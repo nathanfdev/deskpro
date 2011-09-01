@@ -58,7 +58,7 @@ e.change()}});if(a){e.change(function(){var i=$("option:selected",this);var k=i.
 }return this.elements.wrapper.is(":visible")},getOpenTriggerEvent:function(){return this.openTriggerEvent},getOpenTriggerElement:function(){if(!this.openTriggerEvent){return null
 }return this.openTriggerEvent.target},open:function(a){return this.openMenu(a)},openMenu:function(a){if(!this._initMenu()){return
 }if(this.isMenuOpen()){return}if(!this.parentMenu){Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup],function(m,l){if(m.isMenuOpen()){m.closeMenu()
-}})}this.openTriggerEvent=a;if(a.stopPropagation){a.stopPropagation()}var i={menu:this,cancelOpen:false};if(a&&a.customEvents){a.customEvents.fireEvent("beforeMenuOpened",i)
+}})}this.openTriggerEvent=a;if(a&&a.stopPropagation){a.stopPropagation()}var i={menu:this,cancelOpen:false};if(a&&a.customEvents){a.customEvents.fireEvent("beforeMenuOpened",i)
 }if(!i.noFireEvent){this.fireEvent("beforeMenuOpened",i)}if(i.cancelOpen){this.openTriggerEvent=null;return}if(!this.options.zIndex){this.options.zIndex=Orb.findHighestZindex()+1
 }if(this.cachePosInfo&&this.openedTime&&this.parentMenu&&this.parentMenu.openedTime&&this.parentMenu.openedTime<=this.openedTime){var c=this.cachePosInfo.left;
 var g=this.cachePosInfo.top}else{var b=this.elements.wrapperOuter.outerWidth();var j=this.elements.wrapperOuter.outerHeight();
@@ -85,10 +85,13 @@ this.subMenus[this.openSubMenuId].options.parentMenuItem.removeClass("hover");th
 }this.hasInit=true;if(!this.parentMenu){this.elements.shim=$("<div />").hide().appendTo("body");this.elements.shim.click((function(c){if(this.closeMenu()){c.stopPropagation()
 }}).bind(this))}this._initWrapperElements();this.elements.list=$(this.options.menuElement);this.elements.list.detach().show().appendTo(this.elements.wrapper);
 if(this.options.subMenuConfig){var b=this.options.subMenuConfig}else{var b={}}$("li",this.elements.list[0]).live("click",this._menuItemClicked.bind(this));
-var a=$("> li > ul.submenu",this.elements.list[0]);if(a.length){a.each((function(e,f){var d=$(f);f=$(d.parent());f.mouseover(this._menuItemMouseover.bind(this));
-d.hide();var g=this.subMenus.length;f.addClass("with-submenu");f.data("submenu-id",g);b.parentMenu=this;b.subMenuId=g;b.parentMenuItem=f;
-b.menuElement=d;b.zIndex=this.options.zIndex+1;var c=new DeskPRO.UI.Menu(b);this.subMenus.push(c);f.prepend($('<span class="arrow">&#x25B8;</span>'));
-if(this.options.initSubMenusNow){c._initMenu()}}).bind(this))}this.fireEvent("menuInit",{menu:this});return true},_initWrapperElements:function(){this.elements.wrapperOuter=$('<div class="deskpro-menu-outer '+this.options.customClassname+'" style="display:none" />');
+$("> li[data-submenu-selector]",this.elements.list[0]).each((function(d,e){var c=$($(e).data("submenu-selector")).first();
+if(c.length){c=c.clone();c.data("menu-flag","");c.attr("menu-flag","");c.attr("id","");c.addClass("submenu");if($(e).data("submenu-add-action")){c.data("action",$(e).data("submenu-add-action")).attr("data-action",$(e).data("submenu-add-action"))
+}c.appendTo(e);$(e).data("submenu-selector","").attr("submenu-selector","")}}).bind(this));var a=$("> li > ul.submenu",this.elements.list[0]);
+if(a.length){a.each((function(e,f){var d=$(f);f=$(d.parent());f.mouseover(this._menuItemMouseover.bind(this));d.hide();var g=this.subMenus.length;
+f.addClass("with-submenu");f.data("submenu-id",g);b.parentMenu=this;b.subMenuId=g;b.parentMenuItem=f;b.menuElement=d;b.zIndex=this.options.zIndex+1;
+var c=new DeskPRO.UI.Menu(b);this.subMenus.push(c);f.prepend($('<span class="arrow">&#x25B8;</span>'));if(this.options.initSubMenusNow){c._initMenu()
+}}).bind(this))}this.fireEvent("menuInit",{menu:this});return true},_initWrapperElements:function(){this.elements.wrapperOuter=$('<div class="deskpro-menu-outer '+this.options.customClassname+'" style="display:none" />');
 this.elements.wrapperOuter.appendTo("body");this.elements.wrapperInner=$('<div class="deskpro-menu-inner '+this.options.customClassname+'" />');
 this.elements.wrapperInner.appendTo(this.elements.wrapperOuter);this.elements.wrapper=$('<div class="deskpro-menu '+this.options.customClassname+'">');
 this.elements.wrapper.appendTo(this.elements.wrapperInner)},getListElement:function(){if(this.elements.list){return this.elements.list

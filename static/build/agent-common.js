@@ -81,22 +81,22 @@ c=c.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2");e.data("timeago",{datetime:new Date(
 }if(g.length>0){e.attr("title",g)}}var f=e.data("timeago");if(!isNaN(f.datetime)){var g=a.get(f.datetime);if(!e.data("timeago-no-ago")){g+=" "+a.phrases.ago
 }e.text(g)}})},getRelativeInfo:function(b){var d=0,e=0,a=0,f=0,c=0;d=parseInt(b/1000);c=parseInt(d/29030400);d-=c*29030400;
 f=parseInt(d/86400);d-=f*86400;a=parseInt(d/3600);d-=a*3600;e=parseInt(d/60);d-=e*60;return{secs:d,mins:e,hours:a,days:f,years:c}
-},getForMs:function(b){var c=this.getRelativeInfo(b);var g=parseInt(b/1000);if(g<=120){return this.getPhraseFor("sec",c.secs).replace("{0}",c.secs)
-}else{if(g<=1200){return this.getPhraseFor("min",c.mins).replace("{0}",c.mins)}else{if(g<=86400){var i;if(c.mins<=15){i=""
-}else{if(c.mins<=30){i="1/4"}else{if(c.mins<=45){i="1/2"}else{if(c.mins<=60){i="3/4"}}}}var e=c.hours;var h=c.hours+"";if(i!==""){e+=1;
-h+=" "+i}return this.getPhraseFor("hour",e).replace("{0}",h)}else{if(g<=259200){var d=this.getPhraseFor("day",c.days).replace("{0}",c.days);
-if(c.hours>0){d+=" "+this.getPhraseFor("hour",c.hours).replace("{0}",c.hours)}return d}else{if(g<=2419200){return this.getPhraseFor("day",c.days).replace("{0}",c.days)
-}else{if(g<=7257600){var a=parseInt(c.days/7);return this.getPhraseFor("week",a).replace("{0}",a)}else{if(g<=29030400){return this.getPhraseFor("month",c.months).replace("{0}",c.months)
-}else{if(g<=145152000){var f=this.getPhraseFor("year",c.years).replace("{0}",c.years);if(c.months>0){f+=" "+this.getPhraseFor("month",c.months).replace("{0}",c.months)
-}return f}else{return this.getPhraseFor("year",c.years).replace("{0}",c.years)}}}}}}}}},getDateDiff:function(a,b){var c=(new Date().getTime()-a.getTime());
-if(b){c/=1000}return c},getPhraseFor:function(c,b){if(c=="sec"&&b<=0){return this.phrases.sec_less}var a=c;if(b!=1){a+="s"
-}return this.phrases[a]}};if(jQuery){jQuery.fn.timeago=function(){Orb.Util.TimeAgo.applyToJquery(this);return this}}Orb.createNamespace("Orb.Compat.WebForms");
-Orb.Compat.WebForms.isPlaceholderSupported=function(){this.isSupported=null;if(this.isSupported===null){this.isSupported=("placeholder" in document.createElement(input.tagName))
-}return this.isSupported};Orb.Compat.WebForms.placeholder=function(a){if(!a){return null}input_col=$(a);if(!input_col.length){return null
-}input_col.each(function(){var b=$(this);if(b.placeholder&&this.isPlaceholderSupported()){return}var c=b.attr("placeholder");
-if(!c||!c.length){return}if(b.is(".has-placeholder")){return}b.addClass("has-placeholder");if(b.val()===""||b.val()==c){b.val(c);
-b.addClass("placeholder-visible")}b.focus(function(){if(b.is(".placeholder-visible")){b.val("");b.removeClass("placeholder-visible")
-}});b.blur(function(){if(b.val()===""){b.addClass("placeholder-visible");b.val(c)}else{b.removeClass("placeholder-visible")
+},getForMs:function(b){var d=this.getRelativeInfo(b);var h=parseInt(b/1000);if(h<=120){return this.getPhraseFor("sec",d.secs).replace("{0}",d.secs)
+}else{if(h<=1200){return this.getPhraseFor("min",d.mins).replace("{0}",d.mins)}else{if(h<=86400){var j;if(d.mins<=15){j=""
+}else{if(d.mins<=30){j="1/4"}else{if(d.mins<=45){j="1/2"}else{if(d.mins<=60){j="3/4"}}}}var f=d.hours;var i=d.hours+"";if(j!==""){f+=1;
+i+=" "+j}return this.getPhraseFor("hour",f).replace("{0}",i)}else{if(h<=259200){var e=this.getPhraseFor("day",d.days).replace("{0}",d.days);
+if(d.hours>0){e+=" "+this.getPhraseFor("hour",d.hours).replace("{0}",d.hours)}return e}else{if(h<=2419200){return this.getPhraseFor("day",d.days).replace("{0}",d.days)
+}else{if(h<=7257600){var a=parseInt(d.days/7);return this.getPhraseFor("week",a).replace("{0}",a)}else{if(h<=29030400){var c=parseInt(d.days/30);
+return this.getPhraseFor("month",d.months).replace("{0}",c)}else{if(h<=145152000){var g=this.getPhraseFor("year",d.years).replace("{0}",d.years);
+if(d.months>0){g+=" "+this.getPhraseFor("month",d.months).replace("{0}",d.months)}return g}else{return this.getPhraseFor("year",d.years).replace("{0}",d.years)
+}}}}}}}}},getDateDiff:function(a,b){var c=(new Date().getTime()-a.getTime());if(b){c/=1000}return c},getPhraseFor:function(c,b){if(c=="sec"&&b<=0){return this.phrases.sec_less
+}var a=c;if(b!=1){a+="s"}return this.phrases[a]}};if(jQuery){jQuery.fn.timeago=function(){Orb.Util.TimeAgo.applyToJquery(this);
+return this}}Orb.createNamespace("Orb.Compat.WebForms");Orb.Compat.WebForms.isPlaceholderSupported=function(){this.isSupported=null;
+if(this.isSupported===null){this.isSupported=("placeholder" in document.createElement(input.tagName))}return this.isSupported
+};Orb.Compat.WebForms.placeholder=function(a){if(!a){return null}input_col=$(a);if(!input_col.length){return null}input_col.each(function(){var b=$(this);
+if(b.placeholder&&this.isPlaceholderSupported()){return}var c=b.attr("placeholder");if(!c||!c.length){return}if(b.is(".has-placeholder")){return
+}b.addClass("has-placeholder");if(b.val()===""||b.val()==c){b.val(c);b.addClass("placeholder-visible")}b.focus(function(){if(b.is(".placeholder-visible")){b.val("");
+b.removeClass("placeholder-visible")}});b.blur(function(){if(b.val()===""){b.addClass("placeholder-visible");b.val(c)}else{b.removeClass("placeholder-visible")
 }});if(b.get(0).form){$(b.get(0).form).submit(function(){if(b.is(".placeholder-visible")){b.val("")}})}})};Orb.createNamespace("DeskPRO");
 DeskPRO.MessageBroker=new Orb.Class({initialize:function(){this.messageTransformers={};this.messageListeners={};this.tagged={}
 },addForwarder:function(b,a){this.addMessageListener(b,function(d,c){a.sendMessage(c,d)})},sendMessage:function(a,d){d=this.transformMessage(a,d);

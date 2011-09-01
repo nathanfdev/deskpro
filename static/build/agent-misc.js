@@ -157,6 +157,15 @@ var a=this;$(".merge-trigger",this.wrapper).click(function(){$(this).text("...")
 var b=$(this).data("ticket-id");var c=a.ticketId;$.ajax({url:BASE_URL+"agent/tickets/merge/"+c+"/"+b,type:"POST",dataType:"json",success:function(d){if(d.success){a.fireEvent("mergeSuccess",[d])
 }else{a.fireEvent("mergeError",[d])}},error:function(d){a.fireEvent("mergeError",[d])}})});$(".with-route",this.wrapper).click(function(){DeskPRO_Window.runPageRouteFromElement(this)
 })},open:function(){this._initOverlay();this.overlay.open()},close:function(){this.overlay.close();if(this.options.destroyOnClose){this.desotry
+}},destroy:function(){if(this.overlay){this.overlay.destroy()}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.MergeIdea=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={ideaId:0,destroyOnClose:false};
+this.setOptions(a);this.ideaId=this.options.ideaId;this.overlay=null},_initOverlay:function(){if(this.overlay){return this.overlay
+}var a=[];Array.each(DeskPRO_Window.getTabWatcher().findTabType("idea"),function(b){var c=b.page.getMetaData("idea_id");if(c&&c!=this.ideaId){a.push({name:"open_idea_ids[]",value:c})
+}});this.overlay=new DeskPRO.UI.Overlay({contentMethod:"ajax",contentAjax:{url:BASE_URL+"agent/ideas/merge-overlay/"+this.ideaId,data:a}});
+this.overlay.addEvent("ajaxDone",this._initElements.bind(this))},_initElements:function(){this.wrapper=this.overlay.getWrapper();
+var a=this;$(".merge-trigger",this.wrapper).click(function(){$(this).text("...").attr("disabled",true);$(".merge-trigger",this.wrapper).attr("disabled",true);
+var c=$(this).data("idea-id");var b=a.ideaId;$.ajax({url:BASE_URL+"agent/ideas/merge/"+b+"/"+c,type:"POST",dataType:"json",success:function(d){if(d.success){a.fireEvent("mergeSuccess",[d])
+}else{a.fireEvent("mergeError",[d])}},error:function(d){a.fireEvent("mergeError",[d])}})});$(".with-route",this.wrapper).click(function(){DeskPRO_Window.runPageRouteFromElement(this)
+})},open:function(){this._initOverlay();this.overlay.open()},close:function(){this.overlay.close();if(this.options.destroyOnClose){this.desotry
 }},destroy:function(){if(this.overlay){this.overlay.destroy()}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.AgentChatWin_Registry={};
 DeskPRO.Agent.Widget.AgentChatWin_Find=function(a){var b=null;Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry,function(c){if(!b&&c.getConvoId()==a){b=c
 }});return b};DeskPRO.Agent.Widget.AgentChatWin_FindAgents=function(a){var b=null;a=a.sort(function(d,c){return parseInt(d)-parseInt(c)
