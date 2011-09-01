@@ -17,7 +17,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-class Phone extends AbstractContactData
+class Address extends AbstractContactData
 {
 	/**
 	 * Apply form data to a contact record
@@ -27,9 +27,8 @@ class Phone extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
-		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
-		$contact_record->field_1 = isset($input['country_code']) ? $input['country_code'] : '';
-		$contact_record->field_2 = isset($input['number']) ? $input['number'] : '';
+		$contact_record->comment = $input['comment'];
+		$contact_record->field_1 = $input['address'];
 	}
 
 	/**
@@ -39,9 +38,18 @@ class Phone extends AbstractContactData
 	 */
 	public function getTemplateVars(ContactDataAbstract $contact_record)
 	{
+		$params = array(
+			'sensor' => 'false',
+			'size' => '200x200',
+			'center' => str_replace("\n", " ", Strings::standardEol($contact_record->field_1))
+		);
+		$google_url = 'https://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params, null, '&amp;');
+
 		return array(
-			'country_code' => $contact_record->field_1,
-			'number' => $contact_record->field_2,
+			'comment' => $contact_record->comment,
+			'address' => $contact_record->field_1,
+			'address_html' => nl2br(htmlentities($contact_record->field_1)),
+			'map_url' => $google_url,
 		);
 	}
 }

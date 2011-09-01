@@ -6665,7 +6665,15 @@ article.idea .toprow .votes {
 .contact-list ul li.phone {
 	background-image: url(../../images/icons/social_media_mini_icons/sphinn.png);
 }
+.contact-list ul li.address {
+	background-image: url(../../images/icons/social_media_mini_icons/newsvine.png);
+	line-height: 100%;
+	background-position: 0 0;
+}
 
+.contact-list .addresses {
+	border-top: 1px solid #CAD0D7;
+}
 
 .profile-contact-editor {
 	width: 680px;

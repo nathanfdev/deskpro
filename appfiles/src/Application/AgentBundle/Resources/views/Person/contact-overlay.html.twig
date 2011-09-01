@@ -132,12 +132,24 @@
 					<div class="remove">-</div>
 				</li>
 			{% endfor %}
+
+			{% for contact in contact_data.address %}
+				<li class="facebook" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Address</div>
+					<div class="input">
+						Label: <input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /><br />
+						<textarea cols="40" rows="3" name="contact_data[{{ contact.id }}][address]" value="{{ contact.address }}" />
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
 		</ul>
 	</div>
 	<div class="add-row">
 		<span class="add-new-type-trigger">Add new...</span>
 		<ul class="add-new-type-menu" style="display: none">
 			<li data-tpl="tpl-new-email">Email</li>
+			<li data-tpl="tpl-new-address">Address</li>
 			<li data-tpl="tpl-new-phone">Phone</li>
 			<li data-tpl="tpl-new-mobile">Cell</li>
 			<li data-tpl="tpl-new-fax">Fax</li>
@@ -280,6 +292,16 @@
 					<option value="gtalk">GTalk</option>
 				</select>
 				<input type="text" size="15" name="new_contact_data[instant_message][%id%][username]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-address">
+		<li class="address new">
+			<div class="type">Address</div>
+			<div class="input">
+				Label: <input type="text" size="8" name="new_contact_data[address][%id%][comment]" value="" /><br />
+				<textarea cols="40" rows="3" name="new_contact_data[address][%id%][address]" value="" />
 			</div>
 			<div class="remove">-</div>
 		</li>

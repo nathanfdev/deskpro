@@ -198,7 +198,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 				console.log(wrap);
 				var item = $(info.itemEl);
 				var tpl = $('.' + item.data('tpl'), wrap).get(0).innerHTML;
-				tpl = tpl.replace('%id%', Orb.uuid());
+				tpl = tpl.replace(/%id%/g, Orb.uuid());
 
 				var el = $(tpl);
 				el.appendTo($('.contact-edit-list ul', wrap));
