@@ -157,7 +157,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The gateway this ticket originated from
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGateway")
 	 * @ORM_Mapping\JoinColumn(name="email_gateway_id", referencedColumnName="id", onDelete="set null")
@@ -309,7 +309,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $_ticket_logger;
 
 	protected $_label_manager = null;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedTicket", mappedBy="ticket")
@@ -599,7 +599,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Set agent participants. Agents are added/removed so that
 	 * all participants on the ticket are in the array.
-	 * 
+	 *
 	 * @param array $set_agent_ids
 	 * @return void
 	 */
@@ -735,7 +735,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Add a ticket attachment
-	 * 
+	 *
 	 * @param TicketAttachment $attach
 	 * @return void
 	 */
@@ -757,7 +757,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($field_id instanceof CustomDefTicket) {
 			$field_id = $field_id['id'];
 		}
-		
+
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id) {
 				return $data;
@@ -779,10 +779,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if (!$data) {
 			return null;
 		}
-		
+
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $ticket_field_defs);
-		
+
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray(
 			$ticket_field_defs,
 			$ticket_data_structured
@@ -882,7 +882,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Check if this ticket has a custom field.
-	 * 
+	 *
 	 * @param $field_id
 	 * @return bool
 	 */
@@ -1274,7 +1274,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return \Orb\Util\Numbers::roundToMultiple($this->urgency, 10, \Orb\Util\Numbers::ROUND_MULTIPLE_NEAR);
 	}
 
-	
+
 
 	/**
 	 * Get the deletion record if there is one
@@ -1390,10 +1390,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Soft-delete a ticket
-	 * 
+	 *
 	 * @param null $person
 	 * @param string $reason
 	 * @return void
@@ -1440,7 +1440,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->access_codes->add($tac);
 	}
 
-	
+
 
 	/**
 	 * Find the access code for a person if it exists
@@ -1483,7 +1483,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * Returns null if the person isn't on the ticket or if they don't have any email
 	 * addresses.
-	 * 
+	 *
 	 * @param Person $person
 	 * @return PersonEmail|null
 	 */
@@ -1530,7 +1530,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the Message-ID field for an email regarding this ticket, witht he
 	 * embedded PTAC code.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getUniqueEmailMessageId()
@@ -1545,7 +1545,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get the ID used in the interface for links etc.
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getPublicId()
@@ -1643,7 +1643,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->ticket_hash = sha1(implode('', $hashes));
 		$this->_onPropertyChanged('ticket_hash', '', $this->ticket_hash);
 	}
-	
+
 
 	/**
 	 * @ORM_Mapping\PrePersist
@@ -1747,734 +1747,4 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		return $alt_ticket;
 	}
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set ref
-     *
-     * @param string $ref
-     */
-    public function setRef($ref)
-    {
-        $this->ref = $ref;
-    }
-
-    /**
-     * Get ref
-     *
-     * @return string 
-     */
-    public function getRef()
-    {
-        return $this->ref;
-    }
-
-    /**
-     * Set auth
-     *
-     * @param string $auth
-     */
-    public function setAuth($auth)
-    {
-        $this->auth = $auth;
-    }
-
-    /**
-     * Get auth
-     *
-     * @return string 
-     */
-    public function getAuth()
-    {
-        return $this->auth;
-    }
-
-    /**
-     * Set notify_template
-     *
-     * @param string $notifyTemplate
-     */
-    public function setNotifyTemplate($notifyTemplate)
-    {
-        $this->notify_template = $notifyTemplate;
-    }
-
-    /**
-     * Get notify_template
-     *
-     * @return string 
-     */
-    public function getNotifyTemplate()
-    {
-        return $this->notify_template;
-    }
-
-    /**
-     * Set creation_system
-     *
-     * @param string $creationSystem
-     */
-    public function setCreationSystem($creationSystem)
-    {
-        $this->creation_system = $creationSystem;
-    }
-
-    /**
-     * Get creation_system
-     *
-     * @return string 
-     */
-    public function getCreationSystem()
-    {
-        return $this->creation_system;
-    }
-
-    /**
-     * Set ticket_hash
-     *
-     * @param string $ticketHash
-     */
-    public function setTicketHash($ticketHash)
-    {
-        $this->ticket_hash = $ticketHash;
-    }
-
-    /**
-     * Get status
-     *
-     * @return string 
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Get hidden_status
-     *
-     * @return string 
-     */
-    public function getHiddenStatus()
-    {
-        return $this->hidden_status;
-    }
-
-    /**
-     * Get urgency
-     *
-     * @return integer 
-     */
-    public function getUrgency()
-    {
-        return $this->urgency;
-    }
-
-    /**
-     * Set date_created
-     *
-     * @param datetime $dateCreated
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->date_created = $dateCreated;
-    }
-
-    /**
-     * Get date_created
-     *
-     * @return datetime 
-     */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * Set date_resolved
-     *
-     * @param datetime $dateResolved
-     */
-    public function setDateResolved($dateResolved)
-    {
-        $this->date_resolved = $dateResolved;
-    }
-
-    /**
-     * Get date_resolved
-     *
-     * @return datetime 
-     */
-    public function getDateResolved()
-    {
-        return $this->date_resolved;
-    }
-
-    /**
-     * Set date_closed
-     *
-     * @param datetime $dateClosed
-     */
-    public function setDateClosed($dateClosed)
-    {
-        $this->date_closed = $dateClosed;
-    }
-
-    /**
-     * Get date_closed
-     *
-     * @return datetime 
-     */
-    public function getDateClosed()
-    {
-        return $this->date_closed;
-    }
-
-    /**
-     * Set date_first_agent_reply
-     *
-     * @param datetime $dateFirstAgentReply
-     */
-    public function setDateFirstAgentReply($dateFirstAgentReply)
-    {
-        $this->date_first_agent_reply = $dateFirstAgentReply;
-    }
-
-    /**
-     * Get date_first_agent_reply
-     *
-     * @return datetime 
-     */
-    public function getDateFirstAgentReply()
-    {
-        return $this->date_first_agent_reply;
-    }
-
-    /**
-     * Set date_last_agent_reply
-     *
-     * @param datetime $dateLastAgentReply
-     */
-    public function setDateLastAgentReply($dateLastAgentReply)
-    {
-        $this->date_last_agent_reply = $dateLastAgentReply;
-    }
-
-    /**
-     * Get date_last_agent_reply
-     *
-     * @return datetime 
-     */
-    public function getDateLastAgentReply()
-    {
-        return $this->date_last_agent_reply;
-    }
-
-    /**
-     * Set date_last_user_reply
-     *
-     * @param datetime $dateLastUserReply
-     */
-    public function setDateLastUserReply($dateLastUserReply)
-    {
-        $this->date_last_user_reply = $dateLastUserReply;
-    }
-
-    /**
-     * Get date_last_user_reply
-     *
-     * @return datetime 
-     */
-    public function getDateLastUserReply()
-    {
-        return $this->date_last_user_reply;
-    }
-
-    /**
-     * Set date_agent_waiting
-     *
-     * @param datetime $dateAgentWaiting
-     */
-    public function setDateAgentWaiting($dateAgentWaiting)
-    {
-        $this->date_agent_waiting = $dateAgentWaiting;
-    }
-
-    /**
-     * Get date_agent_waiting
-     *
-     * @return datetime 
-     */
-    public function getDateAgentWaiting()
-    {
-        return $this->date_agent_waiting;
-    }
-
-    /**
-     * Set date_user_waiting
-     *
-     * @param datetime $dateUserWaiting
-     */
-    public function setDateUserWaiting($dateUserWaiting)
-    {
-        $this->date_user_waiting = $dateUserWaiting;
-    }
-
-    /**
-     * Get date_user_waiting
-     *
-     * @return datetime 
-     */
-    public function getDateUserWaiting()
-    {
-        return $this->date_user_waiting;
-    }
-
-    /**
-     * Set total_user_waiting
-     *
-     * @param integer $totalUserWaiting
-     */
-    public function setTotalUserWaiting($totalUserWaiting)
-    {
-        $this->total_user_waiting = $totalUserWaiting;
-    }
-
-    /**
-     * Get total_user_waiting
-     *
-     * @return integer 
-     */
-    public function getTotalUserWaiting()
-    {
-        return $this->total_user_waiting;
-    }
-
-    /**
-     * Set total_to_first_reply
-     *
-     * @param integer $totalToFirstReply
-     */
-    public function setTotalToFirstReply($totalToFirstReply)
-    {
-        $this->total_to_first_reply = $totalToFirstReply;
-    }
-
-    /**
-     * Get total_to_first_reply
-     *
-     * @return integer 
-     */
-    public function getTotalToFirstReply()
-    {
-        return $this->total_to_first_reply;
-    }
-
-    /**
-     * Set date_locked
-     *
-     * @param datetime $dateLocked
-     */
-    public function setDateLocked($dateLocked)
-    {
-        $this->date_locked = $dateLocked;
-    }
-
-    /**
-     * Get date_locked
-     *
-     * @return datetime 
-     */
-    public function getDateLocked()
-    {
-        return $this->date_locked;
-    }
-
-    /**
-     * Set has_attachments
-     *
-     * @param boolean $hasAttachments
-     */
-    public function setHasAttachments($hasAttachments)
-    {
-        $this->has_attachments = $hasAttachments;
-    }
-
-    /**
-     * Get has_attachments
-     *
-     * @return boolean 
-     */
-    public function getHasAttachments()
-    {
-        return $this->has_attachments;
-    }
-
-    /**
-     * Set subject
-     *
-     * @param string $subject
-     */
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-    }
-
-    /**
-     * Get subject
-     *
-     * @return string 
-     */
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-
-    /**
-     * Get department
-     *
-     * @return Application\DeskPRO\Entity\Department 
-     */
-    public function getDepartment()
-    {
-        return $this->department;
-    }
-
-    /**
-     * Set category
-     *
-     * @param Application\DeskPRO\Entity\TicketCategory $category
-     */
-    public function setCategory(\Application\DeskPRO\Entity\TicketCategory $category)
-    {
-        $this->category = $category;
-    }
-
-    /**
-     * Get category
-     *
-     * @return Application\DeskPRO\Entity\TicketCategory 
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
-     * Set priority
-     *
-     * @param Application\DeskPRO\Entity\TicketPriority $priority
-     */
-    public function setPriority(\Application\DeskPRO\Entity\TicketPriority $priority)
-    {
-        $this->priority = $priority;
-    }
-
-    /**
-     * Get priority
-     *
-     * @return Application\DeskPRO\Entity\TicketPriority 
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Set workflow
-     *
-     * @param Application\DeskPRO\Entity\TicketWorkflow $workflow
-     */
-    public function setWorkflow(\Application\DeskPRO\Entity\TicketWorkflow $workflow)
-    {
-        $this->workflow = $workflow;
-    }
-
-    /**
-     * Get workflow
-     *
-     * @return Application\DeskPRO\Entity\TicketWorkflow 
-     */
-    public function getWorkflow()
-    {
-        return $this->workflow;
-    }
-
-    /**
-     * Set product
-     *
-     * @param Application\DeskPRO\Entity\Product $product
-     */
-    public function setProduct(\Application\DeskPRO\Entity\Product $product)
-    {
-        $this->product = $product;
-    }
-
-    /**
-     * Get product
-     *
-     * @return Application\DeskPRO\Entity\Product 
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
-     * Set person
-     *
-     * @param Application\DeskPRO\Entity\Person $person
-     */
-    public function setPerson(\Application\DeskPRO\Entity\Person $person)
-    {
-        $this->person = $person;
-    }
-
-    /**
-     * Get person
-     *
-     * @return Application\DeskPRO\Entity\Person 
-     */
-    public function getPerson()
-    {
-        return $this->person;
-    }
-
-    /**
-     * Set person_email
-     *
-     * @param Application\DeskPRO\Entity\PersonEmail $personEmail
-     */
-    public function setPersonEmail(\Application\DeskPRO\Entity\PersonEmail $personEmail)
-    {
-        $this->person_email = $personEmail;
-    }
-
-    /**
-     * Set agent
-     *
-     * @param Application\DeskPRO\Entity\Person $agent
-     */
-    public function setAgent(\Application\DeskPRO\Entity\Person $agent)
-    {
-        $this->agent = $agent;
-    }
-
-    /**
-     * Get agent
-     *
-     * @return Application\DeskPRO\Entity\Person 
-     */
-    public function getAgent()
-    {
-        return $this->agent;
-    }
-
-    /**
-     * Set agent_team
-     *
-     * @param Application\DeskPRO\Entity\AgentTeam $agentTeam
-     */
-    public function setAgentTeam(\Application\DeskPRO\Entity\AgentTeam $agentTeam)
-    {
-        $this->agent_team = $agentTeam;
-    }
-
-    /**
-     * Get agent_team
-     *
-     * @return Application\DeskPRO\Entity\AgentTeam 
-     */
-    public function getAgentTeam()
-    {
-        return $this->agent_team;
-    }
-
-    /**
-     * Set organization
-     *
-     * @param Application\DeskPRO\Entity\Organization $organization
-     */
-    public function setOrganization(\Application\DeskPRO\Entity\Organization $organization)
-    {
-        $this->organization = $organization;
-    }
-
-    /**
-     * Get organization
-     *
-     * @return Application\DeskPRO\Entity\Organization 
-     */
-    public function getOrganization()
-    {
-        return $this->organization;
-    }
-
-    /**
-     * Add attachments
-     *
-     * @param Application\DeskPRO\Entity\TicketAttachment $attachments
-     */
-    public function addTicketAttachment(\Application\DeskPRO\Entity\TicketAttachment $attachments)
-    {
-        $this->attachments[] = $attachments;
-    }
-
-    /**
-     * Get attachments
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    /**
-     * Add access_codes
-     *
-     * @param Application\DeskPRO\Entity\TicketAccessCode $accessCodes
-     */
-    public function addTicketAccessCode(\Application\DeskPRO\Entity\TicketAccessCode $accessCodes)
-    {
-        $this->access_codes[] = $accessCodes;
-    }
-
-    /**
-     * Get access_codes
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getAccessCodes()
-    {
-        return $this->access_codes;
-    }
-
-    /**
-     * Add messages
-     *
-     * @param Application\DeskPRO\Entity\TicketMessage $messages
-     */
-    public function addTicketMessage(\Application\DeskPRO\Entity\TicketMessage $messages)
-    {
-        $this->messages[] = $messages;
-    }
-
-    /**
-     * Get messages
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getMessages()
-    {
-        return $this->messages;
-    }
-
-    /**
-     * Add custom_data
-     *
-     * @param Application\DeskPRO\Entity\CustomDataTicket $customData
-     */
-    public function addCustomDataTicket(\Application\DeskPRO\Entity\CustomDataTicket $customData)
-    {
-        $this->custom_data[] = $customData;
-    }
-
-    /**
-     * Get custom_data
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getCustomData()
-    {
-        return $this->custom_data;
-    }
-
-    /**
-     * Add labels
-     *
-     * @param Application\DeskPRO\Entity\LabelTicket $labels
-     */
-    public function addLabelTicket(\Application\DeskPRO\Entity\LabelTicket $labels)
-    {
-        $this->labels[] = $labels;
-    }
-
-    /**
-     * Get labels
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * Set email_gateway
-     *
-     * @param Application\DeskPRO\Entity\EmailGateway $emailGateway
-     */
-    public function setEmailGateway(\Application\DeskPRO\Entity\EmailGateway $emailGateway)
-    {
-        $this->email_gateway = $emailGateway;
-    }
-
-    /**
-     * Get email_gateway
-     *
-     * @return Application\DeskPRO\Entity\EmailGateway 
-     */
-    public function getEmailGateway()
-    {
-        return $this->email_gateway;
-    }
-
-    /**
-     * Get locked_by_agent
-     *
-     * @return Application\DeskPRO\Entity\Person 
-     */
-    public function getLockedByAgent()
-    {
-        return $this->locked_by_agent;
-    }
-
-    /**
-     * Add participants
-     *
-     * @param Application\DeskPRO\Entity\TicketParticipant $participants
-     */
-    public function addTicketParticipant(\Application\DeskPRO\Entity\TicketParticipant $participants)
-    {
-        $this->participants[] = $participants;
-    }
-
-    /**
-     * Add task_associations
-     *
-     * @param Application\DeskPRO\Entity\TaskAssociatedTicket $taskAssociations
-     */
-    public function addTaskAssociatedTicket(\Application\DeskPRO\Entity\TaskAssociatedTicket $taskAssociations)
-    {
-        $this->task_associations[] = $taskAssociations;
-    }
-
-    /**
-     * Get task_associations
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getTaskAssociations()
-    {
-        return $this->task_associations;
-    }
 }
