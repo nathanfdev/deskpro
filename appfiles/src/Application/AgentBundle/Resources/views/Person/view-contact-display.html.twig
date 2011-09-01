@@ -1,10 +1,10 @@
 <ul class="contact-data-list">
 	{% for email in person.emails %}
-		<li class="email">
+		<li class="email {% if email.id == person.primary_email.id %}is-primary{% endif %} email-{{email.id}}">
 			{{ email.email }}
-			{% if email.id == person.primary_email.id %}
-				<span class="primary">primary</span>
-			{% endif %}
+
+			<span class="primary">primary</span>
+			<span class="set-primary" data-email-id="{{ email.id }}">make primary</span>
 		</li>
 	{% endfor %}
 

@@ -13,7 +13,9 @@ namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Entity\Session as SessionEntity;
+use \Application\DeskPRO\Entity\Person as PersonEntity;
+use \Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use \Doctrine\ORM\EntityRepository;
 use \Orb\Util\Util;
 
@@ -62,7 +64,7 @@ class Session extends EntityRepository
 	 */
 	public function getSessionFromCode($sess_code)
 	{
-		$session_id = Entity\Session::getIdFromCode($sess_code);
+		$session_id = SessionEntity::getIdFromCode($sess_code);
 		if (!$session_id) {
 			return null;
 		}
@@ -78,11 +80,11 @@ class Session extends EntityRepository
 
 	/**
 	 * Find an active session that is tied to a visitor.
-	 * 
+	 *
 	 * @param  $visitor
 	 * @return Session
 	 */
-	public function getSessionFromVisitor($visitor)
+	public function getSessionFromVisitor(VisitorEntity $visitor)
 	{
 		$session = $this->getEntityManager()->createQuery("
 			SELECT s
@@ -96,5 +98,27 @@ class Session extends EntityRepository
 		}
 
 		return $session[0];
+	}
+
+
+	/**
+	 * Get the latest active session for a particular user
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function getSessionForPerson(PersonEntity $person)
+	{
+		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+
+		return $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:Session s
+			LEFT JOIN s.visitor v
+			WHERE s.person = ?1 AND s.date_last > ?2
+			ORDER BY s.id
+		")->setMaxResults(1)
+		  ->setParameter(1, $person)
+		  ->setParameter(2, $datecut)
+		  ->getOneOrNullResult();
 	}
 }

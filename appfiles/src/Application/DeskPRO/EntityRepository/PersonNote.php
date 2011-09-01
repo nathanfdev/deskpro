@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -27,5 +28,15 @@ class PersonNote extends EntityRepository
 			FROM DeskPRO:PersonField f
 			WHERE f.parent IS NULL
 		")->execute();
+	}
+
+	public function getNotesForPerson(PersonEntity $person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT n
+			FROM DeskPRO:PersonNote n
+			WHERE n.person = ?1
+			ORDER BY n.id DESC
+		")->execute(array(1=> $person));
 	}
 }

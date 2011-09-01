@@ -31,14 +31,43 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		this.initEditorOverlay();
 
-		return;
+		this.initNoteFormEditable();
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
-		$('input[placeholder]', this.wrapper).each(function() {
-			Orb.Compat.WebForms.placeholder(this);
-		})
+		var tzMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('timezone')
+		});
+		var autoResMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('is_autoresponder')
+		});
+
+		this.getEl('timezone').change(function(){
+			var val = $(this).val();
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'timezone',
+					timezone: val
+				}
+			});
+		});
+
+		this.getEl('is_autoresponder').change(function(){
+			var val = $(this).val();
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'is_autoresponder',
+					is_autoresponder: val
+				}
+			});
+		});
 
 		// Name is editable
 		var name = $('h3.name.editable:first', el);
@@ -47,7 +76,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		}
 
 		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: el,
+			baseElement: this.wrapper,
 			ajax: {
 				url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 			}
@@ -60,33 +89,70 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			editable.handleDocumentClick(ev);
 		});
 
-		// Email pops up the email dialog
-		this.initEmailDlg();
-		this.email_display = $('.main .header .email:first', el);
+		$('.create-ticket', this.getEl('action_buttons')).click(function() {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				page.setUser(self.meta.person_id);
+			});
+		});
 
-		//edit-contact-info
-		this.editContactInfoMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.edit-contact-info:first', this.wrapper),
-			menuElement: $('.contact-info-edit-menu:first', this.wrapper),
+		$('.contact-list-wrapper', this.wrapper).first().delegate('.set-primary', 'click', function() {
+			var email_id = $(this).data('email-id');
+			$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
+			$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');
+
+			var val = $(this).val();
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'set-primary-email',
+					email_id: email_id
+				}
+			});
+		});
+
+		this.morectionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.more', this.getEl('action_buttons')),
+			menuElement: this.getEl('more_actions_menu'),
 			onItemClicked: function(info) {
-				var type = $(info.itemEl).data('edit-type');
-				if (type == 'email') {
-					self.showEmailEditor();
-				} else {
-					self.startContactAdd(type);
+				var action = $(info.itemEl).data('action');
+
+				if (action == 'reset-password') {
+					DeskPRO_Window.showPrompt(
+						'<div>Enter a new password:<br /><br /><label style="font-size: 11px;"><input type="checkbox" class="send_email" value="1" /> Send the user an email with their new password</label></div>',
+						function(val, wrap) {
+							var postData = [];
+							postData.push({
+								name: 'password',
+								value: val
+							});
+
+							postData.push({
+								name: 'send_email',
+								value: $('.send_email', wrap).is(':checked')
+							});
+
+							postData.push({
+								name: 'action',
+								value: 'password'
+							});
+
+							$.ajax({
+								url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+								type: 'POST',
+								dataType: 'json',
+								data: postData
+							});
+						}
+					);
 				}
 			}
 		});
 
-		// The main tabs at the bottom of the page
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed', this.wrapper),
-			triggerElements: $('.full-container-tabbed-tabs li', this.wrapper)
-		});
+		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this);
 
-		this.initNoteFormEditable();
-		this.initNotePagination();
-		this.initOrgEditable();
+		return;
 		this._initLabels();
 		this._initCustomFieldsEditor();
 	},
@@ -442,245 +508,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$('.new-note-form', this.notesSection).removeClass('saving');
 
 		this.updateCounts();
-	},
-
-	//#########################################################################
-	//# Note pagination
-	//#########################################################################
-
-	initNotePagination: function() {
-		var pages = $('ul.pages', this.notesSection);
-		if (!pages.length) return;
-
-		var self = this;
-		$('li', pages).click(function() {
-			self.loadNotePage($(this).data('page'));
-		});
-	},
-
-	loadNotePage: function(page) {
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-get-notes',
-			data: { 'pp': $('.note-list', this.notesSection).data('limit'), 'p': page },
-			success: this.handleGetNotes.bind(this)
-		});
-	},
-
-	handleGetNotes: function(data) {
-		var note_list = $('.note-list', this.notesSection);
-		note_list.html(data.notes_html);
-
-		$('ul.pages il', this.notesSection).removeClass('active');
-		$('ul.pages il.page-'+data.page, this.notesSection).addClass('active');
-	},
-
-	//#########################################################################
-	//# Contact form stuff
-	//#########################################################################
-
-	startContactAdd: function(type) {
-
-		var edit_el = $('.contact-add-tpl.new.'+type, this.wrapper).clone();
-		this.wrapper.append(edit_el)
-
-		var pos_el = $('.contact-info-list-wrap:first', this.wrapper);
-		var pos = pos_el.position();
-
-		// Initial positioning
-		// Because .position() needs to work on visible
-		// element, which might cause scrolling
-		edit_el.css({
-			position: 'absolute',
-			top: 10,
-			left: 10,
-			'z-index': this.zIndex
-		});
-		edit_el.show();
-
-		edit_el.position({
-			my: 'right top',
-			at: 'right top',
-			of: pos_el
-		});
-
-		$('.close', edit_el).click(function() {
-			edit_el.remove();
-		});
-
-		var self = this;
-		$('.save', edit_el).click(function() {
-			self.saveContact(edit_el);
-		});
-	},
-
-	saveContact: function(edit_el) {
-
-		var data = $(':input, select, textarea', edit_el).serializeArray();
-
-		edit_el.addClass('saving');
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-contact',
-			data: data,
-			success: (function(data) {
-				this.handleSaveSuccess(data, edit_el);
-			}).bind(this)
-		});
-
-	},
-
-	handleSaveSuccess: function(data, edit_el) {
-		$('.contact-info-list-wrap:first', this.wrapper).html(data.contact_html);
-
-		edit_el.remove();
-	},
-
-	//#########################################################################
-	//# Email Dlg stuff
-	//#########################################################################
-
-	initEmailDlg: function() {
-
-		this.email_dlg = $('.email-edit-dlg', this.wrapper).detach().appendTo($('body'));
-
-		$('.close-trigger', this.email_dlg).click((function() {
-			this.closeEmailEditor();
-		}).bind(this));
-
-		var self = this;
-		$('.save-trigger', this.email_dlg).click((function() {
-			this.saveEmails();
-		}).bind(this));
-
-		$('.organization.hover-edit:first', this.wrapper).dblclick((function() {
-			this.showEmailEditor();
-		}).bind(this));
-
-		$('ul.emails-list', this.email_dlg).click(function(ev) {
-			var el = $(ev.target);
-			var parent_li = el.parent();
-			if (!parent_li.length) {
-				return;
-			}
-
-			if (el.is('.delete')) {
-				parent_li.addClass('delete');
-				if (parent_li.is('.new')) {
-					parent_li.remove();
-				}
-			} else if (el.is('.undelete')) {
-				parent_li.removeClass('delete');
-			} else if (el.is('.set-primary')) {
-				$('ul.emails-list li.primary', this.email_dlg).removeClass('primary');
-				parent_li.addClass('primary');
-			}
-		});
-
-		// Add buttn
-		$('.new-email-btn', this.email_dlg).click((function() {
-			var email_address = $('.new-email-input', this.email_dlg).val().trim();
-
-			var tpl = $('.emails-list li.tpl', this.email_dlg).clone();
-			tpl.removeClass('tpl');
-			tpl.attr('data-new-email', email_address);
-			$('.email-address', tpl).html(email_address);
-
-			$('.emails-list', this.email_dlg).append(tpl);
-
-		}).bind(this));
-	},
-
-	showEmailEditor: function() {
-
-		var width = this.email_dlg.width();
-		if (width < 350) width = 350;
-
-		this.email_dlg.css({
-			position: 'absolute',
-			width: width,
-			'z-index': this.zIndex
-		});
-
-		this.email_dlg.position({
-			my: 'left top',
-			at: 'left top',
-			of: $('.contact-info-list-wrap:first', this.wrapper)
-		});
-
-		this.email_dlg.slideDown();
-	},
-
-	closeEmailEditor: function() {
-		this.email_dlg.slideUp();
-	},
-
-	saveEmails: function() {
-		var del_ids = [];
-		var new_emails = [];
-		var primary_id = 0;
-
-		$('ul.emails-list li', this.email_dlg).each((function(i, el) {
-			var el = $(el);
-			if (el.is('.tpl')) return;
-
-			// Exists
-			if (el.is('.exists')) {
-				if (el.is('.delete')) {
-					del_ids.push(el.data('email-id'));
-				}
-				// If an email was deleted and was set as primary, we'll sort it out in PHP
-				if (el.is('.primary')) {
-					primary_id = el.data('email-id');
-				}
-
-			// New
-			} else {
-				new_emails.push(el.data('new-email'));
-				if (el.is('.primary')) {
-					primary_id = el.data('new-email');
-				}
-			}
-		}).bind(this));
-
-		var data = [];
-		var i = null;
-		while (i = del_ids.pop()) {
-			data.push({
-				name: 'del_ids[]',
-				value: i
-			});
-		}
-		while (i = new_emails.pop()) {
-			data.push({
-				name: 'new_emails[]',
-				value: i
-			});
-		}
-		data.push({
-			name: 'primary_id',
-			value: primary_id
-		});
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-emails',
-			data: data,
-			success: this.handleEmailSave.bind(this)
-		});
-	},
-
-	handleEmailSave: function(data) {
-		$('ul.emails-list', this.email_dlg).empty().html(data.dlg_html);
-
-		var html = '<li>' + data.emails_list.join('</li><li>') + '</li>';
-
-		$('.contact-info-list-wrap:first ul.emails-list:first', this.wrapper).html(html);
-
-		this.closeEmailEditor();
 	}
 });

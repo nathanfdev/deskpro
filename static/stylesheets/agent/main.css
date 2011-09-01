@@ -6616,7 +6616,10 @@ article.idea .toprow .votes {
 
 
 .profile section.property-col {
-	padding: 8px;
+	padding: 8px 8px 8px 4px;
+}
+.profile section.content-col {
+	padding: 8px 4px 8px 8px;
 }
 
 .profile button.contact-edit {
@@ -6634,6 +6637,24 @@ article.idea .toprow .votes {
 	padding-left: 20px;
 }
 
+.contact-list ul li.email.is-primary .set-primary,
+.contact-list ul li.email.is-primary:hover .set-primary {
+	display: none;
+}
+.contact-list ul li.email.is-primary .primary {
+	display: inline;
+}
+
+.contact-list ul li.email .set-primary {
+	display: none;
+}
+.contact-list ul li.email:hover .set-primary {
+	display: inline;
+}
+.contact-list ul li.email .primary {
+	display: none;
+}
+
 .contact-list ul li.email .primary {
 	background-color: #FFF09C;
 	color: #A19963;
@@ -6641,6 +6662,16 @@ article.idea .toprow .votes {
 	line-height: 100%;
 	padding: 0 0 1px 0;
 	margin-left: 5px;
+}
+
+.contact-list ul li.email .set-primary {
+	background-color: #6DF67F;
+	color: #A19963;
+	font-size: 10px;
+	line-height: 100%;
+	padding: 0 0 1px 0;
+	margin-left: 5px;
+	cursor: pointer;
 }
 
 .contact-list ul li.email {
@@ -6733,4 +6764,47 @@ article.idea .toprow .votes {
 	overflow: hidden;
 	text-indent: -100px;
 	cursor: pointer;
+}
+
+
+
+
+
+.profile .person-picture-box {
+	border: 1px solid #CAD0D7;
+	text-align: center;
+}
+
+table.props-table td.label {
+	border-right: 1px solid #CAD0D7;
+}
+
+table.props-table td {
+	padding: 4px 3px 4px 3px;
+	line-height: 110%;
+}
+
+table.props-table td time.timeago {
+	font-size: 11px;
+	color: #898E93;
+}
+
+
+
+
+.change-person-picture {
+	width: 600px;
+	height: 400px;
+	overflow: auto;
+}
+
+.change-person-picture table td {
+	padding: 8px;
+	border-bottom: 2px solid #CAD0D7;
+	font-size: 11px;
+}
+
+.change-person-picture table td.img {
+	text-align:center;
+	width: 120px;
 }

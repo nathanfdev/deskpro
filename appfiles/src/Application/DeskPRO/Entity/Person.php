@@ -33,6 +33,10 @@ use Application\DeskPRO\Entity;
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {
+	const CREATED_WEB_PERSON = 'web.person';
+	const CREATED_WEB_AGENT = 'web.agent';
+	const CREATED_GATEWAT_PERSON = 'gateway.person';
+
 	/**
 	 * The unique ID.
 	 *
@@ -84,6 +88,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_agent = 0;
 
 	/**
+	 * Autoresponds
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_autoresponder", type="boolean")
+	 */
+	protected $is_autoresponder = 0;
+
+	/**
 	 * Has this user ever confirmed themselves via email?
 	 * Individual email addresses must be confirmed as well, but this
 	 * is an account-wide flag that says the user is at least real.
@@ -108,6 +120,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="importance", type="smallint")
 	 */
 	protected $importance = 0;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
+	 */
+	protected $creation_system;
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -1198,7 +1216,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function addEmailAddress(PersonEmail $email)
 	{
-		if ($this->emails->count() < 1) {
+		if (!$this->primary_email && $this->emails->count() < 1) {
 			$this->primary_email = $email;
 		}
 		$this->emails->add($email);

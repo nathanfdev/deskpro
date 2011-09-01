@@ -27,29 +27,6 @@ use \Application\DeskPRO\App;
  */
 class PersonController extends AbstractController
 {
-	public function newPersonFromPaneAction()
-	{
-		$person = new Person();
-		$person['first_name'] = $this->in->getString('first_name');
-		$person['last_name'] = $this->in->getString('last_name');
-
-		if ($this->in->getString('email_address')) {
-			$email = new PersonEmail();
-			$email['email'] = $this->in->getString('email_address');
-			$email['is_validated'] = true;
-
-			$person->addEmailAddress($email);
-		}
-
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
-
-		return $this->createJsonResponse(array(
-			'person_id' => $person['id']
-		));
-	}
-
-
 	############################################################################
 	# /agent/people/:person_id                                   agent_people_view
 	############################################################################
@@ -83,8 +60,6 @@ class PersonController extends AbstractController
 			}
 		}
 
-		$form = $this->_getForm($person);
-
 		// Custom fields
 		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$field_defs = array();
@@ -94,92 +69,14 @@ class PersonController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------
-		# Contact fields: empty tpls
-		#------------------------------
-
-		$contact_fields_tpl = array();
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\InstantMessage();
-		$contact_fields_tpl['instant_message'] = $f->getFormField();
-
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Address();
-		$contact_fields_tpl['address'] = $f->getFormField();
-
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Phone();
-		$contact_fields_tpl['phone'] = $f->getFormField();
-
-		#------------------------------
-		# Latest 5 notes
-		#------------------------------
-
-		$em = App::getOrm();
-
-		$notes = $em->createQuery("
-			SELECT n
-			FROM DeskPRO:PersonNote n
-			WHERE n.person = ?1
-			ORDER BY n.id DESC
-		")->setParameter(1, $person['id'])->setMaxResults(5)->execute();
-
-		$db = App::getDb();
-		$notes_count = $db->fetchColumn("
-			SELECT COUNT(*) FROM people_notes
-			WHERE person_id = ?
-		", array($person['id']));
-
-		$note_pages = false;
-		if ($notes_count > 5) {
-			$note_pages = range(1, ceil($notes_count / 5));
-		}
-
-		#------------------------------
-		# Users tickets
-		#------------------------------
-
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person);
-
-		#------------------------------
-		# User online, get their sess
-		#------------------------------
-
-		try {
-			$session = App::getOrm()->createQuery("
-				SELECT s
-				FROM DeskPRO:Session s
-				WHERE s.person = ?1
-				ORDER BY s.id DESC
-			")->setParameter(1, $person)->setMaxResults(1)->getSingleResult();
-		} catch (\Exception $e) {
-			$session = null;
-		}
-
-		#------------------------------
 		# Misc info needed
 		#------------------------------
 
-		// Used in the org dlg popup. TODO need to clean this up.
-		// Likely be an autocomplete field in the dlg
-		$org_options = $db->fetchAllKeyValue("
-			SELECT id, name
-			FROM organizations
-			ORDER BY name ASC
-		");
-		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
+		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 5);
+		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
-		$ids = array();
-		foreach ($person['usergroups'] as $ug) $ids[] = $ug['id'];
-
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$usergroups_form = false;
-		if ($usergroups_form) {
-			$usergroups_form = $this->get('form.factory')->createNamedBuilder('choice', 'usergroups', $ids, array(
-				'choices' => $usergroup_names,
-				'multiple' => true
-			))->getForm();
-		}
-
-		$counts = $this->_fetchCounts($person);
-
-		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person);
+		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 10);
 
 		$contact_data = array();
 		foreach ($person->contact_data as $cd) {
@@ -189,49 +86,21 @@ class PersonController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionForPerson($person);
+
+		$timezone_options = \DateTimeZone::listIdentifiers();
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
+			'session' => $session,
+			'timezone_options' => $timezone_options,
 			'contact_data' => $contact_data,
 			'activity_stream' => $activity_stream,
-			'form' => $form,
-			'fields' => $form->getCustomFields(),
 			'custom_fields' => $custom_fields,
-			'contact_fields_tpl' => $contact_fields_tpl,
 			'notes' => $notes,
-			'note_pages' => $note_pages,
-			'org_options' => $org_options,
-			'usergroups_names' => $usergroup_names,
-			'usergroups_form' => $usergroups_form ? $usergroups_form->createView() : null,
 			'person_tickets' => $person_tickets,
-			'counts' => $counts,
-			'session' => $session
+			'person_tickets_count' => $person_tickets_count,
 		));
-	}
-
-	protected function _fetchCounts($person)
-	{
-		$counts = array();
-
-		$counts['notes'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM people_notes
-			WHERE person_id = ?
-		", array($person['id']));
-
-		$counts['tickets'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets
-			WHERE person_id = ?
-		", array($person['id']));
-
-		return $counts;
-	}
-
-	public function getUpdatedCountsAction($person_id)
-	{
-		$person = $this->getPersonOr404($person_id);
-
-		return $this->createJsonResponse($this->_fetchCounts($person));
 	}
 
 	############################################################################
@@ -310,22 +179,90 @@ class PersonController extends AbstractController
 			$person = new Person();
 		}
 
-		$form = $this->_getForm($person);
+		$this->em->beginTransaction();
+		$data = array(
+			'success' => true
+		);
 
 		switch ($this->in->getString('action')) {
 			case 'name':
-				$form['basic_fields']['first_name']->setFormData($_POST['edit_person']['basic_fields']['first_name']);
-				$form['basic_fields']['last_name']->setFormData($_POST['edit_person']['basic_fields']['last_name']);
-				if ($form->isValid()) {
-					$form->savePerson($person);
-					return $this->createJsonResponse(array(
-						'success' => true,
-						'person_id' => $person['id'],
-						'html' => htmlspecialchars($person['first_name'] . ' ' . $person['last_name'])
-					));
+				if ($this->in->getString('name')) {
+					$person->name = $this->in->getString('name');
+					$this->em->persist($person);
 				}
 				break;
+
+			case 'timezone':
+				if (in_array($this->in->getString('timezone'), \DateTimeZone::listIdentifiers())) {
+					$person->timezone = $this->in->getString('timezone');
+					$this->em->persist($person);
+				}
+				break;
+
+			case 'is_autoresponder':
+				$person->is_autoresponder = $this->in->getBool('is_autoresponder');
+				$this->em->persist($person);
+				break;
+
+			case 'set-primary-email':
+				$email_id = $this->in->getUint('email_id');
+				if (isset($person->emails[$email_id])) {
+					$person->primary_email = $person->emails[$email_id];
+					$this->em->persist($person);
+				}
+				break;
+
+			case 'delete-picture':
+				$person->setPictureBlob(null);
+				$this->em->persist($person);
+				break;
+
+			case 'set-picture':
+				$blob = App::findEntity('DeskPRO:Blob', $this->in->getUint('blob_id'));
+				if ($blob) {
+					$person->setPictureBlob($blob);
+					$this->em->persist($person);
+				}
+				break;
+
+			case 'password':
+				if ($this->in->getString('password')) {
+					$person->password = $this->in->getString('password');
+					$this->em->persist($person);
+
+					if ($this->in->getBool('send_email')) {
+						$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+							'person' => $person
+						));
+
+						$message = App::getMailer()->createMessage();
+						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+						$message->setSubject('New Password');
+						$message->setBody($email_body, 'text/html');
+						$message->enableQueueHint();
+						App::getMailer()->send($message);
+					}
+				}
+				break;
+
+			default:
+				return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
+				break;
 		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function changePictureOverlayAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		return $this->render('AgentBundle:Person:change-person-picture.html.twig', array(
+			'person' => $person
+		));
 	}
 
 	############################################################################
@@ -679,26 +616,6 @@ class PersonController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
-
-
-	############################################################################
-
-	protected function _getForm(Person $person)
-	{
-		$form = new \Application\AgentBundle\Form\EditPerson(array('name' => 'edit_person'));
-
-		// Custom fields
-		//$fields = $this->em->getRepository('DeskPRO:PersonField')->getEnabledFields();
-		//$form->setCustomFields($fields);
-
-		$form->setPerson($person);
-
-		$renderer = new \Orb\Form\Renderer\Basic();
-		$form->setRenderer($renderer);
-
-		return $form;
-	}
-
 
 	/**
 	 * @return Application\DeskPRO\Entity\Person

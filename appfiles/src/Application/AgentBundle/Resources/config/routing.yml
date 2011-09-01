@@ -191,6 +191,11 @@ agent_people_ajaxsave:
   defaults: { _controller: AgentBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
+agent_people_changepicoverlay:
+  pattern: /people/{person_id}/change-picture-overlay
+  defaults: { _controller: AgentBundle:Person:changePictureOverlay }
+  requirements: { person_id: "\d+" }
+
 agent_people_savecontactdata:
   pattern: /people/{person_id}/save-contact-data.json
   defaults: { _controller: AgentBundle:Person:saveContactData }

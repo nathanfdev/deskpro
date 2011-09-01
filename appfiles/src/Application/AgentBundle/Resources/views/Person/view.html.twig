@@ -7,6 +7,9 @@ pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'l
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
 pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'person_id': person.id}) }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 {# Page Containers #}
 <div class="profile layout-content with-scrollbar">
@@ -14,7 +17,7 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 
-<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="56%">
+<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
 		{% include 'AgentBundle:Person:view-content-col.html.twig' %}
 	</section>
@@ -23,7 +26,6 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 		{% include 'AgentBundle:Person:view-property-col.html.twig' %}
 	</section>
 </td></tr></table>
-
 
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
 

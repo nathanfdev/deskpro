@@ -214,7 +214,8 @@ Orb.Util.TimeAgo = {
 
 		// less than a year: 8 months
 		} else if (total_secs <= 29030400) {
-			return this.getPhraseFor('month', info.months).replace('{0}', info.months);
+			var months = parseInt(info.days / 30);
+			return this.getPhraseFor('month', info.months).replace('{0}', months);
 
 		// less than 5 years: 1 year 3 months
 		} else if (total_secs <= 145152000) {

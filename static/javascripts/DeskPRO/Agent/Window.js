@@ -550,13 +550,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
-					self._promptOverlay_callback_no($('#prompt_overlay_input').val());
+					self._promptOverlay_callback_no($('#prompt_overlay_input').val(), $('#prompt_overlay'));
 					self._promptOverlay_callback_no = function() {};
 					$('#prompt_overlay_input').val('');
 				}).bind(this));
 				$('.okay-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
-					self._promptOverlay_callback_yes($('#prompt_overlay_input').val());
+					self._promptOverlay_callback_yes($('#prompt_overlay_input').val(), $('#prompt_overlay'));
 					self._promptOverlay_callback_yes = function() {};
 					$('#prompt_overlay_input').val('');
 				}).bind(this));

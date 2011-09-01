@@ -159,7 +159,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		return 0;
 	}
 
-	
+
 	/**
 	 * A secret hash of this session key with the app secret.
 	 *
@@ -173,7 +173,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		return md5($this->id . $this->auth . App::getAppSecret() . $secret);
 	}
 
-	
+
 
 	public function updateLastTime()
 	{
