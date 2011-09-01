@@ -1,6 +1,0 @@
-{% for id,name in all_usergroups %}
-	<li class="usergorup-{{id}}" data-usergroup-id="{{id}}" data-route="">
-		<span class="list-counter" id="usergroup_{{id}}_count">{{ usergroup_counts[id]|default('0') }}</span>
-		<a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}">{{name}}</a>
-	</li>
-{% endfor %}

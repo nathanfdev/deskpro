@@ -5,6 +5,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 	initialize: function(page, options)  {
 
+		var self = this;
+
 		this.page = page;
 
 		this.options = {
@@ -22,6 +24,32 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		$(this.options.triggerElement).click((function() {
 			this.open();
 		}).bind(this));
+
+		// Automatically set up the quick sort menu button
+		var menuBtn = $('button.order-by-trigger', this.page.wrapper);
+		var menuEl  = $('ul.order-by-menu', this.page.wrapper);
+		if (menuBtn.length && menuEl.length) {
+			this.orderByMenu = new DeskPRO.UI.Menu({
+				triggerElement: menuBtn,
+				menuElement: menuEl,
+				onItemClicked: (function(info) {
+					var item = $(info.itemEl);
+
+					var prop = item.data('field')
+					var label = item.text().trim();
+
+					$('.label', menuBtn).text(label);
+
+					var disOptWrap = self.getWrapperElement();
+					var sel = $('select.sel-order-by', disOptWrap);
+					$('option', sel).prop('selected', false);
+					$('option.' + prop.replace('.', '_'), sel).prop('selected', true);
+
+					self.saveAndRefresh();
+
+				}).bind(this)
+			});
+		}
 
 		this.page.addEvent('destroy', (function() {
 			this.destroy();

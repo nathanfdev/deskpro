@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\Searcher;
 
 use \Application\DeskPRO\App;
-	
+
 use \Orb\Util\Util;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
@@ -147,7 +147,7 @@ class PersonSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'people.name':
-				$order_by = "ORDER BY people.last_name $dir";
+				$order_by = "ORDER BY people.last_name $dir, people.name $dir";
 				break;
 
 			case 'people.date_created':
@@ -251,7 +251,7 @@ class PersonSearch extends SearcherAbstract
 						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
 						return $titles;
 					});
-                        
+
 					$wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
 					break;
 				case self::TERM_EMAIL:

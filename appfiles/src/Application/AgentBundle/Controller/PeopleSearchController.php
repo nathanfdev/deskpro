@@ -74,10 +74,10 @@ class PeopleSearchController extends AbstractController
 		}
 
 		$is_partial = false;
-		$tpl = 'AgentBundle:PeopleSearch:'.$type.'-results-'.$view_type.'.html.twig';
+		$tpl = 'AgentBundle:PeopleSearch:'.$type . ($view_type != 'simple' ? '-'.$view_type : '') .'.html.twig';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
-			$tpl = 'AgentBundle:PeopleSearch:part-results-'.$view_type.'.html.twig';
+			$tpl = 'AgentBundle:PeopleSearch:' . $type . '-page' . ($view_type != 'simple' ? '-'.$view_type : '') . '.html.twig';
 		}
 
 		#------------------------------
@@ -177,6 +177,10 @@ class PeopleSearchController extends AbstractController
 				$order_by = $result_cache['extra']['order_by'];
 			}
 
+			if (!$order_by) {
+				$order_by = 'people.id:asc';
+			}
+
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}
@@ -206,9 +210,11 @@ class PeopleSearchController extends AbstractController
 		// the order_by in criteria, that means the user changed it
 		// and we have to re-do the search
 
-		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
+		$order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . $result_cache['id']);
+
+		if ($order_pref && $order_pref != $result_cache['criteria']['order_by']) {
 			$criteria = $result_cache['criteria'];
-			$criteria['order_by'] = $result_cache['extra']['order_by'];
+			$criteria['order_by'] = $order_pref;
 
 			$result_cache['criteria'] = $criteria;
 
@@ -264,7 +270,7 @@ class PeopleSearchController extends AbstractController
 		$people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 		$vars['people_fields'] = $people_fields;
 
-		return $this->_getResponseForPeople('custom-filter', $result_cache['id'], $results_helper, $vars);
+		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
 	}
 
 	############################################################################

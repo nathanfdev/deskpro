@@ -1,6 +1,6 @@
 <script>
 pageMeta.title = {{ page_title|json_encode|raw }};
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleCustomFilter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleList';
 pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
 pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
@@ -11,26 +11,15 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 {% if not people %}
 	pageMeta.noResults = true;
 {% endif %}
-pageMeta.preselectTerms = {{preselect_terms|json_encode|raw}};
 </script>
 <div class="layout-content">
 <div class="content">
 
-	<header class="control-bar">
-		<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
-		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
+ 	{% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
+ 	{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}
 
-		Ordered by
-		<button class="clean-gray xxx-small sub-group-trigger" class="tipped" title="Change sorting">
-			<span>Registration date</span>
-		</button>
- 	</header>
-
-	{% include 'AgentBundle:PeopleSearch:part-display-options-overlay.html.twig' %}
-	{% include 'AgentBundle:PeopleSearch:part-terms-overlay.html.twig' %}
-	
 	<section class="ticket-simple-list deskpro-results-list">
-		{% include 'AgentBundle:PeopleSearch:part-results-simple.html.twig' %}
+		{% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
 	</section>
 
 	<div class="loading-more">

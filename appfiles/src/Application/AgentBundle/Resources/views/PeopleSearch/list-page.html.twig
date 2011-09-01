@@ -1,0 +1,53 @@
+<section class="search-reuslts page-set" data-page="{{page}}">
+	{% for person in people %}
+		<article class="person person-{{person.id}}">
+			<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
+			<div class="toprow">
+				<div class="left">
+					<span class="subject">
+						<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
+							{{ person.display_name }}
+						</a>
+					</span>
+				</div>
+			</div>
+			{% if display_fields|length %}
+				{% set extra_info_row %}
+				{% set has_set = false %}
+				<div class="extra-info">
+					<ul>
+						{% for field in display_fields %}
+							{% if field == 'email_address' and person.primary_email_address %}
+								{% set has_set = true %}
+								<li><span class="prop-val email_address">{{ person.primary_email_address }}</span></li>
+							{% elseif field == 'organization' and person.organization %}
+								{% set has_set = true %}
+								<li>
+									<span class="prop-val org">{{ person.organization.name }}</span>
+									{% if person.organization_position %}
+										({{ person.organization_position }})
+									{% endif %}
+								</li>
+							{% elseif field == 'locale' %}
+								{% set has_set = true %}
+								<li><span class="prop-val email_address">{{person.locale.title}}</span></li>
+							{% else %}
+								{% for f in person_field_defs %}
+									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
+									{% set has_set = true %}
+									<li>
+										{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+									</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
+					</ul>
+					<br class="clear" />
+				</div>
+				{% endset %}
+				{% if has_set %}{{ extra_info_row }}{% endif %}
+			{% endif %}
+		</article>
+	{% endfor %}
+</section>

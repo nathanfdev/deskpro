@@ -1,0 +1,430 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
+pageMeta.title = {{ person.display_name|json_encode|raw }};
+pageMeta.person_id = {{person.id}};
+pageMeta.pageIdentity = 'person:{{person.id}}';
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
+pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
+pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'person_id': person.id}) }}';
+</script>
+<div class="profile layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+
+<div class="inner-box-tab-content-2">
+	<div class="person-info-top">
+		<div style="float:left; margin-right: 7px; padding: 4px 0;">
+			<img src="{{ person.getPictureUrl(45) }}" alt="" width="45" height="45" />
+		</div>
+		<h3 class="name editable hover-edit" data-editable-for=".inline-editable .name">{{person.display_name}}</h3>
+		<div class="organization hover-edit">
+			<span class="name">{{person.organization.name|default('No organization')}}</span>
+			<span class="position">{{person.organization_position}}</span>
+		</div>
+	</div>
+</div>
+
+{# Info Wrap #}
+<div class="ticket-info-wrapper">
+
+	{# Top Left #}
+	<div class="ticket-info left">
+		<div class="tags-wrap people-tags">
+			<span class="tag-icon"></span>
+			<ul>
+				{% for label in person.labels %}
+					<li><span>{{label.label}}</span></li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		{# Top Tabs #}
+		<div class="container-tabbed-wrap ticket-participants">
+
+			<div class="container-tabbed-tabs">
+				<ul>
+					<li class="container-tabbed-tabs-active"><a>Activity Stream</a></li>
+				</ul>
+			</div>
+
+			<div class="container-tabbed">
+				<div class="container-tabbed-contents">
+
+					{# Tab: Stream #}
+					{% if activity_stream|length %}
+					<div class="container-tabbed-content-tab">
+						<div class="row">
+							<ul class="activity-stream">
+								{% for action in activity_stream %}
+									<li>
+										<span class="time">{{ action.date_created|date('M j, Y') }}</span>
+										<span class="what">
+											{% if action.action_type == 'registered' %}
+												Registered an account
+											{% elseif action.action_type == 'new_ticket' %}
+												Submitted a new ticket
+												<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+													{{ action.details.subject }}
+												</a>
+											{% elseif action.action_type == 'new_ticket_reply' %}
+												Replied to ticket
+												<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+													{{ action.details.subject }}
+												</a>
+											{% endif %}
+										</span>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+					{% endif %}
+					{# /Tab: Stream #}
+				</div>
+			</div>
+
+		</div>
+		{# /Top Tabs #}
+
+	</div>
+	{# /Top Left #}
+
+	{# Top Right #}
+	<div class="ticket-properties right">
+
+		{# Box Contact #}
+		<div class="table-container">
+			<div class="table-title">
+				<a class="hover-link edit-contact-info">edit</a>
+				<h4>Contact Information</h4>
+			</div>
+			<div class="table-content contact-info-list-wrap">
+				{% include 'AgentBundle:Person:contact-section.html.twig' with {'person': person} %}
+			</div>
+		</div>
+		{# /Box Contact #}
+
+		{# Box Properties #}
+		<div class="table-container">
+			<div class="table-title">
+				<a class="hover-link person-custom-fields-edit">edit</a>
+				<h4>Properties</h4>
+			</div>
+			<div class="table-content properties-info-list-wrap">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Date Created</span>
+					</div>
+					<div class="col-table-content prop-val">
+						<span class="timeago" title="{{person.date_created|date('c')}}">{{person.date_created|date('Y-m-d')}}</span>
+					</div>
+				</div>
+				<div class="row-table-cotent usergroups-list-wrap" {% if not person.usergroups|length %}style="display:none"{% endif %}>
+					<div class="col-table-content title-col">
+						<span>Groups</span>
+					</div>
+					<div class="col-table-content prop-val">
+						<ul class="usergroups-list">
+							{% for ug in person.usergroups %}
+								<li>{{ug.title}}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				{% if custom_fields %}
+					<div class="person-custom-fields">
+						{% include 'AgentBundle:Person:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}
+					</div>
+
+					<div class="person-custom-fields edit show-fields edit-fields-overlay" style="display:none">
+						{% if usergroups_form %}
+						<div class="field-wrap custom-field">
+							<div class="label-wrap"><label>Groups</label></div>
+							<div class="field-input">
+								{{ form_widget(usergroups_form) }}
+							</div>
+						</div>
+						{% endif %}
+						{% for f in custom_fields %}
+							<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
+								<div class="label-wrap"><label>{{f.title}}</label></div>
+								<div class="field-input">
+									{{ render_custom_field_form(f) }}
+								</div>
+							</div>
+						{% endfor %}
+						<div class="buttons">
+							<div class="loading-off">
+								<button class="save-trigger dp-button small">Save</button>
+								<button class="close-trigger dp-button gray small">Cancel</button>
+							</div>
+							<div class="loading-on">
+								<span>Saving ...</span>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		{# /Box Properties #}
+	</div>
+	{# /Top Right #}
+
+</div>
+{# /Info Wrap #}
+
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<ul>
+			<li class="tab-trigger person-notes on" data-tab-for=".tab-content.person-notes"><a>Notes <em class="person-notes-count">({{counts.notes}})</em></a></li>
+			<li class="tab-trigger person-tickets" data-tab-for=".tab-content.person-tickets"><a>Tickets <em class="person-tickets-count">({{counts.tickets}})</em></a></li>
+			{% if session %}
+				<li class="tab-trigger session" data-tab-for=".tab-content.session"><a>Session</a></li>
+			{% endif %}
+		</ul>
+	</div>
+	{# /Tab Triggers #}
+
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+		{# Tab: Notes #}
+		<div class="full-container-tabbed-contents tab-content person-notes on" data-tab-trigger=".tab-trigger.person-notes">
+			<div class="full-tab-content">
+				<div class="messages-wrap notes-wrap">
+					<div class="note-list">
+						{% for note in notes|reverse %}
+							{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
+						{% endfor %}
+					</div>
+
+					<div class="new-note-form message admin-message">
+						<div class="message-avatar left">
+							<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+						</div>
+						<div class="message-body">
+							<div class="message-meta">
+								<span class="arrow-left"></span>
+								<h4>{{ app.user.display_name }}</h4>
+							</div>
+							<div class="message-text">
+								<p>
+									<textarea style="width:98%; height: 80px;"></textarea>
+								</p>
+								<div style="text-align:center; margin-top: 9px;">
+									<div class="trigger-row">
+										<button class="dp-button x-small trigger save">Add Note</button>
+									</div>
+									<div class="saving-row">
+										Saving ...
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Tab: Notes #}
+
+		{# Tab: Tickets #}
+			<div class="full-container-tabbed-contents tab-content person-tickets" data-tab-trigger=".tab-trigger.person-tickets" style="display:none">
+
+				<div class="inner-box-tab-content top-box">
+					<ul>
+						<li>
+							<a class="with-route" data-route="page:{{ path('agent_ticket_new', {'person_id': person.id}) }}">Create new ticket</a>
+						</li>
+						<li class="total on">
+							<label>Total</label>
+							<span class="counter">{{ person_tickets|length }}</span>
+						</li>
+					</ul>
+				</div>
+
+				<div class="inner-box-tab-content box-list">
+					<table class="list" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Subject</th>
+								<th>Department</th>
+								<th width="100">Status</th>
+								<th width="100">Agent / Team</th>
+								<th width="100">Date Created</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for ticket in person_tickets %}
+								<tr class="line-1 {% if loop.index0 is odd %}white{% endif %}">
+									<td><a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a></td>
+									<td>{{ ticket.department.title }}</td>
+									<td>{{ phrase('core_tickets.status_' ~ ticket.status) }}</td>
+									<td>
+										{% if not ticket.agent and not ticket.agent_team %}q
+											Unassigned
+										{% else %}
+											<div>{{ ticket.agent.display_name }}</div>
+											<div>{{ ticket.agent_team.name }}</div>
+										{% endif %}
+									</td>
+									<td>
+										<span class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="4">This user has no tickets.</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		{# /Tab: Tickets #}
+
+		{# Tab: Session #}
+		{% if session %}
+		<div class="full-container-tabbed-contents tab-content person-session" data-tab-trigger=".tab-trigger.person-session" style="display:none">
+			<table class="list" cellspacing="0" width="100%">
+				<tr class="white line-1">
+					<td width="120">Landing Page</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.landing_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Current Page</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.last_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Referrer</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.ref_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Initial Visit</td>
+					<td>{{ session.visitor.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Session Started</td>
+					<td>{{ session.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Last Activity</td>
+					<td>{{ session.visitor.date_last|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>IP Address</td>
+					<td>
+						{% if session.visitor.ip_address %}
+							<img src="http://api.hostip.info/flag.php?ip=12.215.42.19" border="0" width="53" height="27" align="left" style="padding-right: 8px;" />
+						{% endif %}
+						{{ session.visitor.ip_address }}
+					</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Browser Agent</td>
+					<td>{{ session.visitor.user_agent }}</td>
+				</tr>
+			</table>
+		</div>
+		{% endif %}
+	</div>
+	{# /Tab Contents #}
+</div>
+{# /Main Tabs #}
+
+<ul class="contact-info-edit-menu" style="display:none">
+	<li data-edit-type="email">Edit emails addresses</li>
+	<li data-edit-type="phone">Edit phone numbers</li>
+	<li data-edit-type="address">Edit addresses</li>
+	<li data-edit-type="im">Edit instant messaging</li>
+</ul>
+
+<div class="inline-editable" style="display:none">
+	<div class="name">
+		{{form.findField('basic_fields.first_name').render()|raw}}
+		{{form.findField('basic_fields.last_name').render()|raw}}
+		<input type="hidden" name="action" value="name" />
+	</div>
+</div>
+
+<div class="contact-add-tpl im new show-fields edit" style="display:none; width: 375px">
+	<input type="hidden" name="contact_type" value="instant_message" />
+	<div class="field-wrap">
+		{{contact_fields_tpl.instant_message.protocol.render|raw}}
+		{{contact_fields_tpl.instant_message.im.render({'placeholder': 'ID/Nickname'})|raw}}
+		{{contact_fields_tpl.instant_message.comment.render()|raw}}
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save trigger dp-button small">Save</button>
+			<button class="close trigger dp-button gray small">Cancel</button>
+		</div>
+		<div class="loading-on">
+			<span>Saving ...</span>
+		</div>
+	</div>
+</div>
+<div class="contact-add-tpl address new show-fields edit" style="display:none; width: 375px">
+	<input type="hidden" name="contact_type" value="address" />
+	<div class="field-wrap">
+		{{contact_fields_tpl.address.address.render()|raw}}<br />
+		{{contact_fields_tpl.address.country.render({'size': 10, 'placeholder': 'Country'})|raw}}
+		{{contact_fields_tpl.address.comment.render()|raw}}
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save trigger dp-button small">Save</button>
+			<button class="close trigger dp-button gray small">Cancel</button>
+		</div>
+		<div class="loading-on">
+			<span>Saving ...</span>
+		</div>
+	</div>
+</div>
+<div class="contact-add-tpl phone new show-fields edit" style="display:none; width: 375px">
+	<input type="hidden" name="contact_type" value="phone" />
+	<div class="field-wrap">
+		{{contact_fields_tpl.phone.country_code.render({'size': 4, 'placeholder': 'Country Code'})|raw}}
+		{{contact_fields_tpl.phone.phone.render({'placeholder': 'Phone Number'})|raw}}
+		{{contact_fields_tpl.phone.comment.render()|raw}}
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save trigger dp-button small">Save</button>
+			<button class="close trigger dp-button gray small">Cancel</button>
+		</div>
+		<div class="loading-on">
+			<span>Saving ...</span>
+		</div>
+	</div>
+</div>
+
+<div class="org-edit-dlg show-fields edit-fields-overlay edit" style="display:none">
+	<select name="organization_id">{{org_options|raw}}</select>
+	<br />
+	Position: <input type="text" name="organization_position" value="{{person.organization_position}}" />
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
+	</div>
+</div>
+
+<div class="email-edit-dlg show-fields edit-fields-overlay edit" style="display:none;">
+	<div style="padding: 5px">
+		<ul class="emails-list">
+			{% include 'AgentBundle:Person:email-dlg-li.html.twig' with {'person': person} %}
+		</ul>
+		<div class="add-email">
+			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
+		</div>
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
+	</div>
+</div>

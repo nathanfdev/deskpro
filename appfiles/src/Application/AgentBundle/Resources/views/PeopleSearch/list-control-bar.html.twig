@@ -1,0 +1,22 @@
+<header class="control-bar">
+	<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
+	<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
+
+	Ordered by
+	<button class="clean-gray xxx-small order-by-trigger" class="tipped" title="Change sorting">
+		<span class="label">
+			{% if 'name' in cache.criteria.order_by %}
+				Alphabetical
+			{% else %}
+				Date Registered
+			{% endif %}
+		</span>
+	</button>
+
+	<ul class="order-by-menu" style="display: none">
+		<li data-field="people.name">Alphabetical</li>
+		<li data-field="people.date">Date Registered</li>
+	</ul>
+
+	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
+</header>
