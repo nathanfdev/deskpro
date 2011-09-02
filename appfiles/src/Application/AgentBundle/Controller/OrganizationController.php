@@ -78,8 +78,11 @@ class OrganizationController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
+		$org_members = App::getEntityRepository('DeskPRO:Person')->getOrganizationMembers($org);
+
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
+			'org_members'        => $org_members,
 			'contact_data'       => $contact_data,
 			'org_usergroups'     => $org_usergroups,
 			'usergroup_names'    => $usergroup_names,
@@ -166,6 +169,25 @@ class OrganizationController extends AbstractController
 				if ($blob) {
 					$org->picture_blob = $blob;
 					$this->em->persist($org);
+				}
+				break;
+
+			case 'add-person':
+				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				if ($person) {
+					$person->organization = $org;
+					$this->em->persist($person);
+					$data['add_person_id'] = $person['id'];
+					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));
+				}
+				break;
+
+			case 'remove-person':
+				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				if ($person && $person->organization && $person->organization->id == $org->id) {
+					$person->organization = null;
+					$this->em->persist($person);
+					$data['remove_person_id'] = $person['id'];
 				}
 				break;
 

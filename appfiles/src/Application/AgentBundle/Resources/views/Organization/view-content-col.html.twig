@@ -23,6 +23,34 @@
 	</ul>
 </section>
 
+<div class="inner-box-tab-content box-list no-pad org-members-table">
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger dbl-click-trigger nosel">
+			<tr>
+				<th>Member</th>
+				<th width="30%">Position</th>
+				<th width="35"></th>
+			</tr>
+		</thead>
+		<tbody id="{{baseId}}_members_list">
+			<tr class="add-new-member line-2">
+				<td>
+					<input type="input" style="width: 90%" class="name" />
+				</td>
+				<td>
+					<input type="input" style="width: 90%" class="position" />
+				</td>
+				<td>
+					<button class="clean-gray xxx-small">Add</button>
+				</td>
+			</tr>
+			{% for person in org_members %}
+				{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
 {% if activity_stream|length %}
 <div class="table-container">
 	<div class="table-title">

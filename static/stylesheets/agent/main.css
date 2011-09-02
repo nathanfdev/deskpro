@@ -6808,3 +6808,25 @@ table.props-table td time.timeago {
 	text-align:center;
 	width: 120px;
 }
+
+
+
+.org-members-table tr:hover td {
+	background-color: #E6EEF2;
+}
+
+.org-members-table span.remove {
+	float: right;
+	display: block;
+	width: 11px;
+	height: 11px;
+	background: url(../../images/action-remove.png) no-repeat 50% 50%;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+
+	opacity: 0.6;
+}
+.org-members-table span.remove:hover {
+	opacity: 1;
+}

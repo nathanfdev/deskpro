@@ -62,6 +62,28 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 
 		this._initLabels();
 		this._initCustomFieldsEditor();
+
+		this.getEl('members_list').delegate('.remove', 'click', function() {
+			var row = $(this).closest('.member-row');
+			var personId = row.data('person-id');
+			if (!personId) {
+				return;
+			}
+
+			row.fadeOut('fast');
+
+			$.ajax({
+				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				data: { action: 'remove-person', person_id: personId },
+				type: 'POST',
+				error: function() {
+					row.show();
+				},
+				success: function() {
+					row.remove();
+				}
+			});
+		});
 	},
 
 	//#########################################################################

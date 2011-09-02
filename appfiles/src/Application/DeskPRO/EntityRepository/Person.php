@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
-use \Doctrine\ORM\EntityRepository;
-use \Orb\Util\Numbers;
+use Orb\Util\Numbers;
 
-class Person extends EntityRepository
+class Person extends \Doctrine\ORM\EntityRepository
 {
 	protected $_agent_names = null;
 
@@ -169,6 +169,16 @@ class Person extends EntityRepository
 		")->execute();
 
 		return $people;
+	}
+
+	public function getOrganizationMembers(OrganizationEntity $org)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			WHERE p.organization = ?1
+			ORDER BY p.organization_position ASC, p.id ASC
+		")->execute(array(1=> $org));
 	}
 
 

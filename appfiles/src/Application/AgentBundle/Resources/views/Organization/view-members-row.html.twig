@@ -1,0 +1,11 @@
+<tr class="line-1 member-row" data-person-id="{{ person.id }}">
+	<td>
+		<a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ person.display_name }}</a>
+	</td>
+	<td>
+		{{ person.organization_position }}
+	</td>
+	<td>
+		<span class="remove">x</span>
+	</td>
+</tr>
