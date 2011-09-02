@@ -4,9 +4,18 @@
 	<td class="value">
 		<select name="usergroups[]" multiple="multiple">
 			{% for id,title in usergroup_names %}
-				<option value="{{id}}" {% if person.usergroups[id] %}selected="selected"{% endif %}>{{ title }}</option>
+				<option value="{{id}}" {% if id in person_usergroups_ids %}selected="selected"{% endif %}>{{ title }}</option>
 			{% endfor %}
 		</select>
+		{% if person_org_usergroups_ids %}
+			<br />
+			These groups have been inherited from the users organization and will always apply:<br />
+			<ul>
+				{% for id in person_org_usergroups_ids %}
+					<li>{{ usergroup_names[id] }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 	</td>
 </tr>
 {% endif %}

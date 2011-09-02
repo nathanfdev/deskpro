@@ -36,6 +36,13 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $usergroup_ids;
 
 	/**
+	 * Groups we got inherited from an org
+	 *
+	 * @string array
+	 */
+	protected $org_usergroup_ids;
+
+	/**
 	 * The usergroups key for all the users groups
 	 * @var string
 	 */
@@ -69,13 +76,28 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		// For 'everyone'
 		$this->usergroup_ids[] = 1;
 
+		// And usergroup ones...
+		$this->org_usergroup_ids = array();
+		if ($this->person->organization) {
+			$this->org_usergroup_ids = App::getDb()->fetchAllCol("
+				SELECT usergroup_id
+				FROM organization2usergroups
+				WHERE organization_id = ?
+			", array($this->person->organization['id']));
+
+			if ($this->org_usergroup_ids) {
+				$this->usergroup_ids = array_merge($this->usergroup_ids, $this->org_usergroup_ids);
+				$this->usergroup_ids = array_unique($this->usergroup_ids);
+			}
+		}
+
 		sort($this->usergroup_ids, SORT_NUMERIC);
 
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 	}
 
 
-	
+
 	/**
 	 * Get an array of usergroups this user has applied to them
 	 *
@@ -87,7 +109,19 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	}
 
 
-	
+
+	/**
+	 * Of the groups we belong to, get the ones we inherited from our organization.
+	 *
+	 * @return array
+	 */
+	public function getOrganizationUsergroupIds()
+	{
+		return $this->org_usergroup_ids;
+	}
+
+
+
 	/**
 	 * Get the usergroups set key
 	 *
@@ -99,7 +133,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	}
 
 
-	
+
 	/**
 	 * Load permissions of a particular type.
 	 *
@@ -123,12 +157,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	}
 
 
-	
+
 	/**
 	 * This loads up the queued permission types. The reason they're queued is so we
 	 * can fetch multiple records from the cache at once, which is helpful when
 	 * the cache is a slow-cache such as the db.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function _loadQueued()
@@ -168,7 +202,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 		if ($do_cache) {
 			App::getOrm()->beginTransaction();
-			
+
 			foreach ($do_cache as $c) {
 				App::getOrm()->persist($c);
 			}
@@ -178,7 +212,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		}
 	}
 
-	
+
 
 	/**
 	 * Using property overloading to give direct access to individual loaders.
@@ -217,10 +251,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	}
 
 
-	
+
 	/**
 	 * Get the full name of the loader for a given permission type name.
-	 * 
+	 *
 	 * @param  $name
 	 * @return string
 	 */

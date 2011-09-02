@@ -96,11 +96,14 @@ class PersonController extends AbstractController
 		$timezone_options = \DateTimeZone::listIdentifiers();
 		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
-		$person_usergroups = $person->usergroups;
+		$person->loadHelper('PermissionsManager');
+		$person_usergroups_ids = $person->getPermissionsManager()->getUsergroupIds();
+		$person_org_usergroups_ids = $person->getPermissionsManager()->getOrganizationUsergroupIds();
 
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
-			'person_usergroups' => $person_usergroups,
+			'person_usergroups_ids' => $person_usergroups_ids,
+			'person_org_usergroups_ids' => $person_org_usergroups_ids,
 			'session' => $session,
 			'timezone_options' => $timezone_options,
 			'usergroup_names' => $usergroup_names,
@@ -282,8 +285,8 @@ class PersonController extends AbstractController
 		$db = App::getDb();
 		$db->delete('person2usergroups', array('person_id' => $person['id']));
 
-		$usergroups = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
-		foreach ($usergroups as $u) {
+		$usergroups_ids = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
+		foreach ($usergroups_ids as $u) {
 			$db->insert('person2usergroups', array(
 				'person_id' => $person['id'],
 				'usergroup_id' => $u
@@ -291,13 +294,15 @@ class PersonController extends AbstractController
 		}
 
 		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$person_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getByIds($usergroups);
+
+		$person->loadHelper('PermissionsManager');
+		$person_org_usergroups_ids = $person->getPermissionsManager()->getOrganizationUsergroupIds();
 
 		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
 			'person' => $person,
 			'custom_fields' => $custom_fields,
-			'usergroup_names' => $usergroup_names,
-			'person_usergroups' => $person_usergroups,
+			'person_usergroups_ids' => $usergroups_ids,
+			'person_org_usergroups_ids' => $person_org_usergroups_ids,
 		));
 	}
 
@@ -566,33 +571,6 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
-	# new
-	############################################################################
-
-	public function newAction()
-	{
-		$person = new Entity\Person();
-		$person['first_name'] = $this->in->getString('person.first_name');
-		$person['last_name'] = $this->in->getString('person.last_last');
-
-		$email = new Entity\PersonEmail();
-		$email['email'] = $this->in->getString('person_email.email');
-		$person->addEmailAddress($email);
-
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
-
-		$data = array(
-			'id' => $person['id'],
-			'name' => $person['display_name'],
-			'email' => $person['primary_email_address'],
-			'label' => $person['display_name'] . ($person['primary_email_address'] ? " <{$person['primary_email_address']}>" : '')
-		);
-
-		return $this->createJsonResponse($data);
-	}
-
-	############################################################################
 	# ajax-save-labels
 	############################################################################
 
@@ -608,6 +586,47 @@ class PersonController extends AbstractController
 		App::getOrm()->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
+	}
+
+	############################################################################
+	# New person
+	############################################################################
+
+	public function newPersonAction()
+	{
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
+
+		return $this->render('AgentBundle:Person:newperson.html.twig', array(
+			'state' => $state
+		));
+	}
+
+	public function newPersonSaveAction()
+	{
+		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewPerson();
+		$form = $this->get('form.factory')->create($formType, $newperson);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newperson->save();
+
+			$person = $newperson->getArticle();
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'person_id' => $person['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
 	}
 
 	/**
