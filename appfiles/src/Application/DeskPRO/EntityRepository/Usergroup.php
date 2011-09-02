@@ -92,6 +92,25 @@ class Usergroup extends EntityRepository
 		")->execute();
 	}
 
+	public function getCountsForAll()
+	{
+
+	}
+
+	public function getCountsFor(array $ids)
+	{
+		if (!$ids) return array();
+
+		$ids_comma = implode(',', $ids);
+
+		return App::getDb()->fetchAllKeyValue("
+			SELECT usergroup_id, COUNT(*)
+			FROM person2usergroups
+			WHERE usergroup_id IN ($ids_comma)
+			GROUP BY usergroup_id
+		");
+	}
+
 
 	/**
 	 * Invalidates caches

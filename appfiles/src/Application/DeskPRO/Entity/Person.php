@@ -1996,16 +1996,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get timezone
-     *
-     * @return string
-     */
-    public function getTimezone()
-    {
-        return $this->timezone;
-    }
-
-    /**
      * Get password
      *
      * @return string
@@ -2055,9 +2045,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
+	public function getTimezone()
+	{
+		if (!$this->timezone) {
+			return 'UTC';
+		}
+
+		return $this->timezone;
+	}
+
 	public function getDateTimezone()
 	{
-		return new \DateTimeZone($this->timezone);
+		return new \DateTimeZone($this->getTimezone());
 	}
 
 	public function getDateTime()

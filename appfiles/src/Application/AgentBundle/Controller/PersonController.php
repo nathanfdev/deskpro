@@ -295,6 +295,7 @@ class PersonController extends AbstractController
 		$db = App::getDb();
 		$db->delete('person2usergroups', array('person_id' => $person['id']));
 
+		$usergroups = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
 		foreach ($usergroups as $u) {
 			$db->insert('person2usergroups', array(
 				'person_id' => $person['id'],
@@ -303,7 +304,7 @@ class PersonController extends AbstractController
 		}
 
 		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$person_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getByIds($this->in->getCleanValueArray('usergroups', 'uint', 'discard'));
+		$person_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getByIds($usergroups);
 
 		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
 			'person' => $person,

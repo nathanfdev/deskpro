@@ -9,6 +9,9 @@
 		<ul>
 			<li class="tag-cloud" data-tab-for="#people_outline_tagcloud"><a>Tag Cloud</a></li>
 			<li class="tag-list" data-tab-for="#people_outline_taglist"><a>Tag List</a></li>
+			{% if usergroup_names|length %}
+				<li data-tab-for="#people_outline_usergroups"><a>Usergroups</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 </header>
@@ -38,6 +41,24 @@
 		{% endfor %}
 	</dl>
 </section>
+{% if usergroup_names|length %}
+<section id="people_outline_usergroups" class="deskpro-tab-item">
+	<ul class="nav-list">
+		{% for id,title in usergroup_names %}
+			<li
+				class="usergroup-{{id}}"
+				data-usergroup-id="{{id}}"
+				data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
+			>
+				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
+					{{ usergroup_counts[id]|default(0) }}
+				</span>
+				<a>{{title}}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</section>
+{% endif %}
 
 <header class="section-header with-tabs" style="margin-top: 26px;">
 	<nav class="mode-buttons">
