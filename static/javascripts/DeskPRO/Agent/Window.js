@@ -1446,6 +1446,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/people/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/people/new'
 		});
+		this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+			loadUrl: BASE_URL + 'agent/organizations/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/organizations/new'
+		});
 		this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/kb/article/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new'
@@ -1468,6 +1472,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 		$('#create_person_btn').click(function() {
 			DeskPRO_Window.newPersonLoader.toggle();
+		});
+		$('#create_organization_btn').click(function() {
+			DeskPRO_Window.newOrganizationLoader.toggle();
 		});
 		$('#create_article_btn').click(function() {
 			DeskPRO_Window.newArticleLoader.toggle();

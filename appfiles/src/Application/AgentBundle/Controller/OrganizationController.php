@@ -376,6 +376,60 @@ class OrganizationController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
+	############################################################################
+	# New person
+	############################################################################
+
+	public function newOrganizationAction()
+	{
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.neworg', $this->person->id);
+
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		// Custom fields
+		$field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $field_defs);
+
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
+
+		return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
+			'state' => $state,
+			'custom_fields' => $custom_fields,
+		));
+	}
+
+	public function newOrganizationSaveAction()
+	{
+		$neworg = new \Application\AgentBundle\Form\Model\NewOrganization($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewOrganization();
+		$form = $this->get('form.factory')->create($formType, $neworg);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$neworg->setCustomFieldForm($_POST);
+			$neworg->save();
+
+			$org = $neworg->getOrganization();
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.neworg', $this->person->id);
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'org_id' => $org['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Organization
