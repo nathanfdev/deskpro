@@ -11,6 +11,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 		var self = this;
 
 		this.options = {
+			loadUrl: '',
+			saveUrl: ''
 		};
 
 		this.setOptions(options);
@@ -18,7 +20,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 
 		this.page.getEl('change_user_picture').click(this.open.bind(this));
 
-		this.addEvent('destroy', this.destroy.bind(this));
+		this.page.addEvent('destroy', this.destroy.bind(this));
 	},
 
 	_initOverlay: function() {
@@ -34,7 +36,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + "agent/people/" + this.page.meta.person_id + "/change-picture-overlay",
+			url: this.options.loadUrl,
 			type: 'GET',
 			dataType: 'html',
 			context: this,
@@ -94,7 +96,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/people/' + this.page.meta.person_id + '/ajax-save',
+			url: this.options.saveUrl,
 			type: 'POST',
 			dataType: 'json',
 			data: formData

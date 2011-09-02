@@ -115,19 +115,6 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
-	# viewSession
-	############################################################################
-
-	public function viewSessionAction($session_id)
-	{
-		$session = App::findEntity('DeskPRO:Session', $session_id);
-
-		return $this->render('AgentBundle:Person:session-info.html.twig', array(
-			'session' => $session
-		));
-	}
-
-	############################################################################
 	# /agent/people/:person_id/ajax-get-notes           agent_people_ajaxget_notes
 	############################################################################
 

@@ -2,24 +2,30 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
-
-	TYPENAME: 'organiztion',
-
+	TYPENAME: 'organization',
 	wrapper: null,
 
-	contactSection: null,
-
-	notesSection: null,
-
 	initPage: function(el) {
-
 		this.wrapper = el;
+		this.contentWrapper = $('div.layout-content:first', el);
 
 		var self = this;
 
-		$('input[placeholder]', this.wrapper).each(function() {
-			Orb.Compat.WebForms.placeholder(this);
-		})
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.tinyscrollbar_update();
+		});
+
+		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
+			saveUrl: BASE_URL + 'agent/organization/' + this.meta.org_id + '/save-contact-data.json'
+		});
+
+		this.initNoteFormEditable();
+
+		this.initRoutesOnCollection($('.with-route', this.wrapper));
+		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
 		// Name is editable
 		var name = $('h3.name.editable:first', el);
@@ -28,9 +34,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 		}
 
 		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: el,
+			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/organizations/' + this.meta.organization_id + '/ajax-save'
+				url: BASE_URL + 'agent/organization/' + this.meta.person_id + '/ajax-save'
 			}
 		});
 
@@ -41,105 +47,62 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 			editable.handleDocumentClick(ev);
 		});
 
-		//edit-contact-info
-		this.editContactInfoMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.edit-contact-info:first', this.wrapper),
-			menuElement: $('.contact-info-edit-menu:first', this.wrapper),
+		this.morectionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.more', this.getEl('action_buttons')),
+			menuElement: this.getEl('more_actions_menu'),
 			onItemClicked: function(info) {
-				var type = $(info.itemEl).data('edit-type');
-				if (type == 'email') {
-					self.email_dlg.dialog('open');
-				} else {
-					self.startContactAdd(type);
-				}
+				var action = $(info.itemEl).data('action');
 			}
 		});
-		
-		this.initNoteFormEditable();
-		this.initNotePagination();
+
+		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
+			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
+			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
+		});
+
 		this._initLabels();
 		this._initCustomFieldsEditor();
-
-		this.initRoutesOnCollection($('.with-route'));
-	},
-
-	destroyPage: function() {
-
 	},
 
 	//#########################################################################
 	//# Custom fields
 	//#########################################################################
 
-	custom_fields_display: null,
-	custom_fields_edit: null,
 	_initCustomFieldsEditor: function() {
-		$('.person-custom-fields-edit:first', this.wrapper).click((function() {
-			this.showCustomFieldEditor();
-		}).bind(this));
 
-		this.custom_fields_display = $('.person-custom-fields:not(.edit)', this.wrapper);
-		this.custom_fields_edit = $('.person-custom-fields.edit', this.wrapper).detach().appendTo($('body'));
+		var fieldsRenderedWrap, fieldsEditWrap;
 
-		$('.close-trigger', this.custom_fields_edit).click((function() {
-			this.closeCustomFieldEditor();
-		}).bind(this));
+		fieldsRenderedWrap = this.fieldsRenderedWrap = this.getEl('custom_fields_rendered');
+		fieldsEditWrap = this.fieldsEditWrap = this.getEl('custom_fields_editable');
 
-		var self = this;
-		$('.save-trigger', this.custom_fields_edit).click((function() {
-			var fieldEls = $(':input', self.custom_fields_edit);
-			this._saveCustomFields(fieldEls);
-		}).bind(this));
-	},
-
-	showCustomFieldEditor: function() {
-
-		var width = this.custom_fields_display.width();
-		if (width < 350) width = 350;
-
-		this.custom_fields_edit.css({
-			position: 'absolute',
-			width: width,
-			'z-index': 10000
-		});
-
-		this.custom_fields_edit.position({
-			my: 'right top',
-			at: 'right top',
-			of: $('.properties-info-list-wrap', this.wrapper)
-		});
-
-		this.custom_fields_edit.slideDown();
-	},
-
-	closeCustomFieldEditor: function() {
-		this.custom_fields_edit.slideUp();
-	},
-
-	_saveCustomFields: function(fieldEls) {
-		$('.buttons .loading-off', this.custom_fields_edit).hide();
-		$('.buttons .loading-on', this.custom_fields_edit).show();
-
-		var data = fieldEls.serializeArray();
-
-		$.ajax({
-			url: this.getMetaData('saveFieldsUrl'),
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this._handleSaveCustomFieldsSuccess(data);
+		var toggle = (function() {
+			if (fieldsRenderedWrap.is(':visible')) {
+				fieldsRenderedWrap.hide();
+				fieldsEditWrap.show();
+			} else {
+				fieldsEditWrap.hide();
+				fieldsRenderedWrap.show();
 			}
+		}).bind(this);;
+
+		$('.show-edit-custom-fields', this.wrapper).click(function() {
+			toggle();
 		});
-	},
 
-	_handleSaveCustomFieldsSuccess: function(data) {
-		$('.buttons .loading-on', this.custom_fields_edit).hide();
-		$('.buttons .loading-off', this.custom_fields_edit).show();
-		this.closeCustomFieldEditor();
+		$('.save-custom-fields', this.wrapper).click((function() {
+			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
 
-		$('.wrap', this.custom_fields_display).html(data.custom_fields_html);
+			$.ajax({
+				url: BASE_URL + 'agent/person/' + this.meta.person_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRenderedWrap.empty().html(rendered);
+					toggle();
+				}
+			});
+		}).bind(this));
 	},
 
 	//#########################################################################
@@ -149,7 +112,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".org-tags ul", this.wrapper).tagit({
+		this.labelsList = $(".people-tags ul", this.wrapper).tagit({
 			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
 			fieldName: 'labels',
@@ -176,13 +139,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				this._handleSaveLabelsSuccess(data);
+
 			}
 		});
-	},
-
-	_handleSaveLabelsSuccess: function(data) {
-
 	},
 
 	//#########################################################################
@@ -192,50 +151,20 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 	initNoteFormEditable: function() {
 		this.notesSection = $('.notes-wrap:first', this.wrapper);
 
-		$('.trigger.new-note', this.notesSection).click((function() {
-			this.openNoteEdtiable();
-		}).bind(this));
-
-		$('.new-note-form .trigger.cancel', this.notesSection).click((function(ev) {
-			ev.preventDefault();
-			this.closeNoteEditable();
-		}).bind(this));
-
 		$('.new-note-form .trigger.save', this.notesSection).click((function() {
 			this.saveNote();
 		}).bind(this));
 	},
 
-	openNoteEdtiable: function() {
-		$('.trigger.new-note', this.notesSection).hide();
-
-		var form = $('.new-note-form', this.notesSection);
-		if (form.is(':hidden')) {
-			$('.new-note-form textarea', this.notesSection).val('');
-			form.slideDown();
-		}
-	},
-
-	closeNoteEditable: function() {
-
-		$('.new-note-form textarea').val('');
-		var form = $('.new-note-form', this.notesSection);
-		if (form.is(':visible')) {
-			form.slideUp();
-		}
-
-		$('.trigger.new-note', this.notesSection).show();
-	},
-
 	saveNote: function() {
 
-		$('.new-note-form').addClass('saving');
-		var note = $('.new-note-form textarea').val();
+		$('.new-note-form', this.notesSection).addClass('saving');
+		var note = $('.new-note-form textarea', this.notesSection).val();
 
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/organizations/' + this.meta.organization_id + '/ajax-save-note',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-note',
 			data: {note: note},
 			success: this.handleNoteSave.bind(this)
 		});
@@ -243,104 +172,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 
 	handleNoteSave: function(data) {
 
+		$('.new-note-form textarea', this.notesSection).val('');
+
 		var list = $('.note-list', this.notesSection);
-		list.prepend(data.note_li_html);
+		list.append(data.note_li_html);
 
-		$('.new-note-form').removeClass('saving');
-		this.closeNoteEditable();
-	},
+		$('.new-note-form', this.notesSection).removeClass('saving');
 
-	//#########################################################################
-	//# Note pagination
-	//#########################################################################
-
-	initNotePagination: function() {
-		var pages = $('ul.pages', this.notesSection);
-		if (!pages.length) return;
-
-		var self = this;
-		$('li', pages).click(function() {
-			self.loadNotePage($(this).data('page'));
-		});
-	},
-
-	loadNotePage: function(page) {
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/organizations/' + this.meta.organization_id + '/ajax-get-notes',
-			data: { 'pp': $('.note-list', this.notesSection).data('limit'), 'p': page },
-			success: this.handleGetNotes.bind(this)
-		});
-	},
-
-	handleGetNotes: function(data) {
-		var note_list = $('.note-list', this.notesSection);
-		note_list.html(data.notes_html);
-
-		$('ul.pages il', this.notesSection).removeClass('active');
-		$('ul.pages il.page-'+data.page, this.notesSection).addClass('active');
-	},
-
-	//#########################################################################
-	//# Contact form stuff
-	//#########################################################################
-
-	startContactAdd: function(type) {
-
-		var edit_el = $('.contact-add-tpl.new.'+type, this.wrapper).clone();
-		this.wrapper.append(edit_el)
-
-		var pos_el = $('.contact-info-list-wrap:first', this.wrapper);
-		var pos = pos_el.position();
-
-		// Initial positioning
-		// Because .position() needs to work on visible
-		// element, which might cause scrolling
-		edit_el.css({
-			position: 'absolute',
-			top: 10,
-			left: 10
-		});
-		edit_el.show();
-
-		edit_el.position({
-			my: 'right top',
-			at: 'right top',
-			of: pos_el
-		});
-
-		$('.close', edit_el).click(function() {
-			edit_el.remove();
-		});
-
-		var self = this;
-		$('.save', edit_el).click(function() {
-			self.saveContact(edit_el);
-		});
-	},
-
-	saveContact: function(edit_el) {
-
-		var data = $(':input, select, textarea', edit_el).serializeArray();
-
-		edit_el.addClass('saving');
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/organizations/' + this.meta.organization_id + '/ajax-save-contact',
-			data: data,
-			success: (function(data) {
-				this.handleSaveSuccess(data, edit_el);
-			}).bind(this)
-		});
-
-	},
-
-	handleSaveSuccess: function(data, edit_el) {
-		$('.contact-info-list-wrap:first', this.wrapper).html(data.contact_html);
-
-		edit_el.remove();
+		this.updateCounts();
 	}
 });

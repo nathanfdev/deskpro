@@ -2,17 +2,8 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
-
 	TYPENAME: 'person',
-
 	wrapper: null,
-	hasSetupEmailDlg: false,
-	email_display: null,
-	email_dlg: null,
-
-	contactSection: null,
-
-	notesSection: null,
 
 	initPage: function(el) {
 		this.wrapper = el;
@@ -29,7 +20,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			cw.tinyscrollbar_update();
 		});
 
-		this.initEditorOverlay();
+		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
+			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json'
+		});
 
 		this.initNoteFormEditable();
 
@@ -155,125 +148,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			}
 		});
 
-		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this);
+		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
+			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
+			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
+		});
 
 		this._initLabels();
 		this._initCustomFieldsEditor();
-	},
-
-	destroyPage: function() {
-		if (this.org_dlg) {
-			this.org_dlg.remove();
-		}
-
-		if (this.email_dlg) {
-			this.email_dlg.remove();
-		}
-	},
-
-	updateCounts: function() {
-		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
-
-		$.ajax({
-			url: this.getMetaData('getUpdatedCountsUrl'),
-			type: 'GET',
-			context: this,
-			dataType: 'json',
-			success: function(counts) {
-				Object.each(counts, function(v,k) {
-					var sel = '.person-' + k + '-count';
-					$(sel, wrap).html('(' + v + ')');
-				});
-			}
-		});
-	},
-
-	replaceEditorOverlay: function(html) {
-		var contactEditor = $('.profile-contact-editor', this.wrapper);
-		contactEditor.remove();
-		contactEditor = null;
-
-		$(html).appendTo(this.wrapper);
-
-		this.initEditorOverlay();
-	},
-
-	initEditorOverlay: function() {
-
-		var self = this;
-		if (this.contactOverlay) {
-			this.contactOverlay.destroy();
-			this.contactOverlay = null;
-		}
-
-		if (this.contactNewMenu) {
-			this.contactNewMenu.destroy();
-			this.contactNewMenu = null;
-		}
-
-		var contactEditor = $('.profile-contact-editor', this.wrapper);
-
-		this.contactOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: $('.contact-edit:first', this.wrapper),
-			contentElement: contactEditor
-		});
-
-		$('.save-trigger', contactEditor).click(function(ev) {
-
-			var formData = $(':input, select, textarea', contactEditor).serializeArray();
-
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/save-contact-data.json',
-				type: 'POST',
-				dataType: 'json',
-				data: formData,
-				success: function(data) {
-					self.contactOverlay.close();
-					$('.contact-list-wrapper', self.wrapper).empty().html(data.display_html);
-					self.replaceEditorOverlay(data.editor_overlay_html);
-				}
-			});
-		});
-
-		contactEditor.delegate('.remove', 'click', function(ev) {
-			var el = $(this);
-
-			var row = el;
-			while (!row.is('li')) {
-				row = row.parent();
-			}
-
-			var removeName = row.data('remove-name');
-			var removeVal  = row.data('remove-value');
-
-			if (removeName && removeVal) {
-				var input = $('<input type="hidden" />');
-				input.attr('name', removeName);
-				input.val(removeVal);
-
-				input.appendTo($('.contact-edit-list', contactEditor));
-			}
-
-			row.fadeOut('fast', function() {
-				row.remove();
-			});
-		});
-
-		this.contactNewMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.add-new-type-trigger', this.wrapper),
-			menuElement: $('.add-new-type-menu:first', this.wrapper),
-			initMenuNow: true,
-			onItemClicked: (function(info) {
-				var wrap = this.contactOverlay.elements.wrapper;
-				console.log(wrap);
-				var item = $(info.itemEl);
-				var tpl = $('.' + item.data('tpl'), wrap).get(0).innerHTML;
-				tpl = tpl.replace(/%id%/g, Orb.uuid());
-
-				var el = $(tpl);
-				el.appendTo($('.contact-edit-list ul', wrap));
-			}).bind(this)
-		});
 	},
 
 	//#########################################################################
@@ -351,85 +232,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				this._handleSaveLabelsSuccess(data);
+
 			}
 		});
-	},
-
-	_handleSaveLabelsSuccess: function(data) {
-
-	},
-
-	//#########################################################################
-	//# Company stuff
-	//#########################################################################
-
-	initOrgEditable: function() {
-
-		this.org_dlg = $('.org-edit-dlg', this.wrapper).detach().appendTo($('body'));
-
-		$('.close-trigger', this.org_dlg).click((function() {
-			this.closeOrgEditor();
-		}).bind(this));
-
-		var self = this;
-		$('.save-trigger', this.org_dlg).click((function() {
-			var fieldEls = $(':input', self.org_dlg);
-			this.saveOrg();
-		}).bind(this));
-
-		$('.organization.hover-edit:first', this.wrapper).dblclick((function() {
-			this.showOrgEditor();
-		}).bind(this));
-	},
-
-	showOrgEditor: function() {
-
-		var width = this.org_dlg.width();
-		if (width < 350) width = 350;
-
-		this.org_dlg.css({
-			position: 'absolute',
-			width: width,
-			'z-index': this.zIndex
-		});
-
-		this.org_dlg.position({
-			my: 'left top',
-			at: 'left top',
-			of: $('.organization.hover-edit:first', this.wrapper)
-		});
-
-		this.org_dlg.slideDown();
-	},
-
-	closeOrgEditor: function() {
-		this.org_dlg.slideUp();
-	},
-
-	saveOrg: function() {
-
-		var sel = $('select[name="organization_id"]', this.org_dlg);
-		var opt = $('option:selected', sel);
-
-		var data = {
-			'organization_id': opt.val(),
-			'organization_position': $('input[name="organization_position"]', this.org_dlg).val()
-		};
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-organization',
-			data: data,
-			success: this.handleOrgSave.bind(this)
-		});
-	},
-
-	handleOrgSave: function(data) {
-		$('.organization.hover-edit:first .name').html(data.organization_name);
-		$('.organization.hover-edit:first .position').html(data.organization_position);
-		this.closeOrgEditor();
 	},
 
 	//#########################################################################

@@ -308,11 +308,6 @@ agent_org_ajaxsave:
   defaults: { _controller: AgentBundle:Organization:ajaxSave }
   requirements: { organization_id: "\d+" }
 
-agent_org_ajaxsave_emails:
-  pattern: /organizations/{organization_id}/ajax-save-emails
-  defaults: { _controller: AgentBundle:Organization:ajaxSaveEmails }
-  requirements: { organization_id: "\d+" }
-
 agent_org_ajaxsave_contact:
   pattern: /organizations/{organization_id}/ajax-save-contact
   defaults: { _controller: AgentBundle:Organization:ajaxSaveContact }
@@ -341,6 +336,11 @@ agent_org_ajax_labels_save:
 agent_org_ajaxsavecustomfields:
   pattern: /organizations/{organization_id}/ajax-save-custom-fields
   defaults: { _controller: AgentBundle:Organization:ajaxSaveCustomFields }
+  requirements: { organization_id: "\d+" }
+
+agent_org_changepicoverlay:
+  pattern: /organizations/{organization_id}/change-picture-overlay
+  defaults: { _controller: AgentBundle:Organization:changePictureOverlay }
   requirements: { organization_id: "\d+" }
 
 agent_orgsearch_labelspane:

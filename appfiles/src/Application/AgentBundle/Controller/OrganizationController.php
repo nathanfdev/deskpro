@@ -67,8 +67,11 @@ class OrganizationController extends AbstractController
 		// Count members
 		$members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($org);
 
+		$org_usergroups = $org->usergroups;
+
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
+			'org_usergroups'     => $org_usergroups,
 			'notes'              => $notes,
 			'activity_stream'    => $activity_stream,
 			'org_tickets'        => $org_tickets,
@@ -129,19 +132,98 @@ class OrganizationController extends AbstractController
 	{
 		$org = $this->getOrgOr404($organization_id);
 
+		$this->em->beginTransaction();
+		$data = array(
+			'success' => true
+		);
+
 		switch ($this->in->getString('action')) {
 			case 'name':
-				$org['name'] = $this->in->getString('name');
-				App::getOrm()->persist($org);
-				App::getOrm()->flush();
+				if ($this->in->getString('name')) {
+					$org->name = $this->in->getString('name');
+					$this->em->persist($org);
+				}
+				break;
 
-				return $this->createJsonResponse(array(
-					'success' => true,
-					'organization_id' => $org['id'],
-					'html' => htmlspecialchars($org['name'])
-				));
+			case 'delete-picture':
+				$org->picture_blob = null;
+				$this->em->persist($org);
+				break;
+
+			case 'set-picture':
+				$blob = App::findEntity('DeskPRO:Blob', $this->in->getUint('blob_id'));
+				if ($blob) {
+					$org->picture_blob = $blob;
+					$this->em->persist($org);
+				}
+				break;
+
+			default:
+				return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
 				break;
 		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxSaveCustomFieldsAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
+
+		if (!empty($_POST['custom_fields'])) {
+			foreach ($org_field_defs as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
+					$org->setCustomData($info[0], $info[1], $info[2]);
+				}
+			}
+
+			App::getOrm()->persist($org);
+			App::getOrm()->flush();
+		}
+
+		// Custom fields
+		$org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($org['custom_data'], $org_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($org_field_defs, $org_data_structured, $custom_fields_form);
+
+		// Usergroups
+		$db = App::getDb();
+		$db->delete('organization2usergroups', array('organization_id' => $org['id']));
+
+		$usergroups = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
+		foreach ($usergroups as $u) {
+			$db->insert('organization2usergroups', array(
+				'organization_id' => $org['id'],
+				'usergroup_id' => $u
+			));
+		}
+
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$org_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getByIds($usergroups);
+
+		return $this->render('AgentBundle:Organization:view-customfields-rendered-rows.html.twig', array(
+			'org'             => $org,
+			'custom_fields'   => $custom_fields,
+			'usergroup_names' => $usergroup_names,
+			'org_usergroups'  => $org_usergroups,
+		));
+	}
+
+	public function changePictureOverlayAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		return $this->render('AgentBundle:Organization:change-person-picture.html.twig', array(
+			'org' => $org
+		));
 	}
 
 
@@ -213,41 +295,6 @@ class OrganizationController extends AbstractController
 			'success' => true,
 			'organization_id' => $org['id'],
 			'note_li_html' => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note))
-		));
-	}
-
-	############################################################################
-	# ajax-save-custom-fields
-	############################################################################
-
-	public function ajaxSaveCustomFieldsAction($organization_id)
-	{
-		$org = $this->getOrgOr404($organization_id);
-
-		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		foreach ($field_defs as $field_def) {
-			foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-				$org->setCustomData($info[0], $info[1], $info[2]);
-			}
-		}
-
-		App::getOrm()->persist($org);
-		App::getOrm()->flush();
-
-		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($org['custom_data'], $field_defs);
-		$custom_fields = array();
-		foreach ($field_defs as $f_def) {
-			$f = $f_def->getHandler()->getFormField();
-
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'rendered' => $data_structured[$f_def['id']] ? $f_def->getHandler()->renderHtml($data_structured[$f_def['id']]) : false
-			);
-		}
-
-		return $this->createJsonResponse(array(
-			'custom_fields_html' => $this->renderView('AgentBundle:Organization:custom-fields-rendered.html.twig', array('custom_fields' => $custom_fields)),
 		));
 	}
 

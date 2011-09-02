@@ -89,6 +89,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/Participants.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketFields.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewArticle.js',
