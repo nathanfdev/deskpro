@@ -13,6 +13,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
 class PersonActivity extends \Doctrine\ORM\EntityRepository
 {
@@ -24,5 +25,16 @@ class PersonActivity extends \Doctrine\ORM\EntityRepository
 			WHERE a.person = ?1
 			ORDER BY a.id DESC
 		")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$person));
+	}
+
+	public function getForOrganization(OrganizationEntity $org, $max = 30, $offset = 0)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT a
+			FROM DeskPRO:PersonActivity a
+			LEFT JOIN a.person p
+			WHERE p.organization = ?1
+			ORDER BY a.id DESC
+		")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$org));
 	}
 }

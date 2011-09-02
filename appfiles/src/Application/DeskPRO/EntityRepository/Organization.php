@@ -11,13 +11,12 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
-use \Doctrine\ORM\EntityRepository;
+use Orb\Util\Numbers;
 
-use \Orb\Util\Numbers;
-
-class Organization extends EntityRepository
+class Organization extends \Doctrine\ORM\EntityRepository
 {
 	protected $_organization_names = null;
 
@@ -87,7 +86,7 @@ class Organization extends EntityRepository
 	}
 
 	/**
-	 * Get a count of how many people there are
+	 * Get a count of how many orgs there are
 	 *
 	 * @return int
 	 */
@@ -99,6 +98,20 @@ class Organization extends EntityRepository
 		");
 	}
 
+	/**
+	 * Count how many people there are in an organization
+	 *
+	 * @param \Application\DeskPRO\Entity\Organization $org
+	 * @return int
+	 */
+	public function countMembersFor(OrganizationEntity $org)
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE organization_id = {$org['id']}
+		");
+	}
 
 
 	/**

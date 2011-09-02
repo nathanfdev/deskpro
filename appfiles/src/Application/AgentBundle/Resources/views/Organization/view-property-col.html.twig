@@ -1,0 +1,83 @@
+<div class="person-picture-box">
+	<button class="clean-gray xxx-small" id="{{baseId}}_change_user_picture" style="float: right;">Set Picture</button>
+	<img src="{{ org.getPictureUrl(80) }}" id="{{baseId}}_picture_display" />
+</div>
+
+{# Box Contact #}
+<div class="table-container">
+	<div class="table-title">
+		<button class="clean-gray xxx-small contact-edit">edit</button>
+		<h4>Contact Information</h4>
+	</div>
+	<div class="table-content contact-list contact-list-wrapper">
+		{% include 'AgentBundle:Organization:view-contact-display.html.twig' %}
+	</div>
+</div>
+{# /Box Contact #}
+
+{# Box Contact #}
+<div class="table-container">
+	<div class="table-title">
+		{% if custom_fields|length %}
+			<button class="clean-gray xxx-small show-edit-custom-fields" style="float:right">edit</button>
+		{% endif %}
+		<h4>Properties</h4>
+	</div>
+	<div class="table-content contact-list contact-list-wrapper">
+		<table cellpadding="0" cellspacing="0" width="100%" class="props-table">
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<div class="people-tags tags-wrap">
+							<span class="tag-icon"></span>
+							<ul>
+								{% for label in org.labels %}
+									<li><span>{{label.label}}</span></li>
+								{% endfor %}
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			{% if custom_fields|length %}
+				<tbody id="{{baseId}}_custom_fields_rendered">
+					{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
+				</tbody>
+				<tbody id="{{baseId}}_custom_fields_editable" style="display: none">
+					{% include 'AgentBundle:Organization:view-customfields-edit-rows.html.twig' %}
+					<tr>
+						<td colspan="2" style="text-align: center;">
+							<button class="clean-gray xxx-small save-custom-fields">Save</button>
+						</td>
+					</tr>
+				</tbody>
+			{% endif %}
+		</table>
+	</div>
+</div>
+{# /Box Contact #}
+
+{# Box Contact #}
+<div class="table-container">
+	<div class="table-title">
+		<h4>Inforation</h4>
+	</div>
+	<div class="table-content">
+		<table cellpadding="0" cellspacing="0" width="100%" class="props-table">
+			<tr>
+				<td class="label" width="80">Created</td>
+				<td class="value">
+					<time>{{org.date_created|date('H:ia M j Y')}}</time>
+					(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Members</td>
+				<td>
+					<a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=organization&amp;terms[0][op]=is&amp;terms[0][organization]={{organization.id}}">{{members_count|default(0)}}</a> members
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+{# /Box Contact #}

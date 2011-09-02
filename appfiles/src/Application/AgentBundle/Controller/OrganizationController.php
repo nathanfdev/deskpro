@@ -45,7 +45,7 @@ class OrganizationController extends AbstractController
 	public function viewAction($organization_id)
 	{
 		$org = $this->getOrgOr404($organization_id);
-		
+
 		// Custom fields
 		$field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($org['custom_data'], $field_defs);
@@ -54,58 +54,27 @@ class OrganizationController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------
-		# Contact fields: empty tpls
+		# Misc info needed
 		#------------------------------
 
-		$contact_fields_tpl = array();
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\InstantMessage();
-		$contact_fields_tpl['instant_message'] = $f->getFormField();
+		$notes = App::getEntityRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Address();
-		$contact_fields_tpl['address'] = $f->getFormField();
+		$org_tickets = App::getEntityRepository('DeskPRO:Ticket')->getOrganizationTickets($org, 5);
+		$org_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
 
-		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Phone();
-		$contact_fields_tpl['phone'] = $f->getFormField();
-
-		#------------------------------
-		# Latest 5 notes
-		#------------------------------
-
-		$em = App::getOrm();
-
-		$notes = $em->createQuery("
-			SELECT n
-			FROM DeskPRO:OrganizationNote n
-			WHERE n.organization = ?1
-			ORDER BY n.id DESC
-		")->setParameter(1, $org)->setMaxResults(5)->execute();
-
-		$db = App::getDb();
-		$notes_count = $db->fetchColumn("
-			SELECT COUNT(*) FROM organization_notes
-			WHERE organization_id = ?
-		", array($org['id']));
-
-		$note_pages = false;
-		if ($notes_count > 5) {
-			$note_pages = range(1, ceil($notes_count / 5));
-		}
-		
+		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);
 
 		// Count members
-		$members_count = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM people
-			WHERE organization_id = ?
-		", array($org['id']));
+		$members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($org);
 
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
-			'organization' => $org,
-			'notes' => $notes,
-			'note_pages' => $note_pages,
-			'members_count' => $members_count,
-			'custom_fields' => $custom_fields,
-			'contact_fields_tpl' => $contact_fields_tpl,
+			'org'                => $org,
+			'notes'              => $notes,
+			'activity_stream'    => $activity_stream,
+			'org_tickets'        => $org_tickets,
+			'org_tickets_count'  => $org_tickets_count,
+			'members_count'      => $members_count,
+			'custom_fields'      => $custom_fields,
 		));
 	}
 
@@ -183,7 +152,7 @@ class OrganizationController extends AbstractController
 	public function ajaxSaveContactAction($organization_id)
 	{
 		$org = $this->getOrgOr404($organization_id);
-		
+
 		$type = $this->in->getString('contact_type');
 		$handler = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
 

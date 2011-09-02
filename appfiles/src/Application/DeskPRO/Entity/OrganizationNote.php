@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @ORM_Mapping\Entity
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\OrganizationNote")
  * @ORM_Mapping\Table(name="organization_notes")
  */
 class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
@@ -31,7 +31,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The org the note is attached to.
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
 	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
@@ -40,7 +40,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The agent that added the note
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")

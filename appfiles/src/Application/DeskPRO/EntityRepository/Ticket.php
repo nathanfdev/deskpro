@@ -19,6 +19,12 @@ use \Orb\Util\Numbers;
 
 class Ticket extends EntityRepository
 {
+	/**
+	 * Find a ticket by its TAC
+	 *
+	 * @param $access_code
+	 * @return null
+	 */
 	public function getByAccessCode($access_code)
 	{
 		$info = Entity\Ticket::decodeAccessCode($access_code);
@@ -38,7 +44,14 @@ class Ticket extends EntityRepository
 			return null;
 		}
 	}
-	
+
+
+	/**
+	 * Get tickets by specific ids
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
 	public function getTicketsFromIds(array $ids)
 	{
 		// Only valid ID's please :)
@@ -63,7 +76,18 @@ class Ticket extends EntityRepository
 		return $tickets;
 	}
 
-	
+
+	/**
+	 * Get tickets by IDs
+	 *
+	 * @param array $ids
+	 * @return void
+	 */
+	public function getByIds(array $ids)
+	{
+		return $this->getTicketsFromIds($ids);
+	}
+
 
 	/**
 	 * Get all tickets a person owns, or is a participant in.
@@ -85,6 +109,13 @@ class Ticket extends EntityRepository
 	}
 
 
+	/**
+	 * Count how many tickets a person has
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param null $status
+	 * @return int
+	 */
 	public function countTicketsForPerson(Entity\Person $person, $status = null)
 	{
 		if ($status) {
@@ -94,7 +125,7 @@ class Ticket extends EntityRepository
 			}
 			$status = implode(',', $status);
 		}
-		
+
 		$count = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM tickets
@@ -106,8 +137,53 @@ class Ticket extends EntityRepository
 
 
 	/**
+	 * Get all tickets that belong ot an org
+	 *
+	 * @return array
+	 */
+	public function getOrganizationTickets(Entity\Organization $org, $limit = null)
+	{
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t INDEX BY t.id
+			WHERE t.organization = ?1
+			ORDER BY t.id DESC
+		")->setParameters(array(1=>$org))->setMaxResults($limit)->execute();
+
+		return $tickets;
+	}
+
+
+	/**
+	 * COunt the total number of tickets that belong to an org
+	 *
+	 * @param \Application\DeskPRO\Entity\Organization $org
+	 * @param null $status
+	 * @return int
+	 */
+	public function countTicketsForOrganization(Entity\Organization $org, $status = null)
+	{
+		if ($status) {
+			$status = (array)$status;
+			foreach ($status as &$s) {
+				$s = "'$s'";
+			}
+			$status = implode(',', $status);
+		}
+
+		$count = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets
+			WHERE organization_id = ? " . ($status ? " AND status IN ($status) " : '') . "
+		", array($org['id']));
+
+		return $count;
+	}
+
+
+	/**
 	 * Get the latest tickets from a particular user
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @param int $max The max number of results
 	 * @return array
@@ -124,7 +200,7 @@ class Ticket extends EntityRepository
 		return $tickets;
 	}
 
-	
+
 	/**
 	 * Executes a query to re-fill the ticket_search_active table
 	 */

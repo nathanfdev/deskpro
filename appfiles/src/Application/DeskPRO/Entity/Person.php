@@ -1349,39 +1349,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels->add($label);
 	}
 
-
-
-	public function getContactDataOfType($type)
-	{
-		if (strpos($type, 'Application\\DeskPRO\\') !== 0) {
-			$type = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
-		}
-
-		$ret = array();
-		foreach ($this->contact_data as $contact_data) {
-			if ($contact_data['handler_class'] == $type) {
-				$ret[] = $contact_data;
-			}
-		}
-
-		return $ret;
-	}
-
-	public function getIms()
-	{
-		return $this->getContactDataOfType('instant_message');
-	}
-
-	public function getAddresses()
-	{
-		return $this->getContactDataOfType('address');
-	}
-
-	public function getPhones()
-	{
-		return $this->getContactDataOfType('phone');
-	}
-
 	public function getUsergroupSetKey()
 	{
 		if ($this->usergroups instanceof \Doctrine\Common\Collections\Collection) {

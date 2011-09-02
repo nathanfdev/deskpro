@@ -1,0 +1,22 @@
+{% if usergroup_names %}
+<tr>
+	<td class="label" width="80">Usergroups</td>
+	<td class="value">
+		{% for group in org_usergroups %}
+			{{ group.title }}{% if not loop.last %}, {% endif %}
+		{% else %}
+			None
+		{% endfor %}
+	</td>
+</tr>
+{% endif %}
+{% for f in custom_fields %}
+	{% if org.hasCustomField(f.id) %}
+	<tr>
+		<td class="label" width="80">{{f.title}}</td>
+		<td class="value">
+			{{ render_custom_field(f) }}
+		</td>
+	</tr>
+	{% endif %}
+{% endfor %}

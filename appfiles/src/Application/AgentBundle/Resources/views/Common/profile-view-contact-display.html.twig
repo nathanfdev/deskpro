@@ -1,0 +1,89 @@
+{% block pre_extra %}{% endblock %}
+<ul class="contact-data-list">
+	{% block top_extra %}{% endblock %}
+
+	{% for contact in contact_data.website %}
+		<li class="website">
+			<a href="{{ contact.url }}" target="_blank">{{ contact.display }}</a>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.twitter %}
+		<li class="twitter">
+			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.username }}</a>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.linkedin %}
+		<li class="linkedin">
+			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.facebook %}
+		<li class="linkedin">
+			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.mobile %}
+		<li class="mobile">
+			{% if contact.comment %}
+				<span class="label">{{ contact.comment }}</span>
+			{% endif %}
+			{% if contact.country_code %}
+				<span class="country-code">{{ contact.country_code }}</span>
+			{% endif %}
+			<span class="number">{{ contact.number }}</span>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.phone %}
+		<li class="phone">
+			{% if contact.comment %}
+				<span class="label">{{ contact.comment }}</span>
+			{% endif %}
+			{% if contact.country_code %}
+				<span class="country-code">{{ contact.country_code }}</span>
+			{% endif %}
+			<span class="number">{{ contact.number }}</span>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.fax %}
+		<li class="fax">
+			{% if contact.comment %}
+				<span class="label">{{ contact.comment }}</span>
+			{% endif %}
+			{% if contact.country_code %}
+				<span class="country-code">{{ contact.country_code }}</span>
+			{% endif %}
+			<span class="number">{{ contact.number }}</span>
+		</li>
+	{% endfor %}
+
+	{% for contact in contact_data.instant_message %}
+		<li class="fax {{ contact.service }}">
+			{% if contact.comment %}
+				<span class="label">{{ contact.comment }}</span>
+			{% endif %}
+			{{ contact.username }}
+		</li>
+	{% endfor %}
+
+	{% block bottom_extra %}{% endblock %}
+</ul>
+
+{% if contact_data.address %}
+	<div class="addresses">
+		<ul>
+			{% for contact in contact_data.address %}
+				<li class="address {{ contact.country_code }} tipped" data-tipped='<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'">
+					{{ contact.address_html|raw }}
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endif %}
+
+{% block post_extra %}{% endblock %}

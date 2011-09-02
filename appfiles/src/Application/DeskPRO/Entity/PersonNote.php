@@ -19,7 +19,6 @@ use Orb\Util\Arrays;
  * A note is a private note added by an agent to a persons account.
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonNote")
- * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="people_notes")
  */
 class PersonNote extends \Application\DeskPRO\Domain\DomainObject
@@ -27,13 +26,13 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * The person the note is attached to.
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
@@ -42,7 +41,7 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The agent that added the note
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
@@ -63,14 +62,13 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $note;
 
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
+	}
+
 	public function getNoteHtml()
 	{
 		return nl2br(htmlspecialchars($this->note), true);
-	}
-
-	/** @ORM_Mapping\PrePersist */
-	public function _prePersist()
-	{
-		$this->date_created = new \DateTime();
 	}
 }

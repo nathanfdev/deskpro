@@ -1,0 +1,293 @@
+<div class="profile-contact-editor" style="display: none">
+
+	<div class="contact-list contact-edit-list">
+		<ul>
+			{% block list_extra %}{% endblock %}
+
+			{% for contact in contact_data.phone %}
+				<li class="phone" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Phone</div>
+					<div class="input">
+						<table cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Label:</td>
+								<td>Country:</td>
+								<td>Number:</td>
+							</tr>
+							<tr>
+								<td><input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /></td>
+								<td><input type="text" size="4" name="contact_data[{{ contact.id }}][country_code]" value="{{ contact.rec.field_1 }}"/></td>
+								<td><input type="text" size="12" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.mobile %}
+				<li class="mobile" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Cell</div>
+					<div class="input">
+						<table cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Label:</td>
+								<td>Country:</td>
+								<td>Number:</td>
+							</tr>
+							<tr>
+								<td><input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /></td>
+								<td><input type="text" size="4" name="contact_data[{{ contact.id }}][country_code]" value="{{ contact.rec.field_1 }}"/></td>
+								<td><input type="text" size="12" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.fax %}
+				<li class="fax" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Fax</div>
+					<div class="input">
+						<table cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Label:</td>
+								<td>Country:</td>
+								<td>Number:</td>
+							</tr>
+							<tr>
+								<td><input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /></td>
+								<td><input type="text" size="4" name="contact_data[{{ contact.id }}][country_code]" value="{{ contact.rec.field_1 }}"/></td>
+								<td><input type="text" size="12" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.website %}
+				<li class="twitter" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Website</div>
+					<div class="input">
+						<input type="text" size="15" name="contact_data[{{ contact.id }}][url]" value="{{ contact.url }}"/>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.twitter %}
+				<li class="twitter" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Twitter</div>
+					<div class="input">
+						<input type="text" size="15" name="contact_data[{{ contact.id }}][username]" value="{{ contact.field_1 }}"/>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.linkedin %}
+				<li class="twitter" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">LinkedIn</div>
+					<div class="input">
+						<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.profile_url }}"/>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.facebook %}
+				<li class="facebook" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Facebook</div>
+					<div class="input">
+						<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.profile_url }}"/>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.instant_message %}
+				<li class="instant_message" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">IM</div>
+					<div class="input">
+						<select name="contact_data[{{ contact.id }}][service]">
+							<option {% if contact.service == 'other' %} {% endif %} value="other">Other</option>
+							<option {% if contact.service == 'aim' %} {% endif %} value="aim">AIM</option>
+							<option {% if contact.service == 'msn' %} {% endif %} value="msn">MSN</option>
+							<option {% if contact.service == 'yim' %} {% endif %} value="yim">YIM</option>
+							<option {% if contact.service == 'icq' %} {% endif %} value="icq">ICQ</option>
+							<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">GTalk</option>
+						</select>
+						<input type="text" size="15" name="contact_data[{{ contact.id }}][username]" value="{{ contact.username }}"/>
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+
+			{% for contact in contact_data.address %}
+				<li class="facebook" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					<div class="type">Address</div>
+					<div class="input">
+						Label: <input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /><br />
+						<textarea cols="40" rows="3" name="contact_data[{{ contact.id }}][address]" value="{{ contact.address }}" />
+					</div>
+					<div class="remove">-</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="add-row">
+		<span class="add-new-type-trigger">Add new...</span>
+		<ul class="add-new-type-menu" style="display: none">
+			{% block newmenu_options_extra %}{% endblock %}
+			<li data-tpl="tpl-new-address">Address</li>
+			<li data-tpl="tpl-new-phone">Phone</li>
+			<li data-tpl="tpl-new-mobile">Cell</li>
+			<li data-tpl="tpl-new-fax">Fax</li>
+			<li data-tpl="tpl-new-website">Website</li>
+			<li data-tpl="tpl-new-twitter">Twitter</li>
+			<li data-tpl="tpl-new-facebook">Facebook</li>
+			<li data-tpl="tpl-new-linkedin">LinkedIn</li>
+			<li data-tpl="tpl-new-skype">Skype</li>
+			<li data-tpl="tpl-new-instantmessage">Instant Messaging</li>
+		</ul>
+	</div>
+	<div style="text-align: center; margin-top: 7px;">
+		<button class="dp-button save-trigger">Save</button>
+	</div>
+
+	{% block newtpl_extra %}{% endblock %}
+	<script type="text/x-deskpro-plain" class="tpl-new-phone">
+		<li class="phone new">
+			<div class="type">Phone</div>
+			<div class="input">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td>Label:</td>
+						<td>Country:</td>
+						<td>Number:</td>
+					</tr>
+					<tr>
+						<td><input type="text" size="8" name="new_contact_data[phone][%id%][comment]" value=""/></td>
+						<td><input type="text" size="4" name="new_contact_data[phone][%id%][country_code]" value=""/></td>
+						<td><input type="text" size="12" name="new_contact_data[phone][%id%][number]" value=""/></td>
+					</tr>
+				</table>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-mobile">
+		<li class="mobile new">
+			<div class="type">Cell</div>
+			<div class="input">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td>Label:</td>
+						<td>Country:</td>
+						<td>Number:</td>
+					</tr>
+					<tr>
+						<td><input type="text" size="8" name="new_contact_data[mobile][%id%][comment]" value=""/></td>
+						<td><input type="text" size="4" name="new_contact_data[mobile][%id%][country_code]" value=""/></td>
+						<td><input type="text" size="12" name="new_contact_data[mobile][%id%][number]" value=""/></td>
+					</tr>
+				</table>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-fax">
+		<li class="fax new">
+			<div class="type">Fax</div>
+			<div class="input">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td>Label:</td>
+						<td>Country:</td>
+						<td>Number:</td>
+					</tr>
+					<tr>
+						<td><input type="text" size="8" name="new_contact_data[fax][%id%][comment]" value=""/></td>
+						<td><input type="text" size="4" name="new_contact_data[fax][%id%][country_code]" value=""/></td>
+						<td><input type="text" size="12" name="new_contact_data[fax][%id%][number]" value=""/></td>
+					</tr>
+				</table>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-twitter">
+		<li class="twitter new">
+			<div class="type">Twitter</div>
+			<div class="input">
+				<input type="text" size="15" name="new_contact_data[twitter][%id%][username]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-facebook">
+		<li class="facebook new">
+			<div class="type">Facebook</div>
+			<div class="input">
+				<input type="text" size="15" name="new_contact_data[facebook][%id%][profile_url]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-linkedin">
+		<li class="twitter new">
+			<div class="type">LinkedIn</div>
+			<div class="input">
+				<input type="text" size="15" name="new_contact_data[linked_in][%id%][profile_url]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-skype">
+		<li class="twitter new">
+			<div class="type">Skype</div>
+			<div class="input">
+				<input type="text" size="15" name="new_contact_data[skype][%id%][username]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-website">
+		<li class="twitter new">
+			<div class="type">Website</div>
+			<div class="input">
+				<input type="text" size="15" name="new_contact_data[website][%id%][url]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-instantmessage">
+		<li class="instant_message new">
+			<div class="type">IM</div>
+			<div class="input">
+				<select name="new_contact_data[instant_message][%id%][service]">
+					<option value="other">Other</option>
+					<option value="aim">AIM</option>
+					<option value="msn">MSN</option>
+					<option value="yim">YIM</option>
+					<option value="icq">ICQ</option>
+					<option value="gtalk">GTalk</option>
+				</select>
+				<input type="text" size="15" name="new_contact_data[instant_message][%id%][username]" value=""/>
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+	<script type="text/x-deskpro-plain" class="tpl-new-address">
+		<li class="address new">
+			<div class="type">Address</div>
+			<div class="input">
+				Label: <input type="text" size="8" name="new_contact_data[address][%id%][comment]" value="" /><br />
+				<textarea cols="40" rows="3" name="new_contact_data[address][%id%][address]" value="" />
+			</div>
+			<div class="remove">-</div>
+		</li>
+	</script>
+</div>
