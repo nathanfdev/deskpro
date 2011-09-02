@@ -78,8 +78,39 @@ class TemplatingExtension extends \Twig_Extension
 			'encode_number' => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
+			'date'   => new \Twig_Filter_Method($this, 'userDate'),
         );
     }
+
+	public function userDate($date, $format = 'F j, Y H:i', $timezone = null)
+	{
+		if (!$date instanceof \DateTime) {
+			if (ctype_digit((string) $date)) {
+				$date = new \DateTime('@'.$date);
+				$date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+			} else {
+				$date = new \DateTime($date);
+			}
+		}
+
+		if ($timezone === null && App::getCurrentPerson()) {
+			$timezone = App::getCurrentPerson();
+		}
+
+		if ($timezone instanceof \Application\DeskPRO\Entity\Person) {
+			$timezone = new \DateTimeZone($timezone->timezone);
+		}
+
+		if (null !== $timezone) {
+			if (!$timezone instanceof \DateTimeZone) {
+				$timezone = new \DateTimeZone($timezone);
+			}
+
+			$date->setTimezone($timezone);
+		}
+
+		return $date->format($format);
+	}
 
 	public function debugVar($var)
 	{
