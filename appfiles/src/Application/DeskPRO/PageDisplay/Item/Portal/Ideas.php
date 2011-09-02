@@ -38,9 +38,10 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 			$this->setOption('show_cat_switcher', true);
 		}
 	}
-	
+
 	public function getHtml()
 	{
+		return '';
 		if ($this->section == 'portal') {
 			return $this->getContentHtml();
 		} else {

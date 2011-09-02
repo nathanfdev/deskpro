@@ -183,8 +183,12 @@ agent_people_viewsession:
   requirements: { session_id: "\d+" }
 
 agent_people_new:
-  pattern: /people/new-person
-  defaults: { _controller: AgentBundle:Person:new }
+  pattern: /people/new
+  defaults: { _controller: AgentBundle:Person:newPerson }
+
+agent_people_new_save:
+  pattern: /people/new/save
+  defaults: { _controller: AgentBundle:Person:newPersonSave }
 
 agent_people_ajaxsave:
   pattern: /people/{person_id}/ajax-save

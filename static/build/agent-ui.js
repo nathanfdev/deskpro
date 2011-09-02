@@ -127,6 +127,7 @@ $("#volume_controls").fadeOut()};$("#volume_controls_back").click(function(e){e.
 $("#volume_controls").css({top:30,left:$("#sound_icon").offset().left-7});$("#volume_controls").fadeIn()};$("#sound_icon a").click(function(e){e.preventDefault();
 e.stopPropagation();a()});this.createMenu=new DeskPRO.UI.Menu({triggerElement:"#create_content_trigger",menuElement:"#create_content_menu"});
 this.newTicketLoader=new DeskPRO.Agent.Widget.BackgroundPopout({loadUrl:BASE_URL+"agent/tickets/new",tabRoute:"page:"+BASE_URL+"agent/tickets/new"});
+this.newPersonLoader=new DeskPRO.Agent.Widget.BackgroundPopout({loadUrl:BASE_URL+"agent/people/new",tabRoute:"page:"+BASE_URL+"agent/people/new"});
 this.newArticleLoader=new DeskPRO.Agent.Widget.BackgroundPopout({loadUrl:BASE_URL+"agent/kb/article/new",tabRoute:"page:"+BASE_URL+"agent/kb/article/new"});
 this.newNewsLoader=new DeskPRO.Agent.Widget.BackgroundPopout({loadUrl:BASE_URL+"agent/news/new",tabRoute:"page:"+BASE_URL+"agent/news/new"});
 this.newDownloadLoader=new DeskPRO.Agent.Widget.BackgroundPopout({loadUrl:BASE_URL+"agent/downloads/new",tabRoute:"page:"+BASE_URL+"agent/news/new"});
@@ -273,12 +274,13 @@ DeskPRO.Agent.KeyboardShortcuts=new Orb.Class({Implements:[Orb.Util.Events,Orb.U
 $(document).bind("keydown","ctrl+right",this.tabRight.bind(this));$(document).bind("keydown","ctrl+shift+c",this.closeTab.bind(this));
 $(document).bind("keydown","t",this.showNewTicket.bind(this));$(document).bind("keydown","k",this.showNewArticle.bind(this));
 $(document).bind("keydown","n",this.showNewNews.bind(this));$(document).bind("keydown","d",this.showNewDownload.bind(this));
-$(document).bind("keydown","i",this.showNewIdea.bind(this));this.boundShortkuts={};this.addContextShortcut("ticket","ctrl+shift+r","shortcutFocusReply")
-},addContextShortcut:function(c,b,a){if(!this.boundShortkuts[b]){this.boundShortkuts[b]={};$(document).bind("keydown",b,(function(d){this.dispatchShortcutEvent(d,b)
-}).bind(this))}this.boundShortkuts[b][c]=a},dispatchShortcutEvent:function(b,a){if(!this.boundShortkuts[a]){return}var c=DeskPRO_Window.getCurrentTabPage();
-if(!c||!c.TYPENAME||!this.boundShortkuts[a][c.TYPENAME]){return}c.fireEvent(this.boundShortkuts[a][c.TYPENAME],[b,a])},showNewTicket:function(){DeskPRO_Window.newTicketLoader.toggle()
-},showNewArticle:function(){DeskPRO_Window.newArticleLoader.toggle()},showNewNews:function(){DeskPRO_Window.newNewsLoader.toggle()
-},showNewDownload:function(){DeskPRO_Window.newDownloadLoader.toggle()},showNewIdea:function(){DeskPRO_Window.newIdeaLoader.toggle()
+$(document).bind("keydown","i",this.showNewIdea.bind(this));$(document).bind("keydown","p",this.showNewPerson.bind(this));
+this.boundShortkuts={};this.addContextShortcut("ticket","ctrl+shift+r","shortcutFocusReply")},addContextShortcut:function(c,b,a){if(!this.boundShortkuts[b]){this.boundShortkuts[b]={};
+$(document).bind("keydown",b,(function(d){this.dispatchShortcutEvent(d,b)}).bind(this))}this.boundShortkuts[b][c]=a},dispatchShortcutEvent:function(b,a){if(!this.boundShortkuts[a]){return
+}var c=DeskPRO_Window.getCurrentTabPage();if(!c||!c.TYPENAME||!this.boundShortkuts[a][c.TYPENAME]){return}c.fireEvent(this.boundShortkuts[a][c.TYPENAME],[b,a])
+},showNewTicket:function(){DeskPRO_Window.newTicketLoader.toggle()},showNewArticle:function(){DeskPRO_Window.newArticleLoader.toggle()
+},showNewNews:function(){DeskPRO_Window.newNewsLoader.toggle()},showNewDownload:function(){DeskPRO_Window.newDownloadLoader.toggle()
+},showNewIdea:function(){DeskPRO_Window.newIdeaLoader.toggle()},showNewPerson:function(){DeskPRO_Window.newPersonLoader.toggle()
 },tabLeft:function(){var a=$("li.active-tab",DeskPRO_Window.pageTabStrip.tabStrip);var b=a.prev();if(!b.length){b=$("li:last",DeskPRO_Window.pageTabStrip.tabStrip)
 }if(!b.is(".active-tab")){DeskPRO_Window.pageTabStrip.activateTabById(b.data("tab-id"))}},tabRight:function(){var a=$("li.active-tab",DeskPRO_Window.pageTabStrip.tabStrip);
 var b=a.next();if(!b.length){b=$("li:first",DeskPRO_Window.pageTabStrip.tabStrip)}if(!b.is(".active-tab")){DeskPRO_Window.pageTabStrip.activateTabById(b.data("tab-id"))

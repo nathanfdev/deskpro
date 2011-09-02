@@ -94,6 +94,25 @@
 </ul>
 {% endif %}
 
+{# Organizations #}
+{% if titles.organizations %}
+	<select id="organizations_select">
+	{% for id,title in titles.organizations %}
+		<option value="{{ id }}">{{ title }}</option>
+	{% endfor %}
+	</select>
+{% endif %}
+
+{# Usergroups #}
+{% if titles.usergroups %}
+<select id="usergroups_select">
+	{% for id,title in titles.usergroups %}
+		<option value="{{ id }}">{{ title }}</option>
+	{% endfor %}
+</select>
+{% endif %}
+
+
 {# Ticket Status #}
 <ul id="ticket_status_menu">
 	<li data-status="open">Open</li>

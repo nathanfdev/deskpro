@@ -551,7 +551,30 @@ this.userFind=new DeskPRO.Agent.Widget.FindPerson({onChoosePerson:function(c){a.
 e.empty().html(d);var f=$("li.person",e).length;$(".user-part-count",this.wrapper).text(f)}})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.Ticket");
 DeskPRO.Agent.PageFragment.Page.Ticket.TicketFields=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(b,a){this.options={};
 this.page=b;$(".properties-edit-trigger",this.page.wrapper).click(this.showEditor.bind(this))},getEl:function(a){return this.page.getEl(a)
-}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.Content");DeskPRO.Agent.PageFragment.Page.Content.DeleteControl=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(c,b){var a=this;
+}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.PersonHelper");DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(c,b){var a=this;
+this.options={loadUrl:"",saveUrl:""};this.setOptions(b);this.page=c;this.page.getEl("change_user_picture").click(this.open.bind(this));
+this.page.addEvent("destroy",this.destroy.bind(this))},_initOverlay:function(){if(this.overlay){return}this.wrapperEl=$('<div class="change-person-picture" />');
+this.wrapperEl.append("<div>Loading...</div>");this.overlay=new DeskPRO.UI.Overlay({contentElement:this.wrapperEl});$.ajax({url:this.options.loadUrl,type:"GET",dataType:"html",context:this,success:function(a){this.wrapperEl.empty().append(a);
+this._initControls()}})},_initControls:function(){this.wrapperEl.fileupload({url:BASE_URL+"agent/misc/accept-upload",dropZone:this.wrapperEl,autoUpload:true,uploadTemplate:$(".template-upload",this.wrapperEl),downloadTemplate:$(".template-download",this.wrapperEl)});
+$(".save-trigger",this.wrapperEl).click(this._doSave.bind(this))},_doSave:function(){var b=$(".set_pic_opt:checked",this.wrapperEl).val();
+var c=null;var d=null;var e=[];switch(b){case"nochange":this.close();return;case"gravatar":e.push({name:"action",value:"delete-picture"});
+c=$("img.pic-gravatar",this.wrapperEl).attr("src");break;case"newpic":e.push({name:"action",value:"set-picture"});var a=$("input.new_blob_id",this.wrapperEl).val();
+if(!a){return}e.push({name:"blob_id",value:a});c=$("img.pic-new",this.wrapperEl).attr("src");break;default:return}$.ajax({url:this.options.saveUrl,type:"POST",dataType:"json",data:e});
+this.page.getEl("picture_display").attr("src",c);this.close()},open:function(){this._initOverlay();this.overlay.open()},close:function(){if(this.overlay){this.overlay.close()
+}},destroy:function(){if(this.overlay){this.overlay.destroy()}}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.PersonHelper");
+DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(c,b){var a=this;
+this.options={saveUrl:""};this.setOptions(b);this.page=c;this.wrapper=this.page.wrapper;this.page.addEvent("destroy",this.destroy.bind(this));
+this.initEditorOverlay()},replaceEditorOverlay:function(a){var b=$(".profile-contact-editor",this.wrapper);b.remove();b=null;
+$(a).appendTo(this.wrapper);this.initEditorOverlay()},initEditorOverlay:function(){var a=this;if(this.contactOverlay){this.contactOverlay.destroy();
+this.contactOverlay=null}if(this.contactNewMenu){this.contactNewMenu.destroy();this.contactNewMenu=null}var b=$(".profile-contact-editor",this.wrapper);
+this.contactOverlay=new DeskPRO.UI.Overlay({triggerElement:$(".contact-edit:first",this.wrapper),contentElement:b});$(".save-trigger",b).click(function(c){var d=$(":input, select, textarea",b).serializeArray();
+$.ajax({url:a.options.saveUrl,type:"POST",dataType:"json",data:d,success:function(e){a.contactOverlay.close();$(".contact-list-wrapper",a.wrapper).empty().html(e.display_html);
+a.replaceEditorOverlay(e.editor_overlay_html)}})});b.delegate(".remove","click",function(f){var d=$(this);var h=d;while(!h.is("li")){h=h.parent()
+}var e=h.data("remove-name");var g=h.data("remove-value");if(e&&g){var c=$('<input type="hidden" />');c.attr("name",e);c.val(g);
+c.appendTo($(".contact-edit-list",b))}h.fadeOut("fast",function(){h.remove()})});this.contactNewMenu=new DeskPRO.UI.Menu({triggerElement:$(".add-new-type-trigger",this.wrapper),menuElement:$(".add-new-type-menu:first",this.wrapper),initMenuNow:true,onItemClicked:(function(g){var e=this.contactOverlay.elements.wrapper;
+var f=$(g.itemEl);var c=$("."+f.data("tpl"),e).get(0).innerHTML;c=c.replace(/%id%/g,Orb.uuid());var d=$(c);d.appendTo($(".contact-edit-list ul",e))
+}).bind(this)})},destroy:function(){if(this.contactOverlay){this.contactOverlay.destroy()}if(this.contactNewMenu){this.contactNewMenu.destroy()
+}}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.Content");DeskPRO.Agent.PageFragment.Page.Content.DeleteControl=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(c,b){var a=this;
 this.options={ajaxSaveUrl:"",statusMenu:null,type:"delete"};this.setOptions(b);this.page=c;this.deleteBtn=$("."+this.options.type,this.page.getEl("action_buttons"));
 this.deletedNotice=$("."+this.options.type+"-notice:first",this.page.wrapper);this.statusBtn=$(".the-status:first",this.page.wrapper);
 this.undeleteBtn=$(".un"+this.options.type,this.deletedNotice);this.otherDeleteBtns=$(".delete-type:not(."+this.options.type+")",this.page.getEl("action_buttons"));
@@ -588,7 +611,18 @@ var c=this.getEl("other_props_tabs_wrap");var d=e.tabEl;if(!$(".on",c).length||d
 c.removeClass("on")}else{window.setTimeout(function(){f.slideDown()},20);c.addClass("on")}}}).bind(this)});var a=this;this.labelsInput=new DeskPRO.UI.LabelsInput({type:"articles",fieldName:"newarticle[labels]",list:$(".tags-wrap ul",this.wrapper),onChange:function(){a.stateSaver.triggerChange()
 }});this.getEl("slug").focus(function(){this.addClass("had-focus")});var b=$(".file-list",this.wrapper);$("input",b[0]).live("click",function(){var d=$(this);
 var c=d.parent();if(d.is(":checked")){c.removeClass("unchecked")}else{c.addClass("unchecked")}});this.wrapper.fileupload({url:BASE_URL+"agent/misc/accept-upload",dropZone:this.wrapper,autoUpload:true,uploadTemplate:$(".template-upload",this.wrapper),downloadTemplate:$(".template-download",this.wrapper)})
-}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.NewDownload=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,allowDupe:true,TYPENAME:"newdownload",initPage:function(c){this.wrapper=c;
+}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.NewPerson=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,allowDupe:true,TYPENAME:"newperson",initPage:function(d){this.wrapper=d;
+this.contentWrapper=this.wrapper.children(".layout-content").attr("id",Orb.getUniqueId());this.parent(d);var a=this.contentWrapper;
+a.tinyscrollbar();var b=this;$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update();
+b.fireEvent("resized")});this.form=$("form",this.wrapper).submit(function(e){e.preventDefault()});$("button.submit-trigger",this.wrapper).click(this.submit.bind(this));
+this._initNameSection();this._initOtherSection();this.stateSaver=new DeskPRO.Agent.PageHelper.StateSaver({stateId:"newperson",listenOn:this.getEl("newperson")});
+var c=$("#organizations_select").clone().appendTo(this.getEl("org_container"));c.data("placebolder","Select an existing organization");
+c.css("width",200);c.prepend("<option />");c.chosen()},closeSelf:function(){var a={cancel:false};this.fireEvent("closeSelf",a);
+if(!a.cancel){this.parent()}},submit:function(){var a=this.form.serializeArray();$.ajax({url:BASE_URL+"agent/people/new-person",type:"POST",data:a,dataType:"json",context:this,success:function(b){if(b.success){DeskPRO_Window.runPageRoute("person:"+BASE_URL+"agent/people/view/"+b.person_id);
+this.closeSelf()}else{alert("There was an error with the form")}}})},_initNameSection:function(){},_initOtherSection:function(){this.otherTabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("li",this.getEl("other_props_tabs")),context:this.getEl("other_props_tabs_content"),autoSelectFirst:false,onTabClick:(function(d){var e=this.getEl("other_props_tabs_content");
+var b=this.getEl("other_props_tabs_wrap");var c=d.tabEl;if(!$(".on",b).length||c.is(".on")){if(e.is(":visible")){e.slideUp();
+b.removeClass("on")}else{window.setTimeout(function(){e.slideDown()},20);b.addClass("on")}}}).bind(this)});var a=this;this.labelsInput=new DeskPRO.UI.LabelsInput({type:"people",fieldName:"newperson[labels]",list:$(".tags-wrap ul",this.wrapper),onChange:function(){a.stateSaver.triggerChange()
+}})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.NewDownload=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,allowDupe:true,TYPENAME:"newdownload",initPage:function(c){this.wrapper=c;
 this.contentWrapper=this.wrapper.children(".layout-content").attr("id",Orb.getUniqueId());this.parent(c);var a=this.contentWrapper;
 a.tinyscrollbar();var b=this;$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update();
 b.fireEvent("resized")});this.form=$("form",this.wrapper).submit(function(d){d.preventDefault()});$("button.submit-trigger",this.wrapper).click(this.submit.bind(this));
@@ -679,45 +713,40 @@ this.getEl("content").tinymce({script_url:ASSETS_BASE_URL+"/vendor/tiny_mce/tiny
 var b=this.getEl("other_props_tabs_wrap");var c=d.tabEl;if(!$(".on",b).length||c.is(".on")){if(e.is(":visible")){e.slideUp();
 b.removeClass("on")}else{window.setTimeout(function(){e.slideDown()},20);b.addClass("on")}}}).bind(this)});var a=this;this.labelsInput=new DeskPRO.UI.LabelsInput({type:"news",fieldName:"newnews[labels]",list:$(".tags-wrap ul",this.wrapper),onChange:function(){a.stateSaver.triggerChange()
 }});this.getEl("slug").focus(function(){this.addClass("had-focus")})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");
-DeskPRO.Agent.PageFragment.Page.Organization=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"organiztion",wrapper:null,contactSection:null,notesSection:null,initPage:function(d){this.wrapper=d;
-var a=this;$("input[placeholder]",this.wrapper).each(function(){Orb.Compat.WebForms.placeholder(this)});var b=$("h3.name.editable:first",d);
-if(!b.attr("id")){b.attr("id",Orb.getUniqueId())}var c=new DeskPRO.Form.InlineEdit({baseElement:d,ajax:{url:BASE_URL+"agent/organizations/"+this.meta.organization_id+"/ajax-save"}});
-$(this.wrapper).click(function(e){c.handleDocumentClick(e)});this.editContactInfoMenu=new DeskPRO.UI.Menu({triggerElement:$(".edit-contact-info:first",this.wrapper),menuElement:$(".contact-info-edit-menu:first",this.wrapper),onItemClicked:function(f){var e=$(f.itemEl).data("edit-type");
-if(e=="email"){a.email_dlg.dialog("open")}else{a.startContactAdd(e)}}});this.initNoteFormEditable();this.initNotePagination();
-this._initLabels();this._initCustomFieldsEditor();this.initRoutesOnCollection($(".with-route"))},destroyPage:function(){},custom_fields_display:null,custom_fields_edit:null,_initCustomFieldsEditor:function(){$(".person-custom-fields-edit:first",this.wrapper).click((function(){this.showCustomFieldEditor()
-}).bind(this));this.custom_fields_display=$(".person-custom-fields:not(.edit)",this.wrapper);this.custom_fields_edit=$(".person-custom-fields.edit",this.wrapper).detach().appendTo($("body"));
-$(".close-trigger",this.custom_fields_edit).click((function(){this.closeCustomFieldEditor()}).bind(this));var a=this;$(".save-trigger",this.custom_fields_edit).click((function(){var b=$(":input",a.custom_fields_edit);
-this._saveCustomFields(b)}).bind(this))},showCustomFieldEditor:function(){var a=this.custom_fields_display.width();if(a<350){a=350
-}this.custom_fields_edit.css({position:"absolute",width:a,"z-index":10000});this.custom_fields_edit.position({my:"right top",at:"right top",of:$(".properties-info-list-wrap",this.wrapper)});
-this.custom_fields_edit.slideDown()},closeCustomFieldEditor:function(){this.custom_fields_edit.slideUp()},_saveCustomFields:function(a){$(".buttons .loading-off",this.custom_fields_edit).hide();
-$(".buttons .loading-on",this.custom_fields_edit).show();var b=a.serializeArray();$.ajax({url:this.getMetaData("saveFieldsUrl"),type:"POST",context:this,data:b,dataType:"json",success:function(c){this._handleSaveCustomFieldsSuccess(c)
-}})},_handleSaveCustomFieldsSuccess:function(a){$(".buttons .loading-on",this.custom_fields_edit).hide();$(".buttons .loading-off",this.custom_fields_edit).show();
-this.closeCustomFieldEditor();$(".wrap",this.custom_fields_display).html(a.custom_fields_html)},labelsList:null,_initLabels:function(){this.labelsList=$(".org-tags ul",this.wrapper).tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
+DeskPRO.Agent.PageFragment.Page.Organization=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"organization",wrapper:null,initPage:function(e){this.wrapper=e;
+this.contentWrapper=$("div.layout-content:first",e);var b=this;var a=this.contentWrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()
+});this.contactEditor=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this,{saveUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/save-contact-data.json"});
+this.initNoteFormEditable();this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));
+var c=$("h3.name.editable:first",e);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save"}});
+$(this.wrapper).click(function(f){d.handleDocumentClick(f)});this.morectionsMenu=new DeskPRO.UI.Menu({triggerElement:$(".more",this.getEl("action_buttons")),menuElement:this.getEl("more_actions_menu"),onItemClicked:function(g){var f=$(g.itemEl).data("action")
+}});this.changePic=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this,{loadUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/change-picture-overlay",saveUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save"});
+this._initLabels();this._initCustomFieldsEditor();this.getEl("members_list").delegate(".remove","click",function(){var g=$(this).closest(".member-row");
+var f=g.data("person-id");if(!f){return}g.fadeOut("fast");$.ajax({url:BASE_URL+"agent/organizations/"+b.meta.org_id+"/ajax-save",data:{action:"remove-person",person_id:f},type:"POST",error:function(){g.show()
+},success:function(){g.remove()}})});this.getEl("newmember_person_input").autocomplete({focus:true,delay:300,minLength:2,source:function(f,g){$.ajax({timeout:8000,type:"POST",url:BASE_URL+"agent/people-search/search-quick",data:{term:f.term,format:"json",limit:20},dataType:"json",context:this,success:function(h){g(h)
+}})},select:(function(f,g){f.preventDefault();b.getEl("newmember_person_input").val(g.item.email);b.getEl("newmember_person_id").val(g.item.value)
+}).bind(this)});this.getEl("newmember_btn").click(function(){var f=b.getEl("newmember_person_id").val();var g=b.getEl("newmember_position").val();
+$.ajax({url:BASE_URL+"agent/organizations/"+b.meta.org_id+"/ajax-save",data:{action:"add-person",person_id:f,position:g},type:"POST",success:function(h){b.getEl("newmember_person_input").val("");
+b.getEl("newmember_position").val("");b.getEl("newmember_person_id").val("0");var i=$(h.row_html);i.insertAfter(b.getEl("newmember_row"));
+DeskPRO_Window.util.showSavePuff(i)}})})},_initCustomFieldsEditor:function(){var c,b;c=this.fieldsRenderedWrap=this.getEl("custom_fields_rendered");
+b=this.fieldsEditWrap=this.getEl("custom_fields_editable");var a=(function(){if(c.is(":visible")){c.hide();b.show()}else{b.hide();
+c.show()}}).bind(this);$(".show-edit-custom-fields",this.wrapper).click(function(){a()});$(".save-custom-fields",this.wrapper).click((function(){var d=$("input, select, textarea",b).serializeArray();
+$.ajax({url:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save-custom-fields",type:"POST",data:d,dataType:"html",success:function(e){c.empty().html(e);
+a()}})}).bind(this))},labelsList:null,_initLabels:function(){this.labelsList=$(".org-tags ul",this.wrapper).tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
 },_saveLabelsTimeout:null,saveLabels:function(){if(this._saveLabelsTimeout){window.clearTimeout(this._saveLabelsTimeout)}this._saveLabelsTimeout=this._doSaveLabels.delay(2000,this)
-},_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){this._handleSaveLabelsSuccess(b)
-}})},_handleSaveLabelsSuccess:function(a){},initNoteFormEditable:function(){this.notesSection=$(".notes-wrap:first",this.wrapper);
-$(".trigger.new-note",this.notesSection).click((function(){this.openNoteEdtiable()}).bind(this));$(".new-note-form .trigger.cancel",this.notesSection).click((function(a){a.preventDefault();
-this.closeNoteEditable()}).bind(this));$(".new-note-form .trigger.save",this.notesSection).click((function(){this.saveNote()
-}).bind(this))},openNoteEdtiable:function(){$(".trigger.new-note",this.notesSection).hide();var a=$(".new-note-form",this.notesSection);
-if(a.is(":hidden")){$(".new-note-form textarea",this.notesSection).val("");a.slideDown()}},closeNoteEditable:function(){$(".new-note-form textarea").val("");
-var a=$(".new-note-form",this.notesSection);if(a.is(":visible")){a.slideUp()}$(".trigger.new-note",this.notesSection).show()
-},saveNote:function(){$(".new-note-form").addClass("saving");var a=$(".new-note-form textarea").val();$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/organizations/"+this.meta.organization_id+"/ajax-save-note",data:{note:a},success:this.handleNoteSave.bind(this)})
-},handleNoteSave:function(b){var a=$(".note-list",this.notesSection);a.prepend(b.note_li_html);$(".new-note-form").removeClass("saving");
-this.closeNoteEditable()},initNotePagination:function(){var a=$("ul.pages",this.notesSection);if(!a.length){return}var b=this;
-$("li",a).click(function(){b.loadNotePage($(this).data("page"))})},loadNotePage:function(a){$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/organizations/"+this.meta.organization_id+"/ajax-get-notes",data:{pp:$(".note-list",this.notesSection).data("limit"),p:a},success:this.handleGetNotes.bind(this)})
-},handleGetNotes:function(b){var a=$(".note-list",this.notesSection);a.html(b.notes_html);$("ul.pages il",this.notesSection).removeClass("active");
-$("ul.pages il.page-"+b.page,this.notesSection).addClass("active")},startContactAdd:function(c){var d=$(".contact-add-tpl.new."+c,this.wrapper).clone();
-this.wrapper.append(d);var a=$(".contact-info-list-wrap:first",this.wrapper);var e=a.position();d.css({position:"absolute",top:10,left:10});
-d.show();d.position({my:"right top",at:"right top",of:a});$(".close",d).click(function(){d.remove()});var b=this;$(".save",d).click(function(){b.saveContact(d)
-})},saveContact:function(b){var a=$(":input, select, textarea",b).serializeArray();b.addClass("saving");$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/organizations/"+this.meta.organization_id+"/ajax-save-contact",data:a,success:(function(c){this.handleSaveSuccess(c,b)
-}).bind(this)})},handleSaveSuccess:function(b,a){$(".contact-info-list-wrap:first",this.wrapper).html(b.contact_html);a.remove()
-}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.Person=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"person",wrapper:null,hasSetupEmailDlg:false,email_display:null,email_dlg:null,contactSection:null,notesSection:null,initPage:function(f){this.wrapper=f;
+},_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){}})
+},initNoteFormEditable:function(){this.notesSection=$(".notes-wrap:first",this.wrapper);$(".new-note-form .trigger.save",this.notesSection).click((function(){this.saveNote()
+}).bind(this))},saveNote:function(){$(".new-note-form",this.notesSection).addClass("saving");var a=$(".new-note-form textarea",this.notesSection).val();
+$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save-note",data:{note:a},success:this.handleNoteSave.bind(this)})
+},handleNoteSave:function(b){$(".new-note-form textarea",this.notesSection).val("");var a=$(".note-list",this.notesSection);
+a.append(b.note_li_html);$(".new-note-form",this.notesSection).removeClass("saving");this.updateCounts()}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");
+DeskPRO.Agent.PageFragment.Page.Person=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"person",wrapper:null,initPage:function(f){this.wrapper=f;
 this.contentWrapper=$("div.layout-content:first",f);this.zIndex=999999;var b=this;var a=this.contentWrapper;a.tinyscrollbar();
 $("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()});
-this.initEditorOverlay();this.initNoteFormEditable();this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));
+this.contactEditor=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this,{saveUrl:BASE_URL+"agent/people/"+this.meta.person_id+"/save-contact-data.json"});
+this.initNoteFormEditable();this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));
 var g=new DeskPRO.UI.Menu({menuElement:this.getEl("timezone")});var d=new DeskPRO.UI.Menu({menuElement:this.getEl("is_autoresponder")});
-this.getEl("timezone").change(function(){var h=$(this).val();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"timezone",timezone:h}})
-});this.getEl("is_autoresponder").change(function(){var h=$(this).val();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"is_autoresponder",is_autoresponder:h}})
+this.getEl("timezone").change(function(){var h=$(this).val();$(".timezone-info",this.wrapper).empty();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"timezone",timezone:h},context:this,success:function(i){$(".timezone-info",this.wrapper).empty().html(i.bit_html)
+}})});this.getEl("is_autoresponder").change(function(){var h=$(this).val();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"is_autoresponder",is_autoresponder:h}})
 });var c=$("h3.name.editable:first",f);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var e=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save"}});
 $(this.wrapper).click(function(h){e.handleDocumentClick(h)});$(".create-ticket",this.getEl("action_buttons")).click(function(){DeskPRO_Window.newTicketLoader.open(function(h){h.setUser(b.meta.person_id)
 })});$(".contact-list-wrapper",this.wrapper).first().delegate(".set-primary","click",function(){var h=$(this).data("email-id");
@@ -726,40 +755,15 @@ var i=$(this).val();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax
 });this.morectionsMenu=new DeskPRO.UI.Menu({triggerElement:$(".more",this.getEl("action_buttons")),menuElement:this.getEl("more_actions_menu"),onItemClicked:function(i){var h=$(i.itemEl).data("action");
 if(h=="reset-password"){DeskPRO_Window.showPrompt('<div>Enter a new password:<br /><br /><label style="font-size: 11px;"><input type="checkbox" class="send_email" value="1" /> Send the user an email with their new password</label></div>',function(l,k){var j=[];
 j.push({name:"password",value:l});j.push({name:"send_email",value:$(".send_email",k).is(":checked")});j.push({name:"action",value:"password"});
-$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:j})})}}});return;this._initLabels();
-this._initCustomFieldsEditor()},destroyPage:function(){if(this.org_dlg){this.org_dlg.remove()}if(this.email_dlg){this.email_dlg.remove()
-}},updateCounts:function(){var a=$(".full-container-tabbed-tabs",this.wrapper);$.ajax({url:this.getMetaData("getUpdatedCountsUrl"),type:"GET",context:this,dataType:"json",success:function(b){Object.each(b,function(d,c){var e=".person-"+c+"-count";
-$(e,a).html("("+d+")")})}})},replaceEditorOverlay:function(a){var b=$(".profile-contact-editor",this.wrapper);b.remove();
-b=null;$(a).appendTo(this.wrapper);this.initEditorOverlay()},initEditorOverlay:function(){var a=this;if(this.contactOverlay){this.contactOverlay.destroy();
-this.contactOverlay=null}if(this.contactNewMenu){this.contactNewMenu.destroy();this.contactNewMenu=null}var b=$(".profile-contact-editor",this.wrapper);
-this.contactOverlay=new DeskPRO.UI.Overlay({triggerElement:$(".contact-edit:first",this.wrapper),contentElement:b});$(".save-trigger",b).click(function(c){var d=$(":input, select, textarea",b).serializeArray();
-$.ajax({url:BASE_URL+"agent/people/"+a.meta.person_id+"/save-contact-data.json",type:"POST",dataType:"json",data:d,success:function(e){a.contactOverlay.close();
-$(".contact-list-wrapper",a.wrapper).empty().html(e.display_html);a.replaceEditorOverlay(e.editor_overlay_html)}})});b.delegate(".remove","click",function(f){var d=$(this);
-var h=d;while(!h.is("li")){h=h.parent()}var e=h.data("remove-name");var g=h.data("remove-value");if(e&&g){var c=$('<input type="hidden" />');
-c.attr("name",e);c.val(g);c.appendTo($(".contact-edit-list",b))}h.fadeOut("fast",function(){h.remove()})});this.contactNewMenu=new DeskPRO.UI.Menu({triggerElement:$(".add-new-type-trigger",this.wrapper),menuElement:$(".add-new-type-menu:first",this.wrapper),initMenuNow:true,onItemClicked:(function(g){var e=this.contactOverlay.elements.wrapper;
-console.log(e);var f=$(g.itemEl);var c=$("."+f.data("tpl"),e).get(0).innerHTML;c=c.replace(/%id%/g,Orb.uuid());var d=$(c);
-d.appendTo($(".contact-edit-list ul",e))}).bind(this)})},custom_fields_display:null,custom_fields_edit:null,_initCustomFieldsEditor:function(){$(".person-custom-fields-edit:first",this.wrapper).click((function(){this.showCustomFieldEditor()
-}).bind(this));this.custom_fields_display=$(".person-custom-fields:not(.edit)",this.wrapper);this.custom_fields_edit=$(".person-custom-fields.edit",this.wrapper).detach().appendTo($("body"));
-$(".close-trigger",this.custom_fields_edit).click((function(){this.closeCustomFieldEditor()}).bind(this));var a=this;$(".save-trigger",this.custom_fields_edit).click((function(){var b=$(":input",a.custom_fields_edit);
-this._saveCustomFields(b)}).bind(this))},showCustomFieldEditor:function(){var a=this.custom_fields_display.width();if(a<350){a=350
-}this.custom_fields_edit.css({position:"absolute",width:a,"z-index":this.zIndex});this.custom_fields_edit.position({my:"right top",at:"right top",of:$(".properties-info-list-wrap",this.wrapper)});
-this.custom_fields_edit.slideDown()},closeCustomFieldEditor:function(){this.custom_fields_edit.slideUp()},_saveCustomFields:function(a){$(".buttons .loading-off",this.custom_fields_edit).hide();
-$(".buttons .loading-on",this.custom_fields_edit).show();var b=a.serializeArray();$.ajax({url:this.getMetaData("saveFieldsUrl"),type:"POST",context:this,data:b,dataType:"json",success:function(c){this._handleSaveCustomFieldsSuccess(c)
-}})},_handleSaveCustomFieldsSuccess:function(c){$(".buttons .loading-on",this.custom_fields_edit).hide();$(".buttons .loading-off",this.custom_fields_edit).show();
-this.closeCustomFieldEditor();$(".wrap",this.custom_fields_display).html(c.custom_fields_html);var b=$("ul.usergroups-list",this.wrapper).html("<li>"+c.usergroup_names.join("</li><li>")+"</li>");
-var a=$(".usergroups-list-wrap",this.wrapper);if($("li",b).length){a.show()}else{a.hide()}},labelsList:null,_initLabels:function(){this.labelsList=$(".people-tags ul",this.wrapper).tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
+$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:j})})}}});this.changePic=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this,{loadUrl:BASE_URL+"agent/people/"+this.meta.person_id+"/change-picture-overlay",saveUrl:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save"});
+this._initLabels();this._initCustomFieldsEditor()},_initCustomFieldsEditor:function(){var c,b;c=this.fieldsRenderedWrap=this.getEl("custom_fields_rendered");
+b=this.fieldsEditWrap=this.getEl("custom_fields_editable");var a=(function(){if(c.is(":visible")){c.hide();b.show()}else{b.hide();
+c.show()}}).bind(this);$(".show-edit-custom-fields",this.wrapper).click(function(){a()});$(".save-custom-fields",this.wrapper).click((function(){var d=$("input, select, textarea",b).serializeArray();
+$.ajax({url:BASE_URL+"agent/person/"+this.meta.person_id+"/ajax-save-custom-fields",type:"POST",data:d,dataType:"html",success:function(e){c.empty().html(e);
+a()}})}).bind(this))},labelsList:null,_initLabels:function(){this.labelsList=$(".people-tags ul",this.wrapper).tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
 },_saveLabelsTimeout:null,saveLabels:function(){if(this._saveLabelsTimeout){window.clearTimeout(this._saveLabelsTimeout)}this._saveLabelsTimeout=this._doSaveLabels.delay(2000,this)
-},_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){this._handleSaveLabelsSuccess(b)
-}})},_handleSaveLabelsSuccess:function(a){},initOrgEditable:function(){this.org_dlg=$(".org-edit-dlg",this.wrapper).detach().appendTo($("body"));
-$(".close-trigger",this.org_dlg).click((function(){this.closeOrgEditor()}).bind(this));var a=this;$(".save-trigger",this.org_dlg).click((function(){var b=$(":input",a.org_dlg);
-this.saveOrg()}).bind(this));$(".organization.hover-edit:first",this.wrapper).dblclick((function(){this.showOrgEditor()}).bind(this))
-},showOrgEditor:function(){var a=this.org_dlg.width();if(a<350){a=350}this.org_dlg.css({position:"absolute",width:a,"z-index":this.zIndex});
-this.org_dlg.position({my:"left top",at:"left top",of:$(".organization.hover-edit:first",this.wrapper)});this.org_dlg.slideDown()
-},closeOrgEditor:function(){this.org_dlg.slideUp()},saveOrg:function(){var c=$('select[name="organization_id"]',this.org_dlg);
-var a=$("option:selected",c);var b={organization_id:a.val(),organization_position:$('input[name="organization_position"]',this.org_dlg).val()};
-$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save-organization",data:b,success:this.handleOrgSave.bind(this)})
-},handleOrgSave:function(a){$(".organization.hover-edit:first .name").html(a.organization_name);$(".organization.hover-edit:first .position").html(a.organization_position);
-this.closeOrgEditor()},initNoteFormEditable:function(){this.notesSection=$(".notes-wrap:first",this.wrapper);$(".new-note-form .trigger.save",this.notesSection).click((function(){this.saveNote()
+},_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){}})
+},initNoteFormEditable:function(){this.notesSection=$(".notes-wrap:first",this.wrapper);$(".new-note-form .trigger.save",this.notesSection).click((function(){this.saveNote()
 }).bind(this))},saveNote:function(){$(".new-note-form",this.notesSection).addClass("saving");var a=$(".new-note-form textarea",this.notesSection).val();
 $.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save-note",data:{note:a},success:this.handleNoteSave.bind(this)})
 },handleNoteSave:function(b){$(".new-note-form textarea",this.notesSection).val("");var a=$(".note-list",this.notesSection);

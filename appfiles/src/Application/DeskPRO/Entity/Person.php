@@ -451,6 +451,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->assigned_tasks         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_comments          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);

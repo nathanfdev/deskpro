@@ -1,0 +1,134 @@
+Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
+
+DeskPRO.Agent.PageFragment.Page.NewPerson = new Class({
+
+	Extends: DeskPRO.Agent.PageFragment.Basic,
+
+	allowDupe: true,
+	TYPENAME: 'newperson',
+
+	initPage: function(el) {
+		this.wrapper = el;
+		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
+		this.parent(el);
+
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		var self = this;
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			cw.tinyscrollbar_update();
+			self.fireEvent('resized');
+		});
+
+		this.form = $('form', this.wrapper).submit(function(ev) {
+			ev.preventDefault();
+		});
+
+		$('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
+
+		this._initNameSection();
+		this._initOtherSection();
+
+		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'newperson',
+			listenOn: this.getEl('newperson')
+		});
+
+		// Init the org selection
+		var orgSel = $('#organizations_select').clone().appendTo(this.getEl('org_container'));
+		orgSel.data('placeholder', 'Select an existing organization');
+		orgSel.attr('name', 'newperson[organization_id]');
+		orgSel.css('width', 200);
+		orgSel.prepend('<option selected />');
+		orgSel.chosen();
+
+		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
+		ugSel.data('placeholder', 'Choose usergroups');
+		ugSel.attr('name', 'newperson[usergroup_ids][]');
+		ugSel.attr('multiple', 'multiple');
+		ugSel.css('width', '400');
+		ugSel.prepend('<option selected />');
+		ugSel.chosen();
+
+		var tzSel = this.getEl('timezone');
+		tzSel.chosen();
+	},
+
+	closeSelf: function() {
+		var ev = {cancel: false};
+		this.fireEvent('closeSelf', ev);
+
+		if (!ev.cancel) {
+			this.parent();
+		}
+	},
+
+	submit: function() {
+		var formData = this.form.serializeArray();
+
+		$.ajax({
+			url: BASE_URL + 'agent/people/new/save',
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				if (data.success) {
+					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+					this.closeSelf();
+				} else {
+					alert('There was an error with the form');
+				}
+			}
+		});
+	},
+
+	//#################################################################
+	//# Name/email section
+	//#################################################################
+
+	_initNameSection: function() {
+
+	},
+
+	//#########################################################################
+	//# Other Section
+	//#########################################################################
+
+	_initOtherSection: function() {
+
+		this.otherTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li', this.getEl('other_props_tabs')),
+			context: this.getEl('other_props_tabs_content'),
+			autoSelectFirst: false,
+			onTabClick: (function(ev) {
+				var contentWrap = this.getEl('other_props_tabs_content');
+				var navWrap = this.getEl('other_props_tabs_wrap');
+				var tab = ev.tabEl;
+
+				// Toggle content state if we're clicking for the first time,
+				// or re-clicking a tab
+				if (!$('.on', navWrap).length || tab.is('.on')) {
+					if (contentWrap.is(':visible')) {
+						contentWrap.slideUp();
+						navWrap.removeClass('on');
+					} else {
+						window.setTimeout(function() { contentWrap.slideDown() }, 20);
+						navWrap.addClass('on');
+					}
+				}
+			}).bind(this)
+		});
+
+		// Labels
+		var self = this;
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'people',
+			fieldName: 'newperson[labels]',
+			list: $(".tags-wrap ul", this.wrapper),
+			onChange: function() {
+				self.stateSaver.triggerChange();
+			}
+		});
+	}
+});

@@ -113,7 +113,6 @@ class PersonController extends AbstractController
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
 			'person_tickets_count' => $person_tickets_count,
-			'custom_fields' => $custom_fields,
 		));
 	}
 
@@ -609,8 +608,25 @@ class PersonController extends AbstractController
 	{
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		// Custom fields
+		$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $user_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newperson[custom_fields]');
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
+
+		$timezone_options = \DateTimeZone::listIdentifiers();
+
 		return $this->render('AgentBundle:Person:newperson.html.twig', array(
-			'state' => $state
+			'state' => $state,
+			'custom_fields' => $custom_fields,
+			'timezone_options' => $timezone_options,
 		));
 	}
 
@@ -625,9 +641,10 @@ class PersonController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			$newperson->setCustomFieldForm($_POST);
 			$newperson->save();
 
-			$person = $newperson->getArticle();
+			$person = $newperson->getPerson();
 
 			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 

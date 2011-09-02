@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="{{ asset('vendor/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('vendor/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('vendor/jquery/jcrop/css/jquery.Jcrop.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/chosen/chosen.css') }}" type="text/css" media="screen" />
 
 <link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
@@ -41,6 +42,8 @@ $('#loading_css_header').remove();
 {{ html_js_pack('agent.window-sections') }}
 {{ html_js_pack('agent.pages') }}
 {{ html_js_pack('agent.pages-lists') }}
+
+<script type="text/javascript" src="{{ asset('vendor/jquery/chosen/chosen.jquery.min.js') }}"></script>
 
 {% if not no_interface_date %}
 <script src="{{ path('agent_interface_data_js') }}"></script>
