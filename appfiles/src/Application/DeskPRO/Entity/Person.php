@@ -2055,6 +2055,32 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
+	public function getDateTimezone()
+	{
+		return new \DateTimeZone($this->timezone);
+	}
+
+	public function getDateTime()
+	{
+		return new \DateTime("now", $this->getDateTimezone());
+	}
+
+	public function getTimezoneOffset($as_string = false)
+	{
+		$user_offset = $this->getDateTimezone()->getOffset(new \DateTime("now"));
+		$user_offset /= 3600; //hours
+
+		if ($as_string) {
+			if ($user_offset >= 0) {
+				$user_offset = "+$user_offset";
+			} else {
+				$user_offset = "-$user_offset";
+			}
+		}
+
+		return $user_offset;
+	}
+
     /**
      * Set date_last_login
      *

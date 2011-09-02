@@ -204,6 +204,9 @@ class PersonController extends AbstractController
 					$person->timezone = $this->in->getString('timezone');
 					$this->em->persist($person);
 				}
+
+				$data['bit_html'] = $this->renderView('AgentBundle:Person:view-bit-timezoneinfo.html.twig', array('person' => $person));
+
 				break;
 
 			case 'is_autoresponder':

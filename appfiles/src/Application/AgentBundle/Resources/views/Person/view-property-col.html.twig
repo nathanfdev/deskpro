@@ -72,6 +72,9 @@
 							<option value="{{tz}}" {% if person.timezone == tz %}selected="selected"{% endif %}>{{ tz }}</option>
 						{% endfor %}
 					</select>
+					<div class="timezone-info">
+						{% include 'AgentBundle:Person:view-bit-timezoneinfo.html.twig' %}
+					</div>
 				</td>
 			</tr>
 			<tr>

@@ -45,6 +45,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		this.getEl('timezone').change(function(){
 			var val = $(this).val();
+			$('.timezone-info', this.wrapper).empty();
 			$.ajax({
 				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 				type: 'POST',
@@ -52,6 +53,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 				data: {
 					action: 'timezone',
 					timezone: val
+				},
+				context: this,
+				success: function(data) {
+					$('.timezone-info', this.wrapper).empty().html(data.bit_html);
 				}
 			});
 		});
