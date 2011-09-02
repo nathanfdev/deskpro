@@ -25,7 +25,7 @@
 
 <div class="inner-box-tab-content box-list no-pad org-members-table">
 	<table class="list" cellspacing="0" width="100%">
-		<thead class="display-options-trigger dbl-click-trigger nosel">
+		<thead>
 			<tr>
 				<th>Member</th>
 				<th width="30%">Position</th>
@@ -33,15 +33,17 @@
 			</tr>
 		</thead>
 		<tbody id="{{baseId}}_members_list">
-			<tr class="add-new-member line-2">
+			<tr class="add-new-member line-2" id="{{baseId}}_newmember_row">
 				<td>
-					<input type="input" style="width: 90%" class="name" />
+					<input type="input" style="width: 88%" class="name" id="{{baseId}}_newmember_person_input" />
+					<span class="create-new-user tipped" title="Create a new user">new user</span>
+					<input type="hidden" style="width: 90%" class="person_id" id="{{baseId}}_newmember_person_id" />
 				</td>
 				<td>
-					<input type="input" style="width: 90%" class="position" />
+					<input type="input" style="width: 90%" class="position" id="{{baseId}}_newmember_position" />
 				</td>
 				<td>
-					<button class="clean-gray xxx-small">Add</button>
+					<button class="clean-gray xxx-small" id="{{baseId}}_newmember_btn">Add</button>
 				</td>
 			</tr>
 			{% for person in org_members %}

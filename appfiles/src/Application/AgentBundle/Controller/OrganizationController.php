@@ -176,6 +176,7 @@ class OrganizationController extends AbstractController
 				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person) {
 					$person->organization = $org;
+					$person->organization_position = $this->in->getString('position');
 					$this->em->persist($person);
 					$data['add_person_id'] = $person['id'];
 					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));

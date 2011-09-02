@@ -84,6 +84,51 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 				}
 			});
 		});
+
+		this.getEl('newmember_person_input').autocomplete({
+			focus: true,
+			delay: 300,
+			minLength: 2,
+			source: function(req, callback) {
+				$.ajax({
+					timeout: 8000,
+					type: 'POST',
+					url: BASE_URL + 'agent/people-search/search-quick',
+					data: {term: req.term, format: 'json', limit: 20},
+					dataType: 'json',
+					context: this,
+					success: function(data) {
+						callback(data);
+					}
+				});
+			},
+			select: (function(ev, ui) {
+				ev.preventDefault();
+				self.getEl('newmember_person_input').val(ui.item.email);
+				self.getEl('newmember_person_id').val(ui.item.value);
+			}).bind(this)
+		});
+
+		this.getEl('newmember_btn').click(function() {
+			var personId = self.getEl('newmember_person_id').val();
+			var pos = self.getEl('newmember_position').val();
+
+			$.ajax({
+				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				data: { action: 'add-person', person_id: personId, position: pos },
+				type: 'POST',
+				success: function(data) {
+					self.getEl('newmember_person_input').val('');
+					self.getEl('newmember_position').val('');
+					self.getEl('newmember_person_id').val('0');
+
+					var row = $(data.row_html);
+					row.insertAfter(self.getEl('newmember_row'));
+
+					DeskPRO_Window.util.showSavePuff(row);
+				}
+			});
+		});
 	},
 
 	//#########################################################################

@@ -6830,3 +6830,20 @@ table.props-table td time.timeago {
 .org-members-table span.remove:hover {
 	opacity: 1;
 }
+
+.org-members-table span.create-new-user {
+	float: right;
+	display: block;
+	width: 11px;
+	height: 11px;
+	background: url(../../images/action-add.png) no-repeat 50% 50%;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+
+	opacity: 1;
+	margin-top: 4px;
+}
+.org-members-table span.create-new-user:hover {
+	opacity: 0.8;
+}
