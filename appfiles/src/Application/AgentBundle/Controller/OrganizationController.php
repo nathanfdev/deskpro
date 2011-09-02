@@ -67,11 +67,22 @@ class OrganizationController extends AbstractController
 		// Count members
 		$members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($org);
 
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
 		$org_usergroups = $org->usergroups;
+
+		$contact_data = array();
+		foreach ($org->contact_data as $cd) {
+			if (!isset($contact_data[$cd->contact_type])) {
+				$contact_data[$cd->contact_type] = array();
+			}
+			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+		}
 
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
+			'contact_data'       => $contact_data,
 			'org_usergroups'     => $org_usergroups,
+			'usergroup_names'    => $usergroup_names,
 			'notes'              => $notes,
 			'activity_stream'    => $activity_stream,
 			'org_tickets'        => $org_tickets,
@@ -226,46 +237,72 @@ class OrganizationController extends AbstractController
 		));
 	}
 
-
-	############################################################################
-	# ajax-save-contact
-	############################################################################
-
-	public function ajaxSaveContactAction($organization_id)
+	public function saveContactDataAction($organization_id)
 	{
 		$org = $this->getOrgOr404($organization_id);
 
-		$type = $this->in->getString('contact_type');
-		$handler = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+		$this->em->beginTransaction();
 
-		$handler = new $handler();
+		// Adding contact data
+		foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
+			foreach ($inputs as $input) {
+				try {
+					$contact_data = new OrganizationContactData();
+					$contact_data->contact_type = $type;
+					$contact_data->applyFormData($input);
 
-		$contact_data = new OrganizationContactData();
-		$contact_data['handler_class'] = get_class($handler);
+					$contact_data->organization = $org;
 
-		$post_data = isset($_POST[$handler->getSimpleName()]) ? $_POST[$handler->getSimpleName()] : array();
-
-		foreach ($post_data as $k => $v) {
-			$field_k = $k;
-			if ($k != 'comment') {
-				$field_k = $handler->mapNameToField($k);
+					$this->em->persist($contact_data);
+					$org->contact_data->add($contact_data);
+				} catch (\Exception $e) {
+					throw $e;
+				}
 			}
-			if (!$field_k) continue;
-
-			$contact_data[$field_k] = $v;
 		}
 
-		$em = App::getOrm();
-		$em->beginTransaction();
-		$org->addContactData($contact_data);
-		$em->persist($contact_data);
-		$em->flush();
-		$em->commit();
+		// Editing values
+		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+			if (!isset($org->contact_data[$id])) {
+				continue;
+			}
+
+			$org->contact_data[$id]->applyFormData($input);
+			$this->em->persist($org->contact_data[$id]);
+		}
+
+		// Removing values
+		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
+			if (isset($org->contact_data[$id])) {
+				$this->em->remove($org->contact_data[$id]);
+				$org->contact_data->remove($id);
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		$contact_data = array();
+		foreach ($org->contact_data as $cd) {
+			if (!isset($contact_data[$cd->contact_type])) {
+				$contact_data[$cd->contact_type] = array();
+			}
+			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+		}
+
+		$display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', array(
+			'org' => $org,
+			'contact_data' => $contact_data,
+		));
+		$editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', array(
+			'org' => $org,
+			'contact_data' => $contact_data,
+		));
 
 		return $this->createJsonResponse(array(
-			'success' => true,
-			'organization_id' => $org['id'],
-			'contact_html' => $this->renderView('AgentBundle:Organization:contact-section.html.twig', array('organization' => $org))
+			'success' => 1,
+			'display_html' => $display_html,
+			'editor_overlay_html' => $editor_overlay_html
 		));
 	}
 

@@ -84,6 +84,8 @@ class Usergroup extends EntityRepository
 
 	public function getByIds(array $ids)
 	{
+		if (!$ids) return array();
+
 		return $this->getEntityManager()->createQuery("
 			SELECT u
 			FROM DeskPRO:Usergroup u INDEX BY u.id

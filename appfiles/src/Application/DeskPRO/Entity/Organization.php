@@ -108,7 +108,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true, indexBy="id")
 	 */
 	protected $contact_data;
 

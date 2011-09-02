@@ -19,7 +19,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 		});
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/organization/' + this.meta.org_id + '/save-contact-data.json'
+			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/save-contact-data.json'
 		});
 
 		this.initNoteFormEditable();
@@ -36,7 +36,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/organization/' + this.meta.person_id + '/ajax-save'
+				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 			}
 		});
 
@@ -93,7 +93,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
 
 			$.ajax({
-				url: BASE_URL + 'agent/person/' + this.meta.person_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -112,7 +112,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".people-tags ul", this.wrapper).tagit({
+		this.labelsList = $(".org-tags ul", this.wrapper).tagit({
 			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
 			fieldName: 'labels',
@@ -164,7 +164,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-note',
+			url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save-note',
 			data: {note: note},
 			success: this.handleNoteSave.bind(this)
 		});
