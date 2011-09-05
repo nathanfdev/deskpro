@@ -44,6 +44,17 @@
 	padding-left: 5px !important;
 }
 
+.pendingTicket .titles .checkbox {
+	width: 11px;
+	height: 11px;
+	position: relative;
+	top: 1px;
+}
+.pendingTicket .titles .selectionCtrl {
+	width: 10px;
+	height: 10px;
+}
+
 .pendingTicket .titles h2, .ticketHoldCheck span.holdTicketCount, .filters .titles h2 {
 	font-size: 11px;
 	font-weight: bold;
@@ -86,7 +97,7 @@
 }
 
 .filters {
-	margin-top: 8px;
+	margin-top: 12px;
 	border-top: 1px solid #C5CFD8;
 }
 .filters .ticketHoldCheck .item{
@@ -215,7 +226,7 @@
 
 #DP-SourceList ul.navList li.subList span.listCounter{
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(40,40,40,0.1);
-	background: #adbdcc !important;
+	background: #ADBDCC !important;
 	float: left;
 	behavior: url(js/lib/PIE.htc);
 	position: relative;
@@ -223,14 +234,14 @@
 	z-index: 1;
 }
 #DP-SourceList ul.navList li.subList a:hover span.listCounter{
-	background: #4D7399 !important;
+	background: #ADBDCC !important;
 }
 
 #DP-SourceList ul.navList ul.subGroup li span.listCounter{
-	background: #7c91a6;
+	background: #ADBDCC;
 }
 #DP-SourceList ul.navList ul.subGroup li a:hover span.listCounter{
-	background: #4D7399;
+	background: #ADBDCC;
 }
 #DP-SourceList ul.navList ul.subGroup li span.borderLink{
 	border-left: 1px solid #c2c7cc;
