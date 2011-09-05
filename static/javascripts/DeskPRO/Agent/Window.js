@@ -1579,8 +1579,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('hide');
 		}
 
-		$('#DP-Navigation li.on').removeClass('on');
-		btn.addClass('on');
+		$('#DP-Navigation li.dpNavActive').removeClass('dpNavActive');
+		btn.addClass('dpNavActive');
 
 		$('#DP-SourceList > section.on').removeClass('on');
 		$('#DP-TicketList > section.on').removeClass('on');

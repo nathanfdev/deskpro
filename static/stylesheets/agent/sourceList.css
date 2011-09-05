@@ -11,6 +11,15 @@
 	overflow-y: auto;
 	overfloe-x: hidden;
 }
+
+#DP-SourceList > section {
+	display: none;
+}
+
+#DP-SourceList > section.on {
+	display: block;
+}
+
 .pendingTicket{
 
 }
