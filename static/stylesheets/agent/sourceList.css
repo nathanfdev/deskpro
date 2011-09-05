@@ -322,6 +322,9 @@ ul.navList li.active span.open{
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
 	position: relative;
 }
+#DP-SourceList ul.navList li:last-of-type a.groupHead {
+	border-bottom: 1px solid #ced4d9;
+}
 .ie #DP-SourceList ul.navList li.active a.on, .ie #DP-SourceList ul.navList li a.groupHead,
 .ie #DP-SourceList ul.navList ul.subGroup li:hover a, .ie #DP-SourceList .teamfilter ul.navList li a:hover {
 	background: #dde3e7;
