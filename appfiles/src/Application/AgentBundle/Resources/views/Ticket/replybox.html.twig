@@ -9,8 +9,8 @@
 
 	<div class="replyType">
 		<ul>
-			<li id="{{baseId}}_replybox_replytab_btn" class="on">Reply</li>
-			<li id="{{baseId}}_replybox_notetab_btn">Note</li>
+			<li id="{{baseId}}_replybox_replytab_btn" class="replyActive"><a>Reply</a></li>
+			<li id="{{baseId}}_replybox_notetab_btn"><a>Note</a></li>
 		</ul>
 	</div>
 
@@ -19,9 +19,10 @@
 			<div class="assignBtn ticket-snippets-trigger"><a>Text snippets</a></div>
 			<div class="assignBtn similar-tickets"><a>Suggested Knowledge Base articles</a></div>
 			<div class="assignBtn suggested-articles"><a>Similar Tickets</a></div>
+			<br class="clear" />
 		</div>
 		<div class="textBoxWrap">
-			<textarea id="commentBox" rows="3" cols="30"></textarea>
+			<textarea class="commentBox" rows="3" cols="30"></textarea>
 		</div>
 		<div class="replyAction">
 			<div class="attachments">

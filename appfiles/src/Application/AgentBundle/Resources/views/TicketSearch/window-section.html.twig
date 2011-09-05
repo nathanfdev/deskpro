@@ -4,14 +4,11 @@
 	<div class="titles">
 		<div class="ticketHoldCheck">
 			<div class="item">
-				<input class="selectionCtrl" type="checkbox"/>
-				<span class="holdTicketCount">45 On hold</span>
-			</div>
-			<div class="item">
 				<span class="edit">edit display</span>
 			</div>
 		</div>
-		<h2>Awaiting Agent</h2>
+		<h2>Awaiting Agent &amp; <input class="selectionCtrl" type="checkbox"/>
+				<span class="holdTicketCount">On hold</span></h2>
 		<br class="clear" />
 	</div>
 	<!-- DeskPro Inbox Ticket -->
@@ -49,7 +46,11 @@
 {% if custom_filters %}
 	<div class="filters">
 		<div class="titles">
-			<span class="filterSetup">Manage Filters</span>
+			<div class="ticketHoldCheck">
+				<div class="item">
+					<span class="edit">edit display</span>
+				</div>
+			</div>
 			<h2>Filters</h2>
 		</div>
 		<div class="teamfilter">
