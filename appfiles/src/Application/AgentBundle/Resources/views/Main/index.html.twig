@@ -45,12 +45,12 @@
 	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
-<div id="page_loading">
-	Loading interface for {{ app.user.display_name }} ...
-</div>
+<div id="DP-Container">
 
-{% include 'AgentBundle:Main:header.html.twig' %}
-{% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
+{% include 'AgentBundle:Main:window-nav.html.twig' %}
+{% include 'AgentBundle:Main:window-header.html.twig' %}
+{% include 'AgentBundle:Main:window-col-layout.html.twig' %}
+{% include 'AgentBundle:Main:window-chat.html.twig' %}
 
 {####################
  # RESOURCE LOADING
@@ -58,6 +58,9 @@
 
 {% include 'AgentBundle:Main:resources.html.twig' %}
 {% include 'AgentBundle:Main:page-init.html.twig' %}
+{% include 'AgentBundle:Main:global-templates.html.twig' %}
+
+</div>{# /DP-Container #}
 
 </body>
 </html>

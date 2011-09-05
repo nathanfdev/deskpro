@@ -1,0 +1,215 @@
+<!-- BEGIN HEADER BAR -->
+<div id="DP-Header">
+	<!-- BEGIN NOTIFICATION SECTION -->
+	<div id="DP-NotificationSection">
+		<div id="notificationWrap" class="left ">
+			<div class="notifications">
+				<div class="notifMenuWrap">
+					<div class="wrapNotif" onclick="toggle_visibility('notificationDropdown');">
+						<a class="iconImg mail">Tickets<span id="ticketsCounter" class="counter">50</span></a>
+						<a class="iconImg chat">Chat<span id="chatCounter" class="counter">2</span></a>
+					</div>
+				</div>
+			</div>
+			<!-- Header - Notification Dropdown on click -->
+			<div id="notificationDropdown" style="display:none;">
+			<div class="notifDropdown" onclick="toggle_visibility('notificationDropdown');">
+				<div class="notifHead">
+					<div class="notifMail"><span class="counter">10</span></div>
+					<div class="notifChat"><span class="counter">2</span></div>
+				</div>
+				<ul id="notification">
+					<li>
+						<a>New chat 2</a>
+						<span class="timeStamp">5 minutes<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>New chat</a>
+						<span class="timeStamp">1 hours ago<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>Email to user ticket participants</a>
+						<span class="timeStamp">4 hours ago<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>Company CC emails log</a>
+						<span class="timeStamp">9 hours ago<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>Invoices</a>
+						<span class="timeStamp">15 hours ago<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>New user from gateway</a>
+						<span class="timeStamp">18 hours ago<span class="dismissHover">Dismiss</span></span>
+					</li>
+					<li>
+						<a>Survey module</a>
+						<span class="timeStamp">yesterday<span class="dismissHover">Dismiss</span></span>
+
+					</li>
+					<li class="notifPaging">
+						<span>Page :</span>
+						<ul id="notifPages">
+							<li class="pages active"><a>1</a></li>
+							<li class="pages"><a>2</a></li>
+							<li class="pages"><a>3</a></li>
+							<li class="mark">...</li>
+							<li class="pages"><a>7</a></li>
+							<li class="pages"><a>8</a></li>
+							<li class="pages"><a>9</a></li>
+							<li class="pText right"><a>next</a></li>
+							<li class="mark right">|</li>
+							<li class="pText right"><a>last</a></li>
+							<li class="mark right">|</li>
+							<li class="pText right"><a>first</a></li>
+							<li class="mark right">|</li>
+							<li class="pText right off"><a>prev</a></li>
+						</ul>
+					</li>
+					<li class="dismissAll">
+						<a>Dismiss all notifications</a>
+					</li>
+				</ul>
+			</div>
+			</div>
+		</div>
+	<!-- END NOTIFICATION SECTION -->
+	</div>
+	<!-- BEGIN SEARCH SECTION -->
+	<div id="DP-SearchSection">
+		<div id="DP-SearchBox">
+			<div class="searchBoxWrap">
+				<div class="searchType"><a onclick="toggle_visibility('searchDropdown');">all</a></div>
+				<div class="searchBy" onclick="toggle_visibility('searchDropdown');">
+					<span class="picker">Department</span>
+					<a>Departement 3<span class="close">x</span></a>
+				</div>
+				<input id="dpsearchbox" type="text" value="" name="search" autocomplete="off" onclick="toggle_visibility('searchDropdown');"/>
+				<!-- Header - Search Categories Dropdown on click-->
+				<div id="searchDropdown" style="display:none;">
+					<div class="searchCatDropdown" >
+						<ul>
+							<li><a href="#"><span class="createTicket">Tickets</span></a></li>
+							<li><a href="#">Buggy inline editor</a></li>
+							<li><a href="#">Report not displayed after switching account on...</a></li>
+							<li><a href="#">Report template doesn’t recognized</a></li>
+							<li><a href="#"><span class="people">People</span></a></li>
+							<li><a href="#">Farrokh Bulsara</a></li>
+							<li><a href="#">Rolf Magnus Joakim Larsson</a></li>
+							<li><a href="#">Sammy Hagar</a></li>
+							<li><a href="#"><span class="createIdeas">Ideas</span></a></li>
+							<li><a href="#">Auto reload contact list after adding new report</a></li>
+							<li><a href="#">Wider detail invoice view</a></li>
+							<li class="last"><a href="#">View all results</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	<!-- END SEARCH SECTION -->
+	</div>
+	<!-- BEGIN CREATE SECTION -->
+	<div id="DP-CreateSection">
+		<div class="DP-createTicket">
+			<div id="createContentTrigger" class="newContent">
+				<a onclick="toggle_visibility('createTicketToggle');"><span class="plusIcon">Create</span></a>
+			</div>
+		</div>
+		<!-- Header - Create Ticket Dropdown on click -->
+		<div id="createTicketToggle" style="display:none;">
+			<div class="createHeader">
+				<a>Create</a>
+			</div>
+			<div class="createDropdown"  onclick="toggle_visibility('createTicketToggle');">
+				<ul class="createBtnPopups" onclick="toggle_visibility('DP-overlayCreateTicket');"><span class="createTicket">
+					<li><a><span class="createTicket">Ticket</span></a></li>
+					<li><a><span class="createArticle">Article</span></a></li>
+					<li><a><span class="createNews">News Entry</span></a></li>
+					<li><a><span class="createDownload">Download</span></a></li>
+					<li><a><span class="createIdeas">Ideas</span></a></li>
+				</ul>
+			</div>
+		</div>
+	<!-- END CREATE SECTION -->
+	</div>
+	<!-- BEGIN USER SECTION -->
+	<div id="DP-UserSection">
+		<div id="DP-userControl">
+			<div class="currentUserAvatar">
+				<div class="userWrapper">
+					<a onclick="toggle_visibility('userSetting');"><img src="img/menAvtr-med.png" alt="" /></a>
+				</div>
+				<span class="dropdownIcon" onclick="toggle_visibility('userSetting');"></span>
+			</div>
+		</div>
+		<!-- Header - User Control Dropdown -->
+		<div id="userSetting" style="display:none;">
+			<div class="userProfileDropdown" >
+				<div class="userProfileDropdownHeader">
+					<a onclick="toggle_visibility('userSetting');"><img src="img/menAvtr-med.png" alt="" /></a>
+				</div>
+				<ul>
+					<li class="logggedAs"><p>Logged in as</p></li>
+					<li class="currentUsername"><p>Johnny Doe</p></li>
+					<li class="myAccount"><a href="#">My Account</a></li>
+					<li class="setting"><a href="#">Settings</a></li>
+					<li class="help"><a href="#">Help</a></li>
+					<li class="logout"><a href="#">Log out</a></li>
+				</ul>
+			</div>
+		</div>
+	<!-- END USER SECTION -->
+	</div>
+	<!-- BEGIN STATUS SECTION -->
+	<div id="DP-StatusSection">
+		<div class="DP-adminStatus">
+			<ul>
+				<li class="agentStatus">
+					<a class="tipped on" href="#" title="">Away
+						<!-- Agent Status Tooltips -->
+						<div class="dropdowninfo"><span>Toggle your availability status</span></div>
+					</a>
+				</li>
+				<li class="networkStatIndicator">
+					<a class="tipped " href="#" title="">Network
+						<!-- Agent Status Tooltips -->
+						<div class="dropdowninfo"><span>Network Status<br/>White : Connected<br/>Red : Disconnected</div>
+					</a>
+				</li>
+				<li class="soundIcon">
+					<a class="tipped " href="#" title="Sound Control" onclick="toggle_visibility('volumeControl');">Sound</a>
+					<!-- Agent Volume control -->
+					<div id="volumeControl" class="dropdowninfo" style="display:none">
+						<div class="slider"><a class="btnSlider" onclick="toggle_visibility('volumeControl');"></a></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	<!-- END STATUS SECTION -->
+	</div>
+	<!-- BEGIN INTERFACE SECTION -->
+	<div id="DP-InterfaceSwitcher">
+		<div class="DP-adminSwitch">
+			<div class="adminSwitcher">
+				<a onclick="toggle_visibility('interfacesToggle');">Agent Interface<span class="dropdownIcon"></span></a>
+			</div>
+		</div>
+		<!-- Header - Switch Button Interfaces- Dropdown -->
+		<div id="interfacesToggle" style="display:none;">
+		<div class="dropdownSwitcherWrap"  onclick="toggle_visibility('interfacesToggle');">
+			<div class="switcherHeader">
+				<a><span>Agent Interface</span></a>
+			</div>
+			<ul>
+				<li><a class="admin" href=""><span class="check">Admin Interface</span></a></li>
+				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
+				<li><a class="report" href=""><span class="check">Report Interface</span></a></li>
+				<li><a class="portal" href=""><span class="check">User Interface</span></a></li>
+			</ul>
+		</div>
+		</div>
+	<!-- END INTERFACE SECTION -->
+	</div>
+<!-- END HEADER BAR -->
+</div>

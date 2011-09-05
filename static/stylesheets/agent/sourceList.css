@@ -1,0 +1,826 @@
+#DP-SourceList {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	background-color: #dfe5eb;
+	width: 215px;
+	border-right: 1px;
+	border-right-style: solid;
+	border-right-color: #b6babf;
+	overflow-y: auto;
+	overfloe-x: hidden;
+}
+.pendingTicket{
+
+}
+.pendingTicket .titles{
+	background-image: -moz-linear-gradient(top, #d9dfe6, #b9c5d0);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#b9c5d0));
+	-pie-background: linear-gradient(#d9dfe6, #b9c5d0);
+	behavior: url(js/lib/PIE.htc);
+	border-bottom: 1px solid #9DA2A6;
+	float: left;
+	padding: 9px 10px 7px;
+	position: relative;
+	width: 198px;
+}
+
+.pendingTicket .titles h2, .ticketHoldCheck span.holdTicketCount{
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+	color: #738699;
+	text-transform:uppercase;
+	float: left;
+}
+
+.ticketHoldCheck{
+	float: left;
+	margin-left: 25px;
+}
+.ticketHoldCheck .selectionCtrl{float: left;}
+.ticketHoldCheck span.holdTicketCount{
+	text-transform:none;	
+	padding: 0 0 0 5px;
+}
+
+.ticketsOutlineViewtypetabs{
+	display: block;
+	margin: 5px 10px 10px;
+	position: relative;
+	width: 196px;
+	float: left;
+}
+.ticketsOutlineViewtypetabs ul{
+	margin: 0;
+	
+}
+.ticketsOutlineViewtypetabs li, .deskproSegmentedButton li{
+	background-image: -moz-linear-gradient(top, #ccd2d5, #a8b2b6);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#ccd2d5), to(#a8b2b6));
+	-pie-background: linear-gradient(#ccd2d5, #a8b2b6);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0px 1px rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.35);
+	border: 1px solid #8b98a6;
+	border-radius: 5px;
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgba(255,255,255, 0.5);
+	text-align: center;
+	color: #626a73;
+	float: left;
+	padding: 3px 16px;
+	position: relative;
+	width: 60px;
+	position: relative;
+}
+.ticketsOutlineViewtypetabs li.on, .deskproSegmentedButton li.on{
+	background-image: -moz-linear-gradient(top, #a3adb2, #a8b2b6);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#a3adb2), to(#a8b2b6));
+	-pie-background: linear-gradient(#a3adb2, #a8b2b6);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.35);
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	position: relative;
+}
+.ticketsOutlineViewtypetabs li.withCount span{
+	background: #8a9199;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3) inset, 0 1px 0 rgba(255, 255, 255, 0.3);
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	margin: 0 0 0 18px;
+	padding: 0 4px 1px;
+	font-size: 9px;
+	position: relative;
+	behavior: url(js/lib/PIE.htc);
+}
+.ticketsOutlineViewtypetabs li:first-child, .deskproSegmentedButton li.list {
+    border-radius: 3px 0 0 3px;
+    border-right: none;
+}
+.ticketsOutlineViewtypetabs li:last-child, .deskproSegmentedButton li.cloud {
+    border-radius: 0 3px 3px 0;
+}
+
+.ticketsOutlineViewtypetabs li:hover, .deskproSegmentedButton li:hover{
+	background: rgba(218, 224, 229, 0.8);
+	display: block;
+	color: #626a73;
+	text-shadow: 0 1px 0 rgba(255,255,255, 0.5);
+	position: relative;
+	behavior: url(js/lib/PIE.htc);
+}
+
+
+/* Ticket Collapse-Expand */
+#DP-SourceList .yourPendingTicket{
+	clear: both;
+	position: relative;
+}
+#DP-SourceList ul.navList{}
+
+#DP-SourceList ul.navList li{
+	white-space: no-wrap;
+	cursor: pointer;
+	font-size: 11px;
+	position: relative;
+}
+#DP-SourceList ul.navList li span.listCounter{
+	font-size: 10px;
+	line-height: 14px;
+	color: #fff;
+	text-shadow: 0 1px 0 #6c7680;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
+	float: right;
+	margin: 0 5px 0 0;
+    padding: 0 5px;
+	background: #6c89a6;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+}
+
+#DP-SourceList ul.navList li a:hover span.listCounter{
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
+	background: #2f4b67;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+	z-index: 1;
+}
+
+#DP-SourceList ul.navList li.subList span.listCounter{
+	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(40,40,40,0.1);
+	background: #adbdcc !important;
+	float: left;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+	border-radius: 10px;
+	z-index: 1;
+}
+#DP-SourceList ul.navList li.subList a:hover span.listCounter{
+	background: #4D7399 !important;
+}
+
+#DP-SourceList ul.navList ul.subGroup li span.listCounter{
+	background: #7c91a6;
+}
+#DP-SourceList ul.navList ul.subGroup li a:hover span.listCounter{
+	background: #4D7399;
+}
+#DP-SourceList ul.navList ul.subGroup li span.borderLink{
+	border-left: 1px solid #c2c7cc;
+	border-bottom: 1px solid #c2c7cc;
+ 	height: 0;
+	left: 30px;
+    padding: 10px 0 8px 6px;
+	position: absolute;
+	top: -4px;
+	z-index: 9;
+}
+
+ul.navList li .subToggle{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -870px;
+	cursor: pointer;
+	display: block;
+	float: left;
+	height: 13px;
+	margin-left: 1px;
+	margin-right: 2px;
+	margin-top: 2px;
+	overflow: hidden;
+	text-indent: -100px;
+	width: 14px;	
+}
+ul.navList li.active span.open{
+	background: url("../img/imgSprt_ico.png") no-repeat 0 -782px;
+	display: block;
+	position: relative;
+}
+
+#DP-SourceList ul.navList > li a{
+	color: #6c7680;
+	display: block;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 14px;
+	padding: 5px 0 4px;
+	text-shadow: 0 1px 0 #FFFFFF;
+	position: relative;
+}
+#DP-SourceList ul.navList > li a.grupHead{
+	color: #575e66;
+	padding: 5px 0 5px 10px;
+	text-shadow: 0 1px 0 #FFFFFF;
+}
+
+#DP-SourceList ul.navList li ul.subGroup li a{
+	padding: 3px 0 3px 27px;
+	border-bottom: 1px solid transparent;
+	border-top: 1px solid transparent;
+}
+
+#DP-SourceList ul.navList ul.subGroup li.groupingOpt{
+	
+}
+#DP-SourceList ul.navList ul.subGroup li.groupingOpt a{
+	color: #a1aab2;
+	font-size: 11px !important;
+	font-weight: bold !important;
+	text-shadow: 0 1px 0 #FFFFFF;
+}
+#DP-SourceList ul.navList ul.subGroup li.groupingOpt .menuTrigger{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 72px -944px;
+	padding: 0 10px 0 2px;
+	font-size: 11px;
+	font-weight: bold;
+}
+#DP-SourceList ul.navList ul.subGroup li.groupingOpt .menuTrigger:hover{
+	color: #6C7680;
+	text-shadow: 0 1px 0 #FFFFFF;
+}
+#DP-SourceList ul.navList ul.subGroup li{
+	border: 0 none;
+	position: relative;
+}
+#DP-SourceList ul.navList ul.subGroup li.subList a{
+	padding: 4px 0 3px 42px;
+}
+
+#DP-SourceList ul.navList li.active a.on, #DP-SourceList ul.navList li a.grupHead,
+#DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
+	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
+	-pie-background: linear-gradient(#edf0f2, #dde3e7);
+	behavior: url(js/lib/PIE.htc);
+	border-bottom: 1px solid #dde3e7;	
+	border-top: 1px solid #ced4d9;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+	position: relative;
+}
+.ie #DP-SourceList ul.navList li.active a.on, .ie #DP-SourceList ul.navList li a.grupHead,
+.ie #DP-SourceList ul.navList ul.subGroup li:hover a, .ie #DP-SourceList .teamfilter ul.navList li a:hover {
+	background: #dde3e7;
+}
+#DP-SourceList ul.navList li.active a.on{
+	border-bottom: 1px solid #ced4d9;	
+}
+#DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
+	border-bottom: 1px solid #C2C7CC;
+}
+#DP-SourceList ul.navList li:hover a.grupHead, #DP-SourceList ul.navList li.active:hover a.on {
+	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
+	-pie-background: linear-gradient(#6baccc, #5182b3);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: inset 0 1px 0 #82bdd7;
+	border-bottom: 1px solid #4d7399!important;
+	border-top: 1px solid #709ecc!important;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	display: block !important;
+	position: relative;
+}
+.ie #DP-SourceList ul.navList li:hover a.grupHead, .ie #DP-SourceList ul.navList li.active:hover a.on {
+	background: #6baccc;
+}
+
+/* List Item User Group Control */
+
+.listItemUserGroupCtrl{
+	left: 78px;
+	position: absolute;
+	top: 118px;
+	z-index: 99999;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+}
+.listItemUserGroupCtrl div.userGroupCtrlTitle{
+	background: rgba(242,242,242,0.98);
+	border-radius: 3px 3px 0 3px;
+	border: 1px solid #aaaeb2;
+	float: left;
+	font-size: 11px;
+	font-weight: bold;
+	color: #6D7073;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+}
+.ie .listItemUserGroupCtrl div.userGroupCtrlTitle{
+	background: #f2f2f2;
+}
+.listItemUserGroupCtrl div.userGroupCtrlTitle .userCtrlHead{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 252px -1556px;
+	float: left;
+	padding: 5px 28px 5px 117px;
+	text-align: left;
+	cursor: pointer;
+}
+.listItemUserGroupCtrl div.userGroupCtrlTitle span.listMenuChoose{
+	float: left;
+	padding: 5px 0 6px 4px;
+}
+.listItemUserGroupCtrl ul.userControlWrap{
+	background: rgba(242,242,242,0.98);
+	border-right: 1px solid #aaaeb2;
+	border-bottom: 1px solid #aaaeb2;
+	border-left: 1px solid #aaaeb2;
+	border-top: none;
+	border-radius: 0 0 3px 3px;
+	box-shadow: 0 2px 2px 0px rgba(0, 0, 0, 0.15);
+	right: 0;
+	padding: 0;
+	position: absolute;
+	top: 25px;
+	width: 164px;
+	z-index: 100;
+	behavior: url(js/lib/PIE.htc);
+}
+ul.userControlWrap li{
+	display: block;
+	padding: 4px 0;
+	position: relative;display: block;
+	position: relative;
+}
+ul.userControlWrap li a{
+	cursor: pointer;
+	color: #505559;
+	font-size: 11px;
+	font-weight: normal;
+	padding: 5px 0 4px 30px !important;
+}
+ul.userControlWrap li input{
+	left: 7px;
+	padding: 2px 10px;
+	position: absolute;
+	top: 5px;
+}
+
+
+/* Button Expand Ticket Control on Source List */
+#expanderToggle{
+	position: absolute;
+	top: 25px;
+	left: 8px;
+}
+.subToggleExpandDropdown{
+	background: rgba(170,174,179,0.98);
+	border-radius: 3px;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+	position: relative;
+	padding: 1px;
+	behavior: url(js/lib/PIE.htc);
+	z-index: 100;
+}
+.ie .subToggleExpandDropdown{
+	background: #AAAEB3;
+}
+.subToggleExpandDropdown:after{
+	content:'';
+	display:block;
+	position:absolute;
+	top:-10px;
+	left:5px;
+	width:0;
+	height:0;
+	border-color: transparent transparent rgba(170,174,179,0.98) transparent;
+	border-style: solid;
+	border-width: 5px;
+}
+.ie .subToggleExpandDropdown:after{
+	border-color: transparent transparent #AAAEB3 transparent;
+}
+
+.expandDropdown{
+	background: rgba(242,242,242,0.98);
+	border-radius: 3px;
+	box-shadow: 0 1px 0 #FFFFFF inset, 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+	text-shadow: 0 1px 0 #fff;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+}
+.ie .expandDropdown{
+	background: #f2f2f2;
+}
+.expandDropdown:after{
+	content:'';
+	display:block;
+	position:absolute;
+	top:-9px;
+	left:4px;
+	width:0;
+	height:0;
+	border-color: transparent transparent #f2f2f2 transparent;
+	border-style: solid;
+	border-width: 5px;
+	z-index: 100;
+}
+
+.expandDropdown h6{
+	color: #6d7073;
+	font-weight: bold;
+	font-size: 11px;
+	padding: 3px 5px;
+	border-bottom: 1px solid #e3e4e6;
+}
+.expandDropdown ol{}
+.expandDropdown ol li{
+	display: block;
+	border-bottom: 1px solid #e3e4e6;
+	padding: 3px 5px;
+}
+.expandDropdown ol li:last-child{
+	border-bottom: none;
+	border-radius: 0 0 3px 3px;
+}
+.expandDropdown ol li a{
+	font-size: 11px;
+	font-weight: normal !important;
+	color: #737a80 !important;
+	padding: 2px 50px 2px 20px !important; 
+}
+.expandDropdown ol li span.checked{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1586px;
+	padding: 7px;
+	float: left;
+	display: none;
+}
+.expandDropdown ol li:hover{
+	background: #f8f8f9;
+}
+.expandDropdown ol li:hover span.checked{
+	display: block;
+}
+
+#DP-SourceList .teamfilter ul.navList li{}
+#DP-SourceList .teamfilter ul.navList li a{
+	padding: 4px 0 4px 10px;
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+.filters{
+	position: relative;
+}
+.filters .titles{
+	background-image: -moz-linear-gradient(top, #d9dfe6, #b9c5d0);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#b9c5d0));
+	-pie-background: linear-gradient(#d9dfe6, #b9c5d0);
+	behavior: url(js/lib/PIE.htc);
+	border-bottom: 1px solid #9da2a6;
+	border-top: 1px solid #ced4d9;
+	float: left;
+	padding: 5px 0 5px 10px;
+	width: 206px;
+	margin: 0;
+	position: relative;
+}
+.filters .titles h2{
+	float: left;
+	padding: 2px 0 0;
+	font-weight: bold;
+	font-size: 12px;
+}
+.filterSetup{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -867px;
+	float: left;
+	height: 17px;
+	width: 16px;
+	text-indent: -9999px;
+	display: block;
+	cursor: pointer;
+}
+.filterSetup:hover{
+	background-position: 0 -779px;
+}
+
+.listTabNavTicket{
+	width: 215px;
+}
+#navTabStrip{
+	margin-top: 15px;
+}
+.desproTabStrip{
+	border-top: 1px solid #B4BABF;
+}
+.desproTabStrip ul{
+	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
+	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
+	behavior: url(js/lib/PIE.htc);
+	border-right: 1px;
+	border-right-style: solid;
+	border-right-color: #B4BABF;
+	width: 100%;
+	padding: 0;
+	float: left;
+	border-bottom: 1px solid #B4BABF;
+	position: relative;
+	z-index: 0;
+}
+.desproTabStrip li{
+	border-right: 1px solid #B4BABF;
+	float: left;
+	display: inline;
+	padding: 0;
+	height: 23px;
+	position: relative;
+}
+.desproTabStrip li a{
+	color: #959da6;
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #fff;
+	padding: 6px 11px;
+	float: left;
+	cursor: pointer;
+	text-align: center;
+}
+.ie .desproTabStrip li a{
+	width: 53px !important;
+	padding: 5px 8px 6px 9px !important;
+}
+.windows .desproTabStrip li a{
+
+}
+.windows .desproTabStrip li:hover a{
+	
+}
+.desproTabStrip li:last-child{
+	border-right: none;
+}
+.windows .desproTabStrip li:last-child a, .desproTabStrip li.on:last-child a{
+	padding: 5px 15px 6px !important;
+}
+.desproTabStrip li:last-child a, .desproTabStrip li.on:last-child a{
+	padding: 5px 10px 6px !important;
+}
+
+.ie .desproTabStrip li:last-child a{
+	padding: 6px 17px 6px 18px !important;
+}
+.desproTabStrip li:hover a {
+	color: #6c7680;
+	padding: 6px 11px 3px;
+	position: relative;
+}
+.desproTabStrip li.on a{
+	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
+	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
+	behavior: url(js/lib/PIE.htc);
+	height: 13px;
+	padding: 5px 8px 6px;
+	position: relative;
+}
+
+#ticketOutlineLabels{
+	float: left;
+	width: 215px;
+}
+.deskproSegmentedItem .deskproSegmentedButton{
+	height: 22px;
+	margin: 0 auto;
+	padding: 7px 0;
+	width: 189px;
+}
+.deskproSegmentedItem .deskproSegmentedButton ul{}
+.deskproSegmentedItem .deskproSegmentedButton li{
+	display: inline;
+}
+.dpTabItem{
+	float: left;
+	margin-top: 5px;
+}
+#listingTicketLabels{
+
+}
+#listingTicketLabels ul{}
+#listingTicketLabels, #flaggedTicketLabels li, #archiveTicketLabels li{
+	display: block;
+	padding: 0 0 3px;
+	float: left;
+	width: 100%;
+}
+#listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a{
+	padding: 4px 0 5px 10px;
+	color: #565e66;
+	text-shadow: 0 1px 0 #fff;
+	font-size: 11px;
+	font-weight: bold;
+	float: left;
+	width: 100%;
+	border-bottom: 1px solid transparent;	
+	border-top: 1px solid transparent;
+	cursor: pointer;
+}
+#listingTicketLabels li:hover a, #flaggedTicketLabels li:hover , #archiveTicketLabels li a:hover {
+	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
+	-pie-background: linear-gradient(#edf0f2, #dde3e7);
+	behavior: url(js/lib/PIE.htc);
+	border-bottom: 1px solid #c2c7cc;	
+	border-top: 1px solid #ced4d9;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+	position: relative;
+}
+.ie #listingTicketLabels li:hover a, .ie #flaggedTicketLabels li:hover , .ie #archiveTicketLabels li a:hover{
+	background: #dde3e7;
+}
+#flaggedTicketLabels{
+	margin: 10px 0;
+}
+#flaggedTicketLabels li:hover a span{
+	text-indent: 0;
+}
+#flaggedTicketLabels ul li a span{
+	float: right;
+	text-indent: -1999px;
+}
+#flaggedTicketLabels ul li a{
+	background: url(../../images/agent/flagIco.png) no-repeat;
+	float: left;
+	padding: 4px 0 3px 20px;
+	width: 205px;
+} 
+#flaggedTicketLabels ul li a#flaggedBlue{
+	background-position: 10px 6px;
+}
+#flaggedTicketLabels ul li a#flaggedGreen{
+	background-position: 10px -19px;
+}
+#flaggedTicketLabels ul li a#flaggedOrange{
+	background-position: 10px -44px;
+}
+#flaggedTicketLabels ul li a#flaggedPink{
+	background-position: 10px -69px;
+}
+#flaggedTicketLabels ul li a#flaggedPurple{
+	background-position: 10px -94px;
+}
+#flaggedTicketLabels ul li a#flaggedRed{
+	background-position: 10px -119px;
+}
+#flaggedTicketLabels ul li a#flaggedYellow{
+	background-position: 10px -144px;
+}
+#flaggedTicketLabels li:hover {
+	
+}
+ #flaggedTicketLabels li:hover a span{
+	background: none repeat scroll 0 0 #2F4B67;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(0, 0, 0, 0.15) inset;padding: 2px 10px 2px;
+	behavior: url(js/lib/PIE.htc);
+	padding: 1px 6px 1px;
+	float: right;
+	margin-right: 16px;
+	color: white;
+	text-shadow: 0 1px 0 #000;
+	position: relative;
+}
+
+#tagCloudTicketLabels{
+	padding-bottom: 5px;
+}
+#tagCloudTicketLabels ul, .catTags ul .groupingBar ul{
+	padding: 0 5px;
+}
+#tagCloudTicketLabels li, .catTags li, .groupingBar li{
+	display: inline;
+	float: left;
+	padding: 3px;
+}
+#tagCloudTicketLabels li a, .catTags li a, .groupingBar li a{
+	background: #fff;
+	border-radius: 10px 10px 10px 10px;
+	padding: 1px 5px;
+	color: #959DA6;
+	text-shadow: 0 1px 0 #fff;
+	font-size: 10px;
+	behavior: url(js/lib/PIE.htc);
+	cursor: pointer;
+	position: relative;
+}
+#tagCloudTicketLabels li a:hover, .groupingBar li a:hover{
+	background: #6c89a6;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+}
+
+.searchList, .teamfilter, .yourTicketsItem, .participantItem, .teamTicketItem, .unassigned, .all, .filter, .customSearches, .listTabNavTicket{
+	clear: both;
+}
+
+#archiveTicketLabels li#trash{
+	border-top: 1px solid #C2C7CC;
+	box-shadow: 0 1px 0 #EAEEF2 inset;
+	position: relative;
+	behavior: url(js/lib/PIE.htc);
+	z-index: 1;
+}
+
+/* LIST ITEM SOURCE LIST CONTROL BOX */
+
+.listItemUserGroupCtrl{
+	left: 78px;
+	position: absolute;
+	top: 97px;
+	z-index: 99999;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+	behavior: url(js/lib/PIE.htc);
+}
+.listItemUserGroupCtrl div.userGroupCtrlTitle{
+	background: rgba(242,242,242,0.98);
+	border-radius: 3px 3px 0 3px;
+	border: 1px solid #aaaeb2;
+	box-shadow: 0 0px 2px 0 rgba(0, 0, 0, 0.1), 1px 1px 1px 0px #FFFFFF inset;
+	float: left;
+	font-size: 11px;
+	font-weight: bold;
+	color: #6D7073;
+	padding: 5px 0 3px;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+	text-shadow: 0 1px 0 #fff;
+	z-index: 1;
+}
+
+.ie .listItemUserGroupCtrl div.userGroupCtrlTitle, .ie .listItemUserGroupCtrl ul.userControlWrap{
+	background: #f2f2f2;
+}
+.listItemUserGroupCtrl div.userGroupCtrlTitle .userCtrlHead{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat  251px -1561px;
+	float: left;
+	padding: 2px 31px 0 117px;
+	text-align: left;
+	cursor: pointer;
+}
+
+.windows .listItemUserGroupCtrl div.userGroupCtrlTitle .userCtrlHead{
+	background-position: 251px -1560px;
+	padding: 1px 23px 0 117px;
+}
+
+.listItemUserGroupCtrl div.userGroupCtrlTitle span.listMenuChoose{
+	float: left;
+	padding: 0 0 0 4px;
+	
+}
+.firefox .listItemUserGroupCtrl div.userGroupCtrlTitle span.listMenuChoose{
+	padding: 0 0 0 4px;
+}
+.listItemUserGroupCtrl ul.userControlWrap{
+	background: rgba(242,242,242,0.98);
+	border-right: 1px solid #aaaeb2;
+	border-bottom: 1px solid #aaaeb2;
+	border-left: 1px solid #aaaeb2;
+	border-top: none;
+	border-radius: 0 0 3px 3px;
+	box-shadow: 0 2px 2px 0px rgba(0, 0, 0, 0.15), inset 0px -1px 1px #fff;
+	right: 0;
+	padding: 0;
+	position: absolute;
+	top: 23px;
+	width: 164px;
+	z-index: 100;
+	behavior: url(js/lib/PIE.htc);
+}
+
+.firefox .windows ul.userControlWrap{
+	top: 24px;
+}
+.chrome .windows .listItemUserGroupCtrl ul.userControlWrap{
+	top: 27px;
+}
+
+.chrome .listItemUserGroupCtrl ul.userControlWrap, .safari .listItemUserGroupCtrl ul.userControlWrap{
+	top: 24px;
+}
+
+ul.userControlWrap li{
+	display: block;
+	padding: 6px 0 3px;
+	position: relative;
+	display: block;
+}
+ul.userControlWrap li:last-child{
+	padding: 6px 0 9px;
+}
+ul.userControlWrap li a{
+	text-shadow: 0 1px 0 #fff;
+	cursor: pointer;
+	color: #505559;
+	font-size: 11px;
+	font-weight: normal;
+	padding: 5px 0 4px 30px !important;
+}
+ul.userControlWrap li input{
+	left: 7px;
+	padding: 2px 10px;
+	position: absolute;
+	top: 5px;
+}

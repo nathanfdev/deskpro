@@ -116,8 +116,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.sectionEl = el;
-		if (!el.parent().is('#deskpro_outline')) {
-			this.sectionEl.detach().appendTo('#deskpro_outline');
+		if (!el.parent().is('#DP-SourceList')) {
+			this.sectionEl.detach().appendTo('#DP-SourceList');
 		}
 
 		if (!contentEl) {
@@ -166,8 +166,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.listEl = el;
-		if (!el.parent().is('#deskpro_list')) {
-			this.listEl.detach().appendTo('#deskpro_list');
+		if (!el.parent().is('#DP-TicketList')) {
+			this.listEl.detach().appendTo('#DP-TicketList');
 		}
 
 		if (!contentEl) {
@@ -213,10 +213,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		return this._isVisible;
 	},
 
-	
+
 	/**
 	 * Update the badge number on the icon
-	 * 
+	 *
 	 * @param {Integer} count
 	 */
 	updateBadge: function(count) {

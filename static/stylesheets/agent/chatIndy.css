@@ -1,0 +1,495 @@
+/*  AGENT CHAT PANEL COUNTER */
+#DP-agentChatPanel{
+	position: relative;
+}
+#DP-ChatWindows{
+	background: #fafafa;
+	border: 1px solid #b6babf;
+	border-radius: 5px 5px 0 0;
+	behavior: url(js/lib/PIE.htc);
+	position: absolute;
+	right: 0;
+	bottom: 0 !important;
+	left: 8px;
+	min-height: 320px;
+	width: 300px;
+	z-index: 99999;
+	height: 350px;
+}
+.chatPanelHead{
+	background-image: -moz-linear-gradient(top, #eff1f2, #dadcde);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#eff1f2), to(#dadcde));
+	-pie-background: linear-gradient(#eff1f2, #dadcde);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, inset 0 1px 0 rgba(255,255,255,0.15);
+	border-bottom: 1px solid #b6babf;
+	border-radius: 5px 5px 0 0;
+ 	float: left;
+    height: 20px;
+   	padding: 6px 0 0 5px;
+    width: 295px;
+}
+.chatPanelHead nav{
+	float: left;
+	margin: 10px 5px 0;
+}
+.chatPanelHead ul{}
+.chatPanelHead li{
+	background-image: -moz-linear-gradient(top, #6da3c2, #375388);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6da3c2), to(#375388));
+	-pie-background: linear-gradient(#6da3c2, #375388);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset;
+	border-radius: 5px 5px 0 0;
+	border-right: 1px solid #4d7399;
+	border-left: 1px solid #4d7399;
+	border-top: 1px solid #4d7399;
+	margin: 0 1px;
+	display: inline;
+	float: left;
+	margin: 0 5px 0 1px;
+	padding: 0 5px;
+	behavior: url(js/lib/PIE.htc);
+}
+
+.chatPanelHead li a{
+	color: #fff;
+	float: left;
+	font-size: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	padding: 4px 0 3px;
+}
+.chatPanelHead li a span{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat;
+}
+.chatPanelHead li a span.userIcon{
+	background-position: 0 -1281px;
+	padding: 0 8px 0 23px;
+}
+.chatPanelHead li a span.teamIcon{
+	background-position: 0 -1215px;
+	padding: 0 7px 0 26px;
+}
+.chatPanelHead li:hover{
+	background-image: -moz-linear-gradient(top, #93bcdc, #4b7ebb);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#93bcdc), to(#4b7ebb));
+	-pie-background: linear-gradient(#93bcdc, #4b7ebb);
+	behavior: url(js/lib/PIE.htc);
+}
+
+.chatPanelHead li.active, .chatPanelHead li.active:hover{
+	background: #fafafa;
+	border-right: 1px solid #b6babf;
+	border-left: 1px solid #b6babf;
+	border-top: 1px solid #b6babf;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset;
+	behavior: url(js/lib/PIE.htc);	
+}
+
+.chatPanelHead li.active a span.userIcon{
+	color: #2d5680;
+	background-position: 0 -1312px;
+}
+.chatPanelHead li.active a span.teamIcon{
+	color: #2d5680;
+	background-position: 0 -1246px;
+}
+
+.closeBtn{
+	float: right;
+	 margin: 0 5px;
+}
+
+.closeBtn a{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1336px;
+	display: block;
+	float: left;
+	height: 15px;
+	overflow: hidden;
+	text-indent: -9999px;
+	width: 16px;
+	float: left;
+}
+
+.chatListWrap{
+	float: left;
+	width: 300px;
+}	
+.chatListWrap .on{
+	display: block;
+}	
+.agentList{
+	display: none;
+}
+.teamList{
+	display: block;
+}
+.onlineList{
+	float: left;
+	width: 300px;
+}
+.offlineList{
+	clear: both;
+}
+.onlineTeam{}
+.offlineTeam{}
+
+.onlineList ul, .offlineList ul, .onlineTeam ul, .offlineTeam ul{
+	margin: 0;
+	padding: 0;
+}
+.onlineList li, .offlineList li, .onlineTeam li, .offlineTeam li{
+	border-bottom: 1px solid #e3e4e6;
+	display: block;
+	float: left;
+}
+.onlineList li a, .offlineList li a, .onlineTeam li a, .offlineTeam li a{
+	font-size: 10px;
+	font-weight: bold;
+	color: #7e858c;
+	float: left;
+	cursor: pointer;
+	padding: 6px 5px;
+	width: 290px;
+}
+.onlineList li:hover a, .offlineList li:hover a, .onlineTeam li:hover a, .offlineTeam li:hover a{
+	background: #f0f0f0;
+}
+.onlineList li .agentOnline, .offlineList li .agentOnline, .onlineTeam li .agentOnline, .offlineTeam li .agentOnline{
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 2px solid #F5F5F5;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 2px 1px rgba(0, 0, 0, 0.1) inset;
+	float: left;
+	padding: 3px 3px 1px;
+	margin-right: 10px;
+	behavior: url(js/lib/PIE.htc);
+}
+.onlineList li span, .offlineList li span, .onlineTeam li span, agentOnline li span{
+	font-size:10px;
+	font-weight: bold;
+	color: #7e858c;
+}
+.offlineBar{
+	background: #f3f3f3;
+}
+.offlineList h5, .offlineTeam h5{
+	font-size: 10px;
+	font-weight: bold;
+	color: #7e858c;
+	padding: 5px;
+}
+.offlineList li:first-child, .offlineTeam li:first-child{
+	border-top: 1px solid #e3e4e6;
+}
+
+.chatPanelFoot{
+	background-image: -moz-linear-gradient(top, #ebeced, #d9dadc);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#ebeced), to(#d9dadc));
+	-pie-background: linear-gradient(#ebeced, #d9dadc);
+	behavior: url(js/lib/PIE.htc);
+	border-top: 1px solid #DEDFE0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
+	height: 26px;
+	padding: 5px 10px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+.showOffline{
+	display: block;
+	height: 17px;
+	padding: 5px;
+	position: relative;
+	border-bottom: 1px solid #e3e4e6;
+}
+.showOffline label, .viewHistory a{
+	font-size: 10px;
+	font-weight: bold;
+	color: #7e858c;
+	float: right;
+}
+#offline{
+	margin-right: 4px;
+}
+#viewHistory{
+	position: absolute;
+	right: 5px;
+	top: 10px;
+}
+#viewHistory a{
+	color: #77828c;
+}
+/* END OF AGENT CHAT PANEL */
+
+/* CHAT ACTIVE SECTION */
+#agentChatWrapper{
+	position: absolute;
+	bottom: 0;
+	left: 60px;
+	z-index: 10000;
+	display: block;
+}
+
+.agentChat{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.agentChat div.openChat{
+	background-image: -moz-linear-gradient(top, #edeff2, #e1e3e6);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#edeff2), to(#e1e3e6));
+	-pie-background: linear-gradient(#edeff2, #e1e3e6);
+	behavior: url(js/lib/PIE.htc);
+	border-right: 1px solid #b6babf;
+	border-left: 1px solid #b6babf;
+	border-top: 1px solid #b6babf;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+	left: 0;
+	padding: 5px;
+	position: absolute;
+	width: 70px;
+	bottom: 0;
+}
+.agentChat div.closedChat{
+	background-image: -moz-linear-gradient(top, #6ea4c3, #375288);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6ea4c3), to(#375288));
+	-pie-background: linear-gradient(#6ea4c3, #375288);
+	behavior: url(js/lib/PIE.htc);
+	border-right: 1px solid #334d66;
+	border-left: 1px solid #334d66;
+	border-top: 1px solid #334d66;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+	cursor: pointer;
+	padding: 5px;
+	position: absolute;
+	width: 70px;
+	bottom: 0;
+}
+.agentChat div.closedChat span.closeTrigger{
+	background-position: 0 -1137px;
+	
+}
+.agentChat div.closedChat a{
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+}
+.agentChat div span.closeTrigger{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1335px;
+	height: 12px;
+	padding: 2px;
+	position: absolute;
+	right: 5px;
+	text-indent: -10000px;
+	top: 10px;
+	width: 13px;
+	cursor:pointer;
+}
+.agentChat div a{
+	color: #626973;
+	font: 11px;
+	font-weight: bold;
+	line-height: 25px;
+	text-shadow: 0 1px 0 #fff;
+	text-align: center;
+	white-space: nowrap;
+	margin: 0 0 0 6px;
+}
+
+.wrapChatBox{
+	background: #d8dadc;
+	border: 1px solid #B6BABF;
+	border-radius: 5px 5px 5px 0;
+	bottom: 32px;
+	height: 340px;
+	left: -1px;
+	position: absolute;
+	width: 312px;
+}
+.messageBoxHead{
+	background-image: -moz-linear-gradient(top, #f1f3f5, #e4e7eb);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f1f3f5), to(#e4e7eb));
+	-pie-background: linear-gradient(#f1f3f5, #e4e7eb);
+	behavior: url(js/lib/PIE.htc);
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    left: 0;
+    position: absolute;
+	top: 0;
+    width: 312px;
+	height: 36px;
+}
+.messageBoxHead h2{
+	font-size: 14px;
+	font-weight: bold;
+	color: #2d5680;
+	text-shadow: 0 1px 0 #fff;
+	float: left;
+	padding: 10px;
+}
+.msgAct{
+	float: right;
+}
+.messageBoxHead span.statusOnline{
+	border-right: 1px solid #d8dadc;
+	color: #949799;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 11px 5px 12px 0;
+	box-shadow: 1px 0 0 #fff;
+	float: left;
+}
+.messageBoxHead span.minimize{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1455px;
+	cursor: pointer;
+	float: right;
+	height: 16px;
+	margin: 11px 8px 0 7px;
+	text-indent: -9999px;
+	width: 16px;
+}
+
+
+.messageBox{
+	background: #E4E7EB;
+	border-top: 1px solid #b6babf;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+	position: absolute;
+	bottom: 53px;
+	left: 0;
+	padding: 5px 5px 5px 7px;
+	top: 35px;
+	width: 300px;
+	left: 0; 
+	height: 253px;
+	behavior: url(js/lib/PIE.htc);
+}
+.agentOnline{
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 2px solid #F5F5F5;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 2px 1px rgba(0, 0, 0, 0.1) inset;
+	float: left;
+	behavior: url(js/lib/PIE.htc);
+	padding: 3px 3px 0;
+	position: relative;
+}
+
+.messageContainer{
+	font-size: 11px;
+	line-height: 12px;
+	float: left;
+	width: 300px;
+	margin-bottom: 5px;
+}
+
+.messageContainer .chatSend, .messageContainer .chatRecieve{
+	color: #626973;
+	font-size: 11px;
+	line-height: 22px;
+	text-shadow: 0 1px 0 #fff;
+	padding: 3px 5px;
+}
+.messageContainer .chatSend{
+	float: left;
+}
+.messageContainer .chatRecieve{
+	float: left;
+}
+
+.messageContainer .timeChat, .messageContainer .dateChat{
+	font-size: 10px;
+	color: #a1a8b2;
+}
+.messageContainer .dateChat{
+	padding: 3px 0;
+	text-align: center;
+}
+.chatSend .chatMsgSend, .chatRecieve .chatMsgRecieve{
+	color: #595959;
+	font-size: 11px;
+	float: left;
+	line-height: 18px;
+	padding: 2px 10px;
+	position: relative;
+	width: 205px;
+}
+.chatSend .chatMsgSend{
+	background-image: -moz-linear-gradient(top, #f2f2f2, #eaeaea);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#eaeaea));
+	-pie-background: linear-gradient(#f2f2f2, #eaeaea);
+	behavior: url(js/lib/PIE.htc);
+	border-radius: 3px;
+	border: 1px solid #b3b3b3;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;	
+}
+.chatRecieve .chatMsgRecieve{
+	background-image: -moz-linear-gradient(top, #cce8f2, #b0dbea);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#cce8f2), to(#b0dbea));
+	-pie-background: linear-gradient(#cce8f2, #b0dbea);
+	behavior: url(js/lib/PIE.htc);
+	border-radius: 3px;
+	border: 1px solid #8fb3bf;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;
+	float: left;
+}
+.chatMsgSend span.bubbleLeft{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1515px;
+	bottom: 1px;
+	left: -11px;
+	padding: 4px 8px;
+	position: absolute;
+}
+.chatMsgRecieve span.bubbleRight{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1538px;
+	bottom: 1px;
+	right: -11px;
+	padding: 4px 8px;
+	position: absolute;
+}
+.chatSend .timeChat{
+	float: right;
+	text-align: right;
+	width: 60px;
+	padding: 3px 0 0;
+}
+.chatRecieve .timeChat{
+	float: left;
+	width: 60px;
+	padding: 3px 0 0;
+}
+
+
+.inputMessageWrap{
+	background: #edeff2;
+	border-radius: 0 0 5px 0px;
+	box-shadow: inset 0 1px 0 #fff, 0 1px 0 1px rgba(255, 255, 255, 0.2) inset;
+	bottom: 0;
+	padding: 5px 6px;
+	position: absolute;
+	width: 300px;
+	behavior: url(js/lib/PIE.htc);
+}
+
+textarea#typeChat{
+	color: #626973;
+	font-size: 11px;
+	line-height: 18px;
+	border: 1px solid #dce1e6;
+	border-radius: 3px;
+	outline: none;
+	width: 290px;
+	padding: 3px 5px 2px;
+	word-wrap: break-word;
+	behavior: url(js/lib/PIE.htc);
+}
+span.borderOver{
+	border-bottom: 1px solid #edeff2;
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	width: 80px;
+}

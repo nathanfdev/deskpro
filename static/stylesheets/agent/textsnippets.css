@@ -1,0 +1,305 @@
+#DP-overlayTextSnippet{
+	background-color: transparent;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 999999;
+}
+
+.overlayTextSnippetWrapper{
+	background: #e4e7eb;
+	border-radius: 	10px;
+	border: 1px solid #000000;
+	position: absolute;
+	width: 650px;
+	margin: 10px 0 0 100px;
+	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+	behavior: url(js/lib/PIE.htc);
+	
+}
+.textSnippetHeader{
+	background: -moz-linear-gradient(top, #3b3b3b, #0b0b0b);
+	background: -webkit-gradient(linear, center top, center bottom, from(#3b3b3b), to(#0b0b0b));
+	-pie-background: linear-gradient(#3b3b3b, #0b0b0b);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 #515151 inset;
+	position: relative;
+	padding: 5px 10px;
+	border-radius: 8px 8px 0 0;
+	border-bottom: 1px solid #000;
+	display: block;
+    float: left;
+ 	padding: 4px 5px;
+    position: relative;
+    width: 640px;
+}
+
+.textSnippetHeader createTickerTitle{
+	margin: 0 0 0 270px !important;
+}
+.textSnippetHeader .createTickerTitle h1{
+	color: #FFF;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	padding: 5px 0;
+	text-shadow: 0 1px 0 #000;
+}
+.textSnippetHeader .closeCreateTicker{
+	
+}
+
+.textSnippetHeader .closeCreateTicker{
+	margin: 0;
+	position: absolute;
+    right: 7px;
+    top: 10px;
+    width: 41px;
+}
+
+.textSnippetContent{
+	width: 100%;
+}
+
+.textSnippetLeft{
+	float: left;
+	width: 170px;
+}
+
+.headLeftSnippet{
+	background: -moz-linear-gradient(top, #d9dfe6, #bac5d1);
+	background: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#bac5d1));
+	-pie-background: linear-gradient(#d9dfe6, #bac5d1);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 0 #e0e5ea inset;
+	border-bottom: 1px solid #9da2a6;
+	height: 20px;
+	position: relative;
+}
+
+.leftTitle{
+	float: left;
+	padding: 4px 0 0 10px;
+}
+.leftTitle a{
+	cursor: pointer;
+	font-size: 11px !important;
+	font-weight: bold;
+	color: #6c7680;
+	text-shadow: 0 1px 0 #dfe4e9;
+}
+
+.addCategories{  
+	margin-left: 57px;
+}
+.windows .addCategories{  
+	margin-left: 54px;
+}
+.controlCat{}
+.addCategories, .controlCat{
+	border-left: 1px solid #96a8b8;
+	float: left;
+}
+
+.addCategories span.addCat, .controlCat span.ctrlCat{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat;
+	cursor: pointer;
+}
+.addCategories span.addCat{
+	background-position: 4px -893px;
+	float: left;
+	padding: 10px 11px;
+}
+.controlCat span.ctrlCat{
+	background-position: 4px -865px;
+	float: left;
+	padding: 10px 9px;
+}
+
+.leftSnippetList{}
+.leftSnippetList ul{}
+.leftSnippetList li{
+	display: block;
+}
+.leftSnippetList li a{
+	display: block;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 14px;
+	position: relative;
+	text-shadow: 0 1px 0 #FFFFFF;
+	padding: 6px 0 6px 11px;
+	cursor: pointer;
+	border-bottom: 1px solid transparent;
+	border-top: 1px solid transparent;
+}
+.leftSnippetList li a span{
+	behavior: url(js/lib/PIE.htc);
+	background: #7C91A6;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(0, 0, 0, 0.15) inset;
+	color: #FFFFFF;
+	float: right;
+	margin: 0 5px 0 0;
+	padding: 1px 5px 0;
+	text-shadow: 0 1px 0 #6C7680;
+	position: relative;
+}
+.windows .leftSnippetList li a span{
+	padding: 0 5px;
+}
+.leftSnippetList li:hover a{
+	background: -moz-linear-gradient(top, #6baccc, #5182b3);
+	background: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
+	-pie-background: linear-gradient(#6baccc, #5182b3);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: inset 0 1px 0 #82bdd7;
+	border-bottom: 1px solid #4d7399!important;
+	border-top: 1px solid #709ecc!important;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	display: block !important;
+	position: relative
+
+}
+.ie .leftSnippetList li:hover a{
+ 	background: #6baccc;	
+}
+.leftSnippetList li a:hover span{
+	background: #2F4B67;
+}
+
+.textSnippetRight{
+	behavior: url(js/lib/PIE.htc);
+	background: #FFFFFF;
+    border-radius: 0 0 8px 0;
+    display: block;
+    float: left;
+    position: relative;
+    width: 480px;
+}
+
+.textSnippetContentWrap{
+	border-left: 1px solid #ADB1B6;
+	float: left;
+	padding: 5px;
+	width: 467px;
+}
+.textSnippetContentWrap ul{
+	margin: 0;
+	padding: 0;
+}
+.textSnippetContentWrap li{
+	border-bottom: 1px solid #e1e1e1;
+	padding: 10px 10px 5px;
+}
+.textSnippetContentWrap li:last-child{
+	border-bottom: none;
+}
+
+.snippetContentTitle{
+	float: left;
+	padding-bottom: 5px;
+	width: 100%;
+}
+.snippetContentTitle h3, .snippetTextInput h3{
+	text-shadow: 0 1px 0 #fff;
+	font-weight: bold;
+	font-size: 12px;
+	float: left;
+	color: #2d5680;
+	width: 80%;
+}
+
+.insertBtn{
+	float: right;
+}
+.insertBtn a{
+	color: #77828c;
+	font-weight: bold;
+	font-size: 10px;
+	text-shadow: 0 1px 0 #fff;
+	padding: 3px 5px;
+}
+.firefox .insertBtn a{
+	padding: 3px 5px 2px;
+}
+.firefox .windows .insertBtn a{
+	padding: 0px 5px 2px;
+}
+
+.snippetContent{
+	clear: both;
+	margin: 15px 0 5px;
+}
+.snippetContent p{
+	font-size: 11px;
+	color: #4c5359;
+	font-weight: normal;
+	line-height: 16px;
+	text-shadow: 0 1px 0 #fff;
+}
+
+span.moreText{
+	color: #2d5680;
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #fff;
+	padding-left: 5px;
+	cursor: pointer;
+}
+
+#createSnipet{}
+
+#snippetWriteTitle{
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
+	border: 1px solid #bdc2c7;
+	background: #fafafa;
+	border-radius: 3px;
+	padding: 2px 4px;
+	font-size: 12px;
+	color: #737373;
+	outline: none;
+	width: 440px;
+	float: left;
+	font-size: 11px;
+	margin: 7px 0;
+	position: relative;
+}
+.ie input#snippetWriteTitle, #snippetWriteMsg{
+	box-shadow: none;
+	border: none;
+	border-radius: none;
+}
+#snippetWriteMsg{
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
+	border: 1px solid #bdc2c7;
+	background: #fafafa;
+	border-radius: 3px;
+	padding: 2px 4px;
+	font-size: 12px;
+	color: #737373;
+	outline: none;
+	width: 440px;
+	float: left;
+	font-size: 11px;
+	margin: 7px 0;
+	height: 80px;
+	position: relative;
+	z-index: 1;
+}
+#createSnipet #finishCreateTicket{
+	float: right;
+	padding: 10px 0;
+}
+#createSnipet #finishCreateTicket a{
+	font-size: 12px;
+}
+.firefox #createSnipet #finishCreateTicket a{
+	padding: 6px 15px 3px;
+	font-size: 12px;
+}

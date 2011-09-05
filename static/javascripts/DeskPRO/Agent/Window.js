@@ -831,12 +831,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
-		$('#deskpro_list > section').removeClass('on');
-		$('#deskpro_list_loading').addClass('on');
+		$('#DP-TicketList > section').removeClass('on');
+		$('#DP-TicketList_loading').addClass('on');
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 
-			$('#deskpro_list_loading').removeClass('on');
+			$('#DP-TicketList_loading').removeClass('on');
 
 			var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
@@ -1529,7 +1529,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var self = this;
 		var first = null;
-		$('#deskpro_sections [data-section-handler]').each(function() {
+		$('#DP-Navigation [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
 				el.attr('id', Orb.getUniqueId('section_'));
@@ -1557,7 +1557,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
-		$('#deskpro_outline').delegate('[data-route]', 'click', function(ev) {
+		$('#DP-SourceList').delegate('[data-route]', 'click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
@@ -1583,19 +1583,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('hide');
 		}
 
-		$('#deskpro_sections li.on').removeClass('on');
+		$('#DP-Navigation li.on').removeClass('on');
 		btn.addClass('on');
 
-		$('#deskpro_outline > section.on').removeClass('on');
-		$('#deskpro_list > section.on').removeClass('on');
+		$('#DP-SourceList > section.on').removeClass('on');
+		$('#DP-TicketList > section.on').removeClass('on');
 
-		$('#deskpro_list_loading, #deskpro_outline_loading').addClass('on');
+		$('#DP-TicketList_loading, #DP-SourceList_loading').addClass('on');
 
 		if (this.openSection) {
 			this.openSection.fireEvent('afterhide');
 		}
 
-		$('#deskpro_list_loading').removeClass('on');
+		$('#DP-TicketList_loading').removeClass('on');
 
 		handler.fireEvent('show');
 		var sectionEl = handler.getSectionElement();
@@ -1621,8 +1621,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.layout.doResize();
 
 		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
-			$('#deskpro_tabstrip > ul:first'),
-			new DeskPRO.Agent.TabManager('#deskpro_viewport')
+			$('#tabNavigationPane > .deskproTabList > ul'),
+			new DeskPRO.Agent.TabManager('#deskproContent')
 		);
 		this.tabManager = this.pageTabStrip.tabManager;
 

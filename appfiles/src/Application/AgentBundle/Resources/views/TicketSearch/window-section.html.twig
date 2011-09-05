@@ -1,19 +1,4 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-{# Tip holders #}
-<div style="display: none">
-	{% for id,summary in filters_summary %}
-		<div id="filter_{{id}}_tip">
-			<ul>
-				{% for line in summary %}
-					<li>{{line}}</li>
-				{% else %}
-					<li>No criteria</li>
-				{% endfor %}
-			</ul>
-		</div>
-	{% endfor %}
-</div>
-
 <section class="inbox">
 	<h2>Awaiting Agent</h2>
 	<nav id="tickets_outline_viewtypetabs">

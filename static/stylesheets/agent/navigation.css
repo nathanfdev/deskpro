@@ -1,0 +1,200 @@
+#DP-Navigation{
+	background: #363c42 url(../../images/agent/navBack.png) repeat-y scroll 0 0;
+	width: 54px;
+}
+#DP-NavSections{
+	background: #383B40 url(../../images/agent/navBg.jpg) repeat 0 -368px;
+	border-top: 1px solid #292C31;
+	bottom: 0;
+	box-shadow: -2px -5px 4px #222222 inset;
+	font-size: 10px;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	width: 56px;
+	z-index: 99999;
+	behavior: url(../../js/lib/PIE.htc);
+}
+
+#DP-NavSections ul{
+	position: relative;
+	margin: 100px 0 0;
+	padding: 0;
+}
+
+#DP-NavSections li{
+	background: url(../../images/agent/navPaneBack.png) repeat-y top left;
+	border-bottom: 1px solid #272A2E;
+	box-shadow: 0 1px 0 #303439 inset;
+	float: left;
+	width: 100%;
+	cursor: pointer;
+	padding: 0;
+	position: relative;
+}
+#DP-NavSections li:first-child{
+	border-top: 1px solid #272A2E;
+	box-shadow: 0 1px 0 #3C3F44 inset;
+}
+#DP-NavSections li.dpNavActive{
+	background: url(../../"../images/agent/pointerNav.png") no-repeat 44px 22px #1f2225;
+	padding: 0;
+	z-index: 999;
+	box-shadow: none;
+	border: 1px solid #17191B;
+	box-shadow: 0 -1px 0 #17191B;
+}
+#DP-NavSections li.dpNavActive:first-child{
+	border: 1px solid #17191B;
+	box-shadow: 0 -1px 0 #17191B;
+}
+
+
+/*#DP-NavSections li .navCounterGreen, #DP-chatOnlineCount .navCounterGreen{
+	background: -moz-linear-gradient(top, rgba(119,150,90,1) 0%, rgba(88,119,60,1) 100%); 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(119,150,90,1)), color-stop(100%,rgba(88,119,60,1))); 
+	-pie-background: linear-gradient(#77965a, #58773c);
+	behavior: url(../../js/lib/PIE.htc);
+	border-radius: 10px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 0px 1px rgba(255, 255, 255, 0.2) inset,  0 2px 3px rgba(0, 0, 0, 0.3);
+	border: 1px solid #304020;
+	display: block;
+	left: 25px;
+	padding: 1px 2px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	z-index: 99;
+}*/
+
+#DP-NavSections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
+	border-radius: 7px;
+	background-image: -moz-linear-gradient(top, #bf4d4e, #943232);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf4d4e), to(#943232));
+	box-shadow: 0 1px 5px rgba(0,0,0,0.25), inset 0 1px 0 #d58181;
+	-pie-background: linear-gradient(#bf4d4e, #943232);
+	behavior: url(../../js/lib/PIE.htc);
+	border: 1px solid #592d2d;
+	display: block;
+	left: 30px;
+	padding: 1px 2px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	z-index: 99;
+}
+.circle01{ 
+	top: 0px !important;
+	position: absolute;
+}
+.circle02, .circle03, .circle04, .circle05, .circle06{ 
+	top: 5px  !important;
+	position: absolute;
+}
+
+#DP-NavSections li span, #DP-chatOnlineCount span{
+	color: #fff;
+	font-size: 10px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #000000;
+	padding: 1px 2px 0 1px;
+}
+
+#DP-NavSections li a{
+	color: #FFFFFF;
+	float: left;
+	font-size: 11px !important;
+	padding: 10px 0 15px;
+	text-align: center;
+}
+#DP-NavSections li a span, #DP-NavSections li.dpNavActive a span, #DP-chatOnlineCount a span{
+	background: url(../../images/agent/navIcon.png) no-repeat;
+ 	color: #FFFFFF;
+    float: left;
+    font-weight: normal;
+    height: 7px;
+    margin: 0 10px;
+    padding: 28px 0 0;
+    width: 33px;
+}
+
+#DP-NavSections li a span.ticketNavIcon{
+	background-position: 0 0;
+}
+#DP-NavSections li:hover a span.ticketNavIcon, #DP-NavSections li.dpNavActive a span.ticketNavIcon{
+	background-position: 0 -757px;
+}
+#DP-NavSections li a span.chatNavIcon{
+	background-position: 0 -58px;
+}
+#DP-NavSections li:hover a span.chatNavIcon, #DP-NavSections li.dpNavActive a span.chatNavIcon{
+	background-position: 0 -814px;
+}
+#DP-NavSections li a span.twitterNavIcon{
+	background-position: 0 -115px;
+}
+#DP-NavSections li:hover a span.twitterNavIcon, #DP-NavSections li.dpNavActive a span.twitterNavIcon{
+	background-position: 0 -871px;
+}
+#DP-NavSections li a span.peopleNavIcon{
+	background-position: 0 -177px;
+}
+#DP-NavSections li:hover a span.peopleNavIcon, #DP-NavSections li.dpNavActive a span.peopleNavIcon{
+	background-position: 0 -933px;
+}
+#DP-NavSections li a span.ideasNavIcon{
+	background-position: 0 -237px;
+}
+#DP-NavSections li:hover a span.ideasNavIcon, #DP-NavSections li.dpNavActive a span.ideasNavIcon{
+	background-position: 0 -993px;
+}
+#DP-NavSections li a span.publishNavIcon{
+	background-position:0 -298px;
+}
+#DP-NavSections li:hover a span.publishNavIcon, #DP-NavSections li.dpNavActive	a span.publishNavIcon{
+	background-position:0 -1054px;
+}
+
+
+/* Agent Chat Status */
+#DP-agenChatIndy{
+	background-image: -moz-linear-gradient(top, #eef0f2, #e4e6e9);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#eef0f2), to(#e4e6e9));
+	-pie-background: linear-gradient(#eef0f2, #e4e6e9);
+	behavior: url(../../js/lib/PIE.htc);
+	border-radius: 5px 5px 0 0;
+	border-top: 1px solid #212326;
+	border-left: 1px solid #212326;
+	border-right: 1px solid #212326;
+	box-shadow: 0 1px 0 #FFFFFF inset;
+	bottom: 0;
+	cursor: pointer;
+	height: 33px;
+	left: 8px;
+	position: absolute;
+	width: 40px;
+	z-index: 9999;
+}
+#DP-agenChatIndy:hover{
+	background: #d2d4d6;
+}
+#DP-chatOnlineCount{
+	position: relative;
+}
+
+#DP-chatOnlineCount a{
+	float: left;
+	padding: 7px 0 0;
+	width: 100%;
+}
+#DP-chatOnlineCount a span.liveChatIcon{
+	background-position:0 -350px;
+	padding: 11px 0 5px 24px;
+	width: 100%;
+	margin: 0;
+	color: #000000;
+	text-shadow: 0 1px 0 #fff;
+}
+
+/* End of Agent Chat Status */

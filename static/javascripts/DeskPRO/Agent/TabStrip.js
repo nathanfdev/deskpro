@@ -61,7 +61,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	alertTab: function(tabIdClass) {
 		var el = $('li.' + tabIdClass, this.tabStrip);
-		if (!el.length || el.is('.active-tab') || el.is('.is-alerting')) return;
+		if (!el.length || el.is('.activeTabList') || el.is('.is-alerting')) return;
 
 		el.addClass('is-alerting');
 		var timeout = this._alertTabDoHighlight.periodical(1500, this, [el]);
@@ -177,7 +177,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
-		
+
 		var id = this.addTab(page);
 
 		if (routeData.tabLoad) {
@@ -220,30 +220,30 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var el_click = $(event.target);
 
-		if (el_click.is('li.tab')) {
+		if (el_click.is('li')) {
 			var el = el_click;
-		} else if (el_click.parent().is('li.tab')) {
+		} else if (el_click.parent().is('li')) {
 			var el = el_click.parent();
 		} else {
-			var el = el_click.parentsUntil('li.tab');
+			var el = el_click.parentsUntil('li');
 			if (el.length) {
 				el = el.parent(); // jquery doesnt include the actual parent in parentsUntil
 			}
 		}
 
 		// If its not a tab, we can just ignore the event
-		if (!el.is('li.tab')) {
+		if (!el.is('li')) {
 			console.log('not click %o', event.target);
 			return;
 		}
-		
+
 		event.preventDefault();
 		event.stopPropagation();
-		
+
 		var tabId = el.data('tab-id');
 
 		// If the clicked thing was the close button, or if its a middle-click...
-		if (el_click.is('.close-tab') || event.which == 2 || event.isDbl) {
+		if (el_click.is('.close') || event.which == 2 || event.isDbl) {
 			var tab = this.getTabById(tabId);
 			if (tab.page && tab.page.fireEvent) {
 				event.deskpro = {cancelClose: false};
@@ -277,7 +277,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
-		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped ' + tabIdClass;
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tipped ' + tabIdClass;
 
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' ' + tabData.page.TYPENAME;
@@ -301,8 +301,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				html += '" data-tipped="' + tabData.title + '" data-tipped-options="hook: \'topmiddle\'">';
 			}
 
-			html += '<a class="link">'+tabData.title+'</a>';
-			html += '<a class="close-tab">Close</a>';
+			html += '<a>';
+				html += '<span class="tab-title">'+tabData.title+'</span>';
+				html += '<span class="close"></span>';
+			html += '</a>';
 		html += '</li>';
 
 		var li = $(html);
@@ -317,8 +319,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			$('#' + btnId).replaceWith(li);
 
-			if (!$('li.active-tab', this.tabStrip).length) {
-				li.addClass('active-tab');
+			if (!$('li.activeTabList', this.tabStrip).length) {
+				li.addClass('activeTabList');
 			}
 		} else {
 			li.appendTo(this.tabStrip);
@@ -336,8 +338,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	},
 
 	_onTabActivate: function(tabData) {
-		$('li', this.tabStrip).removeClass('active-tab');
-		var tabEl = $('#' + tabData.btnId).addClass('active-tab');
+		$('li', this.tabStrip).removeClass('activeTabList');
+		var tabEl = $('#' + tabData.btnId).addClass('activeTabList');
 
 		if (tabEl.is('.is-alerting')) {
 			tabEl.removeClass('alert-highlight').removeClass('is-alerting');
