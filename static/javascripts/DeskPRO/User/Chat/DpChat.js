@@ -539,11 +539,21 @@ var DpChat = (function() {
 			hasStarted = true;
 
 			for (var i = 0; i < initialMessages.length; i++) {
-				display.addMessageRow(
+				console.log(initialMessages);
+				if (initialMessages[i].message_html) {
+					display.addMessageRow(
+						initialMessages[i].name,
+						initialMessages[i].message_html,
+						initialMessages[i].type,
+						true
+					);
+				} else {
+					display.addMessageRow(
 						initialMessages[i].name,
 						initialMessages[i].message,
 						initialMessages[i].type
-				);
+					);
+				}
 			}
 
 			display.showChatPanel();

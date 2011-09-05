@@ -2,24 +2,29 @@
 	$messages = array();
 	foreach ($convo_messages as $msg) {
 		if ($msg->author && $msg->author['is_agent']) {
-			$messages[] = array(
+			$m = array(
 				'name' => $msg->author['display_name'],
-				'message' => $msg['content'],
 				'type' => 'agent'
 			);
 		} elseif ($msg['is_sys']) {
-			$messages[] = array(
+			$m = array(
 				'name' => '*',
-				'message' => $msg['content'],
 				'type' => 'sys'
 			);
 		} else {
-			$messages[] = array(
+			$m = array(
 				'name' => 'You',
-				'message' => $msg['content'],
 				'type' => 'user'
 			);
 		}
+
+		if ($msg->is_html) {
+			$m['message_html'] = $msg->content;
+		} else {
+			$m['message'] = $msg->content;
+		}
+
+		$messages[] = $m;
 	}
 ?>
 DpChat.setInitialMessages(<?php echo json_encode(array_reverse($messages)) ?>);

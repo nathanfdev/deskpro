@@ -305,27 +305,24 @@ class UserChatController extends AbstractController
 			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 		}
 
-		$file = $this->request->files->get('file-upload');
-		$desc = App::getApi('filestorage')->createRandomPath();
-
-		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $file->getMimeType(),
-			'filename' => $file->getClientOriginalName()
-		));
-
-		$blob_id = $desc->getPath();
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
 
 		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+		if ($blob->isImage()) {
+			$msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
+		}
 
 		$chat_message = $conversation->addNewMessage(
 			$msg,
 			$this->person
 		);
+		$chat_message->is_html = true;
 
+		$cm_data = null;
 		$client_messages = ChatClientMessageGenerator::createNewMessageMessages(
 			App::getSession()->getEntityId(),
-			$chat_message
+			$chat_message,
+			$cm_data
 		);
 
 		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
@@ -342,7 +339,8 @@ class UserChatController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'conversation_id' => $conversation_id,
-			'new_message_id'  => $chat_message['id']
+			'new_message_id'  => $chat_message['id'],
+			'chat_data'       => $cm_data,
 		));
 	}
 

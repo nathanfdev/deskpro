@@ -231,9 +231,6 @@ var DpChat_Display = (function() {
 			name = name + ': ';
 		}
 
-		message = DpChat.util.escapeHtml(message);
-		message = DpChat.util.linkUrls(message);
-
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
 			html.push('<div class="dpchat-author">' + name + '</div>');
@@ -242,9 +239,12 @@ var DpChat_Display = (function() {
 
 		var el = $(html.join(''));
 		if (is_html) {
+			console.log(message);
 			$('.dpchat-msg', el).html(message);
 		} else {
-			$('.dpchat-msg', el).text(message);
+			message = DpChat.util.escapeHtml(message);
+			message = DpChat.util.linkUrls(message);
+			$('.dpchat-msg', el).html(message);
 		}
 
 		el.appendTo(messageWrapper);

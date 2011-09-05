@@ -225,7 +225,7 @@ class Chat
 		return array($new_chat_cm);
 	}
 
-	public static function createNewMessageMessages($by_client_id, ChatMessage $chat_message)
+	public static function createNewMessageMessages($by_client_id, ChatMessage $chat_message, &$cm_data = null)
 	{
 		$conversation = $chat_message->conversation;
 
@@ -253,7 +253,7 @@ class Chat
 		);
 		if ($chat_message['is_html']) {
 			$cm_data['message_html'] = $chat_message['content'];
-			unset($cm_data['message_html']);
+			unset($cm_data['message']);
 		}
 
 		$cms = array();

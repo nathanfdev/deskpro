@@ -1200,10 +1200,6 @@ agent_agentchat_send_message:
   pattern: /agent-chat/send-message/{conversation_id}
   defaults: { _controller: AgentBundle:AgentChat:sendMessage }
 
-agent_agentchat_send_filemessage:
-  pattern: /agent-chat/send-file-message/{conversation_id}
-  defaults: { _controller: AgentBundle:AgentChat:sendFileAction }
-
 agent_agentchat_send_agent_message:
   pattern: /agent-chat/send-agent-message/{convo_id}
   defaults: { _controller: AgentBundle:AgentChat:sendAgentMessage }
@@ -1232,6 +1228,10 @@ agent_userchat_listopen:
 agent_userchat_send_messageview:
   pattern: /chat/send-message/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:sendMessage }
+
+agent_userchat_send_filemessage:
+  pattern: /chat/send-file-message/{conversation_id}
+  defaults: { _controller: AgentBundle:UserChat:sendFile }
 
 agent_userchat_getqr:
   pattern: /chat/get-qr/{conversation_id}/{quick_reply_id}

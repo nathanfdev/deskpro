@@ -6847,3 +6847,8 @@ table.props-table td time.timeago {
 .org-members-table span.create-new-user:hover {
 	opacity: 0.8;
 }
+
+
+.userchat-send-file {
+	width: 400px;
+}

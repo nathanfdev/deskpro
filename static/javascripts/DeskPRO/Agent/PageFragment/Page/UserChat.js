@@ -17,10 +17,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 		this._initLayout();
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
-			this._handleResize()
-		}).bind(this));
-
 		var self = this;
 		var messageTextarea = $('.new-message', this.barWrapper);
 		messageTextarea.keypress(function(ev) {
@@ -44,6 +40,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		if (this.meta.viewPersonUrl) {
 			this._initPopout();
 		}
+
+		$('.bar-actions .attach', this.wrapper).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self.showUploadOverlay();
+		});
 	},
 
 	_initLayout: function() {
@@ -86,11 +88,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				ul.append('<li class="agent-'+agent_id+'">'+name+'</li>');
 			});
 		}
-	},
-
-	_handleResize: function() {
-		if (!this.layout) return;
-		this.layout.doLayout();
 	},
 
 	_initMenus: function() {
@@ -218,7 +215,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		$('.ended', el).show();
 
 		this.barWrapper.hide();
-		this._handleResize();
 	},
 
 	addPart: function(agent_id) {
@@ -269,9 +265,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			popoutclass = " person-overview";
 		}
 
-		msg = Orb.escapeHtml(msg);
-		msg = Orb.linkUrls(msg);
-
 		var html = ['<div class="message '+type+'">'];
 			html.push('<span class="author' + popoutclass + '">' + name + '</span>');
 			html.push('<span class="message"></span>');
@@ -281,7 +274,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		if (is_html) {
 			$('.message', row).html(msg);
 		} else {
-			$('.message', row).text(msg);
+			msg = Orb.escapeHtml(msg);
+			//msg = Orb.linkUrls(msg);
+			$('.message', row).html(msg);
 		}
 
 		row.appendTo($('.chat-messages .messages-wrapper', this.wrapper));
@@ -295,6 +290,66 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			data: {content: msg},
 			context: this,
 			contentType: 'json'
+		});
+	},
+
+	//#################################################################
+	//# Upload message
+	//#################################################################
+
+	showUploadOverlay: function() {
+		this._initUploadOverlay();
+		this.uploadOverlay.open();
+	},
+
+	_initUploadOverlay: function() {
+		if (this.uploadOverlay) return;
+
+		var self = this;
+		var o;
+		var overlayWrapper = this.getEl('upfile_overlay');
+		this.uploadOverlay = o = new DeskPRO.UI.Overlay({
+			contentElement: overlayWrapper
+		});
+
+		this.addEvent('destroy', function() {
+			o.destroy();
+		});
+
+		var list = $('.file-list', overlayWrapper);
+
+		overlayWrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: overlayWrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', overlayWrapper),
+			downloadTemplate: $('.template-download', overlayWrapper)
+		});
+		overlayWrapper.bind('fileuploadadd', function() {
+            $('ul.file-list', overlayWrapper).empty();
+        });
+
+		$('button.send-trigger', overlayWrapper).click(function() {
+			var blobId = $('input.send_blob_id', overlayWrapper).val();
+			console.log(blobId);
+
+			if (!blobId) {
+				return;
+			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
+				data: {send_blob_id: blobId},
+				context: self,
+				contentType: 'json',
+				success: function(data) {
+					var chat_data = data.chat_data;
+					this.addMessageRow(chat_data.author_name, chat_data.message_html, chat_data.author_type, true);
+				}
+			});
+
+			self.uploadOverlay.close();
+			$('ul.file-list', overlayWrapper).empty();
 		});
 	},
 
