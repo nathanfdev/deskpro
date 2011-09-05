@@ -12,14 +12,14 @@
 	overflow: hidden;
 	position: absolute;
 	top: 0;
-	width: 56px;
+	width: 55px;
 	z-index: 99999;
 	behavior: url(../../js/lib/PIE.htc);
 }
 
 #DP-NavSections ul{
 	position: relative;
-	margin: 100px 0 0;
+	margin: 60px 0 0;
 	padding: 0;
 }
 
@@ -34,11 +34,12 @@
 	position: relative;
 }
 #DP-NavSections li:first-child{
+	margin-top:-1px;
 	border-top: 1px solid #272A2E;
 	box-shadow: 0 1px 0 #3C3F44 inset;
 }
 #DP-NavSections li.dpNavActive{
-	background: url(../../"../images/agent/pointerNav.png") no-repeat 44px 22px #1f2225;
+	background: url(../../images/agent/pointerNav.png) no-repeat 44px 22px #1f2225;
 	padding: 0;
 	z-index: 999;
 	box-shadow: none;
@@ -46,7 +47,8 @@
 	box-shadow: 0 -1px 0 #17191B;
 }
 #DP-NavSections li.dpNavActive:first-child{
-	border: 1px solid #17191B;
+	margin-top: 0;
+	border-top: 1px solid #17191B;
 	box-shadow: 0 -1px 0 #17191B;
 }
 
@@ -84,11 +86,11 @@
 	top: 0;
 	z-index: 99;
 }
-.circle01{ 
+.count-badge.first { 
 	top: 0px !important;
 	position: absolute;
 }
-.circle02, .circle03, .circle04, .circle05, .circle06{ 
+.count-badge{ 
 	top: 5px  !important;
 	position: absolute;
 }
@@ -105,7 +107,7 @@
 	color: #FFFFFF;
 	float: left;
 	font-size: 11px !important;
-	padding: 10px 0 15px;
+	padding: 8px 0 9px;
 	text-align: center;
 }
 #DP-NavSections li a span, #DP-NavSections li.dpNavActive a span, #DP-chatOnlineCount a span{
@@ -156,6 +158,19 @@
 	background-position:0 -1054px;
 }
 
+#DP-NavSections li a span.tasksNavIcon{
+	background-position:0 -298px;
+}
+#DP-NavSections li:hover a span.tasksNavIcon, #DP-NavSections li.dpNavActive	a span.tasksNavIcon{
+	background-position:0 -1054px;
+}
+
+#DP-NavSections li a span.deaksNavIcon{
+	background-position:0 -298px;
+}
+#DP-NavSections li:hover a span.dealsNavIcon, #DP-NavSections li.dpNavActive	a span.dealsNavIcon{
+	background-position:0 -1054px;
+}
 
 /* Agent Chat Status */
 #DP-agenChatIndy{
@@ -170,10 +185,10 @@
 	box-shadow: 0 1px 0 #FFFFFF inset;
 	bottom: 0;
 	cursor: pointer;
-	height: 33px;
+	height: 25px;
 	left: 8px;
 	position: absolute;
-	width: 40px;
+	width: 37px;
 	z-index: 9999;
 }
 #DP-agenChatIndy:hover{
@@ -184,8 +199,7 @@
 }
 
 #DP-chatOnlineCount a{
-	float: left;
-	padding: 7px 0 0;
+	padding: 0;
 	width: 100%;
 }
 #DP-chatOnlineCount a span.liveChatIcon{
