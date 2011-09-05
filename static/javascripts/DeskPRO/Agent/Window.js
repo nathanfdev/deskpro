@@ -1120,6 +1120,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
+		console.log(options);
+
 		if (options.appendTo) {
 			$(options.appendTo).append(el);
 		} else {
@@ -1139,8 +1141,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	playLibrarySound: function(name, options) {
 		var files = [
-			ASSETS_BASE_URL + 'sounds/' + name + '.mp3',
-			ASSETS_BASE_URL + 'sounds/' + name + '.ogg'
+			ASSETS_BASE_URL + '/sounds/' + name + '.mp3',
+			ASSETS_BASE_URL + '/sounds/' + name + '.ogg'
 		];
 
 		this.playSound(files, options);
@@ -1148,11 +1150,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	handleSoundElements: function(el) {
 		var self = this;
-		$('[data-play-sound]', el).each(function() {
-			self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
-		});
 		if ($(el).is('[data-play-sound]')) {
 			self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+		} else {
+			$('[data-play-sound]', el).each(function() {
+				self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
+			});
 		}
 	},
 

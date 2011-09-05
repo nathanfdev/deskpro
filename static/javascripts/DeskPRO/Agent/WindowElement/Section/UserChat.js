@@ -134,11 +134,19 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		alertEl.appendTo('body');
 		DeskPRO_Window.handleSoundElements(alertEl);
 
+		var audio = $('audio', alertEl).get(0);
+
 		$('.dismiss-trigger', alertEl).click(function() {
+			if (audio) {
+				audio.pause();
+			}
 			alertEl.remove();
 		});
 		$('.accept-trigger', alertEl).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+			if (audio) {
+				audio.pause();
+			}
 			alertEl.remove();
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 
