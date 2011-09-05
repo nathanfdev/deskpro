@@ -30,7 +30,7 @@
 	float: left;
 	width: 100%;
 	cursor: pointer;
-	padding: 0;
+	padding: 1px 0 0 1px;
 	position: relative;
 }
 #DP-NavSections li:first-child{
@@ -93,6 +93,10 @@
 .count-badge{ 
 	top: 3px  !important;
 	position: absolute;
+}
+
+#DP-NavSections li.dpNavActive .count-badge {
+	margin-top: -1px;
 }
 
 #DP-NavSections li span, #DP-chatOnlineCount span{
