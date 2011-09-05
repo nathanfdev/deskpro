@@ -138,6 +138,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		var scrollEl = $('.with-scrollbar:first', this.sectionEl);
 		if (scrollEl.length) {
+			console.log('re');
 			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(this, scrollEl, {
 				showEvent: 'show',
 				hideEvent: 'hide'

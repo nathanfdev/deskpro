@@ -21,7 +21,7 @@ body {
 	top: 41px;
 	right: 0;
 	bottom: 0;
-	left: 54px;
+	left: 56px;
 }
 
 /* ----- FIX ----- */
@@ -228,4 +228,14 @@ span.dropdownIcon{
     user-select: none;
 
 	z-index: 100000000;
+}
+
+
+
+.deskpro-tab-item {
+	display: none;
+}
+
+.deskpro-tab-item.on {
+	display: block;
 }

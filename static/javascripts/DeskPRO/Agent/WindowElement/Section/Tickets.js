@@ -32,7 +32,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.setHasInitialLoaded();
 
-		this.sectionEl.html(data.section_html);
+		this.contentEl.html(data.section_html);
 
 		var self = this;
 		this.tabs = new DeskPRO.UI.SimpleTabs({
@@ -47,12 +47,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
-		this.inboxViewTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('#tickets_outline_viewtypetabs li')
-		});
-
 		this._initFilters();
-		//this._initOverview();
 		this._initFlagged();
 
 		$('#user_settings_filters_link').click(function() {
@@ -233,155 +228,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	//#########################################################################
-	// Grouping
-	//#########################################################################
-
-	_initOverview: function() {
-
-		this.overviewGroupMenuEl = null;
-		this.overviewGroupEl1 = null;
-		this.overviewGroupEl2 = null;
-		this.overviewGroupEl2_yes = null;
-
-		this.overviewGroupingMenu = null;
-		this.overviewModeMenu = null;
-
-		this._initoverviewGroupingMenu();
-		this.overviewLoadList();
-	},
-
-	_initoverviewGroupingMenu: function() {
-
-		this.overviewGroupMenuEl   = $('#overview_grouping_menu');
-		this.overviewModeMenuEl    = $('#overview_mode_menu');
-		this.overviewModeEl        = $('#ticket_grouping_options .mode');
-		this.overviewGroupEl1      = $('#ticket_grouping_options .grouping1');
-		this.overviewGroupEl2      = $('#ticket_grouping_options .grouping2');
-
-		var self = this;
-		this.overviewGroupingMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('#ticket_grouping_options .grouping-menu-trigger'),
-			menuElement: this.overviewGroupMenuEl,
-			onItemClicked: function(info) {
-				info.event.stopPropagation();
-				self._handleGroupingChanged(info);
-			},
-			onBeforeMenuOpened: function(info) {
-				$('li[data-groupby]', self.overviewGroupMenuEl).show();
-
-				var event = info.menu.getOpenTriggerEvent();
-				var triggerEl = $(event.target);
-
-				if (triggerEl.is('.grouping1')) {
-					$('li[data-groupby="none"]', self.overviewGroupMenuEl).hide();
-				} else {
-					var grouping1 = self.overviewGroupEl1.data('groupby');
-
-					// Hide primary grouping form sub-grouping menu
-					$('li[data-groupby="'+grouping1+'"]', self.overviewGroupMenuEl).hide();
-				}
-			}
-		});
-
-		this.overviewModeMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('#ticket_grouping_options .mode-menu-trigger'),
-			menuElement: this.overviewModeMenuEl,
-			onItemClicked: function(info) {
-				self._handleModeChanged(info);
-			}
-		});
-	},
-
-	_handleModeChanged: function (info) {
-		var itemEl = $(info.itemEl);
-		var mode = itemEl.data('mode');
-		var modeTitle = itemEl.text();
-
-		this.overviewModeEl.text(modeTitle).data('mode', mode);
-		this.overviewLoadList();
-	},
-
-	_handleGroupingChanged: function(info) {
-		var grouping1 = this.overviewGroupEl1.data('groupby');
-		var grouping2 = this.overviewGroupEl2.data('groupby');
-
-		var event = info.menu.getOpenTriggerEvent();
-		var triggerEl = $(event.target);
-		var itemEl = $(info.itemEl);
-
-		if (triggerEl.is('.grouping1')) {
-			grouping1 = itemEl.data('groupby');
-			if (grouping1 == grouping2) {
-				grouping2 = '';
-			}
-		} else {
-			grouping2 = itemEl.data('groupby');
-		}
-
-		if (!grouping1 || grouping1 == 'none') grouping1 = 'department';
-		if (!grouping2 || grouping2 == 'none') grouping2 = '';
-
-		this.overviewUpdateGrouping(grouping1, grouping2);
-		this.overviewLoadList();
-	},
-
-	/**
-	 * This just updates the page to show proper texts etc for the particular groups
-	 */
-	overviewUpdateGrouping: function(grouping1, grouping2) {
-		var grouping1_menuItemEl = $('[data-groupby="'+grouping1+'"]', this.overviewGroupMenuEl);
-
-		if (grouping2 && grouping2.length) {
-			var grouping2_menuItemEl = $('[data-groupby="'+grouping2+'"]', this.overviewGroupMenuEl);;
-		} else {
-			grouping2 = false;
-			var grouping2_menuItemEl = $();
-		}
-
-		// Update
-		this.overviewGroupEl1.html(grouping1_menuItemEl.html()).data('groupby', grouping1);
-
-		if (grouping2) {
-			this.overviewGroupEl2.html(grouping2_menuItemEl.html()).data('groupby', grouping2);
-
-		} else {
-			this.overviewGroupEl2.html('none').data('groupby', '');
-		}
-	},
-
-	/**
-	 * This loads the lists for the currently selected group and mode
-	 */
-	overviewLoadList: function() {
-
-		var grouping1 = this.overviewGroupEl1.data('groupby');
-		var grouping2 = this.overviewGroupEl2.data('groupby') || '';
-		var mode = this.overviewModeEl.data('mode');
-
-		var data = {
-			group1: grouping1,
-			group2: grouping2,
-			mode: mode
-		};
-
-		// Send AJAX
-		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/overview-nav',
-			type: 'GET',
-			data: data,
-			context: this,
-			dataType: 'html',
-			success: function(html) {
-				this._overviewGroupListLoaded(html);
-			}
-		});
-	},
-
-	_overviewGroupListLoaded: function(html) {
-		var list = $('#ticket_grouping_list > ul').html(html);
-	},
-
-	//#########################################################################
 	// Flagged
 	//#########################################################################
 
@@ -453,7 +299,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				backdrop.remove();
 				wrapper.remove();
 			};
-			
+
 			var backdrop = $('<div class="backdrop"></div>');
 			backdrop.appendTo('body');
 			backdrop.click(closeFn);

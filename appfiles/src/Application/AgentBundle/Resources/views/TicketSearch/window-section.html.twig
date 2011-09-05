@@ -1,253 +1,77 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-<section class="inbox">
-	<h2>Awaiting Agent</h2>
-	<nav id="tickets_outline_viewtypetabs">
-		<ul>
-			<li class="on" data-tab-for="#tickets_outline_pending">Pending</li>
-			<li data-tab-for="#tickets_outline_hold" class="with-count">On Hold <span class="count">22</span></li>
-		</ul>
-	</nav>
-
-	<div id="tickets_outline_pending">
-		<ul id="tickets_outline_inbox_list" class="nav-list">
+<!-- DeskPRO Source List Inbox -->
+<div class="pendingTicket">
+	<div class="titles">
+		<h2>Awaiting Agent</h2>
+		<div class="ticketHoldCheck">
+			<input class="selectionCtrl" type="checkbox"/>
+			<span class="holdTicketCount">45 On hold</span>
+		</div>
+	</div>
+	<!-- DeskPro Inbox Ticket -->
+	<div class="yourPendingTicket">
+		<ul id="ticketOutlineInboxList" class="navList">
 			{% for filter in sys_filters %}
 				<li
 					class="filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 				>
-					<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
-						{{ sys_filter_counts[filter.id]|default(0) }}
-					</span>
-					<span class="sub-toggle">expand</span>
-					<a>{{filter.title}}</a>
-					<ul class="sub-group" style="display: none;">
-						<li class="grouping-options">
-							Grouped by <span class="menu-trigger">Department</span>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>General Contact</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Sales</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>General</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Feature Enquiry</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Licensing and Pricing</a>
-						</li>
-						<li>
-							<span class="list-counter">9</span>
-							<a>Support</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>General</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>How Do I</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Troubleshooting</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Feature Requests</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Custom Work</a>
-						</li>
-					</ul>
+					<a class="groupHead">
+						{{filter.title}}
+						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
+							{{ sys_filter_counts[filter.id]|default(0) }}
+						</span>
+						<span id="toggled" class="subToggle open">expand</span>
+					</a>
 				</li>
 			{% endfor %}
 		</ul>
 	</div>
-
-	{# /TODO DEMO UI #}
-	<div id="tickets_outline_hold" style="display:none">
-		<ul class="nav-list">
-				<li data-route="listpane:/dp_400/index_dev.php/agent/ticket-search/filter/1" data-filter-id="1" class="filter-1 nav-filter-1 auto-load-route active-nav">
-					<span id="ticket_filter_1_count" class="list-counter">2</span>
-					<span class="sub-toggle">expand</span>
-					<a>Your Tickets</a>
-					<ul style="display: none;" class="sub-group">
-						<li class="grouping-options">
-							Grouped by <span class="menu-trigger">Department</span>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 1</a>
-						</li>
-						<li>
-							<span class="list-counter">9</span>
-							<a>Department 2</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Child</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Department 3</a>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 4</a>
-						</li>
-					</ul>
-				</li>
-						<li data-route="listpane:/dp_400/index_dev.php/agent/ticket-search/filter/3" data-filter-id="3" class="filter-3 nav-filter-3 ">
-					<span id="ticket_filter_3_count" class="list-counter">1</span>
-					<span class="sub-toggle">expand</span>
-					<a>You're a Participant</a>
-					<ul style="display: none;" class="sub-group">
-						<li class="grouping-options">
-							Grouped by <span class="menu-trigger">Department</span>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 1</a>
-						</li>
-						<li>
-							<span class="list-counter">9</span>
-							<a>Department 2</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Child</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Department 3</a>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 4</a>
-						</li>
-					</ul>
-				</li>
-						<li data-route="listpane:/dp_400/index_dev.php/agent/ticket-search/filter/2" data-filter-id="2" class="filter-2 nav-filter-2 ">
-					<span id="ticket_filter_2_count" class="list-counter">19</span>
-					<span class="sub-toggle">expand</span>
-					<a>Your Teams Tickets</a>
-					<ul style="display: none;" class="sub-group">
-						<li class="grouping-options">
-							Grouped by <span class="menu-trigger">Department</span>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 1</a>
-						</li>
-						<li>
-							<span class="list-counter">9</span>
-							<a>Department 2</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Child</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Department 3</a>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 4</a>
-						</li>
-					</ul>
-				</li>
-				<li data-route="listpane:/dp_400/index_dev.php/agent/ticket-search/filter/5" data-filter-id="5" class="filter-5 nav-filter-5 ">
-					<span id="ticket_filter_5_count" class="list-counter">46</span>
-					<span class="sub-toggle">expand</span>
-					<a>All</a>
-					<ul style="display: none;" class="sub-group">
-						<li class="grouping-options">
-							Grouped by <span class="menu-trigger">Department</span>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 1</a>
-						</li>
-						<li>
-							<span class="list-counter">9</span>
-							<a>Department 2</a>
-						</li>
-						<li class="sub-list">
-							<span class="list-counter">3</span>
-							<a>Child</a>
-						</li>
-						<li>
-							<span class="list-counter">3</span>
-							<a>Department 3</a>
-						</li>
-						<li>
-							<span class="list-counter">5</span>
-							<a>Department 4</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-		{# /TODO DEMO UI #}
-</section>{# /inbox section #}
+</div>
+<!-- DeskPRO Source List Ticket Filter -->
 
 {% if custom_filters %}
-	<section class="filters" style="margin-top: 10px;">
-		<span class="manage-filters-btn tipped" id="user_settings_filters_link" title="Manage Filters" data-tipped-options="hook: 'rightmiddle'">Manage Filters</span>
-		<h2>Filters</h2>
-		<ul id="tickets_outline_filters_list" class="nav-list">
-			{% for filter in custom_filters %}
-				<li
-					class="filter-{{filter.id}} tipped"
-					data-filter-id="{{filter.id}}"
-					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
-					data-tipped="filter_{{filter.id}}_tip"
-					data-tipped-options="inline:true, hook: 'rightmiddle'"
-				>
-					<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
-						-
-					</span>
-					<a>{{filter.title}}</a>
-				</li>
-			{% endfor %}
-		</ul>
-	</section>
+	<div class="filters">
+		<div class="titles">
+			<span class="filterSetup">Manage Filters</span>
+			<h2>Filters</h2>
+		</div>
+		<div class="teamfilter">
+			<ul id="ticketsOutlineFiltersList" class="navList">
+				{% for filter in custom_filters %}
+					<li
+						class="filter-{{filter.id}} tipped"
+						data-filter-id="{{filter.id}}"
+						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+						data-tipped="filter_{{filter.id}}_tip"
+						data-tipped-options="inline:true, hook: 'rightmiddle'"
+					>
+						<a>
+							{{filter.title}}
+							<span class="listCounter">1000</span>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 {% endif %}
 
-<section class="custom-searches" style="margin-top: 10px">
-	<span class="new-search-btn with-route tipped" data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}" title="New Search" data-tipped-options="hook: 'rightmiddle'">New Search</span>
-	<h2>Searches</h2>
-	<ul id="tickets_outline_searches_list" class="nav-list">
-		{% include 'AgentBundle:TicketSearch:window-recentsearch-list.html.twig' %}
-	</ul>
-</section>
+<div id="tickets_outline_tabstrip" class="listTabNavTicket">
+	<div id="navTabStrip" class="desproTabStrip">
+		<ul>
+			<li class="labels"  data-tab-for="#tickets_outline_labels"><a>Labels</a></li>
+			<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
+			<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>
+		</ul>
+	</div>
+</div>
 
-<nav id="tickets_outline_tabstrip" class="deskpro-tabstrip">
-	<ul>
-		<li class="labels"  data-tab-for="#tickets_outline_labels"><a>Labels</a></li>
-		<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
-		<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>
-	</ul>
-</nav>
-<section id="tickets_outline_grouped" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.grouped">
-	{% include 'AgentBundle:TicketSearch:window-section-grouped.html.twig' %}
-</section>
-<section id="tickets_outline_labels"  class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.labels">
+<section id="tickets_outline_labels"  class="deskpro-tab-item">
 	Loading ...
 </section>
-<section id="tickets_outline_flagged" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.flagged">
+<section id="tickets_outline_flagged" class="deskpro-tab-item">
 	<ul id="tickets_outline_flags_list" class="nav-list">
 		{% for color in flags %}
 			<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
@@ -257,8 +81,8 @@
 		{% endfor %}
 	</ul>
 </section>
-<section id="tickets_outline_archive" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.archive">
-	<ul id="tickets_outline_filters_list" class="nav-list">
+<section id="tickets_outline_archive" class="deskpro-tab-item">
+	<ul id="tickets_outline_filters_list" class="navSimpleList">
 		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam">
 			<a>Spam</a>
 		</li>
@@ -274,7 +98,6 @@
 		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed">
 			<a>Closed</a>
 		</li>
-		<li class="sep">-</li>
 		<li>
 			<a class="with-route" data-route="listpane:{{ path('agent_recyclebin') }}">Recycle Bin</a>
 		</li>
