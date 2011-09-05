@@ -37,7 +37,7 @@
 					</li>
 				</script>
 				<div class="file-input chooseFiles">
-					<input type="file" name="file-upload" multiple="multiple" />
+					<input type="file" name="file-upload" multiple="multiple" size="5" />
 					<div id="uploadFiles" class="assignBtn"><a>Upload</a></div>
 				</div>
 				<div class="fileAttach file-list">
@@ -47,7 +47,7 @@
 			</div>
 			<div class="ccUsers">
 				<span class="label">CC Users</span>
-				<div class="chooseFiles clear">
+				<div class="chooseFiles">
 					<input type="text" class="new-cc" id="{{baseId}}_add_cc_tx" />
 					<div id="add" class="assignBtn add-cc-trigger"><a>Add</a></div>
 				</div>
@@ -55,6 +55,7 @@
 					<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
 				</div>
 			</div>
+			<br class="clear" />
 		</div>
 		<div class="formCheckBox">
 			<div class="checkBoxAssign">
@@ -76,7 +77,7 @@
 				<label>Close tab after reply</label>
 			</div>
 		</div>
-		<div id="addReplyButton" class="clear">
+		<div id="addReplyButton">
 			<div class="replyButton"><a>Add Reply</a></div>
 		</div>
 	</div>

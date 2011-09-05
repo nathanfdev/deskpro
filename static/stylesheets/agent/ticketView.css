@@ -908,13 +908,12 @@
 	font-weight: bold;
 	color: #77828c;
 	text-shadow: 0 1px 0 #fff;
-	float: left;
 	padding-bottom: 5px;
 }
 .attachments, .ccUsers{
 	float: left;
 	margin-right: 30px;
-	width: 40%;
+	width: 46%;
 }
 .label{
 	font-size: 11px;
