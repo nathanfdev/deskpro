@@ -1,28 +1,38 @@
-<nav class="deskpro-sub-tabstrip">
-	<ul>
-		<li data-tab-for="#ticket_labels_list">List</li>
-		<li data-tab-for="#ticket_labels_cloud">Cloud</li>
-	</ul>
-</nav>
-<dl id="ticket_labels_list">
-	{% for letter,labels in labels_index %}
-		<dt>{{letter}}</dt>
-		<dd>
-			<ul class="comma-list">
-				{% for label in labels %}
-					<li><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-				{% endfor %}
-			</ul>
-		</dd>
-	{% else %}
-		<dt></dt>
-		<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
-	{% endfor %}
-</dl>
-<ol id="ticket_labels_cloud" class="tags tag-cloud" style="display: none;">
-	{% for label,css_class in labels_cloud %}
-		<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-	{% else %}
-		<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
-	{% endfor %}
-</ol>
+<div id="ticketOutlineLabels" class="deskproSegmentedItem">
+	<div class="deskproSegmentedButton">
+		<ul>
+			<li data-tab-for="#ticket_labels_list" class="list on">List</li>
+			<li data-tab-for="#ticket_labels_cloud" class="cloud">Cloud</li>
+		</ul>
+	</div>
+</div>
+<div id="ticket_labels_list">
+	<div id="listingTicketLabels">
+		<ul>
+			{% for letter,labels in labels_index %}
+				<li>
+					<a>{{letter}}</a>
+					<ul class="listingTicketChild">
+						{% for label in labels %}
+							<li><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+						{% endfor %}
+					</ul>
+					<br class="clear" />
+				</li>
+			{% else %}
+				<li>
+					You haven't labeled any tickets. Load a ticket to label it.
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+<div id="ticket_labels_cloud" style="display: none;">
+	<div id="tagCloudTicketLabels">
+		{% for label,css_class in labels_cloud %}
+			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+		{% else %}
+			<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
+		{% endfor %}
+	</div>
+</div>

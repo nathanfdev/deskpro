@@ -383,8 +383,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#tickets_outline_labels').html(html);
 
 		this.labelsTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('#tickets_outline_labels'),
-			triggerElements: $('#tickets_outline_labels .deskpro-sub-tabstrip li')
+			context: this.sectionEl,
+			triggerElements: $('#ticketOutlineLabels li')
 		});
 	}
 });

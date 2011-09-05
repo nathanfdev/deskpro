@@ -615,7 +615,7 @@ ul.userControlWrap li input{
 #listingTicketLabels ul{}
 #listingTicketLabels, #flaggedTicketLabels li, #archiveTicketLabels li, .navSimpleList li {
 	display: block;
-	padding: 0 0 3px;
+	padding: 0;
 	float: left;
 	width: 100%;
 }
@@ -631,7 +631,7 @@ ul.userControlWrap li input{
 	border-top: 1px solid transparent;
 	cursor: pointer;
 }
-#listingTicketLabels li:hover a, #flaggedTicketLabels li:hover , #archiveTicketLabels li a:hover, .navSimpleList li a:hover {
+#flaggedTicketLabels li:hover , #archiveTicketLabels li a:hover, .navSimpleList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
 	-pie-background: linear-gradient(#edf0f2, #dde3e7);
@@ -641,7 +641,7 @@ ul.userControlWrap li input{
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
 	position: relative;
 }
-.ie #listingTicketLabels li:hover a, .ie #flaggedTicketLabels li:hover , .ie #archiveTicketLabels li a:hover, .ie .navSimpleList li a:hover {
+.ie #flaggedTicketLabels li:hover , .ie #archiveTicketLabels li a:hover, .ie .navSimpleList li a:hover {
 	background: #dde3e7;
 }
 #flaggedTicketLabels{
@@ -837,4 +837,77 @@ ul.userControlWrap li input{
 	padding: 2px 10px;
 	position: absolute;
 	top: 5px;
+}
+
+ul.listingTicketChild{
+	float: left;
+	padding-top: 3px;
+}
+ul.listingTicketChild li{
+	display: inline !important;
+	width: auto !important;
+	margin: 0 0 0 5px;
+	float: left !important;
+	clear: none !important;
+}
+ul.listingTicketChild li a{
+	float: left;
+	background: #FFF;
+	border-radius: 10px 10px 10px 10px;
+	behavior: url(js/lib/PIE.htc);
+	padding: 1px 4px 1px !important;
+	font-size: 10px;
+	color: #607080 !important;
+	cursor: pointer;
+	font-weight: normal !important;
+}
+ul.listingTicketChild li a:hover{
+	border-radius: 10px 10px 10px 10px;
+	background: #6c89a6 !important;
+	color: #fff !important;
+	text-shadow: 0 1px 0 #000 !important;
+	behavior: url(js/lib/PIE.htc);
+}
+
+#ticketOutlineLabels{
+	border-bottom: 1px solid #B6BABF;
+	float: left;
+	padding: 7px 0 4px;
+	width: 215px;
+	box-shadow: 0 1px 0 #e7ecf0;
+}
+
+#listingTicketLabels li{
+	display: block;
+	width: 100%;
+	clear: both;
+	float: none;
+}
+#listingTicketLabels li a{
+	width: auto !important;
+}
+
+#tagCloudTicketLabels li a {
+	padding: 2px 5px;
+	color: #607080;
+	text-shadow: 0 1px 0 #fff;
+	cursor: pointer;
+	position: relative;
+}
+#tagCloudTicketLabels li a:hover{
+	border-radius: 10px 10px 10px 10px;
+	background: #6c89a6;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	behavior: url(js/lib/PIE.htc);
+}
+.groupingBar li a:hover{
+	background: #6c89a6;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+}
+.catTags li a, .groupingBar li a{
+	border-radius: 10px 10px 10px 10px;
+	background: #fff;
+	font-size: 10px;
 }
