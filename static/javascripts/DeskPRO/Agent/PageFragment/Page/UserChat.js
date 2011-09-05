@@ -54,7 +54,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
-		
+
 		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 
 		var self = this;
@@ -243,7 +243,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 	handleNewMessage: function(data) {
 		DeskPRO_Window.pageTabStrip.alertTab(this.meta.tabIdClass);
-		this.addMessageRow(data.author_name, data.message, data.author_type);
+
+		if (data.message_html) {
+			this.addMessageRow(data.author_name, data.message_html, data.author_type, true);
+		} else {
+			this.addMessageRow(data.author_name, data.message, data.author_type);
+		}
 
 		// Add 'pop' sound
 		var alertEl = $.tmpl('user_chat_newmsg_sound');
@@ -251,7 +256,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		DeskPRO_Window.handleSoundElements(alertEl);
 	},
 
-	addMessageRow: function(name, msg, type) {
+	addMessageRow: function(name, msg, type, is_html) {
 
 		if (type == 'sys') {
 			name = '* ';
@@ -269,10 +274,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 		var html = ['<div class="message '+type+'">'];
 			html.push('<span class="author' + popoutclass + '">' + name + '</span>');
-			html.push('<span class="message">' + msg + '</span>');
+			html.push('<span class="message"></span>');
 		html.push('</div>');
 
-		$(html.join('')).appendTo($('.chat-messages .messages-wrapper', this.wrapper));
+		var row = $(html.join(''));
+		if (is_html) {
+			$('.message', row).html(msg);
+		} else {
+			$('.message', row).text(msg);
+		}
+
+		row.appendTo($('.chat-messages .messages-wrapper', this.wrapper));
 
 		$('.scroll-viewport', this.wrapper).scrollTop(10000);
 	},

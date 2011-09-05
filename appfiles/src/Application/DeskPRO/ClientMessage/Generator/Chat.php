@@ -25,7 +25,7 @@ class Chat
 		} else {
 			$channel = 'chat.new-chat';
 		}
-		
+
 		$new_chat_cm = new ClientMessage();
 		$new_chat_cm->fromArray(array(
 			'channel' => $channel,
@@ -48,7 +48,7 @@ class Chat
 		$channel = 'chat_user_agent.added-as-part';
 
 		$chat_message = $conversation->messages->get(0);
-		
+
 		$new_chat_cm = new ClientMessage();
 		$new_chat_cm->fromArray(array(
 			'channel' => $channel,
@@ -228,7 +228,7 @@ class Chat
 	public static function createNewMessageMessages($by_client_id, ChatMessage $chat_message)
 	{
 		$conversation = $chat_message->conversation;
-		
+
 		if ($conversation['is_agent']) {
 			$channel = 'agent_chat.message';
 		} else {
@@ -284,10 +284,6 @@ class Chat
 		if (!$conversation['is_agent'] AND !$chat_message['is_user_hidden']) {
 
 			$session = $conversation->session;
-			$person = null;
-			if ($session->person) {
-				$person = $session->person;
-			}
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
