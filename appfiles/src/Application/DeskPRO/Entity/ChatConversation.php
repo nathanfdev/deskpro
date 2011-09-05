@@ -58,7 +58,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * If this is a user conversation, this is the agent assigned.
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
@@ -85,7 +85,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * User chat: The users name, if they arent a person
-	 * 
+	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="person_name", type="string", length=255)
 	 */
@@ -194,16 +194,20 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Create a new message and then add it to this convo
 	 */
-	public function addNewMessage($content, $author)
+	public function addNewMessage($content, $author, $is_html = false)
 	{
 		$chat_message = new ChatMessage();
 		$chat_message->conversation = $this;
 		$chat_message->author = $author;
 		$chat_message['content'] = $content;
 
+		if ($is_html) {
+			$chat_message['is_html'] = true;
+		}
+
 		return $this->addMessage($chat_message);
 	}
-	
+
 
 
 	/**
@@ -243,11 +247,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $this->addMessage($chat_message);
 	}
 
-	
+
 	/**
 	 * Add a message to this convo
 	 *
-	 * @param 
+	 * @param
 	 */
 	public function addMessage($message)
 	{
@@ -264,7 +268,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 				$this->subject = substr($message['content'], 0, 45);
 			}
 		}
-		
+
 		$message->conversation = $this;
 		$this->messages->add($message);
 
@@ -276,7 +280,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get an array of only user participants
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getUserParticipants()
@@ -401,7 +405,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Set the status (open or ended).
-	 * 
+	 *
 	 * @param  $status
 	 * @return void
 	 */
@@ -410,10 +414,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->status == $status) {
 			return;
 		}
-		
+
 		$this->_onPropertyChanged('status', $this->status, $status);
 		$this->status = $status;
-		
+
 		if ($status == self::STATUS_ENDED) {
 			if (!$this->date_ended) {
 				$this['date_ended'] = new \DateTime();
@@ -431,21 +435,21 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Set the agent
-	 * 
+	 *
 	 * @param  $agent
 	 * @return void
 	 */
 	public function setAgent($agent)
 	{
 		if (!$agent) $agent = null;
-		
+
 		$old_agent = $this->agent;
 		if ($this->agent == $agent) {
 			return;
 		}
-		
+
 		$this->_onPropertyChanged('agent', $this->agent, $agent);
-		
+
 		$this->agent = $agent;
 		if ($agent AND !$this->date_assigned) {
 			$this['date_assigned'] = new \DateTime();

@@ -296,6 +296,57 @@ class UserChatController extends AbstractController
 	}
 
 
+	public function sendFileAction($conversation_id)
+	{
+		if ($conversation_id instanceof ChatConversation) {
+			// sendAgentMessageAction calls this with the convo already
+			$conversation = $conversation_id;
+		} else {
+			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		}
+
+		$file = $this->request->files->get('file-upload');
+		$desc = App::getApi('filestorage')->createRandomPath();
+
+		$desc->write(file_get_contents($file->getRealPath()), array(
+			'content_type' => $file->getMimeType(),
+			'filename' => $file->getClientOriginalName()
+		));
+
+		$blob_id = $desc->getPath();
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+
+		$chat_message = $conversation->addNewMessage(
+			$msg,
+			$this->person
+		);
+
+		$client_messages = ChatClientMessageGenerator::createNewMessageMessages(
+			App::getSession()->getEntityId(),
+			$chat_message
+		);
+
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
+
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					$em->persist($cm);
+				}
+			}
+
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'conversation_id' => $conversation_id,
+			'new_message_id'  => $chat_message['id']
+		));
+	}
+
+
 	/**
 	 * List the articles
 	 */
@@ -317,7 +368,7 @@ class UserChatController extends AbstractController
 		$counts = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenChatsForAgents();
 
 		// Also run through timeout checks now for any chats this agent has
-		if (false && !empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
+		if (!empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
 			$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($this->person);
 			foreach ($convos as $convo) {
 				$status_check = new ChatStatusCheck($convo, App::getSession()->getEntity());

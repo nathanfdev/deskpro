@@ -588,7 +588,11 @@ var DpChat = (function() {
 	};
 
 	var addIncomingMessage = function(data) {
-		display.addMessageRow(data.author_name, data.message, data.author_type);
+		if (data.message_html) {
+			display.addMessageRow(data.author_name, data.message_html, data.author_type, true);
+		} else {
+			display.addMessageRow(data.author_name, data.message, data.author_type);
+		}
 	};
 
 	var endChat = this.endChat = function() {

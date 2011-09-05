@@ -81,6 +81,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_user_hidden = false;
 
 	/**
+	 * Is the content an HTML message?
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_html", type="boolean")
+	 */
+	protected $is_html = false;
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */

@@ -2743,7 +2743,7 @@ table.participants-table .partis ul li{
 	background-color: #a9b1c0;
 	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#99a2b3 ), to(#b6bdca));
     background: -moz-linear-gradient(90deg, #99a2b3, #b6bdca );
-    text-align: center;
+    text-align: left;
 }
 
 .tab-bottom .check-count {

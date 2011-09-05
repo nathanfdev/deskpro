@@ -75,7 +75,7 @@ pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': con
 			</div>
 		</div>
 		{# /Chat Messages #}
-		
+
 	</div>
 	{# /Tab Contents #}
 
@@ -96,13 +96,14 @@ pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': con
 	<div class="tab-bottom-wrap">
 		<div class="tab-bottom">
 			<input type="text" class="new-message" />
-			{% if quick_replies|length %}
 			<div class="bar-actions">
 				<ul>
+					<li class="attach"><a>File</a></li>
+					{% if quick_replies|length %}
 					<li class="macros"><a>Quick Replies</a></li>
+					{% endif %}
 				</ul>
 			</div>
-			{% endif %}
 		</div>
 	</div>
 </div>

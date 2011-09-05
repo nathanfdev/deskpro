@@ -101,7 +101,7 @@ var DpChat_Display = (function() {
 		var messageTextarea = $('#dpchat_input > textarea');
 		messageTextarea.keypress(function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
-			
+
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				doSend();
@@ -117,7 +117,7 @@ var DpChat_Display = (function() {
 
 	var doSend = function() {
 		var messageTextarea = $('#dpchat_input > textarea');
-		
+
 		var msg = $.trim(messageTextarea.val());
 		messageTextarea.val('');
 
@@ -183,7 +183,7 @@ var DpChat_Display = (function() {
 				html.push('</div>');
 			html.push('</div>');
 		html.push('</div>');
-		
+
 		overlay = $(html.join(''));
 		$('.close-trigger', overlay).click(function() {
 			overlay.remove();
@@ -205,12 +205,12 @@ var DpChat_Display = (function() {
 
 	/**
 	 * Add a message row
-	 * 
+	 *
 	 * @param name
 	 * @param message
 	 * @param type
 	 */
-	this.addMessageRow = function(name, message, type) {
+	this.addMessageRow = function(name, message, type, is_html) {
 
 		$('#dpchat_preform').hide();
 		$('#dpchat_messages').show();
@@ -237,10 +237,15 @@ var DpChat_Display = (function() {
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
 			html.push('<div class="dpchat-author">' + name + '</div>');
-			html.push('<div class="dpchat-msg">' + message + '</div>');
+			html.push('<div class="dpchat-msg"></div>');
 		html.push('</div>');
 
 		var el = $(html.join(''));
+		if (is_html) {
+			$('.dpchat-msg', el).html(message);
+		} else {
+			$('.dpchat-msg', el).text(message);
+		}
 
 		el.appendTo(messageWrapper);
 

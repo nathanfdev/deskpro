@@ -251,6 +251,10 @@ class Chat
 			'message'           => $chat_message['content'],
 			'date_created'      => $chat_message['date_created']->getTimestamp()
 		);
+		if ($chat_message['is_html']) {
+			$cm_data['message_html'] = $chat_message['content'];
+			unset($cm_data['message_html']);
+		}
 
 		$cms = array();
 
