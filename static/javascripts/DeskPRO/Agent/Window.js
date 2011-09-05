@@ -1632,3 +1632,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.pageTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 	}
 });
+
+function toggle_visibility(elId) {
+	var el = $('#' + elId);
+	if (el.is(':visible')) {
+		el.hide();
+	} else {
+
+		var back = $('<div class="backdrop" />');
+		back.css('z-index', parseInt(el.css('z-index') | 10000) - 1);
+		back.appendTo('body');
+
+		back.click(function() {
+			el.hide();
+			back.remove();
+		});
+
+		el.show();
+	}
+}

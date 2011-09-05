@@ -144,6 +144,19 @@ span.dropdownIcon{
 
 
 
+.backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    z-index: 100000;
+}
+
+
+
+
 
 
 #volume_controls_back {

@@ -1163,6 +1163,7 @@
 	right: 18px;
     position: absolute;
 	top: 41px;
+	z-index: 10000;
 }
 
 

@@ -122,12 +122,14 @@
 				<a>Create</a>
 			</div>
 			<div class="createDropdown"  onclick="toggle_visibility('createTicketToggle');">
-				<ul class="createBtnPopups" onclick="toggle_visibility('DP-overlayCreateTicket');"><span class="createTicket">
-					<li><a><span class="createTicket">Ticket</span></a></li>
-					<li><a><span class="createArticle">Article</span></a></li>
-					<li><a><span class="createNews">News Entry</span></a></li>
-					<li><a><span class="createDownload">Download</span></a></li>
-					<li><a><span class="createIdeas">Ideas</span></a></li>
+				<ul class="createBtnPopups" onclick="toggle_visibility('DP-overlayCreateTicket');">
+					<li id="create_ticket_btn"><a><span class="createTicket">Ticket</span></a></li>
+					<li id="create_person_btn"><a><span class="createTicket">Person</span></a></li>
+					<li id="create_organization_btn"><a><span class="createArticle">Organization</span></a></li>
+					<li id="create_article_btn"><a><span class="createArticle">Article</span></a></li>
+					<li id="create_news_btn"><a><span class="createNews">News Entry</span></a></li>
+					<li id="create_donwload_btn"><a><span class="createDownload">Download</span></a></li>
+					<li id="create_idea_btn"><a><span class="createIdeas">Ideas</span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -138,7 +140,7 @@
 		<div id="DP-userControl">
 			<div class="currentUserAvatar">
 				<div class="userWrapper">
-					<a onclick="toggle_visibility('userSetting');"><img src="img/menAvtr-med.png" alt="" /></a>
+					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
 				</div>
 				<span class="dropdownIcon" onclick="toggle_visibility('userSetting');"></span>
 			</div>
@@ -147,15 +149,14 @@
 		<div id="userSetting" style="display:none;">
 			<div class="userProfileDropdown" >
 				<div class="userProfileDropdownHeader">
-					<a onclick="toggle_visibility('userSetting');"><img src="img/menAvtr-med.png" alt="" /></a>
+					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
 				</div>
 				<ul>
 					<li class="logggedAs"><p>Logged in as</p></li>
-					<li class="currentUsername"><p>Johnny Doe</p></li>
-					<li class="myAccount"><a href="#">My Account</a></li>
-					<li class="setting"><a href="#">Settings</a></li>
-					<li class="help"><a href="#">Help</a></li>
-					<li class="logout"><a href="#">Log out</a></li>
+					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
+					<li class="setting" id="user_settings_link"><a>Settings</a></li>
+					<li class="help"><a>Help</a></li>
+					<li class="logout"><a href="{{ path('agent_logout') }}">Log out</a></li>
 				</ul>
 			</div>
 		</div>
@@ -194,10 +195,10 @@
 				<a><span>Agent Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href=""><span class="check">Admin Interface</span></a></li>
+				<li><a class="admin" href="{{ path('admin') }}"><span class="check">Admin Interface</span></a></li>
 				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
 				<li><a class="report" href=""><span class="check">Report Interface</span></a></li>
-				<li><a class="portal" href=""><span class="check">User Interface</span></a></li>
+				<li><a class="portal" href="{{ path('user') }}"><span class="check">User Interface</span></a></li>
 			</ul>
 		</div>
 		</div>
