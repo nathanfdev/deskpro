@@ -74,6 +74,14 @@ span.dropdownIcon{
 	height: 6px;
 	width: 8px;
 }
+
+.clear {
+	clear: both;
+	height: 0;
+	width: 0;
+	overflow: hidden;
+}
+
 /* ----- OVERLAY SCREEN ------*/
 #overlayScreen{
 	background: rgba(0,0,0,0.80);
@@ -247,6 +255,11 @@ span.dropdownIcon{
 	padding-left: 18px;
 }
 
+.agent-link, .user-link, .team-link {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	padding-left: 18px;
+}
 
 
 

@@ -1,5 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_ticket_view', {'ticket_id': ticket.id}) }}';
@@ -90,245 +91,116 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 {% endif %}
 
-<section class="ticket-header" id="{{baseId}}_ticket_header">
-	<div class="ticket-id">
-		<span>#{{ ticket.id }}</span>
-	</div>
-	<div class="the-status">
-		<div class="ticket-status prop-status-icon tipped" title="{{ ticket.status }}">
-			<span class="ticket-{{ticket.status}}"></span>
+<div class="topContentTicketView">
+	<div class="ticketIdNumber">#{{ ticket.id }}</div>
+	<div class="ticketTitles"><h1>{{ ticket.subject }}</h1></div>
+	<div class="ticketKindWrap">
+		<div class="awaitAgent">
+			<a><span class="dropdownIcon">{{ ticket.status }}</span></a>
+		</div>
+		<div class="departmentInfo">
+			<a>Departement : {{ ticket.department.full_title }}</a>
+		</div>
+		<div class="setOnHold">
+			<a>Set on hold</a>
 		</div>
 	</div>
+	<br class="clear" />
+</div>
 
-	<div class="the-department">
-		<div class="ticket-department prop-department-id">
-			<div class="parent">
-				{% if ticket.department.parent %}
-					{{ ticket.department.parent.title }}
-				{% else %}
-					{{ ticket.department.title }}
-				{% endif %}
-			</div>
-			<div class="sub">
-				{% if ticket.department.parent %}
-					{{ ticket.department.title }}
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="ticket-subject">
-		{{ ticket.subject }}
-	</div>
-	<div class="ticket-urgency tipped" title="Urgency: 8<br />&middot; User waiting for response for 1 hour (+1)<br />&middot; Users first ticket (+1)<br />&middot; Priority high (+6)">
-		<span>Urgency: 8</span>
-	</div>
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<div class="assignments">
-		<div class="user">
-			<div class="desc">
-				Ticket owned by
+<div class="ticketDescInfo">
+	<div class="topDescInfo">
+		<div class="ticketInformation">
+			<dl>
+				<dt>Ticket owned by:</dt>
+				<dd>
 					<a
 						class="user-link person-overview"
 						style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');"
 						data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
 					>
-						{{ ticket.person.display_name }}
-						&lt;{{ ticket.person_email_address }}&gt;
+						{{ ticket.person.display_name }}{% if ticket.person.organization %},
+							{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}{{ ticket.person.organization }}
+						{% endif %}
+						<span class="email">&lt;{{ ticket.person_email_address }}&gt;</span>
 					</a>
-					{% if ticket.person.organization %}
-						from <a
-							style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');"
-							class="org-link org-overview"
-							data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"
-						>{{ ticket.person.organization.name }}</a>
-						{% if ticket.person.organization_position %}<span class="org-pos">({{ ticket.person.organization_position }})</span>{% endif %}
-					{% endif %}
-			</div>
-			<div class="more user-participants-edit">
-				<span class="user-part-count">{{ ticket.user_participants|length }}</span> users CC'ed
-			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
-		</div>
-		<div class="agent">
-			<div class="desc">
-				Ticket assigned to <a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
-				and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
-			</div>
-			<div class="more agent-participants-edit">
-				<span class="agent-part-count">{{ ticket.agent_participants|length }}</span> agents subscribed
-			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
-		</div>
-		<div class="agents-list" style="display: none;">
-			<ul id="{{baseId}}_agent_part_list">
-				{% include 'AgentBundle:Ticket:view-participants-agents.html.twig' with {'participants': participants} %}
-			</ul>
-		</div>
-		<div class="user-list" style="display: none;">
-			<ul id="{{baseId}}_user_part_list">
-				{% include 'AgentBundle:Ticket:view-participants-users.html.twig' with {'participants': participants} %}
-			</ul>
+				</dd>
+
+				<dt>Ticket assigned to:</dt>
+				<dd>
+					<a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
+					and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
+				</dd>
+			</dl>
 		</div>
 	</div>
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
-		<ul>
-			<li class="assign-me" {% if ticket.agent.id != app.user.id %}style="display: none"{% endif %}><button class="clean-gray xx-small">Assign To Me</button></li>
-			<li class="assign-none" {% if ticket.agent.id == app.user.id %}style="display: none"{% endif %}><button class="clean-gray xx-small">Unassign</button></li>
-
-			<li class="assign-to"><button class="clean-gray xx-small">Assign To</button></li>
-			<li class="assign-to-team"><button class="clean-gray xx-small">Assign To Team</button></li>
-
-			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-resolved"><button class="clean-gray xx-small">Set Resolved</button></li>
-			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-closed"><button class="clean-gray xx-small">Close</button></li>
-			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="mark-spam"><button class="clean-gray xx-small">Mark As Spam</button></li>
-
-			<li {% if not (ticket.status == 'resolved' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-open"><button class="clean-gray xx-small">Set Awaiting Agent</button></li>
-
-			<li class="macros"><button class="clean-gray xx-small">Macros</button></li>
-			<li class="more"><button class="clean-gray xx-small">More</button></li>
-		</ul>
-	</nav>
-
-	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li class="merge-trigger">Merge Ticket</li>
-		<li class="delete-trigger">Delete Ticket</li>
-		<li class="change-user-trigger">Change User Owner</li>
-	</ul>
-
-	<div class="times">
-		Ticket created <time>2 hours ago</time> by <span class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }}</span> at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.<br/>
-		User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.
-	</div>
-</section>
-
-{# Main Tabs #}
-<div class="full-container-tabbed main-tabs">
-	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs">
-		<ul class="field-section-bodytabs-tabs" id="{{baseId}}_ticket_tabs">
-			<li class="tab-trigger tab-details on" data-tab-for=".tab-details"><a>Ticket Details</a></li>
-			<li class="tab-trigger tab-attachments" data-tab-for=".tab-attach"><a>Attachments</a></li>
-		</ul>
-	</div>
-
-	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
-		{# Tab: Details #}
-		<div class="full-container-tabbed-contents tab-content tab-details">
-			<div class="table-content">
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Labels</span>
-					</div>
-					<div class="col-table-content">
-						<div class="tags-wrap">
-							<span class="tag-icon"></span>
-							<ul>
-								{% for label in ticket.labels %}
-									<li><span>{{label.label}}</span></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row-table-cotent" id="{{baseId}}_fields_display_main_wrap">
-				<div class="col-table-content title-col">
-					<span class="properties-edit-trigger edit-fields-trigger">
-						Properties
-					</span>
-				</div>
-				<div class="col-table-content">
-					<div class="extra-info fields-show">
-						<ul id="{{baseId}}_fields_display_main">
-						</ul>
-					</div>
-					<div class="fields-edit" style="display: none;"></div>
-				</div>
-			</div>
-		</div>
-		{# /Tab: Details #}
-
-		{# Tab: Attachments #}
-		<div class="full-container-tabbed-contents tab-content tab-attach">
-			{% include 'AgentBundle:Ticket:tab-attachments.html.twig' with {'message': message} %}
-		</div>
-		{# /Tab: Attachments #}
+	<div class="bottomDescInfo">
+		<div class="assignBtn"><a>Assign to me<span class="dropdownIcon"></span></a></div>
+		<div class="assignBtn"><a>Assign to team support tier 1<span class="dropdownIcon"></span></a></div>
+		<div class="assignBtn"><a>Manage CC users<span class="dropdownIcon"></span></a></div>
+		<br class="clear" />
 	</div>
 </div>
-{# /Top Tabs #}
 
-{# Tab: Messages #}
-<div class="full-tab-content messages-wrap">
-	<div class="message-controls">
-		<button class="clean-gray x-small goto-reply">Jump To Reply</button>
+<div class="detailViewTabWrap">
+	<div class="tabNavInner">
+		<ul>
+			<li data-tab-for="" class="on"><a>Details</a></li>
+			<li data-tab-for=""><a>Attachments</a></li>
+		</ul>
+	</div>
+	<div class="tableContentWrap">
+		<div class="labelContent">
+			<span class="label">Labels:</span>
+			<ul>
+				{% for label in ticket.labels %}
+					<li><span>{{label.label}}</span></li>
+				{% endfor %}
+			</ul>
+			<br class="clear" />
+		</div>
+		<div class="propertiesContent">
+			<span class="label">
+				<span class="properties-edit-trigger edit-fields-trigger">
+					Properties:
+				</span>
+			</span>
+			<div class="extra-info fields-show">
+				<ul id="{{baseId}}_fields_display_main">
+				</ul>
+			</div>
+			<div class="fields-edit" style="display: none;"></div>
+			<br class="clear" />
+		</div>
+	</div>
+	<div class="ticketTreat">
+		<div class="ticketTreatButton">
+			<div class="assignBtn"><a>Split Ticket</a></div>
+			<div class="assignBtn"><a>Merge Ticket</a></div>
+			<div class="assignBtn"><a>More<span class="dropdownIcon"></span></a></div>
+			<br class="clear" />
+		</div>
+		<div class="createTicketInfo">
+			<p>Ticket created <time>2 hours ago</time> by <span class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }}</span> at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.</p>
+			<p>User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.</p>
+		</div>
+	</div>
+</div>
+
+<div class="messageWrap">
+	<div class="showMsgControl">
 		<ul>
 			<li><label><input type="checkbox" class="show-messages" checked="checked" />Show messages</label></li>
 			<li><label><input type="checkbox" class="show-notes" checked="checked" />Show notes</label></li>
 			<li><label><input type="checkbox" class="show-logs" />Show logs</label></li>
 		</ul>
 	</div>
-	<div class="messages-wrap" id="{{baseId}}_messages_wrap">
+	<br class="clear" />
+	<div class="messageDetailWrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</div>
 </div>
-{# /Tab Messages #}
 
-{# Wrapper around fields in the properties box #}
-<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
-	<li class="display-item">
-		<div class="prop-title display-title"></div>
-		<div class="prop-val display-content"></div>
-	</li>
-</script>
-<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_tpl">
-	<div class="fields-edit-container">
-		<table>
-			<tbody class="fields-edit-rows">
-
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="2">
-						<div class="controls">
-							<button class="clean-gray xx-small save-trigger">Save</button>
-							<button class="clean-gray xx-small close-trigger">Cancel</button>
-						</div>
-						<div class="saving">
-							Saving, please wait...
-						</div>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
-</script>
-<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_row_tpl">
-	<tr>
-		<td class="display-title"></td>
-		<td class="display-content"></td>
-	</tr>
-</script>
-
-{# New tab code for bottom tabs (for addition to tabstrip) #}
-<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-tab" id="{{baseId}}_fields_display_tabs_tab_tpl">
-	<li class="tab-trigger {id} field-tab" data-tab-for=".{id}" data-field-tab-id="{id}">
-		<a>{title}</a>
-	</li>
-</script>
-<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-content" id="{{baseId}}_fields_display_tabs_content_tpl">
-	<div class="full-container-tabbed-contents tab-content field-tab-content {id}">
-	</div>
-</script>
-<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_tabs_wrap_tpl">
-	<div class="row-table-cotent display-item">
-		<div class="col-table-content title-col display-title">
-		</div>
-		<div class="col-table-content display-content">
-		</div>
-	</div>
-</script>
 
 {% if ticket.hidden_status != 'deleted' %}
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}

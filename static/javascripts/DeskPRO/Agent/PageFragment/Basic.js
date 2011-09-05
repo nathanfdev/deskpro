@@ -317,7 +317,14 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 * @param {jQuery} el The wrapper element
 	 */
 	initPage: function(el) {
-
+		this.wrapper = el;
+		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.tinyscrollbar_update();
+		});
 	},
 
 

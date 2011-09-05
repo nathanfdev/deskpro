@@ -1,127 +1,84 @@
-<section class="reply-box" id="{{baseId}}_replybox">
+<div class="replyWrapper">
 	<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}" enctype="multipart/form-data">
 
-		<div class="fields-both">
-			<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-			<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-			<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
-		</div>
+	<div class="fields-both">
+		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+	</div>
 
-		<nav class="reply-type">
-			<ul>
-				<li id="{{baseId}}_replybox_replytab_btn" class="on">Reply</li>
-				<li id="{{baseId}}_replybox_notetab_btn">Note</li>
-			</ul>
-		</nav>
-		<div class="form-inner">
-			<div class="top-area note-hide">
-				<button class="clean-gray xx-small ticket-snippets-trigger">Text Snippets</button>
-				<ul class="related-content">
-					<li class="similar-tickets"><a>Similar Tickets</a></li>
-					<li class="suggested-articles"><a>Suggested Knowledgebase Articles</a></li>
-				</ul>
-				<br style="clear: both; height: 0; overflow: hidden;" />
-			</div>
-			<div class="fields-both reply-area">
-				<textarea class="reply" name="message" id="{{baseId}}_replybox_txt">{{ draft_text }}</textarea>
-				<div class="attachments">
-					<script class="template-upload" type="text/x-jquery-tmpl">
-						<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-					</script>
-					<script class="template-download" type="text/x-jquery-tmpl">
-						<li class="uploaded">
-							<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-							<a href="${download_url}" target="_blank">${filename}</a>
-							<span class="size">${filesize_readable}</span>
-						</li>
-					</script>
-					<h6>Attachments</h6>
-					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
-					</div>
-					<ul class="files file-list"></ul>
+	<div class="replyType">
+		<ul>
+			<li id="{{baseId}}_replybox_replytab_btn" class="on">Reply</li>
+			<li id="{{baseId}}_replybox_notetab_btn">Note</li>
+		</ul>
+	</div>
+
+	<div class="formReplyWrap">
+		<div class="formReplyHeading">
+			<div class="assignBtn ticket-snippets-trigger"><a>Text snippets</a></div>
+			<div class="assignBtn similar-tickets"><a>Suggested Knowledge Base articles</a></div>
+			<div class="assignBtn suggested-articles"><a>Similar Tickets</a></div>
+		</div>
+		<div class="textBoxWrap">
+			<textarea id="commentBox" rows="3" cols="30"></textarea>
+		</div>
+		<div class="replyAction">
+			<div class="attachments">
+				<span class="label">Attacments</span>
+				<script class="template-upload" type="text/x-jquery-tmpl">
+					<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+				</script>
+				<script class="template-download" type="text/x-jquery-tmpl">
+					<li>
+						<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+						<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+					</li>
+				</script>
+				<div class="file-input chooseFiles">
+					<input type="file" name="file-upload" multiple="multiple" />
+					<div id="uploadFiles" class="assignBtn"><a>Upload</a></div>
 				</div>
-				<div class="cc-users note-hide">
-					<h6>CC</h6>
-					<div class="cc-input">
-						<input type="text" class="new-cc" id="{{baseId}}_add_cc_txt" /> <button class="clean-gray xxx-small add-cc-trigger">Add</button>
-					</div>
+				<div class="fileAttach file-list">
+					<ol>
+					</ol>
+				</div>
+			</div>
+			<div class="ccUsers">
+				<span class="label">CC Users</span>
+				<div class="chooseFiles clear">
+					<input type="text" class="new-cc" id="{{baseId}}_add_cc_tx" />
+					<div id="add" class="assignBtn add-cc-trigger"><a>Add</a></div>
+				</div>
+				<div class="listUser">
 					<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
 				</div>
-				<br style="clear: both; height: 0; overflow: hidden;" />
-			</div>
-
-			{# Reply Options #}
-			<div class="reply-options options-area note-hide">
-				<ul>
-					<li>
-						<input id="{{baseId}}_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" checked="checked" />
-						<label for="{{baseId}}_assign_opt">Assign to</label>
-						<span class="reply-agent-menu-trigger menu-trigger" id="{{baseId}}_agent_id_name">Me</span>
-
-						{% if app.user.team %}
-							and
-							<input id="{{baseId}}_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" checked="checked" />
-							<label for="{{baseId}}_assign_team_opt">Team</label>
-							<span class="reply-agent-team-menu-trigger menu-trigger" id="{{baseId}}_agent_team_id_name">{{ app.user.team.name }}</span>
-						{% endif %}
-					</li>
-
-					<li>
-						<input id="{{baseId}}_kbpending_opt" class="small" type="checkbox" name="options[do_kbpending]" value="1" />
-						<label for="{{baseId}}_kbpending_opt">Mark as Pending KB Article</label>
-					</li>
-
-					<li>
-						<input id="{{baseId}}_status_opt" class="small" type="checkbox" name="options[do_status]" value="1" checked="checked" />
-						<label for="{{baseId}}_status_opt">Set as</label>
-						<span class="reply-status-menu-trigger menu-trigger" id="{{baseId}}_ticket_status_name">Awaiting User</span>
-					</li>
-
-					<li>
-						<input id="{{baseId}}_closetab_opt" class="small" type="checkbox" name="options[close_tab]" value="1" />
-						<label for="{{baseId}}_closetab_opt">Close tab after reply</label>
-					</li>
-				</ul>
-				<br style="clear: both; height: 0; overflow: hidden;" />
-			</div>
-			{# /Reply Options #}
-
-			{# Note Options #}
-			<div class="note-options options-area reply-hide" style="display: none;">
-				<input type="hidden" name="options[is_note]" value="1" />
-				<ul>
-					<li>
-						<input id="{{baseId}}_note_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" />
-						<label for="{{baseId}}_note_assign_opt">Assign to</label>
-						<span class="reply-agent-menu-trigger menu-trigger" id="{{baseId}}_note_agent_id_name"></span>
-					</li>
-					<li>
-						<input id="{{baseId}}_note_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" />
-						<label for="{{baseId}}_note_assign_team_opt">Assign to team</label>
-						<span class="reply-agent-team-menu-trigger menu-trigger" id="{{baseId}}_note_agent_team_id_name"></span>
-					</li>
-				</ul>
-				<div class="followers">
-					<h6>Follwers</h6>
-					<button class="clean-gray xx-small add-followers-trigger">Add Followers</button>
-
-					<ul class="followers-list" id="{{baseId}}_newnote_followerslist">
-					</ul>
-				</div>
-				<br style="clear: both; height: 0; overflow: hidden;" />
-			</div>
-			{# /Note Options #}
-
-			<div class="controls-area">
-				<div class="loading-spinner">
-					Saving your reply, please wait...
-				</div>
-				<div class="controls">
-					<button class="dp-button save-reply-trigger note-hide">Add Reply (alt+r)</button>
-					<button class="dp-button save-reply-trigger reply-hide" style="display: none;">Add Note (alt+r)</button>
-				</div>
 			</div>
 		</div>
+		<div class="formCheckBox">
+			<div class="checkBoxAssign">
+				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
+				<label>Assign to me and</label>
+				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
+				<label>My team</label>
+			</div>
+			<div class="checkBoxAssign">
+				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
+				<label>Mark as pending KB Article</label>
+			</div>
+			<div class="checkBoxAssign">
+				<input type="checkbox" class="assignCheck" name="options[do_status]" />
+				<label>Set as awaiting user</label>
+			</div>
+			<div class="checkBoxAssign">
+				<input type="checkbox" class="assignCheck" name="options[close_tab]" />
+				<label>Close tab after reply</label>
+			</div>
+		</div>
+		<div id="addReplyButton" class="clear">
+			<div class="replyButton"><a>Add Reply</a></div>
+		</div>
+	</div>
+
 	</form>
-</section>
+</div>

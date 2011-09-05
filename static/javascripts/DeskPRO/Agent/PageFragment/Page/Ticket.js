@@ -29,8 +29,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	initPage: function(el) {
 
 		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
+		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
 		this.barWrapper = $('.bar-wrapper', this.wrapper);
+
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.tinyscrollbar_update();
+		});
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.valueForm.submit(function(ev) {
@@ -58,13 +65,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.initFeaturesOnCollection(this.wrapper, {
 			routes: [],
 			times: ['.timeago']
-		});
-
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
 		});
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
