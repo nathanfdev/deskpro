@@ -39,7 +39,7 @@
 	box-shadow: 0 1px 0 #3C3F44 inset;
 }
 #DP-NavSections li.dpNavActive{
-	background: url(../../images/agent/pointerNav.png) no-repeat 44px 22px #1f2225;
+	background: url(../../images/agent/pointerNav.png) no-repeat 44px 18px #1f2225;
 	padding: 0;
 	z-index: 999;
 	box-shadow: none;
@@ -91,7 +91,7 @@
 	position: absolute;
 }
 .count-badge{ 
-	top: 5px  !important;
+	top: 3px  !important;
 	position: absolute;
 }
 
@@ -107,7 +107,7 @@
 	color: #FFFFFF;
 	float: left;
 	font-size: 11px !important;
-	padding: 8px 0 9px;
+	padding: 7px 0 9px;
 	text-align: center;
 }
 #DP-NavSections li a span, #DP-NavSections li.dpNavActive a span, #DP-chatOnlineCount a span{
@@ -124,52 +124,52 @@
 #DP-NavSections li a span.ticketNavIcon{
 	background-position: 0 0;
 }
-#DP-NavSections li:hover a span.ticketNavIcon, #DP-NavSections li.dpNavActive a span.ticketNavIcon{
+#DP-NavSections li:hover a span.ticketNavIcon {
 	background-position: 0 -757px;
 }
 #DP-NavSections li a span.chatNavIcon{
 	background-position: 0 -58px;
 }
-#DP-NavSections li:hover a span.chatNavIcon, #DP-NavSections li.dpNavActive a span.chatNavIcon{
+#DP-NavSections li:hover a span.chatNavIcon {
 	background-position: 0 -814px;
 }
 #DP-NavSections li a span.twitterNavIcon{
 	background-position: 0 -115px;
 }
-#DP-NavSections li:hover a span.twitterNavIcon, #DP-NavSections li.dpNavActive a span.twitterNavIcon{
+#DP-NavSections li:hover a span.twitterNavIcon {
 	background-position: 0 -871px;
 }
 #DP-NavSections li a span.peopleNavIcon{
 	background-position: 0 -177px;
 }
-#DP-NavSections li:hover a span.peopleNavIcon, #DP-NavSections li.dpNavActive a span.peopleNavIcon{
+#DP-NavSections li:hover a span.peopleNavIcon {
 	background-position: 0 -933px;
 }
 #DP-NavSections li a span.ideasNavIcon{
 	background-position: 0 -237px;
 }
-#DP-NavSections li:hover a span.ideasNavIcon, #DP-NavSections li.dpNavActive a span.ideasNavIcon{
+#DP-NavSections li:hover a span.ideasNavIcon {
 	background-position: 0 -993px;
 }
 #DP-NavSections li a span.publishNavIcon{
 	background-position:0 -298px;
 }
-#DP-NavSections li:hover a span.publishNavIcon, #DP-NavSections li.dpNavActive	a span.publishNavIcon{
+#DP-NavSections li:hover a span.publishNavIcon {
 	background-position:0 -1054px;
 }
 
 #DP-NavSections li a span.tasksNavIcon{
-	background-position:0 -298px;
+	background-position: -1px -467px;
 }
-#DP-NavSections li:hover a span.tasksNavIcon, #DP-NavSections li.dpNavActive	a span.tasksNavIcon{
-	background-position:0 -1054px;
+#DP-NavSections li:hover a span.tasksNavIcon {
+	background-position:-1px -1165px;
 }
 
-#DP-NavSections li a span.deaksNavIcon{
-	background-position:0 -298px;
+#DP-NavSections li a span.dealsNavIcon{
+	background-position: -2px -526px;
 }
-#DP-NavSections li:hover a span.dealsNavIcon, #DP-NavSections li.dpNavActive	a span.dealsNavIcon{
-	background-position:0 -1054px;
+#DP-NavSections li:hover a span.dealsNavIcon {
+	background-position:-2px -1224px;
 }
 
 /* Agent Chat Status */
