@@ -34,10 +34,14 @@
 	-pie-background: linear-gradient(#d9dfe6, #b9c5d0);
 	behavior: url(js/lib/PIE.htc);
 	border-bottom: 1px solid #9DA2A6;
-	float: left;
-	padding: 9px 10px 7px;
 	position: relative;
-	width: 198px;
+	
+	height: 31px;
+	overflow: hidden;
+}
+
+.pendingTicket .titles h2 {
+	padding-left: 5px !important;
 }
 
 .pendingTicket .titles h2, .ticketHoldCheck span.holdTicketCount{
@@ -47,13 +51,46 @@
 	color: #738699;
 	text-transform:uppercase;
 	float: left;
+	padding: 0;
+	margin: 0;
+	line-height: 31px;
+}
+
+.pendingTicket .ticketHoldCheck .item {
+	display: block;
+	border-left: 1px solid #ADB7C0;
+	float: left;
+	height: 31px;
+	line-height: 31px;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	padding-left: 4px;
+	padding-right: 4px;
+	margin-left: 4px;
+}
+
+.pendingTicket .ticketHoldCheck .item:first-of-type {
+	border-left: 0;
+	padding: 0;
+	margin-left: 0;
+}
+
+.pendingTicket .ticketHoldCheck .item .edit {
+	width: 13px;
+	height: 14px;
+	overflow: hidden;
+	cursor: pointer;
+	display: block;
+	text-indent: -100px;
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -870px;	
+	margin-top: 10px;
 }
 
 .ticketHoldCheck{
-	float: left;
-	margin-left: 25px;
+	float: right;
 }
-.ticketHoldCheck .selectionCtrl{float: left;}
+.ticketHoldCheck .selectionCtrl{float: left; padding: 0; margin: 0; margin-top: 8px;}
 .ticketHoldCheck span.holdTicketCount{
 	text-transform:none;	
 	padding: 0 0 0 5px;
@@ -220,19 +257,19 @@ ul.navList li.active span.open{
 	display: block;
 	font-size: 11px;
 	font-weight: bold;
-	line-height: 14px;
+	line-height: 13px;
 	padding: 5px 0 4px;
 	text-shadow: 0 1px 0 #FFFFFF;
 	position: relative;
 }
 #DP-SourceList ul.navList > li a.groupHead{
 	color: #575e66;
-	padding: 5px 0 5px 10px;
+	padding: 7px 0 5px 10px;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 
 #DP-SourceList ul.navList li ul.subGroup li a{
-	padding: 3px 0 3px 27px;
+	padding: 3px 0 3px 20px;
 	border-bottom: 1px solid transparent;
 	border-top: 1px solid transparent;
 }
@@ -285,7 +322,7 @@ ul.navList li.active span.open{
 #DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
 }
-#DP-SourceList ul.navList li:hover a.groupHead, #DP-SourceList ul.navList li.active:hover a.on {
+#DP-SourceList ul.navList li a.groupHead:hover, #DP-SourceList ul.navList li.active:hover a.on {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -478,6 +515,7 @@ ul.userControlWrap li input{
 }
 .filters{
 	position: relative;
+	margin-top: 9px;
 }
 .filters .titles{
 	background-image: -moz-linear-gradient(top, #d9dfe6, #b9c5d0);
@@ -492,20 +530,26 @@ ul.userControlWrap li input{
 	margin: 0;
 	position: relative;
 }
-.filters .titles h2{
-	float: left;
-	padding: 2px 0 0;
+.filters .titles h2{	
+	font-size: 11px;
 	font-weight: bold;
-	font-size: 12px;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+	color: #738699;
+	text-transform:uppercase;
+	float: left;
+	padding: 0;
+	margin: 0;
+	line-height: 15px;
 }
 .filterSetup{
 	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -867px;
-	float: left;
+	float: right;
 	height: 17px;
 	width: 16px;
 	text-indent: -9999px;
 	display: block;
 	cursor: pointer;
+	margin-right: 5px;
 }
 .filterSetup:hover{
 	background-position: 0 -779px;

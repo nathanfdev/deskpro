@@ -2,11 +2,17 @@
 <!-- DeskPRO Source List Inbox -->
 <div class="pendingTicket">
 	<div class="titles">
-		<h2>Awaiting Agent</h2>
 		<div class="ticketHoldCheck">
-			<input class="selectionCtrl" type="checkbox"/>
-			<span class="holdTicketCount">45 On hold</span>
+			<div class="item">
+				<input class="selectionCtrl" type="checkbox"/>
+				<span class="holdTicketCount">45 On hold</span>
+			</div>
+			<div class="item">
+				<span class="edit">edit display</span>
+			</div>
 		</div>
+		<h2>Awaiting Agent</h2>
+		<br class="clear" />
 	</div>
 	<!-- DeskPro Inbox Ticket -->
 	<div class="yourPendingTicket">
@@ -22,8 +28,17 @@
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 							{{ sys_filter_counts[filter.id]|default(0) }}
 						</span>
-						<span id="toggled" class="subToggle open">expand</span>
 					</a>
+					{% if loop.index == 1 %}
+					<ul class="subGroup" style="display: block;">
+						<!-- List Item Ticket Pending >> Link to User Item Controller -->
+						<li><a>Departement 1<span class="listCounter">5</span></a></li>
+						<li><a>Departement 2<span class="listCounter">3</span></a></li>
+						<li class="subList"><span class="borderLink"></span><a>Child<span class="listCounter">3</span></a></li>
+						<li><a>Departement 3<span class="listCounter">9</span></a></li>
+						<li><a>Departement 4<span class="listCounter">3</span></a></li>
+					</ul>
+					{% endif %}
 				</li>
 			{% endfor %}
 		</ul>
