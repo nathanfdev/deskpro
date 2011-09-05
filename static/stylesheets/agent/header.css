@@ -954,7 +954,7 @@
 
 .DP-adminStatus li.agentStatus a{
 	background-position: 0 -112px;
-    padding-right: 15px;
+    margin-right: 15px;
 	position: relative
 }
 .DP-adminStatus li.agentStatus a:hover, #dpHeader .actions li.agentStatus a.on{
@@ -963,7 +963,7 @@
 
 .DP-adminStatus li.networkStatIndicator a{
 	background-position: 0 -91px;
-	padding: 0 6px 0 0;
+	margin-right: 6px;
 	width: 17px;
 }
 .DP-adminStatus li.networkStatIndicator a:hover, .DP-adminStatus li.networkStatIndicator a.on{

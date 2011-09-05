@@ -166,23 +166,15 @@
 		<div class="DP-adminStatus">
 			<ul>
 				<li class="agentStatus">
-					<a class="tipped on" href="#" title="">Away
-						<!-- Agent Status Tooltips -->
-						<div class="dropdowninfo"><span>Toggle your availability status</span></div>
-					</a>
+					<a class="tipped on" id="agent_status" data-tipped="Toggle your away status" data-tipped-options="hook: 'bottommiddle'">Away</a>
 				</li>
 				<li class="networkStatIndicator">
-					<a class="tipped " href="#" title="">Network
-						<!-- Agent Status Tooltips -->
-						<div class="dropdowninfo"><span>Network Status<br/>White : Connected<br/>Red : Disconnected</div>
+					<a class="tipped" data-tipped="Network status<br /><div class='network-status-green'>Everything seems okay</div><div class='network-status-red'>Red: Network problems, you may have been disconnected</div>" data-tipped-options="hook: 'bottommiddle'">
+						Network
 					</a>
 				</li>
 				<li class="soundIcon">
-					<a class="tipped " href="#" title="Sound Control" onclick="toggle_visibility('volumeControl');">Sound</a>
-					<!-- Agent Volume control -->
-					<div id="volumeControl" class="dropdowninfo" style="display:none">
-						<div class="slider"><a class="btnSlider" onclick="toggle_visibility('volumeControl');"></a></div>
-					</div>
+					<a class="tipped" id="sound_icon" title="Toggle sound notifications" data-tipped-options="hook: 'bottommiddle'">Sound</a>
 				</li>
 			</ul>
 		</div>

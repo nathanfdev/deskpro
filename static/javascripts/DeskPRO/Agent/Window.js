@@ -1428,7 +1428,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#volume_controls').fadeIn();
 		};
 
-		$('#sound_icon a').click(function(ev) {
+		$('#sound_icon').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1511,10 +1511,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		} else {
 			var overlayEl = $('<div id="agent_status_away_overlay" />').appendTo('body');
-			overlayEl.click(function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-			});
 
 			statusEl.addClass('off');
 

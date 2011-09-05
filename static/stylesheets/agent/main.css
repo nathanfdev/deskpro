@@ -141,3 +141,78 @@ span.dropdownIcon{
 .inner-container-content.scrollbar-disabled .viewport {
 	margin-right: 0;
 }
+
+
+
+
+
+#volume_controls_back {
+
+    display:none;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    z-index: 100000000;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#volume_controls {
+    position: absolute;
+
+    display: none;
+
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+
+    padding: 15px 8px 15px 8px;
+    border: 2px solid rgba(128,128,128,0.5);
+
+    -webkit-box-shadow: 1px 1px 5px 0px #6e6e6e;
+    -moz-box-shadow: 1px 1px 5px 0px #6e6e6e;
+    box-shadow: 1px 1px 5px 0px #6e6e6e;
+
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+
+    z-index: 100000001;
+}
+
+#volume_controls .slider {
+    height: 100px;
+}
+
+
+
+
+#agent_status_away_overlay {
+    position: absolute;
+    top: 41px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(59,59,59,0.6);
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+	z-index: 100000000;
+}
