@@ -34,74 +34,28 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
-	<header class="control-bar">
-		<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
-		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
+	<header class="controlBar">
+		<ul class="controlBarList">
+			<li>Ordered by </li>
+			<li class="tickerPicker"><a class="button"><span class="dropdownIcon">Urgency</span></a></li>
+			<li><span class="borderBar"></span></li>
+			<li>and Grouped by </li>
+            <li><a class="button">Departement</a></li>
+			<li class="displayOpt display-options-trigger"><a>Display option</a></li>
+			<li class="detailView detail-view-trigger"><a class="setupIcon">Detail</a></li>
+		</ul>
+	</header>
 
-		Ordered by
-		<button class="clean-gray xxx-small sub-group-trigger" class="tipped" title="Change sorting">
-			<span>Urgency</span>
-		</button>
-		and grouped by
-		<button class="clean-gray xxx-small sub-group-trigger">
-			<span>Department</span>
-		</button>
- 	</header>
+	<header class="selectionBar selection-bar">
+		<input class="selectionCtrl selection-ctrl" type="checkbox" />
+		<span class="selected-count selectedCount">0</span> selected
+		<a class="performActTrigger perform-actions-trigger"><span class="dropdownIcon">Perform Action</span></a>
+	</header>
 
-	<ul class="menu sub-group-menu" style="display: none">
-	<li>
-		None
-	</li>
-	<li class="sep">-</li>
-	<li class="on">
-		Department
-	</li>
-	<li>
-		Category
-	</li>
-	<li>
-		Agent
-	</li>
-	<li>
-		Agent Team
-	</li>
-	<li>
-		Product
-	</li>
-	<li>
-		Workflow
-	</li>
-	<li>
-		Priority
-	</li>
-	<li>
-		Urgency
-	</li>
-	<li class="sep">-</li>
-	<li>
-		Creation Date
-	</li>
-	<li>
-		Waiting Time
-	</li>
-	<li>
-		Last Reply
-	</li>
-</ul>
-
-	{% include 'AgentBundle:TicketSearch:grouping-bar.html.twig' %}
-
-	{% include 'AgentBundle:TicketSearch:massactions-bar.html.twig' %}
-
-	<section class="ticket-simple-ext-list deskpro-results-list">
-		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
-	</section>
-
-	<div class="loading-more">
-		Loading more results ...
-	</div>
-	<div class="no-more-results">
-		There are no more results.
+	<div class="contentList">
+		<section class="ticketListWrap">
+			{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
+		</section>
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}

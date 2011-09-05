@@ -1,147 +1,144 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
-	{% for ticket in tickets %}
-		<article class="ticket ticket-{{ticket.id}}">
-			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
-			<div class="toprow">
-				<div class="left">
-					<span class="subject">
-						<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
-							{{ ticket.subject }}
-						</a>
-					</span>
-				</div>
-				<div class="ticketinfo">
-					<div class="bound-faded"></div>
-					<span class="urgency"><span>{{ rand(1,10) }}</span></span>
-					<span class="status">Awaiting agent</span>
-					{#<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>#}
-				</div>
-			</div>
-			<div class="userinfo">
-				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
-					<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
+{% for ticket in tickets %}
+
+<article class="ticketList">
+	<input type="checkbox" class="ticket-select ticket" value="{{ ticket.id }}"/>
+	<div class="topRow">
+		<div class="topRowLeft">
+			<h3>
+				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+					{{ ticket.subject }}
 				</a>
-				{% if ticket.person.organization %}
-					<span class="org">
-						({% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}{{ ticket.person.organization.name }})
-					</span>
-				{% endif %}
-				{% if ticket.person.primary_email %}
-					<span class="email">{{ ticket.person.primary_email_address }}</span>
-				{% endif %}
-			</div>
-			{% if display_fields|length %}
-			<div class="extra-info">
-				<ul>
-					{% for field in display_fields %}
-						{% if field == 'deleted_reason' %}
-							<li class="{{field}}">
-								{% if deleted_tickets[ticket.id] %}
-									Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
-									{% if deleted_tickets[ticket.id].reason %}
-										because: {{ deleted_tickets[ticket.id].reason }}
-									{% endif %}
-								{% endif %}
-							</li>
-						{% elseif field == 'department' and ticket.department %}
-							<li class="{{field}}">
-								<span class="prop-title">Department:</span>
-								<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
-								{% if ticket.department %}
-									{{ticket.department.title}}
-								{% else %}
-									None
-								{% endif %}
-								</span>
-							</li>
-						{% elseif field == 'category' and ticket.category %}
-							<li class="{{field}}">
-								<span class="prop-title">Category:</span>
-								<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
-								{% if ticket.category %}
-									{{ticket.category.title}}
-								{% else %}
-									None
-								{% endif %}
-								</span>
-							</li>
-						{% elseif field == 'agent' and ticket.agent %}
-							<li class="{{field}}">
-								<span class="prop-title">Agent:</span>
-								<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
-								{% if ticket.agent %}
-									<span style="background-image: url('{{ticket.agent.getPictureUrl(15)}}');">{{ ticket.agent.display_name }}</span>
-								{% else %}
-									Unassigned
-								{% endif %}
-								</span>
-							</li>
-						{% elseif field == 'agent_team' and ticket.agent_team %}
-							<li class="{{field}}">
-								<span class="prop-title">Agent Team:</span>
-								<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
-								{% if ticket.agent_team %}
-									<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
-								{% else %}
-									No Team
-								{% endif %}
-								</span>
-							</li>
-						{% elseif field == 'product' and ticket.product %}
-							<li class="{{field}}">
-								<span class="prop-title">Product:</span>
-								<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
-								{% if ticket.product %}
-									{{ticket.product.title}}
-								{% else %}
-									None
-								{% endif %}
-								</span>
-							</li>
-						{% elseif field == 'date_user_waiting' %}
-							<li class="{{field}}">
-								<span class="prop-title">User Waiting:</span>
-								<span class="prop-val">
-									4 hours
-								</span>
-							</li>
-						{% elseif field == 'organization' and ticket.organization %}
-							<li class="{{field}}">
-								<span class="prop-title">Organization:</span>
-								<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
-								{% if ticket.organization %}
-									<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
-								{% else %}
-									None
-								{% endif %}
-								</span>
-							</li>
+			</h3>
+		</div>
+		<div class="topRowRight">
+			<div class="urgency"><a>{{ rand(1,10) }}</a></div>
+			<div class="status">{{ ticket.status }}</div>
+		</div>
+	</div>
+	<div class="metadata">
+		<div class="metaleft">
+			<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+				<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
+			</a>
+		</div>
+		<div class="metaRight">
+			&nbsp;-<span>{{ ticket.person.primary_email_address }}</span>
+		</div>
+	</div>
+	{% if display_fields|length %}
+	<div class="catTags">
+		<ul>
+			{% for field in display_fields %}
+				{% if field == 'deleted_reason' %}
+					<li class="{{field}}"><a>
+						{% if deleted_tickets[ticket.id] %}
+							Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
+							{% if deleted_tickets[ticket.id].reason %}
+								because: {{ deleted_tickets[ticket.id].reason }}
+							{% endif %}
+						{% endif %}
+					</a></li>
+				{% elseif field == 'department' and ticket.department %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Department:</span>
+						<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
+						{% if ticket.department %}
+							{{ticket.department.title}}
 						{% else %}
-							{% for f in ticket_field_defs %}
-								{% if field == 'ticket_fields['~f.id~']' and ticket.hasCustomField(f.id) %}
-									<li class="ticket-field">
-										<div class="prop-val ticket_fields_{{f.id}}">
-											{{ render_custom_field(ticket.getCustomFieldDisplayArray(f.id)) }}
-										</div>
-									</li>
-								{% endif %}
-							{% endfor %}
-							{% for f in person_field_defs %}
-								{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
-									<li class="person-field">
-										<span class="prop-title">{{ f.title }}:</span>
-										<div class="prop-val person_fields_{{f.id}}">
-											{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
-										</div>
-									</li>
-								{% endif %}
-							{% endfor %}
+							None
+						{% endif %}
+						</span>
+					</a></li>
+				{% elseif field == 'category' and ticket.category %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Category:</span>
+						<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
+						{% if ticket.category %}
+							{{ticket.category.title}}
+						{% else %}
+							None
+						{% endif %}
+						</span>
+					</a></li>
+				{% elseif field == 'agent' and ticket.agent %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Agent:</span>
+						<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
+						{% if ticket.agent %}
+							<span style="background-image: url('{{ticket.agent.getPictureUrl(15)}}');">{{ ticket.agent.display_name }}</span>
+						{% else %}
+							Unassigned
+						{% endif %}
+						</span>
+					</a></li>
+				{% elseif field == 'agent_team' and ticket.agent_team %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Agent Team:</span>
+						<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
+						{% if ticket.agent_team %}
+							<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
+						{% else %}
+							No Team
+						{% endif %}
+						</span>
+					</a></li>
+				{% elseif field == 'product' and ticket.product %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Product:</span>
+						<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
+						{% if ticket.product %}
+							{{ticket.product.title}}
+						{% else %}
+							None
+						{% endif %}
+						</span>
+					</a></li>
+				{% elseif field == 'date_user_waiting' %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">User Waiting:</span>
+						<span class="prop-val">
+							4 hours
+						</span>
+					</a></li>
+				{% elseif field == 'organization' and ticket.organization %}
+					<li class="{{field}}"><a>
+						<span class="prop-title">Organization:</span>
+						<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
+						{% if ticket.organization %}
+							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
+						{% else %}
+							None
+						{% endif %}
+						</span>
+					</a></li>
+				{% else %}
+					{% for f in ticket_field_defs %}
+						{% if field == 'ticket_fields['~f.id~']' and ticket.hasCustomField(f.id) %}
+							<li class="ticket-field">
+								<div class="prop-val ticket_fields_{{f.id}}">
+									{{ render_custom_field(ticket.getCustomFieldDisplayArray(f.id)) }}
+								</div>
+							</a></li>
 						{% endif %}
 					{% endfor %}
-				</ul>
-				<br style="height: 1px;overflow: hidden; clear: left;" />
-			</div>
-			{% endif %}
-		</article>
-	{% endfor %}
+					{% for f in person_field_defs %}
+						{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
+							<li class="person-field">
+								<span class="prop-title">{{ f.title }}:</span>
+								<div class="prop-val person_fields_{{f.id}}">
+									{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+								</div>
+							</a></li>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		</ul>
+		<br style="height: 1px;overflow: hidden; clear: left;" />
+	</div>
+	{% endif %}
+</article>
+
+{% endfor%}
 </section>
