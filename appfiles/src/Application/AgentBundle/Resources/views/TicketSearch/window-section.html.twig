@@ -18,11 +18,11 @@
 		<ul id="ticketOutlineInboxList" class="navList">
 			{% for filter in sys_filters %}
 				<li
-					class="filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}"
+					class="filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 				>
-					<a class="groupHead">
+					<a class="groupHead {% if loop.index == 1 %}on{% endif %}">
 						{{filter.title}}
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 							{{ sys_filter_counts[filter.id]|default(0) }}
@@ -55,7 +55,7 @@
 			</div>
 			<h2>Filters</h2>
 		</div>
-		<div class="teamfilter">
+		<div class="yourPendingTicket">
 			<ul id="ticketsOutlineFiltersList" class="navList">
 				{% for filter in custom_filters %}
 					<li
@@ -65,7 +65,7 @@
 						data-tipped="filter_{{filter.id}}_tip"
 						data-tipped-options="inline:true, hook: 'rightmiddle'"
 					>
-						<a>
+						<a class="groupHead">
 							{{filter.title}}
 							<span class="listCounter">1000</span>
 						</a>
