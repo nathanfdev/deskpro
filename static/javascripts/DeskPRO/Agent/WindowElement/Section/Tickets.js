@@ -94,6 +94,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					}
 					break;
 
+				case 'label':
+					if (view_extra) {
+						this.activeNavClass = '.nav-label-' + DeskPRO_Window.util.slugify(view_extra);
+					}
+					break;
+
 				case 'spam': this.activeNavClass = '.nav-archive-spam'; break;
 				case 'validating': this.activeNavClass = '.nav-archive-validating'; break;
 				case 'pending': this.activeNavClass = '.nav-archive-pending'; break;

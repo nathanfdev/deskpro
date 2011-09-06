@@ -98,6 +98,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 						});
 					}, 225);
 				});
+			},
+
+			slugify: function(str) {
+				str = str.replace(/[^a-zA-Z0-9\-]/g, '-');
+				str = str.replace(/\-{2,}/g, '-');
+				str = str.replace(/^\-/, '');
+				str = str.replace(/\-$/, '');
+
+				return str;
 			}
 		};
 	},

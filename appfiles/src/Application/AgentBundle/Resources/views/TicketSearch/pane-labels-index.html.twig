@@ -14,7 +14,7 @@
 					<a>{{letter}}</a>
 					<ul class="listingTicketChild">
 						{% for label in labels %}
-							<li><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+							<li class="nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><a>{{label}}</a></li>
 						{% endfor %}
 					</ul>
 					<br class="clear" />
@@ -30,7 +30,7 @@
 <div id="ticket_labels_cloud" style="display: none;">
 	<div id="tagCloudTicketLabels">
 		{% for label,css_class in labels_cloud %}
-			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+			<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><a>{{label}}</a></li>
 		{% else %}
 			<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
 		{% endfor %}

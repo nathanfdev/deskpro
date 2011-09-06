@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
 
 use Orb\Util\Util;
+use Orb\Util\Strings;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -79,8 +80,14 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
 			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
+			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
         );
     }
+
+	public function slugify($str)
+	{
+		return Strings::slugifyTitle($str);
+	}
 
 	public function userDate($date, $format = 'F j, Y H:i', $timezone = null)
 	{

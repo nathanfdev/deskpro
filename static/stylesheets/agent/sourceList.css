@@ -971,7 +971,7 @@ ul.listingTicketChild li a{
 	cursor: pointer;
 	font-weight: normal !important;
 }
-ul.listingTicketChild li a:hover{
+ul.listingTicketChild li a:hover, ul.listingTicketChild li.nav-selected a {
 	border-radius: 10px 10px 10px 10px;
 	background: #6c89a6 !important;
 	color: #fff !important;
