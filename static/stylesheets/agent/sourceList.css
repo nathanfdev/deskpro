@@ -57,6 +57,7 @@
 
 .pendingTicket .titles h2, .ticketHoldCheck span.holdTicketCount, .filters .titles h2 {
 	font-size: 11px;
+	font-family: Arial, "Lucida Grande", Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 	color: #738699;
@@ -288,6 +289,7 @@ ul.navList li.active span.open{
 }
 
 #DP-SourceList ul.navList li ul.subGroup li a{
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	padding: 3px 0 3px 20px;
 	border-bottom: 1px solid transparent;
 	border-top: 1px solid transparent;
@@ -330,6 +332,7 @@ ul.navList li.active span.open{
 	border-top: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
 	position: relative;
+	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 }
 #DP-SourceList ul.navList li.active a.on {
 	border-bottom: 1px solid #ced4d9;
@@ -630,7 +633,7 @@ ul.userControlWrap li input{
 	padding: 5px 8px 6px 9px !important;
 }
 .windows .desproTabStrip li a{
-
+	
 }
 .windows .desproTabStrip li:hover a{
 	
@@ -647,6 +650,10 @@ ul.userControlWrap li input{
 
 .ie .desproTabStrip li:last-child a{
 	padding: 6px 17px 6px 18px !important;
+}
+.desproTabStrip li {
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	text-transform:uppercase;
 }
 .desproTabStrip li:hover a {
 	color: #6c7680;
@@ -675,6 +682,7 @@ ul.userControlWrap li input{
 }
 .deskproSegmentedItem .deskproSegmentedButton ul{}
 .deskproSegmentedItem .deskproSegmentedButton li{
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	display: inline;
 }
 .dpTabItem{
@@ -692,6 +700,7 @@ ul.userControlWrap li input{
 	width: 100%;
 }
 #listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a, .navSimpleList li a {
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	padding: 4px 0 5px 10px;
 	color: #565e66;
 	text-shadow: 0 1px 0 #fff;

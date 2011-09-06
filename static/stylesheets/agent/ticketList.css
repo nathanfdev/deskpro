@@ -63,6 +63,7 @@
 }
 
 .controlBar ul.controlBarList li{
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	font-weight: bold;
 	display: inline;
 	float: left;
@@ -98,6 +99,7 @@
 }
 
 .controlBar ul.controlBarList li.tickerPicker span.dropdownIcon, a.performActTrigger span.dropdownIcon{
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	background-position: 39px -944px;
 	float: left;
 	height: 12px;
