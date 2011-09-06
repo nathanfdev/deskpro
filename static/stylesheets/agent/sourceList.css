@@ -146,6 +146,7 @@
 	position: relative;
 	width: 60px;
 	position: relative;
+	cursor: pointer;
 }
 .ticketsOutlineViewtypetabs li.on, .deskproSegmentedButton li.on{
 	background-image: -moz-linear-gradient(top, #a3adb2, #a8b2b6);
@@ -153,8 +154,8 @@
 	-pie-background: linear-gradient(#a3adb2, #a8b2b6);
 	behavior: url(js/lib/PIE.htc);
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.35);
-	color: #fff;
-	text-shadow: 0 1px 0 #000;
+	color: #3A3F45;
+	text-shadow: 0 1px 0 #CBDAED;
 	position: relative;
 }
 .ticketsOutlineViewtypetabs li.withCount span{
@@ -359,7 +360,7 @@ ul.navList li.active span.open{
 	border-bottom: 1px solid #4d7399!important;
 	border-top: 1px solid #709ecc!important;
 	color: #fff;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 0 #3C648E;
 	display: block !important;
 	position: relative;
 }
@@ -700,7 +701,7 @@ ul.userControlWrap li input{
 	width: 100%;
 }
 #listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a, .navSimpleList li a {
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	padding: 4px 0 5px 10px;
 	color: #565e66;
 	text-shadow: 0 1px 0 #fff;
@@ -966,6 +967,7 @@ ul.listingTicketChild li a:hover{
 }
 #listingTicketLabels li a{
 	width: auto !important;
+	font-size: 9px;
 }
 
 #tagCloudTicketLabels li a {
@@ -979,7 +981,7 @@ ul.listingTicketChild li a:hover{
 	border-radius: 10px 10px 10px 10px;
 	background: #6c89a6;
 	color: #fff;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 0 #4C6277;
 	behavior: url(js/lib/PIE.htc);
 }
 .groupingBar li a:hover{

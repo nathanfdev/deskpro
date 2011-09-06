@@ -78,6 +78,7 @@
 .count-badge{ 
 	top: 3px  !important;
 	position: absolute;
+	font-family: Tahoma, Arial, sans-serif;
 }
 
 #DP-NavSections li.dpNavActive .count-badge {
@@ -195,11 +196,13 @@
 }
 #DP-chatOnlineCount a span.liveChatIcon{
 	background-position:0 -350px;
-	padding: 11px 0 5px 24px;
+	padding: 11px 1px 5px 24px;
 	width: 100%;
 	margin: 0;
 	color: #000000;
 	text-shadow: 0 1px 0 #fff;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size: 10px;
 }
 
 /* End of Agent Chat Status */

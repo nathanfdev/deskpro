@@ -95,6 +95,7 @@
 	text-align: center;
 	z-index: 99;
 	text-indent: 0;
+	font-family: Tahoma, Arial, sans-serif;
 }
 .notifMenuWrap span#ticketsCounter{
 	left: 17px;
