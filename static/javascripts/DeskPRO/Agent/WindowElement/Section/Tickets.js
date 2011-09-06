@@ -64,6 +64,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		this.activeNavClass = null;
+
+		$('.dp-checkbox', this.sectionEl).click(function() {
+			$(this).toggleClass('checked');
+		});
 	},
 
 	onShow: function() {

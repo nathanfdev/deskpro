@@ -82,6 +82,19 @@ span.dropdownIcon{
 	overflow: hidden;
 }
 
+.dp-checkbox {
+	width: 9px;
+	height: 10px;
+	text-indent: -100px;
+	overflow: hidden;
+	background: transparent url(../../images/checkbox.png) no-repeat 50% 100%;
+	display: inline-block;
+}
+
+.dp-checkbox.checked {
+	background-image: url(../../images/checkbox-checked.png);
+}
+
 /* ----- OVERLAY SCREEN ------*/
 #overlayScreen{
 	background: rgba(0,0,0,0.80);
