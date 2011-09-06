@@ -16,14 +16,14 @@
 	width: 650px;
 	margin: 50px 0 0 100px;
 	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .OverlayCreateTicketHeader{
 	background: -moz-linear-gradient(top, #3b3b3b, #0b0b0b);
 	background: -webkit-gradient(linear, center top, center bottom, from(#3b3b3b), to(#0b0b0b));
 	-pie-background: linear-gradient(#3b3b3b, #0b0b0b);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #515151 inset;
 	position: relative;
 	padding: 5px 10px;
@@ -68,7 +68,7 @@
 	background: -moz-linear-gradient(top, #5a90b8, #3c6094);
 	background: -webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));
 	-pie-background: linear-gradient(#5a90b8, #3c6094);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #75b3da inset, 0 0 0 1px #4169a0 inset, 0 1px 0 #323232;
 	border: 1px solid #070a0d;
 	padding: 4px 5px 3px;
@@ -81,7 +81,7 @@
 	background: -moz-linear-gradient(top, #6099c4, #436ba3);
 	background: -webkit-gradient(linear, center top, center bottom, from(#6099c4), to(#436ba3));
 	-pie-background: linear-gradient(#6099c4, #436ba3);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .closeCreateTicker{
@@ -93,7 +93,7 @@
 	background: -moz-linear-gradient(top, #b04242, #842b2b);
 	background: -webkit-gradient(linear, center top, center bottom, from(#b04242), to(#842b2b));
 	-pie-background: linear-gradient(#b04242, #842b2b);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #d05454 inset, 0 0 0 1px #922f2f inset, 0 1px 0 #323232;
 	border: 1px solid #070a0d;
 	padding: 4px 5px 3px;
@@ -104,7 +104,7 @@
 	background: -moz-linear-gradient(top, #bd4646, #913030);
 	background: -webkit-gradient(linear, center top, center bottom, from(#bd4646), to(#913030));
 	-pie-background: linear-gradient(#bd4646, #913030);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .overlayCreateTicketContent{
@@ -128,7 +128,7 @@
 	padding: 4px 7px 2px;
 	position: absolute;
 	top: 5px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 .greenCircle{background: #6fa653;}
 .orangeCircle{background: #d9912b;}
@@ -162,7 +162,7 @@ span.createTicketLabel{
 	color: #737373;
 	outline: none;
 	width: 300px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	float: left;
 	font-size: 11px;
 	position: relative;
@@ -240,7 +240,7 @@ span.createTicketLabel{
 	background: -moz-linear-gradient(top, #e6e9eb, #d9dee2);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6e9eb), to(#d9dee2));
 	-pie-background: linear-gradient(#e6e9eb, #d9dee2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-bottom: 1px solid #c2c6cc;
 	height: 25px;
     width: 100%;
@@ -335,7 +335,7 @@ span.createTicketLabel{
 	background: -moz-linear-gradient(top, #e6eaee, #cfd7df);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6eaee), to(#cfd7df));
 	-pie-background: linear-gradient(#e6eaee, #cfd7df);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #FFF inset, 0 0 0 1px #dbe1e7 inset;
 	border: 1px solid #a3b1bf;
 	padding: 4px 15px 3px;
@@ -350,5 +350,5 @@ span.createTicketLabel{
 	background: -moz-linear-gradient(top, #e6eaee, #dae2eb);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6eaee), to(#dae2eb));
 	-pie-background: linear-gradient(#e6eaee, #dae2eb);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }

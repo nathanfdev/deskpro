@@ -20,7 +20,7 @@
 	background-image: -moz-linear-gradient(top, #529dcd, #3567b2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));
 	-pie-background: linear-gradient(#529dcd, #3567b2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #314559;
 	box-shadow: 0 1px 0 #356599, 0 1px 0 #68BEEC inset, inset 0 0 0px 1px rgba(255, 255, 255, 0.1);
 	border-radius: 3px;
@@ -34,7 +34,7 @@
 	background-image: -moz-linear-gradient(top, #57a7d9, #396fbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#57a7d9), to(#396fbf));
 	-pie-background: linear-gradient(#57a7d9, #396fbf);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 
@@ -80,7 +80,7 @@
 	background-image: -moz-linear-gradient(top, #bf6060, #804040);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf6060), to(#804040));
 	-pie-background: linear-gradient(#bf6060, #804040);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 10px;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 0px 1px rgba(255, 255, 255, 0.2) inset,  0 2px 3px rgba(0, 0, 0, 0.3);
 	border: 1px solid #543237;
@@ -123,7 +123,7 @@
 	width: 380px;
 	float: left;
 	z-index: 999;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 .ie .notifDropdown{
 	background: #f2f2f2;
@@ -179,7 +179,7 @@
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #4B7095;
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-radius: 3px;
@@ -196,7 +196,7 @@
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
 	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 
@@ -204,7 +204,7 @@
 	background-image: -moz-linear-gradient(top, #f6f6f6, #e9e9e9);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f6f6f6), to(#e9e9e9));
 	-pie-background: linear-gradient(#f6f6f6, #e9e9e9);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 .notifDropdown ul#notification li.notifPaging span{
@@ -216,7 +216,7 @@
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 2px 1px 0 #D2D2D2 inset;
 	border-left: 1px solid #314559;
 	border-radius: 3px 3px 0 0;
@@ -294,7 +294,7 @@
 	border: 1px solid #a5a6a7;
 	border-radius: 10px 10px 10px 10px;
 	padding: 0px 3px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 /* End of Notification Dropdown */
 
@@ -307,7 +307,7 @@
 	width: 467px;
 	border-right: 1px solid #3A4A59;
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 .ie #DP-SearchSection{
@@ -334,7 +334,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#98AEB3), to(#98AEB3));
 	background: linear-gradient(#98AEB3, #98AEB3);
 	-pie-background: linear-gradient(#98AEB3, #98AEB3);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 .searchType a, .searchBy span{
@@ -355,7 +355,7 @@
 	border-radius: 10px 0 0 10px;
 	color: #2b3233;
 	text-shadow: none;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 .searchBy a{
@@ -367,7 +367,7 @@
 	padding: 1px 5px;
 	border-radius: 0 10px 10px 0;
 	position: relative;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .searchBy a span.close{
@@ -400,7 +400,7 @@
 	position: relative;
 	z-index: 9999;
 	float: left;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .searchCatDropdown ul, .notifDropdown ul#notification{
@@ -453,7 +453,7 @@
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #4b7095;
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-radius: 3px 3px 3px 3px;
@@ -469,7 +469,7 @@
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
 	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 /* End of DP Search Dropdown */
@@ -541,7 +541,7 @@
 	border: 1px solid #3a4a59;
 	border-radius:15px;
 	box-shadow: 0 1px 0 #3b71a9, inset 0 1px 3px rgba(0,0,0,0.15);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 /* DP Create Ticket */
@@ -566,7 +566,7 @@
 	background-image: -moz-linear-gradient(top, #529dcd, #3567b2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));
 	-pie-background: linear-gradient(#529dcd, #3567B2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #386da1, 0 1px 0 #95caec inset, 0 0 1px 1px rgba(255,255,255,0.2) inset;
 	border: 1px solid #314559;
 	border-radius: 3px;
@@ -590,7 +590,7 @@
 	background-image: -moz-linear-gradient(top, #75a8cd, #5688c9);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#75a8cd), to(#5688c9));
 	-pie-background: linear-gradient(#75a8cd, #5688c9);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 .DP-createTicket #createContentTrigger a span{
@@ -654,7 +654,7 @@
 	width: 160px;
 	position: relative;
 	z-index: 1;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 .ie .createDropdown ul{
 	background: #f2f2f2;
@@ -699,7 +699,7 @@
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
 	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #4B7095;
 	border-radius: 3px;
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
@@ -753,7 +753,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));		
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 3px 3px 0 0;
 	border-top: 1px solid #314559;
 	border-left: 1px solid #314559;
@@ -800,7 +800,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));
 	-pie-background: linear-gradient(#436ba3, #3c6094);
 	box-shadow: 0 1px 0 #386da1, inset 0 1px 0 #75b3da, inset 0 0 1px #5283af;
-	behavior: url(js/lib/PIE.htc);	
+	behavior: url(../../static/vendor/PIE.htc);	
 	border: 1px solid #314559;
 	border-radius: 3px;
 	float: left;
@@ -835,7 +835,7 @@
 	background-image: -moz-linear-gradient(top, #5c93ba, #4670aa);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#5c93ba), to(#4670aa));
 	-pie-background: linear-gradient(#5c93ba, #4670aa);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
 /* Dropdown - Switcher Interfaces */
@@ -853,7 +853,7 @@
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));	
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);		
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	border-radius: 0 0 4px 4px;
 	border-left: 1px solid #B6BABF;
@@ -893,7 +893,7 @@
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
 	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #406080;
 	border-radius: 3px;
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
@@ -986,7 +986,7 @@
 .DP-adminStatus li a span{
 	background-image: -moz-linear-gradient(top, #262626, #111111);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#262626), to(#111111));
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset, 0 0 2px rgba(0,0,0,0.3);
 	border-radius: 5px 5px 5px 5px;
 	line-height: 16px;
@@ -1115,7 +1115,7 @@
 
 .currentUserAvatar .userWrapper{
 	background: #f2f2f2;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 2px 2px 0 #D2D2D2 inset, 0 2px 0 #D6D6D6 inset, 0 0 0 2px #E5E5E5 inset;
 	border: 1px solid #314559;
 	border-radius: 5px;
@@ -1145,7 +1145,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));		
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-top: 1px solid #314559;
 	border-left: 1px solid #314559;
 	border-right: 1px solid #314559;
@@ -1172,7 +1172,7 @@
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));	
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);		
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	border-radius: 0 0 4px 4px;
 	border-left: 1px solid #B6BABF;
@@ -1244,7 +1244,7 @@
 	background-image: -moz-linear-gradient(top, #cd5353, #b43e3e);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#cd5353), to(#b43e3e));		
 	-pie-background: linear-gradient(#cd5353, #b43e3e);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #673434;
 	box-shadow: inset 0 1px 0 #d86565;
 	border-radius: 3px;
@@ -1261,7 +1261,7 @@
 	background-image: -moz-linear-gradient(top, #d85858, #bf4242);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#d85858), to(#bf4242));		
 	-pie-background: linear-gradient(#d85858, #bf4242);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 3px;
 	position: relative;
 }

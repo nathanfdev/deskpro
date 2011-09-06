@@ -14,7 +14,7 @@
 	top: 0;
 	width: 55px;
 	z-index: 99999;
-	behavior: url(../../js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 #DP-NavSections ul{
@@ -58,7 +58,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf4d4e), to(#943232));
 	box-shadow: 0 1px 5px rgba(0,0,0,0.25), inset 0 1px 0 #d58181;
 	-pie-background: linear-gradient(#bf4d4e, #943232);
-	behavior: url(../../js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #592d2d;
 	display: block;
 	right: 5px;
@@ -169,7 +169,7 @@
 	background-image: -moz-linear-gradient(top, #eef0f2, #e4e6e9);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#eef0f2), to(#e4e6e9));
 	-pie-background: linear-gradient(#eef0f2, #e4e6e9);
-	behavior: url(../../js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 5px 5px 0 0;
 	border-top: 1px solid #212326;
 	border-left: 1px solid #212326;

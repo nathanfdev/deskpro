@@ -6,7 +6,7 @@
 	background: #fafafa;
 	border: 1px solid #b6babf;
 	border-radius: 5px 5px 0 0;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	position: absolute;
 	right: 0;
 	bottom: 0 !important;
@@ -20,7 +20,7 @@
 	background-image: -moz-linear-gradient(top, #eff1f2, #dadcde);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#eff1f2), to(#dadcde));
 	-pie-background: linear-gradient(#eff1f2, #dadcde);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, inset 0 1px 0 rgba(255,255,255,0.15);
 	border-bottom: 1px solid #b6babf;
 	border-radius: 5px 5px 0 0;
@@ -38,7 +38,7 @@
 	background-image: -moz-linear-gradient(top, #6da3c2, #375388);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6da3c2), to(#375388));
 	-pie-background: linear-gradient(#6da3c2, #375388);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset;
 	border-radius: 5px 5px 0 0;
 	border-right: 1px solid #4d7399;
@@ -49,7 +49,7 @@
 	float: left;
 	margin: 0 5px 0 1px;
 	padding: 0 5px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .chatPanelHead li a{
@@ -75,7 +75,7 @@
 	background-image: -moz-linear-gradient(top, #93bcdc, #4b7ebb);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#93bcdc), to(#4b7ebb));
 	-pie-background: linear-gradient(#93bcdc, #4b7ebb);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 .chatPanelHead li.active, .chatPanelHead li.active:hover{
@@ -84,7 +84,7 @@
 	border-left: 1px solid #b6babf;
 	border-top: 1px solid #b6babf;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset;
-	behavior: url(js/lib/PIE.htc);	
+	behavior: url(../../static/vendor/PIE.htc);	
 }
 
 .chatPanelHead li.active a span.userIcon{
@@ -163,7 +163,7 @@
 	float: left;
 	padding: 3px 3px 1px;
 	margin-right: 10px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 .onlineList li span, .offlineList li span, .onlineTeam li span, agentOnline li span{
 	font-size:10px;
@@ -187,7 +187,7 @@
 	background-image: -moz-linear-gradient(top, #ebeced, #d9dadc);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#ebeced), to(#d9dadc));
 	-pie-background: linear-gradient(#ebeced, #d9dadc);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-top: 1px solid #DEDFE0;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
 	height: 26px;
@@ -242,7 +242,7 @@
 	background-image: -moz-linear-gradient(top, #edeff2, #e1e3e6);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edeff2), to(#e1e3e6));
 	-pie-background: linear-gradient(#edeff2, #e1e3e6);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-right: 1px solid #b6babf;
 	border-left: 1px solid #b6babf;
 	border-top: 1px solid #b6babf;
@@ -258,7 +258,7 @@
 	background-image: -moz-linear-gradient(top, #6ea4c3, #375288);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6ea4c3), to(#375288));
 	-pie-background: linear-gradient(#6ea4c3, #375288);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-right: 1px solid #334d66;
 	border-left: 1px solid #334d66;
 	border-top: 1px solid #334d66;
@@ -314,7 +314,7 @@
 	background-image: -moz-linear-gradient(top, #f1f3f5, #e4e7eb);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f1f3f5), to(#e4e7eb));
 	-pie-background: linear-gradient(#f1f3f5, #e4e7eb);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 5px 5px 0 0;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
     left: 0;
@@ -366,14 +366,14 @@
 	width: 300px;
 	left: 0; 
 	height: 253px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 .agentOnline{
 	background: none repeat scroll 0 0 #FFFFFF;
 	border: 2px solid #F5F5F5;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 2px 1px rgba(0, 0, 0, 0.1) inset;
 	float: left;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	padding: 3px 3px 0;
 	position: relative;
 }
@@ -421,7 +421,7 @@
 	background-image: -moz-linear-gradient(top, #f2f2f2, #eaeaea);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#eaeaea));
 	-pie-background: linear-gradient(#f2f2f2, #eaeaea);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 3px;
 	border: 1px solid #b3b3b3;
 	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;	
@@ -430,7 +430,7 @@
 	background-image: -moz-linear-gradient(top, #cce8f2, #b0dbea);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#cce8f2), to(#b0dbea));
 	-pie-background: linear-gradient(#cce8f2, #b0dbea);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 3px;
 	border: 1px solid #8fb3bf;
 	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;
@@ -471,7 +471,7 @@
 	padding: 5px 6px;
 	position: absolute;
 	width: 300px;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 
 textarea#typeChat{
@@ -484,7 +484,7 @@ textarea#typeChat{
 	width: 290px;
 	padding: 3px 5px 2px;
 	word-wrap: break-word;
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 }
 span.borderOver{
 	border-bottom: 1px solid #edeff2;

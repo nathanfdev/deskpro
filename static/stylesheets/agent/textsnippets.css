@@ -16,14 +16,14 @@
 	width: 650px;
 	margin: 10px 0 0 100px;
 	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	
 }
 .textSnippetHeader{
 	background: -moz-linear-gradient(top, #3b3b3b, #0b0b0b);
 	background: -webkit-gradient(linear, center top, center bottom, from(#3b3b3b), to(#0b0b0b));
 	-pie-background: linear-gradient(#3b3b3b, #0b0b0b);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #515151 inset;
 	position: relative;
 	padding: 5px 10px;
@@ -72,7 +72,7 @@
 	background: -moz-linear-gradient(top, #d9dfe6, #bac5d1);
 	background: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#bac5d1));
 	-pie-background: linear-gradient(#d9dfe6, #bac5d1);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 0 #e0e5ea inset;
 	border-bottom: 1px solid #9da2a6;
 	height: 20px;
@@ -136,7 +136,7 @@
 	border-top: 1px solid transparent;
 }
 .leftSnippetList li a span{
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	background: #7C91A6;
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(0, 0, 0, 0.15) inset;
@@ -154,7 +154,7 @@
 	background: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-bottom: 1px solid #4d7399!important;
 	border-top: 1px solid #709ecc!important;
@@ -172,7 +172,7 @@
 }
 
 .textSnippetRight{
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	background: #FFFFFF;
     border-radius: 0 0 8px 0;
     display: block;
@@ -254,7 +254,7 @@ span.moreText{
 #createSnipet{}
 
 #snippetWriteTitle{
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
 	border: 1px solid #bdc2c7;
 	background: #fafafa;
@@ -275,7 +275,7 @@ span.moreText{
 	border-radius: none;
 }
 #snippetWriteMsg{
-	behavior: url(js/lib/PIE.htc);
+	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
 	border: 1px solid #bdc2c7;
 	background: #fafafa;
