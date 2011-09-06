@@ -200,7 +200,8 @@
 	font-size: 11px;
 	position: relative;
 }
-#DP-SourceList ul.navList li span.listCounter{
+#DP-SourceList ul.navList li span.listCounter,
+#DP-SourceList ul.navSimpleList li span.listCounter {
 	font-size: 10px;
 	line-height: 14px;
 	color: #fff;
@@ -215,7 +216,8 @@
 	position: relative;
 }
 
-#DP-SourceList ul.navList li a:hover span.listCounter{
+#DP-SourceList ul.navList li a:hover span.listCounter,
+#DP-SourceList ul.navSimpleList li a:hover span.listCounter{
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	background: #2f4b67;
@@ -224,7 +226,8 @@
 	z-index: 1;
 }
 
-#DP-SourceList ul.navList li.subList span.listCounter{
+#DP-SourceList ul.navList li.subList span.listCounter,
+#DP-SourceList ul.navSimpleList li.subList span.listCounter{
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(40,40,40,0.1);
 	background: #ADBDCC !important;
 	float: left;
@@ -233,7 +236,8 @@
 	border-radius: 10px;
 	z-index: 1;
 }
-#DP-SourceList ul.navList li.subList a:hover span.listCounter{
+#DP-SourceList ul.navList li.subList a:hover span.listCounter,
+#DP-SourceList ul.navSimpleList li.subList a:hover span.listCounter{
 	background: #ADBDCC !important;
 }
 
@@ -697,8 +701,6 @@ ul.userControlWrap li input{
 #listingTicketLabels, #flaggedTicketLabels li, #archiveTicketLabels li, .navSimpleList li {
 	display: block;
 	padding: 0;
-	float: left;
-	width: 100%;
 }
 #listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a, .navSimpleList li a {
 	font-family: Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
@@ -707,11 +709,10 @@ ul.userControlWrap li input{
 	text-shadow: 0 1px 0 #fff;
 	font-size: 11px;
 	font-weight: bold;
-	float: left;
-	width: 100%;
 	border-bottom: 1px solid transparent;	
 	border-top: 1px solid transparent;
 	cursor: pointer;
+	display: block;
 }
 #flaggedTicketLabels li:hover , #archiveTicketLabels li a:hover, .navSimpleList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
@@ -994,3 +995,16 @@ ul.listingTicketChild li a:hover{
 	background: #fff;
 	font-size: 10px;
 }
+.navSimpleList .flag span {
+	background: url(../../images/agent/flagIco.png) no-repeat;
+	background-repeat: no-repeat;
+	padding-left: 10px
+}
+
+.navSimpleList .flag-blue span     { background-position: 0px 2px; }
+.navSimpleList .flag-green span    { background-position: 0px -23px; }
+.navSimpleList .flag-orange span   { background-position: 0px -48px; }
+.navSimpleList .flag-pink span     { background-position: 0px -73px; }
+.navSimpleList .flag-purple span   { background-position: 0px -98px; }
+.navSimpleList .flag-red span      { background-position: 0px -123px; }
+.navSimpleList .flag-yellow span   { background-position: 0px -148px; }

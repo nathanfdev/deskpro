@@ -82,6 +82,7 @@
 			<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
 			<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>
 		</ul>
+		<br class="clear" />
 	</div>
 </div>
 
@@ -89,17 +90,19 @@
 	Loading ...
 </section>
 <section id="tickets_outline_flagged" class="deskpro-tab-item">
-	<ul id="tickets_outline_flags_list" class="nav-list">
+	<ul id="tickets_outline_flags_list" class="navSimpleList" style="margin-top: 4px;">
 		{% for color in flags %}
-			<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
-				<span id="ticket_flag_{{color}}_count" class="list-counter">0</span>
-				<a>{{ flagnamer.flag_name(color, person) }}</a>
+			<li class="flag flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
+				<a>
+					<span>{{ flagnamer.flag_name(color, person) }}</span>
+					<span id="ticket_flag_{{color}}_count" class="listCounter">0</span>
+				</a>
 			</li>
 		{% endfor %}
 	</ul>
 </section>
 <section id="tickets_outline_archive" class="deskpro-tab-item">
-	<ul id="tickets_outline_filters_list" class="navSimpleList">
+	<ul id="tickets_outline_filters_list" class="navSimpleList" style="margin-top: 4px;">
 		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam">
 			<a>Spam</a>
 		</li>
