@@ -45,8 +45,6 @@
 }
 
 .pendingTicket .titles .checkbox {
-	width: 11px;
-	height: 11px;
 	position: relative;
 	top: 1px;
 }
@@ -260,7 +258,7 @@
 	border-left: 1px solid #c2c7cc;
 	border-bottom: 1px solid #c2c7cc;
  	height: 0;
-	left: 30px;
+	left: 22px;
     padding: 4px 0 3px 6px;
 	position: absolute;
 	top: 6px;
@@ -338,7 +336,7 @@ ul.navList li.active span.open{
 	position: relative;
 }
 #DP-SourceList ul.navList ul.subGroup li.subList a{
-	padding: 4px 0 3px 42px;
+	padding: 4px 0 3px 33px;
 }
 
 #DP-SourceList ul.navList li.active a.on, #DP-SourceList ul.navList li a.groupHead,
