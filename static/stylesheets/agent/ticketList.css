@@ -237,6 +237,31 @@ a.performActTrigger span.dropdownIcon{
 	position: relative;
 }
 
+.ticketList .extra_fields {
+	margin-left: 22px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.ticketList .extra_fields ul li {
+	float: left;
+	border: 1px solid #D4D7D9;
+	margin-right: 5px;
+	font-size: 10px;
+	line-height: 100%;
+	padding:  3px 4px 3px 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.ticketList .extra_fields ul li .prop-title {
+	color: #777D83;
+}
+.ticketList .extra_fields ul li .prop-val {
+	color: #777D83;
+}
+
 .catTags{
 	margin-left: 18px;
 	margin-bottom: 5px;
@@ -244,6 +269,7 @@ a.performActTrigger span.dropdownIcon{
 .catTags li {
 	padding: 0;
 	margin-right: 5px;
+	line-height:5px;
 }
 .catTags li a{
 	cursor: pointer;
@@ -253,7 +279,7 @@ a.performActTrigger span.dropdownIcon{
 	-moz-border-radius: 8px;
 	border-radius: 8px;
 	line-height: 100%;
-	padding:  1px 3px;
+	padding: 0 2px 0 2px;
 }
 .firefox .catTags li a{
 	padding: 3px 4px 1px;
@@ -264,34 +290,60 @@ a.performActTrigger span.dropdownIcon{
 
 .ticketList .item-select{
 	float: left;
-	margin: 3px;
+	margin: 5px;
 }
 
 .topRow, .midleRow, .metadata{
 	display: block;
-	margin-bottom: 3px;
-	margin-left: 3px;
-	margin-top: 1px;
-	position: relative;
 }
-.topRow .topRowLeft{
 
+.topRow {
+	position: absolute;
+	top: 0px;
+	left: 23px;
+	right: 0;
+	height: 15px;
+}
+
+.topRow .topRowLeft{
+	width: 1000px;
 }
 .topRow .topRowLeft h3{}
 .topRow .topRowLeft h3 a{
-	font-size: 11px;
-	color: #324c66;
+	font-size: 12px;
 	cursor: pointer;
 	text-shadow: 0 1px 0 #FFFFFF;
+	text-decoration: underline;
+	color: #356595;
 }
 .topRow .topRowLeft h3 a:hover{
-	color: #78858f;
+	color: #3586A9;
 }
 .topRow .topRowRight {
 	position: absolute;
 	top: 3px;
-	right: 8px;
+	right: 0;
+	padding-right: 8px;
+	margin-left: 75px;
+	background-color: #F5F7FA;
 }
+
+.topRowRight .bound-fade {
+	position: absolute;
+	left: -75px;
+	top: 0;
+	bottom: 0;
+	width:75px;
+
+	background: -moz-linear-gradient(left, rgba(245,247,250,0) 0%, rgba(245,247,250,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(245,247,250,0)), color-stop(100%,rgba(245,247,250,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f5f7fa', endColorstr='#f5f7fa',GradientType=1 ); /* IE6-9 */
+	background: linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* W3C */
+}
+
 .topRow .topRowRight, .topRowRight .urgency a{
 	color: #606B73;
 	float: right;
@@ -309,7 +361,6 @@ a.performActTrigger span.dropdownIcon{
 .topRowRight .urgency a, .status{
 	background: #bf6060;
 	border-radius: 10px 10px 10px 10px;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 0 rgba(0, 0, 0, 0.1) inset;
 	padding: 1px 4px;
 	color: #fff;
 	text-shadow: none;
@@ -317,32 +368,51 @@ a.performActTrigger span.dropdownIcon{
 	position: relative;
 }
 .status{
-	background: #97a4b2;
+	background: #93C8A8;
 	border-radius: 10px;
 	font-size: 9px;
 	float: left;
-	background: #73994D;
 	padding: 1px 5px;
 	color: #fff;
 }
+
+.ticketList .userinfo {
+	margin-top: 19px;
+}
+
+.ticketList .userinfo a.name {
+    color: #303338;
+}
+
+.ticketList .userinfo .email {
+    font-size: 95%;
+    color: #484A4C;
+}
+
+.ticketList .userinfo .org {
+    font-size: 95%;
+    color: #484A4C;
+}
+
 .metadata{
 	clear: both;
-	margin-left: 20px;
-	font-size: 12px;
-	color: #78858f;
+	position: relative;
+	height: 18px;
 }
 .metadata, .metaleft a{
 	color: #738699;
-	display: block;
 	font-size: 10px;
 	font-weight: bold;
 	position: relative;
 	text-shadow: 0 1px 0 #FFFFFF;
-	cursor: pointer;
 	position: relative;
 }
 .metaleft{
-	float: left;
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
 }
 
 .metaleft span{
@@ -350,7 +420,10 @@ a.performActTrigger span.dropdownIcon{
 	font-weight: normal;
 }
 .metaRight{
-	float: left;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
 }
 .metaRight span{
 	margin: 0 0 0 5px;

@@ -12,36 +12,40 @@
 			</h3>
 		</div>
 		<div class="topRowRight">
+			<div class="bound-fade"></div>
 			<div class="urgency"><a>{{ rand(1,10) }}</a></div>
 			<div class="status">{{ ticket.status }}</div>
+			<br class="clear" />
 		</div>
 	</div>
-	<div class="metadata">
-		<div class="metaleft">
-			<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
-				<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
-			</a>
-		</div>
-		<div class="metaRight">
-			&nbsp;-<span>{{ ticket.person.primary_email_address }}</span>
-		</div>
-		<br class="clear" />
+	<div class="userinfo">
+		<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+			<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
+		</a>
+		{% if ticket.person.organization %}
+			<span class="org">
+				({% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}{{ ticket.person.organization.name }})
+			</span>
+		{% endif %}
+		{% if ticket.person.primary_email %}
+			<span class="email">{{ ticket.person.primary_email_address }}</span>
+		{% endif %}
 	</div>
 	{% if display_fields|length %}
-	<div class="catTags">
+	<div class="extra_fields">
 		<ul>
 			{% for field in display_fields %}
 				{% if field == 'deleted_reason' %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						{% if deleted_tickets[ticket.id] %}
 							Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
 							{% if deleted_tickets[ticket.id].reason %}
 								because: {{ deleted_tickets[ticket.id].reason }}
 							{% endif %}
 						{% endif %}
-					</a></li>
+					</li>
 				{% elseif field == 'department' and ticket.department %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Department:</span>
 						<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
 						{% if ticket.department %}
@@ -50,9 +54,9 @@
 							None
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'category' and ticket.category %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Category:</span>
 						<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
 						{% if ticket.category %}
@@ -61,9 +65,9 @@
 							None
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'agent' and ticket.agent %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Agent:</span>
 						<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
 						{% if ticket.agent %}
@@ -72,9 +76,9 @@
 							Unassigned
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'agent_team' and ticket.agent_team %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Agent Team:</span>
 						<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
 						{% if ticket.agent_team %}
@@ -83,9 +87,9 @@
 							No Team
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'product' and ticket.product %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Product:</span>
 						<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
 						{% if ticket.product %}
@@ -94,16 +98,16 @@
 							None
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'date_user_waiting' %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">User Waiting:</span>
 						<span class="prop-val">
 							4 hours
 						</span>
-					</a></li>
+					</li>
 				{% elseif field == 'organization' and ticket.organization %}
-					<li class="{{field}}"><a>
+					<li class="{{field}}">
 						<span class="prop-title">Organization:</span>
 						<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 						{% if ticket.organization %}
@@ -112,7 +116,7 @@
 							None
 						{% endif %}
 						</span>
-					</a></li>
+					</li>
 				{% else %}
 					{% for f in ticket_field_defs %}
 						{% if field == 'ticket_fields['~f.id~']' and ticket.hasCustomField(f.id) %}
@@ -120,7 +124,7 @@
 								<div class="prop-val ticket_fields_{{f.id}}">
 									{{ render_custom_field(ticket.getCustomFieldDisplayArray(f.id)) }}
 								</div>
-							</a></li>
+							</li>
 						{% endif %}
 					{% endfor %}
 					{% for f in person_field_defs %}
@@ -130,7 +134,7 @@
 								<div class="prop-val person_fields_{{f.id}}">
 									{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
 								</div>
-							</a></li>
+							</li>
 						{% endif %}
 					{% endfor %}
 				{% endif %}
