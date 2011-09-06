@@ -272,7 +272,7 @@ input.ticket{
 }
 .topRow .topRowLeft h3{}
 .topRow .topRowLeft h3 a{
-	font-size: 12px;
+	font-size: 11px;
 	color: #324c66;
 	cursor: pointer;
 	text-shadow: 0 1px 0 #FFFFFF;
@@ -285,6 +285,9 @@ input.ticket{
 	float: right;
 	font-size: 11px;
 	text-shadow: 0 1px 0 #FFFFFF;
+}
+.topRowRight .urgency a{
+	font-size: 9px;
 }
 .topRowRight .urgency{
 	float: right;
@@ -304,7 +307,7 @@ input.ticket{
 .status{
 	background: #97a4b2;
 	border-radius: 10px;
-	font-size: 10px;
+	font-size: 9px;
 	float: left;
 	background: #73994D;
 	padding: 1px 5px;

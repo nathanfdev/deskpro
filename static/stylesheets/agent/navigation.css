@@ -52,24 +52,6 @@
 	box-shadow: 0 -1px 0 #17191B;
 }
 
-
-/*#DP-NavSections li .navCounterGreen, #DP-chatOnlineCount .navCounterGreen{
-	background: -moz-linear-gradient(top, rgba(119,150,90,1) 0%, rgba(88,119,60,1) 100%); 
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(119,150,90,1)), color-stop(100%,rgba(88,119,60,1))); 
-	-pie-background: linear-gradient(#77965a, #58773c);
-	behavior: url(../../js/lib/PIE.htc);
-	border-radius: 10px;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 0px 1px rgba(255, 255, 255, 0.2) inset,  0 2px 3px rgba(0, 0, 0, 0.3);
-	border: 1px solid #304020;
-	display: block;
-	left: 25px;
-	padding: 1px 2px;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	z-index: 99;
-}*/
-
 #DP-NavSections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
 	border-radius: 7px;
 	background-image: -moz-linear-gradient(top, #bf4d4e, #943232);
@@ -86,6 +68,9 @@
 	top: 0;
 	z-index: 99;
 }
+#DP-NavSections li .navCounterRed {
+	font-size: 8px !important;
+}
 .count-badge.first { 
 	top: 0px !important;
 	position: absolute;
@@ -101,10 +86,12 @@
 
 #DP-NavSections li span, #DP-chatOnlineCount span{
 	color: #fff;
-	font-size: 10px;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #000000;
 	padding: 1px 2px 0 1px;
+}
+#DP-NavSections li a span, #DP-chatOnlineCount a span{
+	font-size: 10px;
 }
 
 #DP-NavSections li a{

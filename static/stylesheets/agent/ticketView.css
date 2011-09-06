@@ -306,7 +306,7 @@
 	color: #2d5680;
 }
 .ticketTitles h1{
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: bold;
 }
 
@@ -331,7 +331,7 @@
 	position: relative;
 }
 .awaitAgent a, .setOnHold a{
-	font-size: 12px;
+	font-size: 10px;
 	font-weight: bold;
 	color: #FFF !important;
 	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5) !important;
@@ -340,7 +340,7 @@
 }
 .departmentInfo a{
 	color: #697b8c;
-	font-size: 11px;
+	font-size: 10px;
 	font-weight: bold;
 	float: left;
 	padding: 5px;
@@ -454,7 +454,7 @@
 
 .ticketInformation{
 	color: #5B708C;
-	font-size: 11px;
+	font-size: 10px;
 	width: 500px;
 }
 
@@ -552,7 +552,7 @@
 }
 
 .tabNavInner li a, .replyType li a{
-	font-size: 11px;
+	font-size: 10px;
 	font-weight: bold;
 	line-height: 20px;
 	color: #738699;
