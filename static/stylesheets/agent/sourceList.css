@@ -77,8 +77,8 @@
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
-	padding-left: 4px;
-	padding-right: 4px;
+	padding-left: 7px;
+	padding-right: 7px;
 	margin-left: 4px;
 }
 
@@ -208,7 +208,7 @@
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	float: right;
-	margin: 0 5px 0 0;
+	margin: 0 8px 0 0;
     padding: 0 5px;
 	background: #6c89a6;
 	behavior: url(js/lib/PIE.htc);
