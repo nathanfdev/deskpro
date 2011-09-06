@@ -1,4 +1,4 @@
-#DP-SourceList {
+#dp_source {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -12,7 +12,7 @@
 	overflow-x: hidden;
 }
 
-#DP-SourceList > section {
+#dp_source > section {
 	display: none;
 	position: absolute;
 	top: 0;
@@ -21,7 +21,7 @@
 	left: 0;
 }
 
-#DP-SourceList > section.on {
+#dp_source > section.on {
 	display: block;
 }
 
@@ -186,19 +186,19 @@
 
 
 /* Ticket Collapse-Expand */
-#DP-SourceList .yourPendingTicket{
+#dp_source .yourPendingTicket{
 	clear: both;
 	position: relative;
 }
 
-#DP-SourceList ul.navList li{
+#dp_source ul.navList li{
 	white-space: no-wrap;
 	cursor: pointer;
 	font-size: 11px;
 	position: relative;
 }
-#DP-SourceList ul.navList li span.listCounter,
-#DP-SourceList ul.navSimpleList li span.listCounter {
+#dp_source ul.navList li span.listCounter,
+#dp_source ul.navSimpleList li span.listCounter {
 	font-size: 10px;
 	line-height: 14px;
 	color: #fff;
@@ -213,9 +213,9 @@
 	position: relative;
 }
 
-#DP-SourceList ul.navList li a:hover span.listCounter,
-#DP-SourceList ul.navSimpleList li a:hover span.listCounter,
-#DP-SourceList li.nav-selected a span.listCounter{
+#dp_source ul.navList li a:hover span.listCounter,
+#dp_source ul.navSimpleList li a:hover span.listCounter,
+#dp_source li.nav-selected a span.listCounter{
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	background: #2f4b67;
@@ -224,8 +224,8 @@
 	z-index: 1;
 }
 
-#DP-SourceList ul.navList li.subList span.listCounter,
-#DP-SourceList ul.navSimpleList li.subList span.listCounter{
+#dp_source ul.navList li.subList span.listCounter,
+#dp_source ul.navSimpleList li.subList span.listCounter{
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(40,40,40,0.1);
 	background: #ADBDCC !important;
 	float: left;
@@ -234,18 +234,18 @@
 	border-radius: 10px;
 	z-index: 1;
 }
-#DP-SourceList ul.navList li.subList a:hover span.listCounter,
-#DP-SourceList ul.navSimpleList li.subList a:hover span.listCounter{
+#dp_source ul.navList li.subList a:hover span.listCounter,
+#dp_source ul.navSimpleList li.subList a:hover span.listCounter{
 	background: #ADBDCC !important;
 }
 
-#DP-SourceList ul.navList ul.subGroup li span.listCounter{
+#dp_source ul.navList ul.subGroup li span.listCounter{
 	background: #ADBDCC;
 }
-#DP-SourceList ul.navList ul.subGroup li a:hover span.listCounter{
+#dp_source ul.navList ul.subGroup li a:hover span.listCounter{
 	background: #ADBDCC;
 }
-#DP-SourceList ul.navList ul.subGroup li.nav-selected a span.listCounter{
+#dp_source ul.navList ul.subGroup li.nav-selected a span.listCounter{
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	background: #2f4b67;
@@ -253,7 +253,7 @@
 	position: relative;
 	z-index: 1;
 }
-#DP-SourceList ul.navList ul.subGroup li span.borderLink{
+#dp_source ul.navList ul.subGroup li span.borderLink{
 	border-left: 1px solid #c2c7cc;
 	border-bottom: 1px solid #c2c7cc;
  	height: 0;
@@ -283,7 +283,7 @@ ul.navList li.active span.open{
 	position: relative;
 }
 
-#DP-SourceList ul.navList > li a{
+#dp_source ul.navList > li a{
 	color: #6c7680;
 	display: block;
 	font-size: 11px;
@@ -293,53 +293,53 @@ ul.navList li.active span.open{
 	text-shadow: 0 1px 0 #FFFFFF;
 	position: relative;
 }
-#DP-SourceList ul.navList > li a.groupHead{
+#dp_source ul.navList > li a.groupHead{
 	color: #575e66;
 	padding: 7px 0 5px 10px;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 
-#DP-SourceList ul.navList li ul.subGroup li a{
+#dp_source ul.navList li ul.subGroup li a{
 	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	padding: 3px 0 3px 20px;
 	border-bottom: 1px solid transparent;
 	border-top: 1px solid transparent;
 }
-#DP-SourceList ul.navList li ul.subGroup li.nav-selected a,
-#DP-SourceList ul.navSimpleList li.nav-selected a {
+#dp_source ul.navList li ul.subGroup li.nav-selected a,
+#dp_source ul.navSimpleList li.nav-selected a {
 	color: #fff;
 	text-shadow: 0 1px 0 #3C648E;
 }
 
-#DP-SourceList ul.navList ul.subGroup li.groupingOpt{
+#dp_source ul.navList ul.subGroup li.groupingOpt{
 	
 }
-#DP-SourceList ul.navList ul.subGroup li.groupingOpt a{
+#dp_source ul.navList ul.subGroup li.groupingOpt a{
 	color: #a1aab2;
 	font-size: 11px !important;
 	font-weight: bold !important;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
-#DP-SourceList ul.navList ul.subGroup li.groupingOpt .menuTrigger{
+#dp_source ul.navList ul.subGroup li.groupingOpt .menuTrigger{
 	background: url(../../images/agent/imgSprt_ico.png) no-repeat 72px -944px;
 	padding: 0 10px 0 2px;
 	font-size: 11px;
 	font-weight: bold;
 }
-#DP-SourceList ul.navList ul.subGroup li.groupingOpt .menuTrigger:hover{
+#dp_source ul.navList ul.subGroup li.groupingOpt .menuTrigger:hover{
 	color: #6C7680;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
-#DP-SourceList ul.navList ul.subGroup li{
+#dp_source ul.navList ul.subGroup li{
 	border: 0 none;
 	position: relative;
 }
-#DP-SourceList ul.navList ul.subGroup li.subList a{
+#dp_source ul.navList ul.subGroup li.subList a{
 	padding: 4px 0 3px 33px;
 }
 
-#DP-SourceList ul.navList li.active a.on, #DP-SourceList ul.navList li a.groupHead,
-#DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
+#dp_source ul.navList li.active a.on, #dp_source ul.navList li a.groupHead,
+#dp_source ul.navList ul.subGroup li:hover a, #dp_source .teamfilter ul.navList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
 	-pie-background: linear-gradient(#edf0f2, #dde3e7);
@@ -350,7 +350,7 @@ ul.navList li.active span.open{
 	position: relative;
 	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 }
-#DP-SourceList ul.navList ul.subGroup li.nav-selected { 
+#dp_source ul.navList ul.subGroup li.nav-selected { 
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -361,27 +361,27 @@ ul.navList li.active span.open{
 	color: #fff;
 	text-shadow: 0 1px 0 #3C648E;
 }
-#DP-SourceList ul.navList li.active a.on {
+#dp_source ul.navList li.active a.on {
 	border-bottom: 1px solid #ced4d9;
 }
-#DP-SourceList ul.navList li:last-of-type a.groupHead {
+#dp_source ul.navList li:last-of-type a.groupHead {
 	border-bottom: 1px solid #ced4d9;
 }
-.ie #DP-SourceList ul.navList li.active a.on, .ie #DP-SourceList ul.navList li a.groupHead,
-.ie #DP-SourceList ul.navList ul.subGroup li:hover a, .ie #DP-SourceList .teamfilter ul.navList li a:hover {
+.ie #dp_source ul.navList li.active a.on, .ie #dp_source ul.navList li a.groupHead,
+.ie #dp_source ul.navList ul.subGroup li:hover a, .ie #dp_source .teamfilter ul.navList li a:hover {
 	background: #dde3e7;
 }
 
-#DP-SourceList ul.navList li:first-child a.groupHead {
+#dp_source ul.navList li:first-child a.groupHead {
 	border-top: 1px solid #9DA2A6 !important;
 }
 
-#DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
+#dp_source ul.navList ul.subGroup li:hover a, #dp_source .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
 }
-#DP-SourceList ul.navList li a.groupHead:hover,
-#DP-SourceList ul.navList li.nav-selected a.groupHead,
-#DP-SourceList ul.navSimpleList li.nav-selected
+#dp_source ul.navList li a.groupHead:hover,
+#dp_source ul.navList li.nav-selected a.groupHead,
+#dp_source ul.navSimpleList li.nav-selected
 {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
@@ -395,7 +395,7 @@ ul.navList li.active span.open{
 	display: block !important;
 	position: relative;
 }
-.ie #DP-SourceList ul.navList li:hover a.groupHead, .ie #DP-SourceList ul.navList li.active:hover a.on {
+.ie #dp_source ul.navList li:hover a.groupHead, .ie #dp_source ul.navList li.active:hover a.on {
 	background: #6baccc;
 }
 
@@ -567,8 +567,8 @@ ul.userControlWrap li input{
 	display: block;
 }
 
-#DP-SourceList .teamfilter ul.navList li{}
-#DP-SourceList .teamfilter ul.navList li a{
+#dp_source .teamfilter ul.navList li{}
+#dp_source .teamfilter ul.navList li a{
 	padding: 4px 0 4px 10px;
 	border-top: 1px solid transparent;
 	border-bottom: 1px solid transparent;

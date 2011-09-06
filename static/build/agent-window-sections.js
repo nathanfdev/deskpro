@@ -11,7 +11,7 @@ a.push('<div class="scrollbar"><div class="track"><div class="thumb"><div class=
 a=a.join("");c=$(a);this.sectionEl.append(c);b=$("div.scroll-content:first",c)}}this.contentEl=b;var d=$(".with-scrollbar:first",this.sectionEl);
 if(d.length){console.log("re");this.scrollerHandler=new DeskPRO.Agent.ScrollerHandler(this,d,{showEvent:"show",hideEvent:"hide"})
 }},setListElement:function(b,a){if(this.listEl){this.listEl.remove()}if(!b){b=$("<section></section>");b.attr("id",Orb.getUniqueId("list_"))
-}this.listEl=b;if(!b.parent().is("#DP-TicketList")){this.listEl.detach().appendTo("#DP-TicketList")}if(!a){a=$('<section class="content"></section>')
+}this.listEl=b;if(!b.parent().is("#dp_list")){this.listEl.detach().appendTo("#dp_list")}if(!a){a=$('<section class="content"></section>')
 }this.listEl.append(a);this.listContentEl=a},setListPageFragment:function(b){if(this.listPage){this.listPage.fireEvent("destroy");
 this.listPage=null}this.listPage=b;var a=$("section.content:first",this.getListElement());a.empty();a.html(b.html);this.getListElement().addClass("on");
 $("#deskpro_list_loading").removeClass("on");b.fireEvent("render",[a]);b.fireEvent("activate")},isVisible:function(){return this._isVisible

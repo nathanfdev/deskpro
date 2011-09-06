@@ -840,12 +840,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
-		$('#DP-TicketList > section').removeClass('on');
-		$('#DP-TicketList_loading').addClass('on');
+		$('#dp_list > section').removeClass('on');
+		$('#dp_list_loading').addClass('on');
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 
-			$('#DP-TicketList_loading').removeClass('on');
+			$('#dp_list_loading').removeClass('on');
 
 			var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
@@ -1534,7 +1534,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var self = this;
 		var first = null;
-		$('#DP-Navigation [data-section-handler]').each(function() {
+		$('#dp_nav [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
 				el.attr('id', Orb.getUniqueId('section_'));
@@ -1562,7 +1562,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
-		$('#DP-SourceList').delegate('[data-route]', 'click', function(ev) {
+		$('#dp_source').delegate('[data-route]', 'click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
@@ -1588,19 +1588,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('hide');
 		}
 
-		$('#DP-Navigation li.dpNavActive').removeClass('dpNavActive');
+		$('#dp_nav li.dpNavActive').removeClass('dpNavActive');
 		btn.addClass('dpNavActive');
 
-		$('#DP-SourceList > section.on').removeClass('on');
-		$('#DP-TicketList > section.on').removeClass('on');
+		$('#dp_source > section.on').removeClass('on');
+		$('#dp_list > section.on').removeClass('on');
 
-		$('#DP-TicketList_loading, #DP-SourceList_loading').addClass('on');
+		$('#dp_list_loading, #dp_source_loading').addClass('on');
 
 		if (this.openSection) {
 			this.openSection.fireEvent('afterhide');
 		}
 
-		$('#DP-TicketList_loading').removeClass('on');
+		$('#dp_list_loading').removeClass('on');
 
 		handler.fireEvent('show');
 		var sectionEl = handler.getSectionElement();

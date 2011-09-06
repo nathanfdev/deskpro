@@ -515,7 +515,7 @@
 	background-position: right top;
 }
 
-#DP-Header{
+#dp_header{
 	background-color:#2d5680;
 	background-image: url(../../images/agent/headerBack.png);
 	background-repeat: repeat-x;

@@ -6,7 +6,7 @@ body {
 	color: #324c66;
 }
 
-#DP-Container{
+#dp_window{
 	position: absolute;
 	overflow: hidden;
 	top: 0;
@@ -15,7 +15,7 @@ body {
 	left: 0;
 }
 
-#DP-MainView{
+#dp_center{
 	position: absolute;
 	overflow: hidden;
 	top: 41px;
@@ -27,15 +27,15 @@ body {
 /* ----- FIX ----- */
 
 img {
-	border: none;	
+	border: none;
 }
 
 img a {
-	
+
 }
 
 img a:hover {
-	
+
 }
 
 /* ----- LINKS ----- */
@@ -46,11 +46,11 @@ a {
 }
 
 a:hover {
-	
+
 }
 
 a:visited, a:active, a:focus {
-	
+
 }
 /* ----- GLOBAL USE -----*/
 .assignBtn a{

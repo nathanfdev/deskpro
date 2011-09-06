@@ -116,8 +116,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.sectionEl = el;
-		if (!el.parent().is('#DP-SourceList')) {
-			this.sectionEl.detach().appendTo('#DP-SourceList');
+		if (!el.parent().is('#dp_source')) {
+			this.sectionEl.detach().appendTo('#dp_source');
 		}
 
 		if (!contentEl) {
@@ -167,8 +167,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.listEl = el;
-		if (!el.parent().is('#DP-TicketList')) {
-			this.listEl.detach().appendTo('#DP-TicketList');
+		if (!el.parent().is('#dp_list')) {
+			this.listEl.detach().appendTo('#dp_list');
 		}
 
 		if (!contentEl) {

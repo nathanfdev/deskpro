@@ -1,8 +1,8 @@
-#DP-Navigation{
+#dp_nav{
 	background: #363c42 url(../../images/agent/navBack.png) repeat-y scroll 0 0;
 	width: 54px;
 }
-#DP-NavSections{
+#dp_nav_sections{
 	background: #383B40;
 	border-top: 1px solid #292C31;
 	bottom: 0;
@@ -17,13 +17,13 @@
 	behavior: url(../../static/vendor/PIE.htc);
 }
 
-#DP-NavSections ul{
+#dp_nav_sections ul{
 	position: relative;
 	margin: 60px 0 0;
 	padding: 0;
 }
 
-#DP-NavSections li{
+#dp_nav_sections li{
 	background: url(../../images/agent/navPaneBack.png) repeat-y top left;
 	border-bottom: 1px solid #272A2E;
 	box-shadow: 0 1px 0 #303439 inset;
@@ -33,12 +33,12 @@
 	padding: 1px 0 0 1px;
 	position: relative;
 }
-#DP-NavSections li:first-child{
+#dp_nav_sections li:first-child{
 	margin-top:-1px;
 	border-top: 1px solid #272A2E;
 	box-shadow: 0 1px 0 #3C3F44 inset;
 }
-#DP-NavSections li.dpNavActive{
+#dp_nav_sections li.dpNavActive{
 	background: url(../../images/agent/pointerNav.png) no-repeat 44px 18px #1f2225;
 	padding: 0;
 	z-index: 999;
@@ -46,13 +46,13 @@
 	border: 1px solid #17191B;
 	box-shadow: 0 -1px 0 #17191B;
 }
-#DP-NavSections li.dpNavActive:first-child{
+#dp_nav_sections li.dpNavActive:first-child{
 	margin-top: 0;
 	border-top: 1px solid #17191B;
 	box-shadow: 0 -1px 0 #17191B;
 }
 
-#DP-NavSections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
+#dp_nav_sections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
 	border-radius: 7px;
 	background-image: -moz-linear-gradient(top, #bf4d4e, #943232);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf4d4e), to(#943232));
@@ -68,7 +68,7 @@
 	top: 0;
 	z-index: 99;
 }
-#DP-NavSections li .navCounterRed {
+#dp_nav_sections li .navCounterRed {
 	font-size: 8px !important;
 }
 .count-badge.first { 
@@ -81,28 +81,28 @@
 	font-family: Tahoma, Arial, sans-serif;
 }
 
-#DP-NavSections li.dpNavActive .count-badge {
+#dp_nav_sections li.dpNavActive .count-badge {
 	margin-top: -1px;
 }
 
-#DP-NavSections li span, #DP-chatOnlineCount span{
+#dp_nav_sections li span, #DP-chatOnlineCount span{
 	color: #fff;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #000000;
 	padding: 1px 2px 0 1px;
 }
-#DP-NavSections li a span, #DP-chatOnlineCount a span{
+#dp_nav_sections li a span, #DP-chatOnlineCount a span{
 	font-size: 10px;
 }
 
-#DP-NavSections li a{
+#dp_nav_sections li a{
 	color: #FFFFFF;
 	float: left;
 	font-size: 11px !important;
 	padding: 7px 0 9px;
 	text-align: center;
 }
-#DP-NavSections li a span, #DP-NavSections li.dpNavActive a span, #DP-chatOnlineCount a span{
+#dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span, #DP-chatOnlineCount a span{
 	background: url(../../images/agent/navIcon.png) no-repeat;
  	color: #FFFFFF;
     float: left;
@@ -113,54 +113,54 @@
     width: 33px;
 }
 
-#DP-NavSections li a span.ticketNavIcon{
+#dp_nav_sections li a span.ticketNavIcon{
 	background-position: 0 0;
 }
-#DP-NavSections li:hover a span.ticketNavIcon {
+#dp_nav_sections li:hover a span.ticketNavIcon {
 	background-position: 0 -757px;
 }
-#DP-NavSections li a span.chatNavIcon{
+#dp_nav_sections li a span.chatNavIcon{
 	background-position: 0 -58px;
 }
-#DP-NavSections li:hover a span.chatNavIcon {
+#dp_nav_sections li:hover a span.chatNavIcon {
 	background-position: 0 -814px;
 }
-#DP-NavSections li a span.twitterNavIcon{
+#dp_nav_sections li a span.twitterNavIcon{
 	background-position: 0 -115px;
 }
-#DP-NavSections li:hover a span.twitterNavIcon {
+#dp_nav_sections li:hover a span.twitterNavIcon {
 	background-position: 0 -871px;
 }
-#DP-NavSections li a span.peopleNavIcon{
+#dp_nav_sections li a span.peopleNavIcon{
 	background-position: 0 -177px;
 }
-#DP-NavSections li:hover a span.peopleNavIcon {
+#dp_nav_sections li:hover a span.peopleNavIcon {
 	background-position: 0 -933px;
 }
-#DP-NavSections li a span.ideasNavIcon{
+#dp_nav_sections li a span.ideasNavIcon{
 	background-position: 0 -237px;
 }
-#DP-NavSections li:hover a span.ideasNavIcon {
+#dp_nav_sections li:hover a span.ideasNavIcon {
 	background-position: 0 -993px;
 }
-#DP-NavSections li a span.publishNavIcon{
+#dp_nav_sections li a span.publishNavIcon{
 	background-position:0 -298px;
 }
-#DP-NavSections li:hover a span.publishNavIcon {
+#dp_nav_sections li:hover a span.publishNavIcon {
 	background-position:0 -1054px;
 }
 
-#DP-NavSections li a span.tasksNavIcon{
+#dp_nav_sections li a span.tasksNavIcon{
 	background-position: -1px -467px;
 }
-#DP-NavSections li:hover a span.tasksNavIcon {
+#dp_nav_sections li:hover a span.tasksNavIcon {
 	background-position:-1px -1165px;
 }
 
-#DP-NavSections li a span.dealsNavIcon{
+#dp_nav_sections li a span.dealsNavIcon{
 	background-position: -2px -526px;
 }
-#DP-NavSections li:hover a span.dealsNavIcon {
+#dp_nav_sections li:hover a span.dealsNavIcon {
 	background-position:-2px -1224px;
 }
 
