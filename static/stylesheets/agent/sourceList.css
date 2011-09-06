@@ -33,7 +33,6 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#b9c5d0));
 	-pie-background: linear-gradient(#d9dfe6, #b9c5d0);
 	behavior: url(../../static/vendor/PIE.htc);
-	border-bottom: 1px solid #9DA2A6;
 	position: relative;
 	
 	height: 25px;
@@ -372,9 +371,11 @@ ul.navList li.active span.open{
 .ie #DP-SourceList ul.navList ul.subGroup li:hover a, .ie #DP-SourceList .teamfilter ul.navList li a:hover {
 	background: #dde3e7;
 }
-#DP-SourceList ul.navList li.active a.on{
-	border-bottom: 1px solid #ced4d9;	
+
+#DP-SourceList ul.navList li:first-child a.groupHead {
+	border-top: 1px solid #9DA2A6 !important;
 }
+
 #DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
 }

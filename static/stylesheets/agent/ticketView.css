@@ -39,8 +39,10 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#DADBDE), to(#F0F1F3));
 	-pie-background: linear-gradient(#DADBDE, #F0F1F3);
 	behavior: url(../../static/vendor/PIE.htc);
-	height: 31px;
+	height: 25px;
 	position: relative;
+	overflow: hidden;
+	border-bottom: 1px solid #B6BABF;
 }
 
 #tabNavSelectorLeft{
@@ -165,16 +167,14 @@
 }
 
 .deskproTabList{
-	float: left;
-	width: 100%;
 	position: relative;
-	height: 30px;
+	height: 25px;
 	padding: 0 0 0 10px;
 }
 
 .deskproTabList ul{
 	margin: 0;
-	padding: 5px 10px;
+	padding: 0;
 	cursor: pointer;
 }
 .deskproTabList li{
@@ -187,11 +187,13 @@
 	border-right: 1px solid #8a9199;
 	border-left: 1px solid #8a9199;
 	border-top: 1px solid #8a9199;
-	padding: 1px 0 0 5px;
-	margin: 0 1px;
+	padding: 0px 2px 2px 3px;
+	margin: 3px 4px 0 0;
 	display: inline;
 	float: left;
 	position: relative;
+	max-width: 150px;
+	overflow:hidden;
 }
 .deskproTabList li.important{
 	background-image: -moz-linear-gradient(top, #6da3c2, #375388);
@@ -247,10 +249,11 @@
 	font-size: 11px;
 	color: #676D73;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-	padding: 5px 10px 6px 18px;
+	padding: 1px 4px 0 17px;
 	float: left;
 	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
+	width: 300px;
 }
 .ie .deskproTabList li a{
 	padding: 4px 10px 6px 18px;
@@ -264,17 +267,14 @@
 .deskproTabList li span.close{
 	display: block;
 	float: right;
-	height: 17px;
+	height: 13px;
 	position: absolute;
-	right: 5px;
+	right: 2px;
 	top: 4px;
-	width: 17px;
+	width: 13px;
 }
 .deskproTabList li.important:hover span.close, .deskproTabList li.activeTabList:hover span.close{
-	background: url(../../images/agent/imgSprt_ico.png) no-repeat -18px -1137px;
-}
-.deskproTabList li.important span.close:hover, .deskproTabList li.activeTabList span.close:hover{
-	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -1137px;
+	background: url(../../images/close-small.png);
 }
 .deskproTabList li.activeTabList a.open {
 	background-position: 0 -1046px !important;

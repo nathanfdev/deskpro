@@ -303,8 +303,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			html += '<a>';
 				html += '<span class="tab-title">'+tabData.title+'</span>';
-				html += '<span class="close"></span>';
 			html += '</a>';
+			html += '<span class="close"></span>';
 		html += '</li>';
 
 		var li = $(html);

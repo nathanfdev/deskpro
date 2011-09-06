@@ -48,7 +48,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
 	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
 	behavior: url(../../static/vendor/PIE.htc);
-	height: 31px;
+	height: 25px;
 	position: relative;
 	border-bottom: 1px solid #B6BABF;
 }
@@ -57,7 +57,7 @@
 	color: #FFFFFF;
 	float: left;
 	font-size: 10px;
-	padding: 7px 9px 0 10px;
+	padding: 3px 9px 0 6px;
 	text-shadow: 0 1px 0 #000000;
 	width: 449px;
 }
