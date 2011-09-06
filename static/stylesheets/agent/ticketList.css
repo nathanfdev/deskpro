@@ -377,7 +377,11 @@ a.performActTrigger span.dropdownIcon{
 }
 
 .ticketList .userinfo {
+	position: relative;
 	margin-top: 19px;
+	height: 18px;
+	overflow:  hidden;
+	white-space: nowrap;
 }
 
 .ticketList .userinfo a.name {
@@ -393,6 +397,25 @@ a.performActTrigger span.dropdownIcon{
     font-size: 95%;
     color: #484A4C;
 }
+
+.ticketList .userinfo .bound-fade {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width:80px;
+	border-right: 5px solid #F5F7FA;
+
+
+	background: -moz-linear-gradient(left, rgba(245,247,250,0) 0%, rgba(245,247,250,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(245,247,250,0)), color-stop(100%,rgba(245,247,250,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f5f7fa', endColorstr='#f5f7fa',GradientType=1 ); /* IE6-9 */
+	background: linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* W3C */
+}
+
 
 .metadata{
 	clear: both;
@@ -463,7 +486,7 @@ a.performActTrigger span.dropdownIcon{
 	border-width: 7px;
 }
 
-.ie ..userInfoHint:after{
+.ie .userInfoHint:after{
 	top: 110px;
 }
 

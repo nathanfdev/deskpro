@@ -30,6 +30,7 @@
 		{% if ticket.person.primary_email %}
 			<span class="email">{{ ticket.person.primary_email_address }}</span>
 		{% endif %}
+		<div class="bound-fade"></div>
 	</div>
 	{% if display_fields|length %}
 	<div class="extra_fields">
@@ -69,9 +70,9 @@
 				{% elseif field == 'agent' and ticket.agent %}
 					<li class="{{field}}">
 						<span class="prop-title">Agent:</span>
-						<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
+						<span class="prop-val" data-prop-value="{{ticket.agent.id}}">
 						{% if ticket.agent %}
-							<span style="background-image: url('{{ticket.agent.getPictureUrl(15)}}');">{{ ticket.agent.display_name }}</span>
+							{{ ticket.agent.display_name }}
 						{% else %}
 							Unassigned
 						{% endif %}
