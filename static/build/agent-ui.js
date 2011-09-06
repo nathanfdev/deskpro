@@ -245,7 +245,7 @@ if(!b.page.getMetaData("url_fragment")&&b.page.TYPENAME!="loading"){}var c=b.pag
 if(b.page.TYPENAME!="basic"){d+=" "+b.page.TYPENAME}if(b.page.getMetaData("tabTip")){if(b.page.getMetaData("tabTip").indexOf(".")===0){b.page.setMetaData("fetchTabTip",true);
 d+='" data-tipped="'+b.btnId+'_tip" data-tipped-options="inline: true, hook: \'topmiddle\'">'}else{d+='" data-tipped="'+b.tabTip+'" data-tipped-options="hook: \'topmiddle\'">'
 }}else{d+='" data-tipped="'+b.title+'" data-tipped-options="hook: \'topmiddle\'">'}d+="<a>";d+='<span class="tab-title">'+b.title+"</span>";
-d+='<span class="close"></span>';d+="</a>";d+="</li>";var a=$(d);if(b.page&&b.page.meta.tabPlaceholderId){var e=this.getTabById(b.page.meta.tabPlaceholderId);
+d+="</a>";d+='<span class="close"></span>';d+="</li>";var a=$(d);if(b.page&&b.page.meta.tabPlaceholderId){var e=this.getTabById(b.page.meta.tabPlaceholderId);
 var f=e.btnId;loadingTabData=this.getTabById(b.page.meta.tabPlaceholderId);loadingTabData.isReplacing=true;this.removeTabById(b.page.meta.tabPlaceholderId);
 $("#"+f).replaceWith(a);if(!$("li.activeTabList",this.tabStrip).length){a.addClass("activeTabList")}}else{a.appendTo(this.tabStrip);
 this.resizeTabListWidth()}},_onTabDeactivate:function(a,b,c){$("#tiptip_holder").clearQueue().hide()},_onTabActivate:function(b){$("li",this.tabStrip).removeClass("activeTabList");

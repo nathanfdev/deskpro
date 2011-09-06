@@ -2,7 +2,7 @@
 {% for ticket in tickets %}
 
 <article class="ticketList">
-	<input type="checkbox" class="ticket-select ticket" value="{{ ticket.id }}"/>
+	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="topRow">
 		<div class="topRowLeft">
 			<h3>
@@ -25,6 +25,7 @@
 		<div class="metaRight">
 			&nbsp;-<span>{{ ticket.person.primary_email_address }}</span>
 		</div>
+		<br class="clear" />
 	</div>
 	{% if display_fields|length %}
 	<div class="catTags">
@@ -135,7 +136,7 @@
 				{% endif %}
 			{% endfor %}
 		</ul>
-		<br style="height: 1px;overflow: hidden; clear: left;" />
+		<br class="clear" />
 	</div>
 	{% endif %}
 </article>
