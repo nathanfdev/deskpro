@@ -634,12 +634,11 @@ ul.userControlWrap li input{
 	border-right: 1px;
 	border-right-style: solid;
 	border-right-color: #B4BABF;
-	width: 100%;
+	width: 120%;
 	padding: 0;
-	float: left;
 	border-bottom: 1px solid #B4BABF;
-	position: relative;
 	z-index: 0;
+	position: absolute;
 }
 .desproTabStrip li{
 	border-right: 1px solid #B4BABF;
@@ -657,7 +656,6 @@ ul.userControlWrap li input{
 	padding: 6px 11px;
 	float: left;
 	cursor: pointer;
-	text-align: center;
 }
 .ie .desproTabStrip li a{
 	width: 53px !important;
@@ -673,10 +671,10 @@ ul.userControlWrap li input{
 	/*border-right: none;*/
 }
 .windows .desproTabStrip li:last-child a, .desproTabStrip li.on:last-child a{
-	padding: 5px 15px 6px !important;
+	padding: 6px 19px 6px 11px !important;
 }
 .desproTabStrip li:last-child a, .desproTabStrip li.on:last-child a{
-	padding: 5px 10px 6px !important;
+	padding: 6px 19px 6px 11px !important;
 }
 
 .ie .desproTabStrip li:last-child a{
@@ -697,8 +695,8 @@ ul.userControlWrap li input{
 	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
 	behavior: url(js/lib/PIE.htc);
 	height: 13px;
-	padding: 5px 8px 6px;
 	position: relative;
+	border-bottom: none !important;
 }
 
 #ticketOutlineLabels{
@@ -727,6 +725,9 @@ ul.userControlWrap li input{
 #listingTicketLabels, #flaggedTicketLabels li, #archiveTicketLabels li, .navSimpleList li {
 	display: block;
 	padding: 0;
+}
+#listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a {
+	float: left;
 }
 #listingTicketLabels li a, #flaggedTicketLabels li a, #archiveTicketLabels li a, .navSimpleList li a {
 	font-family: Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
