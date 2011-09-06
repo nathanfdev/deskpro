@@ -17,6 +17,12 @@ pageMeta.isNewRecentSearch = true;
 {% if recent_search_id %}
 pageMeta.recent_search_id = '{{ recent_search_id }}';
 {% endif %}
+{% if view_name %}
+	pageMeta.view_name = '{{ view_name }}';
+{% endif %}
+{% if view_extra %}
+	pageMeta.view_extra = '{{ view_extra }}';
+{% endif %}
 </script>
 <div class="layout-content">
 <div class="content">

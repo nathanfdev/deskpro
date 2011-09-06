@@ -3,6 +3,8 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
+	TYPENAME: 'recyclebin',
+
 	wrapper: null,
 	contentWrapper: null,
 	barWrapper: null,

@@ -42,7 +42,7 @@ class TicketSearchController extends AbstractController
 		#------------------------------
 		# Filters
 		#------------------------------
-		
+
 		$all_filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
 
 		$order = $this->person->getPref('agent.ui.ticket-filters-order');
@@ -136,7 +136,7 @@ class TicketSearchController extends AbstractController
 		$recent_searches = $this->person->getPref('agent.recent-searches');
 
 
-		
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filter_counts' => $sys_filter_counts,
@@ -345,7 +345,7 @@ class TicketSearchController extends AbstractController
 	public function getSingleTicketRowAction($filter_id)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
-		
+
 		$ticket_id = $this->in->getUint('ticket_id');
 		$ticket = App::findEntity('DeskPRO:Ticket', $ticket_id);
 
@@ -426,7 +426,7 @@ class TicketSearchController extends AbstractController
 
 	// TODO handling if search results with the cache etc should be refactored
 	// theres dupe code, particularly around updating results based on new order
-	
+
 	/**
 	 * Listing of soft-deleted tickets
 	 */
@@ -515,7 +515,7 @@ class TicketSearchController extends AbstractController
 			'show_deleted_reason' => true,
 			'disable_actions' => true
 		);
-		
+
 		$pref_name = 'agent.ui.ticket-filter-display-fields.' . $result_cache['id'];
 		if (!empty($result_cache['extra'][$pref_name])) {
 			$vars['display_fields'] = $result_cache['extra'][$pref_name];
@@ -564,7 +564,7 @@ class TicketSearchController extends AbstractController
 
 		$is_new_recentsearch = false;
 		$recent_search_id = 0;
-		
+
 		if (!$result_cache) {
 
 			$recent_searches = $this->person->getPref('agent.recent-searches');
@@ -712,6 +712,14 @@ class TicketSearchController extends AbstractController
 
 		if ($this->in->getString('page_title')) {
 			$vars['page_title'] = $this->in->getString('page_title');
+		}
+
+		// Used in the templates/JS pages to highlight active nav elements
+		if ($this->in->getString('view_name')) {
+			$vars['view_name'] = $this->in->getString('view_name');
+			if ($this->in->getString('view_extra')) {
+				$vars['view_extra'] = $this->in->getString('view_extra');
+			}
 		}
 
 		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);

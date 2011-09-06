@@ -78,9 +78,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if (page.TYPENAME == 'ticket-filter') {
 			this.activeNavClass = '.nav-filter-' + page.getMetaData('filter_id');
-		} else if (page.TYPENAME == 'ticket-custom-filter') {
-			if (page.getMetaData('recent_search_id')) {
-				this.activeNavClass = '.nav-recent-search-' + page.getMetaData('recent_search_id')
+		} else if (page.TYPENAME == 'recyclebin') {
+			this.activeNavClass = '.archive-recycle-bin';
+		} else if (page.TYPENAME == 'ticket-custom-filter' || page.TYPENAME == 'ticket-flagged') {
+			var view_extra = page.getMetaData('view_extra');
+			var view_name = page.getMetaData('view_name');
+			switch (view_name) {
+				case 'flag':
+					if (view_extra) {
+						this.activeNavClass = '.nav-flag-' + view_extra;
+					}
+					break;
+
+				case 'spam': this.activeNavClass = '.nav-archive-spam'; break;
+				case 'validating': this.activeNavClass = '.nav-archive-validating'; break;
+				case 'pending': this.activeNavClass = '.nav-archive-pending'; break;
+				case 'resolved': this.activeNavClass = '.nav-archive-resolved'; break;
+				case 'closed': this.activeNavClass = '.nav-archive-closed'; break;
 			}
 		}
 
@@ -89,15 +103,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	highlightNav: function() {
 
-		$('.active-nav', this.getSectionElement()).removeClass('active-nav');
+		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
 		if (this.activeNavClass) {
-			$(this.activeNavClass, this.getSectionElement()).addClass('active-nav');
+			$(this.activeNavClass, this.getSectionElement()).addClass('nav-selected');
 		}
 	},
 
 	highlightNavItem: function(el) {
-		$('.active-nav', this.getSectionElement()).removeClass('active-nav');
-		el.addClass('active-nav');
+		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
+		el.addClass('nav-selected');
 	},
 
 	//#########################################################################

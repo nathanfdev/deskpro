@@ -58,7 +58,7 @@
 			<ul id="ticketsOutlineFiltersList" class="navList">
 				{% for filter in custom_filters %}
 					<li
-						class="filter-{{filter.id}} tipped"
+						class="filter-{{filter.id}} nav-filter-{{filter.id}} tipped"
 						data-filter-id="{{filter.id}}"
 						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 						data-tipped="filter_{{filter.id}}_tip"
@@ -92,7 +92,7 @@
 <section id="tickets_outline_flagged" class="deskpro-tab-item">
 	<ul id="tickets_outline_flags_list" class="navSimpleList" style="margin-top: 4px;">
 		{% for color in flags %}
-			<li class="flag flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
+			<li class="flag flag-{{color}} nav-flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color, 'view_name': 'flag', 'view_extra': color}) }}">
 				<a>
 					<span>{{ flagnamer.flag_name(color, person) }}</span>
 					<span id="ticket_flag_{{color}}_count" class="listCounter">0</span>
@@ -103,23 +103,23 @@
 </section>
 <section id="tickets_outline_archive" class="deskpro-tab-item">
 	<ul id="tickets_outline_filters_list" class="navSimpleList" style="margin-top: 4px;">
-		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam">
+		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;view_name=spam">
 			<a>Spam</a>
 		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating">
+		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;view_name=validating">
 			<a>Validating</a>
 		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending">
+		<li class="with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending&amp;view_name=pending">
 			<a>Pending</a>
 		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved">
+		<li class="with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
 			<a>Resolved</a>
 		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed">
+		<li class="with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
 			<a>Closed</a>
 		</li>
 		<li>
-			<a class="with-route" data-route="listpane:{{ path('agent_recyclebin') }}">Recycle Bin</a>
+			<a class="with-route nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">Recycle Bin</a>
 		</li>
 	</ul>
 </section>

@@ -217,7 +217,8 @@
 }
 
 #DP-SourceList ul.navList li a:hover span.listCounter,
-#DP-SourceList ul.navSimpleList li a:hover span.listCounter{
+#DP-SourceList ul.navSimpleList li a:hover span.listCounter,
+#DP-SourceList li.nav-selected a span.listCounter{
 	border-radius: 10px 10px 10px 10px;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	background: #2f4b67;
@@ -246,6 +247,14 @@
 }
 #DP-SourceList ul.navList ul.subGroup li a:hover span.listCounter{
 	background: #ADBDCC;
+}
+#DP-SourceList ul.navList ul.subGroup li.nav-selected a span.listCounter{
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
+	background: #2f4b67;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+	z-index: 1;
 }
 #DP-SourceList ul.navList ul.subGroup li span.borderLink{
 	border-left: 1px solid #c2c7cc;
@@ -299,6 +308,11 @@ ul.navList li.active span.open{
 	border-bottom: 1px solid transparent;
 	border-top: 1px solid transparent;
 }
+#DP-SourceList ul.navList li ul.subGroup li.nav-selected a,
+#DP-SourceList ul.navSimpleList li.nav-selected a {
+	color: #fff;
+	text-shadow: 0 1px 0 #3C648E;
+}
 
 #DP-SourceList ul.navList ul.subGroup li.groupingOpt{
 	
@@ -339,6 +353,17 @@ ul.navList li.active span.open{
 	position: relative;
 	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 }
+#DP-SourceList ul.navList ul.subGroup li.nav-selected { 
+	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
+	-pie-background: linear-gradient(#6baccc, #5182b3);
+	behavior: url(js/lib/PIE.htc);
+	box-shadow: inset 0 1px 0 #82bdd7;
+	border-bottom: 1px solid #4d7399!important;
+	border-top: 1px solid #709ecc!important;
+	color: #fff;
+	text-shadow: 0 1px 0 #3C648E;
+}
 #DP-SourceList ul.navList li.active a.on {
 	border-bottom: 1px solid #ced4d9;
 }
@@ -355,7 +380,10 @@ ul.navList li.active span.open{
 #DP-SourceList ul.navList ul.subGroup li:hover a, #DP-SourceList .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
 }
-#DP-SourceList ul.navList li a.groupHead:hover{
+#DP-SourceList ul.navList li a.groupHead:hover,
+#DP-SourceList ul.navList li.nav-selected a.groupHead,
+#DP-SourceList ul.navSimpleList li.nav-selected
+{
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
