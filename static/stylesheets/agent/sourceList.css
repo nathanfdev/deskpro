@@ -4,7 +4,7 @@
 	bottom: 0;
 	left: 0;
 	background-color: #dfe5eb;
-	width: 213px;
+	width: 214px;
 	border-right: 1px;
 	border-right-style: solid;
 	border-right-color: #b6babf;
@@ -672,7 +672,7 @@ ul.userControlWrap li input{
 	
 }
 .desproTabStrip li:last-child{
-	border-right: none;
+	/*border-right: none;*/
 }
 .windows .desproTabStrip li:last-child a, .desproTabStrip li.on:last-child a{
 	padding: 5px 15px 6px !important;
