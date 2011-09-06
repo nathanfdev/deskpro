@@ -5,7 +5,7 @@ namespace Application\DeskPRO\Build\Upgrade;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Build\Upgrader;
 
-class Upgrade20110902092755 extends UpgradeAbstract
+class Upgrade20110902092725 extends UpgradeAbstract
 {
 	public function step1()
 	{
