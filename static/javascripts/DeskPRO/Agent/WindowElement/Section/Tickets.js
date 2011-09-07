@@ -9,7 +9,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated.bind(this));
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-recent-search', this.refreshRecentSearches.bind(this));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('list-page-fragment.activated', this.highlightActiveSection.bind(this));
 
@@ -18,6 +17,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.getSectionElement().delegate('li[data-route]', 'click', function() {
 			self.highlightNavItem($(this));
 		});
+
+		this.filterTicketIds = {};
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/get-section-data.json',
@@ -47,6 +48,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
+		this.filterTicketIds = data.filter_id_matches;
+
 		this._initFilters();
 		this._initFlagged();
 
@@ -72,7 +75,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
 			containerElement: '#tickets_outline .scroll-content',
 			listElement: '#system_filters_wrap > ul',
-			triggerElement: '#ticket_filter_launch_editor'
+			triggerElement: '#ticket_filter_launch_editor',
+			onGroupingChanged: function(filterId) {
+				self.refreshFilterGrouping([filterId]);
+			}
 		});
 	},
 
@@ -217,7 +223,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	filterUpdated: function(data) {
-		var count = this.getFilterCount(data.filter_id);
+
+		var filterId = parseInt(data.filter_id);
+		var ticketId = parseInt(data.ticket_id);
+
+		if (!this.filterTicketIds[filterId]) {
+			this.filterTicketIds[filterId] = [];
+		}
 
 		var page = null;
 		if (this.listPage && this.listPage.meta.filter_id == data.filter_id) {
@@ -225,7 +237,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		if (data.op == 'add') {
-			count++;
+			this.filterTicketIds[filterId].include(ticketId);
+
+			var count = this.filterTicketIds[filterId].length;
 			this.setFilterCount(data.filter_id, count);
 
 			if (page && data.ticket_id) {
@@ -233,28 +247,81 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 		} else if (data.op == 'del') {
-			count--;
-			if (count < 1) count = 0;
+			this.filterTicketIds[filterId].erase(ticketId);
 
+			var count = this.filterTicketIds[filterId].length;
 			this.setFilterCount(data.filter_id, count);
 
 			if (page && data.ticket_id) {
 				page.delTicket(data.ticket_id);
 			}
 		}
+
+		this.refreshFilterGrouping([filterId]);
 	},
 
-	refreshRecentSearches: function() {
+	refreshFilterGrouping: function(filterIds) {
+		var postData = [];
+
+		Array.each(filterIds, function(filterId) {
+			filterId = parseInt(filterId);
+
+			if (!this.filterTicketIds[filterId]) {
+				return;
+			}
+
+			var grouping = this.getGroupingVar(filterId);
+			var ticketIds = this.filterTicketIds[filterId];
+
+			if (!grouping || !grouping.length || !ticketIds.length) {
+				this.setFilterGroupingContent(filterId, '');
+				return;
+			}
+
+			postData.push({
+				name: 'batches['+filterId+'][grouping]',
+				value: grouping
+			});
+			Array.each(ticketIds, function(tid) {
+				postData.push({
+					name: 'batches['+filterId+'][ticket_ids][]',
+					value: tid
+				});
+			});
+		}, this);
+
 		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/get-recent-search-list',
-			type: 'GET',
+			url: BASE_URL + 'agent/ticket-search/group-tickets.json',
+			type: 'POST',
+			dataType: 'json',
+			data: postData,
 			context: this,
-			dataType: 'html',
-			success: function(html) {
-				$('#tickets_outline_searches_list').empty().html(html);
-				this.highlightNav(); //the list was replaced, so have to re-highlight it
+			success: function(batches) {
+				Object.each(batches, function(html,filterId) {
+					this.setFilterGroupingContent(filterId, html);
+				}, this);
 			}
 		});
+	},
+
+	getGroupingVar: function(filterId) {
+		return $('#ticket_filter_group_editor .filter-' + filterId + ' .field-option').val();
+	},
+
+	setFilterGroupingContent: function(filterId, html) {
+		var filterEl = $('.filter-' + filterId, this.sectionEl);
+		var subgroupEl = $('ul.subGroup', filterEl);
+
+		subgroupEl.empty();
+		if (html.length) {
+			subgroupEl.html(html);
+		}
+
+		if ($('> *', subgroupEl).length) {
+			subgroupEl.show();
+		} else {
+			subgroupEl.hide();
+		}
 	},
 
 	//#########################################################################

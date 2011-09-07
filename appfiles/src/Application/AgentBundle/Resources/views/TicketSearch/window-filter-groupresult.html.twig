@@ -1,0 +1,25 @@
+{% for cat in grouped_info.group1_structure %}
+	{% set count = grouped_info.counts[cat.id].total %}
+	{% if count > 0 %}
+		<li>
+			<a>
+				{{ cat.title }}
+				<span class="listCounter">{{ count }}</span>
+			</a>
+		</li>
+		{% if cat.children %}
+			{% for subcat in cat.children %}
+				{% set subcount = grouped_info.counts[subcat.id].total %}
+				{% if subcount > 0 %}
+					<li class="subList">
+						<span class="borderLink"></span>
+						<a>
+							{{ subcat.title }}
+							<span class="listCounter">{{ subcount }}</span>
+						</a>
+					</li>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endif %}
+{% endfor %}

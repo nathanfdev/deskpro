@@ -101,6 +101,38 @@ class Filters
 
 
 	/**
+	 * Get an array of IDs for each filter in a collection
+	 *
+	 * @param $ticket_filters
+	 * @return array
+	 */
+	public function getAllIdsForFiltersCollection($ticket_filters)
+	{
+		$all_ids = array();
+
+		foreach ($ticket_filters as $ticket_filter) {
+			$all_ids[$ticket_filter['id']] = $ticket_filter->getResults();
+		}
+
+		return $all_ids;
+	}
+
+
+	/**
+	 * @param $ticket_filter
+	 * @return
+	 */
+	public function getIdsFromFilter($ticket_filter)
+	{
+		$ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+
+		$result_ids = $ticket_filter->getResults();
+
+		return $result_ids;
+	}
+
+
+	/**
 	 * Get ticket results from a filter
 	 *
 	 * @param TicketFilter $ticket_filter

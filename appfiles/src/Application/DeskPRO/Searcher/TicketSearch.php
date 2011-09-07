@@ -68,7 +68,7 @@ class TicketSearch extends SearcherAbstract
 	/**
 	 * An array of fields these search terms are affected by.
 	 * Used in ListUpdater to determine if a filter needs changing on the client.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $affected_fields = array();
@@ -595,7 +595,7 @@ class TicketSearch extends SearcherAbstract
 					if ($no_team) {
 						$wheres[] = "$tickets_table.agent_team_id IS NULL";
 						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $tr->phrase('core.unassigned'));
-						
+
 					} else {
 						if ($team_ids) {
 							$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $team_ids, function($choice) {
@@ -1076,7 +1076,7 @@ class TicketSearch extends SearcherAbstract
 						}
 					}
 					break;
-				
+
 				case self::TERM_SUBJECT:
 					switch ($op) {
 						case self::OP_IS:
@@ -1097,7 +1097,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_CREATION_SYSTEM:
 					if (!$this->_testStringMatch($ticket['creation_system'], $op, $choice, true, true)) return false;
 					break;
-				
+
 				case self::TERM_RECEIVING_GATEWAY:
 					if (!$this->_testChoiceMatch($ticket['email_gateway_id'], $op, $choice. true)) return false;
 					break;
@@ -1125,5 +1125,21 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		return true;
+	}
+
+
+	public static function getTableField($term_id)
+	{
+		switch ($term_id) {
+			case self::TERM_DEPARTMENT: return 'department_id';
+			case self::TERM_CATEGORY: return 'category_id';
+			case self::TERM_PRODUCT: return 'product_id';
+			case self::TERM_AGENT: return 'agent_id';
+			case self::TERM_AGENT_TEAM: return 'agent_team_id';
+			case self::TERM_WORKFLOW: return 'workflow_id';
+			case self::TERM_PRIORITY: return 'priority_id';
+			case self::TERM_LANGUAGE: return 'language_id';
+			default: return $term_id;
+		}
 	}
 }

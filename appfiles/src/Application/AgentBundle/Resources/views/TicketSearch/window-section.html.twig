@@ -24,19 +24,10 @@
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}">
 						{{filter.title}}
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
-							{{ sys_filter_counts[filter.id]|default(0) }}
+							{{ filter_counts[filter.id]|default(0) }}
 						</span>
 					</a>
-					{% if loop.index == 1 %}
-					<ul class="subGroup" style="display: block;">
-						<!-- List Item Ticket Pending >> Link to User Item Controller -->
-						<li><a>Departement 1<span class="listCounter">5</span></a></li>
-						<li><a>Departement 2<span class="listCounter">3</span></a></li>
-						<li class="subList"><span class="borderLink"></span><a>Child<span class="listCounter">3</span></a></li>
-						<li><a>Departement 3<span class="listCounter">9</span></a></li>
-						<li><a>Departement 4<span class="listCounter">3</span></a></li>
-					</ul>
-					{% endif %}
+					<ul class="subGroup" style="display: none;"></ul>
 				</li>
 			{% endfor %}
 		</ul>
@@ -58,15 +49,15 @@
 			<ul id="ticketsOutlineFiltersList" class="navList">
 				{% for filter in custom_filters %}
 					<li
-						class="filter-{{filter.id}} nav-filter-{{filter.id}} tipped"
+						class="filter-{{filter.id}} nav-filter-{{filter.id}}"
 						data-filter-id="{{filter.id}}"
 						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
-						data-tipped="filter_{{filter.id}}_tip"
-						data-tipped-options="inline:true, hook: 'rightmiddle'"
 					>
 						<a class="groupHead">
 							{{filter.title}}
-							<span class="listCounter">1000</span>
+							<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
+								{{ filter_counts[filter.id]|default(0) }}
+							</span>
 						</a>
 					</li>
 				{% endfor %}

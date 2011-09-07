@@ -23,12 +23,14 @@ class GroupingCounter
 	const MODE_PARTICIPANT   = 'participant';
 	const MODE_UNASSIGNED    = 'unassigned';
 	const MODE_ALL           = 'all';
+	const MODE_SPECIFY       = 'specify';
 
-	protected $grouping1 = 'department_id';
+	protected $grouping1 = 'department';
 	protected $grouping2 = null;
 
 	protected $mode = 'unassigned';
-	protected $this_person_id = null;
+	protected $tickets = array();
+	protected $this_person = null;
 
 	protected $terms = array();
 
@@ -58,39 +60,39 @@ class GroupingCounter
 		$group1_has = array();
 		$group2_has = array();
 
-		foreach ($titles1 as $field1_id => $field1_title) {
+		foreach ($titles1 as $field1 => $field1_title) {
 
-			if (!isset($counts[$field1_id])) continue;
+			if (!isset($counts[$field1])) continue;
 
-			$countinfo = $counts[$field1_id];
+			$countinfo = $counts[$field1];
 
-			$group1_has[] = $field1_id;
+			$group1_has[] = $field1;
 
 			$row = array();
-			$row['id'] = $field1_id;
+			$row['id'] = $field1;
 			$row['title'] = $field1_title;
 			$row['total'] = $countinfo['total'];
 
 			if (!empty($countinfo['sub'])) {
 
 				$row['sub'] = array();
-				foreach ($titles2 as $field2_id => $field2_title) {
+				foreach ($titles2 as $field2 => $field2_title) {
 
-					if (!isset($countinfo['sub'][$field2_id])) continue;
-					$countinfo2 = $countinfo['sub'][$field2_id];
+					if (!isset($countinfo['sub'][$field2])) continue;
+					$countinfo2 = $countinfo['sub'][$field2];
 
-					$group2_has[] = $field2_id;
+					$group2_has[] = $field2;
 
 					$row2 = array();
-					$row2['id'] = $field2_id;
+					$row2['id'] = $field2;
 					$row2['title'] = $field2_title;
 					$row2['total'] = $countinfo2['total'];
 
-					$row['sub'][$field2_id] = $row2;
+					$row['sub'][$field2] = $row2;
 				}
 			}
 
-			$items[$field1_id] = $row;
+			$items[$field1] = $row;
 		}
 
 		$group1_has = array_unique($group1_has);
@@ -104,15 +106,15 @@ class GroupingCounter
 		$group2_structure = array();
 
 		switch ($this->grouping1) {
-			case 'department_id':
+			case 'department':
 				$group1_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 				break;
 
-			case 'category_id':
+			case 'category':
 				$group1_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
 				break;
 
-			case 'product_id':
+			case 'product':
 				$group1_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
 				break;
 
@@ -125,15 +127,15 @@ class GroupingCounter
 
 		if ($this->grouping2) {
 			switch ($this->grouping2) {
-				case 'department_id':
+				case 'department':
 					$group2_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 					break;
 
-				case 'category_id':
+				case 'category':
 					$group2_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
 					break;
 
-				case 'product_id':
+				case 'product':
 					$group2_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
 					break;
 
@@ -147,6 +149,7 @@ class GroupingCounter
 
 		return array(
 			'items' => $items,
+			'counts' => $counts,
 			'group1_structure' => $group1_structure,
 			'group2_structure' => $group2_structure,
 		);
@@ -183,69 +186,86 @@ class GroupingCounter
 	{
 		$group_by = 'GROUP BY field1';
 
-		$select_fields[] = "COALESCE(tickets.{$this->grouping1}, 0) AS field1";
+		$group1_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping1);
+
+		$select_fields[] = "COALESCE(tickets.{$group1_fieldname}, 0) AS field1";
 		if ($this->grouping2) {
-			$select_fields[] = "COALESCE(tickets.{$this->grouping2}, 0) AS field2";
+			$group2_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping2);
+			$select_fields[] = "COALESCE(tickets.{$group2_fieldname}, 0) AS field2";
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
 
-		$wheres = array('tickets.status = \'open\'');
+		// Doing a search on a sys-type filter at the same time
 
-		// Standard agent perms
-		$agent = App::getEntityRepository('DeskPRO:Person')->find($this->this_person_id);
-		$agent->loadHelper('AgentPermissions');
-		$agent->loadHelper('AgentTeam');
+		if ($this->mode != self::MODE_SPECIFY) {
+			$wheres = array('tickets.status = \'open\'');
 
-		// perms only matter if person has permissions applied at all
-		if ($agent->getDisallowedDepartments()) {
+			// Standard agent perms
+			$agent = App::getEntityRepository('DeskPRO:Person')->find($this->this_person);
+			$agent->loadHelper('AgentPermissions');
+			$agent->loadHelper('AgentTeam');
 
-			$where_perm = array();
-			$where_perm[] = "tickets.agent_id = {$agent['id']}";
+			// perms only matter if person has permissions applied at all
+			if ($agent->getDisallowedDepartments()) {
 
-			if ($agent->getAgentTeamIds()) {
-				$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				$where_perm = array();
+				$where_perm[] = "tickets.agent = {$agent['id']}";
+
+				if ($agent->getAgentTeamIds()) {
+					$where_perm[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				}
+
+				$where_perm[] = "tickets.department IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+				$where_perm[] = "part_check.person = {$agent['id']}";
+
+				$where_perm = implode(' OR ', $where_perm);
+
+				$where[] = "($where_perm)";
 			}
 
-			$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
-			$where_perm[] = "part_check.person_id = {$agent['id']}";
+			switch ($this->mode) {
+				case self::MODE_AGENT:
+					$wheres[] = 'tickets.agent = ' . $agent['id'];
+					break;
 
-			$where_perm = implode(' OR ', $where_perm);
+				case self::MODE_AGENT_TEAM:
+					$wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+					break;
 
-			$where[] = "($where_perm)";
+				case self::MODE_PARTICIPANT:
+					$wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+					break;
+
+				case self::MODE_ALL:
+					break;
+
+				case self::MODE_UNASSIGNED:
+					$wheres[] = 'tickets.agent IS NULL';
+					break;
+			}
+
+			//SELECT tickets.department, tickets.priority, COUNT(*) as cnt FROM tickets GROUP BY tickets.department, tickets.priority WITH ROLLUP
+			// TODO this should be using active table
+			$sql = "
+				SELECT " . implode(', ', $select_fields) . "
+				FROM tickets
+				LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
+				LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
+				WHERE " . implode(' AND ', $wheres) . "
+				$group_by WITH ROLLUP
+			";
+
+		// We have ticket IDs already (mode = specify)
+		} else {
+			$wheres[] = "tickets.id IN (" . implode(',', $this->tickets) . ")";
+			$sql = "
+				SELECT " . implode(', ', $select_fields) . "
+				FROM tickets
+				WHERE " . implode(' AND ', $wheres) . "
+				$group_by WITH ROLLUP
+			";
 		}
-
-		switch ($this->mode) {
-			case self::MODE_AGENT:
-				$wheres[] = 'tickets.agent_id = ' . $agent['id'];
-				break;
-
-			case self::MODE_AGENT_TEAM:
-				$wheres[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
-				break;
-
-			case self::MODE_PARTICIPANT:
-				$wheres[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
-				break;
-
-			case self::MODE_ALL:
-				break;
-
-			case self::MODE_UNASSIGNED:
-				$wheres[] = 'tickets.agent_id IS NULL';
-				break;
-		}
-
-		//SELECT tickets.department_id, tickets.priority_id, COUNT(*) as cnt FROM tickets GROUP BY tickets.department_id, tickets.priority_id WITH ROLLUP
-		// TODO this should be using active table
-		$sql = "
-			SELECT " . implode(', ', $select_fields) . "
-			FROM tickets
-			LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-			LEFT JOIN tickets_participants AS part_check ON (part_check.ticket_id = tickets.id)
-			WHERE " . implode(' AND ', $wheres) . "
-			$group_by WITH ROLLUP
-		";
 
 		$db = App::getDb();
 
@@ -349,32 +369,32 @@ class GroupingCounter
 	{
 		$titles = null;
 		switch ($field) {
-			case 'department_id':
+			case 'department':
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'product_id':
+			case 'product':
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'category_id':
+			case 'category':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'agent_id':
+			case 'agent':
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
 				break;
 
-			case 'workflow_id':
+			case 'workflow':
 				$titles = App::getOrm()->getRepository('DeskPRO:Workflow')->getWorkflowNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'priority_id':
+			case 'priority':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
@@ -407,7 +427,11 @@ class GroupingCounter
 	{
 		$this->mode = $mode;
 
-		$this->this_person_id = $opt;
+		if ($this->mode == self::MODE_SPECIFY) {
+			$this->tickets = $opt;
+		} else {
+			$this->this_person = $opt;
+		}
 	}
 
 

@@ -37,12 +37,6 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			elements: '.filter',
 
 			/**
-			 * The URL to update when grouping has been changed
-			 * @option {String}
-			 */
-			updateUrl: null,
-
-			/**
 			 * The widget control element that is already rendered on the page
 			 * and contains the special 'editor-fields' and 'editor-
 			 *
@@ -108,6 +102,11 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			var field = $(this.editorFieldsTpl);
 			field.addClass('field-option');
 			$('.field-wrap', row).append(field);
+
+			var self = this;
+			field.change(function() {
+				self.fireEvent('groupingChanged', [parseInt(id), field.val(), field, self]);
+			});
 
 			row.addClass('filter-' + id);
 
@@ -179,14 +178,6 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			right: 0
 		});
 
-		var listHeight = this.listElement.outerHeight();
-
-		this.controlRealEl.css({
-			height: listHeight,
-			top: 0,
-			left: 0
-		});
-
 		this.updatePositions();
 
 		this.controlEl.addClass('open');
@@ -207,6 +198,14 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 * if someonthing in the main list changes, like new subgrouping.
 	 */
 	updatePositions: function() {
+
+		var listHeight = this.listElement.outerHeight();
+
+		this.controlRealEl.css({
+			height: listHeight,
+			top: 0,
+			left: 0
+		});
 
 		// Update where the position of the container is relative to the outer wrapper
 		var top = 0;
@@ -245,6 +244,11 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 * Update the scroll position in the element so it matches that of the main list
 	 */
 	syncScroll: function() {
+
+		var h = this.listElement.height();
+		if (!this.lastListElHeight || h != this.lastListElHeight) {
+			this.updatePositions();
+		}
 
 		var containerTop = this.containerElement.position().top;
 		var listTop = this.listElement.position().top;

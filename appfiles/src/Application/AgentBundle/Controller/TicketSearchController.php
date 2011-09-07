@@ -18,7 +18,6 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Elastica\Searcher\TicketSearcher;
 use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
@@ -93,7 +92,11 @@ class TicketSearchController extends AbstractController
 		}
 
 		// Counts for filters
-		$sys_filter_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
+		$filter_counts = array();
+		foreach ($filter_id_matches as $fid => $ids) {
+			$filter_counts[$fid] = count($ids);
+		}
 
 		// Summary of terms for all filters
 		$filters_summary = array();
@@ -133,21 +136,55 @@ class TicketSearchController extends AbstractController
 		# Misc
 		#------------------------------
 
-		$recent_searches = $this->person->getPref('agent.recent-searches');
-
-
-
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
-			'sys_filter_counts' => $sys_filter_counts,
+			'filter_id_matches' => $filter_id_matches,
+			'filter_counts' => $filter_counts,
 			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
-			'recent_searches' => $recent_searches,
 		));
+
+		$data['filter_id_matches'] = $filter_id_matches;
 
 		return $this->createJsonResponse($data);
 	}
+
+	/**
+	 * We get in an array of ticket ID batches. Each batch is identified by some ID,
+	 * usually a filter ID from Tickets.js section.
+	 *
+	 * array(
+	 *     'batchId' => array('grouping' => 'xxx', 'ticket_ids' => array(x,x,x))
+	 * )
+	 *
+	 * We group the batches, and return titles, search URL's, and counts for the batch
+	 * using the same batch ID:
+	 *
+	 * array(
+	 *     'batchId' => 'subgroup_html'
+	 * )
+	 */
+	public function groupTicketsAction()
+	{
+		$ticket_batches = $this->in->getArrayValue('batches');
+		$batches = array();
+
+		foreach ($ticket_batches as $batch_id => $ticket_batch) {
+			$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+			$grouper->setGrouping($ticket_batch['grouping']);
+			$grouper->setMode('specify', $ticket_batch['ticket_ids']);
+
+			$grouped_info = $grouper->getDisplayArray();
+			//print_r($grouped_info);exit;
+			$batches[$batch_id] = $this->renderView('AgentBundle:TicketSearch:window-filter-groupresult.html.twig', array(
+				'grouped_info' => $grouped_info,
+			));
+		}
+
+		return $this->createJsonResponse($batches);
+	}
+
 
 	public function getFlaggedSectionDataAction()
 	{
