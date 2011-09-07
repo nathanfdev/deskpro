@@ -19,7 +19,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			 * you can use setHtml() instead.
 			 */
 			pageUrl: '',
-			
+
 			/**
 			 * Callback method for loading the page instead of using default ajax loader.
 			 */
@@ -29,13 +29,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			 * The route to load when clicking "move to tab"
 			 */
 			tabRoute: false,
-			
+
 			/**
 			 * Destroy the popover when it closes?
 			 */
 			destroyOnClose: false,
 
-			overFrom: '#deskpro_content'
+			overFrom: '#dp_content'
 		};
 
 		this.id = Orb.uuid();
@@ -65,7 +65,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		// Various popover element handlers
 		this.popover = null;
 		this.popoverOuter = null;
-		this.popoverTabs = null;
 
 		if (this.options.loadTimeout) {
 			this.autoloadTimeout = window.setTimeout(this._loadPage.bind(this), this.options.loadTimeout);
@@ -73,11 +72,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	_loadPage: function() {
-		
+
 		if (this.options.pageCallback) {
 			return this.options.pageCallback(this.setHtml.bind(this));
 		}
-		
+
 		if (!this.options.pageUrl) {
 			return;
 		}
@@ -101,7 +100,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			}
 		});
 	},
-	
+
 	setHtml: function(html) {
 		this.pageSource = html;
 		if (this.isWaiting) {
@@ -116,15 +115,10 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this._hasInit) return;
 		this._hasInit = true;
 
-		var tpl = $($('#popover_tpl').get(0).innerHTML);
+		this.popoverOuter = $($('#popover_tpl').get(0).innerHTML);
+		this.popover = $('.popover-inner', this.popoverOuter).first();
 
-		this.popover = tpl.filter('.popover-inner');
-		this.popoverOuter = tpl.filter('.popover-outer');
-		this.popoverTabs = tpl.filter('.popover-tabs');
-
-		this.popover.detach().appendTo('body');
 		this.popoverOuter.detach().appendTo('body');
-		this.popoverTabs.detach().appendTo('body');
 
 		// Prevent bubbling up from clicks on the popover page
 		this.popoverOuter.click(function(ev) {
@@ -134,17 +128,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var pos = $(this.options.overFrom).offset();
 		var top = pos.top;
 		var width = pos.left - 30;
-		
-		this.popover.css({
-			'position': 'absolute',
-			'display': 'none',
-			'z-index': 999998,
-			'overflow': 'auto',
-			top: top,
-			left: 10,
-			width: width,
-			bottom: 30
-		});
 
 		this.popoverOuter.css({
 			'position': 'absolute',
@@ -152,25 +135,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			'z-index': 999997,
 			'width': width+2+6, //2px for thi sborder, 6px for the popover border
 			'overflow': 'auto',
-			'top': top-1,
+			'top': top-3,
 			'left': 9,
-			'bottom': 29 //popover bottom (30) -1 for the white border
+			'bottom': 20 // account for border+shadows
 		});
 
-		if (this.options.tabRoute) {
-			var tabLeft = width - 210;
-		} else {
-			var tabLeft = width - 100;
-		}
-
-		this.popoverTabs.css({
-			'z-index': 999996,
-			'display': 'none',
-			'top': top - 24,
-			'left': tabLeft
-		});
-
-		$('.close:first', this.popoverTabs).click((function(ev) {
+		$('.close', this.popoverOuter).first().click((function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -181,7 +151,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			if (ev.cancel) {
 				return;
 			}
-			
+
 			this.close();
 		}).bind(this));
 
@@ -242,9 +212,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			}
 		});
 
-		this.popover.show();
 		this.popoverOuter.show();
-		this.popoverTabs.show();
 	},
 
 	toggle: function() {
@@ -263,10 +231,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			return;
 		}
 
-		this.popover.hide();
 		this.popoverOuter.hide();
-		this.popoverTabs.hide();
-		
+
 		if (this.options.destroyOnClose) {
 			this.destroy();
 		}
@@ -279,9 +245,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 
 		if (this.popover) {
-			this.popover.remove();
 			this.popoverOuter.remove();
-			this.popoverTabs.remove();
 		}
 
 		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.id];

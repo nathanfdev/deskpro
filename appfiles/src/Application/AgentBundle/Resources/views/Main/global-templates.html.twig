@@ -136,13 +136,15 @@
 
 {# Popover tempalte #}
 <script type="text/x-deskpro-plain" id="popover_tpl">
-	<ul class="popover-tabs" style="display:none">
-		<li class="move-to-tab"><a>Move into tab</a></li>
-		<li class="close"><a>Close</a></li>
-	</ul>
-	<div class="popover-outer" style="display:none"></div>
-	<div class="popover-inner" style="display:none">
-		Loading ...
+	<div class="overlayCreateTicketWrapper popover-wrapper">
+		<div class="OverlayCreateTicketHeader">
+			<div class="moveToTabBtn move-to-tab"><a>Move into tab</a></div>
+			<div class="createTickerTitle"><h1 class="tab-title"></h1></div>
+			<div class="closeCreateTicker close"><a>Close</a></div>
+		</div>
+		<div class="overlayCreateTicketContent popover-inner">
+
+		</div>
 	</div>
 </script>
 
