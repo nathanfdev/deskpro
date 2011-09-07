@@ -1,0 +1,29 @@
+{% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block other_options %}
+	Order By: <select name="order_by" class="sel-order-by">
+		<option class="urgency" value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
+		<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
+		<option class="date_created" value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+		<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+		<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+		<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+	</select>
+{% endblock %}
+{% block display_elements_list %}
+	{% if show_deleted_reason %}
+		<li data-field="deleted_reason"><input type="checkbox" name="deleted_reason" /> Deleted Reason</li>
+	{% endif %}
+	<li data-field="department"><input type="checkbox" name="department" /> Department</li>
+	<li data-field="agent"><input type="checkbox" name="agent" /> Agent</li>
+	<li data-field="agent_team"><input type="checkbox" name="agent_team" /> Agent Team</li>
+	<li data-field="category"><input type="checkbox" name="category" /> Category</li>
+	<li data-field="product"><input type="checkbox" name="product" /> Product</li>
+	<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
+	<li data-field="date_user_waiting"><input type="checkbox" name="date_user_waiting" /> User Waiting</li>
+	{% for f in ticket_field_defs %}
+		<li data-field="ticket_fields[{{f.id}}]"><input type="checkbox" name="ticket_fields[{{f.id}}]" /> Ticket Field: {{f.title}}</li>
+	{% endfor %}
+	{% for f in person_field_defs %}
+		<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> User Field: {{f.title}}</li>
+	{% endfor %}
+{% endblock %}

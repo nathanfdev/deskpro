@@ -5,8 +5,6 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 
 	initialize: function(options) {
 
-		console.log(this);
-
 		this.options = {
 			ticketsWrapper: null,
 			selectionBar: null,
@@ -17,9 +15,9 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 
 		this.ticketsWrapper = this.options.ticketsWrapper;
 		this.selectionBar   = this.options.selectionBar;
-		this.actionsWrap    = $('.mass-actions:first', this.selectionBar);
+		this.actionsWrap    = $('.mass-actions', this.selectionBar.options.selectionBar).first();
 		this.changeManager  = this.options.changeManager;
-		
+
 		this._applyButtonCallback = null;
 
 		this.initOverlay();
@@ -29,55 +27,13 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 
 		var self = this;
 
-		var trigger = this.triggerBtn = $('.perform-actions-trigger', this.selectionBar);
-
 		this.actionsOverlay = new DeskPRO.UI.Overlay({
 			contentElement: this.actionsWrap,
-			triggerElement: trigger,
 			onBeforeOverlayOpened: function(evData) {
-				if (trigger.is('.disabled')) {
-					evData.cancel = true;
-					return;
-				}
 				var count = $('input.ticket-select:checked', self.ticketsWrapper).length;
 				$('.check-count-overlay', self.actionsWrap).html(count);
 			}
 		});
-
-		/*
-		// Set default checked values based on table
-		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-tpl', this.actionsWrap));
-		this.actionsEditor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
-				new_row.remove();
-			});
-		});
-
-		$('select.apply-macro-select', this.actionsWrap).change(function() {
-			self.loadMacroActions();
-		});
-
-		// Init ticket reply tabs
-		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.ticket-reply', this.actionsWrap),
-			triggerElements: $('li.tab-trigger', $('.ticket-reply', this.actionsWrap))
-		});
-
-		var to_el = $('.actions-form .actions-terms', this.actionsWrap);
-
-		$('.actions-form .add-term', this.actionsWrap).data('add-count', 0).click(function() {
-			var count = parseInt($(this).data('add-count'));
-			var basename = 'actions['+count+']';
-
-			$(this).data('add-count', count+1);
-
-			self.actionsEditor.addNewRow(to_el, basename);
-		});
-
-		$('.save-trigger', this.actionsWrap).click((function() {
-			this._loadActions(this.getSelectedTicketIds());
-		}).bind(this));
-		*/
 
 		var self = this;
 		$('.radio-option', this.actionsWrap).click(function() {
@@ -102,6 +58,10 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 				$('.reply-area', self.actionsWrap).slideUp();
 			}
 		});
+	},
+
+	open: function() {
+		this.actionsOverlay.open();
 	},
 
 	loadMacroActions: function() {
@@ -164,11 +124,7 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 	 * @return {Array}
 	 */
 	getSelectedTicketIds: function() {
-		var ticket_ids = [];
-
-		$('input.ticket-select:checked', this.ticketsWrapper).each(function() {
-			ticket_ids.push(parseInt($(this).val()));
-		});
+		var ticket_ids = this.selectionBar.getCheckedValues();
 
 		return ticket_ids;
 	},

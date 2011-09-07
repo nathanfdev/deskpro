@@ -225,12 +225,43 @@ class TicketSearchController extends AbstractController
 	public function runFilterAction($filter_id)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
-		$results_helper = Helper\TicketResults::newFromFilter($this, $filter);
+
+		$searcher = $filter->getSearcher();
+		$searcher->setPerson($this->person);
+
+		$order_by = $this->in->getString('order_by');
+		if (!$order_by) {
+			$order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.' . $filter['id']);
+		}
+		if (!$order_by AND $filter['order_by']) {
+			$order_by = $filter['order_by'];
+		}
+		if ($order_by) {
+			$searcher->setOrderByCode($order_by);
+		}
+
+		$results = $searcher->getMatches();
+
+		$helper = new Helper\TicketResults($this);
+		$helper->setTicketIds($results);
+
+		if ($this->in->getString('group_by')) {
+			$helper->setGroupField($this->in->getString('group_by'));
+		} elseif ($filter['group_by']) {
+			$helper->setGroupField($filter['group_by']);
+		}
+
+		// Or if the user has their own
+		$group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
+		if ($group_by) {
+			$helper->setGroupField($group_by);
+		}
 
 		$vars = array(
 			'filter' => $filter,
 			'filter_id' => $filter['id'],
-			'terms_summary' => $filter->getSearcher()->getSummary()
+			'order_by_summary' => $searcher->getOrderBySummary(),
+			'terms_summary' => $searcher->getSummary()
 		);
 
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
@@ -249,7 +280,7 @@ class TicketSearchController extends AbstractController
 		);
 		$vars['search_form'] = $search_form;
 
-		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
+		return $this->_getResponseForTickets('filter', $filter['id'], $helper, $vars);
 	}
 
 	public function getFilterSummaryAction($filter_id)
@@ -350,6 +381,8 @@ class TicketSearchController extends AbstractController
 
 		$pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
 
+		$order_by = $results_helper;
+
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
@@ -364,6 +397,7 @@ class TicketSearchController extends AbstractController
 			'grouped_info'       => $grouped_info,
 			'group_by'           => $results_helper->getGroupField(),
 			'grouping_option'    => $grouping_option,
+			'grouping_summary'   => $results_helper->getGroupingSummary(),
 			'is_grouped_result'  => $is_grouping,
 			'ticket_field_defs'  => $ticket_field_defs,
 			'person_field_defs'  => $person_field_defs,

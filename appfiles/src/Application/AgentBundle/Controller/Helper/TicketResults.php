@@ -55,6 +55,11 @@ class TicketResults
 	 */
 	protected $group_display_info = null;
 
+	/**
+	 * @var string
+	 */
+	protected $grouping_summary;
+
 
 	/**
 	 * @return Application\AgentBundle\Controller\Helper\TicketResults
@@ -63,8 +68,6 @@ class TicketResults
 	{
 		$helper = new self($controller);
 		$helper->setTicketIds($filter->getResults($controller->getPerson()));
-
-		$helper->setGroupOrderBy($filter->getSearcher()->getOrderBy());
 
 		if ($controller->in->getString('group_by')) {
 			$helper->setGroupField($controller->in->getString('group_by'));
@@ -77,6 +80,8 @@ class TicketResults
 		if ($group_by) {
 			$helper->setGroupField($group_by);
 		}
+
+		$helper->setGroupOrderBy($filter->getSearcher()->getOrderBy());
 
 		return $helper;
 	}
@@ -273,9 +278,24 @@ class TicketResults
 		$this->group_display_info = $grouper->getDisplayArray();
 		//$grouper->sortDisplayArray($this->group_display_info);
 
+		$this->grouping_summary = $grouper->getGroupingSummary();
+
 		return $this->group_display_info;
 	}
 
+
+	/**
+	 * Get the grouping field phrase
+	 *
+	 * @return string
+	 */
+	public function getGroupingSummary()
+	{
+		if ($this->grouping_summary) {
+			return $this->grouping_summary;
+		}
+		return '';
+	}
 
 
 	/**

@@ -19,8 +19,8 @@ pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
 pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
 pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
 pageMeta.viewType = 'simple-ext';
-{% if filter_id %}
-	pageMeta.filter_id = {{filter_id}};
+{% if filter %}
+	pageMeta.filter_id = {{filter.id}};
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
@@ -32,35 +32,17 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="layout-content">
 <div class="content">
 
-	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
+	{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 
-	<header class="controlBar">
-		<ul class="controlBarList">
-			<li>Ordered by </li>
-			<li class="tickerPicker"><a class="button"><span class="dropdownIcon">Urgency</span></a></li>
-			<li><span class="borderBar"></span></li>
-			<li>and Grouped by </li>
-            <li><a class="button">Departement</a></li>
-			<li class="displayOpt display-options-trigger"><a>Display option</a></li>
-			<li class="detailView detail-view-trigger"><a class="setupIcon">Detail</a></li>
-		</ul>
-	</header>
-
-	{% include 'AgentBundle:TicketSearch:grouping-bar.html.twig' %}
-
-	<header class="selectionBar selection-bar">
-		<input class="selectionCtrl selection-ctrl" type="checkbox" />
-		<span class="selected-count selectedCount">0</span> selected
-		<a class="performActTrigger perform-actions-trigger"><span class="dropdownIcon">Perform Action</span></a>
-	</header>
+	{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+	{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
 	<div class="contentList">
 		<section class="ticketListWrap">
 			{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
 		</section>
 	</div>
-
-	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
 </div>
 
 </div>

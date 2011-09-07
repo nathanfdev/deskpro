@@ -1,0 +1,33 @@
+<header class="controlBar">
+	<ul class="controlBarList">
+		<li>Ordered by </li>
+		<li class="tickerPicker"><a class="button order-by-menu-trigger"><span class="label">{{ order_by_summary }}</span><span class="dropdownIcon"></span></a></li>
+		<li><span class="borderBar"></span></li>
+		<li>and Grouped by </li>
+		<li><a class="button"><span class="label group-by-menu-trigger">{{ grouping_summary|default('None') }}</span><span class="dropdownIcon"></span></a></li>
+		<li class="displayOpt display-options-trigger"><a>Display options</a></li>
+		<li class="detailView detail-view-trigger"><a class="setupIcon">Detail</a></li>
+	</ul>
+
+	<ul style="display: none" class="order-by-menu">
+		<li data-order-by="urgency">Urgency</li>
+		<li data-order-by="date_created">Date Opened</li>
+		<li data-order-by="priority">Priority</li>
+	</ul>
+	<ul style="display: none" class="group-by-menu">
+		<li data-group-by="">None</li>
+		<li class="sep">-</li>
+		<li data-group-by="department">Department</li>
+		<li data-group-by="category">Category</li>
+		<li data-group-by="priority">Priority</li>
+		<li data-group-by="product">Product</li>
+		<li data-group-by="workflow">Workflow</li>
+		<li data-group-by="organization">Organization</li>
+		<li data-group-by="language">Language</li>
+		<li data-group-by="urgency">Urgency</li>
+		<li data-group-by="agent">Agent</li>
+		<li data-group-by="agent_team">Agent Team</li>
+		<li data-group-by="time_waiting">Time Waiting</li>
+		<li data-group-by="date_created">Date Created</li>
+	</ul>
+</header>

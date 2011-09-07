@@ -24,15 +24,18 @@ if(!a.length||!a.data("route")){return}DeskPRO_Window.runPageRoute(a.data("route
 }if(this.hasLoaded){$("#deskpro_outline_loading").hide()}},_onHideDeactivateList:function(){if(this.listPage){this.listPage.fireEvent("deactivate")
 }}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Tickets=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#tickets_section");
 this.setSectionElement($('<section id="tickets_outline"></section>'));DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.filter-update",this.filterUpdated.bind(this));
-DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-recent-search",this.refreshRecentSearches.bind(this));DeskPRO_Window.getMessageChanneler().subscribeChannel("list-page-fragment.activated",this.highlightActiveSection.bind(this));
-var a=this;this.getSectionElement().delegate("li[data-route]","click",function(){a.highlightNavItem($(this))});$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(b){this._initSection(b)
-}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
-}else{if(c.tabEl.is(".flagged")){a.loadFlagCounts()}}}});this._initFilters();this._initFlagged();$("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
+DeskPRO_Window.getMessageChanneler().subscribeChannel("list-page-fragment.activated",this.highlightActiveSection.bind(this));
+var a=this;this.getSectionElement().delegate("li[data-route]","click",function(){a.highlightNavItem($(this))});this.filterTicketIds={};
+$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(b){this._initSection(b)}})},_initSection:function(b){this.setHasInitialLoaded();
+this.contentEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
+}else{if(c.tabEl.is(".flagged")){a.loadFlagCounts()}}}});this.filterTicketIds=b.filter_id_matches;this._initFilters();this._initFlagged();
+$("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
 c.openOverlay()});if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()}this.activeNavClass=null;
-$(".dp-checkbox",this.sectionEl).click(function(){$(this).toggleClass("checked")})},onShow:function(){this.activeNavClass=null
-},highlightActiveSection:function(c){if(!this.isVisible()){return}var b=c.page;if(b.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+b.getMetaData("filter_id")
-}else{if(b.TYPENAME=="recyclebin"){this.activeNavClass=".archive-recycle-bin"}else{if(b.TYPENAME=="ticket-custom-filter"||b.TYPENAME=="ticket-flagged"){var d=b.getMetaData("view_extra");
-var a=b.getMetaData("view_name");switch(a){case"flag":if(d){this.activeNavClass=".nav-flag-"+d}break;case"label":if(d){this.activeNavClass=".nav-label-"+DeskPRO_Window.util.slugify(d)
+$(".dp-checkbox",this.sectionEl).click(function(){$(this).toggleClass("checked")});this.filterGroupEditor=new DeskPRO.Agent.Widget.FilterGroupEditor({containerElement:"#tickets_outline .scroll-content",listElement:"#system_filters_wrap > ul",triggerElement:"#ticket_filter_launch_editor",onGroupingChanged:function(c){a.refreshFilterGrouping([c])
+}})},onShow:function(){this.activeNavClass=null},highlightActiveSection:function(c){if(!this.isVisible()){return}var b=c.page;
+if(b.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+b.getMetaData("filter_id")}else{if(b.TYPENAME=="recyclebin"){this.activeNavClass=".archive-recycle-bin"
+}else{if(b.TYPENAME=="ticket-custom-filter"||b.TYPENAME=="ticket-flagged"){var d=b.getMetaData("view_extra");var a=b.getMetaData("view_name");
+switch(a){case"flag":if(d){this.activeNavClass=".nav-flag-"+d}break;case"label":if(d){this.activeNavClass=".nav-label-"+DeskPRO_Window.util.slugify(d)
 }break;case"spam":this.activeNavClass=".nav-archive-spam";break;case"validating":this.activeNavClass=".nav-archive-validating";
 break;case"pending":this.activeNavClass=".nav-archive-pending";break;case"resolved":this.activeNavClass=".nav-archive-resolved";
 break;case"closed":this.activeNavClass=".nav-archive-closed";break}}}}this.highlightNav()},highlightNav:function(){$(".nav-selected",this.getSectionElement()).removeClass("nav-selected");
@@ -46,11 +49,18 @@ var a=$(this).parent();var b=$("ul.sub-group",a);if(b.is(":visible")){b.slideUp(
 $(this).addClass("open")}})},getFilterCount:function(a){return parseInt($("#ticket_filter_"+a+"_count").data("count")||0)
 },setFilterCount:function(e,d){var c=d;e=parseInt(e);if(d>1000){c="1000+"}var a=DeskPRO_Window.getData("systemFilters")[e];
 if(a){if(a=="all"){this.updateBadge(d)}var b=$("#ticket_filter_"+e+"_count").html(c).data("count",d)}else{var b=$("#ticket_filter_"+e+"_count").html(c).data("count",d)
-}},updateFilterCounts:function(a){Object.each(a,function(b,c){this.setFilterCount(c,b)},this)},filterUpdated:function(c){var a=this.getFilterCount(c.filter_id);
-var b=null;if(this.listPage&&this.listPage.meta.filter_id==c.filter_id){b=this.listPage}if(c.op=="add"){a++;this.setFilterCount(c.filter_id,a);
-if(b&&c.ticket_id){b.addTicket(c.ticket_id)}}else{if(c.op=="del"){a--;if(a<1){a=0}this.setFilterCount(c.filter_id,a);if(b&&c.ticket_id){b.delTicket(c.ticket_id)
-}}}},refreshRecentSearches:function(){$.ajax({url:BASE_URL+"agent/ticket-search/get-recent-search-list",type:"GET",context:this,dataType:"html",success:function(a){$("#tickets_outline_searches_list").empty().html(a);
-this.highlightNav()}})},_initFlagged:function(){DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.counts",this.updateFlagCounts.bind(this));
+}},updateFilterCounts:function(a){Object.each(a,function(b,c){this.setFilterCount(c,b)},this)},filterUpdated:function(d){var a=parseInt(d.filter_id);
+var e=parseInt(d.ticket_id);if(!this.filterTicketIds[a]){this.filterTicketIds[a]=[]}var c=null;if(this.listPage&&this.listPage.meta.filter_id==d.filter_id){c=this.listPage
+}if(d.op=="add"){this.filterTicketIds[a].include(e);var b=this.filterTicketIds[a].length;this.setFilterCount(d.filter_id,b);
+if(c&&d.ticket_id){c.addTicket(d.ticket_id)}}else{if(d.op=="del"){this.filterTicketIds[a].erase(e);var b=this.filterTicketIds[a].length;
+this.setFilterCount(d.filter_id,b);if(c&&d.ticket_id){c.delTicket(d.ticket_id)}}}this.refreshFilterGrouping([a])},refreshFilterGrouping:function(b){var a=[];
+Array.each(b,function(c){c=parseInt(c);if(!this.filterTicketIds[c]){return}var e=this.getGroupingVar(c);var d=this.filterTicketIds[c];
+if(!e||!e.length||!d.length){this.setFilterGroupingContent(c,"");return}a.push({name:"batches["+c+"][grouping]",value:e});
+Array.each(d,function(f){a.push({name:"batches["+c+"][ticket_ids][]",value:f})})},this);$.ajax({url:BASE_URL+"agent/ticket-search/group-tickets.json",type:"POST",dataType:"json",data:a,context:this,success:function(c){Object.each(c,function(e,d){this.setFilterGroupingContent(d,e)
+},this)}})},getGroupingVar:function(a){return $("#ticket_filter_group_editor .filter-"+a+" .field-option").val()},setFilterGroupingContent:function(a,c){var e=$(".filter-"+a,this.sectionEl);
+var d=$("ul.subGroup",e);var g=this.getGroupingVar(a);var f=$("a.groupHead",e).first().data("route");d.empty();if(c.length){d.html(c)
+}var b=$("> li",d);if(b.length){d.show();b.each(function(){var h=Orb.appendQueryData(f,"group_by",g);h=Orb.appendQueryData(h,"grouping_option",$(this).data("grouping-option"));
+$("a",this).first().data("route",h);$("a",this).first().attr("data-route",h)})}else{d.hide()}},_initFlagged:function(){DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.counts",this.updateFlagCounts.bind(this));
 DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.flag-changed",this.changeFlagCountsForSwitch.bind(this));
 var a=this;$("#tickets_outline_flagged ul").sortable({axis:"y",distance:8,update:function(){var b=[];$("#tickets_outline_flagged ul > li").each(function(){var c=$(this).data("flag");
 if(c){b.push({name:"prefs[agent.ui.ticket-flag-order][]",value:c})}});$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/misc/ajax-save-prefs",data:b})

@@ -21,6 +21,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 	initPage: function(el) {
 
+		var self = this;
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
 			var ticketId = info.ticket_id;
 			$('.ticket-' + ticketId, this.contentWrapper).removeClass('locked');
@@ -64,7 +66,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			var grid = true;
 			var mock_bottom = false;
 		}
-		
+
 		this.contentWrapper = $('.content:first', this.wrapper);
 
 		if (grid) {
@@ -151,44 +153,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.new-recent-search');
 		}
 
-		var self = this;
-		this.selectedCount = $('.selected-count', this.wrapper);
-		this.selectionBar = $('.selection-bar', this.wrapper);
 		this.performActionsBtn = $('.perform-actions-trigger', this.wrapper);
 
-		$('input.ticket-select', this.wrapper).click(function() {
-			var count = $('input.ticket-select:checked', self.wrapper).length;
-			self.selectedCount.html(count);
-
-			if (!$(this).is(':checked')) {
-				$('.selection-control', this.wrapper).attr('checked', false);
-			}
-
-			if (count > 0) {
-				self.performActionsBtn.removeClass('disabled');
-			} else {
-				self.performActionsBtn.addClass('disabled');
-			}
-		});
-
-		$('.selection-control', this.wrapper).click(function() {
-
-			if ($(this).is(':checked')) {
-			 	$('input.ticket-select', self.wrapper).attr('checked', true);
-
-				var count = $('input.ticket-select:checked', self.wrapper).length;
-				self.selectedCount.html(count);
-				self.performActionsBtn.removeClass('disabled');
-			} else {
-				$('input.ticket-select', self.wrapper).attr('checked', false);
-				self.selectedCount.html('0');
-				self.performActionsBtn.addClass('disabled');
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onButtonClick: function() {
+				self.massActions.open();
 			}
 		});
 
 		this.massActions = new DeskPRO.Agent.PageHelper.TicketMassActions({
 			ticketsWrapper: $('.ticket-simple-ext-list', this.wrapper),
-			selectionBar: $('.selection-bar', this.wrapper),
+			selectionBar: this.selectionBar,
 			changeManager: this.changeManager
 		});
 
@@ -233,7 +208,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				});
 
 				$('.timeago', el).timeago();
-				
+
 				$('.deskpro-results-list', this.wrapper).prepend(el);
 				el.slideDown();
 			}
@@ -389,10 +364,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	//# Display options
 	//#########################################################################
 
-	displayOptionsWrapper: null,
-	displayOptionsOverlay: null,
-	displayOptionsList: null,
 	_initDisplayOptions: function() {
+
+		var self = this;
 
 		// View type switcher
 		if (this.meta.viewTypeUrl) {
@@ -405,32 +379,54 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			});
 		}
 
-		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
-		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
+		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'ticket-' + this.resultTypeName,
+			resultId: this.resultTypeId,
+			refreshUrl: this.meta.refreshUrl
+		});
 
-		this.displayOptionsOverlay = new DeskPRO.UI.Overlay({
-			contentElement: overlay_wrapper,
-			triggerElement: $('.display-options-trigger th:not(.no-option-trigger), header .display-options-trigger', this.contentWrapper),
-			onContentSet: function(eventData) {
-				$('ul.sortable-list', eventData.wrapperEl).sortable({
-					'axis': 'y'
-				});
+		// Sorting options
+		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
+		this.sortingMenu = new DeskPRO.UI.Menu({
+			triggerElement: sortMenuBtn,
+			menuElement: $('.order-by-menu', this.wrapper).first(),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+
+				var prop = item.data('order-by')
+				var label = item.text().trim();
+
+				// Change the displayed label for some visual feedback
+				$('.label', sortMenuBtn).text(label);
+
+				var disOptWrap = self.displayOptions.getWrapperElement();
+				var sel = $('select.sel-order-by', disOptWrap);
+				$('option', sel).prop('selected', false);
+				$('option.' + prop, sel).prop('selected', true);
+
+				self.displayOptions.saveAndRefresh();
 			}
 		});
 
-		$('.save-trigger', overlay_wrapper).click((function() {
-			this.saveDisplayOptions();
-		}).bind(this));
+		var groupMenuBtn = $('.group-by-menu-trigger', this.wrapper).first();
+		this.groupingMenu = new DeskPRO.UI.Menu({
+			triggerElement: groupMenuBtn,
+			menuElement: $('.group-by-menu', this.wrapper).first(),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
 
-		// Set default checked values based on table
-		var self = this;
-		$('.list thead th', this.contentWrapper).each(function() {
-			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
+				var prop = item.data('group-by')
+				var label = item.text().trim();
+
+				// Change the displayed label for some visual feedback
+				$('.label', groupMenuBtn).text(label);
+
+				var url = self.meta.refreshUrl;
+				url += 'group_by=' + prop;
+
+				DeskPRO_Window.loadListPane(url);
+			}
 		});
-
-		$('.detail-view-trigger', this.wrapper).click((function() {
-			this.switchViewType('list');
-		}).bind(this));
 	},
 
 	switchViewType: function(view_type) {
@@ -485,152 +481,5 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		DeskPRO_Window.loadListPane(new_url, null, function() {
 			DeskPRO_Window.removePage(self);
 		});
-	},
-
-	saveDisplayOptions: function() {
-
-		$('.loading-off', this.displayOptionsWrapper).hide();
-		$('.loading-on', this.displayOptionsWrapper).show();
-
-		var data = [];
-		var pref_name = 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-display-fields.' + this.resultTypeId +'][]';
-
-		$('input[type="checkbox"]:checked', this.displayOptionsList).each(function() {
-			data.push({
-				name: pref_name,
-				value: $(this).attr('name')
-			});
-		});
-
-		// and the ordering
-		data.push({
-			name: 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-order-by.' + this.resultTypeId +']',
-			value: $('select[name="order_by"]', this.displayOptionsWrapper).val()
-		});
-
-		// We reload the same page which will have changes applied
-		var url = this.getMetaData('refreshUrl');
-		if (this.appendUrl) {
-			url += this.appendUrl;
-		}
-
-		var self = this;
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: this.getMetaData('saveListPrefsUrl'),
-			data: data,
-			context: this,
-			success: function() {
-
-				if (this.meta.pageReloader) {
-					this.displayOptionsOverlay.closeOverlay();
-					this.fireEvent('destroy');
-					this.meta.pageReloader(url);
-				} else {
-					DeskPRO_Window.loadListPane(url, null, function() {
-						DeskPRO_Window.removePage(self);
-					});
-				}
-
-			}
-		});
-	},
-
-
-	//#########################################################################
-	//# Infinite loading stuff
-	//#########################################################################
-
-	_initInfiniteScroll: function() {
-		//console.log(this.contentWrapper.scrollTop()+50);
-		//console.log(this._scrollInnerHeights() - this.contentWrapper.height());
-		//console.log('-');
-		this.contentWrapper.scroll((function() {
-			if (this.contentWrapper.scrollTop()+50 >= this._scrollInnerHeights() - this.contentWrapper.height()) {
-				this.nextSearchPage();
-			}
-		}).bind(this));
-	},
-
-	_scrollInnerHeights_cache: null,
-	_scrollInnerHeights: function() {
-		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;
-		var h = 0;
-		this.contentWrapper.children(':visible').each(function() {
-			h += $(this).height();
-		});
-
-		this._scrollInnerHeights_cache = h;
-
-		return h;
-	},
-
-	isLoadingNext: false,
-	noMoreResults: false,
-	nextSearchPage: function() {
-		var last_page = parseInt($('.page-set:last', this.contentWrapper).data('page'));
-		this.loadResultPage(last_page+1)
-	},
-
-	loadResultPage: function(page) {
-		if (this.isLoadingNext|| this.noMoreResults) return;
-		this.isLoadingNext = true;
-
-		var loading = $('.loading-more', this.contentWrapper);
-		loading.detach().appendTo(this.contentWrapper); // make sure its at the bottom
-		loading.show();
-
-		var url = this.getMetaData('pageUrl').replace('$page', page);
-		if (this.appendUrl) {
-			url += this.appendUrl;
-		}
-
-		$.ajax({
-			cache: false,
-			type: 'GET',
-			url: url,
-			context: this,
-			dataType: 'json',
-			success: function (data) {
-				this._handleAjaxSuccess(data);
-			}
-		});
-	},
-
-	_handleAjaxSuccess: function(data) {
-
-		this.isLoadingNext = false;
-		$('.loading-more', this.contentWrapper).hide();
-
-		if (data['no_more_results']) {
-			this.noMoreResults = true;
-			var nomore = $('.no-more-results', this.contentWrapper);
-			nomore.detach().appendTo(this.contentWrapper); // make sure its at the bottom
-			nomore.show();
-			return;
-		}
-
-		this._scrollInnerHeights_cache = null;
-
-		var html = data['html'];
-
-		var el = $(html);
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['.timeago']
-		});
-
-		$('table.list', this.contentWrapper).append(el);
-
-		if (this.loadFirst) {
-			this.loadFirst = false;
-
-			var a = $('td.subject:first a.with-route:first', el);
-			if (a.length) {
-				DeskPRO_Window.runPageRouteFromElement(a);
-			}
-		}
 	}
 });

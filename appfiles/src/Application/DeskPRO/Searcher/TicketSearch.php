@@ -66,6 +66,12 @@ class TicketSearch extends SearcherAbstract
 	protected $summary = null;
 
 	/**
+	 * Summary of sorting in phrases
+	 * @var array
+	 */
+	protected $order_summary = array();
+
+	/**
 	 * An array of fields these search terms are affected by.
 	 * Used in ListUpdater to determine if a filter needs changing on the client.
 	 *
@@ -131,6 +137,19 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		return $summary;
+	}
+
+
+	/**
+	 * Get the order-by summary
+	 *
+	 * @return array
+	 */
+	public function getOrderBySummary()
+	{
+		$this->getOrderByPart();
+
+		return $this->order_summary;
 	}
 
 
@@ -331,10 +350,12 @@ class TicketSearch extends SearcherAbstract
 		switch ($type) {
 			case 'ticket.urgency':
 				$order_by = "ORDER BY tickets.urgency $dir";
+				$this->order_summary = "Urgency";
 				break;
 
 			case 'ticket.date_created':
 				$order_by = "ORDER BY tickets.id $dir";
+				$this->order_summary = "Date created";
 				break;
 
 			case 'ticket.priority':
@@ -344,21 +365,26 @@ class TicketSearch extends SearcherAbstract
 				} else {
 					$order_by = "ORDER BY tickets.priority_id $dir";
 				}
+				$this->order_summary = "Priority";
 				break;
 
 			case 'ticket.date_resolved':
+				$this->order_summary = "Date resolved";
 				$order_by = "ORDER BY tickets.date_resolved $dir";
 				break;
 
 			case 'ticket.date_closed':
+				$this->order_summary = "Date closed";
 				$order_by = "ORDER BY tickets.date_closed $dir";
 				break;
 
 			case 'ticket.last_activity':
+				$this->order_summary = "Last user activity";
 				$order_by = "ORDER BY tickets.date_last_user_reply $dir";
 				break;
 
 			case 'ticket.organization':
+				$this->order_summary = "Organization name";
 				$order_by = array(
 					"INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)",
 					"ORDER BY sort_table.name $dir"
@@ -368,6 +394,8 @@ class TicketSearch extends SearcherAbstract
 			case 'ticket.ticket_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
 				if (!$field) break;
+
+				$this->order_summary = $field['title'];
 
 				$search_type = $field->getHandler()->getSearchType();
 

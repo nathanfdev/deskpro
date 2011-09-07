@@ -98,14 +98,14 @@
 	position: relative;
 }
 
-.controlBar ul.controlBarList li.tickerPicker span.dropdownIcon, a.performActTrigger span.dropdownIcon{
+.controlBar ul.controlBarList li span.dropdownIcon {
 	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
-	background-position: 39px -944px;
-	float: left;
+	background-position: 0px -944px;
+	float: right;
 	height: 12px;
 	overflow: hidden;
 	color: #626a73;
-	width: 48px;
+	margin-left: 5px;
 }
 .controlBar ul.controlBarList li span.borderBar{
 	background: url(../../images/agent/divGrdt.jpg) no-repeat 0 0;

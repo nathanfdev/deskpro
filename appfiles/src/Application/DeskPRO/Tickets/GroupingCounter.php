@@ -34,6 +34,13 @@ class GroupingCounter
 
 	protected $terms = array();
 
+	protected $grouping_summary = '';
+
+	public function getGroupingSummary()
+	{
+		return $this->grouping_summary;
+	}
+
 	/**
 	 * Get an array of counts suitable for looping in a template etc
 	 *
@@ -150,6 +157,8 @@ class GroupingCounter
 		return array(
 			'items' => $items,
 			'counts' => $counts,
+			'titles1' => $titles1,
+			'titles2' => $titles2,
 			'group1_structure' => $group1_structure,
 			'group2_structure' => $group2_structure,
 		);
@@ -370,36 +379,45 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'department':
+				$this->grouping_summary = "Department";
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'product':
+				$this->grouping_summary = "Product";
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'category':
+				$this->grouping_summary = "Category";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'agent':
+				$this->grouping_summary = "Agent";
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
 				break;
 
 			case 'workflow':
+				$this->grouping_summary = "Workflow";
 				$titles = App::getOrm()->getRepository('DeskPRO:Workflow')->getWorkflowNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'priority':
+				$this->grouping_summary = "Priority";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			default:
+
+				$this->grouping_summary = $field;
+
 				// Just make all titles the ids themselves by default,
 				// useful for things like status which might be rendered into words after
 				if ($ids) {
