@@ -1341,6 +1341,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			self.runPageRouteFromElement(this);
 		});
+
+		$(document).delegate('[data-route]', 'click', function(ev) {
+			ev.preventDefault();
+			self.runPageRouteFromElement($(this));
+		});
 	},
 
 	_initWindowInterface: function() {

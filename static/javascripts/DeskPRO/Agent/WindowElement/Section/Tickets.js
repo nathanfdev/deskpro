@@ -312,13 +312,25 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var filterEl = $('.filter-' + filterId, this.sectionEl);
 		var subgroupEl = $('ul.subGroup', filterEl);
 
+		var groupingVar = this.getGroupingVar(filterId);
+		var baseRoute = $('a.groupHead', filterEl).first().data('route');
+
 		subgroupEl.empty();
 		if (html.length) {
 			subgroupEl.html(html);
 		}
 
-		if ($('> *', subgroupEl).length) {
+		var lis = $('> li', subgroupEl);
+		if (lis.length) {
 			subgroupEl.show();
+
+			// Add the proper route to each row
+			lis.each(function() {
+				var setRoute = Orb.appendQueryData(baseRoute, 'group_by', groupingVar);
+				setRoute = Orb.appendQueryData(setRoute, 'grouping_option', $(this).data('grouping-option'));
+				$('a', this).first().data('route', setRoute);
+				$('a', this).first().attr('data-route', setRoute);
+			});
 		} else {
 			subgroupEl.hide();
 		}

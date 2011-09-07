@@ -150,7 +150,6 @@ span.borderGradBtm{
 .groupingBar{
 	background: #f0f2f5;
 	border-bottom: 1px solid #CCD1D6;
-	float: left;
 	padding: 2px 0;
 }
 .groupingBar li{

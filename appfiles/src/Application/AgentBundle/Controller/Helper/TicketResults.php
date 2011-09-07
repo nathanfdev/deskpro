@@ -66,7 +66,9 @@ class TicketResults
 
 		$helper->setGroupOrderBy($filter->getSearcher()->getOrderBy());
 
-		if ($filter['group_by']) {
+		if ($controller->in->getString('group_by')) {
+			$helper->setGroupField($controller->in->getString('group_by'));
+		} elseif ($filter['group_by']) {
 			$helper->setGroupField($filter['group_by']);
 		}
 
@@ -135,7 +137,7 @@ class TicketResults
 
 	/**
 	 * Get total number of matches
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getCount()
@@ -229,6 +231,17 @@ class TicketResults
 	}
 
 
+	/**
+	 * Get the grouping field
+	 *
+	 * @return null|string
+	 */
+	public function getGroupField()
+	{
+		return $this->group_field;
+	}
+
+
 
 	/**
 	 * Set the order by that will be used for sub-grouping. Tickets area
@@ -253,9 +266,12 @@ class TicketResults
 		if ($this->group_display_info !== null) return $this->group_display_info;
 		if ($this->group_field === null) return null;
 
-		$grouper = new \Application\DeskPRO\Tickets\SimpleGroupingCounter($this->getTicketIds(), $this->group_field);
+		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+		$grouper->setGrouping($this->group_field);
+		$grouper->setMode('specify', $this->getTicketIds());
+
 		$this->group_display_info = $grouper->getDisplayArray();
-		$grouper->sortDisplayArray($this->group_display_info);
+		//$grouper->sortDisplayArray($this->group_display_info);
 
 		return $this->group_display_info;
 	}

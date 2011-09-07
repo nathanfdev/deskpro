@@ -51,7 +51,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 	/**
 	 * Set the person context to fetch permissions etc for
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return void
 	 */
@@ -334,7 +334,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		$choice = (array)$choice;
 		$choice = array_values($choice);
-		
+
 		$range1 = !empty($choice[0]) ? $choice[0] : null;
 		$range2 = !empty($choice[1]) ? $choice[1] : null;
 
@@ -379,7 +379,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 	/**
 	 * Get summary of the range summary
-	 * 
+	 *
 	 * @param $field
 	 * @param $op
 	 * @param $choice
@@ -390,7 +390,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$summary = '';
 
 		$choice = (array)$choice;
-		
+
 		$date1 = null;
 		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
@@ -526,10 +526,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$db = App::getDb();
 		$where = '';
 
-		if (!$choice) {
-			return '0'; // no choices, always fails!
-		}
-
 		if (is_array($choice) AND count($choice) == 1) {
 			$choice = Arrays::getFirstItem($choice);
 		}
@@ -648,7 +644,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	protected function _testDateMatch($value, $op, $choice)
 	{
 		$choice = (array)$choice;
-		
+
 		$date1 = null;
 		if (isset($choice['date1'])) {
 			$date1 = $choice['date1'];

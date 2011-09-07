@@ -289,6 +289,7 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		$this->_last_sql = $sql;
+
 		return $sql;
 	}
 
@@ -430,7 +431,11 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+					if ($op == self::OP_IS) {
+						$wheres[] = "$tickets_table.id IN (" . implode(',', (array)$choice) . ")";
+					} else {
+						$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+					}
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
 				case self::TERM_ARCHIVE_SEARCH:
@@ -445,7 +450,9 @@ class TicketSearch extends SearcherAbstract
 						return $titles;
 					});
 
-					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					if ($choice != 0) {
+						$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					}
 
 					if (count($choice) == 1) {
 						$this->specific_fields[] = self::TERM_DEPARTMENT;

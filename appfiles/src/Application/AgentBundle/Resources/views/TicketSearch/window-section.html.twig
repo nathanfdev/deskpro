@@ -19,9 +19,8 @@
 				<li
 					class="filter filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
-					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 				>
-					<a class="groupHead {% if loop.index == 1 %}on{% endif %}">
+					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						{{filter.title}}
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 							{{ filter_counts[filter.id]|default(0) }}
@@ -51,9 +50,8 @@
 					<li
 						class="filter-{{filter.id}} nav-filter-{{filter.id}}"
 						data-filter-id="{{filter.id}}"
-						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 					>
-						<a class="groupHead">
+						<a class="groupHead" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 							{{filter.title}}
 							<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 								{{ filter_counts[filter.id]|default(0) }}

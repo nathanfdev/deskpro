@@ -41,6 +41,53 @@ pageMeta.recent_search_id = '{{ recent_search_id }}';
 		</ul>
 	</header>
 
+	{% if grouped_info and grouped_info.counts[-1].total > 0 %}
+		<header class="groupingBar">
+			{% if grouped_info.counts[-1].total > 0 %}
+				<li data-grouping-option="">
+					<a>
+						All
+						<span>{{ grouped_info.counts[-1].total }}</span>
+					</a>
+				</li>
+			{% endif %}
+			{% if grouped_info.counts[0].total > 0 %}
+				<li data-grouping-option="0">
+					<a>
+						None
+						<span>{{ grouped_info.counts[0].total }}</span>
+					</a>
+				</li>
+			{% endif %}
+			{% for cat in grouped_info.group1_structure %}
+				{% set count = grouped_info.counts[cat.id].total %}
+				{% if count > 0 %}
+					<li data-grouping-option="{{ cat.id }}">
+						<a>
+							{{ cat.title }}
+							<span>{{ count }}</span>
+						</a>
+					</li>
+					{% if cat.children %}
+						{% for subcat in cat.children %}
+							{% set subcount = grouped_info.counts[subcat.id].total %}
+							{% if subcount > 0 %}
+								<li class="subList" data-grouping-option="{{ subcat.id }}">
+									<span class="borderLink"></span>
+									<a>
+										{{ cat.title }} &gt;
+										{{ subcat.title }}
+										<span>{{ subcount }}</span>
+									</a>
+								</li>
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+        </header>
+	{% endif %}
+
 	<header class="selectionBar selection-bar" style="display: none;">
 		<span class="selected-count selectedCount">0</span> selected
 		<a class="performActTrigger perform-actions-trigger"><span class="dropdownIcon">Perform Action</span></a>
