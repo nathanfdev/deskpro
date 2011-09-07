@@ -307,3 +307,55 @@ span.dropdownIcon{
 .overlay.display-options {
 	width: 550px;
 }
+
+
+
+#ticket_filter_group_editor {
+	position: absolute;
+	overflow: hidden;
+	z-index: 1000001;
+
+	background-color: rgba(255, 255, 255, 0.75);
+}
+
+.filter-group-editor {
+	position: absolute;
+	overflow: hidden;
+	background-color: #DFE5EB;
+	border: 1px solid #B4B8BD;
+
+	width: 180px;
+
+	z-index: 1000002;
+
+
+	-webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.6);
+	-moz-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.6);
+	box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.6);
+}
+
+.filter-group-editor .filter-row {
+	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
+	-pie-background: linear-gradient(#edf0f2, #dde3e7);
+	behavior: url(../../static/vendor/PIE.htc);
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid #ced4d9;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+
+	position: absolute;
+	display: block;
+	height: 25px;
+	line-height: 25px;
+	width: 180px;
+}
+
+.filter-group-editor .filter-row:first-of-type {
+	border-top: none;
+}
+
+.filter-group-editor .filter-row .field-wrap select {
+	width: 162px;
+	margin: 0 8px 0 8px;
+}

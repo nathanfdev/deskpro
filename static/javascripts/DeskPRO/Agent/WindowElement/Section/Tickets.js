@@ -68,6 +68,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('.dp-checkbox', this.sectionEl).click(function() {
 			$(this).toggleClass('checked');
 		});
+
+		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
+			containerElement: '#tickets_outline .scroll-content',
+			listElement: '#system_filters_wrap > ul',
+			triggerElement: '#ticket_filter_launch_editor'
+		});
 	},
 
 	onShow: function() {

@@ -4,7 +4,7 @@
 	<div class="titles">
 		<div class="ticketHoldCheck">
 			<div class="item">
-				<span class="edit">edit display</span>
+				<span class="edit" id="ticket_filter_launch_editor">edit display</span>
 			</div>
 		</div>
 			<h2>Awaiting Agent
@@ -13,11 +13,11 @@
 		<br class="clear" />
 	</div>
 	<!-- DeskPro Inbox Ticket -->
-	<div class="yourPendingTicket">
+	<div class="yourPendingTicket" id="system_filters_wrap">
 		<ul id="ticketOutlineInboxList" class="navList">
 			{% for filter in sys_filters %}
 				<li
-					class="filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 				>
@@ -122,4 +122,32 @@
 			<a class="with-route nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">Recycle Bin</a>
 		</li>
 	</ul>
+</section>
+
+
+<section id="ticket_filter_group_editor">
+	<section class="filter-group-editor">
+		<script type="text/x-deskpro-plain" class="editor-row-tpl">
+			<div class="filter-row">
+				<div class="field-wrap"></div>
+			</div>
+		</script>
+		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
+			<select>
+				<option value="">(none)</option>
+				<option value="department">Department</option>
+				<option value="category">Category</option>
+				<option value="priority">Priority</option>
+				<option value="product">Product</option>
+				<option value="workflow">Workflow</option>
+				<option value="organization">Organization</option>
+				<option value="language">Language</option>
+				<option value="urgency">Urgency</option>
+				<option value="agent">Agent</option>
+				<option value="agent_team">Agent Team</option>
+				<option value="time_waiting">Time Waiting</option>
+				<option value="date_created">Date Created</option>
+			</select>
+		</script>
+	</section>
 </section>

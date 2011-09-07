@@ -35,9 +35,15 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		var element = this.element;
 		if (element.data('resize-special-event')) return;
 
-		var viewport = $('div.scroll-viewport:first', element);
+		var viewport = $('div.scroll-viewport', element).first();
 		viewport.resize(function() {
-			// When size changes within the pane, need to re-size the scroll
+			// When pane size changes, need to re-size the scroll
+			element.tinyscrollbar_update();
+		});
+
+		var content = $('div.scroll-content', element).first();
+		content.resize(function() {
+			// When content changes within the pane, need to re-size the scroll
 			element.tinyscrollbar_update();
 		});
 	},
