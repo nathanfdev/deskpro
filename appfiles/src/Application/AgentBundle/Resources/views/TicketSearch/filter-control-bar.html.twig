@@ -1,10 +1,10 @@
 <header class="controlBar">
 	<ul class="controlBarList">
 		<li>Ordered by </li>
-		<li class="tickerPicker"><a class="button order-by-menu-trigger"><span class="label">{{ order_by_summary }}</span><span class="dropdownIcon"></span></a></li>
+		<li class="tickerPicker order-by-menu-trigger"><a class="button"><span class="label">{{ order_by_summary }}</span><span class="dropdownIcon"></span></a></li>
 		<li><span class="borderBar"></span></li>
 		<li>and Grouped by </li>
-		<li><a class="button"><span class="label group-by-menu-trigger">{{ grouping_summary|default('None') }}</span><span class="dropdownIcon"></span></a></li>
+		<li class="group-by-menu-trigger"><a class="button"><span class="label">{{ grouping_summary|default('None') }}</span><span class="dropdownIcon"></span></a></li>
 		<li class="displayOpt display-options-trigger"><a>Display options</a></li>
 		<li class="detailView detail-view-trigger"><a class="setupIcon">Detail</a></li>
 	</ul>
