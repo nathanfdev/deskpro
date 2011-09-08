@@ -12,13 +12,11 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 
-use DoctrineExtensions\NestedSet\Node;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 

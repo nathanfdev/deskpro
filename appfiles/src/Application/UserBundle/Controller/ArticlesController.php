@@ -98,7 +98,7 @@ class ArticlesController extends AbstractController
 
 		$per_page = 20;
 
-		$kb_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
+		$kb_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getFlatHierarchy();
 		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();

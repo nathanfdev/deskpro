@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 /**
  * Products
@@ -23,14 +22,13 @@ use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 class Product extends CategoryAbstract
 {
 	/**
-Gedmo_Mappinggedmo:TreeParent
 	 * @ORM_Mapping\ManyToOne(targetEntity="Product", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="Product", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 }

@@ -20,7 +20,7 @@ use \Orb\Util\Arrays;
 class CategoryHierarchy
 {
 	/**
-	 * @var \Doctrine\ORM\EntityRepository
+	 * @var \Application\DeskPRO\EntityRepository\EntityRepository
 	 */
 	protected $repos;
 
@@ -63,10 +63,10 @@ class CategoryHierarchy
 		$this->cache_tag = $cache_tag;
 	}
 
-	
+
 	/**
 	 * Set the where condition when fetching categories
-	 * 
+	 *
 	 * @param  $where_cond
 	 * @return string
 	 */
@@ -76,8 +76,47 @@ class CategoryHierarchy
 	}
 
 
-	
+	/**
+	 * Get all root node ids
+	 *
+	 * @return array
+	 */
+	public function getRootNodeIds()
+	{
+		$this->getCategoriesInHierarchy();
 
+		$root_ids = array();
+
+		foreach ($this->_cat_hierarchy as $c) {
+			$root_ids[] = $c['id'];
+		}
+
+		return $root_ids;
+	}
+
+
+	/**
+	 * Get all root nodes
+	 *
+	 * @return array
+	 */
+	public function getRootNodes()
+	{
+		$root_ids = $this->getRootNodeIds();
+
+		if (!$root_ids) {
+			return array();
+		}
+
+		return $this->repos->getByIds($root_ids);
+	}
+
+
+	/**
+	 * Get all category IDs that exists
+	 *
+	 * @return array
+	 */
 	public function getCategoryIds()
 	{
 		$this->getCategoriesInHierarchy();
@@ -85,6 +124,12 @@ class CategoryHierarchy
 		return $this->_cat_ids;
 	}
 
+
+	/**
+	 * Get a plain hierarchy array
+	 *
+	 * @return null
+	 */
 	public function getCategoriesInHierarchy()
 	{
 		if ($this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
@@ -114,11 +159,11 @@ class CategoryHierarchy
 			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
 
 			$cats = Arrays::intoHierarchy($cats, null);
-			$this->_cats_hierarchy = $cats;
+			$this->_cat_hierarchy = $cats;
 			$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
 
 			App::getCache('common')->save(array(
-				'_cats_hierarchy' => $this->_cats_hierarchy,
+				'_cat_hierarchy' => $this->_cat_hierarchy,
 				'_cat_hierarchy_flat' => $this->_cat_hierarchy_flat,
 				'_cat_names' => $this->_cat_names,
 				'_cat_ids' => $this->_cat_ids,
@@ -126,13 +171,13 @@ class CategoryHierarchy
 			), $this->table_name.'_category_info', array($this->cache_tag));
 		}
 
-		return $this->_cats_hierarchy;
+		return $this->_cat_hierarchy;
 	}
 
 
 	/**
 	 * Get an array of child=>parent for all categories.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getParentMap()
@@ -210,64 +255,140 @@ class CategoryHierarchy
 		return $this->_cat_hierarchy_flat;
 	}
 
-	
 
 	/**
-	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
+	 * Get IDs of parents in order (left to right)
 	 *
-	 * Note this goes down all levels. For example, if the parent has children 3 levels deep,
-	 * this will fetch ids from all levels.
+	 * @param $category
+	 * @return array
+	 */
+	public function getPathIds($category)
+	{
+		$ids = array();
+
+		$cat_id = is_object($category) ? $category->getId() : $category;
+
+		while (!empty($this->_cat_parent_map[$cat_id])) {
+			$cat_id = $this->_cat_parent_map[$cat_id];
+			$ids[] = $cat_id;
+		}
+
+		$ids = array_reverse($ids);
+
+		return $ids;
+	}
+
+
+	/**
+	 * Get category entities for all parents
+	 *
+	 * @param $category
+	 * @return array
+	 */
+	public function getPath($category)
+	{
+		$ids = $this->getPathIds($category);
+
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->repos->getByIds($ids);
+	}
+
+
+	/**
+	 * Get children IDs of a category
+	 *
+	 * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+	 * @param bool $direct Only get the immediate children?
+	 * @return int[]
+	 */
+	public function getChildrenIds($category = null, $direct = true)
+	{
+		$this->getCategoriesInHierarchy();
+
+		// All ids if null
+		if ($category === null) {
+			return $this->_cat_ids;
+		}
+
+		$cat_id = is_object($category) ? $category->getId() : $category;
+		$child_ids = array();
+
+		if (!isset($this->_cat_hierarchy_flat[$cat_id])) {
+			return array();
+		}
+
+		$start = false;
+		$depth = null;
+		foreach ($this->_cat_hierarchy_flat as $c) {
+			if ($start) {
+				// Once we go under the cat depth, we're no
+				// longer traversing this category tree
+				if ($c['depth'] <= $depth) {
+					break;
+				}
+
+				// Once we get one level deeper, then we're
+				// no longer direct children
+				if ($direct && $c['depth'] >= $depth+2) {
+					break;
+				}
+
+				$child_ids[] = $c['id'];
+			} elseif ($c['id'] == $cat_id) {
+				$start = true;
+				$depth = $c['depth'];
+			}
+		}
+
+		return $child_ids;
+	}
+
+
+	/**
+	 * Get children IDs of a category
+	 *
+	 * @param int|\Application\DeskPRO\Entity\CategoryAbstract $category
+	 * @param bool $direct Only get the immediate children?
+	 * @return \Application\DeskPRO\Entity\CategoryAbstract[]
+	 */
+	public function getChildren($category = null, $direct = true)
+	{
+		$ids = $this->getChildrenIds($category, $direct);
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->repos->getByIds($ids);
+	}
+
+	/**
+	 * TODO: Remove this call
+	 *
+	 * @deprecated
+	 */
+	public function children($category = null, $direct = true)
+	{
+		return $this->getChildren($category, $direct);
+	}
+
+
+	/**
+	 * Get an array of all cat IDs in a tree including the parent itself (optionally disabled).
 	 *
 	 * @param int $parent_id
 	 * @return array
 	 */
 	public function getIdsInTree($parent_id, $incude_top = true)
 	{
-		$ids = array();
-		if ($incude_top AND $parent_id) {
-			$ids[] = $parent_id;
-		}
+		$ids = $this->getChildrenIds($parent_id);
 
-		$cats = $this->getCategoriesInHierarchy();
-		if ($parent_id) {
-			// Bad cat ID
-			if (empty($cats[$parent_id])) {
-				return $ids;
-			}
-			// No children, so either return nothing, or if $include_top it will just be this
-			if (empty($cats[$parent_id]['children'])) {
-				return $ids;
-			}
-			
-			$cats = $cats[$parent_id]['children'];
-		}
-
-		// TODO this needs to handle unlimited depth,
-		// and probably want to cache all this info
-
-		foreach ($cats as $cat) {
-			$ids[] = $cat['id'];
-
-			if ($cat['children']) {
-				foreach ($cat['children'] as $childcat) {
-					$ids[] = $childcat['id'];
-				}
-			}
+		if ($incude_top) {
+			array_unshift($ids, $parent_id);
 		}
 
 		return $ids;
-	}
-
-
-	public function getTopCategories()
-	{
-		$cats = $this->repos->getEntityManager()->createQuery("
-			SELECT c
-			FROM {$this->class} c
-			WHERE c.parent IS NULL
-			ORDER BY c.display_order ASC
-		")->execute();
-
-		return $cats;
 	}
 }

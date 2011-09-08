@@ -11,12 +11,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-class AbstractCategoryRepository extends \Doctrine\ORM\EntityRepository
+class AbstractCategoryRepository extends AbstractEntityRepository
 {
 	protected $_cat_helper = null;
 
@@ -32,30 +31,15 @@ class AbstractCategoryRepository extends \Doctrine\ORM\EntityRepository
 		return $this->_cat_helper;
 	}
 
-	/**#@+ Aliases to the helper methods */
-	public function getCategoryIds()
+	/**
+	 * Pass through to helper
+	 *
+	 * @param $method
+	 * @param $args
+	 * @return mixed
+	 */
+	public function __call($method, $args)
 	{
-		return $this->getCategoryHelper()->getCategoryIds();
+		return call_user_func_array(array($this->getCategoryHelper(), $method), $args);
 	}
-
-	public function getCategoriesInHierarchy()
-	{
-		return $this->getCategoryHelper()->getCategoriesInHierarchy();
-	}
-
-	public function getCategoryNames($for_ids = null)
-	{
-		return $this->getCategoryHelper()->getCategoryNames($for_ids);
-	}
-
-	public function getFullCategoryNames($sep = ' > ', $include_tops = true)
-	{
-		return $this->getCategoryHelper()->getFullCategoryNames($sep, $include_tops);
-	}
-
-	public function getIdsInTree($parent_id, $incude_top = true)
-	{
-		return $this->getCategoryHelper()->getIdsInTree($parent_id, $incude_top);
-	}
-	/**#@-*/
 }

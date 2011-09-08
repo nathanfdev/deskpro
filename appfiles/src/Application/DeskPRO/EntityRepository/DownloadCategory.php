@@ -19,7 +19,7 @@ use Application\DeskPRO\Searcher\DownloadSearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class DownloadCategory extends AbstractNestedTreeCategoryRepository
+class DownloadCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
 

@@ -12,21 +12,17 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 
-use DoctrineExtensions\NestedSet\Node;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Basic hierarchicial category entity. Hierarchy is maintained automatically
- * by a Doctrine NestedSet implementation
+ * Basic hierarchicial category entity
  *
- * @Gedmo_Mapping\Tree(type="nested")
  * @ORM_Mapping\MappedSuperclass
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
@@ -51,46 +47,39 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
 	///**
-	// * @Gedmo_Mapping\TreeParent
 	// * @ORM_Mapping\ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
 	// */
 	//protected $parent;
 	//
 	///**
 	// * @ORM_Mapping\OneToMany(targetEntity="CategoryAbstract", mappedBy="parent")
-	// * @ORM_Mapping\OrderBy({"lft" = "ASC"})
+	// * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	// */
 	//protected $children;
 
 	/**
-	 * @Gedmo_Mapping\TreeRoot
+	 * @ORM_Mapping\Column(name="depth", type="integer")
+	 */
+	protected $depth = 0;
+
+	/**
 	 * @ORM_Mapping\Column(name="root", type="integer", nullable=true)
 	 */
 	protected $root;
-
-	/**
-	 * @Gedmo_Mapping\TreeLevel
-	 * @ORM_Mapping\Column(name="depth", type="integer")
-	 */
-	protected $depth;
-
-	/**
-	 * @Gedmo_Mapping\TreeLeft
-	 * @ORM_Mapping\Column(name="lft", type="integer")
-	 */
-	protected $lft;
-
-	/**
-	 * @Gedmo_Mapping\TreeRight
-	 * @ORM_Mapping\Column(name="rgt", type="integer")
-	 */
-	protected $rgt;
 
 	/**
 	 * Local cache of some structure info with this category
 	 * @var array()
 	 */
 	protected $_structure = array();
+
+	public function setParent(CategoryAbstract $cat)
+	{
+		$this->setModelField('parent', $cat);
+
+		$this->setModelField('root', $cat->root ? $cat->root : $cat);
+		$this->setModelField('depth', $cat->depth + 1);
+	}
 
 
 	/**
@@ -118,10 +107,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	 */
 	public function getFullTitle($sep = ' > ')
 	{
-		return implode(' > ', $this->getTitleParts());
+		return implode($sep, $this->getTitleParts());
 	}
 
-	
+
 	/**
 	 * Gets all parents in the tree, in order (left to right, aka, top to bottom)
 	 *
@@ -137,7 +126,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	}
 
 
-	
+
 	/**
 	 * Get all IDs of this tree, from this node and downwards.
 	 *
@@ -198,7 +187,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		}
 		return $this->title;
 	}
-	
+
 
 	public function __toString()
 	{

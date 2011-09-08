@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 use \Application\DeskPRO\App;
 
@@ -25,7 +24,6 @@ use \Application\DeskPRO\App;
 class DownloadCategory extends CategoryAbstract
 {
 	/**
-	 * @Gedmo_Mapping\TreeParent
 	 * @ORM_Mapping\ManyToOne(targetEntity="DownloadCategory", inversedBy="children")
 	 */
 	protected $parent;

@@ -27,7 +27,7 @@ use Application\DeskPRO\Searcher\NewsSearch;
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class NewsCategory extends AbstractNestedTreeCategoryRepository
+class NewsCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
 

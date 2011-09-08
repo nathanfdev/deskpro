@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 use \Application\DeskPRO\App;
 
@@ -25,14 +24,13 @@ use \Application\DeskPRO\App;
 class IdeaCategory extends CategoryAbstract
 {
 	/**
-	 * @Gedmo_Mapping\TreeParent
 	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="IdeaCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 }

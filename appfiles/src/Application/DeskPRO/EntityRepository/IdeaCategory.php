@@ -26,10 +26,10 @@ use Application\DeskPRO\Searcher\IdeaSearch;
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class IdeaCategory extends AbstractNestedTreeCategoryRepository
+class IdeaCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
-	
+
 	/**
 	 * Get an array of categories
 	 *
