@@ -420,6 +420,25 @@ ul.navList li.active span.open{
 	background: #6baccc;
 }
 
+#dp_source ul.navSimpleList ul.sub-group li a {
+	font-weight: normal;
+	padding-left: 15px;
+}
+
+#dp_source ul.navSimpleList ul.sub-group li   ul.sub-group li a { padding-left: 25px; }
+#dp_source ul.navSimpleList ul.sub-group li   ul.sub-group li   ul.sub-group li a { padding-left: 32px; }
+#dp_source ul.navSimpleList ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li a { padding-left: 39px; }
+#dp_source ul.navSimpleList ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li  ul.sub-group li a { padding-left: 46px; }
+#dp_source ul.navSimpleList ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li  ul.sub-group li  ul.sub-group li a { padding-left: 51px; }
+
+#dp_source ul.navSimpleList.with-tree li a { padding-left: 13px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li a { padding-left: 25px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li   ul.sub-group li a { padding-left: 35px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li   ul.sub-group li   ul.sub-group li a { padding-left: 42px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li a { padding-left: 49px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li  ul.sub-group li a { padding-left: 56px; }
+#dp_source ul.navSimpleList.with-tree ul.sub-group li   ul.sub-group li   ul.sub-group li   ul.sub-group li  ul.sub-group li  ul.sub-group li a { padding-left: 61px; }
+
 /* List Item User Group Control */
 
 .listItemUserGroupCtrl{

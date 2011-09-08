@@ -1,10 +1,10 @@
 {% for cat in cats %}
-	<li class="news-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %} {% if depth > 1 %}subList{% endif %}" data-category-id="{{ cat.id }}">
+	<li class="news-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}" data-category-id="{{ cat.id }}">
 		<span class="edit-cat">edit</span>
 		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>delete</span>
 		<span class="sub-toggle">expand</span>
-		<a class="{% if depth==0%}groupHead{% endif %}" data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
-			{{ cat.title }}
+		<a data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
+			<span class="title">{{ cat.title }}</span>
 			<span class="list-counter listCounter"
 				id="news_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"

@@ -27,19 +27,13 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			 * Selector that identifies the title within the li
 			 * @param {String}
 			 */
-			titleSelector: '> .title',
+			titleSelector: '.title:first',
 
 			/**
 			 * The data attribute that holds the category ID
 			 * @param {String}
 			 */
 			dataId: 'category-id',
-
-			/**
-			 * The title in each item
-			 * @param {String}
-			 */
-			titleSelector: '> a',
 
 			/**
 			 * Selector for new item template
@@ -269,7 +263,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 	_disableEditable: function(item) {
 		var titleEl = $(this.options.titleSelector, item);
-		var input = $('> input.dp-cat-input', item);
+		var input = $('input.dp-cat-input', item).first();
 		var newTitle = input.val().trim();
 
 		input.remove();
@@ -330,8 +324,10 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		var elPos = li.offset();
 		var elWidth = li.width() - 10;
 
-		var title = $('a:first', li).text().trim();
+		var title = $('.title:first', li).text().trim();
 		$('input.title', this.editTab).val(title);
+
+		elPos.top -= 5;
 
 		this.editTab.css({
 			left: elPos.left,
@@ -363,7 +359,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		if (li) {
 			var newTitle = $('input.title', this.editTab).val().trim();
-			var titleEl = $('a:first', li);
+			var titleEl = $('.title:first', li);
 			var oldTitle = titleEl.text().trim();
 			var dataId = li.data(this.options.dataId);
 
