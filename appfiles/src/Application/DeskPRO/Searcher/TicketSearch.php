@@ -41,6 +41,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DELETED                   = 'deleted';
 	const TERM_CREATION_SYSTEM           = 'creation_system';
 	const TERM_RECEIVING_GATEWAY         = 'receiving_gateway';
+	const TERM_HOLD                      = 'is_hold';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -697,6 +698,21 @@ class TicketSearch extends SearcherAbstract
 					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $choice_str));
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+
+					break;
+				case self::TERM_HOLD:
+
+					$this->affected_fields[] = 'ticket.is_hold';
+
+					// Op is irrelevant. or, it's always "is", and choice is yes/no
+
+					if ($choice) {
+						$wheres[] = "tickets.is_hold = 1";
+					} else {
+						$wheres[] = "tickets.is_hold = 0";
+					}
+
+					$this->summary[] = $tr->phrase('core.is_not_x', array('field' => 'on hold'));
 
 					break;
 				case self::TERM_ORGANIZATION:

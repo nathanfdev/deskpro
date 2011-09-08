@@ -199,6 +199,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $hidden_status = null;
 
 	/**
+	 * Is the ticket on hold?
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_hold", type="boolean")
+	 */
+	protected $is_hold = false;
+
+	/**
 	 * @var int
 	 * @ORM_Mapping\Column(name="urgency", type="integer")
 	 */
@@ -1340,6 +1348,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($status != 'hidden' AND $this->status == 'hidden' AND $this->hidden_status == 'deleted') {
 			$this->undeleteTicket();
+		}
+
+		if ($this->is_hold && $status != self::STATUS_OPEN) {
+			$this->setModelField('is_hold', false);
 		}
 
 		$this->status = $status;

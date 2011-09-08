@@ -29,14 +29,14 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * Always who created the filter. Or if its not a team or global,
 	 * also means the person it belongs to.
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
@@ -153,13 +153,30 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return Application\DeskPRO\Searcher\TicketSearch
 	 */
-	public function getSearcher()
+	public function getSearcher(array $force_terms = array())
 	{
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 		$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 		$has_user_terms = false;
 
+		$force_term_types = array();
+		foreach ($force_terms as $term) {
+			if (strpos($term['type'], 'person_') === 0) {
+				$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
+				$has_user_terms = true;
+			} else {
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+			}
+
+			$force_term_types[] = $term['type'];
+		}
+
 		foreach ($this->terms as $term) {
+
+			if (in_array($term['type'], $force_term_types)) {
+				continue;
+			}
+
 			if (strpos($term['type'], 'person_') === 0) {
 				$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
 				$has_user_terms = true;

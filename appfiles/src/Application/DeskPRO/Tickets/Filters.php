@@ -119,6 +119,25 @@ class Filters
 
 
 	/**
+	 * Get an array of IDs for each filter in a collection
+	 *
+	 * @param $ticket_filters
+	 * @return array
+	 */
+	public function getAllHoldIdsForFiltersCollection($ticket_filters)
+	{
+		$all_ids = array();
+
+		foreach ($ticket_filters as $ticket_filter) {
+			$searcher = $ticket_filter->getSearcher(array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => 1)));
+			$all_ids[$ticket_filter['id']] = $searcher->getResults();
+		}
+
+		return $all_ids;
+	}
+
+
+	/**
 	 * @param $ticket_filter
 	 * @return
 	 */

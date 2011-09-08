@@ -7,17 +7,38 @@
 				<span class="edit" id="ticket_filter_launch_editor">edit display</span>
 			</div>
 		</div>
-			<h2>Awaiting Agent
-				<span class="dp-checkbox checkbox"></span>
-				<span class="holdTicketCount">On hold</span></h2>
+			<h2>
+				Inbox
+				<span class="holdTicketCount">
+					<span class="dp-checkbox checkbox show-hold-check"></span>
+					<span class="count"></span>
+					On hold
+				</span>
+			</h2>
 		<br class="clear" />
 	</div>
 	<!-- DeskPro Inbox Ticket -->
 	<div class="yourPendingTicket" id="system_filters_wrap">
-		<ul id="ticketOutlineInboxList" class="navList">
+		<ul id="tickets_outline_sys_filters" class="navList">
 			{% for filter in sys_filters %}
 				<li
-					class="filter filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					data-filter-id="{{filter.id}}"
+				>
+					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+						{{filter.title}}
+						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
+							{{ filter_counts[filter.id]|default(0) }}
+						</span>
+					</a>
+					<ul class="subGroup" style="display: none;"></ul>
+				</li>
+			{% endfor %}
+		</ul>
+		<ul id="tickets_outline_sys_hold_filters" class="navList" style="display: none;">
+			{% for filter in sys_filters_hold %}
+				<li
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 				>
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">

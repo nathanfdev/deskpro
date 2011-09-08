@@ -65,11 +65,16 @@ class TicketSearchController extends AbstractController
 
 		// Order them into sys/other
 		$sys_filters = array();
+		$sys_filters_hold = array();
 		$custom_filters = array();
 
 		foreach ($all_filters as $id => $filter) {
 			if ($filter['sys_name']) {
-				$sys_filters[$filter['sys_name']] = $filter;
+				if (strpos($filter['sys_name'], '_w_hold')) {
+					$sys_filters_hold[$filter['sys_name']] = $filter;
+				} else {
+					$sys_filters[$filter['sys_name']] = $filter;
+				}
 			} else {
 				$custom_filters[$id] = $filter;
 			}
@@ -85,18 +90,23 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		$sys_filters_unordered = $sys_filters_hold;
+		$sys_filters_hold = array();
+		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+			$id .= '_w_hold';
+			if (isset($sys_filters_unordered[$id])) {
+				$sys_filters_hold[$id] = $sys_filters_unordered[$id];
+				unset($sys_filters_unordered[$id]);
+			}
+		}
+
 		if (count($sys_filters_unordered)) {
 			foreach ($sys_filters_unordered as $id => $q) {
 				$sys_filters[$id] = $q;
 			}
 		}
 
-		// Counts for filters
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
-		$filter_counts = array();
-		foreach ($filter_id_matches as $fid => $ids) {
-			$filter_counts[$fid] = count($ids);
-		}
 
 		// Summary of terms for all filters
 		$filters_summary = array();
@@ -138,8 +148,8 @@ class TicketSearchController extends AbstractController
 
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
+			'sys_filters_hold' => $sys_filters_hold,
 			'filter_id_matches' => $filter_id_matches,
-			'filter_counts' => $filter_counts,
 			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,

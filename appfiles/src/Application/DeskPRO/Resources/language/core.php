@@ -4,6 +4,8 @@
 	'core.error_page_not_found'    => 'The page you are looking for could not be found',
 
 	'core.none'                    => 'None',
+	'core.is_x'                    => 'is {{field}}',
+	'core.is_not_x'                => 'is not {{field}}',
 	'core.x_is_y'                  => '{{field}} is {{value}}',
 	'core.x_is_not_y'              => '{{field}} is not {{value}}',
 	'core.x_is_between_y_and_z'    => '{{field}} is between {{value1}} and {{value2}}',

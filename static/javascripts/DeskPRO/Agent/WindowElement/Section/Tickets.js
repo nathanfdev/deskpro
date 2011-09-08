@@ -68,8 +68,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.activeNavClass = null;
 
-		$('.dp-checkbox', this.sectionEl).click(function() {
+		$('.show-hold-check', this.sectionEl).click(function() {
 			$(this).toggleClass('checked');
+
+			if ($(this).is('.checked')) {
+				$('#tickets_outline_sys_filters').hide();
+				$('#tickets_outline_sys_hold_filters').show();
+			} else {
+				$('#tickets_outline_sys_hold_filters').hide();
+				$('#tickets_outline_sys_filters').show();
+			}
 		});
 
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
@@ -190,6 +198,20 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				$(this).addClass('open');
 			}
 		});
+
+		// Init counts based on IDs we have cached
+		$('li.filter', this.sectionEl).each((function(i, el) {
+			el = $(el);
+
+			var filterId = el.data('filter-id');
+			if (this.filterTicketIds[filterId]) {
+				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
+			} else {
+				this.setFilterCount(filterId, 0);
+			}
+		}).bind(this));
+
+		this._recountHold();
 	},
 
 	getFilterCount: function(filter_id) {
@@ -211,8 +233,35 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+
+			if (el.is('.is-hold-filter')) {
+				this._recountHold();
+			}
 		} else {
 			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+		}
+	},
+
+	_recountHold: function() {
+		var total = 0;
+		$('#tickets_outline_sys_hold_filters li.filter', this.sectionEl).each((function(i, el) {
+			el = $(el);
+
+			var filterId = el.data('filter-id');
+			if (this.filterTicketIds[filterId]) {
+				total += this.filterTicketIds[filterId].length;
+				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
+			} else {
+				this.setFilterCount(filterId, 0);
+			}
+		}).bind(this));
+
+		var hold = $('.holdTicketCount', this.sectionEl);
+		if (total < 1) {
+			hold.hide();
+		} else {
+			$('.count', hold).text(total);
+			hold.show();
 		}
 	},
 

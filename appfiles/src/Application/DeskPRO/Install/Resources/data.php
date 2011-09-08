@@ -35,7 +35,12 @@ $q['terms']      = array(array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'open',)
-	)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '0')
+	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
@@ -59,7 +64,12 @@ $q['terms']      = array(array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'open',)
-	)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '0')
+	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
@@ -83,7 +93,12 @@ $q['terms']      = array(array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'open',)
-	)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '0')
+	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
@@ -107,7 +122,12 @@ $q['terms']      = array(array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'open',)
-	)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '0')
+	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
@@ -127,7 +147,127 @@ $q['terms']      = array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'open',)
-	)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '0')
+	),
+);
+\Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+
+##BEGIN:create_filter.agent_w_hold##
+
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.urgency:desc';
+$q['person']     = null;
+$q['title']      = 'Your Tickets';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'agent_w_hold';
+$q['terms']      = array(array(
+		'type'      => 'agent',
+		'op'        => 'is',
+		'options'   => array('agent'     => '-1',)
+	),
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'open',)
+	),
+);
+\Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+
+
+##BEGIN:create_filter.agent_team_w_hold##
+
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.urgency:desc';
+$q['person']     = null;
+$q['title']      = 'Your Teams Tickets';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'agent_team_w_hold';
+$q['terms']      = array(array(
+		'type'      => 'agent_team',
+		'op'        => 'is',
+		'options'   => array('agent_team' => '-1',)
+	),
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'open',)
+	),
+);
+\Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+
+
+##BEGIN:create_filter.participant_w_hold##
+
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.urgency:desc';
+$q['person']     = null;
+$q['title']      = 'Subscribed Tickets';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'participant_w_hold';
+$q['terms']      = array(array(
+		'type'      => 'participant',
+		'op'        => 'is',
+		'options'   => array('agent'     => '-1',)
+	),
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'open',)
+	),
+);
+\Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+
+
+##BEGIN:create_filter.unassigned_w_hold##
+
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.urgency:desc';
+$q['person']     = null;
+$q['title']      = 'Unassigned';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'unassigned_w_hold';
+$q['terms']      = array(array(
+		'type'      => 'agent',
+		'op'        => 'is',
+		'options'   => array('agent'     => '0',)
+	),
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'open',)
+	),
+);
+\Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+
+
+##BEGIN:create_filter.all_w_hold##
+
+$q = new \Application\DeskPRO\Entity\TicketFilter();
+$q['order_by']   = 'ticket.urgency:desc';
+$q['person']     = null;
+$q['title']      = 'All';
+$q['is_enabled'] = true;
+$q['is_global']  = true;
+$q['sys_name']   = 'all_w_hold';
+$q['terms']      = array(
+	array(
+		'type'      => 'status',
+		'op'        => 'is',
+		'options'   => array('status'    => 'open',)
+	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
