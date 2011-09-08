@@ -806,18 +806,18 @@ ul.userControlWrap li input{
 	position: relative;
 }
 
-#tagCloudTicketLabels{
+.tagCloudTicketLabels{
 	padding-bottom: 5px;
 }
-#tagCloudTicketLabels ul, .catTags ul .groupingBar ul{
+.tagCloudTicketLabels ul, .catTags ul .groupingBar ul{
 	padding: 0 5px;
 }
-#tagCloudTicketLabels li, .catTags li, .groupingBar li{
+.tagCloudTicketLabels li, .catTags li, .groupingBar li{
 	display: inline;
 	float: left;
 	padding: 3px;
 }
-#tagCloudTicketLabels li a, .catTags li a, .groupingBar li a{
+.tagCloudTicketLabels li a, .catTags li a, .groupingBar li a{
 	background: #fff;
 	border-radius: 10px 10px 10px 10px;
 	padding: 1px 5px;
@@ -828,7 +828,7 @@ ul.userControlWrap li input{
 	cursor: pointer;
 	position: relative;
 }
-#tagCloudTicketLabels li a:hover, .groupingBar li a:hover{
+.tagCloudTicketLabels li a:hover, .groupingBar li a:hover{
 	background: #6c89a6;
 	color: #fff;
 	text-shadow: 0 1px 0 #000;
@@ -1016,7 +1016,7 @@ ul.listingTicketChild li.nav-selected a {
 	padding-top: 0;
 }
 
-#tagCloudTicketLabels li a {
+.tagCloudTicketLabels li a {
 	padding: 2px 5px;
 	color: #607080;
 	text-shadow: 0 1px 0 #fff;
@@ -1024,7 +1024,7 @@ ul.listingTicketChild li.nav-selected a {
 	position: relative;
 }
 .listingTicketLabels li a:hover,
-#tagCloudTicketLabels li a:hover {
+.tagCloudTicketLabels li a:hover {
 	border-radius: 10px 10px 10px 10px;
 	background: #6c89a6;
 	color: #fff;
@@ -1059,3 +1059,24 @@ ul.listingTicketChild li.nav-selected a {
 .navSimpleList .flag-purple span   { background-position: 0px -98px; }
 .navSimpleList .flag-red span      { background-position: 0px -123px; }
 .navSimpleList .flag-yellow span   { background-position: 0px -148px; }
+
+.pendingTicket .titles .browselist {
+	float: right;
+	font-size: 10px;
+	cursor: pointer;
+	margin: 7px 4px 0 0 ;
+
+	font-size: 10px;
+	font-family: Arial, "Lucida Grande", Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+	color: #738699;
+}
+
+.pendingTicket .titles .browselist span {
+	background: url(../../images/agent/imgSprt_ico.png) repeat-x 0 -926px;
+	float: right;
+	display: block;
+	width: 16px;
+	height: 16px;
+	margin-left: 3px;
+}

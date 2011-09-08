@@ -29,7 +29,7 @@
 	</div>
 </div>
 <div id="ticket_labels_cloud" style="display: none;">
-	<div id="tagCloudTicketLabels">
+	<div class="tagCloudTicketLabels">
 		{% for label,css_class in labels_cloud %}
 			<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><a>{{label}}</a></li>
 		{% else %}

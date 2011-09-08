@@ -1,102 +1,126 @@
-<header class="section-header with-tabs">
-	<nav class="mode-buttons">
+<div class="pendingTicket">
+	<div class="titles">
+		<span class="browselist" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
+			<span></span>
+			{{ people_count }}
+		</span>
+		<h2>People</h2>
+		<br class="clear" />
+	</div>
+</div>
+<div id="people_outline_tabstrip" class="listTabNavTicket">
+	<div class="desproTabStrip after-title">
 		<ul>
-			<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">{{ people_count }}</li>
-		</ul>
-	</nav>
-	<h1>People</h1>
-	<nav id="people_outline_tabstrip" class="deskpro-inner-tabstrip">
-		<ul>
-			<li class="tag-cloud" data-tab-for="#people_outline_tagcloud"><a>Tag Cloud</a></li>
-			<li class="tag-list" data-tab-for="#people_outline_taglist"><a>Tag List</a></li>
+			<li data-tab-for="#people_outline_tagcloud"><a>Cloud</a></li>
+			<li data-tab-for="#people_outline_taglist"><a>List</a></li>
 			{% if usergroup_names|length %}
-				<li data-tab-for="#people_outline_usergroups"><a>Usergroups</a></li>
+				<li data-tab-for="#people_outline_usergroups"><a>Groups</a></li>
 			{% endif %}
 		</ul>
-	</nav>
-</header>
+		<br class="clear" />
+	</div>
+</div>
+
 <section id="people_outline_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_tabstrip li.tag-cloud" style="padding: 8px;">
-	<ol class="tags tag-cloud">
-		{% for label,css_class in people_tag_cloud %}
-			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-		{% else %}
-			<li>View a person to add labels to their profile. The most popular labels will show here.</li>
-		{% endfor %}
-	</ol>
+	<div class="tagCloudTicketLabels">
+		<ul>
+			{% for label,css_class in people_tag_cloud %}
+				<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><a>{{label}}</a></li>
+			{% else %}
+				<li>You haven't labeled any tickets. Load a ticket to label it.</li>
+			{% endfor %}
+		</ul>
+		<br class="clear" />
+	</div>
 </section>
 <section id="people_outline_taglist" class="deskpro-tab-item" data-tab-trigger="#people_outline_tabstrip li.tag-list">
-	<dl class="labels-list">
-		{% for letter,labels in people_tag_index %}
-			<dt>{{letter}}</dt>
-			<dd>
-				<ul class="comma-list">
-					{% for label in labels %}
-						<li><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-					{% endfor %}
-				</ul>
-			</dd>
-		{% else %}
-			<dt></dt>
-			<dd>You haven't labeled any people! View a person to add labels to their profile.</dd>
-		{% endfor %}
-	</dl>
+	<div class="listingTicketLabels">
+		<ul>
+			{% for letter,labels in people_tag_index %}
+				<li>
+					<a>{{letter}}</a>
+					<ul class="listingTicketChild">
+						{% for label in labels %}
+							<li><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% else %}
+				<li>You haven't labeled any people! View a person to add labels to their profile.</li>
+			{% endfor %}
+		</ul>
+		<br class="clear" />
+	</div>
 </section>
 {% if usergroup_names|length %}
 <section id="people_outline_usergroups" class="deskpro-tab-item">
-	<ul class="nav-list">
+	<ul class="navList">
 		{% for id,title in usergroup_names %}
 			<li
 				class="usergroup-{{id}}"
 				data-usergroup-id="{{id}}"
 				data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 			>
-				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
-					{{ usergroup_counts[id]|default(0) }}
-				</span>
-				<a>{{title}}</a>
+				<a class="groupHead">
+					{{title}}
+					<span class="listCounter" id="ticket_filter_{{filter.id}}_count">{{ usergroup_counts[id]|default(0) }}</span>
+				</a>
 			</li>
 		{% endfor %}
+		<br class="clear" />
 	</ul>
 </section>
 {% endif %}
 
-<header class="section-header with-tabs" style="margin-top: 26px;">
-	<nav class="mode-buttons">
+
+<div class="pendingTicket" style="margin-top: 8px;">
+	<div class="titles">
+		<span class="browselist" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
+			<span></span>
+			{{ org_count|default(0) }}
+		</span>
+		<h2>Organizations</h2>
+		<br class="clear" />
+	</div>
+</div>
+<div id="people_outline_org_tabstrip" class="listTabNavTicket">
+	<div class="desproTabStrip after-title">
 		<ul>
-			<li class="with-route" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">{{ org_count|default(0) }}</li>
+			<li data-tab-for="#people_outline_org_tagcloud"><a>Tag Cloud</a></li>
+			<li data-tab-for="#people_outline_org_taglist"><a>Tag List</a></li>
 		</ul>
-	</nav>
-	<h1>Organizations</h1>
-	<nav id="people_outline_org_tabstrip" class="deskpro-inner-tabstrip">
-		<ul>
-			<li class="org-tag-cloud" data-tab-for="#people_outline_org_tagcloud"><a>Tag Cloud</a></li>
-			<li class="org-tag-list" data-tab-for="#people_outline_org_taglist"><a>Tag List</a></li>
-		</ul>
-	</nav>
-</header>
+		<br class="clear" />
+	</div>
+</div>
+
 <section id="people_outline_org_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_org_tabstrip li.tag-cloud" style="padding: 8px;">
-	<ol class="tags tag-cloud">
-		{% for label,css_class in org_tag_cloud %}
-			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-		{% else %}
-			<li>View an organization to add labels to its profile. The most popular labels will show here.</li>
-		{% endfor %}
-	</ol>
+	<div class="tagCloudTicketLabels">
+		<ul>
+			{% for label,css_class in org_tag_cloud %}
+				<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+			{% else %}
+				<li>You haven't labeled any tickets. Load a ticket to label it.</li>
+			{% endfor %}
+		</ul>
+		<br class="clear" />
+	</div>
 </section>
 <section id="people_outline_org_taglist" class="deskpro-tab-item" data-tab-trigger="#people_outline_org_tabstrip li.tag-list">
-	<dl class="labels-list">
-		{% for letter,labels in org_tag_index %}
-			<dt>{{letter}}</dt>
-			<dd>
-				<ul class="comma-list">
-					{% for label in labels %}
-						<li><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
-					{% endfor %}
-				</ul>
-			</dd>
-		{% else %}
-			<dt></dt>
-			<dd>View an organization to add labels to its profile.</dd>
-		{% endfor %}
-	</dl>
+	<div class="listingTicketLabels">
+		<ul>
+			{% for letter,labels in org_tag_index %}
+				<li>
+					<a>{{letter}}</a>
+					<ul class="listingTicketChild">
+						{% for label in labels %}
+							<li><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% else %}
+				<li>View an organization to add labels to its profile/</li>
+			{% endfor %}
+		</ul>
+		<br class="clear" />
+	</div>
 </section>
