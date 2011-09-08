@@ -320,11 +320,13 @@ span.dropdownIcon{
 
 .filter-group-editor {
 	position: absolute;
-	overflow: hidden;
+	overflow: visible;
 	background-color: #DFE5EB;
 	border: 1px solid #B4B8BD;
 
-	width: 180px;
+	margin-left: -1px;
+
+	width: 200px;
 
 	z-index: 1000002;
 
@@ -348,7 +350,7 @@ span.dropdownIcon{
 	display: block;
 	height: 25px;
 	line-height: 25px;
-	width: 180px;
+	width: 200px;
 }
 
 .filter-group-editor .filter-row:first-of-type {
@@ -358,8 +360,22 @@ span.dropdownIcon{
 .filter-group-editor .filter-row .field-wrap select {
 	width: 162px;
 	margin: 0 8px 0 8px;
+	font-size: 10px;
 }
 
+.filter-group-editor .close {
+	position: absolute;
+	background: url(../../images/close-small.png) no-repeat 50% 50%;
+	width: 13px;
+	height: 13px;
+	overflow: hidden;
+	text-index: -100px;
+	cursor: pointer;
+	top: -6px;
+	right: -6px;
+	display: block;
+	z-index: 1000004;
+}
 
 
 .deskpro-tab-item li.all .edit-mode,

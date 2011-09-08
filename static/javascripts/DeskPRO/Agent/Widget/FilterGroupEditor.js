@@ -125,6 +125,15 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
 		this.backdrop.click(this.close.bind(this));
 
+		this.backdrop2 = $('<div class="backdrop" />').hide().appendTo('body');
+		this.backdrop2.click(this.close.bind(this));
+
+		$('.close', this.controlRealEl).first().click((function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			this.close();
+		}).bind(this));
+
 		this.fireEvent('init', [this]);
 	},
 
@@ -182,7 +191,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		this.controlEl.css({
 			top: containPos.top,
 			bottom: 0,
-			left: containPos.left + containWidth,
+			left: containPos.left + containWidth + 1, //+1 border
 			right: 0
 		});
 
@@ -195,7 +204,13 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			left: containPos.left + containWidth // so the sidebar remains functional/scrollable
 		});
 
+		this.backdrop2.css({
+			left: 0,
+			width: containPos.left
+		});
+
 		this.backdrop.show();
+		this.backdrop2.show();
 
 		this._startScrollWatch();
 	},
@@ -307,6 +322,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		this.controlEl.removeClass('open');
 		this.controlEl.fadeOut();
 		this.backdrop.hide();
+		this.backdrop2.hide();
 	},
 
 
@@ -329,6 +345,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	destroy: function() {
 		if (this._hasInit) {
 			this.controlEl.remove();
+			this.backdrop.remove();
+			this.backdrop2.remove();
 		}
 	}
 });

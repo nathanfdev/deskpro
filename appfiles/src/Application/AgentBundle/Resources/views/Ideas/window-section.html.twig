@@ -2,13 +2,13 @@
 	<ul class="navList">
 		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
 			<a class="groupHead">
-				Ideas Validating
+				Ideas to validate
 				<span class="list-counter listCounter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 			</a>
 		</li>
 		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
 			<a class="groupHead">
-				Comments Validating
+				Comments to validate
 				<span class="list-counter listCounter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 			</a>
 		</li>
@@ -26,7 +26,7 @@
 	</div>
 </nav>
 
-<section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status">
+<section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status" style="margin-top: 8px;">
 	<ul class="navList">
 		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
 			<a class="groupHead">
@@ -68,21 +68,21 @@
 				<span class="list-counter listCounter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
 			</a>
 		</li>
-			<li class="sub-list" data-route="listpane:">
-				<a class="groupHead">
+			<li class="subItem" data-route="listpane:">
+				<a>
 					Deleted
 					<span class="list-counter listCounter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
 				</a>
 			</li>
-			<li class="sub-list" data-route="listpane:">
-				<a class="groupHead">
+			<li class="subItem" data-route="listpane:">
+				<a>
 					Spam
 					<span class="list-counter listCounter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
 				</a>
 			</li>
 	</ul>
 </section>
-<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies">
+<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies" style="margin-top: 8px;">
 	<ul class="navList">
 		{% for cat in idea_cats %}
 			<li data-route="listpane:{{ path('agent_ideas_category', {'category_id':cat.id}) }}" {% if cat.depth %}class="subItem"{% endif %}>

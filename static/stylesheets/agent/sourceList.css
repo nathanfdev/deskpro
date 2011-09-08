@@ -201,6 +201,20 @@
 	font-size: 11px;
 	position: relative;
 }
+
+.listCounter {
+	display: block;
+}
+
+.listCounter.loading {
+	background-image: url(../../images/loading-arrows-xsmall-dark-w.gif) !important;
+	background-position: 50% 50% !important;
+	background-repeat: no-repeat !important;
+	width: 13px !important;
+	overflow:  hidden !important;
+	text-indent: -100px !important;
+}
+
 #dp_source ul.navList li span.listCounter,
 #dp_source ul.navSimpleList li span.listCounter {
 	font-size: 10px;
@@ -229,7 +243,8 @@
 }
 
 #dp_source ul.navList li.subList span.listCounter,
-#dp_source ul.navSimpleList li.subList span.listCounter{
+#dp_source ul.navSimpleList li.subList span.listCounter
+{
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(40,40,40,0.1);
 	background: #ADBDCC !important;
 	float: left;
@@ -239,6 +254,7 @@
 	z-index: 1;
 }
 #dp_source ul.navList li.subList a:hover span.listCounter,
+#dp_source ul.navList li.subItem span.listCounter,
 #dp_source ul.navSimpleList li.subList a:hover span.listCounter{
 	background: #ADBDCC !important;
 }
@@ -313,6 +329,14 @@ ul.navList li.active span.open{
 	border-top: 1px solid transparent;
 }
 
+#dp_source ul.navList li ul.subGroup li.nav-selected a,
+#dp_source ul.navSimpleList li.nav-selected a,
+#dp_source ul.navList li.subItem.nav-selected a {
+	/* to account for added border on selected */
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
 #dp_source ul.navSimpleList li a {
 	padding-left: 5px;
 }
@@ -343,17 +367,18 @@ ul.navList li.active span.open{
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 #dp_source ul.navList ul.subGroup li, #dp_source ul.navList li.subItem {
-	border: 0 none;
+	border:  none;
 	position: relative;
 }
 #dp_source ul.navList ul.subGroup li.subList a, #dp_source ul.navList li.subItem a {
-	padding: 4px 0 3px 33px;
+	padding: 3px 0 3px 20px;
 }
 
 #dp_source ul.navList li.active a.on,
 #dp_source ul.navList li a.groupHead,
 #dp_source ul.navList ul.subGroup li:not(.nav-selected) a:hover,
 #dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
+#dp_source ul.navList li.subItem:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
@@ -366,7 +391,8 @@ ul.navList li.active span.open{
 	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 	cursor: pointer;
 }
-#dp_source ul.navList ul.subGroup li.nav-selected {
+#dp_source ul.navList ul.subGroup li.nav-selected,
+#dp_source ul.navList li.subItem.nav-selected {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -394,6 +420,7 @@ ul.navList li.active span.open{
 
 #dp_source ul.navList ul.subGroup li:not(.nav-selected) a:hover,
 #dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
+#dp_source ul.navList li.subItem:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
 }
@@ -979,8 +1006,8 @@ ul.userControlWrap li input{
 }
 
 ul.listingTicketChild{
-	float: left;
 	padding-top: 0px;
+	margin-left: 15px;
 }
 ul.listingTicketChild li{
 	display: inline !important;
@@ -992,9 +1019,9 @@ ul.listingTicketChild li{
 ul.listingTicketChild li a{
 	float: left;
 	background: #FFF;
-	border-radius: 3px;
+	border-radius: 10px;
 	behavior: url(../../static/vendor/PIE.htc);
-	padding: 1px 4px 1px !important;
+	padding: 2px 5px 3px !important;
 	font-size: 11px;
 	color: #607080 !important;
 	cursor: pointer;
@@ -1112,3 +1139,14 @@ ul.listingTicketChild li.nav-selected a {
 	height: 16px;
 	margin-left: 3px;
 }
+
+
+
+#publish_outline_tabstrip li a {
+	padding: 6px 9px;
+}
+#publish_outline_tabstrip li:last-of-type a {
+
+}
+
+

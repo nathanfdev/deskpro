@@ -69,15 +69,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.activeNavClass = null;
 
 		$('.show-hold-check', this.sectionEl).click(function() {
-			$(this).toggleClass('checked');
-
-			if ($(this).is('.checked')) {
-				$('#tickets_outline_sys_filters').hide();
-				$('#tickets_outline_sys_hold_filters').show();
-			} else {
-				$('#tickets_outline_sys_hold_filters').hide();
-				$('#tickets_outline_sys_filters').show();
-			}
+			self.toggleHoldDisplay();
 		});
 
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
@@ -335,9 +327,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	refreshFilterGrouping: function(filterIds) {
 		var postData = [];
 
+		var els = [];
+
 		Array.each(filterIds, function(filterId) {
 			filterId = parseInt(filterId);
 			var filterEl = $('li.filter-' + filterId, this.sectionEl);
+			els.push(filterEl.get(0));
 
 			var boundFilterEl = null;
 			var boundFilterId = null;
@@ -390,12 +385,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}, this);
 
+		var countEls = $('.listCounter', $(els)).first();
+		countEls.addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/group-tickets.json',
 			type: 'POST',
 			dataType: 'json',
 			data: postData,
 			context: this,
+			complete: function() {
+				countEls.removeClass('loading');
+			},
 			success: function(batches) {
 				Object.each(batches, function(html,filterId) {
 					this.setFilterGroupingContent(filterId, html);
@@ -434,6 +435,46 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		} else {
 			subgroupEl.hide();
 		}
+	},
+
+	toggleHoldDisplay: function() {
+		var check = $('.show-hold-check', this.getSectionElement());
+		check.toggleClass('checked');
+
+		// Go through each one and figure out which ones change
+		// We dont need ot do any filter matching, they are always in the same order
+
+		var counts1 = $('#tickets_outline_sys_filters > li > a > .listCounter');
+		var counts2 = $('#tickets_outline_sys_hold_filters > li > a > .listCounter');
+
+		var els = [];
+
+		counts1.each(function(i) {
+			var other = counts2.eq(i);
+
+			var val1 = parseInt($(this).text().trim());
+			var val2 = parseInt(other.text().trim());
+
+			if (val1 != val2) {
+				els.push(this);
+				els.push(other.get(0));
+			}
+		});
+
+		els = $(els);
+
+		els.addClass('loading');
+		window.setTimeout(function() {
+			if (check.is('.checked')) {
+				$('#tickets_outline_sys_filters').hide();
+				$('#tickets_outline_sys_hold_filters').show();
+			} else {
+				$('#tickets_outline_sys_hold_filters').hide();
+				$('#tickets_outline_sys_filters').show();
+			}
+
+			els.removeClass('loading');
+		}, 200);
 	},
 
 	//#########################################################################
