@@ -82,7 +82,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
 			containerElement: '#tickets_outline .scroll-content',
-			listElement: '#system_filters_wrap > ul',
+			listElement: '#tickets_outline_sys_filters',
+			boundListElement: '#tickets_outline_sys_hold_filters',
 			triggerElement: '#ticket_filter_launch_editor',
 			onGroupingChanged: function(filterId) {
 				self.refreshFilterGrouping([filterId]);
@@ -326,16 +327,27 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		Array.each(filterIds, function(filterId) {
 			filterId = parseInt(filterId);
+			var filterEl = $('li.filter-' + filterId, this.sectionEl);
 
-			if (!this.filterTicketIds[filterId]) {
+			var boundFilterEl = null;
+			var boundFilterId = null;
+			if (filterEl.data('filter-name')) {
+				boundFilterEl = $('.filter-' + filterEl.data('filter-name') + '_w_hold', this.sectionEl);
+				boundFilterId = boundFilterEl.data('filter-id');
+			}
+
+			if (!this.filterTicketIds[filterId] && (!boundFilterId || !this.filterTicketIds[boundFilterId])) {
 				return;
 			}
 
 			var grouping = this.getGroupingVar(filterId);
-			var ticketIds = this.filterTicketIds[filterId];
 
-			if (!grouping || !grouping.length || !ticketIds.length) {
+			if (!grouping || !grouping.length) {
 				this.setFilterGroupingContent(filterId, '');
+
+				if (boundFilterId) {
+					this.setFilterGroupingContent(boundFilterId, '');
+				}
 				return;
 			}
 
@@ -343,12 +355,29 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				name: 'batches['+filterId+'][grouping]',
 				value: grouping
 			});
-			Array.each(ticketIds, function(tid) {
+			Array.each(this.filterTicketIds[filterId], function(tid) {
 				postData.push({
 					name: 'batches['+filterId+'][ticket_ids][]',
 					value: tid
 				});
 			});
+
+			if (boundFilterId) {
+				if (this.filterTicketIds[boundFilterId]) {
+					postData.push({
+						name: 'batches['+boundFilterId+'][grouping]',
+						value: grouping
+					});
+					Array.each(this.filterTicketIds[boundFilterId], function(tid) {
+						postData.push({
+							name: 'batches['+boundFilterId+'][ticket_ids][]',
+							value: tid
+						});
+					});
+				} else {
+					this.setFilterGroupingContent(boundFilterId, '');
+				}
+			}
 		}, this);
 
 		$.ajax({

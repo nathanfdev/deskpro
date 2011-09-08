@@ -8,12 +8,12 @@
 			</div>
 		</div>
 			<h2>
-				Inbox
-				<span class="holdTicketCount">
+				<div class="holdTicketCount">
 					<span class="dp-checkbox checkbox show-hold-check"></span>
 					<span class="count"></span>
-					On hold
-				</span>
+					Ticket On hold
+				</div>
+				Inbox
 			</h2>
 		<br class="clear" />
 	</div>
@@ -24,6 +24,7 @@
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
+					data-filter-name="{{filter.sys_name}}"
 				>
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						{{filter.title}}
@@ -40,6 +41,7 @@
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
+					data-filter-name="{{filter.sys_name}}"
 				>
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						{{filter.title}}

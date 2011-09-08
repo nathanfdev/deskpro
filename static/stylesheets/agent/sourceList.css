@@ -64,6 +64,10 @@
 	line-height: 28px;
 }
 
+.holdTicketCount {
+	float: right;
+}
+
 .pendingTicket .ticketHoldCheck .item,
 .filters .ticketHoldCheck .item{
 	display: block;

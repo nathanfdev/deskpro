@@ -28,6 +28,13 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			listElement: null,
 
 			/**
+			 * The list that is also attacehd to this editor
+			 *
+			 * @param {jQuery}
+			 */
+			boundListElement: null,
+
+			/**
 			 * The elements we'll apply this goruping on. This is
 			 * either a selector (run in the context of listElement),
 			 * or actual elements.
@@ -72,6 +79,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		this.containerElement = $(this.options.containerElement);
 		this.listElement = $(this.options.listElement);
+		this.boundListElement = $(this.options.boundListElement);
 
 		this.elements = this.options.elements;
 		if (typeOf(this.elements) == 'string') {
@@ -199,7 +207,15 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 */
 	updatePositions: function() {
 
-		var listHeight = this.listElement.outerHeight();
+		var listEl = this.listElement;
+		var boundMode = false;
+
+		if (!listEl.is(':visible')) {
+			listEl = this.boundListElement;
+			boundMode = true;
+		}
+
+		var listHeight = listEl.outerHeight();
 
 		this.controlRealEl.css({
 			height: listHeight,
@@ -209,7 +225,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		// Update where the position of the container is relative to the outer wrapper
 		var top = 0;
-		var el = this.listElement;
+		var el = listEl;
 		while (el) {
 			top += el.position().top;
 			if (el.parent().get(0) == this.containerElement.get(0)) {
@@ -224,18 +240,23 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			'margin-top': top /* so the sync below doesnt need to worry about where it is */
 		});
 
-		this.elements.each((function(i, el) {
+		$(this.options.elements, listEl).each((function(i, el) {
 			el = $(el);
 			var id = el.data('filter-id');
 
 			// Get its position within the wrapper, we'll copy it over
 			var pos = el.position();
 
-			var editEl = $('.filter-' + id, this.controlEl);
+			if (boundMode) {
+				var otherFilterId = $('.filter-' + el.data('filter-name').replace('_w_hold', ''), this.listElement).data('filter-id');
+				var editEl = $('.filter-' + otherFilterId, this.controlEl);
+			} else {
+				var editEl = $('.filter-' + id, this.controlEl);
+			}
+
 			editEl.css({
 				top: pos.top
 			});
-
 		}).bind(this));
 	},
 
