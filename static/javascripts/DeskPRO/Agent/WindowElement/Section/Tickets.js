@@ -14,7 +14,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		// Simulate instant switching when clicking nav items
 		var self = this;
-		this.getSectionElement().delegate('li[data-route]', 'click', function() {
+		this.getSectionElement().delegate('[data-route]', 'click', function(ev) {
 			self.highlightNavItem($(this));
 		});
 
@@ -134,13 +134,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	highlightNav: function() {
 
-		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
 		if (this.activeNavClass) {
-			$(this.activeNavClass, this.getSectionElement()).addClass('nav-selected');
+			var el = $(this.activeNavClass, this.getSectionElement());
+			var childSel = $('.nav-selected', el);
+
+			if (!childSel.length) {
+				$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
+				el.addClass('nav-selected');
+			}
 		}
 	},
 
 	highlightNavItem: function(el) {
+
+		if (!el.is('li')) {
+			el = el.closest('li');
+		}
+
 		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
 		el.addClass('nav-selected');
 	},

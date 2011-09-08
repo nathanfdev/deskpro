@@ -352,7 +352,7 @@ ul.navList li.active span.open{
 
 #dp_source ul.navList li.active a.on,
 #dp_source ul.navList li a.groupHead,
-#dp_source ul.navList ul.subGroup li a:hover,
+#dp_source ul.navList ul.subGroup li:not(.nav-selected) a:hover,
 #dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
@@ -392,7 +392,7 @@ ul.navList li.active span.open{
 	/*border-top: 1px solid #9DA2A6 !important;*/
 }
 
-#dp_source ul.navList ul.subGroup li a:hover,
+#dp_source ul.navList ul.subGroup li:not(.nav-selected) a:hover,
 #dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;

@@ -181,6 +181,11 @@ class TicketSearchController extends AbstractController
 		$batches = array();
 
 		foreach ($ticket_batches as $batch_id => $ticket_batch) {
+			if (!$ticket_batch || empty($ticket_batch['ticket_ids'])) {
+				$batches[$batch_id] = '';
+				continue;
+			}
+
 			$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
 			$grouper->setGrouping($ticket_batch['grouping']);
 			$grouper->setMode('specify', $ticket_batch['ticket_ids']);

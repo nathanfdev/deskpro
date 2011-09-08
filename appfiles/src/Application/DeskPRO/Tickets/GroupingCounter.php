@@ -267,6 +267,11 @@ class GroupingCounter
 
 		// We have ticket IDs already (mode = specify)
 		} else {
+
+			if (!$this->tickets) {
+				return array();
+			}
+
 			$wheres[] = "tickets.id IN (" . implode(',', $this->tickets) . ")";
 			$sql = "
 				SELECT " . implode(', ', $select_fields) . "
