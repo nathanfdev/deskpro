@@ -256,6 +256,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}).bind(this));
 
+		$('#tickets_outline_sys_filters li.filter', this.sectionEl).each((function(i, el) {
+			el = $(el);
+
+			var filterId = el.data('filter-id');
+			if (this.filterTicketIds[filterId]) {
+				total -= this.filterTicketIds[filterId].length;
+				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
+			} else {
+				this.setFilterCount(filterId, 0);
+			}
+		}).bind(this));
+
 		var hold = $('.holdTicketCount', this.sectionEl);
 		if (total < 1) {
 			hold.hide();
