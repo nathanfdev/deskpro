@@ -157,12 +157,12 @@ this.tabManager=this.pageTabStrip.tabManager;this.tabWatcher=new DeskPRO.Agent.T
 this.pageTabStrip.tabManager.addEvent("addTab",function(){DeskPRO_Window.windowStateUpdated("tabs")});this.pageTabStrip.tabManager.addEvent("removeTab",function(){DeskPRO_Window.windowStateUpdated("tabs")
 })}});function toggle_visibility(b){var c=$("#"+b);if(c.is(":visible")){c.hide()}else{var a=$('<div class="backdrop" />');
 a.css("z-index",parseInt(c.css("z-index")|10000)-1);a.appendTo("body");a.click(function(){c.hide();a.remove()});c.show()}}Orb.createNamespace("DeskPRO.Agent.Layout");
-DeskPRO.Agent.Layout.DeskproWindow=Orb.Class({Implements:[Orb.Util.Events],initialize:function(){var a=this;this.LEFT_START=244;
-$(window).resize(function(){if(a._resizeTimeout){window.clearTimeout(a._resizeTimeout)}a._resizeTimeout=a.doResize.delay(300,a)
-})},doResize:function(){var b=$(window).width();var a=b-this.LEFT_START;var c=a*0.39;if(c<255){c=255}$("#deskpro_list").width(c);
-$("#deskpro_content").css("left",this.LEFT_START+c+1);this.fireEvent("resized",[this])}});Orb.createNamespace("DeskPRO.Agent.Layout");
-DeskPRO.Agent.Layout.WindowLayout=Orb.Class({Implements:[Orb.Util.Events],initialize:function(){var c=this;this.TOP_POS=107;
-this.PADDING=5;this.TABSTRIP_HEIGHT=32;this.TABSTRIP_W_ALTER=7;this.winWidth=$(window).width();this.winHeight=$(window).height();
+DeskPRO.Agent.Layout.DeskproWindow=Orb.Class({Implements:[Orb.Util.Events],initialize:function(){var a=this;this.LEFT_START=215;
+this.CENTER_START=55;$(window).resize(function(){if(a._resizeTimeout){window.clearTimeout(a._resizeTimeout)}a._resizeTimeout=a.doResize.delay(300,a)
+})},doResize:function(){var b=$(window).width();var a=b-this.LEFT_START-this.CENTER_START;var c=a*0.4;if(c<425){c=425}else{if(c>700){c=700
+}}$("#dp_list").width(c);$("#dp_omnibox_wrap").width(c-1);$("#dp_content").css("left",this.LEFT_START+c+1);this.fireEvent("resized",[this])
+}});Orb.createNamespace("DeskPRO.Agent.Layout");DeskPRO.Agent.Layout.WindowLayout=Orb.Class({Implements:[Orb.Util.Events],initialize:function(){var c=this;
+this.TOP_POS=107;this.PADDING=5;this.TABSTRIP_HEIGHT=32;this.TABSTRIP_W_ALTER=7;this.winWidth=$(window).width();this.winHeight=$(window).height();
 var d=$(document).width();var b=$(document).height();$("#window_panes").css({position:"absolute",top:this.TOP_POS,left:0,right:0,bottom:0}).addClass("has-layout").data("layout",this).show();
 this.columns=$("#window_panes > tbody > tr > td");var e=this.calculateHeight(b);var a=d;var f=Math.floor(a/this.columns.length)-(2*this.PADDING)-((this.columns.length-1)*this.PADDING);
 this.columns.each(function(){c.resizeColumn($(this),f,e)});this.drawDraggers();$(window).resize(function(){if(c._resizeTimeout){window.clearTimeout(c._resizeTimeout)
