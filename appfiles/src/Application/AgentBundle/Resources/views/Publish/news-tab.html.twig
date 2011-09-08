@@ -1,9 +1,9 @@
 <section id="publish_outline_news" class="deskpro-tab-item" data-editor-class="news-cat-editor">
-	<ul class="nav-list" id="publish_outline_newscat_list">
+	<ul class="navList" id="publish_outline_newscat_list">
 		<li class="all">
 			<span class="edit-mode tipped" id="publish_outline_newscat_editmode" title="Edit categories">edit mode</span>
 			<span class="add-new tipped" id="publish_outline_newscat_addcat" title="Add category">add</span>
-			<a class="all-route" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} Posts</a>
+			<a class="all-route groupHead" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} Posts</a>
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 	</ul>

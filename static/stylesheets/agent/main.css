@@ -359,3 +359,152 @@ span.dropdownIcon{
 	width: 162px;
 	margin: 0 8px 0 8px;
 }
+
+
+
+.deskpro-tab-item li.all .edit-mode,
+.deskpro-tab-item li.all .add-new {
+	position: absolute;
+	right: 4px;
+	top: 2px;
+	display: block;
+	background-repeat: no-repeat;
+	backgorund-position: 50% 50%;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+	margin-right: 3px;
+	margin-top: 2px;
+	z-index: 1;
+}
+
+.deskpro-tab-item li.all .edit-mode {
+	background-image: url(../../images/icons/cog.png);
+}
+
+.deskpro-tab-item li.all .add-new {
+	background-image: url(../../images/icons/add.png);
+	right: 23px;
+	display: none;
+}
+
+
+#publish_outline_tabstrip { height: 26px; }
+
+
+#dp_source ul.navList li .edit-cat,
+#dp_source ul.navList li .delete-cat {
+	position: absolute;
+	right: 4px;
+	top: 2px;
+	z-index: 1;
+
+	width: 16px;
+	height: 16px;
+	display: none;
+	background: url(../../images/icons/cog.png) no-repeat 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	opacity: 0.7;
+	margin-top: 3px;
+	margin-right: 3px;
+}
+
+#dp_source ul.navList li .delete-cat {
+	background-image: url(../../images/icons/trash.png);
+}
+
+#dp_source ul.navList li:hover .edit-cat,
+#dp_source ul.navList li:hover .delete-cat {
+	opacity: 1;
+}
+
+#dp_source ul.navList.edit-mode .list-counter {
+	display: none;
+}
+
+#dp_source ul.navList.edit-mode .edit-cat,
+#dp_source ul.navList.edit-mode .delete-cat,
+#dp_source ul.navList.edit-mode .add-new {
+	display: block;
+}
+
+.navList .subGroup .sub-toggle {
+	left: 10px;
+	top: 1px;
+}
+
+.navList .sub-toggle {
+    position: absolute;
+	left: 0px;
+	top: 4px;
+	z-index: 1;
+
+    display: block;
+    background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 50% 50%;
+    cursor: pointer;
+    margin-right: 2px;
+    margin-top: 6px;
+    margin-left: 1px;
+    width: 10px;
+    height: 10px;
+    text-indent: -100px;
+    overflow: hidden;
+}
+
+.navList .sub-expanded .sub-toggle,
+.navList .sub-toggle.open {
+    background-image: url(../../images/icons/bullet_toggle_minus.png);
+}
+
+.navList li > ul.sub-group {
+	display: none;
+}
+
+.navList li.sub-expanded > ul.sub-group {
+	display: block;
+}
+
+
+#dp_source ul.navList li .sub-toggle {
+	visibility: hidden;
+}
+
+#dp_source ul.navList li.has-children > .sub-toggle,
+#dp_source ul.navList li.has-children > .dp-cat-item > .sub-toggle {
+	visibility: visible;
+}
+
+#dp_source ul.navList li { position: relative; }
+#dp_source ul.navList .dp-cat-dropzone {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+
+#dp_source #publish_outline ul.navList li:first-child a.groupHead { border-top:  none !important; }
+
+ul.navList li.all a.groupHead {
+	padding-left: 8px;
+}
+
+.dp-cat-dropzone {
+	margin-top: -4px;
+	height: 8px;
+}
+
+.dp-cat-dropzone.dp-cat-over {
+	background-color: #D8D07E;
+}
+
+.dp-cat-item.dp-cat-over {
+	background-color: #D8D07E;
+}
+
+.dp-cat-li.ui-draggable-dragging {
+	width: 198px;
+}

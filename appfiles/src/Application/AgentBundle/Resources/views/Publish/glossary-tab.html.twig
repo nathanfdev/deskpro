@@ -2,22 +2,24 @@
 	<div style="float:right; padding: 4px 4px 0 0;">
 		<a class="glossary-new-trigger">Add Word</a>
 	</div>
-	<dl>
-		{% for letter,words in glossary_words %}
-			<dt data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>{{letter}}</dt>
-			<dd data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>
-				<ul class="comma-list">
-					{% for id,word in words %}
-						<li>
-							<a class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
-							{{word}}
-							</a>
-						</li>
-					{% endfor %}
-				</ul>
-			</dd>
-		{% endfor %}
-	</dl>
+	<div class="listingTicketLabels">
+		<ul>
+			{% for letter,words in glossary_words %}
+				<li data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>
+					<a>{{ letter }}</a>
+					<ul class="listingTicketChild">
+						{% for id,word in words %}
+							<li>
+								<a class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
+								{{word}}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 
 	<div class="glossary-add-dlg dp-overlay" style="display: none; width: 400px;">
 		Add a new glossary word: <input type="text" class="word" value="" style="width: 150px;" /><br />
