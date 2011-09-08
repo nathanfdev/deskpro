@@ -299,7 +299,8 @@ ul.navList li.active span.open{
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 
-#dp_source ul.navList li ul.subGroup li a{
+#dp_source ul.navList li ul.subGroup li a,
+#dp_source ul.navList li.subItem a {
 	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	padding: 3px 0 3px 20px;
 	border-bottom: 1px solid transparent;
@@ -330,11 +331,11 @@ ul.navList li.active span.open{
 	color: #6C7680;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
-#dp_source ul.navList ul.subGroup li{
+#dp_source ul.navList ul.subGroup li, #dp_source ul.navList li.subItem {
 	border: 0 none;
 	position: relative;
 }
-#dp_source ul.navList ul.subGroup li.subList a{
+#dp_source ul.navList ul.subGroup li.subList a, #dp_source ul.navList li.subItem a {
 	padding: 4px 0 3px 33px;
 }
 
@@ -373,7 +374,7 @@ ul.navList li.active span.open{
 }
 
 #dp_source ul.navList li:first-child a.groupHead {
-	border-top: 1px solid #9DA2A6 !important;
+	/*border-top: 1px solid #9DA2A6 !important;*/
 }
 
 #dp_source ul.navList ul.subGroup li:hover a, #dp_source .teamfilter ul.navList li a:hover {
@@ -626,6 +627,7 @@ ul.userControlWrap li input{
 }
 .desproTabStrip{
 	border-top: 1px solid #B4BABF;
+	height: 25px;
 }
 .desproTabStrip ul{
 	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
