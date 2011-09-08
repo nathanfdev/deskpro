@@ -353,7 +353,7 @@ ul.navList li.active span.open{
 #dp_source ul.navList li.active a.on,
 #dp_source ul.navList li a.groupHead,
 #dp_source ul.navList ul.subGroup li a:hover,
-#dp_source ul.navSimpleList li a:hover,
+#dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
@@ -393,9 +393,12 @@ ul.navList li.active span.open{
 }
 
 #dp_source ul.navList ul.subGroup li a:hover,
-#dp_source ul.navSimpleList li a:hover,
+#dp_source ul.navSimpleList li:not(.nav-selected) a:hover,
 #dp_source .teamfilter ul.navList li a:hover {
 	border-bottom: 1px solid #C2C7CC;
+}
+#dp_source ul.navSimpleList li a:hover {
+	cursor: pointer;
 }
 #dp_source ul.navList li a.groupHead:hover,
 #dp_source ul.navList li.nav-selected a.groupHead,
