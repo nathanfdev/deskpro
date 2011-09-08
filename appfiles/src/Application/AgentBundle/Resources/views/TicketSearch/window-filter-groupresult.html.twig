@@ -8,11 +8,17 @@
 {% endif %}
 {% for cat in grouped_info.group1_structure %}
 	{% set count = grouped_info.counts[cat.id].total %}
+	{% set count_all = count %}
+	{% if cat.children %}
+		{% for subcat in cat.children %}
+			{% set count_all = count_all + grouped_info.counts[subcat.id].total %}
+		{% endfor %}
+	{% endif %}
 	{% if count > 0 %}
 		<li data-grouping-option="{{ cat.id }}">
 			<a>
 				{{ cat.title }}
-				<span class="listCounter">{{ count }}</span>
+				<span class="listCounter">{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
 			</a>
 		</li>
 		{% if cat.children %}

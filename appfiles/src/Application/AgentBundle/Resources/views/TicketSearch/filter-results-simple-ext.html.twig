@@ -9,7 +9,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=$view_type';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id, 'set_group_term': set_group_term, 'set_group_option': set_group_option })|raw }}&';
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
 pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';

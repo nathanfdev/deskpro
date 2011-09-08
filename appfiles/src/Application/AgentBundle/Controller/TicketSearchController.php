@@ -73,7 +73,7 @@ class TicketSearchController extends AbstractController
 				if (strpos($filter['sys_name'], '_w_hold')) {
 					$sys_filters_hold[$filter['sys_name']] = $filter;
 				} else {
-					$sys_filters[$filter['sys_name']] = $filter;
+				$sys_filters[$filter['sys_name']] = $filter;
 				}
 			} else {
 				$custom_filters[$id] = $filter;
@@ -250,6 +250,14 @@ class TicketSearchController extends AbstractController
 			$searcher->setOrderByCode($order_by);
 		}
 
+		$set_group_term = null;
+		$set_group_option = null;
+		if ($this->in->getString('set_group_term')) {
+			$set_group_term = $this->in->getString('set_group_term');
+			$set_group_option = $this->in->getString('set_group_option');
+			$searcher->addTerm($set_group_term, 'is', $set_group_option);
+		}
+
 		$results = $searcher->getMatches();
 
 		$helper = new Helper\TicketResults($this);
@@ -271,7 +279,9 @@ class TicketSearchController extends AbstractController
 			'filter' => $filter,
 			'filter_id' => $filter['id'],
 			'order_by_summary' => $searcher->getOrderBySummary(),
-			'terms_summary' => $searcher->getSummary()
+			'terms_summary' => $searcher->getSummary(),
+			'set_group_term' => $set_group_term,
+			'set_group_option' => $set_group_option
 		);
 
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);

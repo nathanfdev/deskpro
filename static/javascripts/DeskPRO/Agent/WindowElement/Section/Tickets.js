@@ -416,8 +416,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			// Add the proper route to each row
 			lis.each(function() {
-				var setRoute = Orb.appendQueryData(baseRoute, 'group_by', groupingVar);
-				setRoute = Orb.appendQueryData(setRoute, 'grouping_option', $(this).data('grouping-option'));
+				var setRoute = Orb.appendQueryData(baseRoute, 'set_group_term', groupingVar);
+				setRoute = Orb.appendQueryData(setRoute, 'set_group_option', $(this).data('grouping-option'));
 				$('a', this).first().data('route', setRoute);
 				$('a', this).first().attr('data-route', setRoute);
 			});
