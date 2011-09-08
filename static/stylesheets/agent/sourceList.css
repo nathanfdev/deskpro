@@ -819,7 +819,7 @@ ul.userControlWrap li input{
 }
 .tagCloudTicketLabels li a, .catTags li a, .groupingBar li a{
 	background: #fff;
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 5px;
 	padding: 1px 5px;
 	color: #959DA6;
 	text-shadow: 0 1px 0 #fff;
@@ -1014,23 +1014,18 @@ ul.listingTicketChild li.nav-selected a {
 }
 .listingTicketLabels > ul > li > a {
 	padding-top: 0;
+	cursor: default;
 }
 
 .tagCloudTicketLabels li a {
-	padding: 2px 5px;
+	padding: 0 3px;
+	line-height: 100%;
 	color: #607080;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
 	position: relative;
 }
-.listingTicketLabels li a:hover,
-.tagCloudTicketLabels li a:hover {
-	border-radius: 10px 10px 10px 10px;
-	background: #6c89a6;
-	color: #fff;
-	behavior: url(../../static/vendor/PIE.htc);
-	text-shadow: 0 1px 0 #42566B !important;
-}
+
 .groupingBar li a:hover{
 	background: #6c89a6;
 	color: #fff;

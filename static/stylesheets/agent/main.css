@@ -508,3 +508,27 @@ ul.navList li.all a.groupHead {
 .dp-cat-li.ui-draggable-dragging {
 	width: 198px;
 }
+
+
+
+.tag-size1  { font-size:10px; }
+.tag-size2  { font-size:13px; }
+.tag-size3  { font-size:16px; }
+.tag-size4  { font-size:19px; }
+.tag-size5  { font-size:18px; }
+.tag-size6  { font-size:15px; }
+.tag-size7  { font-size:16px; }
+.tag-size8  { font-size:17px; }
+.tag-size9  { font-size:18px; }
+.tag-size10 { font-size:19px; }
+
+.tag-size1  a { font-size:10px !important; }
+.tag-size2  a { font-size:13px !important; }
+.tag-size3  a { font-size:16px !important; }
+.tag-size4  a { font-size:19px !important; }
+.tag-size5  a { font-size:22px !important; }
+.tag-size6  a { font-size:25px !important; }
+.tag-size7  a { font-size:28px !important; }
+.tag-size8  a { font-size:31px !important; }
+.tag-size9  a { font-size:34px !important; }
+.tag-size10 a { font-size:37px !important; }
