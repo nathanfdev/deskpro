@@ -212,7 +212,7 @@
 	padding: 5px 0 5px 9px;
 }
 
-.notifHead{	
+.notifHead{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
@@ -299,7 +299,7 @@
 /* End of Notification Dropdown */
 
 /* Search Categories */
-#DP-SearchSection{
+#dp_omnibox_wrap{
 	background: url("../../images/agent/headerBack.png") repeat-x top left;
 	position: relative;
 	float: left;
@@ -310,8 +310,8 @@
 	behavior: url(../../static/vendor/PIE.htc);
 	position: relative;
 }
-.ie #DP-SearchSection{
-	box-shadow: 2px 0 4px 0 #396388;	
+.ie #dp_omnibox_wrap{
+	box-shadow: 2px 0 4px 0 #396388;
 }
 
 .searchBoxWrap{
@@ -426,7 +426,7 @@
 }
 
 .searchCatDropdown li:hover a{
-	background: #f9f9f9;	
+	background: #f9f9f9;
 }
 
 .searchCatDropdown li a span{
@@ -528,12 +528,11 @@
 	left: 54px;
 }
 
-#DP-SearchBox{
+#dp_omnibox{
 	height: 22px;
-	margin: 7px 0 0 6px;
-	position: relative;
-	float: left;
-	width: 452px;
+	margin: 7px 7px 0 6px;
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
 	font-size: 10px;
 	line-height: 12px;
 	color: #2b3233;
@@ -542,6 +541,7 @@
 	border-radius:15px;
 	box-shadow: 0 1px 0 #3b71a9, inset 0 1px 3px rgba(0,0,0,0.15);
 	behavior: url(../../static/vendor/PIE.htc);
+	overflow: hidden;
 }
 
 /* DP Create Ticket */
@@ -550,7 +550,7 @@
 	float: left;
 	width: 100px;
 	height: 41px;
-	
+
 }
 .DP-createTicket{
 	overflow: hidden;
@@ -575,7 +575,7 @@
 	float: left;
 	font-size: 11px;
 	font-weight: normal;
-	height: 19px;	
+	height: 19px;
 	line-height: 19px;
 	padding: 1px 0 0;
 	text-align: center;
@@ -608,7 +608,7 @@
 }
 /*.createDropdown{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));	
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	left: 19px;
     width: 160px;
     position: absolute;
@@ -712,7 +712,7 @@
     line-height: 23px;
     margin: 0;
     padding: 0 0 0 25px;
-    
+
 }
 .createDropdown ul.createBtnPopups li a span.createTicket{
 	background-position: 0 -469px;
@@ -722,35 +722,35 @@
 }
 
 .createDropdown ul.createBtnPopups li a span.createArticle{
-	background-position: 0 -493px;	
+	background-position: 0 -493px;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createArticle {
-	background-position: 0px -616px;	
+	background-position: 0px -616px;
 }
 
 .createDropdown ul.createBtnPopups li a span.createNews{
-	background-position: 0 -517px;	
+	background-position: 0 -517px;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createNews {
-	background-position: 0px -640px;	
+	background-position: 0px -640px;
 }
 
 .createDropdown ul.createBtnPopups li a span.createDownload{
-	background-position: 0 -541px;	
+	background-position: 0 -541px;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createDownload {
-	background-position: 0px -663px;	
+	background-position: 0px -663px;
 }
 
 .createDropdown ul.createBtnPopups li a span.createIdeas {
-	background-position: 0 -565px;	
+	background-position: 0 -565px;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createIdeas {
 	background-position: 0px -687px;
 }
 .createHeader, .switcherHeader{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
 	behavior: url(../../static/vendor/PIE.htc);
@@ -789,7 +789,7 @@
 	width: 180px;
 	position: relative;
 	float: right;
-	height: 41px;	
+	height: 41px;
 }
 .DP-adminSwitch{
 	padding: 8px 16px;
@@ -800,7 +800,7 @@
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));
 	-pie-background: linear-gradient(#436ba3, #3c6094);
 	box-shadow: 0 1px 0 #386da1, inset 0 1px 0 #75b3da, inset 0 0 1px #5283af;
-	behavior: url(../../static/vendor/PIE.htc);	
+	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #314559;
 	border-radius: 3px;
 	float: left;
@@ -851,8 +851,8 @@
 
 .dropdownSwitcherWrap ul{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));	
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
+	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
 	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	border-radius: 0 0 4px 4px;
@@ -881,7 +881,7 @@
 }
 
 .dropdownSwitcherWrap li a{
-	 
+
 }
 .dropdownSwitcherWrap li a:focus span{
 	background: url(../../images/agent/imgSprt_ico.png) no-repeat 99px -409px;
@@ -902,7 +902,7 @@
 	margin: 0;
 	padding: 2px 0 1px 3px !important;
 	text-shadow: 0 1px 0 #333333;
-	width: 90%;	
+	width: 90%;
 	position: relative;
 }
 .switcherHeader{
@@ -930,7 +930,7 @@
 	position: relative;
 	float: right;
 	height: 41px;
-	
+
 }
 .DP-adminStatus{
 	height: 31px;
@@ -973,7 +973,7 @@
 
 .DP-adminStatus li.soundIcon a{
 	background-position: 0 -158px;
-	margin-left: 10px;	
+	margin-left: 10px;
 }
 .DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.on{
 	background-position: 0px -222px;
@@ -994,7 +994,7 @@
 	font-weight: bold;
 	padding: 5px 10px;
 	min-width: 100px;
-	max-width: 200px;	
+	max-width: 200px;
 	display: none;
 	color: #FFF;
 	border: 1px solid #000;
@@ -1008,7 +1008,7 @@
 	content:'';
 	display:block;
 	position:absolute;
-	top:-11px; 
+	top:-11px;
 	left:75px;
 	width:0;
 	height:0;
@@ -1083,7 +1083,7 @@
 	right: 7px;
 	top: 21px;
 	width: 21px;
-	cursor:pointer;	
+	cursor:pointer;
 }
 
 .DP-adminStatus li.soundIcon a:hover .dropdowninfo{
@@ -1142,7 +1142,7 @@
 /* User Profile Dropdown */
 .userProfileDropdownHeader{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
 	behavior: url(../../static/vendor/PIE.htc);
@@ -1155,7 +1155,7 @@
 	top: -37px;
 }
 .userProfileDropdownHeader a{
-	padding: 5px 8px 8px;	
+	padding: 5px 8px 8px;
 	float: left;
 	cursor: pointer;
 }
@@ -1170,8 +1170,8 @@
 
 .userProfileDropdown{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));	
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
+	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
 	behavior: url(../../static/vendor/PIE.htc);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	border-radius: 0 0 4px 4px;
@@ -1202,7 +1202,7 @@
 	padding: 2px 0 1px 30px;
 }
 .userProfileDropdown li.myAccount a, .userProfileDropdown li.myAccount:hover a{
-	background-position: 9px -254px;	
+	background-position: 9px -254px;
 }
 .userProfileDropdown li.setting a, .userProfileDropdown li.setting:hover a{
 	background-position: 9px -278px;
@@ -1242,7 +1242,7 @@
 }
 .userProfileDropdown li.logout a{
 	background-image: -moz-linear-gradient(top, #cd5353, #b43e3e);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#cd5353), to(#b43e3e));		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#cd5353), to(#b43e3e));
 	-pie-background: linear-gradient(#cd5353, #b43e3e);
 	behavior: url(../../static/vendor/PIE.htc);
 	border: 1px solid #673434;
@@ -1259,7 +1259,7 @@
 }
 .userProfileDropdown li.logout:hover a{
 	background-image: -moz-linear-gradient(top, #d85858, #bf4242);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#d85858), to(#bf4242));		
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#d85858), to(#bf4242));
 	-pie-background: linear-gradient(#d85858, #bf4242);
 	behavior: url(../../static/vendor/PIE.htc);
 	border-radius: 3px;

@@ -9,7 +9,10 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		// This is the width of nav pane + overview pane,
 		// aka where the listpane starts
-		this.LEFT_START = 244;
+		this.LEFT_START = 215;
+
+		// Where the center section (where all cols are embedded) starts
+		this.CENTER_START = 55;
 
 		// Handle window resizes
 		$(window).resize(function() {
@@ -25,14 +28,17 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var newWidth = $(window).width();
 
-		var totalWidth = newWidth - this.LEFT_START;
-		var listWidth = totalWidth * 0.39;
-		if (listWidth < 255) {
-			listWidth = 255;
+		var totalWidth = newWidth - this.LEFT_START - this.CENTER_START;
+		var listWidth = totalWidth * 0.40;
+		if (listWidth < 425) {
+			listWidth = 425;
+		} else if (listWidth > 700) {
+			listWidth = 700;
 		}
 
-		$('#deskpro_list').width(listWidth);
-		$('#deskpro_content').css('left', this.LEFT_START + listWidth + 1);
+		$('#dp_list').width(listWidth);
+		$('#dp_omnibox_wrap').width(listWidth-1); // -1 for border
+		$('#dp_content').css('left', this.LEFT_START + listWidth + 1); //+1 for border
 
 		this.fireEvent('resized', [this]);
 	}
