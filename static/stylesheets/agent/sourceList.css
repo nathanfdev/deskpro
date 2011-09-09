@@ -8,8 +8,7 @@
 	border-right: 1px;
 	border-right-style: solid;
 	border-right-color: #b6babf;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 #dp_source > section {
@@ -19,6 +18,7 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
+	overflow: hidden;
 }
 
 #dp_source > section.on {
