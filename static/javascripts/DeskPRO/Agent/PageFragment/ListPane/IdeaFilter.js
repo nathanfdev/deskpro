@@ -42,8 +42,6 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Class({
 			}).bind(this)
 		});
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.listWrapper = $('section.idea-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {

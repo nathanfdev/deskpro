@@ -9,8 +9,5 @@ DeskPRO.Agent.PageFragment.ListPane.OpenChats = new Class({
 
 		this.wrapper = el;
 
-		$('tr.with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
 	}
 });

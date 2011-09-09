@@ -69,10 +69,6 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 				}
 			});
 		});
-
-		$('.with-route', this.wrapper).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
 	},
 
 	open: function() {

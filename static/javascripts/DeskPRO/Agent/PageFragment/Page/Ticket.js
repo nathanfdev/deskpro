@@ -67,8 +67,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			times: ['.timeago']
 		});
 
-		this.initRoutesOnCollection($('.with-route', this.wrapper));
-
 		if (!this.meta.isDeleted) {
 			this._initTicketActionsMenu();
 			this._initMessageActionsMenu();

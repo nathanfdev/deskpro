@@ -414,7 +414,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			self.closePopout();
 		});
 
-		$('.move-to-tab:first', this.popoutTabs).click(function() {
+		$('.move-to-tab:first', this.popoutTabs).click(function(ev) {
+			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement($('.person-overview', self.wrapper));
 			self.closePopout();
 		});

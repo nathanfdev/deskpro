@@ -7,7 +7,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Class({
 
 	initPage: function(el) {
 		this.wrapper = el;
-		this.initRoutesOnCollection($('.with-route', el));
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 

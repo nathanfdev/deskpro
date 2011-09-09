@@ -9,8 +9,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 
 		this.actionsMenu = new DeskPRO.UI.Menu({

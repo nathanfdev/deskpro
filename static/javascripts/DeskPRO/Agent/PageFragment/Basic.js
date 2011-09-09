@@ -107,25 +107,12 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 
 		featureSelectors = featureSelectors || this.featureSelectors;
 
-		if (featureSelectors.routes && featureSelectors.routes.length) {
-			this.initRoutesOnCollection($(featureSelectors.routes.join(', '), wrapper));
-		}
-
 		if (featureSelectors.times && featureSelectors.times.length) {
 			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
 		}
 
 		this.initTipsOnCollection($('.person-tip', wrapper));
 		this.initPersonPopoversOnCollection($('.person-popover', wrapper));
-	},
-
-	/**
-	 * Init route loaders on all elements in a collection
-	 */
-	initRoutesOnCollection: function(els) {
-		els.click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
 	},
 
 	/**

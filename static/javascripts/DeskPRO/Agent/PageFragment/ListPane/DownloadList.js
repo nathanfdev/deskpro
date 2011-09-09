@@ -19,8 +19,6 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Class({
 
 		});
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.listWrapper = $('section.downloads-simple-list', this.wrapper)
 			.delegate('button.dl-insert-link', 'click', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
 			.delegate('button.dl-insert-attach', 'click', function() { self.insertIntoTicket($(this).data('download-id'), 'attach') });

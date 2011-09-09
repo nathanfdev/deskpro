@@ -535,10 +535,15 @@ button.clean-gray.disabled {
 	display: block;
 }
 
-.navSimpleList .subGroup .sub-toggle {
-	left: 10px;
-	top: 1px;
-}
+.navSimpleList .subGroup .sub-toggle { left: 10px; 	top: 1px; }
+.navSimpleList .subGroup .subGroup .sub-toggle { left: 20px; }
+.navSimpleList .subGroup .subGroup .subGroup .sub-toggle { left: 30px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 40px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 50px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 60px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 70px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 80px; }
+.navSimpleList .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .subGroup .sub-toggle { left: 90px; }
 
 .navSimpleList .sub-toggle {
     position: absolute;

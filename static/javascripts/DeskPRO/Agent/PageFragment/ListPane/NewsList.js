@@ -18,8 +18,6 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Class({
 
 		});
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.listWrapper = $('section.news-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {

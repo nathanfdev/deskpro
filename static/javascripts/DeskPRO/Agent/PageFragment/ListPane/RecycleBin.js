@@ -31,7 +31,6 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
 		});
 
 		$('time.timeago', this.wrapper).timeago();
-		this.initRoutesOnCollection($('.with-route', this.wrapper));
 
 	},
 
@@ -66,7 +65,6 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
 
 				var rows = $(data.htmls);
 				$('time.timeago', rows).timeago();
-				this.initRoutesOnCollection($('.with-route', rows));
 
 				table.append(rows);
 			}

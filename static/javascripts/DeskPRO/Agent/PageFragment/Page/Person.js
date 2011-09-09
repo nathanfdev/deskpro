@@ -26,7 +26,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		this.initNoteFormEditable();
 
-		this.initRoutesOnCollection($('.with-route', this.wrapper));
 		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
 		var tzMenu = new DeskPRO.UI.Menu({

@@ -24,7 +24,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 
 		this.initNoteFormEditable();
 
-		this.initRoutesOnCollection($('.with-route', this.wrapper));
 		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
 		// Name is editable

@@ -1337,10 +1337,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
 
 		var self = this;
-		$('#header li a[data-route]').click(function(ev) {
-			ev.preventDefault();
-			self.runPageRouteFromElement(this);
-		});
 
 		$(document).delegate('[data-route]', 'click', function(ev) {
 			ev.preventDefault();
@@ -1565,11 +1561,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (!el.is('.no-click-switch')) {
 				el.click(function() { self.switchToSection(el.attr('id')) });
 			}
-		});
-
-		$('#dp_source').delegate('[data-route]', 'click', function(ev) {
-			ev.stopPropagation();
-			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 
 		if (first) {

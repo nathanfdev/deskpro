@@ -8,8 +8,6 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		var self = this;
 		$('button.view-trigger', this.wrapper).click(function(ev) {
 			ev.preventDefault();

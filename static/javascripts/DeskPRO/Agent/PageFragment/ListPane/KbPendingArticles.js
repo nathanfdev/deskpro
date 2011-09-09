@@ -9,8 +9,6 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
@@ -158,7 +156,6 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 				formWrap.slideUp();
 
 				var addEl = $(info.row_html);
-				this.initRoutesOnCollection($('.with-route', addEl));
 				$('section.pending-articles-list', this.wrapper).prepend(addEl);
 
 				DeskPRO_Window.util.modCountEl('#kb_pending_count', '+');

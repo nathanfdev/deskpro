@@ -118,7 +118,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('.dismiss-trigger', alertEl).click(function() {
 			alertEl.remove();
 		});
-		$('.accept-trigger', alertEl).click(function() {
+		$('.accept-trigger', alertEl).click(function(ev) {
+			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			alertEl.remove();
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
@@ -142,7 +143,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 			alertEl.remove();
 		});
-		$('.accept-trigger', alertEl).click(function() {
+		$('.accept-trigger', alertEl).click(function(ev) {
+			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {
 				audio.pause();

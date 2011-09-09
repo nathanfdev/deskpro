@@ -17,8 +17,6 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Class({
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 
-		this.initRoutesOnCollection($('.with-route', el));
-
 		this.listWrapper = $('section.kb-simple-list', this.wrapper);
 
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
