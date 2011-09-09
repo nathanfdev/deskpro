@@ -1,21 +1,41 @@
+{##################################}
+{# People #}
+{##################################}
+
 <div class="pendingTicket">
 	<div class="titles">
-		<span class="browselist" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
-			<span></span>
-			{{ people_count }}
-		</span>
 		<h2>People</h2>
-		<br class="clear" />
 	</div>
 </div>
+<div class="yourPendingTicket" id="people_outline_people_list">
+	<ul  class="navList">
+		<li class="people nav-people">
+			<a class="groupHead" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
+				People
+				<span class="listCounter">{{ people_count }}</span>
+			</a>
+		</li>
+
+		{% for id,title in usergroup_names %}
+			<li
+				class="usergroup-{{id}} nav-usergroup-{{id}}"
+				data-usergroup-id="{{id}}"
+				data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
+			>
+				<a class="groupHead">
+					{{title}}
+					<span class="listCounter">{{ usergroup_counts[id]|default(0) }}</span>
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+
 <div id="people_outline_tabstrip" class="listTabNavTicket">
 	<div class="desproTabStrip after-title">
 		<ul>
 			<li data-tab-for="#people_outline_tagcloud"><a>Cloud</a></li>
 			<li data-tab-for="#people_outline_taglist"><a>List</a></li>
-			{% if usergroup_names|length %}
-				<li data-tab-for="#people_outline_usergroups"><a>Groups</a></li>
-			{% endif %}
 		</ul>
 		<br class="clear" />
 	</div>
@@ -52,37 +72,41 @@
 		<br class="clear" />
 	</div>
 </section>
-{% if usergroup_names|length %}
-<section id="people_outline_usergroups" class="deskpro-tab-item">
+
+{##################################}
+{# Organizations #}
+{##################################}
+
+<div class="pendingTicket" id="people_outline_org_title">
+	<div class="titles">
+		<h2>Organizations</h2>
+	</div>
+</div>
+
+<div class="yourPendingTicket" id="people_outline_org_list">
 	<ul class="navList">
+		<li class="people nav-people">
+			<a class="groupHead" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
+				Organizations
+				<span class="listCounter">{{ org_count|default('0') }}</span>
+			</a>
+		</li>
+
 		{% for id,title in usergroup_names %}
 			<li
-				class="usergroup-{{id}}"
+				class="usergroup-{{id}} nav-usergroup-org-{{id}}"
 				data-usergroup-id="{{id}}"
 				data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 			>
 				<a class="groupHead">
 					{{title}}
-					<span class="listCounter" id="ticket_filter_{{filter.id}}_count">{{ usergroup_counts[id]|default(0) }}</span>
+					<span class="listCounter">{{ org_usergroup_counts[id]|default(0) }}</span>
 				</a>
 			</li>
 		{% endfor %}
-		<br class="clear" />
 	</ul>
-</section>
-{% endif %}
-
-
-<div class="pendingTicket" style="margin-top: 8px;">
-	<div class="titles">
-		<span class="browselist" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
-			<span></span>
-			{{ org_count|default(0) }}
-		</span>
-		<h2>Organizations</h2>
-		<br class="clear" />
-	</div>
 </div>
+
 <div id="people_outline_org_tabstrip" class="listTabNavTicket">
 	<div class="desproTabStrip after-title">
 		<ul>

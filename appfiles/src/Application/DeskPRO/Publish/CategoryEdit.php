@@ -143,9 +143,6 @@ class CategoryEdit
 
 		App::getOrm()->beginTransaction();
 
-		// Update the left/right orders
-		App::getEntityRepository($entity)->reorderAll('display_order');
-
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 	}

@@ -1,7 +1,12 @@
 <section id="publish_outline_glossary" class="deskpro-tab-item">
-	<div style="float:right; padding: 4px 4px 0 0;">
-		<a class="glossary-new-trigger">Add Word</a>
-	</div>
+	<ul class="navSimpleList">
+		<li class="all">
+			<span class="add-new tipped glossary-new-trigger" title="Add new glossary word">add</span>
+			<a style="cursor: default;" class="groupHead">
+				<span class="glossary-word-count">{{ glossary_count }}</span> words
+			</span>
+		</li>
+	</ul>
 	<div class="listingTicketLabels">
 		<ul>
 			{% for letter,words in glossary_words %}
@@ -31,12 +36,12 @@
 
 	<div class="glossary-edit-dlg dp-overlay" style="display: none; width: 400px;">
 		<div class="form">
-			<strong class="word"></strong><br />
+			<strong class="word"></strong>
 			<input type="hidden" class="word_id" value="" />
 			<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
 			<div style="text-align: right">
-				<span class="delete-trigger link-look" style="float: left; margin-top: 3px;">delete</span>
-				<button class="dp-button x-small save-trigger">Save</button>
+				<button class="clean-gray xx-small delete-trigger">Delete</button>
+				<button class="clean-gray xx-small save-trigger">Save</button>
 			</div>
 		</div>
 		<div class="loading">Loading ...</div>

@@ -73,12 +73,17 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	 */
 	protected $_structure = array();
 
-	public function setParent(CategoryAbstract $cat)
+	public function setParent(CategoryAbstract $cat = null)
 	{
 		$this->setModelField('parent', $cat);
 
-		$this->setModelField('root', $cat->root ? $cat->root : $cat);
-		$this->setModelField('depth', $cat->depth + 1);
+		if ($cat) {
+			$this->setModelField('root', $cat->root ? $cat->root : $cat);
+			$this->setModelField('depth', $cat->depth + 1);
+		} else {
+			$this->setModelField('root', null);
+			$this->setModelField('depth', 0);
+		}
 	}
 
 

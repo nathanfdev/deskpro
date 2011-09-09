@@ -54,12 +54,14 @@ class PeopleSearchController extends AbstractController
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
 		$org_tag_index = $label_lister->getIndexList();
 
-		$usergroup_names  = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$usergroup_counts = App::getEntityRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+		$usergroup_names      = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroup_counts     = App::getEntityRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+		$org_usergroup_counts = App::getEntityRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
 
 		$data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
-			'usergroup_names'  => $usergroup_names,
-			'usergroup_counts' => $usergroup_counts,
+			'usergroup_names'      => $usergroup_names,
+			'usergroup_counts'     => $usergroup_counts,
+			'org_usergroup_counts' => $org_usergroup_counts,
 
 			'people_count'     => $people_count,
 			'people_tag_cloud' => $people_tag_cloud,

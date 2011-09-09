@@ -11,23 +11,34 @@
 
 namespace Application\DeskPRO\EntityRepository\Helper;
 
-use \Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
-use \Doctrine\ORM\Mapping\ClassMetadata;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\EntityManager;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class CategoryHierarchy
 {
 	/**
-	 * @var \Application\DeskPRO\EntityRepository\EntityRepository
+	 * @var \Application\DeskPRO\EntityRepository\AbstractEntityRepository
 	 */
 	protected $repos;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
 
 	/**
 	 * @var \Doctrine\ORM\Mapping\ClassMetadata
 	 */
 	protected $class;
+
+	/**
+	 * @var string
+	 */
+	protected $entity_name;
 
 	/**
 	 * @var string
@@ -50,11 +61,13 @@ class CategoryHierarchy
 	protected $_cat_ids = array();
 	protected $_cat_parent_map = array();
 
-	public function __construct(EntityRepository $repos, ClassMetadata $class, $cache_tag = null)
+	public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)
 	{
-		$this->repos = $repos;
-		$this->class = $class;
-		$this->table_name = $class->getTableName();
+		$this->repos       = $repos;
+		$this->em          = $em;
+		$this->class       = $class;
+		$this->entity_name = $entity_name;
+		$this->table_name  = $class->getTableName();
 
 		if (!$cache_tag) {
 			$cache_tag = $this->table_name;
@@ -130,11 +143,15 @@ class CategoryHierarchy
 	 *
 	 * @return null
 	 */
-	public function getCategoriesInHierarchy()
+	public function getCategoriesInHierarchy($reset = false)
 	{
-		if ($this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
+		if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
-		$cat_info = App::getCache('common')->load($this->table_name . '_category_info');
+		if (!$reset) {
+			$cat_info = App::getCache('common')->load($this->table_name . '_category_info');
+		} else {
+			$cat_info = null;
+		}
 
 		if ($cat_info) {
 			foreach ($cat_info as $k => $v) {
@@ -390,5 +407,49 @@ class CategoryHierarchy
 		}
 
 		return $ids;
+	}
+
+
+	/**
+	 * Runs through the hierarchy to repair 'depth' and 'root' values,
+	 * and updates all 'display_order' so that they are stored in
+	 * real tree order.
+	 *
+	 * @return void
+	 */
+	public function repair()
+	{
+		$this->getCategoriesInHierarchy(true);
+
+		$all = $this->em->createQuery("
+			SELECT c
+			FROM {$this->entity_name} c INDEX BY c.id
+		")->execute();
+
+		$display_order = 0;
+
+		$current_root = null;
+
+		$this->em->beginTransaction();
+
+		foreach ($this->getFlatHierarchy() as $cid => $cinfo) {
+			$cat = $all[$cid];
+
+			$display_order += 10;
+			$cat->display_order = $display_order;
+			$cat->depth = $cinfo['depth'];
+
+			if (!$cat->parent) {
+				$current_root = $cat;
+				$cat->root = null;
+			} else {
+				$cat->root = $current_root['id'];
+			}
+
+			$this->em->persist($cat);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
 	}
 }

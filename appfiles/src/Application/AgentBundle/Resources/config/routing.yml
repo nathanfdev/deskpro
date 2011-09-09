@@ -980,7 +980,7 @@ agent_glossary_saveword_json:
 
 agent_glossary_delword_json:
   pattern: /glossary/{word_id}/delete.json
-  defaults: { _controller: AgentBundle:Glossary:user_articles_article }
+  defaults: { _controller: AgentBundle:Glossary:glossaryDeleteWordJson }
 
 agent_glossary_word_tip:
   pattern: /glossary/{word}/tip

@@ -106,11 +106,6 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 				self.fireEvent('reordered', [ui.draggable, this]);
 
-				$('li.subList', list).removeClass('subList');
-				$('a.groupHead', list).removeClass('groupHead');
-				$('> li > .dp-cat-item > a', list).addClass('groupHead');
-				$('> li > .subGroup li', list).addClass('subList');
-
 				if (movedTree) {
 					console.log('structed');
 					window.setTimeout(function() {
@@ -309,7 +304,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		});
 
 		var input = $('input:first', li);
-		input.focus().val();
+		input.focus().select();
 	},
 
 	/**

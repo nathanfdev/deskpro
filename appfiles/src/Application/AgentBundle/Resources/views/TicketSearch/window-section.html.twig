@@ -27,7 +27,15 @@
 					data-filter-name="{{filter.sys_name}}"
 				>
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-						{{filter.title}}
+						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
+							{% if app.user.teams|length > 1 %}
+								{{ phrase('agent_tickets.filter_agent_team') }}
+							{% else %}
+								{{ phrase('agent_tickets.filter_agent_teams') }}
+							{% endif %}
+						{% else %}
+							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
+						{% endif %}
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 							{{ filter_counts[filter.id]|default(0) }}
 						</span>
@@ -44,7 +52,15 @@
 					data-filter-name="{{filter.sys_name}}"
 				>
 					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-						{{filter.title}}
+						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
+							{% if app.user.teams|length > 1 %}
+								{{ phrase('agent_tickets.filter_agent_team') }}
+							{% else %}
+								{{ phrase('agent_tickets.filter_agent_teams') }}
+							{% endif %}
+						{% else %}
+							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
+						{% endif %}
 						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
 							{{ filter_counts[filter.id]|default(0) }}
 						</span>

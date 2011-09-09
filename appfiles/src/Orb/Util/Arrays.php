@@ -1667,4 +1667,22 @@ class Arrays
 			return ($a < $b) ? -1 : 1;
 		});
 	}
+
+
+	/**
+	 * Counts an array of arrays, returning the grand total.
+	 *
+	 * @param array $array
+	 * @return int
+	 */
+	public static function countMulti(array &$array)
+	{
+		$count = 0;
+
+		foreach ($array as $sub) {
+			$count += count($sub);
+		}
+
+		return $count;
+	}
 }

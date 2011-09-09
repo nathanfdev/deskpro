@@ -60,6 +60,7 @@ class PublishController extends AbstractController
 		$download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
 		$glossary_words     = $this->publish_helper->getGlossaryWordsIndex();
+		$glossary_count     = Arrays::countMulti($glossary_words);
 
 		$counts = array();
 		$counts['validating_comments']   = $this->publish_helper->getValidatingCommentsCount();
@@ -81,6 +82,7 @@ class PublishController extends AbstractController
 			'download_cats_counts'  => $download_cats_counts,
 
 			'glossary_words'        => $glossary_words,
+			'glossary_count'        => $glossary_count,
 		));
 
 		return $this->createJsonResponse($data);

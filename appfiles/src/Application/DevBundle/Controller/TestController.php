@@ -14,11 +14,11 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$ids = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('idea', 2);
-
-		echo count($ids);
-		print_r(array_keys($ids));
-
+		foreach (array('ArticleCategory', 'IdeaCategory', 'NewsCategory', 'DownloadCategory', 'Product') as $name) {
+			$name = "DeskPRO:$name";
+			$er = App::getEntityRepository($name);
+			$er->repair();
+		}
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');
     }

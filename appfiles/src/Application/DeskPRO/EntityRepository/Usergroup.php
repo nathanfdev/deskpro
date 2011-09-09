@@ -99,6 +99,13 @@ class Usergroup extends EntityRepository
 
 	}
 
+
+	/**
+	 * Count the number of members in usergroups ($ids)
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
 	public function getCountsFor(array $ids)
 	{
 		if (!$ids) return array();
@@ -108,6 +115,27 @@ class Usergroup extends EntityRepository
 		return App::getDb()->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
+			WHERE usergroup_id IN ($ids_comma)
+			GROUP BY usergroup_id
+		");
+	}
+
+
+	/**
+	 * Count the number of organization members in usergroups ($ids)
+	 *
+	 * @param array $ids
+	 * @return int
+	 */
+	public function getOrganizationCountsFor(array $ids)
+	{
+		if (!$ids) return array();
+
+		$ids_comma = implode(',', $ids);
+
+		return App::getDb()->fetchAllKeyValue("
+			SELECT usergroup_id, COUNT(*)
+			FROM organization2usergroups
 			WHERE usergroup_id IN ($ids_comma)
 			GROUP BY usergroup_id
 		");

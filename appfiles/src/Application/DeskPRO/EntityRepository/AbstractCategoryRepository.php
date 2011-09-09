@@ -26,7 +26,7 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 	{
 		if ($this->_cat_helper !== null) return $this->_cat_helper;
 
-		$this->_cat_helper = new CategoryHierarchy($this, $this->getClassMetadata());
+		$this->_cat_helper = new CategoryHierarchy($this->getEntityManager(), $this, $this->getEntityName(), $this->getClassMetadata());
 
 		return $this->_cat_helper;
 	}

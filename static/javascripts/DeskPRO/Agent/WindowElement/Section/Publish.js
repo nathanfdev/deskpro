@@ -370,6 +370,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				$('input.word', this.addDlg.elements.wrapperOuter).val('');
 				$('textarea.content', this.addDlg.elements.wrapperOuter).val('');
 
+				DeskPRO_Window.util.modCountEl($('.glossary-word-count', this.getSectionElement()), '+');
+
 				this.addDlg.closeOverlay();
 			}
 		});
@@ -417,6 +419,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				wordEl.fadeOut('fast', function() {
 					wordEl.remove();
 				});
+
+				DeskPRO_Window.util.modCountEl($('.glossary-word-count', this.getSectionElement()), '-');
+
 				this.getGlossaryEditDlg().close();
 			}
 		});
