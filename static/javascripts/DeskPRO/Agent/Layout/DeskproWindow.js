@@ -30,8 +30,8 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var totalWidth = newWidth - this.LEFT_START - this.CENTER_START;
 		var listWidth = totalWidth * 0.40;
-		if (listWidth < 425) {
-			listWidth = 425;
+		if (listWidth < 370) {
+			listWidth = 370;
 		} else if (listWidth > 700) {
 			listWidth = 700;
 		}

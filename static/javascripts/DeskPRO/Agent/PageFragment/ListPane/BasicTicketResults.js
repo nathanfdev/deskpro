@@ -418,7 +418,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				$('.label', groupMenuBtn).text(label);
 
 				var url = self.meta.refreshUrl;
-				url += 'group_by=' + prop;
+				url = Orb.appendQueryData(url, 'group_by', prop);
 
 				DeskPRO_Window.loadListPane(url);
 			}

@@ -55,11 +55,9 @@
 
 .controlBar ul.controlBarList{
 	color: #FFFFFF;
-	float: left;
 	font-size: 10px;
 	padding: 3px 9px 0 6px;
 	text-shadow: 0 1px 0 #000000;
-	width: 449px;
 }
 
 .controlBar ul.controlBarList li{
