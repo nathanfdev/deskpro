@@ -36,6 +36,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
 	const TERM_URGENCY                   = 'urgency';
 	const TERM_USER_WAITING              = 'user_waiting';
+	const TERM_TOTAL_USER_WAITING        = 'total_user_waiting';
 	const TERM_AGENT_WAITING             = 'agent_waiting';
 	const TERM_ARCHIVE_SEARCH            = 'archive_search';
 	const TERM_DELETED                   = 'deleted';
@@ -892,13 +893,16 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_USER_WAITING:
 					$this->affected_fields[] = 'ticket.date_user_waiting';
 					$wheres[] = $this->_dateMatch("$tickets_table.date_user_waiting", $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('open'));
 					break;
 
 				case self::TERM_AGENT_WAITING:
 					$this->affected_fields[] = 'ticket.date_agent_waiting';
 					$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('pending'));
+					break;
+
+				case self::TERM_TOTAL_USER_WAITING:
+					$this->affected_fields[] = 'ticket.total_user_waiting';
+					$wheres[] = $this->_rangeMatch("$tickets_table.total_user_waiting", $op, $choice);
 					break;
 
 				case self::TERM_CREATION_SYSTEM:
@@ -1183,14 +1187,19 @@ class TicketSearch extends SearcherAbstract
 	{
 		switch ($term_id) {
 			case self::TERM_DEPARTMENT: return 'department_id';
-			case self::TERM_CATEGORY: return 'category_id';
-			case self::TERM_PRODUCT: return 'product_id';
 			case self::TERM_AGENT: return 'agent_id';
 			case self::TERM_AGENT_TEAM: return 'agent_team_id';
-			case self::TERM_WORKFLOW: return 'workflow_id';
+			case self::TERM_URGENCY: return 'urgency';
+			case self::TERM_CATEGORY: return 'category_id';
 			case self::TERM_PRIORITY: return 'priority_id';
+			case self::TERM_PRODUCT: return 'product_id';
+			case self::TERM_WORKFLOW: return 'workflow_id';
 			case self::TERM_LANGUAGE: return 'language_id';
-			default: return $term_id;
+			case self::TERM_ORGANIZATION: return 'organization_id';
+			case self::TERM_USER_WAITING: return 'date_user_waiting';
+			case self::TERM_TOTAL_USER_WAITING: return 'total_user_waiting';
+			case self::TERM_DATE_CREATED: return 'date_created';
+			default: return false;
 		}
 	}
 }

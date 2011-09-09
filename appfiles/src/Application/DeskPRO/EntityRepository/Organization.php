@@ -54,7 +54,9 @@ class Organization extends \Doctrine\ORM\EntityRepository
 
         $ret = array();
         foreach ($for_ids as $id) {
-            $ret[$id] = $this->_organization_names[$id];
+			if (isset($this->_organization_names[$id])) {
+            	$ret[$id] = $this->_organization_names[$id];
+			}
         }
 
         return $ret;

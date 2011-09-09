@@ -11,10 +11,11 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Searcher\TicketSearch;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class GroupingCounter
 {
@@ -48,6 +49,7 @@ class GroupingCounter
 	 */
 	public function getDisplayArray()
 	{
+
 		#------------------------------
 		# Connect counts to titles
 		#------------------------------
@@ -112,46 +114,10 @@ class GroupingCounter
 		$group1_structure = array();
 		$group2_structure = array();
 
-		switch ($this->grouping1) {
-			case 'department':
-				$group1_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-				break;
-
-			case 'category':
-				$group1_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
-				break;
-
-			case 'product':
-				$group1_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
-				break;
-
-			default:
-				foreach ($titles1 as $id => $t) {
-					$group1_structure[$id] = array('title' => $t);
-				}
-				break;
-		}
+		$group1_structure = $this->getFieldStructure($this->grouping1, $titles1, $display_elements['ids1']);
 
 		if ($this->grouping2) {
-			switch ($this->grouping2) {
-				case 'department':
-					$group2_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-					break;
-
-				case 'category':
-					$group2_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
-					break;
-
-				case 'product':
-					$group2_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
-					break;
-
-				default:
-					foreach ($titles2 as $id => $t) {
-						$group2_structure[$id] = array('title' => $t);
-					}
-					break;
-			}
+			$group2_structure = $this->getFieldStructure($this->grouping2, $titles2, $display_elements['ids2']);
 		}
 
 		return array(
@@ -195,12 +161,20 @@ class GroupingCounter
 	{
 		$group_by = 'GROUP BY field1';
 
-		$group1_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping1);
+		if ($this->isTimeField($this->grouping1)) {
+			$select_fields[] = $this->makeTimeFieldSelect($this->grouping1, 'field1');
+		} else {
+			$group1_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping1);
+			$select_fields[] = "COALESCE(tickets.{$group1_fieldname}, 0) AS field1";
+		}
 
-		$select_fields[] = "COALESCE(tickets.{$group1_fieldname}, 0) AS field1";
 		if ($this->grouping2) {
-			$group2_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping2);
-			$select_fields[] = "COALESCE(tickets.{$group2_fieldname}, 0) AS field2";
+			if ($this->isTimeField($this->grouping2)) {
+				$select_fields[] = $this->makeTimeFieldSelect($this->grouping2, 'field2');
+			} else {
+				$group2_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping2);
+				$select_fields[] = "COALESCE(tickets.{$group2_fieldname}, 0) AS field2";
+			}
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
@@ -289,6 +263,54 @@ class GroupingCounter
 	}
 
 
+	/**
+	 * Check if a field is a time field
+	 *
+	 * @param $field
+	 * @return bool
+	 */
+	public function isTimeField($field)
+	{
+		return in_array($field, array(
+			TicketSearch::TERM_USER_WAITING,
+			TicketSearch::TERM_TOTAL_USER_WAITING,
+			TicketSearch::TERM_DATE_CREATED,
+		));
+	}
+
+
+	/**
+	 * Generates some nasty SQL to get MySQL to group on the right date range value.
+	 *
+	 * @param $field
+	 * @param $select_name
+	 * @return string
+	 */
+	public function makeTimeFieldSelect($field, $select_name)
+	{
+		$times = array_keys($this->getTimeTitles());
+
+		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
+		$now = time();
+
+		$sql = "CASE ";
+
+		$parts = array();
+		foreach ($times as $t) {
+			// Get a real time so we dont have mysql doing calculations,
+			// and we dont need to do a subquery etc
+
+			$date = date('Y-m-d H:i:s', $now - $t);
+
+
+			$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
+		}
+
+		$sql .= implode('', $parts) . " ELSE 14515200 END AS $select_name";
+
+		return $sql;
+	}
+
 
 	/**
 	 * Get information about strucutred counts and titles.
@@ -304,9 +326,7 @@ class GroupingCounter
 		#------------------------------
 
 		$ids1 = array();
-		if ($this->grouping2) {
-			$ids2 = array();
-		}
+		$ids2 = array();
 
 		// $counts_structure becomes:
 		// array(field1 => array(total => xxx, sub => array(someid => 123, someid2 => 123 ...) )
@@ -364,8 +384,49 @@ class GroupingCounter
 		return array(
 			'titles1' => $titles1,
 			'titles2' => $titles2,
+			'ids1'    => $ids1,
+			'ids2'    => $ids2,
 			'counts'  => $counts_structured
 		);
+	}
+
+
+
+	/**
+	 * Get's a hierarchy array of titles for use in a template.
+	 *
+	 * @param $field
+	 * @param array $titles
+	 * @param array $ids
+	 * @return array
+	 */
+	public function getFieldStructure($field, array $titles, array $ids)
+	{
+		switch ($field) {
+			case TicketSearch::TERM_DEPARTMENT:
+				$group_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+				break;
+
+			case TicketSearch::TERM_CATEGORY:
+				$group_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
+				break;
+
+			case TicketSearch::TERM_PRODUCT:
+				$group_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
+				break;
+
+			default:
+				$group_structure = array();
+				foreach ($titles as $id => $t) {
+					$group_structure[$id] = array('id' => $id, 'title' => $t);
+				}
+
+				// But remove the -1 rollups
+				unset($group_structure[-1]);
+				break;
+		}
+
+		return $group_structure;
 	}
 
 
@@ -379,44 +440,76 @@ class GroupingCounter
 	 * @param array $ids
 	 * @return array
 	 */
-	public function getFieldTitles($field, array $ids = null)
+	public function getFieldTitles($field, array $ids)
 	{
 		$titles = null;
 		switch ($field) {
-			case 'department':
+			case TicketSearch::TERM_DEPARTMENT:
 				$this->grouping_summary = "Department";
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'product':
-				$this->grouping_summary = "Product";
-				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
-				break;
-
-			case 'category':
-				$this->grouping_summary = "Category";
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
-				break;
-
-			case 'agent':
+			case TicketSearch::TERM_AGENT:
 				$this->grouping_summary = "Agent";
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
 				break;
 
-			case 'workflow':
-				$this->grouping_summary = "Workflow";
-				$titles = App::getOrm()->getRepository('DeskPRO:Workflow')->getWorkflowNames();
+			case TicketSearch::TERM_AGENT_TEAM:
+				$this->grouping_summary = "Agent";
+				$titles = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
+				break;
+
+			case TicketSearch::TERM_URGENCY:
+				$this->grouping_summary = "Agent";
+				$titles = range(1, 2);
+				break;
+
+			case TicketSearch::TERM_CATEGORY:
+				$this->grouping_summary = "Category";
+				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
-			case 'priority':
+			case TicketSearch::TERM_PRIORITY:
 				$this->grouping_summary = "Priority";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				break;
+
+			case TicketSearch::TERM_PRODUCT:
+				$this->grouping_summary = "Product";
+				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				break;
+
+			case TicketSearch::TERM_WORKFLOW:
+				$this->grouping_summary = "Workflow";
+				$titles = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				break;
+
+			case TicketSearch::TERM_ORGANIZATION:
+				$this->grouping_summary = "Organization";
+				$titles = App::getOrm()->getRepository('DeskPRO:Organization')->getOrganizationNames($ids);
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				break;
+
+			case TicketSearch::TERM_USER_WAITING:
+				$this->grouping_summary = "Time User Waiting";
+				$titles = $this->getTimeTitles();
+				break;
+
+			case TicketSearch::TERM_TOTAL_USER_WAITING:
+				$this->grouping_summary = "Total Time User Waiting";
+				$titles = $this->getTimeTitles();
+				break;
+
+			case TicketSearch::TERM_DATE_CREATED:
+				$this->grouping_summary = "Time Since Creation";
+				$titles = $this->getTimeTitles();
 				break;
 
 			default:
@@ -434,6 +527,39 @@ class GroupingCounter
 		}
 
 		return $titles;
+	}
+
+	public static function getTimeTitles()
+	{
+		$times = array(
+			1 => '< 5 minutes',
+			300 => '5 - 15 minutes',	// TIMEMINUTE * 5
+			900 => '15 - 30 minutes',	// TIMEMINUTE * 15
+			1800 => '30 - 60 minutes',	// TIMEMINUTE * 30
+			3600 => '1 - 2 hours',		// TIMEHOUR
+			7200 => '2 - 3 hours',		// TIMEHOUR * 2
+			10800 => '3 - 4 hours',		// TIMEHOUR * 3
+			14400 => '4 - 6 hours',		// TIMEHOUR * 4
+			21600 => '6 - 12 hours',	// TIMEHOUR * 6
+			43200 => '12 - 24 hours',	// TIMEHOUR * 12
+			86400 => '1 - 2 days',		// TIMEDAY
+			172800 => '2 - 3 days',		// TIMEDAY * 2
+			259200 => '3 - 4 days',		// TIMEDAY * 3
+			345600 => '4 - 5 days',		// TIMEDAY * 4
+			432000 => '5 - 6 days',		// TIMEDAY * 5
+			518400 => '6 - 7 days',		// TIMEDAY * 6
+			604800 => '1 - 2 weeks',	// TIMEWEEK
+			1209600 => '2 - 3 weeks',	// TIMEWEEK * 2
+			1814400 => '3 - 4 weeks',	// TIMEWEEK * 3
+			2419200 => '1 - 2 months',	// TIMEMONTh
+			4838400 => '2 - 3 months',	// TIMEMONTH * 2
+			7257600 => '3 - 4 months',	// TIMEONTH * 3
+			9676800 => '4 - 5 months',	// TIMEMONTH * 4
+			12096000 => '5 - 6 months',	// TIMEMONTH * 5
+			14515200 => '> 6 months'	// TIMEMONTH * 6
+		);
+
+		return $times;
 	}
 
 
@@ -469,5 +595,43 @@ class GroupingCounter
 	{
 		$this->grouping1 = $grouping1 ? $grouping1 : 'department';
 		$this->grouping2 = $grouping2 ? $grouping2 : null;
+	}
+
+
+	/**
+	 * Transforms a grouping var and choice into a search term for TicketSearch
+	 *
+	 * @param $groupvar
+	 * @param $groupchoice
+	 * @return void
+	 */
+	public static function getSearchTerm($groupvar, $groupchoice)
+	{
+		switch ($groupvar) {
+			case TicketSearch::TERM_USER_WAITING:
+			case TicketSearch::TERM_TOTAL_USER_WAITING:
+			case TicketSearch::TERM_DATE_CREATED:
+
+				$times = array_keys(self::getTimeTitles());
+				$key = array_search($groupchoice, $times);
+
+				if ($key == 0) {
+					$date = new \DateTime('-5 minutes');
+					return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
+				} elseif ($key == (count($times) - 1)) {
+					$date = new \DateTime('-6 months');
+					return array('type' => $groupvar, 'op' => 'gte', 'options' => array('date1' => $date));
+				} else {
+					$date1 = new \DateTime('-' . $times[$key] . ' seconds');
+					$date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
+
+					return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
+				}
+
+				break;
+
+			default;
+				return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
+		}
 	}
 }

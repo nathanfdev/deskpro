@@ -206,7 +206,9 @@ abstract class SearcherAbstract implements PersonContextInterface
 	{
 		$where = '';
 
-		$choice = (array)$choice;
+		if (!is_array($choice)) {
+			$choice = array($choice);
+		}
 
 		$date1 = null;
 		if (!empty($choice['date1'])) {
@@ -235,7 +237,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		// There should always be at least one date
 		if ($date1 === null AND $date2 === null) {
-			return '';
+			return '0';
 		}
 
 		// Normalize operations
