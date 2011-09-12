@@ -1,0 +1,78 @@
+DEVELOPMENT INSTALL: MAC
+========================
+
+REQUIREMENTS
+============
+
+- Mac OSX 10.5 or later
+
+
+Install Git
+===========
+
+You first need to install Git. Follow this guide on GitHub: http://help.github.com/mac-set-up-git/
+
+Make sure to follow the instructions about setting up an SSH key as well, and add it to your GitHub account so you can properly checkout the private DeskPRO repository.
+
+
+Install MAMP
+============
+
+MAMP is a package that includes Apache, MySQL and PHP in one easy application. Download it here: http://www.mamp.info/en/index.html
+
+Double click the package to start the installer. After it finishes, run the MAMP launcher in Application/MAMP.
+
+Note: The first time, it'll ask you if you want to launch "MAMP PRO." This is a premium version that adds some extra features like a GUI around vhosts. You don't need these so you can ignore the prompt and launch "normal" MAMP.
+
+Create Database
+===============
+
+After you've launched MAMP, it should open up a welcome page in your browser. If you don't see this page, just navigate your browser to http://localhost:8888/MAMP/
+
+1. Click on "phpMyAdmin" in the header.
+2. Click on the "Privileges" tab.
+3. Click on "Add New User"
+4. Enter the following details:
+    - Username: deskpro
+    - Host: Change the select box to `Local`
+    - Password: deskpro
+    - Under "Database for user" choose "Create database with same name and grant all privileges"
+    - Click on "Go" to save the user and create the database.
+
+Clone Repository
+================
+
+Open up Terminal (Applications/Utilities/Terminal) and enter these commands:
+
+    $ cd /Applications/MAMP/htdocs
+    $ git clone git@github.com:DeskPRO/DeskPRO.git
+    $ cd DeskPRO
+    $ git submodule init
+    $ git submodule update
+    $ chmod -R 0777 appfiles/sys
+    $ cp appfiles/config.new.php appfiles/config.php
+    $ open appfiles/config.php
+
+Note: Some of these commands (especially `git submodule update`) can take a long time depending on your internet connection.
+
+After these commands have executed, you will have cloned all of the DeskPRO source files into the folder at `/Applications/MAMP/htdocs/DeskPRO`.
+The last `open` command should open a configuration file in your default editor (probably TextEdit).
+
+Edit Config
+===========
+
+You should have a file open in a text editor. If you don't, manually open `/Applications/MAMP/htdocs/DeskPRO/appfiles/config.php`
+
+Edit the database values to set `user`, `password` and `database` to `deskpro`. Save and close the file.
+
+Run Installer
+=============
+
+Open your browser and navigate to `http://localhost:8888/DeskPRO/index_dev.php/_sys/install` and follow the on-screen instructions.
+
+After you've reached the end of the Installation Wizard, an initial admin account will be created that you can use to log in.
+Navigate to http://localhost:8888/DeskPRO/index_dev.php/agent/ and log in with `admin@example.com` with password `pass`
+
+Note: The /index_dev.php/ prefix is important as it loads the dev environment which some things are currently tied to.
+
+Note: The first time you run a page from any section (/, /agent/ or /_sys/), Symfony will take a while to generate a bunch of cache files. Subsequent page loads will be much quicker.

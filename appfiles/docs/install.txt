@@ -46,6 +46,8 @@ Make sure `/appfiles/sys/cache` is writable. For example:
 Edit Config
 ===========
 
+Create a MySQL database and then edit your config file:
+
 - Copy `/appfiles/config.new.php` to `/appfiles/config.php`
 - Edit `/appfiles/config.php` with your database details.
 
