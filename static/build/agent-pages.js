@@ -363,11 +363,10 @@ var d=this.contentWrapper;d.tinyscrollbar();$("div.scroll-content:first, div.scr
 });this.valueForm=$("form.value-form:first",this.contentWrapper);this.valueForm.submit(function(i){i.preventDefault()});this.changeManager=new DeskPRO.Agent.Ticket.ChangeManager(this);
 window.TICKET=this;if(!this.meta.isDeleted){this._initCustomFieldsEditor()}var f=this;this._initMessage($("div.messages-wrap"));
 $("input.date-field",this.contentWrapper).datepicker({dateFormat:"M d, yy"});this.ticketDisplay=new DeskPRO.Agent.PageHelper.TicketDisplay(this,{wrapper:g});
-this.initFeaturesOnCollection(this.wrapper,{routes:[],times:[".timeago"]});this.initRoutesOnCollection($(".with-route",this.wrapper));
-if(!this.meta.isDeleted){this._initTicketActionsMenu();this._initMessageActionsMenu();this._initFlagMenu();this._initLabels()
-}else{$("button.undelete-trigger",this.wrapper).click(this.doTicketUndelete.bind(this))}this._initPopout();this._initTicketTabs();
-DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.opened",{ticketId:this.getMetaData("ticket_id")});DeskPRO_Window.getMessageBroker().sendMessage("ui.tab.opened",{type:"tickets",id:this.getMetaData("ticket_id")});
-DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(i){if(i.indexOf(this.getMetaData("ticket_id"))!==-1){DeskPRO_Window.removePage(this)
+this.initFeaturesOnCollection(this.wrapper,{routes:[],times:[".timeago"]});if(!this.meta.isDeleted){this._initTicketActionsMenu();
+this._initMessageActionsMenu();this._initFlagMenu();this._initLabels()}else{$("button.undelete-trigger",this.wrapper).click(this.doTicketUndelete.bind(this))
+}this._initPopout();this._initTicketTabs();DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.opened",{ticketId:this.getMetaData("ticket_id")});
+DeskPRO_Window.getMessageBroker().sendMessage("ui.tab.opened",{type:"tickets",id:this.getMetaData("ticket_id")});DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(i){if(i.indexOf(this.getMetaData("ticket_id"))!==-1){DeskPRO_Window.removePage(this)
 }}).bind(this),this.pageUid);DeskPRO_Window.getMessageBroker().addMessageListener("tickets.new-messages."+this.getMetaData("ticket_id"),this.getNewTicketMessages.bind(this),this.pageUid);
 Array.each(this.getMetaData("fieldHandlers",[]),function(i){if(!i){return}var j=i.classname;var k=i.wrap_id;var i=new i($("#"+k),this);
 i.initPage()},this);this.addEvent("shortcutFocusReply",(function(){$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).scrollTop(100000);
@@ -724,8 +723,8 @@ b.removeClass("on")}else{window.setTimeout(function(){e.slideDown()},20);b.addCl
 DeskPRO.Agent.PageFragment.Page.Organization=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"organization",wrapper:null,initPage:function(e){this.wrapper=e;
 this.contentWrapper=$("div.layout-content:first",e);var b=this;var a=this.contentWrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()
 });this.contactEditor=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this,{saveUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/save-contact-data.json"});
-this.initNoteFormEditable();this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));
-var c=$("h3.name.editable:first",e);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save"}});
+this.initNoteFormEditable();this.initTimesOnCollection($("time.timeago",this.wrapper));var c=$("h3.name.editable:first",e);
+if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save"}});
 $(this.wrapper).click(function(f){d.handleDocumentClick(f)});this.morectionsMenu=new DeskPRO.UI.Menu({triggerElement:$(".more",this.getEl("action_buttons")),menuElement:this.getEl("more_actions_menu"),onItemClicked:function(g){var f=$(g.itemEl).data("action")
 }});this.changePic=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this,{loadUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/change-picture-overlay",saveUrl:BASE_URL+"agent/organizations/"+this.meta.org_id+"/ajax-save"});
 this._initLabels();this._initCustomFieldsEditor();this.getEl("members_list").delegate(".remove","click",function(){var g=$(this).closest(".member-row");
@@ -751,9 +750,9 @@ DeskPRO.Agent.PageFragment.Page.Person=new Class({Extends:DeskPRO.Agent.PageFrag
 this.contentWrapper=$("div.layout-content:first",f);this.zIndex=999999;var b=this;var a=this.contentWrapper;a.tinyscrollbar();
 $("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()});
 this.contactEditor=new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this,{saveUrl:BASE_URL+"agent/people/"+this.meta.person_id+"/save-contact-data.json"});
-this.initNoteFormEditable();this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));
-var g=new DeskPRO.UI.Menu({menuElement:this.getEl("timezone")});var d=new DeskPRO.UI.Menu({menuElement:this.getEl("is_autoresponder")});
-this.getEl("timezone").change(function(){var h=$(this).val();$(".timezone-info",this.wrapper).empty();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"timezone",timezone:h},context:this,success:function(i){$(".timezone-info",this.wrapper).empty().html(i.bit_html)
+this.initNoteFormEditable();this.initTimesOnCollection($("time.timeago",this.wrapper));var g=new DeskPRO.UI.Menu({menuElement:this.getEl("timezone")});
+var d=new DeskPRO.UI.Menu({menuElement:this.getEl("is_autoresponder")});this.getEl("timezone").change(function(){var h=$(this).val();
+$(".timezone-info",this.wrapper).empty();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"timezone",timezone:h},context:this,success:function(i){$(".timezone-info",this.wrapper).empty().html(i.bit_html)
 }})});this.getEl("is_autoresponder").change(function(){var h=$(this).val();$.ajax({url:BASE_URL+"agent/people/"+b.meta.person_id+"/ajax-save",type:"POST",dataType:"json",data:{action:"is_autoresponder",is_autoresponder:h}})
 });var c=$("h3.name.editable:first",f);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var e=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save"}});
 $(this.wrapper).click(function(h){e.handleDocumentClick(h)});$(".create-ticket",this.getEl("action_buttons")).click(function(){DeskPRO_Window.newTicketLoader.open(function(h){h.setUser(b.meta.person_id)
@@ -909,7 +908,7 @@ var b=this.contentWrapper;var a=this;this.popout=$(".person-popout:first",b);thi
 });this.popout.detach().appendTo("body");this.destroyEls.push(this.popout);this.popoutOuter=$(".person-popout-outer:first",b);
 this.popoutOuter.detach().appendTo("body");this.destroyEls.push(this.popoutOuter);this.popoutTabs=$(".person-popout-tabs:first",b);
 this.popoutTabs.detach().appendTo("body");this.destroyEls.push(this.popoutTabs);var a=this;$(".close:first",this.popoutTabs).click(function(){a.closePopout()
-});$(".move-to-tab:first",this.popoutTabs).click(function(){DeskPRO_Window.runPageRouteFromElement($(".person-overview",a.wrapper));
+});$(".move-to-tab:first",this.popoutTabs).click(function(c){c.stopPropagation();DeskPRO_Window.runPageRouteFromElement($(".person-overview",a.wrapper));
 a.closePopout()})},openPopOut:function(d){this._initPopoutEls();if(this.popout.is(":visible")){return}var g=$(".person-overview:first",this.wrapper);
 var f=g.offset();var c=this.wrapper.offset();var b=f.left-35;if(b>780){b=780}var a=true;if(b<400){a=false}if(a){this.popout.css({position:"absolute",display:"block","z-index":999998,width:b,overflow:"auto"});
 this.popout.css({top:(c.top-8),left:(f.left-this.popout.outerWidth()-20),bottom:30});var e=this.popout.offset();this.popoutOuter.css({position:"absolute",display:"block","z-index":999997,width:b+2+6,overflow:"auto",top:e.top-1,left:e.left-1,bottom:29});
