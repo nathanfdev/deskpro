@@ -7,15 +7,19 @@ REQUIREMENTS
 
 - PHP 5.3.2 or later
 -- `pdo` and `pdo_mysql` extensions
--- `intl` extension. (See note 1)
-
 - MySQL 5.1.41 or later
 
-	Note (1):
-	The `intl` extension is bundled with PHP, however some distros do not ship it.
-	You can easily use PECL to install the extension, or your package manager may
-	have a package for it. For example, with Ubuntu: apt-get install php5-intl
 
+Cloning The Repository
+======================
+
+Use git to clone the DeskPRO repository at https://github.com/DeskPRO/DeskPRO
+
+For example:
+
+    git@github.com:DeskPRO/DeskPRO.git
+
+You may need to add your computers key to your GitHub account at https://github.com/account/ssh
 
 Vendors
 =======
@@ -29,20 +33,21 @@ This will initiate the submodules in your git tree, and then clone the repositor
 
 If you use SmartGit, choose Remote -> Submodule from the menu to get to these commands.
 
+This step may take a while to download all of the vendor repositories.
+
+File Permissions
+================
+
+Make sure `/appfiles/sys/cache` is writable. For example:
+
+    chown -R 0777 appfiles/sys/cache
+
 
 Edit Config
 ===========
 
 - Copy `/appfiles/config.new.php` to `/appfiles/config.php`
 - Edit `/appfiles/config.php` with your database details.
-
-FIXES
-=====
-
-Two changes due to bugs need to be made manually.
-
-1. Create the directory `/appfiles/sys/cache/dev/doctrine/orm/Proxies/` and make sure it's writable.
-2. Edit `/appfiles/sys/config/config.yml` and change the value for `assets_base_urls` to your real base url to the 'static' directory on your web server.
 
 RUN INSTALL
 ===========
@@ -51,6 +56,10 @@ In your web browser, visit the on-screen installer:
 
 	/index_dev.php/dev/install
 
+Note the admin account credentials created.
+
+Note: The first time you try to bring up the page it may take a long time.
+This is because Symfony is generating all of the cache files for the first time.
 
 Log In
 ================

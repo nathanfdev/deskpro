@@ -3,18 +3,6 @@ DeskPRO
 
 ### Introduction
 
-Some text here
+Refer to `appfiles/docs/install.txt` for installation instructions.
 
-### Development
-
-Some more text here
-
-### Links
-
-*   [Nightly Builds](http://nightly.mtasa.com/)
-*   [Bugtracker Roadmap](http://bugs.mtasa.com/roadmap_page.php)
-*   [Wiki Roadmap](http://wiki.mtasa.com/index.php?title=Roadmap)
-
-### Screenshots
-
-![screenshot 1](http://www.deskpro.com/sites/all/themes/dptheme/logo.png "Screenshot 1")
+If you're on a Mac, read `appfiles/docs/install-mac.txt` for easy-to-follow instructions specific for Mac.

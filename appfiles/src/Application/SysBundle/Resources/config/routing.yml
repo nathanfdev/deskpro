@@ -5,3 +5,19 @@ sys:
 sys_test:
   pattern: /test
   defaults: { _controller: SysBundle:Test:test }
+
+sys_install:
+  pattern: /install
+  defaults: { _controller: SysBundle:Install:index }
+
+sys_install_check:
+  pattern:  /install/check
+  defaults: { _controller: SysBundle:Install:check }
+
+sys_install_createtables:
+  pattern:  /install/create-tables
+  defaults: { _controller: SysBundle:Install:createTables }
+
+sys_install_createdata:
+  pattern:  /install/create-data
+  defaults: { _controller: SysBundle:Install:createData }

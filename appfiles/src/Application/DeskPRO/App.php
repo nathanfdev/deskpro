@@ -544,6 +544,27 @@ class App
 
 
 	/**
+	 * Get the type of kernel being used:
+	 * - agent
+	 * - cli
+	 * - sys
+	 * - user
+	 *
+	 * @return string
+	 */
+	public static function getKernelType()
+	{
+		$kernel = self::getKernel();
+
+		$type = get_class($kernel);
+		$type = preg_replace('#^.*?\\\\([a-zA-Z]+)Kernel$#', '$1', $type);
+		$type = strtolower($type);
+
+		return $type;
+	}
+
+
+	/**
 	 * Get a secret key used for various hashing.
 	 *
 	 * @return string

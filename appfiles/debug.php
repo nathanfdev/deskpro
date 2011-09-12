@@ -50,7 +50,8 @@ $CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor
  * Useful for debugging since you dont need to re-compile the files each time.
  * Possible values are in config.js-sources.php
  */
-$CONFIG['debug']['raw_js_packs'] = array();
+// TODO remove in distribution. Enabled just for devs
+$CONFIG['debug']['raw_js_packs'] = array('all');
 
 $CONFIG['debug']['templates'] = array();
 

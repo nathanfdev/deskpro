@@ -68,15 +68,17 @@ class SysKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
+			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+
+			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\SysBundle\SysBundle(),
 		);
 
 		return $bundles;
 	}
-	
+
 	public function registerBundleDirs()
 	{
 		return array(

@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * that can be used to perform actions before or after an action, and can override the response object
  * in those cases.
  */
-class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel 
+class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 {
 	protected $dispatcher;
 	protected $resolver;
@@ -71,8 +71,9 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
         $this->container->leaveScope('request');
 
 		// Do to gc/cleanup in php we have to write the session manually before
-		// objects are destructed
-		if (!App::isCli()) {
+		// objects are destructed.
+		// TODO this shouldnt be hard-coded like this?
+		if (App::getKernelType() == 'user' OR App::getKernelType() == 'agent') {
 			if ($s = $request->getSession()) {
 				$s->save();
 				session_write_close();
@@ -81,7 +82,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
         return $response;
     }
-	
+
 	protected function handleRaw(Request $request, $type = self::MASTER_REQUEST)
 	{
 		$event = new GetResponseEvent($this, $request, $type);
@@ -290,7 +291,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
         $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::RESPONSE, $event);
         return $event->getResponse();
     }
-	
+
     private function handleException(\Exception $e, $request, $type)
     {
         $event = new GetResponseForExceptionEvent($this, $request, $type, $e);
