@@ -20,7 +20,7 @@ Due to a bug in msysgit, you must also add it's bin directory to your PATH:
 2. In the `System Properties` window, click on the `Advanced` tab
 3. Click on the `Environment Variables` button
 4. Find the `Path` variable in the list and double-click to edit it
-5. Append `;C:\Program Files (x86)\Git\bin` to the existing value. That is a semi-colon followed by the path to the msysgit `bin` directory.
+5. Append `;C:\Program Files (x86)\Git\bin\` to the existing value. That is a semi-colon followed by the path to the msysgit `bin` directory.
 
 Install WAMP
 ============
