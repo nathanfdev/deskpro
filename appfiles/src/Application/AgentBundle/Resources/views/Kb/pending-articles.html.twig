@@ -5,7 +5,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles'
 <div class="content">
 
 	<header class="list-control-bar">
-		<button class="clean-gray xx-small add-new-trigger">
+		<button class="clean-gray xx-small add-new-trigger" style="margin:  4px 0 0 5px">
 			<span>Add New</span>
 		</button>
 		<div class="add-new-form" style="display: none">
@@ -17,7 +17,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles'
 
 	{% include 'AgentBundle:Kb:pending-articles-massactions-bar.html.twig' %}
 
-	<section class="pending-articles-list deskpro-results-list">
+	<section class="pending-articles-list list-listing">
 		{% include 'AgentBundle:Kb:pending-articles-page.html.twig' %}
 	</section>
 </div>
