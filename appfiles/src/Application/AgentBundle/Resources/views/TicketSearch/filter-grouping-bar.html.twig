@@ -1,6 +1,6 @@
 {% if grouped_info and grouped_info.counts[-1].total > 0 %}
 	{% set grouping_url = 'listpane:' ~ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) ~ '?group_by=' ~ group_by ~ '&grouping_option=' %}
-	<header class="groupingBar">
+	<header class="list-grouping-bar">
 		{% if grouped_info.counts[-1].total > 0 %}
 			<li data-grouping-option="" {% if grouping_option == 'DP_NOT_SET' %}class="on"{% endif %}>
 				<a data-route="{{ grouping_url }}">

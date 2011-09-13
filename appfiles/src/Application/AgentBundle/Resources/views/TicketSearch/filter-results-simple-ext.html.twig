@@ -36,11 +36,9 @@ pageMeta.baseId = '{{ baseId }}';
 	{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 	{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
-	<div class="contentList">
-		<section class="ticketListWrap">
-			{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
-		</section>
-	</div>
+	<section class="list-listing">
+		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
+	</section>
 </div>
 
 </div>

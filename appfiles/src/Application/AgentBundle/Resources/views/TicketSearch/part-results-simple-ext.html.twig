@@ -1,17 +1,17 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
-<article class="ticketList">
+<article class="row-item">
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
-	<div class="topRow">
-		<div class="topRowLeft">
+	<div class="top-row">
+		<div class="top-row-left">
 			<h3>
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
 					{{ ticket.subject }}
 				</a>
 			</h3>
 		</div>
-		<div class="topRowRight">
+		<div class="top-row-right">
 			<div class="bound-fade"></div>
 			<div class="urgency"><a>{{ rand(1,10) }}</a></div>
 			<div class="status">{{ ticket.status }}</div>
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="userinfo">
-		<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+		<a class="name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
 			<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
 		</a>
 		{% if ticket.person.organization %}

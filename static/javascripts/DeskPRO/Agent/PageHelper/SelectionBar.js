@@ -16,7 +16,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		this.setOptions(options);
 
 		if (!this.options.selectionBar) {
-			this.options.selectionBar = $('.selection-bar', this.page.wrapper).first();
+			this.options.selectionBar = $('.list-selection-bar', this.page.wrapper).first();
 		}
 		this.selectionBar = $(this.options.selectionBar);
 
