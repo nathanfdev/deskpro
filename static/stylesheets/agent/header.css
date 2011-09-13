@@ -972,11 +972,11 @@
 }
 
 .DP-adminStatus li.soundIcon a{
-	background-position: 0 -158px;
+	background-position: 0px -222px;
 	margin-left: 10px;
 }
-.DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.on{
-	background-position: 0px -222px;
+.DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.off{
+	background-position: 0 -158px;
 }
 .DP-adminStatus li a .dropdowninfo{
 	position: relative;

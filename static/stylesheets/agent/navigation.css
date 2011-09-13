@@ -102,7 +102,7 @@
 	padding: 7px 0 9px;
 	text-align: center;
 }
-#dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span, #DP-chatOnlineCount a span{
+#dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span {
 	background: url(../../images/agent/navIcon.png) no-repeat;
  	color: #FFFFFF;
     float: left;
@@ -163,46 +163,3 @@
 #dp_nav_sections li:hover a span.dealsNavIcon {
 	background-position:-2px -1224px;
 }
-
-/* Agent Chat Status */
-#DP-agenChatIndy{
-	background-image: -moz-linear-gradient(top, #eef0f2, #e4e6e9);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#eef0f2), to(#e4e6e9));
-	-pie-background: linear-gradient(#eef0f2, #e4e6e9);
-	behavior: url(../../static/vendor/PIE.htc);
-	border-radius: 5px 5px 0 0;
-	border-top: 1px solid #212326;
-	border-left: 1px solid #212326;
-	border-right: 1px solid #212326;
-	box-shadow: 0 1px 0 #FFFFFF inset;
-	bottom: 0;
-	cursor: pointer;
-	height: 25px;
-	left: 8px;
-	position: absolute;
-	width: 37px;
-	z-index: 9999;
-}
-#DP-agenChatIndy:hover{
-	background: #d2d4d6;
-}
-#DP-chatOnlineCount{
-	position: relative;
-}
-
-#DP-chatOnlineCount a{
-	padding: 0;
-	width: 100%;
-}
-#DP-chatOnlineCount a span.liveChatIcon{
-	background-position:0 -350px;
-	padding: 11px 1px 5px 24px;
-	width: 100%;
-	margin: 0;
-	color: #000000;
-	text-shadow: 0 1px 0 #fff;
-	font-family: Tahoma, Arial, sans-serif;
-	font-size: 10px;
-}
-
-/* End of Agent Chat Status */
