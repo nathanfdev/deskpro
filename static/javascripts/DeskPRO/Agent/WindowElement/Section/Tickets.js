@@ -271,7 +271,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}).bind(this));
 
-		var hold = $('.holdTicketCount', this.sectionEl);
+		var hold = $('.hold-ticket-count', this.sectionEl);
 		if (total < 1) {
 			hold.hide();
 		} else {
@@ -385,7 +385,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}, this);
 
-		var countEls = $('.listCounter', $(els)).first();
+		var countEls = $('.list-counter', $(els)).first();
 		countEls.addClass('loading');
 
 		$.ajax({
@@ -411,10 +411,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	setFilterGroupingContent: function(filterId, html) {
 		var filterEl = $('.filter-' + filterId, this.sectionEl);
-		var subgroupEl = $('ul.subGroup', filterEl);
+		var subgroupEl = $('ul.sub-group', filterEl);
 
 		var groupingVar = this.getGroupingVar(filterId);
-		var baseRoute = $('a.groupHead', filterEl).first().data('route');
+		var baseRoute = $('.title', filterEl).first().data('route');
 
 		subgroupEl.empty();
 		if (html.length) {
@@ -429,8 +429,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			lis.each(function() {
 				var setRoute = Orb.appendQueryData(baseRoute, 'set_group_term', groupingVar);
 				setRoute = Orb.appendQueryData(setRoute, 'set_group_option', $(this).data('grouping-option'));
-				$('a', this).first().data('route', setRoute);
-				$('a', this).first().attr('data-route', setRoute);
+				$('.title', this).first().data('route', setRoute);
+				$('.title', this).first().attr('data-route', setRoute);
 			});
 		} else {
 			subgroupEl.hide();
@@ -444,8 +444,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		// Go through each one and figure out which ones change
 		// We dont need ot do any filter matching, they are always in the same order
 
-		var counts1 = $('#tickets_outline_sys_filters > li > a > .listCounter');
-		var counts2 = $('#tickets_outline_sys_hold_filters > li > a > .listCounter');
+		var counts1 = $('#tickets_outline_sys_filters > li > .title > .list-counter');
+		var counts2 = $('#tickets_outline_sys_hold_filters > li > .title > .list-counter');
 
 		var els = [];
 
@@ -634,7 +634,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.labelsTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
-			triggerElements: $('#ticketOutlineLabels li')
+			triggerElements: $('#tickets_outline_labels_switcher li')
 		});
 	}
 });

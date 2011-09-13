@@ -1,32 +1,24 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-<!-- DeskPRO Source List Inbox -->
-<div class="pendingTicket">
-	<div class="titles">
-		<div class="ticketHoldCheck">
-			<div class="item">
-				<span class="edit" id="ticket_filter_launch_editor">edit display</span>
-			</div>
+<section class="source-section sys-filters-section">
+	<header>
+		<div class="hold-ticket-count">
+			<span class="dp-checkbox checkbox show-hold-check"></span>
+			<span class="count"></span>
+			Tickets On hold
 		</div>
-			<h2>
-				<div class="holdTicketCount">
-					<span class="dp-checkbox checkbox show-hold-check"></span>
-					<span class="count"></span>
-					Tickets On hold
-				</div>
-				Inbox
-			</h2>
-		<br class="clear" />
-	</div>
-	<!-- DeskPro Inbox Ticket -->
-	<div class="yourPendingTicket" id="system_filters_wrap">
-		<ul id="tickets_outline_sys_filters" class="navList">
+		<h1>Inbox</h1>
+		<span id="ticket_filter_launch_editor" class="settings">edit display</span>
+	</header>
+	<article id="system_filters_wrap">
+		<ul id="tickets_outline_sys_filters" class="source-list">
 			{% for filter in sys_filters %}
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
-					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
 							{% if app.user.teams|length > 1 %}
 								{{ phrase('agent_tickets.filter_agent_team') }}
@@ -36,22 +28,21 @@
 						{% else %}
 							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
 						{% endif %}
-						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
-							{{ filter_counts[filter.id]|default(0) }}
-						</span>
-					</a>
-					<ul class="subGroup" style="display: none;"></ul>
+					</h3>
+					<ul class="sub-group" style="display: none;"></ul>
 				</li>
 			{% endfor %}
 		</ul>
-		<ul id="tickets_outline_sys_hold_filters" class="navList" style="display: none;">
+
+		<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
 			{% for filter in sys_filters_hold %}
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
-					<a class="groupHead {% if loop.index == 1 %}on{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
 							{% if app.user.teams|length > 1 %}
 								{{ phrase('agent_tickets.filter_agent_team') }}
@@ -61,97 +52,84 @@
 						{% else %}
 							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
 						{% endif %}
-						<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
-							{{ filter_counts[filter.id]|default(0) }}
-						</span>
-					</a>
-					<ul class="subGroup" style="display: none;"></ul>
+					</h3>
+					<ul class="sub-group" style="display: none;"></ul>
 				</li>
 			{% endfor %}
 		</ul>
-	</div>
-</div>
-<!-- DeskPRO Source List Ticket Filter -->
+	</article>
+</section>
 
 {% if custom_filters %}
-	<div class="filters">
-		<div class="titles">
-			<div class="ticketHoldCheck">
-				<div class="item">
-					<span class="edit">edit display</span>
-				</div>
-			</div>
-			<h2>Filters</h2>
-		</div>
-		<div class="yourPendingTicket">
-			<ul id="ticketsOutlineFiltersList" class="navList">
-				{% for filter in custom_filters %}
-					<li
-						class="filter-{{filter.id}} nav-filter-{{filter.id}}"
-						data-filter-id="{{filter.id}}"
-					>
-						<a class="groupHead" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-							{{filter.title}}
-							<span class="listCounter" id="ticket_filter_{{filter.id}}_count">
-								{{ filter_counts[filter.id]|default(0) }}
-							</span>
-						</a>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
+<section class="source-section custom-filters-section">
+	<header>
+		<h1>Filters</h1>
+		<span class="settings">edit display</span>
+	</header>
+	<article id="custom_filters_wrap">
+		<ul class="source-list">
+			{% for filter in custom_filters %}
+				<li
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					data-filter-id="{{filter.id}}"
+					data-filter-name="{{filter.sys_name}}"
+				>
+					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
+						{{ filter.title }}
+					</h3>
+				</li>
+			{% endfor %}
+		</ul>
+	</article>
+</section>
 {% endif %}
 
-<div id="tickets_outline_tabstrip" class="listTabNavTicket">
-	<div id="navTabStrip" class="desproTabStrip">
-		<ul>
-			<li class="labels"  data-tab-for="#tickets_outline_labels"><a>Labels</a></li>
-			<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
-			<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>
-		</ul>
-		<br class="clear" />
-	</div>
-</div>
+<section class="source-tabs" id="tickets_outline_tabstrip">
+	<ul>
+		<li class="labels"  data-tab-for="#tickets_outline_labels"><span>Labels</span></li>
+		<li class="flagged" data-tab-for="#tickets_outline_flagged"><span>Flagged</span></li>
+		<li class="archive fill-out" data-tab-for="#tickets_outline_archive"><span>Archive</span></li>
+	</ul>
+</section>
 
 <section id="tickets_outline_labels"  class="deskpro-tab-item">
 	Loading ...
 </section>
 <section id="tickets_outline_flagged" class="deskpro-tab-item">
-	<ul id="tickets_outline_flags_list" class="navSimpleList" style="margin-top: 4px;">
+	<ul class="source-list" id="tickets_outline_flags_list" style="margin-top: 4px;">
 		{% for color in flags %}
 			<li class="flag flag-{{color}} nav-flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color, 'view_name': 'flag', 'view_extra': color}) }}">
-				<a>
+				<span class="title">
 					<span>{{ flagnamer.flag_name(color, person) }}</span>
-					<span id="ticket_flag_{{color}}_count" class="listCounter">0</span>
-				</a>
+					<span id="ticket_flag_{{color}}_count" class="list-counter">0</span>
+				</span>
 			</li>
 		{% endfor %}
 	</ul>
 </section>
 <section id="tickets_outline_archive" class="deskpro-tab-item">
-	<ul id="tickets_outline_filters_list" class="navSimpleList" style="margin-top: 4px;">
+	<ul class="source-list" id="tickets_outline_filters_list" style="margin-top: 4px;">
 		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;view_name=spam">
-			<a>Spam</a>
+			<span class="title">Spam</span>
 		</li>
 		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;view_name=validating">
-			<a>Validating</a>
+			<span class="title">Validating</span>
 		</li>
 		<li class="with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending&amp;view_name=pending">
-			<a>Pending</a>
+			<span class="title">Pending</span>
 		</li>
 		<li class="with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
-			<a>Resolved</a>
+			<span class="title">Resolved</span>
 		</li>
 		<li class="with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
-			<a>Closed</a>
+			<span class="title">Closed</span>
 		</li>
-		<li>
-			<a class="with-route nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">Recycle Bin</a>
+		<li class="nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">
+			<span class="title">Recycle Bin</span>
 		</li>
 	</ul>
 </section>
-
 
 <section id="ticket_filter_group_editor">
 	<section class="filter-group-editor">

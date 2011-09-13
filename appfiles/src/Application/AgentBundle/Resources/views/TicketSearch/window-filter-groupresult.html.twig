@@ -1,9 +1,9 @@
 {% if grouped_info.counts[0].total > 0 %}
 	<li data-grouping-option="0">
-		<a>
+		<span class="title">
+			<span class="list-counter">{{ grouped_info.counts[0].total }}</span>
 			None
-			<span class="listCounter">{{ grouped_info.counts[0].total }}</span>
-		</a>
+		</span>
 	</li>
 {% endif %}
 {% for cat in grouped_info.group1_structure %}
@@ -16,21 +16,20 @@
 	{% endif %}
 	{% if count > 0 %}
 		<li data-grouping-option="{{ cat.id }}">
-			<a>
+			<span class="title">
+				<span class="list-counter">{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
 				{{ cat.title }}
-				<span class="listCounter">{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
-			</a>
+			</span>
 		</li>
 		{% if cat.children %}
 			{% for subcat in cat.children %}
 				{% set subcount = grouped_info.counts[subcat.id].total %}
 				{% if subcount > 0 %}
-					<li class="subList" data-grouping-option="{{ subcat.id }}">
-						<span class="borderLink"></span>
-						<a>
+					<li data-grouping-option="{{ subcat.id }}" class="sub-item">
+						<span class="title">
+							<span class="list-counter">{{ subcount }}</span>
 							{{ subcat.title }}
-							<span class="listCounter">{{ subcount }}</span>
-						</a>
+						</span>
 					</li>
 				{% endif %}
 			{% endfor %}
