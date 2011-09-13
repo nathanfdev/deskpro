@@ -27,7 +27,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			 * Selector that identifies the title within the li
 			 * @param {String}
 			 */
-			titleSelector: '.title:first',
+			titleSelector: '.title-edit:first',
 
 			/**
 			 * The data attribute that holds the category ID
@@ -67,7 +67,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		var list = this.list;
 
 		lis.addClass('dp-cat-li')
-			.wrapInner('<div class="dp-cat-item" />')
+			.wrapInner('<div class="item-wrap dp-cat-item" />')
 			.prepend('<div class="dp-cat-dropzone" />');
 
 		// Move existing subgroups back out of dp-cat-item
@@ -319,7 +319,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		var elPos = li.offset();
 		var elWidth = li.width() - 10;
 
-		var title = $('.title:first', li).text().trim();
+		var title = $('.title-edit:first', li).text().trim();
 		$('input.title', this.editTab).val(title);
 
 		elPos.top -= 5;
@@ -354,7 +354,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		if (li) {
 			var newTitle = $('input.title', this.editTab).val().trim();
-			var titleEl = $('.title:first', li);
+			var titleEl = $('.title-edit:first', li);
 			var oldTitle = titleEl.text().trim();
 			var dataId = li.data(this.options.dataId);
 

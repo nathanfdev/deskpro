@@ -80,7 +80,12 @@ section.source-section header span.settings {
  * Lists
 /*****************************************************************************/
 
-ul.source-list li.nav-selected > .title {
+ul.source-list li {
+	position: relative;
+}
+
+ul.source-list li.nav-selected > .title,
+ul.source-list li.nav-selected > .item-wrap > .title {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -116,7 +121,8 @@ ul.source-list li:last-of-type h3.title {
 	border-bottom: 1px solid #ced4d9;
 }
 
-ul.source-list li:not(.nav-selected) > h3.title:hover {
+ul.source-list li:not(.nav-selected) > h3.title:hover,
+ul.source-list li:not(.nav-selected) > .item-wrap > h3.title:hover {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -140,7 +146,8 @@ ul.source-list li span.title {
 	border-bottom: 1px solid transparent;
 }
 
-ul.source-list li:not(.nav-selected) > span.title:hover {
+ul.source-list li:not(.nav-selected) > span.title:hover,
+ul.source-list li:not(.nav-selected) > .item-wrap > span.title:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
 	-pie-background: linear-gradient(#edf0f2, #dde3e7);
@@ -171,7 +178,8 @@ ul.source-list li .list-counter {
 
 /* list counters are the bubbles with numbers */
 ul.source-list li:not(.nav-selected) .title:hover .list-counter,
-ul.source-list li.nav-selected > .title .list-counter {
+ul.source-list li.nav-selected > .title .list-counter,
+ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 	background-color: #2F4B67;
 }
 
@@ -227,6 +235,83 @@ ul.source-list li .elbow {
 	z-index: 9;
 	position: absolute;
 	text-indent: -100px;
+}
+
+.source-list .sub-toggle {
+    position: absolute;
+	left: 0px;
+	top: 11px;
+	z-index: 1;
+
+    display: block;
+    background: url(../../images/icons/tree-plus.gif) no-repeat 50% 50%;
+    cursor: pointer;
+    margin-right: 2px;
+    margin-top: 3px;
+    margin-left: 2px;
+    width: 9px;
+    height: 9px;
+    text-indent: -100px;
+    overflow: hidden;
+
+	opacity: 0.7;
+}
+
+.source-list .sub-expanded > .sub-toggle,
+.source-list .sub-expanded > div > .sub-toggle,
+.source-list .sub-toggle.open {
+    background-image: url(../../images/icons/tree-minus.gif);
+}
+
+.source-list .sub-toggle:hover {
+	opacity: 1;
+}
+
+.source-list li > ul.sub-group {
+	display: none;
+}
+
+.source-list li.sub-expanded > ul.sub-group {
+	display: block;
+}
+
+
+#dp_source ul.source-list li .sub-toggle {
+	visibility: hidden;
+}
+
+#dp_source ul.source-list li.has-children > .sub-toggle,
+#dp_source ul.source-list li.has-children > .dp-cat-item > .sub-toggle {
+	visibility: visible;
+}
+
+ul.source-list.with-tree ul.sub-group {
+	margin: 0;
+	border-top: none;
+}
+
+ul.source-list.with-tree li > .item-wrap > .title { padding-left: 16px; }
+ul.source-list.with-tree ul.sub-group li > .item-wrap > .title { padding-left: 26px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 36px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 46px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 56px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 66px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 76px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 86px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 96px; }
+
+ul.source-list.with-tree li > .item-wrap > .sub-toggle { left: 2px; }
+ul.source-list.with-tree ul.sub-group li > .item-wrap > .sub-toggle { left: 12px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 22px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 32px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 42px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 52px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 62px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 72px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 82px; }
+
+ul.source-list.with-tree ul.sub-group .sub-toggle {
+	top: 10px;
 }
 
 /*****************************************************************************
@@ -289,6 +374,10 @@ section.source-tabs ul li.on span {
 
 section.source-tabs ul li.fill-out span {
 	padding-right: 20px;
+}
+
+section.source-tabs.many ul li span {
+	padding: 6px 7px;
 }
 
 /*****************************************************************************
@@ -406,7 +495,8 @@ section.source-labels-list ul li:not(.nav-selected):hover span {
 	text-shadow: 0 1px 0 #42566B;
 }
 
-section.source-labels-list ul li.nav-selected > span {
+section.source-labels-list ul li.nav-selected > span,
+section.source-labels-list ul li.nav-selected > .item-wrap > span {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3) !important;
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3)) !important;
 	-pie-background: linear-gradient(#6baccc, #5182b3) !important ;
@@ -708,4 +798,81 @@ input.dp-cat-input:focus {
 	font-weight: bold;
 	display: block;
 	margin:  0 0 3px 0;
+}	
+
+
+
+#publish_outline ul.source-list li .edit-cat,
+#publish_outline ul.source-list li .delete-cat {
+	position: absolute;
+	right: 4px;
+	top: 7px;
+	z-index: 1;
+
+	width: 16px;
+	height: 16px;
+	display: none;
+	background: url(../../images/icons/cog.png) no-repeat 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	opacity: 0.7;
+	margin-top: 3px;
+	margin-right: 3px;
+}
+
+#publish_outline ul.source-list li .delete-cat {
+	background-image: url(../../images/icons/trash.png);
+}
+
+#publish_outline ul.source-list li .delete-cat {
+	right: 24px;
+}
+
+#publish_outline ul.source-list li:hover .edit-cat,
+#publish_outline ul.source-list li:hover .delete-cat {
+	opacity: 1;
+}
+
+#publish_outline ul.source-list.edit-mode .list-counter {
+	display: none;
+}
+
+#publish_outline ul.source-list.edit-mode .edit-cat,
+#publish_outline ul.source-list.edit-mode .delete-cat,
+#publish_outline ul.source-list.edit-mode .add-new {
+	display: block;
+}
+
+
+
+.deskpro-tab-item li.all .edit-mode,
+.deskpro-tab-item li.all .add-new {
+	position: absolute;
+	right: 4px;
+	top: 1px;
+	display: block;
+	background-repeat: no-repeat;
+	backgorund-position: 50% 50%;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+	margin-right: 3px;
+	margin-top: 2px;
+	z-index: 1;
+}
+
+.deskpro-tab-item li.all .edit-mode {
+	background-image: url(../../images/icons/cog.png);
+}
+
+.deskpro-tab-item .edit-mode li.all .edit-mode {
+	background-image: url(../../images/icons/cog_delete.png);
+}
+
+.deskpro-tab-item li.all .add-new {
+	background-image: url(../../images/icons/add.png);
+	right: 23px;
+	display: none;
 }

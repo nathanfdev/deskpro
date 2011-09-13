@@ -3,14 +3,14 @@
 		<span class="edit-cat">edit</span>
 		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>delete</span>
 		<span class="sub-toggle">expand</span>
-		<a data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
-			<span class="title">{{ cat.title }}</span>
-			<span class="list-counter listCounter"
+		<span class="title" data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
+			<span class="list-counter"
 				id="news_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"
 			>{{ counts[cat.id]|default(0) }}</span>
-		</a>
-		<ul class="subGroup sub-group">
+			<span class="title-edit">{{ cat.title }}</span>
+		</span>
+		<ul class="sub-group">
 		{% if cat.children|length %}
 			{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': cat.children, 'counts': counts, 'depth': depth+1 } %}
 		{% endif %}

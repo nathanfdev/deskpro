@@ -1,30 +1,31 @@
 <section id="publish_outline_glossary" class="deskpro-tab-item">
-	<ul class="navSimpleList">
+	<ul class="source-list">
 		<li class="all">
 			<span class="add-new tipped glossary-new-trigger" title="Add new glossary word">add</span>
-			<a style="cursor: default;" class="groupHead">
+			<span class="title">
 				<span class="glossary-word-count">{{ glossary_count }}</span> words
 			</span>
 		</li>
 	</ul>
-	<div class="listingTicketLabels">
-		<ul>
+
+	<section class="source-labels-list" id="ticket_labels_list">
+		<dl>
 			{% for letter,words in glossary_words %}
-				<li data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>
-					<a>{{ letter }}</a>
-					<ul class="listingTicketChild">
+				<dt data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>{{ letter }}</dt>
+				<dd data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>
+					<ul>
 						{% for id,word in words %}
 							<li>
-								<a class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
+								<span class="glossary-word-trigger word-{{id}}" data-word-id="{{id}}">
 								{{word}}
-								</a>
+								</span>
 							</li>
 						{% endfor %}
 					</ul>
-				</li>
+				</dd>
 			{% endfor %}
-		</ul>
-	</div>
+		</dl>
+	</section>
 
 	<div class="glossary-add-dlg dp-overlay" style="display: none; width: 400px;">
 		Add a new glossary word: <input type="text" class="word" value="" style="width: 150px;" /><br />
