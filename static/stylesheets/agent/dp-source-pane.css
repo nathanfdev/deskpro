@@ -140,7 +140,7 @@ ul.source-list li span.title {
 	border-bottom: 1px solid transparent;
 }
 
-ul.source-list li:not(.nav-selected) span.title:hover {
+ul.source-list li:not(.nav-selected) > span.title:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
 	-pie-background: linear-gradient(#edf0f2, #dde3e7);
