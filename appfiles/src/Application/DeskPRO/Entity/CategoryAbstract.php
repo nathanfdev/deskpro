@@ -141,7 +141,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	public function getTreeIds($including_this = true)
 	{
 		if (!isset($this->_structure['all_child_ids'])) {
-			$ids = App::getEntityRepository(get_class($this))->childrenIds($this);
+			$ids = App::getEntityRepository(get_class($this))->getIdsInTree($this);
 			$this->_structure['all_child_ids'] = $ids;
 		}
 

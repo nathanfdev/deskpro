@@ -400,6 +400,8 @@ class CategoryHierarchy
 	 */
 	public function getIdsInTree($parent_id, $incude_top = true)
 	{
+		$parent_id = is_object($parent_id) ? $parent_id->getId() : $parent_id;
+		
 		$ids = $this->getChildrenIds($parent_id);
 
 		if ($incude_top) {
