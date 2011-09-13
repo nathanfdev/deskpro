@@ -1,116 +1,115 @@
-<div class="yourPendingTicket">
-	<ul class="navList">
-		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
-			<a class="groupHead">
+<section class="source-section">
+	<ul class="source-list">
+		<li class="auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
+			<h3 class="title">
+				<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 				Ideas to validate
-				<span class="list-counter listCounter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
-			</a>
+			</h3>
 		</li>
-		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
-			<a class="groupHead">
+		<li data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
+			<h3 class="title">
+				<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 				Comments to validate
-				<span class="list-counter listCounter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
-			</a>
+			</h3>
 		</li>
-	</ul>
-</div>
-
-<nav id="ideas_outline_tabstrip" class="listTabNavTicket deskpro-tabstrip">
-	<div id="navTabStrip" class="desproTabStrip">
-		<ul>
-			<li data-tab-for="#ideas_outline_status"><a>Status</a></li>
-			<li data-tab-for="#ideas_outline_category"><a>Category</a></li>
-			<li data-tab-for="#ideas_outline_labels"><a>Labels</a></li>
-		</ul>
-		<br class="clear" />
-	</div>
-</nav>
-
-<section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status" style="margin-top: 8px;">
-	<ul class="navList">
-		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
-			<a class="groupHead">
-				New
-				<span class="list-counter listCounter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
-			</a>
-		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'active'}) }}">
-			<a class="groupHead">
-				Active
-				<span class="list-counter listCounter" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
-			</a>
-		</li>
-		{% for cat in active_status_cats %}
-			<li class="subItem with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
-				<a>
-					{{ cat.title }}
-					<span class="list-counter listCounter" id="ideas_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
-				</a>
-			</li>
-		{% endfor %}
-		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'closed'}) }}">
-			<a class="groupHead">
-				Closed
-				<span class="list-counter listCounter" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
-			</a>
-		</li>
-		{% for cat in closed_status_cats %}
-			<li class="subItem with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
-				<a>
-					{{ cat.title }}
-					<span class="list-counter listCounter" id="ideas_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
-				</a>
-			</li>
-		{% endfor %}
-		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'hidden'}) }}">
-			<a class="groupHead">
-				Hidden
-				<span class="list-counter listCounter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
-			</a>
-		</li>
-			<li class="subItem" data-route="listpane:">
-				<a>
-					Deleted
-					<span class="list-counter listCounter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
-				</a>
-			</li>
-			<li class="subItem" data-route="listpane:">
-				<a>
-					Spam
-					<span class="list-counter listCounter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
-				</a>
-			</li>
 	</ul>
 </section>
-<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies" style="margin-top: 8px;">
-	<ul class="navList">
+
+<section class="source-tabs" id="ideas_outline_tabstrip">
+	<ul>
+			<li data-tab-for="#ideas_outline_status"><span>Status</span></li>
+			<li data-tab-for="#ideas_outline_category"><span>Category</span></li>
+			<li data-tab-for="#ideas_outline_labels"><span>Labels</span></li>
+		</ul>
+</section>
+
+<section id="ideas_outline_status" class="deskpro-tab-item">
+	<ul class="source-list">
+		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
+			<span class="title">
+				<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
+				New
+			</span>
+		</li>
+		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'active'}) }}">
+			<span class="title">
+				<span class="list-counter" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
+				Active
+			</span>
+			<ul class="sub-group indented-list">
+				{% for cat in active_status_cats %}
+					<li class="indent" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
+						<span class="title">
+							<span class="list-counter" id="ideas_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
+							{{ cat.title }}
+						</span>
+					</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'closed'}) }}">
+			<span class="title">
+				<span class="list-counter" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
+				Closed
+			</span>
+			<ul class="sub-group indented-list">
+				{% for cat in closed_status_cats %}
+					<li class="indent" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
+						<span class="title">
+							<span class="list-counter" id="ideas_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
+							{{ cat.title }}
+						</span>
+					</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'hidden'}) }}">
+			<span class="title">
+				<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
+				Hidden
+			</span>
+			<ul class="sub-group indented-list">
+				<li class="indent" data-route="listpane:">
+					<span class="title">
+						<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
+						Deleted
+					</span>
+				</li>
+				<li class="indent" data-route="listpane:">
+					<span class="title">
+						<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
+						Spam
+					</span>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies">
+	<ul class="source-list">
 		{% for cat in idea_cats %}
-			<li data-route="listpane:{{ path('agent_ideas_category', {'category_id':cat.id}) }}" {% if cat.depth %}class="subItem"{% endif %}>
-				<a {% if cat.depth %}style="margin-left: {{ 2 * cat.depth }}px"{% else %}class="groupHead"{% endif %}>
+			<li data-route="listpane:{{ path('agent_ideas_category', {'category_id':cat.id}) }}">
+				<span class="title" {% if cat.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %}>
+					<span class="list-counter" id="ideas_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
 					{{ cat.title }}
-					<span class="list-counter listCounter" id="ideas_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
-				</a>
+				</span>
 			</li>
 		{% endfor %}
 	</ul>
 </section>
 <section id="ideas_outline_labels" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.labels">
-	<div class="listingTicketLabels">
-		<ul>
+	<section class="source-labels-list">
+		<dl>
 			{% for letter,labels in ideas_tag_index %}
-				<li>
-					<a>{{letter}}</a>
-					<ul class="listingTicketChild">
+				<dt>{{ letter }}</dt>
+				<dd>
+					<ul>
 						{% for label in labels %}
-							<li><a data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</a></li>
+							<li><span data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</span></li>
 						{% endfor %}
 					</ul>
-				</li>
-			{% else %}
-				<li>
-					View an idea to add labels to it.
-				</li>
+				</dd>
 			{% endfor %}
-		</ul>
-	</div>
+		</dl>
+	</section>
 </section>

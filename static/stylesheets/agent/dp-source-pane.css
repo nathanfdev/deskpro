@@ -210,6 +210,16 @@ ul.source-list ul.sub-group li:not(.nav-selected) .title:hover .list-counter {
 	background-color: #ADBDCC;
 }
 
+ul.source-list ul.sub-group.indented-list {
+	display: block;
+	border-top: none;
+	margin: 0;
+}
+
+ul.source-list ul.sub-group.indented-list li .title {
+	padding-left: 22px;
+}
+
 /* Subitems  put number to the left */
 ul.source-list li.sub-item .list-counter {
 	float: left;
@@ -269,6 +279,10 @@ ul.source-list li .elbow {
 
 .source-list li > ul.sub-group {
 	display: none;
+}
+
+.source-list li > ul.sub-group.show {
+	display: block;
 }
 
 .source-list li.sub-expanded > ul.sub-group {
