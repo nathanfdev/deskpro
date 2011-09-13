@@ -34,6 +34,8 @@ Change PHP Version
 
 Some versions of WAMP default to using an older version of PHP, but a newer version is still bundled with the app. To change the version, find the WAMP icon in the status area of the task bar (the green "W"). Click on it, and under PHP > Version, switch it to any version that is >= 5.3.2.
 
+Note that if you have Skype running you may need to close Skype because it uses Port:80 if started first.
+
 Create Database
 ===============
 
