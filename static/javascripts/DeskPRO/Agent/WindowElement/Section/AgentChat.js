@@ -111,8 +111,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		// Agents/teams tabs
 		this.listTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('#agent_chat_panel_listviews > li'),
-			context: $('#agent_chat_panel div.wrap:first')
+			triggerElements: $('#agent_chat_panel_listviews > li')
 		});
 	},
 
@@ -147,7 +146,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		chatWin.showMessage(info.author_id, info.message);
 		chatWin.open();
 	},
-	
+
 	//#########################################################################
 	//# Online agent handling
 	//#########################################################################
@@ -196,7 +195,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		// Show them in offline again
 		offlineLi.show();
-		
+
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt--;
 		this.onlineCountEl.html(countInt);
