@@ -572,3 +572,140 @@ section.source-labels-cloud ul li.nav-selected span {
 	display: block;
 	z-index: 1000004;
 }
+
+
+/*****************************************************************************
+ * Specific: Publish
+/*****************************************************************************/
+
+.dp-cat-dropzone {
+	margin-top: -4px;
+	height: 8px;
+}
+
+.dp-cat-dropzone.dp-cat-over {
+	background-color: #D8D07E;
+}
+
+.dp-cat-item.dp-cat-over {
+	background-color: #D8D07E;
+}
+
+.dp-cat-li.ui-draggable-dragging {
+	width: 198px;
+}
+
+.cat-editor-tab {
+	position: absolute;
+	background: rgba(242,242,242,0.98);
+	border-radius: 3px 3px 0 3px;
+	padding: 5px;
+	font-size: 11px;
+	border: 1px solid #BFC2C7;
+	border-right: 1px solid #BFC2C7;
+
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 4px;
+	-webkit-border-radius: 4px 0px 0px 4px;
+	border-radius: 4px 0px 0px 4px;
+
+	margin-left: 2px;
+
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	z-index: 999998;
+}
+
+.cat-editor-tab input.title {
+	width: 160px;
+}
+
+.cat-editor-shadow-breaker {
+	display: block;
+	position: absolute;
+	background: rgba(242,242,242,0.98);
+	height: 30px;
+	width: 6px;
+	z-index: 999999;
+}
+.cat-editor {
+	background: rgba(242,242,242,0.98);
+	border-radius: 3px 3px 0 3px;
+	border: 1px solid #aaaeb2;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	float: left;
+	font-size: 11px;
+	font-weight: bold;
+	color: #6D7073;
+	behavior: url(js/lib/PIE.htc);
+	position: relative;
+	text-shadow: 0 1px 0 #fff;
+	z-index: 1;
+
+	padding: 5px 35px 6px 8px;
+
+	z-index: 999998;
+}
+
+.cat-editor h5 {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.cat-editor-backdrop {
+	z-index: 999990 !important;
+}
+
+.cat-editor label {
+	display: block;
+	margin: 3px 0 3px 0;
+	font-weight: normal;
+}
+
+.cat-editor .close-trigger {
+    display: block;
+    width: 15px;
+    height: 15px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url("../../images/agent/imgSprt_ico.png") no-repeat scroll 0px -1561px transparent;
+    margin-top: 0;
+    cursor: pointer;
+	position: absolute;;
+	top: 2px;
+	right: 3px;
+}
+
+
+
+
+input.dp-cat-input {
+	background-color: #fff;
+	outline: none;
+	box-shadow: none;
+	border: 1px solid #C0C7CD;
+	font-size: 11px;
+	padding: 1px;
+	margin: 0;
+}
+
+input.dp-cat-input:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+
+#publish_outline_glossary li.all .add-new {
+	display: block;
+	right: 0px;
+}
+
+
+.glossary-edit-dlg .word {
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	display: block;
+	margin:  0 0 3px 0;
+}

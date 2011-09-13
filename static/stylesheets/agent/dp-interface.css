@@ -192,6 +192,36 @@ input[type="text"], input[type="password"], textarea {
 .tag-size9  span { font-size:18px !important; }
 .tag-size10 span { font-size:19px !important; }
 
+
+.overlay { display: none; }
+
+.overlay > h1 {
+	font-size: 12pt;
+	font-weight: bold;
+	padding: 0 0 5px 0;
+	margin: -10px -10px 15px -10px;
+	border-bottom: 2px solid #6B7075;
+}
+
+.overlay > .buttons {
+	margin-top: 25px;
+	padding-top: 10px;
+	border-top: 1px solid #6B7075;
+	text-align: center;
+}
+
+.deskpro-overlay.no-pad .overlay > .buttons {
+	margin-top: 15px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+
+.overlay.display-options {
+	width: 550px;
+}
+
+
 /*****************************************************************************
  * Button styles
 /*****************************************************************************/
