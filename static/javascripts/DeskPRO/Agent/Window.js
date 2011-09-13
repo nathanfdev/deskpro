@@ -1101,13 +1101,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			volume = options.volume;
 		}
 
+		volume = volume + 0.0;
+
 		var html = [];
 		html.push('<audio ');
 		if (volume != 1) {
 			html.push(' volume="' + volume + '" ');
-		}
-		if (options.autoplay) {
-			html.push(' autoplay="autoplay" ');
 		}
 		if (options.loop) {
 			html.push(' loop="loop" ');
@@ -1122,6 +1121,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		html = html.join('');
 
 		var el = $(html);
+		el.get(0).volume = volume;
 
 		if (options.destroyAfter) {
 			el.bind('ended', function() {
@@ -1129,12 +1129,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		console.log(options);
-
 		if (options.appendTo) {
 			$(options.appendTo).append(el);
 		} else {
 			el.appendTo('body');
+		}
+
+		if (options.autoplay) {
+			el.get(0).play();
 		}
 
 		return el;
@@ -1411,6 +1413,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				} else {
 					$('#sound_icon').removeClass('off');
 				}
+
+				$('audio').each(function() {
+					this.volume = self.volume;
+				});
 			}
 		});
 
