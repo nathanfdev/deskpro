@@ -101,7 +101,7 @@
 		{% for color in flags %}
 			<li class="flag flag-{{color}} nav-flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color, 'view_name': 'flag', 'view_extra': color}) }}">
 				<span class="title">
-					<span>{{ flagnamer.flag_name(color, person) }}</span>
+					<span class="flag flag-{{color}}">{{ flagnamer.flag_name(color, person) }}</span>
 					<span id="ticket_flag_{{color}}_count" class="list-counter">0</span>
 				</span>
 			</li>

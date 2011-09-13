@@ -461,6 +461,24 @@ section.source-labels-cloud ul li.nav-selected span {
 	top: 1px;
 }
 
+
+#tickets_outline_flags_list span.flag {
+	background: url(../../images/agent/flagIco.png) no-repeat;
+	background-repeat: no-repeat;
+	padding-left: 10px
+}
+#tickets_outline_flags_list span.flag-blue      { background-position: 0px 2px; }
+#tickets_outline_flags_list span.flag-green     { background-position: 0px -23px; }
+#tickets_outline_flags_list span.flag-orange    { background-position: 0px -48px; }
+#tickets_outline_flags_list span.flag-pink      { background-position: 0px -73px; }
+#tickets_outline_flags_list span.flag-purple    { background-position: 0px -98px; }
+#tickets_outline_flags_list span.flag-red       { background-position: 0px -123px; }
+#tickets_outline_flags_list span.flag-yellow    { background-position: 0px -148px; }
+
+
+
+
+
 #ticket_filter_group_editor {
 	position: absolute;
 	overflow: hidden;
