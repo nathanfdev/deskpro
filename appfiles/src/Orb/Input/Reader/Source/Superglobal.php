@@ -90,7 +90,7 @@ class Superglobal implements SourceInterface
 
 		// Process slashes
 		if (\get_magic_quotes_gpc()) {
-			Orb\Util\Arrays::func($this->array, 'stripslashes');
+			\Orb\Util\Arrays::func($this->array, 'stripslashes');
 		}
 	}
 

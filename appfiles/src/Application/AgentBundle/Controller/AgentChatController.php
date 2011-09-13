@@ -104,7 +104,7 @@ class AgentChatController extends AbstractController
 				'picture_url' => $sess->person->getPictureUrl(10)
 			);
 		}
-		*/
+		
 		return $this->createJsonResponse(array(
 			'agent_info'    => $agent_info,
 			'online_agents' => $online_agents

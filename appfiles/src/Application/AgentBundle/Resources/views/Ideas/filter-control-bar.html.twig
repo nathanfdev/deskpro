@@ -1,19 +1,20 @@
-<header class="control-bar">
-	<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
-
-	Ordered by
-	<button class="clean-gray xxx-small order-by-trigger" class="tipped" title="Change sorting">
-		<span class="label">
-			{% if 'popularity' in cache.criteria.order_by %}
-				Popularity
-			{% elseif 'num_ratings' in cache.criteria.order_by %}
-				Votes
-			{% else %}
-				Date
-			{% endif %}
-		</span>
-	</button>
-
+<header class="list-control-bar">
+	<ul>
+		<li>Ordered by </li>
+		<li class="order-by-menu-trigger"><a class="button">
+			<span class="label">
+				{% if 'popularity' in cache.criteria.order_by %}
+					Popularity
+				{% elseif 'num_ratings' in cache.criteria.order_by %}
+					Votes
+				{% else %}
+					Date
+				{% endif %}
+			</span>
+		</a></li>
+		<li><span class="sep"></span></li>
+		<li class="display-options display-options-trigger"><a>Display options</a></li>
+	</ul>
 	<ul class="order-by-menu" style="display: none">
 		<li data-field="popularity">Popularity</li>
 		<li data-field="votes">Votes</li>

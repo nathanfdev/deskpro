@@ -1,5 +1,5 @@
 {% if group_data %}
-	<header class="grouping-bar">
+	<header class="list-grouping-bar">
 		<ul>
 			<li class="{% if not subgroup %}on{% endif %} with-route" data-route="listpane:{{ subgroup_url|replace({'SUBGROUP_ID': ''}) }}">
 				<span class="prop">All:</span>
@@ -16,6 +16,6 @@
 				{% endif %}
 			{% endfor %}
 		</ul>
-		<br style="clear: both; height: 1px; overflow: hidden; "/>
+		<br class="clear" />
 	</header>
 {% endif %}

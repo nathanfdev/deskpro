@@ -29,15 +29,8 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 	{% include 'AgentBundle:Ideas:filter-grouping-bar.html.twig' %}
 	{% include 'AgentBundle:Ideas:filter-massactions-bar.html.twig' %}
 
-	<section class="ideas-simple-list deskpro-results-list">
+	<section class="ideas-simple-list list-listing">
 		{% include 'AgentBundle:Ideas:filter-page.html.twig' %}
 	</section>
-
-	<div class="loading-more">
-		Loading more results ...
-	</div>
-	<div class="no-more-results">
-		There are no more results.
-	</div>
 </div>
 </div>
