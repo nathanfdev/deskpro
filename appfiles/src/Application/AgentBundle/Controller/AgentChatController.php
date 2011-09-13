@@ -87,10 +87,6 @@ class AgentChatController extends AbstractController
 			);
 		}
 
-		// TODO [UI demo]
-		// - Revert real session sniffing for online agents instaed of random
-
-		/*
 		$sessions = App::getOrm()->createQuery("
 			SELECT s,p
 			FROM DeskPRO:Session s
@@ -109,13 +105,6 @@ class AgentChatController extends AbstractController
 			);
 		}
 		*/
-
-		// get random online agent id for demo
-		$rand = array_rand($agent_info);
-		if ($rand == $this->person['id']) $rand = array_rand($agent_info);
-
-		$online_agents[] = $rand;
-
 		return $this->createJsonResponse(array(
 			'agent_info'    => $agent_info,
 			'online_agents' => $online_agents

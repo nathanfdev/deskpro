@@ -3,11 +3,11 @@
 	<!-- BEGIN NOTIFICATION SECTION -->
 	<div id="DP-NotificationSection">
 		<div id="notificationWrap" class="left ">
-			<div class="notifications">
+			<div class="notifications" style="display: none;">
 				<div class="notifMenuWrap">
 					<div class="wrapNotif" onclick="toggle_visibility('notificationDropdown');">
-						<a class="iconImg mail">Tickets<span id="ticketsCounter" class="counter">99+</span></a>
-						<a class="iconImg chat">Chat<span id="chatCounter" class="counter">2</span></a>
+						<div class="notifMail" style="display: none;"><span class="counter">0</span></div>
+						<div class="notifChat" style="display: none;"><span class="counter">0</span></div>
 					</div>
 				</div>
 			</div>
@@ -15,49 +15,12 @@
 			<div id="notificationDropdown" style="display:none;">
 			<div class="notifDropdown" onclick="toggle_visibility('notificationDropdown');">
 				<div class="notifHead">
-					<div class="notifMail"><span class="counter">99+</span></div>
-					<div class="notifChat"><span class="counter">2</span></div>
+					<div class="notifMail" style="display: none;"><span class="counter">0</span></div>
+					<div class="notifChat" style="display: none;"><span class="counter">0</span></div>
 				</div>
 				<ul id="notification">
-					<li>
-						<a>New chat 2</a>
-						<span class="timeStamp">5 minutes<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>New chat</a>
-						<span class="timeStamp">1 hours ago<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>Email to user ticket participants</a>
-						<span class="timeStamp">4 hours ago<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>Company CC emails log</a>
-						<span class="timeStamp">9 hours ago<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>Invoices</a>
-						<span class="timeStamp">15 hours ago<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>New user from gateway</a>
-						<span class="timeStamp">18 hours ago<span class="dismissHover">Dismiss</span></span>
-					</li>
-					<li>
-						<a>Survey module</a>
-						<span class="timeStamp">yesterday<span class="dismissHover">Dismiss</span></span>
-
-					</li>
 					<li class="notifPaging">
-						<span>Page :</span>
 						<ul id="notifPages">
-							<li class="pages active"><a>1</a></li>
-							<li class="pages"><a>2</a></li>
-							<li class="pages"><a>3</a></li>
-							<li class="mark">...</li>
-							<li class="pages"><a>7</a></li>
-							<li class="pages"><a>8</a></li>
-							<li class="pages"><a>9</a></li>
 							<li class="pText right"><a>next</a></li>
 							<li class="mark right">|</li>
 							<li class="pText right"><a>last</a></li>

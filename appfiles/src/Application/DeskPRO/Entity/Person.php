@@ -1393,58 +1393,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getPictureUrl($size = 80, $secure = null)
 	{
-		// !TODO [demo UI]
-		// Sample avatars for agents
-		static $gravatars = array(
-			'face',
-			'http://www.gravatar.com/avatar/5b131a252b91dc91442d8b9772dc6045?',
-			'http://www.gravatar.com/avatar/1a33e7a69df4f675fcd799edca088ac2?',
-			'http://www.gravatar.com/avatar/c5c64af9b7505777b53e05857616d39f?',
-			'http://www.gravatar.com/avatar/6cf147a5459184fdd93a2328d03ebcb4?',
-			'http://www.gravatar.com/avatar/aac7e0386facd070f6d4b817c257a958?',
-			'http://www.gravatar.com/avatar/7da5bead8e47f9b9142a4bdd05975bac?',
-			'http://www.gravatar.com/avatar/c6f539874bcd98210c786b4314488753?',
-			'http://www.gravatar.com/avatar/ffb623edef4ff4597e125ddc8bad928e?',
-			'http://www.gravatar.com/avatar/84987b436214f52ec0b04cd1f8a73c3c?',
-			'http://www.gravatar.com/avatar/c63392ca320086522cf4d55cbf1d3808?',
-			'http://www.gravatar.com/avatar/8f0c9789bd69a98b3103bcefa878f1bb?',
-			'http://www.gravatar.com/avatar/0939030c354e4efefe655fa5107fd888?',
-			'http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?',
-			'http://www.gravatar.com/avatar/aa19dcc345fb0f1a6ddaf9b9863a678f?',
-			'http://www.gravatar.com/avatar/3751204a1a48ba86eb6bb83a96640318?',
-			'http://www.gravatar.com/avatar/4d346581a3340e32cf93703c9ce46bd4?',
-			'http://www.gravatar.com/avatar/777ec1b95dbc49dd05d724da9bef1edd?',
-			'http://www.gravatar.com/avatar/f45143c409f3deed51a65a238654f7f4?',
-			'http://www.gravatar.com/avatar/4e84843ebff0918d72ade21c6ee7b1e4?',
-			'http://www.gravatar.com/avatar/00e1dd94340133b9daf6e291fb766266?',
-			'http://www.gravatar.com/avatar/3cb9afe63d364690c0e188fb16473277?',
-			'http://www.gravatar.com/avatar/5b3b5ce04dd402124aba53142b3e47f6?',
-			'http://www.gravatar.com/avatar/e5dae0bd2dea55f013b2ffd49d6e6f1d?',
-			'http://www.gravatar.com/avatar/3f494b0b21d852f9d17e99b228beca08?',
-			'http://www.gravatar.com/avatar/9e8f7fd87fd2163010f98280f3e45a35?',
-		);
-		if ($this->is_agent && !$this->picture_blob && $gravatars) {
-			if (!isset($this->_demo_gravatar_url)) {
-
-				if (isset($gravatars[0]) AND $gravatars[0] == 'face') {
-					$url = App::get('router')->generate('serve_default_picture', array(
-						's' => $size,
-						'face' => 1,
-					), true);
-					$this->_demo_gravatar_url = $url;
-					unset($gravatars[0]);
-				} else {
-					$key = array_rand($gravatars);
-					$this->_demo_gravatar_url = $gravatars[$key];
-					unset($gravatars[$key]);
-				}
-			}
-		}
-
-		if (isset($this->_demo_gravatar_url)) {
-			return $this->_demo_gravatar_url . '&s=' . $size;
-		}
-
 		// Null means detect
 		if ($secure === null AND App::isWebRequest()) {
 			$request = App::getRequest();
