@@ -154,7 +154,7 @@ ul.source-list li:not(.nav-selected) span.title:hover {
 }
 
 ul.source-list li .list-counter {
-	font-family: Tahoma,Verdana,Arial,sans-serif;
+	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	font-size: 10px;
 	line-height: 14px;
 	color: #fff;
@@ -200,6 +200,33 @@ ul.source-list ul.sub-group .list-counter {
 
 ul.source-list ul.sub-group li:not(.nav-selected) .title:hover .list-counter {
 	background-color: #ADBDCC;
+}
+
+/* Subitems  put number to the left */
+ul.source-list li.sub-item .list-counter {
+	float: left;
+	margin: 0 3px 0 0;
+}
+
+ul.source-list li.sub-item.with-elbow .title {
+	padding-left: 22px;
+}
+
+ul.source-list li.sub-item {
+	position: relative;
+}
+
+ul.source-list li .elbow {
+	border-left: 1px solid #c2c7cc;
+	border-bottom: 1px solid #c2c7cc;
+ 	height: 0;
+	left: 12px;
+    padding: 3px 0 3px 6px;
+	position: absolute;
+	top: 5px;
+	z-index: 9;
+	position: absolute;
+	text-indent: -100px;
 }
 
 /*****************************************************************************

@@ -239,17 +239,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		});
 
 		// Update where the position of the container is relative to the outer wrapper
-		var top = 0;
-		var el = listEl;
-		while (el) {
-			top += el.position().top;
-			if (el.parent().get(0) == this.containerElement.get(0)) {
-				el = null;
-				break;
-			} else {
-				el = el.parent();
-			}
-		}
+		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
+		var top = 25;
 
 		this.controlRealEl.css({
 			'margin-top': top /* so the sync below doesnt need to worry about where it is */
@@ -270,7 +261,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			}
 
 			editEl.css({
-				top: pos.top
+				top: pos.top-25
 			});
 		}).bind(this));
 	},
@@ -289,7 +280,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		var containerTop = this.containerElement.position().top;
 		var listTop = this.listElement.position().top;
 
-		var realTop = listTop + containerTop;
+		var realTop = containerTop;
 
 		this.controlRealEl.css('top', realTop + 'px');
 	},

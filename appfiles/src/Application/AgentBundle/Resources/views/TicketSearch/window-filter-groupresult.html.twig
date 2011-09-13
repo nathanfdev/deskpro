@@ -25,7 +25,8 @@
 			{% for subcat in cat.children %}
 				{% set subcount = grouped_info.counts[subcat.id].total %}
 				{% if subcount > 0 %}
-					<li data-grouping-option="{{ subcat.id }}" class="sub-item">
+					<li data-grouping-option="{{ subcat.id }}" class="sub-item with-elbow">
+						<span class="elbow">|</span>
 						<span class="title">
 							<span class="list-counter">{{ subcount }}</span>
 							{{ subcat.title }}
