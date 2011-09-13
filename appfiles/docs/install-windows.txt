@@ -74,6 +74,20 @@ You may get many error alerts in `git submodule update`, you can just ignore tho
 
 After these commands have executed, you will have cloned all of the DeskPRO source files into the folder at `C:\wamp\www\DeskPRO`
 
+Using tortoisegit
+================
+
+Tortioisegit is a GUI for git for windows directly integrated into the filesystem. If you already have git working as per the instructions above it is trivial to install.
+
+1. Download from: http://code.google.com/p/tortoisegit/ and install using default options
+2. Run puttygen to generate a key. Save the private key to your filesystem. Copy the the public-key for pasting into OpenSSH authorized_keys file into github store of keys. 
+	
+Note: do not use the Save private key button - this is for a different purpose.
+
+3. Run pageant and load the private key
+4. You are now ready to use torioisegit from the filesystem. Right click to see the options.
+
+
 Edit Config
 ===========
 
