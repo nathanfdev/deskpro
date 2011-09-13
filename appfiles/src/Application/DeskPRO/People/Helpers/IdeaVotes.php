@@ -32,7 +32,7 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	/**
 	 * This is set if we're a session, we might be fetching votes based on
 	 * visitor id.
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
 	 */
 	protected $visitor;
@@ -93,15 +93,15 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 
 		if ($this->person['id']) {
 			$num_votes = App::getDb()->fetchColumn("
-				SELECT SUM(num_votes)
-				FROM idea_votes
-				WHERE person_id = ? AND is_returned = 0
+				SELECT SUM(rating)
+				FROM ratings
+				WHERE person_id = ? AND object_type = 'idea' #AND is_returned = 0
 			", array($this->person['id']));
 		} elseif ($this->visitor) {
 			$num_votes = App::getDb()->fetchColumn("
-				SELECT SUM(num_votes)
-				FROM idea_votes
-				WHERE visitor_id = ? AND is_returned = 0
+				SELECT SUM(rating)
+				FROM ratings
+				WHERE visitor_id = ? AND object_type = 'idea' #AND is_returned = 0
 			", array(App::getSession()->getVisitor()->getId()));
 		} else {
 			$num_votes = 0;
@@ -114,7 +114,7 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	}
 
 
-	
+
 	/**
 	 * Get how many votes this user has cast on a specific idea
 	 *
@@ -133,15 +133,15 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 
 		if ($this->person['id']) {
 			$num_votes_this = App::getDb()->fetchColumn("
-				SELECT num_votes
-				FROM idea_votes
-				WHERE person_id = ? AND idea_id = ?
+				SELECT rating
+				FROM ratings
+				WHERE person_id = ? AND object_type = 'idea' AND object_id = ?
 			", array($this->person['id'], $idea_id));
 		} elseif ($this->visitor) {
 			$num_votes_this = App::getDb()->fetchColumn("
-				SELECT num_votes
-				FROM idea_votes
-				WHERE visitor_id = ? AND idea_id = ?
+				SELECT rating
+				FROM ratings
+				WHERE visitor_id = ? AND object_type = 'idea' AND object_id = ?
 			", array($this->visitor['id'], $idea_id));
 		} else {
 			$num_votes_this = 0;
@@ -152,7 +152,7 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 		return $this->idea_votes[$idea_id];
 	}
 
-	
+
 
 	public function getShortCallableNames()
 	{

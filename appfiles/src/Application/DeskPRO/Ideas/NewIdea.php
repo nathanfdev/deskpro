@@ -74,7 +74,7 @@ class NewIdea
 		} else {
 			$vote->visitor = $this->visitor;
 		}
-		$vote['num_votes'] = $this->votes;
+		$vote['num_ratings'] = $this->votes;
 		$vote['date_created'] = new \DateTime();
 
 		App::getOrm()->persist($vote);

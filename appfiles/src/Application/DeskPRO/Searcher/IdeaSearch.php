@@ -15,14 +15,14 @@ class IdeaSearch extends SearcherAbstract
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_VOTES           = 'num_votes';
+	const TERM_NUM_RATINGS       = 'num_ratings';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
 	const TERM_LABEL           = 'label';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
-	const ORDER_VOTES = 'num_votes';
+	const ORDER_NUM_RATINGS = 'num_ratings';
 
 
 	/**
@@ -285,8 +285,8 @@ class IdeaSearch extends SearcherAbstract
 					});
 					break;
 
-				case self::TERM_VOTES:
-					$wheres[] = $this->_rangeMatch('ideas.num_votes', $op, $choice);
+				case self::TERM_NUM_RATINGS:
+					$wheres[] = $this->_rangeMatch('ideas.num_ratings', $op, $choice);
 					break;
 
 				case self::TERM_POPULAR:
@@ -296,7 +296,7 @@ class IdeaSearch extends SearcherAbstract
 					// must be 1
 					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
 					if ($choice) {
-						$wheres[] = $this->_rangeMatch('ideas.num_votes', 'gte', App::getSetting('core_ideas.popular_votes'));
+						$wheres[] = $this->_rangeMatch('ideas.num_ratings', 'gte', App::getSetting('core_ideas.popular_votes'));
 					}
 					break;
 

@@ -41,7 +41,6 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 
 	public function getHtml()
 	{
-		return '';
 		if ($this->section == 'portal') {
 			return $this->getContentHtml();
 		} else {

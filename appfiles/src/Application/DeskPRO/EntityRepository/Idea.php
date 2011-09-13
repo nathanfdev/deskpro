@@ -212,7 +212,7 @@ class Idea extends EntityRepository
 	public function getIdeas($status, $node = false, $sort = 'id', $num = 10)
 	{
 		if ($sort == 'date') $sort = 'id';
-		if (!in_array($sort, array('id', 'num_votes'))) $sort = 'id';
+		if (!in_array($sort, array('id', 'num_ratings'))) $sort = 'id';
 
 		if ($node) {
 			$node_ids = $node->getTreeIds(true);

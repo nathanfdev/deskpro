@@ -25,7 +25,7 @@
 		{% for idea in ideas %}
 			<tr>
 				<td width="80">
-					{{ idea.num_votes }} votes
+					{{ idea.total_rating }} votes
 				</td>
 				<td>
 					<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>

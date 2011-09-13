@@ -21,7 +21,7 @@
 >
 	<div class="votes-wrap">
 		<div class="votes">
-			<div class="count">{{idea.num_votes}}</div>
+			<div class="count">{{idea.total_rating}}</div>
 			<span>votes</span>
 		</div>
 		<button class="idea-btn" id="submit_vote_trigger" data-votes-used="{{ num_votes_this|default(0) }}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">vote</button>
@@ -88,9 +88,7 @@
 					</li>
 
 					{% for comment in comments %}
-						{% if comment.id != idea.first_comment.id %}{# < because comment 1 is actually the post #}
-							{% include 'UserBundle:Common:comment.html.twig' %}
-						{% endif %}
+						{% include 'UserBundle:Common:comment.html.twig' %}
 					{% endfor %}
 				</ul>
 			</div>

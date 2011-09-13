@@ -34,7 +34,7 @@ class IdeasController extends AbstractController
 		$this->person->loadHelper('IdeaVotes', array('visitor' => App::getSession()->getVisitor()));
 	}
 
-	
+
 	/**
 	 * Main index shows initial category listing
 	 */
@@ -43,7 +43,7 @@ class IdeasController extends AbstractController
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
 		$per_page = 20;
-		
+
 		if (!$status) {
 			$status = 'new';
 		}
@@ -55,7 +55,7 @@ class IdeasController extends AbstractController
 		$search_options = array(
 			'order_by' => '',
 		);
-		
+
 		if ($slug && $slug != 'all') {
 			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
 
@@ -249,7 +249,7 @@ class IdeasController extends AbstractController
 	}
 
 
-	
+
 	/**
 	 * View an idea
 	 *
@@ -263,27 +263,26 @@ class IdeasController extends AbstractController
 		}
 
 		if ($this->person['id']) {
-			App::getDb()->delete('idea_votes', array('idea_id' => $idea['id'], 'person_id' => $this->person['id']));
+			App::getDb()->delete('ratings', array('object_type' => 'idea', 'object_id' => $idea['id'], 'person_id' => $this->person['id']));
 		}
 
-		App::getDb()->delete('idea_votes', array('idea_id' => $idea['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
+		App::getDb()->delete('ratings', array('object_type' => 'idea', 'object_id' => $idea['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
 
-		$vote = new Entity\IdeaVote();
-		$vote['idea'] = $idea;
-		if ($this->person['id']) {
-			$vote['person'] = $this->person;
-		} else {
-			$vote['visitor'] = App::getSession()->getVisitor();
+		if ($this->in->getInt('rating')) {
+			$entity_name = 'DeskPRO:' . ucfirst($object_type);
+			$content_object = App::findEntity($entity_name, $object_id);
+
+			$content_rating = new ContentRating($content_object, $this->person, $this->session->getVisitor());
+			$content_rating->setRequest($this->request);
+
+			$this->em->beginTransaction();
+			$content_rating->setRating(
+				$this->in->getInt('rating'),
+				$this->in->getUint('log_search_id')
+			);
+			$this->em->flush();
+			$this->em->commit();
 		}
-		$vote['num_votes'] = $this->in->getUint('vote');
-		$vote['date_created'] = new \DateTime();
-
-		App::getOrm()->persist($vote);
-		App::getOrm()->flush();
-
-		$idea->recountVotes();
-		App::getOrm()->persist($idea);
-		App::getOrm()->flush();
 
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' => true));
