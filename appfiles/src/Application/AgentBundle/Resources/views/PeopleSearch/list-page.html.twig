@@ -1,20 +1,21 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for person in people %}
-		<article class="person person-{{person.id}}">
+		<article class="row-item person person-{{person.id}}">
 			<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
-			<div class="toprow">
-				<div class="left">
-					<span class="subject">
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
 						<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
 							{{ person.display_name }}
 						</a>
-					</span>
+					</h3>
 				</div>
 			</div>
+			<hr class="clear-top" />
 			{% if display_fields|length %}
 				{% set extra_info_row %}
 				{% set has_set = false %}
-				<div class="extra-info">
+				<div class="extra-fields">
 					<ul>
 						{% for field in display_fields %}
 							{% if field == 'email_address' and person.primary_email_address %}

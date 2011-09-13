@@ -244,13 +244,13 @@
 	position: relative;
 }
 
-.list-listing .extra_fields {
+.list-listing .extra-fields {
 	margin-left: 22px;
 	margin-top: 4px;
 	margin-bottom: 4px;
 }
 
-.list-listing .extra_fields ul li {
+.list-listing .extra-fields ul li {
 	float: left;
 	border: 1px solid #D4D7D9;
 	margin-right: 5px;
@@ -262,11 +262,11 @@
 	border-radius: 4px;
 }
 
-.list-listing .extra_fields ul li .prop-title {
+.list-listing .extra-fields ul li .prop-title {
 	color: #777D83;
 }
 
-.list-listing .extra_fields ul li .prop-val {
+.list-listing .extra-fields ul li .prop-val {
 	color: #777D83;
 }
 
@@ -290,6 +290,24 @@
 .list-listing .row-item .top-row .top-row-left{
 	width: 1000px;
 }
+
+.list-listing .row-item .top-row .top-row-left .votes {
+	position: relative;
+	top: 0px;
+	float: left;
+	background-color: #E8DD7F;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	margin-right: 5px;
+	padding: 0 2px 0 2px;
+	min-width: 12px;
+	display: block;
+	text-align: center;
+	
+	font-size: 9px;
+}
+
 .list-listing .row-item .top-row .top-row-left h3{
 	margin-top: 5px;
 }
@@ -340,6 +358,14 @@
 .list-listing .row-item .top-row-right .urgency{
 	float: right;
 	margin-left: 3px;
+}
+
+.list-listing .row-item .clear-top {
+	height: 0;
+	width: 0;
+	margin-top: 19px;
+	border: none;
+	overflow: hidden;
 }
 
 .list-listing .row-item .top-row-right .urgency a, .status{
@@ -464,4 +490,37 @@
 	font-size: 10px;
 	font-weight: bold;
 	line-height: 19px;
+}
+
+
+
+.visible-ticket-controls {
+	display: none;
+}
+.with-visible-ticket .visible-ticket-controls {
+	display: block;
+}
+
+.visible-related-content-controls {
+	display: none;
+}
+
+.with-related-content-controls .visible-related-content-controls {
+	display: block;
+}
+
+.visible-related-content-controls .related-unlink {
+	display: none;
+}
+
+.related-is-linked .visible-related-content-controls .related-unlink {
+	display: block;
+}
+.related-is-linked .visible-related-content-controls .related-link {
+	display: none;
+}
+
+.related-not-linkable .visible-related-content-controls .related-link,
+.related-not-linkable .visible-related-content-controls .related-unlink {
+	display: none;
 }

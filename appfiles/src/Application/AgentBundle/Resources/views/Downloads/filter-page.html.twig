@@ -1,26 +1,27 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
 	{% for download in results %}
-		<article class="download download-{{download.id}} downloads-{{download.id}} related-is-linkable" data-content-type="downloads" data-content-id="{{ download.id }}">
+		<article class="row-item download download-{{download.id}} downloads-{{download.id}} related-is-linkable" data-content-type="downloads" data-content-id="{{ download.id }}">
 			<input class="item-select" type="checkbox" value="{{download.id}}" />
-			<div class="toprow">
-				<div class="left">
-					<span class="subject">
-						<a class="with-route" data-route="page:{{ path('agent_downloads_view', {'download_id': download.id}) }}">{{ download.title }}</a>
-					</span>
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
+						<a data-route="page:{{ path('agent_downloads_view', {'download_id': download.id}) }}">{{ download.title }}</a>
+					</h3>
 				</div>
-				<div class="ticketinfo visible-ticket-controls">
+				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small dl-insert-link" data-download-id="{{ download.id }}">Insert Link</button>
 					<button class="clean-gray xxx-small dl-insert-attach" data-download-id="{{ download.id }}">Add Attachment</button>
 				</div>
-				<div class="ticketinfo visible-related-content-controls">
+				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small related-link">Add as related</button>
 					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
 				</div>
 			</div>
+			<hr class="clear-top" />
 			{% if display_fields|length %}
-				<div class="extra-info">
+				<div class="extra-fields">
 					<ul>
 						{% for field in display_fields %}
 							{% if field == 'category' %}

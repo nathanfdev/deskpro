@@ -1,26 +1,27 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
 	{% for article in results %}
-		<article class="article article-{{article.id}} articles-{{article.id}} related-is-linkable" data-content-type="articles" data-content-id="{{ article.id }}">
+		<article class="row-item article article-{{article.id}} articles-{{article.id}} related-is-linkable" data-content-type="articles" data-content-id="{{ article.id }}">
 			<input class="item-select" type="checkbox" value="{{article.id}}" />
-			<div class="toprow">
-				<div class="left">
-					<span class="subject">
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
 						<a class="with-route" data-route="page:{{ path('agent_kb_article', {'article_id': article.id}) }}">{{ article.title }}</a>
-					</span>
+					</h3>
 				</div>
-				<div class="ticketinfo visible-ticket-controls">
+				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small kb-insert-link" data-article-id="{{ article.id }}">Insert Link</button>
 					<button class="clean-gray xxx-small kb-insert-content" data-article-id="{{ article.id }}">Insert Content</button>
 				</div>
-				<div class="ticketinfo visible-related-content-controls">
+				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small related-link">Add as related</button>
 					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
 				</div>
 			</div>
+			<hr class="clear-top" />
 			{% if display_fields|length %}
-				<div class="extra-info">
+				<div class="extra-fields">
 					<ul>
 						{% for field in display_fields %}
 							{% if field == 'category' %}
