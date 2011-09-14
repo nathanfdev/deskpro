@@ -304,6 +304,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			html += '<a>';
 				html += '<span class="tab-title">'+tabData.title+'</span>';
 			html += '</a>';
+			html += '<span class="bound-fade"></span>';
 			html += '<span class="close"></span>';
 		html += '</li>';
 
