@@ -262,4 +262,26 @@ class Ticket extends EntityRepository
 
 		return false;
 	}
+
+
+	/**
+	 * Count tickets in each of the "archive" statuses:
+	 * - hidden.spam
+	 * - hidden.awaiting_validation
+	 * - resolved
+	 * - closed
+	 * - hidden.deleted
+	 *
+	 * @return array
+	 */
+	public function getArchiveCounts()
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
+			FROM tickets
+			WHERE
+				status IN ('pending', 'closed', 'resolved', 'hidden')
+			GROUP BY status_code
+		");
+	}
 }

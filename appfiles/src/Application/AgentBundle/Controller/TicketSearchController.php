@@ -146,6 +146,8 @@ class TicketSearchController extends AbstractController
 		# Misc
 		#------------------------------
 
+		$archive_counts = $this->em->getRepository('DeskPRO:Ticket')->getArchiveCounts();
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
@@ -153,6 +155,7 @@ class TicketSearchController extends AbstractController
 			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
+			'archive_counts' => $archive_counts,
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;

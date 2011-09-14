@@ -1,5 +1,5 @@
 <?php return array(
-	
+
 	'agent.not_found'               => 'Not Found',
 	'agent.error_page_not_found'    => 'The page you are looking for could not be found',
 
@@ -58,4 +58,6 @@
 
 	'agent.tab_loading_title' => 'Loading',
 	'agent.tab_loading' => 'Loading...',
+
+	'agent.recycle_bin' => 'Recycle Bin',
 );

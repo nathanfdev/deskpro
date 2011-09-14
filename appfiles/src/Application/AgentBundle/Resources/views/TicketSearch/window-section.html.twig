@@ -98,22 +98,40 @@
 <section id="tickets_outline_archive" class="deskpro-tab-item">
 	<ul class="source-list" id="tickets_outline_filters_list" style="margin-top: 4px;">
 		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;view_name=spam">
-			<span class="title">Spam</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_spam_count">{{ archive_counts['hidden.spam']|default(0) }}</span>
+				{{ phrase('agent.tickets.hidden_status_spam') }}
+			</span>
 		</li>
 		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;view_name=validating">
-			<span class="title">Validating</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_validating_count">{{ archive_counts['hidden.validating']|default(0) }}</span>
+				{{ phrase('agent.tickets.hidden_status_validating') }}
+			</span>
 		</li>
 		<li class="with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending&amp;view_name=pending">
-			<span class="title">Pending</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_pending_count">{{ archive_counts['pending']|default(0) }}</span>
+				{{ phrase('agent.tickets.status_pending') }}
+			</span>
 		</li>
 		<li class="with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
-			<span class="title">Resolved</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_resolved_count">{{ archive_counts['resolved']|default(0) }}</span>
+				{{ phrase('agent.tickets.status_resolved') }}
+			</span>
 		</li>
 		<li class="with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
-			<span class="title">Closed</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_closed_count">{{ archive_counts['closed']|default(0) }}</span>
+				{{ phrase('agent.tickets.status_closed') }}
+			</span>
 		</li>
 		<li class="nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">
-			<span class="title">Recycle Bin</span>
+			<span class="title">
+				<span class="list-counter" id="ticket_archive_recycle_bin_count">{{ archive_counts['hidden.deleted']|default(0) }}</span>
+				{{ phrase('agent.recycle_bin') }}
+			</span>
 		</li>
 	</ul>
 </section>
