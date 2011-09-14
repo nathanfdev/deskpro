@@ -187,14 +187,14 @@
 	box-shadow: 0 1px 0 #FFFFFF;
 	border-bottom: 1px solid #B3B8BD;
 	clear: both;
-	height: 31px;
+	height: 25px;
 	color: #959da6;
 	text-shadow: 0 1px 0 #fff;
 	font-size: 11px;
 	position: relative;
 }
 .list-selection-bar input.selection-control{
-	margin: 8px 5px 0;
+	margin: 6px 5px 0;
 }
 .list-selection-bar span.selected-count{
 	font-size: 11px;
@@ -219,7 +219,7 @@
 	
 	float: right;
 	font-size: 10px;
-	margin: 7px 10px 0 0;
+	margin: 4px 10px 0 0;
 	padding: 2px 5px 2px 5px;
 	
 	font-family: 'Helvetica Neue', Helvetica, sans-serif;
