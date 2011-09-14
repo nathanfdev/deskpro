@@ -24,6 +24,10 @@ pageMeta.viewType = 'simple-ext';
 	pageMeta.noResults = true;
 {% endif %}
 
+{% if filter.sys_name == 'agent' %}pageMeta.groupingIgnore=["agent","agent_team"];{% endif %}
+{% if filter.sys_name == 'agent_team' %}pageMeta.groupingIgnore=["agent","agent_team"];{% endif %}
+{% if filter.sys_name == 'unassigned' %}pageMeta.groupingIgnore=["agent"];{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

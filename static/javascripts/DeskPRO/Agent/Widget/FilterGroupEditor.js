@@ -111,6 +111,15 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			field.addClass('field-option');
 			$('.field-wrap', row).append(field);
 
+			// See if there are any options that need to be removed
+			var ignore = el.data('grouping-ignore');
+			if (ignore) {
+				ignore = ignore.split(',');
+				Array.each(ignore, function(ig) {
+					$('[value="' + ig + '"]', field).remove();
+				});
+			}
+
 			var self = this;
 			field.change(function() {
 				self.fireEvent('groupingChanged', [parseInt(id), field.val(), field, self]);

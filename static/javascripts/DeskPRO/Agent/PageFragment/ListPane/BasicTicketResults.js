@@ -171,6 +171,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			triggerElement: $('button.sub-group-trigger:first', this.contentWrapper),
 			menuElement: $('ul.sub-group-menu:first', this.contentWrapper)
 		});
+
+		if (this.meta.groupingIgnore) {
+			var groupByMenu = $('.group-by-menu', this.wrapper);
+			Array.each(this.meta.groupingIgnore, function(ig) {
+				$('[value="' + ig + '"], [data-group-by="' + ig + '"]', groupByMenu).remove();
+			});
+		}
 	},
 
 	_handleResize: function() {
