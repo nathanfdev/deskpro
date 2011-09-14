@@ -43,7 +43,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %}">
 {% if ticket.is_locked %}
 <div class="locked-bar" id="{{baseId}}_locked_bar">
-	<button class="clean-gray xx-small dismiss">Dismiss</button>
+	<button class="clean-white dismiss">Dismiss</button>
 	The ticket is in use by <cite>{{ ticket.locked_by_agent }}</cite>.
 </div>
 {% endif %}
@@ -53,8 +53,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
 
 <div class="macro-controls" style="display: none;">
-	<button class="clean-gray small save" id="macro_apply_btn">Apply Macro</button>
-	<button class="clean-gray small cancel" id="macro_cancel_btn">Cancel</button>
+	<button class="clean-white save" id="macro_apply_btn">Apply Macro</button>
+	<button class="clean-white cancel" id="macro_cancel_btn">Cancel</button>
 </div>
 
 <form class="value-form" style="display:none">
@@ -127,9 +127,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</dl>
 
 	<div class="controls">
-		<button class="clean-gray xx-small"><span>Assign to me</span></button>
-		<button class="clean-gray xx-small"><span>Assign to team support tier 1</span></button>
-		<button class="clean-gray xx-small"><span>Manage CC users</span></button>
+		<button class="clean-white arrow"><span>Assign to me</span></button>
+		<button class="clean-white arrow"><span>Assign to team support tier 1</span></button>
+		<button class="clean-white"><span>Manage CC users</span></button>
 		<br class="clear" />
 	</div>
 </section>
@@ -164,9 +164,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 
 	<div class="controls">
-		<button class="clean-gray xx-small"><span>Split Ticket</span></button>
-		<button class="clean-gray xx-small"><span>Merge Ticket</span></button>
-		<button class="clean-gray xx-small"><span>More</span></button>
+		<button class="clean-white"><span>Split Ticket</span></button>
+		<button class="clean-white"><span>Merge Ticket</span></button>
+		<button class="clean-white arrow"><span>More</span></button>
 	</div>
 
 	<footer class="time-info">
@@ -230,12 +230,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="reply-col">
 			<div class="reply-box-wrap"><textarea></textarea></div>
 			<footer>
-				<button class="clean-gray xx-small reply">Send Reply</button>
+				<button class="clean-white reply">Send Reply</button>
 				<div class="buttons-right">
-					<button class="clean-gray xx-small related-articles">Related Articles</button>
-					<button class="clean-gray xx-small text-snippets">Text Snippets</button>
-					<button class="clean-gray xx-small cc-people">CC People</button>
-					<button class="clean-gray xx-small attach-files">Attach Files</button>
+					<button class="clean-white related-articles">Related Articles</button>
+					<button class="clean-white text-snippets">Text Snippets</button>
+					<button class="clean-white cc-people">CC People</button>
+					<button class="clean-white attach-files">Attach Files</button>
 				</div>
 			</footer>
 		</div>
@@ -254,8 +254,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 
 <div class="macro-controls" style="display: none;">
-	<button class="clean-gray small save" id="macro_apply_btn">Apply Macro</button>
-	<button class="clean-gray small cancel" id="macro_cancel_btn">Cancel</button>
+	<button class="clean-white save" id="macro_apply_btn">Apply Macro</button>
+	<button class="clean-white cancel" id="macro_cancel_btn">Cancel</button>
 </div>
 
 </div></div> {# /scroll #}
