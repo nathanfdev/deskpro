@@ -93,14 +93,10 @@ class CoreExtension extends Extension
 	protected function loadTranslation(ContainerBuilder $container)
 	{
 		// BundleLoader
-		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
-			'core' => DP_ROOT . '/src/Application/DeskPRO/Resources/language',
-			'api' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
-			'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
-			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
-			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(
+			DP_ROOT . '/languages'
 		)));
-		$container->setDefinition('deskpro.core.translate_loader_bundle', $definition);
+		$container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
 		// DbLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
@@ -110,7 +106,7 @@ class CoreExtension extends Extension
 
 		// CombinationLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
-		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_bundle')));
+		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_system')));
 		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_db')));
 		$container->setDefinition('deskpro.core.translate_loader', $definition);
 

@@ -40,12 +40,17 @@ class DbLoader implements LoaderInterface
 
 		$group_in = "'" . implode("','", $groups) . "'";
 
-		//$langs = $locale->getAllParentIds();
 		$langs = array();
-		$langs[] = $locale['id'];
+		$langs[] = 1; // default deskpro lang
+
+		if ($locale->language) {
+			$langs[] = $locale->language->getId(); // the chosen lang
+		}
 
 		// null contains non-language language like cat names and such
 		$langs[] = '0';
+
+		$langs = array_unique($langs, \SORT_STRING);
 
 		$lang_in = implode(',', $langs);
 

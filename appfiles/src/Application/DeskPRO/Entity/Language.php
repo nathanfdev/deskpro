@@ -37,7 +37,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
 	 * @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -55,6 +55,14 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	/**
+	 * The language pack used with this lang
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="language_package", type="string", length=255)
+	 */
+	protected $language_package = '';
 
 	/**
 	 * @var array

@@ -120,7 +120,7 @@ class Translate implements PersonContextInterface
 		$this->_event_dispatcher = $event_dispatcher;
 	}
 
-	
+
 	/**
 	 * Set the current person context. This will also change the locale to their preference.
 	 *
@@ -364,7 +364,9 @@ class Translate implements PersonContextInterface
 			return false;
 		}
 
-		return substr($phrase_name, 0, $pos);
+		$parts = Strings::rexplode('.', $phrase_name, 2);
+
+		return $parts[0];
 	}
 
 
@@ -491,7 +493,7 @@ class Translate implements PersonContextInterface
 			}
 
 			if ($phrase_text) return $phrase_text;
-			
+
 			return '';
 		}
 
@@ -586,7 +588,7 @@ class Translate implements PersonContextInterface
 
 	/**
 	 * Check to see if a phrase exists
-	 * 
+	 *
 	 * @param string $phrase_name
 	 * @return bool
 	 */

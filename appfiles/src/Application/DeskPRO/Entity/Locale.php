@@ -63,7 +63,6 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $title;
 
-
 	public function getLanguageId()
 	{
 		if (!$this->language) {

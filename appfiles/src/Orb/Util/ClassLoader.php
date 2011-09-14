@@ -21,6 +21,13 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 	 */
 	protected $class_map = array();
 
+	/**
+	 * Maps a namespace to a callback that is called when it cant be loaded using
+	 * a normal map.
+	 *
+	 * @var array
+	 */
+	protected $namespace_callback = array();
 
 
 	/**
@@ -33,6 +40,18 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 		return $this->class_map;
 	}
 
+
+	/**
+	 * Register a new namespace callback loader
+	 *
+	 * @param string $namespace
+	 * @param callback $callback
+	 * @return void
+	 */
+	public function registerNamespaceCallback($namespace, $callback)
+	{
+		$this->namespace_callback[$namespace] = $callback;
+	}
 
 
 	/**
@@ -61,22 +80,29 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 	}
 
 
-
-	/**
-	 * Loads the given class or interface.
-	 *
-	 * @param string $class The name of the class
-	 */
-	public function loadClass($class_name)
+	public function findFile($class_name)
 	{
 		if (isset($this->class_map[$class_name])) {
 			$file = $this->class_map[$class_name];
 			if (file_exists($file)) {
-				require $file;
+				return $file;
 			}
-			return;
 		}
 
-		return parent::loadClass($class_name);
+		$file = parent::findFile($class_name);
+
+		if ($file === null) {
+			$m = null;
+			$ns_parts = explode('\\', $class_name, 2);
+			if (count($ns_parts) == 2) {
+				$ns = $ns_parts[0];
+				if (isset($this->namespace_callback[$ns])) {
+					$callback = $this->namespace_callback[$ns];
+					$file = call_user_func($callback, $class_name);
+				}
+			}
+		}
+
+		return $file;
 	}
 }
