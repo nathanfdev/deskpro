@@ -77,7 +77,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 
 		this._initPopout();
-		this._initTicketTabs();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
@@ -582,74 +581,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('filter-flagged.flag-changed', {
 			old_flag: old_flag,
 			new_flag: new_flag
-		});
-	},
-
-	//#################################################################
-	//# Ticket "tabs"
-	//#################################################################
-
-	_initTicketTabs: function() {
-
-		var self = this;
-
-		var bodyTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed-contents-wrap', this.contentWrapper),
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
-			onTabSwitch: function(info) {
-				if (info.tabEl.is('.ticket-log')) {
-					self._loadTicketTab_Log();
-				} else if (info.tabEl.is('.ticket-attach')) {
-					self._loadTicketTab_Attach();
-				} else if (info.tabEl.is('.ticket-related-content')) {
-					self._loadTicketTab_RelatedContent();
-				}
-			}
-		});
-
-		// Top tabs
-		/*
-		var topTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.container-tabbed-wrap.ticket-participants', this.contentWrapper),
-			triggerElements: $('.container-tabbed-tabs li', this.contentWrapper),
-			activeClassname: 'container-tabbed-tabs-active'
-		});
-		*/
-
-		/*
-		// Body tabs
-		var bodyTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed.messages-container', this.contentWrapper),
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
-			onTabSwitch: function(info) {
-				if (info.tabEl.is('.ticket-log')) {
-					self._loadTicketTab_Log();
-				} else if (info.tabEl.is('.ticket-attach')) {
-					self._loadTicketTab_Attach();
-				} else if (info.tabEl.is('.ticket-related-content')) {
-					self._loadTicketTab_RelatedContent();
-				}
-			}
-		});
-		*/
-	},
-
-	_loadTicketTab_RelatedContent: function() {
-		var contentEl = $('.tab-content.ticket-realted-content', this.wrapper);
-
-		if (!contentEl.is('.unloaded')) {
-			// Already loaded
-			return;
-		}
-
-		$.ajax({
-			url: this.getMetaData('tabRelatedContentUrl'),
-			type: 'GET',
-			dataType: 'html',
-			success: function(html) {
-				contentEl.html(html);
-				contentEl.removeClass('unloaded');
-			}
 		});
 	},
 

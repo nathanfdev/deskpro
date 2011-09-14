@@ -197,55 +197,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 </section>
 
-<section class="ticket-reply">
-	<nav>
-		<ul>
-			<li class="on">Reply</li>
-			<li>Note</li>
-		</ul>
-	</nav>
-	<section class="reply-area reply-tab deskpro-tab-item on">
-		<div class="options-col">
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>Assign to my team</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-				<label>Mark as pending KB Article</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_status]" />
-				<label>Set as awaiting user</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[close_tab]" />
-				<label>Close tab after reply</label>
-			</div>
-		</div>
-		<div class="reply-col">
-			<div class="reply-box-wrap"><textarea></textarea></div>
-			<footer>
-				<button class="clean-white reply">Send Reply</button>
-				<div class="buttons-right">
-					<button class="clean-white related-articles">Related Articles</button>
-					<button class="clean-white text-snippets">Text Snippets</button>
-					<button class="clean-white cc-people">CC People</button>
-					<button class="clean-white attach-files">Attach Files</button>
-				</div>
-			</footer>
-		</div>
-	</section>
-	<section class="note-tab deskpro-tab-item">
-
-	</section>
-</section>
-
-{% if false and ticket.hidden_status != 'deleted' %}
+{% if ticket.hidden_status != 'deleted' %}
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 {% endif %}
 

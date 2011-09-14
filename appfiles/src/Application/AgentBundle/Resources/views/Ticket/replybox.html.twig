@@ -1,86 +1,102 @@
-<div class="replyWrapper">
-	<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}" enctype="multipart/form-data">
+<section class="ticket-reply">
+	<nav>
+		<ul>
+			<li class="on">Reply</li>
+			<li>Note</li>
+		</ul>
+	</nav>
+	<section class="reply-area reply-tab deskpro-tab-item on">
 
-	<div class="fields-both">
+		<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+
 		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
 		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
 		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
-	</div>
 
-	<div class="replyType">
-		<ul>
-			<li id="{{baseId}}_replybox_replytab_btn" class="replyActive"><a>Reply</a></li>
-			<li id="{{baseId}}_replybox_notetab_btn"><a>Note</a></li>
-		</ul>
-	</div>
-
-	<div class="formReplyWrap">
-		<div class="formReplyHeading">
-			<div class="assignBtn ticket-snippets-trigger"><a>Text snippets</a></div>
-			<div class="assignBtn similar-tickets"><a>Suggested Knowledge Base articles</a></div>
-			<div class="assignBtn suggested-articles"><a>Similar Tickets</a></div>
-			<br class="clear" />
-		</div>
-		<div class="textBoxWrap">
-			<textarea class="commentBox" rows="3" cols="30"></textarea>
-		</div>
-		<div class="replyAction">
-			<div class="attachments">
-				<span class="label">Attacments</span>
-				<script class="template-upload" type="text/x-jquery-tmpl">
-					<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-				</script>
-				<script class="template-download" type="text/x-jquery-tmpl">
-					<li>
-						<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
-						<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-					</li>
-				</script>
-				<div class="file-input chooseFiles">
-					<input type="file" name="file-upload" multiple="multiple" size="5" />
-					<div id="uploadFiles" class="assignBtn"><a>Upload</a></div>
-				</div>
-				<div class="fileAttach file-list">
-					<ol>
-					</ol>
-				</div>
-			</div>
-			<div class="ccUsers">
-				<span class="label">CC Users</span>
-				<div class="chooseFiles">
-					<input type="text" class="new-cc" id="{{baseId}}_add_cc_tx" />
-					<div id="add" class="assignBtn add-cc-trigger"><a>Add</a></div>
-				</div>
-				<div class="listUser">
-					<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
-				</div>
-			</div>
-			<br class="clear" />
-		</div>
-		<div class="formCheckBox">
-			<div class="checkBoxAssign">
+		<div class="options-col">
+			<div>
 				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me and</label>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>My team</label>
+				<label>Assign to me</label>
 			</div>
-			<div class="checkBoxAssign">
+			<div>
+				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
+				<label>Assign to my team</label>
+			</div>
+			<div>
 				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
 				<label>Mark as pending KB Article</label>
 			</div>
-			<div class="checkBoxAssign">
+			<div>
 				<input type="checkbox" class="assignCheck" name="options[do_status]" />
 				<label>Set as awaiting user</label>
 			</div>
-			<div class="checkBoxAssign">
+			<div>
 				<input type="checkbox" class="assignCheck" name="options[close_tab]" />
 				<label>Close tab after reply</label>
 			</div>
 		</div>
-		<div id="addReplyButton">
-			<div class="replyButton"><a>Add Reply</a></div>
+		<div class="reply-col">
+			<div class="reply-box-wrap"><textarea></textarea></div>
+			<footer>
+				<button class="clean-white reply">Send Reply</button>
+				<div class="buttons-right">
+					<button class="clean-white related-articles">Related Articles</button>
+					<button class="clean-white text-snippets">Text Snippets</button>
+					<button class="clean-white cc-people">CC People</button>
+					<button class="clean-white attach-files">Attach Files</button>
+				</div>
+				<div class="attach-list-area" style="display: none"></div>
+				<div class="cc-list-area" style="display: none"></div>
+			</footer>
 		</div>
-	</div>
 
-	</form>
-</div>
+		</form>
+
+	</section>
+	<section class="note-tab deskpro-tab-item">
+
+		<form id="{{baseId}}_note_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+
+		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+
+		<div class="options-col">
+			<div>
+				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
+				<label>Assign to me</label>
+			</div>
+			<div>
+				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
+				<label>Assign to my team</label>
+			</div>
+			<div>
+				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
+				<label>Mark as pending KB Article</label>
+			</div>
+		</div>
+		<div class="reply-col">
+			<div class="reply-box-wrap"><textarea></textarea></div>
+			<footer>
+				<button class="clean-white reply">Send Reply</button>
+				<div class="buttons-right">
+					<button class="clean-white attach-files">Attach Files</button>
+				</div>
+				<div class="attach-list-area" style="display: none"></div>
+			</footer>
+		</div>
+
+		</form>
+
+	</section>
+
+	<script class="template-upload" type="text/x-jquery-tmpl">
+		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+	</script>
+	<script class="template-download" type="text/x-jquery-tmpl">
+		<li>
+			<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+			<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+		</li>
+	</script>
+</section>
