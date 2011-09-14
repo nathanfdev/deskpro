@@ -449,8 +449,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var els = [];
 
+		var selectedIndex = null;
+
 		counts1.each(function(i) {
+
 			var other = counts2.eq(i);
+
+			if (selectedIndex === null && ($(this).parent().parent().is('.nav-selected') || other.parent().parent().is('.nav-selected'))) {
+				selectedIndex = i;
+			}
 
 			var val1 = parseInt($(this).text().trim());
 			var val2 = parseInt(other.text().trim());
@@ -467,13 +474,30 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		// of change
 		els.addClass('loading');
 
+		if (selectedIndex !== null) {
+			if (check.is('.checked')) {
+				var runEl = $('#tickets_outline_sys_hold_filters li').eq(selectedIndex).addClass('nav-selected');
+			} else {
+				var runEl = $('#tickets_outline_sys_filters li').eq(selectedIndex).addClass('nav-selected');
+			}
+
+			DeskPRO_Window.runPageRouteFromElement($('h3', runEl).first());
+		}
+
 		window.setTimeout(function() {
+
+			var runEl = null;
+
 			if (check.is('.checked')) {
 				$('#tickets_outline_sys_filters').hide();
 				$('#tickets_outline_sys_hold_filters').show();
+
+				$('#tickets_outline_sys_filters li.nav-selected').removeClass('nav-selected');
 			} else {
 				$('#tickets_outline_sys_hold_filters').hide();
 				$('#tickets_outline_sys_filters').show();
+
+				$('#tickets_outline_sys_hold_filters li.nav-selected').removeClass('nav-selected');
 			}
 
 			els.removeClass('loading');
