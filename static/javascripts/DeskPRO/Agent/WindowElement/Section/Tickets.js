@@ -463,7 +463,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		els = $(els);
 
+		// Fake "loading" indicator gives impression
+		// of change
 		els.addClass('loading');
+
 		window.setTimeout(function() {
 			if (check.is('.checked')) {
 				$('#tickets_outline_sys_filters').hide();
@@ -474,7 +477,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			els.removeClass('loading');
-		}, 200);
+		}, 310);
 	},
 
 	//#########################################################################
