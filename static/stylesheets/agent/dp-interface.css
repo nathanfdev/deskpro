@@ -23,7 +23,7 @@ a, button, input, textarea, submit {
 
 body {
 	background-color: #eaebed;
-	font: normal 11px "Lucida Sans Unicode", "Trebuchet MS", "Lucida Grande", Geneva, Verdana, sans-serif;
+	font: normal 12px "Trebuchet MS", Arial, "Bitstream Vera Sans", sans-serif;
 	color: #324c66;
 }
 
@@ -40,6 +40,26 @@ a:hover {
 	text-decoration: none;
 }
 
+span.user-link, a.user-link {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 23px;
+	padding: 2px 0 2px 23px;
+}
+
+span.agent-link, a.agent-link {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 23px;
+	padding: 2px 0 2px 23px;
+}
+
+span.team-link, a.team-link {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 23px;
+	padding: 2px 0 2px 23px;
+}
 
 /*****************************************************************************
  * Window layout

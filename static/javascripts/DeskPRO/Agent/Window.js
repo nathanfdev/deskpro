@@ -1629,7 +1629,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
 			$('#tabNavigationPane > .deskproTabList > ul'),
-			new DeskPRO.Agent.TabManager('#deskproContent')
+			new DeskPRO.Agent.TabManager('#dp_content_wrap')
 		);
 		this.tabManager = this.pageTabStrip.tabManager;
 

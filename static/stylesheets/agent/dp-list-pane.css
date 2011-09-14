@@ -368,7 +368,7 @@
 	overflow: hidden;
 }
 
-.list-listing .row-item .top-row-right .urgency a, .status{
+.list-listing .row-item .top-row-right .urgency a {
 	background: #bf6060;
 	border-radius: 10px 10px 10px 10px;
 	padding: 1px 4px;

@@ -1,5 +1,8 @@
-<div data-message-id="{{message.id}}" class="message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}admin-message{% else %}user-message{% endif %}">
-	<div class="msgAvatar">
+<article
+	class="content-message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %}"
+	data-message-id="{{message.id}}"
+>
+	<div class="avatar">
 		<img
 			src="{{ message.person.getPictureUrl(20) }}"
 			alt=""
@@ -8,34 +11,32 @@
 			{% if not message.person.is_agent %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"{% endif %}
 		/>
 	</div>
-	<div class="msgBody">
-		<div class="lineWrapper blue">
-			<div class="msgMeta headblue">
-				<span class="ticketMsgEditBtn">#{{ loop.index }}</span>
-				<h4
-					{% if not message.person.is_agent %}
-						class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
-					{% endif %}
-				>{{message.person.name}}</h4>
-				<time class="timeago" datetime="{{idea.date_created|date('c')}}"></time>
-			</div>
-			<div class="msgText">
-				{{message.message_html|raw}}
-				{% if ticket_message_attachments[message.id] %}
-					<ul class="attachment-list">
-						{% for attach_id in ticket_message_attachments[message.id] %}
-							{% set ticket_attach = ticket_attachments[attach_id] %}
-							<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-								{% if ticket_attach.blob.isImage() %}
-									<a href="{{ ticket_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
-								{% endif %}
-								<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-								<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
-							</li>
-						{% endfor %}
-					</ul>
-				{%endif%}
-			</div>
+	<div class="content">
+		<header>
+			<span class="message-counter with-gear">#{{ loop.index }}</span>
+			<h4
+				{% if not message.person.is_agent %}
+					class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
+				{% endif %}
+			>{{message.person.name}}</h4>
+			<time class="timeago" datetime="{{idea.date_created|date('c')}}"></time>
+		</header>
+		<div class="body-text">
+			{{message.message_html|raw}}
+			{% if ticket_message_attachments[message.id] %}
+				<ul class="attachment-list">
+					{% for attach_id in ticket_message_attachments[message.id] %}
+						{% set ticket_attach = ticket_attachments[attach_id] %}
+						<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+							{% if ticket_attach.blob.isImage() %}
+								<a href="{{ ticket_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+							{% endif %}
+							<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+							<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+						</li>
+					{% endfor %}
+				</ul>
+			{%endif%}
 		</div>
 	</div>
-</div>
+</article>
