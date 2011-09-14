@@ -328,6 +328,20 @@ ul.source-list.with-tree ul.sub-group .sub-toggle {
 	top: 10px;
 }
 
+ul.source-list li.all {
+	margin-bottom: 10px;
+	background: #E0E6EC;
+}
+
+ul.source-list li.all .title {
+	border-bottom: 1px solid #B4BABF;
+	padding-bottom: 3px;
+}
+
+ul.source-list li.all .title:hover {
+	border-top: 1px solid transparent !important;
+}
+
 /*****************************************************************************
  * Tab Strip
 /*****************************************************************************/
