@@ -19,7 +19,7 @@
 #dp_content_wrap{
 	text-shadow: 0 1px 0 #fff;
 	position: absolute;
-	top: 31px;
+	top: 27px;
 	right: 0;
 	bottom: 0;
 	left: 0;
@@ -400,6 +400,7 @@ nav.page-tabs {
 	behavior: url(../../static/vendor/PIE.htc);
 	height: 27px;
 	clear: both;
+	border-top: 1px solid #C2C6CC;
 	border-bottom: 1px solid #c2c6cc;
 	position: relative;
 }
@@ -417,6 +418,9 @@ nav.page-tabs ul li {
 	float: left;
 }
 
+nav.page-tabs ul li.on {
+	background-color: #fff;
+}
 
 /*****************************************************************************
  * Mid page section
@@ -574,7 +578,7 @@ article.content-message .content .body-text {
 
 
 /*****************************************************************************
- * Footer reply area
+ * Tickets
 /*****************************************************************************/
 
 ul.tickets-msg-controls {
@@ -589,4 +593,121 @@ ul.tickets-msg-controls li {
 
 ul.tickets-msg-controls li input {
 	margin-right: 4px;
+}
+
+.ticket-hidden-bar {
+	background-color: #E2E3E6;
+	padding: 3px 8px 3px 8px;
+	font-size: 11px;
+	text-align: center;
+	border-bottom: 1px solid #CDCED2;
+}
+
+
+
+
+section.ticket-reply {
+	background-color: #fff;
+	border-top: 1px solid #ABAFB5;
+	position: relative;
+}
+
+section.ticket-reply nav {
+	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
+	behavior: url(../../static/vendor/PIE.htc);
+	height: 27px;
+	clear: both;
+	border-bottom: 1px solid #c2c6cc;
+	position: relative;
+}
+
+
+section.ticket-reply nav ul li {
+	float: left;
+	border-right: 1px solid #C2C6CC;
+	cursor: pointer;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 20px;
+	color: #738699;
+	padding: 4px 15px;
+	float: left;
+}
+
+section.ticket-reply nav ul li.on {
+	background-color: #fff;
+}
+
+section.ticket-reply section.reply-area {
+	position: relative;
+}
+
+section.ticket-reply section.reply-area .options-col {
+	float: right;
+	width: 150px;
+	font-size: 10px;
+	padding-top: 7px;
+}
+
+section.ticket-reply section.reply-area .options-col .extra-buttons {
+	margin: 10px 8px 0 0px;
+	background-color: #E8E8E8;
+	border: 1px solid #CCCCCC;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+section.ticket-reply section.reply-area .options-col .extra-buttons li:first-child {
+	border-top: none;
+}
+
+section.ticket-reply section.reply-area .options-col .extra-buttons li {
+	border-top: 1px solid #CCCCCC;
+	padding: 3px 5px 3px 5px;
+	cursor: pointer;
+}
+
+section.ticket-reply section.reply-area .reply-col {
+	margin-right: 153px;
+	position: relative;
+	height: 200px;
+}
+
+section.ticket-reply section.reply-area .reply-col .reply-box-wrap {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	left: 8px;
+	bottom: 35px;
+}
+
+section.ticket-reply section.reply-area .reply-col .reply-box-wrap textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+	margin: 0;
+	padding: 0;
+	
+	border: 1px solid #C8CACC
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+}
+
+section.ticket-reply section.reply-area .reply-col footer {
+	position: absolute;
+	height: 25px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+section.ticket-reply section.reply-area .reply-col button.reply {
+	margin-left: 8px;
+}
+
+section.ticket-reply section.reply-area .reply-col .buttons-right {
+	float: right;
 }
