@@ -52,11 +52,4 @@
 	'agent.tickets.filter_participant' => 'Tickets I Follow',
 	'agent.tickets.filter_unassigned'  => 'Unassigned Tickets',
 	'agent.tickets.filter_all'         => 'All Tickets',
-
-	'agent.tickets.filter_agent_w_hold'       => 'My Tickets',
-	'agent.tickets.filter_agent_team_w_hold'  => 'My Team\'s Tickets',
-	'agent.tickets.filter_agent_teams_w_hold' => 'My Teams\' Tickets',
-	'agent.tickets.filter_participant_w_hold' => 'Tickets I Follow',
-	'agent.tickets.filter_unassigned_w_hold'  => 'Unassigned Tickets',
-	'agent.tickets.filter_all_w_hold'         => 'All Tickets',
 );

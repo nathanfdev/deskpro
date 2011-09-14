@@ -194,6 +194,68 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		if ($this->sys_name) {
+			$tr = App::getTranslator();
+
+			switch ($this->sys_name) {
+				case 'agent':
+				case 'agent_w_hold':
+					return $tr->phrase('agent.tickets.filter_agent');
+
+				case 'agent_team':
+				case 'agent_team_w_hold':
+
+					$phrase = 'agent.tickets.filter_agent_team';
+
+					$person = App::getCurrentPerson();
+					if ($person && $person->isAgent()) {
+						$person->loadHelper('Agent');
+
+						if (count($person->getTeams()) > 1) {
+							$phrase = 'agent.tickets.filter_agent_teams';
+						}
+					}
+
+					return $tr->phrase($phrase);
+
+				case 'participant':
+				case 'participant_w_hold':
+					return $tr->phrase('agent.tickets.filter_participant');
+
+				case 'unassigned':
+				case 'unassigned_w_hold':
+					return $tr->phrase('agent.tickets.filter_unassigned');
+
+				case 'all':
+				case 'all_w_hold':
+					return $tr->phrase('agent.tickets.filter_all');
+			}
+		}
+
+		if (!$this->title && $this->sys_name) {
+			return $this->sys_name;
+		}
+
+		return $this->title;
+	}
+
+
+	/**
+	 * Gets the actual value in the title field.
+	 *
+	 * @return string
+	 */
+	public function getRawTitle()
+	{
+		return $this->title;
+	}
+
+
+	/**
 	 * Get an array of criteria phrases.
 	 *
 	 * @return array

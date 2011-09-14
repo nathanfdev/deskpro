@@ -19,15 +19,7 @@
 				>
 					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
-							{% if app.user.teams|length > 1 %}
-								{{ phrase('agent_tickets.filter_agent_team') }}
-							{% else %}
-								{{ phrase('agent_tickets.filter_agent_teams') }}
-							{% endif %}
-						{% else %}
-							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
-						{% endif %}
+						{{ filter.title }}
 					</h3>
 					<ul class="sub-group" style="display: none;"></ul>
 				</li>
@@ -43,15 +35,7 @@
 				>
 					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-						{% if filter.sys_name == 'agent_team' or filter.sys_name == 'agent_team_w_hold' %}
-							{% if app.user.teams|length > 1 %}
-								{{ phrase('agent_tickets.filter_agent_team') }}
-							{% else %}
-								{{ phrase('agent_tickets.filter_agent_teams') }}
-							{% endif %}
-						{% else %}
-							{{ phrase('agent_tickets.filter_' ~ filter.sys_name) }}
-						{% endif %}
+						{{ filter.title }}
 					</h3>
 					<ul class="sub-group" style="display: none;"></ul>
 				</li>
