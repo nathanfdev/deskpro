@@ -106,6 +106,11 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		if (!$this->person->getHasTeams()) {
+			unset($sys_filters['agent_team']);
+			unset($sys_filters_unordered['agent_team_w_hold']);
+		}
+
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
 
 		// Summary of terms for all filters

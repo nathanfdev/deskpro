@@ -17,8 +17,14 @@
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
-					{% if filter.sys_name == 'agent_team' %}data-grouping-ignore="agent,agent_team"{% endif %}
-					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent"{% endif %}
+					{% if filter.sys_name == 'agent_team' %}
+						{% if app.user.is_single_team %}
+							data-grouping-ignore="agent,agent_team"
+						{% else %}
+							data-grouping-ignore="agent"
+						{% endif %}
+					{% endif %}
+					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
 				>
 					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>

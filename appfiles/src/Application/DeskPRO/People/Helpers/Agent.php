@@ -16,6 +16,9 @@ use \Application\DeskPRO\Entity;
 
 /**
  * Helper added to People who are agents, works with agent-specific stuff.
+ *
+ * // TODO: Team related things: Store a flag somewhere to see if any teams exist in the db.
+ * // if they dont, all team realted stuff can be optimized a bit
  */
 class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
@@ -53,6 +56,13 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 			'team' => 'getTeam',
 			'getTeam' => 'getTeam',
+
+			'isSingleTeam' => 'isSingleTeam',
+			'getIsSingleTeam' => 'isSingleTeam',
+			'countTeams' => 'countTeams',
+			'getCountTeams' => 'countTeams',
+			'hasTeams' => 'hasTeams',
+			'getHasTeams' => 'hasTeams',
 		);
 	}
 
@@ -128,6 +138,43 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		}
 
 		return $this->_agent_team_ids;
+	}
+
+
+	/**
+	 * Count how many teams the user belongs to
+	 *
+	 * @return int
+	 */
+	public function countTeams()
+	{
+		return count($this->getTeams());
+	}
+
+
+	/**
+	 * Does the user belong to exactly 1 team?
+	 *
+	 * @return bool
+	 */
+	public function isSingleTeams()
+	{
+		if ($this->countTeams() == 1) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Does this user belong to at least one team?
+	 *
+	 * @return bool
+	 */
+	public function hasTeams()
+	{
+		return ($this->countTeams() > 0);
 	}
 
 
