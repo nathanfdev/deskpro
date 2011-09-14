@@ -282,7 +282,7 @@ header.page-header .meta-line .category span {
 	position: relative;	
 	color: #697b8c;
 	font-size: 11px;
-	font-weight: bold;
+	font-weight: normal;
 	float: left;
 	padding: 5px;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -347,7 +347,7 @@ section.description-area {
 
 section.description-area .info-list {
 	color: #5B708C;
-	font-size: 11px;
+	font-size: 10px;
 }
 
 section.description-area .info-list dl { line-height: 20px; }
@@ -362,7 +362,7 @@ section.description-area .info-list dt {
 section.description-area .info-list dd {
 	margin-left: 110px;
 	text-align: left;
-	font-weight: bold;
+	font-weight: normal;
 	line-height: 20px;
 }
 
@@ -412,6 +412,7 @@ nav.page-tabs ul li {
 	cursor: pointer;
 	font-size: 11px;
 	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
 	line-height: 20px;
 	color: #738699;
 	padding: 4px 15px;
@@ -454,7 +455,7 @@ section.mid-page footer.time-info ul li {
 
 dl.table-list {
 	margin: 5px 10px 5px 10px;
-	font-size: 11px;
+	font-size: 10px;
 }
 
 dl.table-list         dt { width: 80px;  }    dl.table-list dd         { margin-left: 85px;  }
@@ -473,7 +474,6 @@ dl.table-list dt {
 	float: left;
 	
 	color: #7E7E7E;
-	font-weight: bold;
 	
 	margin-top: 8px;
 }
@@ -583,7 +583,7 @@ article.content-message .content .body-text {
 
 ul.tickets-msg-controls {
 	float: right;
-	font-size: 11px;
+	font-size: 10px;
 }
 
 ul.tickets-msg-controls li {
@@ -630,6 +630,7 @@ section.ticket-reply nav ul li {
 	cursor: pointer;
 	font-size: 11px;
 	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
 	line-height: 20px;
 	color: #738699;
 	padding: 4px 15px;

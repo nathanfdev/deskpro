@@ -383,6 +383,7 @@ section.source-tabs ul li {
 section.source-tabs ul li span {
 	color: #959da6;
 	font-size: 11px;
+	font-family: Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #fff;
 	padding: 6px 11px;
@@ -755,6 +756,7 @@ section.source-labels-cloud ul li.nav-selected span {
 	float: left;
 	font-size: 11px;
 	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
 	color: #6D7073;
 	behavior: url(js/lib/PIE.htc);
 	position: relative;
