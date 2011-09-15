@@ -26,9 +26,9 @@ class BundleLoader implements LoaderInterface
 
 
 
-	public function load($groups, $locale)
+	public function load($groups, $language)
 	{
-		// We dont actually use locale here. the bundle loader
+		// We dont actually use lang here. the bundle loader
 		// is always english, used as the default.
 
 		if (!is_array($groups)) $groups = array($groups);

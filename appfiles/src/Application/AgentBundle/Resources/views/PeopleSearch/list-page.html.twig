@@ -29,9 +29,9 @@
 										({{ person.organization_position }})
 									{% endif %}
 								</li>
-							{% elseif field == 'locale' %}
+							{% elseif field == 'language' %}
 								{% set has_set = true %}
-								<li><span class="prop-val email_address">{{person.locale.title}}</span></li>
+								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
 							{% else %}
 								{% for f in person_field_defs %}
 									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}

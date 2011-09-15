@@ -1,20 +1,14 @@
 <?php
 ##BEGIN:locale.language##
-
 $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = 'Default Engligh';
+$l['locale'] = 'en_US';
+$l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 \Application\DeskPRO\App::getOrm()->persist($l);
 \Application\DeskPRO\App::getOrm()->flush();
 
 
 ##BEGIN:locale.locale##
-
-$l = new \Application\DeskPRO\Entity\Locale();
-$l['title'] = 'English (US)';
-$l['language_id'] = 1;
-$l['locale'] = 'en_US';
-\Application\DeskPRO\App::getOrm()->persist($l);
-\Application\DeskPRO\App::getOrm()->flush();
 
 
 ##BEGIN:create_filter.agent##

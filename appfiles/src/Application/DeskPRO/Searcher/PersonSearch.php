@@ -18,8 +18,8 @@ class PersonSearch extends SearcherAbstract
 
 	const TERM_ID               = 'person_id';
 	const TERM_ORGANIZATION     = 'person_organization';
+	const TERM_LANGUAGE         = 'person_language';
 	const TERM_USERGROUP        = 'person_usergroup';
-	const TERM_LOCALE           = 'person_locale';
 	const TERM_EMAIL            = 'person_email';
 	const TERM_EMAIL_DOMAIN     = 'person_email_domain';
 	const TERM_NAME             = 'person_name';
@@ -226,13 +226,13 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
-                case self::TERM_LOCALE:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('core.locale'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Locale')->getLocaleNames((array)$choice);
+                case self::TERM_LANGUAGE:
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core.language'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:Language')->getTitles((array)$choice);
 						return $titles;
 					});
 
-					$wheres[] = $this->_choiceMatch("$people_table.locale_id", $op, $choice, true);
+					$wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
 					break;
 				case self::TERM_ORGANIZATION:
                     $this->summary[] = $this->_choiceSummary($tr->phrase('core.organization'), $op, $choice, function($choice) {

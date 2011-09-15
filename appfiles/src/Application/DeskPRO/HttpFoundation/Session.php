@@ -18,12 +18,12 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
- * Session is able to load up a user, their locale etc.
+ * Session is able to load up a user, their language etc.
  */
 class Session extends \Symfony\Component\HttpFoundation\Session implements \ArrayAccess, \IteratorAggregate
 {
 	public static $track_from_input = false;
-	
+
 	/**
 	 * The person this session belongs to
 	 * @var \Application\DeskPRO\Entity\Person
@@ -31,10 +31,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	protected $person;
 
 	/**
-	 * The lcoale used for this user
-	 * @var \Application\DeskPRO\Entity\Locale
+	 * The lang used for this user
+	 * @var \Application\DeskPRO\Entity\Language
 	 */
-	protected $locale;
+	protected $language;
 
 	/**
 	 * The current visitor
@@ -113,7 +113,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		return $this->visitor;
 	}
 
-	
+
 
 	/**
 	 * Get the logged in Person
@@ -147,48 +147,42 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 
 	/**
-	 * Get the locale code. Note that this is the string code xx_XX. Use
-	 * getLocaleObject if you want the object.
-	 *
-	 * (It's the code because some Symfony components expects it to be).
+	 * Get the locale code. Note that this is the string code xx_XX.
 	 *
 	 * @return string
 	 */
 	public function getLocale()
 	{
-		$locale = $this->getLocaleObject();
-
-		return $locale['locale'];
+		return $this->getLanguage()->getLocale();
 	}
 
 
-
 	/**
-	 * Get the locale object the user wants.
+	 * Get the language object
 	 *
-	 * @return Application\DeskPRO\Entity\Locale
+	 * @return \Application\DeskPRO\Entity\Language
 	 */
-	public function getLocaleObject()
+	public function getLanguage()
 	{
-		if ($this->locale !== null) return $this->locale;
+		if ($this->language !== null) return $this->language;
 
 		$person = $this->getPerson();
-		if ($person['id']) {
-			$this->locale = $person['locale'];
-		} elseif ($this->get('locale_id')) {
-			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find($this->get('locale_id'));
+		if ($person && !$person->isGuest()) {
+			$this->language = $person->getLanguage();
+		} elseif ($this->get('language_id')) {
+			$this->language = App::getEntityRepository('DeskPRO:Language')->find($this->get('language_id'));
 		}
 
-		if (!$this->locale) {
-			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find(App::getSetting('core.default_locale_id'));
+		if (!$this->language) {
+			$this->language = App::getEntityRepository('DeskPRO:Language')->getDefault();
 		}
 
 		// still no locale? we might be pre-install, lets use the fake one
-		if (!$this->locale) {
-			$this->locale = \Application\DeskPRO\Translate\SystemLocale::getInstance();
+		if (!$this->language) {
+			$this->language = \Application\DeskPRO\Translate\SystemLanguage::getInstance();
 		}
 
-		return $this->locale;
+		return $this->language;
 	}
 
 

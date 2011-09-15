@@ -49,8 +49,8 @@
 	</div>
 </div>
 {% endif %}
-{% if term_options.locales %}
-<div class="type" title="Locale" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_locale">
+{% if term_options.languages %}
+<div class="type" title="Langauge" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_language">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -58,8 +58,8 @@
 		</select>
 	</div>
 	<div class="options">
-		<select name="locale">
-			{% for id,title in term_options.locales %}
+		<select name="language">
+			{% for id,title in term_options.languages %}
 			<option value="{{id}}">{{title}}</option>
 			{% endfor %}
 		</select>

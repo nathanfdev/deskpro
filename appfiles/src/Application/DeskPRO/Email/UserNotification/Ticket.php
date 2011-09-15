@@ -40,7 +40,7 @@ class Ticket
 		$notify_types = Entity\AgentNotification::reduceNotificationTypes($notify_types);
 		$person = $this->ticket['person'];
 
-		App::getTranslator()->setLocale($person['locale']);
+		App::getTranslator()->setLanguage($person->getLanguage());
 
 		foreach ($notify_types as $type) {
 			switch ($type) {
@@ -59,13 +59,13 @@ class Ticket
 		}
 
 		// Reset translator to current context
-		App::getTranslator()->setLocale(null);
+		App::getTranslator()->setLanguage(null);
 	}
 
 	public function sendNewTicket(Entity\Person $person)
 	{
 		$tac = $this->ticket->findAccessCodeForPerson($person);
-		
+
 		$new_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this->ticket);
 		$email_subject = 'New ticket: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket.html.twig', array(
@@ -78,7 +78,7 @@ class Ticket
 		));
 
 		$message = App::getMailer()->createMessage();
-		
+
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');

@@ -26,15 +26,15 @@ class SystemLoader implements LoaderInterface
 		$this->file_path = $file_path;
 	}
 
-	public function load($groups, $locale)
+	public function load($groups, $language)
 	{
 		$lang_packs = array();
 
 		// Always read from the default because it has the core phrases
 		$lang_packs[] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 
-		if ($locale->language && $locale->language->language_package) {
-			$lang_packs[] = $locale->language->getLanguagePackage();
+		if ($language) {
+			$lang_packs[] = $language->getLanguagePackage();
 		}
 
 		$lang_packs = array_unique($lang_packs);

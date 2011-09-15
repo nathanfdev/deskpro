@@ -271,7 +271,7 @@ class PeopleSearchController extends AbstractController
         $titles = array();
         $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
         $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['locales'] = App::getEntityRepository('DeskPRO:Locale')->getLocaleNames();
+        $titles['languages'] = App::getEntityRepository('DeskPRO:Langauge')->getNames();
 		$vars['titles'] = $titles;
 
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();

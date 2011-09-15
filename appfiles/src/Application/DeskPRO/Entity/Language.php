@@ -22,11 +22,9 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * A language is just a collection of phrases. For other internationalization
- * features, the Locale is used.
+ * A language groups phrases and defines a locale code.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Language")
  * @ORM_Mapping\Table(name="languages")
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject
@@ -63,6 +61,14 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="language_package", type="string", length=255)
 	 */
 	protected $language_package = '';
+
+	/**
+	 * The locale code
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="locale", type="string", length=8)
+	 */
+	protected $locale = 'en_US';
 
 	/**
 	 * @var array

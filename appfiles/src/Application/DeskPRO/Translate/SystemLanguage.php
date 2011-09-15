@@ -12,10 +12,9 @@
 namespace Application\DeskPRO\Translate;
 
 /**
- * A fake locale used in the translate class as the 'base'.
- * The translate system uses this to load from the filesystem only.
+ * A fake language in the translate class etc
  */
-class SystemLocale extends \Application\DeskPRO\Entity\Locale
+class SystemLanguage extends \Application\DeskPRO\Entity\Language
 {
 	protected static $instance = null;
 	public static function getInstance()
@@ -32,9 +31,6 @@ class SystemLocale extends \Application\DeskPRO\Entity\Locale
 		$this->id = 0;
 		$this->locale = 'en_US';
 		$this->title = "English (US)";
-
-		$this->language = new \Application\DeskPRO\Entity\Language();
-		$this->language['id'] = 0;
-		$this->language['title'] = 'English';
+		$this->language_package = 'DeskproLanguages\\DeskPRO\\LangPackage';
 	}
 }

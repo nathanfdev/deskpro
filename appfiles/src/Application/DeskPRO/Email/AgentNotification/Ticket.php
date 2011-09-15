@@ -41,7 +41,7 @@ class Ticket
 				continue;
 			}
 
-			App::getTranslator()->setLocale($person['locale']);
+			App::getTranslator()->setLanguage($person->getLanguage());
 
 			$notify_types = Entity\AgentNotification::reduceNotificationTypes($notify_types);
 
@@ -67,7 +67,7 @@ class Ticket
 		}
 
 		// Reset translator to current context
-		App::getTranslator()->setLocale(null);
+		App::getTranslator()->setLanguage(null);
 	}
 
 	public function sendNewTicket(Entity\Person $person)
@@ -124,7 +124,7 @@ class Ticket
 	public function sendPropChange(Entity\Person $person)
 	{
 		$tac = $this->ticket->findAccessCodeForPerson($person);
-		
+
 		$changes = $this->_getPropertyChanges();
 		$email_subject = 'Ticket Changed: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(

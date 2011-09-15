@@ -15,8 +15,8 @@
 				<span class="prop-val email_address">{{p.primary_email_address}}</span>
 			{% elseif field == 'organization' %}
 				<span class="prop-val email_address">{{p.organization.name|default('None')}}</span>
-			{% elseif field == 'locale' %}
-				<span class="prop-val email_address">{{p.locale.title|default('Default')}}</span>
+			{% elseif field == 'language' %}
+				<span class="prop-val email_address">{{p.language.title|default('Default')}}</span>
 			{% else %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}

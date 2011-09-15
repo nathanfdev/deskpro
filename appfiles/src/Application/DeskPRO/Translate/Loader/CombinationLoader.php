@@ -103,10 +103,10 @@ class CombinationLoader implements LoaderInterface
 	 * Loads phrase groups
 	 *
 	 * @param array $groups Groups to load
-	 * @param \Application\DeskPRO\Entity\Locale $locale
+	 * @param \Application\DeskPRO\Entity\Language $language
 	 * @return array
 	 */
-	public function load($groups, $locale)
+	public function load($groups, $language)
 	{
 		#------------------------------
 		# See if we can fetch any fully-formed groups from the cache
@@ -142,7 +142,7 @@ class CombinationLoader implements LoaderInterface
 
 			foreach ($this->loaders as $loader) {
 				try {
-					$loader_phrases = $loader->load($groups, $locale);
+					$loader_phrases = $loader->load($groups, $language);
 
 					// Loaders return array(group=>array(phrases), group2=>array(phrases)..)
 					// So we'll merge all loader groups into one master array

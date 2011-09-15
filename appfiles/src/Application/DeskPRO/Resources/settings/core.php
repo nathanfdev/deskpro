@@ -25,7 +25,7 @@
 	'core.cookie_path' => '/',
 	'core.cookie_domain' => '',
 
-	'core.default_locale_id' => 1,
+	'core.default_language_id' => 1,
 	'core.default_style_id' => 1,
 	'core.everyone_usergroup_id' => 2,
 	'core.default_timezone' => 'UTC',

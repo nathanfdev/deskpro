@@ -30,11 +30,11 @@ class DbLoader implements LoaderInterface
 		$this->dbconn = $dbconn;
 	}
 
-	public function load($groups, $locale)
+	public function load($groups, $language)
 	{
-		// No locale means we have nothing to do here,
+		// No lang means we have nothing to do here,
 		// usually means we're in an area without db yet (pre install?)
-		if (!$locale OR !$locale['id']) {
+		if (!$language OR !$language['id']) {
 			return array();
 		}
 
@@ -43,8 +43,8 @@ class DbLoader implements LoaderInterface
 		$langs = array();
 		$langs[] = 1; // default deskpro lang
 
-		if ($locale->language) {
-			$langs[] = $locale->language->getId(); // the chosen lang
+		if ($language) {
+			$langs[] = $language->getId(); // the chosen lang
 		}
 
 		// null contains non-language language like cat names and such

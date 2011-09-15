@@ -64,7 +64,7 @@
 						<input type="text" name="id" value="" />
 					</div>
 				</div>
-				<div class="type" title="Locale" data-rule-type="locale">
+				<div class="type" title="Language" data-rule-type="language">
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
@@ -72,8 +72,8 @@
 						</select>
 					</div>
 					<div class="options">
-						<select name="locale">
-							{% for id,title in titles.locales %}
+						<select name="language">
+							{% for id,title in titles.languages %}
 								<option value="{{id}}">{{title}}</option>
 							{% endfor %}
 						</select>

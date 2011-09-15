@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Translate;
 
-use Application\DeskPRO\Entity\Locale;
+use Application\DeskPRO\Entity\Language;
 
 class DelegatePhrase implements DelegatePhraseInterface
 {
@@ -24,16 +24,16 @@ class DelegatePhrase implements DelegatePhraseInterface
 		$this->phrase_vars = $phrase_vars;
 	}
 
-	
+
 	/**
 	 * Get the phrase text.
 	 *
 	 * @param  $translator
 	 * @return string
 	 */
-	public function getPhrase(Translate $translator, Locale $locale = null)
+	public function getPhrase(Translate $translator, Language $language = null)
 	{
-		return $translator->phrase($this->phrase_name, $this->phrase_vars, $locale);
+		return $translator->phrase($this->phrase_name, $this->phrase_vars, $language);
 	}
 
 
@@ -54,7 +54,7 @@ class DelegatePhrase implements DelegatePhraseInterface
 		return $this->phrase_vars;
 	}
 
-	
+
 	public function __toString()
 	{
 		return $this->phrase_name;

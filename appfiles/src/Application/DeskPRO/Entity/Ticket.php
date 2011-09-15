@@ -61,6 +61,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $auth;
 
 	/**
+	 * The language the ticket is in
+	 *
+	 * @var \Application\DeskPRO\Entity\Language
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $language = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @ORM_Mapping\ManyToOne(targetEntity="Department", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")

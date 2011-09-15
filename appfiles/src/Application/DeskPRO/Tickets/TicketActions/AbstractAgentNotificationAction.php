@@ -42,11 +42,11 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		$this->template_suffix = $template_suffix;
 	}
 
-	
+
 	/**
 	 * When this rule is merged, we need to take into account previously set
 	 * agents and the custom template the other rule might've set
-	 * 
+	 *
 	 * @param array $real_send_to
 	 * @return void
 	 */
@@ -59,12 +59,12 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 
 	/**
 	 * Get the default template name to use
-	 * 
+	 *
 	 * @return void
 	 */
 	abstract public function getDefaultTemplate();
 
-	
+
 	/**
 	 * Get the template to use
 	 *
@@ -123,7 +123,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 
 	/**
 	 * Calculate an array of "real" agentids we're sending to, and the template they should get
-	 * 
+	 *
 	 * @return
 	 */
 	public function getRealSendTo()
@@ -169,7 +169,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		return $this->from_address;
 	}
 
-	
+
 	protected function doSend($tpl, $vars, Ticket $ticket, Person $person)
 	{
 		if (!$person->getPrimaryEmailAddress()) {
@@ -190,7 +190,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 
 		$tpl_suffix = $this->getTemplateSuffix();
 		$tr = App::getTranslator();
-		//App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $tpl_suffix) {
+		//App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($tpl, $vars, $ticket, $person, $tpl_suffix) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 

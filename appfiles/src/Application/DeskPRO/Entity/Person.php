@@ -160,13 +160,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $secret_string;
 
 	/**
-	 * The locale associate with the user.
+	 * The language associate with the user.
 	 *
-	 * @var \Application\DeskPRO\Entity\Locale
-	 * @ORM_Mapping\ManyToOne(targetEntity="Locale", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="locale_id", referencedColumnName="id", onDelete="set null")
+	 * @var \Application\DeskPRO\Entity\Language
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
-	protected $locale = null;
+	protected $language = null;
 
 	/**
 	 * The users organization
@@ -554,45 +554,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return parent::__isset($name);
 	}
 
-	public function getLocale()
-	{
-		if ($this->locale) {
-			return $this->locale;
-		}
-
-		return App::getEntityRepository('DeskPRO:Locale')->find(App::getSetting('core.default_locale_id'));
-	}
-
-	public function getLocaleId()
-	{
-		return $this->getLocale()->getId();
-	}
-
-	public function getActualLocale()
-	{
-		return $this->locale;
-	}
-
-	public function getActualLocaleId()
-	{
-		if ($this->locale) {
-			return $this->locale;
-		}
-
-		return 0;
-	}
-
-	public function setLocaleId($locale_id)
-	{
-		if ($locale_id) {
-			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find($locale);
-		} else {
-			$this->locale = null;
-		}
-	}
-
-
-
 	/**
 	 * Get a string display name we can call this person.
 	 * @return string
@@ -913,6 +874,47 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $ret;
+	}
+
+
+	/**
+	 * Get the real language. This might be null if there is no preference for the user.
+	 *
+	 * @return \Application\DeskPRO\Entity\Language|null
+	 */
+	public function getRealLanguage()
+	{
+		return $this->language;
+	}
+
+
+	/**
+	 * Get the users language
+	 *
+	 * @return \Application\DeskPRO\Entity\Language
+	 */
+	public function getLangauge()
+	{
+		if ($this->language) {
+			return $this->language;
+		}
+
+		return App::getEntityRepository('DeskPRO:Language')->getDefault();
+	}
+
+
+
+	/**
+	 * Get the locale string
+	 *
+	 * Example: en_US
+	 *
+	 * @return string
+	 */
+	public function getLocale()
+	{
+		$lang = $this->getLanguage();
+		return $lang->getLocale();
 	}
 
 

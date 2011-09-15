@@ -16,7 +16,7 @@
 			<ul class="sortable-list">
 				<li data-field="email_address"><input type="checkbox" name="email_address" /> Email Address</li>
 				<li data-field="organization"><input type="checkbox" name="organization" /> Organization</li>
-				<li data-field="locale"><input type="checkbox" name="locale" /> Locale</li>
+				<li data-field="language"><input type="checkbox" name="language" /> Language</li>
 				{% for f in person_field_defs %}
 					<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> User Field: {{f.title}}</li>
 				{% endfor %}
