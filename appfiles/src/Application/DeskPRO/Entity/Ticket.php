@@ -219,7 +219,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @ORM_Mapping\Column(name="urgency", type="integer")
 	 */
-	protected $urgency = 0;
+	protected $urgency = 1;
 
 	/**
 	 * @var \DateTime
@@ -429,7 +429,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function modifyUrgency($mod, $reset_on_reply = false)
 	{
 		$old_u = $this->urgency;
-		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 0, 100);
+		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 1, 100);
 
 		if ($old_u != $new_u) {
 			$this->urgency = $new_u;
@@ -451,7 +451,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setUrgency($set)
 	{
 		$old_u = $this->urgency;
-		$new_u = \Orb\Util\Numbers::bound($set, 0, 100);
+		$new_u = \Orb\Util\Numbers::bound($set, 1, 100);
 
 		if ($old_u != $new_u) {
 			$this->urgency = $new_u;
@@ -958,6 +958,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 		$this['person'] = $person;
+	}
+
+	public function setPerson(Person $person)
+	{
+		$this->setModelField('person', $person);
+
+		if ($person->getRealLanguage()) {
+			$this->language = $person->getRealLanguage();
+		}
 	}
 
 	public function getPersonEmail()

@@ -149,7 +149,18 @@ class GroupingCounter
 		return ($a['total'] < $b['total']) ? -1 : 1;
 	}
 
-
+	protected function buildSelectTerm($grouping, $field)
+	{
+		if ($this->isTimeField($grouping)) {
+			return $this->makeTimeFieldSelect($grouping, $field);
+		} elseif ($grouping == 'language') {
+			$default = App::getEntityRepository('DeskPRO:Language')->getDefault();
+			return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+		} else {
+			$group_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($grouping);
+			return "COALESCE(tickets.{$group_fieldname}, 0) AS $field";
+		}
+	}
 
 
 	/**
@@ -161,20 +172,10 @@ class GroupingCounter
 	{
 		$group_by = 'GROUP BY field1';
 
-		if ($this->isTimeField($this->grouping1)) {
-			$select_fields[] = $this->makeTimeFieldSelect($this->grouping1, 'field1');
-		} else {
-			$group1_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping1);
-			$select_fields[] = "COALESCE(tickets.{$group1_fieldname}, 0) AS field1";
-		}
+		$select_fields[] = $this->buildSelectTerm($this->grouping1, 'field1');
 
 		if ($this->grouping2) {
-			if ($this->isTimeField($this->grouping2)) {
-				$select_fields[] = $this->makeTimeFieldSelect($this->grouping2, 'field2');
-			} else {
-				$group2_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($this->grouping2);
-				$select_fields[] = "COALESCE(tickets.{$group2_fieldname}, 0) AS field2";
-			}
+			$select_fields[] = $this->buildSelectTerm($this->grouping2, 'field2');
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
@@ -447,7 +448,7 @@ class GroupingCounter
 			case TicketSearch::TERM_DEPARTMENT:
 				$this->grouping_summary = "Department";
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_AGENT:
@@ -470,31 +471,37 @@ class GroupingCounter
 			case TicketSearch::TERM_CATEGORY:
 				$this->grouping_summary = "Category";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_PRIORITY:
 				$this->grouping_summary = "Priority";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
 				$this->grouping_summary = "Product";
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_WORKFLOW:
 				$this->grouping_summary = "Workflow";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_ORGANIZATION:
 				$this->grouping_summary = "Organization";
 				$titles = App::getOrm()->getRepository('DeskPRO:Organization')->getOrganizationNames($ids);
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
+				break;
+
+			case TicketSearch::TERM_LANGUAGE:
+				$this->grouping_summary = "Langauge";
+				$titles = App::getOrm()->getRepository('DeskPRO:Language')->getTitles();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case TicketSearch::TERM_USER_WAITING:
