@@ -20,7 +20,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 
 		this.page.getEl('change_user_picture').click(this.open.bind(this));
 
-		this.page.addEvent('destroy', this.destroy.bind(this));
+		this.page.addEvent('destroy', this.destroy, this);
 	},
 
 	_initOverlay: function() {

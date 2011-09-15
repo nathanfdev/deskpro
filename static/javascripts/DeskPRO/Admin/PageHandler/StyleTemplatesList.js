@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.StyleTemplatesList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('style_templates.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('style_templates.list.change', this.handleListChange, this);
 	},
 
 	handleListChange: function(info) {

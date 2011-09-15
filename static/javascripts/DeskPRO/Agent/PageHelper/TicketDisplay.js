@@ -4,7 +4,7 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
  * Fields on the ticket display page are completely customizable. Here are two general rules:
  *
  * 1) Changing a department can completely change the design of a page.
- * 
+ *
  * 2) Changes to other fields within a department dont change the design, but they can
  * show or hide other fields.
  *
@@ -63,7 +63,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			wrapper: null,
 			holders: '.page-display-holders:first',
 			inputHolders: '.page-display-input:first',
-			
+
 			fieldWrapSelector: '.display-item',
 			fieldTabSelector: 'li.field-tab',
 			fieldTabContentSelector: '.field-tab-content'
@@ -134,7 +134,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.departmentId = null;
 
 		this.page = ticketPage;
-		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult.bind(this));
+		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult, this);
 
 		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 
@@ -152,7 +152,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 	/**
 	 * Replaces the holder templates with a pristine copy.
-	 * 
+	 *
 	 * @param {String} html
 	 */
 	replaceHolders: function(html) {
@@ -359,7 +359,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		changeManager.saveChanges(customFieldData, (function() {
 			this.closeEditMode();
 		}).bind(this));
-		
+
 		var data = $('input, textarea, select', editWrapper).serializeArray();
 	},
 
@@ -403,7 +403,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		//------------------------------
 		// Run all the rules to fetch on/off of each item in display
 		//------------------------------
-		
+
 		var itemStates = [];
 
 		Array.each(items, function(item) {
@@ -493,7 +493,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		return [itemId, $('> .' + itemId, item.sectionEl), visible];
 	},
-	
+
 	/**
 	 * Get the holder elements for an item
 	 *
@@ -520,7 +520,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	/**
 	 * Get the item ID from the type/id in an item array.
 	 * This isnt an actual page ID, but a special classname.
-	 * 
+	 *
 	 * @param {Object} item
 	 */
 	getItemId: function(item) {

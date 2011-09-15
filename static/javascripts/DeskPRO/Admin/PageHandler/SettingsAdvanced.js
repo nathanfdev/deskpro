@@ -6,7 +6,7 @@ DeskPRO.Admin.PageHandler.SettingsAdvanced = new Class({
 	initPage: function() {
 		this.filterBox = $('#settings_filter');
 		this.filterUpdateTimeout = null;
-		this.filterBox.keypress(this.handleFilterChange.bind(this));
+		this.filterBox.keypress(this.handleFilterChange, this);
 
 		this.settingsRows = $('#settings_rows');
 

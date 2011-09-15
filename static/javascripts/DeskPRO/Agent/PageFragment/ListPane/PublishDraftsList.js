@@ -12,9 +12,9 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Class({
 
 		});
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', (function (info) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
 			$('article.' + info.typename + '-' + info.contentId, this.wrapper).slideUp();
-		}).bind(this));
+		}, this);
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),

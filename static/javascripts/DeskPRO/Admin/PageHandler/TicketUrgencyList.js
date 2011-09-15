@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.TicketUrgencyList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('ticket_urgency.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('ticket_urgency.list.change', this.handleListChange, this);
 
 		$('#urgency_options_form').ajaxForm({
 			dataType: 'json'

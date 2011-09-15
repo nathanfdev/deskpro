@@ -7,7 +7,7 @@ DeskPRO.Admin.PageHandler.GeneralList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers(this.contextEl);
-		this.getMessageBroker().addMessageListener(this.contextEl.attr('id') + '.change', this.handleListChange.bind(this));
+		this.getMessageBroker().addMessageListener(this.contextEl.attr('id') + '.change', this.handleListChange, this);
 	},
 
 	handleListChange: function(info) {

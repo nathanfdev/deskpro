@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 				fieldsEditWrap.hide();
 				fieldsRenderedWrap.show();
 			}
-		}).bind(this);;
+		}).bind(this);
 
 		$('.show-edit-custom-fields', this.wrapper).click(function() {
 			toggle();

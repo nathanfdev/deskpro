@@ -29,7 +29,7 @@ DeskPRO.Agent.Notifier.Notifier = new Class({
 		//this.notifyTypes.push(new DeskPRO.Agent.Notifier.Types.Ticket());
 
 		Array.each(this.notifyTypes, function(t) {
-			t.addEvent('listUpdated', this.updateListForType.bind(this));
+			t.addEvent('listUpdated', this.updateListForType, this);
 		});
 	},
 

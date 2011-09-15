@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.DepartmentsList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('departments.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('departments.list.change', this.handleListChange, this);
 
 		var self = this;
 		$('#departments_parentlist').sortable({

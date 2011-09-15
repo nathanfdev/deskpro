@@ -21,8 +21,8 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 				url: BASE_URL + 'agent/people-search/quick-find'
 			}
 		});
-		
-		this.overlay.addEvent('ajaxDone', this._initElements.bind(this));
+
+		this.overlay.addEvent('ajaxDone', this._initElements, this);
 
 		var event = {
 			findPerson: this,

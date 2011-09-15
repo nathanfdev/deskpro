@@ -19,7 +19,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			interval: 5000,
 			alwaysRequest: true
 		});
-		this.poller.addEvent('ajaxSuccess', this.handleUpdateCounts.bind(this));
+		this.poller.addEvent('ajaxSuccess', this.handleUpdateCounts, this);
 	},
 
 	onShow: function() {
@@ -63,12 +63,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.chat-assigned');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.added-as-part');
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated', this.handlePartsUpdated.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.added-as-part', this.handleAddedAsPart.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated', this.handlePartsUpdated, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.added-as-part', this.handleAddedAsPart, this);
 	},
 
 	handleNewMessage: function(data) {

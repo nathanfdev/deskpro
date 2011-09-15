@@ -5,8 +5,8 @@ DeskPRO.Agent.PageFragment.ListPane.Basic = new Class({
 	initialize: function(html) {
 		this.parent(html);
 
-		this.addEvent('activate', (function() {
+		this.addEvent('activate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('list-page-fragment.activated', { page: this });
-		}).bind(this));
+		}, this);
 	}
 });

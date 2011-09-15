@@ -17,9 +17,9 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		this.tabManager = this.options.tabManager;
 		this.selectionHistory = [];
 
-		this.tabManager.addEvent('activateTab', this._activateTab.bind(this));
-		this.tabManager.addEvent('deactivateTab', this._deactivateTab.bind(this));
-		this.tabManager.addEvent('removeTab', this._removeTab.bind(this));
+		this.tabManager.addEvent('activateTab', this._activateTab, this);
+		this.tabManager.addEvent('deactivateTab', this._deactivateTab, this);
+		this.tabManager.addEvent('removeTab', this._removeTab, this);
 
 		this.watchedTypes = {};
 	},

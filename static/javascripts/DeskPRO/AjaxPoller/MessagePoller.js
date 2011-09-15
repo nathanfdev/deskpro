@@ -7,24 +7,24 @@ Orb.createNamespace('DeskPRO.AjaxPoller');
  * <code>
  * { messages: [{name: 'some.message.name', data: 'data'}, ...] }
  * </code>
- * 
+ *
  * These messages are passed through a message broker for handling in the app.
  */
 DeskPRO.AjaxPoller.MessagePoller = new Orb.Class({
 	Extends: DeskPRO.AjaxPoller.Poller,
-	
+
 	initialize: function(messageBroker, options) {
 		this.parent(options);
-		
+
 		this.messageBroker = messageBroker;
-		
-		this.addEvent('ajaxSuccess', this._sendMessages.bind(this), true);
+
+		this.addEvent('ajaxSuccess', this._sendMessages, this);
 	},
-	
+
 	getMessageBroker: function() {
 		return this.messageBroker;
 	},
-	
+
 	_sendMessages: function(data) {
 
 		if (data.messages === undefined || typeOf(data.messages) != 'array') {

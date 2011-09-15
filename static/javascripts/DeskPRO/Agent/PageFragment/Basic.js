@@ -40,17 +40,17 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			this.html = html;
 		}
 
-		this.addEvent('activate', (function() {
+		this.addEvent('activate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
-		}).bind(this));
-		this.addEvent('deactivate', (function() {
+		}, this);
+		this.addEvent('deactivate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
-		}).bind(this));
+		}, this);
 
 		// Auto-init
-		this.addEvent('render', (function(wrapper) {
+		this.addEvent('render', function(wrapper) {
 			this.initFeaturesOnCollection(wrapper);
-		}).bind(this));
+		}, this);
 
 		if (this.getMetaData('initRoutesOn')) {
 			var tmp = this.getMetaData('initRoutesOn');

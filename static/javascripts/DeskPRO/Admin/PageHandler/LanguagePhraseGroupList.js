@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.LanguagePhraseGroupList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('language_phrasegroup.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('language_phrasegroup.list.change', this.handleListChange, this);
 	},
 
 	handleListChange: function(info) {

@@ -5,6 +5,6 @@ DeskPRO.Admin.PageHandler.UsergroupsList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('usergroups.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('usergroups.list.change', this.handleListChange, this);
 	}
 });

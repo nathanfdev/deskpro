@@ -23,7 +23,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	initialize: function(page, options) {
 
 		var self = this;
-				
+
 		this.page = page;
 		this.options = {
 			/**
@@ -53,12 +53,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		this.getEl('replybox_txt').keypress(this.updateDraftWait.bind(this));
 
 		// Before the tab is closed and desotryed, save the draft if there is one
-		this.page.addEvent('closeTab', this.updateDraft.bind(this));
+		this.page.addEvent('closeTab', this.updateDraft, this);
 
 		//------------------------------
 		// Init reply/note tab switcher
 		//------------------------------
-		
+
 		var tabReply = this.getEl('replybox_replytab_btn');
 		var tabNote = this.getEl('replybox_notetab_btn');
 
@@ -264,7 +264,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			},
 			error: function(xhr, textStatus) {
 				this.replyBox.removeClass('loading');
-				
+
 				evData.xhr = xhr;
 				evData.result = null;
 				evData.textStatus = textStatus;

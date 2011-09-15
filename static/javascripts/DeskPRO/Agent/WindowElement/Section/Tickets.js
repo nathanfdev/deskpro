@@ -8,9 +8,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated.bind(this));
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated, this);
 
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('list-page-fragment.activated', this.highlightActiveSection.bind(this));
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('list-page-fragment.activated', this.highlightActiveSection, this);
 
 		// Simulate instant switching when clicking nav items
 		var self = this;
@@ -164,7 +164,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			{recurring: true, minDelay: 600000/*10 mintues*/, minDelayAfterOne:true }
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts, this);
 
 		$('ul#tickets_outline_filters_list').sortable({
 			'axis': 'y',
@@ -509,8 +509,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	//#########################################################################
 
 	_initFlagged: function() {
-		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.counts', this.updateFlagCounts.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.counts', this.updateFlagCounts, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.flag-changed', this.changeFlagCountsForSwitch, this);
 
 		//------------------------------
 		// Reorder flags

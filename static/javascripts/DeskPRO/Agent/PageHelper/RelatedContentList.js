@@ -21,8 +21,8 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 
 		this.contentListEl = $(this.options.contentListEl);
 
-		this.addEvent('watchedTabActivated', this.enableControls.bind(this));
-		this.addEvent('watchedTabDeactivated', this.disableControls.bind(this));
+		this.addEvent('watchedTabActivated', this.enableControls, this);
+		this.addEvent('watchedTabDeactivated', this.disableControls, this);
 
 		var selectedTabType = DeskPRO_Window.getTabWatcher().getActiveTabType();
 		var doEnable = false;

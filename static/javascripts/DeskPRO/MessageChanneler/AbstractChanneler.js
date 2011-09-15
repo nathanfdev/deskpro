@@ -9,10 +9,10 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 	Implements: [Orb.Util.Options],
 
 	initialize: function(messageBroker, options) {
-		
+
 		this.channels = [];
 		this.options = {};
-		
+
 		this.messageBroker = messageBroker;
 		if (options) this.setOptions(options);
 
@@ -21,7 +21,7 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 
 	_init: function() { /* Child class hook method */ },
 
-	subscribeChannel: function(channel, callback) {
+	subscribeChannel: function(channel, callback, context) {
 		// Override
 	},
 

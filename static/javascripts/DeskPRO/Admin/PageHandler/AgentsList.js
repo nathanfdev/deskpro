@@ -5,9 +5,9 @@ DeskPRO.Admin.PageHandler.AgentsList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('teams.list.change', this.handleTeamListChange.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('usergroups.list.change', this.handleGroupListChange.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('agents.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('teams.list.change', this.handleTeamListChange, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('usergroups.list.change', this.handleGroupListChange, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agents.list.change', this.handleListChange, this);
 	},
 
 	handleTeamListChange: function(info) {

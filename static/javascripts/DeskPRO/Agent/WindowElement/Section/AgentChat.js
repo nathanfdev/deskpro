@@ -32,11 +32,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent_chat.new-message');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-agent-online');
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.newIncomingMessage.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', (function(info) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.newIncomingMessage, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', function(info) {
 			var agent_id = info.agent_id;
 			this.addOnlineAgent.bind(agent_id);
-		}).bind(this));
+		}, this);
 	},
 
 	_initInterface: function() {

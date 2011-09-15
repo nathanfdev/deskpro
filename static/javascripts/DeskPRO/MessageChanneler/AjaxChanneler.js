@@ -7,12 +7,12 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
 	_init: function() {
-		
+
 		this._add_subs = [];
 		this._add_subs_timeout = null;
 		this._del_subs = [];
 		this._del_subs_timeout = null;
-		
+
 		this.lastMessageId = -1;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
@@ -40,7 +40,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 				if (d[0] <= this.lastMessageId && (!d[3] || !d[3]['offline_messsage'])) {
 					return;
 				}
-				
+
 				this.lastMessageId = d[0];
 				this.sendMessage(d[1], d[2]);
 			}, this);
@@ -56,7 +56,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	//# Handle subcriptions
 	//#########################################################################
 
-	subscribeChannel: function(channel, callback) {
+	subscribeChannel: function(channel, callback, context) {
 		this._add_subs.include(channel);
 
 		if (this._add_subs_timeout) {
@@ -66,7 +66,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		this._add_subs_timeout = this._sendSubscribeChannels.delay(300, this);
 
 		if (callback) {
-			this.messageBroker.addMessageListener(channel, callback);
+			this.messageBroker.addMessageListener(channel, callback, context);
 		}
 	},
 

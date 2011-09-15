@@ -33,9 +33,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 
 		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
+		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', function() {
 			this._handleResize()
-		}).bind(this));
+		}, this);
 	},
 
 	destroyPage: function() {

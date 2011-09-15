@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.LocalesList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('locales.list.change', this.handleListChange.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('locales.list.change', this.handleListChange, this);
 	},
 
 	handleListChange: function(info) {

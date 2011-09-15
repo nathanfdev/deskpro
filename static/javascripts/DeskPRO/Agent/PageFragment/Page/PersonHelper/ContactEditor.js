@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.wrapper = this.page.wrapper;
 
-		this.page.addEvent('destroy', this.destroy.bind(this));
+		this.page.addEvent('destroy', this.destroy, this);
 
 		this.initEditorOverlay();
 	},

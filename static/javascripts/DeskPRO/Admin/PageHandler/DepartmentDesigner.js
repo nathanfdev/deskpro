@@ -8,8 +8,8 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		this.department_id = department_id;
 
 		$('#display_item').template('display_item');
-		DeskPRO_Window.getMessageBroker().addMessageListener('field.change', this.fetchNewlyCreatedField.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('widget.change', this.fetchNewlyCreatedWidget.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('field.change', this.fetchNewlyCreatedField, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('widget.change', this.fetchNewlyCreatedWidget, this);
 	},
 
 	initPage: function() {

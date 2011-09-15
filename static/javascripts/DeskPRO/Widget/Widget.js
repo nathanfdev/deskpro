@@ -190,7 +190,7 @@ DeskPRO.Widget.Widget = new Class({
 			return false;
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener(id, callback.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener(id, callback, this);
 
 		return id;
 	}

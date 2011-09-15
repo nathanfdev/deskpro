@@ -7,19 +7,19 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 	Implements: [Orb.Util.Events],
 
 	initialize: function() {
-		this.addEvent('activateTab', this.activateTab.bind(this));
-		this.addEvent('deactivateTab', this.deactivateTab.bind(this));
+		this.addEvent('activateTab', this.activateTab, this);
+		this.addEvent('deactivateTab', this.deactivateTab, this);
 
 		this.releasing = {};
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', function(info) {
 			var ticketId = info.ticket_id;
 			Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
 				if (tab.page.getMetaData('ticket_id') == ticketId && tab.page.ticketLocked) {
 					tab.page.ticketLocked.unlock();
 				}
 			});
-		}).bind(this));
+		}, this);
 	},
 
 	activateTab: function(tab) {
@@ -34,7 +34,7 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 			delete this.releasing[ticketId];
 		}
 	},
-	
+
 	deactivateTab: function(tab) {
 
 		// If its locked, it means its locked by someone else
