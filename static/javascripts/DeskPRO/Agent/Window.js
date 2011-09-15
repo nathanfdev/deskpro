@@ -130,6 +130,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.loadHashPath(hash);
 		},
 		{ unescape: ",/:" });
+
+		/**
+		 * After everything is init'ed we'll start our GC
+		 */
+		Orb.Class_GC_Start(5000);
+		Orb.Class_GC_Callbacks.push(function(obj, id) {
+			self.messageBroker.removeTaggedEvents(id);
+		});
 	},
 
 	loadHashPath: function(browserHash) {

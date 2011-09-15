@@ -12,25 +12,7 @@ Orb.createNamespace('DeskPRO');
  */
 DeskPRO.MessageBroker = new Orb.Class({
 
-	initialize: function() {
-		this.messageTransformers = {};
-		this.messageListeners = {};
-		this.tagged = {};
-	},
-
-	/**
-	 * Forward a message type to a separate broker instance.
-	 *
-	 * @param {String} name The message name
-	 * @param {DeskPRO.MessageBroker} messageBroker The broker to forward to
-	 */
-	addForwarder: function (name, messageBroker) {
-		this.addMessageListener(name, function(data, name) {
-			messageBroker.sendMessage(name, data);
-		});
-	},
-
-
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * Send a message to all listeners.
@@ -40,76 +22,16 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 */
 	sendMessage: function (name, data) {
 
-		data = this.transformMessage(name, data);
-
-		if (this.messageListeners[name] !== undefined) {
-			this.messageListeners[name].each(function(callback) {
-				callback(data, name);
-			});
-		}
+		this.fireEvent(name, [data, name]);
 
 		var nameparts = name.split('.');
 		var cur_name = null;
 
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
-			if (this.messageListeners[cur_name] !== undefined) {
-				this.messageListeners[cur_name].each(function(callback) {
-					callback(data, name);
-				});
-			}
+			this.fireEvent(cur_name, [data, cur_name]);
 		}
 	},
-
-
-
-	/**
-	 * Run all transformers on some data
-	 *
-	 * @param {String} name The message name
-	 * @param {Object} data The message data to transform
-	 * @return {Object} The transformed data
-	 */
-	transformMessage: function (name, data) {
-
-		if (this.messageTransformers[name] !== undefined) {
-			this.messageTransformers[name].each(function(callback) {
-				data = callback(data, name);
-			});
-		}
-
-		var nameparts = name.split('.');
-		var cur_name = null;
-
-		while (nameparts.pop()) {
-			cur_name = nameparts.join('.') + '.*';
-			if (this.messageTransformers[cur_name] !== undefined) {
-				this.messageTransformers[cur_name].each(function(callback) {
-					data = callback(data, name);
-				});
-			}
-		}
-
-		return data;
-	},
-
-
-
-	/**
-	 * Add a message transformer. `name` follows same rules as `addMessageListener()`.
-	 *
-	 * @param {String} name Message name
-	 * @param {Function} callback Callback that will transform the data
-	 */
-	addMessageTransformer: function(name, callback) {
-		if (this.messageTransformers[name] === undefined) {
-			this.messageTransformers[name] = [];
-		}
-
-		this.messageTransformers[name].push(callback);
-	},
-
-
 
 	/**
 	 * Add a listener on a message.
@@ -121,20 +43,8 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 * @param {String} name Message name
 	 * @param {Function} callback Callback to execute with message
 	 */
-	addMessageListener: function(name, callback, tag) {
-		if (this.messageListeners[name] === undefined) {
-			this.messageListeners[name] = [];
-		}
-
-		this.messageListeners[name].push(callback);
-
-		if (tag) {
-			if (!this.tagged[tag]) {
-				this.tagged[tag] = [];
-			}
-
-			this.tagged[tag].push([name, callback]);
-		}
+	addMessageListener: function(name, callback, context, tags) {
+		this.addEvent(name, callback, context, tags);
 	},
 
 
@@ -145,15 +55,8 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 * @param {String} name Message name
 	 * @param {Function} callback Callback to remove
 	 */
-	removeMessageListener: function (name, callback) {
-		if (this.messageListeners[name] === undefined) {
-			return;
-		}
-
-		var index = this.messageListeners[name].indexOf(callback);
-		if (index != -1) {
-			this.messageListeners[name].splice(index, 1);
-		}
+	removeMessageListener: function (name, callback, context) {
+		this.removeEvent(name, callback, context);
 	},
 
 
@@ -164,10 +67,6 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 * @param tag
 	 */
 	removeTaggedListeners: function(tag) {
-		if (!this.tagged[tag]) return;
-
-		Array.each(this.tagged[tag], function (x) {
-			this.removeMessageListener(x[0], x[1]);
-		}, this);
+		this.removeTaggedEvents(tag);
 	}
 });

@@ -83,6 +83,8 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		this.addEvent('destroy', this.destroyPage);
 
 		this.init();
+
+		this.addEvent('destroy', this.destroy);
 	},
 
 	/**
@@ -349,5 +351,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 */
 	closeSelf: function() {
 		DeskPRO_Window.removePage(this);
+	},
+
+	destroy: function() {
+
 	}
 });

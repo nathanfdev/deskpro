@@ -1,5 +1,48 @@
 if (!Orb) var Orb = {};
 
+Orb.Class_Instances = {};
+Orb.Class_GC_Callbacks = [];
+Orb.Class_GC_PrintDebug = false;
+Orb.Class_GC_Start = function(timeout) {
+
+	if (Orb.Class_GC_Interval) {
+		console.warn('[GC] GC already restarted. Clearing cycle timeout and starting again.');
+		window.clearTimeout(Orb.Class_GC_Interval);
+	}
+
+	// Default to 10 seconds
+	if (!timeout) {
+		timeout = 10000;
+	}
+
+	Orb.Class_GC_Interval = window.setInterval(function() {
+		Orb.Class_GC_Cycle();
+	}, timeout);
+};
+Orb.Class_GC_Cycle = function() {
+	var i, l;
+
+	if (this.isRunning) return;
+	this.isRunning = true;
+
+	if (Orb.Class_GC_PrintDebug) {
+		console.log('[GC] Cycle');
+	}
+
+	Object.each(Orb.Class_Instances, function(obj, id) {
+		if (obj.OBJ_DESTROYED) {
+			console.log('[GC] Destroyed %i: %o', id, obj);
+			for (i = 0, l = Orb.Class_GC_Callbacks.length; i < l; i++) {
+				Orb.Class_GC_Callbacks[i](obj, id);
+			}
+
+			delete Orb.Class_Instances[id];
+		}
+	});
+
+	this.isRunning = false;
+};
+
 Orb.Class = function(properties) {
 
 	//------------------------------
@@ -95,6 +138,22 @@ Orb.Class = function(properties) {
 	// and methods now
 	//------------------------------
 
+	if (properties.destroy) {
+		properties.__destroy = properties.destroy;
+		properties.destroy = (function(old) {
+			return function() {
+				old.apply(this);
+				this.OBJ_DESTROYED = true;
+			};
+		})(properties.__destroy);
+	} else {
+		properties.destroy = (function() {
+			return function() {
+				this.OBJ_DESTROYED = true;
+			};
+		})();
+	}
+
 	for (var name in properties) {
 		if (properties.prototype && !properties.prototype.hasOwnProperty(name)) {
 			continue;
@@ -103,7 +162,7 @@ Orb.Class = function(properties) {
 		var value = properties[name];
 
 		if (typeof value == 'function') {
-			if (checkParentUse(value)) {
+			if (name != 'destroy' && checkParentUse(value)) {
 				value = (function(func, name) {
 					return function() {
 						this.parent = parent_proto[name];
@@ -117,20 +176,24 @@ Orb.Class = function(properties) {
 		}
 	}
 
-	var newClass = function() {
-
+	var newClass;
+	newClass = function() {
 		if (newClass.__is_prototyping) {
 			return this;
 		}
 
+		// Easy reference to the class object
+		// Ex to use the set ClassVars easier
+		this.CLASS  = newClass;
+		this.SUPER  = parent_class;
+		this.OBJ_ID = Orb.uuid();
+		this.OBJ_DESTROYED = false;
+
+		Orb.Class_Instances[this.OBJ_ID] = this;
+
 		if (this.initialize) {
 			this.initialize.apply(this, arguments);
 		}
-
-		// Easy reference to the class object
-		// Ex to use the set ClassVars easier
-		this.CLASS = newClass;
-		this.SUPER = parent_class;
 
 		return this;
 	}
@@ -145,6 +208,12 @@ Orb.Class = function(properties) {
 
 	newClass.prototype = proto;
 	newClass.constructor = newClass;
+
+	delete properties;
+	delete static_props;
+	delete name;
+	delete value;
+	delete checkParentUse;
 
 	return newClass;
 };
