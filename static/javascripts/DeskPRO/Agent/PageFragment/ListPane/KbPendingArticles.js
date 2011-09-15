@@ -8,6 +8,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 		this.wrapper = el;
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
+
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
 			menuElement: $('ul.actions-menu:first', this.wrapper),
@@ -44,6 +46,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.actionsMenu);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('kb.pending_article_removed', function(data) {
 			self.removeFromList(data.pending_article_id)

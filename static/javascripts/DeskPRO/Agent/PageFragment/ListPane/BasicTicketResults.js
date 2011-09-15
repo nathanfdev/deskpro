@@ -163,17 +163,20 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				self.massActions.open();
 			}
 		});
+		this.ownObject(this.selectionBar);
 
 		this.massActions = new DeskPRO.Agent.PageHelper.TicketMassActions({
 			ticketsWrapper: $('.ticket-simple-ext-list', this.wrapper),
 			selectionBar: this.selectionBar,
 			changeManager: this.changeManager
 		});
+		this.ownObject(this.massActions);
 
-		new DeskPRO.UI.Menu({
+		var m = new DeskPRO.UI.Menu({
 			triggerElement: $('button.sub-group-trigger:first', this.contentWrapper),
 			menuElement: $('ul.sub-group-menu:first', this.contentWrapper)
 		});
+		this.ownObject(m);
 
 		if (this.meta.groupingIgnore) {
 			var groupByMenu = $('.group-by-menu', this.wrapper);
@@ -186,16 +189,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	_handleResize: function() {
 		if (!this.layout) return;
 		this.layout.resizeAll();
-	},
-
-	destroyPage: function() {
-		if (this.flagMenu) {
-			this.flagMenu.destroy();
-		}
-
-		if (this.displayOptionsOverlay) {
-			this.displayOptionsOverlay.destroy();
-		}
 	},
 
 	addTicket: function(ticket_id) {
@@ -253,6 +246,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var criteriaTerms = $('.search-builder-tpl', this.topSection);
 
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
+		this.ownObject(editor);
+
 		$('.add-term', criteriaList).data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
@@ -331,6 +326,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				self._handleFlagMenuClick(info);
 			}
 		});
+		this.ownObject(this.flagMenu);
 
 		$('table.list:first', this.contentWrapper).delegate('span.ticket-flag', 'click', function(ev) {
 			self.flagMenu.openMenu(ev);
@@ -389,6 +385,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			resultId: this.resultTypeId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayOptions);
 
 		// Sorting options
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
@@ -412,6 +409,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				self.displayOptions.saveAndRefresh();
 			}
 		});
+		this.ownObject(this.sortingMenu);
 
 		var groupMenuBtn = $('.group-by-menu-trigger', this.wrapper).first();
 		this.groupingMenu = new DeskPRO.UI.Menu({
@@ -432,6 +430,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				DeskPRO_Window.loadListPane(url);
 			}
 		});
+		this.ownObject(this.groupingMenu);
 	},
 
 	switchViewType: function(view_type) {

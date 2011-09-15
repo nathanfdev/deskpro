@@ -36,6 +36,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			stateId: 'newperson',
 			listenOn: this.getEl('newperson')
 		});
+		this.ownObject(this.stateSaver);
 
 		// Init the org selection
 		var orgSel = $('#organizations_select').clone().appendTo(this.getEl('org_container'));
@@ -122,6 +123,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.otherTabs);
 
 		// Labels
 		var self = this;
@@ -133,5 +135,6 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 				self.stateSaver.triggerChange();
 			}
 		});
+		this.ownObject(this.labelsInput);
 	}
 });

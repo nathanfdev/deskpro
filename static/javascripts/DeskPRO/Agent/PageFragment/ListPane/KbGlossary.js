@@ -53,6 +53,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbGlossary = new Orb.Class({
 		this.addDlg = new DeskPRO.UI.Overlay({
 			contentElement: el
 		});
+		this.ownObject(this.addDlg);
 
 		$('.save-trigger', el).click(this.saveNewWord.bind(this));
 
@@ -66,6 +67,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbGlossary = new Orb.Class({
 		this.editDlg = new DeskPRO.UI.Overlay({
 			contentElement: el
 		});
+		this.ownObject(this.editDlg);
 
 		$('.save-trigger', el).click(this.saveEditWord.bind(this));
 

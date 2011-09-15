@@ -36,6 +36,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			stateId: 'neworg',
 			listenOn: this.getEl('neworg')
 		});
+		this.ownObject(this.stateSaver);
 
 		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
 		ugSel.data('placeholder', 'Choose usergroups');
@@ -111,6 +112,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.otherTabs);
 
 		// Labels
 		var self = this;
@@ -122,5 +124,6 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 				self.stateSaver.triggerChange();
 			}
 		});
+		this.ownObject(this.labelsInput);
 	}
 });

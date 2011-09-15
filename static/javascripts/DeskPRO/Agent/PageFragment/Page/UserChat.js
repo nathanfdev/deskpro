@@ -312,10 +312,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			contentElement: overlayWrapper
 		});
 
-		this.addEvent('destroy', function() {
-			o.destroy();
-		});
-
 		var list = $('.file-list', overlayWrapper);
 
 		overlayWrapper.fileupload({
@@ -396,15 +392,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			event.stopPropagation();
 		});
 		this.popout.detach().appendTo('body');
-		this.destroyEls.push(this.popout);
 
 		this.popoutOuter = $('.person-popout-outer:first', el);
 		this.popoutOuter.detach().appendTo('body');
-		this.destroyEls.push(this.popoutOuter);
 
 		this.popoutTabs = $('.person-popout-tabs:first', el);
 		this.popoutTabs.detach().appendTo('body');
-		this.destroyEls.push(this.popoutTabs);
 
 		var self = this;
 		$('.close:first', this.popoutTabs).click(function() {

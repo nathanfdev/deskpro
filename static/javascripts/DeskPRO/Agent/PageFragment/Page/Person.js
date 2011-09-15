@@ -26,6 +26,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json'
 		});
+		this.ownObject(this.contactEditor);
 
 		this.initNoteFormEditable();
 
@@ -34,9 +35,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var tzMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('timezone')
 		});
+		this.ownObject(tzMenu);
+
 		var autoResMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('is_autoresponder')
 		});
+		this.ownObject(autoResMenu);
 
 		this.getEl('timezone').change(function(){
 			var val = $(this).val();
@@ -112,7 +116,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
-		this.morectionsMenu = new DeskPRO.UI.Menu({
+		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
 			menuElement: this.getEl('more_actions_menu'),
 			onItemClicked: function(info) {
@@ -149,11 +153,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			}
 		});
+		this.ownObject(this.moreactionMenu);
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 		});
+		this.ownObject(this.changePic);
 
 		this._initLabels();
 		this._initCustomFieldsEditor();

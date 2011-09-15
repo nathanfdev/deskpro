@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		this.wrapper = el;
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
@@ -43,6 +44,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.actionsMenu);
 
 		var findRowInfo = function(el) {
 			var row = $(el);

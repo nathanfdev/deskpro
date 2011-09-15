@@ -20,11 +20,13 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			triggerElements: $('nav:first > ul > li:not(.new-category)', this.wrapper),
 			context: this.wrapper
 		});
+		this.ownObject(this.catTabs);
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: this.wrapper,
 			destroyOnClose: false
 		});
+		this.ownObject(this.overlay);
 
 		this.wrapper.delegate('.snippet-trigger', 'click', function(ev) {
 

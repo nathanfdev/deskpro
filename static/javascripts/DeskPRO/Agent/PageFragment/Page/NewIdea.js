@@ -38,6 +38,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 			stateId: 'newnews',
 			listenOn: this.getEl('newidea')
 		});
+		this.ownObject(this.stateSaver);
 	},
 
 	closeSelf: function() {
@@ -179,6 +180,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.otherTabs);
 
 		// Labels
 		var self = this;
@@ -190,6 +192,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 				self.stateSaver.triggerChange();
 			}
 		});
+		this.ownObject(this.labelsInput);
 
 		this.getEl('slug').focus(function() {
 			this.addClass('had-focus');

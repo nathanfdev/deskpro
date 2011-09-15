@@ -27,6 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				typename: 'news',
 				contentId: this.meta.news_id
 			});
+			this.ownObject(this.validatingEdit);
 		}
 
 		var cw = this.wrapper;
@@ -64,10 +65,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.relatedContent);
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
 			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
 		});
+		this.ownObject(this.miscContent);
 
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: '.who-voted-trigger',
@@ -76,6 +79,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				url: BASE_URL + 'agent/publish/rating-who-voted/news/' + this.meta.news_id
 			}
 		});
+		this.ownObject(this.whoVotedOverlay);
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -117,6 +121,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.bodyTabs);
 
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
@@ -164,11 +169,13 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.statusMenu);
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 			ajaxSaveUrl: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
 			statusMenu: this.statusMenu
 		});
+		this.ownObject(this.deleteHelper);
 
 		// Change category menu
         var catMenu = new DeskPRO.UI.Menu({
@@ -207,6 +214,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				});
 			}
         });
+		this.ownObject(catMenu);
 	},
 
 	_initActions: function() {
@@ -249,12 +257,14 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 
 		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
 			contentType: 'news',
 			contentId: this.meta.news_id,
 			element: $('.sticky-search-words ul', this.wrapper)
 		});
+		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -292,6 +302,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.commentsController = new DeskPRO.Agent.PageHelper.Comments(this, {
 			commentsWrapper: this.getEl('comments_wrap')
 		});
+		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
 		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
@@ -348,6 +359,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			stateId: 'editarticle',
 			listenOn: $('.news-editor-wrap:first', wrap)
 		});
+		this.ownObject(this.editStateSaver);
 
 		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
 			ev.preventDefault();

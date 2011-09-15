@@ -6,9 +6,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
-
-		});
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
 			$('article.' + info.typename + '-' + info.contentId, this.wrapper).slideUp();
@@ -53,5 +52,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.actionsMenu);
 	}
 });

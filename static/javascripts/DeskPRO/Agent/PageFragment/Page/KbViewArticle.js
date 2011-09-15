@@ -32,6 +32,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				typename: 'articles',
 				contentId: this.meta.article_id
 			});
+			this.ownObject(this.validatingEdit);
 		}
 
 		var cw = this.wrapper;
@@ -66,10 +67,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.relatedContent);
 
-		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-
-		});
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
+		this.ownObject(this.miscContent);
 
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: '.who-voted-trigger',
@@ -78,6 +79,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				url: BASE_URL + 'agent/publish/rating-who-voted/article/' + this.meta.article_id
 			}
 		});
+		this.ownObject(this.whoVotedOverlay);
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -143,6 +145,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.bodyTabs);
 
 		var actions = this.getEl('action_buttons');
 		$('.permalink', actions).click(function() {
@@ -223,11 +226,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.statusMenu);
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 			ajaxSaveUrl: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
 			statusMenu: this.statusMenu
 		});
+		this.ownObject(this.deleteHelper);
 
 		this.catMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('li.add', this.getEl('categories')),
@@ -264,6 +269,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				self.sendUpdateCats();
 			}
 		});
+		this.ownObject(this.catMenu);
+
 		this.getEl('categories').delegate('.remove', 'click', function(ev) {
 			var li = $(this).parent();
 			li.remove();
@@ -306,6 +313,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				self.sendUpdateProds();
 			}
 		});
+		this.ownObject(this.prodMenu);
+
 		this.getEl('products').delegate('.remove', 'click', function(ev) {
 			var li = $(this).parent();
 			li.remove();
@@ -360,12 +369,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 
 		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
 			contentType: 'articles',
 			contentId: this.meta.article_id,
 			element: $('.sticky-search-words ul', this.wrapper)
 		});
+		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -430,6 +441,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				self.updateAutoUnPubOptions();
 			}
 		});
+		this.ownObject(m);
 
 		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
@@ -611,6 +623,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			stateId: 'editarticle',
 			listenOn: $('.article-editor-wrap:first', wrap)
 		});
+		this.ownObject(this.editStateSaver);
 
 		var wrap = this.wrapper;
 
@@ -728,6 +741,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.commentsController = new DeskPRO.Agent.PageHelper.Comments(this, {
 			commentsWrapper: this.getEl('comments_wrap')
 		});
+		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
 		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));

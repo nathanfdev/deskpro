@@ -38,12 +38,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 		}, this);
 	},
 
-	destroyPage: function() {
-		if (this.displayOptionsOverlay) {
-			this.displayOptionsOverlay.destroy();
-		}
-	},
-
 	//#########################################################################
 	//# Display options
 	//#########################################################################
@@ -62,6 +56,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.displayOptionsOverlay);
 
 		$('.close-trigger', overlay_wrapper).click((function() {
 			this.displayOptionsOverlay.closeOverlay();

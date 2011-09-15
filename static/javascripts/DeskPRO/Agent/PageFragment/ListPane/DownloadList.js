@@ -12,10 +12,12 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 
 		});
+		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.downloads-simple-list', this.wrapper)
 			.delegate('button.dl-insert-link', 'click', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
@@ -37,6 +39,7 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
 		});
+		this.ownObject(this.relatedContentList);
 	},
 
 	initVisibleTicket: function() {

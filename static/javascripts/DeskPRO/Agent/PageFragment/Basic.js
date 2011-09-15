@@ -28,6 +28,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.meta = {};
 		this.urls = {};
 
+		this.destroyObjects = [];
+
 		this.featureSelectors = {
 			routes: [],
 			times: []
@@ -83,6 +85,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 		this.init();
 
+		this.addEvent('destroy', function() {
+			var i;
+			for (i = 0; i < this.destroyObjects.length; i++) {
+				this.destroyObjects[i].destroy();
+			}
+			this.destroyObjects = null;
+		}, this);
 		this.addEvent('destroy', this.destroy);
 	},
 
@@ -100,6 +109,20 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	 * Called when the fragment is deactivated (hidden from view)
 	 */
 	deactivate: function() { },
+
+	/**
+	 * Register an object that we "own."
+	 *
+	 * When this page is destroyed, all of these owned objects
+	 * are destroyed as well.
+	 *
+	 * @param obj
+	 */
+	ownObject: function(obj) {
+		if (obj.destroy) {
+			this.destroyObjects.push(obj);
+		}
+	},
 
 	/**
 	 * Init all standard features (using page-defined selectors) on a wrapper
@@ -175,6 +198,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 						loadTimeout: loadtimeout
 					});
 					made_popovers[personId] = popover;
+
+					self.ownObject(popover);
 
 					self.addEvent('destroy', function() {
 						popover.destroy();

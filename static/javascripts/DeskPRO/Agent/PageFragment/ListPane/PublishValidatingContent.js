@@ -6,9 +6,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
-
-		});
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
 			$('article.' + info.typename + '-' + info.contentId).slideUp();
@@ -62,5 +61,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 				}
 			}
 		});
+		this.ownObject(this.actionsMenu);
 	}
 });

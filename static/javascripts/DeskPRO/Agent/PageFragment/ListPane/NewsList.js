@@ -16,15 +16,18 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 
 		});
+		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.news-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
 		});
+		this.ownObject(this.relatedContentList);
 	}
 });

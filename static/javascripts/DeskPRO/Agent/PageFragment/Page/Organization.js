@@ -24,6 +24,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/save-contact-data.json'
 		});
+		this.ownObject(this.contactEditor);
 
 		this.initNoteFormEditable();
 
@@ -49,18 +50,20 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			editable.handleDocumentClick(ev);
 		});
 
-		this.morectionsMenu = new DeskPRO.UI.Menu({
+		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
 			menuElement: this.getEl('more_actions_menu'),
 			onItemClicked: function(info) {
 				var action = $(info.itemEl).data('action');
 			}
 		});
+		this.ownObject(this.moreactionsMenu);
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
+		this.ownObject(this.changePic);
 
 		this._initLabels();
 		this._initCustomFieldsEditor();

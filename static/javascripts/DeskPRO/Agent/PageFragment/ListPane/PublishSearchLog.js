@@ -12,5 +12,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishSearchLog = new Orb.Class({
 		this.tabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('tabs'))
 		});
+		this.ownObject(this.tabs);
 	}
 });

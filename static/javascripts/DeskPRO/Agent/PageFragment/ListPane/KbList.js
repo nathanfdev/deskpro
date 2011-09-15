@@ -12,8 +12,10 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayoptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.kb-simple-list', this.wrapper);
 
@@ -37,6 +39,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
 		});
+		this.ownObject(this.relatedContentList);
 	},
 
 	initVisibleTicket: function() {

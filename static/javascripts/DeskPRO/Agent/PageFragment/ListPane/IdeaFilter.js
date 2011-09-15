@@ -18,10 +18,12 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 
 		});
+		this.ownObject(this.selectionBar);
 
 		var menuBtn = $('button.order-by-trigger:first', this.wrapper);
 		this.orderByMenu = new DeskPRO.UI.Menu({
@@ -44,12 +46,14 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 
 			}).bind(this)
 		});
+		this.ownObject(this.orderByMenu);
 
 		this.listWrapper = $('section.idea-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
 		});
+		this.ownObject(this.relatedContentList);
 
 		this.massActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.perform-actions-trigger:first', this.wrapper),
@@ -133,5 +137,6 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.massActionsMenu);
 	}
 });

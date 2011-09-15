@@ -41,8 +41,10 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			resultId: this.resultTypeId,
 			refreshUrl: this.meta.refreshUrl
 		});
+		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
+		this.ownObject(this.selectionBar);
 
 		$('.detail-view-trigger', this.wrapper).click((function() {
 			this.switchViewType('list');
@@ -133,6 +135,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				});
 			}
 		});
+		this.ownObject(this.massActionsMenu);
 	},
 
 	destroyPage: function() {

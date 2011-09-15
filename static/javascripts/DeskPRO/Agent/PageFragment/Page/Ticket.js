@@ -8,9 +8,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'ticket';
 		this.wrapper = null;
-		this.destroyEls = [];
-		this.destroyMenus = [];
-		this.destroyOverlays = [];
 		this.changeManager = null;
 		this.valueForm = null;
 		this.layout = null;
@@ -57,6 +54,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
 			wrapper: el
 		});
+		this.ownObject(this.ticketDisplay);
 
 		this.initFeaturesOnCollection(this.wrapper, {
 			routes: [],
@@ -179,7 +177,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			}).bind(this)
 		});
-
+		this.ownObject(this.moreActionsMenu);
 
 		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
 			replyBox: this.getEl('replybox'),
@@ -225,50 +223,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.replyBox);
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
+		this.ownObject(this.ticketActions);
+
 		this.ticketParticipants = new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
+		this.ownObject(this.ticketParticipants);
 
 		this.ticketChecker = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker(this, {
 			lastMessageId: this.meta.lastMessageId,
 			lastLogId: this.meta.lastLogId,
 			checkUrl: BASE_URL + 'agent/tickets/'+this.getMetaData('ticket_id')+'/ajax-update-check'
 		});
+		this.ownObject(this.ticketChecker);
 
 		if (this.meta.isLocked) {
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
+			this.ownObject(this.ticketLocked);
 		}
 	},
 
 	destroyPage: function() {
 
-		this.ticketChecker.destroy();
-
 		if (this.updateCheckTimeout) {
 			this.updateCheckTimeout = window.clearTimeout(this.updateCheckTimeout);
 		}
 
-		for (var i = 0; i < this.destroyEls.length; i++) {
-			$(this.destroyEls[i]).remove();
-		}
-
-		for (var i = 0; i < this.destroyMenus.length; i++) {
-			this.destroyMenus[i].destroy();
-		}
-
-		for (var i = 0; i < this.destroyOverlays.length; i++) {
-			this.destroyOverlays[i].destroy();
-		}
-
-		if (this.personPopover) {
-			this.personPopover.destroy();
-		}
-		if (this.orgPopover) {
-			this.orgPopover.destroy();
-		}
-
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
-		DeskPRO_Window.getMessageBroker().removeTaggedListeners(this.pageUid);
 	},
 
 	handleTicketUpdate: function(data) {
@@ -458,6 +440,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 	},
 
 	saveLabels: function() {
@@ -554,8 +537,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self._handleFlagMenuClick(info);
 			}
 		});
-
-		this.destroyMenus.push(this.flagMenu);
+		this.ownObject(this.flagMenu);
 	},
 
 	_handleFlagMenuClick: function(info) {
@@ -592,8 +574,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			}
 		});
-
-		this.destroyMenus.push(this.ticketActionsMenu);
+		this.ownObject(this.ticketActionsMenu);
 	},
 
 	_initDeleteOverlay: function() {
@@ -604,12 +585,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.deleteOverlay = new DeskPRO.UI.Overlay({
 			contentElement: this.deleteOverlayEl
 		});
+		this.ownObject(this.deleteOverlay);
 
 		$('.save-trigger', this.deleteOverlayEl).click((function() {
 			this.doTicketDelete();
 		}).bind(this));
-
-		this.destroyOverlays.push(this.deleteOverlay);
 	},
 
 	showDeleteOverlay: function() {
@@ -669,8 +649,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
-
-		this.destroyMenus.push(this.messageActionsMenu);
+		this.ownObject(this.messageActionsMenu);
 
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
@@ -739,6 +718,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			tabRoute: $('.person-overview', this.wrapper).data('route'),
 			loadTimeout: 500
 		});
+		this.ownObject(this.personPopover);
 
 		$('.person-overview', this.wrapper).css({'cursor': 'pointer'}).click((function(event) {
 
@@ -754,6 +734,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				tabRoute: orgEl.data('route'),
 				loadTimeout: 1200
 			});
+			this.ownObject(this.orgPopover);
 
 			orgEl.css({'cursor': 'pointer'}).click((function(event) {
 				this.orgPopover.toggle();

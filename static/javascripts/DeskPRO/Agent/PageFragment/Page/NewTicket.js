@@ -280,6 +280,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.otherTabs);
 
 		// Agent selector
 		this.assignAgentSelector = new DeskPRO.Agent.Widget.AgentSelector({
@@ -299,6 +300,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			}).bind(this)
 		});
+		this.ownObject(this.assignAgentSelector);
 
 		// Add CC's
 		var self = this;
