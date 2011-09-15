@@ -463,8 +463,12 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var val2 = parseInt(other.text().trim());
 
 			if (val1 != val2) {
-				els.push(this);
-				els.push(other.get(0));
+				$('.list-counter', $(this).parent().parent()).each(function() {
+					els.push(this);
+				});
+				$('.list-counter', other.parent().parent()).each(function() {
+					els.push(this);
+				});
 			}
 		});
 
@@ -485,8 +489,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		window.setTimeout(function() {
-
-			var runEl = null;
 
 			if (check.is('.checked')) {
 				$('#tickets_outline_sys_filters').hide();

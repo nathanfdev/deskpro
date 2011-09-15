@@ -65,13 +65,13 @@ section.source-section header span.settings {
 	right: 0;
 	bottom: 0;
 	width: 28px;
-	
+
 	overflow: hidden;
 	text-indent: -100px;
-	
+
 	background: url("../../images/agent/imgSprt_ico.png") no-repeat 7px -862px;
 	border-left: 1px solid #ADB7C0;
-	
+
 	cursor: pointer;
 }
 
@@ -184,12 +184,16 @@ ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 }
 
 ul.source-list li .list-counter.loading {
-	background-image: url(../../images/loading-arrows-xsmall-dark-w.gif) !important;
+	background-image: url(../../images/loading-arrows-xsmall-white-darkbg.gif) !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat !important;
 	width: 13px !important;
 	overflow:  hidden !important;
 	text-indent: -100px !important;
+}
+
+ul.source-list ul.sub-group li .list-counter.loading {
+	background-image: url(../../images/loading-arrows-xsmall-white-lightbg.gif) !important;
 }
 
 ul.source-list ul.sub-group {
@@ -352,7 +356,7 @@ section.source-tabs {
 	overflow: hidden;
 }
 
-section.source-tabs ul {	
+section.source-tabs ul {
 	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
 	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
@@ -374,7 +378,7 @@ section.source-tabs ul li {
 	padding: 0;
 	height: 23px;
 	position: relative;
-	
+
 	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 	font-weight: normal;
 	text-transform: uppercase;
@@ -487,7 +491,7 @@ section.source-labels-list dl dt {
 	text-shadow: 0 1px 0 #FFFFFF;
 	color: #565E66;
 	clear: both;
-	
+
 	margin-bottom: 8px;
 }
 
@@ -588,7 +592,7 @@ section.source-labels-cloud ul li.nav-selected span {
 
 #tickets_outline section.sys-filters-section .hold-ticket-count {
 	position: relative;
-	
+
 	float: right;
 	font-size: 10px;
 	font-family: Arial, "Lucida Grande", Helvetica, Tahoma, Geneva, Verdana, sans-serif;
@@ -597,7 +601,7 @@ section.source-labels-cloud ul li.nav-selected span {
 	color: #738699;
 	text-transform: uppercase;
 	line-height: 27px;
-	
+
 	/* margin right for settings button */
 	margin-right: 33px;
 }
@@ -828,7 +832,7 @@ input.dp-cat-input:focus {
 	font-weight: bold;
 	display: block;
 	margin:  0 0 3px 0;
-}	
+}
 
 
 
