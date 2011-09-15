@@ -18,7 +18,7 @@
 					data-filter-name="{{filter.sys_name}}"
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
 					{% if filter.sys_name == 'agent_team' %}
-						{% if app.user.is_single_team %}
+						{% if app.user.agent.is_single_team %}
 							data-grouping-ignore="agent,agent_team"
 						{% else %}
 							data-grouping-ignore="agent"

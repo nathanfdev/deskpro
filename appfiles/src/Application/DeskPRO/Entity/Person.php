@@ -533,14 +533,26 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function __get($name)
 	{
 		if ($this->_helper_manager) {
-			if ($this->_helper_manager->hasHelper($name)) {
-				return $this->_helper_manager->getHelper($name);
+			$name_l = strtolower($name);
+			if ($this->_helper_manager->isNameCallable($name_l)) {
+				return $this->_helper_manager->callName($name_l, $arguments);
 			}
 		}
 
 		return parent::__get($name);
 	}
 
+	public function __isset($name)
+	{
+		if ($this->_helper_manager) {
+			$name_l = strtolower($name);
+			if ($this->_helper_manager->isNameCallable($name_l)) {
+				return true;
+			}
+		}
+
+		return parent::__isset($name);
+	}
 
 	public function getLocale()
 	{
