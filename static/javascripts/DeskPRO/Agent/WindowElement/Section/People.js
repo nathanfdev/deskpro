@@ -18,9 +18,9 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	},
 
 	_initSection: function(data) {
-		
+
 		this.setHasInitialLoaded();
-		
+
 		this.contentEl.html(data.section_html);
 
 		var self = this;
@@ -39,11 +39,5 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
-
-		this.contentEl.addClass('scroll-content').tinyscrollbar();
-
-		if (this.isVisible()) {
-			this._onShowLoadList();
-		}
 	}
 });
