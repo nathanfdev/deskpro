@@ -290,6 +290,7 @@ class GroupingCounter
 	public function makeTimeFieldSelect($field, $select_name)
 	{
 		$times = array_keys($this->getTimeTitles());
+		$times = array_reverse($times);
 
 		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
 		$now = time();
@@ -307,7 +308,7 @@ class GroupingCounter
 			$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
 		}
 
-		$sql .= implode('', $parts) . " ELSE 14515200 END AS $select_name";
+		$sql .= implode('', $parts) . " ELSE 1 END AS $select_name";
 
 		return $sql;
 	}
@@ -563,7 +564,7 @@ class GroupingCounter
 			7257600 => '3 - 4 months',	// TIMEONTH * 3
 			9676800 => '4 - 5 months',	// TIMEMONTH * 4
 			12096000 => '5 - 6 months',	// TIMEMONTH * 5
-			14515200 => '> 6 months'	// TIMEMONTH * 6
+			900000000 => '> 6 months'	// Everything else
 		);
 
 		return $times;
