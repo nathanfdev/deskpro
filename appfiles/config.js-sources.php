@@ -258,7 +258,7 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/jquery.tinyscrollbar.js',
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/mwheelIntent.js',
-		'vendor/jquery/jquery.ajax-retry.js',
+		//'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 

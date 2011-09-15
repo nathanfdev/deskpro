@@ -1670,3 +1670,15 @@ function toggle_visibility(elId) {
 		el.show();
 	}
 }
+
+//var jQuery_Ajax = $.ajax;
+//var dp_noPollAjax = function(settings) {
+//	if (settings.dpIsPolling) {
+//		return;
+//	}
+//
+//	jQuery_Ajax(settings);
+//};
+//
+//$.ajax = dp_noPollAjax;
+//
