@@ -1,11 +1,14 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.NewNews = new Class({
+DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	allowDupe: true,
-	TYPENAME: 'newnews',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'newnews';
+		this.allowDupe = true;
+	},
 
 	initPage: function(el) {
 		this.wrapper = el;

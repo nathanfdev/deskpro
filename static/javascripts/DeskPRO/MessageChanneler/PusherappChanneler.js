@@ -3,16 +3,16 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
 /**
  * The pusherapp channeler uses websockets and pusherapp.com to delivery messages.
  */
-DeskPRO.MessageChanneler.PusherappChanneler = new Class({
+DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
 	_init: function() {
-		
+
 		this._add_subs = [];
 		this._add_subs_timeout = null;
 		this._del_subs = [];
 		this._del_subs_timeout = null;
-		
+
 		this.socket = new Pusher(this.options.apiKey);
 	},
 

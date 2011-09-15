@@ -1,12 +1,15 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults,
 
-	TYPENAME: 'ticket-flagged',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'ticket-flagged';
 
-	resultTypeName: 'flagged',
-	resultTypeId: 0,
+		this.resultTypeName = 'flagged';
+		this.resultTypeId = 0;
+	},
 
 	initPage: function(el) {
 

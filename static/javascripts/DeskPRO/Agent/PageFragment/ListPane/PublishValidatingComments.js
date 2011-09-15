@@ -1,9 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
+DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
-
-	wrapper: null,
 
 	initPage: function(el) {
 		var self = this;

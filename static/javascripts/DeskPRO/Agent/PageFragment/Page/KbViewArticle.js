@@ -1,12 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
+DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'article',
-
-	wrapper: null,
-	article_id: null,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'article';
+	},
 
 	initPage: function(el) {
 
@@ -351,7 +351,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	//# Labels
 	//#################################################################
 
-	labelsList: null,
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $(".kb-tags ul", this.wrapper);
@@ -369,7 +368,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 	},
 
-	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);

@@ -1,5 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
+DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
@@ -357,8 +357,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 	//# Popout
 	//#################################################################
 
-	personPopoutHtml: null,
-	personPopoutWaiting: false,
 	_initPopout: function() {
 		var self = this;
 		var el = this.wrapper;
@@ -384,7 +382,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 	},
 
-	_initPopoutEls_done: false,
 	_initPopoutEls: function() {
 
 		if (this._initPopoutEls_done) return;

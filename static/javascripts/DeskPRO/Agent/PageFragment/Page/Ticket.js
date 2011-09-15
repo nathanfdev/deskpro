@@ -1,30 +1,26 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
+DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'ticket',
-
-	wrapper: null,
-
-	destroyEls: [],
-	destroyMenus: [],
-	destroyOverlays: [],
-
-	changeManager: null,
-	valueForm: null,
-
-	layout: null,
-
-	popout: null,
-	popout_overview: null,
-
-	isMouseOverPopout: false,
-	hasInitPopout: false,
-	popoutPage: null,
-
-	lastActiveDate: null,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'ticket';
+		this.wrapper = null;
+		this.destroyEls = [];
+		this.destroyMenus = [];
+		this.destroyOverlays = [];
+		this.changeManager = null;
+		this.valueForm = null;
+		this.layout = null;
+		this.popout = null;
+		this.popout_overview = null;
+		this.isMouseOverPopout = false;
+		this.hasInitPopout = false;
+		this.popoutPage = null;
+		this.lastActiveDate = null;
+	},
 
 	initPage: function(el) {
 
@@ -401,8 +397,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Custom Fields popout
 	//#################################################################
 
-	custom_fields_display: null,
-	custom_fields_edit: null,
 	_initCustomFieldsEditor: function() {
 		$('.ticket-custom-fields-edit-btn', this.wrapper).click((function() {
 			this.showCustomFieldEditor();
@@ -455,7 +449,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Labels
 	//#################################################################
 
-	labelsList: null,
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $(".ticket-tags ul", this.contentWrapper);
@@ -467,7 +460,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 	},
 
-	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this.changeManager.hasChanges()) {
 			// If change manager has changes, we dont save new/removed tags
@@ -553,8 +545,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Ticket flag
 	//#################################################################
 
-
-	flagMenu: null,
 	_initFlagMenu: function() {
 		var self = this;
 		this.flagMenu = new DeskPRO.UI.Menu({
@@ -588,7 +578,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Message actions menu
 	//#################################################################
 
-	ticketActionsMenu: null,
 	_initTicketActionsMenu: function() {
 
 		var self = this;
@@ -607,8 +596,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.destroyMenus.push(this.ticketActionsMenu);
 	},
 
-	deleteOverlay: null,
-	deleteOverlayEl: null,
 	_initDeleteOverlay: function() {
 
 		if (this.deleteOverlay) return;
@@ -673,7 +660,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.changeManager.setInstantChange(prop, 'open');
 	},
 
-	messageActionsMenu: null,
 	_initMessageActionsMenu: function() {
 		var self = this;
 		this.messageActionsMenu = new DeskPRO.UI.Menu({

@@ -1,10 +1,13 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter = new Class({
+DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	wrapper: null,
-	filterSearchForm: null,
+	initializeProperties: function() {
+		this.parent();
+		this.wrapper = null;
+		this.filterSearchForm = null;
+	},
 
 	initPage: function(el) {
 		this.wrapper = el;

@@ -1,23 +1,26 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
+DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	wrapper: null,
-	contentWrapper: null,
-	barWrapper: null,
-	layout: null,
-	overlay: null,
-	appendUrl: null,
+	initializeProperties: function() {
+		this.parent();
+		this.wrapper = null;
+		this.contentWrapper = null;
+		this.barWrapper = null;
+		this.layout = null;
+		this.overlay = null;
+		this.appendUrl = null;
 
-	actionsBarHelper: null,
+		this.actionsBarHelper = null;
 
-	resultTypeName: 'basic',
-	resultTypeId: 'general',
+		this.resultTypeName = 'basic';
+		this.resultTypeId = 'general';
 
-	changeManager: null,
+		this.changeManager = null;
 
-	loadFirst: false,
+		this.loadFirst = false;
+	},
 
 	initPage: function(el) {
 
@@ -320,7 +323,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	//# Flag menu
 	//#########################################################################
 
-	flagMenu: null,
 	_initFlagMenu: function() {
 		var self = this;
 		this.flagMenu = new DeskPRO.UI.Menu({

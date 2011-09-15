@@ -1,25 +1,23 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
+DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	TYPENAME: 'recyclebin',
-
-	wrapper: null,
-	contentWrapper: null,
-	barWrapper: null,
-	layout: null,
-	overlay: null,
-	appendUrl: null,
-
-	actionsBarHelper: null,
-
-	resultTypeName: 'basic',
-	resultTypeId: 'general',
-
-	changeManager: null,
-
-	loadFirst: false,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'recyclebin';
+		this.wrapper = null;
+		this.contentWrapper = null;
+		this.barWrapper = null;
+		this.layout = null;
+		this.overlay = null;
+		this.appendUrl = null;
+		this.actionsBarHelper = null;
+		this.resultTypeName = 'basic';
+		this.resultTypeId = 'general';
+		this.changeManager = null;
+		this.loadFirst = false;
+	},
 
 	initPage: function(el) {
 

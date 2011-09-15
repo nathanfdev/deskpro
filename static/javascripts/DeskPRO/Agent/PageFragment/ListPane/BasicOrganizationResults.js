@@ -1,17 +1,20 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Class({
+DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	wrapper: null,
-	contentWrapper: null,
-	overlay: null,
-	appendUrl: null,
+	initializeProperties: function() {
+		this.parent();
+		this.wrapper = null;
+		this.contentWrapper = null;
+		this.overlay = null;
+		this.appendUrl = null;
 
-	actionsBarHelper: null,
+		this.actionsBarHelper = null;
 
-	resultTypeName: 'basic',
-	resultTypeId: 'general',
+		this.resultTypeName = 'basic';
+		this.resultTypeId = 'general';
+	},
 
 	initPage: function(el) {
 
@@ -41,21 +44,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Class({
 		}
 	},
 
-	activate: function() {
-		this.attachInfiniteScroll();
-	},
-
-	deactivate: function() {
-		this.deattachInfiniteScroll();
-	},
-
 	//#########################################################################
 	//# Display options
 	//#########################################################################
 
-	displayOptionsWrapper: null,
-	displayOptionsOverlay: null,
-	displayOptionsList: null,
 	_initDisplayOptions: function() {
 
 		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
@@ -129,98 +121,5 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Class({
 
 			}
 		});
-	},
-
-
-	//#########################################################################
-	//# Infinite loading stuff
-	//#########################################################################
-
-	attachInfiniteScroll: function() {
-		this._handleOnScroll_bound = this._handleOnScroll.bind(this);
-		this.wrapper.parent().scroll(this._handleOnScroll_bound);
-	},
-	deattachInfiniteScroll: function() {
-		if (this._handleOnScroll_bound) {
-			this.wrapper.parent().unbind('scroll', this._handleOnScroll_bound);
-			this._handleOnScroll_bound = null;
-		}
-	},
-
-	_handleOnScroll_bound: null,
-	_handleOnScroll: function() {
-		var scrolling_area = this.wrapper.parent();
-		var content_area = this.contentWrapper;
-
-		if ((scrolling_area.scrollTop()+50+scrolling_area.height()) >= content_area.height()) {
-			this.nextSearchPage();
-		}
-	},
-
-	isLoadingNext: false,
-	noMoreResults: false,
-	nextSearchPage: function() {
-		var last_page = parseInt($('.page-set:last', this.contentWrapper).data('page'));
-		this.loadResultPage(last_page+1)
-	},
-
-	loadResultPage: function(page) {
-		if (this.isLoadingNext|| this.noMoreResults) return;
-		this.isLoadingNext = true;
-
-		var loading = $('.loading-more', this.contentWrapper);
-		loading.detach().appendTo(this.contentWrapper); // make sure its at the bottom
-		loading.show();
-
-		var url = this.getMetaData('pageUrl').replace('$page', page);
-		if (this.appendUrl) {
-			url += this.appendUrl;
-		}
-
-		$.ajax({
-			cache: false,
-			type: 'GET',
-			url: url,
-			context: this,
-			dataType: 'json',
-			success: function (data) {
-				this._handleAjaxSuccess(data);
-			}
-		});
-	},
-
-	_handleAjaxSuccess: function(data) {
-
-		this.isLoadingNext = false;
-		$('.loading-more', this.contentWrapper).hide();
-
-		if (data['no_more_results']) {
-			this.noMoreResults = true;
-			var nomore = $('.no-more-results', this.contentWrapper);
-			nomore.detach().appendTo(this.contentWrapper); // make sure its at the bottom
-			nomore.show();
-			return;
-		}
-
-		this._scrollInnerHeights_cache = null;
-
-		var html = data['html'];
-
-		var el = $(html);
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['abbr.timeago']
-		});
-
-		$('table.list', this.contentWrapper).append(el);
-
-		if (this.loadFirst) {
-			this.loadFirst = false;
-
-			var a = $('td.subject:first a.with-route:first', el);
-			if (a.length) {
-				DeskPRO_Window.runPageRouteFromElement(a);
-			}
-		}
 	}
 });

@@ -1,11 +1,14 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
+DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	allowDupe: true,
-	TYPENAME: 'newdownload',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'newdownload';
+		this.allowDupe = true;
+	},
 
 	initPage: function(el) {
 		this.wrapper = el;

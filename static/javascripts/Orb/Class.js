@@ -18,7 +18,8 @@ Orb.Class_GC_Start = function(timeout) {
 	Orb.Class_GC_Interval = window.setInterval(function() {
 		Orb.Class_GC_Cycle();
 	}, timeout);
-};
+}
+
 Orb.Class_GC_Cycle = function() {
 	var i, l;
 
@@ -29,18 +30,32 @@ Orb.Class_GC_Cycle = function() {
 		console.log('[GC] Cycle');
 	}
 
-	Object.each(Orb.Class_Instances, function(obj, id) {
+	Object.each(Orb.Class_Instances, function(obj) {
 		if (obj.OBJ_DESTROYED) {
-			console.log('[GC] Destroyed %i: %o', id, obj);
-			for (i = 0, l = Orb.Class_GC_Callbacks.length; i < l; i++) {
-				Orb.Class_GC_Callbacks[i](obj, id);
-			}
-
-			delete Orb.Class_Instances[id];
+			Orb.Class_GC_Cycle_Class(obj);
 		}
 	});
 
 	this.isRunning = false;
+};
+
+Orb.Class_GC_Cycle_Class = function(obj) {
+
+	var id = obj.OBJ_ID;
+
+	if (obj.OBJ_DESTROYED && !obj.OBJ_DONE_DESTROYED) {
+		obj.OBJ_DONE_DESTROYED = true;
+
+		if (Orb.Class_GC_PrintDebug) {
+			console.log('[GC] Destroyed %s: %o', id, obj);
+		}
+
+		for (i = 0, l = Orb.Class_GC_Callbacks.length; i < l; i++) {
+			Orb.Class_GC_Callbacks[i](obj, id);
+		}
+
+		delete Orb.Class_Instances[id];
+	}
 };
 
 Orb.Class = function(properties) {
@@ -172,7 +187,9 @@ Orb.Class = function(properties) {
 			}
 			proto[name] = value;
 		} else {
-			throw "Error: Non-function property in class. Set properties in an initializer method, never in the class body!";
+			console.error("[Orb.Class] Non-function property in class: %o extends %o", this, properties);
+			throw "Error: Non-function property in class";
+			return;
 		}
 	}
 

@@ -1,11 +1,14 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Class({
+DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	allowDupe: true,
-	TYPENAME: 'ticket_snippets',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'ticket_snippets';
+		this.allowDupe = true;
+	},
 
 	initPage: function(el) {
 		var self = this;
@@ -66,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Class({
 		if (this.newCatOverlay) this.newCatOverlay.remove();
 		if (this.newCatBackdrop) this.newCatBackdrop.remove();
 	},
-	
+
 	//#########################################################################
 	// Editing features
 	//#########################################################################

@@ -1,19 +1,19 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Class({
+DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	TYPENAME: 'people-list',
-
-	wrapper: null,
-	contentWrapper: null,
-	overlay: null,
-	appendUrl: null,
-
-	actionsBarHelper: null,
-
-	resultTypeName: 'filter',
-	resultTypeId: 0,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'people-list';
+		this.wrapper = null;
+		this.contentWrapper = null;
+		this.overlay = null;
+		this.appendUrl = null;
+		this.actionsBarHelper = null;
+		this.resultTypeName = 'filter';
+		this.resultTypeId = 0;
+	},
 
 	initPage: function(el) {
 

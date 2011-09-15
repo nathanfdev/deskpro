@@ -1,14 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
-
-	wrapper: null,
-	header: null,
-	content: null,
-
-	// note: null,
-	// reply: null,
 
 	initPage: function(el) {
 		this.wrapper = $(el);

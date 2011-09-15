@@ -1,12 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
+DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'news',
-
-	wrapper: null,
-	article_id: null,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'news';
+	},
 
 	initPage: function(el) {
 
@@ -240,7 +240,6 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	//# Labels
 	//#################################################################
 
-	labelsList: null,
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $(".news-tags ul", this.wrapper);
@@ -258,7 +257,6 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		});
 	},
 
-	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);

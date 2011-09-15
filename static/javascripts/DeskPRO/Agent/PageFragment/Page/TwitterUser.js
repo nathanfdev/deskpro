@@ -1,11 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.TwitterUser = new Class({
+DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
-
-	el: null,
-	tabs: null,
-
 	initPage: function(el) {
 		this.el = $(el);
 

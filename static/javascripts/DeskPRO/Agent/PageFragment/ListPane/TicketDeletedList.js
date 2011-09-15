@@ -1,12 +1,15 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TicketDeletedList = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TicketDeletedList = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults,
 
-	TYPENAME: 'ticket-deleted-list',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'ticket-deleted-list';
 
-	resultTypeName: 'filter',
-	resultTypeId: 0,
+		this.resultTypeName = 'filter';
+		this.resultTypeId = 0;
+	},
 
 	initPage: function(el) {
 		this.parent(el);

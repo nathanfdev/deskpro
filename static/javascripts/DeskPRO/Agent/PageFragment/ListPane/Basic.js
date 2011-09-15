@@ -1,5 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
-DeskPRO.Agent.PageFragment.ListPane.Basic = new Class({
+DeskPRO.Agent.PageFragment.ListPane.Basic = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initialize: function(html) {

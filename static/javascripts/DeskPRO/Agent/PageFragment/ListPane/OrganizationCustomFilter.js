@@ -1,12 +1,15 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.OrganizationCustomFilter = new Class({
+DeskPRO.Agent.PageFragment.ListPane.OrganizationCustomFilter = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults,
 
-	TYPENAME: 'organization-custom-filter',
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'organization-custom-filter';
 
-	resultTypeName: 'filter',
-	resultTypeId: 0,
+		this.resultTypeName = 'filter';
+		this.resultTypeId = 0;
+	},
 
 	initPage: function(el) {
 		this.parent(el);

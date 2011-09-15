@@ -7,34 +7,33 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment');
  * Each page can have it's own resources that should be loaded before the HTML
  * for it is rendered (though that responsibility is up to whatever uses the PageFragment).
  */
-DeskPRO.Agent.PageFragment.Basic = new Class({
+DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
-	Implements: [Events, DeskPRO.Agent.Widgetable],
+	Implements: [Orb.Util.Events],
 
-	pageUuid: null,
-	ZONE: 'agent',
-	TYPENAME: 'basic',
+	initializeProperties: function() {
 
-	/**
-	 * When this is true, the loader (in Window) will allow duplicates
-	 * of a tab with the same thing
-	 */
-	allowDupe: false,
-
-	scripts: [],
-	stylesheets: [],
-	html: '',
-	meta: {},
-	urls: {},
-
-	featureSelectors: {
-		routes: [],
-		times: []
 	},
 
 	initialize: function(html) {
 
 		this.pageUid = Orb.uuid();
+		this.ZONE = 'agent';
+		this.TYPENAME = 'basic';
+
+		this.allowDupe = false;
+		this.scripts = [];
+		this.stylesheets = [];
+		this.html = '';
+		this.meta = {};
+		this.urls = {};
+
+		this.featureSelectors = {
+			routes: [],
+			times: []
+		};
+
+		this.initializeProperties();
 
 		if (html) {
 			this.html = html;

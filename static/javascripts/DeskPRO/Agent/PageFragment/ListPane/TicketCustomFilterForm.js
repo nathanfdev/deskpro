@@ -1,9 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
-
-	wrapper: null,
 
 	initPage: function(el) {
 

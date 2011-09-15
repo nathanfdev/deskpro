@@ -1,9 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.Organization = new Class({
+DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
-	TYPENAME: 'organization',
-	wrapper: null,
+
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'organization';
+	},
 
 	initPage: function(el) {
 		this.wrapper = el;
@@ -175,7 +178,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 	//# Labels
 	//#########################################################################
 
-	labelsList: null,
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $(".org-tags ul", this.wrapper).tagit({
@@ -186,7 +188,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Class({
 		});
 	},
 
-	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);

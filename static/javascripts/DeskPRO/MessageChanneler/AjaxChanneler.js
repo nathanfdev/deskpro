@@ -3,7 +3,7 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
 /**
  * The AJAX channeler uses AJAX polling to fetch new messages from the server.
  */
-DeskPRO.MessageChanneler.AjaxChanneler = new Class({
+DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
 	_init: function() {

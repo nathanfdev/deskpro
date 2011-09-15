@@ -1,12 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
+DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'download',
-
-	wrapper: null,
-	article_id: null,
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'download';
+	},
 
 	initPage: function(el) {
 
@@ -232,7 +232,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 	//# Labels
 	//#################################################################
 
-	labelsList: null,
 	_initLabels: function() {
 
 		// Tags
@@ -251,7 +250,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		});
 	},
 
-	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);
