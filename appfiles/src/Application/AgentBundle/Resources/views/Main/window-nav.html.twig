@@ -2,6 +2,12 @@
 <div id="dp_nav">
 	<div id="dp_nav_sections" class="deskproPane">
 		<ul>
+			{% if js_debug.useTestSection %}
+				<li id="test_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Test">
+					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
+					<a><span class="devNavIcon">DEV</span></a>
+				</li>
+			{% endif %}
 			<li class="dpNavActive" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
 				<div class="count-badge navCounterRed" style="display: none"><span></span></div>
 				<a><span class="ticketNavIcon">Tickets</span></a>

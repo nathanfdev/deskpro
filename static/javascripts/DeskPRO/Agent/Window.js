@@ -693,6 +693,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['tickets_section'];
 		}
 
+		if (!handler && this.DEBUG.useTestSection) {
+			handler = this.sections['test_section'];
+		}
+
 		if (!handler) {
 			console.error('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
