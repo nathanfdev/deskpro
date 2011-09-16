@@ -5,5 +5,59 @@
 	<a class="perform-action perform-actions-trigger disabled">
 		<span>Perform Action</span>
 	</a>
-	{% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %}
+	{# {% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %} #}
+
+	<div class="mass-actions-overlay-container">
+		<script type="text/x-deskpro-plain" class="radio-tpl">
+			<button class="clean-white"><span class="radio-title"></span></button>
+		</script>
+		<section class="mass-actions-overlay">
+			<header>
+				<h1>Apply actions to <span class="selected-tickets-count"></span> tickets</h1>
+			</header>
+			<article>
+				<dl>
+					<dt>Change Status</dt>
+					<dd>
+						<label class="radio-item">
+							<input type="radio" name="status" value="resolved" />
+							<span class="radio-title">Resolve Ticket</span>
+						</label>
+						<label class="radio-item">
+							<input type="radio" name="status" value="pending" />
+							<span class="radio-title">Set Awaiting User</span>
+						</label>
+						<label class="radio-item">
+							<input type="radio" name="status" value="open" />
+							<span class="radio-title">Set Awaiting Agent</span>
+						</label>
+					</dd>
+
+					<dt>Change Ownership</dt>
+					<dd>
+						<button class="clean-white radio-option group-assign" data-radio-group="group-assign"><span>Assign to me</span><span class="arrow"></span></button>
+						<button class="clean-white radio-option group-assign" data-radio-group="group-assign"><span>Assign to my team</span><span class="arrow"></span></button>
+					</dd>
+
+					<dt>Change Property</dt>
+					<dd>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Category</span><span class="arrow"></span></button>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Priority</span><span class="arrow"></span></button>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Language</span><span class="arrow"></span></button>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Product</span><span class="arrow"></span></button>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Workflow</span><span class="arrow"></span></button>
+						<button class="clean-white arrow radio-option group-assign" data-radio-group="group-assign"><span>Set Flag</span><span class="arrow"></span></button>
+					</dd>
+				</dl>
+				<div class="reply-area">
+
+				</div>
+			</article>
+			<footer>
+				<button class="apply-actions">
+					Apply
+				</button>
+			</footer>
+		</section>
+	</div>
 </header>

@@ -201,6 +201,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		// has its own strucutred array anyway,
 		// since it could be large we can delete it from memory
 		delete this.meta.ticketResultIds;
+
+		this.massActions = new DeskPRO.Agent.TicketList.MassActions.Widget(this);
+		this.ownObject(this.massActions);
 	},
 
 	_handleResize: function() {
