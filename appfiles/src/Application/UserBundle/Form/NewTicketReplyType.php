@@ -36,7 +36,7 @@ class NewTicketReplyType extends AbstractType
 	{
 		$builder->add('message', 'textarea');
 
-		$builder->add('new_upload', 'file', array('type' => 'file', 'required' => false)); // type=file so we get UploadedFile object
+		$builder->add('new_upload', 'file', array('required' => false));
 
 		if (!empty($options['tmp_files'])) {
 			$builder->add('tmp_files', 'choice', array(
