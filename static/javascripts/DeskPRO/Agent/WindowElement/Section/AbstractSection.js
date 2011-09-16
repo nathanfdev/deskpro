@@ -45,7 +45,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	setHasInitialLoaded: function() {
 		this.hasLoaded = true;
-		$('#deskpro_outline_loading').removeClass('on');
+		$('#dp_source_loading').removeClass('on');
 	},
 
 
@@ -197,7 +197,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		this.getListElement().addClass('on');
 
-		$('#deskpro_list_loading').removeClass('on');
+		$('#dp_list_loading').removeClass('on');
 
 		page.fireEvent('render', [contentEl]);
 		page.fireEvent('activate');

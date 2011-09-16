@@ -30,6 +30,20 @@
 	box-shadow: 2px 0 4px 0 #8c8f93;
 }
 
+#dp_list_loading {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+
+	background: url(../../images/loading-big-circle.gif) no-repeat 50% 20px;
+}
+
+#dp_list_loading.on {
+	display: block;
+}
 
 /*****************************************************************************
  * Control Bar
@@ -216,12 +230,12 @@
 	font-family: Helvetica, Arial, sans-serif;
 	line-height: 12px;
 	position: relative;
-	
+
 	float: right;
 	font-size: 10px;
 	margin: 4px 10px 0 0;
 	padding: 2px 5px 2px 5px;
-	
+
 	font-family: 'Helvetica Neue', Helvetica, sans-serif;
 }
 
@@ -305,7 +319,7 @@
 	min-width: 12px;
 	display: block;
 	text-align: center;
-	
+
 	font-size: 9px;
 }
 

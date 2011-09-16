@@ -25,6 +25,20 @@
 	display: block;
 }
 
+#dp_source_loading {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+
+	background: url(../../images/loading-big-circle.gif) no-repeat 50% 20px;
+}
+
+#dp_source_loading.on {
+	display: block;
+}
 
 /*****************************************************************************
  * Section headers
