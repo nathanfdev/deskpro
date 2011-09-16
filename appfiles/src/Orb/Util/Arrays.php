@@ -1685,4 +1685,38 @@ class Arrays
 
 		return $count;
 	}
+
+
+	/**
+	 * Take an array of ordered elements (usually IDs) that are keys in $unordered_data,
+	 * and create a new array where all data is in the same order as $ordered_ids.
+	 *
+	 * @param array $ordered_ids
+	 * @param array $unordeded_data
+	 * @param bool  $append_remain   True to append any remaining elements in $unordered_data if there are any
+	 * @return array
+	 */
+	public static function orderIdArray(array $ordered_ids, array $unordeded_data, $append_remain = false)
+	{
+		$data = array();
+
+		foreach ($ordered_ids as $id) {
+			if (isset($unordeded_data[$id])) {
+				$data[$id] = $unordeded_data[$id];
+			}
+		}
+
+		if ($append_remain && count($ordered_ids) != count($unordeded_data)) {
+			$keys = array_keys($unordeded_data);
+			$append_keys = array_diff($keys, $ordered_ids);
+
+			if ($append_keys) {
+				foreach ($append_keys as $k) {
+					$data[$k] = $unordeded_data[$k];
+				}
+			}
+		}
+
+		return $data;
+	}
 }

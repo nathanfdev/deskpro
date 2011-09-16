@@ -77,6 +77,16 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		}).bind(this));
 	},
 
+	getDisplayFields: function() {
+		var fields = [];
+
+		$(':checkbox:checked', this.getWrapperElement()).each(function() {
+			fields.push($(this).val());
+		});
+
+		return fields;
+	},
+
 	saveDisplayOptions: function() {
 
 		$('.loading-off', this.overlay.elements.wrapper).hide();

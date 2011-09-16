@@ -231,6 +231,34 @@ Orb.strRepeat = function(str, count) {
 
 
 /**
+ * Take elements of array and chunk them into subarrays of size
+ *
+ * @param {Array}   array
+ * @param {Integer} size
+ */
+Orb.arrayChunk = function(array, size) {
+	var newArray = [], chunk = [], i;
+
+	for (i = 0; i < array.length; i++) {
+		if (chunk.length == size) {
+			newArray.push(chunk);
+			chunk = [];
+		}
+
+		if (chunk.length < size) {
+			chunk.push(array[i]);
+		}
+	}
+
+	if (chunk.length) {
+		newArray.push(chunk);
+	}
+
+	return newArray;
+};
+
+
+/**
  * Simple way to load Javascript and CSS files on-demand.
  *
  * Usage:

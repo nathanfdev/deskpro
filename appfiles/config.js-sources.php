@@ -78,6 +78,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
 		'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
 		'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
+		'javascripts/DeskPRO/Agent/PageHelper/Results.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',

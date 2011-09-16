@@ -240,7 +240,7 @@
 }
 
 /*****************************************************************************
- * Selection Bar
+ * Result listings
 /*****************************************************************************/
 
 .list-listing{
@@ -257,6 +257,10 @@
 	padding: 0;
 	width: 100%;
 	position: relative;
+}
+
+.list-listing .row-item:last-of-type {
+	border-bottom: none;
 }
 
 .list-listing .extra-fields {
@@ -465,13 +469,13 @@
 	font-style: italic;
 	font-weight: normal;
 }
-..list-listing .row-item .meta-right{
+.list-listing .row-item .meta-right{
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	right: 0;
 }
-..list-listing .row-item .meta-right span{
+.list-listing .row-item .meta-right span{
 	margin: 0 0 0 5px;
 }
 
@@ -532,4 +536,85 @@
 .related-not-linkable .visible-related-content-controls .related-link,
 .related-not-linkable .visible-related-content-controls .related-unlink {
 	display: none;
+}
+
+
+/*****************************************************************************
+ * Pagenav in result listings
+/*****************************************************************************/
+
+
+footer.results-nav {
+	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
+	behavior: url(../../static/vendor/PIE.htc);
+	box-shadow: 0 1px 0 #FFFFFF;
+	border-top: 1px solid #B3B8BD;
+	border-bottom: 1px solid #B3B8BD;
+	clear: both;
+	height: 25px;
+	color: #959da6;
+	text-shadow: 0 1px 0 #fff;
+	font-size: 11px;
+	position: relative;
+}
+
+footer.results-nav .cursor {
+	background-color: #E1E3E6;
+	padding: 0 0 0 5px;
+	line-height: 25px;
+	text-align: center;
+	color: #75777A;
+	font-size: 10px;
+	float: left;
+}
+
+footer.results-nav.no-more-results .more,
+footer.results-nav.loading .more {
+	display: none;
+}
+
+footer.results-nav .loading {
+	display: none;
+
+	float: right;
+	background: url(../../images/loading-small.gif) no-repeat 50% 50%;
+	width: 16px;
+	height: 15px;
+
+	margin: 4px 10px 0 0;
+}
+
+footer.results-nav.loading .loading {
+	display: block;
+}
+
+footer.results-nav .more {
+	float: right;
+}
+
+footer.results-nav .more button {
+	background-image: -moz-linear-gradient(top, #fafcfd, #f0f2f3);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#fafcfd), to(#f0f2f3));
+	-pie-background: linear-gradient(#fafcfd, #f0f2f3);
+	behavior: url(../../static/vendor/PIE.htc);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+	border: 1px solid #b6babf;
+	border-radius: 3px 3px 3px 3px;
+	float: left;
+	color: #626a73;
+	text-shadow: 0 1px 0 #fff;
+	cursor: pointer;
+	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
+	line-height: 12px;
+	position: relative;
+
+	float: right;
+	font-size: 10px;
+	margin: 3px 10px 0 0;
+	padding: 2px 5px 2px 5px;
+
+	font-family: 'Helvetica Neue', Helvetica, sans-serif;
 }

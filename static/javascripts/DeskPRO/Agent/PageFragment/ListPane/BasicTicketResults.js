@@ -70,7 +70,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			var mock_bottom = false;
 		}
 
-		this.contentWrapper = $('.content:first', this.wrapper);
+		this.contentWrapper = $('.layout-content:first', this.wrapper);
 
 		if (grid) {
 			this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
@@ -104,6 +104,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
 			}
 		}
+
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		var self = this;
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			cw.tinyscrollbar_update();
+			self.fireEvent('resized');
+		});
 
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 
@@ -150,8 +158,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			this._handleResize()
 		}, this);
 
-		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
-
 		if (this.getMetaData('isNewRecentSearch')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.new-recent-search');
 		}
@@ -184,6 +190,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				$('[value="' + ig + '"], [data-group-by="' + ig + '"]', groupByMenu).remove();
 			});
 		}
+
+		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, {
+			resultIds: this.meta.ticketResultIds,
+			perPage: this.meta.perPage || 50
+		});
+		this.ownObject(this.resultsHelper);
+
+		// We dont need them anymore, and resultsHelper
+		// has its own strucutred array anyway,
+		// since it could be large we can delete it from memory
+		delete this.meta.ticketResultIds;
 	},
 
 	_handleResize: function() {

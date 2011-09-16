@@ -389,6 +389,10 @@ agent_ticketsearch_grouptickets:
   pattern: /ticket-search/group-tickets.json
   defaults: { _controller: AgentBundle:TicketSearch:groupTickets }
 
+agent_ticketsearch_getpage:
+  pattern: /ticket-search/get-page
+  defaults: { _controller: AgentBundle:TicketSearch:getTicketPage }
+
 agent_ticketsearch_getflaggedsectiondata:
   pattern: /tickets/get-flagged-section-data.json
   defaults: { _controller: AgentBundle:TicketSearch:getFlaggedSectionData }

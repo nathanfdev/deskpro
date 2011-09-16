@@ -168,6 +168,47 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+
+	/**
+	 * Render a new pageset.
+	 *
+	 * The client has a full list of IDs from a search. When he wants the next page,
+	 * he sends a set of new IDs in the result set and we return the HTML to inject
+	 * into his view.
+	 *
+	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+	 */
+	public function getTicketPageAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
+		$ticket_ids = Arrays::removeFalsey($ticket_ids);
+		$ticket_ids = array_unique($ticket_ids);
+
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids, $this->person);
+		$tickets = Arrays::orderIdArray($ticket_ids, $tickets);
+
+		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+		if (!$display_fields) {
+			$display_fields = array('department', 'agent', 'agent_team');
+		}
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+
+		$tpl = 'part-results-simple-ext.html.twig';
+		if ($this->in->getString('view_type') == 'list') {
+			$tpl = 'part-results-simple-ext.html.twig';
+		}
+
+		return $this->render("AgentBundle:TicketSearch:$tpl", array(
+			'tickets'           => $tickets,
+			'display_fields'    => $display_fields,
+			'ticket_field_defs' => $ticket_field_defs,
+			'person_field_defs' => $person_field_defs,
+		));
+	}
+
+
 	/**
 	 * We get in an array of ticket ID batches. Each batch is identified by some ID,
 	 * usually a filter ID from Tickets.js section.
@@ -276,6 +317,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		$results = $searcher->getMatches();
+		$results = Arrays::castToType($results, 'integer');
 
 		$helper = new Helper\TicketResults($this);
 		$helper->setTicketIds($results);
@@ -298,7 +340,8 @@ class TicketSearchController extends AbstractController
 			'order_by_summary' => $searcher->getOrderBySummary(),
 			'terms_summary' => $searcher->getSummary(),
 			'set_group_term' => $set_group_term,
-			'set_group_option' => $set_group_option
+			'set_group_option' => $set_group_option,
+			'ticket_ids' => $results
 		);
 
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
@@ -429,6 +472,7 @@ class TicketSearchController extends AbstractController
 			'ticket_options'     => $ticket_options,
 			'page'               => $page,
 			'pageinfo'           => $pageinfo,
+			'per_page'           => $per_page,
 			'macros'             => $macros,
 			'show_flag'          => true,
 			'grouped_info'       => $grouped_info,
