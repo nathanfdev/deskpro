@@ -740,13 +740,42 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$message->ticket = $this;
 
 		$now = new \DateTime();
-		if ($message->person['is_agent'] AND (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now)) {
-			$this->date_last_agent_reply = $now;
-		} elseif (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
-			$this->date_last_user_reply = $now;
+		if ($message->person['is_agent']) {
+			if (!($this->date_last_agent_reply || $this->date_last_agent_reply < $now)) {
+				$this->date_last_agent_reply = $now;
+			}
+
+			if (!$this->date_first_agent_reply) {
+				$this->date_first_agent_reply = $now;
+			}
+
+			if (!$message->is_agent_note) {
+				$this->setDateUserWaiting(null);
+			}
+		} else {
+			if (!($this->date_last_user_reply || $this->date_last_user_reply < $now)) {
+				$this->date_last_user_reply = $now;
+			}
+
+			$this->setDateUserWaiting($now);
 		}
 
 		$this->_onPropertyChanged('messages', null, $message);
+	}
+
+
+	public function setDateUserWaiting($date)
+	{
+		if ($this->date_user_waiting) {
+			$time = time() - $this->date_user_waiting->getTimestamp();
+			$this->setModelField('total_user_waiting', $this->total_user_waiting += $time);
+
+			if (!$this->total_to_first_reply) {
+				$this->setModelField('total_to_first_reply', $this->total_user_waiting);
+			}
+		}
+
+		$this->setModelField('date_user_waiting', $date);
 	}
 
 
@@ -1361,36 +1390,31 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setStatus($status)
 	{
-		$old_status = $this->status;
+		$old_status  = $this->status;
 		$old_hstatus = $this->hidden_status;
+		$old_status_code = "$old_status.$old_hstatus";
 
-		if ($status != 'hidden' AND $this->status == 'hidden' AND $this->hidden_status == 'deleted') {
+		$status_code = $status;
+		$hstatus = null;
+		if (strpos($status, '.')) {
+			list($status, $hstatus) = explode('.', $status, 2);
+		}
+
+		$this->setModelField('status', $status);
+		$this->setModelField('hidden_status', $hstatus);
+
+		if ($old_status_code == 'hidden.deleted' || $status_code != 'hidden.deleted') {
 			$this->undeleteTicket();
 		}
 
 		if ($this->is_hold && $status != self::STATUS_OPEN) {
 			$this->setModelField('is_hold', false);
 		}
-
-		$this->status = $status;
-
-		$this->_onPropertyChanged('status', $old_status, $this->status);
-
-		if ($status != 'hidden' AND $this->hidden_status) {
-			$this->hidden_status = null;
-			$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
-		}
 	}
 
 	public function setHiddenStatus($hstatus)
 	{
-		$old_status = $this->status;
-		$old_hstatus = $this->hidden_status;
-
-		$this->hidden_status = $hstatus;
-		$this->status = 'hidden';
-		$this->_onPropertyChanged('status', $old_status, $this->status);
-		$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
+		$this->setStatus('hidden.' . $hstatus);
 	}
 
 	public function getStatusCode()
