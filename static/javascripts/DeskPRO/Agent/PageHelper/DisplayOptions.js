@@ -81,7 +81,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var fields = [];
 
 		$(':checkbox:checked', this.getWrapperElement()).each(function() {
-			fields.push($(this).val());
+			fields.push($(this).attr('name'));
 		});
 
 		return fields;
