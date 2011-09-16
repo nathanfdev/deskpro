@@ -990,6 +990,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			} catch (err) {
 				console.error('Page fragment JS eval error: %o', err);
 			}
+
+			// Cut out the pageMeta from the HTML string
+			html = html.substring(matches[0].length);
 		}
 
 		// Hard switch that prevents page fragments from

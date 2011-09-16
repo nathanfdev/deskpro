@@ -51,6 +51,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		// Auto-init
 		this.addEvent('render', function(wrapper) {
 			this.initFeaturesOnCollection(wrapper);
+
+			if (!this.noDeleteHtmlString) {
+				delete this.html;
+			}
 		}, this);
 
 		if (this.getMetaData('initRoutesOn')) {
