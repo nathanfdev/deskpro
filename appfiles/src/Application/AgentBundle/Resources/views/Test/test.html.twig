@@ -19,12 +19,39 @@
 
 		$(document).ready(function() {
 
+			var cw = $('#scrollable > .layout-content');
+			cw.tinyscrollbar();
+			$('div.scroll-content:first', this.contentWrapper).resize(function() {
+				// When size changes within the pane, need to re-size the scroll
+				cw.tinyscrollbar_update();
+			});
+
+			$('#add_height').click(function() {
+				$('#test').append('<div>#<br />#<br />#<br />#<br />#<br />#<br />#<br /></div>');
+			});
 		});
 	</script>
+
+	<style>
+		#test > div { background-color: #ccc; }
+		#test > div:nth-child(2n+2) { background-color: red; }
+	</style>
 </head>
 <body>
 
-{{ phrase('agent.test.testing') }}
+<button id="add_height">Add Lines</button>
+<div id="scrollable" style="border:  1px solid #000; width: 300px; height: 200px; overflow: hidden; position: relative;">
+	<div class="layout-content with-scrollbar page-new-ticket page-new-content">
+		<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport">
+			<div class="scroll-content" id="test">
+
+				<div>#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br />#<br /></div>
+
+			</div>
+		</div>
+	</div>
+</div>
 
 </body>
 </html>

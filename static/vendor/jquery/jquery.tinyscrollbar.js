@@ -52,8 +52,12 @@
 			this.tinyscrollbar_update();
 			setEvents();
 		};
-		this.tinyscrollbar_update = function(){
-			iScroll = 0;
+		this.tinyscrollbar_update = function(sScroll){
+
+			if (!sScroll) {
+				sScroll = 'relative';
+			}
+
 			oViewport[options.axis] = oViewport.obj[0]['offset'+ sSize];
 			oContent[options.axis] = oContent.obj[0]['scroll'+ sSize];
 			oContent.ratio = oViewport[options.axis] / oContent[options.axis];
@@ -67,19 +71,31 @@
 			}
 
 			oScrollbar.ratio = options.sizethumb == 'auto' ? (oContent[options.axis] / oTrack[options.axis]) : (oContent[options.axis] - oViewport[options.axis]) / (oTrack[options.axis] - oThumb[options.axis]);
+
+			if (sScroll == 'relative' && oContent.ratio <= 1.0) {
+				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
+			}
+
+			if (!iScroll) {
+				iScroll = 0;
+			}
+
 			setSize();
 		};
 		this.tinyscrollbar_scrolltop = function(x) {
 			scrollTop(x);
 		}
 		function setSize(){
-			//if(!sAxis)oContent.obj.removeAttr('style');
-			oThumb.obj.removeAttr('style');
+			oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
+			oContent.obj.css(sDirection, -iScroll);
+
 			iMouse['start'] = oThumb.obj.offset()[sDirection];
 			var sCssSize = sSize.toLowerCase();
 			oScrollbar.obj.css(sCssSize, oTrack[options.axis]);
 			oTrack.obj.css(sCssSize, oTrack[options.axis]);
 			oThumb.obj.css(sCssSize, oThumb[options.axis]);
+
+			oContent.obj.css(sDirection, -iScroll);
 		};
 		function setEvents(){
 			oThumb.obj.bind('mousedown', start);
