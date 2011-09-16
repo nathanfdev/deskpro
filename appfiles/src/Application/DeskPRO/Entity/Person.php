@@ -535,7 +535,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_helper_manager) {
 			$name_l = strtolower($name);
 			if ($this->_helper_manager->isNameCallable($name_l)) {
-				return $this->_helper_manager->callName($name_l, $arguments);
+				return $this->_helper_manager->callName($name_l, array());
 			}
 		}
 
