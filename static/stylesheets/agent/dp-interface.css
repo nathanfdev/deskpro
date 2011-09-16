@@ -365,11 +365,25 @@ button.clean-white.arrow span {
  * one is a different element, and looks so. You click the arrow usually
  * to open a menu to change the value of the button itself
  */
-button.clean-white span.arrow {
+button.clean-white.inner-arrow {
+	padding-right: 25px;
+}
+button.clean-white.inner-arrow span.arrow {
+	display: block;
+	background-color: #F0F3F4;
 	background-image: url(../../images/icons/bullet_arrow_down.png);
 	background-position: 100% 50%;
 	background-repeat: no-repeat;
-	height: 18px;
+	position: absolute;
+	top: -3px;
+	right: 11px;
+	bottom: -3px;
+	width: 16px;
+	border-left: 1px solid #B6BABF;
+}
+
+button.clean-white span.arrow:hover {
+	background-color: #CDD1D3 !important;
 }
 
 button.clean-white.radio-on {
