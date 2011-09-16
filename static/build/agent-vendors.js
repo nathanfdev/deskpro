@@ -2185,18 +2185,19 @@ a('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"
 m.addClass("with-scrollbar");return m.tinyscrollbar(f)}var k={obj:a(".scroll-viewport:first",this)};var g={obj:a(".scroll-content:first",this)};
 var c={obj:a(".scrollbar:first",this)};var q={obj:a(".track:first",c.obj)};var v={obj:a(".thumb:first",c.obj)};var l=f.axis=="x",r=l?"left":"top",B=l?"Width":"Height";
 var x,F={start:0,now:0},u={};var d=null;var E=null;if(this.length>1){this.each(function(){a(this).tinyscrollbar(f)});return this
-}this.initialize=function(){this.tinyscrollbar_update();y()};this.tinyscrollbar_update=function(){x=0;k[f.axis]=k.obj[0]["offset"+B];
+}this.initialize=function(){this.tinyscrollbar_update();y()};this.tinyscrollbar_update=function(G){if(!G){G="relative"}k[f.axis]=k.obj[0]["offset"+B];
 g[f.axis]=g.obj[0]["scroll"+B];g.ratio=k[f.axis]/g[f.axis];c.obj.toggleClass("disable",g.ratio>=1);q[f.axis]=f.size=="auto"?k[f.axis]:f.size;
 v[f.axis]=Math.min(q[f.axis],Math.max(0,(f.sizethumb=="auto"?(q[f.axis]*g.ratio):f.sizethumb)));if(v[f.axis]<30){v[f.axis]=30;
-f.sizethumb=30}c.ratio=f.sizethumb=="auto"?(g[f.axis]/q[f.axis]):(g[f.axis]-k[f.axis])/(q[f.axis]-v[f.axis]);C()};this.tinyscrollbar_scrolltop=function(G){b(G)
-};function C(){v.obj.removeAttr("style");u.start=v.obj.offset()[r];var G=B.toLowerCase();c.obj.css(G,q[f.axis]);q.obj.css(G,q[f.axis]);
-v.obj.css(G,v[f.axis])}function y(){v.obj.bind("mousedown",j);q.obj.bind("mouseup",A);if(f.scroll&&this.addEventListener){z[0].addEventListener("DOMMouseScroll",D,false);
-z[0].addEventListener("mousewheel",D,false)}else{if(f.scroll){z[0].onmousewheel=D}}k.obj.mouseover(function(G){c.obj.addClass("is-scrolling")
-});k.obj.mouseout(function(G){c.obj.removeClass("is-scrolling")})}function j(H){u.start=l?H.pageX:H.pageY;var G=parseInt(v.obj.css(r));
-F.start=G=="auto"?0:G;a(document).bind("mousemove",A);a(document).bind("mouseup",e);v.obj.bind("mouseup",e);c.obj.addClass("is-scrolling");
-return false}function D(H){if(!(g.ratio>=1)){var I=parseInt(g.obj.css(r));H=a.event.fix(H||window.event);var G=H.wheelDelta?H.wheelDelta/120:-H.detail/3;
-x-=G*f.wheel;x=Math.min((g[f.axis]-k[f.axis]),Math.max(0,x));v.obj.css(r,x/c.ratio);g.obj.css(r,-x);H.preventDefault();if(!c.obj.is(".disable")){H.stopPropagation()
-}if(d){window.clearTimeout(d)}}}function b(G){if(G<0){G=0}if(G>x){G=x}v.obj.css("top",x/c.ratio);g.obj.css("top",-x)}function e(G){a(document).unbind("mousemove",A);
+f.sizethumb=30}c.ratio=f.sizethumb=="auto"?(g[f.axis]/q[f.axis]):(g[f.axis]-k[f.axis])/(q[f.axis]-v[f.axis]);if(G=="relative"&&g.ratio<=1){x=Math.min((g[f.axis]-k[f.axis]),Math.max(0,x))
+}if(!x){x=0}C()};this.tinyscrollbar_scrolltop=function(G){b(G)};function C(){v.obj.css(r,x/c.ratio);g.obj.css(r,-x);u.start=v.obj.offset()[r];
+var G=B.toLowerCase();c.obj.css(G,q[f.axis]);q.obj.css(G,q[f.axis]);v.obj.css(G,v[f.axis]);g.obj.css(r,-x)}function y(){v.obj.bind("mousedown",j);
+q.obj.bind("mouseup",A);if(f.scroll&&this.addEventListener){z[0].addEventListener("DOMMouseScroll",D,false);z[0].addEventListener("mousewheel",D,false)
+}else{if(f.scroll){z[0].onmousewheel=D}}k.obj.mouseover(function(G){c.obj.addClass("is-scrolling")});k.obj.mouseout(function(G){c.obj.removeClass("is-scrolling")
+})}function j(H){u.start=l?H.pageX:H.pageY;var G=parseInt(v.obj.css(r));F.start=G=="auto"?0:G;a(document).bind("mousemove",A);
+a(document).bind("mouseup",e);v.obj.bind("mouseup",e);c.obj.addClass("is-scrolling");return false}function D(H){if(!(g.ratio>=1)){var I=parseInt(g.obj.css(r));
+H=a.event.fix(H||window.event);var G=H.wheelDelta?H.wheelDelta/120:-H.detail/3;x-=G*f.wheel;x=Math.min((g[f.axis]-k[f.axis]),Math.max(0,x));
+v.obj.css(r,x/c.ratio);g.obj.css(r,-x);H.preventDefault();if(!c.obj.is(".disable")){H.stopPropagation()}if(d){window.clearTimeout(d)
+}}}function b(G){if(G<0){G=0}if(G>x){G=x}v.obj.css("top",x/c.ratio);g.obj.css("top",-x)}function e(G){a(document).unbind("mousemove",A);
 a(document).unbind("mouseup",e);v.obj.unbind("mouseup",e);c.obj.removeClass("is-scrolling");return false}function A(G){if(!(g.ratio>=1)){F.now=Math.min((q[f.axis]-v[f.axis]),Math.max(0,(F.start+((l?G.pageX:G.pageY)-u.start))));
 x=F.now*c.ratio;g.obj.css(r,-x);v.obj.css(r,F.now)}return false}return this.initialize()}})(jQuery);(function(b){b.hotkeys={version:"0.8",specialKeys:{8:"backspace",9:"tab",13:"return",16:"shift",17:"ctrl",18:"alt",19:"pause",20:"capslock",27:"esc",32:"space",33:"pageup",34:"pagedown",35:"end",36:"home",37:"left",38:"up",39:"right",40:"down",45:"insert",46:"del",96:"0",97:"1",98:"2",99:"3",100:"4",101:"5",102:"6",103:"7",104:"8",105:"9",106:"*",107:"+",109:"-",110:".",111:"/",112:"f1",113:"f2",114:"f3",115:"f4",116:"f5",117:"f6",118:"f7",119:"f8",120:"f9",121:"f10",122:"f11",123:"f12",144:"numlock",145:"scroll",191:"/",224:"meta"},shiftNums:{"`":"~","1":"!","2":"@","3":"#","4":"$","5":"%","6":"^","7":"&","8":"*","9":"(","0":")","-":"_","=":"+",";":": ","'":'"',",":"<",".":">","/":"?","\\":"|"}};
 function a(d){if(typeof d.data!=="string"){return}var c=d.handler,e=d.data.toLowerCase().split(" ");d.handler=function(q){if(this!==q.target&&(/textarea|select/i.test(q.target.nodeName)||q.target.type==="text")){return
