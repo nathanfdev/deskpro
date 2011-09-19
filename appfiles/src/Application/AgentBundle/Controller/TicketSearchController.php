@@ -18,6 +18,9 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+
 use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
@@ -192,6 +195,39 @@ class TicketSearchController extends AbstractController
 			$display_fields = array('department', 'agent', 'agent_team');
 		}
 
+		// Accept changes to apply for previewing
+		// - We just apply the changes but dont save them, they'll be
+		//   properly displayed in the listing.
+		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+		$changed_fields = array();
+
+		if ($actions && $tickets) {
+			$factory = new ActionsFactory();
+			$collection = new ActionsCollection();
+
+			foreach ($actions as $name => $opt) {
+				$action = $factory->createFromForm($name, $opt);
+				$collection->add($action);
+
+				$display_fields[] = $name;
+			}
+
+			foreach ($tickets as $t) {
+				$ticket_changes = $collection->getApplyActions($t, $this->person);
+				$collection->apply($t, $this->person);
+
+				if ($ticket_changes) {
+					$ticket_changed_fields = array();
+					foreach ($ticket_changes as $change) {
+						$ticket_changed_fields[$change['action']] = true;
+						$changed_fields[$t['id']] = $ticket_changed_fields;
+					}
+				}
+			}
+
+			$display_fields = array_unique($display_fields);
+		}
+
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
@@ -205,6 +241,7 @@ class TicketSearchController extends AbstractController
 			'display_fields'    => $display_fields,
 			'ticket_field_defs' => $ticket_field_defs,
 			'person_field_defs' => $person_field_defs,
+			'changed_fields'    => $changed_fields,
 		));
 	}
 
@@ -1230,34 +1267,33 @@ class TicketSearchController extends AbstractController
 
 	public function ajaxSaveActionsAction()
 	{
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$ticket_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
-		// Use a dummy TicketMacro so we can get an actions array easily
-		$macro = new Entity\TicketMacro();
-		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+		// Accept changes to apply for previewing
+		// - We just apply the changes but dont save them, they'll be
+		//   properly displayed in the listing.
+		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
-		if ($this->in->getString('message')) {
-			$got_actions[] = array('type' => 'reply', 'new_reply' => $this->in->getString('message'));
+		$this->em->beginTransaction();
+
+		if ($actions && $tickets) {
+			$factory = new ActionsFactory();
+			$collection = new ActionsCollection();
+
+			foreach ($actions as $name => $opt) {
+				$action = $factory->createFromForm($name, $opt);
+				$collection->add($action);
+			}
+
+			foreach ($tickets as $t) {
+				$collection->apply($t, $this->person);
+				$this->em->persist($t);
+			}
 		}
 
-		$macro['actions'] = $got_actions;
-
-		App::getOrm()->beginTransaction();
-
-		foreach ($tickets as $ticket) {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$actions = $macro->getActionsArray($ticket);
-			$result = $ticket_edit->applyActions($actions);
-			$ticket_edit->save();
-
-			// We need to manually apply to the user since ticketedit doesnt care about that
-			$macro->performOnPerson($ticket['person']);
-			App::getOrm()->persist($ticket['person']);
-		}
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse(array('success' => true));
 	}

@@ -36,7 +36,7 @@ class ActionsCollection
 		}
 	}
 
-	
+
 	/**
 	 * Add a new action
 	 *
@@ -93,7 +93,7 @@ class ActionsCollection
 		if (strpos($name, '\\') === false) {
 			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
 		}
-		
+
 		if (!$this->hasActionType($name)) {
 			throw new \InvalidArgumentException("No action type `$name` exists");
 		}
@@ -101,7 +101,7 @@ class ActionsCollection
 		return $this->actions[$name];
 	}
 
-	
+
 	/**
 	 * Remove an action type from the collection, and return it
 	 *
@@ -139,7 +139,7 @@ class ActionsCollection
 
 	/**
 	 * Get an array of ticket actions
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getActions()
@@ -147,11 +147,11 @@ class ActionsCollection
 		return $actions;
 	}
 
-	
+
 	/**
 	 * Apply actions in this collection to $ticket, using $person_context as
 	 * the context on actions that require it.
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person_context
 	 */
@@ -163,6 +163,21 @@ class ActionsCollection
 			}
 
 			$action->apply($ticket);
+		}
+	}
+
+
+	/**
+	 * Apply actions in this collection to a collection of $tickets, using $person_context
+	 * as the context on actions that require it.
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket[] $tickets
+	 * @param \Application\DeskPRO\Entity\Person $person_context
+	 */
+	public function applyToCollection(array $tickets, Person $person_context)
+	{
+		foreach ($tickets as $t) {
+			$this->apply($t, $person_context);
 		}
 	}
 

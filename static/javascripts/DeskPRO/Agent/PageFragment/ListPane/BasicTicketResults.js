@@ -171,13 +171,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.selectionBar);
 
-		this.massActions = new DeskPRO.Agent.PageHelper.TicketMassActions({
-			ticketsWrapper: $('.ticket-simple-ext-list', this.wrapper),
-			selectionBar: this.selectionBar,
-			changeManager: this.changeManager
-		});
-		this.ownObject(this.massActions);
-
 		var m = new DeskPRO.UI.Menu({
 			triggerElement: $('button.sub-group-trigger:first', this.contentWrapper),
 			menuElement: $('ul.sub-group-menu:first', this.contentWrapper)
@@ -202,7 +195,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		// since it could be large we can delete it from memory
 		delete this.meta.ticketResultIds;
 
-		this.massActions = new DeskPRO.Agent.TicketList.MassActions.Widget(this);
+		this.massActions = new DeskPRO.Agent.TicketList.MassActions.Widget(this, {
+
+		});
 		this.ownObject(this.massActions);
 	},
 

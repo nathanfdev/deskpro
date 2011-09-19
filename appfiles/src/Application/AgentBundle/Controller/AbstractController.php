@@ -9,7 +9,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * The currently logged in person.
 	 * TODO: Rename this to user? Agent?
-	 * @var \Application\DeskPRO\Bundle\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	public $person;
 
@@ -34,7 +34,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				);
 
 				return $this->createJsonResponse($data, 403);
-				
+
 			} else {
 				if ($this->isPostRequest()) {
 					$return = $this->get('router')->generate('agent');

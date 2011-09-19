@@ -20,6 +20,13 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			selectionBar: null,
 
 			/**
+			 * The element within the list pane that contains the ticket results
+			 * Defaults to 'wrapper .list-listing'
+			 * @option {jQUery}
+			 */
+			listWrapper: null,
+
+			/**
 			 * The URL we'll post IDs to to get updated items
 			 */
 			fetchPreviewUrl: null,
@@ -41,11 +48,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.setOptions(options);
 
 		this.viewHandler     = this.options.viewHandler;
-		this.selectionBar    = this.options.selectionBar || page.selectionbar;
+		this.selectionBar    = this.options.selectionBar || page.selectionBar;
 		this.fetchPreviewUrl = this.options.fetchPreviewUrl || page.meta.fetchResultsUrl;
+		this.listWrapper     = this.options.listWrapper || $('.list-listing', page.wrapper);
 
 		this.wrapper = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.backdropEls = null;
+
+		this.countEl = $('.selected-tickets-count', this.getElement());
 
 		var trigger = null;
 		if (this.options.triggerElement === null) {
@@ -100,6 +110,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			this.close();
 		}).bind(this));
 
+		$('header .close-trigger', this.wrapper).click((function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			this.close();
+		}).bind(this));
+
 		//------------------------------
 		// Convert radios
 		//------------------------------
@@ -116,6 +132,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			groupedRadios[name].push(this);
 		});
 
+		var self = this;
 		Object.each(groupedRadios, function(els) {
 			var newEls = [];
 			els = $(els);
@@ -127,6 +144,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				// Toggle off already checked (ie none selected now)
 				if (radio.is(':checked')) {
 					radio.attr('checked', false);
+					newEls.removeClass('radio-on');
 
 				// Normal radio behavior
 				} else {
@@ -134,6 +152,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 					newEls.removeClass('radio-on');
 					$(this).addClass('radio-on');
 				}
+
+				self.updatePreview();
 			};
 
 			els.each(function() {
@@ -141,7 +161,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				var wrapper = $(this).parent();
 				var title = $('.radio-title', wrapper).text().trim();
 
-				var newEl = $(tpl);
+				var newEl = $(tpl)
+				newEl.addClass($(this).data('attach-class'));
 				$('.radio-title', newEl).text(title);
 
 				if (!$(this).attr('id')) {
@@ -159,6 +180,258 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			});
 
 			newEls = $(newEls);
+		});
+
+		//------------------------------
+		// Attach change listeners
+		//------------------------------
+
+		$('input, select, textarea', this.wrapper).change((function() {
+			this.updatePreview();
+		}).bind(this));
+
+		this.selectionBar.addEvent('checkChange', function(el, is_checked, count) {
+			if (!this.isOpen()) return;
+			this.updateCount(count);
+			this.handleCheckChange(el, is_checked);
+		}, this);
+		this.selectionBar.addEvent('checkAll', function(count) {
+			if (!this.isOpen()) return;
+			this.updateCount(count);
+			this.updatePreview();
+		}, this);
+		this.selectionBar.addEvent('checkNone', function() {
+			if (!this.isOpen()) return;
+			this.updateCount(0);
+			this.clearPreview();
+		}, this);
+
+		$('.apply-macro-trigger', this.wrapper).click((function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			this.loadMacro($('select.macro', this.wrapper).val());
+		}).bind(this));
+
+		$('.apply-actions', this.wrapper).click((function(ev) {
+			this.apply();
+		}).bind(this));
+	},
+
+	updateCount: function(num) {
+		if (num === undefined || num === null) {
+			num = this.selectionBar.getCount();
+		}
+		this.countEl.text(num);
+	},
+
+	getActionFormValues: function(appendArray, isApply, info) {
+		appendArray = appendArray || [];
+
+		if (!info) info = {};
+		info.actionsCount = 0;
+
+		$('input, select, textarea', this.wrapper).filter('[name^="actions["]').each(function() {
+
+			var val = $(this).val().trim(), name = $(this).attr('name');
+
+			if ($(this).is(':radio, :checkbox')) {
+				if (!$(this).is(':checked')) {
+					return;
+				}
+			}
+
+			if (val === '') {
+				return;
+			}
+
+			// Dont send reply type when we're just fetching previews
+			if (!isApply && name == 'actions[reply]') {
+				return;
+			}
+
+			appendArray.push({
+				name: name,
+				value: val
+			});
+
+			info.actionsCount++;
+		});
+
+		return appendArray;
+	},
+
+	/**
+	 * Apply the changes
+	 */
+	apply: function() {
+		var formData, rows = [];
+
+		var formDataInfo = {
+			checkedCount: 0,
+			actionsCount: 0
+		};
+
+		formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo);
+		this.selectionBar.getChecked().each(function() {
+			rows.push($(this).closest('article.row-item').get(0));
+		});
+
+		this.getActionFormValues(formData, true, formDataInfo);
+
+		// If we dont have any tickets or actions then theres nothing to do
+		if (!formDataInfo.checkedCount || !formDataInfo.actionsCount) {
+			return;
+		}
+
+		rows = $(rows);
+		rows.addClass('loading');
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			context: this,
+			complete: function() {
+				rows.removeClass('loading');
+			},
+			success: function(html) {
+				$('.preview-edit', this.listWrapper).removeClass('preview-edit');
+				$('.preview-edit-hide', this.listWrapper).remove();
+				$('article li.changed', this.listWrapper).removeClass('changed');
+			}
+		});
+
+	},
+
+
+	/**
+	 * Clear all pending previews
+	 */
+	clearPreview: function() {
+		$('.preview-edit', this.listWrapper).remove();
+		$('.preview-edit-hide', this.listWrapper).show().removeClass('preview-edit-hide');
+	},
+
+
+	/**
+	 * Updates the listing with a preview of the changes we're making
+	 */
+	updatePreview: function(specific_id) {
+
+		if (this.runningAjax) {
+			this.runningAjax.abort();
+			this.runningAjax = null;
+		}
+
+		var formData, rows = [];
+		var formDataInfo = {
+			checkedCount: 0,
+			actionsCount: 0
+		};
+
+		if (!specific_id) {
+			formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo);
+			this.selectionBar.getChecked().each(function() {
+				rows.push($(this).closest('article.row-item').get(0));
+			});
+		} else {
+			formData = [{ name: 'result_ids[]', value: specific_id }];
+			formDataInfo.checkedCount = 1;
+			rows = [$('article.ticket-' + specific_id).get(0)];
+		}
+
+		this.getActionFormValues(formData, false, formDataInfo);
+
+		// If we dont have any tickets or actions then theres nothing to do
+		if (!formDataInfo.checkedCount) {
+			return;
+		}
+
+		rows = $(rows);
+		rows.addClass('loading');
+
+		var runningAjax = $.ajax({
+			url: BASE_URL + 'agent/ticket-search/get-page',
+			type: 'POST',
+			data: formData,
+			dataType: 'html',
+			context: this,
+			complete: function() {
+				rows.removeClass('loading');
+				this.runningAjax = null;
+			},
+			success: function(html) {
+				this.updatePreviewDisplay(html);
+			}
+		});
+
+		// Only save running ajax if theres more than one
+		if (!specific_id) {
+			this.runningAjax = runningAjax;
+		}
+	},
+
+	/**
+	 * Update the preview display data with an HTML block returned from the server
+	 *
+	 * @param html
+	 */
+	updatePreviewDisplay: function(html) {
+		var resultWrap = $(html);
+		var listWrapper = this.listWrapper;
+
+		$('article.row-item', resultWrap).each(function() {
+			var ticketId = $(this).data('ticket-id');
+			var row = $('article.ticket-' + ticketId, listWrapper);
+
+			// Clear existing preview edits if there are any
+			var existPrev = $('.preview-edit', row);
+			existPrev.remove();
+
+			var topRowRight = $('.top-row-right', this).addClass('preview-edit');
+			var extraFields = $('.extra-fields', this).addClass('preview-edit');
+
+			var origTopRowRight = $('.top-row-right', row).addClass('preview-edit-hide');
+			var origExtraFields = $('.extra-fields', row).addClass('preview-edit-hide');
+
+			topRowRight.insertAfter(origTopRowRight);
+			extraFields.insertAfter(origExtraFields);
+
+			origTopRowRight.hide();
+			origExtraFields.hide();
+		});
+	},
+
+
+	/**
+	 * When a ticket has been checked or uncheck, need to update the preview status of that ticket.
+	 */
+	handleCheckChange: function(el, is_checked) {
+		var row = $(el).closest('article.row-item');
+
+		if (is_checked) {
+			this.updatePreview(row.data('ticket-id'));
+		} else {
+			$('.preview-edit', row).remove();
+			$('.preview-edit-hide', row).show().removeClass('preview-edit-hide');
+		}
+	},
+
+
+	/**
+	 * Resets the form back to nothing
+	 */
+	resetForm: function() {
+		$('input, select, textarea', this.wrapper).filter('[name^="actions["]').each(function() {
+			if ($(this).is(':radio, :checkbox')) {
+				$(this).attr('checked', false);
+			} else if ($(this).is('select')) {
+				$('option', this).attr('selected', false).first().selected('true');
+			} else if ($(this).is('input, textarea')) {
+				$(this).val('');
+			}
 		});
 	},
 
@@ -198,7 +471,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.backdropEls.eq(1).css({
 			top: 0,
 			height: topEnd,
-			right: contentStart - 62,
+			width: contentStart - leftEnd,
 			left: leftEnd
 		});
 
@@ -207,6 +480,72 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			right: 0,
 			bottom: 0,
 			left: contentStart
+		});
+	},
+
+	/**
+	 * Load a macro into the form
+	 */
+	loadMacro: function(macro_id) {
+
+		macro_id = parseInt(macro_id);
+		if (!macro_id) {
+			return;
+		}
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
+			data: { macro_id: macro_id },
+			type: 'GET',
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				console.log(data);
+				if (!data.macro_actions) {
+					return;
+				}
+
+				Array.each(data.macro_actions, function(action) {
+					switch (action.type) {
+						case 'agent':
+							$('[name="actions[agent]"]', this.wrapper).val(action.options.agent);
+							break;
+						case 'agent_team':
+							$('[name="actions[agent_team]"]', this.wrapper).val(action.options.agent_team);
+							break;
+						case 'category':
+							$('[name="actions[category]"]', this.wrapper).val(action.options.category);
+							break;
+						case 'department':
+							$('[name="actions[department]"]', this.wrapper).val(action.options.department);
+							break;
+						case 'product':
+							$('[name="actions[product]"]', this.wrapper).val(action.options.product);
+							break;
+						case 'flag':
+							$('[name="actions[flag]"]', this.wrapper).val(action.options.flag);
+							break;
+						case 'priority':
+							$('[name="actions[priority]"]', this.wrapper).val(action.options.priority);
+							break;
+						case 'urgency':
+
+							break;
+						case 'urgency_set':
+
+							break;
+						case 'workflow':
+							$('[name="actions[workflow]"]', this.wrapper).val(action.options.workflow);
+							break;
+						case 'status':
+							$('button.status.status-' + action.options.status, this.wrapper).click();
+							break;
+						case 'reply':
+							$('[name="actions[reply]"]', this.wrapper).val(action.options.reply_text);
+							break;
+					}
+				}, this);
+			}
 		});
 	},
 
@@ -230,12 +569,16 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 */
 	open: function() {
 		this._initOverlay();
+
 		this.updatePositions();
 
 		this.wrapper.addClass('open');
 		this.backdropEls.show();
 
+		this.updateCount(null);
 		this.wrapper.addClass('open');
+
+		this.updatePreview();
 	},
 
 
@@ -250,6 +593,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.wrapper.removeClass('open');
 		this.backdropEls.hide();
 		this.fireEvent('closed', [this]);
+
+		this.clearPreview();
 	},
 
 

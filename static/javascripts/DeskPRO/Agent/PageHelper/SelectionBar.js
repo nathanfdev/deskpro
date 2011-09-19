@@ -64,14 +64,18 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		return values;
 	},
 
-	getCheckedFormValues: function (form_name, appendArray) {
+	getCheckedFormValues: function (form_name, appendArray, info) {
 		appendArray = appendArray || [];
+
+		if (!info) info = {};
+		info.checkedCount = 0;
 
 		$('input.item-select:checked', this.page.wrapper).each(function() {
 			appendArray.push({
 				name: form_name,
 				value: $(this).val()
 			});
+			info.checkedCount++;
 		});
 
 		return appendArray;
@@ -97,6 +101,8 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		} else {
 			this.controlCheck.attr('checked', false);
 		}
+
+		this.fireEvent('checkAll', [count]);
 	},
 
 	checkNone: function() {
@@ -107,6 +113,8 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 		this.button.addClass('disabled');
 		this.controlCheck.attr('checked', false);
+
+		this.fireEvent('checkNone');
 	},
 
 	handleCheckChange: function(el, is_checked) {

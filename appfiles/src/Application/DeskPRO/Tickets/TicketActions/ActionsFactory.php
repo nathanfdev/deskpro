@@ -34,6 +34,60 @@ class ActionsFactory
 		$this->global_options[$name] = $value;
 	}
 
+	/**
+	 * Create an action object from a posted form representation of an action.
+	 * These are generally just an action name and a single value to represent the actions
+	 * new value.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @return object
+	 */
+	public function createFromForm($name, $value)
+	{
+		$options = array();
+		switch ($name) {
+			case 'agent':
+				$options['agent'] = $value;
+				break;
+			case 'agent_team':
+				$options['agent_team'] = $value;
+				break;
+			case 'category':
+				$options['category'] = $value;
+				break;
+			case 'department':
+				$options['department'] = $value;
+				break;
+			case 'product':
+				$options['product'] = $value;
+				break;
+			case 'flag':
+				$options['flag'] = $value;
+				break;
+			case 'priority':
+				$options['priority'] = $value;
+				break;
+			case 'urgency':
+				$options['num'] = $value;
+				break;
+			case 'urgency_set':
+				$options['num'] = $value;
+				break;
+			case 'workflow':
+				$options['workflow'] = $value;
+				break;
+			case 'status':
+				$options['status'] = $value;
+				break;
+			case 'reply':
+				$options['reply_text'] = $value['reply_text'];
+				break;
+		}
+
+		return $this->create($name, $options);
+	}
+
 	public function createFromInfo(array $action_info)
 	{
 		return $this->create($action_info['type'], $action_info['options']);

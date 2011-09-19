@@ -1,7 +1,8 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
-<article class="row-item">
+<article class="row-item ticket-{{ ticket.id }}" data-ticket-id="{{ ticket.id }}">
+	<div class="loading-arrow">loading</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
 		<div class="top-row-left">
@@ -14,7 +15,7 @@
 		<div class="top-row-right">
 			<div class="bound-fade"></div>
 			<div class="urgency"><a>{{ ticket.urgency }}</a></div>
-			<div class="status">{{ ticket.status }}</div>
+			<div class="status {{ ticket.status_code }}">{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}</div>
 			<br class="clear" />
 		</div>
 	</div>
@@ -45,8 +46,8 @@
 							{% endif %}
 						{% endif %}
 					</li>
-				{% elseif field == 'department' and ticket.department %}
-					<li class="{{field}}">
+				{% elseif field == 'department' and (ticket.department or changed_fields[ticket.id].department) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].department %}changed{% endif %}">
 						<span class="prop-title">Department:</span>
 						<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
 						{% if ticket.department %}
@@ -56,8 +57,8 @@
 						{% endif %}
 						</span>
 					</li>
-				{% elseif field == 'category' and ticket.category %}
-					<li class="{{field}}">
+				{% elseif field == 'category' and (ticket.category or changed_fields[ticket.id].category) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].category %}changed{% endif %}">
 						<span class="prop-title">Category:</span>
 						<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
 						{% if ticket.category %}
@@ -67,8 +68,30 @@
 						{% endif %}
 						</span>
 					</li>
-				{% elseif field == 'agent' and ticket.agent %}
-					<li class="{{field}}">
+				{% elseif field == 'priority' and (ticket.priority or changed_fields[ticket.id].priority) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].priority %}changed{% endif %}">
+						<span class="prop-title">Priority:</span>
+						<span class="prop-val priority_id" data-prop-value="{{ticket.priority.id}}">
+						{% if ticket.priority %}
+							{{ticket.priority.title}}
+						{% else %}
+							None
+						{% endif %}
+						</span>
+					</li>
+				{% elseif field == 'workflow' and (ticket.workflow or changed_fields[ticket.id].workflow) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].workflow %}changed{% endif %}">
+						<span class="prop-title">Workflow:</span>
+						<span class="prop-val workflow_id" data-prop-value="{{ticket.workflow.id}}">
+						{% if ticket.workflow %}
+							{{ticket.workflow.title}}
+						{% else %}
+							None
+						{% endif %}
+						</span>
+					</li>
+				{% elseif field == 'agent' and (ticket.agent or changed_fields[ticket.id].agent) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].agent %}changed{% endif %}">
 						<span class="prop-title">Agent:</span>
 						<span class="prop-val" data-prop-value="{{ticket.agent.id}}">
 						{% if ticket.agent %}
@@ -78,8 +101,8 @@
 						{% endif %}
 						</span>
 					</li>
-				{% elseif field == 'agent_team' and ticket.agent_team %}
-					<li class="{{field}}">
+				{% elseif field == 'agent_team' and (ticket.agent_team or changed_fields[ticket.id].agent_team) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].agent_team %}changed{% endif %}">
 						<span class="prop-title">Agent Team:</span>
 						<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
 						{% if ticket.agent_team %}
@@ -89,8 +112,8 @@
 						{% endif %}
 						</span>
 					</li>
-				{% elseif field == 'product' and ticket.product %}
-					<li class="{{field}}">
+				{% elseif field == 'product' and (ticket.product or changed_fields[ticket.id].product) %}
+					<li class="{{field}} {% if changed_fields[ticket.id].product %}changed{% endif %}">
 						<span class="prop-title">Product:</span>
 						<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
 						{% if ticket.product %}
