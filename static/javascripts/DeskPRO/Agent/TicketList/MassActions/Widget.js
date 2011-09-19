@@ -300,6 +300,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				$('.preview-edit', this.listWrapper).removeClass('preview-edit');
 				$('.preview-edit-hide', this.listWrapper).remove();
 				$('article li.changed', this.listWrapper).removeClass('changed');
+
+				this.resetForm();
 			}
 		});
 
@@ -433,6 +435,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				$(this).val('');
 			}
 		});
+
+		$('button.radio.on', this.wrapper).removeClass('on');
 	},
 
 
