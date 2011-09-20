@@ -16,14 +16,25 @@
 		<div class="dp-summary">
 			Our friendly support staff are here to help.
 		</div>
-		<ul>
-			{% for agent in staff %}
-				<li>
-					<div class="item">
-						<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
-					</div>
-				</li>
-			{% endfor %}
-		</ul>
+		{% if list_style == 'compact' %}
+			<ul class="dp-compact">
+				{% for agent in staff %}
+					<li title="{{ agent.display_name }}">
+						<span style="background-image: url('{{ agent.getPictureUrl(24) }}')"></span>
+					</li>
+				{% endfor %}
+			</ul>
+			<br class="dp-clear" style="clear:left" />
+		{% else %}
+			<ul>
+				{% for agent in staff %}
+					<li>
+						<div class="item">
+							<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 	</div>
 {% endif %}
