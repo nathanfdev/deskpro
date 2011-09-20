@@ -44,19 +44,9 @@ class Staff extends PortalItemAbstract implements CacheableItem
 			$staff = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		}
 
-		$list_style = $this->getOption('list_style', 'auto');
-
-		if ($list_style == 'auto') {
-			$list_style = 'list';
-			if (count($staff) > 5) {
-				$list_style = 'compact';
-			}
-		}
-
 		$html = $this->renderView('UserBundle:Portal:staff-sidebar.html.twig', array(
 			'staff' => $staff,
 			'title' => $this->getOption('title'),
-			'list_style' => $list_style
 		));
 
 		return $html;

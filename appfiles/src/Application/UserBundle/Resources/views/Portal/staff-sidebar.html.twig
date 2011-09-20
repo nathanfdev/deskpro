@@ -16,7 +16,7 @@
 		<div class="dp-summary">
 			Our friendly support staff are here to help.
 		</div>
-		{% if list_style == 'compact' %}
+		{% if staff|length > 5 %}
 			<ul class="dp-compact">
 				{% for agent in staff %}
 					<li title="{{ agent.display_name }}">
