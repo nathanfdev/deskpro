@@ -269,7 +269,7 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 }
 #dp_page:before, #dp_page:after{display:table;content:"";zoom:1;*display:inline;}
 #dp_page:after {clear:both;}
-#dp_page > #dp_sidebar {float:right; width:235px;}
+#dp_page > #dp_sidebar {float:right; width:222px; margin-right: 14px;}
 #dp_page > #dp_content {margin-right:232px;}
 
 #dp_sidebar {
@@ -948,27 +948,14 @@ ul.dp-ideas-list .meta {
 }
 
 #dp_sidebar {
-	background-color: #EEF1F5;
 	border-radius: 5px;
 	margin-top: 15px;
 }
 
-#dp_sidebar .dp-nav-block {
+#dp_sidebar .dp-sidebar-block {
 	margin-left: 12px;
 	margin-bottom: 20px;
 }
-
-#dp_sidebar .dp-nav-block > ul {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-
-#dp_sidebar .dp-nav-block > ul > li a {
-	font-size: 12px;
-	padding: 5px;
-}
-
 
 
 #dp_sidebar .dp-online-block {
@@ -1064,9 +1051,11 @@ ul.dp-ideas-list .meta {
 	margin-bottom: 8px;
 	padding-bottom: 3px;
 	border-bottom: 1px solid #D9DBDB;
-	margin-right: 20px;
 }
 
+#dp_sidebar .dp-box-header h3 a {
+	color: #000;
+}
 
 .new-ticket .form-row {
 	margin-bottom: 15px;
@@ -1165,4 +1154,22 @@ ul.dp-ideas-list .meta {
 
 .dp-box-comments ul li > .post {
 	margin-left: 85px;
+}
+
+
+
+.dp-twitter-list {
+
+}
+
+.dp-twitter-list li {
+	background: transparent url(../../images/icons/social_media_mini_icons/twitter.png) no-repeat 0 2px;
+	padding-left: 19px;
+	font-size: 11px;
+	margin-bottom: 10px;
+}
+
+.dp-twitter-list .dp-more {
+	text-align: center;
+	font-size: 11px;
 }

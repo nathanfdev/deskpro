@@ -1,23 +1,29 @@
-<div class="sidebar-item portal_staff">
-	<div class="heading">
-		<h2>{{ title|default('Staff') }}</h2>
+{% if staff|length %}
+	<div class="dp-sidebar-block dp-online-block">
+		<div class="dp-box-header">
+			<h3>
+				{% if title %}
+					{{ title }}
+				{% else %}
+					{% if online %}
+						Online Staff
+					{% else %}
+						Our Staff
+					{% endif %}
+				{% endif %}
+			</h3>
+		</div>
+		<div class="dp-summary">
+			Our friendly support staff are here to help.
+		</div>
+		<ul>
+			{% for agent in staff %}
+				<li>
+					<div class="item">
+						<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
-
-	<div class="content-list">
-		<div class="item">
-			<div style="background-image: url('http://www.gravatar.com/avatar/7968240f9d3de59a6412975eee3fefbd?s=40');">
-				Christopher Padfield
-			</div>
-		</div>
-		<div class="item">
-			<div style="background-image: url('http://www.gravatar.com/avatar/00000000000000000000000000000000?s=40&d=mm');">
-				Jane Doe
-			</div>
-		</div>
-		<div class="item">
-			<div style="background-image: url('http://www.gravatar.com/avatar/7e53906dbd43989ea9367ab938bfb558?s=40&d=mm');">
-				Christopher Nadeau
-			</div>
-		</div>
-	</div>
-</div>
+{% endif %}

@@ -122,7 +122,6 @@ class Person extends \Doctrine\ORM\EntityRepository
 	}
 
 
-
 	/**
 	 * Find a person by their email address.
 	 *

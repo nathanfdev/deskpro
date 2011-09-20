@@ -90,27 +90,27 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		$sidebar_pagedisplay['section'] = PortalPageDisplay::SECTION_SIDEBAR;
 		$sidebar_pagedisplay['data'] = array(
 			array(
-				'type' => 'userinfo',
-			),
-			array(
 				'type' => 'contact',
 			),
 			array(
-				'type' => 'news'
+				'type' => 'staff',
+				//'online' => 1
 			),
-			array(
-				'type' => 'labels'
-			),
-			array(
-				'type' => 'downloads'
-			),
-			array(
-				'type' => 'ideas'
-			),
-			array(
-				'type' => 'template',
-				'tpl' => 'UserBundle:Portal:staff-sidebar.html.twig'
-			),
+			//array(
+			//	'type' => 'userinfo',
+			//),
+			//array(
+			//	'type' => 'news'
+			//),
+			//array(
+			//	'type' => 'labels'
+			//),
+			//array(
+			//	'type' => 'downloads'
+			//),
+			//array(
+			//	'type' => 'ideas'
+			//),
 			array(
 				'type' => 'twitter',
 				'twitter_name' => 'deskpro',
