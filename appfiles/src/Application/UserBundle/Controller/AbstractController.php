@@ -12,16 +12,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	protected $person;
 
-	protected function init()
-	{
-		parent::init();
-
-		$this->person = $this->session->getPerson();
-		$this->person->loadHelper('IdeaVotes', array(
-			'visitor' => $this->session->getVisitor()
-		));
-	}
-
 	public function preAction($action, $arguments = null)
 	{
 		if ($this instanceof RequireUserInterface) {
@@ -36,13 +26,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->redirect($redirect_url);
 			}
 		}
+
+		$this->person = $this->session->getPerson();
+		$this->person->loadHelper('IdeaVotes', array(
+			'visitor' => $this->session->getVisitor()
+		));
 	}
 
 
 
 	/**
 	 * Render a standard error message.
-	 * 
+	 *
 	 * @param string $error_message
 	 * @param string $error_title
 	 * @return Response

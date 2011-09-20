@@ -88,13 +88,6 @@ class IdeaCategory extends AbstractCategoryRepository
 				$searcher = new IdeaSearch();
 				$searcher->setPersonContext($person_context);
 				$searcher->addTerm(IdeaSearch::TERM_CATEGORY, 'is', $c['id']);
-				$searcher->addTerm(IdeaSearch::TERM_POPULAR, 'is', 1);
-				$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', array(IdeaEntity::STATUS_NEW, IdeaEntity::STATUS_ACTIVE));
-				$cat_counts['popular'] = $searcher->getCount();
-
-				$searcher = new IdeaSearch();
-				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(IdeaSearch::TERM_CATEGORY, 'is', $c['id']);
 				$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', IdeaEntity::STATUS_NEW);
 				$cat_counts['new'] = $searcher->getCount();
 
@@ -117,7 +110,6 @@ class IdeaCategory extends AbstractCategoryRepository
 
 				// 0 is sum of all root nodes
 				if (!$c['depth']) {
-					$counts[0]['popular'] += $counts[$c['id']]['popular'];
 					$counts[0]['new']     += $counts[$c['id']]['new'];
 					$counts[0]['active']  += $counts[$c['id']]['active'];
 					$counts[0]['closed']  += $counts[$c['id']]['closed'];

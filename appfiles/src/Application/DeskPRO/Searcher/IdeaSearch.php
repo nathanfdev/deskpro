@@ -17,7 +17,6 @@ class IdeaSearch extends SearcherAbstract
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
 	const TERM_NUM_RATINGS       = 'num_ratings';
 	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_POPULAR         = 'popular';
 	const TERM_LABEL           = 'label';
 
 	const ORDER_ID    = 'id';
@@ -181,9 +180,9 @@ class IdeaSearch extends SearcherAbstract
 				$order_by = "ORDER BY ideas.id $dir";
 				break;
 
-			case 'popularity':
-				$order_by = "ORDER BY ideas.popularity $dir";
-				break;
+			//case 'popularity':
+			//	$order_by = "ORDER BY ideas.popularity $dir";
+			//	break;
 
 			case 'num_ratings':
 				$order_by = "ORDER BY ideas.num_ratings $dir";
@@ -287,17 +286,6 @@ class IdeaSearch extends SearcherAbstract
 
 				case self::TERM_NUM_RATINGS:
 					$wheres[] = $this->_rangeMatch('ideas.num_ratings', $op, $choice);
-					break;
-
-				case self::TERM_POPULAR:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-					// must be 1
-					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
-					if ($choice) {
-						$wheres[] = $this->_rangeMatch('ideas.num_ratings', 'gte', App::getSetting('core_ideas.popular_votes'));
-					}
 					break;
 
 				case self::TERM_DATE_CREATED:

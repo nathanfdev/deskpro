@@ -47,4 +47,9 @@ class IdeaStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
+
+	public function getStatusCode()
+	{
+		return $this->status_type . '.' . $this->id;
+	}
 }

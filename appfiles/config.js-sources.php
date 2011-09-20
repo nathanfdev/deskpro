@@ -345,12 +345,9 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
-		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
-		'javascripts/DeskPRO/User/ElementHandler/IdeaView.js',
-		'javascripts/DeskPRO/User/ElementHandler/Ideas.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
 	)
@@ -364,13 +361,6 @@ $CONFIG['user']['vendors'] = array(
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
-
-		'vendor/jquery/tipped/js/bridge/bridge.js',
-		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
-		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
-		'vendor/jquery/tipped/js/excanvas/excanvas.js',
-		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',

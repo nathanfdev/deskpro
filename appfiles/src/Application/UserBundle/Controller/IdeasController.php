@@ -27,14 +27,6 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class IdeasController extends AbstractController
 {
-	protected function init()
-	{
-		parent::init();
-
-		$this->person->loadHelper('IdeaVotes', array('visitor' => App::getSession()->getVisitor()));
-	}
-
-
 	/**
 	 * Main index shows initial category listing
 	 */
@@ -43,6 +35,9 @@ class IdeasController extends AbstractController
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
 		$per_page = 20;
+
+		$parent_status = $status;
+		$sub_status_id = 0;
 
 		if (!$status) {
 			$status = 'new';
@@ -53,7 +48,7 @@ class IdeasController extends AbstractController
 		}
 
 		$search_options = array(
-			'order_by' => '',
+			'order_by' => 'num_ratings',
 		);
 
 		if ($slug && $slug != 'all') {
@@ -78,25 +73,36 @@ class IdeasController extends AbstractController
 			$category_path = array();
 		}
 
-		$idea_cats  = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
-		$idea_cat_objs = App::getEntityRepository('DeskPRO:IdeaCategory')->getAll();
+		$idea_cats  = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+		$status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
 
 		$searcher = new \Application\DeskPRO\Searcher\IdeaSearch();
 
-		if ($this->in->getString('order_by')) {
-			$searcher->setOrderByCode($this->in->getString('order_by'));
-			$search_options['order_by'] = $this->in->getString('order_by');
-		}
-
 		if ($status == 'popular') {
-			$searcher->addTerm('popular', 'is', 1);
+			$searcher->addTerm('status', 'is', array('active', 'new'));
+			$searcher->setOrderByCode('num_ratings');
+			$search_options['order_by'] = 'num_ratings';
 		} else {
-			$searcher->addTerm('status', 'is', $status);
+			if ($status != 'all') {
+				$searcher->addTerm('status', 'is', $status);
+			}
+
+			if (strpos($status, '.') !== false) {
+				list($parent_status, $sub_status_id) = explode('.', $status, 2);
+			}
+
+			if ($this->in->getString('order_by')) {
+				$search_options['order_by'] = $this->in->getString('order_by');
+				$searcher->setOrderByCode($search_options['order_by']);
+			}
 		}
 
 		if ($category) {
 			$searcher->addTerm('category', 'is', $category['id']);
 		}
+
 		$total = $searcher->getCount();
 		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 		$limit = array(
@@ -110,18 +116,30 @@ class IdeasController extends AbstractController
 
 		$category_counts = App::getEntityRepository('DeskPRO:IdeaCategory')->getAllCounts($this->person);
 
+		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
+		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
+
+		$has_voted_ids = $this->person->IdeaVotes->getVotesOnIdeas($idea_ids);
+
 		return $this->render('UserBundle:Ideas:filter.html.twig', array(
 			'idea_cats'       => $idea_cats,
-			'idea_cat_objs'   => $idea_cat_objs,
+			'active_status_cats' => $active_status_cats,
+			'closed_status_cats' => $closed_status_cats,
+			'status_subcats'    => $status_subcats,
+			'sub_status_id'      => $sub_status_id,
 			'category'        => $category,
 			'cat_id'          => 0,
 			'category_path'   => $category_path,
 			'category_counts' => $category_counts,
 			'status'          => $status,
+			'parent_status'   => $parent_status,
 			'ideas'           => $ideas,
 			'pageinfo'        => $pageinfo,
 			'num_results'     => $total,
 			'search_options' => $search_options,
+			'has_voted_ids' => $has_voted_ids,
+			'num_votes' => $num_votes,
+			'num_votes_remain' => $num_votes_remain,
 		));
 	}
 
@@ -262,17 +280,24 @@ class IdeasController extends AbstractController
 			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
+		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
+
 		if ($this->person['id']) {
-			App::getDb()->delete('ratings', array('object_type' => 'idea', 'object_id' => $idea['id'], 'person_id' => $this->person['id']));
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Idea', $idea_id, $this->person, $this->session->getVisitor());
+		} else {
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Idea', $idea_id, null, $this->session->getVisitor());
 		}
 
-		App::getDb()->delete('ratings', array('object_type' => 'idea', 'object_id' => $idea['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
+		if ($r) {
+			$num_votes_remain++;
+			$idea->removeRating($r);
+			$this->em->remove($r);
+			$this->em->flush($r);
+		}
 
 		if ($this->in->getInt('rating')) {
-			$entity_name = 'DeskPRO:' . ucfirst($object_type);
-			$content_object = App::findEntity($entity_name, $object_id);
-
-			$content_rating = new ContentRating($content_object, $this->person, $this->session->getVisitor());
+			$num_votes_remain--;
+			$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
 			$content_rating->setRequest($this->request);
 
 			$this->em->beginTransaction();
@@ -284,8 +309,15 @@ class IdeasController extends AbstractController
 			$this->em->commit();
 		}
 
+		$num_votes_remain = Numbers::bound($num_votes_remain, 0,10);
+
 		if ($this->request->isXmlHttpRequest()) {
-			return $this->createJsonResponse(array('success' => true));
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'voted' => $this->in->getInt('rating'),
+				'total_rating' => $idea->total_rating,
+				'num_votes_remain' => $num_votes_remain,
+			));
 		}
 
 		return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));

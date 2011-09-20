@@ -1,8 +1,10 @@
-<div class="labels">
-	<ul>
-		{% for label in labels %}
-			<li><a href="{{ path('user_search_labels', {'label': label.label}) }}">{{ label.label }}</a></li>
-		{% endfor %}
-	</ul>
-	<br class="clear" />
-</div>
+{% if labels|length %}
+	<div class="dp-labels">
+		<ul>
+			{% for label in labels %}
+				<li><a href="{{ path('user_search_labels', {'label': label.label}) }}">{{ label.label }}</a></li>
+			{% endfor %}
+		</ul>
+		<br class="dp-clear" style="clear:left" />
+	</div>
+{% endif %}

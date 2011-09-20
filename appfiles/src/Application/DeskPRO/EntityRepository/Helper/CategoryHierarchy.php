@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
 
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class CategoryHierarchy
 {
@@ -61,6 +62,10 @@ class CategoryHierarchy
 	protected $_cat_ids = array();
 	protected $_cat_parent_map = array();
 
+	protected $select_fields = array('id', 'title', 'parent_id');
+
+	protected $processor_callback = null;
+
 	public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)
 	{
 		$this->repos       = $repos;
@@ -74,6 +79,32 @@ class CategoryHierarchy
 		}
 
 		$this->cache_tag = $cache_tag;
+	}
+
+
+	/**
+	 * Set the fields that the basic (cachable) fetchers will select.
+	 *
+	 * @param array $select_fields
+	 */
+	public function setSelectFields(array $select_fields)
+	{
+		$this->select_fields = $select_fields;
+	}
+
+
+	/**
+	 * If provided, the function will be called on the array of raw category data from the db.
+	 * The result is used for the rest of this class' work (and cached).
+	 *
+	 * The callback is given an array $cats, and should return the same array (usually modified!)
+	 *
+	 * @param $callback
+	 * @return void
+	 */
+	public function setProcessorCallback($callback)
+	{
+		$this->processor_callback = $callback;
 	}
 
 
@@ -166,6 +197,17 @@ class CategoryHierarchy
 				" . ($this->where_cond ? "WHERE {$this->where_cond}" : '') . "
 				ORDER BY display_order ASC
 			");
+
+			foreach ($cats as &$c) {
+				if (empty($c['url_slug'])) {
+					$c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
+				}
+			}
+			$c = null;
+
+			if ($this->processor_callback) {
+				$cats = $this->processor_callback($cats);
+			}
 
 			foreach ($cats as $c) {
 				$this->_cat_parent_map[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
@@ -401,7 +443,7 @@ class CategoryHierarchy
 	public function getIdsInTree($parent_id, $incude_top = true)
 	{
 		$parent_id = is_object($parent_id) ? $parent_id->getId() : $parent_id;
-		
+
 		$ids = $this->getChildrenIds($parent_id);
 
 		if ($incude_top) {

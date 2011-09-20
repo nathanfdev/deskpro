@@ -25,14 +25,14 @@ class IdeaStatusCategory extends EntityRepository
 	{
 		$this->active_cats = $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaStatusCategory c
+			FROM DeskPRO:IdeaStatusCategory c INDEX BY c.id
 			WHERE c.status_type = ?1
 			ORDER BY c.display_order ASC
 		")->setParameter(1, 'active')->execute();
 
 		$this->closed_cats = $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaStatusCategory c
+			FROM DeskPRO:IdeaStatusCategory c INDEX BY c.id
 			WHERE c.status_type = ?1
 			ORDER BY c.display_order ASC
 		")->setParameter(1, 'closed')->execute();

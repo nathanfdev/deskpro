@@ -3,8 +3,6 @@
 	<meta property="og:url" content="{{ path('user_ideas_view', {'slug': idea.id}) }}" />
 	<meta property="og:title" content="{{idea.title}}" />
 	<meta property="og:type" content="article" />
-
-	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/IdeaView.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
@@ -14,86 +12,34 @@
 	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}
 {% block content %}
-<div class="idea with-handler"
-	data-element-handler="DeskPRO.User.ElementHandler.IdeaView"
-	data-votes-used="{{ app.user.getHelper('IdeaVotes').getVotesOnIdea(idea)|default(0) }}"
-	data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}"
->
-	<div class="votes-wrap">
-		<div class="votes">
-			<div class="count">{{idea.total_rating}}</div>
-			<span>votes</span>
-		</div>
-		<button class="idea-btn" id="submit_vote_trigger" data-votes-used="{{ num_votes_this|default(0) }}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">vote</button>
-	</div>
-	<div class="description">
-		<div class="cal-date" title="{{ idea.date_created|date('M d Y @ H:i:s') }}">
-			<div class="month">{{ idea.date_created|date('M')|upper }}</div>
-			<div class="day">{{ idea.date_created|date('d') }}</div>
-		</div>
-		<div class="page-title">
-			<h1>{{ idea.title }}</h1>
-			<div class="info-line">
-				By {{ idea.user_name|default('Anonymous') }}
+<div class="dp-idea-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
+				<h1>{{ idea.title }}</h1>
+			</div>
+			<div class="dp-box-content-meta">
+				<div class="by-line">
+					<img src="{{ idea.person.getPictureUrl(40) }}" />
+					Created by {{ idea.person.display_name }} on {{ idea.date_created|date('M d Y') }}
+					<br class="dp-clear" style="clear:left" />
+				</div>
+			</div>
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<div class="dp-post">{{ idea.content_html|raw }}</div>
+
+					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': idea.labels} %}
+
+					{% include 'UserBundle:Common:comments-box.html.twig' with {
+						'comments': comments,
+						'form_action': path('user_ideas_newcomment', {'idea_id': idea.id})
+					} %}
+				</div>
 			</div>
 		</div>
-
-		<div class="post">
-			{{idea.content_html|raw}}
-		</div>
-
-		{% include 'UserBundle:Ideas:vote-widget.html.twig' %}
 	</div>
-
-	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'idea', 'page_id': idea.id} %}
-
-	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': idea.labels} %}
-
-	{% if comments_widget %}
-		{{comments_widget|raw}}
-	{% else %}
-		<div class="content-item">
-			<div class="heading"><h2>Comments</h2></div>
-			<div class="content-list">
-				<ul class="comments">
-					<li class="new-comment">
-						<form action="{{ path('user_ideas_newcomment', {'idea_id': idea.id}) }}" method="post">
-							<table cellspacing="0" cellpadding="0">
-								{% if is_user_guest() %}
-									<tr>
-										<td>Name:</td>
-										<td><input type="text" name="new_comment[name]" /> (public)</td>
-									</tr>
-									<tr>
-										<td>Email:</td>
-										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td>Name:</td>
-										<td>{{ app.user.display_name }} (public)</td>
-									</tr>
-								{% endif %}
-								<tr>
-									<td>&nbsp;</td>
-									<td>
-										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
-										<div style="text-align: right">
-											<input type="submit" value="comment" />
-										</div>
-									</td>
-								</tr>
-							</table>
-						</form>
-					</li>
-
-					{% for comment in comments %}
-						{% include 'UserBundle:Common:comment.html.twig' %}
-					{% endfor %}
-				</ul>
-			</div>
-		</div>
-	{% endif %}
 </div>
 
 {% endblock %}

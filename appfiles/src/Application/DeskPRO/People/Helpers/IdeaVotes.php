@@ -95,8 +95,8 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 			$num_votes = App::getDb()->fetchColumn("
 				SELECT SUM(rating)
 				FROM ratings
-				WHERE person_id = ? AND object_type = 'idea' #AND is_returned = 0
-			", array($this->person['id']));
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' #AND is_returned = 0
+			", array($this->person['id'], $this->visitor['id']));
 		} elseif ($this->visitor) {
 			$num_votes = App::getDb()->fetchColumn("
 				SELECT SUM(rating)
@@ -135,8 +135,8 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 			$num_votes_this = App::getDb()->fetchColumn("
 				SELECT rating
 				FROM ratings
-				WHERE person_id = ? AND object_type = 'idea' AND object_id = ?
-			", array($this->person['id'], $idea_id));
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' AND object_id = ?
+			", array($this->person['id'], $this->visitor['id'], $idea_id));
 		} elseif ($this->visitor) {
 			$num_votes_this = App::getDb()->fetchColumn("
 				SELECT rating
@@ -150,6 +150,55 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 		$this->idea_votes[$idea_id] = $num_votes_this;
 
 		return $this->idea_votes[$idea_id];
+	}
+
+
+	/**
+	 * Get vote status on a bunch of ideas
+	 *
+	 * @param array $ideas
+	 * @return array
+	 */
+	public function getVotesOnIdeas(array $ideas)
+	{
+		$ids = array();
+
+		foreach ($ideas as $i) {
+			if ($i instanceof \Application\DeskPRO\Entity\Idea) {
+				$ids[] = $i->getId();
+			} else {
+				$ids[] = (int)$i;
+			}
+		}
+
+		if (!$ids) {
+			return $this->idea_votes;
+		}
+
+
+		$ids_in = implode(',', $ids);
+
+		if ($this->person['id']) {
+			$vote_info = App::getDb()->fetchAllKeyValue("
+				SELECT object_id, rating
+				FROM ratings
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' AND object_id IN ($ids_in)
+			", array($this->person['id'], $this->visitor['id']));
+		} elseif ($this->visitor) {
+			$vote_info = App::getDb()->fetchAllKeyValue("
+				SELECT object_id, rating
+				FROM ratings
+				WHERE visitor_id = ? AND object_type = 'idea' AND object_id IN ($ids_in)
+			", array($this->visitor['id']));
+		} else {
+			$vote_info = array_combine($ids, array_fill(0, count($ids), 0));
+		}
+
+		foreach ($vote_info as $k => $v) {
+			$this->idea_votes[$k] = $v;
+		}
+
+		return $this->idea_votes;
 	}
 
 

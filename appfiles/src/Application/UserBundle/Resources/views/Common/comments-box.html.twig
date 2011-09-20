@@ -1,0 +1,48 @@
+<div class="dp-box-comments">
+	<h4>{{ comments|length }} Comments</h4>
+	<div class="dp-box-comments-content">
+		{% if comments_widget %}
+			{{comments_widget|raw}}
+		{% else %}
+			<ul>
+				{% for comment in comments %}
+					<li>
+						<div class="author">
+							{% if comment.person %}
+								<img src="{{ comment.person.getPictureUrl(60) }}" /><br />
+							{% else %}
+								<img src="{{ path('serve_default_picture', {'s': 60}) }}" /><br />
+							{% endif %}
+							<strong>{{ comment.user_name }}</strong>
+						</div>
+						<div class="post">
+							{{ comment.content_html|raw }}
+						</div>
+						<br class="dp-clear" />
+					</li>
+				{% endfor %}
+				{% if not no_comment_form %}
+				<li class="new-comment">
+					<form action="{{ form_action }}" method="post">
+						<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea><br/>
+
+						<input type="text" name="new_comment[email]" placeholder="Name..." style="margin-top: 5px; "/>
+						<input type="text" name="new_comment[email]" placeholder="Email..." />
+
+						{#
+						<span class="or-signin">
+							or sign in with
+							<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/twitter.png') }}" alt="" />
+							<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/facebook.png') }}" alt="" />
+						</span>
+						#}
+
+						<br />
+						<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+					</form>
+				</li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
+</div>

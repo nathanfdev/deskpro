@@ -5,78 +5,43 @@
 	<meta property="og:type" content="blog" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">Downloads</a></li>
+	<li><a href="{{ path('user_news') }}">News</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
 	<li><a href="{{ path('user_news_view', {'slug': post.url_slug}) }}">{{ post.title }}</a></li>
 {% endblock %}
 {% block content %}
-<div class="newst-post">
-	<div class="cal-date" title="Uploaded: {{ download.date_created|date('M d Y @ H:i:s') }}">
-		<div class="month">{{ download.date_created|date('M')|upper }}</div>
-		<div class="day">{{ download.date_created|date('d') }}</div>
-	</div>
-	<div class="page-title">
-		<h1>{{ post.title }}</h1>
-		<div class="info-line">
-			By {{ post.person.display_name }}
-		</div>
-	</div>
+<div class="dp-news-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				<h1>{{ post.title }}</h1>
+			</div>
 
-	<div class="post">{{ post.content_html|raw }}</div>
+			<div class="dp-box-content-meta">
+				<div class="by-line">
+					<img src="{{ post.person.getPictureUrl(40) }}" />
+					Created by {{ post.person.display_name }} on {{ post.date_created|date('M d Y') }}
+					<br class="dp-clear" style="clear:left" />
+				</div>
+			</div>
 
-	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'news', 'page_id': post.id} %}
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<div class="dp-post">{{ post.content_html|raw }}</div>
 
-	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': post.labels} %}
+					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': post.labels} %}
 
-	{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': post} %}
+					{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': post} %}
 
-	{% if comments_widget %}
-			{{comments_widget|raw}}
-	{% else %}
-		<div class="content-item">
-			<div class="heading"><h2>Comments</h2></div>
-			<div class="content-list">
-				<ul class="comments">
-					<li class="new-comment">
-						<form action="{{ path('user_news_newcomment', {'post_id': post.id}) }}" method="post">
-							<table cellspacing="0" cellpadding="0">
-								{% if is_user_guest() %}
-									<tr>
-										<td>Name:</td>
-										<td><input type="text" name="new_comment[name]" /> (public)</td>
-									</tr>
-									<tr>
-										<td>Email:</td>
-										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td>Name:</td>
-										<td>{{ app.user.display_name }} (public)</td>
-									</tr>
-								{% endif %}
-								<tr>
-									<td>&nbsp;</td>
-									<td>
-										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
-										<div style="text-align: right">
-											<input type="submit" value="comment" />
-										</div>
-									</td>
-								</tr>
-							</table>
-						</form>
-					</li>
-
-					{% for comment in comments %}
-						{% include 'UserBundle:Common:comment.html.twig' %}
-					{% endfor %}
-				</ul>
+					{% include 'UserBundle:Common:comments-box.html.twig' with {
+						'comments': comments,
+						'form_action': path('user_news_newcomment', {'post_id': post.id})
+					} %}
+				</div>
 			</div>
 		</div>
-	{% endif %}
+	</div>
 </div>
-
 {% endblock %}

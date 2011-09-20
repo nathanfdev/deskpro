@@ -1,3 +1,5 @@
+{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
+{% if not breadcrumb|trim|length %}{% set breadcrumb = false %}{% endif %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
@@ -6,10 +8,7 @@
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
 	{{ html_js_pack('user.vendors') }}
-	<script type="text/javascript">
-	var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
-		Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
-	</script>
+
 	<script type="text/javascript">
 	var IdeaVotesRemaining  = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesRemaining()|default(0) }}');
 	var IdeaVotesUsed       = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesUsed()|default(0) }}');
@@ -43,7 +42,7 @@
 
 	{% block head %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
 <div id="dp_header">
 	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
@@ -74,8 +73,7 @@
 		{% endblock %}
 	</div>
 
-	{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
-	{% if breadcrumb|trim|length %}
+	{% if breadcrumb %}
 		<div id="dp_breadcrumb">
 			<ul>
 				<li><a href="{{ path('user') }}">Helpdesk</a></li>

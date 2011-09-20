@@ -1,48 +1,88 @@
 {% extends 'UserBundle::layout-partial-aware.html.twig' %}
+{% macro cat_row(cat, status, selected_cat) %}
+	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
+		<a href="{{ path('user_ideas', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
+		{% if cat.children|length %}
+			<ul>
+				{% for subcat in cat.children %}
+					{{ _self.cat_row(subcat, status) }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</li>
+{% endmacro %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+	<li>
+		<a href="{{ path('user_ideas', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_' ~ parent_status) }}</a>
+	</li>
+	{% if parent_status != status %}
+		<li>
+			<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">
+				{% if parent_status == 'active' %}
+					{{ active_status_cats[sub_status_id].title }}
+				{% else %}
+					{{ closed_status_cats[sub_status_id].title }}
+				{% endif %}
+			</a>
+		</li>
+	{% endif %}
+	{% if category %}
+		{% for cat in category.getTreeParents() %}
+			<li><a href="{{ path('user_ideas', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
+		{% endfor %}
+		<li><a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a></li>
+	{% endif %}
 {% endblock %}
 {% block content %}
-<div class="dp-content-block portal_kb with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.Ideas"{% endif %}>
+<div class="dp-content-block portal_kb">
 	<div class="dp-box">
 		<div class="dp-box-header">
 			<div class="dp-box-options">
-				<select>
-					<option>Sort by: Votes</option>
-					<option>Sort by: Date</option>
-				</select>
+				{% if status != 'popular' %}
+					Sort by:
+						<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">Votes</a>
+						/
+						<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date</a>
+				{% endif %}
 			</div>
-			<h1>Ideas</h1>
+			<h1>
+				<a href="{{ path('user_ideas_all') }}">Ideas</a>
+			</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-nav">
+				<div class="dp-idea-votes-info">
+					You have <span class="dp-idea-votes-remain">{{ num_votes_remain }}</span> votes remaining.
+				</div>
 				<ul>
 					<li class="dp-title">Status</li>
-					<li><a>All</a></li>
-					<li class="on"><a>Popular</a></li>
-					<li><a>New</a></li>
-					<li>
-						<a>Active</a>
+					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'all', 'slug': category.url_slug}) }}">All</a></li>
+					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug}) }}">Popular</a></li>
+					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug}) }}">New</a></li>
+					<li {% if status == 'active' %}class="on"{% endif %}>
+						<a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug}) }}">Active</a>
 						<ul>
-							<li><a>Accepted</a></li>
-							<li><a>In Progress</a></li>
-							<li><a>Considering</a></li>
+							{% for s_cat in active_status_cats %}
+								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
+							{% endfor %}
 						</ul>
 					</li>
-					<li>
-						<a>Closed</a>
+					<li {% if status == 'closed' %}class="on"{% endif %}>
+						<a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug}) }}">Closed</a>
 						<ul>
-							<li><a>Declined</a></li>
-							<li><a>Finished</a></li>
+							{% for s_cat in closed_status_cats %}
+								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
+							{% endfor %}
 						</ul>
 					</li>
 				</ul>
 				<ul class="sep">
 					<li class="dp-title">Category</li>
-					<li class="on"><a>All</a></li>
+					<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': status, 'slug': 'all'}) }}">All</a></li>
 					{% for cat in idea_cats %}
-						<li><a href="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}">{{ cat.title }}</a></li>
+						{{ _self.cat_row(cat, status, category) }}
 					{% endfor %}
 				</ul>
 			</div>
@@ -50,12 +90,17 @@
 				<ul class="dp-ideas-list">
 					{% for idea in ideas %}
 						<li>
-							<div class="vote">
-								<span></span>
-								<em>{{ num_votes_this|default(0) }}</em>
-							</div>
+							{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
 							<div class="item">
 								<h3><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h3>
+								<div class="meta">
+									{{ idea.date_created|date('M d, Y') }} &middot;
+										{% if idea.status_category %}
+											{{ idea.status_category.title }}
+										{% else %}
+											{{ phrase('user.ideas.status_' ~ idea.status) }}
+										{% endif %}
+								</div>
 							</div>
 						</li>
 					{% else %}

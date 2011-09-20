@@ -1,11 +1,6 @@
 {% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
-{% block head %}
-{% if do_portal %}
-	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/Kb.js') }}"></script>
-{% endif %}
-{% endblock %}
 {% block content %}
-<div class="dp-content-block portal_kb with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.PortalKb"{% endif %}>
+<div class="dp-content-block portal_kb">
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if category %}

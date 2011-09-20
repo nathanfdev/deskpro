@@ -16,80 +16,34 @@
 	<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{article.title}}</a></li>
 {% endblock %}
 {% block content %}
-<div class="article">
+<div class="dp-article-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				<h1>{{ article.title }}</h1>
+			</div>
+			<div class="dp-box-content-meta">
+				<div class="by-line">
+					<img src="{{ article.person.getPictureUrl(40) }}" />
+					Created by {{ article.person.display_name }} on {{ article.date_created|date('M d Y') }}
+					<br class="dp-clear" style="clear:left" />
+				</div>
+			</div>
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<div class="dp-post">{{ article.content_html|raw }}</div>
 
-	<div class="cal-date" title="{{ article.date_created|date('M d Y @ H:i:s') }}">
-		<div class="month">{{ article.date_created|date('M')|upper }}</div>
-		<div class="day">{{ article.date_created|date('d') }}</div>
-	</div>
-	<div class="page-title">
-		<h1>{{ article.title }}</h1>
-		<div class="info-line">
-			By {{ article.by_line }}
-			{% if all_categories|length > 1 %}
-				<br /><strong>Cross-posted into:</strong>
-				{% for categories in all_categories -%}
-					{% for c in categories -%}
-						<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
-					{% endfor %}{%- if not loop.last %}, {% endif %}
-				{% endfor %}
-			{% endif %}
-		</div>
-	</div>
+					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}
 
-	<div class="post">{{ article.content_html|raw }}</div>
+					{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
 
-	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'article', 'page_id': article.id} %}
-
-	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}
-
-	{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
-
-	{% if comments_widget %}
-			{{comments_widget|raw}}
-	{% else %}
-		<div class="content-item">
-			<div class="heading"><h2>Comments</h2></div>
-			<div class="content-list">
-				<ul class="comments">
-					<li class="new-comment">
-						<form action="{{ path('user_articles_newcomment', {'article_id': article.id}) }}" method="post">
-							<table cellspacing="0" cellpadding="0">
-								{% if is_user_guest() %}
-									<tr>
-										<td>Name:</td>
-										<td><input type="text" name="new_comment[name]" /> (public)</td>
-									</tr>
-									<tr>
-										<td>Email:</td>
-										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
-									</tr>
-								{% else %}
-									<tr>
-										<td>Name:</td>
-										<td>{{ app.user.display_name }} (public)</td>
-									</tr>
-								{% endif %}
-								<tr>
-									<td>&nbsp;</td>
-									<td>
-										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
-										<div style="text-align: right">
-											<input type="submit" value="comment" />
-										</div>
-									</td>
-								</tr>
-							</table>
-						</form>
-					</li>
-
-					{% for comment in comments %}
-						{% include 'UserBundle:Common:comment.html.twig' %}
-					{% endfor %}
-				</ul>
+					{% include 'UserBundle:Common:comments-box.html.twig' with {
+						'comments': comments,
+						'form_action': path('user_articles_newcomment', {'article_id': article.id})
+					} %}
+				</div>
 			</div>
 		</div>
-	{% endif %}
+	</div>
 </div>
-
 {% endblock %}
