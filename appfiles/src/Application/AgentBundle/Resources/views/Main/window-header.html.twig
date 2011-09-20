@@ -76,7 +76,7 @@
 	<div id="DP-CreateSection">
 		<div class="DP-createTicket">
 			<div id="createContentTrigger" class="newContent">
-				<a onclick="toggle_visibility('createTicketToggle');"><span class="plusIcon">Create</span></a>
+				<a onclick="toggle_visibility('createTicketToggle', 'createContentTrigger');"><span class="plusIcon">Create</span></a>
 			</div>
 		</div>
 		<!-- Header - Create Ticket Dropdown on click -->
@@ -85,7 +85,7 @@
 				<a>Create</a>
 			</div>
 			<div class="createDropdown"  onclick="toggle_visibility('createTicketToggle');">
-				<ul class="createBtnPopups" onclick="toggle_visibility('DP-overlayCreateTicket');">
+				<ul class="createBtnPopups">
 					<li id="create_ticket_btn"><a><span class="createTicket">Ticket</span></a></li>
 					<li id="create_person_btn"><a><span class="createTicket">Person</span></a></li>
 					<li id="create_organization_btn"><a><span class="createArticle">Organization</span></a></li>

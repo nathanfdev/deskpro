@@ -1659,14 +1659,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 	}
 });
 
-function toggle_visibility(elId) {
+// TODO get rid of this from the designer and replace with proper opener
+function toggle_visibility(elId, parentId) {
 	var el = $('#' + elId);
 	if (el.is(':visible')) {
 		el.hide();
 	} else {
+		if (!el.is('.has-init')) {
+			el.addClass('has-init');
+
+			if (parentId) {
+				var trigger = $('#' + parentId);
+				var pos = trigger.offset();
+				el.detach().appendTo('body');
+
+				el.css({
+					'position': 'absolute',
+					'top': pos.top,
+					'left': pos.left,
+					'width': 200,
+					'height': 'auto',
+					'z-index': 10001
+				});
+			}
+		}
 
 		var back = $('<div class="backdrop" />');
-		back.css('z-index', parseInt(el.css('z-index') | 10000) - 1);
+		back.css('z-index', 10000);
 		back.appendTo('body');
 
 		back.click(function() {
