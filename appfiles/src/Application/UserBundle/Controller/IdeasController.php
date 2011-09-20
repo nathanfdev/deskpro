@@ -115,10 +115,6 @@ class IdeasController extends AbstractController
 		$ideas = App::getEntityRepository('DeskPRO:Idea')->getByResultIds($idea_ids);
 
 		$category_counts = App::getEntityRepository('DeskPRO:IdeaCategory')->getAllCounts($this->person);
-
-		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
-		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
-
 		$has_voted_ids = $this->person->IdeaVotes->getVotesOnIdeas($idea_ids);
 
 		return $this->render('UserBundle:Ideas:filter.html.twig', array(
@@ -138,8 +134,6 @@ class IdeasController extends AbstractController
 			'num_results'     => $total,
 			'search_options' => $search_options,
 			'has_voted_ids' => $has_voted_ids,
-			'num_votes' => $num_votes,
-			'num_votes_remain' => $num_votes_remain,
 		));
 	}
 
@@ -160,13 +154,6 @@ class IdeasController extends AbstractController
 			$newidea->category_id = $this->in->getUint('category_id');
 		}
 
-		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
-		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
-
-		if (!$num_votes_remain) {
-			die('you must have at least one vote to submit a new idea');
-		}
-
 		$form = $this->get('form.factory')->create(new NewIdeaType($num_votes_remain));
 
 		if ($this->get('request')->getMethod() == 'POST') {
@@ -181,8 +168,6 @@ class IdeasController extends AbstractController
 
 		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
 			'form' => $form->createView(),
-			'num_votes' => $num_votes,
-			'num_votes_remain' => $num_votes_remain,
 		));
 	}
 
@@ -221,11 +206,7 @@ class IdeasController extends AbstractController
 		$category = $idea->category;
 		$category_path = $category->getTreeParents();
 
-		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
 		$num_votes_this   = $this->person->IdeaVotes->getVotesOnIdea($idea);
-		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
-
-		$spend_on_this = min($num_votes_remain+$num_votes_this, 3);
 
 		$comments = null;
 		$comments_widget = null;
@@ -247,10 +228,7 @@ class IdeasController extends AbstractController
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
 			'subscription' => $subscription,
 
-			'num_votes' => $num_votes,
 			'num_votes_this' => $num_votes_this,
-			'num_votes_remain' => $num_votes_remain,
-			'spend_on_this' => $spend_on_this,
 
 			'idea'          => $idea,
 			'category_path' => $category_path,
@@ -280,8 +258,6 @@ class IdeasController extends AbstractController
 			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
-		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
-
 		if ($this->person['id']) {
 			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Idea', $idea_id, $this->person, $this->session->getVisitor());
 		} else {
@@ -289,14 +265,12 @@ class IdeasController extends AbstractController
 		}
 
 		if ($r) {
-			$num_votes_remain++;
 			$idea->removeRating($r);
 			$this->em->remove($r);
 			$this->em->flush($r);
 		}
 
 		if ($this->in->getInt('rating')) {
-			$num_votes_remain--;
 			$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
 			$content_rating->setRequest($this->request);
 
@@ -309,14 +283,11 @@ class IdeasController extends AbstractController
 			$this->em->commit();
 		}
 
-		$num_votes_remain = Numbers::bound($num_votes_remain, 0,10);
-
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array(
 				'success' => true,
 				'voted' => $this->in->getInt('rating'),
 				'total_rating' => $idea->total_rating,
-				'num_votes_remain' => $num_votes_remain,
 			));
 		}
 

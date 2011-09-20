@@ -7,8 +7,6 @@ DeskPRO.User.ElementHandler.Helper.IdeaVote = new Orb.Class({
 		$('body').delegate('.dp-idea-vote', 'click', function() {
 			self.voteOnElement($(this));
 		});
-
-		this.remainCountEl = $('.dp-idea-votes-remain');
 	},
 
 	voteOnElement: function(el) {
@@ -32,8 +30,6 @@ DeskPRO.User.ElementHandler.Helper.IdeaVote = new Orb.Class({
 				}
 
 				$('em', el).first().text(data.total_rating || 0);
-
-				this.remainCountEl.text(data.num_votes_remain);
 			}
 		});
 	}

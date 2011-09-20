@@ -16,7 +16,7 @@
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
+				{% include 'UserBundle:Ideas:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
 				<h1>{{ idea.title }}</h1>
 			</div>
 			<div class="dp-box-content-meta">

@@ -53,9 +53,6 @@
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-nav">
-				<div class="dp-idea-votes-info">
-					You have <span class="dp-idea-votes-remain">{{ num_votes_remain }}</span> votes remaining.
-				</div>
 				<ul>
 					<li class="dp-title">Status</li>
 					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'all', 'slug': category.url_slug}) }}">All</a></li>
