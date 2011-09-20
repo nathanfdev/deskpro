@@ -21,7 +21,7 @@ class News extends PortalItemAbstract implements CacheableItem
 	{
 		return array('tags' => array('news'));
 	}
-	
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {
@@ -50,7 +50,7 @@ class News extends PortalItemAbstract implements CacheableItem
 		}
 
 		$news_entries = App::getEntityRepository('DeskPRO:News')->getNewest(
-			$this->getValueOption('num_articles', 5),
+			$this->getValueOption('num_articles', 3),
 			$category
 		);
 

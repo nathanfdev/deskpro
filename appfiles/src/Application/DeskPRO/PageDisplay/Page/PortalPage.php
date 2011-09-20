@@ -95,15 +95,15 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			//array(
 			//	'type' => 'userinfo',
 			//),
-			//array(
-			//	'type' => 'news'
-			//),
+			array(
+				'type' => 'news'
+			),
 			//array(
 			//	'type' => 'labels'
 			//),
-			//array(
-			//	'type' => 'downloads'
-			//),
+			array(
+				'type' => 'downloads'
+			),
 			array(
 				'type' => 'ideas'
 			),

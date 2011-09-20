@@ -826,6 +826,16 @@ ul.dp-downloads-list > li > h3 {
 	margin-top: 10px;
 }
 
+#dp_sidebar .dp-downloads-block li {
+	line-height: 100%;
+	margin-bottom: 10px;
+}
+
+#dp_sidebar .dp-downloads-block li span {
+	display: block;
+	line-height: 16px;
+}
+
 /******************
 * dp-ideas-list
 *******************/
@@ -1014,7 +1024,14 @@ ul.dp-ideas-list .meta {
 
 
 #dp_sidebar .dp-content-list {
+	font-size: 11px;
+}
 
+#dp_sidebar .dp-news-block .dp-content-list li {
+	clear: left;
+	line-height: 27px;
+	height: 27px;
+	overflow: hidden;
 }
 
 
@@ -1208,3 +1225,87 @@ ul.dp-ideas-list .meta {
 	font-size: 11px;
 	margin-top: 12px;
 }
+
+
+
+
+
+.dp-cal-date {
+    width: 46px;
+    float: right;
+}
+
+.dp-cal-date .month {
+    background-color: #253F66;
+    font-size: 9px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    border: 1px solid #253F66;
+
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.dp-cal-date .day {
+    background-color: #F8F8F8;
+    border: 2px solid #DEDEDE;
+    border-top: none;
+    text-align: center;
+    color: #888;
+    font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+    font-size: 13px;
+    padding-top: 2px;
+
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    border-radius: 0px 0px 4px 4px;
+}
+
+.dp-cal-date.small {
+    width: 32px;
+    margin: 0;
+}
+
+.dp-cal-date.small .month {
+    font-size: 9px;
+    line-height: 100%;
+}
+
+.dp-cal-date.small .day {
+    font-size: 10px;
+    border-width: 1px;
+    padding-top: 1px;
+    line-height: 100%;
+    color: #555;
+}
+
+
+
+
+.dp-icon-file {
+	background-image: url(../../images/icons/page_white.png);
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	padding-left: 18px;
+}
+
+.dp-icon-file.dp-icon-zip { background-image: url(../../images/icons/page_white_zip.png); }
+.dp-icon-file.dp-icon-doc { background-image: url(../../images/icons/page_white_word.png); }
+.dp-icon-file.dp-icon-docx { background-image: url(../../images/icons/page_white_word.png); }
+.dp-icon-file.dp-icon-txt { background-image: url(../../images/icons/page_white_text.png); }
+.dp-icon-file.dp-icon-rtf { background-image: url(../../images/icons/page_white_text.png); }
+.dp-icon-file.dp-icon-pdf { background-image: url(../../images/icons/page_white_acrobat.png); }
+.dp-icon-file.dp-icon-gif { background-image: url(../../images/icons/page_white_picture.png); }
+.dp-icon-file.dp-icon-jpg { background-image: url(../../images/icons/page_white_picture.png); }
+.dp-icon-file.dp-icon-jpeg { background-image: url(../../images/icons/page_white_picture.png); }
+.dp-icon-file.dp-icon-png { background-image: url(../../images/icons/page_white_picture.png); }
+.dp-icon-file.dp-icon-html { background-image: url(../../images/icons/page_white_world.png); }
+.dp-icon-file.dp-icon-htm { background-image: url(../../images/icons/page_white_world.png); }
