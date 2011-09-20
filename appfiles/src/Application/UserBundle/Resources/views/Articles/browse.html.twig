@@ -6,30 +6,19 @@
 	{% endfor %}
 {% endblock %}
 {% block kb_browse %}
-{% if category %}
-	<h3 style="margin:0;">{{category.title}}</h3>
-{% endif %}
 
 {% if category_children|length %}
 	{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
 {% endif %}
 
 {% if articles %}
-<div class="content-list">
-	<ul>
-		{% for article in articles %}
-		<li>
-			<div class="info-line" style="float:right">
-				<ul>
-					<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
-					<li class="views" title="Views"><span>{{ article.view_count }}</span></li>
-				</ul>
-			</div>
-			<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
-		</li>
-		{% endfor %}
-	</ul>
-</div>
+<ul class="dp-browse-list-full sep">
+	{% for article in articles %}
+	<li>
+		<h3><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h3>
+	</li>
+	{% endfor %}
+</ul>
 {% endif %}
 
 {% endblock %}

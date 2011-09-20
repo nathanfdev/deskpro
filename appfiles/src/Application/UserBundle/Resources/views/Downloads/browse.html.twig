@@ -6,64 +6,25 @@
 	{% endfor %}
 {% endblock %}
 {% block downloads_browse %}
-	<div class="downloads-browser">
-		<div class="content-list">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="cats">
-				<div class="cat-list">
-					<ul>
-						<li class="all {% if not category %}on{% endif %}">
-							<a href="{{ path('user_downloads') }}"><span>All <em>({{ category_counts[0]|default(0) }})</em></span></a>
-						</li>
-						{% include 'UserBundle:Downloads:browse-cat-list.html.twig' with {'categories': categories } %}
-					</ul>
-				</div>
-			</td><td>
-				<div class="content-list inner">
-					<ul>
-						{% for download in downloads %}
-						<li>
-							<div class="info-line" style="float:right">
-								<ul>
-									<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
-									<li class="views" title="Downloads"><span>{{ download.num_downloads }}</span></li>
-								</ul>
-							</div>
-							<h4><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}"><span class="icon-file icon-{{ download.blob.extension }}">{{ download.title }}</span></a></h4>
-							<div class="info-line">
-								{{ download.filename }}, {{ download.readable_filesize }}
-							</div>
-						</li>
-						{% endfor %}
-						<li class="pagenav">
-							<div class="count">{{ num_results }} downloads</div>
-							<div class="controls">
-								<form id="dl_nav_form" action="{{ path('user_downloads', {'slug': category.url_slug} ) }}" method="post">
-									Sorted by
-									<select name="order_by" onchange="$('#dl_nav_form').submit();">
-										<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
-										<option value="num_downloads.desc" {% if search_options.order_by == 'num_downloads.desc' %}selected="selected"{% endif %}>Popularity</option>
-									</select>
-
-									{% if pageinfo.last != 1 %},
-										Page <select name="page" onchange="$('#dl_nav_form').submit();">
-											{% for i in 1..pageinfo.last %}
-												<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}
-											{% endfor %}
-										</select>
-										of {{ pageinfo.last }}
-										{% if pageinfo.prev %}
-											<button name="page" value="{{pageinfo.prev}}">Prev</button>
-										{% endif %}
-										{% if pageinfo.next %}
-											<button name="page" value="{{pageinfo.next}}">Next</button>
-										{% endif %}
-									{% endif %}
-								</form>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</table>
-		</div>
+	<div class="dp-box-nav">
+		<ul>
+			<li class="dp-title">Category:</li>
+			<li class="all {% if not category %}on{% endif %}">
+				<a href="{{ path('user_downloads') }}"><span>All <em>({{ category_counts[0]|default(0) }})</em></span></a>
+			</li>
+			{% include 'UserBundle:Downloads:browse-cat-list.html.twig' with {'categories': categories } %}
+		</ul>
+	</div>
+	<div class="dp-box-content dp-with-nav">
+		<ul class="dp-downloads-list">
+			{% for download in downloads %}
+				<li>
+					<h3><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}"><span class="icon-file icon-{{ download.blob.extension }}">{{ download.title }}</span></a></h3>
+					<div class="meta">
+						{{ download.filename }}, {{ download.readable_filesize }}
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
 {% endblock %}

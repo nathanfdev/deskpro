@@ -5,33 +5,655 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
-	{% include 'UserBundle:Common:resources.html.twig' %}
-	{% include 'UserBundle:Common:page-init.html.twig' %}
+	{{ html_js_pack('user.vendors') }}
+	<link rel="stylesheet" href="{{ asset('stylesheets/user/main.css') }}" type="text/css" media="screen, projection">
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#deskpro_search').focus(function(ev) {
+				var el = $(this);
+				var assist = $('#dp_search_assist');
 
-	{% block head %}{% endblock %}
+				var pos = el.offset();
+				var w = el.outerWidth();
+				var h = el.outerHeight();
+
+				assist.css({
+					top: pos.top + h,
+					left: pos.left,
+					width: w
+				});
+				assist.show();
+			});
+			$('#deskpro_search').blur(function(ev) {
+				$('#dp_search_assist').hide();
+			});
+		});
+	</script>
 </head>
 <body>
 
-<div class="container">
-	<div class="span-24">
-		<div id="header">
-			<div class="logo">
-				<h1>
-					<a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a>
-				</h1>
-			</div>
+<div id="dp_header">
+	<h1>DeskPRO</h1>
+	<h2>Support</h2>
+</div>
+
+<div id="dp_search_assist" style="display: none;">
+	ccccc
+</div>
+
+<div id="dp_page">
+	<div id="dp_header_bar">
+		<div id="dp_userbar">
+			Welcome back, guest &middot;
+			<a>Log in</a> &middot; <a>Sign up</a>
+		</div>
+		<div id="dp_search_bar">
+			<form action="">
+				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." />
+				<button class="btn primary">Search</button>
+			</form>
 		</div>
 	</div>
 
-	<hr class="space">
+	<div id="dp_sidebar">
+		<div class="dp-nav-block">
+			<div class="dp-box-header">
+				<h3>Contact Us</h3>
+			</div>
 
-	<div class="span-16">
-		{% block content %}{% endblock %}
+			<ul class="dp-primary">
+				<li><a href="" class="dp-email-us">Email us</a></li>
+				<li><a href="" class="dp-submit-idea">Submit a suggestion</a></li>
+				<li><a href="" class="dp-chat-live">Chat live</a></li>
+			</ul>
+		</div>
+		<div class="dp-online-block">
+			<div class="dp-box-header">
+				<h3>Support Staff</h3>
+			</div>
+
+			<div class="dp-summary">
+				Our friendly support staff are here to help.
+			</div>
+			<ul>
+				<li>
+					<div class="item">
+						<span style="background-image: url('http://www.gravatar.com/avatar/7968240f9d3de59a6412975eee3fefbd?s=24')">Christopher Padfield</span>
+					</div>
+				</li>
+				<li>
+					<div class="item">
+						<span style="background-image: url('http://www.gravatar.com/avatar/asdasdsadsad?s=24')">Jane Doe</span>
+					</div>
+				</li>
+				<li>
+					<div class="item">
+						<span style="background-image: url('http://www.gravatar.com/avatar/7e53906dbd43989ea9367ab938bfb558?s=24&d=mm');">Christopher Nadeau</span>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</div>
 
-	<div class="span-4 colborder last">
-		{% block sidebar %}{% endblock %}
+	<div class="dp-breadcrumb">
+						Helpdesk > Help Articles > Sales
+					</div>
+
+	<div id="dp_content">
+
+		{########################################
+		 # New Ticket
+		 ########################################}
+		<div class="dp-content-block">
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<h1>Contact Us</h1>
+				</div>
+				<div class="dp-box-content-wrapper">
+				<div class="dp-box-content new-ticket">
+					<div class="form-row">
+						<div class="form-label">
+							Name <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							<input type="text" name="new_comment[email]" placeholder="Name" style="margin-top: 5px; "/>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-label">
+							Email <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							<input type="text" name="new_comment[email]" placeholder="Email" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-label">
+							Subject <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							<input type="text" name="new_comment[subject]" class="subject" placeholder="Subject" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-label">
+							Department <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							<select>
+
+							</select>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-label">
+							What is your question? <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							<textarea name="new_ticket[message]"></textarea>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-label">
+							Attachments
+						</div>
+						<div class="form-input">
+							<input type="file" />
+						</div>
+					</div>
+
+					<br />
+					<button class="btn primary">Ask Question</button>
+				</div>
+				</div>
+			</div>
+		</div>
+
+		{########################################
+		 # News
+		 ########################################}
+		<div class="dp-content-block">
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<h1>Can I change my URL</h1>
+				</div>
+				<div class="dp-box-content-meta">
+                    <div class="by-line">
+						<img src="http://2.gravatar.com/avatar/30cf08c478da339285e39b5e8feb6a3f?size=40" />
+						Created by John Doe on Sep 11, 2011 <br/>
+						Modified by Jane Smith on Sep 19, 2011
+					</div>
+
+				</div>
+				<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<p>Moving an existing DeskPRO installation to a new server is fairly straightforward. Here are the steps you should follow:</p>
+					<ol>
+						<li>Generate a dump of your MySQL database and restore it on your new server.</li>
+						<li>Copy all of the DeskPRO files from your old server to your new server.</li>
+						<li>Edit /includes/config.php and update the database details.</li>
+
+						<li>Make sure the /datastore/ directory (and it's contents) is still writable (for example, CHMOD it to 0777).</li>
+						<li>If you have moved your entire domain to the new server, make sure any configured POP3 accounts are set up properly. If you are using the PIPE'ing mechanism, make sure you reconfigure your new mail server.</li>
+						<li>Reconfigure the required scheduled tasks.</li>
+						<li>If you have moved to a brand new domain name, make sure to update the <i>Helpdesk URL</i> setting in the DeskPRO Admin CP.</li>
+					</ol>
+					<p>Note: We also offer a relocation service that you can purchase from the <a href="http://members.deskpro.com/">members area</a>.</p>
+
+					<div class="labels">
+                    	<ul>
+                    			<li><a href="/index_dev.php/search/labels/address">address</a></li>
+                    					<li><a href="/index_dev.php/search/labels/fare">fare</a></li>
+
+                    					<li><a href="/index_dev.php/search/labels/fungus">fungus</a></li>
+                    					<li><a href="/index_dev.php/search/labels/law">law</a></li>
+                    					<li><a href="/index_dev.php/search/labels/mat">mat</a></li>
+                    					<li><a href="/index_dev.php/search/labels/model">model</a></li>
+                    					<li><a href="/index_dev.php/search/labels/sentry">sentry</a></li>
+                    	</ul>
+
+                    	<br class="dp-clear" />
+                    </div>
+
+					<div class="user-vote">
+                    	<form method="post">
+                    		<input type="hidden" name="log_search_id" value="{{ rating_log_search_id }}" />
+                    			<button class="good" value="1" name="rating"><span>This article was helpful</span></button>
+                    			<button class="bad" value="-1" name="rating"><span>This article was not helpful</span></button>
+                    	</form>
+                    </div>
+
+				</div>
+				</div>
+
+				<div class="dp-box-comments">
+					<h4>23 Comments</h4>
+					<div class="dp-box-comments-content">
+						<ul>
+							<li>
+								<div class="author">
+									<img src="http://2.gravatar.com/avatar/30cf08c478da339285e39b5e8feb6a3f?size=60" /><br />
+									<strong>John Doe</strong>
+								</div>
+								<div class="post">
+									Hi Again I think the macro quick search fix, has caused it not to work as intended. When searching and getting one macro result back, hitting Enter does nothing? Br Carsten
+								</div>
+								<br class="dp-clear" />
+							</li>
+							<li>
+								<div class="author">
+									<img src="http://2.gravatar.com/avatar/30cf08c478da339285e39b5e8feb6a3f?size=60" /><br />
+									<strong>John Doe</strong>
+								</div>
+								<div class="post">
+									We are seeing problems with the assignee field for agents who can only see tickets in their group. Rather than just listing agents from their group it is now showing all agents. This presents a significant usability issue for those of us with 75+ agents. (I have also opened ticket 129730) for this issue.
+								</div>
+								<br class="dp-clear" />
+							</li>
+							<li>
+								<div class="author">
+									<img src="http://2.gravatar.com/avatar/30cf08c478da339285e39b5e8feb6a3f?size=60" /><br />
+									<strong>John Doe</strong>
+								</div>
+								<div class="post">
+									Long overdue but very welcome changes to the linked Incidents-Problems Interface. There is still room to improve but this is much better, thank you
+								</div>
+								<br class="dp-clear" />
+							</li>
+							<li class="new-comment">
+								<form method="post">
+									<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea><br/>
+
+									<input type="text" name="new_comment[email]" placeholder="Name..." style="margin-top: 5px; "/>
+									<input type="text" name="new_comment[email]" placeholder="Email..." />
+
+									<span class="or-signin">
+										or sign in with
+										<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/twitter.png') }}" alt="" />
+										<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/facebook.png') }}" alt="" />
+									</span>
+
+									<Br />
+									<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+								</form>
+							</li>
+						</ul>
+						<br class="dp-clear" />
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		{########################################
+		 # News
+		 ########################################}
+		<div class="dp-content-block">
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<h1>News</h1>
+				</div>
+				<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<ul class="dp-news-list">
+						<li>
+							<h3><a>Introducing DeskPRO</a></h3>
+							<div class="meta">
+								Christopher Nadeau Sep-08 &middot; 42 &middot; Announcements / Announcements
+							</div>
+						</li>
+						<li>
+							<h3><a>Liquid Templates Support for Voice and Other Fixes</a></h3>
+							<div class="meta">
+								Christopher Padfield Sep-08 &middot; 42 &middot; Announcements / Announcements
+							</div>
+						</li>
+					</ul>
+				</div>
+				</div>
+
+				<div class="dp-footer">
+					<button class="btn">View all 23 entries</button>
+				</div>
+			</div>
+
+		</div>
+
+
+		{########################################
+		 # KB
+		 ########################################}
+		<div class="dp-content-block">
+
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<h1>Help Articles</h1>
+				</div>
+				<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<ul class="dp-browse-list">
+						<li>
+							<h3>Getting Started</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 8 articles</a>
+						</li>
+
+						<li>
+							<h3>Using DeskPRO</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 32 articles</a>
+						</li>
+					</ul>
+					<ul class="dp-browse-list">
+						<li>
+							<h3>Getting Started</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 8 articles</a>
+						</li>
+
+						<li>
+							<h3>Using DeskPRO</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 32 articles</a>
+						</li>
+					</ul>
+					<ul class="dp-browse-list">
+						<li>
+							<h3>Getting Started</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 8 articles</a>
+						</li>
+
+						<li>
+							<h3>Using DeskPRO</h3>
+							<ul>
+								<li><a>Liquid Templates Support for Voice and Other Fixe</a></li>
+								<li><a>Introducing DeskPRO Enterprise</a></li>
+								<li><a>Getting Started table of contents with links</a></li>
+							</ul>
+							<a class="view-more">View all 32 articles</a>
+						</li>
+					</ul>
+
+					<br class="dp-clear" />
+				</div>
+				</div>
+			</div>
+
+		</div>
+
+		{########################################
+		 # Ideas
+		 ########################################}
+		 <div class="dp-content-block">
+
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<div class="dp-box-options">
+						<select>
+							<option>Sort by: Votes</option>
+							<option>Sort by: Date</option>
+						</select>
+					</div>
+					<h1>Ideas</h1>
+				</div>
+				<div class="dp-box-content-wrapper">
+					<div class="dp-box-nav">
+						<ul>
+							<li class="dp-title">Status</li>
+							<li><a>All</a></li>
+							<li class="on"><a>Popular</a></li>
+							<li><a>New</a></li>
+							<li>
+								<a>Active</a>
+								<ul>
+									<li><a>Accepted</a></li>
+									<li><a>In Progress</a></li>
+									<li><a>Considering</a></li>
+								</ul>
+							</li>
+							<li>
+								<a>Closed</a>
+								<ul>
+									<li><a>Declined</a></li>
+									<li><a>Finished</a></li>
+								</ul>
+							</li>
+						</ul>
+						<ul class="sep">
+							<li class="dp-title">Category</li>
+							<li class="on"><a>All</a></li>
+							<li><a>General</a></li>
+							<li><a>Tickets</a></li>
+							<li><a>Gateways</a></li>
+							<li><a>Users</a></li>
+							<li><a>Knowledgeabse</a></li>
+							<li>
+								<a>Plugins</a>
+								<ul>
+									<li><a>Chat</a></li>
+									<li><a>Manual</a></li>
+									<li><a>Desktop Notifier</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<div class="dp-box-content dp-with-nav">
+						<ul class="dp-ideas-list">
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>23</em>
+								</div>
+								<div class="item">
+									<h3><a>Reporting expansion</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote voted">
+									<span></span>
+									<em>9</em>
+								</div>
+								<div class="item">
+									<h3><a>Multiple Helpdesks Integration</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>11</em>
+								</div>
+								<div class="item">
+									<h3><a>Turn on/off auto responder in user area</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote voted">
+									<span></span>
+									<em>4</em>
+								</div>
+								<div class="item">
+									<h3><a>Category Specific Workflows</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>54</em>
+								</div>
+								<div class="item">
+									<h3><a>Ticket Details in User replies emails</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>2</em>
+								</div>
+								<div class="item">
+									<h3><a>User API</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>18</em>
+								</div>
+								<div class="item">
+									<h3><a>Super Users</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="vote">
+									<span></span>
+									<em>6</em>
+								</div>
+								<div class="item">
+									<h3><a>Allow feedback from anonymous users</a></h3>
+									<div class="meta">
+										Christopher Nadeau &middot; 4 comments &middot; Last reply 2 days ago by Jane Doe
+									</div>
+								</div>
+							</li>
+						</ul>
+
+						<div class="dp-footer">
+							<button class="btn">View all 52 ideas</button>
+						</div>
+					</div>
+					<br class="dp-clear" />
+				</div>
+			</div>
+		</div>
+
+		{########################################
+		 # Downloads
+		 ########################################}
+		 <div class="dp-content-block">
+
+			<div class="dp-box">
+				<div class="dp-box-header">
+					<h1>Downloads</h1>
+				</div>
+				<div class="dp-box-content-wrapper">
+					<div class="dp-box-nav">
+						<ul>
+							<li class="dp-all"><a>View all 52 files</a></li>
+						</ul>
+						<ul>
+							<li class="dp-title">View by category:</li>
+							<li>
+								<a>Patches</a>
+								<ul>
+									<li><a>DeskPRO v3.4</a></li>
+									<li><a>DeskPRO v3.5</a></li>
+								</ul>
+							</li>
+							<li><a>Documentation</a></li>
+							<li><a>Tools</a></li>
+							<li><a>Misc</a></li>
+						</ul>
+					</div>
+					<div class="dp-box-content dp-with-nav">
+						<ul class="dp-downloads-list">
+							<li>
+								<h3><a>Usage Logger</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Schema Checker</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Regenerate All Passwords</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Reset Admin Password</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Style Guide</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Usage Guide</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Patch 2 for 3.3.1</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+							<li>
+								<h3><a>Patch 1 for 3.4.2</a></h3>
+								<div class="meta">
+									usage-logger.zip &middot; 6.22 KB &middot; 22
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
 	</div>
+
 </div>
 
 </body>

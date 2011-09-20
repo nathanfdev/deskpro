@@ -76,13 +76,13 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				'type' => 'news'
 			),
 			array(
-				'type' => 'downloads'
-			),
-			array(
 				'type' => 'kb'
 			),
 			array(
 				'type' => 'ideas'
+			),
+			array(
+				'type' => 'downloads'
 			),
 		);
 
@@ -121,7 +121,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		$this->addPageDisplay($content_pagedisplay);
 		$this->addPageDisplay($sidebar_pagedisplay);
 	}
-	
+
 
 	/**
 	 * @param callback $lazy_loader
@@ -163,7 +163,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		parent::addPageDisplay($page_display);
 		$this->_initItems($page_display);
 	}
-	
+
 
 	/**
 	 * Init all items defined in the PortalPageDisplay and add it to
@@ -185,11 +185,11 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			$this->page_display_items[$section][] = $this->_createPortalItem($section, $item_info);
 		}
 	}
-	
+
 
 	/**
 	 * Creates a PortalItem object given the item info array
-	 * 
+	 *
 	 * @param $section
 	 * @param array $item_info
 	 * @return \Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract
@@ -209,7 +209,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		return $obj;
 	}
 
-	
+
 	/**
 	 * Get an array of all CSS assets used by all portal items
 	 *
@@ -275,7 +275,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	public function getSectionHtml($section)
 	{
 		$this->_loadSection($section);
-		
+
 		if (!isset($this->page_display_items[$section])) {
 			return '';
 		}
@@ -311,7 +311,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 					$block_html = $item->getHtml();
 					$cache->save($block_html, $cache_id, $cache_info['tags'], $cache_info['lifetime']);
 				}
-				
+
 			} else {
 				$block_html = $item->getHtml();
 			}

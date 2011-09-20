@@ -1,20 +1,14 @@
-<div class="content-list overview-table">
-	<table cellspacing="0" cellpadding="0" width="100%">
-		<tr>
-		{% for cat in categories %}
-			{% if loop.index0 is divisibleby(2) %}</tr><tr>{% endif %}
-				<td width="50%">
-					<h3><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }} <span class="count">({{ category_counts[cat.id] }})</span></a></h3>
-					<ul>
-						{% for article in category_articles[cat.id] %}
-							<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></li>
-						{% endfor %}
-						{% if category_articles[cat.id]|length >= 5 %}
-							<li class="more"><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ category_counts[cat.id]|default(0) - category_articles[cat.id]|length }} more...</a></li>
-						{% endif %}
-					</ul>
-				</td>
-		{% endfor %}
-		</tr>
-	</table>
-</div>
+<ul class="dp-browse-list">
+	{% for cat in categories %}
+		{% if loop.index0 != 0 and loop.index0 % 2 == 0 %}</ul><ul class="dp-browse-list">{% endif %}
+		<li>
+			<h3><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></h3>
+			<ul>
+				{% for article in category_articles[cat.id] %}
+					<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></li>
+				{% endfor %}
+			</ul>
+			<a href="{{ path('user_articles', {'slug': cat.url_slug}) }}" class="view-more">View all {{ category_counts[cat.id] }} articles</a>
+		</li>
+	{% endfor %}
+</ul>

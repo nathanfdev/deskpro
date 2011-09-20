@@ -5,8 +5,38 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
-	{% include 'UserBundle:Common:resources.html.twig' %}
-	{% include 'UserBundle:Common:page-init.html.twig' %}
+	{{ html_js_pack('user.vendors') }}
+	<script type="text/javascript">
+	var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
+		Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+	</script>
+	<script type="text/javascript">
+	var IdeaVotesRemaining  = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesRemaining()|default(0) }}');
+	var IdeaVotesUsed       = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesUsed()|default(0) }}');
+	var IdeaVotesMaxPerIdea = parseInt('{{ app.getSetting('core_ideas.max_votes_ideas') }}');
+	var IdeaVotesAllowed    = parseInt('{{ app.getSetting('core_ideas.votes_per_person') }}');
+	</script>
+
+	{{ html_js_pack('user.vendors') }}
+	{{ html_js_pack('user.common') }}
+
+	<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="{{ asset('stylesheets/user/main.css') }}" type="text/css" media="screen, projection">
+
+	<script type="text/javascript">
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+	</script>
+	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
+		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
+		});
+	</script>
+
+	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name'))}}" />
+	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{app.getSetting('core.facebook_admins')}}" />{% endif %}
 
 	{{ portal_css(['sidebar', 'pagetop']) }}
 	{{ portal_js(['sidebar', 'pagetop']) }}
@@ -15,73 +45,51 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
-<div class="container">
-	<div class="span-24">
-		<div id="header">
-			<div class="logo">
-				<h1>
-					<a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a>
-				</h1>
-			</div>
-		</div>
-	</div>
+<div id="dp_header">
+	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
+	<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
 </div>
 
-<hr class="space" />
-
-<div class="container" id="content_container">
-	<div class="span-24">
-		<div id="pagetop">
-			{{ portal_section('pagetop') }}
-		</div>
-	</div>
-	
-	<div class="span-17">
-		<div id="content">
-			{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
-			{% if breadcrumb|trim|length %}
-				<div class="breadcrumb">
-					<ul>
-						<li><a href="{{ path('user') }}">Helpdesk</a></li>
-						{{ breadcrumb }}
-					</ul>
-				</div>
-			{% endif %}
-
-			{% block content %}{% endblock %}
-		</div>
-	</div>
-
-	<div class="span-7 last">
-		<div id="sidebar">
-			{% block sidebar %}
-				{{ portal_section('sidebar') }}
-			{% endblock %}
-		</div>
-	</div>
-
-	<div class="span-24">
-		<div id="copy_footer">
-			<a class="up" href="#" onclick="$(document).scrollTop(0); return false;">Top</a>
-			<a href="http://www.deskpro.com/">Helpdesk software by <em>DeskPRO</em></a>
-		</div>
-	</div>
+<div id="dp_search_assist" style="display: none;">
+	ccccc
 </div>
 
-<hr class="space" />
+<div id="dp_page">
+	<div id="dp_header_bar">
+		<div id="dp_userbar">
+			Welcome back, guest &middot;
+			<a>Log in</a> &middot; <a>Sign up</a>
+		</div>
+		<div id="dp_search_bar">
+			<form action="">
+				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." />
+				<button class="btn primary">Search</button>
+			</form>
+		</div>
+	</div>
 
-<div class="container">
-	<div class="span-24">
-		<div id="footer">
-			<ul class="links">
-				<li><a href="{{ app.getSetting('core.site_url') }}">{{ app.getSetting('core.site_name') }}</a></li>
+	<div id="dp_sidebar">
+		{% block sidebar %}
+			{{ portal_section('sidebar') }}
+		{% endblock %}
+	</div>
+
+	{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
+	{% if breadcrumb|trim|length %}
+		<div id="dp_breadcrumb">
+			<ul>
+				<li><a href="{{ path('user') }}">Helpdesk</a></li>
+				{{ breadcrumb }}
 			</ul>
 		</div>
+	{% endif %}
+
+	<div id="dp_content">
+		{% block content %}{% endblock %}
 	</div>
 </div>
 
-
-{% if not app.getSetting('user.disable_chat_element') %}
+{% if false and not app.getSetting('user.disable_chat_element') %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
 {% endif %}
 </body>

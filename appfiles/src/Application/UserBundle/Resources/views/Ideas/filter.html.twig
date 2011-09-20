@@ -3,103 +3,68 @@
 	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
 {% endblock %}
 {% block content %}
-<div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas" {% if is_partial_request() == 'portal' %}data-ajax-update="1"{% endif %}>
-<div class="content-item portal_ideas">
-	<div class="heading">
-		<div style="float: right">
-			<a class="dp-button x-small" href="{{ path('user_ideas_newidea') }}">Submit Idea</a>
+<div class="dp-content-block portal_kb with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.Ideas"{% endif %}>
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<div class="dp-box-options">
+				<select>
+					<option>Sort by: Votes</option>
+					<option>Sort by: Date</option>
+				</select>
+			</div>
+			<h1>Ideas</h1>
 		</div>
-		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Ideas') }}</a></h2>
-	</div>
 
-	<div class="content-wrapper">
-		<div class="content-filters">
-			<table cellspacing="0" cellpadding="0" width="100%">
-				<tr>
-					<td>Category:</td>
-					<td rowspan="2">
-						<div class="idea-status-nav">
-							<ul>
-								<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}">Hot ({{ category_counts[cat_id].popular }})</a></li>
-								<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}">New ({{ category_counts[cat_id].new }})</a></li>
-								<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}">Active ({{ category_counts[cat_id].active }})</a></li>
-								<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}">Closed ({{ category_counts[cat_id].closed }})</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<select name="category_id" class="category_id">
-							<option value="0">All ({{ category_counts[0].all }})</option>
-							{% for cat in idea_cats %}
-								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }} ({{ category_counts[cat.id].all }})</option>
-							{% endfor %}
-						</select>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="content-list">
-			<ul>
-				{% for idea in ideas %}
-					<li class="idea-item">
-						<div class="info-line" style="float:right">
-							<ul>
-								<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
-								<li class="views" title="Views"><span>{{ 0 }}</span></li>
-							</ul>
-						</div>
-						<div class="ideas-votes idea-btn" title="Votes in favor of this idea" data-votes-used="{{ num_votes_this|default(0) }}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">
-							<div class="votes"><span class="votes-count">{{ rand(1,80) }}</span></div>
-						</div>
-						<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-nav">
+				<ul>
+					<li class="dp-title">Status</li>
+					<li><a>All</a></li>
+					<li class="on"><a>Popular</a></li>
+					<li><a>New</a></li>
+					<li>
+						<a>Active</a>
+						<ul>
+							<li><a>Accepted</a></li>
+							<li><a>In Progress</a></li>
+							<li><a>Considering</a></li>
+						</ul>
 					</li>
-				{% else %}
-					<li>There are no ideas with those specificiations.</li>
-				{% endfor %}
-				{% if ideas|length %}
-					<li class="pagenav">
-						<div class="count">{{ num_results }} ideas</div>
-						<form action="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}" method="get" id="idea_find_form_btm">
-						<div class="controls">
-							<div class="sort-controls">
-								Sorted by
-								<select name="order_by" onchange="$('#idea_find_form_btm select.page').val(1); $('#idea_find_form_btm').submit();">
-									<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
-									<option value="num_votes.desc" {% if search_options.order_by == 'num_votes.desc' %}selected="selected"{% endif %}>Popularity</option>
-								</select>
-							</div>
-							{% if pageinfo.last != 1 %}
-							<div class="page-controls">
-								{% if pageinfo.prev %}
-									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.prev})) }}" class="page-link page-left">Previous</a>
-								{% endif %}
-								Page <select class="page" name="page" onchange="$('#idea_find_form_btm').submit();">
-									{% for i in 1..pageinfo.last %}
-										<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
-									{% endfor %}
-								</select>
-								of {{ pageinfo.last }} <button class="dp-button x-small">Go</button>
-								{% if pageinfo.next %}
-									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.next})) }}" class="page-link page-right">Next</a>
-								{% endif %}
-							</div>
-							{% endif %}
-						</div>
-						</form>
-						<br class="clear" />
+					<li>
+						<a>Closed</a>
+						<ul>
+							<li><a>Declined</a></li>
+							<li><a>Finished</a></li>
+						</ul>
 					</li>
-				{% endif %}
-			</ul>
+				</ul>
+				<ul class="sep">
+					<li class="dp-title">Category</li>
+					<li class="on"><a>All</a></li>
+					{% for cat in idea_cats %}
+						<li><a href="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}">{{ cat.title }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="dp-box-content dp-with-nav">
+				<ul class="dp-ideas-list">
+					{% for idea in ideas %}
+						<li>
+							<div class="vote">
+								<span></span>
+								<em>{{ num_votes_this|default(0) }}</em>
+							</div>
+							<div class="item">
+								<h3><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h3>
+							</div>
+						</li>
+					{% else %}
+						<li>There are no ideas with those specificiations.</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<br class="dp-clear" style="clear:left" />
 		</div>
 	</div>
-
-	<div class="loading-tpl" style="display: none">
-		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
-	</div>
-</div>
-
-{% include 'UserBundle:Ideas:vote-widget.html.twig' %}
 </div>
 {% endblock %}

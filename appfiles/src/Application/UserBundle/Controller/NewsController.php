@@ -25,7 +25,7 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class NewsController extends AbstractController
 {
-	public function browseAction($slug = '', $page = 1, $list_type = 'posts')
+	public function browseAction($slug = '', $page = 1, $list_type = 'list')
 	{
 		if ($this->in->getUint('page')) {
 			$page = $this->in->getUint('page');

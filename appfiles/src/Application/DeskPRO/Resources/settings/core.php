@@ -4,7 +4,8 @@
 	'core.emergency_contact' => 'emergency-contact@example.com',
 
 	'core.deskpro_url' => 'http://localhost/',
-	'core.deskpro_name' => 'Helpdesk',
+	'core.deskpro_name' => 'DeskPRO',
+	'core.deskpro_tagline' => 'Support',
 	'core.site_url' => '',
 	'core.site_name' => '',
 	'core.deskpro_assets_full_url' => 'http://localhost/static/',
