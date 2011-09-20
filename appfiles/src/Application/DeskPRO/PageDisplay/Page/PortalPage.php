@@ -98,9 +98,6 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'news'
 			),
-			//array(
-			//	'type' => 'labels'
-			//),
 			array(
 				'type' => 'downloads'
 			),
@@ -110,6 +107,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'staff',
 				//'online' => 1
+			),
+			array(
+				'type' => 'labels'
 			),
 			array(
 				'type' => 'twitter',

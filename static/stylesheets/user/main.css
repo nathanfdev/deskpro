@@ -1306,3 +1306,21 @@ ul.dp-ideas-list .meta {
 .dp-icon-file.dp-icon-png { background-image: url(../../images/icons/page_white_picture.png); }
 .dp-icon-file.dp-icon-html { background-image: url(../../images/icons/page_white_world.png); }
 .dp-icon-file.dp-icon-htm { background-image: url(../../images/icons/page_white_world.png); }
+
+
+.dp-tag-size1  { font-size:10px !important; }
+.dp-tag-size2  { font-size:13px !important; }
+.dp-tag-size3  { font-size:16px !important; }
+.dp-tag-size4  { font-size:19px !important; }
+.dp-tag-size5  { font-size:18px !important; }
+.dp-tag-size6  { font-size:15px !important; }
+.dp-tag-size7  { font-size:16px !important; }
+.dp-tag-size8  { font-size:17px !important; }
+.dp-tag-size9  { font-size:18px !important; }
+.dp-tag-size10 { font-size:19px !important; }
+
+.dp-tag-cloud li {
+	display: inline;
+	margin-left: 4px;
+	margin-right: 4px;
+}
