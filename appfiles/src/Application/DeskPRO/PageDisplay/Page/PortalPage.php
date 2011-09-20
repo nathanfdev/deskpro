@@ -92,10 +92,6 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'contact',
 			),
-			array(
-				'type' => 'staff',
-				//'online' => 1
-			),
 			//array(
 			//	'type' => 'userinfo',
 			//),
@@ -108,9 +104,13 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			//array(
 			//	'type' => 'downloads'
 			//),
-			//array(
-			//	'type' => 'ideas'
-			//),
+			array(
+				'type' => 'ideas'
+			),
+			array(
+				'type' => 'staff',
+				//'online' => 1
+			),
 			array(
 				'type' => 'twitter',
 				'twitter_name' => 'deskpro',

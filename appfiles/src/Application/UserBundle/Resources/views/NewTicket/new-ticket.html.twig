@@ -15,6 +15,159 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
+<div
+	class="dp-content-block dp-newticket-page with-handler"
+	data-element-handler="DeskPRO.User.ElementHandler.NewTicket"
+	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}"
+>
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>Contact Us</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				<form action="{{ path('user_tickets_new') }}" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="process" value="1" />
+
+				<div class="form-row">
+					<div class="form-label">
+						Name <em class="required">required</em>
+					</div>
+					<div class="form-input">
+						{{ form_widget(form.person.name) }}
+					</div>
+				</div>
+				{% if form.person.email %}
+					<div class="form-row">
+						<div class="form-label">
+							Email <em class="required">required</em>
+						</div>
+						<div class="form-input">
+							{{ form_widget(form.person.email) }}
+						</div>
+					</div>
+				{% endif %}
+				<div class="form-row">
+					<div class="form-label">
+						Subject <em class="required">required</em>
+					</div>
+					<div class="form-input">
+						{{ form_widget(form.ticket.subject) }}
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-label">
+						Department <em class="required">required</em>
+					</div>
+					<div class="form-input">
+						<select name="newticket[ticket][department_id]" class="department_id parent-option">
+							<option value=""></option>
+							{% for id,info in ticket_options.departments_hierarchy %}
+								<option value="{{id}}">{{info.title}}</option>
+							{% endfor %}
+						</select>
+						{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
+							{% if parent_info.children|length %}
+							<div class="sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
+								<select name="newticket[ticket][department_id]" class="sub_department_id">
+									<option value=""></option>
+									{% for id,info in parent_info.children %}
+										<option value="{{id}}">{{info.title}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-label">
+						<td>{{ phrase('core_tickets.category') }}</td>
+					<td id="category_select_wrap" class="with-sub-options">
+						<select name="newticket[ticket][category_id]" class="parent-option category_id">
+							<option value=""></option>
+							{% for id,info in ticket_options.ticket_categories_hierarchy %}
+								<option value="{{id}}">{{info.title}}</option>
+							{% endfor %}
+						</select>
+						{% for parent_id, parent_info in ticket_options.ticket_categories_hierarchy %}
+							{% if parent_info.children|length %}
+							<div class="sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
+								<select name="newticket[ticket][category_id]" class="sub_category_id">
+									<option value=""></option>
+									{% for id,info in parent_info.children %}
+										<option value="{{id}}">{{info.title}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							{% endif %}
+						{% endfor %}
+					</td>
+				</tr>
+				{% if form.ticket.product_id %}
+				<tr class="ticket_product standard-field ticket-display-field" style="display: none">
+					<td>{{ phrase('core.product') }}</td>
+					<td class="with-sub-options">
+						<select name="newticket[ticket][product_id]" class="parent-option product_id">
+							<option value=""></option>
+							{% for id,info in ticket_options.products_hierarchy %}
+								<option value="{{id}}">{{info.title}}</option>
+							{% endfor %}
+						</select>
+						{% for parent_id, parent_info in ticket_options.products_hierarchy %}
+							{% if parent_info.children|length %}
+							<div class="sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
+								<select name="newticket[ticket][product_id]" class="sub_product_id">
+									<option value=""></option>
+									{% for id,info in parent_info.children %}
+										<option value="{{id}}">{{info.title}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							{% endif %}
+						{% endfor %}
+					</td>
+				</tr>
+				{% endif %}
+				{% if form.ticket.priority_id %}
+				<tr class="ticket_priority standard-field ticket-display-field" style="display: none">
+					<td>{{ phrase('core_tickets.priority') }}</td>
+					<td>
+						{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+					</td>
+				</tr>
+				{% endif %}
+				{% for f in custom_fields %}
+					<tr class="custom-field ticket_field_{{f.id}} ticket-display-field" style="display: none">
+						<td>{{f.title}}</td>
+						<td>{{ render_custom_field_form(f) }}</td>
+					</tr>
+				{% endfor %}
+
+
+
+				<div class="form-row">
+					<div class="form-label">
+						What is your question? <em class="required">required</em>
+					</div>
+					<div class="form-input">
+						<textarea name="new_ticket[message]"></textarea>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-label">
+						Attachments
+					</div>
+					<div class="form-input">
+						<input type="file" />
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
 <div class="new-ticket with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewTicket" data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}">
 
 <div class="page-title">

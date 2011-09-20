@@ -1,23 +1,18 @@
-<div class="sidebar-item portal_kb">
-	<div class="heading">
-		<h2><a href="{{ path('user_ideas', {'status': 'new'}) }}">{{ title|default('Recent Ideas') }}</a></h2>
+{% if ideas|length %}
+	<div class="dp-sidebar-block dp-ideas-block">
+		<div class="dp-box-header">
+			<h3><a href="{{ path('user_ideas', {'status': 'new'}) }}">Newest Ideas</a></h3>
+		</div>
+		<ul class="dp-content-list">
+			{% for idea in ideas %}
+				<li>
+					{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
+					<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<div class="dp-more" style="clear:left">
+			<a href="{{ path('user_ideas', {'status': 'new'}) }}">View more ideas &rarr;</a>
+		</div>
 	</div>
-
-	<div class="content-list">
-		{% for idea in ideas %}
-			<div class="item">
-				<div class="ideas-votes" title="Votes in favor of this idea">
-					<div class="votes"><span>{{ rand(1,80) }}</span></div>
-				</div>
-				<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
-				<div class="info-line">
-					In <a href="{{ path('user_ideas', {'slug': idea.category.url_slug}) }}">{{ idea.category.title }}</a>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
-
-	<div class="more-link">
-		<a href="{{ path('user_ideas') }}">more...</a>
-	</div>
-</div>
+{% endif %}

@@ -29,14 +29,15 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 {
 	public function getCacheOptions()
 	{
-		return array('tags' => array('ideas'));
-	}
+		$opt = array(
+			'tags' => array('ideas')
+		);
 
-	public function init()
-	{
-		if (!$this->hasOption('show_cat_switcher')) {
-			$this->setOption('show_cat_switcher', true);
+		if ($this->section == 'sidebar') {
+			$opt['lifetime'] = 1800;
 		}
+
+		return $opt;
 	}
 
 	public function getHtml()

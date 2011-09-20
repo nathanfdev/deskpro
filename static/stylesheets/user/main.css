@@ -875,6 +875,10 @@ ul.dp-ideas-list > li .meta {
 	margin-right: 10px;
 }
 
+#dp_sidebar .dp-idea-vote {
+	margin-right: 7px;
+}
+
 .dp-idea-vote {
 	float: left;
 	background: rgb(244,252,252); /* Old browsers */
@@ -964,6 +968,20 @@ ul.dp-ideas-list .meta {
 	padding-right: 10px;
 }
 
+#dp_sidebar .dp-online-block .dp-compact li {
+	float: left;
+	margin-right: 6px;
+	margin-bottom: 6px;
+	width: 24px;
+	height: 24px;
+}
+#dp_sidebar .dp-online-block .dp-compact li span {
+	display: block;
+	width: 24px;
+	height: 24px;
+	float: left;
+}
+
 #dp_sidebar .dp-online-block > ul {
 	margin: 0;
 	padding: 0;
@@ -979,7 +997,7 @@ ul.dp-ideas-list .meta {
 	line-height: 110%;
 	padding-bottom: 10px;
 }
-#dp_sidebar .dp-online-block  ul  div.item  span {
+#dp_sidebar .dp-online-block  ul   span {
 	background-repeat: no-repeat;
 	background-position: 0 50%;
 	padding-left: 30px;
@@ -993,6 +1011,13 @@ ul.dp-ideas-list .meta {
 	margin-bottom: 6px;
 	padding-bottom: 1px;
 }
+
+
+#dp_sidebar .dp-content-list {
+
+}
+
+
 
 
 .dp-content-block {
@@ -1054,7 +1079,16 @@ ul.dp-ideas-list .meta {
 }
 
 #dp_sidebar .dp-box-header h3 a {
-	color: #000;
+	color: #404040;
+}
+
+#dp_sidebar .dp-ideas-block li {
+	position: relative;
+}
+#dp_sidebar .dp-ideas-block li a {
+	position: relative;
+	font-size: 11px;
+	top: 2px;
 }
 
 .new-ticket .form-row {
@@ -1169,7 +1203,8 @@ ul.dp-ideas-list .meta {
 	margin-bottom: 10px;
 }
 
-.dp-twitter-list .dp-more {
+.dp-sidebar-block .dp-more {
 	text-align: center;
 	font-size: 11px;
+	margin-top: 12px;
 }
