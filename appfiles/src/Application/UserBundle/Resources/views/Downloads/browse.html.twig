@@ -19,7 +19,7 @@
 		<ul class="dp-downloads-list">
 			{% for download in downloads %}
 				<li>
-					<h3><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}"><span class="icon-file icon-{{ download.blob.extension }}">{{ download.title }}</span></a></h3>
+					<h3><span class="dp-icon-file dp-icon-{{ download.blob.extension }}"><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></span></h3>
 					<div class="meta">
 						{{ download.filename }}, {{ download.readable_filesize }}
 					</div>
