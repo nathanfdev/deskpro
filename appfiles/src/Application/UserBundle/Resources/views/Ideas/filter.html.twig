@@ -43,7 +43,7 @@
 					Sort by:
 						<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">Votes</a>
 						/
-						<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date</a>
+						<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date Submitted</a>
 				{% endif %}
 			</div>
 			<h1>
