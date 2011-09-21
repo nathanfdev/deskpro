@@ -79,7 +79,9 @@ class ArticlesController extends AbstractController
 
 		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5);
 
-		return $this->render('UserBundle:Articles:browse.html.twig', array(
+		$tpl = 'UserBundle:Articles:browse.html.twig';
+
+		return $this->render($tpl, array(
 			'category' => $category,
 			'category_path' => $category_path,
 			'category_children' => $category_children,
@@ -302,7 +304,12 @@ class ArticlesController extends AbstractController
 			$rating_log_search_id = 0;
 		}
 
-		return $this->render('UserBundle:Articles:article.html.twig', array(
+		$tpl = 'UserBundle:Articles:article.html.twig';
+		if ($this->in->getBool('overlay')) {
+			$tpl = 'UserBundle:Articles:article-overlay.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,

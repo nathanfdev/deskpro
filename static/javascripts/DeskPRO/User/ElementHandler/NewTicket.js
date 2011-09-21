@@ -132,8 +132,53 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 						this.moreLink.hide();
 					}
 
+					var self = this;
+					$('li a[href]', this.suggestionsBox).click(function(ev) {
+						ev.preventDefault();
+						self.openSuggestedContent($(this).attr('href'));
+					});
+
 					this.suggestionsBox.show();
 				}
+			}
+		});
+	},
+
+	openSuggestedContent: function(href) {
+		var url = Orb.appendQueryData(href, 'overlay', 1);
+
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'html',
+			success: function(html) {
+
+				var el = $(html).hide().appendTo('body');
+
+				var w = el.width();
+				var docW = $(document).width();
+				var scroll = $(document).scrollTop();
+
+				var top = scroll + 35;
+				var left = (docW / 2) - (w / 2);
+
+				el.css({
+					top: top,
+					left: left
+				});
+				el.fadeIn('fast');
+
+				var closeFn = function() {
+					back.remove();
+					el.fadeOut('fast', function() {
+						el.remove();
+					});
+				};
+
+				var back = $('<div class="dp-backdrop" />').appendTo('body');
+				back.click(function() {
+					closeFn();
+				});
 			}
 		});
 	},

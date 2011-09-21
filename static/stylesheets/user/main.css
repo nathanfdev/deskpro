@@ -1674,6 +1674,8 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	-webkit-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.6);
 	-moz-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.6);
 	box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.6);
+
+	z-index: 10000;
 }
 
 .dp-post-overlay {
@@ -1727,4 +1729,11 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 .dp-overlay .dp-content .dp-post p {
 	line-height: 130%;
+}
+
+
+.dp-backdrop {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 1000;
 }
