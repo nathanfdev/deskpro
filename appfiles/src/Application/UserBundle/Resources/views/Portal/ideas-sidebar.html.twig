@@ -7,7 +7,10 @@
 			{% for idea in ideas %}
 				<li>
 					{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
-					<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
+					<div class="title dp-faded-container">
+						<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
+						<div class="dp-bound-faded"></div>
+					</div>
 				</li>
 			{% endfor %}
 		</ul>

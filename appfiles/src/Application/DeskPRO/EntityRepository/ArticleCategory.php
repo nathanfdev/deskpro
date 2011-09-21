@@ -98,7 +98,7 @@ class ArticleCategory extends AbstractCategoryRepository
 
 			$repos = $this;
 			$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
-				$total = 0;
+				$total = empty($counts[$node['id']]) ? 0 : $counts[$node['id']];
 				foreach ($repos->children($node, true) as $c) {
 					// We already have the single count
 					$total += $counts[$c['id']];

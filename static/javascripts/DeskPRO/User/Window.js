@@ -65,6 +65,12 @@ DeskPRO.User.Window = new Orb.Class({
 
 			overlay.open();
 		});
+
+		$(document).delegate('.dp-bound-faded', 'click', function() {
+			var parent = $(this).parent();
+			var link = $('a[href]', parent).first();
+			window.location = link.attr('href');
+		});
 	},
 
 	getHandler: function(id) {

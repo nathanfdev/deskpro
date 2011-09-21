@@ -6,7 +6,10 @@
 		<ul class="dp-content-list">
 			{% for download in downloads %}
 				<li>
-					<span class="dp-icon-file dp-icon-{{ download.blob.extension }}"><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></span>
+					<div class="dp-faded-container">
+						<span class="dp-icon-file dp-icon-{{ download.blob.extension }}"><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></span>
+						<div class="dp-bound-faded"></div>
+					</div>
 					<div class="meta">
 						{{ download.filename }}, {{ download.readable_filesize }}
 					</div>

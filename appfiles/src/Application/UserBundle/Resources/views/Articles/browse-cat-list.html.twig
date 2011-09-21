@@ -5,10 +5,15 @@
 			<h3><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></h3>
 			<ul>
 				{% for article in category_articles[cat.id] %}
-					<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></li>
+					<li>
+						<div class="dp-faded-container">
+							<a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a>
+							<div class="dp-bound-faded"></div>
+						</div>
+					</li>
 				{% endfor %}
 			</ul>
-			<a href="{{ path('user_articles', {'slug': cat.url_slug}) }}" class="view-more">View all {{ category_counts[cat.id] }} articles</a>
+			<a href="{{ path('user_articles', {'slug': cat.url_slug}) }}" class="view-more">View all {{ category_counts[cat.id ~ '_total'] }} articles</a>
 		</li>
 	{% endfor %}
 </ul>

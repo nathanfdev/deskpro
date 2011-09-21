@@ -89,7 +89,10 @@
 						<li>
 							{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
 							<div class="item">
-								<h3><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h3>
+								<div class="dp-faded-container">
+									<h3><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h3>
+									<div class="dp-bound-faded"></div>
+								</div>
 								<div class="meta">
 									{{ idea.date_created|date('M d, Y') }} &middot;
 										{% if idea.status_category %}
