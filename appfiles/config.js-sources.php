@@ -351,6 +351,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
+		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
 	)
 );
 

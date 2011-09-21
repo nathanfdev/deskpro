@@ -78,7 +78,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 					this.doSuggestResend = false;
 					this.updateSuggestions();
 				}
-				
+
 				this.resultsEl.html(html);
 
 				if (!$('li:first', this.resultsEl).length) {
@@ -102,6 +102,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		this.depSelect.change(function() {
 			self.handleDepChange();
 		});
+		this.depSelect.data('original-name', this.depSelect.attr('name'));
 
 		$('select.sub_department_id', this.el).change(function(){
 			self.setDepartment($(this).val());
@@ -109,14 +110,27 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		$('.with-sub-options:not(.department_id_wrapper)', this.el).each(function() {
 			var parentSel = $('.parent-option', this);
+			parentSel.data('original-name', parentSel.attr('name'));
+
 			var wrapper = this;
 
 			parentSel.change(function() {
 				var val = $(this).val();
 				var sub = $('.sub-options-' + val, wrapper);
 
-				$('.sub-options', wrapper).hide();
+				var allSubs = $('.sub-options', wrapper).hide();
+				$('select', allSubs).attr('name', '');
+
 				sub.show();
+
+				if (sub.length) {
+					// If there is a sub, zero out the parent name and give it to the child
+					parentSel.attr('name', '');
+					$('select', sub).attr('name', parentSel.data('original-name'));
+				} else {
+					// Otherwise make sure the parent has the proper name
+					parentSel.attr('name', parentSel.data('original-name'));
+				}
 			});
 		});
 
@@ -138,14 +152,20 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	handleDepChange: function() {
 		var wrapper = $('.department_id_wrapper', this.el);
-		$('.sub-options', wrapper).hide();
+
+		var allSubs = $('.sub-options', wrapper).hide();
+		$('select', allSubs).attr('name', '');
 
 		var depId = this.depSelect.val();
 		var sub = $('.sub-options-' + depId, wrapper);
 
 		if (!sub.length) {
+			this.depSelect.attr('name', this.depSelect.data('original-name'));
 			this.setDepartment(depId);
 			return;
+		} else {
+			this.depSelect.attr('name', '');
+			$('select', sub).attr('name', this.depSelect.data('original-name'));
 		}
 
 		sub.show();
@@ -188,7 +208,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
 		console.log('depItems %o', depItems);
-		
+
 		Array.each(depItems, function(item) {
 			var itemId = this.getItemId(item);
 			var itemEl = $('.' + itemId + ':first');

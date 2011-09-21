@@ -25,41 +25,57 @@
 			<h1>Contact Us</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
+			<div class="dp-box-content dp-form">
 				<form action="{{ path('user_tickets_new') }}" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="process" value="1" />
 
-				<div class="form-row">
-					<div class="form-label">
-						Name <em class="required">required</em>
+				{###############
+				 # Name
+				 ###############}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Name</label> <em class="required">required</em>
 					</div>
-					<div class="form-input">
+					<div class="dp-form-input">
 						{{ form_widget(form.person.name) }}
 					</div>
 				</div>
+
+				{###############
+				 # Email
+				 ###############}
 				{% if form.person.email %}
-					<div class="form-row">
-						<div class="form-label">
-							Email <em class="required">required</em>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Email</label> <em class="required">required</em>
 						</div>
-						<div class="form-input">
+						<div class="dp-form-input">
 							{{ form_widget(form.person.email) }}
 						</div>
 					</div>
 				{% endif %}
-				<div class="form-row">
-					<div class="form-label">
-						Subject <em class="required">required</em>
+
+				{###############
+				 # Subject
+				 ###############}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.tickets.subject') }}</label> <em class="required">required</em>
 					</div>
-					<div class="form-input">
+					<div class="dp-form-input">
 						{{ form_widget(form.ticket.subject) }}
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="form-label">
-						Department <em class="required">required</em>
+
+				{###############
+				 # Department
+				 ###############}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.department') }}</label>
+						<em class="required">{{ phrase('user.field_required') }}</em>
 					</div>
-					<div class="form-input">
+					<div class="department_id_wrapper with-sub-options dp-form-input">
 						<select name="newticket[ticket][department_id]" class="department_id parent-option">
 							<option value=""></option>
 							{% for id,info in ticket_options.departments_hierarchy %}
@@ -68,8 +84,8 @@
 						</select>
 						{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
 							{% if parent_info.children|length %}
-							<div class="sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
-								<select name="newticket[ticket][department_id]" class="sub_department_id">
+							<div class="dp-sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
+								<select class="sub_department_id">
 									<option value=""></option>
 									{% for id,info in parent_info.children %}
 										<option value="{{id}}">{{info.title}}</option>
@@ -80,10 +96,15 @@
 						{% endfor %}
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="form-label">
-						<td>{{ phrase('core_tickets.category') }}</td>
-					<td id="category_select_wrap" class="with-sub-options">
+
+				{###############
+				 # Category
+				 ###############}
+				<div class="dp-form-row ticket_category standard-field ticket-display-field" style="display: none">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.tickets.category') }}</label>
+					</div>
+					<div class="dp-form-input with-sub-options">
 						<select name="newticket[ticket][category_id]" class="parent-option category_id">
 							<option value=""></option>
 							{% for id,info in ticket_options.ticket_categories_hierarchy %}
@@ -92,8 +113,8 @@
 						</select>
 						{% for parent_id, parent_info in ticket_options.ticket_categories_hierarchy %}
 							{% if parent_info.children|length %}
-							<div class="sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
-								<select name="newticket[ticket][category_id]" class="sub_category_id">
+							<div class="dp-sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
+								<select class="sub_category_id">
 									<option value=""></option>
 									{% for id,info in parent_info.children %}
 										<option value="{{id}}">{{info.title}}</option>
@@ -102,12 +123,18 @@
 							</div>
 							{% endif %}
 						{% endfor %}
-					</td>
-				</tr>
+					</div>
+				</div>
+
+				{###############
+				 # Product
+				 ###############}
 				{% if form.ticket.product_id %}
-				<tr class="ticket_product standard-field ticket-display-field" style="display: none">
-					<td>{{ phrase('core.product') }}</td>
-					<td class="with-sub-options">
+				<div class="dp-form-row ticket_product standard-field ticket-display-field" style="display: none">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.product') }}</label>
+					</div>
+					<div class="dp-form-input with-sub-options">
 						<select name="newticket[ticket][product_id]" class="parent-option product_id">
 							<option value=""></option>
 							{% for id,info in ticket_options.products_hierarchy %}
@@ -116,8 +143,8 @@
 						</select>
 						{% for parent_id, parent_info in ticket_options.products_hierarchy %}
 							{% if parent_info.children|length %}
-							<div class="sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
-								<select name="newticket[ticket][product_id]" class="sub_product_id">
+							<div class="dp-sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
+								<select class="sub_product_id">
 									<option value=""></option>
 									{% for id,info in parent_info.children %}
 										<option value="{{id}}">{{info.title}}</option>
@@ -126,196 +153,62 @@
 							</div>
 							{% endif %}
 						{% endfor %}
-					</td>
-				</tr>
-				{% endif %}
-				{% if form.ticket.priority_id %}
-				<tr class="ticket_priority standard-field ticket-display-field" style="display: none">
-					<td>{{ phrase('core_tickets.priority') }}</td>
-					<td>
-						{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
-					</td>
-				</tr>
-				{% endif %}
-				{% for f in custom_fields %}
-					<tr class="custom-field ticket_field_{{f.id}} ticket-display-field" style="display: none">
-						<td>{{f.title}}</td>
-						<td>{{ render_custom_field_form(f) }}</td>
-					</tr>
-				{% endfor %}
-
-
-
-				<div class="form-row">
-					<div class="form-label">
-						What is your question? <em class="required">required</em>
-					</div>
-					<div class="form-input">
-						<textarea name="new_ticket[message]"></textarea>
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="form-label">
+				{% endif %}
+
+				{###############
+				 # Priority
+				 ###############}
+				{% if form.ticket.priority_id %}
+				<div class="dp-form-row ticket_priority standard-field ticket-display-field" style="display: none">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.tickets.priority') }}</label>
+					</div>
+					<div class="dp-form-input">
+						{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+					</div>
+				</div>
+				{% endif %}
+
+				{###############
+				 # Custom Fields
+				 ###############}
+
+				{% for f in custom_fields %}
+					<div class="dp-form-row custom-field ticket_field_{{f.id}} ticket-display-field" style="display: none">
+						<div class="dp-form-label">
+							<label>{{f.title}}</label>
+						</div>
+						<div class="dp-form-input">{{ render_custom_field_form(f) }}</div>
+					</div>
+				{% endfor %}
+
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>What is your question?</label>
+						<em class="required">required</em>
+					</div>
+					<div class="dp-form-input">
+						<textarea class="dp-message" name="newticket[ticket][message]"></textarea>
+					</div>
+				</div>
+				<div class="dp-form-row">
+					<div class="dp-form-label">
 						Attachments
 					</div>
-					<div class="form-input">
+					<div class="dp-form-input">
 						<input type="file" />
 					</div>
 				</div>
 
+				<div class="dp-footer">
+					<input class="btn primary" type="submit" value="Submit" />
+				</div>
 
+				</form>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="new-ticket with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewTicket" data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}">
-
-<div class="page-title">
-	<h1>Submit a ticket</h1>
-</div>
-
-<form action="{{ path('user_tickets_new') }}" method="post" enctype="multipart/form-data">
-<input type="hidden" name="process" value="1" />
-
-<div class="input-form">
-<table cellspacing="0" cellpadding="0" width="100%">
-	<tr>
-		<td width="160">Name</td>
-		<td>
-			{{ form_widget(form.person.name) }}
-		</td>
-	</tr>
-
-	{% if form.person.email %}
-		<tr>
-			<td>Email Address</td>
-			<td>
-				{{ form_widget(form.person.email) }}
-			</td>
-		</tr>
-	{% endif %}
-
-	<tr>
-		<td>Subject</td>
-		<td>
-			{{ form_widget(form.ticket.subject) }}
-		</td>
-	</tr>
-
-	<tr>
-		<td>Department</td>
-		<td class="department_id_wrapper with-sub-options">
-			<select name="newticket[ticket][department_id]" class="department_id parent-option">
-				<option value=""></option>
-				{% for id,info in ticket_options.departments_hierarchy %}
-					<option value="{{id}}">{{info.title}}</option>
-				{% endfor %}
-			</select>
-			{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
-				{% if parent_info.children|length %}
-				<div class="sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
-					<select name="newticket[ticket][department_id]" class="sub_department_id">
-						<option value=""></option>
-						{% for id,info in parent_info.children %}
-							<option value="{{id}}">{{info.title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				{% endif %}
-			{% endfor %}
-		</td>
-	</tr>
-
-	<tr class="ticket_category standard-field ticket-display-field" style="display: none">
-		<td>{{ phrase('core_tickets.category') }}</td>
-		<td id="category_select_wrap" class="with-sub-options">
-			<select name="newticket[ticket][category_id]" class="parent-option category_id">
-				<option value=""></option>
-				{% for id,info in ticket_options.ticket_categories_hierarchy %}
-					<option value="{{id}}">{{info.title}}</option>
-				{% endfor %}
-			</select>
-			{% for parent_id, parent_info in ticket_options.ticket_categories_hierarchy %}
-				{% if parent_info.children|length %}
-				<div class="sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
-					<select name="newticket[ticket][category_id]" class="sub_category_id">
-						<option value=""></option>
-						{% for id,info in parent_info.children %}
-							<option value="{{id}}">{{info.title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				{% endif %}
-			{% endfor %}
-		</td>
-	</tr>
-	{% if form.ticket.product_id %}
-	<tr class="ticket_product standard-field ticket-display-field" style="display: none">
-		<td>{{ phrase('core.product') }}</td>
-		<td class="with-sub-options">
-			<select name="newticket[ticket][product_id]" class="parent-option product_id">
-				<option value=""></option>
-				{% for id,info in ticket_options.products_hierarchy %}
-					<option value="{{id}}">{{info.title}}</option>
-				{% endfor %}
-			</select>
-			{% for parent_id, parent_info in ticket_options.products_hierarchy %}
-				{% if parent_info.children|length %}
-				<div class="sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
-					<select name="newticket[ticket][product_id]" class="sub_product_id">
-						<option value=""></option>
-						{% for id,info in parent_info.children %}
-							<option value="{{id}}">{{info.title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-				{% endif %}
-			{% endfor %}
-		</td>
-	</tr>
-	{% endif %}
-	{% if form.ticket.priority_id %}
-	<tr class="ticket_priority standard-field ticket-display-field" style="display: none">
-		<td>{{ phrase('core_tickets.priority') }}</td>
-		<td>
-			{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
-		</td>
-	</tr>
-	{% endif %}
-	{% for f in custom_fields %}
-		<tr class="custom-field ticket_field_{{f.id}} ticket-display-field" style="display: none">
-			<td>{{f.title}}</td>
-			<td>{{ render_custom_field_form(f) }}</td>
-		</tr>
-	{% endfor %}
-
-	<tr>
-		<td style="vertical-align: top; padding-top: 8px;">Message</td>
-		<td>
-			{{ form_widget(form.ticket.message) }}
-			<div class="suggestions-box" style="display: none">
-				Have you tried looking at these knowledgebase articles?
-				<div class="results"></div>
-			</div>
-		</td>
-	</tr>
-
-	<tr>
-		<td>Attachment</td>
-		<td>
-			{{ form_widget(form.ticket.new_upload) }}
-		</td>
-	</tr>
-
-	<tr class="foot">
-		<td colspan="2">
-			<button class="dp-button">Submit</button>
-		</td>
-	</tr>
-</table>
-</div>
-
-</form>
-
 </div>
 {% endblock %}
