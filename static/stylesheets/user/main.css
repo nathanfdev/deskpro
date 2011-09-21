@@ -779,6 +779,21 @@ ul.dp-news-list > li > h3 {
 	line-height: 100%;
 }
 
+#dp_sidebar .dp-cal-date {
+	float: left;
+	margin-left: 0;
+	margin-right: 8px;
+}
+
+#dp_sidebar .dp-content-list li {
+	position: relative;
+}
+
+#dp_sidebar .dp-content-list li a {
+	position: relative;
+	top: -3px;
+}
+
 /******************
 * dp-downloads-list
 *******************/

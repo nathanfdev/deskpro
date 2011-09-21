@@ -92,6 +92,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'contact',
 			),
+			array(
+				'type' => 'nav',
+			),
 			//array(
 			//	'type' => 'userinfo',
 			//),
