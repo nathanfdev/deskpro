@@ -1120,28 +1120,6 @@ ul.dp-ideas-list .meta {
 	top: 2px;
 }
 
-.new-ticket .form-row {
-	margin-bottom: 15px;
-	clear: left;
-}
-
-.new-ticket input[type="text"] {
-	width: 190px;
-}
-
-.new-ticket .form-label {
-	font-size: 11px;
-}
-
-.new-ticket .form-label em.required {
-	padding-left: 8px;
-	color: #888;
-}
-
-.new-ticket .form-input {
-	display: block;
-}
-
 .new-ticket textarea {
 	width: 95%;
 	height: 160px;
@@ -1338,4 +1316,113 @@ ul.dp-ideas-list .meta {
 	display: inline;
 	margin-left: 4px;
 	margin-right: 4px;
+}
+
+
+/**********************************************************
+* Form
+**********************************************************/
+
+.dp-form .dp-form-row {
+	margin-bottom: 15px;
+	clear: left;
+}
+
+.dp-form input[type="text"], .dp-form input[type="password"] {
+	width: 220px;
+}
+
+.dp-form .dp-form-label {
+	font-size: 11px;
+}
+
+.dp-form .dp-form-input {
+	margin-top: 4px;
+}
+
+.dp-form .dp-form-label em.required {
+	padding-left: 8px;
+	color: #888;
+}
+
+.dp-form .dp-form-label em.note {
+	padding-left: 8px;
+	color: #6C380B;
+}
+.dp-form .dp-form-label em.note a {
+	color: #6C380B;
+	text-decoration: underline;
+}
+
+
+/**********************************************************
+* Login Box Overlay
+**********************************************************/
+
+#dp_login_box_title, #dp_login_box {
+	/* Hidden by default */
+	display: none;
+
+	z-index: 1000;
+}
+
+#dp_login_box_title {
+	position: absolute;
+}
+
+#dp_login_box_title a {
+	background-color: #187ba8;
+	padding: 0 8px 0 8px;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 6px 6px 0 0;
+	display: block;
+	font-size: 11px;
+}
+
+#dp_login_box {
+	position: absolute;
+	border-radius: 6px 6px 6px 6px;
+	background-color: #fff;
+	border: 2px solid #187ba8;
+
+-webkit-box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
+-moz-box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
+box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
+
+	font-size: 11px;
+}
+
+#dp_login_box .dp-login-box-inner {
+	padding: 8px;
+}
+
+#dp_login_box input {
+	padding: 2px;
+}
+
+#dp_login_box dt {
+	display: block;
+	margin-bottom: 3px;
+	font-weight: normal;
+	margin-left: 0;
+}
+
+#dp_login_box dd {
+	display: block;
+	margin-bottom: 10px;
+	font-weight: normal;
+	margin-left: 0;
+}
+
+#dp_login_box .footer {
+	text-align: right;
+}
+
+#dp_login_box em.forgot {
+	margin-left: 8px;
+}
+
+#dp_login_box em.forgot a {
+	font-style: italic;
 }

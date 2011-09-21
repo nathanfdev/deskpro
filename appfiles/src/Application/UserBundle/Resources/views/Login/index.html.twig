@@ -1,31 +1,47 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_login') }}">Log In</a></li>
+{% endblock %}
 {% block content %}
-<h1>Log In</h1>
+<div class="dp-login-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				<h1>Log In</h1>
+			</div>
 
-<div class="login_method_wrap">
-	<div class="content login_method_content">
-		<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
-			{% if return %}
-				<input type="hidden" name="return" value="{{return}}" />
-			{% endif %}
-			{% if invalid_login %}
-				<p>Invalid login. Please try again.</p>
-			{% endif %}
-			<table cellspacing="10" cellpadding="0" border="0">
-				<tr>
-					<td>Email:</td>
-					<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
-				</tr>
-				<tr>
-					<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
-					<td><input type="password" value="" name="password" id="password" size="40" tabindex="2" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type="submit" value="Log In" /></td>
-				</tr>
-			</table>
-		</form>
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					{% if invalid_login %}
+						<div class="alert-message error">
+							Invalid login. Please try again or <a href="{{ path('user_login_resetpass') }}">click here</a> if you have forgotten your password.
+						</div>
+					{% endif %}
+					<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
+						{% if return %}
+							<input type="hidden" name="return" value="{{return}}" />
+						{% endif %}
+						<div class="dp-form">
+							<div class="dp-form-row">
+								<div class="dp-form-label">Email</div>
+								<div class="dp-form-input">
+									<input type="text" value="" name="email" id="email" size="40" tabindex="1" />
+								</div>
+							</div>
+							<div class="dp-form-row">
+								<div class="dp-form-label">Password <em class="note"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></div>
+								<div class="dp-form-input">
+									<input type="password" value="" name="password" id="password" size="40" tabindex="2" />
+								</div>
+							</div>
+						</div>
+						<div class="footer">
+							<input class="btn primary" type="submit" value="Log In" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 {% endblock %}

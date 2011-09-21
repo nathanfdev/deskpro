@@ -31,6 +31,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->person->loadHelper('IdeaVotes', array(
 			'visitor' => $this->session->getVisitor()
 		));
+		$this->person->loadHelper('HelpdeskUser', array(
+			'session' => $this->session,
+			'visitor' => $this->session->getVisitor()
+		));
 	}
 
 
