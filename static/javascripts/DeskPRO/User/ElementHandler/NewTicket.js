@@ -17,8 +17,18 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initSuggestionsBox: function() {
-		this.suggestionsBox = $('.suggestions-box:first', this.el);
-		this.resultsEl = $('.results:first', this.suggestionsBox);
+		this.suggestionsBox = $('.dp-related-search', this.el);
+		this.resultsEl = $('.results', this.suggestionsBox);
+		this.moreLink = $('.more-link', this.suggestionsBox);
+		this.lastSuggestions = null;
+		this.lastString = null;
+
+		this.hasStartedSearch = false;
+
+		this.moreLink.click((function(ev) {
+			this.moreLink.hide();
+			$('li', this.resultsEl).show();
+		}).bind(this));
 
 		this.suggestionsUrl = this.el.data('suggestions-url');
 
@@ -26,11 +36,18 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		this.sugMessageTimer = null;
 
 		this.titleTxt.keypress((function() {
+			if (!this.hasStartedSearch) return;
 			if (this.sugTitleTimer) return;
 			this.sugTitleTimer = this.updateSuggestions.delay(400, this);
 		}).bind(this));
 
+		this.titleTxt.blur((function() {
+			this.hasStartedSearch = true;
+			this.updateSuggestions();
+		}).bind(this));
+
 		this.messageTxt.keypress((function() {
+			if (!this.hasStartedSearch) return;
 			if (this.sugMessageTimer) return;
 			this.sugMessageTimer = this.updateSuggestions.delay(1200, this);
 		}).bind(this));
@@ -48,6 +65,12 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		}
 
 		var content = (this.titleTxt.val().trim() + ' ' + this.messageTxt.val().trim()).trim();
+
+		if (this.lastSearchString && this.lastSearchString == content) {
+			return;
+		}
+
+		this.lastSearchString = content;
 
 		if (!content.length) {
 			this.suggestionsBox.hide();
@@ -79,11 +102,36 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 					this.updateSuggestions();
 				}
 
-				this.resultsEl.html(html);
+				if (this.lastSuggestions && this.lastSuggestions == html) {
+					return;
+				}
+
+				this.lastSuggestions = html;
+
+				this.resultsEl.empty().html(html);
 
 				if (!$('li:first', this.resultsEl).length) {
 					this.suggestionsBox.hide();
+					this.lastSuggestions = null;
 				} else {
+
+					if (!this.moreLink.data('has-mored')) {
+						this.moreLink.data('has-mored', true);
+						var count = $('li', this.resultsEl).length;
+
+						if (count > 6) {
+							var remainCount = count - 6;
+							$('.count', this.moreLink).text(remainCount);
+							this.moreLink.show();
+
+							$('li', this.resultsEl).slice(5).hide();
+						} else {
+							this.moreLink.hide();
+						}
+					} else {
+						this.moreLink.hide();
+					}
+
 					this.suggestionsBox.show();
 				}
 			}
