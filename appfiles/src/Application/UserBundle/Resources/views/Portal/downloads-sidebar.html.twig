@@ -11,7 +11,10 @@
 						<div class="dp-bound-faded"></div>
 					</div>
 					<div class="meta">
-						{{ download.filename }}, {{ download.readable_filesize }}
+						<div class="dp-faded-container">
+							{{ download.filename }}, {{ download.readable_filesize }}
+							<div class="dp-bound-faded"></div>
+						</div>
 					</div>
 				</li>
 			{% endfor %}
