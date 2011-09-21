@@ -118,7 +118,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				var val = $(this).val();
 				var sub = $('.sub-options-' + val, wrapper);
 
-				var allSubs = $('.sub-options', wrapper).hide();
+				var allSubs = $('.dp-sub-options', wrapper).hide();
 				$('select', allSubs).attr('name', '');
 
 				sub.show();
@@ -140,8 +140,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 			// Just zero out the name of the parent, so
 			// the child is always used
-			$('.with-sub-options', this.el).each(function() {
-				var sub = $('.sub-options', this);
+			$('.with.dp-sub-options', this.el).each(function() {
+				var sub = $('.dp-sub-options', this);
 				if (sub) {
 					var parent = $('.parent-option');
 					parent.attr('name', '');
@@ -153,7 +153,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	handleDepChange: function() {
 		var wrapper = $('.department_id_wrapper', this.el);
 
-		var allSubs = $('.sub-options', wrapper).hide();
+		var allSubs = $('.dp-sub-options', wrapper).hide();
 		$('select', allSubs).attr('name', '');
 
 		var depId = this.depSelect.val();
