@@ -193,6 +193,7 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .alert-message.block-message.error{background-color:#fddfde;border-color:#fbc7c6;}
 .alert-message.block-message.success{background-color:#d1eed1;border-color:#bfe7bf;}
 .alert-message.block-message.info{background-color:#ddf4fb;border-color:#c6edf9;}
+.alert-message a { color: #fff; text-decoration: underline; }
 .pagination{height:36px;margin:18px 0;}.pagination ul{float:left;margin:0;border:1px solid #ddd;border:1px solid rgba(0, 0, 0, 0.15);-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);-moz-box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);}
 .pagination li{display:inline;}
 .pagination a{float:left;padding:0 8px;line-height:20px;border-right:1px solid;border-right-color:#ddd;border-right-color:rgba(0, 0, 0, 0.15);*border-right-color:#ddd;text-decoration:none;}
@@ -230,6 +231,7 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .label.warning{background-color:#f89406;}
 .label.success{background-color:#46a546;}
 .label.notice{background-color:#62cffc;}
+a { cursor: pointer; }
 select:focus{outline: none;}
 form {
 	margin:  0;
@@ -244,6 +246,7 @@ ul li, ol li { margin: 0; padding: 0; }
 **********************************************************/
 
 body {
+	font-size: 11px;
 	margin-bottom: 50px;
 	font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
 }
@@ -1390,8 +1393,12 @@ ul.dp-ideas-list .meta {
 	clear: left;
 }
 
-.dp-form input[type="text"], .dp-form input[type="password"] {
-	width: 220px;
+.dp-form input[type="text"], .dp-form input[type="password"], .dp-form textarea {
+	width: 70%;
+}
+
+#newticket_ticket_subject {
+	width: 95%;
 }
 
 .dp-form .dp-form-label {
@@ -1401,6 +1408,7 @@ ul.dp-ideas-list .meta {
 .dp-form .dp-form-label label {
 	font-weight: bold;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 13px;
 }
 
 .dp-form .dp-form-input {
@@ -1410,6 +1418,15 @@ ul.dp-ideas-list .meta {
 .dp-form .dp-form-label em.required {
 	padding-left: 8px;
 	color: #888;
+}
+
+.dp-form .dp-form-label em.desc {
+	padding-left: 8px;
+	color: #888;
+}
+
+.dp-form .dp-form-label em.desc a{
+	font-style: italic;
 }
 
 .dp-form .dp-form-label em.note {
@@ -1538,4 +1555,106 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ecf0f4', endColorstr='#ecf0f4',GradientType=1 ); /* IE6-9 */
 	background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
 	cursor: pointer;
+}
+
+
+.dp-related-search {
+	margin:  10px 60px 10px 40px;
+	border:  1px solid #CCCCCC;
+	border-radius: 6px;
+}
+
+.dp-related-search h4 {
+	font-size: 13px;
+	padding: 8px;
+}
+
+.dp-related-search .subline {
+	font-size: 11px;
+	margin: 0;
+	padding-left: 8px;
+}
+
+.dp-related-search .dp-list {
+	padding: 8px;
+}
+
+.dp-related-search ul li {
+	margin: 4px 0 4px 10px;
+	font-size: 11px;
+}
+
+.dp-related-search ul li a:not(.view-more-link) {
+	background: url(../../images/icons/page_white_text.png) no-repeat 0 50%;
+	padding-left: 21px;
+	line-height: 16px;
+	display: block;;
+}
+
+.dp-related-search ul li .view-more {
+	float: right;
+	background: url(../../images/icons/plus-black.png) no-repeat 0 50%;
+	padding-left: 21px;
+	line-height: 16px;
+	display: block;;
+}
+
+.dp-newticket-login .dp-form-row:first-child {
+	margin-bottom: 0;
+}
+
+.dp-newticket-login {
+	padding: 6px;
+	margin-left: -5px;
+	margin-right: -5px;
+	margin-top: -5px;
+	margin-bottom: 15px;
+	border-radius: 6px;
+}
+
+.dp-newticket-login .dp-btn-row {
+	margin-top: 6px;
+}
+
+.dp-newticket-login {
+	-webkit-transition: background 1s ease;
+	-moz-transition: background 1s ease;
+	-o-transition: background 1s ease;
+	transition: background 1s ease;
+}
+
+.dp-newticket-login .dp-newticket-login-err {
+	display: none;
+}
+
+.dp-newticket-login.open .dp-newticket-login-err {
+	display: block;
+}
+
+.dp-newticket-login.open {
+	background-color: #EEEDE2;
+	-webkit-transition: background 1s ease;
+	-moz-transition: background 1s ease;
+	-o-transition: background 1s ease;
+	transition: background 1s ease;
+}
+
+.dp-newticket-login.open .dp-form-row:first-child {
+	margin-bottom: 15px;
+}
+
+.dp-form .dp-newticket-login-pass {
+	display: none;
+	margin-bottom: 0;
+}
+
+.dp-newticket-login .dp-loading {
+	margin:  10px;
+	padding-left: 18px;
+	background: url(../../images/loading-small.gif) no-repeat 0 50%;
+	line-height: 20px;
+	display: none;
+}
+.dp-newticket-login.loading .dp-loading {
+	display: block;
 }

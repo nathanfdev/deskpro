@@ -148,6 +148,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				}
 			});
 		});
+
+		this._initLoginForm(this.el);
 	},
 
 	handleDepChange: function() {
@@ -228,6 +230,91 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		}
 
 		return itemId;
-	}
+	},
 
+
+	//#########################################################################
+	// In-page login form
+	//#########################################################################
+
+	_initLoginForm: function(context) {
+
+		this.loginWrapper    = $('.dp-newticket-login', context);
+		this.passwordRow     = $('.dp-newticket-login-pass', context);
+		this.nonloginWrapper = $('.dp-newticket-non-login', context);
+		this.loginBtn        = $('.dp-login-in-trigger', context);
+
+		$('.dp-newticket-login-open', context).click((function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			if (!this.loginWrapper.is('.open')) {
+				this.openLogin();
+			} else {
+				this.closeLogin();
+			}
+		}).bind(this));
+
+		this.loginBtn.click((function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			this.processLogin();
+		}).bind(this));
+	},
+
+	openLogin: function() {
+		this.loginWrapper.addClass('open');
+		this.passwordRow.slideDown('fast');
+		this.nonloginWrapper.animate({ opacity: '0.4', duration: 'fast' });
+	},
+
+	closeLogin: function() {
+		this.passwordRow.slideUp('fast', (function() {
+			this.loginWrapper.removeClass('open');
+		}).bind(this));
+		this.nonloginWrapper.animate({ opacity: '1', duration: 'fast' });
+	},
+
+	processLogin: function() {
+		var postData = [];
+		postData.push({
+			name: 'email',
+			value: $('#dp_newticket_email').val()
+		});
+		postData.push({
+			name: 'password',
+			value: $('#dp_newticket_login_pass').val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'tickets/new/login',
+			type: 'POST',
+			data: postData,
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				var newEl = $(data.html);
+				if (data.person_id) {
+					$('#dp_newticket_login_row').replaceWith(newEl);
+					this.nonloginWrapper.css({ opacity: '1'});
+				} else {
+					$('#dp_newticket_login_row').replaceWith(newEl);
+					$('.dp-newticket-login-pass', newEl).show();
+				}
+
+				if (data.name) {
+					$('#newticket_person_name').val(data.name);
+				}
+
+				if (data.sections_replace) {
+					Object.each(data.sections_replace, function(html, id) {
+						$('#' + id).empty().replaceWith(html);
+					});
+				}
+
+				this._initLoginForm(newEl);
+			}
+		})
+	}
 });

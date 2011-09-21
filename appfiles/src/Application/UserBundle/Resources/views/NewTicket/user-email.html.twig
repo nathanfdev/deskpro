@@ -1,0 +1,43 @@
+<div id="dp_newticket_login_row" class="dp-newticket-login dp-newticket-login-email {% if login_error %}open{% endif %}">
+	{% if app.user.is_guest %}
+		{% if login_error %}
+		<div class="alert-message error dp-newticket-login-err">
+			The email address or password you entered is invalid. Please try again or <a href="{{ path('user_login_resetpass') }}">click here</a> if you have lost your password.
+		</div>
+		{% endif %}
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-newticket-login-open">log in</a>. <a href="{{ path('user_login_resetpass') }}">Lost password</a>?</em>
+			</div>
+			<div class="dp-form-input">
+				<input type="text" id="dp_newticket_email" name="newticket[person][email]" value="" />
+			</div>
+		</div>
+
+		<div class="dp-form-row dp-newticket-login-pass">
+			<div class="dp-form-label">
+				<label>Password</label>
+			</div>
+			<div class="dp-form-input">
+				<input type="password" id="dp_newticket_login_pass" />
+				<div class="dp-loading">
+					Logging in...
+				</div>
+				<div class="dp-btn-row">
+					<button class="btn primary dp-login-in-trigger">Log In</button>
+					or <a class="dp-newticket-login-open">close</a>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Your Email Address</label></em>
+			</div>
+			<div class="dp-form-input">
+				{{ app.user.primary_email_address }}
+			</div>
+		</div>
+	{% endif %}
+</div>

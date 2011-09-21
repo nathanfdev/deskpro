@@ -30,40 +30,21 @@
 				<input type="hidden" name="process" value="1" />
 
 				{###############
+				 # Email
+				 ###############}
+
+				{% include 'UserBundle:NewTicket:user-email.html.twig' %}
+
+				<div class="dp-newticket-non-login">
+				{###############
 				 # Name
 				 ###############}
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Name</label> <em class="required">required</em>
+						<label>Your Name *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.person.name) }}
-					</div>
-				</div>
-
-				{###############
-				 # Email
-				 ###############}
-				{% if form.person.email %}
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>Email</label> <em class="required">required</em>
-						</div>
-						<div class="dp-form-input">
-							{{ form_widget(form.person.email) }}
-						</div>
-					</div>
-				{% endif %}
-
-				{###############
-				 # Subject
-				 ###############}
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>{{ phrase('user.tickets.subject') }}</label> <em class="required">required</em>
-					</div>
-					<div class="dp-form-input">
-						{{ form_widget(form.ticket.subject) }}
 					</div>
 				</div>
 
@@ -72,8 +53,7 @@
 				 ###############}
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.department') }}</label>
-						<em class="required">{{ phrase('user.field_required') }}</em>
+						<label>{{ phrase('user.department') }} *</label>
 					</div>
 					<div class="department_id_wrapper with-sub-options dp-form-input">
 						<select name="newticket[ticket][department_id]" class="department_id parent-option">
@@ -184,10 +164,42 @@
 					</div>
 				{% endfor %}
 
+				{###############
+				 # Subject
+				 ###############}
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.tickets.subject') }} *</label>
+					</div>
+					<div class="dp-form-input">
+						{{ form_widget(form.ticket.subject) }}
+					</div>
+				</div>
+
+				<div class="dp-related-search">
+					<h4>We found the following content that may answer your question</h4>
+					<div class="subline">Don't worry, you can a title and your question will remain.</div>
+					<div class="dp-list">
+						<ul>
+							<li><a href="">What are escalations?</a></li>
+							<li><a href="">What are user or ticket rules?</a></li>
+							<li><a href="">About Usergroups</a></li>
+							<li><a href="">About Companies</a></li>
+							<li><a href="">Multiple Styles</a></li>
+							<li>
+								<div class="view-more">
+									<a href="" class="view-more-link">View 10 more results</a>
+								</div>
+								<a href="">Integration with other software</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>What is your question?</label>
-						<em class="required">required</em>
 					</div>
 					<div class="dp-form-input">
 						<textarea class="dp-message" name="newticket[ticket][message]"></textarea>
@@ -195,7 +207,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						Attachments
+						<label>Attachments</label> <em class="desc">You may upload an attachment less than 5 MB</em>
 					</div>
 					<div class="dp-form-input">
 						<input type="file" />
@@ -206,6 +218,7 @@
 					<input class="btn primary" type="submit" value="Submit" />
 				</div>
 
+				</div> {# /dp-newticket-non-login #}
 				</form>
 			</div>
 		</div>

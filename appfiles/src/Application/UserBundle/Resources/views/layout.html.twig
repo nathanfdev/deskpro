@@ -64,19 +64,7 @@
 
 <div id="dp_page">
 	<div id="dp_header_bar">
-		<div id="dp_userbar">
-			{% if app.user.is_guest %}
-				Welcome back, guest &middot;
-				<a href="{{ path('user_login') }}" id="dp_login_link">Log In</a> &middot; <a href="{{ path('user_register') }}">Sign Up</a>
-			{% else %}
-				Welcome back, {{ app.user.display_name }} &middot;
-				{% if app.user.HelpdeskUser.ticket_count %}
-					<a href="{{ path('user_tickets') }}">View my {{ app.user.HelpdeskUser.ticket_count }} Tickets</a> &middot;
-				{% endif %}
-				<a href="{{ path('user_logout') }}">Edit My Profile</a> &middot;
-				<a href="{{ path('user_logout') }}">Log Out</a>
-			{% endif %}
-		</div>
+		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
 		<div id="dp_search_bar">
 			<form action="">
 				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." />
