@@ -53,7 +53,7 @@ class ArticlesController extends AbstractController
 			$category_children = $category->children;
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
-			$searcher->addTerm('category', 'is', $category['id']);
+			$searcher->addTerm('category_specific', 'is', $category['id']);
 			$searcher->addTerm('status', 'is', 'published');
 			$searcher->setOrderBy('id', 'desc');
 
