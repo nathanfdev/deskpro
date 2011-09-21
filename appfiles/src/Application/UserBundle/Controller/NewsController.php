@@ -68,21 +68,14 @@ class NewsController extends AbstractController
 			$searcher->setOrderBy('id', 'desc');
 		}
 
-		$per_page = (int)$this->request->query->get('per_page');
-		if ($list_type == 'list') {
-			if (!$per_page) $per_page = 25;
-			$per_page = Numbers::bound($per_page, 1, 50);
-			$tpl = 'UserBundle:News:browse-list.html.twig';
-			if ($this->request->isPartialRequest() == 'more') {
-				$tpl = 'UserBundle:News:browse-news-list.html.twig';
-			}
-		} else {
-			if (!$per_page) $per_page = 10;
-			$per_page = Numbers::bound($per_page, 1, 25);
-			$tpl = 'UserBundle:News:browse-posts.html.twig';
-			if ($this->request->isPartialRequest() == 'more') {
-				$tpl = 'UserBundle:News:browse-news-posts.html.twig';
-			}
+		$per_page = 20;
+		if ($this->request->isPartialRequest() == 'portal') {
+			$per_page = 2;
+		}
+
+		$tpl = 'UserBundle:News:browse-list.html.twig';
+		if ($this->request->isPartialRequest() == 'more') {
+			$tpl = 'UserBundle:News:browse-news-list.html.twig';
 		}
 
 		$total = $searcher->getCount();

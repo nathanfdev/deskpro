@@ -105,6 +105,38 @@
 					{% endfor %}
 				</ul>
 			</div>
+			{% if is_partial_request() %}
+				{% if num_results > ideas|length %}
+					<div class="dp-footer">
+						<a class="btn" href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">View all {{ num_results }} ideas</a>
+					</div>
+				{% endif %}
+			{% else %}
+				{% if pageinfo.last != 1 %}
+					<div class="dp-footer">
+						<div class="pagination">
+							<ul>
+								{% if pageinfo.prev %}
+									<li>
+										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">&larr; Prev</a>
+									</li>
+								{% endif %}
+								{% for p in pageinfo.pages %}
+									<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
+										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': p }) }}">{{ p }}</a>
+									</li>
+								{% endfor %}
+								{% if pageinfo.next %}
+									<li>
+										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">Next &rarr;</a>
+									</li>
+								{% endif %}
+							</ul>
+							<br class="dp-clear" style="clear:right"/>
+						</div>
+					</div>
+				{% endif %}
+			{% endif %}
 			<br class="dp-clear" style="clear:left" />
 		</div>
 	</div>

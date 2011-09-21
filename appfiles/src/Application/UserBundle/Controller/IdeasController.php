@@ -34,7 +34,11 @@ class IdeasController extends AbstractController
 	{
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
+
 		$per_page = 20;
+		if ($this->request->isPartialRequest() == 'portal') {
+			$per_page = 10;
+		}
 
 		$parent_status = $status;
 		$sub_status_id = 0;

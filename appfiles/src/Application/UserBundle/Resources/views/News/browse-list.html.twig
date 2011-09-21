@@ -13,8 +13,37 @@
 	<ul class="dp-news-list">
 		{% include 'UserBundle:News:browse-news-list.html.twig' %}
 	</ul>
-	<div class="dp-footer">
-		<button class="btn">View all 23 entries</button>
-	</div>
+	{% if is_partial_request() %}
+		{% if num_results > news_entries|length %}
+			<div class="dp-footer">
+				<a href="{{ path('user_news') }}" class="btn">View all {{ num_results }} entries</a>
+			</div>
+		{% endif %}
+	{% else %}
+		{% if pageinfo.last != 1 %}
+			<div class="dp-footer">
+				<div class="pagination">
+					<ul>
+						{% if pageinfo.prev %}
+							<li>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">&larr; Prev</a>
+							</li>
+						{% endif %}
+						{% for p in pageinfo.pages %}
+							<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': p }) }}">{{ p }}</a>
+							</li>
+						{% endfor %}
+						{% if pageinfo.next %}
+							<li>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">Next &rarr;</a>
+							</li>
+						{% endif %}
+					</ul>
+					<br class="dp-clear" style="clear:right"/>
+				</div>
+			</div>
+		{% endif %}
+	{% endif %}
 </div>
 {% endblock %}

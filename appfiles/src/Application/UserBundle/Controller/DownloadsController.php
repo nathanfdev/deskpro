@@ -68,10 +68,16 @@ class DownloadsController extends AbstractController
 		}
 
 		$total = $searcher->getCount();
-		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+
+		$per_page = 20;
+		if ($this->request->isPartialRequest() == 'portal') {
+			$per_page = 5;
+		}
+
+		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 		$limit = array(
-			'offset' => ($pageinfo['curpage']-1) * 20,
-			'max' => 20
+			'offset' => ($pageinfo['curpage']-1) * $per_page,
+			'max' => $per_page
 		);
 
 		$download_ids = $searcher->getMatches($limit);
