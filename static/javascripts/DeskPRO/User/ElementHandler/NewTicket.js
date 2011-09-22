@@ -160,7 +160,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	openSuggestedContent: function(aEl) {
 
 		var origUrl = aEl.attr('href');
-		var url = Orb.appendQueryData(origUrl, 'overlay', 1);
+		var url = Orb.appendQueryData(origUrl, '_partial', 'overlay');
 		var contentType = aEl.data('content-type');
 		var contentId = aEl.data('content-id');
 		var self = this;
@@ -168,19 +168,11 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		var overlay = new DeskPRO.User.SuggestedContentOverlay({
 			template: $('#dp_related_overlay_tpl').get(0).innerHTML,
 			url: url,
+			pageUrl: origUrl,
 			contentType: aEl.data('content-type'),
 			contentId: aEl.data('content-id'),
 			destroyOnClose: true,
-			onPreOpen: function(pos) {
-				var relatedContainer = $('#dp_newticket_related_container');
-				var cPos = relatedContainer.offset();
-				var cWidth = relatedContainer.outerWidth();
-				var addW = 50;
-
-				pos.top = cPos.top - 20;
-				pos.left = cPos.left - (addW / 2);
-				pos.width = cWidth + addW;
-			},
+			openNear: $('#dp_newticket_related_container'),
 			onInit: (function(overlayEl, controls, overlay) {
 				// As soon as they click we subimt the request to record it
 				$('.dp-set-answered', controls).click(function(ev) {

@@ -1260,6 +1260,25 @@ ul.dp-ideas-list .meta {
 	margin-left: 85px;
 }
 
+.dp-box-comments.dp-mini {
+	margin: 8px 10px 10px 10px;
+}
+
+.dp-box-comments.dp-mini h4 {
+	font-size: 12px;
+}
+
+.dp-box-comments.dp-mini ul li {
+	margin-top: 4px;
+	padding: 3px;
+}
+
+.dp-box-comments.dp-mini ul li > .post {
+	margin-left: 8px;
+	color: #404040;
+}
+
+.dp-box-comments
 
 
 .dp-twitter-list {
@@ -1723,9 +1742,9 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 .dp-overlay h3.title {
 	border-bottom: 1px solid #D9DBDB;
-	margin: 4px 10px 0 10px;
+	margin: 10px 10px 0 10px;
 	margin-bottom: 0;
-	padding-bottom: 4px;
+	padding-bottom: 6px;
 }
 
 .dp-with-title .dp-content {
@@ -1744,7 +1763,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 }
 
 .dp-overlay .dp-controls {
-	margin: 15px;
+	margin: 15px 10px 15px 10px;
 	padding: 10px;
 	text-align: center;
 
@@ -1752,19 +1771,36 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	border: 1px solid #D9DBDB;
 }
 
+.dp-overlay .dp-controls button {
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
 .dp-overlay .dp-controls p {
 
 }
 
+.dp-overlay .dp-open-full {
+	float: right;
+	z-index: 102;
+	margin-right: 15px;
+	margin-top: 7px;
+	cursor: pointer;
+}
+
 .dp-backdrop {
-	position: absolute;
+	position: fixed;
 	top: 0; right: 0; bottom: 0; left: 0;
 	z-index: 1000;
 }
 
+.dp-backdrop.dp-faded {
+	background-color: rgba(255,255,255, 0.5);
+}
+
 .dp-overlay .dp-close-btn {
-	top: -7px;
-	right: -7px;
+	top: -10px;
+	right: -10px;
 	z-index: 101;
 }
 
@@ -1772,19 +1808,42 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	position: absolute;
 	top: 0;
 	right: 0;
-	width: 13px;
-	height: 13px;
+	width: 18px;
+	height: 18px;
 	display: block;
 
-	background: url(../../images/close-small.png) no-repeat top right;
+	background: url(../../images/close-btn.png) no-repeat top right;
 	cursor: pointer;
 	overflow: hidden;
 	text-indent: -100px;
 }
 
+.dp-overlay .dp-comments-placeholder {
+	font-size: 13px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	border: 1px solid transparent;
+	border-bottom: 1px solid #D9DBDB;
+	margin:  0 -1px 0 -1px;
+	cursor: pointer;
+}
+
+.dp-overlay .dp-comments-placeholder span {
+	background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 0 50%;
+	padding-left: 18px;
+}
+
+.dp-overlay .dp-comments-placeholder.open span {
+	background: url(../../images/icons/bullet_toggle_minus.png) no-repeat 0 50%;
+}
+
+.dp-overlay .dp-comments-placeholder:hover {
+	border: 1px solid #D9DBDB;
+}
 
 
 .dp-loading-msg {
-	backgorund: url(../../loading-small.gif) no-repeat 0 50%;
-	padding-left: 20px;
+	text-align: center;
+	background: url(../../images/loading-big-circle.gif) no-repeat 50% 0;
+	padding-top: 35px;
+	margin: 30px;
 }

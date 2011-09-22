@@ -305,7 +305,7 @@ class ArticlesController extends AbstractController
 		}
 
 		$tpl = 'UserBundle:Articles:article.html.twig';
-		if ($this->in->getBool('overlay')) {
+		if ($this->in->getString('_partial') == 'overlay') {
 			$tpl = 'UserBundle:Articles:article-overlay.html.twig';
 		}
 
