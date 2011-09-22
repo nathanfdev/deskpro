@@ -96,25 +96,20 @@ class ArticleCategory extends AbstractCategoryRepository
 				$counts['0_total'] += $counts[$c['id']];
 			}
 
-			$repos = $this;
-			$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
-				$total = empty($counts[$node['id']]) ? 0 : $counts[$node['id']];
-				foreach ($repos->children($node, true) as $c) {
-					// We already have the single count
-					$total += $counts[$c['id']];
-
-					// Now add up all its subs
-					$total += $fn_count($c);
+			foreach ($this->getCategoryIds() as $c_id) {
+				$total = 0;
+				if (isset($counts[$c_id])) {
+					$total = $counts[$c_id];
 				}
 
-				if ($node) {
-					$counts[$node['id'] . '_total'] = $total;
+				foreach ($this->getChildrenIds($c_id, false) as $child_id) {
+					if (isset($counts[$child_id])) {
+						$total += $counts[$child_id];
+					}
 				}
 
-				return $total;
-			};
-
-			$fn_count(null);
+				$counts["{$c_id}_total"] = $total;
+			}
 
 			$cache->save($counts, $cache_id, array('article_structure'));
 		}
