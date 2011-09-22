@@ -222,31 +222,31 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<script type="text/x-deskpro-plain" id="dp_related_overlay_tpl">
-	<div class="dp-overlay-outer dp-post-overlay">
-	<div class="dp-overlay">
-		<div class="dp-overlay-inner">
-			<span class="dp-close-btn">close</span>
-			<div class="dp-content">
-				<span class="dp-open-full"><a>Open full page</a></span>
-				<div class="dp-content-holder">
-					<div class="dp-loading-msg">Loading</div>
-				</div>
-				<div class="dp-controls">
-					<div class="dp-default dp-control-section">
-						<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This answered my question</button>
-						<button class="btn small dp-not-answered">This did not answer my question</button>
+	<script type="text/x-deskpro-plain" class="related-content-overlay-tpl">
+		<div class="dp-overlay-outer dp-post-overlay">
+		<div class="dp-overlay">
+			<div class="dp-overlay-inner">
+				<span class="dp-close-btn">close</span>
+				<div class="dp-content">
+					<span class="dp-open-full"><a>Open full page</a></span>
+					<div class="dp-content-holder">
+						<div class="dp-loading-msg">Loading</div>
 					</div>
-					<div class="dp-confirm-answered dp-control-section" style="display:none">
-						<p>We are happy we were able to answer your question. Do you still want to email us?</p>
-						<button class="btn small primary dp-answererd" data-type="close">I do not need to contact you anymore</button>
-						<button class="btn small dp-answererd" data-type="ticket">I still want to submit a question</button>
+					<div class="dp-controls">
+						<div class="dp-default dp-control-section">
+							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This answered my question</button>
+							<button class="btn small dp-not-answered">This did not answer my question</button>
+						</div>
+						<div class="dp-confirm-answered dp-control-section" style="display:none">
+							<p>We are happy we were able to answer your question. Do you still want to email us?</p>
+							<button class="btn small primary dp-answererd" data-type="close">I do not need to contact you anymore</button>
+							<button class="btn small dp-answererd" data-type="ticket">I still want to submit a question</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</script>
+	</script>
+</div>
 {% endblock %}

@@ -166,7 +166,7 @@ class IdeasController extends AbstractController
 			$newidea->category_id = $this->in->getUint('category_id');
 		}
 
-		$form = $this->get('form.factory')->create(new NewIdeaType());
+		$form = $this->get('form.factory')->create(new NewIdeaType($this->person));
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));

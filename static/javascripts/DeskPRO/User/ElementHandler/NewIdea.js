@@ -5,35 +5,32 @@ DeskPRO.User.ElementHandler.NewIdea = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		$('#idea_title').change(this.showSuggestions.bind(this));
-		this.suggestionsBox = $('.suggestions-box:first', this.el);
-		this.resultsEl = $('.results:first', this.suggestionsBox);
-
-		this.url = this.el.data('suggestions-url');
+		this._initSuggestionsBox();
+		this._initLoginForm();
 	},
 
-	showSuggestions: function() {
-		var title = $('#idea_title').val().trim();
+	//#########################################################################
+	//# Suggestions
+	//#########################################################################
 
-		if (!title.length) {
-			this.suggestionsBox.hide();
-			return;
-		}
+	_initSuggestionsBox: function() {
+		this.inlineSuggestions = new DeskPRO.User.InlineSuggestions({
+			elementWrapper: this.el,
+			titleText: '#idea_title',
+			contentText: '#idea_content'
+			//onResolved: this.setTicketSolvedAjax.bind(this),
+			//onResolvedRedirect: this.setTicketSolvedRedirect.bind(this),
+			//onNotResolved: this.setTicketUnsolvedAjax.bind(this)
+		});
+	},
 
-		$.ajax({
-			url: this.url,
-			dataType: 'html',
-			data: {'content': title},
-			context: this,
-			success: function(html) {
-				this.resultsEl.html(html);
+	//#########################################################################
+	// In-page login form
+	//#########################################################################
 
-				if (!$('li:first', this.resultsEl).length) {
-					this.suggestionsBox.hide();
-				} else {
-					this.suggestionsBox.show();
-				}
-			}
+	_initLoginForm: function(context) {
+		this.inlineLogin = new DeskPRO.User.InlineLoginForm({
+			context: this.el
 		});
 	}
 });

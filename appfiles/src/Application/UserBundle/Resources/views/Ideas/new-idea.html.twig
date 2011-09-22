@@ -42,70 +42,86 @@
 					</div>
 
 					{###############
-					 # Categor
+					 # Category
 					 ###############}
 
 					<div class="dp-form-row">
 						<div class="dp-form-label">
 							<label>Category *</label>
 						</div>
-						<td>{{ form_widget(form.category_id) }}</td>
+						<div class="dp-form-input">
+							{{ form_widget(form.category_id) }}
+						</div>
 					</div>
 
+					{###############
+					 # Title
+					 ###############}
+
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Summary *</label> <em class="note">A title or a brief summary of what your idea is about</em>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.title) }}
+						</div>
+					</div>
+
+					<div class="dp-related-search" id="dp_newidea_related_container" style="display: none">
+						<h4>We found the following ideas that may be similar to yours</h4>
+						<div class="subline">Don't worry, you can click a title and you will remain on this page.</div>
+						<div class="dp-list results">
+						</div>
+						<div class="more-link" style="display: none;">
+							<a>View <span class="count">0</span> more results</a>
+						</div>
+					</div>
+
+					{###############
+					 # Description
+					 ###############}
+
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Description *</label> <em class="note">If you need to, you can go into more detail about your idea here</em>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.content) }}
+						</div>
+					</div>
+
+					<input class="btn primary" type="submit" value="Submit Idea" />
 				</form>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="page-title">
-	<h1>Submit Idea</h1>
-</div>
-
-<form action="{{ path('user_ideas_newidea') }}" method="post">
-<input type="hidden" name="process" value="1" />
-
-<div class="input-form">
-<table cellspacing="0" cellpadding="0" width="100%">
-	<tr>
-		<td width="180">What is your idea?</td>
-		<td>
-			{{ form_widget(form.title) }}
-			<div class="suggestions-box" style="display: none">
-				Have you tried looking at these other ideas?
-				<div class="results"></div>
+	<script type="text/x-deskpro-plain" class="related-content-overlay-tpl">
+		<div class="dp-overlay-outer dp-post-overlay">
+		<div class="dp-overlay">
+			<div class="dp-overlay-inner">
+				<span class="dp-close-btn">close</span>
+				<div class="dp-content">
+					<span class="dp-open-full"><a>Open full page</a></span>
+					<div class="dp-content-holder">
+						<div class="dp-loading-msg">Loading</div>
+					</div>
+					<div class="dp-controls">
+						<div class="dp-default dp-control-section">
+							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This is the same as my idea</button>
+							<button class="btn small dp-not-answered">This isn't the same as my idea</button>
+						</div>
+						<div class="dp-confirm-answered dp-control-section" style="display:none">
+							<p>Looks like you have found someone who had the same idea as you did. Does that mean you do not need to create a new one?</p>
+							<button class="btn small primary dp-answererd" data-type="close">I do not want to submit a new idea</button>
+							<button class="btn small dp-answererd" data-type="ticket">I still want to submit my idea</button>
+						</div>
+					</div>
+				</div>
 			</div>
-		</td>
-	</tr>
-
-	<tr>
-		<td>Category</td>
-		<td>{{ form_widget(form.category_id) }}</td>
-	</tr>
-
-	<tr>
-		<td style="vertical-align: top; padding-top: 8px;">More details to explain your idea</td>
-		<td>{{ form_widget(form.content) }}</td>
-	</tr>
-
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			How many of your {{num_votes_remain}} remaining votes would you like to spend on this idea?<br />
-			{{ form_widget(form.votes) }}
-		</td>
-	</tr>
-
-	<tr class="foot">
-		<td colspan="2">
-			<button class="dp-button">Submit</button>
-		</td>
-	</tr>
-</table>
-</div>
-
-	{{ form_rest(form) }}
-</form>
+		</div>
+	</script>
 
 </div>
+
 {% endblock %}
