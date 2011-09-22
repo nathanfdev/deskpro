@@ -45,6 +45,23 @@ class NewTicketController extends AbstractController
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
 
+				// Its no longer a preticket, so we can delete the record
+				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
+					$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+
+					// Must be same user
+					if ($preticket) {
+						if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+							$preticket = null;
+						}
+					}
+
+					if ($preticket) {
+						$this->em->remove($preticket);
+						$this->em->flush();
+					}
+				}
+
 				// If this is a new person, we'll forward them to full reg page
 				if ($person->isNewPerson()) {
 					$this->session->set('finish_register_person', $person['id']);
@@ -114,6 +131,101 @@ class NewTicketController extends AbstractController
 			'ticket_display_js' => $ticket_display_js,
 		));
     }
+
+	/**
+	 * Saves a users form in the database incase they abandon the form
+	 */
+	public function saveStatusAction()
+	{
+		$id = $this->in->getUint('preticket_status_id');
+
+		$preticket = null;
+		if ($id) {
+			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+
+			// Must be same user
+			if ($preticket) {
+				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+					$preticket = null;
+				}
+			}
+		}
+
+		if (!$preticket) {
+			$preticket = Entity\PreticketContent::newForPerson($this->person, true);
+		}
+
+		$form_data = $_POST;
+		unset($form_data['preticket_status_id']);
+
+		if (!empty($form_data['newticket']['ticket']['subject'])) {
+			$preticket->subject = $form_data['newticket']['ticket']['subject'];
+		}
+		if (!empty($form_data['newticket']['ticket']['message'])) {
+			$preticket->message = $form_data['newticket']['ticket']['message'];
+		}
+		if (!empty($form_data['newticket']['ticket']['department_id'])) {
+			$preticket->department_id = $form_data['newticket']['ticket']['department_id'];
+		}
+		if (!empty($form_data['newticket']['person']['email'])) {
+			$preticket->email = $form_data['newticket']['person']['email'];
+		}
+		if (!empty($form_data['newticket']['person']['name'])) {
+			$preticket->name = $form_data['newticket']['person']['name'];
+		}
+
+		$preticket->data = $form_data;
+
+		$this->em->beginTransaction();
+		$this->em->persist($preticket);
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'preticket_status_id' => $preticket->id
+		));
+	}
+
+	public function contentSolvedRedirectAction()
+	{
+		$id = $this->in->getUint('preticket_status_id');
+
+		$preticket = null;
+		if ($id) {
+			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+
+			// Must be same user
+			if ($preticket) {
+				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+					$preticket = null;
+				}
+			}
+		}
+
+		$url = $this->in->getString('url');
+		if (!$url) {
+			$url = $this->get('router')->generate('user');
+		}
+
+		$content_type = $this->in->getString('content_type');
+		$content_id   = $this->in->getString('content_id');
+
+		// Invalid preticket or content
+		if (!$preticket || !$content_type || !$content_id) {
+			return $this->redirect($url);
+		}
+
+		$preticket->is_solved    = true;
+		$preticket->object_type = $content_type;
+		$preticket->object_id   = $content_id;
+
+		$this->em->beginTransaction();
+		$this->em->persist($preticket);
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->redirect($url);
+	}
 
 	################################################################################
 	# thanks

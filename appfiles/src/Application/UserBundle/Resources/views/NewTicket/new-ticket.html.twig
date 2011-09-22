@@ -26,7 +26,8 @@
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
-				<form action="{{ path('user_tickets_new') }}" method="post" enctype="multipart/form-data">
+				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data">
+				<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 				<input type="hidden" name="process" value="1" />
 
 				{###############
@@ -176,7 +177,7 @@
 					</div>
 				</div>
 
-				<div class="dp-related-search" style="display: none">
+				<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
 					<h4>We found the following content that may answer your question</h4>
 					<div class="subline">Don't worry, you can click a title and you will remain on this page.</div>
 					<div class="dp-list results">
@@ -213,6 +214,13 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/x-deskpro-plain" id="dp_related_overlay_header">
+	<div class="dp-title">
+		<span class="dp-close-btn">close</span>
+		<button class="btn small dp-article-solved">This answered my question</button>
+	</div>
+</script>
 
 {#
 <div class="dp-overlay-outer dp-post-overlay">

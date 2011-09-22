@@ -8,8 +8,12 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		this.titleTxt = $('#newticket_ticket_subject');
 		this.messageTxt = $('#newticket_ticket_message');
 
+		this.ticketForm = $('#dp_newticket_form');
+
 		this._initSuggestionsBox();
 		this._initFields();
+		this._initLoginForm(this.el);
+		this._initPreticketStatus();
 	},
 
 	//#########################################################################
@@ -135,7 +139,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 					var self = this;
 					$('li a[href]', this.suggestionsBox).click(function(ev) {
 						ev.preventDefault();
-						self.openSuggestedContent($(this).attr('href'));
+						self.openSuggestedContent($(this));
 					});
 
 					this.suggestionsBox.show();
@@ -144,27 +148,39 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		});
 	},
 
-	openSuggestedContent: function(href) {
-		var url = Orb.appendQueryData(href, 'overlay', 1);
+	openSuggestedContent: function(aEl) {
+		var origUrl = aEl.attr('href');
+		var url = Orb.appendQueryData(origUrl, 'overlay', 1);
 
 		$.ajax({
 			url: url,
 			type: 'GET',
 			dataType: 'html',
+			context: this,
 			success: function(html) {
+
+				var relatedContainer = $('#dp_newticket_related_container');
 
 				var el = $(html).hide().appendTo('body');
 
-				var w = el.width();
-				var docW = $(document).width();
-				var scroll = $(document).scrollTop();
+				var titleRow = $($('#dp_related_overlay_header').get(0).innerHTML);
+				titleRow.insertBefore($('.dp-content', el));
+				el.addClass('dp-with-title');
 
-				var top = scroll + 35;
-				var left = (docW / 2) - (w / 2);
+				$('.dp-article-solved', titleRow).click((function(ev) {
+					ev.preventDefault();
+					this.setTicketSolved(origUrl, aEl.data('content-type'), aEl.data('content-id'));
+				}).bind(this));
+
+				var cPos = relatedContainer.offset();
+				var cWidth = relatedContainer.outerWidth();
+
+				var addW = 50;
 
 				el.css({
-					top: top,
-					left: left
+					top: cPos.top - 20,
+					left: cPos.left - (addW / 2),
+					width: cWidth + addW
 				});
 				el.fadeIn('fast');
 
@@ -181,6 +197,20 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				});
 			}
 		});
+	},
+
+	setTicketSolved: function(url, content_type, content_id) {
+
+		var preticket_id = $('#dp_newticket_preticket_status_id').val();
+		if (preticket_id > 0) {
+			url = BASE_URL + 'tickets/new/content-solved-redirect?'
+				+ 'preticket_status_id=' + escape(preticket_id) + '&'
+				+ 'content_type=' + escape(content_type) + '&'
+				+ 'content_id=' + escape(content_id) + '&'
+				+ 'url=' + escape(url);
+		}
+
+		window.location = url;
 	},
 
 	//#########################################################################
@@ -241,8 +271,6 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				}
 			});
 		});
-
-		this._initLoginForm(this.el);
 	},
 
 	handleDepChange: function() {
@@ -409,5 +437,29 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				this._initLoginForm(newEl);
 			}
 		})
+	},
+
+	//#########################################################################
+	// Preticket status
+	//#########################################################################
+
+	_initPreticketStatus: function() {
+		$('input, select', this.ticketForm).change((function() {
+			this.updatePreticketStatus();
+		}).bind(this));
+	},
+
+	updatePreticketStatus: function() {
+		var formData = this.ticketForm.serializeArray();
+
+		$.ajax({
+			url: BASE_URL + 'tickets/new/save-status',
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			success: function(data) {
+				$('#dp_newticket_preticket_status_id').val(data.preticket_status_id);
+			}
+		});
 	}
 });

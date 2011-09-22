@@ -2,13 +2,13 @@
 	{% for res in results %}
 		{% if res.type == 'article' %}
 			<li class="article">
-				<a href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">
+				<a href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}" data-content-type="article" data-content-id="{{ res.object.id }}">
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>
 		{% elseif res.type == 'idea' %}
 			<li class="idea">
-				<a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}">
+				<a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}" data-content-type="idea" data-content-id="{{ res.object.id }}">
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>

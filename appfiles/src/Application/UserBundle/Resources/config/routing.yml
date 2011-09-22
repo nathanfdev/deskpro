@@ -154,6 +154,14 @@ user_tickets_new_login:
   pattern: /tickets/new/login
   defaults: { _controller: UserBundle:NewTicket:handleLogin }
 
+user_tickets_new_savestatus:
+  pattern: /tickets/new/save-status
+  defaults: { _controller: UserBundle:NewTicket:saveStatus }
+
+user_tickets_new_contentsolved:
+  pattern: /tickets/new/content-solved-redirect
+  defaults: { _controller: UserBundle:NewTicket:contentSolvedRedirect }
+
 user_tickets_new_thanks:
   pattern: /tickets/new/thanks/{ticket_ref}
   defaults: { _controller: UserBundle:NewTicket:thanks }
