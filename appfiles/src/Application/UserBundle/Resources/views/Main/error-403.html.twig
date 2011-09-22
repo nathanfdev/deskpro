@@ -1,0 +1,34 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<div class="dp-idea-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				{% if error_title %}
+					<h1>{{ error_title }}</h1>
+				{% else %}
+					<h1>You are not allowed to do that</h1>
+				{% endif %}
+			</div>
+
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					{% if error_message %}
+						{{ error_message }}
+					{% else %}
+						Sorry, the action you are trying to perform is not allowed.
+					{% endif %}
+
+					{% if app.user.is_guest %}
+						<p>
+							You are currently logged out. <a href="{{ path('user_login') }}">Log in</a> and try again.
+						</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

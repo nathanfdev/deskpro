@@ -1,0 +1,22 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<div class="dp-idea-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			{% if error_title %}
+			<div class="dp-box-header">
+				<h1>{{ error_title }}</h1>
+			</div>
+			{% endif %}
+
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					{{ error_message }}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

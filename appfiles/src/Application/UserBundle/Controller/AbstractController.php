@@ -46,7 +46,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * @param string $error_title
 	 * @return Response
 	 */
-	public function renderStandardError($error_message, $error_title = '', $code = 200)
+	public function renderStandardError($error_message, $error_title = '', $code = 200, array $vars = array())
 	{
 		if ($error_message AND $error_message[0] == '@') {
 			$error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
@@ -59,7 +59,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return $this->forward('UserBundle:Main:standardError', array(
 			'error_message' => $error_message,
 			'error_title'   => $error_title,
-			'code'          => $code
+			'code'          => $code,
+			'vars'          => $vars
 		));
 	}
 }

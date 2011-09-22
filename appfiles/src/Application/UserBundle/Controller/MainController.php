@@ -13,12 +13,22 @@ class MainController extends AbstractController
         return $this->render('UserBundle:Main:index.html.twig');
     }
 
-	public function standardErrorAction($error_message, $error_title = '', $code = 200)
+	public function standardErrorAction($error_message, $error_title = '', $code = 200, array $vars = array())
 	{
-		$res = $this->render('UserBundle:Main:standard-error.html.twig', array(
+		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
+		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
+
+		$tpl = $tpl_standard;
+		if (App::getTemplating()->exists($tpl_specific)) {
+			$tpl = $tpl_specific;
+		}
+
+		$vars = array_merge($vars, array(
 			'error_message' => $error_message,
 			'error_title'   => $error_title
 		));
+
+		$res = $this->render($tpl, $vars);
 
 		$res->setStatusCode($code);
 
