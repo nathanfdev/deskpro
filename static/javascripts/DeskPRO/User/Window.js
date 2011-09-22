@@ -12,6 +12,33 @@ DeskPRO.User.Window = new Orb.Class({
 	},
 
 	initPage: function() {
+
+		// Last block on page fill rest of the height
+		if (!$('body').is('.dp-no-resize-block')) {
+			var sidebar = $('#dp_sidebar');
+			var content = $('#dp_content');
+
+			if (sidebar.height() > content.height()) {
+				var blocks  = $('#dp_content .dp-content-block');
+				var last = blocks.last();
+
+				if (blocks.length == 1) {
+					var h = sidebar.height();
+				} else {
+					var l;
+					var fromTop = 0;
+
+					for (l = 0; l < blocks.length-1; l++) {
+						var fromTop = blocks.eq(l).outerHeight();
+					}
+
+					var h = sidebar.height() - fromTop;
+				}
+
+				last.css('height', h);
+			}
+		}
+
 		if (this.PAGE) {
 			this.PAGE.initPage();
 		}
