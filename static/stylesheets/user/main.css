@@ -1584,6 +1584,12 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	font-size: 11px;
 }
 
+.dp-related-search ul li.not-answered a {
+	font-style: italic;
+	opacity: 0.5;
+	color: #777878;
+}
+
 .dp-related-search ul li a {
 	background: url(../../images/icons/page_white_text.png) no-repeat 0 50%;
 	padding-left: 21px;
@@ -1674,7 +1680,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 .dp-post-overlay {
 	width: 620px;
-	height: 300px;
+	height: 350px;
 }
 
 .dp-overlay {
@@ -1685,6 +1691,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 .dp-overlay .dp-overlay-inner {
 	position: absolute;
 	top: 1px; right: 1px; bottom: 1px; left: 1px;
+	z-index: 100;
 }
 
 .dp-overlay .dp-title {
@@ -1736,6 +1743,18 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	line-height: 130%;
 }
 
+.dp-overlay .dp-controls {
+	margin: 15px;
+	padding: 10px;
+	text-align: center;
+
+	background-color: #ECF0F4;
+	border: 1px solid #D9DBDB;
+}
+
+.dp-overlay .dp-controls p {
+
+}
 
 .dp-backdrop {
 	position: absolute;
@@ -1746,6 +1765,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 .dp-overlay .dp-close-btn {
 	top: -7px;
 	right: -7px;
+	z-index: 101;
 }
 
 .dp-close-btn {
@@ -1760,4 +1780,11 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	cursor: pointer;
 	overflow: hidden;
 	text-indent: -100px;
+}
+
+
+
+.dp-loading-msg {
+	backgorund: url(../../loading-small.gif) no-repeat 0 50%;
+	padding-left: 20px;
 }

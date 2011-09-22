@@ -181,6 +181,8 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		$this->session->set('preticket_id', $preticket->getId());
+
 		return $this->createJsonResponse(array(
 			'preticket_status_id' => $preticket->id
 		));
@@ -224,7 +226,52 @@ class NewTicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		$this->session->remove('preticket_id');
+
 		return $this->redirect($url);
+	}
+
+	public function contentSolvedSaveAction()
+	{
+		$id = $this->in->getUint('preticket_status_id');
+
+		$preticket = null;
+		if ($id) {
+			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+
+			// Must be same user
+			if ($preticket) {
+				if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+					$preticket = null;
+				}
+			}
+		}
+
+		$content_type = $this->in->getString('content_type');
+		$content_id   = $this->in->getString('content_id');
+
+		// Invalid preticket or content
+		if (!$preticket || !$content_type || !$content_id) {
+			return $this->createJsonResponse(array('invalid_details' => 1));
+		}
+
+		if ($this->in->getBool('add_unsolved')) {
+			$unsolved = $preticket->unsolved_content;
+			$unsolved[] = array($content_type, $content_id);
+
+			$preticket->unsolved_content = $unsolved;
+		} else {
+			$preticket->is_solved    = true;
+			$preticket->object_type = $content_type;
+			$preticket->object_id   = $content_id;
+		}
+
+		$this->em->beginTransaction();
+		$this->em->persist($preticket);
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	################################################################################

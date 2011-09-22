@@ -353,6 +353,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
+		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 	)
 );
 

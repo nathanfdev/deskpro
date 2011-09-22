@@ -26,6 +26,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		this.moreLink = $('.more-link', this.suggestionsBox);
 		this.lastSuggestions = null;
 		this.lastString = null;
+		this.notAnsweredResults = [];
 
 		this.hasStartedSearch = false;
 
@@ -114,6 +115,14 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 				this.resultsEl.empty().html(html);
 
+				// Make sure unsolved results dont reappear
+				if (this.notAnsweredResults.length) {
+					var x;
+					for (x = 0; x < this.notAnsweredResults.length; x++) {
+						$('li.' + this.notAnsweredResults[x], this.resultsEl).remove();
+					}
+				}
+
 				if (!$('li:first', this.resultsEl).length) {
 					this.suggestionsBox.hide();
 					this.lastSuggestions = null;
@@ -149,57 +158,82 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	},
 
 	openSuggestedContent: function(aEl) {
+
 		var origUrl = aEl.attr('href');
 		var url = Orb.appendQueryData(origUrl, 'overlay', 1);
+		var contentType = aEl.data('content-type');
+		var contentId = aEl.data('content-id');
+		var self = this;
 
-		$.ajax({
+		var overlay = new DeskPRO.User.SuggestedContentOverlay({
+			template: $('#dp_related_overlay_tpl').get(0).innerHTML,
 			url: url,
-			type: 'GET',
-			dataType: 'html',
-			context: this,
-			success: function(html) {
-
+			contentType: aEl.data('content-type'),
+			contentId: aEl.data('content-id'),
+			destroyOnClose: true,
+			onPreOpen: function(pos) {
 				var relatedContainer = $('#dp_newticket_related_container');
-
-				var el = $(html).hide().appendTo('body');
-
-				var titleRow = $($('#dp_related_overlay_header').get(0).innerHTML);
-				titleRow.insertBefore($('.dp-content', el));
-				el.addClass('dp-with-title');
-
-				$('.dp-article-solved', titleRow).click((function(ev) {
-					ev.preventDefault();
-					this.setTicketSolved(origUrl, aEl.data('content-type'), aEl.data('content-id'));
-				}).bind(this));
-
 				var cPos = relatedContainer.offset();
 				var cWidth = relatedContainer.outerWidth();
-
 				var addW = 50;
 
-				el.css({
-					top: cPos.top - 20,
-					left: cPos.left - (addW / 2),
-					width: cWidth + addW
+				pos.top = cPos.top - 20;
+				pos.left = cPos.left - (addW / 2);
+				pos.width = cWidth + addW;
+			},
+			onInit: (function(overlayEl, controls, overlay) {
+				// As soon as they click we subimt the request to record it
+				$('.dp-set-answered', controls).click(function(ev) {
+					ev.preventDefault();
+					self.setTicketSolvedAjax(contentType, contentId);
 				});
-				el.fadeIn('fast');
 
-				var closeFn = function() {
-					back.remove();
-					el.fadeOut('fast', function() {
-						el.remove();
-					});
-				};
+				// But we still send them through the redirect, so they
+				// can visit the article quickly without waiting for the save to return
+				$('.dp-answererd', controls).click(function(ev) {
+					ev.preventDefault();
+					var type = $(this).data('type');
 
-				var back = $('<div class="dp-backdrop" />').appendTo('body');
-				back.click(function() {
-					closeFn();
+					if (type == 'close') {
+						self.setTicketSolvedRedirect(origUrl, contentType, contentId);
+					} else {
+						overlay.close();
+					}
 				});
-			}
+
+				$('.dp-not-answered', controls).click(function(ev) {
+					ev.preventDefault();
+					self.setTicketSolvedAjax(contentType, contentId, true);
+
+					aEl.parent().addClass('not-answered');
+					self.notAnsweredResults.push(contentType + '-' + contentId);
+					overlay.close();
+				});
+			}).bind(this)
 		});
+		overlay.open();
 	},
 
-	setTicketSolved: function(url, content_type, content_id) {
+	setTicketSolvedAjax: function(content_type, content_id, setUnsolved) {
+		var preticket_id = $('#dp_newticket_preticket_status_id').val();
+		if (preticket_id > 0) {
+			url = BASE_URL + 'tickets/new/content-solved-save.json?'
+					+ 'preticket_status_id=' + escape(preticket_id) + '&'
+					+ 'content_type=' + escape(content_type) + '&'
+					+ 'content_id=' + escape(content_id);
+
+			if (setUnsolved) {
+				url += '&add_unsolved=1';
+			}
+
+			$.ajax({
+				url: url,
+				type: 'GET'
+			});
+		}
+	},
+
+	setTicketSolvedRedirect: function(url, content_type, content_id) {
 
 		var preticket_id = $('#dp_newticket_preticket_status_id').val();
 		if (preticket_id > 0) {

@@ -8,7 +8,7 @@
 	<form action="{{ path('user_saverating', { 'object_type': content_object.content_type, 'object_id': content_object.id}) }}" method="post">
 		<input type="hidden" name="log_search_id" value="{{ rating_log_search_id }}" />
 		{% if rating.rating %}
-			{% if rating.rating > 1 %}
+			{% if rating.rating >= 1 %}
 				You marked this page as helpful
 			{% else %}
 				You marked this page as unhelpful

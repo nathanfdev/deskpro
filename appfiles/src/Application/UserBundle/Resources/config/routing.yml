@@ -158,6 +158,10 @@ user_tickets_new_savestatus:
   pattern: /tickets/new/save-status
   defaults: { _controller: UserBundle:NewTicket:saveStatus }
 
+user_tickets_new_contentsolved_save:
+  pattern: /tickets/new/content-solved-save.json
+  defaults: { _controller: UserBundle:NewTicket:contentSolvedSave }
+
 user_tickets_new_contentsolved:
   pattern: /tickets/new/content-solved-redirect
   defaults: { _controller: UserBundle:NewTicket:contentSolvedRedirect }

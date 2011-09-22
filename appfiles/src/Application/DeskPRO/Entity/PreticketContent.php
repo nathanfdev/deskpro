@@ -106,6 +106,14 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_solved = false;
 
 	/**
+	 * Array of array(type,id) that the user said didnt answer their article.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="unsolved_content", type="array")
+	 */
+	protected $unsolved_content = array();
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="object_type", type="string", length=100, nullable=true)
 	 */
