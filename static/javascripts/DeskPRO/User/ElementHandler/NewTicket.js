@@ -386,10 +386,17 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	_initLoginForm: function(context) {
 
-		this.loginWrapper    = $('.dp-newticket-login', context);
-		this.passwordRow     = $('.dp-newticket-login-pass', context);
-		this.nonloginWrapper = $('.dp-newticket-non-login', context);
-		this.loginBtn        = $('.dp-login-in-trigger', context);
+		this.inlineLogin = new DeskPRO.User.InlineLoginForm({
+			context: this.el
+		});
+		return;
+
+		this.loginWrapper    = $('.dp-inline-login', context);
+		this.passwordRow     = $('.dp-inline-login-pass', context);
+		this.nonloginWrapper = $('.dp-inline-non-login', context);
+		this.loginBtn        = $('.dp-login-trigger', context);
+
+		$('#dp_inline_login_email').name('newticket[ticket][person]');
 
 		$('.dp-newticket-login-open', context).click((function(ev) {
 			ev.preventDefault();
@@ -427,11 +434,11 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		var postData = [];
 		postData.push({
 			name: 'email',
-			value: $('#dp_newticket_email').val()
+			value: $('#dp_inline_login_email').val()
 		});
 		postData.push({
 			name: 'password',
-			value: $('#dp_newticket_login_pass').val()
+			value: $('#dp_inline_login_pass').val()
 		});
 
 		$.ajax({
@@ -443,7 +450,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			success: function(data) {
 				var newEl = $(data.html);
 				if (data.person_id) {
-					$('#dp_newticket_login_row').replaceWith(newEl);
+					$('#dp_inline_login_row').replaceWith(newEl);
 					this.nonloginWrapper.css({ opacity: '1'});
 				} else {
 					$('#dp_newticket_login_row').replaceWith(newEl);

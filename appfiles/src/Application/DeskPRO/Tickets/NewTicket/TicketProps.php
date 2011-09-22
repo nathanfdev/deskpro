@@ -25,7 +25,10 @@ class TicketProps
 	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
 	 */
 	public $new_upload = null;
-	
+
+	public $attach_ids = array();
+	public $attach_ids_authed = false;
+
 	public $department_id = 0;
 	public $category_id   = 0;
 	public $priority_id   = 0;

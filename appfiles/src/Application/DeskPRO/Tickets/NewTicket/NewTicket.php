@@ -56,7 +56,7 @@ class NewTicket
 		App::getOrm()->beginTransaction();
 
 		try {
-			
+
 			#------------------------------
 			# Handle the person first
 			#------------------------------
@@ -135,6 +135,31 @@ class NewTicket
 				$ticket_message->addAttachment($attach);
 			}
 
+			// Existing (pre-uploaded temp) attachments
+			if ($this->ticket->attach_ids) {
+				foreach ($this->ticket->attach_ids as $blob_id) {
+					if ($this->ticket->attach_ids_authed) {
+						list($blob_id, $blob_auth) = explode('-', $blob_auth_id, 2);
+						$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+						if ($blob && $blob->getAuthCode() != $blob_auth) {
+							$blob = false;
+						}
+					} else {
+						$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+					}
+					if ($blob) {
+						$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+						$attach['blob'] = $blob;
+						$attach['person'] = $person;
+
+						$ticket_message->addAttachment($attach);
+
+						$blob->is_temp = false;
+						App::getOrm()->persist($blob);
+					}
+				}
+			}
+
 			$this->new_message = $ticket_message;
 			$ticket->addMessage($ticket_message);
 
@@ -159,7 +184,7 @@ class NewTicket
 				App::getOrm()->rollback();
 				return $dupe_ticket;
 			}
-			
+
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 

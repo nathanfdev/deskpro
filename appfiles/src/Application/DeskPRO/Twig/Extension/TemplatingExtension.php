@@ -67,6 +67,7 @@ class TemplatingExtension extends \Twig_Extension
 			'object_path_agent'  => new \Twig_Function_Method($this, 'getObjectPathAgent'),
 			'get_type'  => new \Twig_Function_Method($this, 'getType'),
 			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
+			'security_token' => new \Twig_Function_Method($this, 'securityToken'),
         );
     }
 
@@ -117,6 +118,11 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $date->format($format);
+	}
+
+	public function securityToken($name = '', $timeout = 43200)
+	{
+		return App::getSession()->getEntity()->generateSecurityToken($name, $timeout);
 	}
 
 	public function debugVar($var)

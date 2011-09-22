@@ -353,6 +353,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
+		'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineLoginForm.js',
 	)
@@ -366,6 +367,11 @@ $CONFIG['user']['vendors'] = array(
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',

@@ -91,7 +91,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Is this a media upload (appears in the media browser etc). These are files that were
 	 * uploaded and are attached to things.
-	 * 
+	 *
 	 * @ORM_Mapping\Column(name="is_media_upload", type="boolean")
 	 */
 	protected $is_media_upload = false;
@@ -124,6 +124,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_temp", type="boolean")
+	 */
+	protected $is_temp = false;
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelBlob", mappedBy="blob", cascade={"persist", "remove", "merge"}, orphanRemoval=true)

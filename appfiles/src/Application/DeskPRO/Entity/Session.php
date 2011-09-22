@@ -168,11 +168,35 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * @param  string $secret Another component to add to the hash
 	 * @return string
 	 */
-	public function getSessionSecret($secret = '')
+	public function getSessionSecret($name = '')
 	{
-		return md5($this->id . $this->auth . App::getAppSecret() . $secret);
+		return md5($this->id . $this->auth . App::getAppSecret() . $name);
 	}
 
+
+	/**
+	 * Generate a security token based off of this session
+	 *
+	 * @param $name
+	 * @param int $timeout
+	 * @return string
+	 */
+	public function generateSecurityToken($name, $timeout = 43200)
+	{
+		return Util::generateStaticSecurityToken($this->getSessionSecret($name), $timeout);
+	}
+
+
+	/**
+	 * Check a security token to see if its valid
+	 *
+	 * @param $name
+	 * @return void
+	 */
+	public function checkSecurityToken($name, $token)
+	{
+		return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name));
+	}
 
 
 	public function updateLastTime()

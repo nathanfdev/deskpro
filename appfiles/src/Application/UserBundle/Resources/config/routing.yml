@@ -10,6 +10,10 @@ user_saverating:
   pattern:  /portal/save-rating/{object_type}/{object_id}
   defaults: { _controller: UserBundle:Portal:saveRating }
 
+user_accept_upload:
+  pattern:  /accept-temp-upload
+  defaults: { _controller: UserBundle:Main:acceptTempUpload }
+
 ################################################################################
 # Login/logout
 ################################################################################

@@ -24,4 +24,35 @@ class MainController extends AbstractController
 
 		return $res;
 	}
+
+	public function acceptTempUploadAction()
+	{
+		$security_token = $this->in->getString('security_token');
+
+		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
+			return $this->createJsonResponse(array(
+				'error' => 'invalid_security_token'
+			), 403);
+		}
+
+		$file = $this->request->files->get('attach');
+		$desc = App::getApi('filestorage')->createRandomPath();
+
+		$desc->write(file_get_contents($file->getRealPath()), array(
+			'content_type' => $file->getMimeType(),
+			'filename' => $file->getClientOriginalName(),
+			'is_temp' => true
+		));
+
+		$blob_id = $desc->getPath();
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+		return $this->createJsonResponse(array(array(
+			'blob_id' => $blob->getId(),
+			'blob_auth_id' => $blob->getAuthId(),
+			'download_url' => $blob->getDownloadUrl(true),
+			'filename' => $blob->getFilename(),
+			'filesize_readable' => $blob->getReadableFilesize()
+		)));
+	}
 }
