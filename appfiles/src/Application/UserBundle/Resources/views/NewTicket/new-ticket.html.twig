@@ -34,9 +34,9 @@
 				 # Email
 				 ###############}
 
-				{% include 'UserBundle:NewTicket:user-email.html.twig' %}
+				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]' } %}
 
-				<div class="dp-newticket-non-login">
+				<div class="dp-inline-non-login">
 				{###############
 				 # Name
 				 ###############}
@@ -201,6 +201,15 @@
 					</div>
 					<div class="dp-form-input">
 						<input type="file" />
+					</div>
+				</div>
+
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Please prove you are human!</label>
+					</div>
+					<div class="dp-form-input">
+						{% include 'UserBundle:Common:recaptcha.html.twig' %}
 					</div>
 				</div>
 

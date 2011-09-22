@@ -4,21 +4,57 @@
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
+	<li><a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
 {% endblock %}
 {% block kb_browse %}
 
 {% if category_children|length %}
-	{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
+	<div class="dp-content-block portal_kb">
+		<div class="dp-box">
+			<div class="dp-box-header">
+				{% if category %}
+					<h1>There are {{ category_children|length  }} Sub-Categories</h1>
+				{% else %}
+					<h1>Help Articles</h1>
+				{% endif %}
+			</div>
+
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
+				</div>
+				<br class="dp-clear" style="clear: left;" />
+			</div>
+		</div>
+	</div>
 {% endif %}
 
 {% if articles %}
-<ul class="dp-browse-list-full sep">
-	{% for article in articles %}
-	<li>
-		<h3><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h3>
-	</li>
-	{% endfor %}
-</ul>
+<div class="dp-content-block portal_kb">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			{% if category %}
+				<h1>There are {{ articles|length }} Articles</h1>
+			{% endif %}
+		</div>
+
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				<ul class="dp-browse-list-full sep">
+					{% for article in articles %}
+					<li>
+						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
+						<div class="dp-meta">
+							Author: {{ article.person.display_name }}
+							{% if comment_counts[article.id] %}| Comments: {{ comment_counts[article.id] }}{% endif %}
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
 {% endif %}
 
 {% endblock %}

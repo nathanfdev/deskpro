@@ -121,23 +121,31 @@ class IdeasController extends AbstractController
 		$category_counts = App::getEntityRepository('DeskPRO:IdeaCategory')->getAllCounts($this->person);
 		$has_voted_ids = $this->person->IdeaVotes->getVotesOnIdeas($idea_ids);
 
+		$comment_counts = array();
+		if ($ideas) {
+			$comment_counts = App::getEntityRepository('DeskPRO:IdeaCategory')
+				->getCommentHelper()
+				->countsOnCollection($ideas);
+		}
+
 		return $this->render('UserBundle:Ideas:filter.html.twig', array(
-			'idea_cats'       => $idea_cats,
+			'idea_cats'          => $idea_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
-			'status_subcats'    => $status_subcats,
+			'status_subcats'     => $status_subcats,
 			'sub_status_id'      => $sub_status_id,
-			'category'        => $category,
-			'cat_id'          => 0,
-			'category_path'   => $category_path,
-			'category_counts' => $category_counts,
-			'status'          => $status,
-			'parent_status'   => $parent_status,
-			'ideas'           => $ideas,
-			'pageinfo'        => $pageinfo,
-			'num_results'     => $total,
-			'search_options' => $search_options,
-			'has_voted_ids' => $has_voted_ids,
+			'category'           => $category,
+			'cat_id'             => 0,
+			'category_path'      => $category_path,
+			'category_counts'    => $category_counts,
+			'status'             => $status,
+			'parent_status'      => $parent_status,
+			'ideas'              => $ideas,
+			'comment_counts'     => $comment_counts,
+			'pageinfo'           => $pageinfo,
+			'num_results'        => $total,
+			'search_options'     => $search_options,
+			'has_voted_ids'      => $has_voted_ids,
 		));
 	}
 
@@ -158,7 +166,7 @@ class IdeasController extends AbstractController
 			$newidea->category_id = $this->in->getUint('category_id');
 		}
 
-		$form = $this->get('form.factory')->create(new NewIdeaType($num_votes_remain));
+		$form = $this->get('form.factory')->create(new NewIdeaType());
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));

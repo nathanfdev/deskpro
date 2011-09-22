@@ -94,12 +94,14 @@
 									<div class="dp-bound-faded"></div>
 								</div>
 								<div class="meta">
-									{{ idea.date_created|date('M d, Y') }} &middot;
+									Submitter: {{ idea.person.display_name }} |
+									{{ idea.date_created|date('M d, Y') }} |
 										{% if idea.status_category %}
 											{{ idea.status_category.title }}
 										{% else %}
 											{{ phrase('user.ideas.status_' ~ idea.status) }}
 										{% endif %}
+									{% if comment_counts[idea.id] %}| Comments: {{ comment_counts[idea.id] }}{% endif %}
 								</div>
 							</div>
 						</li>

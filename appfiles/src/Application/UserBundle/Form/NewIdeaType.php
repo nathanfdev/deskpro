@@ -37,14 +37,9 @@ class NewIdeaType extends AbstractType
 		if ($this->votes_remain) {
 			$num = min(3, $this->votes_remain);
 		}
-		
+
 		$builder->add('title', 'text');
 		$builder->add('content', 'textarea');
-
-		$builder->add('votes', 'choice', array(
-			'choices' => range(1, $num),
-			'expanded' => 1,
-		));
 
 		$builder->add('category_id', 'choice', array(
 			'choices' => App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames(' > ', false),

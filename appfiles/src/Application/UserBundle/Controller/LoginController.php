@@ -48,7 +48,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	{
 		return $this->login_helper->execLogoutAction();
 	}
-	
+
 	public function authenticateAction($usersource_id)
 	{
 		return $this->login_helper->execAuthenticateAction($usersource_id);
@@ -134,5 +134,52 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	public function resetPasswordNewPassQueryCode()
 	{
 		return $this->resetPasswordNewPassAction($this->in->getString('reset_code'));
+	}
+
+	public function inlineLoginAction()
+	{
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
+		$result = $adapter->authenticate();
+
+		if (!$result->isValid()) {
+			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true));
+			return $this->createJsonResponse(array(
+				'html' => $html,
+			));
+		}
+
+		$identity = $result->getIdentity();
+
+		$this->session->set('auth_person_id', $identity->getIdentity());
+
+		$person = $identity['person'];
+		$person->setLastLoginAt();
+		$person->loadHelper('IdeaVotes', array(
+			'visitor' => $this->session->getVisitor()
+		));
+		$person->loadHelper('HelpdeskUser', array(
+			'session' => $this->session,
+			'visitor' => $this->session->getVisitor()
+		));
+
+		$this->person = $person;
+
+		App::setCurrentPerson($person);
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person));
+		$html_userbar = $this->renderView('UserBundle:Common:layout-userbar.html.twig', array('person' => $person));
+
+		return $this->createJsonResponse(array(
+			'html' => $html,
+			'sections_replace' => array(
+				'dp_userbar' => $html_userbar,
+			),
+			'person_id' => $person['id'],
+			'name' => $person['name']
+		));
 	}
 }

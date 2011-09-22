@@ -94,6 +94,13 @@ class NewsController extends AbstractController
 			$show_more = true;
 		}
 
+		$comment_counts = array();
+		if ($news) {
+			$comment_counts = App::getEntityRepository('DeskPRO:NewsCategory')
+				->getCommentHelper()
+				->countsOnCollection($news);
+		}
+
 		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
 
 		return $this->render($tpl, array(
@@ -103,6 +110,7 @@ class NewsController extends AbstractController
 			'category_counts' => $category_counts,
 			'category_path' => $category_path,
 			'news_entries' => $news,
+			'comment_counts' => $comment_counts,
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
 			'list_type' => $list_type,

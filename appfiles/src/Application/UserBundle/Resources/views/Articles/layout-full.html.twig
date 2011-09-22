@@ -1,21 +1,5 @@
 {% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
 {% block content %}
-<div class="dp-content-block portal_kb">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			{% if category %}
-				<h1>Help Articles: {{category.title}}</h1>
-			{% else %}
-				<h1>Help Articles</h1>
-			{% endif %}
-		</div>
-
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				{% block kb_browse %}{% endblock %}
-				<br class="dp-clear" style="clear: left;" />
-			</div>
-		</div>
-	</div>
-</div>
+{% block kb_browse %}{% endblock %}
+<br class="dp-clear" style="clear: left;" />
 {% endblock %}

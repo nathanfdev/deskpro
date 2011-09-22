@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Searcher\DownloadSearch;
@@ -22,6 +23,33 @@ use Orb\Util\Strings;
 class DownloadCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
+
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	protected $_comment_helper = null;
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	public function getCommentHelper()
+	{
+		if ($this->_comment_helper !== null) {
+			return $this->_comment_helper;
+		}
+
+		$this->_comment_helper = new CommentHelper(
+			$this->getEntityManager(),
+			$this,
+			$this->getEntityName(),
+			$this->getClassMetadata(),
+			'DeskPRO:DownlaodComment',
+			'download_comments',
+			'download_id'
+		);
+
+		return $this->_comment_helper;
+	}
 
 	/**
 	 * Get an array of categories

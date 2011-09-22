@@ -84,12 +84,20 @@ class DownloadsController extends AbstractController
 
 		$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
 
+		$comment_counts = array();
+		if ($downloads) {
+			$comment_counts = App::getEntityRepository('DeskPRO:DownloadCategory')
+				->getCommentHelper()
+				->countsOnCollection($downloads);
+		}
+
 		return $this->render('UserBundle:Downloads:browse.html.twig', array(
 			'categories' => $categories,
 			'category' => $category,
 			'category_counts' => $category_counts,
 			'category_path' => $category_path,
 			'downloads' => $downloads,
+			'comment_counts' => $comment_counts,
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
 			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),

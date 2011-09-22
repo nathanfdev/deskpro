@@ -18,6 +18,10 @@ user_login:
   pattern: /login
   defaults: { _controller: UserBundle:Login:index }
 
+user_login_inline:
+  pattern: /login/inline-login
+  defaults: { _controller: UserBundle:Login:inlineLogin }
+
 user_logout:
   pattern: /logout
   defaults: { _controller: UserBundle:Login:logout }

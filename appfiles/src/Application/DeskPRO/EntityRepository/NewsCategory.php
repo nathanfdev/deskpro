@@ -11,25 +11,48 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 
-use Doctrine\ORM\Query,
-    Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ORM\Nested,
-    Gedmo\Exception\InvalidArgumentException,
-    Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Idea as NewsEntity;
 use Application\DeskPRO\Searcher\NewsSearch;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class NewsCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
+
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	protected $_comment_helper = null;
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	public function getCommentHelper()
+	{
+		if ($this->_comment_helper !== null) {
+			return $this->_comment_helper;
+		}
+
+		$this->_comment_helper = new CommentHelper(
+			$this->getEntityManager(),
+			$this,
+			$this->getEntityName(),
+			$this->getClassMetadata(),
+			'DeskPRO:NewsComment',
+			'news_comments',
+			'news_id'
+		);
+
+		return $this->_comment_helper;
+	}
 
 	/**
 	 * Get an array of categories

@@ -22,6 +22,37 @@
 			<div class="dp-box-content dp-form">
 				<form action="{{ path('user_ideas_newidea') }}" method="post">
 				<input type="hidden" name="process" value="1" />
+
+					{###############
+					 # Email
+					 ###############}
+
+					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'idea[person][email]' } %}
+
+					{###############
+					 # Name
+					 ###############}
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Your Name *</label>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.person.name) }}
+						</div>
+					</div>
+
+					{###############
+					 # Categor
+					 ###############}
+
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Category *</label>
+						</div>
+						<td>{{ form_widget(form.category_id) }}</td>
+					</div>
+
+				</form>
 			</div>
 		</div>
 	</div>

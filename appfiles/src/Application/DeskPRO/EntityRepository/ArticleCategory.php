@@ -14,6 +14,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Searcher\ArticleSearch;
@@ -23,8 +24,32 @@ use Orb\Util\Strings;
 
 class ArticleCategory extends AbstractCategoryRepository
 {
-	protected $_agent_cat_helper;
-	protected $_user_cat_helper;
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	protected $_comment_helper = null;
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\CommentHelper
+	 */
+	public function getCommentHelper()
+	{
+		if ($this->_comment_helper !== null) {
+			return $this->_comment_helper;
+		}
+
+		$this->_comment_helper = new CommentHelper(
+			$this->getEntityManager(),
+			$this,
+			$this->getEntityName(),
+			$this->getClassMetadata(),
+			'DeskPRO:ArticleComment',
+			'article_comments',
+			'article_id'
+		);
+
+		return $this->_comment_helper;
+	}
 
 	public function getCategoriesById(array $ids)
 	{

@@ -354,6 +354,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
+		'javascripts/DeskPRO/User/InlineLoginForm.js',
 	)
 );
 
