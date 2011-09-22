@@ -13,31 +13,49 @@ DeskPRO.User.Window = new Orb.Class({
 
 	initPage: function() {
 
-		// Last block on page fill rest of the height
-		if (!$('body').is('.dp-no-resize-block')) {
+		var calcHeights = function() {
 			var sidebar = $('#dp_sidebar');
 			var content = $('#dp_content');
+			var blocks  = $('#dp_content .dp-content-block');
 
-			if (sidebar.height() > content.height()) {
-				var blocks  = $('#dp_content .dp-content-block');
-				var last = blocks.last();
+			// Last block on page fill rest of the height
+			if (!$('body').is('.dp-no-resize-block')) {
+				if (sidebar.height() > content.height()) {
 
-				if (blocks.length == 1) {
-					var h = sidebar.height();
-				} else {
-					var l;
-					var fromTop = 0;
+					var last = blocks.last();
 
-					for (l = 0; l < blocks.length-1; l++) {
-						var fromTop = blocks.eq(l).outerHeight();
+					if (blocks.length == 1) {
+						var h = sidebar.height();
+					} else {
+						var l;
+						var fromTop = 0;
+
+						for (l = 0; l < blocks.length-1; l++) {
+							var fromTop = blocks.eq(l).outerHeight();
+						}
+
+						var h = sidebar.height() - fromTop;
 					}
 
-					var h = sidebar.height() - fromTop;
+					last.css('min-height', h);
 				}
-
-				last.css('height', h);
 			}
-		}
+
+			$('.dp-with-nav.dp-box-content').each(function() {
+				var contentBox = $(this);
+				var blockBox = contentBox.closest('.dp-content-block');
+
+				var top = 40;
+				var bottom = contentBox.height() + top;
+
+				contentBox.css('min-height', blockBox.height());
+				if (bottom < blockBox.height()) {
+					contentBox.css('min-height', blockBox.height() - top - 90);
+				}
+			});
+		};
+
+		calcHeights();
 
 		if (this.PAGE) {
 			this.PAGE.initPage();
