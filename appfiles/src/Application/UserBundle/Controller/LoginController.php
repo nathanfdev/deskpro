@@ -73,6 +73,9 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
 
 		if (!$person) {
+			if ($this->request->isXmlHttpRequest()) {
+				return $this->createJsonResponse(array('error' => 'invalid_email'));
+			}
 			return $this->resetPasswordAction(true);
 		}
 
@@ -94,8 +97,10 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		App::getMailer()->send($message);
 
-		return $this->render('UserBundle:Login:reset-password-sent.html.twig', array(
-		));
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' =>1 ));
+		}
+		return $this->render('UserBundle:Login:reset-password-sent.html.twig', array());
 	}
 
 	public function resetPasswordNewPassAction($code)

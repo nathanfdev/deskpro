@@ -1494,14 +1494,43 @@ ul.dp-ideas-list .meta {
 box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 	font-size: 11px;
+
+	width: 232px;
 }
 
 #dp_login_box .dp-login-box-inner {
 	padding: 8px;
 }
 
+#dp_login_box dl {
+	margin-bottom: 0;
+}
+
 #dp_login_box input {
 	padding: 2px;
+}
+
+#dp_login_box .dp-reset-section .is-loading {
+	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 50% 0;
+	padding-top: 14px;
+	display: none;
+}
+
+#dp_login_box .dp-reset-section.loading .is-loading {
+	display: block;
+}
+#dp_login_box .dp-reset-section.loading .not-loading {
+	display: none;
+}
+
+#dp_login_box .dp-reset-section .dp-btn-row {
+	text-align: center;
+	margin-top: 4px;
+}
+
+#dp_login_box .dp-reset-section .dp-btn-row a {
+	cursor: pointer;
+	font-size: 9px;
 }
 
 #dp_login_box dt {

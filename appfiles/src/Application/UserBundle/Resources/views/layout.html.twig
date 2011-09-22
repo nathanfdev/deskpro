@@ -51,12 +51,37 @@
 		<div class="dp-login-box-inner">
 			<dl>
 				<dt>Email</dt>
-				<dd><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></dd>
-
-				<dt>Password <em class="forgot"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></dt>
-				<dd><input type="password" value="" name="password" id="password" size="40" tabindex="2" /></dd>
+				<dd><input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" /></dd>
 			</dl>
-			<input class="btn" type="submit" value="Log In" />
+			<div class="dp-login-section">
+				<dl>
+					<dt>Password <em class="forgot"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></dt>
+					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
+				</dl>
+				<input class="btn" type="submit" value="Log In" />
+			</div>
+			<div class="dp-reset-section" style="display: none">
+				<div class="dp-reset-desc">
+					Forgot your password? Fill in your email address above, and then
+					click the button below.
+					<br />
+					<div class="dp-btn-row">
+						<div class="not-loading">
+							<button class="btn small dp-do-send">Send Reset Instructions</button>
+							<br /><a class="back">or go back to the login form</a>
+						</div>
+						<div class="is-loading">
+							Please Wait
+						</div>
+					</div>
+				</div>
+				<div class="dp-reset-sent" style="display: none">
+					If we have an account with this email address, then we have sent you
+					instructions on how to reset your password.
+
+					<center><br /><br /><a class="back">Go back to the login form</a></center>
+				</div>
+			</div>
 		</div>
 	<form>
 </div>
