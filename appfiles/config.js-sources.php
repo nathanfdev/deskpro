@@ -199,7 +199,6 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/FaviconBadge.js',
 		'javascripts/DeskPRO/Agent/MediaBrowser.js',
 		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
-		'javascripts/DeskPRO/Agent/Widgetable.js',
 
 		'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
@@ -347,7 +346,6 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
-		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
