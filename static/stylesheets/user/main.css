@@ -40,7 +40,6 @@ ul,ol{margin:0 0 18px 25px;}
 ul ul,ul ol,ol ol,ol ul{margin-bottom:0;}
 ul{list-style:disc;}
 ol{list-style:decimal;}
-li{line-height:18px;color:#808080;}
 ul.unstyled{list-style:none;margin-left:0;}
 dl{margin-bottom:18px;}dl dt,dl dd{line-height:18px;}
 dl dt{font-weight:bold;}
@@ -1007,6 +1006,11 @@ ul.dp-ideas-list .meta {
 	marign-top: 6px;
 }
 
+.dp-ideas-page .dp-box-nav .dp-sort-options {
+	font-size: 10px;
+	margin-top: 6px;
+}
+
 /**********************************************************
 * Sidebar
 **********************************************************/
@@ -1137,11 +1141,6 @@ ul.dp-ideas-list .meta {
 
 .dp-content-block .dp-box  .dp-box-content {
 	background-color: #fff;
-}
-
-.dp-content-block .dp-box  .dp-box-content ul li,
-.dp-content-block .dp-box  .dp-box-content ol li {
-	color: #404040;
 }
 
 .dp-nav-block li, .dp-contact-block li {
@@ -1278,9 +1277,6 @@ ul.dp-ideas-list .meta {
 	margin-left: 8px;
 	color: #404040;
 }
-
-.dp-box-comments
-
 
 .dp-twitter-list {
 
@@ -1881,4 +1877,157 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	background: url(../../images/loading-big-circle.gif) no-repeat 50% 0;
 	padding-top: 35px;
 	margin: 30px;
+}
+
+
+
+
+ul.dp-ticketlist {}
+
+ul.dp-ticketlist > li {
+	margin-bottom: 10px;
+}
+
+ul.dp-ticketlist ul.dp-meta li:first-child {
+	margin-left: 0;
+	padding-left: 0;
+	border-left: none;
+}
+
+ul.dp-ticketlist ul.dp-meta li {
+	font-size: 11px;
+	color: #808080;
+	display: inline;
+	margin-left: 3px;
+	padding-left: 6px;
+	border-left: 1px solid #C4C6C6;
+}
+
+
+.dp-ticket-info {
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #D9DBDB;
+}
+
+.dp-ticket-info dl dt {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.dp-status {
+	float: right;
+	border-radius: 10px;
+	padding: 1px 15px 1px 15px;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 0px 1px 0px #858585;
+	filter: dropshadow(color=#858585, offx=0, offy=1);
+}
+
+.dp-status.dp-status-open {
+	background-color: #72C894;
+}
+
+.dp-status.dp-status-resolved {
+	background-color: #B5C1C8;
+}
+
+.dp-status.dp-status-closed {
+	background-color: #A7A4A4;
+}
+
+
+.dp-ticket-page .dp-messages {
+
+}
+
+.dp-ticket-page .dp-messages h4 {
+	border-bottom: 1px solid #D9DBDB;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.dp-ticket-page .dp-messages ul li {
+	position: relative;
+	border-top: 1px solid #D9DBDB;
+	padding: 15px 15px 0 15px;
+	margin-top: 10px;
+	font-size: 11px;
+	clear: left;
+	line-height: 125%;
+}
+
+.dp-ticket-page .dp-messages ul li:first-of-type {
+	border-top: none;
+	margin-top: none;
+	padding-top: 10px;
+}
+
+.dp-ticket-page .dp-messages ul li > .author {
+	float: left;
+	width: 80px;
+	text-align: center;
+	line-height: 125%;
+}
+
+.dp-ticket-page .dp-messages ul li > .author strong {
+	font-weight: normal;;
+	padding-top: 8px;
+}
+
+.dp-ticket-page .dp-messages ul li > .post {
+	margin-left: 85px;
+}
+
+.dp-ticket-page .dp-messages .feedback-link {
+	position: absolute;
+	bottom: 0px;
+	right: 10px;
+	color: #AAA;
+	font-size: 10px;
+}
+
+.dp-ticket-page .dp-messages .dp-date  {
+	float:right;
+	font-size: 10px;
+	color: #999;
+}
+
+.dp-ticket-page .dp-messages .feedback-link a {
+	display: block;
+	float: right;
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+.dp-ticket-page .dp-messages .feedback-link a:hover,
+.dp-ticket-page .dp-messages .feedback-link a.on {
+	opacity: 1;
+}
+
+
+.dp-ticket-page .dp-messages .feedback-link a.helpful {
+	background-image: url(../../images/icons/thumb_up.png);
+}
+
+.dp-ticket-page .dp-messages .feedback-link a.not-helpful {
+	background-image: url(../../images/icons/thumb_down.png);
+}
+
+.dp-ticket-page .dp-messages li:hover .feedback-link,
+.dp-ticket-page .dp-messages li:hover .feedback-link a {
+	color: #555;
+}
+
+.dp-ticket-page .new-reply textarea {
+	width: 95%;
+	height: 160px;
 }

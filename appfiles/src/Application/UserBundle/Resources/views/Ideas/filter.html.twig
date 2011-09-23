@@ -35,16 +35,11 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
-<div class="dp-content-block portal_kb">
+<div class="dp-content-block dp-ideas-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
 			<div class="dp-box-options">
-				{% if status != 'popular' %}
-					Sort by:
-						<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">Votes</a>
-						/
-						<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date Submitted</a>
-				{% endif %}
+				<a class="btn small" href="{{ path('user_ideas_newidea') }}">Submit Idea</a>
 			</div>
 			<h1>
 				<a href="{{ path('user_ideas_all') }}">Ideas</a>
@@ -75,6 +70,16 @@
 						</ul>
 					</li>
 				</ul>
+
+				{% if status != 'popular' %}
+					<div class="dp-sort-options">
+						Sort by:<br />
+							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">Votes</a>
+							/
+							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date Submitted</a>
+					</div>
+				{% endif %}
+
 				<ul class="sep">
 					<li class="dp-title">Category</li>
 					<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': status, 'slug': 'all'}) }}">All</a></li>

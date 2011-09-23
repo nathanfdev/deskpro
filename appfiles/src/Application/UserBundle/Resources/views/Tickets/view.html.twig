@@ -52,15 +52,38 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 {% block content %}
+<div class="dp-content-block dp-ticket-page">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>{{ ticket.subejct }}</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				{% if ticket.hidden_status == 'validating' %}
+					<div style="background-color: #FFF9DE; border: 2px solid #C4BEA3; margin-bottom: 15px; padding: 8px;">
+						<strong style="color:#B31010">Important</strong>! You still need to validate your
+						email address ({{ticket.person_email.email}}) before your ticket will be read by our agents.
+						Check your email now and click on the link.
+					</div>
+				{% endif %}
 
-{% if ticket.hidden_status == 'validating' %}
-	<div style="background-color: #FFF9DE; border: 2px solid #C4BEA3; margin-bottom: 15px; padding: 8px;">
-		<strong style="color:#B31010">Important</strong>! You still need to validate your
-		email address ({{ticket.person_email.email}}) before your ticket will be read by our agents.
-		Check your email now and click on the link.
+				<div class="dp-ticket-info">
+					<dl>
+						{% if ticket.department %}
+							<dt>{{ phrase('user.tickets.department') }}</dt>
+							<dd>
+								{{ ticket.department.full_title }}
+							</dd>
+						{% endif %}
+					</dl>
+				</div>
+			</div>
+		</div>
 	</div>
-{% endif %}
+</div>
 
+
+{#
 <div style="float:right">
 	<a href="{{ path('user_tickets_modify', {'ticket_ref':ticket.ref}) }}">Modify ticket properties</a>
 </div>
@@ -155,4 +178,6 @@ $(document).ready(function() {
 </div>
 {{ form_rest(newreply_form) }}
 </form>
+#}
+
 {% endblock %}

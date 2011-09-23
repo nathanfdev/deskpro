@@ -5,4 +5,5 @@
 
 	'user.field_required' => 'Required',
 
+	'user.unassigned' => 'Unassigned',
 );

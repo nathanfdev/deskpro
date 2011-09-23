@@ -35,56 +35,143 @@ ul.attachment-list > li img.preview {
 	<li><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
-<div class="content-item">
-	<div class="heading">
-		<h2>{{ ticket.subject }}</h2>
-	</div>
-	<div class="content-list" style="margin-bottom: 8px;">
-		<div class="item def-list">
-			<dl>
-				<dt>{{ phrase('core_tickets.department') }}</dt>
-				<dd>{{ phrase_object(ticket.department, 'full') }}</dd>
-
-			{% if ticket.category %}
-				<dt>{{ phrase('core_tickets.category') }}</dt>
-				<dd>{{ phrase_object(ticket.category, 'full') }}</dd>
+<div class="dp-content-block dp-ticket-page">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			{% if ticket.status == 'open' or ticket.status == 'pending' %}
+				<div class="dp-status dp-status-open">Open</div>
+			{% elseif ticket.status == 'resolved' %}
+				<div class="dp-status dp-status-resolved">Resolved</div>
+			{% elseif ticket.status == 'closed' %}
+				<div class="dp-status dp-status-closed">Closed</div>
 			{% endif %}
+			<h1>{{ ticket.subject }}</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				{# Ticket Info #}
+				<div class="dp-ticket-info">
+					<dl>
+						<dt>{{ phrase('user.department') }}</dt>
+						<dd>{{ phrase_object(ticket.department, 'full') }}</dd>
 
-			{% if ticket.product %}
-				<dt>{{ phrase('core_tickets.product') }}</dt>
-				<dd>{{ phrase_object(ticket.product, 'full') }}</dd>
-			{% endif %}
+					{% if ticket.category %}
+						<dt>{{ phrase('user.tickets.category') }}</dt>
+						<dd>{{ phrase_object(ticket.category, 'full') }}</dd>
+					{% endif %}
 
-			{% if ticket.priority %}
-				<dt>{{ phrase('core_tickets.priority') }}</dt>
-				<dd>{{ phrase_object(ticket.priority) }}</dd>
-			{% endif %}
+					{% if ticket.product %}
+						<dt>{{ phrase('user.product') }}</dt>
+						<dd>{{ phrase_object(ticket.product, 'full') }}</dd>
+					{% endif %}
 
-				<dt>{{ phrase('core_tickets.status') }}</dt>
-				<dd>{{ phrase('core_tickets.status_' ~ ticket.status) }}</dd>
+					{% if ticket.priority %}
+						<dt>{{ phrase('user.tickets.priority') }}</dt>
+						<dd>{{ phrase_object(ticket.priority) }}</dd>
+					{% endif %}
 
-				<dt>{{ phrase('core_tickets.agent') }}</dt>
-				<dd>{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}</dd>
+						<dt>{{ phrase('user.tickets.agent') }}</dt>
+						<dd>{{ ticket.agent.display_name|default(phrase('user.unassigned')) }}</dd>
 
-				<dt>Ticket Starter</dt>
-				<dd>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</dd>
+						{% if ticket.person.id != app.user.id %}
+							<dt>Ticket Starter</dt>
+							<dd>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</dd>
+						{% endif %}
 
-				{% if user_participants|length %}
-					<dt>CCed</dt>
-					<dd>
-						<ul>
-							{% for part in user_participants %}
-								<li>
-									{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
-								</li>
-							{% endfor %}
-						</ul>
-					</dd>
-				{% endif %}
-			</dl>
+						{% if user_participants|length %}
+							<dt>CCed</dt>
+							<dd>
+								<ul>
+									{% for part in user_participants %}
+										<li>
+											{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+										</li>
+									{% endfor %}
+								</ul>
+							</dd>
+						{% endif %}
+					</dl>
+				</div>
+				{# /Ticket Info #}
+
+				{# Messages #}
+				<div class="dp-messages">
+					<ul>
+						{% for message in ticket.displayable_messages %}
+							<li class="{% if message.person.is_agent %}agent-reply{% endif %}">
+								<div class="author">
+									{% if message.person %}
+										<img src="{{ message.person.getPictureUrl(60) }}" /><br />
+									{% endif %}
+									<strong>{{ message.person.display_name }}</strong>
+								</div>
+								<div class="post">
+									<div class="dp-date">{{ message.date_created|date('M j Y h:ia') }}</div>
+									{{ message.message_html|raw }}
+
+									{% if ticket_message_attachments[message.id] %}
+										<ul class="attachment-list">
+											{% for attach_id in ticket_message_attachments[message.id] %}
+												{% set ticket_attach = ticket_attachments[attach_id] %}
+												<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+													{% if ticket_attach.blob.isImage() %}
+														<img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
+													{% endif %}
+													<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+													<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+												</li>
+											{% endfor %}
+										</ul>
+									{%endif%}
+								</div>
+								{% if message.person.is_agent %}
+									<div class="feedback-link">
+										<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">Helpful</a>
+										<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">Not Helpful</a>
+									</div>
+								{% endif %}
+								<br class="dp-clear" style="clear:left" />
+							</li>
+						{% endfor %}
+
+						{# New Reply #}
+						<li class="new-reply">
+							<div class="dp-form">
+								<form action="{{ form_action }}" method="post">
+									<div class="dp-form">
+										<div class="dp-form-row">
+											<div class="dp-form-label">
+												<label>Add Reply</label>
+											</div>
+											<div class="dp-form-input">
+												<textarea name="newreply[message]" cols="120" rows="5" placeholder="Type your reply here..."></textarea>
+											</div>
+										</div>
+									</div>
+
+									<div class="dp-form-row">
+										<div class="dp-form-label">
+											<label>Attachments</label> <em class="desc">You may upload an attachment less than 5 MB</em>
+										</div>
+										<div class="dp-form-input">
+											{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+										</div>
+									</div>
+
+									<button class="btn primary" style="margin-top: 10px;">Submit Reply</button>
+								</form>
+							</div>
+						</li>
+						{# /New Reply #}
+					</ul>
+					{# /Messages #}
+				</div>
+			</div>
 		</div>
 	</div>
+</div>
 
+{#
 	{% if ticket.status == 'open' or ticket.status == 'pending' %}
 	<div style="text-align: right; padding: 0 4px 6px 0;">
 		<form action="{{ path('user_tickets_close', {'ticket_ref': ticket.ref}) }}" method="GET">
@@ -143,4 +230,5 @@ ul.attachment-list > li img.preview {
 		</ul>
 	</div>
 </div>
+#}
 {% endblock %}

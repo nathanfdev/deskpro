@@ -98,6 +98,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		foreach ($this->getTreeParents() as $p) {
 			$titles[] = $p['title'];
 		}
+		$titles[] = $this->title;
 
 		return $titles;
 	}
