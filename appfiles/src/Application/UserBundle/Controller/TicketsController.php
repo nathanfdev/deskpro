@@ -353,6 +353,10 @@ class TicketsController extends AbstractController
 
 		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
 
+		if ($this->in->getUint('rating')) {
+			$feedback->setRating(1);
+		}
+
 		return $this->render('UserBundle:Tickets:feedback.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
@@ -374,7 +378,7 @@ class TicketsController extends AbstractController
 
 		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
 		$feedback['message'] = $this->in->getString('message');
-		if ($this->in->getBool('rate')) {
+		if ($this->in->getBool('rating')) {
 			$feedback->rateUp();
 		} else {
 			$feedback->rateDown();

@@ -35,7 +35,7 @@ ul.attachment-list > li img.preview {
 	<li><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
-<div class="dp-content-block dp-ticket-page">
+<div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if ticket.status == 'open' or ticket.status == 'pending' %}
@@ -51,43 +51,56 @@ ul.attachment-list > li img.preview {
 			<div class="dp-box-content">
 				{# Ticket Info #}
 				<div class="dp-ticket-info">
-					<dl>
-						<dt>{{ phrase('user.department') }}</dt>
-						<dd>{{ phrase_object(ticket.department, 'full') }}</dd>
+					<ul>
+						<li>
+							<div class="label">{{ phrase('user.department') }}</div>
+							<div class="value">{{ phrase_object(ticket.department, 'full') }}</div>
+						</li>
 
-					{% if ticket.category %}
-						<dt>{{ phrase('user.tickets.category') }}</dt>
-						<dd>{{ phrase_object(ticket.category, 'full') }}</dd>
-					{% endif %}
+						{% if ticket.category %}
+							<li>
+								<div class="label">{{ phrase('user.tickets.category') }}</div>
+								<div class="value">{{ phrase_object(ticket.category, 'full') }}</div>
+							</li>
+						{% endif %}
 
-					{% if ticket.product %}
-						<dt>{{ phrase('user.product') }}</dt>
-						<dd>{{ phrase_object(ticket.product, 'full') }}</dd>
-					{% endif %}
+						{% if ticket.product %}
+							<li>
+								<div class="label">{{ phrase('user.product') }}</div>
+								<div class="value">{{ phrase_object(ticket.product, 'full') }}</div>
+							</li>
+						{% endif %}
 
-					{% if ticket.priority %}
-						<dt>{{ phrase('user.tickets.priority') }}</dt>
-						<dd>{{ phrase_object(ticket.priority) }}</dd>
-					{% endif %}
+						{% if ticket.priority %}
+							<li>
+								<div class="label">{{ phrase('user.tickets.priority') }}</div>
+								<div class="value">{{ phrase_object(ticket.priority) }}</div>
+							</li>
+						{% endif %}
 
 						{% if ticket.person.id != app.user.id %}
-							<dt>Ticket Starter</dt>
-							<dd>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</dd>
+							<li>
+								<div class="label">Ticket Starter</div>
+								<div class="value">{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</div>
+							</li>
 						{% endif %}
 
 						{% if user_participants|length %}
-							<dt>CCed</dt>
-							<dd>
-								<ul>
-									{% for part in user_participants %}
-										<li>
-											{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
-										</li>
-									{% endfor %}
-								</ul>
-							</dd>
+							<li>
+								<div class="label">CCed</div>
+								<div class="value">
+									<ul>
+										{% for part in user_participants %}
+											<li>
+												{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</li>
 						{% endif %}
-					</dl>
+					</ul>
+					<br class="dp-clear" style="clear:left" />
 				</div>
 				{# /Ticket Info #}
 
@@ -103,7 +116,9 @@ ul.attachment-list > li img.preview {
 									<strong>{{ message.person.display_name }}</strong>
 								</div>
 								<div class="post">
-									<div class="dp-date">{{ message.date_created|date('M j Y h:ia') }}</div>
+									<div class="dp-date">
+										<span class="timeago" title="{{ message.date_created|date('c') }}">{{ message.date_created|date('M j Y h:ia') }}</span>
+									</div>
 									{{ message.message_html|raw }}
 
 									{% if ticket_message_attachments[message.id] %}
@@ -121,8 +136,20 @@ ul.attachment-list > li img.preview {
 										</ul>
 									{%endif%}
 								</div>
-								{% if message.person.is_agent %}
+								{% if message.id == last_agent_message_id %}
 									<div class="feedback-link">
+										<span class="desc">
+											{% if user_ratings[message.id] == 1 %}
+												You rated this message as helpful
+											{% elseif user_ratings[message.id] == -1 %}
+												You rated this message as unhelpful
+											{% else %}
+												Was this reply helpful?
+											{% endif %}
+										</span>
+										<span class="desc-helpful">Helpful</span>
+										<span class="desc-not-helpful">Not Helpful</span>
+
 										<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">Helpful</a>
 										<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">Not Helpful</a>
 									</div>

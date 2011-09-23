@@ -227,10 +227,10 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .popover .title{background-color:#f5f5f5;padding:9px 15px;line-height:1;-webkit-border-radius:3px 3px 0 0;-moz-border-radius:3px 3px 0 0;border-radius:3px 3px 0 0;border-bottom:1px solid #eee;}
 .popover .content{background-color:#ffffff;padding:14px;-webkit-border-radius:0 0 3px 3px;-moz-border-radius:0 0 3px 3px;border-radius:0 0 3px 3px;-webkit-background-clip:padding-box;-moz-background-clip:padding-box;background-clip:padding-box;}.popover .content p,.popover .content ul,.popover .content ol{margin-bottom:0;}
 .fade{-webkit-transition:opacity 0.15s linear;-moz-transition:opacity 0.15s linear;-ms-transition:opacity 0.15s linear;-o-transition:opacity 0.15s linear;transition:opacity 0.15s linear;opacity:0;}.fade.in{opacity:1;}
-.label{padding:1px 3px 2px;background-color:#bfbfbf;font-size:9.75px;font-weight:bold;color:#ffffff;text-transform:uppercase;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}.label.important{background-color:#c43c35;}
-.label.warning{background-color:#f89406;}
-.label.success{background-color:#46a546;}
-.label.notice{background-color:#62cffc;}
+.dp-status-label{padding:1px 3px 2px;background-color:#bfbfbf;font-size:9.75px;font-weight:bold;color:#ffffff;text-transform:uppercase;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}.label.important{background-color:#c43c35;}
+.dp-status-label.warning{background-color:#f89406;}
+.dp-status-label.success{background-color:#46a546;}
+.dp-status-label.notice{background-color:#62cffc;}
 a { cursor: pointer; }
 select:focus{outline: none;}
 form {
@@ -249,6 +249,17 @@ body {
 	font-size: 11px;
 	margin-bottom: 50px;
 	font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
+}
+
+html, body { width: 100%; }
+
+html.dp-simple-popup, body.dp-simple-popup {
+	background-color: #ECF0F4;
+	margin-bottom: 0;
+}
+
+body.dp-simple-popup .dp-content-block {
+	margin-bottom: 0;
 }
 
 h1,h2,h3,h4,h5,h6,h7,h8 {
@@ -1917,6 +1928,10 @@ ul.dp-ticketlist ul.dp-meta li {
 	border-left: 1px solid #C4C6C6;
 }
 
+.dp-content-block.dp-ticket-page .dp-box > .dp-box-header {
+	margin-bottom: 10px;
+}
+
 
 .dp-ticket-info {
 	padding-bottom: 10px;
@@ -1924,10 +1939,24 @@ ul.dp-ticketlist ul.dp-meta li {
 	border-bottom: 1px solid #D9DBDB;
 }
 
-.dp-ticket-info dl dt {
+.dp-ticket-info ul li {
+	float: left;
+	display: block;
+	background-color: #ECF0F4;
+	border: 1px solid #D9DBDB;
+	padding: 4px;
+	margin-right: 8px;
+	min-width: 70px;
+}
+
+.dp-ticket-info ul li .label {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 13px;
 	font-weight: bold;
+}
+
+.dp-ticket-info ul li .value {
+	padding-left: 8px;
 }
 
 .dp-status {
@@ -2001,6 +2030,7 @@ ul.dp-ticketlist ul.dp-meta li {
 	right: 10px;
 	color: #AAA;
 	font-size: 10px;
+	line-height: 16px;
 }
 
 .dp-ticket-page .dp-messages .dp-date  {
@@ -2008,6 +2038,23 @@ ul.dp-ticketlist ul.dp-meta li {
 	font-size: 10px;
 	color: #999;
 }
+
+.dp-ticket-page .dp-messages .feedback-link span {
+	padding-right: 10px;
+}
+
+.dp-ticket-page .dp-messages .feedback-link .desc-helpful,
+.dp-ticket-page .dp-messages .feedback-link .desc-not-helpful {
+	display:none;
+}
+
+.dp-ticket-page .dp-messages .feedback-link.rating-helpful .desc-helpful { display: inline; }
+.dp-ticket-page .dp-messages .feedback-link.rating-helpful .desc,
+.dp-ticket-page .dp-messages .feedback-link.rating-helpful .desc-not-helpful { display: none; }
+
+.dp-ticket-page .dp-messages .feedback-link.rating-not-helpful .desc-not-helpful { display: inline; }
+.dp-ticket-page .dp-messages .feedback-link.rating-not-helpful .desc,
+.dp-ticket-page .dp-messages .feedback-link.rating-not-helpful .desc-helpful { display: none; }
 
 .dp-ticket-page .dp-messages .feedback-link a {
 	display: block;
@@ -2019,12 +2066,11 @@ ul.dp-ticketlist ul.dp-meta li {
 	overflow: hidden;
 	text-indent: -100px;
 	cursor: pointer;
-	opacity: 0.5;
 }
 
 .dp-ticket-page .dp-messages .feedback-link a:hover,
 .dp-ticket-page .dp-messages .feedback-link a.on {
-	opacity: 1;
+	opacity: 0.6;
 }
 
 

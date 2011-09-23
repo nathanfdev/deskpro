@@ -22,6 +22,8 @@ class TicketDisplay implements PersonContextInterface
 	protected $attachments;
 	protected $message_to_attach;
 
+	protected $user_ratings;
+
 	public function __construct(Ticket $ticket, Person $person)
 	{
 		$this->ticket = $ticket;
@@ -69,7 +71,7 @@ class TicketDisplay implements PersonContextInterface
 	public function getNotes()
 	{
 		if ($this->notes !== null) return $this->notes;
-		
+
 		$this->getMessages();
 
 		$this->notes = array();
@@ -79,7 +81,7 @@ class TicketDisplay implements PersonContextInterface
 				$this->notes[] = $message;
 			}
 		}
-		
+
 		return $this->notes;
 	}
 
@@ -131,8 +133,32 @@ class TicketDisplay implements PersonContextInterface
 		return $this->message_to_attach;
 	}
 
+	public function getFeedbackRatings()
+	{
+		if ($this->user_ratings !== null) return $this->user_ratings;
+
+		$this->user_ratings = App::getDb()->fetchAllKeyValue("
+			SELECT message_id, rating
+			FROM ticket_feedback
+			WHERE ticket_id = ? AND person_id = ?
+		", array($this->ticket->getId(), $this->person_context->getId()));
+
+		return $this->user_ratings;
+	}
+
 	public function getDisplayArray()
 	{
+		$last_user_message = 0;
+		$last_agent_message = 0;
+
+		foreach ($this->getMessages() as $message) {
+			if ($message->person->is_agent) {
+				$last_agent_message = $message->id;
+			} else {
+				$last_user_message = $message->id;
+			}
+		}
+
 		return array(
 			'ticket' => $this->ticket,
 
@@ -142,7 +168,12 @@ class TicketDisplay implements PersonContextInterface
 			'notes' => $this->getNotes(),
 			'messages' => $this->getMessages(),
 			'attachments' => $this->getAttachments(),
-			'message_to_attach' => $this->getMessagesToAttachments()
+			'message_to_attach' => $this->getMessagesToAttachments(),
+
+			'last_user_message_id' => $last_user_message,
+			'last_agent_message_id' => $last_agent_message,
+
+			'user_ratings' => $this->getFeedbackRatings(),
 		);
 	}
 }

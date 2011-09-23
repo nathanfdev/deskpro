@@ -1,16 +1,29 @@
 {% extends 'UserBundle::layout-simple-popup.html.twig' %}
 {% block content %}
-	<h4>Thank you for rating our support</h4>
+<div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h4>Thank you for rating our support</h4>
+		</div>
 
-	{% if feedback.rating == 1 %}
-		<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'message_id': message.id, 'close_win': 1}) }}">
-		<button class="dp-button">I've got what I needed, please close my ticket</button><br />
-		</form>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				{% if feedback.rating == 1 %}
+					<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'message_id': message.id, 'close_win': 1}) }}">
+						<p>
+							Thanks, we appreciate your feedback!</p>
+							<button class="btn primary small" style="display: inline">I have got what I needed, close my ticket now</button>
+						</p>
+					</form>
 
-		<button class="dp-butotn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
-	{% else %}
-		<p>Your feedback will be reviewed by the helpdesk managers. We hope we can do better in the future.</p>
+					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
+				{% else %}
+					<p>Your feedback will be reviewed by the helpdesk managers. We hope we can do better in the future.</p>
 
-		<button class="dp-butotn small" onclick="window.close();">Close this window</button>
-	{% endif %}
+					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

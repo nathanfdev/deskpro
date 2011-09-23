@@ -1,16 +1,40 @@
 {% extends 'UserBundle::layout-simple-popup.html.twig' %}
 {% block content %}
-	<h4>Was this message by {{message.person.display_name}} helpful?</h4>
+<div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h4>Rate message by {{message.person.display_name}}</h4>
+		</div>
 
-	Optionally leave a comment:<br />
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
+				<div class="dp-form">
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Was this message helpful?</label>
+						</div>
+						<div class="dp-form-input">
+							<label><input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} /> Helpful</label>
+							&nbsp;&nbsp;&nbsp;
+							<label><input type="radio" name="rating" value="0" {% if feedback.rating == -1 %}checked="checked"{% endif %} /> Not Helpful</label>
+						</div>
+					</div>
 
-	<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
-	<div style="text-align: center">
-		<textarea name="message" style="width: 90%; height: 60px; margin: 4px auto 10px auto;">{{feedback.message}}</textarea>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Optionally leave a comment</label>
+						</div>
+						<div class="dp-form-input">
+							<textarea name="message" style="width: 95%; height: 60px;">{{ feedback.message }}</textarea>
+						</div>
+					</div>
 
-		<button class="dp-button large green" name="rate" value="1">The message was helpful</button>
-		<br />
-		<button class="dp-button large red" name="rate" value="0" style="margin-top: 4px;">The message was not helpful</button>
+					<input class="btn primary" type="submit" value="Submit Feedback" />
+				</div>
+				</form>
+			</div>
+		</div>
 	</div>
-	</form>
+</div>
 {% endblock %}
