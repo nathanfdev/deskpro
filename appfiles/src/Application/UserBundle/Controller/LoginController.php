@@ -44,8 +44,12 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		return $this->login_helper->execIndexAction();
 	}
 
-	public function logoutAction()
+	public function logoutAction($auth)
 	{
+		if (!$this->session->getEntity()->checkSecurityToken('user_logout', $auth)) {
+			return $this->redirectRoute('user');
+		}
+
 		return $this->login_helper->execLogoutAction();
 	}
 

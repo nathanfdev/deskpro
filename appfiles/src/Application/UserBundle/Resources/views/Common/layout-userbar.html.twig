@@ -7,7 +7,7 @@
 		{% if app.user.HelpdeskUser.ticket_count %}
 			<a href="{{ path('user_tickets') }}">View my {{ app.user.HelpdeskUser.ticket_count }} Tickets</a> &middot;
 		{% endif %}
-		<a href="{{ path('user_logout') }}">Edit My Profile</a> &middot;
-		<a href="{{ path('user_logout') }}">Log Out</a>
+		<a href="{{ path('user_profile') }}">Edit My Profile</a> &middot;
+		<a href="{{ path('user_logout', {'auth': security_token('user_logou') }) }}">Log Out</a>
 	{% endif %}
 </div>

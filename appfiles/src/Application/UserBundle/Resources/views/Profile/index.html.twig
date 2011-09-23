@@ -3,104 +3,119 @@
 	<li><a href="{{ path('user_profile') }}">Profile</a></li>
 {% endblock %}
 {% block content %}
-<div class="content-item">
-	<div class="heading">
-		<h2>Profile</h2>
-	</div>
-	<div class="content-list">
-		<ul>
-			<li>
-				First Name / Last Name:<br />
-				{{ form_widget(form.first_name) }} {{ form_widget(form.last_name) }}
-			</li>
-			<li>
-				Timezone Region:<br />
-				{{ form_widget(form.timezone) }}
-			</li>
-			<li style="text-align: center;">
-				{{ form_rest(form) }}
-				<button class="dp-button x-small">Save</button>
-			</li>
-		</ul>
-	</div>
-</div>
-
-<div class="content-item">
-	<div class="heading">
-		<h2>Email Addresses</h2>
-	</div>
-	<div class="content-list">
-		<ul>
-			{% for email in app.user.emails %}
-				<li>
-					<div style="float:right">
-						<a class="remove icon-remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">x</a>
+<div class="dp-content-block dp-profile-page">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>Profile</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content dp-form">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>First Name</label>
 					</div>
-					{{ email.email }}
-					{% if email.is_validated %}
-						&bull;
-						{% if email.id == app.user.primary_email.id %}
-							Primary address
-						{% else %}
-							<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">Set as primary address</a>
-						{% endif %}
-					{% else %}
-						&bull; This email is not validated yet. <a href="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}">Validate it now</a>.
-					{% endif %}
-				</li>
-			{% endfor %}
-			<li>
-				<form action="{{ path('user_profile_emails_new') }}" method="post">
-					Add an email address to your account:<br />
-					<input type="text" name="new_email" value="" size="30" /> <button class="dp-button x-small">Add</button>
-				</form>
-			</li>
-		</ul>
-	</div>
-</div>
+					<div class="dp-form-input">
+						{{ form_widget(form.first_name) }}
+					</div>
+				</div>
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Last Name</label>
+					</div>
+					<div class="dp-form-input">
+						{{ form_widget(form.last_name) }}
+					</div>
+				</div>
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Timezone</label>
+					</div>
+					<div class="dp-form-input">
+						{{ form_widget(form.timezone) }}
+					</div>
+				</div>
 
-<div class="content-item">
-	<div class="heading">
-		<h2>Change Password</h2>
-	</div>
-	<div class="content-list">
-		{% if flash_message('invalid_current_password') %}
-			<div class="item">
-				You entered your current password incorrectly.
+				<button class="btn primary">Save</button>
 			</div>
-		{% endif %}
-		{% if flash_message('invalid_repeat_password') %}
-			<div class="item">
-				You didn't enter the same password in both fields.
-			</div>
-		{% endif %}
-		{% if flash_message('password_set') %}
-			<div class="item">
-				Password was updated successfully
-			</div>
-		{% endif %}
-		<div class="item">
-			<form action="{{ path('user_profile_changepassword') }}" method="post">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-				<td>
-					Current password:<br />
-					<input type="password" name="current_password" value="" />
-				</td>
-				<td>
-					New password:<br />
-					<input type="password" name="password" value="" />
-				</td>
-				<td>
-					Repeat:<br />
-					<input type="password" name="password2" value="" />
-				</td>
-				<td>
-					<button class="dp-button x-small">Change Password</button>
-				</td>
-			</tr></table>
-			</form>
 		</div>
 	</div>
 </div>
 
+<div class="dp-content-block dp-profile-page">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>Email Addresses</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content">
+				<ul class="dp-emails-list">
+					{% for email in app.user.emails %}
+					<li>
+						<div class="dp-controls">
+							<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">x</a>
+						</div>
+						{{ email.email }}
+						{% if email.is_validated %}
+							&bull;
+							{% if email.id == app.user.primary_email.id %}
+								Primary address
+							{% else %}
+								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">Set as primary address</a>
+							{% endif %}
+						{% else %}
+							&bull; This email is not validated yet. <a href="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}">Validate it now</a>.
+						{% endif %}
+					</li>
+					{% endfor %}
+					<li class="dp-new-email">
+						<form action="{{ path('user_profile_emails_new') }}" method="post">
+							Add an email address to your account:<br />
+							<input type="text" name="new_email" value="" size="30" /> <button class="dp-button x-small">Add</button>
+						</form>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="dp-content-block dp-profile-page">
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>Change Password</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<form action="{{ path('user_profile_changepassword') }}" method="post">
+				<div class="dp-box-content dp-form">
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Current Password</label>
+						</div>
+						<div class="dp-form-input">
+							<input type="password" name="current_password" value="" />
+						</div>
+					</div>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>New Password</label>
+						</div>
+						<div class="dp-form-input">
+							<input type="password" name="password" value="" />
+						</div>
+					</div>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Repeat Password</label>
+						</div>
+						<div class="dp-form-input">
+							<input type="password" name="password2" value="" />
+						</div>
+					</div>
+
+					<button class="btn primary">Change Password</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 {% endblock %}

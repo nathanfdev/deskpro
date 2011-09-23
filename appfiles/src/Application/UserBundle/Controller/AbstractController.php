@@ -14,6 +14,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	public function preAction($action, $arguments = null)
 	{
+		$this->person = $this->session->getPerson();
+		$this->person->loadHelper('IdeaVotes', array(
+			'visitor' => $this->session->getVisitor()
+		));
+		$this->person->loadHelper('HelpdeskUser', array(
+			'session' => $this->session,
+			'visitor' => $this->session->getVisitor()
+		));
+
 		if ($this instanceof RequireUserInterface) {
 			if (!$this->person['id']) {
 				if ($this->isPostRequest()) {
@@ -26,15 +35,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->redirect($redirect_url);
 			}
 		}
-
-		$this->person = $this->session->getPerson();
-		$this->person->loadHelper('IdeaVotes', array(
-			'visitor' => $this->session->getVisitor()
-		));
-		$this->person->loadHelper('HelpdeskUser', array(
-			'session' => $this->session,
-			'visitor' => $this->session->getVisitor()
-		));
 	}
 
 
