@@ -37,7 +37,7 @@ class Callback extends AbstractValidator
 	 */
 	protected $callback_value_arg_pos = 0;
 
-	
+
 
 	/**
 	 * $callback_args should contain ARG_PLACEHOLDER in the array where the value
@@ -46,12 +46,15 @@ class Callback extends AbstractValidator
 	 *
 	 * The callback must return an error code, or an array of error codes, upon error.
 	 * Return false if no errors.
-	 * 
+	 *
 	 * @param  mixed  $callback_fn    The callback to call
 	 * @param  array  $callback_args  The arguments to pass to the callback
 	 */
-	public function __construct($callback_fn, array $callback_args = array())
+	public function init()
 	{
+		$callback_fn = $this->getOption('callback_function');
+		$callback_args = $this->getOption('callback_args', array());
+
 		$this->callback_fn = $callback_fn;
 
 		// The position of the value in the callback must be defined by using the special
@@ -67,7 +70,7 @@ class Callback extends AbstractValidator
 	}
 
 
-	
+
 	/**
 	 * Check $value to see if its valid.
 	 *
@@ -82,7 +85,7 @@ class Callback extends AbstractValidator
 
 		if ($errors) {
 			if (!is_array($errors)) $errors = array($errors);
-			
+
 			foreach ($errors as $info) {
 				if (is_array($info)) {
 					$this->addError($info[0], $info[1]);

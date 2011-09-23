@@ -26,6 +26,15 @@
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
+				{% if errors|length %}
+					<div class="alert-message error">
+						Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+						<!--
+						{{ debug_var(error_fields) }}
+						{{ debug_var(errors) }}
+						-->
+					</div>
+				{% endif %}
 				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data">
 				<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 				<input type="hidden" name="process" value="1" />
@@ -34,54 +43,66 @@
 				 # Email
 				 ###############}
 
-				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]' } %}
+				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email } %}
 
 				<div class="dp-inline-non-login">
 				{###############
 				 # Name
 				 ###############}
-				<div class="dp-form-row">
+				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
 						<label>Your Name *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.person.name) }}
+						{% if error_fields['person.name'] %}
+							<div class="dp-error-explain">
+								Please enter your name
+							</div>
+						{% endif %}
 					</div>
 				</div>
 
 				{###############
 				 # Department
 				 ###############}
-				<div class="dp-form-row">
+				<div class="dp-form-row {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
 						<label>{{ phrase('user.department') }} *</label>
 					</div>
 					<div class="department_id_wrapper with-sub-options dp-form-input">
-						<select name="newticket[ticket][department_id]" class="department_id parent-option">
-							<option value=""></option>
-							{% for id,info in ticket_options.departments_hierarchy %}
-								<option value="{{id}}">{{info.title}}</option>
+						<div class="dp-select-wrapper">
+							<select name="newticket[ticket][department_id]" class="department_id parent-option">
+								<option value=""></option>
+								{% for id,info in ticket_options.departments_hierarchy %}
+									<option value="{{id}}">{{info.title}}</option>
+								{% endfor %}
+							</select>
+							{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
+								{% if parent_info.children|length %}
+								<div class="dp-sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
+									<select class="sub_department_id">
+										<option value=""></option>
+										{% for id,info in parent_info.children %}
+											<option value="{{id}}">{{info.title}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								{% endif %}
 							{% endfor %}
-						</select>
-						{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
-							{% if parent_info.children|length %}
-							<div class="dp-sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
-								<select class="sub_department_id">
-									<option value=""></option>
-									{% for id,info in parent_info.children %}
-										<option value="{{id}}">{{info.title}}</option>
-									{% endfor %}
-								</select>
+						</div>
+						{% if error_fields['ticket.department_id'] %}
+							<div class="dp-error-explain">
+								Please choose a department
 							</div>
-							{% endif %}
-						{% endfor %}
+						{% endif %}
 					</div>
 				</div>
 
 				{###############
 				 # Category
 				 ###############}
-				<div class="dp-form-row ticket_category standard-field ticket-display-field" style="display: none">
+				<div class="dp-form-row ticket_category standard-field ticket-display-field {% if error_fields['ticket.category_id'] %}dp-error{% endif %}" style="display: none">
 					<div class="dp-form-label">
 						<label>{{ phrase('user.tickets.category') }}</label>
 					</div>
@@ -104,6 +125,11 @@
 							</div>
 							{% endif %}
 						{% endfor %}
+						{% if error_fields['ticket.category_id'] %}
+							<div class="dp-error-explain">
+								Please choose a category
+							</div>
+						{% endif %}
 					</div>
 				</div>
 
@@ -111,7 +137,7 @@
 				 # Product
 				 ###############}
 				{% if form.ticket.product_id %}
-				<div class="dp-form-row ticket_product standard-field ticket-display-field" style="display: none">
+				<div class="dp-form-row ticket_product standard-field ticket-display-field {% if error_fields['ticket.product_id'] %}dp-error{% endif %}" style="display: none">
 					<div class="dp-form-label">
 						<label>{{ phrase('user.product') }}</label>
 					</div>
@@ -134,6 +160,11 @@
 							</div>
 							{% endif %}
 						{% endfor %}
+						{% if error_fields['ticket.product_id'] %}
+							<div class="dp-error-explain">
+								Please choose a product
+							</div>
+						{% endif %}
 					</div>
 				</div>
 				{% endif %}
@@ -142,12 +173,17 @@
 				 # Priority
 				 ###############}
 				{% if form.ticket.priority_id %}
-				<div class="dp-form-row ticket_priority standard-field ticket-display-field" style="display: none">
+				<div class="dp-form-row ticket_priority standard-field ticket-display-field {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}" style="display: none">
 					<div class="dp-form-label">
 						<label>{{ phrase('user.tickets.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+						{% if error_fields['ticket.priority_id'] %}
+							<div class="dp-error-explain">
+								Please choose a priority
+							</div>
+						{% endif %}
 					</div>
 				</div>
 				{% endif %}
@@ -168,12 +204,17 @@
 				{###############
 				 # Subject
 				 ###############}
-				<div class="dp-form-row">
+				<div class="dp-form-row {% if error_fields['ticket.subject'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
 						<label>{{ phrase('user.tickets.subject') }} *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.ticket.subject) }}
+						{% if error_fields['ticket.subject'] %}
+							<div class="dp-error-explain">
+								Please enter a subject of at least 5 characters
+							</div>
+						{% endif %}
 					</div>
 				</div>
 
@@ -187,12 +228,17 @@
 					</div>
 				</div>
 
-				<div class="dp-form-row">
+				<div class="dp-form-row {% if error_fields['ticket.message'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
 						<label>What is your question?</label>
 					</div>
 					<div class="dp-form-input">
-						<textarea class="dp-message" id="newticket_ticket_message" name="newticket[ticket][message]"></textarea>
+						{{ form_widget(form.ticket.message, {'attr': {'class': 'dp-message'}}) }}
+						{% if error_fields['ticket.message'] %}
+							<div class="dp-error-explain">
+								Please enter at least 10 characters
+							</div>
+						{% endif %}
 					</div>
 				</div>
 				<div class="dp-form-row">
@@ -211,6 +257,11 @@
 						</div>
 						<div class="dp-form-input">
 							{{ captcha_html|raw }}
+							{% if error_fields['person.name'] %}
+								<div class="dp-error-explain">
+									The code you entered is incorrect.
+								</div>
+							{% endif %}
 						</div>
 					</div>
 				{% endif %}

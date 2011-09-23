@@ -6,12 +6,17 @@
 		</div>
 		{% endif %}
 
-		<div class="dp-form-row">
+		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
 				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-inline-login-open">log in</a>.</em>
 			</div>
 			<div class="dp-form-input">
-				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="" />
+				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" />
+				{% if error_fields[form_key_prefix~'email'] %}
+					<div class="dp-error-explain">
+						Enter a valid email address
+					</div>
+				{% endif %}
 			</div>
 		</div>
 
@@ -37,7 +42,7 @@
 			</div>
 			<div class="dp-form-input">
 				{{ app.user.primary_email_address }}
-				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" />
+				<input type="hidden" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" />
 			</div>
 		</div>
 	{% endif %}

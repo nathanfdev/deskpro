@@ -1689,6 +1689,26 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	margin-top: 6px;
 }
 
+.dp-form-row.dp-error input, .dp-form-row.dp-error textarea {
+	border: 1px solid #C90119;
+}
+
+.dp-form-row.dp-error .dp-select-wrapper {
+	border: 1px solid #C90119;
+	border-radius: 3px;
+	width: 95%;
+	padding: 5px;
+}
+
+.dp-form-row.dp-error .dp-select-wrapper select {
+
+}
+
+.dp-form-row.dp-error .dp-error-explain {
+	color: #920010;
+	margin: 4px;
+}
+
 .dp-inline-login .dp-btn-row button {
 	margin: 0 6px 0 6px;
 }

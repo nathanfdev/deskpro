@@ -39,19 +39,18 @@ class NewTicketController extends AbstractController
 
 		$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
 
+		$errors = array();
+		$error_fields = array();
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
-
-			if ($captcha) {
-				if (!$captcha->validate()) {
-					die('invalid captcha');
-				}
-			}
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'uint', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 
-			if (true or $form->isValid()) {
+			$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+
+			if ($validator->isValid($newticket)) {
 
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
@@ -106,8 +105,8 @@ class NewTicketController extends AbstractController
 				// We get here if the user is a real user and they're logged in
 				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']));
 			} else {
-				print_r($form->getErrors());
-				exit;
+				$errors = $validator->getErrors(true);
+				$error_fields = $validator->getErrorGroups(true);
 			}
 		}
 
@@ -139,6 +138,7 @@ class NewTicketController extends AbstractController
 			'departments' => $departments,
 			'ticket_categories' => $ticket_categories,
 
+			'newticket' => $newticket,
 			'ticket_options' => $newticket_formtype->getTicketOptions(),
 			'newticket_formtype' => $newticket_formtype,
 			'custom_fields' => $newticket_formtype->getTicketFields(),
@@ -147,6 +147,8 @@ class NewTicketController extends AbstractController
 			'ticket_display_js' => $ticket_display_js,
 
 			'captcha_html' => $captcha_html,
+			'errors' => $errors,
+			'error_fields' => $error_fields,
 		));
     }
 

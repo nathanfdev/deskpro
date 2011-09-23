@@ -20,9 +20,9 @@ class ZendValidator extends AbstractValidator
 	 */
 	protected $zend_validator;
 
-	public function __construct(\Zend\Validator\AbstractValidator $zend_validator)
+	public function init()
 	{
-		$this->zend_validator = $zend_validator;
+		$this->zend_validator = $this->getOption('zend_validator');
 	}
 
 
@@ -58,11 +58,11 @@ class ZendValidator extends AbstractValidator
 
 		$zend_validator = Util::callUserConstructorArray($classname, $args);
 
-		return new self($zend_validator);
+		return new self(array('zend_validator' => $zend_validator));
 	}
 
 
-	
+
 	/**
 	 * Check $value to see if its valid.
 	 *
@@ -80,7 +80,7 @@ class ZendValidator extends AbstractValidator
 		return false;
 	}
 
-	
+
 
 	/**
 	 * @return Zend\Validator\AbstractValidator
