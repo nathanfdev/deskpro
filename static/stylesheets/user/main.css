@@ -402,6 +402,14 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 	min-height: 100px;
 	z-index: 100;
 	box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.6);
+
+	border-radius: 0 0 6px 6px;
+	border: 1px solid #B4B6B8;
+	border-top: none;
+}
+
+#dp_search_assist {
+
 }
 
 /**********************************************************
@@ -1884,6 +1892,11 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 
 ul.dp-ticketlist {}
+
+ul.dp-ticketlist > li h4 a {
+	background: url(../../images/icons/page_white_horizontal.png) no-repeat 0 50%;
+	padding-left: 20px;
+}
 
 ul.dp-ticketlist > li {
 	margin-bottom: 10px;

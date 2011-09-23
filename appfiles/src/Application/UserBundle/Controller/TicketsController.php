@@ -54,7 +54,10 @@ class TicketsController extends AbstractController
 		$active_tickets = array();
 		$resolved_tickets = array();
 
+		$ticket_ids = array();
+
 		foreach ($tickets as $t) {
+			$ticket_ids[] = $t['id'];
 			if ($t['status'] == 'open' OR $t['status'] == 'pending') {
 				$active_tickets[] = $t;
 			} else {
@@ -62,9 +65,26 @@ class TicketsController extends AbstractController
 			}
 		}
 
+		$ticket_ids = implode(',', $ticket_ids);
+
+		$last_messages = array();
+		if ($tickets) {
+			$last_messages = App::getOrm()->createQuery("
+				SELECT m, p
+				FROM DeskPRO:TicketMessage m
+				LEFT JOIN m.person p
+				WHERE m.ticket IN ($ticket_ids)
+				GROUP BY m.ticket
+				ORDER BY m.id DESC
+			")->execute();
+
+			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
+		}
+
         return $this->render('UserBundle:Tickets:list.html.twig', array(
 			'active_tickets' => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
+			'last_messages' => $last_messages
 		));
     }
 
@@ -312,9 +332,11 @@ class TicketsController extends AbstractController
 			$em->flush();
 		});
 
-		return $this->redirectRoute('user_tickets_view', array(
-			'ticket_ref' => $ticket['public_id']
-		));
+		if ($this->in->getString('back') == 'list') {
+			return $this->redirectRoute('user_tickets');
+		} else {
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
+		}
 	}
 
 	public function feedbackAction($ticket_ref, $message_id)

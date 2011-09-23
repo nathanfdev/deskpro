@@ -90,8 +90,8 @@
 <div id="dp_page">
 	<div id="dp_header_bar">
 		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
-		<div id="dp_search_bar">
-			<form action="">
+		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
+			<form action="{{ path('user_search') }}" method="GET">
 				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." />
 				<button class="btn primary">Search</button>
 			</form>

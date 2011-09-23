@@ -70,9 +70,6 @@ ul.attachment-list > li img.preview {
 						<dd>{{ phrase_object(ticket.priority) }}</dd>
 					{% endif %}
 
-						<dt>{{ phrase('user.tickets.agent') }}</dt>
-						<dd>{{ ticket.agent.display_name|default(phrase('user.unassigned')) }}</dd>
-
 						{% if ticket.person.id != app.user.id %}
 							<dt>Ticket Starter</dt>
 							<dd>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</dd>
