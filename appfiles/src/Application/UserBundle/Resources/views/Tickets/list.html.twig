@@ -24,7 +24,12 @@
 								{% endif %}
 								{% if last_messages[ticket.id] %}
 									<li>
-										Last activity by {{ last_messages[ticket.id].person.display_name }}
+										Last activity by
+										{% if last_messages[ticket.id].person.id == app.user.id %}
+											you
+										{% else %}
+											{{ last_messages[ticket.id].person.display_name }}
+										{% endif %}
 										(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('M j Y h:ia') }}</span>)
 									</li>
 								{% endif %}
