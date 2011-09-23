@@ -258,6 +258,42 @@ class App
 
 
 	/**
+	 * Get a system service
+	 *
+	 * @param $service_name
+	 * @param string $container_name
+	 * @return mixed
+	 */
+	public static function getSystemService($service_name, $container_name = self::DEFAULT_NAME)
+	{
+		if ($container_name == self::DEFAULT_NAME AND isset(self::$_service_to_container[$service_name])) {
+			$container_name = self::$_service_to_container[$service_name];
+		}
+
+		$container = self::getContainer($container_name);
+		return $container->getSystemService($service_name);
+	}
+
+
+	/**
+	 * Get a system service
+	 *
+	 * @param $service_name
+	 * @param string $container_name
+	 * @return mixed
+	 */
+	public static function getSystemObject($service_name, array $options = array(), $container_name = self::DEFAULT_NAME)
+	{
+		if ($container_name == self::DEFAULT_NAME AND isset(self::$_service_to_container[$service_name])) {
+			$container_name = self::$_service_to_container[$service_name];
+		}
+
+		$container = self::getContainer($container_name);
+		return $container->getSystemObject($service_name, $options);
+	}
+
+
+	/**
 	 * Check if a service exists..
 	 *
 	 * @param string $service_name    The service to get

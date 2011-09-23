@@ -204,14 +204,16 @@
 					</div>
 				</div>
 
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>Please prove you are human!</label>
+				{% if captcha_html %}
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Please prove you are human!</label>
+						</div>
+						<div class="dp-form-input">
+							{{ captcha_html|raw }}
+						</div>
 					</div>
-					<div class="dp-form-input">
-						{% include 'UserBundle:Common:recaptcha.html.twig' %}
-					</div>
-				</div>
+				{% endif %}
 
 				<div class="dp-footer">
 					<input class="btn primary" type="submit" value="Submit" />

@@ -198,4 +198,9 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		return null;
 	}
+
+	protected function getContainerBaseClass()
+    {
+        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
+    }
 }

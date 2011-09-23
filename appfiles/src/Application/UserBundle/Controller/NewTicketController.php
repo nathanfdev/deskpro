@@ -37,8 +37,16 @@ class NewTicketController extends AbstractController
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
+		$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
+
+			if ($captcha) {
+				if (!$captcha->validate()) {
+					die('invalid captcha');
+				}
+			}
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'uint', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
@@ -122,6 +130,11 @@ class NewTicketController extends AbstractController
 		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
 		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
 
+		$captcha_html = '';
+		if ($captcha) {
+			$captcha_html = $captcha->getHtml();
+		}
+
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
 			'departments' => $departments,
 			'ticket_categories' => $ticket_categories,
@@ -132,6 +145,8 @@ class NewTicketController extends AbstractController
 			'form' => $form->createView(),
 			'custom_fields' => $custom_fields,
 			'ticket_display_js' => $ticket_display_js,
+
+			'captcha_html' => $captcha_html,
 		));
     }
 
