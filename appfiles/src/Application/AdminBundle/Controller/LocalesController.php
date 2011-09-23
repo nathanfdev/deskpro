@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditLocaleType;
+use Application\AdminBundle\Form\EditLocaleType;
 
 /**
  * Managing locales

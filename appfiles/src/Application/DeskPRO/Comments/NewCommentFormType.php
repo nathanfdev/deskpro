@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\Comments;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;

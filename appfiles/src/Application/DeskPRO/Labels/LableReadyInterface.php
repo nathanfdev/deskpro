@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Labels;
 
-use \Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * We're subclassing the EntityManager because it's a good place to stick an entity factory for

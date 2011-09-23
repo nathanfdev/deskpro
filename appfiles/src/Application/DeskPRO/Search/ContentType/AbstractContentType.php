@@ -11,14 +11,14 @@
 
 namespace Application\DeskPRO\Search\ContentType;
 
-use \Application\DeskPRO\Search\SearcherResult\ResultInterface;
+use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 
 use Application\DeskPRO\App;
 
 abstract class AbstractContentType implements ContentTypeInterface
 {
 	const ENTITY_NAME = '';
-	
+
 	/**
 	 * Convert a result from a search into the real content object.
 	 *

@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 
@@ -28,13 +28,13 @@ class ChatQuickReply extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * Who created/owns this quick reply
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
@@ -49,7 +49,7 @@ class ChatQuickReply extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Gloabl means everyone can see/use it. But only owner can edit it.
-	 * 
+	 *
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */

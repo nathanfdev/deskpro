@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Form\ContactFieldHandler;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * A ContactFieldHandler handles processing of contact fields like address, phone etc.
@@ -25,7 +25,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 	 * @var array
 	 */
 	protected $name_to_field = array();
-	
+
 	/**
 	 * Reverse of above
 	 */
@@ -40,7 +40,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 	/**
 	 * Convert a "simple name" (ie used in forms) to the corresponding
 	 * handler class.
-	 * 
+	 *
 	 * @param string $simple_name
 	 * @return string
 	 */
@@ -90,7 +90,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 		if (!$value) {
 			return null;
 		}
-		
+
 		$ret_value = array('comment' => $value['comment']);
 
 		foreach ($this->name_to_field as $name => $field) {
@@ -100,7 +100,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 		return $ret_value;
 	}
 
-	
+
 
 	/**
 	 * The Form will call this with an array of values from the form. Check if its
@@ -127,13 +127,13 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 
 
 
-	
+
 	/**
 	 * Get the Orb\Form\Field object for this type.
 	 */
 	abstract public function getFormField();
 
-	
+
 
 	public function getSimpleName()
 	{

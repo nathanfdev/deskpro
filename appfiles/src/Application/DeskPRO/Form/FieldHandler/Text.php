@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * Text field
@@ -40,7 +40,7 @@ class Text extends AbstractFieldHandler
 	}
 
 
-	
+
 	/**
 	 * Render the field
 	 */

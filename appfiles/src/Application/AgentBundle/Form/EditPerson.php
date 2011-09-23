@@ -11,11 +11,11 @@
 
 namespace Application\AgentBundle\Form;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\FormField;
-use \Application\DeskPRO\Entity\PersonFieldData;
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\FormField;
+use Application\DeskPRO\Entity\PersonFieldData;
+use Application\DeskPRO\Entity\Person;
 
 class EditPerson extends \Orb\Form\Field\Form
 {
@@ -100,7 +100,7 @@ class EditPerson extends \Orb\Form\Field\Form
 		foreach ($this['basic_fields'] as $k => $f) {
 			$person[$k] = $f->getData();
 		}
-		
+
 		#------------------------------
 		# Emails
 		#------------------------------

@@ -12,14 +12,14 @@
 namespace Application\AgentBundle\Controller;
 
 
-use \Orb\Util\Arrays;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\PersonEmail;
-use \Application\DeskPRO\Entity\PersonContactData;
-use \Application\DeskPRO\Entity\PersonNote;
-use \Application\DeskPRO\Entity\Organization;
-use \Application\DeskPRO\App;
+use Orb\Util\Arrays;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\App;
 
 /**
  * Handles viewing and editing tasks
@@ -34,31 +34,31 @@ class TaskController extends AbstractController
 	{
 		$task_repository = App::getEntityRepository('DeskPRO:Task');
 		$person = $this->person;
-		
+
 		$all_tasks = array(
 			'total' => $task_repository->countPendingTasks(),
 			'overdue' => $task_repository->countOverdueTasks($person['timezone']),
 			'due_today' => $task_repository->countDueTodayTasks($person['timezone']),
 		);
-		
+
 		$person_tasks = array(
 			'total' => $task_repository->countPendingTasksForPerson($person),
 			'overdue' => $task_repository->countOverdueTasksForPerson($person),
 			'due_today' => $task_repository->countDueTodayTasksForPerson($person),
 		);
-		
+
 		$teams_tasks = array(
 			'total' => $task_repository->countPendingTaksForPersonTeams($person),
 			'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
 			'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
 		);
-		
+
 		$delegated_tasks = array(
 			'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
 			'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
 			'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
 		);
-		
+
 		return $this->renderJson('AgentBundle:Task:countPending.html.twig', array(
 			'tasks' => array(
 				'all' => $all_tasks,
@@ -68,7 +68,7 @@ class TaskController extends AbstractController
 			)
 		));
 	}
-	
+
 	/**
 	 * Renders an html list with all the pending task for the current user.
 	 */
@@ -76,5 +76,5 @@ class TaskController extends AbstractController
 	{
 
 	}
-	
+
 }

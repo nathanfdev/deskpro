@@ -14,8 +14,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Symfony\Component\Validator\Constraints;
-use \Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -36,7 +36,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -66,7 +66,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->code = Strings::random(25, Strings::CHARS_KEY);
 	}
-	
+
 
 
 	/**

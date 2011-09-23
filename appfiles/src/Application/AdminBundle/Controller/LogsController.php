@@ -2,7 +2,7 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Numbers;
 
@@ -38,7 +38,7 @@ class LogsController extends AbstractController
 	public function viewSnAction($log_sn)
 	{
 		$log_sn = trim(preg_replace('#^SN#', '', $log_sn));
-		
+
 		$log = App::getEntityRepository('DeskPRO:LogItem')->findBySn($log_sn);
 		if (!$log) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_log");

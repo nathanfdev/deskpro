@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\People;
 
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * This interface is meant to signify that the object should run in the context

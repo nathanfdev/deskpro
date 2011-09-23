@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
+use Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
 
 use \Doctrine\ORM\Event\LifecycleEventArgs;
 use \Doctrine\ORM\Event\LoadClassMetadataEventArgs;
@@ -24,7 +24,7 @@ use \Doctrine\ORM\Event\OnFlushEventArgs;
 class SymfonyEventConnector implements \Doctrine\Common\EventSubscriber
 {
 	/**
-	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher 
+	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
 	 */
 	protected $event_dispatcher;
 

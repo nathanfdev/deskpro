@@ -12,7 +12,7 @@
 namespace Application\DeskPRO\Elastica\IndexInitializer;
 
 use Application\DeskPRO\Elastica\ElasticaManager;
-use \Orb\Log\Logger;
+use Orb\Log\Logger;
 
 /**
  * An initializer goes through and resets an index, and indexes all existing content.
@@ -43,7 +43,7 @@ abstract class AbstractInitializer
 
 		$this->logger = $log;
 	}
-	
+
 
 	/**
 	 * Index all content

@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\Form;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
-use \Orb\Form\Field\Field;
-use \Orb\Form\Field\FieldGroup;
-use \Orb\Form\Field\Form;
+use Orb\Form\Field\Field;
+use Orb\Form\Field\FieldGroup;
+use Orb\Form\Field\Form;
 
 /**
  * Helper that takes a form and generates code for JS validations.
@@ -69,13 +69,13 @@ class JsValidatorGenerator
 						$regex = str_replace("'", "\\'", $matches[1]);
 
 						$regex_js = 'new RegExp(\'' . $regex . '\')';
-						
+
 						$js_valid[] = $js_name . '.addValidator('.$varname.', new DeskPRO.Form.Validator.Regex(' . $regex_js . '), [\'change\']);';
 
 						break;
 				}
 			}
-			
+
 			$this->field_defs_js .= implode('', $js_fields);
 			$this->validator_defs_js .= implode('', $js_vali);
 
@@ -87,11 +87,11 @@ class JsValidatorGenerator
 		}
 	}
 
-	
+
 
 	/**
 	 * Get the JS that defines fields
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getFieldDefinitions()
@@ -100,10 +100,10 @@ class JsValidatorGenerator
 	}
 
 
-	
+
 	/**
 	 * Get the JS that defines simple validators
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getValidatorDefinitions()

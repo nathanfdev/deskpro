@@ -11,11 +11,11 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class SettingsController extends AbstractController
 {
@@ -51,7 +51,7 @@ class SettingsController extends AbstractController
 		));
 	}
 
-	
+
 	############################################################################
 	# advanced
 	############################################################################
@@ -150,7 +150,7 @@ class SettingsController extends AbstractController
 	{
 		$old_label_str = strtolower($this->in->getString('old_label'));
 		$new_label_str = strtolower($this->in->getString('new_label'));
-		
+
 		$old_label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $old_label_str));
 
 		App::getOrm()->beginTransaction();

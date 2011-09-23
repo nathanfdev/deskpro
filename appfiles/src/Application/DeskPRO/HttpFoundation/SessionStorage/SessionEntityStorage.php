@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Session;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;

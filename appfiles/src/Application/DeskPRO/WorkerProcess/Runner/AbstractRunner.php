@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A Runner is a thing that knows how to run jobs.
@@ -41,7 +41,7 @@ abstract class AbstractRunner
 	}
 
 
-	
+
 	/**
 	 *
 	 * @param Entity\WorkerJob $worker_job
@@ -54,11 +54,11 @@ abstract class AbstractRunner
 		$mtime_start = microtime(true);
 		$logger->log("Job {$worker_job['id']} start: $mtime_start", Logger::DEBUG, array('flag' => 'job_start'));
 		$job->run();
-		
+
 		$mtime_end = microtime(true);
 		$mtime_total = $mtime_end - $mtime_start;
 		$mtime_total = sprintf("%.5f", $mtime_total);
-		
+
 		$logger->log("Job {$worker_job['id']} end: $mtime_end ($mtime_total)", Logger::DEBUG, array('flag' => 'job_end'));
 
 		$worker_job['last_run_date'] = new \DateTime();
@@ -66,11 +66,11 @@ abstract class AbstractRunner
 		App::getOrm()->flush();
 	}
 
-	
+
 
 	/**
 	 * Get the job
-	 * 
+	 *
 	 * @param Entity\WorkerJob $job_worker
 	 * @return Application\DeskPRO\WorkerProcess\Job\AbstractJob
 	 */
@@ -87,7 +87,7 @@ abstract class AbstractRunner
 		return $job;
 	}
 
-	
+
 
 	/**
 	 * Get a logger for a specific job to log its status/debug messages
@@ -117,7 +117,7 @@ abstract class AbstractRunner
 		// Empty hook method to init a logger with custom writers or filters
 	}
 
-	
+
 
 	/**
 	 * Set a custom callback function that helps init the logger.

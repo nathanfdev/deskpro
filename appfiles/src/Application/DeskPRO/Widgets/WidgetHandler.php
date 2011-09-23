@@ -11,8 +11,8 @@ namespace Application\DeskPRO\Widgets;
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * A widget handler is used when it comes time to render a widget to the interface.

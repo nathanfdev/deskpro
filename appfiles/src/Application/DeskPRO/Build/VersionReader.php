@@ -2,7 +2,7 @@
 
 namespace Application\DeskPRO\Build;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 /**
  * Versions are dates and times.
@@ -62,7 +62,7 @@ class VersionReader
 
 		return $version;
 	}
-	
+
 	public static function getVersionId($version)
 	{
 		if (is_string($version)) {

@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -81,7 +81,7 @@ class TicketPriority extends EntityRepository
 	}
 
 
-	
+
 	/**
 	 * Invalidates caches
 	 */

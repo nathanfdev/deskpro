@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketPriorityType;
+use Application\AdminBundle\Form\EditTicketPriorityType;
 
 /**
  * Misc
@@ -28,7 +28,7 @@ class TicketFeaturesController extends AbstractController
 	public function indexAction()
 	{
  		return $this->render('AdminBundle:TicketFeatures:index.html.twig', array(
-			
+
 		));
 	}
 }

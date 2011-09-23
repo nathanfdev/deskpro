@@ -10,9 +10,9 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Ticket;
 
 use Orb\Util\Strings;
 
@@ -89,7 +89,7 @@ class InReplyToDetector implements TicketDetectorInterface
 
 			foreach ($matches as $m) {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
-	
+
 				if ($ticket) {
 
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);

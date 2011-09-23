@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketCategoryType;
+use Application\AdminBundle\Form\EditTicketCategoryType;
 
 /**
  * Managing ticket categories
@@ -60,7 +60,7 @@ class TicketCategoriesController extends AbstractController
 		}
 
 		$form = $this->get('form.factory')->create(new EditTicketCategoryType($category), $category);
-		
+
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {

@@ -2,8 +2,8 @@
 
 namespace Application\DevBundle\DataTest\Generator;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 class Basic extends AbstractGenerator
 {
@@ -11,7 +11,7 @@ class Basic extends AbstractGenerator
 	{
 		$this->_runGenPreMisc($db, $output);
 		$output->writeln('');
-		
+
 		$this->_runGenPeople($db, $output);
 		$output->writeln('');
 
@@ -19,7 +19,7 @@ class Basic extends AbstractGenerator
 	}
 
 
-	
+
 	/**
 	 * Generates any data required before others, such as companies
 	 */
@@ -38,7 +38,7 @@ class Basic extends AbstractGenerator
 		}
 	}
 
-	
+
 
 	/**
 	 * Generates users and related user data
@@ -110,7 +110,7 @@ class Basic extends AbstractGenerator
 				$db->update('people', array('primary_email_id' => $primary_email_id), array('id' => $person_id));
 			}
 
-			
+
 			#------------------------------
 			# Companies
 			#------------------------------
@@ -171,7 +171,7 @@ class Basic extends AbstractGenerator
 			$count += $num_tickets;
 			$this->_genTicketsForUser($db, mt_rand($range[0], $range[1]), $num_tickets);
 		}
-		
+
 		$output->write("<comment>\nCREATING TECH PARTICIPANT RELATIONS\n</comment>\n");
 
 		$max_ticket = $this->dataset->getMinNumTickets() - $this->dataset->getNumTechs();
@@ -192,7 +192,7 @@ class Basic extends AbstractGenerator
 		$person = $db->fetchArray("SELECT * FROM people WHERE id = ?", array($person_id));
 
 		while ($num_tickets-- > 0) {
-			
+
 			$db->beginTransaction();
 
 			$created_at = $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'ticket_start_date');
@@ -240,7 +240,7 @@ class Basic extends AbstractGenerator
 			} elseif ($ticket['status'] == 'open' AND $ticket['sub_status'] == 'pending') {
 				$ticket['pending_at'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
 			}
-			
+
 			$db->insert('tickets', $ticket);
 			$ticket_id = $db->lastInsertId();
 

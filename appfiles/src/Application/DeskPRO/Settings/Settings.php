@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Settings;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

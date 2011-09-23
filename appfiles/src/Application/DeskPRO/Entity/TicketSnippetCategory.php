@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
@@ -31,7 +31,7 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * Who created the cat
 	 *

@@ -10,7 +10,7 @@
 
 namespace Application\DeskPRO\Usersource\Handler;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\Usersource;
 
@@ -22,7 +22,7 @@ class Twitter extends AbstractHandler
 	/**
 	 * Get an array of person data mapped to raw userinfo we got back from a twitter
 	 * login.
-	 * 
+	 *
 	 * @param array $raw_userinfo
 	 * @return array
 	 */

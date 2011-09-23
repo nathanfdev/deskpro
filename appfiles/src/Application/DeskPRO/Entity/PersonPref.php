@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -73,7 +73,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_expire = null;
 
 
-	
+
 	public function getValue()
 	{
 		return is_array($this->value_array) ? $this->value_array : $this->value_str;
@@ -104,7 +104,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -124,7 +124,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get value_str
      *
-     * @return text 
+     * @return text
      */
     public function getValueStr()
     {
@@ -144,7 +144,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get value_array
      *
-     * @return array 
+     * @return array
      */
     public function getValueArray()
     {
@@ -164,7 +164,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_expire
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateExpire()
     {
@@ -184,7 +184,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get person
      *
-     * @return Application\DeskPRO\Entity\Person 
+     * @return Application\DeskPRO\Entity\Person
      */
     public function getPerson()
     {

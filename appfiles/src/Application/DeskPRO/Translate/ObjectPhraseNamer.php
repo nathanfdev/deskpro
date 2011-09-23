@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Translate;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 /**
  * This takes an object, and then based on its state, produces a phrase ID that

@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\People\Helpers;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
 

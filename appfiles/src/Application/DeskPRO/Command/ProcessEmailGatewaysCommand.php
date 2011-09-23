@@ -8,9 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Logger;
 
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
@@ -32,7 +32,7 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$verbose = $input->getOption('verbose');
-		
+
 		if ($input->getOption('gateway')) {
 			if (Numbers::isInteger($input->getOption('gateway'))) {
 				$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'));

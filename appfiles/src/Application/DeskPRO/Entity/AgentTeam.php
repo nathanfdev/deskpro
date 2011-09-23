@@ -13,12 +13,12 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.

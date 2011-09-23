@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * Multi-select field
@@ -67,7 +67,7 @@ class MultipleChoice extends Choice
 	public function setValueOnData(Entity\FormFieldData $field_data, $value)
 	{
 		$em = App::getOrm();
-		
+
 		// Save an array of selected values.
 		// This is so we dont have to look up the entire collection
 		// just to render it :-)

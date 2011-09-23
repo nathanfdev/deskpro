@@ -2,10 +2,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\AdminBundle\Form\EditStyleType;
-use \Orb\Util\Arrays;
-use \Symfony\Component\Form;
+use Application\DeskPRO\App;
+use Application\AdminBundle\Form\EditStyleType;
+use Orb\Util\Arrays;
+use Symfony\Component\Form;
 
 class StylesController extends AbstractController
 {

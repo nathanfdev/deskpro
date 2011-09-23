@@ -2,13 +2,13 @@
 
 namespace Application\DeskPRO\Searcher;
 
-use \Application\DeskPRO\App;
-	
-use \Orb\Util\Util;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity;
+use Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+use Application\DeskPRO\Entity;
 
 class TaskSearch extends SearcherAbstract
 {
@@ -113,7 +113,7 @@ class TaskSearch extends SearcherAbstract
 			case 'tasks.id':
 				$order_by = "ORDER BY tasks.id $dir";
 				break;
-			
+
 			case 'tasks.title':
 				$order_by = "ORDER BY tasks.title $dir";
 				break;
@@ -133,15 +133,15 @@ class TaskSearch extends SearcherAbstract
 			case 'tasks.is_completed':
 				$order_by = "ORDER BY tasks.is_completed $dir";
 				break;
-				
+
 			case 'tasks.visibility':
 				$order_by = "ORDER BY tasks.visibility $dir";
 				break;
-				
+
 			case 'tasks.date_created':
 				$order_by = "ORDER BY tasks.date_created $dir";
 				break;
-				
+
 			case 'tasks.date_completed':
 				$order_by = "ORDER BY tasks.date_completed $dir";
 				break;
@@ -190,7 +190,7 @@ class TaskSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
-				
+
 				case self::TERM_TITLE:
 					$wheres[] = $this->_stringMatch("tasks.title", $op, $choice);
 					break;
@@ -204,12 +204,12 @@ class TaskSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.assigned_agent_id'), $op, $choice);
 					break;
-					
+
 				case self::TERM_ASSIGNED_AGENT_TEAM_ID:
 					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.assigned_agent_id'), $op, $choice);
 					break;
-					
+
 			}
 		}
 

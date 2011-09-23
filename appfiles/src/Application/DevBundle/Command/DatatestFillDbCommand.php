@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 class DatatestFillDbCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

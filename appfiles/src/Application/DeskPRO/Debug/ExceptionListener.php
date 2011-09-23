@@ -10,10 +10,10 @@
 
 namespace Application\DeskPRO\Debug;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Log\Logger;
-use \Orb\Util\Strings;
+use Orb\Log\Logger;
+use Orb\Util\Strings;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;

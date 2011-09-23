@@ -11,21 +11,21 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\TwitterAccount;
-use \Application\DeskPRO\Entity\TwitterAccountFriend;
-use \Application\DeskPRO\Entity\TwitterAccountFollower;
-use \Application\DeskPRO\Entity\TwitterStatus;
-use \Application\DeskPRO\Entity\TwitterStatusMention;
-use \Application\DeskPRO\Entity\TwitterStatusTag;
-use \Application\DeskPRO\Entity\TwitterStatusUrl;
-use \Application\DeskPRO\Entity\TwitterUser;
+use Application\DeskPRO\Entity\TwitterAccount;
+use Application\DeskPRO\Entity\TwitterAccountFriend;
+use Application\DeskPRO\Entity\TwitterAccountFollower;
+use Application\DeskPRO\Entity\TwitterStatus;
+use Application\DeskPRO\Entity\TwitterStatusMention;
+use Application\DeskPRO\Entity\TwitterStatusTag;
+use Application\DeskPRO\Entity\TwitterStatusUrl;
+use Application\DeskPRO\Entity\TwitterUser;
 
-use \Orb\Service\Twitter\Oauth,
+use Orb\Service\Twitter\Oauth,
 	\Orb\Service\Twitter\Twitter;
 
-use \Application\AdminBundle\Form\EditTwitterAccountType;
+use Application\AdminBundle\Form\EditTwitterAccountType;
 
 /**
  * Handles creating/editing of Twitter Accounts

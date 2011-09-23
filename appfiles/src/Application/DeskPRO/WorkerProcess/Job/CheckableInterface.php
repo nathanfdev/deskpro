@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A job is "checkable" when it's easily tested to see if work needs to be done.
@@ -22,7 +22,7 @@ interface CheckableInterface
 {
 	/**
 	 * Is run() ready to be called?
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isReady();

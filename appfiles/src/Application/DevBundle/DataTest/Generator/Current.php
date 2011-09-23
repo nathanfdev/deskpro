@@ -2,9 +2,9 @@
 
 namespace Application\DevBundle\DataTest\Generator;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class Current extends AbstractGenerator
 {

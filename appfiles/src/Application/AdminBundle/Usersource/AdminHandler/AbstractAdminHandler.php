@@ -11,9 +11,9 @@
 
 namespace Application\AgentBundle\Usersource\AdminHandler;
 
-use \Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

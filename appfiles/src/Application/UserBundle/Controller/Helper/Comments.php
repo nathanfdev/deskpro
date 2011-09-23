@@ -11,11 +11,11 @@
 
 namespace Application\UserBundle\Controller\Helper;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class Comments
 {
@@ -62,10 +62,10 @@ class Comments
 	}
 
 
-	
+
 	/**
 	 * Get the HTML block from the adapter
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getHtml()

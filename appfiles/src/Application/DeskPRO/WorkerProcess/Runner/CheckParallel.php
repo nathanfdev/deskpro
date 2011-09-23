@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * This runner continuously runs in a loop, used by the CheckableInterface items
@@ -37,7 +37,7 @@ class CheckParallel extends ExecParallel
 	{
 		$this->_should_stop = true;
 	}
-	
+
 	public function runChunk(array $worker_jobs)
 	{
 		while (true) {

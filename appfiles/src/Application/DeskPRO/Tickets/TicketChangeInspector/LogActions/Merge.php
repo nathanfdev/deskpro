@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 class Merge implements LogActionInterface
 {

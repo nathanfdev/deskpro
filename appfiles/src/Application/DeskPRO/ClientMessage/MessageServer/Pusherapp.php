@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageServer;
 
-use \Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 /**
  * A message server is something that listenes on the ClientMessages event

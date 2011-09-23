@@ -11,13 +11,13 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Searcher\TicketSearch;
-use \Application\DeskPRO\Entity\TicketFilter;
-use \Application\DeskPRO\Entity\Ticket;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles searching for people

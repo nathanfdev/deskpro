@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\People;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * The personlistener listens for changes to a ticket, and then runs inspections once the changes
@@ -76,6 +76,6 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
-		
+
 	}
 }

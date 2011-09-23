@@ -13,9 +13,9 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Numbers;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Numbers;
 
 /**
  * This is a simplified lookup table to see which blobs are attached to which objects.

@@ -11,13 +11,13 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\FormField;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\FormField;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles editing and creating multiple-select choices

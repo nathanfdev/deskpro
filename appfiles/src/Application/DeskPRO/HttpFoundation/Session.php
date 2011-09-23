@@ -14,8 +14,8 @@ namespace Application\DeskPRO\HttpFoundation;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * Session is able to load up a user, their language etc.

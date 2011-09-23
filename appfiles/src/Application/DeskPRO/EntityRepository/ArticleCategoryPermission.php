@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class ArticleCategoryPermission extends EntityRepository
 {
@@ -23,7 +23,7 @@ class ArticleCategoryPermission extends EntityRepository
 		$usergroup_ids = array_filter($usergroup_ids, function ($val) {
 			return ctype_digit($val);
 		});
-		
+
 		if (!$usergroup_ids) {
 			return array();
 		}

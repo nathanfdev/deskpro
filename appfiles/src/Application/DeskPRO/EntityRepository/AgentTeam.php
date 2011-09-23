@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -104,7 +104,7 @@ class AgentTeam extends EntityRepository
 	/**
 	 * Get an array of all team IDs that the agents passed
 	 * belong to. This is an all inclusive list and unsorted.
-	 * 
+	 *
 	 * @param $agents
 	 * @return array
 	 */
@@ -138,7 +138,7 @@ class AgentTeam extends EntityRepository
 	 * Gets an array of team ID's for each agent. Keyed
 	 * by agent_id. Like getAllTeamIdsForAgents() except this
 	 * is sorted into agents
-	 * 
+	 *
 	 * @param $agents
 	 * @return array
 	 */

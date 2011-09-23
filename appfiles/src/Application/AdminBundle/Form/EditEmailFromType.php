@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Form;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
@@ -32,7 +32,7 @@ class EditEmailFromType extends AbstractType
 	{
 		$builder->add('name', 'text');
 		$builder->add('address', 'text');
-		
+
 		$email_from = $this->email_from;
 
 		$opt_forms = $builder->create('transport_options', 'form');

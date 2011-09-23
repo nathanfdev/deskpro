@@ -11,7 +11,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Perform searches or get results from filters.

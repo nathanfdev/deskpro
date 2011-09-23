@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\Labels;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 class LabelLister
 {

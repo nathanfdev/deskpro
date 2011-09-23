@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketWorkflowType;
+use Application\AdminBundle\Form\EditTicketWorkflowType;
 
 /**
  * Simple management of workflows

@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-use \Orb\Util\Numbers;
+use Orb\Util\Numbers;
 
 class TwitterStatus extends EntityRepository
 {

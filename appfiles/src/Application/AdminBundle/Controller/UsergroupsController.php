@@ -11,13 +11,13 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Symfony\Component\Form;
+use Symfony\Component\Form;
 
 class UsergroupsController extends AbstractController
 {

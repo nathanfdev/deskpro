@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * The lang system uses phrases from the DB, and then falls back on the

@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * A permission loader knows how to load permissions for a thing.
@@ -40,7 +40,7 @@ abstract class AbstractLoader implements \Serializable
 
 	protected function init() {}
 
-	
+
 	/**
 	 * Get the usergroup IDs represented by the loaded permissions
 	 *
@@ -69,11 +69,11 @@ abstract class AbstractLoader implements \Serializable
 
 	/**
 	 * Initialize this object with an array of saved data
-	 * 
+	 *
 	 * @param array $data
 	 */
 	abstract protected function unserializeData(array $data);
-	
+
 	public function unserialize($data)
 	{
 		$data = unserialize($data);

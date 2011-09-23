@@ -11,10 +11,10 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditProductType;
+use Application\AdminBundle\Form\EditProductType;
 
 /**
  * Products
@@ -60,7 +60,7 @@ class ProductsController extends AbstractController
 		}
 
 		$form = $this->get('form.factory')->create(new EditProductType($product), $product);
-		
+
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {

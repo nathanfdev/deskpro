@@ -13,13 +13,13 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Symfony\Component\Validator\Constraints;
-use \Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Settings used by the system.
@@ -35,7 +35,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
 	 * @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 

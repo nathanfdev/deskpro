@@ -11,17 +11,17 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
 
-use \Application\AdminBundle\Form\EditAgentType;
-use \Application\AdminBundle\FormModel as AdminFormModel;
+use Application\AdminBundle\Form\EditAgentType;
+use Application\AdminBundle\FormModel as AdminFormModel;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Symfony\Component\Form;
+use Symfony\Component\Form;
 
 class AgentsController extends AbstractController
 {

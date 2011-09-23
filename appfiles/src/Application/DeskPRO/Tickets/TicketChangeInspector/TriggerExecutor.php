@@ -11,13 +11,13 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class TriggerExecutor
 {
@@ -94,7 +94,7 @@ class TriggerExecutor
 			$person = $this->tracker->getTicket()->person;
 		}
 		$actions_collection->apply($this->tracker->getTicket(), $person);
-		
+
 		$this->is_performing = false;
 	}
 }

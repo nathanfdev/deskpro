@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
+use Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher;
 
 use \Doctrine\ORM\Event\LifecycleEventArgs;
 use \Doctrine\ORM\Event\LoadClassMetadataEventArgs;
@@ -58,7 +58,7 @@ class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
 
 	/**
 	 * The entity, or null if the event type doesnt have an entity
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function getEntity()
@@ -74,7 +74,7 @@ class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
 	{
 		return $this->entity_manager;
 	}
-	
+
 
 	/**
 	 * @return string
@@ -84,7 +84,7 @@ class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
 		return $this->event_type;
 	}
 
-	
+
 	/**
 	 * @return mixed
 	 */

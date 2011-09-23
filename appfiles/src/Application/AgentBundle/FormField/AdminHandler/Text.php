@@ -11,7 +11,7 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity\FormField;
+use Application\DeskPRO\Entity\FormField;
 
 /**
  * Handles editing and creating text field definitions
@@ -50,6 +50,6 @@ class Text extends AbstractAdminHandler
 	 */
 	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
 	{
-		$this->fielddef['options'] = $formgroup->getData(); 
+		$this->fielddef['options'] = $formgroup->getData();
 	}
 }

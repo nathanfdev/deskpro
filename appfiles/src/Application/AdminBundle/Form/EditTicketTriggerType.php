@@ -11,8 +11,8 @@
 
 namespace Application\AdminBundle\Form;
 
-use \Symfony\Component\Form;
-use \Application\DeskPRO\Entity\TicketTrigger;
+use Symfony\Component\Form;
+use Application\DeskPRO\Entity\TicketTrigger;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;

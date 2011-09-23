@@ -2,7 +2,7 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 class PortalController extends AbstractController
 {

@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * This just cleans up various records

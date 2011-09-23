@@ -2,8 +2,8 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 class TicketEdit
 {

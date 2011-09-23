@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A standard runner executes all jobs in sequence one at a time

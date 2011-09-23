@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
 class Usergroup extends EntityRepository

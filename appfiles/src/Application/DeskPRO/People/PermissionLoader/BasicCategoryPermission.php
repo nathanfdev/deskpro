@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * A generic category loader
@@ -46,7 +46,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
 		$all_ids = array_keys(App::getEntityRepository($this->getCategoryEntity())->getCategoryOptions());
 		$this->disallowed_cats = array_diff($all_ids, $this->allowed_cats);
 	}
-	
+
 
 	/**
 	 * Are there access permissions at all applied to this user?
@@ -61,7 +61,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
 		return !empty($this->disallowed_cats);
 	}
 
-	
+
 	/**
 	 * Is a cateogry allowed?
 	 *

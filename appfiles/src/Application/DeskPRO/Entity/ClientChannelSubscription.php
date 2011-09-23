@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * A subscription is a record of a channel a client is currently listening to.

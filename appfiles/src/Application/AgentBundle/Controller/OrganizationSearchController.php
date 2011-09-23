@@ -11,12 +11,12 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Searcher\OrganizationSearch;
-use \Application\DeskPRO\Entity\Ticket;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\Searcher\OrganizationSearch;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles searching for orgs

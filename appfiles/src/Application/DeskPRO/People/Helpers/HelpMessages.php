@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\People\Helpers;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * Helper keeps track of "help messages" which are displayed until dismissed, and never seen again.
@@ -20,7 +20,7 @@ use \Application\DeskPRO\Entity;
 class HelpMessages implements \Orb\Helper\ShortCallableInterface
 {
 	const ALL = '__ALL__';
-	
+
 	protected $person;
 	protected $pref;
 	protected $pref_name;
@@ -39,7 +39,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 	protected function _initPref()
 	{
 		if ($this->pref !== null) return;
-		
+
 		$this->pref = $this->person->getPref($this->pref_name);
 		if (!$this->pref) {
 			$this->pref = $this->person->addPreference($this->pref_name);
@@ -129,7 +129,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 	public function reset()
 	{
 		$this->_initPref();
-		
+
 		$this->pref['value'] = array();
 
 		$pref = $this->pref;

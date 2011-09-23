@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * The ticket listener listens for changes to a ticket, and then runs inspections once the changes
@@ -55,10 +55,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		return $this->ticket;
 	}
 
-	
+
 	/**
 	 * Get the original ticket before changes, used for comparisons usually
-	 * 
+	 *
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public  function getOriginalTicket()

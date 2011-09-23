@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.

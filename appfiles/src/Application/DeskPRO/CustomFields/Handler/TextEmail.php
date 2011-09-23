@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * Handles the text field

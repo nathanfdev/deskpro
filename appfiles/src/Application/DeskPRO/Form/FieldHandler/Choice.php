@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Single-select field
@@ -61,7 +61,7 @@ class Choice extends AbstractFieldHandler
 		return $value;
 	}
 
-	
+
 
 
 	/**

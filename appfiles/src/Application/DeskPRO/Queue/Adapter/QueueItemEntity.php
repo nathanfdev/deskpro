@@ -9,9 +9,9 @@
 
 namespace Application\DeskPRO\Queue\Adapter;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Util;
-use \Application\DeskPRO\Entity\QueueItem;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;
@@ -62,7 +62,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 		return in_array($name, $this->_queues);
 	}
 
-	
+
 
 	/**
 	 * Get an array of queues
@@ -94,7 +94,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	}
 
 
-	
+
 	/**
 	 * Delete a queue and all jobs in it
 	 */
@@ -104,7 +104,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 
 		return true;
 	}
-	
+
 
 
 	/**
@@ -119,7 +119,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	}
 
 
-	
+
 	/**
 	 * Put a job onto the queue.
 	 *

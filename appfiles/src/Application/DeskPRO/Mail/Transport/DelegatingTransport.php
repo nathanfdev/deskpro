@@ -9,11 +9,11 @@
 
 namespace Application\DeskPRO\Mail\Transport;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Mail\Message;
-use \Orb\Util\Strings;
-use \Orb\Util\Util;
+use Orb\Mail\Message;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 /**
  * This transport takes care of initializing any other transports based on settings

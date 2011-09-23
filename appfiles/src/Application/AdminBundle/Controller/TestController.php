@@ -11,7 +11,7 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Handles creating/editing of Usersources

@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\ORM;
 
-use \Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * We're subclassing the EntityManager because it's a good place to stick an entity factory for
@@ -28,7 +28,7 @@ class EntityManager extends \Doctrine\ORM\EntityManager
 	protected $_container;
 
 
-	
+
 	/**
 	 * Create a new instance of an entity.
 	 *
@@ -67,7 +67,7 @@ class EntityManager extends \Doctrine\ORM\EntityManager
 	}
 
 
-	
+
 	public static function create($conn, \Doctrine\ORM\Configuration $config, \Doctrine\Common\EventManager $eventManager = null, Container $container = null)
 	{
 		if (!$config->getMetadataDriverImpl()) {

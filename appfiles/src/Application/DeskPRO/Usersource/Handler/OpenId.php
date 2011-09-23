@@ -10,7 +10,7 @@
 
 namespace Application\DeskPRO\Usersource\Handler;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\Usersource;
 

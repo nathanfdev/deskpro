@@ -11,9 +11,9 @@
 
 namespace Application\AdminBundle\FormModel;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class EditAgent
 {

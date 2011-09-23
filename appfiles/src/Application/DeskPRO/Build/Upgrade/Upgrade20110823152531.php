@@ -2,8 +2,8 @@
 
 namespace Application\DeskPRO\Build\Upgrade;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Build\Upgrader;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Build\Upgrader;
 
 class Upgrade20110823152531 extends UpgradeAbstract
 {

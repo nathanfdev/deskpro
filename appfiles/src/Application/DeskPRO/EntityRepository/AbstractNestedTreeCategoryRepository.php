@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class AbstractNestedTreeCategoryRepository extends \Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository
 {

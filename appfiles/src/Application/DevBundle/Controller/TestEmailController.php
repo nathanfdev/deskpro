@@ -4,11 +4,11 @@ namespace Application\DevBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\IdeaCategory;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\IdeaCategory;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 class TestEmailController extends Controller
 {

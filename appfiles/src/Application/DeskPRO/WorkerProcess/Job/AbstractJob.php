@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A job completes some specific processing task.
@@ -43,11 +43,11 @@ abstract class AbstractJob
 	abstract public function run();
 
 
-	
+
 	/**
 	 * Log a status message. These should include information about how many records
 	 * processed etc.
-	 * 
+	 *
 	 * @param string $message
 	 * @param array $details
 	 */
@@ -58,7 +58,7 @@ abstract class AbstractJob
 	}
 
 
-	
+
 	/**
 	 * Get the logger for this job
 	 *

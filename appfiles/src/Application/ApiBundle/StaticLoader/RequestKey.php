@@ -11,7 +11,7 @@
 
 namespace Application\ApiBundle\StaticLoader;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 class RequestKey
 {

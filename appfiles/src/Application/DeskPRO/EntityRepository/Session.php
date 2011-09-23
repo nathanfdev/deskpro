@@ -11,13 +11,13 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\Session as SessionEntity;
-use \Application\DeskPRO\Entity\Person as PersonEntity;
-use \Application\DeskPRO\Entity\Visitor as VisitorEntity;
+use Application\DeskPRO\Entity\Session as SessionEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use \Doctrine\ORM\EntityRepository;
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 class Session extends EntityRepository
 {

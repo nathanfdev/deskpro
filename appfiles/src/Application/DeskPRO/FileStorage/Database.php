@@ -13,7 +13,7 @@ namespace Application\DeskPRO\FileStorage;
 
 use Application\DeskPRO\App;
 
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 /**
  * This handler stores files in teh database as blob parts.

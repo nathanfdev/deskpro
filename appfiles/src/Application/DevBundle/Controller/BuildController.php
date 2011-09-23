@@ -2,8 +2,8 @@
 
 namespace Application\DevBundle\Controller;
 
-use \Application\DeskPRO\Build\VersionReader;
-use \Application\DeskPRO\Build\Upgrader;
+use Application\DeskPRO\Build\VersionReader;
+use Application\DeskPRO\Build\Upgrader;
 
 class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {

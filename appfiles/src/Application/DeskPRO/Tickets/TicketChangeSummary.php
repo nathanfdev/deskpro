@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * An object that can list changes done to a ticket, compatible with the translator.

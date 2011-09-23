@@ -13,9 +13,9 @@ namespace Application\DeskPRO\FileStorage\FileDescriptor;
 
 use Application\DeskPRO\App;
 
-use \Orb\Util\Util;
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Util;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 {

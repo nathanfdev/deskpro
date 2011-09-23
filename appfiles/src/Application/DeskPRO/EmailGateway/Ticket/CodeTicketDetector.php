@@ -10,9 +10,9 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
  * Detects a ticket based off of codes in the subject or body.
@@ -107,7 +107,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 
 	/**
 	 * Unknow people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function canAddUnknownPerson()

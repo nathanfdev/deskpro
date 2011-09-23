@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * Fetches mail from a pop3 server

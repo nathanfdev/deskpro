@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
@@ -59,8 +59,8 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="snippet", type="text")
 	 */
 	protected $snippet;
-	
-	
+
+
 	/**
 	 * Format a snippet
 	 *

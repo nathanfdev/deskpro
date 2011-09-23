@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * A FormField type is a custom field that DeskPRO knows how to handle. This ties together the
@@ -25,7 +25,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 {
 	const CONTEXT_HTML = 'html';
 	const CONTEXT_TEXT = 'text';
-	
+
 	/**
 	 * The form field definition
 	 * @var Application\DeskPRO\Entity\FormField
@@ -49,7 +49,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 		return 'field_' . $this->fielddef['id'];
 	}
 
-	
+
 
 	/**
 	 * Transforms stored data to data the form controls can use
@@ -90,7 +90,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	 */
 	abstract public function getFormField();
 
-	
+
 
 	/**
 	 * Render the field to HTML for use in a web page.
@@ -112,7 +112,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	abstract public function renderText(Entity\FormFieldData $form_field_data = null);
 
 
-	
+
 	/**
 	 * Render a field in a given context. This is just a strategy for calling other renderX
 	 * methods.

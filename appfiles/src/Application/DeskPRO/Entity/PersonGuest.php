@@ -13,12 +13,12 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 
 /**
  * A website visitor when we have no information about them

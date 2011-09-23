@@ -11,8 +11,8 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Auth\LoginProcessor;
-use \Application\DeskPRO\Controller\Helper\LoginHelper;
+use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Controller\Helper\LoginHelper;
 
 use Application\DeskPRO\App;
 
@@ -47,7 +47,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	{
 		return $this->login_helper->execLogoutAction();
 	}
-	
+
 	public function authenticateAction($usersource_id)
 	{
 		return $this->login_helper->execAuthenticateAction($usersource_id);

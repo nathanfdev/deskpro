@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\ClientMessage;
 
-use \Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\ClientMessage;
 
 class Event extends \Symfony\Component\EventDispatcher\Event
 {

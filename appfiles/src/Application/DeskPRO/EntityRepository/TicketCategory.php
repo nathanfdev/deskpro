@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class TicketCategory extends AbstractCategoryRepository
 {
@@ -32,7 +32,7 @@ class TicketCategory extends AbstractCategoryRepository
 
 		return $category;
 	}
-	
+
 	/**
 	 * Count all cats that exist
 	 *

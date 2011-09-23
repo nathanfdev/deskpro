@@ -2,7 +2,7 @@
 
 namespace Application\DeskPRO\Install;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 class InstallData implements \IteratorAggregate
 {

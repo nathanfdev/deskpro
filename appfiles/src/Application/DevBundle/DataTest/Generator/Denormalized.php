@@ -2,8 +2,8 @@
 
 namespace Application\DevBundle\DataTest\Generator;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 class Denormalized extends Basic
 {

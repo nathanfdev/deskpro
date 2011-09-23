@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * Combines multiple loaders, and also adds a cache layer.

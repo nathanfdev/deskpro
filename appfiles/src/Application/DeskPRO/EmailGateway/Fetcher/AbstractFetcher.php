@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * A fetcher takes makes a conenction to a resource described in

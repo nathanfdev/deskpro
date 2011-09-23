@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
 class EmailFrom extends EntityRepository

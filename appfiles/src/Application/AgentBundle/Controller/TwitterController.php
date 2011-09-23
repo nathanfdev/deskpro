@@ -12,9 +12,9 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\TwitterStatusNote;
+use Application\DeskPRO\Entity\TwitterStatusNote;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -54,7 +54,7 @@ class TwitterController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	
+
 	/**
 	 * Display accounts for Super Menu.
 	 *

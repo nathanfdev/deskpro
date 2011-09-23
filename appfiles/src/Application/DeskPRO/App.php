@@ -12,7 +12,7 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\Entity;
 
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

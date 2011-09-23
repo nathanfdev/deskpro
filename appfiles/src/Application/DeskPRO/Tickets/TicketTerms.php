@@ -2,15 +2,15 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Searcher\TicketSearch;
 
-use \Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 
-use \Orb\Util\Numbers;
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Numbers;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class TicketTerms
 {
@@ -112,7 +112,7 @@ class TicketTerms
 		if (!$tracker) return false;
 
 		$tracker = $this->tracker;
-		
+
 		if (!$tracker->isPropertyChanged($term)) {
 			return false;
 		}

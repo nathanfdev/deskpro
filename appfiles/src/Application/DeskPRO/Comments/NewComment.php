@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\Comments;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Symfony\Component\Form;
+use Symfony\Component\Form;
 
 class NewComment
 {
@@ -46,7 +46,7 @@ class NewComment
 			$obj['email'] = $this->email;
 		}
 		$obj->visitor = App::getSession()->getVisitor();
-		
+
 		$obj['content']       = $this->content;
 
 		if ($this->person->isGuest()) {
@@ -60,7 +60,7 @@ class NewComment
 		} else {
 			$obj['status'] = 'visible';
 		}
-		
+
 		$obj['date_created']  = new \DateTime();
 
 		foreach ($this->assignments as $k => $v) {

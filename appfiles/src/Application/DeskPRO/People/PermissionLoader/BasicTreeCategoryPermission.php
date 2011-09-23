@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * A generic category loader
@@ -28,7 +28,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 	 * @var array
 	 */
 	protected $specific_cats = array();
-	
+
 	protected function init()
 	{
 		$this->specific_cats = App::getEntityRepository($this->getCategoryPermissionEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
@@ -54,7 +54,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Get an array of specific categories allowed as defiend by the db.

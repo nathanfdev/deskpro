@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 /**
  * The style system uses templates from the database first, and falls back onto the filesystem.

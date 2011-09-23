@@ -13,8 +13,8 @@ namespace Application\DeskPRO\Search\Adapter;
 
 use Orb\Util\CapabilityInformerInterface;
 
-use \Application\DeskPRO\App;
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\App;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Application\DeskPRO\Search\EntityListener;
 
@@ -205,7 +205,7 @@ class ElasticAdapter extends AbstractAdapter
 		return $this->getClient()->getIndex($index);
 	}
 
-	
+
 	/**
 	 * Maps a contenttype to an Elastic index
 	 *
@@ -217,10 +217,10 @@ class ElasticAdapter extends AbstractAdapter
 		$this->contenttype_to_index[$type_name] = $index_name;
 	}
 
-	
+
 	/**
 	 * Get the index name for a content type
-	 * 
+	 *
 	 * @param $type_name
 	 * @return string
 	 */
@@ -232,7 +232,7 @@ class ElasticAdapter extends AbstractAdapter
 
 	/**
 	 * Get the index for a contenttype
-	 * 
+	 *
 	 * @param $type_name
 	 * @return \Elastica_Index
 	 */

@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 use \Doctrine\ORM\EntityRepository;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class TicketFlagged extends EntityRepository
 {
@@ -25,7 +25,7 @@ class TicketFlagged extends EntityRepository
 		$ids = Arrays::flattenToIndex($tickets, 'id');
 
 		if (!$ids) return array();
-		
+
 		return App::getDb()->fetchAllKeyValue("
 			SELECT ticket_id, color
 			FROM tickets_flagged

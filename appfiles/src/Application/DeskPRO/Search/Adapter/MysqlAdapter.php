@@ -13,8 +13,8 @@ namespace Application\DeskPRO\Search\Adapter;
 
 use Orb\Util\CapabilityInformerInterface;
 
-use \Application\DeskPRO\App;
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\App;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Application\DeskPRO\Search\EntityListener;
 

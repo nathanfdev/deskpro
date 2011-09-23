@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\ORM\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\Query,
@@ -20,7 +20,7 @@ use Doctrine\ORM\Query,
     Gedmo\Exception\InvalidArgumentException,
     Doctrine\ORM\Proxy\Proxy;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class NestedTreeRepository extends \Gedmo\Tree\Entity\Repository\NestedTreeRepository
 {

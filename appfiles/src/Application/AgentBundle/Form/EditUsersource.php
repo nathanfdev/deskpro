@@ -11,7 +11,7 @@
 
 namespace Application\AgentBundle\Form;
 
-use \Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 
 class EditUsersource extends \Orb\Form\Field\Form
 {
@@ -27,7 +27,7 @@ class EditUsersource extends \Orb\Form\Field\Form
 		}
 
 		$this->usersource = $this->getOption('usersource');
-		
+
 		$this->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $this->usersource['handler_class'])));
 
 		$f_group_props = new \Orb\Form\Field\FieldGroup(array('name' => 'basic_properties'));

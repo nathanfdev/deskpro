@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * Loads download category permissions

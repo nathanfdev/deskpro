@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * This cleans up various temporary data
@@ -28,7 +28,7 @@ class CleanupTmpData extends AbstractJob
 		#------------------------------
 		# Temp data
 		#------------------------------
-		
+
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM tmp_data
 			WHERE date_expire > ?",

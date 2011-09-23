@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\HttpKernel\Controller;
 
-use \Symfony\Component\HttpFoundation\Request;
-use \Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
-use \Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
+use Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
 
 
 /**

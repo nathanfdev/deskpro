@@ -9,7 +9,7 @@
 
 namespace Application\DeskPRO\Mail\QueueProcessor;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;

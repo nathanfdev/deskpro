@@ -11,7 +11,7 @@
 
 namespace Application\AdminBundle\Form;
 
-use \Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 
 class EditType extends \Orb\Form\Field\Form
 {

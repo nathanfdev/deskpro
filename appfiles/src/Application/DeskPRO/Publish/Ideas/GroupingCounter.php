@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\Publish\Ideas;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class GroupingCounter
 {

@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\People\Helpers;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * Figures out agent permissions
@@ -48,7 +48,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
 	/**
 	 * Check if the user is allowed to use a particular department
-	 * 
+	 *
 	 * @param int|Department $dep
 	 * @return bool
 	 */
@@ -92,7 +92,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	public function getAllowedDepartments()
 	{
 		if ($this->_allowed_ids !== null) return $this->_allowed_ids;
-		
+
 		// TODO after we figure out how we're doing the ui around
 		// permissions
 
@@ -101,7 +101,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 		return $this->_allowed_ids;
 	}
 
-	
+
 
 	public function offsetExists($offset)
 	{

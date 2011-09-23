@@ -13,7 +13,7 @@ namespace Application\DeskPRO\DBAL\Logging;
 
 use Application\DeskPRO\App;
 
-use \Orb\Log\Logger;
+use Orb\Log\Logger;
 
 /**
  * Log various query information
@@ -119,7 +119,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	}
 
 
-	
+
 	/**
 	 * Get all query info we've logged
 	 *
@@ -130,8 +130,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		return $this->_queries;
 	}
 
-	
-	
+
+
 	/**
 	 * Is this logger currently enabled?
 	 *
@@ -141,9 +141,9 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	{
 		return $this->_is_enabled;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Enable this logger
 	 */
@@ -153,7 +153,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	}
 
 
-	
+
 	/**
 	 * Disable this logger
 	 */
@@ -166,7 +166,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
 	/**
 	 * Add a slow logging rule
-	 * 
+	 *
 	 * @param <type> $query_type
 	 * @param <type> $max_time
 	 */

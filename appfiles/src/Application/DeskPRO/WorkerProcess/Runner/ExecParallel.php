@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * This runner forks and runs several jobs in parallel using exec().
@@ -90,7 +90,7 @@ class ExecParallel extends Standard
 			$this->runJob($job);
 		}
 	}
-	
+
 	public function runJob(Entity\WorkerJob $job)
 	{
 		passthru($this->getCmdForJob($job));

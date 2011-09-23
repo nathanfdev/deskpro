@@ -11,19 +11,19 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\EditTicketType;
-use \Application\UserBundle\Form\NewTicketReplyType;
-use \Application\UserBundle\Form\NewTicketParticipantType;
+use Application\UserBundle\Form\EditTicketType;
+use Application\UserBundle\Form\NewTicketReplyType;
+use Application\UserBundle\Form\NewTicketParticipantType;
 
 class TicketsController extends AbstractController
 {
 	protected $limited_person = null;
-	
+
 	protected $session_allowed = array();
 
 	protected function init()
@@ -176,7 +176,7 @@ class TicketsController extends AbstractController
 
 	/**
 	 * Only posted forms get here. The actual form is on the viewtikcet page.
-	 * 
+	 *
 	 * @param  $ticket_ref
 	 */
 	public function addReplyAction($ticket_ref)
@@ -213,7 +213,7 @@ class TicketsController extends AbstractController
 		$editticket = new \Application\UserBundle\Tickets\EditTicket\EditTicket(
 			$ticket
 		);
-		
+
 		$editticket_formtype = new EditTicketType($this->person);
 		$form = $this->get('form.factory')->create($editticket_formtype, $editticket);
 

@@ -13,9 +13,9 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Numbers;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Numbers;
 
 /**
  * Ban an IP addresses and ranges
@@ -27,7 +27,7 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The banned IP address (human readable)
-	 * 
+	 *
 	 * @var string
 	 * @ORM_Mapping\Id
 	 * @ORM_Mapping\Column(name="banned_ip", type="string", length=100)

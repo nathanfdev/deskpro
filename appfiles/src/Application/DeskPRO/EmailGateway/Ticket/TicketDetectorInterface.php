@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
  * A ticket detector scans an email to try and detect if an email
@@ -45,7 +45,7 @@ interface TicketDetectorInterface
 	/**
 	 * If a ticket is found but a person isn't, should we add the new email address
 	 * as a new CC or should we deny the message?
-	 * 
+	 *
 	 * @return void
 	 */
 	public function canAddUnknownPerson();

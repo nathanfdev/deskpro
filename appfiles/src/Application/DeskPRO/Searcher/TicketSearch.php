@@ -2,14 +2,14 @@
 
 namespace Application\DeskPRO\Searcher;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Util;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket;
 
 class TicketSearch extends SearcherAbstract
 {

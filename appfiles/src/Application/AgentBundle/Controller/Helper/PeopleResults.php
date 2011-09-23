@@ -11,13 +11,13 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
-use \Application\DeskPRO\Searcher\PeopleSearch;
-use \Application\DeskPRO\Entity\ResultCache;
-use \Application\DeskPRO\Entity\People;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\Searcher\PeopleSearch;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\People;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles people searches
@@ -46,7 +46,7 @@ class PeopleResults
 	{
 		$helper = new self($controller);
 		$helper->setPeopleIds($result_cache['results']);
-		
+
 		return $helper;
 	}
 

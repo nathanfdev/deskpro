@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use \Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Log\Logger;
-use \Application\DeskPRO\Mail\Transport\DelegatingTransport;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Mail\Transport\DelegatingTransport;
 
 /**
  * Goes through queued messages

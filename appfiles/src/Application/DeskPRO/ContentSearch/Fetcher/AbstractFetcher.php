@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\ContentSearch\Fetcher;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 abstract class AbstractFetcher
 {
@@ -34,10 +34,10 @@ abstract class AbstractFetcher
 	}
 
 
-	
+
 	/**
 	 * Returns an array of entities identified by $related_ids, that the user is able to see.
-	 * 
+	 *
 	 * @param array $related_ids
 	 * @return array
 	 */

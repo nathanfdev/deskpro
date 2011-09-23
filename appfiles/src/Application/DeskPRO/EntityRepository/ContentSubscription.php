@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\Download as DownloadEntity;
@@ -24,7 +24,7 @@ class ContentSubscription extends EntityRepository
 {
 	/**
 	 * Get a subscription for a type of content
-	 * 
+	 *
 	 * @param $content_object An Article, Idea, News or Download
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return \Application\DeskPRO\Entity\ContentSubscription
@@ -49,7 +49,7 @@ class ContentSubscription extends EntityRepository
 		}
 
 		$qb->setParameters(array(1 => $person, 2 => $content_object));
-		
+
 		try {
 			return $qb->getQuery()->getSingleResult();
 		} catch (\Exception $e) {

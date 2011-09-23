@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\Search\SearcherResult;
 
-use \Application\DeskPRO\App;
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\App;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Search adapter
@@ -46,7 +46,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 		return $this->total;
 	}
 
-	
+
 	/**
 	 * How many results in this object? Note: NOT the same as total
 	 *
@@ -57,7 +57,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 		return count($this->results);
 	}
 
-	
+
 	/**
 	 * Get a result by index, or null if the index doesnt exist
 	 *
@@ -79,7 +79,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 		return $this->results;
 	}
 
-	
+
 	/**
 	 * Get iterator
 	 *
@@ -94,7 +94,7 @@ class ResultSet implements \Countable, \IteratorAggregate
 	/**
 	 * If the result was cached, this is the cacheid we might use again.
 	 * Null means no cacheid.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function getCacheId()

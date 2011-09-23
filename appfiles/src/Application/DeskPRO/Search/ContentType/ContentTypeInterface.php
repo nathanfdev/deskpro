@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\Search\ContentType;
 
-use \Application\DeskPRO\Search\SearcherResult\ResultInterface;
-use \Application\DeskPRO\Search\Indexer\DocumentInterface;
+use Application\DeskPRO\Search\SearcherResult\ResultInterface;
+use Application\DeskPRO\Search\Indexer\DocumentInterface;
 
 /**
  * A content type is a type of indexed content, such as an artile or ticket or ticket message.
@@ -31,7 +31,7 @@ interface ContentTypeInterface
 	 */
 	public function resultToObject(ResultInterface $result);
 
-	
+
 	/**
 	 * Converts many results of this type into real objects.
 	 *
@@ -45,7 +45,7 @@ interface ContentTypeInterface
 	 */
 	public function resultsToObjects(array $results);
 
-	
+
 	/**
 	 * Transforms an object into a document, suitable for indexing.
 	 *

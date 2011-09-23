@@ -11,7 +11,7 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity\FormField;
+use Application\DeskPRO\Entity\FormField;
 
 /**
  * Handles editing and creating text field definitions

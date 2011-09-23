@@ -2,8 +2,8 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 
 class People
 {

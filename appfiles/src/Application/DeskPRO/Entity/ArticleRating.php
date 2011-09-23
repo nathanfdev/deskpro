@@ -13,10 +13,10 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 /**
  * Ratings on ideas
@@ -28,7 +28,7 @@ class ArticleRating extends \Application\DeskPRO\Domain\DomainObject
 {
 	const RATE_POSITIVE = 1;
 	const RATE_NEGATICE = -1;
-	
+
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
@@ -64,7 +64,7 @@ class ArticleRating extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Comment left by the user (usually in the case of negative)
-	 * 
+	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="comment", type="string", length=2500)
 	 */

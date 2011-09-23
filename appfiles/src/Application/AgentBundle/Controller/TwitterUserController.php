@@ -12,11 +12,11 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\TwitterAccountFriend;
+use Application\DeskPRO\Entity\TwitterAccountFriend;
 
-use \Orb\Service\Twitter\Twitter;
+use Orb\Service\Twitter\Twitter;
 
 /**
  * Handles creating/editing of Twitter Users

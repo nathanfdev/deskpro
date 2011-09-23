@@ -11,12 +11,12 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles editing and creating single-select field definitions
@@ -57,11 +57,11 @@ class Choice extends AbstractAdminHandler
 	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
 	{
 		$em = App::getOrm();
-		
+
 		$new = array();
 		$remove = array();
 		$have = array();
-		
+
 		$from_form = explode("\n", Strings::standardEol($formgroup['choices']->getData()));
 		$from_form = Arrays::removeEmptyString($from_form);
 

@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
 
 
 

@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Controller\Helper;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Controller\AbstractController;
-use \Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Controller\AbstractController;
+use Application\DeskPRO\Auth\LoginProcessor;
 
 class LoginHelper
 {
@@ -86,7 +86,7 @@ class LoginHelper
 	}
 
 
-	
+
 	############################################################################
 	# /logout
 	############################################################################
@@ -145,7 +145,7 @@ class LoginHelper
 
 			// Set their status to available by default
 			$this->controller->session->set('dp_active_status', 'available');
-			
+
 			$data = array(
 				'agent_id'   => $person['id'],
 				'agent_name' => $person['display_name'],

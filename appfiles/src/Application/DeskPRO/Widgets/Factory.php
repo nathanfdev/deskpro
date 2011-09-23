@@ -11,7 +11,7 @@ namespace Application\DeskPRO\Widgets;
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 class Factory
 {

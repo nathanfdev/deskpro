@@ -12,7 +12,7 @@ namespace Application\DeskPRO\UI;
 
 use Application\DeskPRO\Entity;
 
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Arrays;
 
@@ -31,7 +31,7 @@ class TagCloud
 	/**
 	 * $tag_counts must be an array of tag=>count for all tags you want to include in
 	 * the cloud.
-	 * 
+	 *
 	 * @param array $tag_counts
 	 */
 	public function __construct(array $tag_counts)

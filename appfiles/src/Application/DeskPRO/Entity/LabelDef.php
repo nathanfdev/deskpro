@@ -13,13 +13,13 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Symfony\Component\Validator\Constraints;
-use \Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * These are pre-defined labels that are allowed to be used.
@@ -56,7 +56,7 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the table name used to store label associations for this type.
 	 *
-	 * @return string 
+	 * @return string
 	 */
 	public function getLabelTable()
 	{

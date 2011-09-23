@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -38,7 +38,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
 	 * @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -68,7 +68,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * When non-null, the group is a special system group (hidden from most interfaces).
-	 * 
+	 *
 	 * @var bool
 	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
 	 */

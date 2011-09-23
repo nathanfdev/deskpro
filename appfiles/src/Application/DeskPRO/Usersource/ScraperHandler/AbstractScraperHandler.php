@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\Usersource\ScraperHandler;
 
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\PersonScraper;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonScraper;
 
 abstract class ScraperHandlerInterface
 {
@@ -49,7 +49,7 @@ abstract class ScraperHandlerInterface
 	/**
 	 * Gets an array of data we'll use to apply to a person. This basically
 	 * normalizes a scrapers data into standard array we can use.
-	 * 
+	 *
 	 * @param array $scraper_data
 	 */
 	public function getPersonData(array $scraper_data)

@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\Build\Upgrade;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Build\Upgrader;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Build\Upgrader;
 
 class <?php echo $build_classname ?> extends UpgradeAbstract
 {

@@ -11,18 +11,18 @@
 
 namespace Application\DeskPRO\Auth;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Arrays;
-use \Orb\Auth\Identity;
+use Orb\Util\Arrays;
+use Orb\Auth\Identity;
 
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\PersonEmail;
-use \Application\DeskPRO\Entity\PersonFieldData;
-use \Application\DeskPRO\Entity\PersonScraper;
-use \Application\DeskPRO\Entity\PersonScraperAssoc;
-use \Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use \Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonFieldData;
+use Application\DeskPRO\Entity\PersonScraper;
+use Application\DeskPRO\Entity\PersonScraperAssoc;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Usersource;
 
 class LoginProcessor
 {
@@ -58,7 +58,7 @@ class LoginProcessor
 
 	protected $is_new_person = false;
 
-	
+
 	public function __construct(Usersource $usersource, Identity $identity)
 	{
 		$this->identity = $identity;
@@ -94,7 +94,7 @@ class LoginProcessor
 		# Figure if we have an existing Person mapped, or if its
 		# a new Person
 		#------------------------------
-		
+
 		$em = App::getOrm();
 		$assoc_repos = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
 

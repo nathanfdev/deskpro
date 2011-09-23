@@ -11,8 +11,8 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\Auth\LoginProcessor;
-use \Application\DeskPRO\Controller\Helper\LoginHelper;
+use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 
 use Application\DeskPRO\App;

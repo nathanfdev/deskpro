@@ -11,17 +11,17 @@
 
 namespace Application\UserBundle\Controller\Helper\CommentsAdapter;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 class DisqusComments extends AbstractComments
 {
 	/**
 	 * Get the HTML block for disqus templates
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getHtml()

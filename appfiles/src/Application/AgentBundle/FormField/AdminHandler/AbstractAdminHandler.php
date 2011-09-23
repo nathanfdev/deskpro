@@ -11,9 +11,9 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * An admin handler that helps with building a custom field (options and the like).
@@ -41,7 +41,7 @@ abstract class AbstractAdminHandler
 	}
 
 
-	
+
 	/**
 	 * Empty hook method
 	 */
@@ -62,7 +62,7 @@ abstract class AbstractAdminHandler
 		foreach ($this->buildRequiredFormFields() as $f) {
 			$formgroup->addField($f);
 		}
-		
+
 
 		return $formgroup;
 	}
@@ -71,7 +71,7 @@ abstract class AbstractAdminHandler
 
 	/**
 	 * Set data/options based on the current field defition.
-	 * 
+	 *
 	 * @param \Orb\Form\Field\FieldGroup $formgroup
 	 */
 	public function setDataOnFormGroup(\Orb\Form\Field\FieldGroup $formgroup)
@@ -90,7 +90,7 @@ abstract class AbstractAdminHandler
 	abstract protected function buildRequiredFormFields();
 
 
-	
+
 	/**
 	 * Gets variables we'll need to use in the template.
 	 *
@@ -102,10 +102,10 @@ abstract class AbstractAdminHandler
 	}
 
 
-	
+
 	/**
 	 * Save the field
-	 * 
+	 *
 	 * @param \Orb\Form\Field\Form $form
 	 */
 	public function saveField(\Orb\Form\Field\Form $form)
@@ -130,7 +130,7 @@ abstract class AbstractAdminHandler
 	}
 
 
-	
+
 	/**
 	 * Save options for the current field.
 	 *

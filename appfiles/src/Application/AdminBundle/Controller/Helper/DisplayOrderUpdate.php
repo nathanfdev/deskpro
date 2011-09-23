@@ -2,8 +2,8 @@
 
 namespace Application\AdminBundle\Controller\Helper;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Util as DeskPRO_Util;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Util as DeskPRO_Util;
 
 use Orb\Util\Arrays;
 

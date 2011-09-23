@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Queue;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Util;
-use \Application\DeskPRO\Entity\QueueItem;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;
@@ -50,7 +50,7 @@ class Queue extends \Zend\Queue\Queue
 		# to point to it.
 		# - The Message item will correctly decode these and load the real data later
 		#------------------------------
-		
+
 		$em = $this->getOption('em');
 		$item = new \Application\DeskPRO\Entity\QueueItem();
 		$item['is_dataonly'] = true;

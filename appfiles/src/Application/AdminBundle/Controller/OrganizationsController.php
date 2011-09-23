@@ -11,13 +11,13 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Application\AdminBundle\Form\EditOrganizationType;
+use Application\AdminBundle\Form\EditOrganizationType;
 
 class OrganizationsController extends AbstractController
 {

@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Numbers;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\App;
+use Orb\Util\Numbers;
+use Orb\Util\Arrays;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -21,7 +21,7 @@ class TicketTrigger extends EntityRepository
 {
 	/**
 	 * Get all event-based triggers (that is, not time-based)
-	 * 
+	 *
 	 * @param bool $only_enabeld
 	 * @param bool $include_sys
 	 * @return array

@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 use \Doctrine\ORM\EntityRepository;
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 class Visitor extends EntityRepository
 {

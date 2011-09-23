@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Settings;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -54,7 +54,7 @@ class SettingsLocator implements \ArrayAccess
 		}
 	}
 
-	
+
 	public function offsetExists($offset)
 	{
 		$this->initPath($offset);

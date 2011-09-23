@@ -12,12 +12,12 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\TwitterAccount,
+use Application\DeskPRO\Entity\TwitterAccount,
     \Application\DeskPRO\Entity\TwitterStatusNote;
 
-use \Orb\Service\Twitter\Twitter;
+use Orb\Service\Twitter\Twitter;
 
 /**
  * Handles creating/editing of Twitter Accounts

@@ -11,8 +11,8 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 

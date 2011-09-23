@@ -10,9 +10,9 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Ticket;
 
 use Orb\Util\Strings;
 

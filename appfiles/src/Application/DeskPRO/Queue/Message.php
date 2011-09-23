@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Queue;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Util;
-use \Application\DeskPRO\Entity\QueueItem;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+use Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;

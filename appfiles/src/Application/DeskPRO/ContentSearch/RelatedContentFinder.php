@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\ContentSearch;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 class RelatedContentFinder
 {
@@ -49,7 +49,7 @@ class RelatedContentFinder
 		$this->entity_type = $entity->getTableName();
 	}
 
-	
+
 
 	/**
 	 * Get an array of object types and their related ID's.
@@ -93,7 +93,7 @@ class RelatedContentFinder
 	}
 
 
-	
+
 	/**
 	 * Processes related records and actually fetches the objects. Uses
 	 * fetchers that will know how to do things like apply permissions
@@ -128,10 +128,10 @@ class RelatedContentFinder
 	}
 
 
-	
+
 	/**
 	 * Get the fetcher class based on a typename.
-	 * 
+	 *
 	 * @param  $type
 	 * @return string
 	 */

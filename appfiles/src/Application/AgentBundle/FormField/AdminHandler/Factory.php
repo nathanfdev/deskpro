@@ -11,11 +11,11 @@
 
 namespace Application\AgentBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity\FormField;
+use Application\DeskPRO\Entity\FormField;
 
 /**
  * Creates an admin handler based off of a particular form field.
- * 
+ *
  * @static
  */
 class Factory
@@ -45,7 +45,7 @@ class Factory
 				$handler = new \Application\AgentBundle\CustomField\AdminHandler\MultipleChoice($form_field);
 				break;
 		}
-		
+
 		if (!$handler) {
 			throw new \InvalidArgumentException("Unknown AdminHandler for {$form_field['handler_class']}");
 		}

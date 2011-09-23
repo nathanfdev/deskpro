@@ -13,12 +13,12 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 /**
  * Description for a section within the ticket page.
@@ -46,7 +46,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 * @ORM_Mapping\Column(name="zone", type="string", length=50)
 	 */
 	protected $zone;
-	
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @ORM_Mapping\ManyToOne(targetEntity="Department")
@@ -80,7 +80,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 		}
 	}
 
-	
+
 	/**
 	 * Get the department id
 	 *
@@ -108,7 +108,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 		return isset($this->options[$name]) ? $this->options[$name] : $default;
 	}
 
-	
+
 	/**
 	 * Set an option
 	 *

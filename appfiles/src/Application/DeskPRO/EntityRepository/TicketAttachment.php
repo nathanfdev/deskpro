@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 class TicketAttachment extends \Doctrine\ORM\EntityRepository
 {

@@ -11,8 +11,8 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageHandler;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * A new chat message

@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Form;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
 /**
  * A helper that helps build and respond to the DeskPRO/InlineEdit.js system.
@@ -55,10 +55,10 @@ class InlineEditHandler
 	}
 
 
-	
+
 	/**
 	 * Apply input to a form
-	 * 
+	 *
 	 * @param \Orb\Form\Field\FieldGroup $form
 	 */
 	public function applyToForm(\Orb\Form\Field\FieldGroup $form)

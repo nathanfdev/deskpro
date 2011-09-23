@@ -14,8 +14,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * Twitter Account Search
@@ -55,7 +55,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->account) {
 			return $this->account->getId();
 		}
-		
+
 		return 0;
 	}
 

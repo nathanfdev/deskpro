@@ -2,12 +2,12 @@
 
 namespace Application\DeskPRO\Searcher;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 class OrganizationSearch extends SearcherAbstract
 {
@@ -178,7 +178,7 @@ class OrganizationSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
-				
+
 				case self::TERM_NAME:
 					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);;
 					break;

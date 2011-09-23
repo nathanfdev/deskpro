@@ -11,11 +11,11 @@
 
 namespace Application\AgentBundle\Usersource\AdminHandler;
 
-use \Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 
 /**
  * Creates an admin handler based off of a particular usersource.
- * 
+ *
  * @static
  */
 class Factory
@@ -37,7 +37,7 @@ class Factory
 				$handler = new \Application\AgentBundle\Usersource\AdminHandler\OpenId($usersource);
 				break;
 		}
-		
+
 		if (!$handler) {
 			throw new \InvalidArgumentException("Unknown AdminHandler for {$usersource['handler_class']}");
 		}

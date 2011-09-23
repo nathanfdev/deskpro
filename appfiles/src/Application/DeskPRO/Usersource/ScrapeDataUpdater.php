@@ -2,11 +2,11 @@
 
 namespace Application\DeskPRO\Usersource;
 
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\PersonScraper;
-use \Application\DeskPRO\Entity\PersonScraperAssoc;
-use \Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use \Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonScraper;
+use Application\DeskPRO\Entity\PersonScraperAssoc;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Usersource;
 
 class ScrapeDataUpdater
 {
@@ -30,7 +30,7 @@ class ScrapeDataUpdater
 		")->setParam(1, true)->getResults();
 	}
 
-	
+
 
 	/**
 	 * Find all scrapers whose polling says we should update, and run them.
@@ -45,10 +45,10 @@ class ScrapeDataUpdater
 	}
 
 
-	
+
 	/**
 	 * Run a scraper to update info on the Person
-	 * 
+	 *
 	 * @param PersonScraper $scraper
 	 * @return string
 	 */
@@ -69,7 +69,7 @@ class ScrapeDataUpdater
 			$assoc['person'] = $this->person;
 			$assoc['scraper'] = $scraper;
 			$assoc['identity'] = $identity;
-			
+
 			$this->person['personscraper_assoc']->add($assoc);
 
 			$em->persist($assoc);
@@ -108,7 +108,7 @@ class ScrapeDataUpdater
 	}
 
 
-	
+
 	public function findAssocForScraper(PersonScraper $scraper)
 	{
 		$found_assoc = false;
@@ -152,11 +152,11 @@ class ScrapeDataUpdater
 		return $updatable;
 	}
 
-	
+
 
 	/**
 	 * Get an array of scrapers that we should try auto-discovery again.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getDiscoverable()

@@ -11,14 +11,14 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Entity\Organization;
-use \Application\DeskPRO\Entity\OrganizationContactData;
-use \Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationContactData;
+use Application\DeskPRO\Entity\OrganizationNote;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Handles viewing and editing an org

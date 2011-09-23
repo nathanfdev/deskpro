@@ -13,9 +13,9 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Symfony\Component\Validator\Constraints\DateTime;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
 class Task extends EntityRepository
 {
@@ -31,7 +31,7 @@ class Task extends EntityRepository
 		$query = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Task t
-			WHERE 
+			WHERE
 			(
 					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
 				OR
@@ -40,10 +40,10 @@ class Task extends EntityRepository
 			AND t.is_completed = false
 			ORDER BY t.date_due ASC
 		");
-		
+
 		return $query->setParameter(1, $person['id'])->getResult();
 	}
-	
+
 	/**
 	 * Count pending tasks.
 	 *
@@ -56,10 +56,10 @@ class Task extends EntityRepository
 			FROM DeskPRO:Task t
 			WHERE t.is_completed = false
 		");
-		
+
 		return $query->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count overdue tasks.
 	 *
@@ -74,13 +74,13 @@ class Task extends EntityRepository
 			WHERE t.is_completed = false
 			AND t.date_due < ?1
 		");
-		
+
 		$date = new \DateTime('now', new \DateTimeZone($time_zone));
-		
+
 		return $query->setParameter(1, $date, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count due today tasks.
 	 *
@@ -98,16 +98,16 @@ class Task extends EntityRepository
 				OR t.date_due IS NULL
 			)
 		");
-		
+
 		$time_zone = new \DateTimeZone($time_zone);
 		$today = new \DateTime('today', $time_zone);
 		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		
+
 		return $query->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
 			->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count pending tasks assigned to the person.
 	 *
@@ -119,7 +119,7 @@ class Task extends EntityRepository
 		$query = $this->getEntityManager()->createQuery("
 			SELECT COUNT(t.id)
 			FROM DeskPRO:Task t
-			WHERE 
+			WHERE
 			(
 					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
 				OR
@@ -127,10 +127,10 @@ class Task extends EntityRepository
 			)
 			AND t.is_completed = false
 		");
-		
+
 		return $query->setParameter(1, $person['id'])->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count overdue tasks assigned to the person.
 	 *
@@ -151,14 +151,14 @@ class Task extends EntityRepository
 			AND t.is_completed = false
 			AND t.date_due < ?2
 		");
-		
+
 		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
-		
+
 		return $query->setParameter(1, $person['id'])
 			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count due today tasks assigned to the person.
 	 *
@@ -182,11 +182,11 @@ class Task extends EntityRepository
 				OR t.date_due IS NULL
 			)
 		");
-		
+
 		$time_zone = new \DateTimeZone($person['timezone']);
 		$today = new \DateTime('today', $time_zone);
 		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		
+
 		return $query->setParameter('person_id', $person['id'])
 			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
 			->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME)
@@ -195,7 +195,7 @@ class Task extends EntityRepository
 
 	/**
 	 * Count all pending tasks assigned to the person's teams.
-	 * 
+	 *
 	 * @param Entity\Person $person The person
 	 * @return int
 	 */
@@ -209,10 +209,10 @@ class Task extends EntityRepository
 			WHERE m.id = ?1
 			AND t.is_completed = false
 		");
-		
+
 		return $query->setParameter(1, $person['id'])->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count overdue tasks assigned to the perso's teams.
 	 *
@@ -230,14 +230,14 @@ class Task extends EntityRepository
 			AND t.is_completed = false
 			AND t.date_due < ?2
 		");
-		
+
 		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
-		
+
 		return $query->setParameter(1, $person['id'])
 			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count due today tasks assigned to the person's teamsT.
 	 *
@@ -258,17 +258,17 @@ class Task extends EntityRepository
 				OR t.date_due IS NULL
 			)
 		");
-		
+
 		$time_zone = new \DateTimeZone($person['timezone']);
 		$today = new \DateTime('today', $time_zone);
 		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		
+
 		return $query->setParameter('person_id', $person['id'])
 			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
 			->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count pending delegated tasks assigned to the person.
 	 *
@@ -285,10 +285,10 @@ class Task extends EntityRepository
             AND t.assigned_agent_id != ?1
 			AND t.is_completed = false
 		");
-		
+
 		return $query->setParameter(1, $person['id'])->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count overdue delegated tasks assigned to the person.
 	 *
@@ -306,14 +306,14 @@ class Task extends EntityRepository
 			AND t.is_completed = false
 			AND t.date_due < ?2
 		");
-		
+
 		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
-		
+
 		return $query->setParameter(1, $person['id'])
 			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 	/**
 	 * Count due today delegated tasks assigned to the person.
 	 *
@@ -334,15 +334,15 @@ class Task extends EntityRepository
 				OR t.date_due IS NULL
 			)
 		");
-		
+
 		$time_zone = new \DateTimeZone($person['timezone']);
 		$today = new \DateTime('today', $time_zone);
 		$tomorrow = new \DateTime('tomorrow', $time_zone);
-		
+
 		return $query->setParameter('person_id', $person['id'])
 			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
 			->setParameter('tomorrow', $tomorrow, \Doctrine\DBAL\Types\Type::DATETIME)
 			->getSingleScalarResult();
 	}
-	
+
 }
