@@ -496,4 +496,28 @@ class CategoryHierarchy
 		$this->em->flush();
 		$this->em->commit();
 	}
+
+
+	public function getTotalCounts(array $counts)
+	{
+		$counts['0_total'] = 0;
+
+		foreach ($this->getCategoryIds() as $c_id) {
+			$total = 0;
+			if (isset($counts[$c_id])) {
+				$total = $counts[$c_id];
+			}
+
+			foreach ($this->getChildrenIds($c_id, false) as $child_id) {
+				if (isset($counts[$child_id])) {
+					$total += $counts[$child_id];
+				}
+			}
+
+			$counts["{$c_id}_total"] = $total;
+			$counts['0_total'] += $total;
+		}
+
+		return $counts;
+	}
 }

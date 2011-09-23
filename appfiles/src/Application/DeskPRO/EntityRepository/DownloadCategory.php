@@ -94,36 +94,16 @@ class DownloadCategory extends AbstractCategoryRepository
 		if (($counts = $cache->load($cache_id)) === false) {
 			$counts = array('0' => 0, '0_total' => 0);
 
-			foreach ($this->children() as $c) {
+			foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
 				$searcher = new DownloadSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+				$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
 				$searcher->addTerm(DownloadSearch::TERM_STATUS, 'is', 'published');
 
-				$counts[$c['id']] = $searcher->getCount();
-
-				$counts['0_total'] += $counts[$c['id']];
+				$counts[$cid] = $searcher->getCount();
 			}
 
-			$repos = $this;
-			$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
-				$total = 0;
-				foreach ($repos->children($node, true) as $c) {
-					// We already have the single count
-					$total += $counts[$c['id']];
-
-					// Now add up all its subs
-					$total += $fn_count($c);
-				}
-
-				if ($node) {
-					$counts[$node['id'] . '_total'] = $total;
-				}
-
-				return $total;
-			};
-
-			$fn_count(null);
+			$counts = $this->getCategoryHelper()->getTotalCounts($counts);
 
 			$cache->save($counts, $cache_id);
 		}

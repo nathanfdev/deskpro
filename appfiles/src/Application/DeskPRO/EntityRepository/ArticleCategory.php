@@ -110,31 +110,16 @@ class ArticleCategory extends AbstractCategoryRepository
 		if (($counts = $cache->load($cache_id)) === false) {
 			$counts = array('0' => 0, '0_total' => 0);
 
-			foreach ($this->children() as $c) {
+			foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
 				$searcher = new ArticleSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+				$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
 				$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
 
-				$counts[$c['id']] = $searcher->getCount();
-
-				$counts['0_total'] += $counts[$c['id']];
+				$counts[$cid] = $searcher->getCount();
 			}
 
-			foreach ($this->getCategoryIds() as $c_id) {
-				$total = 0;
-				if (isset($counts[$c_id])) {
-					$total = $counts[$c_id];
-				}
-
-				foreach ($this->getChildrenIds($c_id, false) as $child_id) {
-					if (isset($counts[$child_id])) {
-						$total += $counts[$child_id];
-					}
-				}
-
-				$counts["{$c_id}_total"] = $total;
-			}
+			$counts = $this->getCategoryHelper()->getTotalCounts($counts);
 
 			$cache->save($counts, $cache_id, array('article_structure'));
 		}
