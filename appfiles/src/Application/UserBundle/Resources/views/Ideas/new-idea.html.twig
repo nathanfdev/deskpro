@@ -20,7 +20,7 @@
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
-				<form action="{{ path('user_ideas_newidea') }}" method="post">
+				<form action="{{ path('user_ideas_newidea') }}" method="post" class="with-form-validator">
 				<input type="hidden" name="process" value="1" />
 
 					{###############
@@ -37,7 +37,15 @@
 							<label>Your Name *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.name) }}
+							{{ form_widget(form.person.name, {
+								'attr': {
+									'data-field-validators': 'DeskPRO.Form.LengthValidator',
+									'data-min-len': 2
+								}
+							}) }}
+							<div class="dp-error-explain">
+								Please enter your name
+							</div>
 						</div>
 					</div>
 
@@ -49,8 +57,30 @@
 						<div class="dp-form-label">
 							<label>Category *</label>
 						</div>
-						<div class="dp-form-input">
-							{{ form_widget(form.category_id) }}
+						<div class="dp-form-input with-sub-options" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
+							<div class="dp-select-wrapper" style="width: 70%;">
+								<select name="idea[category_id]" class="parent-option category_id">
+									<option value=""></option>
+									{% for id,info in idea_categories %}
+										<option value="{{id}}">{{info.title}}</option>
+									{% endfor %}
+								</select>
+								{% for parent_id, parent_info in idea_categories %}
+									{% if parent_info.children|length %}
+									<div class="dp-sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
+										<select class="sub_category_id">
+											<option value=""></option>
+											{% for id,info in parent_info.children %}
+												<option value="{{id}}">{{info.title}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+							<div class="dp-error-explain">
+								Please choose a category
+							</div>
 						</div>
 					</div>
 
@@ -63,7 +93,15 @@
 							<label>Summary *</label> <em class="note">A title or a brief summary of what your idea is about</em>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.title) }}
+							{{ form_widget(form.title, {
+								'attr': {
+									'data-field-validators': 'DeskPRO.Form.LengthValidator',
+									'data-min-len': 5
+								}
+							}) }}
+							<div class="dp-error-explain">
+								Please enter a summary of at laest 5 characters
+							</div>
 						</div>
 					</div>
 
@@ -83,10 +121,18 @@
 
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Description *</label> <em class="note">If you need to, you can go into more detail about your idea here</em>
+							<label>Description *</label> <em class="note">Explain your idea</em>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.content) }}
+							{{ form_widget(form.content, {
+								'attr': {
+									'data-field-validators': 'DeskPRO.Form.LengthValidator',
+									'data-min-len': 5
+								}
+							}) }}
+							<div class="dp-error-explain">
+								Please enter a description of at least 5 characters
+							</div>
 						</div>
 					</div>
 

@@ -178,8 +178,11 @@ class IdeasController extends AbstractController
 			}
 		}
 
+		$idea_categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
 		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
 			'form' => $form->createView(),
+			'idea_categories' => $idea_categories
 		));
 	}
 

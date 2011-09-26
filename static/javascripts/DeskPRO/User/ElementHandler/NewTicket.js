@@ -10,7 +10,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		this.ticketForm = $('#dp_newticket_form');
 
-		//this._initSuggestionsBox();
+		this._initSuggestionsBox();
 		this._initFields();
 		this._initLoginForm(this.el);
 		this._initPreticketStatus();
