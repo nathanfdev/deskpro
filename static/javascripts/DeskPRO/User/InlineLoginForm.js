@@ -24,7 +24,7 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 		this.el = wrapper;
 		this.loginWrapper    = wrapper;
 		this.passwordRow     = $('.dp-inline-login-pass', wrapper);
-		this.nonloginWrapper = $('.dp-inline-non-login', wrapper);
+		this.nonloginWrapper = $('.dp-inline-non-login', this.context);
 		this.loginBtn        = $('.dp-login-trigger', wrapper);
 
 		this.loginSection = $('.dp-login-section', this.el);
