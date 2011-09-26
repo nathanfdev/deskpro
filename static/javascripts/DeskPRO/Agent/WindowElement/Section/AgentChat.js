@@ -153,6 +153,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 	addOnlineAgent: function(agent_id) {
 
+		if (agent_id.agent_id) {
+			agent_id = agent_id.agent_id;
+		}
+
 		// Ignore ourselves
 		if (DESKPRO_PERSON_ID && agent_id == DESKPRO_PERSON_ID) {
 			return;

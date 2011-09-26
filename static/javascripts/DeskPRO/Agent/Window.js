@@ -689,7 +689,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['chat_section'];
 		} else if (testcl('.Idea')) {
 			handler = this.sections['ideas_section'];
-		} else if (testcl('.RecycleBin')) {
+		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			handler = this.sections['tickets_section'];
 		}
 

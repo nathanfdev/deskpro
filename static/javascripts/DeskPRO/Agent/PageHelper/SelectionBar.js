@@ -46,12 +46,12 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		});
 	},
 
-	buttonClicked: function() {
+	buttonClicked: function(ev) {
 		if (this.button.is('.disabled')) {
 			return;
 		}
 
-		this.fireEvent('buttonClick');
+		this.fireEvent('buttonClick', [ev]);
 	},
 
 	getCheckedValues: function() {
