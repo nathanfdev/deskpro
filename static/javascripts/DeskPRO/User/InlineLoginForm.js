@@ -4,28 +4,36 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
+		var self = this;
+
 		this.options = {
 			emailSel: '#dp_inline_login_email',
 			passwordSel: '#dp_inline_login_pass',
-			context: this
+			context: null
 		};
 		this.setOptions(options);
 
 		this.context = this.options.context || document;
 
-		this.loginWrapper    = $('.dp-inline-login', this.context);
-		this.passwordRow     = $('.dp-inline-login-pass', this.context);
-		this.nonloginWrapper = $('.dp-inline-non-login', this.context);
-		this.loginBtn        = $('.dp-login-trigger', this.context);
+		this._initLoginForm($('.dp-inline-login', this.context));
+	},
 
-		$('.dp-inline-login-open', this.context).click((function(ev) {
+	_initLoginForm: function(wrapper) {
+		var self = this;
+
+		this.loginWrapper    = wrapper;
+		this.passwordRow     = $('.dp-inline-login-pass', wrapper);
+		this.nonloginWrapper = $('.dp-inline-non-login', wrapper);
+		this.loginBtn        = $('.dp-login-trigger', wrapper);
+
+		$('.dp-inline-login-open', wrapper).click((function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			if (!this.loginWrapper.is('.open')) {
-				this.openLogin();
-			} else {
+			if (this.loginWrapper.is('.open')) {
 				this.closeLogin();
+			} else {
+				this.openLogin();
 			}
 		}).bind(this));
 
@@ -35,6 +43,29 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 
 			this.processLogin();
 		}).bind(this));
+
+		$(this.options.passwordSel, wrapper).keypress(function(ev) {
+			if (ev.keyCode == 13) {
+				ev.preventDefault();
+
+				if (self.isOpen()) {
+					self.processLogin();
+				}
+			}
+		});
+		$(this.options.emailSel, wrapper).keypress(function(ev) {
+			if (ev.keyCode == 13) {
+				ev.preventDefault();
+
+				if (self.isOpen()) {
+					self.processLogin();
+				}
+			}
+		});
+	},
+
+	isOpen: function() {
+		return this.loginWrapper.is('.open');
 	},
 
 	openLogin: function() {
