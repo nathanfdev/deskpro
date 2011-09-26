@@ -2,7 +2,8 @@
 	<ul class="source-list with-tree" id="publish_outline_newscat_list">
 		<li class="all">
 			<span class="edit-mode tipped" id="publish_outline_newscat_editmode" title="Edit categories">edit mode</span>
-			<span class="add-new tipped" id="publish_outline_newscat_addcat" title="Add category">add</span>
+			<span class="add-new-cat tipped" id="publish_outline_newscat_addcat" title="Create a new category">create category</span>
+				<span class="add-new-article tipped" id="publish_outline_news_add" title="Create a new news post" data-newloader-name="newNewsLoader">create news</span>
 			<span class="all-route title" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} Posts</span>
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}

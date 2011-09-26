@@ -913,7 +913,8 @@ input.dp-cat-input:focus {
 
 
 .deskpro-tab-item li.all .edit-mode,
-.deskpro-tab-item li.all .add-new {
+.deskpro-tab-item li.all .add-new-cat,
+.deskpro-tab-item li.all .add-new-article {
 	position: absolute;
 	right: 4px;
 	top: 1px;
@@ -928,6 +929,17 @@ input.dp-cat-input:focus {
 	margin-right: 3px;
 	margin-top: 2px;
 	z-index: 1;
+}
+
+.deskpro-tab-item li.all .add-new-cat {
+	background: url(../../images/icons/folder_add.png) no-repeat 50% 50%;
+	right: 24px;
+	top: 0px;
+}
+
+.deskpro-tab-item li.all .add-new-article {
+	background: url(../../images/icons/page_add.png) no-repeat 50% 50%;
+	right: 43px;
 }
 
 .deskpro-tab-item li.all .edit-mode {

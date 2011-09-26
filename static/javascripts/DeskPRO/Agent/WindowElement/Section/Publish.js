@@ -178,7 +178,18 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			});
 
 			$('#publish_outline_'+type+'cat_addcat').click(function() {
+				var ul = $(this).parent().parent();
+				ul.toggleClass('edit-mode');
 				ed.addNew();
+			});
+
+			$('#publish_outline_'+type+'_add').click(function() {
+				var name = $(this).data('newloader-name');
+				if (!name || !DeskPRO_Window[name]) {
+					return;
+				}
+
+				DeskPRO_Window[name].toggle();
 			});
 
 			$('#publish_outline_'+type+'cat_list').delegate('.edit-cat', 'click', function(ev) {
