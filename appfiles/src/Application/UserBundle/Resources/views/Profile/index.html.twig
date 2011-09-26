@@ -48,29 +48,57 @@
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
+				{% if app.session.hasFlash('resent_validation_email') %}
+					<div class="alert-message info">
+						Validation email was resent to {{ app.session.flash('resent_validation_email') }}
+					</div>
+				{% endif %}
+				{% if app.session.hasFlash('removed_email') %}
+					<div class="alert-message info">
+						Email {{ app.session.flash('removed_email') }} was removed
+					</div>
+				{% endif %}
+				{% if app.session.hasFlash('new_email') %}
+					<div class="alert-message info">
+						Email {{ app.session.flash('removed_email') }} was added
+					</div>
+				{% endif %}
+				{% if app.session.hasFlash('new_email_validating') %}
+					<div class="alert-message info">
+						Email {{ app.session.flash('removed_email') }} was added. To start using this email address, you must validate it
+						by clicking on the link we just sent you.
+					</div>
+				{% endif %}
+
 				<ul class="dp-emails-list">
 					{% for email in app.user.emails %}
 					<li>
 						<div class="dp-controls">
-							<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">x</a>
-						</div>
-						{{ email.email }}
-						{% if email.is_validated %}
-							&bull;
 							{% if email.id == app.user.primary_email.id %}
 								Primary address
 							{% else %}
 								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">Set as primary address</a>
+								&bull;
+								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">Delete</a>
 							{% endif %}
-						{% else %}
-							&bull; This email is not validated yet. <a href="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}">Validate it now</a>.
-						{% endif %}
+						</div>
+						{{ email.email }}
 					</li>
+					{% endfor %}
+					{% for email in validating_emails %}
+						<li class="validating">
+							<div class="dp-controls">
+								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">Resend Validation Email</a>
+								&bull;
+								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">Delete</a>
+							</div>
+							{{ email.email }} <em>(awaiting validation)</em>
+						</li>
 					{% endfor %}
 					<li class="dp-new-email">
 						<form action="{{ path('user_profile_emails_new') }}" method="post">
-							Add an email address to your account:<br />
-							<input type="text" name="new_email" value="" size="30" /> <button class="dp-button x-small">Add</button>
+							<label>Add an email address to your account:</label><br />
+							<input type="text" name="new_email" value="" size="30" /> <button class="btn small">Add</button>
 						</form>
 					</li>
 				</ul>

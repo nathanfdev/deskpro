@@ -101,6 +101,10 @@ user_profile_emails_remove:
   pattern: /profile/emails/{email_id}/remove
   defaults: { _controller: UserBundle:Profile:removeEmail }
 
+user_profile_emails_validate_remove:
+  pattern: /profile/emails/{email_id}/remove-validating
+  defaults: { _controller: UserBundle:Profile:removeEmailValidating }
+
 user_profile_emails_validate:
   pattern: /profile/emails/{email_id}/validate
   defaults: { _controller: UserBundle:Profile:validateEmail }

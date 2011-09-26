@@ -14,6 +14,7 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\UserBundle\Form\ProfileType;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\DeskPRO\Entity\TmpData;
 
 class ProfileController extends AbstractController implements RequireUserInterface
@@ -28,22 +29,25 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	public function indexAction()
 	{
 		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
-		
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
-			
+
 			if ($form->isValid()) {
 				App::getOrm()->persist($this->person);
 				App::getOrm()->flush();
 			}
 		}
 
+		$validating_emails = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->person);
+
 		return $this->render('UserBundle:Profile:index.html.twig', array(
-			'form' => $form->createView()
+			'form' => $form->createView(),
+			'validating_emails' => $validating_emails,
 		));
 	}
 
-	
+
 	############################################################################
 	# change-password
 	############################################################################
@@ -81,7 +85,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$this->session->setFlash('password_set', true);
 		return $this->redirectRoute('user_profile');
 	}
-	
+
 
 	############################################################################
 	# setDefaultEmail
@@ -112,7 +116,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		return $this->redirectRoute('user_profile');
 	}
 
-	
+
 	############################################################################
 	# removeEmail
 	############################################################################
@@ -155,10 +159,30 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
+		$this->session->setFlash('removed_email', $email['email']);
+
 		return $this->redirectRoute('user_profile');
 	}
 
-	
+	public function removeEmailValidatingAction($email_id)
+	{
+		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
+
+		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
+			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
+		}
+
+		App::getOrm()->transactional(function ($em) use ($validating_email) {
+			$em->remove($validating_email);
+			$em->flush();
+		});
+
+		$this->session->setFlash('removed_email', $validating_email['email']);
+
+		return $this->redirectRoute('user_profile');
+	}
+
+
 	############################################################################
 	# newEmail
 	############################################################################
@@ -172,18 +196,38 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->renderStandardError('@user_profile.error_email_exists_explain', '@user_profile.error_email_exists', 409);
 		}
 
-		$email = new PersonEmail($email_address);
-		$email['email'] = $email_address;
-		$this->person->addEmailAddress($email);
+		if (App::getSetting('core.email_validation')) {
 
-		App::getOrm()->transactional(function ($em) use ($email) {
-			$em->persist($email);
-		});
+			$validating_email = new PersonEmailValidating($email_address);
+			$validating_email['email'] = $email_address;
+			$validating_email->person = $this->person;
+
+			App::getOrm()->transactional(function ($em) use ($validating_email) {
+				$em->persist($validating_email);
+				$em->flush();
+			});
+
+			$this->_doSendValidationEmail($validating_email);
+
+			$this->session->setFlash('new_email_validating', $validating_email['email']);
+
+		} else {
+			$email = new PersonEmail($email_address);
+			$email['email'] = $email_address;
+			$this->person->addEmailAddress($email);
+
+			App::getOrm()->transactional(function ($em) use ($email) {
+				$em->persist($email);
+			});
+
+			$this->session->setFlash('new_email', $validating_email['email']);
+
+		}
 
 		return $this->redirectRoute('user_profile');
 	}
 
-	
+
 	############################################################################
 	# validateEmail
 	############################################################################
@@ -231,44 +275,45 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	# sendValidateEmailLink
 	############################################################################
 
+	protected function _doSendValidationEmail($validating_email)
+	{
+		$person = $this->person;
+
+		$vars = array(
+			'email_subject' => new \Application\DeskPRO\Translate\DelegatePhrase('user.emails.subj_newemail_validate'),
+			'validating_email' => $validating_email
+		);
+
+		App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($vars, $person, $validating_email) {
+			$email_subject = $tr->phrase($vars['email_subject']);
+			$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
+
+			$message = App::getMailer()->createMessage();
+			$message->setTo($validating_email->getEmail(), $person->getDisplayName());
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->enableQueueHint();
+
+			App::getMailer()->send($message);
+		});
+	}
+
 	/**
 	 * Re-send the validation link
 	 */
 	public function sendValidateEmailLinkAction($email_id)
 	{
-		$email = $this->person->getEmailId($email_id);
+		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
 
-		if (!$email) {
+		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
 			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
 		}
 
-		if ($email['is_validated']) {
-			return $this->redirectRoute('user_profile_emails');
-		}
+		$this->_doSendValidationEmail($validating_email);
 
-		$tmp_data = new TmpData();
-		$tmp_data->setData('email_id', $email_id);
-		$tmp_data->setType('email_validation');
-		App::getOrm()->persist($tmp_data);
-		App::getOrm()->flush();
+		$this->session->setFlash('resent_validation_email', $validating_email['email']);
 
-		$email_subject = 'Validate your email address';
-		$email_body = App::get('templating')->render('DeskPRO:emails_user:validate-email.html.twig', array(
-			'email' => $email,
-			'code' => $tmp_data->getCode(),
-		));
-
-		$message = App::getMailer()->createMessage();
-		$message->setTo($email['email'], $this->person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
-		$message->enableQueueHint();
-
-		App::getMailer()->send($message);
-
-		return $this->render('UserBundle:Profile:validate-email-sent.html.twig', array(
-			'email' => $email
-		));
+		return $this->redirectRoute('user_profile');
 	}
 
 	############################################################################
@@ -297,7 +342,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$subscriptions['news'][] = $s;
 			}
 		}
-		
+
 		return $this->render('UserBundle:Profile:subscriptions.html.twig', array(
 			'subscriptions' => $subscriptions
 		));

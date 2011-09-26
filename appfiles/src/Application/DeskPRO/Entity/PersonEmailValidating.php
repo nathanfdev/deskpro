@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * Email addresses that are still waiting to be validated.
  *
- * @ORM_Mapping\Entity
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonEmailValidating")
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="people_emails_validating")
  */

@@ -2177,3 +2177,26 @@ ul.dp-ticketlist ul.dp-meta li {
 .dp-inline-email-manage .change-email-close {
 
 }
+
+
+ul.dp-emails-list li {
+	margin: 4px 0 4px 0;
+}
+
+ul.dp-emails-list li.validating em {
+	font-style: italic;
+	color: #9D5126;
+}
+
+ul.dp-emails-list li .dp-controls {
+	float: right;
+}
+
+ul.dp-emails-list li.dp-new-email {
+	margin-top: 15px;
+}
+
+ul.dp-emails-list li.dp-new-email label {
+	font-weight: bold;
+	margin:  4px 0 4px 0;
+}
