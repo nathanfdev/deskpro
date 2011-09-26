@@ -1,56 +1,19 @@
 <div class="full-tab-content">
-	<div class="download-content-wrap">
-		{# Top Right #}
-		<div class="ticket-properties right">
-			<div class="table-container">
-				<div class="table-title">
-					<h4>File Information</h4>
+	<div class="download-content-wrap content-post-wrap">
+		{# Top #}
+		<div class="download-content-info">
+			{% if download.blob.is_image %}
+				<div class="thumb">
+					<a href="{{ download.blob.download_url }}" target="_blank"><img src="{{ download.blob.getThumbnailUrl(50)  }}" /></a>
 				</div>
-				<div class="table-content">
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>File</span>
-						</div>
-						<div class="col-table-content">
-							{{ download.blob.filename }}
-						</div>
-					</div>
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>Size</span>
-						</div>
-						<div class="col-table-content">
-							{{ download.blob.readable_filesize }}
-						</div>
-					</div>
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>Type</span>
-						</div>
-						<div class="col-table-content">
-							{{ download.blob.content_type }}
-						</div>
-					</div>
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>Download</span>
-						</div>
-						<div class="col-table-content">
-							<a class="dp-button x-small" href="{{ download.blob.download_url }}">Download</a>
-						</div>
-					</div>
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>Created</span>
-						</div>
-						<div class="col-table-content">
-							<span class="timeago" title="{{download.date_created|date('c')}}">{{download.date_created|date('Y-m-d')}}</span>
-						</div>
-					</div>
-				</div>
-			</div>
+			{% endif %}
+
+			<a class="clean-white small" href="{{ download.blob.download_url }}" target="_blank" title="{{ download.blob.content_type }}">
+				{{ download.blob.filename }}
+			</a> ({{ download.blob.readable_filesize }})
+			<br class="clear" />
 		</div>
-		{# /Top Right #}
+		{# /Top #}
 		{{ download.content_html|raw }}
 	</div>
 	<div class="download-editor-wrap" style="display: none">

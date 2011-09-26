@@ -973,7 +973,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} html The HTML page
 	 * @return {DeskPRO.Agent.PageFragment.Basic}
 	 */
-	createPageFragment: function (html, classname) {
+	createPageFragment: function (html, classname, force_classname) {
 
 		pageMeta = {
 			'title': false,
@@ -999,6 +999,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			html = html.substring(matches[0].length);
 		}
 
+		if (force_classname) {
+			pageMeta.fragmentClass = classname;
+		}
+
 		// Hard switch that prevents page fragments from
 		// rendering a login page into the interface
 		// - The login page is redirected to within the code when session expires,
@@ -1013,8 +1017,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 
-		var page = new fragment_class(html);
-		page.setMetaData(pageMeta);
+		try {
+			var page = new fragment_class(html);
+			page.setMetaData(pageMeta);
+		} catch (error) {
+			console.error("Error creating fragment with %s: %s", pageMeta.fragmentClass, error);
+			var page = new fragment_class(html, 'DeskPRO.Agent.PageFragment.Basic', true);
+			page.setMetaData(pageMeta);
+		}
 
 		return page;
 	},

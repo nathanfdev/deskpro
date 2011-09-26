@@ -12,9 +12,11 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page news-page with-scrollbar">
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing page-news-view">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
 
 <div class="delete-notice" {% if news.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This post has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
@@ -24,193 +26,152 @@ pageMeta.baseId = '{{ baseId }}';
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
-<section class="ticket-header" id="{{baseId}}_news_header">
-	<div class="ticket-id">
-		<span>#{{ news.id }}</span>
+<header class="page-header">
+	<h4 class="id-number">#{{ news.id }}</h4>
+	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ news.title }}</h1>
+	<br class="clear" />
+	<div class="meta-line">
+		<div class="status the-status article-status"><span>{{ news.status }}</span></div>
+		<div class="category"><span>Category: {{ news.category.full_title }}</span></div>
+	</div>
+	<br class="clear" />
+</header>
+
+<section id="{{baseId}}_tabs_content_wrap" class="mid-page">
+	<dl class="table-list">
+		<dt class="type-labels">Labels</dt>
+		<dd>
+			<ul>
+				<div class="tags-wrap news-tags">
+					<ul>
+						{% for label in news.labels %}
+							<li><span>{{label.label}}</span></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</ul>
+		</dd>
+
+		<dt>Rating</dt>
+		<dd>
+			{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
+			<small>{{ news.up_votes }} found the post helpful, {{ article.news }} found the post unhelpful</small>
+		</dd>
+	</dl>
+
+	<br class="clear" />
+
+	<div class="controls" id="{{baseId}}_action_buttons">
+		<button class="clean-white delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
+		<button class="clean-white permalink">Copy Permalink</button>
+		<button class="clean-white view-user-interface">View in user interface</button>
+		<br class="clear" />
 	</div>
 
-	{% if news.status_code != "hidden.validating" %}
-		<div class="the-status" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>
-			<div class="ticket-status news-status prop-status-icon tipped" title="{{ news.status }}">
-				<span class="ticket-{{news.status}}"></span>
-			</div>
-		</div>
-	{% endif %}
-
-	<div class="the-department">
-		<div class="ticket-department prop-department-id" id="{{baseId}}_category">
-			<div class="parent">
-				{% if news.category.parent %}
-					{{ news.category.parent.title }}
-				{% else %}
-					{{ news.category.title }}
-				{% endif %}
-			</div>
-			<div class="sub">
-				{% if news.category.parent %}
-					{{ news.category.title }}
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="ticket-subject editable hover-edit" data-editable-for=".inline-editable .title">
-		{{ news.title }}
-	</div>
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<div class="assignments">
-		<div class="agent">
-			<div class="desc">
-				Created by <a class="agent-link prop-agent-id" style="background-image: url('{{ news.person.getPictureUrl(20) }}');">{{ news.person.display_name }}</a>
-			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
-		</div>
-	</div>
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
+	<footer class="time-info">
 		<ul>
-			<li class="delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
-			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
-			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
+			<li>
+				Created <time class="timeago" datetime="{{news.date_created|date('c')}}"></time> by {{ news.person.display_name }} at <time>{{news.date_created|date('H:ia M j Y')}}</time>
+			</li>
 		</ul>
-	</nav>
-
-	<div class="times">
-		Created <time class="timeago" datetime="{{news.date_created|date('c')}}"></time> at <time>{{news.date_created|date('H:ia M j Y')}}</time>.<br/>
-	</div>
+	</footer>
 </section>
 
-<div class="full-container-tabbed main-tabs">
-	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
-		<div class="full-container-tabbed-contents">
-			<div class="table-content">
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Labels</span>
-					</div>
-					<div class="col-table-content">
-						<div class="tags-wrap news-tags">
-							<span class="tag-icon"></span>
-							<ul>
-								{% for label in news.labels %}
-									<li><span>{{label.label}}</span></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</div>
-				</div>
+<nav class="page-tabs" id="{{baseId}}_bodytabs">
+	<ul>
+		<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>Post</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>Comments (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>Revisions</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .related-content"><span>Related Content</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>Search</span></li>
+	</ul>
+</nav>
 
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Rating</span>
-					</div>
-					<div class="col-table-content">
-						{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
-						<small>{{ news.up_votes }} found the article helpful, {{ news.down_votes }} found the article unhelpful</small>
-					</div>
-				</div>
-			</div>
+{# Tab Contents #}
+<div id="{{baseId}}_tab_contents" class="tabbed-page-contents">
+	{# Tab: Content #}
+	<div class="deskpro-tab-item news-content on">
+		{# Content #}
+		<div class="news-content" id="{{baseId}}_content_ed">
+		{% include 'AgentBundle:News:view-content-tab.html.twig' %}
 		</div>
+		{# /Content #}
 	</div>
-</div>
 
-{# Main Tabs #}
-<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
-	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs">
-		<span class="kb-editor-edit news-editor-edit"><a>edit</a></span>
-		<ul>
-			<li class="tab-trigger on" data-tab-for=".tab-content.news-content"><a>Post</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.news-revs"><a>Revisions</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.news-related-content"><a>Related Content</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.search-tab"><a>Search</a></li>
-		</ul>
-	</div>
-	{# /Tab Triggers #}
-
-	{# Tab Contents #}
-	<div class="full-container-tabbed-contents-wrap">
-		{# Tab: Content #}
-		<div class="full-container-tabbed-contents tab-content news-content on">
-            {# Content #}
-            <div class="news-content" id="{{baseId}}_content_ed">
-            {% include 'AgentBundle:News:view-content-tab.html.twig' %}
-            </div>
-            {# /Content #}
-        </div>
-
-        {# Tab: Comments #}
-		<div class="full-container-tabbed-contents tab-content comments-tab">
-			<div class="news-comments">
-            	<div class="full-tab-content">
-            		<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-            			{% for comment in news_comments %}
-            				{% include 'AgentBundle:News:view-comment.html.twig' %}
-            			{% endfor %}
-            		</div>
-            	</div>
-
-            	<div class="message admin-message new-note">
-            		<div class="message-avatar left">
-            			<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-            		</div>
-            		<div class="message-body">
-            			<div class="message-meta">
-            				<span class="arrow-left"></span>
-            				<h4>{{ app.user.display_name }}</h4>
-            			</div>
-            			<div class="message-text">
-            				<p>
-            					<textarea style="width:98%; height: 80px;"></textarea>
-            					<div style="text-align:center; margin-top: 9px;">
-            						<div class="loading-off">
-            							<button class="dp-button x-small">Add Comment</button>
-            						</div>
-            						<div class="loading-on" style="display:none">
-            							Saving ...
-            						</div>
-            					</div>
-            				</p>
-            			</div>
-            		</div>
-            	</div>
-            </div>
-		</div>
-		{# /Tab: Comments #}
-
-		{# Tab: Revisions #}
-		<div id="{{baseId}}_revs" class="full-container-tabbed-contents tab-content news-revs">
-			{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
-		</div>
-		{# /Tab: Revisions #}
-
-		{# Tab: Related #}
-		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content news-related-content">
-			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
-		</div>
-		{# /Tab: Related #}
-
-		{# Tab: Search #}
-		<div id="{{baseId}}_searchtab" class="full-container-tabbed-contents tab-content search-tab">
-			<div class="tags-wrap sticky-search-words">
-				<span class="tag-icon with-label">Search Words</span>
-				<ul>
-					{% for word in sticky_search_words %}
-						<li><span>{{word}}</span></li>
+	{# Tab: Comments #}
+	<div class="deskpro-tab-item comments-tab">
+		<div class="news-comments">
+			<div class="full-tab-content">
+				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+					{% for comment in news_comments %}
+						{% include 'AgentBundle:News:view-comment.html.twig' %}
 					{% endfor %}
-				</ul>
-				<div class="explain">
-					When a user searches for any of these words, this page will always be listed in their top results.
 				</div>
 			</div>
 
-			<br />
-
-			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
-		{# /Tab: Search #}
 	</div>
+	{# /Tab: Comments #}
+
+	{# Tab: Revisions #}
+	<div id="{{baseId}}_revs" class="deskpro-tab-item revisions">
+		{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
+	</div>
+	{# /Tab: Revisions #}
+
+	{# Tab: Related #}
+	<div id="{{baseId}}_related_content" class="deskpro-tab-item related-content">
+		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+	</div>
+	{# /Tab: Related #}
+
+	{# Tab: Search #}
+	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
+		<div class="tags-wrap sticky-search-words">
+			<dl class="table-list">
+				<dt class="type-labels">Search Words</dt>
+				<dd>
+					<ul>
+						{% for word in sticky_search_words %}
+							<li><span>{{word}}</span></li>
+						{% endfor %}
+					</ul>
+					<div class="explain">
+						When a user searches for any of these words, this page will always be listed in their top results.
+					</div>
+				</dd>
+			</dl>
+		</div>
+
+		<br />
+
+		{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+	</div>
+	{# /Tab: Search #}
 </div>
 {# /Main Tabs #}
 
@@ -222,13 +183,14 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
+	<li data-option-value="published">{{ phrase('agent.kb.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('agent.kb.hidden_status_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('agent.kb.status_archived') }}</li>
 	{% if news.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
+		<li data-option-value="hidden.draft">{{ phrase('agent.kb.hidden_status_draft') }}</li>
 	{% endif %}
 </ul>
 
-</div></div> {# scrollbar divs #}
-</div> {# main layout div #}
+{# scroll containers #}
+</div></div></div></div>
+{# /scroll containers #}

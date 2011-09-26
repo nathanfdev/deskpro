@@ -103,10 +103,9 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs'),
+			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.news-revs') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/view-revisions',
 						type: 'GET',
@@ -462,8 +461,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 	},
 
 	showCompareRev: function() {
-		var old_id = $('.news-revs input.old:checked', this.wrapper).val();
-		var new_id = $('.news-revs input.new:checked', this.wrapper).val();
+		var old_id = $('.reivisons input.old:checked', this.wrapper).val();
+		var new_id = $('.revisions input.new:checked', this.wrapper).val();
 
 		if (!old_id || !new_id) {
 			return;

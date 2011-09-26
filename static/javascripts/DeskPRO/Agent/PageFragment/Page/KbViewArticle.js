@@ -128,8 +128,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs'),
+			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
@@ -204,9 +203,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			menuElement: $('.status-menu:first', this.wrapper),
 			onItemClicked: function(info) {
 				var status = $(info.itemEl).data('option-value');
+				var statusName = $(info.itemEl).text().trim();
 
-				$('.article-status', trigger).attr('title', status);
-				$('.article-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+				trigger.attr('title', status);
+				$('span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_')).text(statusName);
 
 				self.getEl('auto_unpub').hide();
 				self.getEl('auto_pub').hide();

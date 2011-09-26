@@ -1,6 +1,6 @@
 <table class="list revision-compare-table" width="100%">
 	{% for rev in news.revisions %}
-		<tr>
+		<tr class="rev-{{rev.id}}">
 			<td width="30">{{ loop.index }}</td>
 			<td>
 				<span style="float:right">
@@ -9,8 +9,7 @@
 				By {{ rev.person.display_name }}
 			</td>
 			<td width="150">
-				<input type="radio" class="old" name="old" value="{{rev.id}}" /> |
-				<input type="radio" class="new" name="new" value="{{rev.id}}" />
+				<input type="checkbox" class="rev-compare-check" value="{{rev.id}}" />
 			</td>
 		</tr>
 	{% endfor %}
