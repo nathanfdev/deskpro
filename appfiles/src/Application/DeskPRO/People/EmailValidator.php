@@ -99,7 +99,7 @@ class EmailValidator
 			$this->em->persist($email);
 
 			$this->person->addEmailAddress($email);
-
+			$this->person->is_confirmed = true;
 
 			$this->em->persist($email);
 
