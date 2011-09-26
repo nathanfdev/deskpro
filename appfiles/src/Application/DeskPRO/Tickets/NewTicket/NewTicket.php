@@ -73,6 +73,13 @@ class NewTicket
 
 				if (!$person) {
 					$person = Entity\Person::newContactPerson();
+					$person['creation_system'] = Entity\Person::CREATED_WEB_PERSON;
+
+					if ($this->creation_system == 'web.agent') {
+						$person['creation_system'] = Entity\Person::CREATED_WEB_AGENT;
+					} else if ($this->creation_system == 'gateway.person') {
+						$person['creation_system'] = Entity\Person::CREATED_GATEWAT_PERSON;
+					}
 				}
 			}
 
