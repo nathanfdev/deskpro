@@ -14,6 +14,10 @@ user_accept_upload:
   pattern:  /accept-temp-upload
   defaults: { _controller: UserBundle:Main:acceptTempUpload }
 
+user_validate_email:
+  pattern: /validate-email/{id}/{auth}
+  defaults: { _controller: UserBundle:Main:validateEmail }
+
 ################################################################################
 # Login/logout
 ################################################################################

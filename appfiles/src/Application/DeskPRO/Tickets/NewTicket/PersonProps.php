@@ -43,8 +43,8 @@ class PersonProps
 			} else {
 				$this->name = '';
 			}
-			
-			$this->email      = $person->getPrimaryEmailAddress();
+
+			$this->email = $person->getPrimaryEmailAddress();
 
 			//todo prefill fields
 		}

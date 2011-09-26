@@ -60,13 +60,37 @@
 		</div>
 
 	{% else %}
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>Your Email Address</label></em>
+		<div
+			class="dp-inline-email-manage with-handler"
+			data-element-handler="DeskPRO.User.ElementHandler.InlineEmailManage"
+			data-security-token="{{ security_token('email_manage') }}"
+		>
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Your Email Address</label>
+					<em class="change-email"><a href="{{ path('user_profile') }}">Change email address</a></em>
+					<em class="change-email-close" style="display: none"><a>Done changing email</a></em>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
+
+				</div>
 			</div>
-			<div class="dp-form-input">
-				{{ app.user.primary_email_address }}
-				<input type="hidden" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" />
+			<div class="dp-email-manage-controls" style="display: none">
+				<strong>Choose the email you want to use:</strong><br />
+				<ul>
+					{% for email in app.user.emails %}
+						<li>
+							<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+						</li>
+					{% endfor %}
+					<li>
+						<label>
+							<input type="radio" name="dp_inline_email_choice" value="NEW" />
+							New email:</label>
+						<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
+					</li>
+				</ul>
 			</div>
 		</div>
 	{% endif %}

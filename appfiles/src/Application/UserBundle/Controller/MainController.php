@@ -5,6 +5,7 @@ namespace Application\UserBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\People\EmailValidator;
 
 class MainController extends AbstractController
 {
@@ -13,7 +14,7 @@ class MainController extends AbstractController
         return $this->render('UserBundle:Main:index.html.twig');
     }
 
-	public function standardErrorAction($error_message, $error_title = '', $code = 200, array $vars = array())
+	public function standardErrorAction($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
 		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
 		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
@@ -64,5 +65,30 @@ class MainController extends AbstractController
 			'filename' => $blob->getFilename(),
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
+	}
+
+	public function validateEmailAction($id, $auth)
+	{
+		$validator = EmailValidator::createFromId($id, $auth);
+
+		if (!$validator) {
+			$this->renderStandardError('@user.profile.error_invalid_email_code', '', 404);
+		}
+
+		try {
+			$email = $validator->validate();
+		} catch (\OutOfBoundsException $e) {
+			if ($e->getCode() == 100) {
+				$this->renderStandardError('@user.profile.error_dupe_email');
+			} else {
+				throw $e;
+			}
+		}
+
+		return $this->render('UserBundle:Main:validate-email-success.html.twig', array(
+			'email' => $email,
+			'person' => $validator->getPerson(),
+			'ticket_ids' => $validator->getTicketIds()
+		));
 	}
 }

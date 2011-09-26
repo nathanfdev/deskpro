@@ -357,6 +357,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
+		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
 
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineSuggestions.js',

@@ -73,25 +73,27 @@ class NewTicket
 
 				if (!$person) {
 					$person = Entity\Person::newContactPerson();
-					$is_new_person = true;
 				}
 			}
 
-			$person['name'] = $this->person->name;
+			if ($this->person->name) {
+				$person['name'] = $this->person->name;
+			}
+
+			App::getOrm()->persist($person);
 
 			// Note that dupe emails shouldnt happen here
 			// The person should already be a person who
-			// has the address, or else we're just initializing it now
-
+			// has the address, or else we need to create the address as
+			// an unvalidated address and require them to validate now
 			$email = $person->findEmailAddress($this->person->email);
+			$email_validating = null;
 			if (!$email) {
-				$email = new Entity\PersonEmail();
-				$email['email'] = $this->person->email;
-				$email['is_validated'] = false;
-
-				$person->addEmailAddress($email);
+				$email_validating = new Entity\PersonEmailValidating();
+				$email_validating->email = $this->person->email;
+				$email_validating->person = $person;
+				App::getOrm()->persist($email_validating);
 			}
-			App::getOrm()->persist($person);
 
 			#------------------------------
 			# Now ticket
@@ -101,7 +103,12 @@ class NewTicket
 			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;
-			$ticket['person_email'] = $email;
+
+			if ($email_validating) {
+				$ticket->person_email_validating = $email_validating;
+			} else {
+				$ticket['person_email'] = $email;
+			}
 			$ticket['status'] = 'open';
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
@@ -163,14 +170,11 @@ class NewTicket
 			$this->new_message = $ticket_message;
 			$ticket->addMessage($ticket_message);
 
-			if ($ticket->person_email['is_validated']) {
-				$ticket['status']        = Entity\Ticket::STATUS_OPEN;
+			if ($email_validating) {
+				$ticket['status'] = 'hidden.validating';
 			} else {
-				$ticket['status']        = Entity\Ticket::STATUS_HIDDEN;
-				$ticket['hidden_status'] = Entity\Ticket::HIDDEN_STATUS_VALIDATING;
+				$ticket['status'] = 'open';
 			}
-
-			$ticket['status']        = Entity\Ticket::STATUS_OPEN;
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 			$raw_custom_fields = isset($_POST['newticket']['custom_fields']) ? $_POST['newticket']['custom_fields'] : array();

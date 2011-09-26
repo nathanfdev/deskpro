@@ -119,6 +119,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $person_email = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\PersonEmailValidating
+	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmailValidating", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_email_validating_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $person_email_validating = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")

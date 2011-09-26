@@ -286,4 +286,21 @@ class Ticket extends EntityRepository
 			GROUP BY status_code
 		");
 	}
+
+
+	public function getTicketIdsWithValidatingEmail($validating_email)
+	{
+		if (is_object($validating_email)) {
+			$validating_email = $validating_email->getId();
+		}
+
+		$validating_email = (int)$validating_email;
+
+		return $this->getEntityManager()->getConnection()->fetchAllCol("
+			SELECT id
+			FROM tickets
+			WHERE person_email_validating_id = ?
+			ORDER BY id DESC
+		", array($validating_email));
+	}
 }

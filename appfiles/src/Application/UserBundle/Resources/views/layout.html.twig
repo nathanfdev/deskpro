@@ -114,6 +114,30 @@
 	{% endif %}
 
 	<div id="dp_content">
+		{% if app.session.hasFlash('new_ticket') %}
+			<div class="dp-content-block">
+				<div class="dp-box">
+					<div class="dp-box-content-wrapper">
+						<div class="dp-box-content">
+							<div class="alert-message block-message success">
+								<p>Your ticket has been created successfully.</p>
+								{% if app.session.hasFlash('new_ticket_validating_email') %}
+									<p>
+										<strong class="warn">Note:</strong> Since this is your first time submitting
+										 a ticket from {{ app.session.flash('new_ticket_validating_email') }}, you must
+										 validate your email address before our agents will respond. Check your email now
+										 and click the validation link we sent you.
+									 </p>
+								{% elseif app.session.hasFlash('new_ticket_email') %}
+									<p>Our agents will respond to your email address at {{ app.session.flash('new_ticket_email') }}.</p>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
 		{% block content %}{% endblock %}
 	</div>
 

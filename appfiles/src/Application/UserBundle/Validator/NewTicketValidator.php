@@ -59,7 +59,9 @@ class NewTicketValidator extends AbstractValidator
 
 			$ticket_page = $ticket_display->getPage($department_id);
 
-			$this->_traverseItems($ticket_page->getPageDisplay('default')->getData());
+			if ($ticket_page) {
+				$this->_traverseItems($ticket_page);
+			}
 		}
 
 		#------------------------------
@@ -104,7 +106,10 @@ class NewTicketValidator extends AbstractValidator
 			}
 
 			if (!$found) {
-				$this->addError('person.email.not_own');
+				$validator = new \Orb\Validator\StringEmail();
+				if (!$validator->isValid($this->newticket->person->email)) {
+					$this->addError('person.email.invalid');
+				}
 			}
 		}
 
