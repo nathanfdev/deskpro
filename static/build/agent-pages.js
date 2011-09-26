@@ -211,14 +211,15 @@ this.page=c;this.options={selectionBar:null,selectedCount:null,button:null};this
 }this.selectedCount=$(this.options.selectedCount);if(!this.options.button){this.options.button=$(".perform-actions-trigger:first",this.selectionBar)
 }this.button=$(this.options.button);this.button.addClass("disabled");this.button.click(this.buttonClicked.bind(this));this.controlCheck=$(".selection-control",this.page.wrapper).click(function(){if($(this).is(":checked")){a.checkAll()
 }else{a.checkNone()}});this.page.wrapper.delegate("input.item-select","click",function(){var d=$(this);a.handleCheckChange(d,d.is(":checked"))
-})},buttonClicked:function(){if(this.button.is(".disabled")){return}this.fireEvent("buttonClick")},getCheckedValues:function(){var a=[];
-$("input.item-select:checked",this.page.wrapper).each(function(){a.push($(this).val())});return a},getCheckedFormValues:function(b,a){a=a||[];
-$("input.item-select:checked",this.page.wrapper).each(function(){a.push({name:b,value:$(this).val()})});return a},getChecked:function(){return $("input.item-select:checked",this.page.wrapper)
-},getCount:function(){return $("input.item-select:checked",this.page.wrapper).length},checkAll:function(){$("input.item-select",this.page.wrapper).attr("checked",true);
-var a=this.getCount();this.selectedCount.text(a);if(a>0){this.button.removeClass("disabled");this.controlCheck.attr("checked",true)
-}else{this.controlCheck.attr("checked",false)}},checkNone:function(){$("input.item-select:checked",this.page.wrapper).attr("checked",false);
-var a=this.getCount();this.selectedCount.text(a);this.button.addClass("disabled");this.controlCheck.attr("checked",false)
-},handleCheckChange:function(b,a){var c=this.getCount();this.selectedCount.text(c);if(c>0){this.button.removeClass("disabled")
+})},buttonClicked:function(a){if(this.button.is(".disabled")){return}this.fireEvent("buttonClick",[a])},getCheckedValues:function(){var a=[];
+$("input.item-select:checked",this.page.wrapper).each(function(){a.push($(this).val())});return a},getCheckedFormValues:function(b,a,c){a=a||[];
+if(!c){c={}}c.checkedCount=0;$("input.item-select:checked",this.page.wrapper).each(function(){a.push({name:b,value:$(this).val()});
+c.checkedCount++});return a},getChecked:function(){return $("input.item-select:checked",this.page.wrapper)},getCount:function(){return $("input.item-select:checked",this.page.wrapper).length
+},checkAll:function(){$("input.item-select",this.page.wrapper).attr("checked",true);var a=this.getCount();this.selectedCount.text(a);
+if(a>0){this.button.removeClass("disabled");this.controlCheck.attr("checked",true)}else{this.controlCheck.attr("checked",false)
+}this.fireEvent("checkAll",[a])},checkNone:function(){$("input.item-select:checked",this.page.wrapper).attr("checked",false);
+var a=this.getCount();this.selectedCount.text(a);this.button.addClass("disabled");this.controlCheck.attr("checked",false);
+this.fireEvent("checkNone")},handleCheckChange:function(b,a){var c=this.getCount();this.selectedCount.text(c);if(c>0){this.button.removeClass("disabled")
 }else{this.button.addClass("disabled")}if($("input.item-select:not(:checked):first",this.page.wrapper).length){this.controlCheck.attr("checked",false)
 }else{this.controlCheck.attr("checked",true)}this.fireEvent("checkChange",[b,a,c])}});Orb.createNamespace("DeskPRO.Agent.PageHelper");
 DeskPRO.Agent.PageHelper.Popover_Instances={};DeskPRO.Agent.PageHelper.Popover=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={loadTimeout:0,pageUrl:"",pageCallback:null,tabRoute:false,destroyOnClose:false,overFrom:"#dp_content"};
