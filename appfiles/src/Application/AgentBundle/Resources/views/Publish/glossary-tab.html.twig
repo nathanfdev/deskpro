@@ -1,14 +1,15 @@
-<section id="publish_outline_glossary" class="deskpro-tab-item">
+<section id="publish_outline_glossary">
 	<ul class="source-list">
-		<li class="all">
+		<li class="all on">
 			<span class="add-new tipped glossary-new-trigger" title="Add new glossary word">add</span>
 			<span class="title">
-				<span class="glossary-word-count">{{ glossary_count }}</span> words
+				Glossary
+				{# <span class="glossary-word-count">{{ glossary_count }}</span> words #}
 			</span>
 		</li>
 	</ul>
 
-	<section class="source-labels-list" id="ticket_labels_list">
+	<section class="source-labels-list">
 		<dl>
 			{% for letter,words in glossary_words %}
 				<dt data-letter="{{ letter }}" {% if not words|length %}style="display: none"{% endif %}>{{ letter }}</dt>

@@ -32,17 +32,15 @@
 
 <section class="source-tabs many" id="publish_outline_tabstrip">
 	<ul>
-		<li data-tab-for="#publish_outline_kb"><span>KB</span></li>
+		<li data-tab-for="#publish_outline_kb_tab"><span>Knowledgebase</span></li>
 		<li data-tab-for="#publish_outline_news"><span>News</span></li>
-		<li data-tab-for="#publish_outline_downloads"><span>Files</span></li>
-		<li data-tab-for="#publish_outline_glossary"><span>Glossary</span></li>
+		<li data-tab-for="#publish_outline_downloads" class="fill-out"><span>Files</span></li>
 	</ul>
 </section>
 
 {% include 'AgentBundle:Publish:kb-tab.html.twig' %}
-{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 {% include 'AgentBundle:Publish:news-tab.html.twig' %}
-{% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
+{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 
 {# Category editor #}
 <div id="publish_cat_editor_backdrop" class="backdrop cat-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;"></div>

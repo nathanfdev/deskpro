@@ -161,6 +161,7 @@ ul.source-list li span.title {
 }
 
 ul.source-list li:not(.nav-selected) > span.title:hover,
+ul.source-list li.on:not(.nav-selected) > span.title,
 ul.source-list li:not(.nav-selected) > .item-wrap > span.title:hover {
 	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
@@ -420,7 +421,7 @@ section.source-tabs ul li.on span {
 }
 
 section.source-tabs ul li.fill-out span {
-	padding-right: 20px;
+	padding-right: 20px !important;
 }
 
 section.source-tabs.many ul li span {
@@ -834,9 +835,27 @@ input.dp-cat-input:focus {
 }
 
 
+#publish_outline_glossary {
+	margin-top: 12px;
+}
+
+#publish_outline_glossary li.all {
+	cursor: default;
+}
+
 #publish_outline_glossary li.all .add-new {
 	display: block;
-	right: 0px;
+	position: absolute;
+	top: 1px;
+	right: 5px;
+
+	background: url(../../images/icons/add.png) no-repeat 100% 50%;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+	z-index: 1;
+	cursor: pointer;
 }
 
 
