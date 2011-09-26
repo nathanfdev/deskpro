@@ -21,10 +21,14 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 	_initLoginForm: function(wrapper) {
 		var self = this;
 
+		this.el = wrapper;
 		this.loginWrapper    = wrapper;
 		this.passwordRow     = $('.dp-inline-login-pass', wrapper);
 		this.nonloginWrapper = $('.dp-inline-non-login', wrapper);
 		this.loginBtn        = $('.dp-login-trigger', wrapper);
+
+		this.loginSection = $('.dp-login-section', this.el);
+		this.resetSection = $('.dp-reset-section', this.el);
 
 		$('.dp-inline-login-open', wrapper).click((function(ev) {
 			ev.preventDefault();
@@ -62,6 +66,8 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 				}
 			}
 		});
+
+		this._initResetSection();
 	},
 
 	isOpen: function() {
@@ -119,5 +125,73 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 				this.fireEvent('success', [data, this]);
 			}
 		})
+	},
+
+	//#########################################################################
+	//# Reset Stuff
+	//#########################################################################
+
+	_initResetSection: function() {
+		$('.forgot', this.el).click((function(ev) {
+			ev.preventDefault();
+			this.showReset();
+		}).bind(this));
+
+		$('.back', this.resetSection).click((function(ev) {
+			this.hideReset();
+		}).bind(this));
+
+		$('.dp-do-send', this.resetSection).click((function(ev) {
+			ev.preventDefault();
+			this.sendReset();
+		}).bind(this));
+	},
+
+	sendReset: function() {
+
+		this.resetSection.addClass('loading');
+
+		$.ajax({
+			url: BASE_URL + 'login/reset-password/send',
+			type: 'POST',
+			data: {
+				email: $(this.options.emailSel, this.el).val()
+			},
+			dataType: 'json',
+			context: this,
+			success: function() {
+				this.resetSection.removeClass('loading');
+
+				var descEl = $('.dp-reset-desc', this.resetSection);
+				var sentEl = $('.dp-reset-sent', this.resetSection);
+
+				descEl.slideUp('fast', function() {
+					sentEl.slideDown();
+				});
+			}
+		});
+	},
+
+	showReset: function() {
+		this.loginSection.slideUp('fast', (function() {
+			this.resetSection.slideDown('fast');
+		}).bind(this));
+	},
+
+	hideReset: function(quick) {
+		if (quick) {
+			this.resetSection.hide();
+			this.loginSection.show();
+			$('.dp-reset-desc', this.resetSection).show();
+			$('.dp-reset-sent', this.resetSection).hide();
+		} else {
+			this.resetSection.slideUp('fast', (function() {
+				this.loginSection.slideDown('fast');
+
+				// Also reset view on others
+				$('.dp-reset-desc', this.resetSection).show();
+				$('.dp-reset-sent', this.resetSection).hide();
+			}).bind(this));
+		}
 	}
 });

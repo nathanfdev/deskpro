@@ -1526,25 +1526,48 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	padding: 2px;
 }
 
-#dp_login_box .dp-reset-section .is-loading {
+#dp_login_box .dp-reset-section .is-loading,
+.dp-inline-login-pass .dp-reset-section .is-loading {
 	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 50% 0;
 	padding-top: 14px;
 	display: none;
 }
 
-#dp_login_box .dp-reset-section.loading .is-loading {
-	display: block;
-}
-#dp_login_box .dp-reset-section.loading .not-loading {
+.dp-inline-login-pass .dp-reset-section .is-loading {
+	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 0 50%;
+	padding-left: 14px;
+	padding-top: 0;
 	display: none;
 }
 
-#dp_login_box .dp-reset-section .dp-btn-row {
+#dp_login_box .dp-reset-section.loading .is-loading,
+.dp-inline-login-pass .dp-reset-section.loading .is-loading {
+	display: block;
+}
+#dp_login_box .dp-reset-section.loading .not-loading,
+.dp-inline-login-pass .dp-reset-section.loading .not-loading {
+	display: none;
+}
+
+#dp_login_box .dp-reset-section .dp-btn-row,
+.dp-inline-login-pass .dp-reset-section .dp-btn-row {
 	text-align: center;
 	margin-top: 4px;
 }
 
-#dp_login_box .dp-reset-section .dp-btn-row a {
+.dp-inline-login-pass .dp-reset-section .dp-btn-row {
+	text-align: left;
+}
+
+
+.dp-inline-login-pass a.forgot {
+	margin-left: 8px;
+	font-size: 10px;
+	font-style: italic;;
+}
+
+#dp_login_box .dp-reset-section .dp-btn-row a,
+.dp-inline-login-pass .dp-reset-section .dp-btn-row a {
 	cursor: pointer;
 	font-size: 9px;
 }

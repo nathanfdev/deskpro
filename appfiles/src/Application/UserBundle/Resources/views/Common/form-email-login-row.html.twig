@@ -18,21 +18,47 @@
 			</div>
 		</div>
 
-		<div class="dp-form-row dp-inline-login-pass">
-			<div class="dp-form-label">
-				<label>Password</label>
-			</div>
-			<div class="dp-form-input">
-				<input type="password" id="dp_inline_login_pass" />
-				<div class="dp-loading">
-					Logging in...
+		<div class="dp-form-row dp-inline-login-pass" style="display: none">
+			<div class="dp-login-section">
+				<div class="dp-form-label">
+					<label>Password</label>
+					<a class="forgot" href="{{ path('user_login_resetpass') }}">Lost?</a>
 				</div>
-				<div class="dp-btn-row">
-					<button class="btn primary dp-login-trigger">Log In</button>
-					<button class="btn dp-inline-login-open">Cancel</button>
+				<div class="dp-form-input">
+					<input type="password" id="dp_inline_login_pass" />
+					<div class="dp-loading">
+						Logging in...
+					</div>
+					<div class="dp-btn-row">
+						<button class="btn primary dp-login-trigger">Log In</button>
+						<button class="btn dp-inline-login-open">Cancel</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-reset-section" style="display: none">
+				<div class="dp-reset-desc">
+					Forgot your password? Fill in your email address above, and then
+					click the button below.
+					<br />
+					<div class="dp-btn-row">
+						<div class="not-loading">
+							<button class="btn small dp-do-send">Send Reset Instructions</button>
+							<a class="back">or go back to the login form</a>
+						</div>
+						<div class="is-loading">
+							Please Wait
+						</div>
+					</div>
+				</div>
+				<div class="dp-reset-sent" style="display: none">
+					If we have an account with this email address, then we have sent you
+					instructions on how to reset your password.<br />
+					<a class="btn small back">Go back to the login form</a>
 				</div>
 			</div>
 		</div>
+
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
