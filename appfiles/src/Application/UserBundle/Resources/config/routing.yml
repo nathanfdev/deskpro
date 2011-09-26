@@ -105,17 +105,9 @@ user_profile_emails_validate_remove:
   pattern: /profile/emails/{email_id}/remove-validating
   defaults: { _controller: UserBundle:Profile:removeEmailValidating }
 
-user_profile_emails_validate:
-  pattern: /profile/emails/{email_id}/validate
-  defaults: { _controller: UserBundle:Profile:validateEmail }
-
 user_profile_emails_validate_sendlink:
   pattern: /profile/emails/{email_id}/validate/send-link
   defaults: { _controller: UserBundle:Profile:sendValidateEmailLink }
-
-user_profile_emails_validate_code:
-  pattern: /profile/emails/{email_id}/validate/{code}
-  defaults: { _controller: UserBundle:Profile:validateEmail }
 
 user_profile_emails_setdefault:
   pattern: /profile/emails/{email_id}/set-default

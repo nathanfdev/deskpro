@@ -137,4 +137,9 @@ class EmailValidator
 	{
 		return $this->ticket_ids;
 	}
+
+	public function getValidatingEmail()
+	{
+		return $this->validating_email;
+	}
 }

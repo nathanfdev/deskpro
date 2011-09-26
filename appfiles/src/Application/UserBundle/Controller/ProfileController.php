@@ -191,85 +191,50 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	{
 		$email_address = $this->in->getString('new_email');
 
-		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->findByEmail($email_address);
+		// Already have this email on their account
+		if ($this->person->findEmailAddress($email_address)) {
+			return $this->redirectRoute('user_profile');
+		}
+
+		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($email_address);
 		if ($email_exists) {
-			return $this->renderStandardError('@user_profile.error_email_exists_explain', '@user_profile.error_email_exists', 409);
+			$person = $this->person;
+
+			$vars = array(
+				'email_subject' => new \Application\DeskPRO\Translate\DelegatePhrase('user.emails.subj_newemail_exists'),
+				'email_exists' => $email_exists,
+				'person' => $person
+			);
+
+			App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($vars, $person, $email_exists) {
+				$email_subject = $tr->phrase($vars['email_subject']);
+				$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-exists.html.twig', $vars);
+
+				$message = App::getMailer()->createMessage();
+				$message->setTo($email_exists->getEmail(), $person->getDisplayName());
+				$message->setSubject($email_subject);
+				$message->setBody($email_body, 'text/html');
+				$message->enableQueueHint();
+
+				App::getMailer()->send($message);
+			});
 		}
 
-		if (App::getSetting('core.email_validation')) {
+		$validating_email = new PersonEmailValidating($email_address);
+		$validating_email['email'] = $email_address;
+		$validating_email->person = $this->person;
 
-			$validating_email = new PersonEmailValidating($email_address);
-			$validating_email['email'] = $email_address;
-			$validating_email->person = $this->person;
+		App::getOrm()->transactional(function ($em) use ($validating_email) {
+			$em->persist($validating_email);
+			$em->flush();
+		});
 
-			App::getOrm()->transactional(function ($em) use ($validating_email) {
-				$em->persist($validating_email);
-				$em->flush();
-			});
+		$this->_doSendValidationEmail($validating_email);
 
-			$this->_doSendValidationEmail($validating_email);
-
-			$this->session->setFlash('new_email_validating', $validating_email['email']);
-
-		} else {
-			$email = new PersonEmail($email_address);
-			$email['email'] = $email_address;
-			$this->person->addEmailAddress($email);
-
-			App::getOrm()->transactional(function ($em) use ($email) {
-				$em->persist($email);
-			});
-
-			$this->session->setFlash('new_email', $validating_email['email']);
-
-		}
+		$this->session->setFlash('new_email_validating', $validating_email['email']);
 
 		return $this->redirectRoute('user_profile');
 	}
-
-
-	############################################################################
-	# validateEmail
-	############################################################################
-
-	/**
-	 * Validates an email address, or shows form to send a new validation email
-	 */
-	public function validateEmailAction($email_id, $code = false)
-	{
-		$email = $this->person->getEmailId($email_id);
-
-		if (!$email) {
-			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
-		}
-
-		if ($email['is_validated']) {
-			return $this->render('UserBundle:Profile:validate-email-done.html.twig', array(
-				'email' => $email
-			));
-		}
-
-		if (!$code) $code = $this->in->getString('code');
-		if ($code) {
-			$tmp_data = App::getEntityRepository('DeskPRO:TmpData')->getByCode($code, 'email_validation');
-			if ($tmp_data AND $tmp_data->getData('email_id') == $email['id']) {
-				$email['is_validated'] = true;
-				App::getOrm()->transactional(function ($em) use ($email) {
-					$em->persist($email);
-					$em->remove($tmp_data);
-				});
-
-				return $this->render('UserBundle:Profile:validate-email-done.html.twig', array(
-					'email' => $email
-				));
-			}
-		}
-
-		return $this->render('UserBundle:Profile:validate-email.html.twig', array(
-			'email' => $email
-		));
-	}
-
 
 	############################################################################
 	# sendValidateEmailLink

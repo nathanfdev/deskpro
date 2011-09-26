@@ -1,0 +1,21 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<div class="dp-error-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<p>
+						The email address you are trying to activate on your account is already attached to a different account.
+					</p>
+
+					<p>
+						If you own both accounts and want to merge them together, please <a href="{{ path('user_tickets_new') }}">submit a ticket</a>
+						and one of our agents will be happy to help.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

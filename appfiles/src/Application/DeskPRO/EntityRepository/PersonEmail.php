@@ -21,6 +21,6 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 			SELECT e
 			FROM DeskPRO:PersonEmail e
 			WHERE e.email = ?1
-		")->setParameters(array(1=> $email_address))->getOneOrNullResult();
+		")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
 	}
 }

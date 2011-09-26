@@ -75,6 +75,16 @@ class MainController extends AbstractController
 			$this->renderStandardError('@user.profile.error_invalid_email_code', '', 404);
 		}
 
+
+		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
+		if ($email_exists) {
+			return $this->render('UserBundle:Main:validate-email-exists.html.twig', array(
+				'email' => $email,
+				'person' => $validator->getPerson(),
+				'ticket_ids' => $validator->getTicketIds()
+			));
+		}
+
 		try {
 			$email = $validator->validate();
 		} catch (\OutOfBoundsException $e) {
