@@ -1573,7 +1573,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				$m = null;
 				if (preg_match('#^(?P<first_name>[A-Za-z]{3,})\s+(?P<last_name>[A-Za-z]{3,})$#', $this->name, $m)) {
 					$this->first_name = $m['first_name'];
-					$this->last_name = $m['last_ame'];
+					$this->last_name = $m['last_name'];
 				}
 			}
 		} else {

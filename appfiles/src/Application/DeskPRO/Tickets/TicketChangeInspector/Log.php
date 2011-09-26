@@ -95,7 +95,7 @@ class Log
 				// All others are single changes,
 				// we wrap in an array for the foreach to work below
 			}
-			
+
 			foreach ($all_info as $info) {
 				$action = null;
 
