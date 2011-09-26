@@ -38,7 +38,7 @@
 			return oWrapper;
 		}
 
-		oWrapper.addClass('.scroll-setup');
+		oWrapper.addClass('scroll-setup');
 
 		var oViewport = { obj: $('.scroll-viewport:first', this) };
 		var oContent = { obj: $('.scroll-content:first', this) };

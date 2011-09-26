@@ -12,7 +12,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
-		this.ownObject(this.displayoptions);
+		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 		this.ownObject(this.selectionBar);
