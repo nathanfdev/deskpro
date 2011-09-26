@@ -61,6 +61,12 @@ span.team-link, a.team-link {
 	padding: 2px 0 2px 23px;
 }
 
+.tab-loading {
+	margin:  20px;
+	background:  url(../../images/loading-big-circle.gif) no-repeat 50% 50%;
+	height: 40px;
+}
+
 /*****************************************************************************
  * Window layout
 /*****************************************************************************/

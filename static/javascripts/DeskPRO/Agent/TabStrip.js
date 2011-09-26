@@ -172,7 +172,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	addTabPlaceholder: function(url, routeData) {
 		var html = $('#tab_loading_template').get(0).innerHTML;
-		html = html.replace('%endScript%', '</scr' + 'ipt>');
+		html = html.replace(/%startScript%/g, '<scr' + 'ipt>');
+		html = html.replace(/%endScript%/g, '</scr' + 'ipt>');
 
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;

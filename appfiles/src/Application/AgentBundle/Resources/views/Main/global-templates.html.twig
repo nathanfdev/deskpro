@@ -334,12 +334,11 @@
 	it needs an html string, and jQuery creates real HTML elements.
 #}
 <script type="text/x-deskpro-tmpl" id="tab_loading_template">
-	<script>
+	%startScript%
 	pageMeta.title = '{{ phrase('agent.tab_loading_title') }}';
 	%endScript%
-	<div class="tab-loading">
-		{{ phrase('agent.tab_loading') }}
-	</div>
+
+	<div class="tab-loading"></div>
 </script>
 
 <div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
