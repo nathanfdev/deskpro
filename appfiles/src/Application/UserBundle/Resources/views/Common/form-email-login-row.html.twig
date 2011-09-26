@@ -11,12 +11,10 @@
 				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-inline-login-open">log in</a>.</em>
 			</div>
 			<div class="dp-form-input">
-				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" />
-				{% if error_fields[form_key_prefix~'email'] %}
-					<div class="dp-error-explain">
-						Enter a valid email address
-					</div>
-				{% endif %}
+				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+				<div class="dp-error-explain">
+					Enter a valid email address
+				</div>
 			</div>
 		</div>
 

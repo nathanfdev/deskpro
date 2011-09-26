@@ -42,13 +42,37 @@ class NewTicketController extends AbstractController
 		$errors = array();
 		$error_fields = array();
 
+		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $ticket_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
+		$ticket_display->addPagesFromDb();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+
+		$cat_parents = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryHelper()->getParentMap();
+		$ticket_display_js .= 'window.DESKPRO_TICKET_CAT_PARENTS = ' . json_encode($cat_parents) . ';';
+
+		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
+		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
+
+		$captcha_html = '';
+		if ($captcha) {
+			$captcha_html = $captcha->getHtml();
+		}
+
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'uint', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
-
-			$validator = new \Application\UserBundle\Validator\NewTicketValidator();
 
 			if ($validator->isValid($newticket)) {
 
@@ -108,30 +132,6 @@ class NewTicketController extends AbstractController
 				$errors = $validator->getErrors(true);
 				$error_fields = $validator->getErrorGroups(true);
 			}
-		}
-
-		// Custom fields
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $ticket_field_defs);
-
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
-
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
-		$ticket_display->addPagesFromDb();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-
-		$cat_parents = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryHelper()->getParentMap();
-		$ticket_display_js .= 'window.DESKPRO_TICKET_CAT_PARENTS = ' . json_encode($cat_parents) . ';';
-
-		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
-		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
-
-		$captcha_html = '';
-		if ($captcha) {
-			$captcha_html = $captcha->getHtml();
 		}
 
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(

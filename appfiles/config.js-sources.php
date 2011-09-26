@@ -347,6 +347,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
+
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
@@ -356,9 +357,16 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
+
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineSuggestions.js',
 		'javascripts/DeskPRO/User/InlineLoginForm.js',
+
+		'javascripts/DeskPRO/FormValidator/FormValidator.js',
+		'javascripts/DeskPRO/FormValidator/FieldValidator.js',
+		'javascripts/DeskPRO/FormValidator/LengthValidator.js',
+		'javascripts/DeskPRO/FormValidator/EmailValidator.js',
+		'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
 	)
 );
 

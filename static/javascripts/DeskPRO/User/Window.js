@@ -88,6 +88,10 @@ DeskPRO.User.Window = new Orb.Class({
 			self.elementHandlers[el.attr('id')] = obj;
 		});
 
+		$('form.with-form-validator', contextEl).each(function() {
+			var v = new DeskPRO.Form.FormValidator($(this));
+			$(this).data('form-validator-inst', v);
+		});
 
 		$('a.in-overlay').click(function(ev) {
 			ev.preventDefault();

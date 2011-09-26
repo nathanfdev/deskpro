@@ -1704,7 +1704,12 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 }
 
+.dp-form-row .dp-error-explain {
+	display: none;
+}
+
 .dp-form-row.dp-error .dp-error-explain {
+	display: block;
 	color: #920010;
 	margin: 4px;
 }
