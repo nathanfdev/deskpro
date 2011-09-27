@@ -342,6 +342,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/Orb/Util/Events.js',
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',

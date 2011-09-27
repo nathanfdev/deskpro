@@ -470,7 +470,6 @@ Orb.DesktopNotify = (function() {
 })();
 
 
-
 /**
  * There is no way to attach a single click handler and a double-click handler.
  * So to do it, we have to emulate double-click detection by setting a timeout.

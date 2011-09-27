@@ -50,7 +50,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$this->person = $person;
 	}
 
-	
+
 	public function query($query_text)
 	{
 		$index = $this->adapter->getIndex('content');
@@ -135,20 +135,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 	public function omnisearch($query_text)
 	{
-		$index = $this->adapter->getIndex('content');
-
-		$query = new \Elastica_Query();
-		$query->setParam('query', array(
-			'fuzzy_like_this' => array(
-				'like_text' => $query_text,
-				'prefix_length' => 3,
-			)
-		));
-
-		$e_result_set = $index->search($query);
-		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
-
-		return $result_set;
+		return $this->similarContent($query_text);
 	}
 
 
@@ -163,7 +150,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if (!$this->person OR $this->person['is_agent']) {
 			return null;
 		}
-		
+
 		$filter = new \Elastica_Filter_Bool();
 
 		$no_perm_types = array();

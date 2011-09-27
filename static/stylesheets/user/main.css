@@ -413,21 +413,101 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 	padding-right: 2px;
 }
 
+#deskpro_search {
+	z-index: 1001;
+	position: relative;
+}
+
 #dp_search_assist {
 	position: absolute;
-	background-color: #fff;
-	min-height: 100px;
 	z-index: 100;
-	box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.6);
-
-	border-radius: 0 0 6px 6px;
+	box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.8);
 	border: 1px solid #B4B6B8;
 	border-top: none;
+
+	z-index: 100000;
+	border-radius: 0 0 6px 6px;
 }
 
 #dp_search_assist {
 
 }
+
+#dp_search_assist .results {
+	background-color: #fff;
+}
+
+#dp_search_assist .results ul li {
+	border-bottom:  1px solid #D9DBDB;
+}
+
+#dp_search_assist .results ul li a {
+	display: block;
+	padding: 3px 3px 3px 8px;
+}
+
+#dp_search_assist .results ul li a:hover {
+	background-color: #2F7FD0;
+	color: #fff;
+	text-decoration: none;
+}
+
+#dp_search_assist .results ul li a:hover span {
+	color: #fff;
+}
+
+#dp_search_assist .results ul li a span {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding: 1px 0 1px 19px;
+}
+#dp_search_assist .results ul li.article a span { background-image: url(../../images/icons/page_white_text.png); }
+#dp_search_assist .results ul li.news a span    { background-image: url(../../images/icons/newspaper.png); }
+#dp_search_assist .results ul li.idea a span    { background-image: url(../../images/icons/bulb.png); }
+#dp_search_assist .results ul li.more a span    { background-image: url(../../images/icons/magnifier.png); }
+
+#dp_search_assist .foot {
+	padding: 8px 8px 15px 8px;
+	background-color: #ECF0F4;
+	border-radius: 0 0 5px 5px;
+}
+
+#dp_search_assist .foot h4 {
+	font-size: 13px;
+	padding: 5px;
+}
+
+#dp_search_assist .foot ul {
+	margin-top: 8px;
+	margin-left: 13px;
+}
+
+#dp_search_assist .foot ul li {
+	display: block;
+	float: left;
+
+	min-width: 70px;
+	width: 32%;
+	text-align: center;
+	margin-right: 6px;
+}
+
+#dp_search_assist .foot ul li a {
+	display: block;
+	padding: 5px 8px 5px 8px;
+	background-color: #fff;
+	border: 1px solid #C1C5C5;
+	color: #686868;
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+#dp_search_assist .foot ul li a:hover {
+	border-color: #9B9E9F;
+	text-decoration: none;
+}
+
 
 /**********************************************************
 * Content
@@ -1548,7 +1628,7 @@ ul.dp-ideas-list .meta {
 	/* Hidden by default */
 	display: none;
 
-	z-index: 1000;
+	z-index: 1100;
 }
 
 #dp_login_box_title {
