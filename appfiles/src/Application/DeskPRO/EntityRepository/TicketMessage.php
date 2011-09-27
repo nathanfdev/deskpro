@@ -19,6 +19,24 @@ use Orb\Util\Numbers;
 
 class TicketMessage extends EntityRepository
 {
+	public function getLastAgentReply($ticket)
+	{
+		if (!($ticket instanceof Entity\Ticket)) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+		}
+
+		return $this->getEntityManager()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			LEFT JOIN m.person p
+			WHERE
+				m.ticket = ?1
+				AND p.is_agent = 1
+				AND m.is_agent_note = 0
+			ORDER BY m.id DESC
+		")->setMaxResults(1)->setParameters(array(1=> $ticket))->getOneOrNullResult();
+	}
+
 	/**
 	 * Fetch the first message of a ticket.
 	 *
@@ -50,7 +68,7 @@ class TicketMessage extends EntityRepository
 
 	/**
 	 * Get all messages in a ticket
-	 * 
+	 *
 	 * @param  $ticket
 	 * @return array
 	 */

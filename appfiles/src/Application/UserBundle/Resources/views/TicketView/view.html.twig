@@ -8,7 +8,10 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if ticket.status == 'open' or ticket.status == 'pending' %}
-				<div class="dp-status dp-status-open">Open</div>
+				<div class="dp-status-switcher" title="Click to close the ticket">
+					<div class="dp-status active dp-status-open">Open</div>
+					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">Closed</a>
+				</div>
 			{% elseif ticket.status == 'resolved' %}
 				<div class="dp-status dp-status-resolved">Resolved</div>
 			{% elseif ticket.status == 'closed' %}
@@ -126,6 +129,12 @@
 								<br class="dp-clear" style="clear:left" />
 							</li>
 						{% endfor %}
+
+						{% if ticket.status == 'open' %}
+							<li class="close-ticket">
+								Have we answered your question? Feel free to <a href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">close this ticket</a>.
+							</li>
+						{% endif %}
 
 						{# New Reply #}
 						<li class="new-reply">

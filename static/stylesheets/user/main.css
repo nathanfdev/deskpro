@@ -236,6 +236,7 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .dp-status-label.warning{background-color:#f89406;}
 .dp-status-label.success{background-color:#46a546;}
 .dp-status-label.notice{background-color:#62cffc;}
+p { line-height: 130%; }
 a { cursor: pointer; }
 select:focus{outline: none;}
 form {
@@ -475,7 +476,15 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 	margin-right: 10px;
 }
 
+.dp-box-section {
+	margin-bottom: 30px;
+	border-bottom: 1px solid #D9DBDB;
+	padding-bottom: 30px;
+}
 
+.dp-box-section:last-child {
+	border-bottom: none;
+}
 
 
 
@@ -2012,6 +2021,14 @@ ul.dp-ticketlist ul.dp-meta li {
 	padding-left: 8px;
 }
 
+.dp-status-switcher {
+	float: right;
+}
+
+.dp-status-switcher .switcher { display: none; }
+.dp-status-switcher:hover .switcher { display: block; }
+.dp-status-switcher:hover .active { display: none; }
+
 .dp-status {
 	float: right;
 	border-radius: 10px;
@@ -2020,6 +2037,11 @@ ul.dp-ticketlist ul.dp-meta li {
 	color: #fff;
 	text-shadow: 0px 1px 0px #858585;
 	filter: dropshadow(color=#858585, offx=0, offy=1);
+}
+
+.dp-status a, .dp-status a:hover {
+	text-decoration: none !important;
+	color: #fff !important;
 }
 
 .dp-status.dp-status-open {
@@ -2053,6 +2075,11 @@ ul.dp-ticketlist ul.dp-meta li {
 	font-size: 11px;
 	clear: left;
 	line-height: 125%;
+}
+
+.dp-ticket-page .dp-messages > ul > li.close-ticket {
+	padding-bottom: 5px;
+	text-align: center;
 }
 
 .dp-ticket-page .dp-messages > ul > li:first-of-type {
