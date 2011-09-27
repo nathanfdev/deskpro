@@ -19,8 +19,6 @@ use Application\DeskPRO\Entity;
  */
 class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 {
-	const MODE_TRUSTED_USER   = 'trusted';
-	const MODE_UNTRUSTED_USER = 'untrusted';
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
@@ -80,44 +78,51 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			# Handle the person first
 			#------------------------------
 
+			$validating = null;
+
 			$person = null;
-			$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
+			$email = null;
 			$email_validating = null;
 
-			// Email belongs to someone
-			if ($email) {
-				$person = $email->person;
+			if ($this->person_context->isGuest()) {
 
-				// The user running this is the same as the owner of the account
-				if ($this->person_context && $email->person->id == $this->person->id) {
-					$this->mode = self::MODE_TRUSTED_USER;
+				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
 
-				// The users are different, or unknown
+				if ($email) {
+					$validating = 'existing';
+
+					$person = $email->person;
+
+					$email_validating = new Entity\PersonEmailValidating();
+					$email_validating->email = $email->email;
+					$email_validating->person = $person;
+					App::getOrm()->persist($email_validating);
+
 				} else {
-					$this->mode = self::MODE_UNTRUSTED_USER;
-				}
+					$validating = 'new';
 
-			// New email
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
+
+					if (!$email_validating) {
+						$person = Entity\Person::newContactPerson();
+						$person->name = $this->person->name;
+						App::getOrm()->persist($person);
+
+						$email_validating = new Entity\PersonEmailValidating();
+						$email_validating->email = $this->person->email;
+						$email_validating->person = $person;
+						App::getOrm()->persist($email_validating);
+
+					} else {
+						$person = $email_validating->person;
+					}
+				}
 			} else {
-				// Its a new email. We can trust them to set user fields like name but still ticket waiting validating
-				$this->mode = self::MODE_TRUSTED_USER;
+				$person = $this->person_context;
 
-				if (!$this->person_context || $this->person_context->isGuest()) {
-					$person = Entity\Person::newContactPerson();
-				}
-
-				App::getOrm()->persist($person);
-
-				$email_validating = new Entity\PersonEmailValidating();
-				$email_validating->email = $this->person->email;
-				$email_validating->person = $person;
-				App::getOrm()->persist($email_validating);
-			}
-
-			// User fields
-			if ($this->mode == self::MODE_TRUSTED_USER) {
 				if ($this->person->name) {
-					$person['name'] = $this->person->name;
+					$person->name = $this->person->name;
+					App::getOrm()->persist($person);
 				}
 			}
 
@@ -131,6 +136,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;
+			$ticket['validating'] = $validating;
 
 			if ($email_validating) {
 				$ticket->person_email_validating = $email_validating;

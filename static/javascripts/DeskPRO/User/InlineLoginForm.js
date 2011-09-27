@@ -98,6 +98,13 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 			value: $(this.options.passwordSel, this.context).val()
 		});
 
+		if (this.loginBtn.is('.mode-advanced')) {
+			postData.push({
+				name: 'mode',
+				value: 'advanced'
+			});
+		}
+
 		$.ajax({
 			url: BASE_URL + 'login/inline-login',
 			type: 'POST',
@@ -107,6 +114,7 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 			success: function(data) {
 				var newEl = $(data.html);
 				if (data.person_id) {
+					DeskPRO_Window.initFeatures(newEl);
 					$('#dp_inline_login_row').replaceWith(newEl);
 					this.nonloginWrapper.css({ opacity: '1'});
 				} else {

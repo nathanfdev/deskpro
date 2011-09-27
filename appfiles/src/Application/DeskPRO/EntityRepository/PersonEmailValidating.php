@@ -25,4 +25,13 @@ class PersonEmailValidating extends \Doctrine\ORM\EntityRepository
 			ORDER BY e.id DESC
 		")->setParameters(array(1=> $person))->execute();
 	}
+
+	public function getEmail($email_address)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT e
+			FROM DeskPRO:PersonEmail e
+			WHERE e.email = ?1
+		")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+	}
 }

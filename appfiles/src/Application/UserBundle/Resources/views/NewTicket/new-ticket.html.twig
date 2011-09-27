@@ -43,7 +43,7 @@
 				 # Email
 				 ###############}
 
-				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email } %}
+				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
 
 				<div class="dp-inline-non-login">
 				{###############

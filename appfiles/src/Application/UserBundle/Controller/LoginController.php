@@ -152,7 +152,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$result = $adapter->authenticate();
 
 		if (!$result->isValid()) {
-			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true));
+			$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('login_error' => true, 'mode' => $this->in->getString('mode')));
 			return $this->createJsonResponse(array(
 				'html' => $html,
 			));
@@ -179,7 +179,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		App::getOrm()->persist($person);
 		App::getOrm()->flush();
 
-		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person));
+		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
 		$html_userbar = $this->renderView('UserBundle:Common:layout-userbar.html.twig', array('person' => $person));
 
 		return $this->createJsonResponse(array(

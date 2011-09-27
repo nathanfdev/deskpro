@@ -20,6 +20,16 @@
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
+				{% if errors|length %}
+					<div class="alert-message error">
+						Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+						<!--
+						{{ debug_var(error_fields) }}
+						{{ debug_var(errors) }}
+						-->
+					</div>
+				{% endif %}
+
 				<form action="{{ path('user_ideas_newidea') }}" method="post" class="with-form-validator">
 				<input type="hidden" name="process" value="1" />
 
@@ -27,17 +37,17 @@
 					 # Email
 					 ###############}
 
-					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'idea[person][email]' } %}
+					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'idea[person_email]', 'mode': 'identity' } %}
 
 					{###############
 					 # Name
 					 ###############}
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['person_name'] %}dp-error{% endif %}"">
 						<div class="dp-form-label">
 							<label>Your Name *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.name, {
+							{{ form_widget(form.person_name, {
 								'attr': {
 									'data-field-validators': 'DeskPRO.Form.LengthValidator',
 									'data-min-len': 2
@@ -53,7 +63,7 @@
 					 # Category
 					 ###############}
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['category_id'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>Category *</label>
 						</div>
@@ -88,7 +98,7 @@
 					 # Title
 					 ###############}
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['title'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>Summary *</label> <em class="note">A title or a brief summary of what your idea is about</em>
 						</div>
@@ -119,7 +129,7 @@
 					 # Description
 					 ###############}
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>Description *</label> <em class="note">Explain your idea</em>
 						</div>

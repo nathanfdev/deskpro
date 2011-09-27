@@ -215,6 +215,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $hidden_status = null;
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="validating", type="string", length=35, nullable=true)
+	 */
+	protected $validating = null;
+
+	/**
 	 * Is the ticket on hold?
 	 *
 	 * @var bool

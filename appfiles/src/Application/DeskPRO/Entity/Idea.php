@@ -45,6 +45,12 @@ class Idea extends ContentAbstract
 	protected $hidden_status = null;
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="validating", type="string", length=35, nullable=true)
+	 */
+	protected $validating = null;
+
+	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", cascade={"persist", "remove", "merge"})
 	 */
@@ -83,6 +89,15 @@ class Idea extends ContentAbstract
 		$this->_is_new = true;
 
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function setValidating($validating)
+	{
+		if (!$validating) {
+			$this->setModelField('validating', null);
+		} else {
+			$this->setModelField('validating', $validating);
+		}
 	}
 
 	public function getUserEmail()
@@ -266,30 +281,5 @@ class Idea extends ContentAbstract
 		}
 
 		return $this->_label_manager;
-	}
-
-	/**
-	 * @ORM_Mapping\PostPersist
-	 */
-	public function _notifyNewIdea()
-	{
-		if ($this->_is_new) {
-			$client_message = new ClientMessage();
-			$client_message->fromArray(array(
-				'channel' => 'agent-notification.new-idea',
-				'data' => array(
-					'idea_id'     => $this->id,
-					'subject'     => $this->title,
-					'author_id'   => $this->person ? $this->person['id'] : 0,
-					'author_name' => $this->getUserName(),
-				),
-				'created_by_client' => 'sys'
-			));
-
-			App::getOrm()->transactional(function ($em) use ($client_message) {
-				$em->persist($client_message);
-				$em->flush();
-			});
-		}
 	}
 }

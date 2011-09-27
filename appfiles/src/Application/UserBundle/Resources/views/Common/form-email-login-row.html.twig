@@ -30,7 +30,7 @@
 						Logging in...
 					</div>
 					<div class="dp-btn-row">
-						<button class="btn primary dp-login-trigger">Log In</button>
+						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">Log In</button>
 						<button class="btn dp-inline-login-open">Cancel</button>
 					</div>
 				</div>
@@ -62,36 +62,42 @@
 	{% else %}
 		<div
 			class="dp-inline-email-manage with-handler"
+			{% if mode == 'advanced' %}
 			data-element-handler="DeskPRO.User.ElementHandler.InlineEmailManage"
 			data-security-token="{{ security_token('email_manage') }}"
+			{% endif %}
 		>
 			<div class="dp-form-row">
 				<div class="dp-form-label">
 					<label>Your Email Address</label>
+					{% if mode == 'advanced' %}
 					<em class="change-email"><a href="{{ path('user_profile') }}">Change email address</a></em>
 					<em class="change-email-close" style="display: none"><a>Done changing email</a></em>
+					{% endif %}
 				</div>
 				<div class="dp-form-input">
 					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
 
 				</div>
 			</div>
-			<div class="dp-email-manage-controls" style="display: none">
-				<strong>Choose the email you want to use:</strong><br />
-				<ul>
-					{% for email in app.user.emails %}
+			{% if mode == 'advanced' %}
+				<div class="dp-email-manage-controls" style="display: none">
+					<strong>Choose the email you want to use:</strong><br />
+					<ul>
+						{% for email in app.user.emails %}
+							<li>
+								<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+							</li>
+						{% endfor %}
 						<li>
-							<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+							<label>
+								<input type="radio" name="dp_inline_email_choice" value="NEW" />
+								New email:</label>
+							<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
 						</li>
-					{% endfor %}
-					<li>
-						<label>
-							<input type="radio" name="dp_inline_email_choice" value="NEW" />
-							New email:</label>
-						<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
-					</li>
-				</ul>
-			</div>
+					</ul>
+				</div>
+			{% endif %}
 		</div>
 	{% endif %}
 </div>

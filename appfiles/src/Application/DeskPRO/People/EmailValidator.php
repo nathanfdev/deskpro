@@ -84,25 +84,26 @@ class EmailValidator
 		$this->em->getConnection()->beginTransaction();
 
 		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
-		if ($exist_email) {
+		if ($exist_email && $exist_email->person && $this->validating_email->person && $exist_email->person->id != $this->validating_email->person->id) {
 			throw new \OutOfBoundsException("Email already exists", 100);
 		}
 
 		try {
+			if (!$exist_email) {
+				$email = new PersonEmail();
+				$email->email = $this->validating_email->email;
+				$email->date_created = $this->validating_email->date_created;
+				$email->date_validated = new \DateTime();
+				$email->person = $this->person;
 
-			$email = new PersonEmail();
-			$email->email = $this->validating_email->email;
-			$email->date_created = $this->validating_email->date_created;
-			$email->date_validated = new \DateTime();
-			$email->person = $this->person;
+				$this->person->addEmailAddress($email);
+				$this->em->persist($email);
+			} else {
+				$email = $exist_email;
+			}
 
-			$this->em->persist($email);
-
-			$this->person->addEmailAddress($email);
 			$this->person->is_confirmed = true;
-
-			$this->em->persist($email);
-
+			$this->em->persist($this->person);
 			$this->em->flush();
 
 			// Find tickets with this email awaiting validation
@@ -117,6 +118,32 @@ class EmailValidator
 
 					$this->em->persist($ticket);
 					$this->em->flush();
+				}
+			}
+
+			// Validate the attached objects
+			foreach ($this->validating_email->validating_content as $validating_object) {
+				list($entity_name, $entity_id) = $validating_object;
+
+				// TODO tear these out into their own validator ahndlers
+				switch ($entity_name) {
+					case 'DeskPRO:Idea':
+						$idea = App::findEntity('DeskPRO:Idea', $entity_id);
+						if (!$idea) {
+							break;
+						}
+
+						$idea->validating = null;
+						if ($idea->status_code == 'hidden.validating') {
+							$idea->status = 'visible';
+						}
+
+						App::getOrm()->transactional(function ($em) use ($idea) {
+							$em->persist($idea);
+							$em->flush();
+						});
+
+						break;
 				}
 			}
 
