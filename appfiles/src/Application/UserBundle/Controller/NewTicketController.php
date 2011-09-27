@@ -71,7 +71,7 @@ class NewTicketController extends AbstractController
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
-			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'uint', 'discard');
+			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 
 			if ($validator->isValid($newticket)) {

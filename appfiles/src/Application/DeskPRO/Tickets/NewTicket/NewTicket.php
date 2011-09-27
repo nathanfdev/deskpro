@@ -35,6 +35,8 @@ class NewTicket
 
 	public $creation_system;
 
+	public $is_html = false;
+
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
 		if ($person AND !$person['id']) {
@@ -128,6 +130,10 @@ class NewTicket
 			$ticket_message['message'] = $this->ticket->message;
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
+			}
+
+			if (!$this->is_html) {
+				$ticket_message['message'] = htmlspecialchars($ticket_message['message']);
 			}
 
 			$attach = false;

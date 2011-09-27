@@ -2045,7 +2045,7 @@ ul.dp-ticketlist ul.dp-meta li {
 	padding-bottom: 10px;
 }
 
-.dp-ticket-page .dp-messages ul li {
+.dp-ticket-page .dp-messages > ul > li {
 	position: relative;
 	border-top: 1px solid #D9DBDB;
 	padding: 15px 15px 0 15px;
@@ -2055,25 +2055,25 @@ ul.dp-ticketlist ul.dp-meta li {
 	line-height: 125%;
 }
 
-.dp-ticket-page .dp-messages ul li:first-of-type {
+.dp-ticket-page .dp-messages > ul > li:first-of-type {
 	border-top: none;
 	margin-top: none;
 	padding-top: 10px;
 }
 
-.dp-ticket-page .dp-messages ul li > .author {
+.dp-ticket-page .dp-messages > ul > li > .author {
 	float: left;
 	width: 80px;
 	text-align: center;
 	line-height: 125%;
 }
 
-.dp-ticket-page .dp-messages ul li > .author strong {
-	font-weight: normal;;
+.dp-ticket-page .dp-messages > ul > li > .author strong {
+	font-weight: normal;
 	padding-top: 8px;
 }
 
-.dp-ticket-page .dp-messages ul li > .post {
+.dp-ticket-page .dp-messages > ul > li > .post {
 	margin-left: 85px;
 }
 
@@ -2199,4 +2199,28 @@ ul.dp-emails-list li.dp-new-email {
 ul.dp-emails-list li.dp-new-email label {
 	font-weight: bold;
 	margin:  4px 0 4px 0;
+}
+
+
+
+ul.attachment-list {
+	border-top: 1px solid #C5CDD4;
+	margin-top: 10px;
+	padding-top: 10px;
+	background: #FFFFFF; /* old browsers */
+}
+
+ul.attachment-list li {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+ul.attachment-list li span.size {
+	font-size: 7pt;
+	color: #5E5E5E;
+}
+
+ul.attachment-list > li img.preview {
+	text-align: right;
+	vertical-align: middle;
+	margin-right: 6px;
 }

@@ -204,19 +204,33 @@ class TicketsController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_ref);
 
 		$newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
-
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
+		$validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+		$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
-				$newreply->save();
-				$ticket_message = $newreply->getNewMessage();
-			}
+		$newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+		$newreply->attach_ids_authed = true;
+
+		if ($validator->isValid($newreply)) {
+			$newreply->save();
+			$ticket_message = $newreply->getNewMessage();
+		} else {
+			$errors = $validator->getErrors(true);
+			$error_fields = $validator->getErrorGroups(true);
+
+			return $this->forward('UserBundle:TicketView:load', array(
+				'ticket_ref' => $ticket->getPublicId(),
+				'display_data' => array(
+					'errors' => $errors,
+					'error_fields' => $error_fields,
+					'newreply' => $newreply,
+					'newreply_form' => $form
+				)
+			));
 		}
 
-		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
 	}
 
 	################################################################################
