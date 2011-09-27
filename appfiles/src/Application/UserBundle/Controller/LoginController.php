@@ -151,6 +151,15 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				$return = $this->in->getString('return');
 				$this->session->set('auth_return', $return);
 
+				if ($this->in->getString('js_tell')) {
+					$return = $this->generateUrl('user_jstell_login', array(
+						'jstell' => $this->in->getString('js_tell'),
+						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
+						'usersource_id' => $usersource_id
+					), true);
+					$this->session->set('auth_return', $return);
+				}
+
 				return $this->redirect($result->getRedirectUrl());
 
 			// Otherwise its an error
@@ -214,6 +223,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->session->set('auth_person_id', $person['id']);
 
 			if ($this->session->get('auth_return')) {
+				$return = $this->session->get('auth_return');
 				$this->session->remove('auth_return');
 				return $this->redirect($return);
 			} else {
@@ -256,7 +266,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		return $adapter;
 	}
-
 
 	############################################################################
 	# Resetting passwords

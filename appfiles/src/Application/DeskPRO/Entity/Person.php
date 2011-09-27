@@ -126,7 +126,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
-	protected $creation_system;
+	protected $creation_system = 'web.person';
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -264,7 +264,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usersource associations
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
+	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person", indexBy="id")
 	 */
 	protected $usersource_assoc;
 

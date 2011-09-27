@@ -1265,7 +1265,7 @@ ul.dp-ideas-list .meta {
 	padding-bottom: 10px;
 }
 
-.dp-box-comments ul li {
+.dp-box-comments > ul > li {
 	border-top: 1px solid #D9DBDB;
 	padding: 15px 15px 0 15px;
 	margin-top: 10px;
@@ -1273,24 +1273,24 @@ ul.dp-ideas-list .meta {
 	clear: left;
 }
 
-.dp-box-comments ul li:first-of-type {
+.dp-box-comments > ul > li:first-of-type {
 	border-top: none;
 	margin-top: none;
 	padding-top: 10px;
 }
 
-.dp-box-comments ul li > .author {
+.dp-box-comments > ul > li > .author {
 	float: left;
 	width: 80px;
 	text-align: center;
 }
 
-.dp-box-comments ul li > .author strong {
+.dp-box-comments > ul > li > .author strong {
 	font-weight: normal;;
 	padding-top: 8px;
 }
 
-.dp-box-comments ul li > .post {
+.dp-box-comments > ul > li > .post {
 	margin-left: 85px;
 }
 
@@ -1311,6 +1311,58 @@ ul.dp-ideas-list .meta {
 	margin-left: 8px;
 	color: #404040;
 }
+
+.dp-box-comments .login-area {
+	margin-top: 8px;
+}
+.dp-box-comments .login-area .nav {
+	height: 30px;
+	border-radius: 0 0 6px 6px;
+	background-color: #DADEE2;
+	padding-left: 18px;
+	padding-bottom: 4px;
+}
+
+.dp-box-comments .login-area .nav li {
+	float: left;
+	display: block;
+	margin-right: 0px;
+	padding: 3px 8px 5px 8px;
+	border-radius: 0 0 5px 5px;
+}
+
+.dp-box-comments .login-area .nav li.on {
+	background-color: #fff;
+}
+
+.dp-box-comments .login-area .nav li a {
+	line-height: 100%;
+	line-height: 14px;
+}
+
+.dp-box-comments .login-area .nav li a span {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding: 1px 0 1px 18px;
+	line-height: 13px;
+}
+
+.dp-box-comments .login-area .tabs-wrap {
+	background-color: #DADEE2;
+	padding: 10px 10px 0 10px;
+	border-radius: 6px 6px 0 0;
+}
+
+.no-nav .login-area .tabs-wrap {
+	padding-bottom: 10px;
+	border-radius: 6px;
+}
+
+.dp-box-comments .login-area .tabs-wrap > div {
+	background-color: #fff;
+	padding: 6px;
+}
+
 
 .dp-twitter-list {
 
@@ -2251,3 +2303,6 @@ ul.attachment-list > li img.preview {
 	vertical-align: middle;
 	margin-right: 6px;
 }
+
+
+.

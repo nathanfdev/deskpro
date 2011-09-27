@@ -17,6 +17,8 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
+use Application\DeskPRO\Comments\NewCommentFormType;
+
 use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
@@ -211,20 +213,22 @@ class NewsController extends AbstractController
 			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
 		}
 
-		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
 			'Application\\DeskPRO\\Entity\\NewsComment',
+			$this->person,
 			array('news' => $post)
 		);
 
-		$form->bind($this->get('request'), $new_comment);
+		$newcomment_formtype = new NewCommentFormType($this->person);
+		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 
-		if ($form->isValid()) {
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
 			$comment = $new_comment->save();
 		}
 
 		return $this->redirectRoute('user_news_view', array(
-			'post_id' => $post['id']
+			'slug' => $post->getUrlSlug()
 		));
 	}
 }

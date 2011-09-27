@@ -8,4 +8,6 @@
 
 	'user_emails.subj_newidea' => 'Thank you for submitting your idea',
 	'user_emails.subj_newidea_validate' => 'Thank you for submitting your idea (validation required)',
+
+	'user_emails.subj_newcomment_validate' => 'Thank you for your comment',
 );

@@ -86,6 +86,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $status = 'visible';
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="validating", type="string", length=35, nullable=true)
+	 */
+	protected $validating = null;
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */

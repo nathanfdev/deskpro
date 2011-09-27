@@ -125,6 +125,10 @@ class EmailValidator
 			foreach ($this->validating_email->validating_content as $validating_object) {
 				list($entity_name, $entity_id) = $validating_object;
 
+				if (strpos($entity_name, 'Application\\DeskPRO\\Entity\\') === 0) {
+					$entity_name = str_replace('Application\\DeskPRO\\Entity\\', 'DeskPRO:', $entity_name);
+				}
+
 				// TODO tear these out into their own validator ahndlers
 				switch ($entity_name) {
 					case 'DeskPRO:Idea':
@@ -144,6 +148,25 @@ class EmailValidator
 						});
 
 						break;
+
+					case 'DeskPRO:ArticleComment':
+					case 'DeskPRO:DownloadComment':
+					case 'DeskPRO:IdeaComment':
+					case 'DeskPRO:NewsComment':
+						$comment = App::findEntity($entity_name, $entity_id);
+						if (!$comment) {
+							break;
+						}
+
+						$comment->validating = null;
+						if ($comment->status == 'validating') {
+							$comment->status = 'visible';
+						}
+
+						App::getOrm()->transactional(function ($em) use ($comment) {
+							$em->persist($comment);
+							$em->flush();
+						});
 				}
 			}
 

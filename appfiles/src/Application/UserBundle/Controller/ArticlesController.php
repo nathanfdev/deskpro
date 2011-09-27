@@ -356,10 +356,7 @@ class ArticlesController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				$comment = $new_comment->save();
-			}
+			$comment = $new_comment->save();
 		}
 
 		return $this->redirectRoute('user_articles_article', array(

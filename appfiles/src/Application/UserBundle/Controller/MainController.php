@@ -102,4 +102,51 @@ class MainController extends AbstractController
 			'ticket_ids' => $validator->getTicketIds()
 		));
 	}
+
+	public function jstellLoginAction($jstell, $security_token, $usersource_id = 0)
+	{
+		if (!$this->session->getEntity()->checkSecurityToken('jstell', $security_token)) {
+			return $this->createResponse('', 403);
+		}
+
+		if ($this->person->isGuest()) {
+			$person_data = array(
+				'person_id' => 0
+			);
+		} else {
+			$person_data = array(
+				'person_id' => $this->person->id,
+				'person_name' => $this->person->name,
+				'person_email' => $this->person->getPrimaryEmailAddress(),
+			);
+
+			if ($usersource_id && $this->person->usersource_assoc[$usersource_id]) {
+				$person_data = array_merge(
+					$this->person->usersource_assoc[$usersource_id]->getData(),
+					$person_data
+				);
+			}
+		}
+
+		$person_data = json_encode($person_data);
+
+		$html = <<<HTML
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" charset="utf-8">
+	function load() {
+		window.opener['$jstell']($person_data);
+		window.close();
+	}
+	</script>
+</head>
+<body onload="load()">
+</body>
+</html>
+HTML;
+
+		return $this->createResponse($html);
+	}
 }

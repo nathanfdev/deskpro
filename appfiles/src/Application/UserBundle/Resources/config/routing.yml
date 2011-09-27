@@ -18,6 +18,10 @@ user_validate_email:
   pattern: /validate-email/{id}/{auth}
   defaults: { _controller: UserBundle:Main:validateEmail }
 
+user_jstell_login:
+  pattern: /login/jstell/{jstell}/{security_token}/{usersource_id}
+  defaults: { _controller: UserBundle:Main:jstellLogin }
+
 ################################################################################
 # Login/logout
 ################################################################################

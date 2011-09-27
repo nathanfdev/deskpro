@@ -1,0 +1,15 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	{{ layout.section_start() }}
+		<p>Thank you for submitting your comment on "<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>"</p>
+		{% if validating %}
+			{% if idea.status == 'visible' %}
+				Please validate your email address online by clicking the following link:
+			{% else %}
+				Before your comment will be displayed publicly you must validate your email address by clicking on the following link:
+			{% endif %}
+			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+		{% endif %}
+	{{ layout.section_end() }}
+{% endblock %}
