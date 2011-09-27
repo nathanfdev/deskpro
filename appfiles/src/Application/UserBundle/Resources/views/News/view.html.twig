@@ -35,6 +35,10 @@
 
 					{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': post} %}
 
+					{% if app.getSetting('core.facebook_like') %}
+						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': news.permalink} %}
+					{% endif %}
+
 					{% include 'UserBundle:Common:comments-box.html.twig' with {
 						'comments': comments,
 						'form_action': path('user_news_newcomment', {'post_id': post.id})

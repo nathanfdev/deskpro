@@ -35,6 +35,10 @@
 
 					{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': download} %}
 
+					{% if app.getSetting('core.facebook_like') %}
+						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': article.permalink} %}
+					{% endif %}
+
 					{% include 'UserBundle:Common:comments-box.html.twig' with {
 						'comments': comments,
 						'form_action': path('user_downloads_newcomment', {'download_id': download.id})
