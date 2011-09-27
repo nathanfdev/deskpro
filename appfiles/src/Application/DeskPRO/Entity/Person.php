@@ -35,6 +35,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
+	const CREATED_WEB_USERSOURCE = 'web.usersource';
 	const CREATED_GATEWAT_PERSON = 'gateway.person';
 
 	/**
@@ -266,14 +267,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
 	 */
 	protected $usersource_assoc;
-
-	/**
-	 * Person scraper associations
-	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonScraperAssoc", mappedBy="person")
-	 */
-	protected $personscraper_assoc;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection

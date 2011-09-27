@@ -17,7 +17,6 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * This tracks associations between a user and a usersource.
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonUsersourceAssoc")
- * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="person_usersource_assoc")
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
@@ -82,37 +81,10 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="created_at", type="datetime")
 	 */
-	protected $created_at;
+	protected $date_created;
 
-	/**
-	 * The last time the user logged in using this auth.
-	 *
-	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="last_used_at", type="datetime")
-	 */
-	protected $last_used_at;
-
-
-	
-	/**
-	 * Set the last time this usersource was used.
-	 *
-	 * @param DateTime $time The time to set, or null to set now
-	 */
-	public function setLastUsedAt(\DateTime $time = null)
+	public function __construct()
 	{
-		if (!$time) $time = new \DateTime();
-		
-		$this->last_used_at = $time;
-	}
-
-
-	/** @ORM_Mapping\PrePersist */
-	public function _incCreatedAt()
-	{
-		if (!$this->created_at) {
-			$this->created_at = new \DateTime();
-		}
-		$this->setLastUsedAt();
+		$this->date_created = new \DateTime();
 	}
 }

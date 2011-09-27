@@ -58,6 +58,13 @@
 					<dt>Password <em class="forgot"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></dt>
 					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 				</dl>
+				<div style="float:right">
+					{% for usersource in app.usersources %}
+						{% if usersource.isCapable('button') %}
+							{{ render_usersource(usersource, 'button', {'button_type': 'icon'}) }}
+						{% endif %}
+					{% endfor %}
+				</div>
 				<input class="btn" type="submit" value="Log In" />
 			</div>
 			<div class="dp-reset-section" style="display: none">

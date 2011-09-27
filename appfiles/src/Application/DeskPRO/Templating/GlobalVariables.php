@@ -17,6 +17,18 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVaria
 
 class GlobalVariables extends BaseGlobalVariables
 {
+	protected $variables = array();
+
+	public function setVariable($name, $value)
+	{
+		$this->variables[$name] = $value;
+	}
+
+	public function getVariable($name)
+	{
+		return isset($this->variables[$name]) ? $this->variables[$name] : null;
+	}
+
 	public function getUser()
 	{
 		return App::getCurrentPerson();
@@ -35,6 +47,20 @@ class GlobalVariables extends BaseGlobalVariables
 	public function getVisitor()
 	{
 		return App::getSession()->getVisitor();
+	}
+
+	public function __get($name)
+	{
+		if (isset($this->variables[$name])) {
+			return $this->variables[$name];
+		}
+
+		return null;
+	}
+
+	public function __isset($name)
+	{
+		return isset($this->variables[$name]);
 	}
 
 	public function getLastException()

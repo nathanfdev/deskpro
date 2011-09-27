@@ -66,7 +66,7 @@ class Twitter extends AbstractCallbackAdatper
 		$oauth = $this->getOauthConsumer();
 
 		if (!isset($state['orb_oauth_twitter_rtoken'])) {
-			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
+			return new Result(Result::FAILURE, null, array('error_code' => 'invalid_token', 'error_message' => 'Invalid verify token'));
 		}
 
 		$access_token = $oauth->getAccessToken($callback_data, $state['orb_oauth_twitter_rtoken']);
@@ -96,7 +96,7 @@ class Twitter extends AbstractCallbackAdatper
 
 		$identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
 		$identity->setFriendlyIdentity($account_data['screen_name']);
-		
+
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;

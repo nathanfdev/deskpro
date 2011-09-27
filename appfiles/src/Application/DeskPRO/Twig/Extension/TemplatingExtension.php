@@ -68,6 +68,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_type'  => new \Twig_Function_Method($this, 'getType'),
 			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
 			'security_token' => new \Twig_Function_Method($this, 'securityToken'),
+			'render_usersource' => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
         );
     }
 
@@ -84,6 +85,11 @@ class TemplatingExtension extends \Twig_Extension
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
         );
     }
+
+	public function renderUsersource($usersource, $type, array $params = array())
+	{
+		return $usersource->renderView($this->getTemplating(), $type, $params);
+	}
 
 	public function slugify($str)
 	{

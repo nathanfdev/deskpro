@@ -13,25 +13,13 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use Application\DeskPRO\Usersource\Handler\AbstractHandler;
 use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * This record defines the relationship between a Person and a Usersource.
- *
- * The relationship between RemoteResourse:
- * A Usersource uses a special RemoteResource which basically exists just so auth Identities
- * can be transformed into RemoteRecords, so the standard user field mapping system can be used
- * for those auth adapters that provide additional information. And RemoteRecord is used to store
- * the relationship between the identity and a Person.
- *
- * @see Application\DeskPRO\Auth\UserInitializer
- * @see Application\DeskPRO\RemoteResourceListener\Auth
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usersource")
  * @ORM_Mapping\Table(name="usersources")
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
@@ -40,8 +28,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * @ORM_Mapping\GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\GeneratedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -54,8 +41,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 	/**
-	 * The title of this usersource. This SHOULD be a phrase ID so the title can change
-	 * based on language.
+	 * The title of this usersource
 	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
@@ -63,42 +49,16 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
-	 * The description of this usersource. This SHOULD be a phrase ID so the title can change
-	 * based on language.
+	 * The adapter classname. An adapter is created from this usersource, and is responsible for
+	 * handling things like creating auth adapters and rendering web templates.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="description", type="string", length=255)
+	 * @ORM_Mapping\Column(name="adapter_class", type="string", length=255)
 	 */
-	protected $description = '';
+	protected $adapter_class;
 
 	/**
-	 * The URL/homepage of this service.
-	 *
-	 * @var string
-	 * @ORM_Mapping\Column(name="url", type="string", length=255)
-	 */
-	protected $url = '';
-
-	/**
-	 * If this usersource includes a person scraper to fetch contact info, this is it.
-	 *
-	 * @var Application\DeskPRO\Entity\PersonScraper
-	 * @ORM_Mapping\ManyToOne(targetEntity="PersonScraper")
-	 * @ORM_Mapping\JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true, onDelete="cascade")
-	 */
-	protected $person_scraper = null;
-
-	/**
-	 * The handler classname. A handler is created from this usersource, and is responsible for
-	 * handling things like creating auth adapters etc.
-	 *
-	 * @var string
-	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
-	 */
-	protected $handler_class;
-
-	/**
-	 * Options we'll pass to the handler
+	 * Options we'll pass to the adapter. These options should be set up with some installer.
 	 *
 	 * @var array
 	 * @ORM_Mapping\Column(name="options", type="array")
@@ -121,26 +81,56 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var Application\DeskPRO\Usersource\Handler\AbstractHandler
+	 * @var Application\DeskPRO\Usersource\Adapter\AbstractUsersource
 	 */
-	protected $_handler_instance = null;
+	protected $_adapter_instance = null;
 
 
 
 	/**
-	 * Get the usersource handler for this usersource.
+	 * Get the usersource adapter for this usersource.
 	 *
-	 * @return Application\DeskPRO\Usersource\Handler\AbstractHandler
+	 * @return \Application\DeskPRO\Usersource\Adapter\AbstractUsersource
 	 */
-	public function getHandler()
+	public function getAdapter()
 	{
-		if ($this->_handler_instance !== null) {
-			return $this->_handler_instance;
+		if ($this->_adapter_instance !== null) {
+			return $this->_adapter_instance;
 		}
 
-		$classname = $this->handler_class;
-		$this->_handler_instance = new $classname($this);
+		$classname = $this->adapter_class;
+		$this->_adapter_instance = new $classname($this);
 
-		return $this->_handler_instance;
+		return $this->_adapter_instance;
+	}
+
+	public function __call($name, $args)
+	{
+		return call_user_func_array(array($this->getAdapter(), $name), $args);
+	}
+
+
+	public function hasOption($name)
+	{
+		return isset($this->options[$name]);
+	}
+
+	public function getOption($name, $default = null)
+	{
+		return isset($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
+	public function setOption($name, $value)
+	{
+		$this->options[$name] = $value;
+	}
+
+	public function setOptions(array $options, $reset = false)
+	{
+		if ($reset) {
+			$this->options = $options;
+		} else {
+			$this->options = array_merge($this->options, $options);
+		}
 	}
 }

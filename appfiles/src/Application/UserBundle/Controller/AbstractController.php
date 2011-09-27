@@ -12,6 +12,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	protected $person;
 
+	protected function init()
+	{
+		parent::init();
+
+		$tpl_globals = $this->container->get('templating.globals');
+		if (!$tpl_globals->getVariable('usersources')) {
+			 $tpl_globals->setVariable('usersources', App::getEntityRepository('DeskPRO:Usersource')->getAllUsersources());
+		}
+	}
+
 	public function preAction($action, $arguments = null)
 	{
 		$this->person = $this->session->getPerson();
