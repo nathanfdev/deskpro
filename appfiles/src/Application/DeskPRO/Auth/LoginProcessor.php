@@ -50,8 +50,6 @@ class LoginProcessor
 	 */
 	protected $person;
 
-	protected $is_new_person = false;
-
 
 	public function __construct(Usersource $usersource, Identity $identity)
 	{
@@ -78,17 +76,32 @@ class LoginProcessor
 			$this->identity->getIdentity()
 		);
 
-		// If we dont have one yet, we're basically initializing a new user
+		// If we dont have one yet, we're have to create the assoc
+		// and maybe a new user too
 		if (!$this->assoc) {
 
-			$this->is_new_person = true;
-
-			$this->person = new Person();
-			$this->person->creation_system = 'web.usersource';
-
 			$mapped_fields = $this->usersource->getFieldsFromIdentity($this->identity);
-			if (isset($mapped_fields['name'])) {
-				$this->person->name = $mapped_fields['name'];
+			$mapped_fields = Arrays::removeEmptyString($mapped_fields);
+			$mapped_fields = new \Orb\Util\OptionsArray($mapped_fields);
+
+			$this->person = null;
+
+			// If we can trust the email address and there already exists a person
+			// with this email address, then we can just link the accounts now
+			if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
+				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+				if ($email) {
+					$this->person = $email->person;
+				}
+			} else {
+				$this->person = new Person();
+				$this->person->creation_system = 'web.usersource';
+			}
+
+			foreach (array('first_name', 'last_name', 'name') as $k) {
+				if (!$this->person[$k] && $mapped_fields->has($k)) {
+					$this->person[$k] = $mapped_fields->get($k);
+				}
 			}
 
 			$em->persist($this->person);
