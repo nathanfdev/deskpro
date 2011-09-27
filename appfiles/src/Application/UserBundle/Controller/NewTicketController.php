@@ -33,6 +33,7 @@ class NewTicketController extends AbstractController
 			Entity\Ticket::CREATED_WEB_PERSON,
 			$this->person
 		);
+		$newticket->setPersonContext($this->person);
 
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
@@ -100,15 +101,14 @@ class NewTicketController extends AbstractController
 					$this->session->setFlash('new_ticket_validating', $ticket->person_email_validating->getEmail());
 				}
 
-				// New users are always sent back to home
-				// with flash message.
+				// New users are always sent back to home with flash message.
 				if ($person->isNewPerson()) {
 					$go = 'front';
 
 				// Existing users are redirected to the ticket if they're using a validated email address.
 				// Otherwise they're sent back to the homepage just like an unregistered user is
 				} else {
-					if ($ticket->person_email_validating) {
+					if ($ticket->person_email_validating || $ticket->person->id != $this->person->id) {
 						$go = 'front';
 					} else {
 						$go = 'ticket';

@@ -17,12 +17,19 @@ use Application\DeskPRO\Entity;
 /**
  * New ticket acts as the processor and domain object for a newticket form
  */
-class NewTicket
+class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 {
+	const MODE_TRUSTED_USER   = 'trusted';
+	const MODE_UNTRUSTED_USER = 'untrusted';
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
 	public $person;
+
+	/**
+	 * The person who is running this (ex an agent?)
+	 */
+	protected $person_context;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\TicketProps
@@ -36,6 +43,8 @@ class NewTicket
 	public $creation_system;
 
 	public $is_html = false;
+
+	protected $mode = 'untrusted';
 
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
@@ -53,6 +62,14 @@ class NewTicket
 		$this->creation_system = $creation_system;
 	}
 
+	public function setPersonContext(Entity\Person $person)
+	{
+		$this->person_context = $person;
+		if ($person->is_agent) {
+			$this->mode = 'trusted';
+		}
+	}
+
 	public function save()
 	{
 		App::getOrm()->beginTransaction();
@@ -63,46 +80,48 @@ class NewTicket
 			# Handle the person first
 			#------------------------------
 
-			$is_new_person = false;
-
-			if ($this->person->person_obj) {
-				$person = $this->person->person_obj;
-			} else {
-
-				// We might still have a person if the Contact is
-				// is on record with an email addy, but still not a reg'd user
-				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->person->email);
-
-				if (!$person) {
-					$person = Entity\Person::newContactPerson();
-					$person['creation_system'] = Entity\Person::CREATED_WEB_PERSON;
-
-					if ($this->creation_system == 'web.agent') {
-						$person['creation_system'] = Entity\Person::CREATED_WEB_AGENT;
-					} else if ($this->creation_system == 'gateway.person') {
-						$person['creation_system'] = Entity\Person::CREATED_GATEWAT_PERSON;
-					}
-				}
-			}
-
-			if ($this->person->name) {
-				$person['name'] = $this->person->name;
-			}
-
-			App::getOrm()->persist($person);
-
-			// Note that dupe emails shouldnt happen here
-			// The person should already be a person who
-			// has the address, or else we need to create the address as
-			// an unvalidated address and require them to validate now
-			$email = $person->findEmailAddress($this->person->email);
+			$person = null;
+			$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
 			$email_validating = null;
-			if (!$email) {
+
+			// Email belongs to someone
+			if ($email) {
+				$person = $email->person;
+
+				// The user running this is the same as the owner of the account
+				if ($this->person_context && $email->person->id == $this->person->id) {
+					$this->mode = self::MODE_TRUSTED_USER;
+
+				// The users are different, or unknown
+				} else {
+					$this->mode = self::MODE_UNTRUSTED_USER;
+				}
+
+			// New email
+			} else {
+				// Its a new email. We can trust them to set user fields like name but still ticket waiting validating
+				$this->mode = self::MODE_TRUSTED_USER;
+
+				if (!$this->person_context || $this->person_context->isGuest()) {
+					$person = Entity\Person::newContactPerson();
+				}
+
+				App::getOrm()->persist($person);
+
 				$email_validating = new Entity\PersonEmailValidating();
 				$email_validating->email = $this->person->email;
 				$email_validating->person = $person;
 				App::getOrm()->persist($email_validating);
 			}
+
+			// User fields
+			if ($this->mode == self::MODE_TRUSTED_USER) {
+				if ($this->person->name) {
+					$person['name'] = $this->person->name;
+				}
+			}
+
+			App::getOrm()->flush();
 
 			#------------------------------
 			# Now ticket

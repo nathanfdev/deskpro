@@ -86,6 +86,10 @@ class TicketViewController extends AbstractController
 	 */
 	public function viewTicket(Ticket $ticket, array $display_data = array())
 	{
+		if ($this->person->id != $ticket->person->id) {
+			return $this->renderStandardError(null, null, 403);
+		}
+
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
 
