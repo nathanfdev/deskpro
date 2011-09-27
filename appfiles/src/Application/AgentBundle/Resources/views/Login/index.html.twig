@@ -17,47 +17,69 @@
 		q:before,q:after { content:''; }
 		abbr,acronym { border:0; }
 
+		html,body {
+			background-color: #383B40;
+		}
+
 		body {
-			background-color: #ececec;
 			font-size: 75%;
 			line-height: 135%;
 			margin: 0;
-			padding: 25px 0 25px 0;
+			padding: 160px 0 25px 0;
+			text-align: center;
+			font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
 		}
 
-		body, div, p, td, th, ul, li {
-			color: #000;
-			font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif;
-		}
-
-		#body_wrap {
-			border: 1px solid #bdbdbd;
+		#login_wrapper {
 			margin: 0 auto 0 auto;
-			width: 700px;
+			text-align: left;
+			width: 500px;
+
+			border: 1px solid #909397;
+			-webkit-box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+			-moz-box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+			box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+
+			border-radius: 6px;
 		}
 
-		#header {
-			background-color: #cacaca;
-			border-bottom: 1px solid #484C52;
+		#login_box {
 		}
 
-		#header h1 {
-			font-size: 130%;
-			font-weight: bold;
-			padding: 10px;
+		#login_box header {
+			background-color: #2A517A;
+			padding:  7px 0 7px 10px;
+
+			border-radius: 5px 5px 0 0;
 		}
 
-		.content {
+		#login_box header h1 {
+			font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 15px;
+			color: #fff;
+		}
+
+		#login_box article {
 			background-color: #fff;
-			padding: 10px;
+			padding:  10px;
 		}
 
-		.login_method_title {
-			background-color: #BCD8F7;
-			padding: 5px;
-			border-bottom: 1px solid #484C52;
-			border-top: 1px solid #484C52;
-			cursor: pointer;
+		#login_box td {
+			padding-bottom: 8px;
+		}
+
+		#login_box a {
+			color: #000;
+			text-decoration: underline;
+		}
+
+		#login_box footer {
+			text-align: center;
+			background-color: #DFE5EB;
+			border-top: 1px solid #CFD2D6;
+			padding:  4px 0 4px 0;
+
+			border-radius: 0 0 5px 5px;
 		}
 
 		#preload_iframe {
@@ -68,69 +90,51 @@
 			height: 1px;
 			border: none;
 		}
+
+		p.error {
+			margin-bottom: 8px;
+		}
 	</style>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		$('.login_method_title').click(function() {
-			var c = $('.login_method_content', $(this).parent());
-			if (!c.is(':hidden')) {
-				// Already on, do nothing
-				return;
-			}
-
-			// Roll up the old one
-			$('.login_method_wrap .login_method_content:visible').slideUp('fast', function() {
-				// Roll down the new one
-				c.slideDown('fast');
-			});
-		});
-
 		$('<iframe id="preload_iframe" src="{{ path('agent_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
 	});
 	</script>
 </head>
 <body>
-<br /><br /><br /><br /><br />
-<br /><br /><br /><br /><br />
-<div id="body_wrap">
-	<div id="header"><h1>Log In</h1></div>
-	
-	<div class="login_method_wrap">
-		<div class="login_method_title">Username and Password</div>
-		<div class="content login_method_content">
-			<form action="{{ path('agent_login_authenticate_local') }}" class="form login" method="post">
-				{% if return %}
-					<input type="hidden" name="return" value="{{return}}" />
-				{% endif %}
-				{% if invalid_login %}
-					<p>Invalid login. Please try again.</p>
-				{% endif %}
-				<table cellspacing="10" cellpadding="0" border="0">
-					<tr>
-						<td>Email:</td>
-						<td><input type="text" value="" name="email" id="email" size="40" /></td>
-					</tr>
-					<tr>
-						<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
-						<td><input type="password" value="" name="password" id="password" size="40" /></td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td><input type="submit" value="Log In" /></td>
-					</tr>
-				</table>
-			</form>
-		</div>
-	</div>
 
-	{% for forminfo in usersource_forms %}
-		<div class="login_method_wrap off">
-		<div class="login_method_title">{{forminfo.usersource.title}}</div>
-		<div class="content login_method_content" style="display:none">
-			{{forminfo.html|raw}}
-		</div>
+<form action="{{ path('user_login_authenticate_local') }}" method="post">
+<div id="login_wrapper">
+	<div id="login_box">
+		<header>
+			<h1>Log In</h1>
+		</header>
+		<article>
+			<input type="hidden" name="agent_login" value="1" />
+			{% if return %}
+				<input type="hidden" name="return" value="{{return}}" />
+			{% endif %}
+			{% if app.session.hasFlash('login_failed') %}
+				<p class="error">Invalid login. Please try again.</p>
+			{% endif %}
+
+			<table cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr>
+					<td>Email:</td>
+					<td><input type="text" value="" name="email" id="email" size="40" /></td>
+				</tr>
+				<tr>
+					<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
+					<td><input type="password" value="" name="password" id="password" size="40" /></td>
+				</tr>
+			</table>
+		</article>
+		<footer>
+			<button id="login_btn">Log In</button>
+		</footer>
 	</div>
-	{% endfor %}
 </div>
+</form>
+
 </body>
 </html>

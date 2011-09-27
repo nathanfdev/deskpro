@@ -25,8 +25,8 @@
 		});
 	</script>
 
-	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name'))}}" />
-	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{app.getSetting('core.facebook_admins')}}" />{% endif %}
+	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
+	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 
 	{{ portal_css(['sidebar', 'pagetop']) }}
 	{{ portal_js(['sidebar', 'pagetop']) }}

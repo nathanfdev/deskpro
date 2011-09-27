@@ -80,9 +80,20 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
 
+		$return = $this->in->getString('return');
+
 		if (!$result->isValid()) {
 			$this->session->setFlash('login_failed', true);
-			return $this->redirectRoute('user_login', array('return' => $return));
+
+			if ($this->in->getBool('agent_login')) {
+				$url = $this->generateUrl('user') . 'agent/login?' . http_build_query(array(
+					'return' => $return
+				));
+
+				return $this->redirect($url);
+			} else {
+				return $this->redirectRoute('user_login', array('return' => $return));
+			}
 		}
 
 		$identity = $result->getIdentity();
@@ -118,7 +129,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			App::getOrm()->flush();
 		}
 
-		$return = $this->in->getString('return');
 		if ($return) {
 			return $this->redirect($return);
 		} else {
