@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
 	const PARTIAL_REQUEST_KEY = '_partial';
-	
+
 	protected $url_locale = null;
 
 	/**
@@ -33,7 +33,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 	public function isPartialRequest()
 	{
 		$val = false;
-		
+
 		if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
 			$val = $this->query->get(self::PARTIAL_REQUEST_KEY);
 			if (!$val) $val = 'partial';
@@ -45,9 +45,19 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 		return $val;
 	}
 
+	public function isPost()
+	{
+		return $this->getMethod() == 'POST';
+	}
+
+	public function isGet()
+	{
+		return $this->getMethod() == 'GET';
+	}
+
 	/**
 	 * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getUrlLocale()

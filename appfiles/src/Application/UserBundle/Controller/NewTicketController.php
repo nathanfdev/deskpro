@@ -35,6 +35,10 @@ class NewTicketController extends AbstractController
 		);
 		$newticket->setPersonContext($this->person);
 
+		if ($this->search_query && !$this->request->isPost()) {
+			$newticket->ticket->subject = $this->search_query;
+		}
+
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 

@@ -200,7 +200,7 @@ Orb.linkUrls = function(string) {
 Orb.appendQueryData = function(url, k, v) {
 	var kev = k;
 	if (v !== undefined) {
-		kev += '=' + v;
+		kev += '=' + encodeURI(v);
 	}
 
 	if (url.indexOf('?') === -1) {

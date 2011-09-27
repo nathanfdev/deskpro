@@ -45,9 +45,9 @@
 	<div class="foot">
 		<h4>Did not find what you were looking for?</h4>
 		<ul>
-			<li class="ticket"><a href="">Create Ticket</a></li>
-			<li class="idea"><a href="">Create Idea</a></li>
-			<li class="chat"><a href="">Chat Live</a></li>
+			<li class="ticket"><a href="{{ path('user_tickets_new') }}">Create Ticket</a></li>
+			<li class="idea"><a href="{{ path('user_ideas_newidea') }}">Create Idea</a></li>
+			<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">Chat Live</a></li>
 		</ul>
 		<br class="dp-clear" style="clear:left" />
 	</div>
@@ -108,7 +108,7 @@
 		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
-				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." autocomplete="off" />
+				<input type="text" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="Enter a question, keyword or topic..." autocomplete="off" />
 				<button class="btn primary">Search</button>
 			</form>
 		</div>

@@ -12,6 +12,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	protected $person;
 
+	protected $search_query = '';
+
 	protected function init()
 	{
 		parent::init();
@@ -19,6 +21,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$tpl_globals = $this->container->get('templating.globals');
 		if (!$tpl_globals->getVariable('usersources')) {
 			 $tpl_globals->setVariable('usersources', App::getEntityRepository('DeskPRO:Usersource')->getAllUsersources());
+		}
+
+		if ($this->in->getString('q')) {
+			$this->search_query = $this->in->getString('q');
+			$tpl_globals->setVariable('search_query', $this->search_query);
 		}
 	}
 

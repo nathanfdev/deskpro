@@ -44,6 +44,21 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 		});
 
 		this.lastTerms = null;
+
+		$('.foot a', this.assistEl).click(function(ev) {
+			var el = $(this);
+			if (el.is('.no-omni-trigger')) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var url = el.attr('href');
+			url = Orb.appendQueryData(url, 'q', self.searchboxEl.val().trim());
+
+			window.location = url;
+		});
 	},
 
 	activateAssist: function() {

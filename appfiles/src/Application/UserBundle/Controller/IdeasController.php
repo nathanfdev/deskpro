@@ -161,6 +161,10 @@ class IdeasController extends AbstractController
 		);
 		$newidea->setPersonContext($this->person);
 
+		if ($this->search_query && !$this->request->isPost()) {
+			$newidea->title = $this->search_query;
+		}
+
 		// Initial value from coming from a category
 		if ($this->in->getUint('category_id')) {
 			$newidea->category_id = $this->in->getUint('category_id');
