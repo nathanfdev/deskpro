@@ -790,6 +790,10 @@ agent_tasks_count_pending:
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }
+agent_task_new:
+  pattern: /tasks/new
+  defaults: { _controller: AgentBundle:Task:new }
+  options: { fragment_name: 'nt' }
 
 ################################################################################
 # Publish

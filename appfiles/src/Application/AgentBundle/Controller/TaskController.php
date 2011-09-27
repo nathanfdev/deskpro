@@ -20,6 +20,8 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Task;
+use Application\AgentBundle\Form\Type\NewTask;
 
 /**
  * Handles viewing and editing tasks
@@ -75,6 +77,20 @@ class TaskController extends AbstractController
 	public function listPendingAction()
 	{
 
+	}
+
+        /**
+         * Render the new task form.
+         * @return <type>
+         */
+
+	public function newAction()
+	{
+            $form = $this->get('form.factory')->create(new NewTask(), new Task())->createView();
+
+            return $this->render('AgentBundle:Task:newtask.html.twig', array(
+                'form' => $form
+            ));
 	}
 
 }

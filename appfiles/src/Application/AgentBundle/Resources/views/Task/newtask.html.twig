@@ -1,0 +1,21 @@
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-new-ticket page-new-content">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
+<form action="{{ path('agent_task_new') }}" method="post" {{ form_enctype(form) }}>
+    
+    <div class="section user-section">
+        <div class="" style="margin-left: 40px;">
+            <h4>Title</h4>
+                {{ form_errors(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class' : 'user-search'}}) }}
+                <span><a href="#">Gear</a></span>
+        </div>
+    </div>
+    
+    <div class="foot">
+        <div class="finishCreateTicket"><a class="submit-trigger">Save & Close</a></div>
+	
+    </div>
+</form>

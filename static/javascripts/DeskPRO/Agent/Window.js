@@ -1500,6 +1500,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/ideas/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new'
 		});
+                this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+			loadUrl: BASE_URL + 'agent/tasks/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new'
+		});
 
 		$('#create_ticket_btn').click(function() {
 			DeskPRO_Window.newTicketLoader.toggle();
@@ -1522,6 +1526,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_idea_btn').click(function() {
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
+                $('#create_task_btn').click(function() {
+                        DeskPRO_Window.newTaskLoader.toggle();
+                });
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
 	},
