@@ -148,22 +148,11 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	{
 		$index = $this->adapter->getIndex('content');
 
-		$query = new \Elastica_Query();
-		$query->setParam('query', array(
-			'fuzzy_like_this' => array(
-				'fields' => array('content'),
-				'like_text' => $query_text,
-				'prefix_length' => 3,
-			),
-			'fuzzy_like_this' => array(
-				'default_field' => array('title'),
-				'like_text' => $query_text,
-				'prefix_length' => 2,
-				'boost' => 2
-			),
-		));
+		$query = new \Elastica_Query_QueryString($query_text);
+		$query_out = new \Elastica_Query();
+		$query_out->setQuery($query);
 
-		$e_result_set = $index->search($query);
+		$e_result_set = $index->search($query_out);
 		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
 
 		return $result_set;
