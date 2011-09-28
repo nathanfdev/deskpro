@@ -767,11 +767,10 @@
 	width: 62px;
 }
 .createHeader a, .switcherHeader a{
-	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -453px;
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0 -459px;
 	color: #737980;
 	cursor: pointer;
 	font-size: 11px;
-	font-weight: bold;
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 .createHeader a{
@@ -840,16 +839,16 @@
 }
 /* Dropdown - Switcher Interfaces */
 #interfacesToggle{
-	left: 16px;
     position: absolute;
-    top: 8px;
-    z-index: 9999;
+    z-index: 100002;
+	position: absolute;
+	display: none;
 }
 .dropdownSwitcherWrap{
-	position: relative;
 }
 
 .dropdownSwitcherWrap ul{
+	margin-left:1px;
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
 	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
@@ -860,9 +859,9 @@
 	border-right: 1px solid #B6BABF;
 	border-bottom: 1px solid #B6BABF;
 	text-align: left;
-	width: 149px;
+	width: 147px;
 	position: relative;
-	z-index: 9999;
+	z-index: 100001;
 }
 
 .dropdownSwitcherWrap li{
@@ -906,13 +905,14 @@
 	position: relative;
 }
 .switcherHeader{
-	height: 24px;
-	padding: 9px 0 0 10px !important;
+	height: 21px;
+	padding: 3px 0 0 10px !important;
 	width: 139px !important;
+	z-index: 100003;
 }
 .switcherHeader a{
-	background-position: 0 -385px !important;
-	padding: 0 0 0 20px !important;
+	background-position: 0 -382px !important;
+	padding: 0 0 0 26px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
 	padding: 0 24px 0 18px !important;

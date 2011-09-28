@@ -136,17 +136,17 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a onclick="toggle_visibility('interfacesToggle');">Agent Interface<span class="dropdownIcon"></span></a>
+				<a>Admin Interface<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
-		<div class="dropdownSwitcherWrap"  onclick="toggle_visibility('interfacesToggle');">
+		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a><span>Agent Interface</span></a>
+				<a><span>Admin Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ path('admin') }}"><span class="check">Admin Interface</span></a></li>
+				<li><a class="admin" href="{{ path('agent') }}"><span class="check">Agent Interface</span></a></li>
 				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
 				<li><a class="report" href=""><span class="check">Report Interface</span></a></li>
 				<li><a class="portal" href="{{ path('user') }}"><span class="check">User Interface</span></a></li>

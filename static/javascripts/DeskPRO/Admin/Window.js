@@ -36,6 +36,30 @@ DeskPRO.Admin.Window = new Orb.Class({
 			table.data('table-reorder', new DeskPRO.Admin.TableReorder(table));
 		});
 
+		// Interface toggle
+		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var pos = $(this).offset();
+			var w = $(this).outerWidth();
+			var h= $(this).outerHeight();
+
+			var list = $('#interfacesToggle');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: pos.top,
+				left: pos.left
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+			backdrop.click(function() {
+				list.hide();
+				backdrop.remove();
+			});
+		});
+
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}

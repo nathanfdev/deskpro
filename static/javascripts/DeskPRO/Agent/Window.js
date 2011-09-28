@@ -1534,6 +1534,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
+
+
+		// Interface toggle
+		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var pos = $(this).offset();
+			var w = $(this).outerWidth();
+			var h= $(this).outerHeight();
+
+			var list = $('#interfacesToggle');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: pos.top,
+				left: pos.left
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+			backdrop.click(function() {
+				list.hide();
+				backdrop.remove();
+			});
+		});
 	},
 
 	toggleAgentStatus: function(force_back) {
