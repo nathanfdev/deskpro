@@ -20,6 +20,12 @@ class ContentSearcher extends AbstractSearcher
 		$query = new \Elastica_Query_QueryString($query);
 		$query_out = new \Elastica_Query();
 		$query_out->setQuery($query);
+		$query_out->addHighlight(array(
+			'tags_schema' => 'styled',
+			'fields' => array(
+				'content' => array(),
+			)
+		));
 
 		$filter = $this->getPermissionFilter();
 		if ($filter) {
@@ -84,7 +90,7 @@ class ContentSearcher extends AbstractSearcher
 
 	/**
 	 * Gets the terms that apply permissions
-	 * 
+	 *
 	 * @return \Elastica_Query_Bool
 	 */
 	public function getPermissionFilter()

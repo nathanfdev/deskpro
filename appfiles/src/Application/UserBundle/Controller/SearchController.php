@@ -26,18 +26,27 @@ class SearchController extends AbstractController
 {
 	public function searchAction()
 	{
-		$q = $this->in->getString('query');
+		$q = $this->in->getString('q');
 
 		$is_search = false;
 		$results = false;
 		$sticky_results = false;
 
-		if ($q) {
-			$search = App::getSearchAdapter();
-			$result_set = $search->getContentSearcher()->query($q);
-			$results = $search->getResultSetObjects($result_set, true);
+		$total = 0;
+		$per_page = 25;
+		$cur_page = 1;
+		if ($this->in->getUint('p')) {
+			$cur_page = $this->in->getUint('p');
+		}
 
-			$sticky_search = new StickyWordSearch($this->em);
+		if ($q) {
+			$is_search  = true;
+			$search     = App::getSearchAdapter();
+			$result_set = $search->getContentSearcher()->query($q, $per_page, $cur_page);
+			$total      = $result_set->totalCount();
+			$results    = $search->getResultSetObjects($result_set, true);
+
+			$sticky_search  = new StickyWordSearch($this->em);
 			$sticky_results = $sticky_search->getResults($q, 5);
 
 			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
@@ -47,15 +56,16 @@ class SearchController extends AbstractController
 			});
 
 			$this->session->set('last_searchlog_id', $searchlog->id);
-
-			$is_search = true;
 		}
+
+		$pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
 		return $this->render('UserBundle:Search:search.html.twig', array(
 			'is_search'         => $is_search,
 			'results'           => $results,
 			'sticky_results'    => $sticky_results,
-			'query'             => $q
+			'query'             => $q,
+			'pageinfo'          => $pageinfo
 		));
 	}
 

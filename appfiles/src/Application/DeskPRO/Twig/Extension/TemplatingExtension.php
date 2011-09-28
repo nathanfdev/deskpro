@@ -83,8 +83,25 @@ class TemplatingExtension extends \Twig_Extension
 			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
+			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
         );
     }
+
+	public function emphasizeWords($string, $words)
+	{
+		if (!is_array($words)) {
+			$words = explode(' ', $words);
+			array_walk($words, 'trim');
+		}
+
+		$string = htmlspecialchars($string);
+		foreach ($words as $w) {
+			$w = htmlspecialchars($w);
+			$string = preg_replace('#(\\b)(' . preg_quote($w, '#') . ')(\\b)#iu', '$1<em>$2</em>$3', $string);
+		}
+
+		return $string;
+	}
 
 	public function renderUsersource($usersource, $type, array $params = array())
 	{

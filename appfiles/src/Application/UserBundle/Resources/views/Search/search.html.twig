@@ -1,21 +1,60 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	{% if query %}
+		<li><a href="{{ path('user_search', {'q': query }) }}">Search: {{ query }}</a></li>
+	{% endif %}
+{% endblock %}
 {% block content %}
-{% if is_search %}
-<div class="content-list">
-	<ul>
-		{% if not results and not sticky_results %}
-			<li><h4>No results, try using different terms.</strong></li>
-		{% else %}
-			{% if sticky_results %}
-				{% for res in sticky_results %}
-					{% include 'UserBundle:Search:search-result-item.html.twig' with {'is_sticky': true}%}
-				{% endfor %}
-			{% endif %}
-			{% for res in results %}
-				{% include 'UserBundle:Search:search-result-item.html.twig' %}
-			{% endfor %}
-		{% endif %}
-	</ul>
+
+<div class="dp-search-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<div class="dp-search-list">
+						<ul>
+							{% if not results and not sticky_results %}
+								<li><h4>No results, try using different terms.</h4></li>
+							{% else %}
+								{% if sticky_results %}
+									{% for res in sticky_results %}
+										{% include 'UserBundle:Search:search-result-item.html.twig' with {'is_sticky': true}%}
+									{% endfor %}
+								{% endif %}
+								{% for res in results %}
+									{% include 'UserBundle:Search:search-result-item.html.twig' %}
+								{% endfor %}
+							{% endif %}
+						</ul>
+					</div>
+				</div>
+
+				<div class="dp-footer">
+					<div class="pagination">
+						<ul>
+							{% if pageinfo.prev %}
+								<li>
+									<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">&larr; Prev</a>
+								</li>
+							{% endif %}
+							{% for p in pageinfo.pages %}
+								<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
+									<a href="{{ path('user_search', {'q': query, 'p': p }) }}">{{ p }}</a>
+								</li>
+							{% endfor %}
+							{% if pageinfo.next %}
+								<li>
+									<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">Next &rarr;</a>
+								</li>
+							{% endif %}
+						</ul>
+						<br class="dp-clear" style="clear:right"/>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </div>
-{% endif %}
+
 {% endblock %}

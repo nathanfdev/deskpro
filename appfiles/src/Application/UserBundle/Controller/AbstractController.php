@@ -3,6 +3,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -25,8 +26,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		if ($this->in->getString('q')) {
 			$this->search_query = $this->in->getString('q');
-			$tpl_globals->setVariable('search_query', $this->search_query);
+		} else {
+			$referrer = $this->request->headers->get('Referer');
+			if ($referrer && ($q = Strings::extractRegexMatch('#search\?q=(.*?)(&|$)#', $referrer, 1))) {
+				$this->search_query = urldecode($q);
+			}
 		}
+		$tpl_globals->setVariable('search_query', $this->search_query);
 	}
 
 	public function preAction($action, $arguments = null)

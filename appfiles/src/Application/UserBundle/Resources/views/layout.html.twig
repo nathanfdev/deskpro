@@ -108,7 +108,7 @@
 		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
-				<input type="text" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="Enter a question, keyword or topic..." autocomplete="off" />
+				<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="Enter a question, keyword or topic..." autocomplete="off" />
 				<button class="btn primary">Search</button>
 			</form>
 		</div>

@@ -2385,4 +2385,38 @@ ul.attachment-list > li img.preview {
 }
 
 
-.
+.dp-search-list {
+
+}
+
+.dp-search-list li {
+	margin-bottom: 10px;
+}
+
+.dp-search-list li a.title {
+	font-size: 15px;
+}
+
+.dp-search-list li a.title em {
+	font-style: normal;
+	font-weight: bold;
+}
+
+.dp-search-list .breadcrumb-line {
+	font-size: 11px;
+	color: #888888;
+}
+
+.dp-search-list .breadcrumb-line li {
+	display: inline;
+	margin-right: 8px;
+}
+
+.dp-search-list .breadcrumb-line a {
+	color: #888888;
+}
+
+.dp-search-list .breadcrumb-line a:hover {
+	color: #888888;
+	text-decoration: underline;
+}

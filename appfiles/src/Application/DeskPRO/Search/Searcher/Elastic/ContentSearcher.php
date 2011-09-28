@@ -51,7 +51,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 
-	public function query($query_text)
+	public function query($query_text, $per_page = 25, $page = 1)
 	{
 		$index = $this->adapter->getIndex('content');
 
@@ -63,6 +63,17 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if ($filter) {
 			$query_out->setFilter($filter);
 		}
+
+		$query_out->setHighlight(array(
+			'tags_schema' => 'styled',
+			'fields' => array(
+				'_all' => array()
+			)
+		));
+
+		$from = ($page - 1) * $per_page;
+		$query_out->setFrom($from);
+		$query_out->setLimit($per_page);
 
 		$e_result_set = $index->search($query_out);
 		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
@@ -135,7 +146,27 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 	public function omnisearch($query_text)
 	{
-		return $this->similarContent($query_text);
+		$index = $this->adapter->getIndex('content');
+
+		$query = new \Elastica_Query();
+		$query->setParam('query', array(
+			'fuzzy_like_this' => array(
+				'fields' => array('content'),
+				'like_text' => $query_text,
+				'prefix_length' => 3,
+			),
+			'fuzzy_like_this' => array(
+				'default_field' => array('title'),
+				'like_text' => $query_text,
+				'prefix_length' => 2,
+				'boost' => 2
+			),
+		));
+
+		$e_result_set = $index->search($query);
+		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
+
+		return $result_set;
 	}
 
 
