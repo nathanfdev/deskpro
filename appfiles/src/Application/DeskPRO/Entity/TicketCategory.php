@@ -28,7 +28,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -118,7 +118,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	{
 		if ($this->parent) {
 			// empty collection
-			return new Doctrine\Common\Collections\ArrayCollection();
+			return new \Doctrine\Common\Collections\ArrayCollection();
 		}
 
 		return $this->children;
@@ -135,7 +135,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 	{
 		return $this->getChildren();
 	}
-	
+
 
 	/**
 	 * Return a unique ID that we can use to look up translations for this object

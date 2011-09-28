@@ -16,8 +16,8 @@
 
 
 
-{% macro structure_list() %}
-		<table cellspacing="0" cellpadding="0" width="100%" border="0" class="with-reorderable structure-list">
+{% macro structure_list(options) %}
+		<table cellspacing="0" cellpadding="0" width="100%" border="0" class="{% if not options.no_reorder %}with-reorderable{% endif %} structure-list">
 {% endmacro %}
 
 {% macro structure_list_end() %}
@@ -25,9 +25,7 @@
 {% endmacro %}
 
 {% macro structure_sublist() %}
-	<ul class="sublist">
 {% endmacro %}
 
 {% macro structure_sublist_end() %}
-	</ul>
 {% endmacro%}

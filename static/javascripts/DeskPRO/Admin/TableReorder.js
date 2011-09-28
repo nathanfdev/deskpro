@@ -27,6 +27,9 @@ DeskPRO.Admin.TableReorder = new Orb.Class({
 				t.empty();
 				t.append(element.clone());
 				t.addClass('dragging');
+
+				$('tr td:not(.title)', t).remove();
+				t.css('width', 300);
 				return t;
 			}
 		});
@@ -48,6 +51,8 @@ DeskPRO.Admin.TableReorder = new Orb.Class({
 					t.empty();
 					t.append(element.clone());
 					t.addClass('dragging');
+					$('tr td:not(.title)', t).remove();
+					t.css('width', 300);
 					return t;
 				}
 			});

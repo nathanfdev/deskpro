@@ -1,13 +1,15 @@
-<li class="priority priority-{{priority.id}}" data-priority-id="{{priority.id}}">
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit edit-trigger"><a href="{{ path('admin_ticketpris_edit', {'priority_id': priority.id}) }}" class="popout-trigger" data-height="350" data-width="400">edit</a></li>
-		</ul>
-	</div>
-	<div style="float:left; padding-right: 6px;">
-		<span style="background-color: #FFF67A; padding: 4px; font-size: 10px;">{{priority.priority}}</span>
-	</div>
-	<div>
-		{{priority.title}}
-	</div>
-</li>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% if not depth %}
+<tbody>
+{% endif %}
+	<tr data-item-id="{{ priority.id }}" class="depth-{{ depth|default(0) }} product product-{{priority.id}}" data-product-id="{{priority.id}}">
+		<td class="title">
+			<span class="priority">{{ priority.priority }}</span>
+			<a href="{{ path('admin_ticketpris_edit', {'priority_id': priority.id}) }}" class="popout-trigger" data-height="300">
+				{{priority.title}}
+			</a>
+		</td>
+	</tr>
+{% if not depth %}
+</tbody>
+{% endif %}

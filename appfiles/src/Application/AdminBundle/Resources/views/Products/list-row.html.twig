@@ -1,14 +1,21 @@
-<li class="product product-{{product.id}}" data-product-id="{{product.id}}">
-	<div class="drag-handle">ORDER</div>
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit edit-trigger"><a href="{{ path('admin_products_edit', {'product_id': product.id}) }}" class="popout-trigger" data-height="200" data-width="400">edit</a></li>
-			<li class="delete delete-trigger" data-product-id="{{product.id}}">delete</li>
-		</ul>
-	</div>
-	<div>
-		{% if not product.parent %}<strong>{{product.title}}</strong>
-		{% else %}{{product.title}}
-		{% endif %}
-	</div>
-</li>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% if not depth %}
+<tbody>
+{% endif %}
+	<tr data-item-id="{{ product.id }}" class="depth-{{ depth|default(0) }} product product-{{product.id}} {% if product.parent %}is-sub parent-{{ product.parent.id }}{% endif %} {% if product.children|length %}has-children{% endif %}" data-product-id="{{product.id}}">
+		<td class="title">
+			<a href="{{ path('admin_products_edit', {'product_id': product.id}) }}" class="popout-trigger" data-height="200" data-width="400">
+				{{product.title}}
+			</a>
+		</td>
+	</tr>
+	{% if product.children|length %}
+		{{ design.structure_sublist() }}
+			{% for sub_prod in product.children %}
+				{% include 'AdminBundle:Products:list-row.html.twig' with {'product': sub_prod, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+			{% endfor %}
+		{{ design.structure_sublist_end() }}
+	{% endif %}
+{% if not depth %}
+</tbody>
+{% endif %}

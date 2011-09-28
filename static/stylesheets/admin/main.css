@@ -461,9 +461,21 @@ table.structure-list tbody.placeholder td,
 table.structure-list tr.placeholder td {
 	height: 10px !important;
 	overflow: hidden;
-	background-color: #E1A948;
+	background-color: #999B9B;
 }
 
 table.structure-list.dragging {
 	opacity: 0.9 !important;
+}
+
+table.structure-list span.priority {
+	float: left;
+	margin-right: 4px;
+	background-color: #FEE35B;
+	padding: 0px 4px 0 4px;
+	border-radius: 10px;
+	font-size: 10px;
+	font-weight: normal;
+	position: relative;
+	top: 2px;
 }

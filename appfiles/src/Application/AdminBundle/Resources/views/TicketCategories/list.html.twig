@@ -1,30 +1,28 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketCategoriesList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page_TicketCategories = new DeskPRO.Admin.PageHandler.TicketCategoriesList('#ticket_categories');
-};
-</script>
 {% endblock %}
-{% block page_id "ticket_categories" %}
+{% block pagetitle %}
+	<nav>
+		<button class="clean-white ">Create New Category</button>
+	</nav>
+	Ticket Categories
+{% endblock %}
+{% block prepage %}
+	Ticket categories are a basic grouping field.
+{% endblock %}
 {% block content %}
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
-</div>
-
-<div class="cat-lists" id="ticket_category_parentlist">
-{% for category in all_categories %}
-	<ul class="item-list categor-list-{{category.id}}" style="margin-top: 10px; margin-bottom: 10px;">
-		{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
-		{% for sub_cat in category.children %}
-			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true } %}
+<div class="page-content">
+	{{ design.structure_list() }}
+		{% for category in all_categories %}
+			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% endfor %}
-	</ul>
-{% endfor %}
+	{{ design.structure_list_end() }}
 </div>
 
 {% endblock %}

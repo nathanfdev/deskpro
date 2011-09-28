@@ -1,25 +1,29 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralSortableList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page_TicketWorkflows = new DeskPRO.Admin.PageHandler.GeneralSortableList('#ticket_workflows', {orderIdAttr: 'workflow-id', orderUpdateUrl: '{{ path('admin_ticketworks_updateorders') }}'});
-};
 </script>
 {% endblock %}
-{% block page_id "ticket_workflows" %}
+{% block pagetitle %}
+	<nav>
+		<button class="clean-white ">Create New Workflow</button>
+	</nav>
+	Ticket Workflows
+{% endblock %}
+{% block prepage %}
+	Ticket workflows give you the ability to describe the current state the ticket may
+	be in outside of the usual helpdesk status. For example, "Waiting for funds."
+{% endblock %}
 {% block content %}
-
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_ticketworks_edit', {'workflow_id': '0'}) }}" data-height="200" data-width="400">Create New Workflow</a>
-</div>
-
-<ul class="item-list">
-	{% for workflow in all_workflows %}
+<div class="page-content">
+	{{ design.structure_list({'no_reorder': true}) }}
+		{% for workflow in all_workflows %}
 		{% include 'AdminBundle:TicketWorkflows:list-row.html.twig' %}
 	{% endfor %}
-</ul>
+	{{ design.structure_list_end() }}
+</div>
 
 {% endblock %}

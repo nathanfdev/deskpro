@@ -1,13 +1,21 @@
-<li class="category category-{{category.id}} {% if category.parent %}sub{% endif %}" data-category-id="{{category.id}}">
-	<div class="drag-handle">ORDER</div>
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit edit-trigger"><a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="popout-trigger" data-height="300">edit</a></li>
-		</ul>
-	</div>
-	<div>
-		{% if not category.parent %}<strong>{{category.title}}</strong>
-		{% else %}{{category.title}}
-		{% endif %}
-	</div>
-</li>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% if not depth %}
+<tbody>
+{% endif %}
+	<tr data-item-id="{{ category.id }}" class="depth-{{ depth|default(0) }} product product-{{category.id}} {% if category.parent %}is-sub parent-{{ category.parent.id }}{% endif %} {% if category.children|length %}has-children{% endif %}" data-product-id="{{category.id}}">
+		<td class="title">
+			<a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="popout-trigger" data-height="300">
+				{{category.title}}
+			</a>
+		</td>
+	</tr>
+	{% if category.children|length %}
+		{{ design.structure_sublist() }}
+			{% for sub_cat in category.children %}
+				{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+			{% endfor %}
+		{{ design.structure_sublist_end() }}
+	{% endif %}
+{% if not depth %}
+</tbody>
+{% endif %}
