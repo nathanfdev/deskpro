@@ -1,31 +1,29 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'crm' %}
-{% block sub_section 'usergroups' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/DepartmentsList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentsList();
+	//window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentsList();
 }
 </script>
 {% endblock %}
+{% block pagetitle %}
+	<nav>
+		<button class="clean-white popout-trigger">Create New Department</button>
+	</nav>
+	Departments
+{% endblock %}
 {% block content %}
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_departments_edit', {'department_id': '0'}) }}">Create New Department</a>
-</div>
-
-<div class="dep-lists" id="departments_parentlist">
-{% for department in all_departments %}
-	<ul class="item-list department-list-{{department.id}}">
-		{% include 'AdminBundle:Departments:list-row.html.twig' %}
-		{% for sub_dep in department.children %}
-			{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true } %}
+<div class="page-content">
+	{{ design.structure_list() }}
+		{% for department in all_departments %}
+			{% include 'AdminBundle:Departments:list-row.html.twig' %}
 		{% endfor %}
-	</ul><br />
-{% endfor %}
+	{{ design.structure_list_end() }}
 </div>
 
 {% endblock %}

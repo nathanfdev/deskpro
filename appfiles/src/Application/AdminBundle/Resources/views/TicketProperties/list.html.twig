@@ -1,3 +1,4 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block section 'tickets' %}
 {% block sub_section 'properties' %}
@@ -11,88 +12,98 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
+{% block prepage %}
+	This page lets you customize the options displayed on the ticket form.
+{% endblock %}
+{% block pagetitle %}
+	<nav>
+		<button class="clean-white">Create Ticket Field</button>
+	</nav>
+	Ticket Fields
+{% endblock %}
 {% block content %}
 
-<ul class="item-list system-list">
-	<li class="system-item dark">
-		<div style="float:right">
-			<ul class="controls">
-				<li class="edit"><a href="{{ path('admin_departments') }}">Manage Departments</a> &rarr;</li>
-			</ul>
-			<ul class="controls reverse">
-				<li><span class="count">{{counts.department}}</span> departments</li>
-			</ul>
-		</div>
-		Departments
-	</li>
-	<li class="system-item dark">
-		<div style="float:right">
-			<ul class="controls">
-				<li class="edit"><a href="{{ path('admin_products') }}">Manage Products</a> &rarr;</li>
-			</ul>
-			<ul class="controls reverse">
-				<li><span class="count">{{counts.product}}</span> products</li>
-			</ul>
-		</div>
-		Products
-	</li>
-	<li class="system-item">
-		<div style="float:right">
-			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketcats') }}">Manage Categories</a></li>
-			</ul>
-			<ul class="controls reverse">
-				<li><span class="count">{{counts.ticket_category}}</span> categories</li>
-			</ul>
-		</div>
-		Ticket Categories
-	</li>
-	<li class="system-item">
-		<div style="float:right">
-			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketpris') }}">Manage Priorities</a></li>
-			</ul>
-			<ul class="controls reverse">
-				<li><span class="count">{{counts.ticket_priority}}</span> priorities</li>
-			</ul>
-		</div>
-		Ticket Priorities
-	</li>
-	<li class="system-item">
-		<div style="float:right">
-			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketworks') }}">Manage Workflows</a></li>
-			</ul>
-			<ul class="controls reverse">
-				<li><span class="count">{{counts.ticket_workflow}}</span> workflows</li>
-			</ul>
-		</div>
-		Ticket Workflows
-	</li>
-</ul>
+{{ design.block_sections() }}
 
-<div style="margin: 19px 0 4px 0;">
-	<a style="float: right" class="dp-button green popout-trigger" href="{{ path('admin_customdeftickets_new_choosetype') }}">Create A New Field</a>
-	<h2 style="font-size: 15px; padding-top: 6px;">Your fields</h2>
-	<br class="clear" />
-</div>
-
-<ul class="item-list">
-	{% for field in fields %}
-		<li class="field-{{field.id}}">
-			<div style="float:right">
-				<ul class="controls">
-					<li class="edit"><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">Edit</a></li>
-				</ul>
+	{{ design.block_sections_item() }}
+		<header>
+			<h3><a href="{{ path('admin_departments') }}">Departments</a></h3>
+			<span class="count">{{counts.department}}</span>
+			<div class="check-control">
+				<input type="checkbox" checked="checked" class="onoff-slider" />
 			</div>
-			<strong>{{field.title}}</strong>
-			<div style="font-size: 90%">{{ phrase(field.handler_class_phrase) }}</div>
-		</li>
-	{% else %}
-		<li>
-			You have no custom fields defined.
-		</li>
+		</header>
+		<p>
+			Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support.
+		</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header>
+			<h3><a href="{{ path('admin_products') }}">Products</a></h3>
+			<span class="count">{{counts.product}}</span>
+			<div class="check-control">
+				<input type="checkbox" checked="checked" class="onoff-slider" />
+			</div>
+		</header>
+		<p>
+			Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
+			is usually a real product or service your company offers, and use it categorize all kinds of content
+			like tickets, ideas and articles.
+		</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header>
+			<h3><a href="{{ path('admin_ticketcats') }}">Ticket Categories</a></h3>
+			<span class="count">{{counts.ticket_category}}</span>
+			<div class="check-control">
+				<input type="checkbox" checked="checked" class="onoff-slider" />
+			</div>
+		</header>
+		<p>
+			Categories are a general organization field usually used to handle grouping tickets within a department.
+		</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header>
+			<h3><a href="{{ path('admin_ticketpris') }}">Ticket Priorities</a></h3>
+			<span class="count">{{counts.ticket_priority}}</span>
+			<div class="check-control">
+				<input type="checkbox" checked="checked" class="onoff-slider" />
+			</div>
+		</header>
+		<p>
+			Priorities rate how important a ticket is.
+		</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header>
+			<h3><a href="{{ path('admin_ticketworks') }}">Ticket Workflows</a></h3>
+			<span class="count">{{counts.ticket_workflow}}</span>
+			<div class="check-control">
+				<input type="checkbox" checked="checked" class="onoff-slider" />
+			</div>
+		</header>
+		<p>
+			Workflows can be used to record where in the lifetime a ticket currently is.
+		</p>
+	{{ design.block_sections_item_end() }}
+
+	{% for field in fields %}
+		{{ design.block_sections_item() }}
+			<header>
+				<h3><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">{{ field.title }}</a></h3>
+				<div class="check-control">
+					<input type="checkbox" checked="checked" class="onoff-slider" />
+				</div>
+			</header>
+			<p>Custom field: {{ phrase(field.handler_class_phrase) }}</p>
+		{{ design.block_sections_item_end() }}
 	{% endfor %}
-</ul>
+
+{{ design.block_sections_end() }}
 
 {% endblock %}

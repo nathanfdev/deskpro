@@ -263,6 +263,8 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/mwheelIntent.js',
 		//'vendor/jquery/jquery.ajax-retry.js',
 
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+
 		'vendor/tiny_mce/jquery.tinymce.js',
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
@@ -303,24 +305,7 @@ $CONFIG['admin']['admin-ui'] = array(
 		'javascripts/DeskPRO/Admin/Window.js',
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
-		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
-
-		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
-
-		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
-
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js',
-
-		'javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js',
-		'javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js',
-		'javascripts/DeskPRO/Admin/WindowElement/MainMenu/AdminSearchBoxResults.js',
+		'javascripts/DeskPRO/Admin/TableReorder.js',
 	)
 );
 

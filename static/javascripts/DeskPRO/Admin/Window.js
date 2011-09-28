@@ -11,102 +11,66 @@ Orb.createNamespace('DeskPRO.Admin');
  */
 DeskPRO.Admin.Window = new Orb.Class({
 
-	Implements: [Orb.Util.Events],
-
-	initialize: function() {
-
-		this.DEBUG = {};
-		this.registry = {};
-		this.messageBroker = null;
-		this.interfaceEffects = null;
-
-	},
+	Extends: DeskPRO.BasicWindow,
 
 	initPage: function() {
-		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
-		this.interfaceEffects.initPage();
+		var self = this;
 
-		this._initBasic();
-		this._initWindowInterface();
+		this.menuEls = $('#menus_container > div').addClass('header-menu').each(function() {
+			$(this).detach().appendTo('body');
+		});
+		$('#menus_container').remove();
+
+		this.menuTriggerEls = $('#dp_admin_nav li[data-menu]');
+		$('#dp_admin_nav').delegate('li[data-menu]', 'click', function(ev) {
+			ev.preventDefault();
+			self.openHeaderMenu($(this));
+		});
+
+		$('input[type="checkbox"].onoff-slider').checkbox({
+			empty: ASSETS_BASE_URL + '/vendor/jquery/jquery-checkbox/empty.png'
+		});
+
+		$('table.with-reorderable').each(function() {
+			var table = $(this);
+			table.data('table-reorder', new DeskPRO.Admin.TableReorder(table));
+		});
 
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}
+	},
 
-		$('.admin-help-header .close-trigger').click(function() {
-			$('.admin-help-header').slideUp();
-			DeskPRO_Window.dismissHelpMessage(this);
+	openHeaderMenu: function(triggerEl) {
+		if (!this.headerMenuBackdrop) {
+			this.headerMenuBackdrop = $('<div class="backdrop" />').appendTo('body').hide();
+			this.headerMenuBackdrop.click(this.closeHeaderMenu.bind(this));
+		}
+
+		this.menuTriggerEls.removeClass('open');
+		this.menuEls.hide();
+
+		var pos = triggerEl.offset();
+		var h = triggerEl.outerHeight();
+		var menuEl = $(triggerEl.data('menu'));
+
+		triggerEl.addClass('open')
+		menuEl.css({
+			top: pos.top + h,
+			left: pos.left
 		});
+
+		menuEl.show();
+		triggerEl.show();
+		this.headerMenuBackdrop.show();
 	},
 
-	_initBasic: function() {
-		this.messageBroker = new DeskPRO.MessageBroker();
+	closeHeaderMenu: function() {
+		this.menuTriggerEls.removeClass('open');
+		var vis = this.menuEls.filter(':visible');
+		vis.fadeOut('fast');
+		this.headerMenuBackdrop.hide();
 	},
-
-	_initWindowInterface: function() {
-		var menuOpener = new DeskPRO.Admin.WindowElement.MainMenuOpener();
-	},
-
-
-
-	//#################################################################
-	//# Getters
-	//#################################################################
-
-	getMessageBroker: function() {
-		return this.messageBroker;
-	},
-
-	//#################################################################
-	//# Global registry
-	//#################################################################
-
-	/**
-	 * Get a value from the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @return mixed
-	 */
-	get: function(id) {
-		if (this.registry[id] === undefined) {
-			return null;
-		}
-
-		return this.registry[id];
-	},
-
-
-
-	/**
-	 * Add or reset a value in the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @param mixed value The value of the item
-	 */
-	set: function(id, value) {
-		this.registry[id] = value;
-	},
-
-
-	/**
-	 * Get a URL pattern
-	 */
-	getUrl: function(name, vars) {
-		if (!window.DESKPRO_URL_REGISTRY[name]) {
-			console.warn('Unknown url name %s', name);
-			return null;
-		}
-
-		var url = window.DESKPRO_URL_REGISTRY[name];
-		if (vars) {
-			Object.each(vars, function(v,k) {
-				url = url.replace('{'+k+'}', v);
-			});
-		}
-
-		return url;
-	},
-
 
 	/**
 	 * Dismiss a help message. This removes the help element, and sends an ajax

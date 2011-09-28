@@ -418,6 +418,7 @@ button.clean-white {
 	font-size: 10px;
 	font: bold 10px/12px 'Helvetica Neue',sans-serif;
 	position: relative;
+	white-space: nowrap;
 }
 
 button.clean-white.small {

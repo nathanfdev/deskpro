@@ -1,13 +1,30 @@
-<li class="department department-{{department.id}} {% if department.parent %}sub{% endif %}" data-department-id="{{department.id}}">
-	<div class="drag-handle">ORDER</div>
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit edit-trigger"><a href="{{ path('admin_departments_edit', {'department_id': department.id}) }}" class="popout-trigger" data-height="300">edit</a></li>
-		</ul>
-	</div>
-	<div>
-		{% if not department.parent %}<strong>{{department.title}}</strong>
-		{% else %}{{department.title}}
-		{% endif %}
-	</div>
-</li>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% if not depth %}
+<tbody>
+{% endif %}
+	<tr data-item-id="{{ department.id }}" class="depth-{{ depth|default(0) }} department department-{{department.id}} {% if department.parent %}is-sub parent-{{ department.parent.id }}{% endif %} {% if department.children|length %}has-children{% endif %}" data-department-id="{{department.id}}">
+		<td class="title">
+			<a href="{{ path('admin_departments_edit', {'department_id': department.id}) }}" class="popout-trigger" data-height="300">
+				{{department.title}}
+			</a>
+		</td>
+		<td width="10" class="controls">
+			<select><option>Agents: 4</option></select>
+		</td>
+		<td width="10" class="controls">
+			<select><option>Teams: 2</option></select>
+		</td>
+		<td width="10" class="controls">
+			<button class="clean-white">Form Designer</button>
+		</td>
+	</tr>
+	{% if department.children|length %}
+		{{ design.structure_sublist() }}
+			{% for sub_dep in department.children %}
+				{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+			{% endfor %}
+		{{ design.structure_sublist_end() }}
+	{% endif %}
+{% if not depth %}
+</tbody>
+{% endif %}

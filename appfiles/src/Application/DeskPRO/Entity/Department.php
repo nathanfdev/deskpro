@@ -28,7 +28,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id;
 
@@ -120,7 +120,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		// so if *we* are the child, then there are no more
 		if ($this->parent) {
 			// empty collection
-			return new Doctrine\Common\Collections\ArrayCollection();
+			return new \Doctrine\Common\Collections\ArrayCollection();
 		}
 
 		return $this->children;
@@ -174,7 +174,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		}
 		return $this->title;
 	}
-	
+
 
 	public function __toString()
 	{
