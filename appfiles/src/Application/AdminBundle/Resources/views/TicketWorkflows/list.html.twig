@@ -19,11 +19,11 @@
 {% endblock %}
 {% block content %}
 <div class="page-content">
-	{{ design.structure_list({'no_reorder': true}) }}
+	{{ design.structure_table({'no_reorder': true}) }}
 		{% for workflow in all_workflows %}
 		{% include 'AdminBundle:TicketWorkflows:list-row.html.twig' %}
 	{% endfor %}
-	{{ design.structure_list_end() }}
+	{{ design.structure_table_end() }}
 </div>
 
 {% endblock %}

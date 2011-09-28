@@ -22,11 +22,11 @@
 {% block content %}
 
 <div class="page-content">
-	{{ design.structure_list() }}
+	{{ design.structure_table() }}
 		{% for product in all_products %}
 			{% include 'AdminBundle:Products:list-row.html.twig' %}
 		{% endfor %}
-	{{ design.structure_list_end() }}
+	{{ design.structure_table_end() }}
 </div>
 
 {% endblock %}

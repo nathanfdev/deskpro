@@ -16,16 +16,10 @@
 
 
 
-{% macro structure_list(options) %}
-		<table cellspacing="0" cellpadding="0" width="100%" border="0" class="{% if not options.no_reorder %}with-reorderable{% endif %} structure-list">
+{% macro structure_table(options) %}
+	<table cellspacing="0" cellpadding="0" width="100%" border="0" class="{% if not options.no_reorder %}with-reorderable{% endif %} structure-list">
 {% endmacro %}
 
-{% macro structure_list_end() %}
-		</table>
+{% macro structure_table_end() %}
+	</table>
 {% endmacro %}
-
-{% macro structure_sublist() %}
-{% endmacro %}
-
-{% macro structure_sublist_end() %}
-{% endmacro%}

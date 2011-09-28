@@ -18,11 +18,11 @@
 {% block content %}
 
 <div class="page-content">
-	{{ design.structure_list() }}
+	{{ design.structure_table() }}
 		{% for category in all_categories %}
 			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% endfor %}
-	{{ design.structure_list_end() }}
+	{{ design.structure_table_end() }}
 </div>
 
 {% endblock %}

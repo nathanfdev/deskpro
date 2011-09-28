@@ -10,11 +10,9 @@
 		</td>
 	</tr>
 	{% if category.children|length %}
-		{{ design.structure_sublist() }}
-			{% for sub_cat in category.children %}
-				{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
-			{% endfor %}
-		{{ design.structure_sublist_end() }}
+		{% for sub_cat in category.children %}
+			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+		{% endfor %}
 	{% endif %}
 {% if not depth %}
 </tbody>

@@ -83,11 +83,11 @@ function _page_exec() {
 {% block content %}
 
 <div class="page-content">
-	{{ design.structure_list() }}
+	{{ design.structure_table() }}
 		{% for department in all_departments %}
 			{% include 'AdminBundle:Departments:list-row.html.twig' %}
 		{% endfor %}
-	{{ design.structure_list_end() }}
+	{{ design.structure_table_end() }}
 </div>
 
 {% endblock %}

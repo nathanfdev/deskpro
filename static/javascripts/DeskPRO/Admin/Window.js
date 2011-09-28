@@ -13,6 +13,39 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 	Extends: DeskPRO.BasicWindow,
 
+	init: function() {
+		this.util = {
+			showSavePuff: function(overEl) {
+				var el = $('<div class="load-puff" style="display: none; opacity: 0" />');
+				el.appendTo('body');
+
+				var pos = overEl.offset();
+				el.css({
+					top: pos.top + 15,
+					left: pos.left + overEl.width() - 4
+				});
+
+				var endPos1 = pos.top - 5;
+				var endPos2 = pos.top - 15;
+
+				el.show();
+				el.animate({
+					top: endPos1,
+					opacity: 1
+				}, 200, 'swing', function() {
+					window.setTimeout(function() {
+						el.animate({
+							top: endPos2,
+							opacity: 0
+						}, 200, 'swing', function() {
+							el.remove();
+						});
+					}, 225);
+				});
+			}
+		}
+	},
+
 	initPage: function() {
 		var self = this;
 

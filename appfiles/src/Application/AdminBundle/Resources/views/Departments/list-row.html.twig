@@ -58,6 +58,12 @@
 				{{department.title}}
 			</a>
 		</td>
+		<td width="35" class="controls">
+			<input type="checkbox" name="tickets" value="1" class="onoff-slider" />
+		</td>
+		<td width="35" class="controls">
+			<input type="checkbox" name="chat" value="1" class="onoff-slider" />
+		</td>
 		<td width="50" class="controls">
 			<button class="clean-white ug-selection">
 				No usergroups
@@ -72,11 +78,9 @@
 		</td>
 	</tr>
 	{% if department.children|length %}
-		{{ design.structure_sublist() }}
-			{% for sub_dep in department.children %}
-				{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
-			{% endfor %}
-		{{ design.structure_sublist_end() }}
+		{% for sub_dep in department.children %}
+			{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+		{% endfor %}
 	{% endif %}
 {% if not depth %}
 </tbody>
