@@ -13,17 +13,30 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 <form action="{{ path('agent_task_new') }}" method="post" {{ form_enctype(form) }}>
     
-    <div class="section user-section">
-        <div class="" style="margin-left: 40px;">
+    <div class="section title-section first" id="{{baseId}}_title_section">
+    
+        <div class="step">
+		<span class="num">1</span>
+		<span class="check">Done</span>
+	</div>
+        <div class="content">
             <h4>Title</h4>
                 {{ form_errors(form.title) }}
                 {{ form_widget(form.title, {'attr': {'class' : 'user-search'}}) }}
-                <span><a href="#">Gear</a></span>
+            <span><a href="#" class="gear" id="{{baseId}}_gear_spn">Gear</a></span>
+        </div>
+    
+    </div>
+    <div class="taskpropertiec-section" id="{{baseId}}_task_proterties_section" style="display:none">
+        <div class="due-date">
+            <h4>Due Date</h4>
+            {{ form_widget(form.date_due, {'attr': {'class' : 'user-search'}}) }}
         </div>
     </div>
     
     <div class="foot">
-        <button class="dp-button submit-trigger">Save & Close</button>
+        <button id="{{baseId}}_save">Save</button>
+
 	
     </div>
 </form>

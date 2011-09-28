@@ -23,8 +23,12 @@ class NewTask extends AbstractType
         # Basic fields
         #------------------------------
 
-        $builder->add('title', 'text');
-        $builder->add('date_due', 'date');
+        $builder->add('title', 'text');        
+        $builder->add('date_due', 'date', array(
+            'input'  => 'datetime',
+            'widget' => 'single_text',
+));
+
         $builder->add('is_completed', 'text');
         $builder->add('is_completed', 'choice', array(
             'choices' => array(0 => 'Public', 2 => 'Private'),
