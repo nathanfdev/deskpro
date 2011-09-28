@@ -39,8 +39,15 @@ class DepartmentsController extends AbstractController
 			ORDER BY dep.display_order ASC
 		")->getResult();
 
+		$agents     = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$teams      = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$usergroups = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
-			'all_departments' => $all_departments
+			'all_departments' => $all_departments,
+			'agents' => $agents,
+			'teams' => $teams,
+			'usergroups' => $usergroups,
 		));
 	}
 

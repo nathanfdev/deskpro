@@ -1,4 +1,54 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% macro agentteam_selector(for_id, selected_agents, selected_teams, agents, teams) %}
+	<div class="optionbox" id="optionbox_dep_{{ for_id }}">
+		{% if teams|length %}
+		<section data-section-name="teams">
+			<header>
+				<input type="checkbox" class="all-check" />
+				<h3>Teams</h3>
+				<span class="selected-count" style="display: none">(<span class="num"></span>)</span>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for team in teams %}
+					<li><input type="checkbox" value="{{ team.id }}" {% if team.id in selected_teams %}checked="checked"{% endif %} /><label>{{ team.name }}</label></li>
+				{% endfor %}
+			</ul>
+		</section>
+		{% endif %}
+		<section data-section-name="agents">
+			<header>
+				<input type="checkbox" class="all-check" />
+				<h3>Agents</h3>
+				<span class="selected-count" style="display: none">(<span class="num"></span>)</span>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for agent in agents %}
+					<li><input type="checkbox" value="{{ agent.id }}" {% if agent.id in selected_agents %}checked="checked"{% endif %} /><label>{{ agent.display_name }}</label></li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+{% endmacro %}
+{% macro ug_selector(for_id, selected_usergroups, usergroups) %}
+	<div class="optionbox" id="optionbox_ug_{{ for_id }}">
+		<section data-section-name="usergroups">
+			<header>
+				<input type="checkbox" class="all-check" />
+				<h3>Usergroups</h3>
+				<span class="selected-count" style="display: none">(<span class="num"></span>)</span>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for usergroup in usergroups %}
+					<li><input type="checkbox" value="{{ usergroup.id }}" {% if usergroup.id in selected_usergroups %}checked="checked"{% endif %} /><label>{{ usergroup.title }}</label></li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+{% endmacro %}
+
 {% if not depth %}
 <tbody>
 {% endif %}
@@ -8,14 +58,17 @@
 				{{department.title}}
 			</a>
 		</td>
-		<td width="10" class="controls">
-			<select><option>Agents: 4</option></select>
+		<td width="50" class="controls">
+			<button class="clean-white ug-selection">
+				No usergroups
+			</button>
+			{{ _self.ug_selector(department.id, 0, usergroups) }}
 		</td>
-		<td width="10" class="controls">
-			<select><option>Teams: 2</option></select>
-		</td>
-		<td width="10" class="controls">
-			<button class="clean-white">Form Designer</button>
+		<td width="50" class="controls">
+			<button class="clean-white agent-team-selection">
+				No agents
+			</button>
+			{{ _self.agentteam_selector(department.id, 0, 0, agents, teams) }}
 		</td>
 	</tr>
 	{% if department.children|length %}

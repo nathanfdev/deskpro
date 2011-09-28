@@ -183,6 +183,7 @@ $CONFIG['agent']['deskpro-ui'] = array(
 	'files' => array(
 		'javascripts/DeskPRO/UI/LabelsInput.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
+		'javascripts/DeskPRO/UI/OptionBox.js',
 		'javascripts/DeskPRO/UI/Menu.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/DateChooser.js',

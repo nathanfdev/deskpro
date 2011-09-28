@@ -7,6 +7,67 @@
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
 	//window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentsList();
+
+	$('table.structure-list tr .agent-team-selection').click(function(ev) {
+		var btn = $(this), optionbox = null, tr = null;
+
+		tr = btn.closest('tr');
+
+		if (btn.data('optionbox')) {
+			optionbox = btn.data('optionbox');
+		} else {
+			optionbox = new DeskPRO.UI.OptionBox({
+				element: $('#optionbox_dep_' + tr.data('item-id')),
+				onClose: function() {
+					var countTeams  = optionbox.getCount('teams');
+					var countAgents = optionbox.getCount('agents');
+
+					var words = [];
+					if (countAgents > 0) {
+						words.push(countAgents + ' agents');
+					}
+					if (countTeams > 0) {
+						words.push(countTeams + ' teams');
+					}
+
+					if (!words.length) {
+						words = ['No agents'];
+					}
+
+					btn.text(words.join(', '));
+				}
+			});
+			btn.data('optionbox', optionbox);
+		}
+
+		optionbox.open(ev);
+	});
+
+	$('table.structure-list tr .ug-selection').click(function(ev) {
+		var btn = $(this), optionbox = null, tr = null;
+
+		tr = btn.closest('tr');
+
+		if (btn.data('optionbox')) {
+			optionbox = btn.data('optionbox');
+		} else {
+			optionbox = new DeskPRO.UI.OptionBox({
+				element: $('#optionbox_ug_' + tr.data('item-id')),
+				onClose: function() {
+					var count = optionbox.getCount('usergroups');
+
+					if (count > 0) {
+						btn.text(count + ' usergroups');
+					} else {
+						btn.text('No usergroups');
+					}
+				}
+			});
+			btn.data('optionbox', optionbox);
+		}
+
+		optionbox.open(ev);
+	});
 }
 </script>
 {% endblock %}

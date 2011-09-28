@@ -559,3 +559,69 @@ button.clean-white.radio-on {
 
 	z-index: 100000000;
 }
+
+
+
+
+.optionbox {
+	display: none;
+	position: absolute;
+	width: 230px;
+	border: 2px solid #CACFD6;
+	background-color: #fff;
+	border-radius: 6px;
+
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
+	box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
+	z-index: 10000000;
+	max-height: 300px;
+	overflow: auto;;
+}
+
+.optionbox section {
+	margin-bottom: 15px;
+}
+
+.optionbox section header {
+	background-color: #DFE5EB;
+	padding: 2px 2px 2px 5px;
+}
+
+.optionbox section header h3 {
+	font-size: 11px;
+	font-weight: bold;
+	display: inline;
+}
+
+.optionbox section header input.all-check {
+	margin-right: 4px;
+}
+
+.optionbox section header .selected-count {
+	font-size: 10px;
+}
+
+.optionbox section input[type="checkbox"] {
+	margin-right: 4px;
+}
+
+.optionbox section header input.filter-box {
+	float: right;
+	padding: 0;
+	margin: 1px 4px 0 0;
+	font-size: 11px;
+	border: none;
+	background-color: transparent;
+	text-align: right;
+	width: 80px;
+	color: #9CA0A6;
+}
+
+.optionbox section header input.filter-box:focus {
+	color: #000;
+}
+
+.optionbox section li {
+	padding: 2px 2px 2px 5px;
+}
