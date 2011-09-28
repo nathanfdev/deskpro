@@ -1,3 +1,11 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTask';
+pageMeta.title = 'New Task';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+
 {# scroll containers #}
 <div class="layout-content with-scrollbar page-new-ticket page-new-content">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -15,7 +23,7 @@
     </div>
     
     <div class="foot">
-        <div class="finishCreateTicket"><a class="submit-trigger">Save & Close</a></div>
+        <button class="dp-button submit-trigger">Save & Close</button>
 	
     </div>
 </form>
