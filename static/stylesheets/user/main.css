@@ -1598,6 +1598,11 @@ ul.dp-ideas-list .meta {
 	margin-top: 4px;
 }
 
+.dp-form .dp-form-input label {
+	margin-right: 8px;
+	padding-left: 2px;
+}
+
 .dp-form .dp-form-label em.required {
 	padding-left: 8px;
 	color: #888;

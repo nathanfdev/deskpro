@@ -49,7 +49,9 @@ class TicketViewController extends AbstractController
 				case 'id':
 					if (Numbers::isInteger($ticket_ref)) {
 						$ticket = App::findEntity('DeskPRO:Ticket', $ticket_ref);
-						return $this->viewTicket($ticket, $display_data);
+						if ($ticket) {
+							return $this->viewTicket($ticket, $display_data);
+						}
 					}
 					break;
 

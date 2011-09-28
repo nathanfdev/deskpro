@@ -71,6 +71,17 @@
 								</div>
 							</li>
 						{% endif %}
+
+						{% for f in custom_fields %}
+							{% if ticket.hasCustomField(f.field_def.id) %}
+								<li>
+									<div class="label">{{f.title}}</div>
+									<div class="value">
+										{{ render_custom_field(f) }}
+									</div>
+								</li>
+							{% endif %}
+						{% endfor %}
 					</ul>
 					<br class="dp-clear" style="clear:left" />
 				</div>

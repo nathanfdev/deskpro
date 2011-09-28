@@ -38,6 +38,12 @@ abstract class HandlerAbstract
 	public function __construct(Entity\CustomDefAbstract $field_def = null)
 	{
 		$this->field_def = $field_def;
+		$this->init();
+	}
+
+	public function init()
+	{
+
 	}
 
 
@@ -211,7 +217,7 @@ abstract class HandlerAbstract
 
 	/**
 	 * Render the HTML form input
-	 * 
+	 *
 	 * @param  $formView
 	 * @param array $template_vars
 	 * @return string

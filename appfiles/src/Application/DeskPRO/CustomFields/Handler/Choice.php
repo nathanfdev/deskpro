@@ -19,6 +19,9 @@ use Application\DeskPRO\App;
  */
 class Choice extends HandlerAbstract
 {
+	protected $multiple = false;
+	protected $expanded = false;
+
 	public function renderHtml(array $data, array $template_vars = array())
 	{
 		$data['value'] = $this->_getRenderableString($data);
@@ -68,13 +71,22 @@ class Choice extends HandlerAbstract
 		}
 
 		$setData = null;
-		if ($selected_options) {
+		if ($selected_options && !$this->multiple) {
 			$setData = array_pop($selected_options);
 		}
-		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), $setData, array(
+
+		$field_opts = array(
 			'choices' => $options,
 			'required' => false,
-		));
+		);
+		if ($this->multiple) {
+			$field_opts['multiple'] = true;
+		}
+		if ($this->expanded) {
+			$field_opts['expanded'] = true;
+		}
+
+		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), $setData, $field_opts);
 
 		return $field_choice;
 	}
@@ -89,9 +101,18 @@ class Choice extends HandlerAbstract
 		}
 
 		if ($value) {
-			return array(
-				array($value, 'value', 1)
-			);
+			if (is_array($value)) {
+				$ret = array();
+				foreach ($value as $k) {
+					$ret[] = array($k, 'value', 1);
+				}
+			} else {
+				$ret = array(
+					array($value, 'value', 1)
+				);
+			}
+
+			return $ret;
 		}
 
 		return array();

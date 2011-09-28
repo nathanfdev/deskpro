@@ -53,7 +53,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
 
-		for ($i = 0; $i < 100; $i++) {
+		for ($i = 0; $i < 500; $i++) {
 			$this->custom_ticket_fields["field_$i"] = null;
 		}
 
@@ -214,18 +214,25 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket['status'] = 'open';
 			}
 
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$raw_custom_fields = isset($_POST['newticket']['custom_fields']) ? $_POST['newticket']['custom_fields'] : array();
+			$raw_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
 			foreach ($ticket_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($raw_custom_fields) as $info) {
 					$ticket->setCustomData($info[0], $info[1], $info[2]);
+					App::getOrm()->flush();
 				}
 			}
 
-			if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
-				App::getOrm()->rollback();
-				return $dupe_ticket;
-			}
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+
+			//if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+			//	App::getOrm()->rollback();
+			//	return $dupe_ticket;
+			//}
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();

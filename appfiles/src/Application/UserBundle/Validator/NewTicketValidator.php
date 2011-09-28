@@ -60,7 +60,7 @@ class NewTicketValidator extends AbstractValidator
 			$ticket_page = $ticket_display->getPage($department_id);
 
 			if ($ticket_page) {
-				$this->_traverseItems($ticket_page);
+				//$this->_traverseItems($ticket_page);
 			}
 		}
 
