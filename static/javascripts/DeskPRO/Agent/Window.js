@@ -67,8 +67,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			 */
 			getPlainTpl: function(el) {
 				var el = $(el);
+				var html = el.get(0).innerHTML;
 
-				return el.get(0).innerHTML;
+				html = html.replace(/%startScript%/g, '<script>');
+				html = html.replace(/%endScript%/g, '</script>');
+
+				return html;
 			},
 
 			showSavePuff: function(overEl) {
@@ -996,7 +1000,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			// Cut out the pageMeta from the HTML string
-			html = html.substring(matches[0].length);
+			html = html.replace(matches[0], '');
 		}
 
 		if (force_classname) {
