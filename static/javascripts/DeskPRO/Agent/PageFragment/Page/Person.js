@@ -153,7 +153,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			}
 		});
-		this.ownObject(this.moreactionMenu);
+		this.ownObject(this.moreactionsMenu);
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
