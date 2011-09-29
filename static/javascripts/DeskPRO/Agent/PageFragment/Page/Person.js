@@ -83,7 +83,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			baseElement: this.wrapper,
 			ajax: {
 				url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-			}
+			},
+			triggers: '.edit-name-gear'
 		});
 
 		// Attach click to wrapper because

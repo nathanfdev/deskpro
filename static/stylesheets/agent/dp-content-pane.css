@@ -896,6 +896,7 @@ section.ticket-reply section.reply-area .reply-col .buttons-right {
 
 .profile header.page-header h1 {
 	font-size: 16px;
+	margin-top: 2px;
 }
 
 .profile header.page-header .titlewrap {
@@ -1103,7 +1104,31 @@ ul.activity-stream time {
 	min-height: 50px;
 }
 
+.profile header.page-header .edit-name-gear {
+	position: relative;
+	top: 3px;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+	background: url(../../images/icons/edit-gear.png) no-repeat 0 0;
+	cursor: pointer;
+}
 
+.profile header.page-header .editable div {
+	display: inline !important;
+}
+
+.profile header.page-header .editing input[type="text"] {
+	font-size: 14px;
+	margin-top: -3px;
+	width: 200px;
+}
+
+.profile header.page-header .editing .edit-name-gear {
+	display: none;
+}
 
 
 

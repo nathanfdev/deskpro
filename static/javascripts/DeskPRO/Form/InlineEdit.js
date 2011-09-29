@@ -15,6 +15,7 @@ DeskPRO.Form.InlineEdit = new Class({
 	options: {
 		baseElement: window.document,
 		editableClass: 'editable',
+		triggers: null,
 		ajax: {
 			timeout: 20000,
 			type: 'POST',
@@ -88,6 +89,13 @@ DeskPRO.Form.InlineEdit = new Class({
 		} else {
 			j_el.dblclick(function() { self.startEditable(this); });
 		}
+
+		if (this.options.triggers) {
+			$(this.options.triggers, j_el.parent()).click(function(ev) {
+				ev.stopPropagation();
+				self.startEditable(j_el);
+			});
+		}
 	},
 
 
@@ -150,8 +158,12 @@ DeskPRO.Form.InlineEdit = new Class({
 			'form_elements_container': form_elements_container
 		};
 
+		editable.addClass('editing').parent().addClass('editing');
+
 		this.documentClickSubmitOn = true;
 		this.activeEdits.push(editinfo);
+
+		$('input[type="text"], input[type="password"], textarea', rendered_els).first().focus();
 	},
 
 
@@ -352,6 +364,8 @@ DeskPRO.Form.InlineEdit = new Class({
 			form_elements.removeClass('editable-fields-on').appendTo(form_elements_container);
 			if (rendered_els.parent().get(0) != editable.get(0)) {
 				rendered_els.hide().appendTo(editable).fadeIn('fast');
+
+				editable.removeClass('editing').parent().removeClass('editing');
 			}
 		});
 	}
