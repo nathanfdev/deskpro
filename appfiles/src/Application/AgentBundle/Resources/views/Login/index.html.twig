@@ -121,20 +121,23 @@
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td>Email:</td>
-					<td><input type="text" value="" name="email" id="email" size="40" /></td>
+					<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
 				</tr>
 				<tr>
 					<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
-					<td><input type="password" value="" name="password" id="password" size="40" /></td>
+					<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
 				</tr>
 			</table>
 		</article>
 		<footer>
-			<button id="login_btn">Log In</button>
+			<button id="login_btn" tabindex="3">Log In</button>
 		</footer>
 	</div>
 </div>
 </form>
 
+<script type="text/javascript">
+document.getElementById('email').focus();
+</script>
 </body>
 </html>
