@@ -15,6 +15,7 @@
 	border-right-color: #8d9094;
 	overflow: hidden;
 	z-index: 0;
+	color: #404040;
 }
 #dp_content_wrap{
 	text-shadow: 0 1px 0 #fff;
@@ -306,7 +307,7 @@ header.page-header .meta-line {
 	margin-top: 10px;
 }
 
-header.page-header .meta-line .category span {
+header.page-header .meta-line .category > span {
 	background: #fafafa;
 	border-radius: 3px 3px 3px 3px;
 	float: left;
@@ -890,4 +891,185 @@ section.ticket-reply section.reply-area .reply-col .buttons-right {
 .download-content-info deiv.thumb {
 	float: left;
 	margin-right: 10px;
+}
+
+
+
+
+
+.profile header.page-header .meta-line {
+	float: right;
+	margin-top: 0;
+}
+
+.profile {
+	background-color: #ECEEF0;
+}
+
+.profile header.page-header nav.actions {
+	clear: right;
+	margin-top: 4px;
+}
+
+.profile header {
+	background-color: #fff;
+}
+
+.profile header.page-header nav.actions ul li {
+	float: left;
+	margin-right: 8px;
+}
+
+.profile .layout-table {
+
+}
+
+.profile .content-col {
+
+}
+
+.profile .property-col .table-container {
+	margin-left: 0;
+}
+
+.profile .person-picture-box {
+	float: left;
+	width: 60px;
+	height: 60px;
+	margin-right: 5px;
+}
+
+.table-container {
+	border: 1px solid #ACB6BF;
+	background-color: #fff;
+	margin:  10px;
+	border-radius: 3px;
+	box-shadow: 0 1px 0 #FFFFFF, 0 1px 0 #FFFFFF inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
+}
+
+.table-container .table-title h4 {
+	font-size: 12px;
+	color: #404040;
+	padding:  6px;
+}
+
+
+.table-container table.tickets-simple td {
+	border-top: 1px solid #D5E3EE;
+	font-size: 11px;
+	vertical-align: middle;
+	padding: 1px 4px 1px 3px;
+}
+
+.table-container table.tickets-simple tr.more td {
+	text-align: center;
+}
+
+.table-container table.tickets-simple td.time {
+	font-size: 9px;
+	color: #777;
+	white-space: nowrap;
+	text-align: right;
+}
+.table-container table.tickets-simple td.time time {
+	white-space: nowrap;
+}
+
+ul.activity-stream {
+	margin: 8px;
+	margin-top: 0;
+}
+
+ul.activity-stream li {
+	margin-bottom: 5px;
+}
+
+ul.activity-stream .what {
+
+}
+
+ul.activity-stream time {
+	display: block;
+	font-size: 9px;
+	color: #777;
+}
+
+
+ul.tickets-plain-list {
+	margin: 8px;
+	margin-top: 0;
+}
+
+ul.tickets-plain-list li.more {
+	margin-top: 8px;
+	text-align: center;
+}
+
+
+
+.notes-wrap {}
+.notes-wrap ul li {
+
+}
+
+.notes-wrap .message {
+	border-top: 1px solid #D5E3EE;
+}
+
+.notes-wrap .message .message-avatar {
+	float: left;
+	width: 25px;
+	margin: 2px 1px 2px 2px;
+}
+
+.notes-wrap .message h4 {
+	color: #606060;
+}
+
+.notes-wrap .message time {
+	float: right;
+	font-size: 9px;
+	color: #777;
+}
+
+.notes-wrap .message .message-body {
+	margin-left: 28px;
+	padding: 3px;
+}
+
+.notes-wrap .new-note .trigger-row {
+	text-align: center;
+}
+
+.notes-wrap .new-note .saving-row {
+	text-align: center;
+	display: none;
+}
+
+.notes-wrap .new-note textarea {
+	width: 98%;
+	height: 50px;
+}
+
+.notes-wrap .new-note {
+	border-top: 1px solid #D5E3EE;
+	padding: 4px;
+}
+
+.table-container.summary {
+	position: relative;
+}
+
+.table-container.summary .wrap {
+	text-align: center;
+	padding-bottom: 6px;
+}
+
+.table-container.summary .wrap button {
+	margin-top: 4px;
+}
+
+.table-container.summary textarea {
+	width: 95%;
+	min-height: 50px;
 }

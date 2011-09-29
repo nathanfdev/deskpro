@@ -33,6 +33,7 @@ a {
 	color: #4769B3;
 	outline: none;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 a:hover {
@@ -462,6 +463,20 @@ button.clean-white.inner-arrow span.arrow {
 	bottom: -3px;
 	width: 16px;
 	border-left: 1px solid #B6BABF;
+}
+
+button.clean-white.inner-arrow.no-sep {
+	padding-right: 15px;
+}
+
+button.clean-white.inner-arrow.no-sep span.arrow {
+	border-left: none;
+}
+
+button.clean-white.inner-arrow.small span.arrow {
+	top: 0;
+	bottom: 0;
+	right: 9px;
 }
 
 button.clean-white span.arrow:hover {

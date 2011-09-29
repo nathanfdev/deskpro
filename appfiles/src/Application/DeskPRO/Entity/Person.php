@@ -153,6 +153,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $last_name = '';
 
 	/**
+	 * The summary field as filled in by agents
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="summary", type="text")
+	 */
+	protected $summary = '';
+
+
+	/**
 	 * A secret string used in various hashing or encryption schemes.
 	 *
 	 * @var string
