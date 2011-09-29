@@ -5,9 +5,9 @@
 	</header>
 	<section>
 		<div class="wrap">
-			<textarea id="{{baseId}}_summary"></textarea>
+			<textarea id="{{baseId}}_summary">{{ person.summary }}</textarea>
 			<br />
-			<button class="clean-white">Save</button>
+			<button class="clean-white" id="{{baseId}}_save_summary">Save</button>
 		</div>
 	</section>
 </div>
@@ -26,25 +26,39 @@
 	<section>
 		<article id="{{baseId}}_tickets_tab" class="on">
 			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				<tr>
-					{% for ticket in person_tickets %}
+				<tbody id="{{baseId}}_tickets_initial">
+					{% for ticket in person_tickets_initial %}
 						<tr>
 							<td>
 								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
 							</td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
 							<td class="time" width="25">
 								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
 							</td>
 						</tr>
 					{% endfor %}
-					{% if person_tickets|length < person_tickets_count %}
-						<tr class="more">
+					{% if person_tickets|length %}
+						<tr class="more" >
 							<td colspan="100">
-								User has <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch') }}">{{ person_tickets_count - person_tickets|length }} more</a> tickets
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">View all {{ person_tickets_count }} tickets</button>
 							</td>
 						</tr>
 					{% endif %}
-				</tr>
+				</tbody>
+				<tbody id="{{baseId}}_tickets_rest" style="display: none;">
+					{% for ticket in person_tickets %}
+						<tr>
+							<td>
+								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
+							</td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
+							<td class="time" width="25">
+								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
 			</table>
 		</article>
 		<article id="{{baseId}}_chats_tab">
@@ -59,7 +73,7 @@
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes</li>
+				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
 				<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>
 				<li data-tab-for="#{{baseId}}_tracking_tab">Browser Info</li>
 			</ul>
@@ -75,10 +89,10 @@
 					{% endfor %}
 					<li class="new-note">
 						<textarea></textarea>
-						<div class="trigger-row">
-							<button class="clean-white small trigger save">Add Note</button>
+						<div class="is-not-loading trigger-row">
+							<button class="clean-white small save-trigger">Add Note</button>
 						</div>
-						<div class="saving-row">
+						<div class="is-loading">
 							Saving ...
 						</div>
 					</li>

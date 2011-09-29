@@ -175,6 +175,38 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		this._initOrgEdit();
+
+		this.getEl('tickets_viewall').click(function(ev){
+			var row = $(this).closest('tr').remove();
+			self.getEl('tickets_rest').slideDown();
+		});
+
+		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
+
+		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
+		this.getEl('save_summary').click(function() {
+			var btn = $(this);
+			var summary = summaryTxt.val();
+			var postData = [];
+			postData.push({
+				name: 'action',
+				value: 'set-summary'
+			});
+			postData.push({
+				name: 'summary',
+				value: summary
+			});
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				success: function(data) {
+					DeskPRO_Window.util.showSavePuff(btn );
+				}
+			});
+		});
 	},
 
 	//#########################################################################
@@ -385,17 +417,18 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	//#########################################################################
 
 	initNoteFormEditable: function() {
-		this.notesSection = $('.notes-wrap:first', this.wrapper);
+		this.notesSection = this.getEl('notes_tab');
+		this.newNoteWrap = $('li.new-note', this.getEl('notes_tab'));
 
-		$('.new-note-form .trigger.save', this.notesSection).click((function() {
+		$('.save-trigger', this.newNoteWrap).click((function() {
 			this.saveNote();
 		}).bind(this));
 	},
 
 	saveNote: function() {
 
-		$('.new-note-form', this.notesSection).addClass('saving');
-		var note = $('.new-note-form textarea', this.notesSection).val();
+		this.notesSection.addClass('loading');
+		var note = $('textarea', this.newNoteWrap).val();
 
 		$.ajax({
 			timeout: 20000,
@@ -408,13 +441,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	handleNoteSave: function(data) {
 
-		$('.new-note-form textarea', this.notesSection).val('');
+		$('textarea', this.newNoteWrap).val('');
 
-		var list = $('.note-list', this.notesSection);
-		list.append(data.note_li_html);
+		$(data.note_li_html).insertBefore(this.newNoteWrap);
 
-		$('.new-note-form', this.notesSection).removeClass('saving');
+		this.notesSection.removeClass('loading');
 
-		this.updateCounts();
+		DeskPRO_Window.util.modCountEl(this.getEl('notes_count'), '+');
 	}
 });

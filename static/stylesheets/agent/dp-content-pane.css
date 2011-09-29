@@ -985,8 +985,36 @@ table.tickets-simple td.time time {
 	white-space: nowrap;
 }
 
+table.tickets-simple td.status {
+	font-size: 9px;
+	white-space: nowrap;
+	text-align: right;
+}
 
+table.tickets-simple td.status .status {
+	display: block;
+	white-space: nowrap;;
+	background-color: #93C8A8;
+	color: #fff;
+	border-radius: 6px;
+	text-shadow: none;
+	line-height: 100%;
+	padding: 1px 3px 1px 3px;
+	float: right;
+}
 
+table.tickets-simple td.status.closed .status,
+table.tickets-simple td.status.resolved .status {
+	background-color: #C2CCDE;
+}
+
+table.tickets-simple td.status.pending .status {
+	background-color: #EBEBBD;
+}
+table.tickets-simple td.status.hidden .status {
+	background-color: #fff;
+	color: #aaa;
+}
 
 table.info-simple td {
 	border-top: 1px solid #D5E3EE;
@@ -1197,6 +1225,24 @@ ul.activity-stream time {
 	background: linear-gradient(left, rgba(205,210,217,1) 0%,rgba(199,207,213,1) 100%); /* W3C */
 
 	color: #404040;
+}
+
+.profile-box-container > header > nav ul li span.count {
+	text-shadow: none;
+	font-size: 9px;
+	padding: 2px 3px 2px 3px;
+	background-color: rgba(50,50,50,0.2);
+	color: #fff;
+	margin-left: 2px;
+	border-radius: 15px;
+	font-weight: normal;
+	font-family: Gotham, Arial;
+	float: right;
+	display: block;
+	line-height: 100%;
+	position: relative;
+	top: 5px;
+	right: -2px;
 }
 
 .profile-box-container > header h4 {

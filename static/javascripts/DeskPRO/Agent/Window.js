@@ -49,7 +49,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var count = parseInt(el.text().trim());
 
-				if (op == '-' || op == 'rem' || op == 'del') {
+				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
 					count -= num;
 					if (count < 0) count = 0;
 				} else {

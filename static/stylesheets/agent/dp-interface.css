@@ -71,6 +71,11 @@ span.team-link, a.team-link {
 :-moz-placeholder{color:#bfbfbf !important;}
 ::-webkit-input-placeholder{color:#bfbfbf !important;}
 
+.is-not-loading { display: inherit; }
+.is-loading { display: none; }
+.loading .is-not-loading { display: none; }
+.loading .is-loading { display: inherit; }
+
 /*****************************************************************************
  * Window layout
 /*****************************************************************************/
@@ -642,4 +647,14 @@ button.clean-white.radio-on {
 
 .optionbox section li {
 	padding: 2px 2px 2px 5px;
+}
+
+
+.load-puff {
+	background: url(../../images/step-check.png) no-repeat 50% 50%;
+	width: 15px;
+	height: 15px;
+	z-index: 100000 !important;
+	overflow: hidden;
+	position: absolute;
 }

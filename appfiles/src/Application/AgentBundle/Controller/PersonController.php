@@ -78,10 +78,36 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 5);
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, null);
 		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
-		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 10);
+		$max = 5;
+		$person_tickets_initial = array();
+		foreach ($person_tickets as $t) {
+			if ($t->status == 'open') {
+				$person_tickets_initial[$t->id] = $t;
+				unset($person_tickets[$t->id]);
+				if (count($person_tickets_initial) >= $max) break;
+			}
+		}
+		if (count($person_tickets_initial) < $max) {
+			foreach ($person_tickets as $t) {
+				if ($t->status == 'pending') {
+					$person_tickets_initial[$t->id] = $t;
+					unset($person_tickets[$t->id]);
+					if (count($person_tickets_initial) >= $max) break;
+				}
+			}
+			if (count($person_tickets_initial) < $max) {
+				foreach ($person_tickets as $t) {
+					$person_tickets_initial[$t->id] = $t;
+					unset($person_tickets[$t->id]);
+					if (count($person_tickets_initial) >= $max) break;
+				}
+			}
+		}
+
+		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 50);
 
 		$contact_data = array();
 		foreach ($person->contact_data as $cd) {
@@ -127,6 +153,7 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
+			'person_tickets_initial' => $person_tickets_initial,
 			'person_tickets_count' => $person_tickets_count,
 			'org_members_count' => $org_members_count,
 			'org_contact_data' => $org_contact_data,
@@ -252,6 +279,11 @@ class PersonController extends AbstractController
 					$person->setPictureBlob($blob);
 					$this->em->persist($person);
 				}
+				break;
+
+			case 'set-summary':
+				$person->summary = $this->in->getString('summary');
+				$this->em->persist($person);
 				break;
 
 			case 'set-organization':
