@@ -500,7 +500,7 @@ class GroupingCounter
 				break;
 
 			case TicketSearch::TERM_LANGUAGE:
-				$this->grouping_summary = "Langauge";
+				$this->grouping_summary = "Language";
 				$titles = App::getOrm()->getRepository('DeskPRO:Language')->getTitles();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;

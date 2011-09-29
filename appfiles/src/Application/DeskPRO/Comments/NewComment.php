@@ -118,7 +118,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 			// Send confirmation email
 			if ($email_validating) {
-				App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($obj, $person, $email_validating, $email, $validating) {
+				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($obj, $person, $email_validating, $email, $validating) {
 
 					if ($validating == 'existing') {
 						$email_to       = $email->email;

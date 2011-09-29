@@ -886,7 +886,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return \Application\DeskPRO\Entity\Language
 	 */
-	public function getLangauge()
+	public function getLanguage()
 	{
 		if ($this->language) {
 			return $this->language;

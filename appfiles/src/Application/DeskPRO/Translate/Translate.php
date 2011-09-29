@@ -139,7 +139,7 @@ class Translate implements PersonContextInterface
 		}
 
 		if ($this->_language['id'] != $this->_person_context['id']) {
-			$this->setLanguage($person->getLangauge(), $load_previous_groups);
+			$this->setLanguage($person->getLanguage(), $load_previous_groups);
 		}
 	}
 

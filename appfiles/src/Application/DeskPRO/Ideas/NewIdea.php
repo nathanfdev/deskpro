@@ -163,7 +163,7 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->commit();
 
 			// Send confirmation email
-			App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($idea, $person, $email_validating, $email, $validating) {
+			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($idea, $person, $email_validating, $email, $validating) {
 
 				if ($validating == 'existing') {
 					$email_to       = $email->email;

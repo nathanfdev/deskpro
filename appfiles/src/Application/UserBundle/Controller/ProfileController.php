@@ -206,7 +206,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				'person' => $person
 			);
 
-			App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($vars, $person, $email_exists) {
+			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $email_exists) {
 				$email_subject = $tr->phrase($vars['email_subject']);
 				$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-exists.html.twig', $vars);
 
@@ -249,7 +249,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'validating_email' => $validating_email
 		);
 
-		App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($vars, $person, $validating_email) {
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $validating_email) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
 

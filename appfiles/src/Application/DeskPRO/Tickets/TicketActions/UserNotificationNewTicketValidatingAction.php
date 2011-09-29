@@ -52,7 +52,7 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 
 			$person = $ticket->person;
 
-			App::getTranslator()->setTemporaryLanguage($person->getLangauge(), function($tr, $lang) use ($tpl, $vars, $ticket, $person) {
+			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $ticket, $person) {
 				$email_subject = $tr->phrase($vars['email_subject']);
 				$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket-validate.html.twig', $vars);
 
