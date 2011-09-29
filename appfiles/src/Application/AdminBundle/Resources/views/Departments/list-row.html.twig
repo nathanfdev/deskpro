@@ -59,22 +59,35 @@
 			</a>
 		</td>
 		<td width="35" class="controls">
-			<input type="checkbox" name="tickets" value="1" class="onoff-slider" />
+			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
 		</td>
 		<td width="35" class="controls">
-			<input type="checkbox" name="chat" value="1" class="onoff-slider" />
+			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
 		</td>
 		<td width="50" class="controls">
-			<button class="clean-white ug-selection">
-				No usergroups
+			<button class="clean-white ug-selection" data-element-handler="DeskPRO.Admin.Departments.UsergroupSelector" data-register-handler="true" data-department-id="{{ department.id }}">
+				{% if current_options[department.id].usergroup %}
+					{{ current_options[department.id].usergroup|length }} usergroups
+				{% else %}
+					No usergroups
+				{% endif %}
 			</button>
-			{{ _self.ug_selector(department.id, 0, usergroups) }}
+			{{ _self.ug_selector(department.id, current_options[department.id].usergroup, usergroups) }}
 		</td>
 		<td width="50" class="controls">
-			<button class="clean-white agent-team-selection">
-				No agents
+			<button class="clean-white agent-team-selection" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-register-handler="true" data-department-id="{{ department.id }}">
+				{% if not current_options[department.id].person and not current_options[department.id].agent_team %}
+					No agents
+				{% else %}
+					{% if current_options[department.id].person %}
+						{{ current_options[department.id].person|length }} sgents{% if current_options[department.id].agent_team|length %},{% endif %}
+					{% endif %}
+					{% if current_options[department.id].agent_team %}
+						{{ current_options[department.id].agent_team|length }} teams
+					{% endif %}
+				{% endif %}
 			</button>
-			{{ _self.agentteam_selector(department.id, 0, 0, agents, teams) }}
+			{{ _self.agentteam_selector(department.id, current_options[department.id].person, current_options[department.id].agent_team, agents, teams) }}
 		</td>
 	</tr>
 	{% if department.children|length %}

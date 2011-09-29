@@ -93,6 +93,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 		});
 
+		this.initFeatures();
+
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}
@@ -153,5 +155,13 @@ DeskPRO.Admin.Window = new Orb.Class({
 			url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
 			type: 'GET'
 		});
+	},
+
+	initFeatures: function(contextEl) {
+		var self = this;
+
+		DeskPRO.ElementHandler_Exec();
+
+		$('.timeago').timeago();
 	}
 });

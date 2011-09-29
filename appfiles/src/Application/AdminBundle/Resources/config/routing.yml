@@ -456,6 +456,21 @@ admin_departments:
   pattern: /departments
   defaults: { _controller: AdminBundle:Departments:list }
 
+admin_departments_saveagents:
+  pattern: /departments/{department_id}/save-agents.json
+  defaults: { _controller: AdminBundle:Departments:saveAgents }
+  requirements: { department_id: "\d+" }
+
+admin_departments_saveusergroups:
+  pattern: /departments/{department_id}/save-usergroups.json
+  defaults: { _controller: AdminBundle:Departments:saveUsergroups }
+  requirements: { department_id: "\d+" }
+
+admin_departments_savefeaturestate:
+  pattern: /departments/{department_id}/save-feature-state.json
+  defaults: { _controller: AdminBundle:Departments:saveFeatureState }
+  requirements: { department_id: "\d+" }
+
 admin_departments_edit:
   pattern: /departments/{department_id}
   defaults: { _controller: AdminBundle:Departments:edit }

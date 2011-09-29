@@ -53,6 +53,18 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	protected $title;
 
 	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_tickets_enabled", type="boolean")
+	 */
+	protected $is_tickets_enabled = true;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_chat_enabled", type="boolean")
+	 */
+	protected $is_chat_enabled = true;
+
+	/**
 	 * @var int
 	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */

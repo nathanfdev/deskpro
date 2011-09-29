@@ -126,6 +126,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/Orb/Util/EventObj.js',
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/ElementHandler.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',
 		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
@@ -307,6 +308,19 @@ $CONFIG['admin']['admin-ui'] = array(
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
 		'javascripts/DeskPRO/Admin/TableReorder.js',
+	)
+);
+
+/**
+ * Admin UI specific
+ */
+$CONFIG['admin']['admin-handlers'] = array(
+	'mode' => 'yui',
+	'out' => 'admin-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
+		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
+		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
 	)
 );
 

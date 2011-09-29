@@ -42,16 +42,103 @@ class DepartmentsController extends AbstractController
 		$agents     = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$teams      = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
 		$usergroups = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+		$current_options = App::getEntityRepository('DeskPRO:DepartmentPermission')->getPermissionsForAllDepartments();
 
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
 			'all_departments' => $all_departments,
 			'agents' => $agents,
 			'teams' => $teams,
 			'usergroups' => $usergroups,
+			'current_options' => $current_options,
 		));
 	}
 
+	public function saveAgentsAction($department_id)
+	{
+		$department = App::findEntity('DeskPRO:Department', $department_id);
 
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		APp::getDb()->executeUpdate("
+			DELETE
+			FROM department_permissions
+			WHERE apply_type IN ('agent_team', 'person')
+			AND department_id = ?
+		", array($department_id));
+
+		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+		$agent_team_ids = $this->in->getCleanValueArray('agent_team_ids', 'uint', 'discard');
+
+		if ($agent_ids || $agent_team_ids) {
+			App::getDb()->beginTransaction();
+
+			if ($agent_ids) {
+				foreach ($agent_ids as $agent_id) {
+					App::getDb()->insert('department_permissions', array('apply_type' => 'person', 'department_id' => $department->id, 'person_id' => $agent_id));
+				}
+			}
+			if ($agent_team_ids) {
+				foreach ($agent_team_ids as $agent_team_id) {
+					App::getDb()->insert('department_permissions', array('apply_type' => 'agent_team', 'department_id' => $department->id, 'agent_team_id' => $agent_team_id));
+				}
+			}
+
+			App::getDb()->commit();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function saveUsergroupsAction($department_id)
+	{
+		$department = App::findEntity('DeskPRO:Department', $department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		APp::getDb()->executeUpdate("
+			DELETE
+			FROM department_permissions
+			WHERE apply_type = 'usergroup'
+			AND department_id = ?
+		", array($department_id));
+
+		$usergroup_ids = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
+
+		if ($usergroup_ids) {
+			App::getDb()->beginTransaction();
+			foreach ($usergroup_ids as $usergroup_id) {
+				App::getDb()->insert('department_permissions', array('apply_type' => 'usergroup', 'department_id' => $department->id, 'usergroup_id' => $usergroup_id));
+			}
+			App::getDb()->commit();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function saveFeatureStateAction($department_id)
+	{
+		$chat = $this->in->getBool('chat');
+		$tickets = $this->in->getBool('tickets');
+
+		$department = App::findEntity('DeskPRO:Department', $department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		$department->is_tickets_enabled = $tickets;
+		$department->is_chat_enabled= $chat;
+
+		App::getOrm()->transactional(function($em) use ($department) {
+			$em->persist($department);
+		});
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
 
 	############################################################################
 	# edit
