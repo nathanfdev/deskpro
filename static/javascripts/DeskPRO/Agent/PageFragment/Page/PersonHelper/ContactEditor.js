@@ -46,9 +46,10 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			this.contactNewMenu = null;
 		}
 
-		var contactEditor = $('.profile-contact-editor', this.wrapper);
+		var contactEditor = $('.profile-contact-editor-wrapper', this.wrapper);
 
 		this.contactOverlay = new DeskPRO.UI.Overlay({
+			customClassname: 'profile-contact-editor',
 			triggerElement: $('.contact-edit:first', this.wrapper),
 			contentElement: contactEditor
 		});

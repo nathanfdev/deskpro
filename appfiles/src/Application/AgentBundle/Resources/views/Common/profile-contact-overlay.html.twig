@@ -1,6 +1,6 @@
-<div class="profile-contact-editor" style="display: none">
+<div class="profile-contact-editor-wrapper" style="display: none">
 
-	<div class="contact-list contact-edit-list">
+	<div class="contact-edit-list">
 		<ul>
 			{% block list_extra %}{% endblock %}
 
@@ -129,7 +129,7 @@
 				<li class="facebook" data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
 					<div class="type">Address</div>
 					<div class="input">
-						Label: <input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" /><br />
+						<input type="text" size="8" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="Label..." />
 						<textarea cols="40" rows="3" name="contact_data[{{ contact.id }}][address]" value="{{ contact.address }}" />
 					</div>
 					<div class="remove">-</div>
