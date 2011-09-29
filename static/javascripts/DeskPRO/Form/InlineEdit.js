@@ -7,7 +7,7 @@ Orb.createNamespace('DeskPRO.Form');
  */
 DeskPRO.Form.InlineEdit = new Class({
 	Implements: Options,
-	
+
 	/**
 	 * Hash of options
 	 * @var {Object}
@@ -22,28 +22,28 @@ DeskPRO.Form.InlineEdit = new Class({
 		},
 		saveFinishCallback: function() { }
 	},
-	
+
 	/**
 	 * An array of 'editinfo's that are currently open
 	 * @var {Array}
 	 */
 	activeEdits: [],
-	
+
 	/**
 	 * ajax_id=>editinfo of changes that are currenly being sent via ajax
 	 * @var {Object}
 	 */
 	sendingEdits: {},
-	
+
 	/**
 	 * If a document click should send open edits. This is used
 	 * with the double-click. Also controls if the Escape key cancels.
 	 * @var {Boolean}
 	 */
 	documentClickSubmitOn: false,
-	
-	
-	
+
+
+
 	initialize: function (options) {
 
 		this.setOptions(options);
@@ -51,11 +51,11 @@ DeskPRO.Form.InlineEdit = new Class({
 		var sel = '.' + this.options['editableClass'];
 		var self = this;
 		$(sel, this.options['baseElement']).each(function() { self.initEditable(this); });
-		
-		$(document).click(function(ev) {
+
+		this.options.baseElement.click(function(ev) {
 			self.handleDocumentClick(ev);
 		})
-		
+
 		$(document).keydown(function(ev) {
 			// Escape key
 			if (ev.keyCode == 27) {
@@ -63,9 +63,9 @@ DeskPRO.Form.InlineEdit = new Class({
 			}
 		});
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Initialize an editable by attaching new triggers
 	 *
@@ -77,9 +77,9 @@ DeskPRO.Form.InlineEdit = new Class({
 	 */
 	initEditable: function(el) {
 		var self = this;
-		
+
 		var j_el = $(el);
-		
+
 		if (j_el.is('.parent-trigger')) {
 			var parent = j_el.parent();
 			parent.dblclick(function() {
@@ -89,9 +89,9 @@ DeskPRO.Form.InlineEdit = new Class({
 			j_el.dblclick(function() { self.startEditable(this); });
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * When anywhere on the page is clicked, we need to see
 	 * if that means we should submit changes.
@@ -100,18 +100,18 @@ DeskPRO.Form.InlineEdit = new Class({
 		if (!this.documentClickSubmitOn) {
 			return;
 		}
-		
+
 		// Dont listen if the click was inside the editable area
 		if ($(event.target).parents().is('.editable')) {
 			return;
 		}
-		
+
 		this.submitOpen();
 		this.documentClickSubmitOn = false;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Start editing an element.
 	 *
@@ -124,7 +124,7 @@ DeskPRO.Form.InlineEdit = new Class({
 	startEditable: function(editable) {
 
 		editable = $(editable);
-		
+
 		// Rendered els are whatever is inside the editable.
 		// We wrap the inside with a rendered-value div so we can easily
 		// just move the nodes using that one wrapper
@@ -142,45 +142,45 @@ DeskPRO.Form.InlineEdit = new Class({
 			rendered_els.detach();
 			form_elements.addClass('editable-fields-on').hide().appendTo(editable).fadeIn('fast');
 		});
-	
+
 		var editinfo = {
 			'editable': editable,
 			'rendered_els': rendered_els,
 			'form_elements': form_elements,
 			'form_elements_container': form_elements_container
 		};
-		
+
 		this.documentClickSubmitOn = true;
 		this.activeEdits.push(editinfo);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Submits all the fields that are currently 'open'.
 	 */
 	submitOpen: function() {
-		
+
 		if (!this.activeEdits.length) {
 			return;
 		}
-		
+
 		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement']).serializeArray();
-		
+
 		var is_multi = this.activeEdits.length;
-		
+
 		var sending_edits = [];
-		
+
 		// Move all open to pending
 		var editinfo = null;
 		while (editinfo = this.activeEdits.pop()) {
 			this.setEditinfoLoading(editinfo);
 			sending_edits.push(editinfo);
 		}
-		
+
 		var ajax_id = Orb.uuid();
 		this.sendingEdits[ajax_id] = sending_edits;
-		
+
 		var self = this;
 		var ajax_options = Object.merge({
 			success: function(data, textStatus, XMLHttpRequest) {
@@ -191,18 +191,19 @@ DeskPRO.Form.InlineEdit = new Class({
 				console.log('ajax-save error: %s', textStatus);
 				self.handleAjaxFailure(ajax_id);
 			},
+			context: this,
 			dataType: 'json',
 			data: data
 		}, this.options['ajax']);
-		
+
 		console.log('ajax-save: %s', ajax_options.url);
 		console.log('ajax-save data: %o', ajax_options.data);
-		
+
 		$.ajax(ajax_options);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Handles a successful AJAX.
 	 *
@@ -214,17 +215,17 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * @param {Object} data
 	 */
 	handleAjaxSuccess: function(ajax_id, data) {
-	
+
 		var all_sending_edits = this.sendingEdits[ajax_id];
 		delete this.sendingEdits[ajax_id];
-		
+
 		var sending_edit = null;
 		var editinfo = null;
 		while (editinfo = all_sending_edits.pop()) {
 			var field_data = this._findDataFromEditinfo(editinfo, data);
-			
+
 			var html = null;
-			
+
 			// We got something back
 			if (field_data) {
 				if (field_data.errors) {
@@ -234,10 +235,10 @@ DeskPRO.Form.InlineEdit = new Class({
 					html = field_data.html;
 				}
 			}
-			
+
 			// We dont have HTML, we'll have to guess what the rendered value is
 			if (!html) {
-				var value_arr = $(':input', editinfo.form_elements).serializeArray();
+				var value_arr = $('input[type="text"], textarea, select', editinfo.form_elements).serializeArray();
 				var value_bits = [];
 				value_arr.each(function (v) {
 					value_bits.push(v.value);
@@ -245,23 +246,23 @@ DeskPRO.Form.InlineEdit = new Class({
 
 				html = value_bits.join(', ');
 			}
-			
+
 			// Remove old rendered value
 			editinfo.rendered_els.remove();
-			
+
 			// Set a new rendered value by creating a new element
 			// The closeEditInfo call next will actually attach the
 			// node to the correct DOM editable
 			editinfo.rendered_els = $('<div class="rendered-value" />').html(html);
-			
+
 			this.closeEditinfo(editinfo);
 		}
 
 		this.options.saveFinishCallback(data);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Try to match an editinfo which contains fields, to data returned
 	 * from ajax.
@@ -270,28 +271,31 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * So the data we get back is often ID'd by the parent.
 	 * For example, date[mm] and date[yy] might be the real form elements,
 	 * but AJAX would return data for the field with the identifier simply 'date'.
-	 * 
+	 *
 	 * Since each editable is for a single field, they must all share the same
 	 * prefix/group. So we can simply try to find the common prefix by removing
 	 * each sub-field one at a time.
 	 * 'date_mm': not found, so we cut down to just 'date': and its found
 	 */
 	_findDataFromEditinfo: function(editinfo, data) {
-		
+
 		var id = $(':input', editinfo.form_elements).eq(0).attr('id');
+		if (!id) {
+			return data;
+		}
 		var id_parts = id.split('_');
-		
+
 		do {
 			var check_part = id_parts.join('_');
 			if (data[check_part] != undefined) {
 				return data[check_part];
 			}
 		} while (id_parts.pop());
-		
+
 		return data;
 	},
-	
-	
+
+
 	/**
 	 * When AJAX fails
 	 *
@@ -300,9 +304,9 @@ DeskPRO.Form.InlineEdit = new Class({
 	handleAjaxFailure: function(ajax_id) {
 		// TODO retry? show error?
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Called on submit so we can show a loading indicator of some kind.
 	 *
@@ -323,9 +327,9 @@ DeskPRO.Form.InlineEdit = new Class({
 			this.closeEditinfo(editinfo);
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Close a specific editable.
 	 *
@@ -335,19 +339,20 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * would appear).
 	 */
 	closeEditinfo: function(editinfo) {
+
 		// 1. Move form back to old location
 		// 2. Put rendered data bc
-		
+
 		var editable = editinfo.editable;
 		var rendered_els = editinfo.rendered_els;
 		var form_elements = editinfo.form_elements;
 		var form_elements_container = editinfo.form_elements_container;
-		
+
 		form_elements.fadeOut('fast', function() {
 			form_elements.removeClass('editable-fields-on').appendTo(form_elements_container);
 			if (rendered_els.parent().get(0) != editable.get(0)) {
 				rendered_els.hide().appendTo(editable).fadeIn('fast');
 			}
-		});	
+		});
 	}
 });
