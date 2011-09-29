@@ -1016,6 +1016,11 @@ table.tickets-simple td.status.hidden .status {
 	color: #aaa;
 }
 
+table.tickets-simple tr.add-new-member td {
+	padding: 4px;
+	border: none;
+}
+
 table.info-simple td {
 	border-top: 1px solid #D5E3EE;
 	font-size: 11px;
@@ -1524,4 +1529,22 @@ ul.activity-stream time {
 
 .contact-list-wrapper.org .contact-data-list li.count {
 	text-align: right;
+}
+
+
+.remove-icon {
+	display: block;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+	text-indent: -100px;
+	float: right;
+
+	background: url(../../images/action-remove.png) no-repeat 0 0;
+	opacity: 0.5;
+	cursor: pointer;
+}
+
+.remove-icon:hover {
+	opacity: 1;
 }

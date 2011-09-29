@@ -78,10 +78,13 @@ class OrganizationController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
+		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+
 		$org_members = App::getEntityRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
+			'org_email_domains'  => $org_email_domains,
 			'org_members'        => $org_members,
 			'contact_data'       => $contact_data,
 			'org_usergroups'     => $org_usergroups,
@@ -284,6 +287,26 @@ class OrganizationController extends AbstractController
 			}
 		}
 
+		// Adding org emails
+		foreach ($this->in->getCleanValueArray('new_org_email_domain') as $domain) {
+			$check = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
+			if (!$check) {
+				$org_email_domain = new \Application\DeskPRO\Entity\OrganizationEmailDomain();
+				$org_email_domain->organization = $org;
+				$org_email_domain->domain = $domain;
+
+				$this->em->persist($org_email_domain);
+			}
+		}
+
+		//remove_org_email
+		foreach ($this->in->getCleanValueArray('remove_org_email') as $domain) {
+			$check = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
+			if ($check && $check->organization->id == $org->id) {
+				$this->em->remove($check);
+			}
+		}
+
 		// Editing values
 		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
 			if (!isset($org->contact_data[$id])) {
@@ -305,6 +328,8 @@ class OrganizationController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+
 		$contact_data = array();
 		foreach ($org->contact_data as $cd) {
 			if (!isset($contact_data[$cd->contact_type])) {
@@ -314,10 +339,12 @@ class OrganizationController extends AbstractController
 		}
 
 		$display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', array(
+			'org_email_domains' => $org_email_domains,
 			'org' => $org,
 			'contact_data' => $contact_data,
 		));
 		$editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', array(
+			'org_email_domains' => $org_email_domains,
 			'org' => $org,
 			'contact_data' => $contact_data,
 		));

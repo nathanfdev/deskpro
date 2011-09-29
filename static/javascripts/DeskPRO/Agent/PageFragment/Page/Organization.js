@@ -40,7 +40,8 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			baseElement: this.wrapper,
 			ajax: {
 				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
-			}
+			},
+			triggers: '.edit-name-gear'
 		});
 
 		// Attach click to wrapper because
@@ -81,11 +82,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
 				data: { action: 'remove-person', person_id: personId },
 				type: 'POST',
+				context: this,
 				error: function() {
 					row.show();
 				},
 				success: function() {
 					row.remove();
+					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
 				}
 			});
 		});
@@ -122,6 +125,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
 				data: { action: 'add-person', person_id: personId, position: pos },
 				type: 'POST',
+				context: this,
 				success: function(data) {
 					self.getEl('newmember_person_input').val('');
 					self.getEl('newmember_position').val('');
@@ -131,9 +135,22 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					row.insertAfter(self.getEl('newmember_row'));
 
 					DeskPRO_Window.util.showSavePuff(row);
+
+					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
 				}
 			});
 		});
+
+		$('.profile-box-container.tabbed', this.wrapper).each(function() {
+			var simpleTabs = new DeskPRO.UI.SimpleTabs({
+				triggerElements: '> header li',
+				context: this
+			});
+
+			self.ownObject(simpleTabs);
+		});
+
+		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 	},
 
 	//#########################################################################
@@ -219,17 +236,18 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	//#########################################################################
 
 	initNoteFormEditable: function() {
-		this.notesSection = $('.notes-wrap:first', this.wrapper);
+		this.notesSection = this.getEl('notes_tab');
+		this.newNoteWrap = $('li.new-note', this.getEl('notes_tab'));
 
-		$('.new-note-form .trigger.save', this.notesSection).click((function() {
+		$('.save-trigger', this.newNoteWrap).click((function() {
 			this.saveNote();
 		}).bind(this));
 	},
 
 	saveNote: function() {
 
-		$('.new-note-form', this.notesSection).addClass('saving');
-		var note = $('.new-note-form textarea', this.notesSection).val();
+		this.notesSection.addClass('loading');
+		var note = $('textarea', this.newNoteWrap).val();
 
 		$.ajax({
 			timeout: 20000,
@@ -242,13 +260,12 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 	handleNoteSave: function(data) {
 
-		$('.new-note-form textarea', this.notesSection).val('');
+		$('textarea', this.newNoteWrap).val('');
 
-		var list = $('.note-list', this.notesSection);
-		list.append(data.note_li_html);
+		$(data.note_li_html).insertBefore(this.newNoteWrap);
 
-		$('.new-note-form', this.notesSection).removeClass('saving');
+		this.notesSection.removeClass('loading');
 
-		this.updateCounts();
+		DeskPRO_Window.util.modCountEl(this.getEl('notes_count'), '+');
 	}
 });

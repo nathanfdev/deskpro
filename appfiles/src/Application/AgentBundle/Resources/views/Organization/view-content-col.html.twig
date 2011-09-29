@@ -1,160 +1,131 @@
-<section class="ticket-header person-header" id="{{baseId}}_org_header">
-	<div class="ticket-id">
-		<span>#{{ org.id }}</span>
-	</div>
-	<div class="ticket-subject no-cat">
-		<span class="editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default('<em>Double-click to set Name</em>') }}</span>
-		<div id="{{baseId}}_editname" style="display: none">
-			<input type="hidden" name="action" value="name" />
-			<input type="text" size="20" name="name" value="{{ org.name }}" />
-		</div>
-	</div>
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_members_tab" class="on">Members <span class="count" id="{{baseId}}_members_count">{{members_count|default(0)}}</span></li>
+				<li data-tab-for="#{{baseId}}_tickets_tab">Tickets <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Members Tab #}
+		<article id="{{baseId}}_members_tab" class="on">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_members_list">
+					<tr class="add-new-member" id="{{baseId}}_newmember_row">
+						<td colspan="3">
+							<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
+								<td>
+									<input type="input" style="width: 88%" class="name" placeholder="Name or email address" id="{{baseId}}_newmember_person_input" />
+									{#<span class="create-new-user tipped" title="Create a new user">new user</span>#}
+									<input type="hidden" style="width: 90%" class="person_id" id="{{baseId}}_newmember_person_id" />
+								</td>
+								<td>
+									<input type="input" style="width: 90%" class="position" placeholder="Position" id="{{baseId}}_newmember_position" />
+								</td>
+								<td>
+									<button class="clean-gray xxx-small" id="{{baseId}}_newmember_btn">Add</button>
+								</td>
+							</tr></table>
+						</td>
+					</tr>
+					{% for person in org_members %}
+						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</article>
+		{# /Members Tab #}
 
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
-		<ul>
-			<li class="more"><button class="clean-gray xx-small">More</button></li>
-		</ul>
-	</nav>
-
-	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li data-action="" class="delete-trigger">Delete Organization</li>
-	</ul>
-</section>
-
-<div class="inner-box-tab-content box-list no-pad org-members-table">
-	<table class="list" cellspacing="0" width="100%">
-		<thead>
-			<tr>
-				<th>Member</th>
-				<th width="30%">Position</th>
-				<th width="35"></th>
-			</tr>
-		</thead>
-		<tbody id="{{baseId}}_members_list">
-			<tr class="add-new-member line-2" id="{{baseId}}_newmember_row">
-				<td>
-					<input type="input" style="width: 88%" class="name" id="{{baseId}}_newmember_person_input" />
-					<span class="create-new-user tipped" title="Create a new user">new user</span>
-					<input type="hidden" style="width: 90%" class="person_id" id="{{baseId}}_newmember_person_id" />
-				</td>
-				<td>
-					<input type="input" style="width: 90%" class="position" id="{{baseId}}_newmember_position" />
-				</td>
-				<td>
-					<button class="clean-gray xxx-small" id="{{baseId}}_newmember_btn">Add</button>
-				</td>
-			</tr>
-			{% for person in org_members %}
-				{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
-			{% endfor %}
-		</tbody>
-	</table>
+		{# Tickets Tab #}
+		<article id="{{baseId}}_tickets_tab" class="on">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_tickets_initial">
+					{% for ticket in org_tickets %}
+						<tr>
+							<td>
+								By <a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ticket.person.display_name}}</a>:<br />
+								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
+							</td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
+							<td class="time" width="25">
+								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
+							</td>
+						</tr>
+					{% endfor %}
+					{% if org_tickets|length < org_tickets_count %}
+						<tr class="more" >
+							<td colspan="100">
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">Open search for all {{ org_tickets_count }} tickets</button>
+							</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</article>
+		{# /Tickets Tab #}
+	</section>
 </div>
 
-{% if activity_stream|length %}
-<div class="table-container">
-	<div class="table-title">
-		<h4>Activity from users in this organization</h4>
-	</div>
-	<div class="table-content">
-		<div class="container-tabbed-content-tab">
-			<div class="row">
-				<ul class="activity-stream">
-					{% for action in activity_stream %}
-						<li>
-							<span class="time">{{ action.date_created|date('M j, Y') }}</span>
-							<span class="what">
-								<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': action.person.id }) }}">
-									{{ action.person.display_name }}
-								</a>
-								{% if action.action_type == 'registered' %}
-									Registered an account
-								{% elseif action.action_type == 'new_ticket' %}
-									Submitted a new ticket
-									<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
-										{{ action.details.subject }}
-									</a>
-								{% elseif action.action_type == 'new_ticket_reply' %}
-									Replied to ticket
-									<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
-										{{ action.details.subject }}
-									</a>
-								{% endif %}
-							</span>
-						</li>
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
+				<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Notes Tab #}
+		<article id="{{baseId}}_notes_tab" class="on">
+			<div class="notes-wrap">
+				<ul>
+					{% for note in notes|reverse %}
+						{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
 					{% endfor %}
+					<li class="new-note">
+						<textarea></textarea>
+						<div class="is-not-loading trigger-row">
+							<button class="clean-white small save-trigger">Add Note</button>
+						</div>
+						<div class="is-loading">
+							Saving ...
+						</div>
+					</li>
 				</ul>
 			</div>
-		</div>
-	</div>
-</div>
-{% endif %}
+		</article>
+		{# /Notes Tab #}
 
-{# Box Tickets #}
-{% if org_tickets|length %}
-<div class="table-container">
-	<div class="table-title">
-		<h4>Tickets</h4>
-	</div>
-	<div class="table-content">
-		<ul class="tickets-plain-list">
-			{% for ticket in org_tickets %}
-				<li>
-					<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a> by
-					<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': ticket.person.id }) }}">{{ ticket.person.display_name }}</a>
-				</li>
-			{% endfor %}
-			{% if org_tickets|length < person_tickets_count %}
-				<li>
-					There are <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch') }}">{{ org_tickets_count - org_tickets|length }} more</a> tickets
-				</li>
-			{% endif %}
-		</ul>
-	</div>
-</div>
-{% endif %}
-{# /Box Tickets #}
-
-{# Box Notes #}
-<div class="table-container">
-	<div class="table-title">
-		<h4>Notes</h4>
-	</div>
-	<div class="table-content">
-		<div class="messages-wrap notes-wrap">
-			<div class="note-list">
-				{% for note in notes|reverse %}
-					{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
+		{# Activity Tab #}
+		<article id="{{baseId}}_activity_tab">
+			<ul class="activity-stream">
+				{% for action in activity_stream %}
+					<li>
+						<span class="what">
+							<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': action.person.id }) }}">
+								{{ action.person.display_name }}
+							</a>
+							{% if action.action_type == 'registered' %}
+								Registered an account
+							{% elseif action.action_type == 'new_ticket' %}
+								Submitted a new ticket
+								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+									{{ action.details.subject }}
+								</a>
+							{% elseif action.action_type == 'new_ticket_reply' %}
+								Replied to ticket
+								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+									{{ action.details.subject }}
+								</a>
+							{% endif %}
+						</span>
+						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('M j, Y') }}</time>
+					</li>
 				{% endfor %}
-			</div>
-
-			<div class="new-note-form message admin-message">
-				<div class="message-avatar left">
-					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-				</div>
-				<div class="message-body">
-					<div class="message-meta">
-						<span class="arrow-left"></span>
-						<h4>{{ app.user.display_name }}</h4>
-					</div>
-					<div class="message-text">
-						<p>
-							<textarea style="width:98%; height: 80px;"></textarea>
-						</p>
-						<div style="text-align:center; margin-top: 9px;">
-							<div class="trigger-row">
-								<button class="dp-button x-small trigger save">Add Note</button>
-							</div>
-							<div class="saving-row">
-								Saving ...
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+			</ul>
+		</article>
+		{# /Activity Tab #}
+	</section>
 </div>
-{# /Box Notes #}

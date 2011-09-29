@@ -9,10 +9,37 @@ pageMeta.labelsSaveUrl = '{{ path('agent_org_ajax_labels_save', {'organization_i
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# Page Containers #}
-<div class="profile org-profile layout-content with-scrollbar">
+<div class="profile org-profile profile layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
+
+<header class="page-header">
+	<nav class="actions" id="{{baseId}}_action_buttons">
+		<ul>
+			<li class="more"><button class="clean-white inner-arrow small no-sep">Controls <span class="arrow"></span></button></li>
+		</ul>
+	</nav>
+	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
+		<img src="{{ org.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
+	</div>
+	<div class="titlewrap">
+		<h4 class="id-number">#{{ org.id }}</h4>
+		<h1>
+			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default('Double-click to set Name') }}</span>
+			<span class="edit-name-gear">edit name</span>
+			<div id="{{baseId}}_editname" style="display: none">
+				<input type="hidden" name="action" value="name" />
+				<input type="text" size="20" name="name" value="{{ org.name }}" />
+			</div>
+		</h1>
+	</div>
+
+	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
+		<li data-action="" class="delete-trigger">Delete Organization</li>
+	</ul>
+	<br class="clear" />
+</header>
 
 <table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">

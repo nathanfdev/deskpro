@@ -1,1 +1,11 @@
 {% extends 'AgentBundle:Common:profile-view-contact-display.html.twig' %}
+{% block post_extra %}
+	{% if org_email_domains|length %}
+		<em>These email domains are reserved to this organization:</em>
+		<ul class="contact-data-list">
+			{% for org_domain in org_email_domains %}
+				<li class="email">@{{org_domain}}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}

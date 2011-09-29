@@ -1,1 +1,26 @@
 {% extends 'AgentBundle:Common:profile-contact-overlay.html.twig' %}
+{% block list_extra %}
+	{% for org_domain in org_email_domains %}
+		<li class="email" data-remove-name="remove_org_email[]" data-remove-value="{{ org_domain }}">
+			<div class="input" style="margin-left:0">
+				Users who are registered with emails from this domain will be placed into this organization automatically:<br />
+				@{{ org_domain }}
+			</div>
+			<div class="remove">-</div>
+		</li>
+	{% endfor %}
+{% endblock %}
+{% block newmenu_options_extra %}
+<li data-tpl="tpl-new-email-domain">Email Domain Match</li>
+{% endblock %}
+{% block newtpl_extra %}
+<script type="text/x-deskpro-plain" class="tpl-new-email-domain">
+	<li class="phone new">
+		<div class="input" style="margin-left:0">
+			Users who are registered with emails from this domain will be placed into this organization automatically:<br />
+			@<input type="text" size="8" name="new_org_email_domain[%id%]" value="" style="display: inline"/>
+		</div>
+		<div class="remove">-</div>
+	</li>
+</script>
+{% endblock %}
