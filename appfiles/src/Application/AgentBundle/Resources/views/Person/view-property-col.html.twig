@@ -12,6 +12,29 @@
 </div>
 {# /Box Contact #}
 
+{# Organization Box #}
+<div class="profile-box-container summary">
+	<header>
+		<span class="edit-gear org-edit-trigger">edit</span>
+		<h4>Organization</h4>
+	</header>
+	<section>
+		<div class="org-info" id="{{baseId}}_org_display_wrap">
+			{% if person.organization %}
+				{% include 'AgentBundle:Person:view-org-info.html.twig' %}
+			{% endif %}
+		</div>
+		<div class="org-edit" style="display: none" id="{{baseId}}_org_edit_wrap">
+			<input type="text" class="org-set" placeholder="Company name" value="{{ person.organization.name }}" />
+			<span class="new-company-notice" id="{{baseId}}_org_create_notice" style="display: none">No company with that name exists yet. A new one will be created.</span>
+			<input type="text" class="org-pos-set" placeholder="Position" value="{{ person.organization_position }}" />
+
+			<button class="clean-white small" id="{{baseId}}_org_edit_save">Set Organization</button>
+		</div>
+	</section>
+</div>
+{# /Organization Box #}
+
 {# Properties Box #}
 <div class="profile-box-container summary">
 	<header>

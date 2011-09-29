@@ -1,0 +1,14 @@
+<div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.name }}">
+	<strong>{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}</strong>
+
+	{% set members_count_row %}
+		<li class="count">
+			<a href="">{{ org_members_count }} members</a>
+		</li>
+	{% endset %}
+	{% include 'AgentBundle:Common:profile-view-contact-display.html.twig' with {
+		'contact_data': org_contact_data,
+		'show_only': ['website', 'email', 'email_domain'],
+		'bottom_extra': members_count_row
+	} %}
+</div>

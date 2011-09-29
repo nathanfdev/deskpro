@@ -100,6 +100,21 @@ class PersonController extends AbstractController
 		$person_usergroups_ids = $person->getPermissionsManager()->getUsergroupIds();
 		$person_org_usergroups_ids = $person->getPermissionsManager()->getOrganizationUsergroupIds();
 
+		// Org stuff
+		$org_members_count = null;
+		$org_contact_data = null;
+		if ($person->organization) {
+			$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+
+			$org_contact_data = array();
+			foreach ($person->organization->contact_data as $cd) {
+				if (!isset($contact_data[$cd->contact_type])) {
+					$contact_data[$cd->contact_type] = array();
+				}
+				$org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+			}
+		}
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
 			'person_usergroups_ids' => $person_usergroups_ids,
@@ -113,6 +128,8 @@ class PersonController extends AbstractController
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
 			'person_tickets_count' => $person_tickets_count,
+			'org_members_count' => $org_members_count,
+			'org_contact_data' => $org_contact_data,
 		));
 	}
 
@@ -234,6 +251,54 @@ class PersonController extends AbstractController
 				if ($blob) {
 					$person->setPictureBlob($blob);
 					$this->em->persist($person);
+				}
+				break;
+
+			case 'set-organization':
+
+				$name = $this->in->getString('name');
+				if (!$name) {
+					$data['organization_id'] = 0;
+				} else {
+					$org = App::getEntityRepository('DeskPRO:Organization')->getByName($name);
+
+					if (!$org) {
+						$org = new Organization();
+						$org->name = $name;
+
+						$this->em->persist($org);
+						$this->em->flush();
+					}
+
+					$person->organization = $org;
+					$person->organization_position = $this->in->getString('position');
+
+					$this->em->persist($person);
+
+					// Org stuff
+					$org_members_count = null;
+					$org_contact_data = null;
+					if ($person->organization) {
+						$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+
+						$org_contact_data = array();
+						foreach ($person->organization->contact_data as $cd) {
+							if (!isset($contact_data[$cd->contact_type])) {
+								$contact_data[$cd->contact_type] = array();
+							}
+							$org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+						}
+					}
+
+					// Regenerate the HTML block
+					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
+						'person' => $person,
+						'org_members_count' => $org_members_count,
+						'org_contact_data' => $org_contact_data,
+					));
+
+					$data['organization_id'] = $org->id;
+					$data['html'] = $html;
 				}
 				break;
 

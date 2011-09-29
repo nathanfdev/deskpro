@@ -68,6 +68,9 @@ span.team-link, a.team-link {
 	height: 40px;
 }
 
+:-moz-placeholder{color:#bfbfbf !important;}
+::-webkit-input-placeholder{color:#bfbfbf !important;}
+
 /*****************************************************************************
  * Window layout
 /*****************************************************************************/

@@ -1,31 +1,41 @@
 {% block pre_extra %}{% endblock %}
 <ul class="contact-data-list">
 	{% block top_extra %}{% endblock %}
+	{{ top_extra }}
 
+	{% if not show_only or show_only.website %}
 	{% for contact in contact_data.website %}
 		<li class="website">
 			<a href="{{ contact.url }}" target="_blank">{{ contact.display }}</a>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.twitter %}
 	{% for contact in contact_data.twitter %}
 		<li class="twitter">
 			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.username }}</a>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.linkedin %}
 	{% for contact in contact_data.linkedin %}
 		<li class="linkedin">
 			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.facebook %}
 	{% for contact in contact_data.facebook %}
 		<li class="linkedin">
 			<a href="{{ contact.profile_url }}" target="_blank">{{ contact.display }}</a>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.mobile %}
 	{% for contact in contact_data.mobile %}
 		<li class="mobile">
 			{% if contact.comment %}
@@ -37,7 +47,9 @@
 			<span class="number">{{ contact.number }}</span>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.phone %}
 	{% for contact in contact_data.phone %}
 		<li class="phone">
 			{% if contact.comment %}
@@ -49,7 +61,9 @@
 			<span class="number">{{ contact.number }}</span>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.fax %}
 	{% for contact in contact_data.fax %}
 		<li class="fax">
 			{% if contact.comment %}
@@ -61,7 +75,9 @@
 			<span class="number">{{ contact.number }}</span>
 		</li>
 	{% endfor %}
+	{% endif %}
 
+	{% if not show_only or show_only.instant_message %}
 	{% for contact in contact_data.instant_message %}
 		<li class="fax {{ contact.service }}">
 			{% if contact.comment %}
@@ -70,8 +86,10 @@
 			{{ contact.username }}
 		</li>
 	{% endfor %}
+	{% endif %}
 
 	{% block bottom_extra %}{% endblock %}
+	{{ bottom_extra }}
 </ul>
 
 {% if contact_data.address %}

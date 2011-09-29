@@ -173,6 +173,133 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			self.ownObject(simpleTabs);
 		});
+
+		this._initOrgEdit();
+	},
+
+	//#########################################################################
+	//# Org Edit
+	//#########################################################################
+
+	_initOrgEdit: function() {
+		var self = this;
+		$('.org-edit-trigger', this.wrapper).click(function(ev) {
+			ev.preventDefault();
+			self.toggleOrgEdit();
+		});
+
+		var orgDisplay = this.getEl('org_display_wrap');
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		this.getEl('org_edit_save').click(function() {
+			var postData = [];
+			postData.push({
+				name: 'action',
+				value: 'set-organization'
+			});
+			postData.push({
+				name: 'name',
+				value: $('.org-set', self.getEl('org_edit_wrap')).val().trim()
+			});
+			postData.push({
+				name: 'position',
+				value: $('.org-pos-set', self.getEl('org_edit_wrap')).val().trim()
+			});
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				success: function(data) {
+					orgDisplay.empty();
+					if (data.organization_id) {
+						orgDisplay.html(data.html);
+					}
+
+					self.toggleOrgEdit();
+				}
+			});
+		});
+
+		var currentLookupAjax = null;
+
+		var showhide_notice = function(onff) {
+			if (onff == 'on') {
+				self.getEl('org_create_notice').slideDown();
+			} else {
+				self.getEl('org_create_notice').slideUp();
+			}
+		};
+
+		var getname = function() {
+			return $('.org-set', self.getEl('org_edit_wrap')).val().trim();
+		}
+
+		var runlookup = function() {
+			if (currentLookupAjax) {
+				currentLookupAjax.abort();
+				currentLookupAjax = null;
+			}
+
+			var val = getname();
+
+			currentLookupAjax = $.ajax({
+				url: BASE_URL + 'agent/organization-search/name-lookup.json',
+				dataType: 'json',
+				data: {'name': val},
+				success: function(data) {
+					if (getname() != val) {
+						return;
+					}
+					if (data.organization_id) {
+						showhide_notice('off');
+					} else {
+						showhide_notice('on');
+					}
+				}
+			});
+		};
+
+		$('.org-set', this.getEl('org_edit_wrap')).autocomplete({
+			minLength: 2,
+			source: function(request, response) {
+				var name = getname();
+				$.ajax({
+					url: BASE_URL + 'agent/organization-search/quick-name-search.json',
+					data: { 'term': request.term },
+					dataType: 'json',
+					success: function(data) {
+						response(data.results);
+
+						if (getname() == name) {
+							if (!data.exact) {
+								showhide_notice('on');
+							} else {
+								showhide_notice('off');
+							}
+						} else {
+							showhide_notice('off');
+						}
+					}
+				})
+			}
+		}).blur(function() {
+			runlookup();
+		});
+	},
+
+	toggleOrgEdit: function() {
+		var orgDisplay = this.getEl('org_display_wrap');
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		if (orgEdit.is(':visible')) {
+			orgEdit.hide();
+			orgDisplay.show();
+		} else {
+			orgDisplay.hide();
+			orgEdit.show();
+		}
 	},
 
 	//#########################################################################

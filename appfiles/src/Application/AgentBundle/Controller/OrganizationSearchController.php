@@ -252,4 +252,63 @@ class OrganizationSearchController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => true));
 	}
+
+	public function performQuickNameSearchAction()
+	{
+		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
+		}
+
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 20;
+
+		$orgs_list = $this->em->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE o.name LIKE ?1
+			ORDER BY o.name ASC
+		")->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
+
+		$json = array('results' => array(), 'exact' => false);
+
+		foreach ($orgs_list as $org) {
+			$json['results'][] = array(
+				'id' => $org['id'],
+				'value' => $org['name'],
+				'label' => $org['name']
+			);
+		}
+
+		$org = $this->em->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE o.name = ?1
+		")->setParameter(1, $this->in->getString('term'))
+		  ->setMaxResults(1)
+		  ->getOneOrNullResult();
+
+		if ($org) {
+			$json['exact'] = $org->id;
+		}
+
+		return $this->createJsonResponse($json);
+	}
+
+	public function checkNameAction()
+	{
+		$org = $this->em->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE o.name = ?1
+		")->setParameter(1, $this->in->getString('name'))
+		  ->setMaxResults(1)
+		  ->getOneOrNullResult();
+
+		if ($org) {
+			return $this->createJsonResponse(array('organization_id' => $org->id));
+		} else {
+			return $this->createJsonResponse(array('invalid' => true));
+		}
+	}
 }

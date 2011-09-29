@@ -373,6 +373,14 @@ agent_orgsearch_save_resultprefs:
   defaults: { _controller: AgentBundle:OrganizationSearch:ajaxSaveResultPrefs }
   requirements: { cache_id: "\d+" }
 
+agent_orgsearch_quicknamesearch:
+  pattern: /organization-search/quick-name-search.json
+  defaults: { _controller: AgentBundle:OrganizationSearch:performQuickNameSearch }
+
+agent_orgsearch_namelookup:
+  pattern: /organization-search/name-lookup.json
+  defaults: { _controller: AgentBundle:OrganizationSearch:checkName }
+
 ################################################################################
 # Ticket Search
 ################################################################################

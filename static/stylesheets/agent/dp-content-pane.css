@@ -1440,3 +1440,42 @@ ul.activity-stream time {
 	text-indent: -100px;
 	cursor: pointer;
 }
+
+
+.profile .org-edit {
+	padding:  4px;
+	width: 80%;text-align: center;
+	margin: 0 auto 0 auto;
+}
+.profile .org-edit .new-company-notice {
+	font-size: 9px;
+	display: block;
+	line-height: 100%;
+	margin-top: -1px;
+	padding-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	color: #399D40;
+	width: 85%;
+}
+
+.profile .org-edit input[type="text"] {
+	width: 100%;
+	margin-bottom: 3px;
+}
+
+.contact-list-wrapper.org > strong {
+	font-size: 12px;
+	padding:  4px 0 4px 4px;
+	display: block;
+	line-height: 100%;
+	font-weight: normal;
+}
+
+.contact-list-wrapper.org .contact-data-list {
+	margin-top: 0;
+}
+
+.contact-list-wrapper.org .contact-data-list li.count {
+	text-align: right;
+}
