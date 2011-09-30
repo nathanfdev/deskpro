@@ -23,11 +23,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 
 		this._initDisplayOptions();
 
-		this.initFeaturesOnCollection(el, {
-			routes: ['tr .with-route'],
-			times: ['tr abbr.timeago']
-		});
-
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();

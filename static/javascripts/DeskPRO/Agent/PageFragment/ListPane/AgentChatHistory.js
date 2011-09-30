@@ -14,16 +14,9 @@ DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['abbr.timeago']
-		});
-
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
-
-		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
 	}
 });

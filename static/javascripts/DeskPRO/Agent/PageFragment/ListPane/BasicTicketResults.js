@@ -43,23 +43,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
 
-		if (this.meta.viewType != 'list') {
-			var cw = this.contentWrapper;
-			cw.tinyscrollbar();
-			var self = this;
-			$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-				cw.tinyscrollbar_update();
-				self.fireEvent('resized');
-			});
-		}
 		this._initDisplayOptions();
 		this._initFlagMenu();
 		this._initGroupingOptions();
-
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['.timeago']
-		});
 
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;

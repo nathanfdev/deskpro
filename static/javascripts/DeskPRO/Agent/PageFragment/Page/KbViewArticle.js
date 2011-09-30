@@ -35,15 +35,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this.ownObject(this.validatingEdit);
 		}
 
-		var cw = this.wrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
-		$('time.timeago', this.wrapper).timeago();
-
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'articles',
 			content_id: this.meta.article_id,

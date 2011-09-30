@@ -24,17 +24,10 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		this.resultTypeId = this.meta.cache_id || 0;
 
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['abbr.timeago']
-		});
-
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
-
-		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'people-filter',

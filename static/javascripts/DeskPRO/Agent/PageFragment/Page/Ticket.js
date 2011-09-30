@@ -51,11 +51,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.ownObject(this.ticketDisplay);
 
-		this.initFeaturesOnCollection(this.wrapper, {
-			routes: [],
-			times: ['.timeago']
-		});
-
 		if (!this.meta.isDeleted) {
 			this._initTicketActionsMenu();
 			this._initMessageActionsMenu();

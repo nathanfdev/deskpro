@@ -25,8 +25,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.initNoteFormEditable();
 
-		this.initTimesOnCollection($('time.timeago', this.wrapper));
-
 		var tzMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('timezone')
 		});

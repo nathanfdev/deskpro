@@ -32,13 +32,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		var btn = $('.download-editor-edit', this.wrap);
 		btn.click(this.showEditor.bind(this));
 
-		var cw = this.wrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
         $('time.timeago', this.wrapper).timeago();
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {

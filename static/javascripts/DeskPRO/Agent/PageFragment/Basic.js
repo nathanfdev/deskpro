@@ -114,15 +114,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	},
 
 	/**
-	 * Init all standard features (using page-defined selectors) on a wrapper
-	 */
-	initFeaturesOnCollection: function(wrapper) {
-		DeskPRO_Window.initInterfaceServices(wrapper);
-	},
-
-	initTimesOnCollection: function(){},
-
-	/**
 	 * Set metadata about this page.
 	 *
 	 * @param mixed name Either a string name to use with value, or an object of key/value pairs
@@ -237,13 +228,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	 */
 	initPage: function(el) {
 		this.wrapper = el;
-		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
 	},
 
 
