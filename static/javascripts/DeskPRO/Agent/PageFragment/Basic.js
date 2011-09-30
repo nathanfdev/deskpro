@@ -16,6 +16,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	},
 
 	initialize: function(html) {
+		var self = this;
 
 		this.pageUid = Orb.uuid();
 		this.ZONE = 'agent';
@@ -50,34 +51,16 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 		// Auto-init
 		this.addEvent('render', function(wrapper) {
-			this.initFeaturesOnCollection(wrapper);
+			self.wrapper = wrapper;
+			wrapper.data('page-fragment', self);
+			wrapper.addClass('with-page-fragment');
+
+			DeskPRO_Window.initInterfaceServices(wrapper);
 
 			if (!this.noDeleteHtmlString) {
 				delete this.html;
 			}
 		}, this);
-
-		if (this.getMetaData('initRoutesOn')) {
-			var tmp = this.getMetaData('initRoutesOn');
-			if (typeOf(tmp) == 'string') {
-				tmp = [tmp];
-			}
-
-			for (var i = 0; i < tmp.length; i++) {
-				this.featureSelectors.routes.push(tmp[i]);
-			}
-		}
-
-		this.addEvent('render', function(el) {
-			if (this.getMetaData('widgets')) {
-				this.initWidgets(this.getMetaData('widgets'), {
-					personId: DESKPRO_PERSON_ID,
-					deskproPath: BASE_URL,
-					proxyKey: DESKPRO_PROXY_KEY
-				});
-				this.initWidgetsDom(el);
-			}
-		});
 
 		var self = this;
 
@@ -90,6 +73,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.init();
 
 		this.addEvent('destroy', function() {
+			self.wrapper.data('with-page-fragment', null);
+
 			var i;
 			for (i = 0; i < this.destroyObjects.length; i++) {
 				this.destroyObjects[i].destroy();
@@ -131,94 +116,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	/**
 	 * Init all standard features (using page-defined selectors) on a wrapper
 	 */
-	initFeaturesOnCollection: function(wrapper, featureSelectors) {
-
-		featureSelectors = featureSelectors || this.featureSelectors;
-
-		if (featureSelectors.times && featureSelectors.times.length) {
-			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
-		}
-
-		this.initTipsOnCollection($('.person-tip', wrapper));
-		this.initPersonPopoversOnCollection($('.person-popover', wrapper));
+	initFeaturesOnCollection: function(wrapper) {
+		DeskPRO_Window.initInterfaceServices(wrapper);
 	},
 
-	/**
-	 * Init time agos on all elements in a collection
-	 */
-	initTimesOnCollection: function(els) {
-		els.timeago();
-	},
-
-
-	initTipsOnCollection: function(els) {
-		$(els).each(function() {
-			var el = $(this);
-
-			if (el.is('.person-tip')) {
-				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
-				el.addClass('tipped');
-				el.attr('data-tipped', tipUrl);
-				el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
-
-				el.click(function(ev) {
-					Tipped.toggle(this);
-				});
-
-				if (el.is('.with-route')) {
-					el.addClass('cancel-route')
-				}
-				if (el.parent().is('.with-route')) {
-					el.parent().addClass('cancel-route')
-				}
-			}
-		});
-	},
-
-	initPersonPopoversOnCollection: function(els) {
-		var made_popovers = {};
-		var self = this;
-		$(els).each(function() {
-			var el = $(this);
-			if (el.is('.person-popover') && !el.is('.with-person-popover')) {
-
-				el.addClass('with-person-popover');
-
-				var loadtimeout = 0;
-				if (el.is('.preload')) {
-					loadtimeout = 250;
-				}
-
-				var personId = el.data('person-id');
-				var url = BASE_URL + 'agent/people/' + personId + '';
-
-				var popover;
-				if (made_popovers[personId]) {
-					popover = made_popovers[personId];
-				} else {
-					popover = new DeskPRO.Agent.PageHelper.Popover({
-						pageUrl: url,
-						tabRoute: 'page:' + url,
-						loadTimeout: loadtimeout
-					});
-					made_popovers[personId] = popover;
-
-					self.ownObject(popover);
-
-					self.addEvent('destroy', function() {
-						popover.destroy();
-					});
-				}
-
-				el.click(function(ev) {
-					ev.stopPropagation();
-					ev.preventDefault();
-
-					popover.toggle();
-				});
-			}
-		});
-	},
+	initTimesOnCollection: function(){},
 
 	/**
 	 * Set metadata about this page.

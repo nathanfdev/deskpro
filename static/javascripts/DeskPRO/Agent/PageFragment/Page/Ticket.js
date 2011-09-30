@@ -21,23 +21,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
+		return;
+
 		this.wrapper = el;
 		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
 		this.barWrapper = $('.bar-wrapper', this.wrapper);
-
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.valueForm.submit(function(ev) {
 			// Never actually submit the form (would load a new page)
 			ev.preventDefault();
 		});
-		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+		//this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
 
 		window.TICKET = this;
 
@@ -69,8 +64,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		} else {
 			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
 		}
-
-		this._initPopout();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
@@ -302,11 +295,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	activate: function() {
-		this.ticketChecker.unpause();
+		if (this.ticketChecker) {
+			this.ticketChecker.unpause();
+		}
 	},
 
 	deactivate: function() {
-		this.ticketChecker.pause();
+		if (this.ticketChecker) {
+			this.ticketChecker.pause();
+		}
 	},
 
 	_initMessage: function(messageEl) {
@@ -705,57 +702,5 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 				break;
 		}
-	},
-
-	//#################################################################
-	//# Popout
-	//#################################################################
-
-	_initPopout: function() {
-
-		this.personPopover = new DeskPRO.Agent.PageHelper.Popover({
-			pageUrl: this.getMetaData('viewPersonUrl'),
-			tabRoute: $('.person-overview', this.wrapper).data('route'),
-			loadTimeout: 500
-		});
-		this.ownObject(this.personPopover);
-
-		$('.person-overview', this.wrapper).css({'cursor': 'pointer'}).click((function(event) {
-
-			this.personPopover.toggle();
-		}).bind(this));
-
-		this.orgPopover = null;
-
-		var orgEl = $('.org-overview', this.wrapper);
-		if (orgEl.length) {
-			this.orgPopover = new DeskPRO.Agent.PageHelper.Popover({
-				pageUrl: this.getMetaData('viewOrgUrl'),
-				tabRoute: orgEl.data('route'),
-				loadTimeout: 1200
-			});
-			this.ownObject(this.orgPopover);
-
-			orgEl.css({'cursor': 'pointer'}).click((function(event) {
-				this.orgPopover.toggle();
-			}).bind(this));
-		}
-	},
-
-	updateCounts: function() {
-		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
-
-		$.ajax({
-			url: this.getMetaData('getUpdatedCountsUrl'),
-			type: 'GET',
-			context: this,
-			dataType: 'json',
-			success: function(counts) {
-				Object.each(counts, function(v,k) {
-					var sel = '.ticket-' + k + '-count';
-					$(sel, wrap).html('(' + v + ')');
-				});
-			}
-		});
 	}
 });

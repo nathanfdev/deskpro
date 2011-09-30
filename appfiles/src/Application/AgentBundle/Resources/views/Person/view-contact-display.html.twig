@@ -2,10 +2,12 @@
 {% block top_extra %}
 	{% for email in person.emails %}
 		<li class="email {% if email.id == person.primary_email.id %}is-primary{% endif %} email-{{email.id}}">
-			{{ email.email }}
+			<a href="mailto:{{ email.email }}">{{ email.email }}</a>
 
-			<span class="primary">primary</span>
-			<span class="set-primary" data-email-id="{{ email.id }}">make primary</span>
+			{% if person.emails|length > 1 %}
+				<span class="primary">primary</span>
+				<span class="set-primary" data-email-id="{{ email.id }}">make primary</span>
+			{% endif %}
 		</li>
 	{% endfor %}
 {% endblock %}

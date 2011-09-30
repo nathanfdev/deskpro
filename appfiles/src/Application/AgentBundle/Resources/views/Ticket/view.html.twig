@@ -1,6 +1,6 @@
 <script>
-{#pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';#}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_ticket_view', {'ticket_id': ticket.id}) }}';
@@ -108,7 +108,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<dt>Ticket owned by:</dt>
 		<dd>
 			<a
-				class="user-link person-overview"
+				class="user-link as-popover preload"
 				style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');"
 				data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
 			>

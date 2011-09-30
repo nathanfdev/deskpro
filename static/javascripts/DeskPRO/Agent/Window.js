@@ -122,6 +122,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initWindowInterface();
 		this._initLayout();
 
+		this._initInterfaceServices();
+
 		$('#page_loading').remove();
 		$('#loading_css').remove();
 
@@ -753,7 +755,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} route The route to match, like navpane:tickets:filters
 	 */
 	runPageRoute: function(route) {
+		var found_listener = false;
 
+		var data = this.parseRoute(route);
+
+		Object.each(this.routePrefixes, function(listeners, prefix) {
+			if (route.indexOf(prefix) == 0) {
+				Array.each(listeners, function(callback) {
+					callback(data);
+					found_listener = true;
+				});
+				if (data.stopListeners) {
+					return true;
+				}
+			}
+		}, this);
+
+		if (!found_listener) {
+			console.warn('Unknown route: %s', route);
+		}
+	},
+
+	/**
+	 * Parse a route into its parts
+	 *
+	 * @param {String} route
+	 * @return {Object}
+	 */
+	parseRoute: function(route) {
 		// Like:
 		// master.masterTag:sectioninfo:moreinfo:url/here/at/end
 		// (There might not be any sectioninfo)
@@ -780,23 +809,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			stopListeners: false
 		};
 
-		var found_listener = false;
-
-		Object.each(this.routePrefixes, function(listeners, prefix) {
-			if (route.indexOf(prefix) == 0) {
-				Array.each(listeners, function(callback) {
-					callback(data);
-					found_listener = true;
-				});
-				if (data.stopListeners) {
-					return true;
-				}
-			}
-		}, this);
-
-		if (!found_listener) {
-			console.warn('Unknown route: %s', route);
-		}
+		return data;
 	},
 
 
@@ -993,11 +1006,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (matches && matches.length) {
-			try {
-				eval(matches[1]);
-			} catch (err) {
-				console.error('Page fragment JS eval error: %o', err);
-			}
+
+			eval(matches[1]);
 
 			// Cut out the pageMeta from the HTML string
 			html = html.replace(matches[0], '');
@@ -1021,14 +1031,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 
-		try {
-			var page = new fragment_class(html);
-			page.setMetaData(pageMeta);
-		} catch (error) {
-			console.error("Error creating fragment with %s: %s", pageMeta.fragmentClass, error);
-			var page = new fragment_class(html, 'DeskPRO.Agent.PageFragment.Basic', true);
-			page.setMetaData(pageMeta);
-		}
+		var page = new fragment_class(html);
+		page.setMetaData(pageMeta);
 
 		return page;
 	},
@@ -1368,11 +1372,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
 
 		var self = this;
-
-		$(document).delegate('[data-route]', 'click', function(ev) {
-			ev.preventDefault();
-			self.runPageRouteFromElement($(this));
-		});
 	},
 
 	_initWindowInterface: function() {
@@ -1695,6 +1694,128 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.pageTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 		this.pageTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
+	},
+
+	_initInterfaceServices: function() {
+		var self = this;
+
+		this.popover_inited = {};
+
+		// Accept clicks on routes
+		$(document).delegate('[data-route]', 'click', function(ev) {
+			if ($(this).is('.as-popover')) {
+				return;
+			}
+			ev.preventDefault();
+			self.runPageRouteFromElement($(this));
+		});
+
+		// Accept clicks on popovers
+		// Keeps track of which tabs have them open so they can be reused
+		$('#dp_content_wrap').delegate('.as-popover', 'click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self._initInterfacePopover($(this)).toggle();
+		});
+
+		$(document).delegate('.person-tip', 'mouseover', function() {
+			var el = $(this);
+			var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
+			el.addClass('tipped');
+			el.attr('data-tipped', tipUrl);
+			el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
+
+			el.click(function(ev) {
+				Tipped.toggle(this);
+			});
+
+			if (el.is('.with-route')) {
+				el.addClass('cancel-route')
+			}
+			if (el.parent().is('.with-route')) {
+				el.parent().addClass('cancel-route')
+			}
+		});
+	},
+
+	_initInterfacePopover: function(el, opennow) {
+		var self = this;
+		var popover_inited = this.popover_inited;
+
+		var route = el.data('route');
+		var routeData = self.parseRoute(route);
+		var popover;
+
+		if (!popover_inited[route]) {
+
+			popover = new DeskPRO.Agent.PageHelper.Popover({
+				pageUrl: routeData.url,
+				tabRoute: route,
+				loadTimeout: (el.is('.preload') ? 1500 : 0)
+			});
+
+			popover_inited[route] = {
+				count: 0,
+				popover: popover
+			};
+
+			popover.addEvent('close', function() {
+				if (popover_inited[route].count < 1) {
+					popover_inited[route].popover.destroy();
+					delete popover_inited[route];
+				}
+			});
+
+			popover.addEvent('destroy', function() {
+				delete popover_inited[route];
+			});
+		} else {
+			popover = popover_inited[route].popover;
+		}
+
+		console.log(popover);
+
+		popover_inited[route].count++;
+
+		var tabWrapper = el.closest('.with-page-fragment');
+		if (tabWrapper.length) {
+			var page = tabWrapper.data('page-fragment');
+			page.addEvent('destroy', function() {
+				popover_inited[route].count--;
+			});
+		} else {
+			popover.options.destroyOnClose = true;
+		}
+
+		return popover;
+	},
+
+	initInterfaceServices: function(context) {
+		var self = this;
+		var page = false;
+
+		if (context.is('.with-page-fragment')) {
+			page = context.data('page-fragment');
+		} else {
+			var tabWrapper = context.closest('.with-page-fragment');
+			page = tabWrapper.data('page-fragment');
+		}
+
+		$('.as-popover.preload', context).each(function() {
+			var p = self._initInterfacePopover($(this));
+		});
+
+		if (page) {
+			var scrollEl = $('.with-scrollbar', context).first();
+			if (scrollEl.length) {
+				this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
+					showEvent: 'show',
+					hideEvent: 'hide'
+				});
+			}
+		}
+
+		$('.timeago', context).timeago();
 	}
 });
 

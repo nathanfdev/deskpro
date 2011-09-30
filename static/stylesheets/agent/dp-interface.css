@@ -419,6 +419,7 @@ button.clean-gray.disabled {
 }
 
 button.clean-white {
+	position: relative;
 	background: -moz-linear-gradient(top, rgba(250,252,253,1) 0%, rgba(240,242,243,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(250,252,253,1)), color-stop(100%,rgba(240,242,243,1)));
 	-pie-background: linear-gradient(#f0f2f3, #fafcfd);
@@ -445,6 +446,10 @@ button.clean-white:hover {
 	box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
 }
 
+button.clean-white.large {
+	padding: 6px 12px 6px 12px;
+}
+
 button.clean-white.arrow {
 	padding-right: 0;
 }
@@ -462,7 +467,7 @@ button.clean-white.arrow span {
  * to open a menu to change the value of the button itself
  */
 button.clean-white.inner-arrow {
-	padding-right: 25px;
+	padding-right: 20px !important;
 }
 button.clean-white.inner-arrow span.arrow {
 	display: block;
@@ -471,9 +476,9 @@ button.clean-white.inner-arrow span.arrow {
 	background-position: 100% 50%;
 	background-repeat: no-repeat;
 	position: absolute;
-	top: -3px;
-	right: 11px;
-	bottom: -3px;
+	top: 0px;
+	right: 2px;
+	bottom: 0px;
 	width: 16px;
 	border-left: 1px solid #B6BABF;
 }

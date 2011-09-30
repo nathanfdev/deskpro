@@ -20,15 +20,14 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="create-ticket"><button class="clean-white small">Create Ticket</button></li>
-			<li class="more"><button class="clean-white inner-arrow small no-sep">More <span class="arrow"></span></button></li>
+			<li class="create-ticket"><button class="clean-white large">Create Ticket</button></li>
+			<li class="more"><button class="clean-white large inner-arrow no-sep">More <span class="arrow"></span></button></li>
 		</ul>
 	</nav>
 	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
 		<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
 	</div>
 	<div class="titlewrap">
-		<h4 class="id-number">#{{ person.id }}</h4>
 		<h1>
 			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('<em>Double-click to set Name</em>') }}</span>
 			<span class="edit-name-gear">edit name</span>
@@ -43,7 +42,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}>
 						<span class="org-pos-display">{{ person.organization_position }}</span>
 					</span>
-					<span class="org-title-display">{{ person.organization.name }}</span>
+					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
 					No Organization
 				{% endif %}

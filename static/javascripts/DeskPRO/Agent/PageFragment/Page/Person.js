@@ -17,11 +17,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var self = this;
 
 		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json'

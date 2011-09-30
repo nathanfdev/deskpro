@@ -38,8 +38,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			overFrom: '#dp_content'
 		};
 
-		this.id = Orb.uuid();
-		DeskPRO.Agent.PageHelper.Popover_Instances[this.id] = this;
+		DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID] = this;
 
 		this.setOptions(options);
 
@@ -242,12 +241,17 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.page) {
 			this.page.fireEvent('destroy');
+			this.page = null;
 		}
 
 		if (this.popover) {
 			this.popoverOuter.remove();
 		}
 
-		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.id];
+		this.popoverOuter = null;
+		this.popover = null;
+		this.options = null;
+
+		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID];
 	}
 });

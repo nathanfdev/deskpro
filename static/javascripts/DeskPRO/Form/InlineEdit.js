@@ -149,6 +149,12 @@ DeskPRO.Form.InlineEdit = new Class({
 		rendered_els.fadeOut('fast', function() {
 			rendered_els.detach();
 			form_elements.addClass('editable-fields-on').hide().appendTo(editable).fadeIn('fast');
+
+			$('input, textarea, select', form_elements)
+				.addClass('unchanged')
+				.change(function() { $(this).removeClass('unchanged'); })
+				.keypress(function() { $(this).removeClass('unchanged'); })
+				.filter(':visible').first().focus();
 		});
 
 		var editinfo = {
@@ -162,8 +168,6 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		this.documentClickSubmitOn = true;
 		this.activeEdits.push(editinfo);
-
-		$('input[type="text"], input[type="password"], textarea', rendered_els).first().focus();
 	},
 
 
@@ -177,7 +181,9 @@ DeskPRO.Form.InlineEdit = new Class({
 			return;
 		}
 
-		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement']).serializeArray();
+		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement'])
+			.filter(':not(.unchanged)')
+			.serializeArray();
 
 		var is_multi = this.activeEdits.length;
 
@@ -193,25 +199,29 @@ DeskPRO.Form.InlineEdit = new Class({
 		var ajax_id = Orb.uuid();
 		this.sendingEdits[ajax_id] = sending_edits;
 
-		var self = this;
-		var ajax_options = Object.merge({
-			success: function(data, textStatus, XMLHttpRequest) {
-				console.log('ajax-save data: %o', data);
-				self.handleAjaxSuccess(ajax_id, data);
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				console.log('ajax-save error: %s', textStatus);
-				self.handleAjaxFailure(ajax_id);
-			},
-			context: this,
-			dataType: 'json',
-			data: data
-		}, this.options['ajax']);
+		if (data.length) {
+			var self = this;
+			var ajax_options = Object.merge({
+				success: function(data, textStatus, XMLHttpRequest) {
+					console.log('ajax-save data: %o', data);
+					self.handleAjaxSuccess(ajax_id, data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					console.log('ajax-save error: %s', textStatus);
+					self.handleAjaxFailure(ajax_id);
+				},
+				context: this,
+				dataType: 'json',
+				data: data
+			}, this.options['ajax']);
 
-		console.log('ajax-save: %s', ajax_options.url);
-		console.log('ajax-save data: %o', ajax_options.data);
+			console.log('ajax-save: %s', ajax_options.url);
+			console.log('ajax-save data: %o', ajax_options.data);
 
-		$.ajax(ajax_options);
+			$.ajax(ajax_options);
+		} else {
+			this.handleAjaxSuccess(ajax_id, {});
+		}
 	},
 
 

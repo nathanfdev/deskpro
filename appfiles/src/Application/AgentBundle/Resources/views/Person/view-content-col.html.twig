@@ -14,17 +14,19 @@
 {# /Box Summary #}
 
 {# Interaction Tabs #}
+{% if person_tickets_count or person_chats_count %}
 <div class="profile-box-container tabbed">
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_tickets_tab" class="on">Tickets</li>
-				<li data-tab-for="#{{baseId}}_chats_tab">Chats</li>
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">Tickets <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">Chats <span class="count">{{ person_chats_count }}</span></li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section>
 		{# Tickets Tab #}
+		{% if person_tickets_count %}
 		<article id="{{baseId}}_tickets_tab" class="on">
 			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tbody id="{{baseId}}_tickets_initial">
@@ -62,13 +64,18 @@
 				</tbody>
 			</table>
 		</article>
+		{% endif %}
 		{# /Tickets Tab #}
+
+		{% if person_chats_count %}
 		<article id="{{baseId}}_chats_tab">
 			Chats
 		</article>
+		{% endif %}
 	</section>
 </div>
 {# /Interaction Tabs #}
+{% endif %}
 
 {# Info Tabs #}
 <div class="profile-box-container tabbed">
@@ -205,6 +212,15 @@
 						</td>
 					</tr>
 				{% endif %}
+				<tr>
+					<td class="label">Auto-responder?</td>
+					<td class="value">
+						<select id="{{baseId}}_is_autoresponder">
+							<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>No</option>
+							<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>Yes, this user auto-responds to emails</option>
+						</select>
+					</td>
+				</tr>
 			</table>
 		</article>
 		{# /Tracking Tab #}

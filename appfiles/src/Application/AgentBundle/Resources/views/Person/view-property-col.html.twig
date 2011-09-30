@@ -77,16 +77,6 @@
 					{% include 'AgentBundle:Person:view-bit-timezoneinfo.html.twig' %}
 				</div>
 			</dd>
-
-			<dt class="label tipped" data-tipped-options="hook: 'leftmiddle', maxWidth: 250" title="If a user is known to auto-respond to emails, DeskPRO will stop sending the user certain email notifications as a way to prevent auto-response loops.">
-				Auto-responder?
-			</dt>
-			<dd>
-				<select id="{{baseId}}_is_autoresponder">
-					<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>No</option>
-					<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>Yes, this user auto-responds to emails</option>
-				</select>
-			</dd>
 		</dl>
 	</section>
 </div>
