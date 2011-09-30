@@ -77,7 +77,7 @@
 				<div class="inner">
 					<section class="name">
 						<img src="{{ person.getPictureUrl(38) }}" />
-						<h4><a href="">{{person.display_name}}</a></h4>
+						<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
 						<address>{{person.primary_email_address}}</address>
 					</section>
 					<section class="zones">

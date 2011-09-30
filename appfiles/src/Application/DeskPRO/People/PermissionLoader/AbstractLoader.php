@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Arrays;
@@ -28,12 +27,20 @@ abstract class AbstractLoader implements \Serializable
 	protected $usergroup_ids;
 
 	/**
-	 * @param int[] $usergroup_ids
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	public function __construct(array $usergroup_ids)
+	protected $person;
+
+	/**
+	 * @param int[] $usergroup_ids
+	 * @param \Application\DeskPRO\Entity\Person $person Optional person to fetch overrides for
+	 */
+	public function __construct(array $usergroup_ids, Person $person = null)
 	{
 		$this->usergroup_ids = $usergroup_ids;
 		sort($this->usergroup_ids, \SORT_NUMERIC);
+
+		$this->person = $person;
 
 		$this->init();
 	}

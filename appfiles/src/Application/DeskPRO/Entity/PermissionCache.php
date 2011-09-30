@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\People\PersonContextInterface;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -65,11 +67,14 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_usergroup_ids = null;
 
-	public static function newFromLoader(\Application\DeskPRO\People\PermissionLoader\AbstractLoader $loader)
+	public static function newFromLoader(\Application\DeskPRO\People\PermissionLoader\AbstractLoader $loader, $person_id = 0)
 	{
 		$obj = new self();
 		$obj['name'] = Util::getBaseClassname($loader);
 		$obj['usergroup_ids'] = $loader->getUsergroupIds();
+		if ($person_id && $loader instanceof PersonContextInterface) {
+			$obj->appendKeyId($person_id);
+		}
 		$obj->perms = $loader;
 
 		return $obj;
@@ -92,6 +97,11 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_usergroup_ids;
+	}
+
+	public function appendKeyId($id)
+	{
+		$this->setModelField('usergroup_key', $this->usergroup_key . $id);
 	}
 
 

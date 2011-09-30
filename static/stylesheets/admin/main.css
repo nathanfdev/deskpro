@@ -533,7 +533,7 @@ table.structure-list td.title a {
 
 table.structure-list { border:1px solid #ddd; }
 table.structure-list th+th,table.structure-list td+td{border-left:1px solid #ddd;}
-table.structure-list tr+tr td, tbody tr td {border-top:1px solid #ddd;}
+table.structure-list tr+tr td, table.structure-list tbody tr td {border-top:1px solid #ddd;}
 
 table.structure-list tbody.placeholder tbody,
 table.structure-list tbody.placeholder tr,
@@ -721,4 +721,105 @@ table.structure-list span.priority {
 
 .agent-listing > ul > li section.info ul li div.items {
 	display: inline;
+}
+
+
+
+
+/************************************************
+ * Agent Edit Page
+ ************************************************/
+
+.agent-edit #permission_type_switcher {
+	font-size: 18px;
+}
+
+.agent-edit table {
+	border-spacing: 0px;
+	border-collapse: separate;
+
+	background: rgb(227,229,231); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(227,229,231,1) 0%, rgba(195,199,203,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(227,229,231,1)), color-stop(100%,rgba(195,199,203,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(227,229,231,1) 0%,rgba(195,199,203,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(227,229,231,1) 0%,rgba(195,199,203,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, rgba(227,229,231,1) 0%,rgba(195,199,203,1) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e3e5e7', endColorstr='#c3c7cb',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, rgba(227,229,231,1) 0%,rgba(195,199,203,1) 100%); /* W3C */
+}
+
+/* table borders */
+.agent-edit table tbody:first-of-type tr:first-child td {
+	border-top: 2px solid #B7BABE !important;
+}
+.agent-edit table td:last-child {
+	border-right: 2px solid #B7BABE !important;
+}
+.agent-edit table tbody:last-of-type tr:last-child td:last-child {
+	border-bottom: 2px solid #B7BABE !important;
+}
+.agent-edit table tbody td:first-child {
+	border-left: 2px solid #B7BABE !important;
+}
+
+.agent-edit table td {
+	background-color: transparent;
+	text-align: center;
+	padding:  8px;
+}
+
+.agent-edit table {
+	border: 1px solid #ddd;
+	border-top:  none;
+	border-left: none;
+}
+
+.agent-edit table td:nth-child(1) {
+	background-color: #F9F9F9;
+	border-top-color: #CECECE;
+	text-align: left;
+}
+.agent-edit table td:nth-child(2) {
+	border-left: 1px solid #CECECE;
+	background-color: #F9F9F9;
+}
+
+.agent-edit table td:nth-child(3) {
+
+	background: -moz-linear-gradient(left, rgba(0,0,0,0.52) 0%, rgba(7,7,7,0) 3%, rgba(249,249,249,0) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0.52)), color-stop(3%,rgba(7,7,7,0)), color-stop(100%,rgba(249,249,249,0))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba(0,0,0,0.52) 0%,rgba(7,7,7,0) 3%,rgba(249,249,249,0) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba(0,0,0,0.52) 0%,rgba(7,7,7,0) 3%,rgba(249,249,249,0) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, rgba(0,0,0,0.52) 0%,rgba(7,7,7,0) 3%,rgba(249,249,249,0) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#85000000', endColorstr='#00f9f9f9',GradientType=1 ); /* IE6-9 */
+	background: linear-gradient(left, rgba(0,0,0,0.52) 0%,rgba(7,7,7,0) 3%,rgba(249,249,249,0) 100%); /* W3C */
+}
+
+.agent-edit table thead th {
+	background-color: #DFE5EB;
+}
+
+.agent-edit table thead th:nth-child(1),
+.agent-edit table thead th:nth-child(2) {
+	border-top: none;
+	background-color: #fff;
+	padding:  10px;
+}
+
+.agent-edit table tbody tr:last-child td {
+	border-bottom: 1px solid #AEB1B4; /* border bottom  of each group */
+}
+
+.agent-edit table tbody tr:first-child td {
+	border-top: 1px solid #E0E2E5; /* highlight of border bottom of group */
+}
+
+.agent-edit table tbody tr:last-child td:nth-child(1),
+.agent-edit table tbody tr:last-child td:nth-child(2) {
+	border-bottom: 1px solid #AEB1B4; /* left: border bottom  of each group */
+}
+
+.agent-edit table tbody tr:first-child td:nth-child(1),
+.agent-edit table tbody tr:first-child td:nth-child(2) {
+	border-top: 1px solid #F8F8F9; /* left: highlight of border bottom of group */
 }

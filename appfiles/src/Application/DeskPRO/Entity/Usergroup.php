@@ -75,43 +75,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	protected $sys_name = null;
 
 	/**
-	 * Properties attached to this usergroup
-	 *
-	 * @var Application\DeskPRO\Entity\UsergroupProperty
-	 * @ORM_Mapping\OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
-	 */
-	protected $properties;
-
-
-	public function __construct()
-	{
-		$this->properties = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	public function fromArray(array $values)
-	{
-		if (isset($values['permissions']) AND is_array($values['permissions'])) {
-			$em = App::getOrm();
-			foreach ($values['permissions'] as $name => $val) {
-				$prop = new \Application\DeskPRO\Entity\UsergroupPropertyPermission();
-				$prop['name'] = $name;
-				if (is_bool($val)) {
-					$prop['flag'] = $val;
-				} else {
-					$prop['data'] = $val;
-				}
-
-				$this->properties->add($prop);
-			}
-
-			unset($values['permissions']);
-		}
-
-		parent::fromArray($values);
-	}
-
-
-	/**
 	 * Generate a key for a set of usergroups. These same usergroups
 	 * will always generate the same key.
 	 *

@@ -118,37 +118,20 @@ class AgentsController extends AbstractController
 
 	public function editAgentAction($person_id)
 	{
-		$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-		$person->loadHelper('Agent');
+		$agent = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+		$agent->loadHelper('Agent');
 
-		$agent_form_model = new AdminFormModel\EditAgent($person);
-
-		$form = $this->get('form.factory')->create(new EditAgentType(), $agent_form_model);
-
-		$is_edited = false;
-		$row_html = false;
-		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				$is_edited = true;
-
-				App::getOrm()->beginTransaction();
-				$agent_form_model->persist();
-				App::getOrm()->flush();
-				App::getOrm()->commit();
-
-				// reset helper so it has correct ids etc
-				$person->getHelperManager()->removeHelper('Agent');
-				$person->loadHelper('Agent');
-
-				$row_html = $this->renderView('AdminBundle:Agents:list-agents-row.html.twig', array('person' => $person));
-			}
-		}
+		$all_usergroups = App::getOrm()->createQuery("
+			SELECT ug
+			FROM DeskPRO:Usergroup ug
+			WHERE ug.is_agent_group = true
+			ORDER BY ug.title ASC
+		")->execute();
 
 		return $this->render('AdminBundle:Agents:edit-agent.html.twig', array(
-			'person' => $person,
-			'form' => $form->createView()
+			'agent' => $agent,
+			'all_usergroups' => $all_usergroups,
+
 		));
 	}
 

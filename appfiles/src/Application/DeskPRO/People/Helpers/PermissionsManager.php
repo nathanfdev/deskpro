@@ -16,6 +16,8 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PermissionCache;
 
+use Application\DeskPRO\People\PersonContextInterface;
+
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
@@ -171,7 +173,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
-		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->queued_types);
+		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->id, $this->queued_types);
 
 		foreach ($caches as $cache) {
 			$loader = $cache->perms;
@@ -195,9 +197,13 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$class = $this->getLoaderClass($name);
 			$loader = new $class($this->usergroup_ids);
 
+			if ($loader instanceof PersonContextInterface) {
+				$loader->setPersonContext($this->person);
+			}
+
 			$this->loaders[strtolower($name)] = $loader;
 
-			$do_cache[] = PermissionCache::newFromLoader($loader);
+			$do_cache[] = PermissionCache::newFromLoader($loader, $this->person->id);
 		}
 
 		if ($do_cache) {
