@@ -266,9 +266,12 @@ body {
 }
 
 #dp_admin_pagetitle nav {
-	float: right;
-	position: relative;
-	top: -3px;
+	margin-top: 4px;
+}
+
+#dp_admin_pagetitle nav button {
+	font-size: 11px;
+	padding: 4px 12px 4px 14px;
 }
 
 #dp_admin_pagetitle h1 {
@@ -276,10 +279,25 @@ body {
 	color: #000;
 }
 
+#dp_admin_prepage {
+	position: relative;
+	top: -5px;
+	margin-right: 40px;
+	float: right;
+	width: 660px;
+	height: 52px;
+	overflow: hidden;
+}
+#dp_admin_prepage p {
+	margin-top: 10px;
+}
+#dp_admin_prepage p:first-child {
+	margin-top: 0;
+}
+
 .admin-help-header {
-    padding: 10px;
+    padding: 6px;
     margin: 0;
-    margin-bottom: 14px;
 
     background-color:#FFF1B2;
 	border:  1px solid #D3C893;
@@ -294,6 +312,49 @@ body {
     filter: dropshadow(color=#ffffff, offx=0, offy=1);
 
     position: relative;
+
+	font-size: 11px;
+	padding-right: 21px;
+}
+
+.admin-help-header .open-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 20px;
+	background-color: #CCC18F;
+
+}
+
+.admin-help-header .open-btn span {
+	font-size: 40px;
+	position: absolute;;
+	top: 26px;
+	z-index: 4;
+	cursor: pointer;
+}
+
+.admin-help-header .content {
+	position: relative;
+	z-index: 1;
+}
+
+.admin-help-header .bound-fade {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 80px;
+
+	z-index: 2;
+background: -moz-linear-gradient(top, rgba(255,241,178,0) 0%, rgba(255,241,178,0.1) 10%, rgba(255,241,178,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,241,178,0)), color-stop(10%,rgba(255,241,178,0.1)), color-stop(100%,rgba(255,241,178,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10%,rgba(255,241,178,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10%,rgba(255,241,178,1) 100%); /* Opera11.10+ */
+background: -ms-linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10%,rgba(255,241,178,1) 100%); /* IE10+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fff1b2', endColorstr='#fff1b2',GradientType=0 ); /* IE6-9 */
+background: linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10%,rgba(255,241,178,1) 100%); /* W3C */
 }
 
 .admin-help-header h3 {

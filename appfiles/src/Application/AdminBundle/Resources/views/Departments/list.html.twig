@@ -1,13 +1,16 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagetitle %}
+	<h1>Departments</h1>
 	<nav>
-		<button class="clean-white popout-trigger">Create New Department</button>
+		<button class="clean-white">Create New Department</button>
 	</nav>
-	Departments
 {% endblock %}
 {% block prepage %}
-	Departments are like global helpdesk categories that split up your resources into logical groups.
+    <p>The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include "Sales", "Support" and "Billing".</p>
+    <p>The department field controls the editor for tickets and chats. For each department you can configure different forms with different categories, priorities, workflows as well as custom fields.</p>
+	<p>The department field is used to configure permissions for both users and agents. Departments are global across tickets and chats; you can disable departments for a particular application if you wish. Those with the need for further granularity can create sub-departments.</p>
+	<p>Please note that DeskPRO requires at least one department enabled for tickets and chats. If you only have a single department enabled, the field will not be shown to users.</p>
 {% endblock %}
 {% block content %}
 <div class="dp-page-box">

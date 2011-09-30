@@ -7,13 +7,15 @@
 {% block page_js_exec %}
 {% endblock %}
 {% block pagetitle %}
+	<h1>Ticket Categories</h1>
 	<nav>
 		<button class="clean-white ">Create New Category</button>
 	</nav>
-	Ticket Categories
 {% endblock %}
 {% block prepage %}
-	Ticket categories are a basic grouping field.
+    <p>The primary grouping concept in DeskPRO is the department (and sub-departments). The second grouping concept is the category field. You only need to enable the category field if you require this further categorization of tickets.</p>
+
+    <p>Category choices can apply to all tickets or can be linked to tickets in specific departments. The category field is recommended when either all or some departments use the same choices. If you need a field that is only relevant to tickets of a certain department you will find it easier to manage by creating a custom field and linking that to the department in the editor.</p>
 {% endblock %}
 {% block content %}
 <div class="dp-page-box">
