@@ -76,7 +76,7 @@
 	<article>
 		<ul class="source-list" id="people_outline_org_list">
 			<li class="people nav-people">
-				<h3 class="title" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
+				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
 					<span class="list-counter">{{ org_count|default('0') }}</span>
 					Organizations
 				</h3>
@@ -86,7 +86,7 @@
 				<li
 					class="usergroup-{{id}} nav-usergroup-org-{{id}}"
 					data-usergroup-id="{{id}}"
-					data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
+					data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 				>
 					<h3 class="title">
 						<span class="list-counter">{{ org_usergroup_counts[id]|default(0) }}</span>
@@ -106,7 +106,7 @@
 		<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_org_tagcloud">
 			<ul>
 				{% for label,css_class in org_tag_cloud %}
-					<li class="{{css_class}}"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
+					<li class="{{css_class}}"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 				{% else %}
 					<li>You haven't labeled any tickets. Load a ticket to label it.</li>
 				{% endfor %}
@@ -120,7 +120,7 @@
 					<dd>
 						<ul>
 							{% for label in labels %}
-								<li><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
+								<li><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 							{% endfor %}
 						</ul>
 					</dd>
