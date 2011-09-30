@@ -162,6 +162,11 @@ class OrganizationController extends AbstractController
 				}
 				break;
 
+			case 'set-summary':
+				$org->summary = $this->in->getString('summary');
+				$this->em->persist($org);
+				break;
+
 			case 'delete-picture':
 				$org->picture_blob = null;
 				$this->em->persist($org);

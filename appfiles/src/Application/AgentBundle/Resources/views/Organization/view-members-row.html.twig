@@ -1,6 +1,10 @@
 <tr class="line-1 member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
 	<td>
-		<a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ person.display_name }}</a>
+		<a
+			class="as-popover tipped"
+			data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}"
+			title="{{ person.primary_email_address }}"
+		>{{ person.display_name }}</a>
 	</td>
 	<td>
 		{{ person.organization_position }}
