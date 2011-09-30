@@ -135,6 +135,27 @@ span.team-link, a.team-link {
 .with-scrollbar.scrollbar-disabled .viewport { position: static; }
 .with-scrollbar.scrollbar-disabled .scrollbar { display: none; }
 
+
+#dp_devbar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: rgba(0,0,0, 0.9);
+	padding: 3px 10px 5px 10px;
+	color: #fff;
+
+	border-radius: 0 0 0 8px;
+
+	height: 30px;
+	width: 400px;
+}
+
+#dp_devbar a {
+	color: #fff;
+	text-decoration: none;
+	cursor: pointer;
+}
+
 /*****************************************************************************
  * Misc styles
 /*****************************************************************************/
