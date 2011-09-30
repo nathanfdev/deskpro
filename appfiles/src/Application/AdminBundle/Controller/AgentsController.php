@@ -35,7 +35,7 @@ class AgentsController extends AbstractController
 
 		$all_agents = App::getOrm()->createQuery("
 			SELECT p
-			FROM DeskPRO:Person p
+			FROM DeskPRO:Person p INDEX BY p.id
 			LEFT JOIN p.usergroups u
 			WHERE p.is_agent = true
 			ORDER BY p.first_name, p.last_name
@@ -58,10 +58,16 @@ class AgentsController extends AbstractController
 			ORDER BY ug.title ASC
 		")->execute();
 
+		$team_member_ids      = App::getEntityRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
+		$usergroup_member_ids = App::getEntityRepository('DeskPRO:Usergroup')->getSortedAgentIds();
+
 		return $this->render('AdminBundle:Agents:list.html.twig', array(
-			'all_agents' => $all_agents,
-			'all_teams' => $all_teams,
-			'all_usergroups' => $all_usergroups
+			'all_agents'     => $all_agents,
+			'all_teams'      => $all_teams,
+			'all_usergroups' => $all_usergroups,
+
+			'team_member_ids'      => $team_member_ids,
+			'usergroup_member_ids' => $usergroup_member_ids,
 		));
 	}
 

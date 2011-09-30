@@ -1,74 +1,125 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'priorities' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentsList.js') }}"></script>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagetitle %}
+	<nav>
+		<button class="clean-white popout-trigger">Create Agent</button>
+	</nav>
+	Agents
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentsList();
-}
-</script>
+
+{% block sidebar_right %}
+	<div class="dp-page-box">
+		<div class="resource-item-list icon-group">
+			<header>
+				<div class="controls">
+					<button class="clean-white small">New</button>
+				</div>
+				<h4>Teams</h4>
+			</header>
+			<article>
+				<ul>
+					{% for team in all_teams %}
+						<li class="agent-team team-{{team.id}}" data-team-id="{{team.id}}">
+							<span class="title">{{team.name}}</span>
+							<div class="icon-list">
+								<ul>
+									{% for id in team_member_ids[team.id] %}
+										{% set agent = all_agents[id] %}
+										<li><img src="{{ agent.getPictureUrl(30) }}" class="tipped" title="{{ agent.display_name }}" /></li>
+									{% endfor %}
+								</ul>
+								<br class="clear" />
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</article>
+		</div>
+	</div>
+
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<div class="controls">
+					<button class="clean-white small">New</button>
+				</div>
+				<h4>Permission Groups</h4>
+			</header>
+			<article>
+				<ul>
+					{% for usergroup in all_usergroups %}
+						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{team.id}}">
+							<span class="title">{{usergroup.title}}</span>
+
+						</li>
+					{% endfor %}
+				</ul>
+			</article>
+		</div>
+	</div>
 {% endblock %}
+
 {% block content %}
+<div class="dp-page-box">
 
-<div style="float:left; width: 290px;">
-	<div class="table-list-wrap">
-		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_teams_new') }}" data-height="300" data-width="400">Create Team</a>
-		<h2>Teams</h2>
-		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
-			<tbody id="teams_rows">
-				{% for team in all_teams %}
-					{% include 'AdminBundle:Agents:list-teams-row.html.twig' %}
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+<div class="page-content agent-listing">
+	<ul>
+		{% for person in all_agents %}
+			<li class="agent person-{{agent.person.id}}" data-person-id="{{agent.person.id}}">
+				<div class="inner">
+					<section class="name">
+						<img src="{{ person.getPictureUrl(38) }}" />
+						<h4><a href="">{{person.display_name}}</a></h4>
+						<address>{{person.primary_email_address}}</address>
+					</section>
+					<section class="zones">
+						<ul>
+							<li class="agent">agent</li>
+							<li class="admin">admin</li>
+							<li class="reports">reports</li>
+							<li class="billing">billing</li>
+						</ul>
+					</section>
+					<section class="info">
+						<ul>
+							<li>
+								<label>Departments:</label>
+								<div class="items">
+									{% for dep in agent.departments %}
+										{{ dep.full_title }}{% if not loop.last %},{% endif %}
+									{% else %}
+										<em>None</em>
+									{% endfor %}
+								</div>
+							</li>
+							<li>
+								<label>Teams:</label>
+								<div class="items">
+									{% for team in person.agent.teams %}
+										{{ team.name }}{% if not loop.last %},{% endif %}
+									{% else %}
+										<em>None</em>
+									{% endfor %}
+								</div>
+							</li>
+							<li>
+								<label>Groups:</label>
+								<div class="items">
+									{% for usergroup in person.usergroups %}
+										{{ usergroup.title }}{% if not loop.last %},{% endif %}
+									{% else %}
+										<em>None</em>
+									{% endfor %}
+								</div>
+							</li>
+						</ul>
+					</section>
+					<br class="clear" />
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
+<div>
 
-	<br />
-
-	<div class="table-list-wrap">
-		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_groups_new') }}">Create Group</a>
-		<h2>Permission Groups</h2>
-		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
-			<tbody id="usergroups_rows">
-				{% for usergroup in all_usergroups %}
-					{% include 'AdminBundle:Agents:list-usergroups-row.html.twig' %}
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
 </div>
-
-<div class="table-list-wrap" style="margin-left: 300px;">
-	<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_new') }}">Create Agent</a>
-	<h2>Agents</h2>
-	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
-		<thead>
-			<tr>
-				<th>Agent</th>
-				<th>Teams</th>
-				<th>Zones</th>
-				<th>Departments</th>
-				<th>Permissions</th>
-				<th width="5">&nbsp;</th>
-			</tr>
-		</thead>
-		{% if grouping %}
-			{% for group in grouping %}
-				{% include 'AdminBundle:Agents:list-grouped-agents-row.html.twig' %}
-			{% endfor %}
-		{% else %}
-			<tbody>
-				{% for person in all_agents %}
-					{% include 'AdminBundle:Agents:list-agents-row.html.twig' %}
-				{% endfor %}
-			</tbody>
-		{% endif %}
-	</table>
-</div>
-
-<br class="clear" />
-
 {% endblock %}

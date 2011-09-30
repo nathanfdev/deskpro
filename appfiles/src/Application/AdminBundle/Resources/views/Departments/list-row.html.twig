@@ -80,7 +80,7 @@
 					No agents
 				{% else %}
 					{% if current_options[department.id].person %}
-						{{ current_options[department.id].person|length }} sgents{% if current_options[department.id].agent_team|length %},{% endif %}
+						{{ current_options[department.id].person|length }} agents{% if current_options[department.id].agent_team|length %},{% endif %}
 					{% endif %}
 					{% if current_options[department.id].agent_team %}
 						{{ current_options[department.id].agent_team|length }} teams

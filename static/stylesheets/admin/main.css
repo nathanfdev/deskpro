@@ -208,16 +208,43 @@ body {
 }
 
 #dp_admin_page {
-	border: 1px solid #CACFD6;
-	border-radius: 10px;
-	background-color: #fff;
 
-	box-shadow: 0px 0px 8px 1px rgba(255, 255, 255, 0.9);
 }
 
 #dp_admin_page {
 	color: #404040;
 }
+
+.dp-page-box {
+	border: 1px solid #CACFD6;
+	border-radius: 6px;
+	background-color: #fff;
+
+	box-shadow: 0px 0px 8px 1px rgba(255, 255, 255, 0.9);
+
+	margin-bottom: 10px;
+}
+
+#dp_admin_page_sidebar {
+	float: left;
+	width: 280px;
+}
+
+#dp_admin_page_sidebar_right {
+	float: right;
+	width: 280px;
+}
+
+#dp_admin_page.with-sidebar {
+	margin-left: 290px;
+}
+
+#dp_admin_page.with-sidebar-right {
+	margin-right: 290px;
+}
+
+
+
 
 #dp_admin_page p {
 	margin-bottom: 10px;
@@ -478,4 +505,159 @@ table.structure-list span.priority {
 	font-weight: normal;
 	position: relative;
 	top: 2px;
+}
+
+
+
+
+.resource-item-list {
+	margin: 6px;
+	margin-bottom: 15px;
+}
+
+.resource-item-list header {
+	border-bottom: 1px solid #D9DBDB;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+}
+
+.resource-item-list header .controls {
+	float: right;
+}
+
+.resource-item-list header h4 {
+	font-size: 15px;
+}
+
+.resource-item-list article > ul > li {
+	padding:  3px;
+}
+
+.resource-item-list article > ul > li  > .count {
+	margin-left: 5px;
+	padding: 0 2px 0 2px;
+	line-height: 100%;
+	background-color: #E2E6E6;
+	border-radius: 14px;
+	font-size: 9px;
+}
+.resource-item-list article > ul > li  > .title {
+	font-size: 12px;
+	font-weight: bold;
+	font-family: Helvetica, Arial;
+}
+
+.resource-item-list article .icon-list li {
+	float: left;
+	margin-right: 3px;
+}
+
+
+
+
+.agent-listing {
+	line-height: 100%;
+}
+
+.agent-listing > ul > li {
+	border-bottom: 1px solid #D9DBDB;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+
+	position: relative;
+	height: 38px;
+}
+
+.agent-listing > ul > li .inner {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 10px;
+	left: 0;
+}
+
+.agent-listing > ul > li section.name {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left: 0;
+	width: 250px;
+	overflow: hidden;
+}
+
+.agent-listing > ul > li section.name img {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.agent-listing > ul > li section.name h4  {
+	color: #000;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+	left: 42px;
+	width: 1000px;
+}
+
+.agent-listing > ul > li section.name address {
+	font-style: normal;
+	font-size: 11px;
+	color: #868889;
+
+	position: absolute;
+	left: 42px;
+	top: 16px;
+}
+
+
+.agent-listing > ul > li section.zones {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left: 255px;
+	width: 42px;
+}
+
+.agent-listing > ul > li section.zones ul li {
+	float: left;
+	width: 16px;
+	height: 16px;
+	background: url(../../images/icons/application_view_tile.png) no-repeat 0 0;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+	margin-right: 2px;
+}
+
+
+.agent-listing > ul > li section.info {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left: 302px;
+	right: 0;
+	overflow: hidden;
+	line-height: 100%;
+}
+
+.agent-listing > ul > li section.info ul {
+	width: 1000px;
+}
+
+.agent-listing > ul > li section.info ul li {
+	margin-bottom: 2px;
+	font-size: 10px;
+}
+
+.agent-listing > ul > li section.info ul li label {
+	font-weight: bold;
+	margin-right: 8px;
+	font-family: Helvetica, Arial;
+}
+
+.agent-listing > ul > li section.info ul li div.items {
+	display: inline;
 }

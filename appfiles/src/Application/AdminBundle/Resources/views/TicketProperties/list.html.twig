@@ -1,17 +1,5 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'properties' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketProperties.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketProperties();
-}
-</script>
-{% endblock %}
 {% block prepage %}
 	This page lets you customize the options displayed on the ticket form.
 {% endblock %}
@@ -22,6 +10,7 @@ function _page_exec() {
 	Ticket Fields
 {% endblock %}
 {% block content %}
+<div class="dp-page-box">
 
 {{ design.block_sections() }}
 
@@ -106,4 +95,5 @@ function _page_exec() {
 
 {{ design.block_sections_end() }}
 
+</div>
 {% endblock %}

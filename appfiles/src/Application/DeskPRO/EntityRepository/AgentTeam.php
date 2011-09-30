@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -83,6 +84,10 @@ class AgentTeam extends EntityRepository
 
 	public function getMemberIds($team_id)
 	{
+		if ($team_id instanceof AgentTeamEntity) {
+			$team_id = $team_id->id;
+		}
+
 		if (!is_array($team_id)) {
 			$agent_ids = App::getDb()->fetchAllCol("
 				SELECT person_id
@@ -98,6 +103,38 @@ class AgentTeam extends EntityRepository
 		}
 
 		return $agent_ids;
+	}
+
+	/**
+	 * Get all agents of all teams, and sort them into an array keyed
+	 * by team: array('teamid' => array('agentid', 'agentid'))
+	 *
+	 * @return array
+	 */
+	public function getSortedMemberIds()
+	{
+		return App::getDb()->fetchAllGrouped("
+			SELECT team_id, person_id
+			FROM agent_team_members
+		", array(), 'team_id', null, 'person_id');
+	}
+
+	public function getMembers($team)
+	{
+		$agent_ids = $this->getMemberIds($team);
+		if (!$agent_ids) {
+			return array();
+		}
+
+		$agent_ids = implode(',', $team);
+
+		$agents = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE p.id IN ($agent_ids)
+		")->execute();
+
+		return $agents;
 	}
 
 

@@ -1,12 +1,5 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralSortableList.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-</script>
-{% endblock %}
 {% block pagetitle %}
 	<nav>
 		<button class="clean-white ">Create New Workflow</button>
@@ -18,6 +11,8 @@
 	be in outside of the usual helpdesk status. For example, "Waiting for funds."
 {% endblock %}
 {% block content %}
+<div class="dp-page-box">
+
 <div class="page-content">
 	{{ design.structure_table({'no_reorder': true}) }}
 		{% for workflow in all_workflows %}
@@ -26,4 +21,5 @@
 	{{ design.structure_table_end() }}
 </div>
 
+</div>
 {% endblock %}

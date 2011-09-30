@@ -143,6 +143,23 @@ class Usergroup extends EntityRepository
 
 
 	/**
+	 * Get all agents of all teams, and sort them into an array keyed
+	 * by team: array('teamid' => array('agentid', 'agentid'))
+	 *
+	 * @return array
+	 */
+	public function getSortedAgentIds()
+	{
+		return App::getDb()->fetchAllGrouped("
+			SELECT person2usergroups.usergroup_id, person2usergroups.person_id
+			FROM person2usergroups
+			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
+			WHERE usergroups.is_agent_group = 1
+		", array(), 'usergroup_id', null, 'person_id');
+	}
+
+
+	/**
 	 * Invalidates caches
 	 */
 	public function invalidateCaches()

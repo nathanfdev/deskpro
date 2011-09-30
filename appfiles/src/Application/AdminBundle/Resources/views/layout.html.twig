@@ -169,8 +169,8 @@
 			<li data-menu="#server_menu">
 				<a><span class="ticketNavIcon">Server</span></a>
 			</li>
-			<li data-menu="#agents_menu">
-				<a><span class="peopleNavIcon">Agents</span></a>
+			<li>
+				<a href="{{ path('admin_agents') }}"><span class="peopleNavIcon">Agents</span></a>
 			</li>
 			<li data-menu="#users_menu">
 				<a><span class="peopleNavIcon">Users</span></a>
@@ -203,7 +203,16 @@
 	<div id="dp_admin_prepage" class="admin-help-header">{{ prepage|raw }}</div>
 {% endif %}
 
-<div id="dp_admin_page">{% block content %}{% endblock %}</div>
+{% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
+{% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
+{% if sidebar|trim|length %}
+	<div id="dp_admin_page_sidebar">{{ sidebar|raw }}</div>
+{% endif %}
+{% if sidebar_right|trim|length %}
+	<div id="dp_admin_page_sidebar_right">{{ sidebar_right|raw }}</div>
+{% endif %}
+
+<div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %}">{% block content %}{% endblock %}</div>
 
 {% include 'AdminBundle:Main:layout-menus.html.twig' %}
 
