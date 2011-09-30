@@ -1,8 +1,8 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
+	<tr class="row-item {% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
 		<td class="check-all" style="vertical-align: middle;">
-			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+			<input type="checkbox" value="{{ticket.id}}" class="ticket item-select" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
 		</td>
 		<td class="subject">
 			<a
@@ -120,6 +120,5 @@
 			{% endif %}
 		{% endif %}{% endfor %}
 	</tr>
-	<tr class="ticket-{{ticket.id}} line-3 urgency-{{ticket.rounded_urgency}}" style="display:none"><td colspan="{{display_fields|length + 2}}"><ul></ul></td></tr>
 {% endfor %}
 </tbody>

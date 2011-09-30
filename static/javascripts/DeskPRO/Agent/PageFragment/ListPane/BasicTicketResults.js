@@ -7,23 +7,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.parent();
 		this.wrapper = null;
 		this.contentWrapper = null;
-		this.barWrapper = null;
 		this.layout = null;
 		this.overlay = null;
 		this.appendUrl = null;
 
-		this.actionsBarHelper = null;
-
 		this.resultTypeName = 'basic';
 		this.resultTypeId = 'general';
-
-		this.changeManager = null;
-
-		this.loadFirst = false;
 	},
 
 	initPage: function(el) {
-
 		var self = this;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
@@ -48,102 +40,22 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			});
 		}).bind(this));
 
-		this.loadFirst = this.getMetaData('loadFirst');
-		if (this.loadFirst) {
-			this.loadFirst = false;
-
-			var a = $('td.subject:first a.with-route:first', el);
-			if (a.length) {
-				DeskPRO_Window.runPageRouteFromElement(a);
-			}
-		}
-
 		this.wrapper = $(el);
-		this.topSection = $('.list-top-area', this.wrapper);
-		this.barWrapper = $('div.layout-footer:first', this.wrapper);
-
-		if (!this.barWrapper.length) {
-			var grid = false;
-			var mock_bottom = true;
-		} else {
-			var grid = true;
-			var mock_bottom = false;
-		}
-
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
 
-		if (grid) {
-			this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
-				table: $('table:first', this.contentWrapper).get(0),
-				onlyRowSel: '.line-2',
-				onlyRowColOffset: 2
+		if (this.meta.viewType != 'list') {
+			var cw = this.contentWrapper;
+			cw.tinyscrollbar();
+			var self = this;
+			$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+				cw.tinyscrollbar_update();
+				self.fireEvent('resized');
 			});
-
-			this.listColResize = new DeskPRO.Agent.PageHelper.ListColResize({
-				table: $('table:first', this.contentWrapper).get(0)
-			});
-
-			var center_id = Orb.getUniqueId('listpane_');
-			var south_id = Orb.getUniqueId('listpane_');
-
-			this.contentWrapper.attr('id', center_id);
-			this.barWrapper.attr('id', south_id);
-
-			if (mock_bottom) {
-				this.layout = {
-					wrapper: this.wrapper,
-					paneWrapper: this.wrapper.parent(),
-					content: this.contentWrapper,
-					footer: $(),
-					isFooterOpen: false,
-					doLayout: function() {},
-					expandFooter: function() {},
-					collapseFooter: function() {}
-				};
-			} else {
-				this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
-			}
 		}
-
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		var self = this;
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			cw.tinyscrollbar_update();
-			self.fireEvent('resized');
-		});
-
-		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
-
 		this._initDisplayOptions();
 		this._initFlagMenu();
 		this._initGroupingOptions();
-		this._initSearchOptions();
 
-		if (grid) {
-			if (mock_bottom) {
-				this.actionsBarHelper = {
-					page: null,
-					wrapper: null,
-					contentWrapper: null,
-					tableEl: null,
-					selectedActionData: null,
-					ticketBar: null,
-					barWrapper: null,
-					initOverlay: function() {},
-					getSelectedTicketIds: function() { },
-					setActiveTable: function() {},
-					handleTicketCheckClick: function() {},
-					updateCount: function() {},
-					applyActions: function() {},
-					toggleMacroApplyBtn: function() {},
-					saveActions: function() {}
-				};
-			} else {
-				this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
-				this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
-			}
-		}
 		this.initFeaturesOnCollection(el, {
 			routes: ['.with-route'],
 			times: ['.timeago']
@@ -154,21 +66,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			$('.no-more-results', this.contentWrapper).show();
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', function() {
-			this._handleResize()
-		}, this);
-
-		if (this.getMetaData('isNewRecentSearch')) {
-			DeskPRO_Window.getMessageBroker().sendMessage('agent.new-recent-search');
-		}
-
 		this.performActionsBtn = $('.perform-actions-trigger', this.wrapper);
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+		var opt = {
 			onButtonClick: function() {
 				self.massActions.open();
 			}
-		});
+		};
+		if (this.meta.viewType == 'list') {
+			opt.selectionBar = $('.selection-bar', el);
+		}
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, opt);
 		this.ownObject(this.selectionBar);
 
 		var m = new DeskPRO.UI.Menu({
@@ -184,10 +92,16 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			});
 		}
 
-		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, {
+		var opt = {
 			resultIds: this.meta.ticketResultIds,
 			perPage: this.meta.perPage || 50
-		});
+		};
+		if (this.meta.viewType == 'list') {
+			opt.resultRowSelector = 'tr.row-item';
+			opt.resultsContainer = $('.table-result-list table', el);
+			opt.navEl = $('.bottom-action-bar', el);
+		}
+		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
 
 		// We dont need them anymore, and resultsHelper
@@ -196,7 +110,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		delete this.meta.ticketResultIds;
 
 		this.massActions = new DeskPRO.Agent.TicketList.MassActions.Widget(this, {
-
+			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
 		this.ownObject(this.massActions);
 	},
@@ -384,21 +298,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		var self = this;
 
-		// View type switcher
-		if (this.meta.viewTypeUrl) {
-			var switcher = $('nav.mode-buttons:first', this.contentWrapper);
-			var self = this;
-			$('li:not(.on)', switcher).click(function(ev) {
-				ev.preventDefault();
-				var view_type = $(this).data('view-type');
-				self.switchViewType(view_type);
-			});
-		}
+		$('.detail-view-trigger', this.contentWrapper).click(function() {
+			self.switchViewType('list');
+		});
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'ticket-' + this.resultTypeName,
 			resultId: this.resultTypeId,
-			refreshUrl: this.meta.refreshUrl
+			refreshUrl: this.meta.refreshUrl,
+			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
 		this.ownObject(this.displayOptions);
 
@@ -485,6 +393,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 						page.setMetaData('routeUrl', new_url);
 						page.setMetaData('pageReloader', pageReloader);
+						page.setMetaData('overlay', overlay);
 
 						contentEl.html(page.html);
 						page.fireEvent('render', [contentEl]);

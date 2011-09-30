@@ -233,7 +233,7 @@ class TicketSearchController extends AbstractController
 
 		$tpl = 'part-results-simple-ext.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
-			$tpl = 'part-results-simple-ext.html.twig';
+			$tpl = 'part-results-list.html.twig';
 		}
 
 		return $this->render("AgentBundle:TicketSearch:$tpl", array(

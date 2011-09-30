@@ -227,7 +227,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 */
 	updateShowingCount: function() {
 		this.showingCount = $(this.options.resultRowSelector, this.resultsContainer).length;
-		this.showingCountEl.empty().text(this.showingCount);
+		this.showingCountEl.empty().text(this.showingCount + '');
 
 		this.fireEvent('showingCountUpdated', [this.showingCount, this.showingCountEl, this]);
 	},

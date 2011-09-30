@@ -150,6 +150,11 @@ span.team-link, a.team-link {
     z-index: 100000;
 }
 
+.backdrop.fade {
+	background: #fff;
+	opacity: 0.6;
+}
+
 .left { float: left; }
 .right { float: right; }
 .clear {

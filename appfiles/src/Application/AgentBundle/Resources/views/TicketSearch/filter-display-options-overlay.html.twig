@@ -1,13 +1,15 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
-	Order By: <select name="order_by" class="sel-order-by">
-		<option class="urgency" value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
-		<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
-		<option class="date_created" value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
-		<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
-		<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-		<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
-	</select>
+	<div style="display: none">
+		Order By: <select name="order_by" class="sel-order-by">
+			<option class="urgency" value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
+			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
+			<option class="date_created" value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+			<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+			<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+		</select>
+	</div>
 {% endblock %}
 {% block display_elements_list %}
 	{% if show_deleted_reason %}

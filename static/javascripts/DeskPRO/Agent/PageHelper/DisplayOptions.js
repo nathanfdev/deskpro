@@ -118,16 +118,70 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		// We reload the same page which will have changes applied
 		var url = this.options.refreshUrl;
 
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/misc/ajax-save-prefs',
-			data: data,
-			context: this,
-			success: function() {
-				DeskPRO_Window.loadListPane(url);
+		if (this.options.isListView) {
+
+			var thisoverlay = this;
+
+			if (this.page.meta.overlay) {
+				this.page.meta.overlay.close();
 			}
-		});
+
+			var w = $(window).width() - 100;
+			var h = $(window).height() - 100;
+
+			var contentEl = $('<div>Loading...</div>');
+			contentEl.width(w);
+			contentEl.height(h);
+			contentEl.css('overflow', 'auto');
+
+			var overlay = new DeskPRO.UI.Overlay({
+				contentElement: contentEl,
+				destroyOnClose: true,
+				customClassname: 'no-padding',
+				maxWidth: w,
+				maxHeight: h
+			});
+			overlay.openOverlay();
+
+			var pageReloader = function(new_url) {
+				$.ajax({
+					timeout: 20000,
+					type: 'GET',
+					url: new_url,
+					dataType: 'html',
+					success: function(html) {
+
+						thisoverlay.destroy();
+
+						if (overlay.isDestroyed()) {
+							return;
+						}
+
+						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+						page.setMetaData('routeUrl', new_url);
+						page.setMetaData('pageReloader', pageReloader);
+						page.setMetaData('overlay', overlay);
+
+						contentEl.html(page.html);
+						page.fireEvent('render', [contentEl]);
+						page.fireEvent('activate');
+					}
+				});
+			}
+
+			pageReloader(url);
+		} else {
+			$.ajax({
+				timeout: 20000,
+				type: 'POST',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
+				data: data,
+				context: this,
+				success: function() {
+					DeskPRO_Window.loadListPane(url);
+				}
+			});
+		}
 	},
 
 	open: function() {
