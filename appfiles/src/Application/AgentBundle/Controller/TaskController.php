@@ -93,4 +93,22 @@ class TaskController extends AbstractController
             ));
 	}
 
+<<<<<<< HEAD
+=======
+        public function createAction()
+        {
+            $task = new Task();
+            $form = $this->get('form.factory')->create(new NewTask(), $employee);
+            return $this->_process($form, $task);
+        }
+
+        private function _process($form, $task)
+        {
+            $request = $this->get('request');
+            $form->bindRequest($request); print $request; exit;            
+            //print $task->getTitle(); exit;
+            return new Response('ok');
+        }
+
+>>>>>>> e0d18f6... edit the task controller to remobe print method
 }
