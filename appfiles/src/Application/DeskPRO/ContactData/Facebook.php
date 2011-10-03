@@ -27,6 +27,7 @@ class Twitter extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
+		$contact_record->comment = $input['comment'];
 		$contact_record->field_1 = $input['profile_url'];
 
 		if (preg_match('#/profile\.php?id=([0-9]+)#', $input['profile_url'], $m)) {
@@ -48,6 +49,7 @@ class Twitter extends AbstractContactData
 	public function getTemplateVars(ContactDataAbstract $contact_record)
 	{
 		return array(
+			'comment'     => $contact_record->comment,
 			'profile_url' => $contact_record->field_1,
 			'display'     => $contact_record->field_2
 		);

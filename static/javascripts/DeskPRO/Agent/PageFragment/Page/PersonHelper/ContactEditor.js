@@ -10,6 +10,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		var self = this;
 
 		this.options = {
+			displayEl: null,
+			outsideEl: null,
 			saveUrl: ''
 		};
 
@@ -21,6 +23,16 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		this.page.addEvent('destroy', this.destroy, this);
 
 		this.initEditorOverlay();
+
+		var displayEl = $(self.options.displayEl || '.contact-list-wrapper', self.wrapper);
+		var outsideEl = $(self.options.outsideEl);
+		if ($('div.outside-html', displayEl)) {
+			var outside = $('div.outside-display', displayEl).detach();
+		} else {
+			var outside = $('<div/>');
+		}
+
+		outsideEl.empty().append(outside);
 	},
 
 	replaceEditorOverlay: function(html) {
@@ -50,7 +62,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.contactOverlay = new DeskPRO.UI.Overlay({
 			customClassname: 'profile-contact-editor',
-			triggerElement: $('.contact-edit:first', this.wrapper),
+			triggerElement: $('.contact-edit', this.wrapper),
 			contentElement: contactEditor
 		});
 
@@ -65,7 +77,22 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				data: formData,
 				success: function(data) {
 					self.contactOverlay.close();
-					$('.contact-list-wrapper', self.wrapper).empty().html(data.display_html);
+					var displayEl = $(self.options.displayEl || '.contact-list-wrapper', self.wrapper);
+					var outsideEl = $(self.options.outsideEl);
+					var newHtml = $(data.display_html);
+
+					if ($('div.outside-html', newHtml)) {
+						var outside = $('div.outside-display', newHtml).detach();
+					} else {
+						var outside = $('<div/>');
+					}
+
+					displayEl.empty().append(newHtml);
+					outsideEl.empty().append(outside);
+
+					DeskPRO_Window.initInterfaceServices(displayEl);
+					DeskPRO_Window.initInterfaceServices(outsideEl);
+
 					self.replaceEditorOverlay(data.editor_overlay_html);
 				}
 			});

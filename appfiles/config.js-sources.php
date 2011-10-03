@@ -128,6 +128,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
 		'javascripts/DeskPRO/ElementHandler.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',

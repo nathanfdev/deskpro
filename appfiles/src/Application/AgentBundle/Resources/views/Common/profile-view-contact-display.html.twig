@@ -105,3 +105,26 @@
 {% endif %}
 
 {% block post_extra %}{% endblock %}
+
+<div class="outside-display">
+	{% if not show_only or show_only.twitter %}
+	{% for contact in contact_data.twitter %}
+		{% if contact.display_feed %}
+		{# Box Contact #}
+		<div class="profile-box-container tweets" style="display: none;" data-element-handler="DeskPRO.Agent.ElementHandler.TwitterFeed" data-twitter-username="{{ contact.username }}">
+			<header>
+				<h4>@<a href="{{ contact.profile_url }}" target="_blank">{{ contact.username }}</a></h4>
+			</header>
+			<section>
+				<ul class="twitter-list"></ul>
+				<script type="text/x-deskpro-plain" class="twitter-list-item-tpl">
+					<li>
+						<span class="tweet"></span>
+					</li>
+				</script>
+			</section>
+		</div>
+		{% endif %}
+	{% endfor %}
+	{% endif %}
+</div>

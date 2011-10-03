@@ -5,12 +5,14 @@
 		<h4>Contact Information</h4>
 	</header>
 	<section>
-		<div class="table-content contact-list contact-list-wrapper">
+		<div class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display">
 			{% include 'AgentBundle:Person:view-contact-display.html.twig' %}
 		</div>
 	</section>
 </div>
 {# /Box Contact #}
+
+<div id="{{baseId}}_contact_outside"></div>
 
 {# Organization Box #}
 <div class="profile-box-container summary">

@@ -435,6 +435,7 @@ class PersonController extends AbstractController
 		$this->em->beginTransaction();
 
 		// Editing emails
+		$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
 		foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
 			if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
 				if (!$email) {
@@ -442,14 +443,17 @@ class PersonController extends AbstractController
 					$person->emails->remove($email_id);
 				} else {
 					$person->emails[$email_id]->email = $email;
+					$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
 					$this->em->persist($person->emails[$email_id]);
 				}
 			}
 		}
 
 		// Adding emails
-		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $email) {
+		$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
 			$email_rec = $person->addEmailAddressString($email);
+			$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
 			$this->em->persist($email_rec);
 		}
 

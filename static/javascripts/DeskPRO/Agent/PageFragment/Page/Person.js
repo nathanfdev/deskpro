@@ -19,7 +19,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var cw = this.contentWrapper;
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json'
+			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
+			displayEl: this.getEl('contact_display'),
+			outsideEl: this.getEl('contact_outside')
 		});
 		this.ownObject(this.contactEditor);
 

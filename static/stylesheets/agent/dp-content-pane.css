@@ -1321,6 +1321,19 @@ ul.activity-stream time {
 	margin-top: 0;
 }
 
+.profile-box-container ul.twitter-list li {
+	border-bottom: 1px solid #CAD0D7;
+	padding:  4px;
+	font-size: 10px;
+	padding-bottom: 4px;
+	margin-bottom: 4px;
+}
+
+.profile-box-container ul.twitter-list li:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
 .property-col .profile-box-container dt {
 	font-size: 9px;
 }
@@ -1475,7 +1488,6 @@ ul.activity-stream time {
 	width: 40%;
 	margin: 2px;
 	padding: 1px;
-	display: block;
 }
 
 .contact-edit-list li textarea {
@@ -1500,6 +1512,19 @@ ul.activity-stream time {
 
 .contact-edit-list li .input {
 	margin-left: 65px;
+}
+
+.contact-edit-list li .input .label {
+	float: left;
+	width: 80px;
+}
+
+.contact-edit-list li .input .label input {
+	width: 75px;
+}
+
+.contact-edit-list li .input .field {
+	margin-left: 85px;
 }
 
 .contact-edit-list li .remove {

@@ -195,24 +195,18 @@ agent_people_ajaxsave:
   defaults: { _controller: AgentBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
+agent_people_savecontactdata:
+  pattern: /people/{person_id}/save-contact-data.json
+  defaults: { _controller: AgentBundle:Person:saveContactData }
+
 agent_people_changepicoverlay:
   pattern: /people/{person_id}/change-picture-overlay
   defaults: { _controller: AgentBundle:Person:changePictureOverlay }
   requirements: { person_id: "\d+" }
 
-agent_people_savecontactdata:
-  pattern: /people/{person_id}/save-contact-data.json
-  defaults: { _controller: AgentBundle:Person:saveContactData }
-  requirements: { person_id: "\d+" }
-
 agent_people_ajaxsave_emails:
   pattern: /people/{person_id}/ajax-save-emails
   defaults: { _controller: AgentBundle:Person:ajaxSaveEmails }
-  requirements: { person_id: "\d+" }
-
-agent_people_ajaxsave_contact:
-  pattern: /people/{person_id}/ajax-save-contact
-  defaults: { _controller: AgentBundle:Person:ajaxSaveContact }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_note:
@@ -321,7 +315,7 @@ agent_org_ajaxsave:
   defaults: { _controller: AgentBundle:Organization:ajaxSave }
   requirements: { organization_id: "\d+" }
 
-agent_people_savecontactdata:
+agent_org_savecontactdata:
   pattern: /organizations/{organization_id}/save-contact-data.json
   defaults: { _controller: AgentBundle:Organization:saveContactData }
   requirements: { person_id: "\d+" }

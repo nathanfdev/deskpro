@@ -1815,6 +1815,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		DeskPRO.ElementHandler_Exec(context);
+
 		$('.timeago', context).timeago();
 	}
 });

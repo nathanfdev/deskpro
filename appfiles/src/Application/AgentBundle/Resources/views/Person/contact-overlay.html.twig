@@ -4,7 +4,12 @@
 		<li class="email" data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}">
 			<div class="type">Email</div>
 			<div class="input">
-				<input type="text" size="15" name="emails[{{ email.id }}]" value="{{ email.email }}" />
+				<div class="label">
+					<input type="text" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="Label" />
+				</div>
+				<div class="field">
+					<input type="text" name="emails[{{ email.id }}]" value="{{ email.email }}" />
+				</div>
 			</div>
 			<div class="remove">-</div>
 		</li>
@@ -18,7 +23,12 @@
 		<li class="email new">
 			<div class="type">Email</div>
 			<div class="input">
-				<input type="text" name="new_emails[]" value="" />
+				<div class="label">
+					<input type="text" name="new_emails_comment[]" value="" placeholder="Label" />
+				</div>
+				<div class="field">
+					<input type="text" name="new_emails[]" value="" placeholder="Email address" />
+				</div>
 			</div>
 			<div class="remove">-</div>
 		</li>
