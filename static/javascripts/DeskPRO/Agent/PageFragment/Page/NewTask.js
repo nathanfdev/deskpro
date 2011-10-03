@@ -23,7 +23,17 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
                 url: $('form#newTaskForm').attr('action'),
                 datataType: 'json',
                 success: function(data){
+<<<<<<< HEAD
                     alert(data);
+=======
+                    if (data.success) {
+                        DeskPRO_Window.runPageRoute('task:' + BASE_URL + 'agent/tasks/'+ data.task_id);
+                        DeskPRO_Window.newTaskLoader.toggle();
+                    } else{
+                        alert('There was an error with the form');
+                    }
+
+>>>>>>> e292b09... add view action in controller and the add view route
                 }
             });
 >>>>>>> 28926c9... add new css file for task view

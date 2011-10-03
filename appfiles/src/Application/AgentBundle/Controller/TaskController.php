@@ -102,9 +102,15 @@ class TaskController extends AbstractController
             return $this->_process($form, $task);
         }
 
-        private function _process($form, $task)
+        public function viewAction($task_id = null)
+        {
+            return $this->render('AgentBundle:Task:view.html.twig');
+        }
+
+        private function _process($form, $task) 
         {
             $request = $this->get('request');
+<<<<<<< HEAD
             $form->bindRequest($request); 
 <<<<<<< HEAD
 =======
@@ -112,6 +118,22 @@ class TaskController extends AbstractController
             $this->_entityManager->flush();
 >>>>>>> e969e50... task info now saved in DB
             return new Response('ok');
+=======
+            $form->bindRequest($request);
+            try {
+                $this->_entityManager->persist($task);
+                $this->_entityManager->flush();
+                //$this->_entityManager->refresh($task);
+                return $this->createJsonResponse(array(
+                    'success' => true,
+                    'task_id' => $task->getId()
+                ));
+            } catch (\Doctrine\ORM\NoResultException $e) {
+                return $this->createJsonResponse(array(
+                    'success' => false
+                ));
+            }
+>>>>>>> e292b09... add view action in controller and the add view route
         }
 
 >>>>>>> e0d18f6... edit the task controller to remobe print method
