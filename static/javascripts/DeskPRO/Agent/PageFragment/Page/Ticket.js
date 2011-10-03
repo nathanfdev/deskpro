@@ -39,7 +39,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		var self = this;
-		this._initMessage($('div.messages-wrap'));
+		this._initMessage($('article.messages-wrap'));
 
 		if (!this.meta.isDeleted) {
 			this._initTicketActionsMenu();
@@ -75,24 +75,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		var showMessages = $('input.show-messages', this.wrapper);
+		var showAttach = $('input.show-attach', this.wrapper);
 		var showNotes = $('input.show-notes', this.wrapper);
 		var showLogs = $('input.show-logs', this.wrapper);
-		var msgWrap = $('.messages-wrap', this.wrapper);
+		var msgWrap = this.getEl('messages_wrap');
 
 		function updateMessageTypes() {
 			var messages = showMessages.is(':checked');
 			var notes = showNotes.is(':checked');
 			var logs = showLogs.is(':checked');
+			var attach = showAttach.is(':checked');
 
 			if (!messages && !notes && !logs) {
 				messages = true;
 				showMessages.attr('checked', true);
 			}
 
-			if (messages) {
-				$('div.message:not(.note-message)', msgWrap).show();
+			if (attach) {
+				$('.attachment-list', msgWrap).show();
 			} else {
-				$('div.message:not(.note-message)', msgWrap).hide();
+				$('.attachment-list', msgWrap).hide();
+			}
+
+			if (messages) {
+				$('article.message:not(.note-message)', msgWrap).show();
+			} else {
+				if (attach) {
+					$('article.message:not(.note-message, .with-attach)', msgWrap).hide();
+				} else {
+					$('article.message:not(.note-message)', msgWrap).hide();
+				}
 			}
 			if (notes) {
 				$('div.note-message', msgWrap).show();
@@ -108,7 +120,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		};
 
-		$('.message-controls input', this.wrapper).click(function() {
+		$('.tickets-msg-controls input', this.wrapper).click(function() {
 			updateMessageTypes();
 		});
 
@@ -218,15 +230,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
 
 			var showMessages = $('input.show-messages', this.wrapper).is(':checked');
+			var showAttach = $('input.show-attach', this.wrapper).is(':checked');
 			var showNotes = $('input.show-notes', this.wrapper).is(':checked');
 			var showLogs = $('input.show-logs', this.wrapper).is(':checked');
 
-			console.log($('input.show-logs', this.wrapper));
-
 			var msgWrap = $('.messages-wrap', this.wrapper);
 
+			if (!showAttach) {
+				$('.attachment-list', new_messages).hide();
+			}
+
 			if (!showMessages) {
-				new_messages.find('div.message:not(.note-message)').hide();
+				new_messages.find('article.message:not(.note-message)').hide();
+				if (showAttach) {
+					new_messages.find('article.message.has-attach').hide();
+				}
 			}
 			if (!showNotes) {
 				new_messages.find('div.note-message').hide();
@@ -292,7 +310,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					sel = $(this).data('set');
 				}
 
-				var expandEl = $(sel, messageEl);
+				var expandEl = $(sel, el);
 				if (expandEl.is(':visible')) {
 					expandEl.slideUp();
 					expandBtn.removeClass('open');

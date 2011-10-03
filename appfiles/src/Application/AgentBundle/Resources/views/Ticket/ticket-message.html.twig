@@ -1,5 +1,5 @@
 <article
-	class="content-message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %}"
+	class="content-message message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %}"
 	data-message-id="{{message.id}}"
 >
 	<div class="avatar">

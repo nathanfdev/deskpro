@@ -196,10 +196,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <section class="main-content">
 	<ul class="tickets-msg-controls">
 		<li><label><input type="checkbox" class="show-messages" checked="checked" />Show messages</label></li>
+		<li><label><input type="checkbox" class="show-attach" checked="checked" />Show attachments</label></li>
 		<li><label><input type="checkbox" class="show-notes" checked="checked" />Show notes</label></li>
 		<li><label><input type="checkbox" class="show-logs" />Show logs</label></li>
 	</ul>
-	<br class="clear" />
 
 	<div class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
