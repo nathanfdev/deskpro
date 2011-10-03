@@ -77,5 +77,11 @@ DeskPRO.IntervalCaller = new Orb.Class({
 
 	execNow: function() {
 		this.exec();
+	},
+
+	destroy: function() {
+		this.stop();
+		this.options = null;
+		this.lastTime = null;
 	}
 });

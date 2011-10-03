@@ -177,29 +177,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
-		this.getEl('save_summary').click(function() {
-			var btn = $(this);
-			var summary = summaryTxt.val();
-			var postData = [];
-			postData.push({
-				name: 'action',
-				value: 'set-summary'
-			});
-			postData.push({
-				name: 'summary',
-				value: summary
-			});
-
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-				type: 'POST',
-				data: postData,
-				dataType: 'json',
-				success: function(data) {
-					DeskPRO_Window.util.showSavePuff(btn );
-				}
-			});
+		this.summaryAutoSave = new DeskPRO.Agent.PageHelper.AutoSave({
+			field: summaryTxt,
+			fieldName: 'summary',
+			url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+			postData: [{ name: 'action', value: 'set-summary'}]
 		});
+		this.ownObject(this.summaryAutoSave);
 	},
 
 	//#########################################################################
