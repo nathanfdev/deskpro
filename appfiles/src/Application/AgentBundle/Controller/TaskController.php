@@ -97,16 +97,15 @@ class TaskController extends AbstractController
 =======
         public function createAction()
         {
-            $task = new Task();
-            $form = $this->get('form.factory')->create(new NewTask(), $employee);
+            $task = new Task(); 
+            $form = $this->get('form.factory')->create(new NewTask(), $task); 
             return $this->_process($form, $task);
         }
 
         private function _process($form, $task)
         {
             $request = $this->get('request');
-            $form->bindRequest($request); print $request; exit;            
-            //print $task->getTitle(); exit;
+            $form->bindRequest($request); 
             return new Response('ok');
         }
 

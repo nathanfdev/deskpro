@@ -795,6 +795,16 @@ agent_task_new:
   defaults: { _controller: AgentBundle:Task:new }
   options: { fragment_name: 'nt' }
 
+<<<<<<< HEAD
+=======
+agent_task_save:
+  pattern: /tasks/save
+  defaults: { _controller: AgentBundle:Task:create }
+  options: { fragment_name: 'nt' }
+  requirements:
+        _method:  POST
+
+>>>>>>> 28926c9... add new css file for task view
 ################################################################################
 # Publish
 ################################################################################

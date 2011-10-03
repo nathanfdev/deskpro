@@ -13,6 +13,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 <form action="{{ path('agent_task_new') }}" method="post" {{ form_enctype(form) }}>
     
+<<<<<<< HEAD
     <div class="section title-section first" id="{{baseId}}_title_section">
     
         <div class="step">
@@ -32,6 +33,40 @@ pageMeta.baseId = '{{ baseId }}';
             <h4>Due Date</h4>
             {{ form_widget(form.date_due, {'attr': {'class' : 'user-search'}}) }}
         </div>
+=======
+    <div class="task-view">
+        <div class="section title-section first isLeft leftContent" id="{{baseId}}_title_section">
+
+            <div class="step">
+                    <span class="num">1</span>
+                    <span class="check">Done</span>
+            </div>
+            <div class="content">
+                <h4>Title</h4>
+                    {{ form_errors(form.title) }}
+                    {{ form_widget(form.title, {'attr': {'class' : 'user-search'}}) }}
+                <span><a href="#" class="gear" id="{{baseId}}_gear_spn">Gear</a></span>
+            </div>
+
+        </div>
+        <div class=" taskpropertiec-section isRight rightContent" id="{{baseId}}_task_proterties_section" style="display:none;">
+            <div class="due-date isLeft hasMarnigRight-10px">
+                <h4>Due Date</h4>
+                {#% set sTime = form.date_due.get('value')| date('m/d/Y') %#}
+                {{ form_widget(form.date_due, {'attr': {'class' : 'calender'}}) }}
+            </div>
+            <div class="visibility isLeft hasMarnigRight-10px">
+                <h4>Visibility</h4>
+                {{form_widget(form.visibility)}}
+            </div>
+            <div class="assign isLeft">
+                <h4>Assign</h4>
+                {{form_widget(form.assigned_agent_team)}}
+            </div>
+
+            </div>
+        
+>>>>>>> 28926c9... add new css file for task view
     </div>
     
     <div class="foot">

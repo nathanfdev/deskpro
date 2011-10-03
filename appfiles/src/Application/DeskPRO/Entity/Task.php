@@ -352,6 +352,16 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		
 		$this->comments->add($comment);
 	}
+
+        public function setDueDate($due_date)
+        {
+            $this->due_date = DateTime($due_date);
+        }
+
+        public function getDueDate()
+        {
+            return $this->due_date;
+        }
 	
 	
 	

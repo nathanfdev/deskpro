@@ -25,9 +25,10 @@ class NewTask extends AbstractType
 
         $builder->add('title', 'text');        
         $builder->add('date_due', 'date', array(
-            'input'  => 'datetime',
+            'input'  => 'string',
             'widget' => 'single_text',
-            'format'=>'M/d/y',
+            'empty_value' => '',
+            'format'=>'y/m/d',
         ));
         
 

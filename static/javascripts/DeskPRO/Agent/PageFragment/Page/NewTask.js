@@ -14,6 +14,19 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
                 this._initTaskProtertiesSection();                
 	},
         doSavePost: function() {
+<<<<<<< HEAD
+=======
+            var formData = $('form#newTaskForm').serializeArray();   
+            $.ajax({
+                type: 'POST',
+                data: formData,
+                url: $('form#newTaskForm').attr('action'),
+                datataType: 'json',
+                success: function(data){
+                    alert(data);
+                }
+            });
+>>>>>>> 28926c9... add new css file for task view
             return false;
         },
         submit:function() {
