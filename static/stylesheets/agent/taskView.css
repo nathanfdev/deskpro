@@ -1,0 +1,41 @@
+/* 
+    Document   : taskView
+    Created on : Oct 2, 2011, 10:46:39 PM
+    Author     : kiser
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+div.task-view{
+    width: 100%;
+    overflow: hidden;
+}
+
+.leftContent{
+    width: 35%;
+}
+.rightContent{
+    width: 60%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.isLeft{
+    float: left;
+}
+.isRight{
+    float: right;
+}
+.hasMarrinLeft-10px{
+    margin-left: 10px;
+}
+.hasMarnigRight-10px{
+    margin-right: 10px;
+}
