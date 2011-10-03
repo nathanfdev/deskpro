@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
@@ -157,6 +158,21 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</header>
 	<section class="description-area" id="{{baseId}}_fields_display_main_wrap">
 		<dl class="info-list">
+			<dt class="type-labels">Flag:</dt>
+			<dd
+				class="flagged-wrap"
+				id="{{baseId}}_flag_opt"
+				data-element-handler="DeskPRO.ElementHandler.ListRadio"
+			>
+				<ul>
+					<li class="flag-none tipped {% if not ticket_flagged %}on{% endif %}" data-value="none" title="No flag"><span></span></li>
+					{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
+						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span></span></li>
+					{% endfor %}
+				</ul>
+				<br class="clear"/>
+			</dd>
+
 			<dt class="type-labels">Labels:</dt>
 			<dd class="ticket-tags tags-wrap">
 				<ul data-label-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">

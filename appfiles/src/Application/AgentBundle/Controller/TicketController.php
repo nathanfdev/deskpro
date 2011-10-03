@@ -73,10 +73,7 @@ class TicketController extends AbstractController
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
-		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
-			'ticket_id' => $ticket_id,
-			'person_id' => $this->person['id']
-		));
+		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
@@ -178,7 +175,7 @@ class TicketController extends AbstractController
 			'ticket_deleted' => $ticket_deleted,
 			'hard_delete_time' => $hard_delete_time,
 			'ticket_options' => $ticket_options,
-			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
+			'ticket_flagged' => $ticket_flagged,
 			'macros' => $macros,
 			'widgets' => $widgets,
 			'counts' => $counts,

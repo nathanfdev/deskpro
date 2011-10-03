@@ -44,7 +44,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (!this.meta.isDeleted) {
 			this._initTicketActionsMenu();
 			this._initMessageActionsMenu();
-			this._initFlagMenu();
 			this._initLabels();
 		} else {
 			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
@@ -497,39 +496,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.closeCustomFieldEditor();
 
 		$('.wrap', this.custom_fields_display).html(html);
-	},
-
-
-	//#################################################################
-	//# Ticket flag
-	//#################################################################
-
-	_initFlagMenu: function() {
-		var self = this;
-		this.flagMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-flag:first', this.wrapper),
-			menuElement: $('.ticket-flag-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				self._handleFlagMenuClick(info);
-			}
-		});
-		this.ownObject(this.flagMenu);
-	},
-
-	_handleFlagMenuClick: function(info) {
-		var opt = 'flag';
-		var itemId = $(info.itemEl).data('flag');
-
-		var prop = this.getPropertyManager(opt);
-		this.changeManager.setInstantChange(prop, itemId);
-	},
-
-	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
-
-		DeskPRO_Window.getMessageBroker().sendMessage('filter-flagged.flag-changed', {
-			old_flag: old_flag,
-			new_flag: new_flag
-		});
 	},
 
 	//#################################################################

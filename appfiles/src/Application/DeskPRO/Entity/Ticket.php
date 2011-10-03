@@ -1324,6 +1324,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			App::getOrm()->remove($ticket_flagged);
 			$ticket_flagged = null;
 		} else {
+			App::getOrm()->persist($ticket_flagged);
 			$ticket_flagged['color'] = $color;
 		}
 

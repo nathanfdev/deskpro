@@ -21,6 +21,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		var wrapper = this.page.wrapper;
 		var actionsButtons = this.getEl('action_buttons');
 
+		this.getEl('flag_opt').bind('listradiochange', function(ev, value) {
+			var prop = self.changeManager.getPropertyManager('flag');
+			self.changeManager.setInstantChange(prop, value);
+		});
+
 		//------------------------------
 		// Assign ...
 		//------------------------------

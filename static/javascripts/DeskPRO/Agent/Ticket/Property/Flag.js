@@ -14,17 +14,12 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 	},
 
 	getValue: function() {
-		return this.getInterfaceElement().data('flag');
+		return $('li.on', this.ticketPage.getEl('flag_opt')).data('value');
 	},
 
 	setValue: function(value) {
-		var last_value = this.getInterfaceElement().data('flag');
-
-		this.getInterfaceElement().data('flag', value);
-		this.getInterfaceElement().removeClass('icon-flag-' + last_value).addClass('icon-flag-' + value);
-	},
-
-	_getInterfaceElement: function() {
-		return $('.ticket-flag:first', this.ticketPage.contentWrapper);
+		console.log('set %o', value);
+		$('li', this.ticketPage.getEl('flag_opt')).removeClass('on');
+		$('li.flag-' + value, this.ticketPage.getEl('flag_opt')).addClass('on');
 	}
 });

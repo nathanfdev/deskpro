@@ -131,6 +131,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
+		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',

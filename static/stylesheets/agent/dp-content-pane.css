@@ -1755,3 +1755,44 @@ ul.activity-stream time {
     float: right;
     font-size: 9px;
 }
+
+.flagged-wrap {
+	margin-bottom: 3px;
+	position: relative;
+	top: -5px;
+}
+
+.flagged-wrap ul li {
+	display: block;
+	float: left;
+	margin-right: 2px;
+	border: 1px solid transparent;
+	padding: 4px;
+	border-radius: 3px;
+}
+
+.flagged-wrap ul li:hover,
+.flagged-wrap ul li.on {
+	background-color: #F3F5F6;
+	border: 1px solid #B6BABF;
+}
+
+.flagged-wrap ul li span {
+	display: block;
+	background-position: 50% 0;
+	background-repeat: no-repeat;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+}
+
+.flagged-wrap ul li.flag-none span { background-image: url(../../images/icons/flag_gray.png); }
+.flagged-wrap ul li.flag-blue span { background-image: url(../../images/icons/flag_blue.png); }
+.flagged-wrap ul li.flag-green span { background-image: url(../../images/icons/flag_green.png); }
+.flagged-wrap ul li.flag-orange span { background-image: url(../../images/icons/flag_orange.png); }
+.flagged-wrap ul li.flag-pink span { background-image: url(../../images/icons/flag_pink.png); }
+.flagged-wrap ul li.flag-purple span { background-image: url(../../images/icons/flag_purple.png); }
+.flagged-wrap ul li.flag-red span { background-image: url(../../images/icons/flag_red.png); }
+.flagged-wrap ul li.flag-yellow span { background-image: url(../../images/icons/flag_yellow.png); }
