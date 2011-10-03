@@ -25,8 +25,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		this.ownObject(this.contactEditor);
 
-		this.initNoteFormEditable();
-
 		var tzMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('timezone')
 		});
@@ -179,13 +177,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
-		this.summaryAutoSave = new DeskPRO.Agent.PageHelper.AutoSave({
-			field: summaryTxt,
-			fieldName: 'summary',
-			url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-			postData: [{ name: 'action', value: 'set-summary'}]
-		});
-		this.ownObject(this.summaryAutoSave);
 	},
 
 	//#########################################################################
@@ -389,43 +380,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			}
 		});
-	},
-
-	//#########################################################################
-	//# Note form stuff
-	//#########################################################################
-
-	initNoteFormEditable: function() {
-		this.notesSection = this.getEl('notes_tab');
-		this.newNoteWrap = $('li.new-note', this.getEl('notes_tab'));
-
-		$('.save-trigger', this.newNoteWrap).click((function() {
-			this.saveNote();
-		}).bind(this));
-	},
-
-	saveNote: function() {
-
-		this.notesSection.addClass('loading');
-		var note = $('textarea', this.newNoteWrap).val();
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-note',
-			data: {note: note},
-			success: this.handleNoteSave.bind(this)
-		});
-	},
-
-	handleNoteSave: function(data) {
-
-		$('textarea', this.newNoteWrap).val('');
-
-		$(data.note_li_html).insertBefore(this.newNoteWrap);
-
-		this.notesSection.removeClass('loading');
-
-		DeskPRO_Window.util.modCountEl(this.getEl('notes_count'), '+');
 	}
 });

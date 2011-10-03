@@ -1,11 +1,20 @@
 {# Box Summary #}
-<div class="profile-box-container summary">
+<div class="profile-box-container summary"
+	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+	data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
+>
 	<header>
+		<div class="controls">
+			<div class="is-loading">Saving</div>
+			<div class="saved" style="display: none">saved</div>
+			<div class="save" style="display: none">save</div>
+		</div>
 		<h4>Summary</h4>
 	</header>
 	<section>
 		<div class="wrap">
-			<textarea id="{{baseId}}_summary">{{ org.summary }}</textarea>
+			<input type="hidden" name="action" value="set-summary" />
+			<textarea id="{{baseId}}_summary" name="summary">{{ org.summary }}</textarea>
 		</div>
 	</section>
 </div>
@@ -101,16 +110,22 @@
 					{% for note in notes|reverse %}
 						{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
 					{% endfor %}
-					<li class="new-note">
-						<div class="btn-col">
-							<div class="is-not-loading trigger-row">
-								<button class="clean-white small save-trigger">Save</button>
+					<li class="new-note"
+						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+						data-form-list-selector="ul"
+						data-form-result-html-key="note_li_html"
+						data-form-save-url="{{ path('agent_org_ajaxsave_note', {'organization_id': org.id}) }}"
+						data-form-count-el="#{{baseId}}_notes_count"
+					>
+						<header>
+							<div class="controls">
+								<div class="is-loading">Saving</div>
+								<div class="saved" style="display: none">saved</div>
+								<div class="save" style="display: none">save</div>
 							</div>
-							<div class="is-loading">Saving</div>
-						</div>
-						<div class="input-col">
-							<textarea></textarea>
-						</div>
+							<h3>New Comment</h3>
+						</header>
+						<textarea name="note"></textarea>
 					</li>
 				</ul>
 			</div>

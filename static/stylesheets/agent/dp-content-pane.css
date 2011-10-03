@@ -1078,6 +1078,10 @@ ul.activity-stream time {
 	border-bottom: 1px solid #D5E3EE;
 }
 
+.notes-wrap li.note:last-of-type .message {
+	border-bottom: none;
+}
+
 .notes-wrap .message .message-avatar {
 	float: left;
 	width: 25px;
@@ -1114,30 +1118,45 @@ ul.activity-stream time {
 }
 
 .notes-wrap .new-note {
-	padding: 4px;
+	padding: 0;
 	position: relative;
 }
 
-.notes-wrap .new-note .input-col {
-	margin-right: 52px;
+.notes-wrap .new-note header .controls {
+	float: right;
+	line-height: 100%;
 }
 
-.notes-wrap .new-note .input-col textarea {
-	margin: 0;
+.notes-wrap .new-note header {
+	background-color: #DDDEE1;
+	padding: 4px 8px 2px 8px;
+	font-size: 10px;
+	border-bottom:  1px solid #C8C9CD;
+	border-top:  1px solid #C8C9CD;
 }
 
-.notes-wrap .new-note .btn-col {
-	position: absolute;
-	bottom: 8px;
-	right: 4px;;
+.notes-wrap .new-note header h3 {
+	font-size: 10px;
+	font-weight: normal;
 }
 
-.notes-wrap .new-note .btn-col .is-loading {
-	background: url(../../images/loading-small.gif) no-repeat 0 0;
-	width: 16px;
-	height: 16px;
+.notes-wrap .new-note .is-loading {
+	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 0 0;
+	width: 11px;
+	height: 11px;
 	overflow: hidden;
 	text-indent: -100px;
+}
+
+.notes-wrap .new-note header .save {
+	cursor: pointer;
+	text-decoration: underline;
+	color: #4769B3;
+}
+
+.notes-wrap .new-note textarea {
+	margin:  5px;
+	width: 90%;
 }
 
 .profile .summary {
@@ -1292,6 +1311,26 @@ ul.activity-stream time {
 	background: url(../../images/icons/edit-gear.png) no-repeat 0 0;
 	cursor: pointer;
 	margin: 3px 5px 0 0;
+}
+
+.profile-box-container > header .controls {
+	float: right;
+	line-height: 100%;
+	padding:  4px;
+}
+
+.profile-box-container > header .is-loading {
+	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 0 0;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+	text-indent: -100px;
+}
+
+.profile-box-container > header .save {
+	cursor: pointer;
+	text-decoration: underline;
+	color: #4769B3;
 }
 
 .profile-box-container > section {
