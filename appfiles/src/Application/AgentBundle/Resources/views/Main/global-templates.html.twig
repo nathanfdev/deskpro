@@ -14,6 +14,89 @@
 	{% endfor %}
 </ul>
 
+<div class="optionbox" id="set_agent_and_team_optionbox_radio">
+	<section data-section-name="me">
+		<ul>
+			<li>
+				<label>Me</label>
+				<button class="clean-white small" data-type="agent" data-agent-id="{{ app.user.id }}">Assign</button>
+			</li>
+			{% if app.user.teams %}
+				{% for team in app.user.teams %}
+					<li>
+						<label>My team {{ team.name }}</label>
+						<button class="clean-white small" data-type="team" data-team-id="{{ team.id }}">Assign</button>
+					</li>
+				{% endfor %}
+			{% endif %}
+		</ul>
+	</section>
+	<section data-section-name="teams">
+		<header>
+			<h3>Teams</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul>
+			{% for team in agent_teams %}
+				<li>
+					<label>{{ team.name }}</label>
+					<button class="clean-white small" data-type="team" data-team-id="{{ team.id }}">Assign</button>
+				</li>
+			{% endfor %}
+		</ul>
+	</section>
+	<section data-section-name="agents">
+		<header>
+			<h3>Everyone</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul>
+			{% for agent in agents %}
+				<li>
+					<label>{{ agent.display_name }}</label>
+					<button class="clean-white small" data-type="agent" data-agent-id="{{ agent.id }}">Assign</button>
+				</li>
+			{% endfor %}
+		</ul>
+	</section>
+</div>
+
+<div class="optionbox" id="agent_optionbox_radio">
+	<section data-section-name="agents">
+		<header>
+			<h3>Agents</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul>
+			{% for agent in agents %}
+				<li><input type="radio" name="agent_optionbox_radio" value="{{ agent.id }}" /><label>{{ agent.display_name }}</label></li>
+			{% endfor %}
+		</ul>
+	</section>
+</div>
+
+<div class="optionbox" id="agent_team_optionbox_radio">
+	<section data-section-name="teams">
+		<header>
+			<h3>Teams</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul>
+			{% if app.user.teams %}
+				<li class="group-title"><strong>Your Teams</strong></li>
+				{% for team in app.user.teams %}
+					<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
+				{% endfor %}
+				<li class="group-title"><strong>All Teams</strong></li>
+			{% endif %}
+
+			{% for team in agent_teams %}
+				<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
+			{% endfor %}
+		</ul>
+	</section>
+</div>
+
 {# Teams #}
 <ul id="agent_teams_menu">
 	{% if app.user.teams %}
@@ -21,7 +104,7 @@
 		{% for team in app.user.teams %}
 			<li data-team-id="{{ team.id }}">{{ team.name }}</li>
 		{% endfor %}
-		<li class="sep">-</li>
+		<li class="section-title">All Teams</li>
 	{% endif %}
 
 	{% for team in agent_teams %}
@@ -41,9 +124,6 @@
 {# Department #}
 <ul id="department_menu" data-menu-flag="copy-menu">
 	{% for dep in ticket_options.departments_hierarchy %}
-		{% if last_with_child %}
-			<li class="sep">-</li>
-		{% endif %}
 		{% if dep.children %}
 			<li data-department-id="{{dep.id}}" class="section-title">{{dep.title}}</li>
 			{% for subdep in dep.children %}
@@ -60,9 +140,6 @@
 {# Products #}
 <ul id="products_menu" data-menu-flag="copy-menu">
 	{% for cat in ticket_options.products_hierarchy %}
-		{% if last_with_child %}
-			<li class="sep">-</li>
-		{% endif %}
 		{% if cat.children %}
 			<li data-product-id="{{cat.id}}" class="section-title prod-{{ cat.id }}">{{cat.title}}</li>
 			{% for subcat in cat.children %}
@@ -115,6 +192,7 @@
 
 {# Ticket Status #}
 <ul id="ticket_status_menu">
+	<li class="section-title">Status</li>
 	<li data-status="open">Open</li>
 	<li data-status="pending">Pending</li>
 	<li data-status="resolved">Resolved</li>

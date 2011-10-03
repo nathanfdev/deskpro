@@ -76,6 +76,35 @@ span.team-link, a.team-link {
 .loading .is-not-loading { display: none; }
 .loading .is-loading { display: inherit; }
 
+
+.icon { background-repeat: no-repeat; background-position: center left; padding-left: 20px; }
+.icon-tickets { background-image: url(../../images/icons/mail.png); }
+.icon-tweets { background-image: url(../../images/icons/social_media_mini_icons/twitter.png); }
+.icon-facebook { background-image: url(../../images/icons/social_media_mini_icons/facebook.png); }
+.icon-linkedin { background-image: url(../../images/icons/social_media_mini_icons/linkedin.png); }
+.icon-chat { background-image: url(../../images/icons/balloons.png); }
+.icon-deals { background-image: url(../../images/icons/clipboard_text.png); }
+.icon-knowledgebase { background-image: url(../../images/icons/document__pencil.png); }
+.icon-troubleshooters { background-image: url(../../images/icons/lightning.png); }
+.icon-ideas { background-image: url(../../images/icons/bulb.png); }
+.icon-files { background-image: url(../../images/icons/folder_open_document.png); }
+.icon-people { background-image: url(../../images/icons/vcards.png); }
+.icon-organizations { background-image: url(../../images/icons/briefcase.png); }
+.icon-script { background-image: url(../../images/icons/script.png); }
+.icon-script-gear { background-image: url(../../images/icons/script_gear.png); }
+.icon-keyboard { background-image: url(../../images/icons/keyboard.png); }
+.icon-mouse { background-image: url(../../images/icons/mouse.png); }
+.icon-key { background-image: url(../../images/icons/key.png); }
+.icon-key-add { background-image: url(../../images/icons/key_add.png); }
+.icon-key-del { background-image: url(../../images/icons/key_delete.png); }
+.icon-page-delete { background-image: url(../../images/icons/page_white_delete.png); }
+.icon-page-merge { background-image: url(../../images/icons/table_go.png); }
+.icon-page-split { background-image: url(../../images/icons/table_relationship.png); }
+.icon-chart { background-image: url(../../images/icons/chart_bar.png); }
+.icon-edit { background-image: url(../../images/icons/pencil.png); }
+
+
+
 /*****************************************************************************
  * Window layout
 /*****************************************************************************/
@@ -447,7 +476,8 @@ button.clean-gray.disabled {
     color: #777879;
 }
 
-button.clean-white {
+button.clean-white,
+a.clean-white {
 	position: relative;
 	background: -moz-linear-gradient(top, rgba(250,252,253,1) 0%, rgba(240,242,243,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(250,252,253,1)), color-stop(100%,rgba(240,242,243,1)));
@@ -464,26 +494,30 @@ button.clean-white {
 	position: relative;
 	white-space: nowrap;
 }
+a.clean-white {
+	display: inline-block;
+	margin: 0;
+}
 
-button.clean-white.small {
+.clean-white.small {
 	padding: 0px 5px 0px 5px;
 }
 
-button.clean-white:hover {
+.clean-white:hover {
 	-webkit-box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
 	-moz-box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
 	box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
 }
 
-button.clean-white.large {
+.clean-white.large {
 	padding: 6px 12px 6px 12px;
 }
 
-button.clean-white.arrow {
+.clean-white.arrow {
 	padding-right: 0;
 }
 
-button.clean-white.arrow span {
+.clean-white.arrow span {
 	background-image: url(../../images/icons/bullet_arrow_down.png);
 	background-position: 100% 50%;
 	background-repeat: no-repeat;
@@ -495,10 +529,10 @@ button.clean-white.arrow span {
  * one is a different element, and looks so. You click the arrow usually
  * to open a menu to change the value of the button itself
  */
-button.clean-white.inner-arrow {
+.clean-white.inner-arrow {
 	padding-right: 20px !important;
 }
-button.clean-white.inner-arrow span.arrow {
+.clean-white.inner-arrow span.arrow {
 	display: block;
 	background-color: #F0F3F4;
 	background-image: url(../../images/icons/bullet_arrow_down.png);
@@ -512,25 +546,25 @@ button.clean-white.inner-arrow span.arrow {
 	border-left: 1px solid #B6BABF;
 }
 
-button.clean-white.inner-arrow.no-sep {
+.clean-white.inner-arrow.no-sep {
 	padding-right: 15px;
 }
 
-button.clean-white.inner-arrow.no-sep span.arrow {
+.clean-white.inner-arrow.no-sep span.arrow {
 	border-left: none;
 }
 
-button.clean-white.inner-arrow.small span.arrow {
+.clean-white.inner-arrow.small span.arrow {
 	top: 0;
 	bottom: 0;
 	right: 9px;
 }
 
-button.clean-white span.arrow:hover {
+.clean-white span.arrow:hover {
 	background-color: #CDD1D3 !important;
 }
 
-button.clean-white.radio-on {
+.clean-white.radio-on {
 	background: rgb(234,237,237); /* Old browsers */
 	background: -moz-linear-gradient(top, rgba(234,237,237,1) 0%, rgba(211,211,211,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(234,237,237,1)), color-stop(100%,rgba(211,211,211,1))); /* Chrome,Safari4+ */
@@ -664,8 +698,15 @@ button.clean-white.radio-on {
 	font-size: 10px;
 }
 
-.optionbox section input[type="checkbox"] {
+.optionbox section input[type="checkbox"],
+.optionbox section input[type="radio"] {
 	margin-right: 4px;
+}
+
+.optionbox section button {
+	position: absolute;
+	top: 2px;
+	right: 4px;
 }
 
 .optionbox section header input.filter-box {
@@ -685,7 +726,16 @@ button.clean-white.radio-on {
 }
 
 .optionbox section li {
-	padding: 2px 2px 2px 5px;
+	position: relative;
+	padding: 1px 2px 1px 5px;
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+
+.optionbox section li:hover {
+	background-color: #E6E8E8;
+	border-top: 1px solid #C4C8C7;
+	border-bottom: 1px solid #C4C8C7;
 }
 
 

@@ -86,7 +86,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var logs = showLogs.is(':checked');
 			var attach = showAttach.is(':checked');
 
-			if (!messages && !notes && !logs) {
+			if (!messages && !notes && !logs && !attach) {
 				messages = true;
 				showMessages.attr('checked', true);
 			}
@@ -100,16 +100,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (messages) {
 				$('article.message:not(.note-message)', msgWrap).show();
 			} else {
+				$('article.message:not(.note-message)', msgWrap).hide();
 				if (attach) {
-					$('article.message:not(.note-message, .with-attach)', msgWrap).hide();
-				} else {
-					$('article.message:not(.note-message)', msgWrap).hide();
+					$('article.message.with-attach', msgWrap).show();
 				}
 			}
 			if (notes) {
-				$('div.note-message', msgWrap).show();
+				$('article.note-message', msgWrap).show();
 			} else {
-				$('div.note-message', msgWrap).hide();
+				$('article.note-message', msgWrap).hide();
 			}
 			if (logs) {
 				$('div.log-row', msgWrap).show();

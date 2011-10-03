@@ -737,72 +737,68 @@ class TicketController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		$cc_person_ids = $this->in->getCleanValueArray('cc_person_ids', 'uint', 'discard');
-		$new_parts = $this->in->getCleanValueArray('new_parts', 'string', 'discard');
+		if (!$message['is_agent_note']) {
+			$cc_person_ids = $this->in->getCleanValueArray('cc_person_ids', 'uint', 'discard');
+			$new_parts = $this->in->getCleanValueArray('new_parts', 'string', 'discard');
 
-		$new_parts_to_people = array();
+			$new_parts_to_people = array();
 
-		foreach ($new_parts as $email) {
-			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
-			if (!$person) {
-				$person = Person::newContactPerson(array('email' => $email));
-				$this->em->persist($person);
-			}
-
-			if ($person['is_agent']) {
-				continue;
-			}
-
-			$new_parts_to_people[] = $person;
-		}
-		$this->em->flush();
-
-		foreach ($new_parts_to_people as $person) {
-			$ticket->addParticipantPerson($person);
-			$cc_person_ids[] = $person['id'];
-		}
-
-		$tracker = $ticket->getTicketLogger();
-		$tracker->recordExtra('enabled_cc', $cc_person_ids);
-
-		// Delete any possible ticket draft
-		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
-		if ($draft_pref) {
-			App::getOrm()->remove($draft_pref);
-		}
-
-		$add_agent_parts = $this->in->getCleanValueArray('add_agent_part', 'uint', 'discard');
-		foreach ($add_agent_parts as $aid) {
-			$ticket->addParticipantPerson($aid);
-		}
-
-		$updated_agent_parts = false;
-		$updated_agent_parts_count = 0;
-		if ($add_agent_parts) {
-
-			$added = false;
-			foreach ($add_agent_parts as $p) {
-				if (!$ticket->hasParticipantPerson($p)) {
-					$ticket->addParticipantPerson($p);
-					$added = true;
+			foreach ($new_parts as $email) {
+				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+				if (!$person) {
+					$person = Person::newContactPerson(array('email' => $email));
+					$this->em->persist($person);
 				}
+
+				if ($person['is_agent']) {
+					continue;
+				}
+
+				$new_parts_to_people[] = $person;
+			}
+			$this->em->flush();
+
+			foreach ($new_parts_to_people as $person) {
+				$ticket->addParticipantPerson($person);
+				$cc_person_ids[] = $person['id'];
 			}
 
-			if ($added) {
-				$participants = App::getOrm()->createQuery("
-					SELECT p
-					FROM DeskPRO:TicketParticipant p
-					LEFT JOIN p.person person
-					LEFT JOIN p.person_email person_email
-					WHERE p.ticket = ?1 AND person.is_agent = true
-				")->setParameter(1, $ticket)->execute();
+			$tracker = $ticket->getTicketLogger();
+			$tracker->recordExtra('enabled_cc', $cc_person_ids);
 
-				$updated_agent_parts_count = count($participants);
+			$add_agent_parts = $this->in->getCleanValueArray('add_agent_part', 'uint', 'discard');
+			foreach ($add_agent_parts as $aid) {
+				$ticket->addParticipantPerson($aid);
+			}
 
-				$updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', array(
-					'ticket' => $ticket,
-					'participants' => $participants
-				));
+			$updated_agent_parts = false;
+			$updated_agent_parts_count = 0;
+			if ($add_agent_parts) {
+
+				$added = false;
+				foreach ($add_agent_parts as $p) {
+					if (!$ticket->hasParticipantPerson($p)) {
+						$ticket->addParticipantPerson($p);
+						$added = true;
+					}
+				}
+
+				if ($added) {
+					$participants = App::getOrm()->createQuery("
+						SELECT p
+						FROM DeskPRO:TicketParticipant p
+						LEFT JOIN p.person person
+						LEFT JOIN p.person_email person_email
+						WHERE p.ticket = ?1 AND person.is_agent = true
+					")->setParameter(1, $ticket)->execute();
+
+					$updated_agent_parts_count = count($participants);
+
+					$updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', array(
+						'ticket' => $ticket,
+						'participants' => $participants
+					));
+				}
 			}
 		}
 
@@ -814,6 +810,12 @@ class TicketController extends AbstractController
 				'message' => $message
 			));
 			$this->em->persist($kb_pending);
+		}
+
+		// Delete any possible ticket draft
+		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		if ($draft_pref) {
+			App::getOrm()->remove($draft_pref);
 		}
 
 		$this->em->persist($ticket);
@@ -838,8 +840,8 @@ class TicketController extends AbstractController
 		);
 
 		$data = array_merge($data, array(
-			'updated_agent_parts_html' => $updated_agent_parts,
-			'updated_agent_parts_html_count' => $updated_agent_parts_count,
+			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
+			'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],

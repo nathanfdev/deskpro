@@ -662,6 +662,25 @@ article.content-message .content header {
 	padding-top: 1px;
 }
 
+article.content-message.note-message .content header {
+	background: rgb(235,236,239); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(235,236,239,1) 0%, rgba(215,217,220,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(235,236,239,1)), color-stop(100%,rgba(215,217,220,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(235,236,239,1) 0%,rgba(215,217,220,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(235,236,239,1) 0%,rgba(215,217,220,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, rgba(235,236,239,1) 0%,rgba(215,217,220,1) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebecef', endColorstr='#d7d9dc',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, rgba(235,236,239,1) 0%,rgba(215,217,220,1) 100%); /* W3C */
+	border-radius: 3px 3px 0 0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
+	border-bottom: 1px solid #acb2bf;
+	position: relative;
+
+	color: #5B513D;
+	line-height: 22px;
+	padding-top: 1px;
+}
+
 article.content-message.agent-message .content header {
 	background-image: -moz-linear-gradient(top, #fcf6e7, #faf0d8);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#fcf6e7), to(#faf0d8));
@@ -813,22 +832,18 @@ section.ticket-reply article.reply-area .options-col .extra-buttons li {
 }
 
 section.ticket-reply article.reply-area .reply-col {
-	margin-right: 153px;
+	margin-right: 162px;
 	position: relative;
-	height: 200px;
 }
 
 section.ticket-reply article.reply-area .reply-col .reply-box-wrap {
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	left: 8px;
-	bottom: 35px;
+	padding: 6px;
+	padding-right: 0;
 }
 
 section.ticket-reply article.reply-area .reply-col .reply-box-wrap textarea {
 	width: 100%;
-	height: 100%;
+	min-height: 200px;
 	resize: none;
 	margin: 0;
 	padding: 0;
@@ -840,11 +855,7 @@ section.ticket-reply article.reply-area .reply-col .reply-box-wrap textarea {
 }
 
 section.ticket-reply article.reply-area .reply-col footer {
-	position: absolute;
-	height: 25px;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	padding-bottom: 6px;
 }
 
 section.ticket-reply article.reply-area .reply-col button.reply {
@@ -853,6 +864,24 @@ section.ticket-reply article.reply-area .reply-col button.reply {
 
 section.ticket-reply article.reply-area .reply-col .buttons-right {
 	float: right;
+}
+
+section.ticket-reply article.reply-area .attach-list-area {
+	padding:  10px;
+}
+
+section.ticket-reply article.reply-area .attach-list-area strong {
+	font-size: 10px;
+}
+
+section.ticket-reply article.reply-area .menu-trigger {
+	border-bottom: 1px dotted #ccc;
+	cursor: pointer;
+}
+
+section.ticket-reply article.reply-area .attach-list-area span {
+	font-size: 10px;
+	margin-left: 5px;
 }
 
 
