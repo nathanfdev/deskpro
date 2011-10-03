@@ -2356,6 +2356,7 @@ border-left: none;
 
 .tags-wrap ul li span {
 	padding: 3px 0 3px 5px;
+	cursor: pointer;
 }
 
 .tags-wrap ul li:hover a {

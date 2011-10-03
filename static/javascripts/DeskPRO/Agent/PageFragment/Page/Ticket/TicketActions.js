@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		this.changeManager = this.page.changeManager;
 
-		var ticketHeader = this.getEl('ticket_header');
+		var wrapper = this.page.wrapper;
 		var actionsButtons = this.getEl('action_buttons');
 
 		//------------------------------
@@ -39,7 +39,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			agentList: $('#agent_selector_list'),
 			showNone: true,
 			multipleChoice: false,
-			triggerElement: $('nav.actions .assign-to button, .prop-agent-id', ticketHeader),
+			triggerElement: $('nav.actions .assign-to button, .prop-agent-id', wrapper),
 			startWith: [agentProp.getValue()],
 			onSelectionChanged: (function(info) {
 				this.changeManager.setInstantChange(agentProp, info.selection);
@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		this.assignTeamMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('nav.actions .assign-to-team button, .prop-agent-team-id', ticketHeader),
+			triggerElement: $('nav.actions .assign-to-team button, .prop-agent-team-id', wrapper),
 			menuElement: $('#agent_teams_menu'),
 			onItemClicked: (function(info) {
 				var item = $(info.itemEl);
@@ -63,7 +63,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.prop-status-icon', ticketHeader),
+			triggerElement: $('.set-status', wrapper),
 			menuElement: $('#ticket_status_menu'),
 			onItemClicked: (function(info) {
 				var item = $(info.itemEl);
@@ -100,11 +100,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}).bind(this));
 
 		//------------------------------
-		// Status
+		// Department
 		//------------------------------
 
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.prop-department-id', ticketHeader),
+		this.depMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.set-department', wrapper),
 			menuElement: $('#department_menu'),
 			onItemClicked: (function(info) {
 				var item = $(info.itemEl);
@@ -114,6 +114,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				this.changeManager.setInstantChange(prop, status);
 			}).bind(this)
 		});
+
+		//------------------------------
+		// Hold/unhold
+		//------------------------------
+
+		$('.set-hold.hold', wrapper).click((function() {
+			var prop = this.changeManager.getPropertyManager('is_hold');
+			this.changeManager.setInstantChange(prop, 1);
+		}).bind(this));
+		$('.set-hold.unhold', wrapper).click((function() {
+			var prop = this.changeManager.getPropertyManager('is_hold');
+			this.changeManager.setInstantChange(prop, 0);
+		}).bind(this));
+
 
 		//------------------------------
 		// Macros
@@ -154,7 +168,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 	activateMacro: function(macroId) {
 		this.currentMacroId = macroId;
-		
+
 		$.ajax({
 			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', this.currentMacroId),
 			type: 'GET',
@@ -171,7 +185,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	saveMacro: function() {
 
 		if (this.changeManager.hasChangedProperty('reply')) {
-			this.page.replyBox.saveReply();	
+			this.page.replyBox.saveReply();
 		}
 
 		this.changeManager.saveChanges();

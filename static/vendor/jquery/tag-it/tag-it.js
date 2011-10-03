@@ -59,7 +59,7 @@
 		var tag_input = $('.tagit-input', options.inputFieldAppendTo);
 
 		// add existing tags
-		el.children("li:not(.tagit-new)").each(function(){
+		el.children("li:not(.tagit-new)").each(function(ev){
 			if (!$(this).hasClass('tagit-new')) {
 				create_choice($('span', this).eq(0).html());
 				$(this).remove();

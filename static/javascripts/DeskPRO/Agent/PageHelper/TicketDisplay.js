@@ -134,7 +134,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.departmentId = null;
 
 		this.page = ticketPage;
-		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult, this);
+		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult.bind(this), this);
 
 		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 
@@ -148,6 +148,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			this.replaceHolders(data.holders);
 			this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0), true);
 		}
+
+		this.closeEditMode();
 	},
 
 	/**
@@ -239,7 +241,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 					var itemId = this.getItemId(item);
 
 					// only put fields with values in the display
-					if (1 || !itemEls.itemHolder.is('.no-value')) {
+					if (!itemEls.itemHolder.is('.no-value')) {
 						if (itemEls.itemHolder.data('custom-field-handler')) {
 							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
 						}
@@ -331,6 +333,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		showWrapper.hide();
 		editWrapper.show();
+
+		this.page.getEl('properties_controls').hide();
 	},
 
 	closeEditMode: function(section) {
@@ -339,6 +343,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		editWrapper.hide();
 		showWrapper.show();
+
+		this.page.getEl('properties_controls').show();
+
+		var editWrapper = $('.fields-edit', this.sectionProperties);
+		editWrapper.removeClass('loading');
 	},
 
 	saveEditMode: function(section) {

@@ -130,6 +130,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/DeskPRO/ElementHandler.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',
@@ -231,6 +232,7 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Ticket/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
 
 		'javascripts/DeskPRO/Agent/TicketList/MassActions/Widget.js',
 

@@ -65,6 +65,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
 	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
+	<input type="hidden" name="is_hold" class="is_hold" value="{{ticket.is_hold|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
 </form>
@@ -96,93 +97,102 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<h1>{{ ticket.subject }}</h1>
 	<br class="clear" />
 	<div class="meta-line">
-		<div class="status"><span>{{ ticket.status }}</span></div>
-		<div class="category"><span>Department: {{ ticket.department.full_title }}</span></div>
-		<div class="set-hold"><span>Set on hold</span></div>
+		<div class="status set-status open" {% if ticket.status_code != 'open' %}style="display: none"{% endif %}><span>Awaiting Agent</span></div>
+		<div class="status set-status pending" {% if ticket.status_code != 'pending' %}style="display: none"{% endif %}><span>Awaiting User</span></div>
+		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>Closed</span></div>
+		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>Resolved</span></div>
+		<div class="status set-status hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span>Spam</span></div>
+		<div class="status set-status hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span>Validating</span></div>
+		<div class="status set-status hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span>Deleted</span></div>
+
+		<div class="category set-department"><span>Department: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
+
+		<div class="set-hold hold" {% if ticket.is_hold %}style="display: none"{% endif %}><span>Set on hold</span></div>
+		<div class="set-hold unhold" {% if not ticket.is_hold %}style="display: none"{% endif %}><span class="tipped" title="Click to release hold">Ticket on hold</span></div>
 	</div>
 	<br class="clear" />
 </header>
 
-<section class="description-area">
-	<dl class="info-list">
-		<dt>Ticket owned by:</dt>
-		<dd>
-			<a
-				class="user-link as-popover preload"
-				style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');"
-				data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
-			>
-				{{ ticket.person.display_name }}{% if ticket.person.organization %},
-					{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}{{ ticket.person.organization }}
-				{% endif %}
-				<span class="email">&lt;{{ ticket.person_email_address }}&gt;</span>
-			</a>
-		</dd>
+{# Box Summary #}
+<div class="profile-box-container">
+	<header>
+		<h4>Assignment</h4>
+	</header>
+	<section>
+		<section class="description-area">
+			<dl class="info-list">
+				<dt>Ticket owned by:</dt>
+				<dd>
+					<a
+						class="user-link as-popover preload"
+						style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');"
+						data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
+					>
+						{{ ticket.person.display_name }}{% if ticket.person.organization %},
+							{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}{{ ticket.person.organization }}
+						{% endif %}
+						<span class="email">&lt;{{ ticket.person_email_address }}&gt;</span>
+					</a>
+				</dd>
 
-		<dt>Ticket assigned to:</dt>
-		<dd>
-			<a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
-			and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
-		</dd>
-	</dl>
+				<dt>Ticket assigned to:</dt>
+				<dd>
+					<a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
+					and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
+				</dd>
+			</dl>
 
-	<div class="controls">
-		<button class="clean-white arrow"><span>Assign to me</span></button>
-		<button class="clean-white arrow"><span>Assign to team support tier 1</span></button>
-		<button class="clean-white"><span>Manage CC users</span></button>
-		<br class="clear" />
-	</div>
-</section>
-
-<nav class="page-tabs">
-	<ul>
-		<li data-tab-for="" class="on"><span>Details</span></li>
-		<li data-tab-for=""><span>Attachments</span></li>
-	</ul>
-</nav>
-
-<section id="{{baseId}}_tabs_content_wrap" class="mid-page">
-	<dl class="table-list">
-		<dt class="type-labels">Labels</dt>
-		<dd>
-			<ul>
-				{% for label in ticket.labels %}
-					<li><span>{{label.label}}</span></li>
-				{% endfor %}
-			</ul>
-		</dd>
-
-		<dt class="properties-edit-trigger edit-fields-trigger">Properties</dt>
-		<dd>
-			<div class="extra-info fields-show">
-				<ul id="{{baseId}}_fields_display_main">
-				</ul>
+			<div class="controls">
+				<button class="clean-white arrow"><span>Assign to me</span></button>
+				<button class="clean-white arrow"><span>Assign to team support tier 1</span></button>
+				<button class="clean-white"><span>Manage CC users</span></button>
+				<br class="clear" />
 			</div>
-			<div class="fields-edit" style="display: none;"></div>
-		</dd>
-	</dl>
-	<br class="clear" />
+		</section>
+	</section>
+</div>
 
-	<div class="controls">
-		<button class="clean-white"><span>Split Ticket</span></button>
-		<button class="clean-white"><span>Merge Ticket</span></button>
-		<button class="clean-white arrow"><span>More</span></button>
-	</div>
+<div class="profile-box-container">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section class="description-area" id="{{baseId}}_fields_display_main_wrap">
+		<dl class="info-list">
+			<dt class="type-labels">Labels:</dt>
+			<dd class="ticket-tags tags-wrap">
+				<ul data-label-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
+					{% for label in ticket.labels %}
+						<li><span>{{label.label}}</span></li>
+					{% endfor %}
+				</ul>
+			</dd>
 
-	<footer class="time-info">
-		<ul>
-			<li>
-				Ticket created <time>2 hours ago</time> by
-				<span class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }}</span>
-				at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>
-			</li>
-			<li>
+			<dt>Ticket Created:</dt>
+			<dd>
+				<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
+				on {{ ticket.date_created|date('M j Y H:ia') }}
+			</dd>
+
+			<dt>User Waiting:</dt>
+			<dd>
 				User has been waiting <time>23 minutes</time> for a reply,
 				and a total of <time>8 hours</time> since the ticket started.
-			</li>
-		</ul>
-	</footer>
-</section>
+			</dd>
+		</dl>
+
+		<div class="extra-info fields-show">
+			<div class="info-list" id="{{baseId}}_fields_display_main"></div>
+		</div>
+		<div class="fields-edit" style="display: none;"></div>
+
+		<div class="controls" id="{{baseId}}_properties_controls">
+			<button class="clean-white properties-edit-trigger edit-fields-trigger"><span>Edit Properties</span></button>
+			<button class="clean-white"><span>Split Ticket</span></button>
+			<button class="clean-white"><span>Merge Ticket</span></button>
+			<button class="clean-white arrow"><span>More</span></button>
+		</div>
+	</section>
+</div>
 
 <section class="main-content">
 	<ul class="tickets-msg-controls">
@@ -200,6 +210,51 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% if ticket.hidden_status != 'deleted' %}
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 {% endif %}
+
+{# Wrapper around fields in the properties box #}
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
+	<dl class="info-list display-item">
+		<dt class="prop-title display-title"></dt>
+		<dd class="prop-val display-content"></dd>
+	</dl>
+</script>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_tpl">
+	<div class="fields-edit-container">
+		<div class="fields-edit-rows"></div>
+		<div class="controls">
+			<div class="is-not-loading">
+				<button class="clean-white save-trigger">Save</button>
+				<button class="clean-white close-trigger">Cancel</button>
+			</div>
+			<div class="is-loading">
+				Saving, please wait...
+			</div>
+		</div>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_row_tpl">
+	<dl class="info-list display-item">
+		<dt class="display-title"></dt>
+		<dd class="display-content"></dd>
+	</dl>
+</script>
+
+{# New tab code for bottom tabs (for addition to tabstrip) #}
+<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-tab" id="{{baseId}}_fields_display_tabs_tab_tpl">
+	<li class="tab-trigger {id} field-tab" data-tab-for=".{id}" data-field-tab-id="{id}">
+		<a>{title}</a>
+	</li>
+</script>
+<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-content" id="{{baseId}}_fields_display_tabs_content_tpl">
+	<div class="full-container-tabbed-contents tab-content field-tab-content {id}">
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_tabs_wrap_tpl">
+	<dl class="info-list display-item">
+		<dt class="display-title"></dt>
+		<dd class="display-content"></dd>
+	</dl>
+</script>
 
 {% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 

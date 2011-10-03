@@ -2,7 +2,7 @@
 	{# Standard fields #}
 	<div class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category">
 		<div class="title">
-			<span class="menu-trigger category_id label">Category</span>
+			<span class="menu-trigger category_id label">Category:</span>
 		</div>
 		<div class="content">
 			<span class="prop-val menu-trigger category_id">{{ticket.category.full_title|default('None')}}</span>
@@ -10,15 +10,15 @@
 	</div>
 	<div class="ticket_product product_id standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="ticket_product">
 		<div class="title">
-			<span class="menu-trigger product_id label">Product</span>
+			<span class="menu-trigger product_id label">Product:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger product_id">{{ticket.product.title|default('None')}}</span>
+			<span class="prop-val menu-trigger product_id">{{ticket.product.full_title|default('None')}}</span>
 		</div>
 	</div>
 	<div class="ticket_priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority">
 		<div class="title">
-			<span class="menu-trigger priority_id label">Priority</span>
+			<span class="menu-trigger priority_id label">Priority:</span>
 		</div>
 		<div class="content">
 			<span class="prop-val menu-trigger priority_id">{{ticket.priority.title|default('None')}}</span>
@@ -26,7 +26,7 @@
 	</div>
 	<div class="ticket_workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow">
 		<div class="title">
-			<span class="menu-trigger workflow_id label">Workflow</span>
+			<span class="menu-trigger workflow_id label">Workflow:</span>
 		</div>
 		<div class="content">
 			<span class="prop-val menu-trigger workflow_id">{{ticket.workflow.title|default('None')}}</span>
@@ -35,9 +35,9 @@
 
 	{# Custom fields#}
 	{% for f in custom_fields %}
-		<div class="ticket_field_{{f.id}} custom-field item" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+		<div class="ticket_field_{{f.id}} custom-field item {% if not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
 			<div class="title">
-				<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}</span>
+				<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 			</div>
 			<div class="content">
 				<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">
@@ -49,7 +49,7 @@
 </div>
 <div class="page-display-input" style="display: none;">
 	<div class="ticket_category category_id standard-field item" data-item-type="ticket_category">
-		<div class="title">Category</div>
+		<div class="title">Category:</div>
 		<div class="content">
 			<select name="ticket[category_id]" data-prop-id="category_id" class="prop-input-category_id">
 				<option value="0"></option>
@@ -60,7 +60,7 @@
 		</div>
 	</div>
 	<div class="ticket_product product_id standard-field item" data-item-type="ticket_product">
-		<div class="title">Product</div>
+		<div class="title">Product:</div>
 		<div class="content">
 			<select name="ticket[product]_id" data-prop-id="product_id" class="prop-input-product_id">
 				<option value="0"></option>
@@ -71,7 +71,7 @@
 		</div>
 	</div>
 	<div class="ticket_priority priority_id standard-field item" data-item-type="ticket_priority">
-		<div class="title">Priority</div>
+		<div class="title">Priority:</div>
 		<div class="content">
 			<select name="ticket[priority_id]" data-prop-id="priority_id" class="prop-input-priority_id">
 				<option value="0"></option>
@@ -82,7 +82,7 @@
 		</div>
 	</div>
 	<div class="ticket_workflow workflow_id standard-field item" data-item-type="ticket_workflow">
-		<div class="title">Workflow</div>
+		<div class="title">Workflow:</div>
 		<div class="content">
 			<select name="ticket[workflow_id]" data-prop-id="workflow_id" class="prop-input-workflow_id">
 				<option value="0"></option>
@@ -92,10 +92,10 @@
 			</select>
 		</div>
 	</div>
-	
+
 	{% for f in custom_fields %}
 		<div class="ticket_field_{{f.id}} custom-field item-input" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
-			<div class="title">{{ f.title }}</div>
+			<div class="title">{{ f.title }}:</div>
 			<div class="content">
 				<div class="custom-field field-input ticket_field_{{f.id}}" data-item-id="{{f.id}}">
 					{{ render_custom_field_form(f) }}

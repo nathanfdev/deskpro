@@ -1,102 +1,111 @@
-<section class="ticket-reply">
-	<nav>
-		<ul>
-			<li class="on">Reply</li>
-			<li>Note</li>
-		</ul>
-	</nav>
-	<section class="reply-area reply-tab deskpro-tab-item on">
+<div class="profile-box-container tabbed" data-element-handler="DeskPRO.Agent.ElementHandler.TabBox">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_ticket_reply" class="on">Reply</li>
+				<li data-tab-for="#{{baseId}}_ticket_reply">Note</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="ticket-reply">
+		{# Reply Tab #}
+		<article class="reply-area reply-tab on" id="{{baseId}}_ticket_reply">
 
-		<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+			<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
 
-		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+			<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+			<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+			<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="pending" />
 
-		<div class="options-col">
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>Assign to my team</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-				<label>Mark as pending KB Article</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_status]" />
-				<label>Set as awaiting user</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[close_tab]" />
-				<label>Close tab after reply</label>
-			</div>
-		</div>
-		<div class="reply-col">
-			<div class="reply-box-wrap"><textarea></textarea></div>
-			<footer>
-				<button class="clean-white reply">Send Reply</button>
-				<div class="buttons-right">
-					<button class="clean-white related-articles">Related Articles</button>
-					<button class="clean-white text-snippets">Text Snippets</button>
-					<button class="clean-white cc-people">CC People</button>
-					<button class="clean-white attach-files">Attach Files</button>
+			<div class="options-col">
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_assign]" />
+					<label>Assign to me</label>
 				</div>
-				<div class="attach-list-area" style="display: none"></div>
-				<div class="cc-list-area" style="display: none"></div>
-			</footer>
-		</div>
-
-		</form>
-
-	</section>
-	<section class="note-tab deskpro-tab-item">
-
-		<form id="{{baseId}}_note_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
-
-		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
-
-		<div class="options-col">
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>Assign to my team</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-				<label>Mark as pending KB Article</label>
-			</div>
-		</div>
-		<div class="reply-col">
-			<div class="reply-box-wrap"><textarea></textarea></div>
-			<footer>
-				<button class="clean-white reply">Send Reply</button>
-				<div class="buttons-right">
-					<button class="clean-white attach-files">Attach Files</button>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
+					<label>Assign to my team</label>
 				</div>
-				<div class="attach-list-area" style="display: none"></div>
-			</footer>
-		</div>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
+					<label>Mark as pending KB Article</label>
+				</div>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_status]" />
+					<label>Set as awaiting user</label>
+				</div>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[close_tab]" />
+					<label>Close tab after reply</label>
+				</div>
+			</div>
+			<div class="reply-col">
+				<div class="reply-box-wrap"><textarea id="{{baseId}}_replybox_txt"></textarea></div>
+				<footer>
+					<button class="clean-white reply">Send Reply</button>
+					<div class="buttons-right">
+						<button class="clean-white related-articles">Related Articles</button>
+						<button class="clean-white text-snippets">Text Snippets</button>
+						<button class="clean-white cc-people">CC People</button>
+						<button class="clean-white attach-files">Attach Files</button>
+					</div>
+					<div class="attach-list-area" style="display: none"></div>
+					<div class="cc-list-area" style="display: none"></div>
+				</footer>
+			</div>
 
-		</form>
+			</form>
 
+		</article>
+		{# /Reply Tab #}
+
+		{# Note Tab #}
+		<article class="note-tab" id="{{baseId}}_ticket_note">
+
+			<form id="{{baseId}}_note_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+
+			<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+			<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+			<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="pending" />
+
+			<div class="options-col">
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_assign]" />
+					<label>Assign to me</label>
+				</div>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
+					<label>Assign to my team</label>
+				</div>
+				<div>
+					<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
+					<label>Mark as pending KB Article</label>
+				</div>
+			</div>
+			<div class="reply-col">
+				<div class="reply-box-wrap"><textarea></textarea></div>
+				<footer>
+					<button class="clean-white reply">Send Reply</button>
+					<div class="buttons-right">
+						<button class="clean-white attach-files">Attach Files</button>
+					</div>
+					<div class="attach-list-area" style="display: none"></div>
+				</footer>
+			</div>
+
+			</form>
+
+		</article>
+		{# /Note Tab #}
+
+		<script class="template-upload" type="text/x-jquery-tmpl">
+			<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+		</script>
+		<script class="template-download" type="text/x-jquery-tmpl">
+			<li>
+				<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+				<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+			</li>
+		</script>
 	</section>
-
-	<script class="template-upload" type="text/x-jquery-tmpl">
-		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-	</script>
-	<script class="template-download" type="text/x-jquery-tmpl">
-		<li>
-			<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
-			<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-		</li>
-	</script>
-</section>
+</div>

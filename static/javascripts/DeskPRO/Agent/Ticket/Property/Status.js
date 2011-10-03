@@ -6,39 +6,28 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 	setValue: function(value) {
 
 		var hidden_status = false;
+		var status_classname = value;
 
 		if (value && value.constructor.toString().indexOf("Array") != -1) {
 			hidden_status = value[1].value;
 			value = value[0].value;
+			status_classname = value;
 		} else {
 			if (value.indexOf('.') != -1) {
 				var parts = value.split('.');
 
 				var value = parts[0];
 				var hidden_status = parts[1];
+				status_classname = value + '_' + hidden_status;
+
+				this.ticketPage.fireEvent('ticketHidden', [hidden_status]);
 			}
 		}
 
-		var btnSetOpen = $('.set-resolved button, .set-closed button, .mark-spam button', this.ticketPage.getEl('action_buttons'));
-		var btnSetOther = $('.set-open button', this.ticketPage.getEl('action_buttons'));
-		if (value == 'open' || value == 'pending') {
-			btnSetOpen.show();
-			btnSetOther.hide();
-		} else {
-			btnSetOpen.hide();
+		$('.page-header .set-status', this.ticketPage.wrapper).hide();
+		$('.page-header .set-status.' + status_classname, this.ticketPage.wrapper).show();
 
-			if (value == 'resolved' || value == 'pending') {
-				btnSetOther.show();
-			} else {
-				btnSetOther.hide();
-			}
-		}
-
-		var statusDisplay = $('.prop-status-icon', this.ticketPage.getEl('ticket_header'));
-		statusDisplay.attr('title', value);
-		var icon = $('> span', statusDisplay);
-		icon.attr('class', '');
-		icon.addClass('ticket-' + value);
+		console.log(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(value);
 		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);

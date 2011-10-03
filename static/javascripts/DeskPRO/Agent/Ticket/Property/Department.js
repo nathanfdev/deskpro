@@ -30,7 +30,7 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 	},
 
 	_getInterfaceElement: function() {
-		return $('.prop-department-id:first', this.ticketPage.wrapper);
+		return $('.label-department-id', this.ticketPage.wrapper);
 	},
 
 	_formEl: null,

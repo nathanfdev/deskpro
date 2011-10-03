@@ -21,20 +21,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
-		return;
-
-		this.wrapper = el;
-		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
-		this.barWrapper = $('.bar-wrapper', this.wrapper);
-
-		this.valueForm = $('form.value-form:first', this.contentWrapper);
+		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.submit(function(ev) {
 			// Never actually submit the form (would load a new page)
 			ev.preventDefault();
 		});
-		//this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
 
-		window.TICKET = this;
+		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+
+		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
+			wrapper: el
+		});
+		this.ownObject(this.ticketDisplay);
 
 		if (!this.meta.isDeleted) {
 			this._initCustomFieldsEditor();
@@ -42,14 +40,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var self = this;
 		this._initMessage($('div.messages-wrap'));
-
-		// Custom field widgets
-		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
-
-		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
-			wrapper: el
-		});
-		this.ownObject(this.ticketDisplay);
 
 		if (!this.meta.isDeleted) {
 			this._initTicketActionsMenu();
@@ -71,26 +61,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 
-		Array.each(this.getMetaData('fieldHandlers', []), function(h) {
-			if (!h) return;
-
-			var handler_class = h.classname;
-			var field_wrap_id = h.wrap_id;
-
-			var h = new h($('#' + field_wrap_id), this);
-			h.initPage();
-		}, this);
-
 		this.addEvent('shortcutFocusReply', (function() {
 
 			// Scroll down
-			$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).scrollTop(100000);
+			$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).scrollTop(100000);
 
 			// Focus reply
 			$('textarea[name="message"]', this.ticketReply).focus();
 		}).bind(this));
 
-		$('.ticket-urgency', this.contentWrapper).mouseover(function() {
+		$('.ticket-urgency', this.wrapper).mouseover(function() {
 			Tipped.show(this);
 		});
 
@@ -130,11 +110,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		$('.message-controls input', this.wrapper).click(function() {
 			updateMessageTypes();
-		});
-
-		// Goto reply
-		$('button.goto-reply', this.wrapper).click(function() {
-			cw.tinyscrollbar_scrolltop(1000000);
 		});
 
 		this.moreActionsMenu = new DeskPRO.UI.Menu({
@@ -425,7 +400,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".ticket-tags ul", this.contentWrapper);
+		this.labelsList = $(".ticket-tags ul", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'tickets',
@@ -468,7 +443,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	getNewTicketMessages: function() {
-		var last_id = $('li.message-item:last', this.contentWrapper).data('message-id');
+		var last_id = $('li.message-item:last', this.wrapper).data('message-id');
 
 		$.ajax({
 			url: this.getMetaData('getMessagesUrl'),
