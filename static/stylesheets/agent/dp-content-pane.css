@@ -1109,13 +1109,35 @@ ul.activity-stream time {
 }
 
 .notes-wrap .new-note textarea {
-	width: 98%;
+	width: 100%;
 	height: 50px;
 }
 
 .notes-wrap .new-note {
-
 	padding: 4px;
+	position: relative;
+}
+
+.notes-wrap .new-note .input-col {
+	margin-right: 52px;
+}
+
+.notes-wrap .new-note .input-col textarea {
+	margin: 0;
+}
+
+.notes-wrap .new-note .btn-col {
+	position: absolute;
+	bottom: 8px;
+	right: 4px;;
+}
+
+.notes-wrap .new-note .btn-col .is-loading {
+	background: url(../../images/loading-small.gif) no-repeat 0 0;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
 }
 
 .profile .summary {

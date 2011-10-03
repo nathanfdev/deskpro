@@ -102,12 +102,14 @@
 						{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
 					{% endfor %}
 					<li class="new-note">
-						<textarea></textarea>
-						<div class="is-not-loading trigger-row">
-							<button class="clean-white small save-trigger">Add Note</button>
+						<div class="btn-col">
+							<div class="is-not-loading trigger-row">
+								<button class="clean-white small save-trigger">Save</button>
+							</div>
+							<div class="is-loading">Saving</div>
 						</div>
-						<div class="is-loading">
-							Saving ...
+						<div class="input-col">
+							<textarea></textarea>
 						</div>
 					</li>
 				</ul>
