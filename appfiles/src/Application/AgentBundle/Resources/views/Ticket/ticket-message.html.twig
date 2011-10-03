@@ -13,7 +13,7 @@
 	</div>
 	<div class="content">
 		<header>
-			<span class="message-counter with-gear">#{{ loop.index }}</span>
+			<span class="message-counter with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
 			<h4
 				{% if not message.person.is_agent %}
 					class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"

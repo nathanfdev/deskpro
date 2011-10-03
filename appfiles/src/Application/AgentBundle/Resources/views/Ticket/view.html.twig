@@ -187,9 +187,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<button class="clean-white properties-edit-trigger edit-fields-trigger"><span>Edit Properties</span></button>
-			<button class="clean-white"><span>Split Ticket</span></button>
-			<button class="clean-white"><span>Merge Ticket</span></button>
-			<button class="clean-white arrow"><span>More</span></button>
+			<button class="clean-white" id="{{baseId}}_merge_trigger"><span>Merge Ticket</span></button>
+			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>More</span></button>
 		</div>
 	</section>
 </div>

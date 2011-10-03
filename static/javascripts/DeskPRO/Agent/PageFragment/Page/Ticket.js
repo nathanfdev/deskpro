@@ -112,35 +112,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			updateMessageTypes();
 		});
 
-		this.moreActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.more', this.getEl('action_buttons')),
-			menuElement: this.getEl('more_actions_menu'),
-			onItemClicked: (function(info) {
-				var el = $(info.itemEl);
-				if (el.is('.merge-trigger')) {
-					var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
-						ticketId: this.getMetaData('ticket_id'),
-						destroyOnClose: true,
-						onMergeSuccess: function(data) {
+		this.getEl('merge_trigger').click(function() {
+			var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
+				ticketId: self.getMetaData('ticket_id'),
+				destroyOnClose: true,
+				onMergeSuccess: function(data) {
 
-							// remove old tabs, theyre outdated
-							Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
-								var tid = tab.page.getMetaData('ticket_id');
-								if (tid == data.old_ticket_id || tid == data.ticket_id) {
-									DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
-								}
-							});
-
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-
-							mergeOverlay.close();
+					// remove old tabs, theyre outdated
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+						var tid = tab.page.getMetaData('ticket_id');
+						if (tid == data.old_ticket_id || tid == data.ticket_id) {
+							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
 						}
 					});
-					mergeOverlay.open();
+
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+
+					mergeOverlay.close();
 				}
-			}).bind(this)
+			});
+			mergeOverlay.open();
 		});
-		this.ownObject(this.moreActionsMenu);
 
 		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
 			replyBox: this.getEl('replybox'),
@@ -613,6 +605,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			triggerElement: null,
 			menuElement: $('.ticket-message-edit-menu:first', this.wrapper),
 			onItemClicked: function(info) {
+				console.log($(info.menu.getOpenTriggerElement()));
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
@@ -646,8 +639,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					context: this,
 					dataType: 'json',
 					success: function(data) {
-						var reply = $('.reply-form-fields:first textarea:first', this.ticketBar);
-						console.log(reply);
+						var reply = this.getEl('replybox_txt');
 						reply.val(data.message_quote + "\n\n" + reply.val());
 						reply.focus();
 					}
