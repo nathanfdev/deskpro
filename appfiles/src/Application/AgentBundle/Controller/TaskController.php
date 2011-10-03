@@ -106,6 +106,11 @@ class TaskController extends AbstractController
         {
             $request = $this->get('request');
             $form->bindRequest($request); 
+<<<<<<< HEAD
+=======
+            $this->_entityManager->persist($task);
+            $this->_entityManager->flush();
+>>>>>>> e969e50... task info now saved in DB
             return new Response('ok');
         }
 
