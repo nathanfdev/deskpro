@@ -178,6 +178,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.page.initPage(this.popover);
 		this.pageSource = null;
 
+		if (this.page.meta.title) {
+			$('h1.tab-title', this.popoverOuter).text(this.page.meta.title);
+		}
+
+		this.page.fireEvent('render', [this.popover]);
 		this.fireEvent('pageInit', [this, this.page]);
 	},
 

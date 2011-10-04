@@ -216,15 +216,17 @@
 
 {# Popover tempalte #}
 <script type="text/x-deskpro-plain" id="popover_tpl">
-	<div class="overlayCreateTicketWrapper popover-wrapper">
-		<div class="OverlayCreateTicketHeader">
-			<div class="moveToTabBtn move-to-tab"><a>Move into tab</a></div>
-			<div class="createTickerTitle"><h1 class="tab-title"></h1></div>
-			<div class="closeCreateTicker close"><a>Close</a></div>
-		</div>
-		<div class="overlayCreateTicketContent popover-inner">
+	<div class="mass-actions-overlay-container open popover-wrapper">
+		<section class="mass-actions-overlay">
+			<header>
+				<span class="close close-trigger">close</span>
+				<span class="move-to-tab">Move to tab</span>
+				<h1 class="tab-title"></h1>
+			</header>
+			<article class="popover-inner no-footer">
 
-		</div>
+			</article>
+		</section>
 	</div>
 </script>
 

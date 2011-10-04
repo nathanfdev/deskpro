@@ -583,7 +583,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		this.messageActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: null,
-			menuElement: $('.ticket-message-edit-menu:first', this.wrapper),
+			menuElement: $('.ticket-message-edit-menu', this.wrapper),
 			onItemClicked: function(info) {
 				console.log($(info.menu.getOpenTriggerElement()));
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));

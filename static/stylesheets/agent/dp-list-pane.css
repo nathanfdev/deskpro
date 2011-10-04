@@ -867,8 +867,7 @@ section.mass-actions-overlay > header {
 	-moz-border-radius-bottomleft: 0px;
 	-webkit-border-radius: 9px 9px 0px 0px;
 	border-radius: 9px 9px 0px 0px;
-
-	text-align: center;
+	padding-left: 12px;
 }
 
 section.mass-actions-overlay > header .close {
@@ -884,6 +883,16 @@ section.mass-actions-overlay > header .close {
 	cursor: pointer;
 }
 
+section.mass-actions-overlay > header .move-to-tab {
+	float: right;
+	padding:  8px 12px 0 0;
+	cursor: pointer;
+}
+
+section.mass-actions-overlay > header .move-to-tab:hover {
+	text-decoration: underline;
+}
+
 section.mass-actions-overlay > header h1 {
 	color: #595959;
 	font-size: 14px;
@@ -891,6 +900,7 @@ section.mass-actions-overlay > header h1 {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	padding-top: 8px;
 }
+
 
 section.mass-actions-overlay > footer {
 	position: absolute;
@@ -942,6 +952,19 @@ section.mass-actions-overlay > footer button {
 section.mass-actions-overlay > article {
 	position: absolute;
 	top: 36px; right: 0; bottom: 45px; left: 0;
+}
+
+section.mass-actions-overlay > article .layout-content {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+}
+
+section.mass-actions-overlay > article.no-footer {
+	bottom: 0;
 }
 
 section.mass-actions-overlay > article dl {
