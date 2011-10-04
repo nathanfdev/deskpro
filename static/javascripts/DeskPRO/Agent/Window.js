@@ -1527,6 +1527,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
                 $('#create_task_btn').click(function() {
+                        $('form#newTaskForm input, form#newTaskForm select').val('');
                         DeskPRO_Window.newTaskLoader.toggle();
                 });
 

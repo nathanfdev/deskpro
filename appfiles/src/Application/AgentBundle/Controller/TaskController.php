@@ -101,7 +101,14 @@ class TaskController extends AbstractController
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+        /**
+         * Create action for the new task. Which pass the data and the from to the _process method to save it in DB.
+         * @return json formated data 
+         */
+>>>>>>> 9c6d9ac... add commnet in the task controller actions
         public function createAction()
         {
             $task = new Task(); 
@@ -109,16 +116,33 @@ class TaskController extends AbstractController
             return $this->_process($form, $task);
         }
 
+        /**
+         * render the task
+         * @param intiger $task_id
+         * @return <type>
+         */
+
         public function viewAction($task_id = null)
         {
             return $this->render('AgentBundle:Task:view.html.twig');
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         private function _process($form, $task) 
         {
 =======
         private function _process($form, Task $task) {
+=======
+        /**
+         * Process data for add or update the task.
+         * @param NewTask $form
+         * @param Task $task
+         * @return json data for success true or false
+         */
+        private function _process($form, Task $task)
+        {
+>>>>>>> 9c6d9ac... add commnet in the task controller actions
             $this->_loadModels();
 >>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
             $request = $this->get('request');
@@ -134,19 +158,26 @@ class TaskController extends AbstractController
             $form->bindRequest($request);
             try {
 
-                $task->setPerson($this->_currentUser);
-                $this->_entityManager->persist($task);
-                $this->_entityManager->flush();
+                if($request->getMethod() == 'POST'){
 
-                return $this->createJsonResponse(array(
-                    'success' => true,
-                    'task_id' => $task->getId()
-                ));
+                    if($form->isValid())
+                    {
+                        $task->setPerson($this->_currentUser);
+                        $this->_entityManager->persist($task);
+                        $this->_entityManager->flush();
+
+                        return $this->createJsonResponse(array(
+                            'success' => true,
+                            'task_id' => $task->getId()
+                        ));
+                    }
+                }
             } catch (\Doctrine\ORM\NoResultException $e) {
                 return $this->createJsonResponse(array(
                     'success' => false
                 ));
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> e292b09... add view action in controller and the add view route
         }
@@ -154,6 +185,9 @@ class TaskController extends AbstractController
 >>>>>>> e0d18f6... edit the task controller to remobe print method
 =======
     }
+=======
+        }
+>>>>>>> 9c6d9ac... add commnet in the task controller actions
 
         private function _loadModels() {
             

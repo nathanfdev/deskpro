@@ -32,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
                     alert(data);
 =======
                     if (data.success) {
-                        DeskPRO_Window.runPageRoute('task:' + BASE_URL + 'agent/tasks/'+ data.task_id);
+                        //DeskPRO_Window.runPageRoute('task:' + BASE_URL + 'agent/tasks/'+ data.task_id);
                         DeskPRO_Window.newTaskLoader.toggle();
                     } else{
                         alert('There was an error with the form');

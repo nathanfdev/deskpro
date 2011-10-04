@@ -92,7 +92,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		DeskPRO_Window.newOrganizationLoader.toggle();
 	},
         showNewTask: function() {
-		DeskPRO_Window.newTaskLoader.toggle();
+		$('form#newTaskForm input, form#newTaskForm select').val('');
+                DeskPRO_Window.newTaskLoader.toggle();
 	},
 
 	tabLeft: function() {
