@@ -1,11 +1,13 @@
-Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.LabelsInput_Grouped={};DeskPRO.UI.LabelsInput=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(c){this.options={list:null,fieldName:"labels",type:"",showMax:50};
-this.setOptions(c);var b={enableBackspace:false,fieldName:this.options.fieldName,onchange:(function(e){this.fireEvent("change",[this.getLabels()])
-}).bind(this)};var d=false;if(DeskPRO.UI.LabelsInput_Grouped[this.options.type]){d=DeskPRO.UI.LabelsInput_Grouped[this.options.type]
-}else{if(window.DESKPRO_DATA_REGISTRY.labels){d=[];Object.each(window.DESKPRO_DATA_REGISTRY.labels,function(f,e){if(f.indexOf(this.options.type)!=-1){d.push(e)
-}},this);DeskPRO.UI.LabelsInput_Grouped[this.options.type]=d}}if(d&&d.length){b.autocompleteOptions={source:d,minLength:0,delay:20};
+Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.LabelsInput_Grouped={};DeskPRO.UI.LabelsInput=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(d){this.options={list:null,fieldName:"labels",type:"",showMax:50};
+this.setOptions(d);var b={enableBackspace:false,fieldName:this.options.fieldName,onchange:(function(f){this.fireEvent("change",[this.getLabels()])
+}).bind(this)};var e=false;if(DeskPRO.UI.LabelsInput_Grouped[this.options.type]){e=DeskPRO.UI.LabelsInput_Grouped[this.options.type]
+}else{if(window.DESKPRO_DATA_REGISTRY.labels){e=[];Object.each(window.DESKPRO_DATA_REGISTRY.labels,function(g,f){if(g.indexOf(this.options.type)!=-1){e.push(f)
+}},this);DeskPRO.UI.LabelsInput_Grouped[this.options.type]=e}}if(e&&e.length){b.autocompleteOptions={source:e,minLength:0,delay:20};
 b.focusShowAutocomplete=true}else{b.autocompleteOptions={source:BASE_URL+"/misc/ajax-labels/"+this.options.type}}var a=this.options.showMax;
-b.autocompleteOptions.open=(function(f,h){var e=this.tagit.getInput();var g=$(e.autocomplete("widget"));var i=$("> li",g).slice(a);
-i.remove()}).bind(this);this.tagit=$(this.options.list).tagit(b)},getLabels:function(){return this.tagit.getLabels()},getFormData:function(){return this.tagit.getFormData()
+b.autocompleteOptions.open=(function(g,i){var f=this.tagit.getInput();var h=$(f.autocomplete("widget"));var j=$("> li",h).slice(a);
+j.remove()}).bind(this);this.tagit=$(this.options.list).tagit(b);var c=$(this.options.list).data("label-route");if(c){$(this.options.list).click(function(i){if($(i.target).is(".close")){return
+}if($(i.target).is("li")){var g=$(i.target)}else{var g=$(i.target).closest("li")}if(g.is(".tagit-new")){return}var f=$("input",g).val();
+var h=c.replace(/\{LABEL\}/g,f,c);DeskPRO_Window.runPageRoute(h)})}},getLabels:function(){return this.tagit.getLabels()},getFormData:function(){return this.tagit.getFormData()
 }});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.Overlay=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.objectId=null,this.options={triggerElement:null,contentMethod:"element",contentElement:null,contentAjax:{url:"",type:"GET",dataType:"html"},iframeUrl:null,iframeId:false,maxHeight:700,maxWidth:900,destroyOnClose:false,customClassname:"",isModal:true,zIndex:1000000,escapeClose:true,modalClickClose:true,objectGroup:"default",addClose:true};
 this.isThisDestroyed=false;this.hasInit=false;this.hasSentAjax=false;this.elements={};if(a){this.setOptions(a)}if(this.options.triggerElement){this.setupTriggerElement($(this.options.triggerElement))
 }if(this.options.escapeClose){$(document).keydown((function(b){if(b.which==27){this.closeOverlay()}}).bind(this))}},isOpen:function(){return this.isOverlayOpen()
@@ -40,7 +42,28 @@ b.show();if(!$("div.overlay-content:first",b).length){var a=b;var b=$('<div clas
 c.preventDefault()}).bind(this);if(b.is(".dbl-click-trigger")){b.dblclick(a)}else{b.click(a)}},getWrapper:function(){return $(this.elements.wrapperOuter)
 },destroy:function(){this.fireEvent("beforeDestroy",[this]);if(this.elements.wrapperOuter){this.elements.wrapperOuter.remove()
 }if(this.elements.modal){this.elements.modal.remove()}this.isThisDestroyed=true;this.fireEvent("destroyed",[this])},isDestroyed:function(){return this.isThisDestroyed
-}});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.Menu_Instances={};DeskPRO.UI.Menu=new Orb.Class({DisableParentCall:true,Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={triggerElement:null,customClassname:"",zIndex:1000000,menuElement:null,objectGroup:"default",subMenuConfig:null,initSubMenusNow:false,initMenuNow:false,parentMenu:null};
+}});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.OptionBox=new Orb.Class({DisableParentCall:true,Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={element:null,trigger:null};
+this.setOptions(a);this.el=this.options.element;if(this.options.trigger){$(this.options.trigger).click(this.open.bind(this))
+}},getElement:function(a){if(!a||a=="element"){this.el}else{if(a=="backdrop"){return this.backdrop}}},_init:function(){var a=this;
+if(this._hasInit){return}this._hasInit=true;this.backdrop=$('<div class="backdrop" />').hide().appendTo("body");if(!this.el.parent().is("body")){this.el.detach().appendTo("body")
+}this.el.click(function(b){b.stopPropagation()});this.backdrop.click(function(b){b.stopPropagation();a.close()});$(":checkbox",this.el).change(function(){a.clickCheckbox($(this))
+});$("section",this.el).each(function(){var b=$("ul :checkbox",this).length;$(this).data("total-count",b);if($(this).data("section-name")){$(this).addClass($(this).data("section-name"))
+}});$("header .all-check",this.el).click(function(){var b=a._findSection($(this));if($(this).is(":checked")){$("ul :checkbox",b).attr("checked",true)
+}else{$("ul :checkbox",b).attr("checked",false)}a.updateCountEls(b)});$("header input.filter-box",this.el).keyup(function(){a.updateFilter($(this))
+}).change(function(){a.updateFilter($(this))});this.fireEvent("init",[this])},clickCheckbox:function(a){var b=this._findSection(a);
+this.updateCountEls(b);this.fireEvent("checked",[this])},updateCountEls:function(b){var a=$("ul :checkbox:checked",b).length;
+var c=$(".selected-count",b);if(a){$(".num",c).text(a);c.show()}else{c.hide()}if(a==b.data("total-count")){$("header .all-check",b).attr("checked",true)
+}else{$("header .all-check",b).attr("checked",false)}},getCount:function(a){if(typeof a=="string"){a=$("section."+a,this.el)
+}return parseInt($(".selected-count .num",a).text()||0)},getSelected:function(a){if(typeof a=="string"){a=$("section."+a,this.el)
+}var b=[];$("li input:checked",a).each(function(){b.push($(this).val())});return b},getAllSelected:function(){var a={};$("section",this.el).each(function(){var b=$(this).data("section-name");
+a[b]=self.getSelected($(this))});return a},_findSection:function(a){return a.closest("section")},updateFilter:function(d){var b=d.val().trim().toLowerCase();
+var c=this._findSection(d);var a=$("li",c);if(!b){a.show();return}a.each(function(){var e=$("label",this).text().toLowerCase();
+if(e.indexOf(b)!==-1){$(this).show()}else{$(this).hide()}})},open:function(f){this._init();var g=$(window).width();var b=$(window).height();
+var e=$(f.target).offset().top;var c=$(f.target).offset().left;var a=this.el.width()+5;var d=this.el.height()+5;this.el.show();
+this.backdrop.show();if(c+a>g){c=c-a}if(e+d>b){e=e-d}this.el.css({top:e,left:c});this.el.addClass("open");this.fireEvent("open",[this])
+},close:function(){if(!this.isOpen()){return}this.el.hide().removeClass("open");this.backdrop.hide();this.fireEvent("close",[this])
+},isOpen:function(){if(this._hasInit&&this.el.is(".open")){return true}return false},destroy:function(){if(this._hasInit){this.el.remove();
+this.backdrop.remove()}}});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.Menu_Instances={};DeskPRO.UI.Menu=new Orb.Class({DisableParentCall:true,Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={triggerElement:null,customClassname:"",zIndex:1000000,menuElement:null,objectGroup:"default",subMenuConfig:null,initSubMenusNow:false,initMenuNow:false,parentMenu:null};
 this.hasInit=false;this.elements={};this.openTriggerEvent=null;this.openedTime=null;this.cachePosInfo=null;this.subMenus=[];
 this.openSubMenuId=null;this.parentMenu=null;this.objectId=Orb.uuid();if(a){this.setOptions(a)}if(this.options.parentMenu){this.parentMenu=this.options.parentMenu;
 delete this.options.parentMenu}if(DeskPRO.UI.Menu_Instances[this.options.objectGroup]===undefined){DeskPRO.UI.Menu_Instances[this.options.objectGroup]={}
@@ -58,18 +81,19 @@ e.change()}});if(a){e.change(function(){var i=$("option:selected",this);var k=i.
 }return this.elements.wrapper.is(":visible")},getOpenTriggerEvent:function(){return this.openTriggerEvent},getOpenTriggerElement:function(){if(!this.openTriggerEvent){return null
 }return this.openTriggerEvent.target},open:function(a){return this.openMenu(a)},openMenu:function(a){if(!this._initMenu()){return
 }if(this.isMenuOpen()){return}if(!this.parentMenu){Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup],function(m,l){if(m.isMenuOpen()){m.closeMenu()
-}})}this.openTriggerEvent=a;if(a&&a.stopPropagation){a.stopPropagation()}var i={menu:this,cancelOpen:false};if(a&&a.customEvents){a.customEvents.fireEvent("beforeMenuOpened",i)
-}if(!i.noFireEvent){this.fireEvent("beforeMenuOpened",i)}if(i.cancelOpen){this.openTriggerEvent=null;return}if(!this.options.zIndex){this.options.zIndex=Orb.findHighestZindex()+1
+}})}this.openTriggerEvent=a;if(a&&a.stopPropagation){a.stopPropagation()}var j={menu:this,cancelOpen:false};if(a&&a.customEvents){a.customEvents.fireEvent("beforeMenuOpened",j)
+}if(!j.noFireEvent){this.fireEvent("beforeMenuOpened",j)}if(j.cancelOpen){this.openTriggerEvent=null;return}if(!this.options.zIndex){this.options.zIndex=Orb.findHighestZindex()+1
 }if(this.cachePosInfo&&this.openedTime&&this.parentMenu&&this.parentMenu.openedTime&&this.parentMenu.openedTime<=this.openedTime){var c=this.cachePosInfo.left;
-var g=this.cachePosInfo.top}else{var b=this.elements.wrapperOuter.outerWidth();var j=this.elements.wrapperOuter.outerHeight();
+var g=this.cachePosInfo.top;var i=this.cachePosInfo.point}else{var b=this.elements.wrapperOuter.outerWidth();var k=this.elements.wrapperOuter.outerHeight();
 var h=$(document).width();var e=$(document).height();if(this.parentMenu!==null&&this.parentMenu.isMenuOpen()){var f=this.options.parentMenuItem.offset().left+this.options.parentMenuItem.outerWidth()-4;
-var d=this.options.parentMenuItem.offset().top;if(f+b>h){f=this.options.parentMenuItem.offset().left-b}}else{if(a.pageX){var f=a.pageX;
-var d=a.pageY}else{var f=$(a.target).offset().top;var d=$(a.target).offset().left}}if(f+b<h){var c=f+4}else{var c=f-b-4}if(d+j<e){var g=d
-}else{var g=d-j+4}if(g<0){g=5}this.cachePosInfo={left:c,top:g}}if(this.elements.shim){this.elements.shim.css({"z-index":this.options.zIndex+1,position:"absolute",top:0,right:0,bottom:0,left:0,background:"transparent"}).show()
-}this.elements.wrapperOuter.css({"z-index":this.options.zIndex+2,position:"absolute",top:g,left:c});this.elements.wrapperOuter.show();
-this.openedTime=new Date();if(a&&a.customEvents){a.customEvents.fireEvent("menuOpened",{menu:this})}if(!i.noFireEvent){this.fireEvent("menuOpened",{menu:this})
-}},close:function(){return this.closeMenu()},closeMenu:function(){if(!this.isMenuOpen()){return false}var a={menu:this,cancelClose:false};
-if(this.openTriggerEvent&&this.openTriggerEvent.customEvents){this.openTriggerEvent.customEvents.fireEvent("beforeMenuClosed",a)
+var d=this.options.parentMenuItem.offset().top;if(f+b>h){f=this.options.parentMenuItem.offset().left-b}}else{if(a.target&&!$(a.target).is(".with-menu-click-position")){var f=$(a.target).offset().left+($(a.target).width()/2);
+var d=$(a.target).offset().top+($(a.target).outerHeight())+2}else{if(a.pageX){var f=a.pageX;var d=a.pageY}else{var f=$(a.target).offset().left;
+var d=$(a.target).offset().top}}}var i=true;if(f+b<h){var c=f}else{var c=h-b-4;i=false}if(d+k<e){var g=d}else{var g=e-k-4;
+i=false}if(g<0){g=5}this.cachePosInfo={left:c,top:g,point:i}}if(this.elements.shim){this.elements.shim.css({"z-index":this.options.zIndex+1,position:"absolute",top:0,right:0,bottom:0,left:0,background:"transparent"}).show()
+}if(i){this.elements.wrapperOuter.addClass("with-point")}else{this.elements.wrapperOuter.removeClass("with-point")}this.elements.wrapperOuter.css({"z-index":this.options.zIndex+2,position:"absolute",top:g,left:c});
+this.elements.wrapperOuter.show();this.openedTime=new Date();if(a&&a.customEvents){a.customEvents.fireEvent("menuOpened",{menu:this})
+}if(!j.noFireEvent){this.fireEvent("menuOpened",{menu:this})}},close:function(){return this.closeMenu()},closeMenu:function(){if(!this.isMenuOpen()){return false
+}var a={menu:this,cancelClose:false};if(this.openTriggerEvent&&this.openTriggerEvent.customEvents){this.openTriggerEvent.customEvents.fireEvent("beforeMenuClosed",a)
 }if(!a.noFireEvent){this.fireEvent("beforeMenuClosed",a)}if(a.cancelClose){return false}this._closeSubMenu();if(this.elements.shim){this.elements.shim.hide()
 }if(this.parentMenu){this.elements.wrapperOuter.hide()}else{this.elements.wrapperOuter.fadeOut(200)}if(this.openTriggerEvent&&this.openTriggerEvent.customEvents){this.openTriggerEvent.customEvents.fireEvent("menuClosed",{menu:this})
 }if(!a.noFireEvent){this.fireEvent("menuClosed",{menu:this})}this.openTriggerEvent=null;return true},_menuItemClicked:function(b){var a={menu:this,event:b,itemEl:b.currentTarget,cancelClose:false};

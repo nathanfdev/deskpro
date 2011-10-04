@@ -2524,7 +2524,7 @@ a("input",g).focus(function(){if(a(this).val()==a(this).data("placeholder")){a(t
 if(y.focusShowAutocomplete){f.focus(function(){a(this).trigger("keydown.autocomplete");a(this).autocomplete("widget").show()
 })}}).blur(function(){if(!a(this).val().trim().length){a(this).val(a(this).data("placeholder"));a(this).removeClass("editting")
 }});c.append(g)}else{var g=a(y.inputFieldHtml);y.inputFieldAppendTo.append(g)}var k=c;var f=a(".tagit-input",y.inputFieldAppendTo);
-c.children("li:not(.tagit-new)").each(function(){if(!a(this).hasClass("tagit-new")){v(a("span",this).eq(0).html());a(this).remove()
+c.children("li:not(.tagit-new)").each(function(z){if(!a(this).hasClass("tagit-new")){v(a("span",this).eq(0).html());a(this).remove()
 }});a(this).delegate("a.close","click",function(){if(a(this).parent().is("li")){a(this).parent().remove()}else{a(this).parent().parent().remove()
 }y.onchange()});a(this).click(function(z){if(z.target.tagName=="A"){}else{f.focus()}});f.keydown(function(z){var A=z.keyCode||z.which;
 if(A==r&&y.enableBackspace){if(f.val()==""){a(c).children(".tagit-choice:last").remove()}}});f.keypress(function(z){var B=z.keyCode||z.which;

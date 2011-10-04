@@ -9,7 +9,7 @@ for(var b=0;b<10000000;b++){if((new Date().getTime()-c)>a){break}}};Orb.mouseInE
 var a=e.outerHeight();if(c<f.left||c>f.left+d){return false}if(b<f.top||b>f.top+a){return false}return true};Orb.findHighestZindex=function(a){if(!a){a=$("body > *")
 }var b=0;a.each(function(){var c=parseInt($(this).css("z-index"));if(c>b){b=c}});return b};Orb.escapeHtml=function(a){a=a||"";
 return a.replace(/&/g,"&amp;").replace(/>/g,"&gt;").replace(/</g,"&lt;").replace(/"/g,"&quot;")};Orb.linkUrls=function(a){a=a||"";
-return a.replace(/(https?:\/\/[^\s]+)/gi,'<a href="$1">$1</a>')};Orb.appendQueryData=function(c,b,a){var d=b;if(a!==undefined){d+="="+a
+return a.replace(/(https?:\/\/[^\s]+)/gi,'<a href="$1">$1</a>')};Orb.appendQueryData=function(c,b,a){var d=b;if(a!==undefined){d+="="+encodeURI(a)
 }if(c.indexOf("?")===-1){c+="?"+d}else{c+="&"+d}return c};Orb.strRepeat=function(c,b){var a=[];while(b-->0){a.push(c)}return a.join("")
 };Orb.arrayChunk=function(e,d){var a=[],b=[],c;for(c=0;c<e.length;c++){if(b.length==d){a.push(b);b=[]}if(b.length<d){b.push(e[c])
 }}if(b.length){a.push(b)}return a};Orb.resourceLoader={batches:{},batchesCallback:{},loadScript:function(a,b){this.loadBatch([{type:"script",url:a}],b)
@@ -112,10 +112,51 @@ if(b.placeholder&&this.isPlaceholderSupported()){return}var c=b.attr("placeholde
 }b.addClass("has-placeholder");if(b.val()===""||b.val()==c){b.val(c);b.addClass("placeholder-visible")}b.focus(function(){if(b.is(".placeholder-visible")){b.val("");
 b.removeClass("placeholder-visible")}});b.blur(function(){if(b.val()===""){b.addClass("placeholder-visible");b.val(c)}else{b.removeClass("placeholder-visible")
 }});if(b.get(0).form){$(b.get(0).form).submit(function(){if(b.is(".placeholder-visible")){b.val("")}})}})};Orb.createNamespace("DeskPRO");
-DeskPRO.MessageBroker=new Orb.Class({Implements:[Orb.Util.Events],sendMessage:function(a,d){this.fireEvent(a,[d,a]);var b=a.split(".");
-var c=null;while(b.pop()){c=b.join(".")+".*";this.fireEvent(c,[d,c])}},addMessageListener:function(b,d,c,a){this.addEvent(b,d,c,a)
+DeskPRO.ElementHandler_Exec=function(a){$("[data-element-handler]:not(.with-handler)",a||document).each(function(){var d=$(this);
+var c=d.data("element-handler");var b=Orb.getNamespacedObject(c);if(!b){console.error("Unknown element handler `%s` on element %o",c,this);
+return}if(!d.attr("id")){d.attr("id",Orb.getUniqueId("dp_"))}var e=new b(d);d.addClass("with-handler")})};DeskPRO.ElementHandler=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.el=a;
+this.options={};this.childHandlers={};this.parentHandlerElement=null;this.init();this.el.data("handler",this);var c=true;
+if(this.el.data("register-handler")){var b=this.el.data("register-handler");if(b=="1"||!b.length||b=="yes"||b=="true"){b=".with-handler"
+}var d=this.el.closest(b);if(d.length){if(d.data("handler")){this.parentHandlerElement=d;d.data("handler")._registerChildHandler(this.el)
+}else{console.warn("Parent handler element %s has no handler object on element %o and handler %o",b,this.el,this)}c=false
+}else{console.warn("Unknow parent handler element %s on element %o and handler %o",b,this.el,this)}}if(c){this.initPage()
+}},init:function(){},initPage:function(){},_registerChildHandler:function(b){this.childHandlers[b.attr("id")]=b;var a=this.registerChildHandler(b.data("handler"),b.data("handler").getHandlerName(),b)||{};
+this.fireEvent("childHandler",[b,a,this]);b.data("handler").setParentReturnOptions(a)},registerChildHandler:function(c,a,b){return{}
+},setParentReturnOptions:function(a){this.setOptions(a);this.fireEvent("parentReturn",[a,this.parentHandlerElement,this]);
+this.initPage()},getHandlerName:function(){return"element_handler"}});Orb.createNamespace("DeskPRO.Agent.ElementHandler");
+DeskPRO.Agent.ElementHandler.TwitterFeed=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){this.twitterUsername=this.el.data("twitter-username");
+this.tpl=DeskPRO_Window.util.getPlainTpl($(".twitter-list-item-tpl",this.el));this.list=$(".twitter-list",this.el);this.limit=parseInt(this.el.data("tweet-limit"))||5
+},initPage:function(){var a=function(){return{entities:function(b){return b.replace(/(&[a-z0-9]+;)/g,function(c){return ENTITIES[c]
+})},link:function(b){return b.replace(/[a-z]+:\/\/([a-z0-9-_]+\.[a-z0-9-_:~\+#%&\?\/.=]+[^:\.,\)\s*$])/ig,function(c,d){return'<a title="'+c+'" href="'+c+'">'+((d.length>36)?d.substr(0,35)+"&hellip;":d)+"</a>"
+})},at:function(b){return b.replace(/(^|[^\w]+)\@([a-zA-Z0-9_]{1,15}(\/[a-zA-Z0-9-_]+)*)/g,function(c,e,d){return e+'@<a href="http://twitter.com/'+d+'">'+d+"</a>"
+})},hash:function(b){return b.replace(/(^|[^&\w'"]+)\#([a-zA-Z0-9_^"^<]+)/g,function(c,e,d){return c.substr(-1)==='"'||c.substr(-1)=="<"?c:e+'#<a href="http://search.twitter.com/search?q=%23'+d+'">'+d+"</a>"
+})},clean:function(b){return this.hash(this.at(this.link(b)))}}}();$.ajax({url:"http://api.twitter.com/1/statuses/user_timeline.json?screen_name="+this.twitterUsername,dataType:"jsonp",context:this,success:function(b){Array.each(b,function(f,c){if(c>this.limit){return false
+}var d=$(this.tpl);var e=f.text;e=a.clean(e);$(".tweet",d).html(e);this.list.append(d);this.el.show()},this)}})}});Orb.createNamespace("DeskPRO.Agent.PageHelper");
+DeskPRO.Agent.ElementHandler.FormSaver=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){var a=this;this.textarea=$("textarea",this.el);
+this.list=null;this.resultHtmlKey=this.el.data("form-result-html-key")||"html";if(this.el.data("form-list-selector")){this.list=this.el.closest(this.el.data("form-list-selector"))
+}console.log(this.list);this.url=this.el.data("form-save-url");this.statusSave=$("header .save",this.el);this.statusSaved=$("header .saved",this.el);
+this.statusSaving=$("header .is-loading",this.el);this.statusSave.click(function(b){b.preventDefault();a.save()});this.textarea.change(this.touch.bind(this));
+this.textarea.keypress(this.touch.bind(this));this.countEl=null;if(this.el.data("form-count-el")){this.countEl=$(this.el.data("form-count-el"))
+}},touch:function(){this.statusSave.show();this.statusSaved.hide();this.statusSaving.hide()},save:function(){this.statusSave.hide();
+this.statusSaved.hide();this.statusSaving.show();var a=$("input, textarea, select",this.el).serializeArray();$.ajax({url:this.url,type:"POST",data:a,dataType:"json",context:this,complete:function(){this.statusSave.hide();
+this.statusSaved.show();this.statusSaving.hide();window.setTimeout((function(){this.statusSaved.fadeOut("slow")}).bind(this),1000)
+},success:function(c){if(this.list){var b=$(c[this.resultHtmlKey]);DeskPRO_Window.initInterfaceServices(b);if(this.el.parent().get(0)==this.list.get(0)){b.insertBefore(this.el)
+}else{this.list.append(b)}this.textarea.val("")}if(this.countEl){DeskPRO_Window.util.modCountEl(this.countEl,"+")}}})}});
+Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TabBox=new Orb.Class({Extends:DeskPRO.ElementHandler,initPage:function(){var a=$("nav ul",this.el).first();
+this.tabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("li",a),context:this.el})},destroy:function(){if(this.tabs){this.tabs.destroy();
+this.tabs=null}this.el=null}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.ElementHandler.ListRadio=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){var a=this;
+this.list=$("ul, ol",this.el).first();this.list.delegate("li","click",function(){$("li",a.list).removeClass("on");$(this).addClass("on");
+a.el.trigger("listradiochange",[$(this).data("value"),$(this),this])})}});Orb.createNamespace("DeskPRO");DeskPRO.MessageBroker=new Orb.Class({Implements:[Orb.Util.Events],sendMessage:function(a,d){this.fireEvent(a,[d,a]);
+var b=a.split(".");var c=null;while(b.pop()){c=b.join(".")+".*";this.fireEvent(c,[d,c])}},addMessageListener:function(b,d,c,a){this.addEvent(b,d,c,a)
 },removeMessageListener:function(a,c,b){this.removeEvent(a,c,b)},removeTaggedListeners:function(a){this.removeTaggedEvents(a)
-}});Orb.createNamespace("DeskPRO.AjaxPoller");DeskPRO.AjaxPoller.Poller=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.dataTransformers=[];
+}});Orb.createNamespace("DeskPRO");DeskPRO.IntervalCaller=new Orb.Class({Implements:[Orb.Util.Options],initialize:function(a){this.options={touchResets:true,touchRequired:true,resetTimeForce:0,callback:function(){},timeout:null,autostart:true};
+this.setOptions(a);if(this.options.autostart){this.start()}this.touched=false;this.paused=false;this.lastTime=new Date()},start:function(){if(this.timer){window.clearTimeout(this.timer);
+this.timer=null}this.timer=window.setTimeout(this.exec.bind(this),this.options.timeout)},stop:function(){if(this.timer){window.clearTimeout(this.timer);
+this.timer=null}},touch:function(){this.touched=true;if(this.options.touchResets){if(this.options.resetTimeForce){var a=new Date();
+var b=a.getTime()-this.lastTime.getTime();if(b>this.options.resetTimeForce){return}}this.start()}},exec:function(a){if(this.lastTime){this.lastTime=new Date()
+}if(!a&&this.options.touchRequired&&!this.touched){this.start();return}this.touched=false;this.options.callback();this.start()
+},execNow:function(){this.exec()},destroy:function(){this.stop();this.options=null;this.lastTime=null}});Orb.createNamespace("DeskPRO.AjaxPoller");
+DeskPRO.AjaxPoller.Poller=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.dataTransformers=[];
 this.filterdData=[];this.messageBroker=null;this.maxDelayTimers=[];this.autoSendTimeout=null;this.options={ajaxUrl:null,interval:6000,alwaysRequest:false,ajaxType:"POST"};
 this.disabled=false;this.setOptions(a);this.autoSendTimeout=this.send.delay(this.options.interval,this)},addDataTransformer:function(a,b){this.dataTransformers.push(b)
 },transformData:function(b,e,a){var c=b.split(".");var d=null;while(c.pop()){d=c.join(".")+".*";if(this.dataTransformers[d]!==undefined){this.dataTransformers[d].each(function(f){e=f(e,a,b)
