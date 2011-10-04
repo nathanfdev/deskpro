@@ -69,7 +69,9 @@
 		</header>
 		<ul>
 			{% for agent in agents %}
-				<li><input type="radio" name="agent_optionbox_radio" value="{{ agent.id }}" /><label>{{ agent.display_name }}</label></li>
+				<li>
+					<input type="radio" name="agent_optionbox_radio" value="{{ agent.id }}" /><label>{{ agent.display_name }}</label>
+				</li>
 			{% endfor %}
 		</ul>
 	</section>

@@ -41,7 +41,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 </script>
-<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %}">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %}">
 {% if ticket.is_locked %}
 <div class="locked-bar" id="{{baseId}}_locked_bar">
 	<button class="clean-white dismiss">Dismiss</button>
@@ -74,17 +74,17 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% if ticket.status == 'hidden' %}
 	<div class="ticket-hidden-bar">
 		{% if ticket.hidden_status == 'deleted' %}
-			This ticket was deleted by {{ ticket_deleted.by_person.display_name }} on {{ ticket_deleted.date_created|date('Y-m-d') }}.
+			This ticket was deleted by {{ ticket_deleted.by_person.display_name }} (<time class="timeago" title="{{ ticket_deleted.date_created|date('c') }}">{{ ticket_deleted.date_created|date('M j Y') }}</time>).
 			{% if ticket_deleted.reason %}
 				<br />Reason: {{ ticket_deleted.reason }}
 			{% endif %}
 
 			<br />
 			<div style="padding: 5px">
-				<button class="dp-button x-small undelete-trigger">Undelete Ticket</button>
+				<button class="clean-white undelete-trigger">Undelete Ticket</button>
 			</div>
 			{% if hard_delete_time %}
-				This ticket will be permanantly purged from the system in {{hard_delete_time}}
+				This ticket will be permanantly purged from the system in {{ hard_delete_time }}
 			{% endif %}
 		{% else %}
 			This ticket is currently hidden because: <span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
@@ -205,6 +205,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<button class="clean-white" id="{{baseId}}_merge_trigger"><span>Merge Ticket</span></button>
 			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>More</span></button>
 		</div>
+
+		<ul id="{{baseId}}_more_menu" style="display: none;">
+			<li data-op="delete">Delete</li>
+		</ul>
 	</section>
 </div>
 
@@ -221,9 +225,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 </section>
 
-{% if ticket.hidden_status != 'deleted' %}
-	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
-{% endif %}
+{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">

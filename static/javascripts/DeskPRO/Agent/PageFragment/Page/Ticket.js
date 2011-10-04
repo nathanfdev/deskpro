@@ -34,18 +34,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.ownObject(this.ticketDisplay);
 
-		if (!this.meta.isDeleted) {
-			this._initCustomFieldsEditor();
-		}
+		this._initCustomFieldsEditor();
 
 		var self = this;
 		this._initMessage($('article.messages-wrap'));
 
-		if (!this.meta.isDeleted) {
-			this._initTicketActionsMenu();
-			this._initMessageActionsMenu();
-			this._initLabels();
-		} else {
+		this._initTicketActionsMenu();
+		this._initMessageActionsMenu();
+		this._initLabels();
+
+		if (this.meta.isDeleted) {
 			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
 		}
 
@@ -499,14 +497,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	//#################################################################
-	//# Message actions menu
+	//# Ticket actions menu
 	//#################################################################
 
 	_initTicketActionsMenu: function() {
 
 		var self = this;
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-actions-trigger:first', this.wrapper),
+			triggerElement: this.getEl('more_menu_trigger'),
 			menuElement: $('.ticket-actions-menu:first', this.wrapper),
 			onItemClicked: function(info) {
 				var op = $(info.itemEl).data('op');
@@ -563,23 +561,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.removePage(self);
 
 				// Reload the ticket page
-				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true}, function(page) {
-					var ticket_title = self.getMetaData('title');
-					if (ticket_title.length > 20) {
-						ticket_title = ticket_title.substr(0, 20) + ' ...';
-					}
-					ticket_title = Orb.escapeHtml(ticket_title);
-					DeskPRO_Window.showUndoMessage("Deleted ticket \""+ticket_title+"\"", function() {
-						page.doTicketUndelete();
-					});
-				});
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 			}
 		});
 	},
 
 	doTicketUndelete: function() {
+		var self = this;
 		var prop = this.getPropertyManager('status');
-		this.changeManager.setInstantChange(prop, 'open');
+		this.changeManager.setInstantChange(prop, 'open', function() {
+			DeskPRO_Window.removePage(self);
+
+			// Reload the ticket page
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+		});
 	},
 
 	_initMessageActionsMenu: function() {

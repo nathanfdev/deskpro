@@ -534,7 +534,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			WHERE p.ticket = ?1
-		")->setParameter(1, $this)->execute();
+		")->setParameter(1, $this->id)->execute();
 
 		return $participants;
 	}

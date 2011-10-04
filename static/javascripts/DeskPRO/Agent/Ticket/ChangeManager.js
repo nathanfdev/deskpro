@@ -189,7 +189,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Set a property change now, no queueing. This will fall back into
 	 * queue mode if we're already in a queued state.
 	 */
-	setInstantChange: function(property, newValue) {
+	setInstantChange: function(property, newValue, callback) {
 
 		// We're already in multi-mode, add this to queue the changes
 		if (this.mode == 'multi') {
@@ -221,6 +221,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
+					if (callback) {
+						callback(data);
+					}
 					this.fireEvent('updateResult', [data]);
 				}
 			});

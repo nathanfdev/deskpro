@@ -1677,6 +1677,12 @@ ul.activity-stream time {
 	background-color: #fff;
 }
 
+.page-ticket.deleted section.description-area .controls,
+.page-ticket.deleted .set-hold,
+.page-ticket.deleted .reply-box-wrap {
+	display: none;
+}
+
 
 
 .log-batch {
@@ -1769,12 +1775,15 @@ ul.activity-stream time {
 	border: 1px solid transparent;
 	padding: 4px;
 	border-radius: 3px;
+	opacity: 0.6;
+	cursor: pointer;
 }
 
 .flagged-wrap ul li:hover,
 .flagged-wrap ul li.on {
 	background-color: #F3F5F6;
 	border: 1px solid #B6BABF;
+	opacity: 1;
 }
 
 .flagged-wrap ul li span {
@@ -1785,7 +1794,7 @@ ul.activity-stream time {
 	height: 16px;
 	overflow: hidden;
 	text-indent: -100px;
-	cursor: pointer;
+
 }
 
 .flagged-wrap ul li.flag-none span { background-image: url(../../images/icons/flag_gray.png); }
