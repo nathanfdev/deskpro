@@ -15,8 +15,13 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 	},
         doSavePost: function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             var formData = $('form#newTaskForm').serializeArray();   
+=======
+            //var formData = $(this).parents('.new-task').find('input, select').serialize();
+            var formData = $('form#newTaskForm').serializeArray();
+>>>>>>> 37ce42c... set task creator as the current user
             $.ajax({
                 type: 'POST',
                 data: formData,
@@ -47,9 +52,18 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
         {
             var self = this;
             this.getEl('gear_spn').click(function(ev){
-                //this.getEl('task_proterties_section').show();
+                
+                $('input, select').val('');
                 $('.taskpropertiec-section').toggle();
+<<<<<<< HEAD
                 return false;
+=======
+                
+            }).bind(this);
+
+            this.getEl('add_another_task').click(function(){
+                $('.new-task').clone().appendTo('form#newTaskForm');
+>>>>>>> 37ce42c... set task creator as the current user
             }).bind(this);
         }
 });

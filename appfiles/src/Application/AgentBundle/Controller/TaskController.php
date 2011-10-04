@@ -134,7 +134,7 @@ class TaskController extends AbstractController
             $form->bindRequest($request);
             try {
 
-                //$task->setPersonId($this->_currentUser->getId());
+                $task->setPerson($this->_currentUser);
                 $this->_entityManager->persist($task);
                 $this->_entityManager->flush();
 
@@ -158,7 +158,7 @@ class TaskController extends AbstractController
         private function _loadModels() {
             
             $this->_entityManager = $this->get('doctrine')->getEntityManager();
-            //$this->_currentUser = $user = $this->get('security.context')->getToken()->getUser();
+            $this->_currentUser = $user = App::getCurrentPerson();
         }
 
 >>>>>>> 2b2db2b... add agent team and individual agent list in the new task form

@@ -14,6 +14,7 @@ pageMeta.baseId = '{{ baseId }}';
 <form action="{{ path('agent_task_new') }}" method="post" {{ form_enctype(form) }}>
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="section title-section first" id="{{baseId}}_title_section">
     
         <div class="step">
@@ -37,6 +38,11 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="task-view">
         <div class="section title-section first isLeft leftContent" id="{{baseId}}_title_section">
 
+=======
+    <div class="new-task">
+    <div class="task-view">
+        <div class="section title-section first isLeft leftContent" id="{{baseId}}_title_section">
+>>>>>>> 37ce42c... set task creator as the current user
             <div class="step">
                     <span class="num">1</span>
                     <span class="check">Done</span>
@@ -47,10 +53,14 @@ pageMeta.baseId = '{{ baseId }}';
                     {{ form_widget(form.title, {'attr': {'class' : 'user-search'}}) }}
                 <span><a href="#" class="gear" id="{{baseId}}_gear_spn">Gear</a></span>
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 37ce42c... set task creator as the current user
         </div>
         <div class=" taskpropertiec-section isRight rightContent" id="{{baseId}}_task_proterties_section" style="display:none;">
             <div class="content">
+<<<<<<< HEAD
             <div class="due-date isLeft hasMarnigRight-10px">
                 <h4>Due Date</h4>
                 {#% set sTime = form.date_due.get('value')| date('m/d/Y') %#}
@@ -69,7 +79,26 @@ pageMeta.baseId = '{{ baseId }}';
             </div>
 <<<<<<< HEAD
 =======
+=======
+                <div class="due-date isLeft hasMarnigRight-10px">
+                    <h4>Due Date</h4>
+                    {#% set sTime = form.date_due.get('value')| date('m/d/Y') %#}
+                    {{ form_widget(form.date_due, {'attr': {'class' : 'calender'}}) }}
+                </div>
+                <div class="visibility isLeft hasMarnigRight-10px">
+                    <h4>Visibility</h4>
+                    {{form_widget(form.visibility)}}
+                </div>
+                    <div class="assign isLeft">
+                    <h4>Assign</h4>
+                    <div class="">
+                        <div class="isLeft"> {{form_widget(form.assigned_agent_team)}}</div>
+                        <div class=""> {{form_widget(form.assigned_agent)}}</div>
+                    </div>
+                </div>
+>>>>>>> 37ce42c... set task creator as the current user
             </div>
+       </div>
 
 >>>>>>> e292b09... add view action in controller and the add view route
         
@@ -81,4 +110,8 @@ pageMeta.baseId = '{{ baseId }}';
 
 	
     </div>
+ </div>
 </form>
+<!--<div>
+    <a href="#" id="{#{baseId}#}_add_another_task">Add another task</a>
+</div>-->
