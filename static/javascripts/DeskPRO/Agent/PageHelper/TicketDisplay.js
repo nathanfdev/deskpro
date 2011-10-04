@@ -241,21 +241,23 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 					var itemId = this.getItemId(item);
 
 					// only put fields with values in the display
-					if (!itemEls.itemHolder.is('.no-value')) {
-						if (itemEls.itemHolder.data('custom-field-handler')) {
-							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
-						}
-
-						var displayWrap = $(this.sectionPropertiesWrapTpl);
-
-						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
-						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
-
-						displayWrap.appendTo(this.sectionPropertiesContent);
-						item.sectionEl = this.sectionPropertiesContent;
-
-						itemEls.itemHolder.remove(); //save mem, just remove the orig container
+					if (itemEls.itemHolder.data('custom-field-handler')) {
+						item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
 					}
+
+					var displayWrap = $(this.sectionPropertiesWrapTpl);
+
+					if (itemEls.itemHolder.is('.no-value')) {
+						displayWrap.addClass('no-value');
+					}
+
+					itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
+					itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
+
+					displayWrap.appendTo(this.sectionPropertiesContent);
+					item.sectionEl = this.sectionPropertiesContent;
+
+					itemEls.itemHolder.remove(); //save mem, just remove the orig container
 
 					var editWrap = $('.fields-edit-container', this.sectionProperties);
 					var itemInputHolder = $('> .' + itemId, this.inputHolders);

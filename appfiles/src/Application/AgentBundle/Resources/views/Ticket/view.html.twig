@@ -41,6 +41,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 </script>
+<div class="macro-controls">
+	<button class="save" id="macro_apply_btn">Apply Macro</button>
+	<button class="cancel" id="macro_cancel_btn">Cancel</button>
+</div>
+
 <div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %}">
 {% if ticket.is_locked %}
 <div class="locked-bar" id="{{baseId}}_locked_bar">
@@ -52,11 +57,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="scroll-viewport"><div class="scroll-content">
 
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
-
-<div class="macro-controls" style="display: none;">
-	<button class="clean-white save" id="macro_apply_btn">Apply Macro</button>
-	<button class="clean-white cancel" id="macro_cancel_btn">Cancel</button>
-</div>
 
 <form class="value-form" style="display:none">
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
@@ -203,6 +203,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<button class="clean-white properties-edit-trigger edit-fields-trigger"><span>Edit Properties</span></button>
 			<button class="clean-white" id="{{baseId}}_merge_trigger"><span>Merge Ticket</span></button>
+			{% if macros|length %}
+				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>Macros</span></button>
+			{% endif %}
 			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>More</span></button>
 		</div>
 

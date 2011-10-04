@@ -133,22 +133,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.macroCancelBtn = $('.cancel', this.macroControls);
 
 		this.macrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.macros button', actionsButtons),
+			triggerElement: this.getEl('macros_menu_trigger'),
 			menuElement: this.getEl('macros_menu'),
 			onItemClicked: (function(info) {
-
-				if ($(info.itemEl).data('no-macro')) {
-					var overlay = new DeskPRO.UI.Overlay({
-						contentMethod: 'iframe',
-						iframeUrl: BASE_URL + 'agent/settings/ticket-macros/new'
-					});
-
-					overlay.openOverlay();
-					return;
-				}
-
 				this.activateMacro($(info.itemEl).data('macro-id'));
-
 			}).bind(this)
 		});
 
@@ -248,9 +236,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 
 		if (force == 'on') {
-			this.macroControls.show();
+			this.page.wrapper.addClass('macro-open');
 		} else {
-			this.macroControls.hide();
+			this.page.wrapper.removeClass('macro-open');
 		}
 	},
 
