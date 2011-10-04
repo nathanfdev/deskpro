@@ -829,7 +829,7 @@ class TicketController extends AbstractController
 
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
-			$this->in->getUint('last_message_id'),
+			$message->id - 1,
 			$this->in->getUint('last_log_id')
 		);
 

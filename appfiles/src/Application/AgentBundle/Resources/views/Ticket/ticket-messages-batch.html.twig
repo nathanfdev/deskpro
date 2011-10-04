@@ -1,4 +1,4 @@
-{% for message in ticket.messages %}
+{% for message in ticket_messages %}
 	{% if ticket_message_logs[message.id] %}
 		<div class="log-batch" style="display: none">
 			{% for log_id in ticket_message_logs[message.id] %}

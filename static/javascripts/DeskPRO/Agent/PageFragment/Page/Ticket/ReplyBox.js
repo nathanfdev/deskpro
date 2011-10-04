@@ -300,12 +300,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			this._draftTimer = null;
 		}
 
-		$('textarea.reply', this.replyBox).val('');
-		$('.attachments ul.file-list', this.replyBox).html('');
+		this.getEl('replybox_txt').val('');
+		$('.attach-list-area ul.files', this.replyBox).html('');
 
 		// If we have a signature, then set it
 		if (this.page.getMetaData('agentSignature', false)) {
-			$('textarea.reply', this.replyBox).val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
+			this.getEl('replybox_txt').val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
 		}
 
 		// Reselect main reply tab

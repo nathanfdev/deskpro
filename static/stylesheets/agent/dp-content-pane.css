@@ -1817,7 +1817,7 @@ ul.activity-stream time {
 .flagged-wrap ul li.flag-yellow span { background-image: url(../../images/icons/flag_yellow.png); }
 
 .full-time {
-	display: none;
+	display: none !important;
 }
 
 
