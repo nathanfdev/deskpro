@@ -29,7 +29,14 @@ use Application\AgentBundle\Form\Type\NewTask;
 class TaskController extends AbstractController
 {
 
+<<<<<<< HEAD
 	/**
+=======
+	 private $_entityManager;
+         private $_currentUser;
+         
+        /**
+>>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
 	 * Renders a JSON with the count of all the pending task for the current user.
 	 */
 	public function countPendingAction()
@@ -107,8 +114,13 @@ class TaskController extends AbstractController
             return $this->render('AgentBundle:Task:view.html.twig');
         }
 
+<<<<<<< HEAD
         private function _process($form, $task) 
         {
+=======
+        private function _process($form, Task $task) {
+            $this->_loadModels();
+>>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
             $request = $this->get('request');
 <<<<<<< HEAD
             $form->bindRequest($request); 
@@ -121,9 +133,11 @@ class TaskController extends AbstractController
 =======
             $form->bindRequest($request);
             try {
+
+                //$task->setPersonId($this->_currentUser->getId());
                 $this->_entityManager->persist($task);
                 $this->_entityManager->flush();
-                //$this->_entityManager->refresh($task);
+
                 return $this->createJsonResponse(array(
                     'success' => true,
                     'task_id' => $task->getId()
@@ -133,8 +147,19 @@ class TaskController extends AbstractController
                     'success' => false
                 ));
             }
+<<<<<<< HEAD
 >>>>>>> e292b09... add view action in controller and the add view route
         }
 
 >>>>>>> e0d18f6... edit the task controller to remobe print method
+=======
+    }
+
+        private function _loadModels() {
+            
+            $this->_entityManager = $this->get('doctrine')->getEntityManager();
+            //$this->_currentUser = $user = $this->get('security.context')->getToken()->getUser();
+        }
+
+>>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
 }

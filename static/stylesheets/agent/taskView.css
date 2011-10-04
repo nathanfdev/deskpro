@@ -39,3 +39,9 @@ div.task-view{
 .hasMarnigRight-10px{
     margin-right: 10px;
 }
+a.gear span{
+    display: block;
+    background-image: url("../../images/icons/cog.png") no-repeat;
+    width: 16px;
+    height: 16px;
+}

@@ -24,8 +24,12 @@ class NewTask extends AbstractType
         #------------------------------
 
         $builder->add('title', 'text');        
+<<<<<<< HEAD
         $builder->add('date_due', 'date', array(
             'input'  => 'string',
+=======
+        $builder->add('date_due', 'datetime', array(            
+>>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
             'widget' => 'single_text',
             'empty_value' => '',
             'format'=>'y/m/d',
@@ -35,8 +39,21 @@ class NewTask extends AbstractType
         $builder->add('is_completed', 'text');
         $builder->add('is_completed', 'choice', array(
             'choices' => array(0 => 'Public', 2 => 'Private'),
+            'required' => true,
+        ));
+<<<<<<< HEAD
+=======
+        $builder->add('assigned_agent_team', 'entity', array(
+            'class' => 'Application\DeskPRO\Entity\AgentTeam',
+            'property' => 'name',
             'required' => false,
         ));
+        $builder->add('assigned_agent', 'entity', array(
+            'class' => 'Application\DeskPRO\Entity\Person',
+            'property' => 'name',
+            'required' => false,
+        ));
+>>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
     }
 
     public function getDefaultOptions(array $options)
