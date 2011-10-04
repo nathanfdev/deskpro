@@ -17,7 +17,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		// Set up the tabs
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('nav:first > ul > li:not(.new-category)', this.wrapper),
+			triggerElements: $('nav > ul > li', this.wrapper),
 			context: this.wrapper
 		});
 		this.ownObject(this.catTabs);
@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	_initEditing: function() {
 		var self = this;
 
-		this.newCategoryBtn = $('nav li.new-category', this.wrapper);
+		this.newCategoryBtn = $('.new-category', this.wrapper);
 
 		this.newCategoryBtn.click(function(ev) {
 			ev.preventDefault();
@@ -90,6 +90,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		this.newCatOverlay = $('.new-snippet-category', this.wrapper);
 		this.newCatOverlay.detach().appendTo('body');
+
+		$('.close', this.newCatOverlay).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			self.newCatOverlay.slideUp();
+			self.newCatBackdrop.hide();
+		});
 
 		$('.perm-type-opt', this.newCatOverlay).click(function() {
 			console.log('click');
@@ -104,17 +112,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.saveNewCat();
 		});
 
-		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body');
+		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});
 		this.newCatBackdrop.click(function() {
 			self.newCatOverlay.slideUp();
 			self.newCatBackdrop.hide();
 		});
 
 		this.wrapper.delegate('.save-snippet-trigger', 'click', function(ev) {
+			console.log('click')
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var row = $(this).parent().parent().parent();
+			var row = $(this).closest('li');
 			self.saveSnippet($(row));
 		});
 
@@ -161,7 +170,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			context: this,
 			success: function(html) {
 				var overlay = $(html).hide().appendTo('body');
-				var backdrop = $('<div class="backdrop" />').hide().appendTo('body');
+				var backdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});;
 
 				var pos = catRow.offset();
 				overlay.css({
@@ -180,12 +189,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				}
 
 				backdrop.click(hideOverlay);
+				$('.close', this.newCatOverlay).click(function(ev) {
+					ev.preventDefault();
+					ev.stopPropagation();
+
+					hideOverlay();
+				});
 
 				$('.save-trigger', overlay).click(function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 
-					var data = $('input', catRow).serializeArray();
+					var data = $('input', overlay).serializeArray();
 
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/snippet-viewer/save-category',
@@ -194,7 +209,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						dataType: 'json',
 						context: this,
 						success: function(data) {
-							$('.cat-title-' + data.category_id, self.wrapper).text(data.title);
+							$('.cat-title-' + data.category_id + ' a', self.wrapper).text(data.title);
 							hideOverlay();
 						}
 					});
@@ -252,7 +267,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				this.newCatOverlay.slideUp();
 				this.newCatBackdrop.hide();
 
-				li.insertBefore(this.newCategoryBtn);
+				$('nav ul', this.wrapper).append(li);
 
 				var section = $(data.cat_section_html);
 				section.appendTo($('.snippet-sections', this.wrapper));

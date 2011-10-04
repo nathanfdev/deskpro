@@ -1897,3 +1897,261 @@ ul.activity-stream time {
 .macro-open .macro-controls {
 	display: block;
 }
+
+
+
+.snippets-overlay {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	overflow: hidden;
+}
+
+.snippets-overlay > nav {
+	position: absolute;
+	top: 0; bottom: 0; left: 0;
+	overflow: hidden;
+
+	background: #E4E7EB;
+	border-right: 1px solid #ADB1B6;
+	width: 170px;
+
+	border-radius: 0 0 0 7px;
+}
+
+.snippets-overlay > nav > header {
+	background: -moz-linear-gradient(top, #d9dfe6, #bac5d1);
+	background: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#bac5d1));
+	-pie-background: linear-gradient(#d9dfe6, #bac5d1);
+	behavior: url(../../static/vendor/PIE.htc);
+	box-shadow: 0 1px 0 #e0e5ea inset;
+	border-bottom: 1px solid #9da2a6;
+	height: 20px;
+	position: relative;
+}
+
+.snippets-overlay > nav > header h4 {
+	font-weight: bold;
+	font-size: 12px;
+
+	text-shadow: 0 1px 0 #DFE4E9;
+	color: #6C7680;
+
+	line-height: 22px;
+	padding-left: 6px;
+}
+
+.snippets-overlay > nav > header .new-category {
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat;
+	cursor: pointer;
+	background-position: 5px -893px;
+	float: left;
+	width: 20px;
+	height: 20px;
+	padding-right: 1px;
+	padding-left: 2px;
+
+	text-indent: -100px;
+	overflow: hidden;
+	display: block;
+
+	border-left: 1px solid #96A8B8;
+}
+
+.snippets-overlay > nav li a {
+	color: #324C66;
+	display: block;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 14px;
+	position: relative;
+	text-shadow: 0 1px 0 #FFFFFF;
+	padding: 6px 0 6px 11px;
+	cursor: pointer;
+	border-bottom: 1px solid transparent;
+	border-top: 1px solid transparent;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.snippets-overlay > nav li:hover a,
+.snippets-overlay > nav li.on a {
+	background: -moz-linear-gradient(top, #6baccc, #5182b3);
+	background: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
+	-pie-background: linear-gradient(#6baccc, #5182b3);
+	behavior: url(../../static/vendor/PIE.htc);
+	box-shadow: inset 0 1px 0 #82bdd7;
+	border-bottom: 1px solid #4d7399!important;
+	border-top: 1px solid #709ecc!important;
+	color: #fff;
+	text-shadow: 0 1px 0 #000;
+	display: block !important;
+	position: relative;
+	z-index: 2;
+}
+
+.snippets-overlay > nav li span.count {
+	float: right;
+	behavior: url(../../static/vendor/PIE.htc);
+	background: #7C91A6;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(0, 0, 0, 0.15) inset;
+	color: #FFFFFF;
+	float: right;
+	margin: 7px 5px 0 0;
+	padding: 1px 5px 0;
+	text-shadow: 0 1px 0 #6C7680;
+	position: relative;
+	line-height: 13px;
+	z-index: 3;
+	font-size: 10px;
+}
+
+.snippets-overlay > nav li:hover span.count,
+.snippets-overlay > nav li.on span.count {
+	background: #2F4B67;
+}
+
+.snippets-overlay .snippet-sections-wrap {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 171px;
+}
+
+.snippets-overlay .snippet-sections li {
+	border-bottom: 1px solid #E1E1E1;
+	padding: 8px;
+}
+
+.snippets-overlay .snippet-sections li .content {
+	color: #4C5359;
+	font-size: 10px;
+}
+.snippets-overlay .snippet-sections li label {
+	color: #2D5680;
+	font-weight: bold;
+	font-size: 12px;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.snippets-overlay .snippet-sections li.new-snippet {
+	margin-bottom: 0;
+	border-bottom: 0;
+}
+
+.snippets-overlay .snippet-sections li input[name="title"] {
+	width: 80%;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.snippets-overlay .snippet-sections li textarea {
+	width: 80%;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.snippets-overlay .insertBtn{
+	float: right;
+}
+.snippets-overlay .insertBtn a{
+	color: #77828c;
+	font-weight: bold;
+	font-size: 10px;
+	text-shadow: 0 1px 0 #fff;
+	padding: 3px 5px;
+	background: -moz-linear-gradient(top, #fefefe 0%, #fefefe 50%, #ededed 50%, #fefefe 100%);
+	background: -webkit-gradient(linear, center top, center bottom, from(#fefefe), to(#ededed), color-stop(50%, #fefefe), color-stop(50%, #ededed));
+	-pie-background: linear-gradient(#fefefe, #ededed);
+	behavior: url(../../static/vendor/PIE.htc);
+	box-shadow: 0 1px 0 #FFFFFF, 0 0 0 1px #FFFFFF inset;
+	border: 1px solid #898989;
+	border-radius: 3px;
+	box-shadow: 0 1px 0 #fff;
+	padding: 2px 5px 1px;
+	position: relative;
+	cursor: pointer;
+
+	font-family: Helvetica, Arial, sans-serif;
+}
+.firefox .snippets-overlay .insertBtn a{
+	padding: 3px 5px 2px;
+}
+.firefox .snippets-overlay .windows .insertBtn a{
+	padding: 0px 5px 2px;
+}
+
+
+.new-snippet-category {
+    width: 300px;
+    font-size: 11px;
+}
+
+.new-snippet-category dl dt {
+    clear: both;
+    float: left;
+    width: 140px;
+
+    padding-bottom: 4px;
+}
+
+.new-snippet-category dl dd {
+    float: left;
+    padding-bottom: 4px;
+}
+
+.new-snippet-category input {
+    margin: 4px;
+}
+
+.new-snippet-category {
+    position: absolute;
+}
+
+.new-snippet-category .controls {
+    clear: left;
+    padding-top: 8px;
+    text-align: center;
+}
+
+.new-snippet-category .close,
+.edit-snippet-category .close {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	background:  url(../../images/close-small.png) no-repeat 0 0;
+	width: 13px;
+	height: 13px;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+}
+
+.field-overlay {
+    border: 3px solid rgba(11, 11, 11, 0.5);
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+    padding: 4px;
+
+    position: absolute;
+
+    z-index: 1000001;
+}
+
+.field-overlay .close-trigger {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+
+    width: 13px;
+    height: 13px;
+    background: url(../../images/close-small.png) no-repeat 0 0;
+
+    text-indent: -1000px;
+    overflow: hidden;
+}

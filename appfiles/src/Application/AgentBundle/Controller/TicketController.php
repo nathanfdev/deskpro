@@ -425,6 +425,9 @@ class TicketController extends AbstractController
 		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
 
+		$this->em->persist($cat);
+		$this->em->flush();
+
 		return $this->createJsonResponse(array(
 			'category_id' => $cat['id'],
 			'title' => $cat['title']

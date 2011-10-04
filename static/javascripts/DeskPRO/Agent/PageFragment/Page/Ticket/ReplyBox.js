@@ -109,15 +109,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		});
 
 		//------------------------------
-		// Text snippers
-		//------------------------------
-
-		var textSnippetsBtn = this.getEl('text_snippets_btn');
-		textSnippetsBtn.click(function() {
-			self.showTextSnippets();
-		});
-
-		//------------------------------
 		// Attachments
 		//------------------------------
 
@@ -204,7 +195,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.page.getUrl('snippetviewer'),
-			triggerElement: $('.ticket-snippets-trigger', this.replyBox),
+			triggerElement: this.getEl('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
 
@@ -279,16 +270,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	serializeFormData: function() {
 		var fields = this.replyBox.find('input:visible, select:visible, textarea:visible, input[type="hidden"]');
 		return fields.serializeArray();
-	},
-
-	showTextSnippets: function() {
-		if (!this.textsnippetsOverlay) {
-			this.textsnippetsOverlay = new DeskPRO.UI.Overlay({
-				contentElement: this.getEl('text_snippets_overlay')
-			});
-		}
-
-		this.textsnippetsOverlay.open();
 	},
 
 	/**

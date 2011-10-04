@@ -175,7 +175,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
 		this.popover.html(this.pageSource);
-		this.page.initPage(this.popover);
 		this.pageSource = null;
 
 		if (this.page.meta.title) {

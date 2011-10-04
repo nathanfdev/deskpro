@@ -1,23 +1,37 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
+pageMeta.title = 'Text Snippets';
 </script>
 <div class="ticket-snippets-overlay snippets-overlay" {% if ticket %}data-ticket-id="{{ ticket.id }}"{% endif %}>
 	<nav>
+		<header>
+			<span class="new-category">new category</span>
+			<h4>Categories</h4>
+		</header>
 		<ul>
 			{% for category in ticket_snippet_cats %}
 				{% include 'AgentBundle:Ticket:ticket-snippets-catrow.html.twig' %}
 			{% endfor %}
-			<li class="new-category tipped" title="Add new category">new category</li>
 		</ul>
 	</nav>
-	<div class="snippet-sections">
-	{% for category in ticket_snippet_cats %}
-		{% set group = ticket_snippets[category.id] %}
-		{% include 'AgentBundle:Ticket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
-	{% endfor %}
+	<div class="snippet-sections-wrap">
+		{# Page Containers #}
+		<div class="layout-content with-scrollbar">
+		<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+		<div class="scroll-viewport"><div class="scroll-content snippet-sections">
+		{# /Page Containers #}
+			{% for category in ticket_snippet_cats %}
+				{% set group = ticket_snippets[category.id] %}
+				{% include 'AgentBundle:Ticket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
+			{% endfor %}
+        {# Page Containers #}
+        </div></div>
+        </div>
+        {# /Page Containers #}
 	</div>
 
 	<div class="new-snippet-category field-overlay" style="display: none">
+		<span class="close">close</span>
 		<dl>
 			<dt>Title:</dt>
 			<dd><input type="text" name="title" value="New Category" /></dd>
@@ -40,7 +54,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
 		</dl>
 
 		<div class="controls">
-			<button class="dp-button xx-small new-cat-trigger">Add</button>
+			<button class="clean-white small new-cat-trigger">Add</button>
 		</div>
 	</div>
 </div>

@@ -1,6 +1,6 @@
 <div class="edit-snippet-category field-overlay" style="display: none">
-	<form>
-		<input type="hidden" name="category_id" value="{{ category.id }}" />
+	<span class="close">close</span>
+	<input type="hidden" name="category_id" value="{{ category.id }}" />
 	<dl>
 		<dt>Title:</dt>
 		<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
@@ -23,7 +23,7 @@
 	</dl>
 
 	<div class="controls">
-		<button class="dp-button xx-small save-trigger">Save</button>
-		<button class="dp-button xx-small delete-trigger">Delete</button>
+		<button class="clean-white small save-trigger">Save</button>
+		<button class="clean-white small delete-trigger">Delete</button>
 	</div>
 </div>

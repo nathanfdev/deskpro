@@ -7,12 +7,9 @@
 			<form>
 				<input type="hidden" name="category_id" value="{{ category.id }}" />
 				<input type="hidden" name="snippet_id" value="0" />
-				<label><input type="text" name="title" value="" /></label>
-				<div class="content">
-					<textarea name="snippet"></textarea>
-					<br />
-					<button class="dp-button save-snippet-trigger">Add Snippet</button>
-				</div>
+				<input type="text" name="title" value="" placeholder="Title" />
+				<textarea name="snippet" placeholder="Snippet text"></textarea>
+				<button class="clean-white save-snippet-trigger">Add Snippet</button>
 			</form>
 		</li>
 	</ul>

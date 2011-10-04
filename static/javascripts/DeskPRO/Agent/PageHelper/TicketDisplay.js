@@ -457,12 +457,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 * If all are hidden, then the section itself should be hidden
 	 */
 	updateSectionDisplay: function() {
-		if ($(this.options.fieldWrapSelector + ':first', this.sectionPropertiesContent).length) {
-			this.sectionProperties.show();
-		} else {
-			this.sectionProperties.hide();
-		}
-
 		var sectionBodyTabContents = this.sectionBodyTabContents;
 		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
 

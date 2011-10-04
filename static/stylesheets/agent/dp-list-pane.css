@@ -837,8 +837,8 @@ section.mass-actions-overlay {
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;
-	border-radius: 8px;
-	-mox-border-radius: 8px;
+	border-radius: 6px;
+	-mox-border-radius: 6px;
 
 	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
 	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
@@ -996,7 +996,7 @@ section.mass-actions-overlay > article .clean-white {
 	margin-bottom: 3px;
 }
 
-section.mass-actions-overlay nav {
+section.mass-actions-overlay > nav {
 	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
 	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
@@ -1009,7 +1009,7 @@ section.mass-actions-overlay nav {
 }
 
 
-section.mass-actions-overlay nav ul li {
+section.mass-actions-overlay > nav ul li {
 	float: left;
 	border-right: 1px solid #C2C6CC;
 	cursor: pointer;
@@ -1022,7 +1022,7 @@ section.mass-actions-overlay nav ul li {
 	float: left;
 }
 
-section.mass-actions-overlay nav ul li.on {
+section.mass-actions-overlay > nav ul li.on {
 	background-color: #fff;
 }
 
