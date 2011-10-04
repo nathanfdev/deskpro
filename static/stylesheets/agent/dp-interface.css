@@ -662,25 +662,34 @@ a.clean-white {
 .optionbox {
 	display: none;
 	position: absolute;
-	width: 230px;
-	border: 2px solid #CACFD6;
+	min-width: 230px;
+	border: 2px solid #0B374D;
 	background-color: #fff;
 	border-radius: 6px;
 
-	-webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
-	-moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
-	box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.4);
+	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
 	z-index: 10000000;
 	max-height: 300px;
-	overflow: auto;;
+	overflow: auto;
 }
 
 .optionbox section {
+	border-radius: 5px;
 	margin-bottom: 15px;
 }
 
 .optionbox section header {
-	background-color: #DFE5EB;
+	background: #edeeef; /* Old browsers */
+	background: -moz-linear-gradient(top, #edeeef 0%, #dbdcdd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edeeef), color-stop(100%,#dbdcdd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #edeeef 0%,#dbdcdd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #edeeef 0%,#dbdcdd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #edeeef 0%,#dbdcdd 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edeeef', endColorstr='#dbdcdd',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #edeeef 0%,#dbdcdd 100%); /* W3C */
+
+	border-bottom: 1px solid #ACB2B9;
+
 	padding: 2px 2px 2px 5px;
 }
 
@@ -727,17 +736,32 @@ a.clean-white {
 
 .optionbox section li {
 	position: relative;
-	padding: 1px 2px 1px 5px;
-	border-top: 1px solid transparent;
-	border-bottom: 1px solid transparent;
+	padding: 2px 2px 2px 5px;
+	cursor: pointer;
+	color: #404040;
+
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.optionbox section li {
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .optionbox section li:hover {
 	background-color: #E6E8E8;
-	border-top: 1px solid #C4C8C7;
-	border-bottom: 1px solid #C4C8C7;
 }
 
+.optionbox section li.on {
+	background-color: #3D649A;
+	color: #fff;
+	text-shadow: 1px 0px 0px rgba(0,0,0, 0.5);
+	filter: dropshadow(color=#000, offx=1, offy=0);
+}
 
 .load-puff {
 	background: url(../../images/step-check.png) no-repeat 50% 50%;

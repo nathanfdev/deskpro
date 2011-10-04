@@ -152,7 +152,13 @@ class TicketController extends AbstractController
 			$draft_text = $draft_pref->getValue();
 		}
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
 		return $this->render($tpl, array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
+
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
 

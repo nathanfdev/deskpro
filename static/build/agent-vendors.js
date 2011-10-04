@@ -2232,8 +2232,32 @@ a(l);return false});e.click(function(l){a(l)});e.bind("disable",function(){f.wra
 });e.bind("check",function(){f.wrapper.addClass(d.cls+"-checked")}).bind("uncheck",function(){f.wrapper.removeClass(d.cls+"-checked")
 });b("img",f.wrapper).bind("dragstart",function(){return false}).bind("mousedown",function(){return false});if(window.getSelection){f.wrapper.css("MozUserSelect","none")
 }if(f.checked){f.wrapper.addClass(d.cls+"-checked")}if(f.disabled){f.wrapperInner.addClass(d.cls+"-disabled")}})}})(jQuery);
-(function(g){var l,m,j=[],p=window;g.fn.tinymce=function(q){var a=this,v,f,u,d,r,e="",c="";if(!a.length){return a}if(!q){return tinyMCE.get(a[0].id)
-}a.css("visibility","hidden");function b(){var x=[],y=0;if(k){k();k=null}a.each(function(C,B){var D,z=B.id,A=q.oninit;if(!z){B.id=z=tinymce.DOM.uniqueId()
+(function(a){a.fn.tokenField=function(q){var e={regex:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,delimiters:", ",max:0,nested:false,badToken:function(){a(this).val("")
+},tooMany:function(){a(this).val("")}};if(q){a.extend(e,q)}function m(u){try{console.log(u)}catch(r){}}function f(r,u){return a.map(u,function(x){return g(r,x)
+}).join("")}function p(r){return"<div class='token-input'><input type='text' size='1'/><span class='token-input-sizer'>###</span></div>"
+}function c(r){return String.fromCharCode(r).match(RegExp("["+e.delimiters+"]"))}function d(r){return r.match(e.regex)}function l(r){r.click(function(){a(".token-input",this).siblings(".selected-token").removeClass("selected-token");
+a(".token-input input",this).focus();return false});a(".token-input input",r).keydown(function(u){if(u.which==9&&a(this).val()){a(this).blur();
+a(this).focus();return false}return true}).keypress(function(u){a(this).next(".token-input-sizer").html(a(this).val()+"###");
+if(u.which==13||c(u.which)){a(this).blur();if(c(u.which)){a(this).focus()}return false}return true}).keyup(function(){a(this).next(".token-input-sizer").html(a(this).val()+"###");
+return true}).focus(function(){a(this).next(".token-input-sizer").html(a(this).val()+"###");return true}).blur(function(x){if(!a(this).data("blur")){a(this).data("blur",true);
+if(e.max==0||a(this).closest(".token-input").siblings(".token").length<e.max){if(d(a(this).val())){b(a(g(a(this).attr("name"),a(this).val())).insertBefore(a(this).closest(".token-input")));
+if(!e.nested){var v=a(this).closest(".token-field").find("input:hidden");var u=v.val().split(",");u.splice(0,0,a(this).val());
+v.val(u.join(","))}a(this).val("")}else{if(e.badToken){this.badToken=e.badToken;this.badToken()}}}else{if(e.tooMany){this.tooMany=e.tooMany;
+this.tooMany()}}a(this).removeData("blur")}return true});b(a(".token",r))}function b(r){r.click(function(){a(this).focus();
+return false}).keydown(function(u){if(a(this).hasClass("selected-token")){if(u.which==8){k(a(this));return false}}return true
+}).blur(function(){a(this).removeClass("selected-token")}).focus(function(){a(this).siblings(".selected-token").removeClass("selected-token");
+a(this).addClass("selected-token")});a(".token-x",r).click(function(){a(this).closest(".token").siblings(".selected-token").removeClass("selected-token");
+k(a(this).closest(".token"));return false})}function j(r){r=r.replace(/^\s*(.+)\s*$/,"$1");if(!r){return[]}return a.map(r.split(","),function(u){if(d(u)){return u
+}m("Warning: ignoring bad token - "+u);return null})}function k(x){if(!e.nested){var v=x.siblings(".token").andSelf().index(x);
+var u=x.closest(".token-field").find("input:hidden");var r=u.val().split(",");r.splice(v,1);u.val(r.join(","))}x.remove()
+}function g(r,u){return"<a href='#' class='token'><span><span><span><span>"+u+(e.nested?"<input type='hidden' value='"+u+"' name='"+r+"'/>":"")+"<span href='#' class='token-x'>x</span></span></span></span></span></a>"
+}return this.each(function(){var z=a(this).attr("id");var u=a(this).attr("name");var r=a(this).attr("class");var v="";var y=j(a(this).val());
+if(a(this).height()>0){v=v+"min-height: "+a(this).height()+"px; height: auto !important; height: "+a(this).height()+"px;"
+}if(a(this).width()>0){v=v+"width: "+a(this).width()+"px;"}if(e.max>0&&y.length>e.max){m("Warning: ignoring extra tokens after maximum of "+e.max);
+y=y.slice(0,e.max)}var x=a("<div></div>").attr({"class":r,id:z,style:v}).addClass("token-field").append(f(u,y)).append(p(u)).append("<div style='clear:both'></div>").replaceAll(this);
+if(!e.nested){x.prepend("<input type='hidden' value='"+y.join(",")+"' name='"+u+"'/>")}l(x)})}})(jQuery);(function(g){var l,m,j=[],p=window;
+g.fn.tinymce=function(q){var a=this,v,f,u,d,r,e="",c="";if(!a.length){return a}if(!q){return tinyMCE.get(a[0].id)}a.css("visibility","hidden");
+function b(){var x=[],y=0;if(k){k();k=null}a.each(function(C,B){var D,z=B.id,A=q.oninit;if(!z){B.id=z=tinymce.DOM.uniqueId()
 }D=new tinymce.Editor(z,q);x.push(D);D.onInit.add(function(){var E,F=A;a.css("visibility","");if(A){if(++y==x.length){if(tinymce.is(F,"string")){E=(F.indexOf(".")===-1)?null:tinymce.resolve(F.replace(/\.\w+$/,""));
 F=tinymce.resolve(F)}F.apply(E||tinymce,x)}}})});g.each(x,function(z,A){A.render()})}if(!p.tinymce&&!m&&(v=q.script_url)){m=1;
 u=v.substring(0,v.lastIndexOf("/"));if(/_(src|dev)\.js/g.test(v)){c="_src"}d=v.lastIndexOf("?");if(d!=-1){e=v.substring(d+1)

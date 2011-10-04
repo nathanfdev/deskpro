@@ -130,6 +130,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/DeskPRO/ElementHandler.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/MessageBroker.js',
@@ -274,6 +275,7 @@ $CONFIG['agent']['vendors'] = array(
 		//'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/token-field/jquery.token-field.js',
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 

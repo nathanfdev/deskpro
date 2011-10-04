@@ -142,7 +142,10 @@ this.statusSaved.hide();this.statusSaving.show();var a=$("input, textarea, selec
 this.statusSaved.show();this.statusSaving.hide();window.setTimeout((function(){this.statusSaved.fadeOut("slow")}).bind(this),1000)
 },success:function(c){if(this.list){var b=$(c[this.resultHtmlKey]);DeskPRO_Window.initInterfaceServices(b);if(this.el.parent().get(0)==this.list.get(0)){b.insertBefore(this.el)
 }else{this.list.append(b)}this.textarea.val("")}if(this.countEl){DeskPRO_Window.util.modCountEl(this.countEl,"+")}}})}});
-Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TabBox=new Orb.Class({Extends:DeskPRO.ElementHandler,initPage:function(){var a=$("nav ul",this.el).first();
+Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TicketReplyBox=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){this.baseId=this.el.data("base-id")
+},initPage:function(){$(".expander").click(function(){var a=$($(this).data("target"));if(a.is(":visible")){$(this).removeClass("expanded");
+a.slideUp("fast")}else{$(this).addClass("expanded");a.slideDown("fast")}});this.getEl("cc_input").tokenField()},getEl:function(b){var a=$("#"+this.baseId+"_"+b);
+return a},destroy:function(){}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TabBox=new Orb.Class({Extends:DeskPRO.ElementHandler,initPage:function(){var a=$("nav ul",this.el).first();
 this.tabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("li",a),context:this.el})},destroy:function(){if(this.tabs){this.tabs.destroy();
 this.tabs=null}this.el=null}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.ElementHandler.ListRadio=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){var a=this;
 this.list=$("ul, ol",this.el).first();this.list.delegate("li","click",function(){$("li",a.list).removeClass("on");$(this).addClass("on");

@@ -134,6 +134,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			console.log('ere');
 			$('.attach-list-area', self.replyBox).show();
 		});
+		this.replyBox.bind('fileuploadstart', function() {
+			console.log('ere');
+			$('.attach-list-area', self.replyBox).show();
+		});
 
 		//------------------------------
 		// Adding CC's

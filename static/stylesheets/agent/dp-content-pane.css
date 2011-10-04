@@ -2155,3 +2155,248 @@ ul.activity-stream time {
     text-indent: -1000px;
     overflow: hidden;
 }
+
+
+
+
+
+
+
+.ticketreply {
+	font-size: 11px;
+}
+
+.ticketreply > nav {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* W3C */
+	height: 22px;
+	border-bottom: 1px solid #B3B6B8;
+	position: relative;
+	position: relative;
+
+	overflow: hidden;
+
+	position: relative;
+}
+
+.ticketreply > nav ul.option-buttons.right {
+	border-left: 1px solid #B3B6B8;
+	float: right;
+}
+
+.ticketreply > nav ul.option-buttons li {
+
+	background: #f9f9f9; /* Old browsers */
+	background: -moz-linear-gradient(top, #f9f9f9 0%, #dddddd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#dddddd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#dddddd',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* W3C */
+
+	float: left;
+	display: block;
+	height: 22px;
+	border-right: 1px solid #B3B6B8;
+	cursor: pointer;
+}
+
+.ticketreply > nav ul.option-buttons li.send span {
+	background: url(../../images/icons/email_go.png) no-repeat 0 50%;
+	width: auto;
+	padding-left: 22px;
+	text-indent: 0;
+	line-height: 23px;
+}
+.ticketreply > nav ul.option-buttons li.send {
+	line-height: 23px;
+	padding: 0 10px 0 10px;
+
+	background: #eaecef; /* Old browsers */
+	background: -moz-linear-gradient(top, #eaecef 0%, #ccd4dd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eaecef), color-stop(100%,#ccd4dd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaecef', endColorstr='#ccd4dd',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* W3C */
+
+	border-right: none;
+}
+
+.ticketreply > nav ul.option-buttons li:hover {
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	-moz-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+}
+
+.ticketreply > nav ul.option-buttons li span {
+	display: block;
+	background: url(../../images/icons/bulb.png) no-repeat 50% 50%;
+	width: 29px;
+	height: 22px;
+	text-indent: -100px;
+	overflow: hidden;
+}
+
+.ticketreply > nav ul.option-buttons li.attach span { background-image: url(../../images/icons/attach.png); }
+.ticketreply > nav ul.option-buttons li.snippets span { background-image: url(../../images/icons/page_white_text.png); }
+.ticketreply > nav ul.option-buttons li.article span { background-image: url(../../images/icons/bookmark.png); }
+.ticketreply > nav ul.option-buttons li.closetab span { background-image: url(../../images/icons/tab_delete.png); }
+
+.ticketreply > article {
+	background-color: #fff;
+	-moz-border-radius: 3px;
+	border-radius: 0 0 3px 3px;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+}
+
+.ticketreply > article > section {
+
+}
+
+.ticketreply > article > section > ul > li {
+	border-bottom: 1px dotted #999;
+	padding:  6px 8px 5px 8px;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.ticketreply > article > section > ul > li > label {
+	display: block;
+	float: left;
+	width: 60px;
+	font-weight: bold;
+	color: #888;
+	text-align: right;
+	margin-right: 15px;
+}
+
+.ticketreply > article > section ul li.attach-row > label span {
+	display: block;
+	float: right;
+	background: url(../../images/icons/attach.png) no-repeat 50% 50%;
+	width: 16px;
+	height: 16px;
+	line-height: 100px;
+	overflow: hidden;
+}
+
+.ticketreply > article > section .input-wrap {
+	position: relative;
+}
+
+.ticketreply > article > section .input-wrap textarea {
+	background-color: #fff;
+	border: none;
+	margin: 0;
+	padding: 5px;
+	width: 95%;
+	height: 150px;
+	resize: none;
+}
+
+.ticketreply > article > section li .expander {
+	float: left;
+	display: block;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+	line-height: 100px;
+	cursor: pointer;
+	background: url(../../images/icons/expand.png) no-repeat 0 0;
+}
+
+.ticketreply > article > section li .expander.expanded {
+	background-image: url(../../images/icons/collapse.png);
+}
+
+.ticketreply > article > section li input[type="text"] {
+	background-color: #fff;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.ticketreply > article > section > ul > li > div {
+	margin-left: 65px;
+}
+
+.ticketreply > article > section .files li {
+	float: left;
+	margin-right: 15px;
+	white-space: nowrap;
+}
+
+.ticketreply > article > section .files li span {
+	color: #888;
+	font-size: 9px;
+	margin-left: 5px;
+}
+
+.ticketreply .token-field {
+	border: none;
+	padding:  0;
+}
+
+.ticketreply .cc-row label {
+	margin-top: 4px;
+}
+
+.ticketreply .token {
+	margin:0;
+	margin-right: 6px;
+}
+
+.ticketreply .token-field .token-input {
+	margin: 0;
+	padding: 2px 3px 2px 0px;
+}
+
+
+
+
+.reply-agent-team-ob {
+	width: 474px;
+}
+
+.reply-agent-team-ob .col:last-child {
+	margin-right: 0;
+}
+
+.reply-agent-team-ob .col {
+	float: left;
+	width: 151px;
+	margin-right: 1px;
+	border-right: 1px solid #ACB2B9;
+}
+
+.reply-agent-team-ob .col:last-child {
+	border-right:  none;
+	margin-right: 0;
+}
+
+.reply-agent-team-ob .col section {
+	margin-bottom: 0;
+}
+
+.reply-agent-team-ob input[type="radio"],
+.reply-agent-team-ob input[type="checkbox"] {
+	display: none;
+}
+
+.reply-agent-team-ob span.agent-pic {
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	padding-left: 22px;
+}
+
+.reply-agent-team-ob .bound-fade {
+
+}

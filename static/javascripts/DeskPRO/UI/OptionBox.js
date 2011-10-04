@@ -72,6 +72,29 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			}
 		});
 
+		var amClicking = false;
+		this.el.delegate('li', 'click', function(ev) {
+			if (amClicking) return;
+			amClicking = true;
+			var radio = $(':radio, :checkbox', this);
+			if (radio.length) {
+				radio.click();
+			}
+			amClicking = false;
+		});
+
+		$(':radio, :checkbox', this.el).change(function() {
+			if ($(this).is(':radio')) {
+				$(this).closest('section').find('li.on').removeClass('on');
+			}
+
+			if ($(this).is(':checked')) {
+				$(this).closest('li').addClass('on');
+			} else {
+				$(this).closest('li').removeClass('on');
+			}
+		});
+
 		$('header .all-check', this.el).click(function() {
 			var section = self._findSection($(this));
 			if ($(this).is(':checked')) {
@@ -200,6 +223,19 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		});
 
 		this.el.addClass('open');
+
+		var cols = $('.col', this.el);
+		var max = 0;
+		cols.each(function() {
+			if ($(this).height() > max) {
+				max = $(this).height();
+			}
+		});
+		cols.each(function() {
+			if ($(this).height() < max) {
+				$(this).height(max);
+			}
+		});
 
 		this.fireEvent('open', [this]);
 	},

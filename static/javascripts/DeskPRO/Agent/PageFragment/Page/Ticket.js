@@ -142,6 +142,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			mergeOverlay.open();
 		});
 
+		/*
 		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
 			replyBox: this.getEl('replybox'),
 			onBeforeSaveReply: (function(info) {
@@ -187,6 +188,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}).bind(this)
 		});
 		this.ownObject(this.replyBox);
+		*/
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);

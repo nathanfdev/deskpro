@@ -1,4 +1,20 @@
-<div class="profile-box-container tabbed reply-box-wrap" data-element-handler="DeskPRO.Agent.ElementHandler.TabBox">
+<form
+	id="{{baseId}}_reply_form"
+	method="post"
+	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
+
+	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
+	data-upload-url="{{ path('agent_accept_upload') }}"
+	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
+	data-base-id="{{baseId}}"
+>
+<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="pending" />
+<input type="hidden" id="{{baseId}}_is_note" name="options[is_note]" value="0" />
+<input type="file" name="file-upload" style="display: none;" />
+
+<div class="profile-box-container reply-box-wrap">
 	<header>
 		<nav>
 			<ul>
@@ -7,70 +23,131 @@
 			</ul>
 		</nav>
 	</header>
-	<section class="ticket-reply">
-		{# Reply Tab #}
-		<article class="reply-area reply-tab on" id="{{baseId}}_replybox">
+	<section class="ticketreply">
 
-			<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+		<nav id="{{baseId}}_header_rows">
+			<ul class="option-buttons">
+				<li class="tipped attach" title="Add attachments"><span>Attachments</span></li>
+				<li class="tipped snippets" id="{{baseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
+			</ul>
 
-			<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-			<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-			<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="pending" />
-			<input type="hidden" id="{{baseId}}_is_note" name="options[is_note]" value="0" />
-
-			<div class="options-col">
-				<div class="note-hide">
-					<label><input type="checkbox" class="assignCheck" name="options[do_assign]" />
-					Assign to <span id="{{baseId}}_agent_id_name" class="reply-agent-menu-trigger menu-trigger">me</span></label>
+			<ul class="option-buttons right">
+				<li class="tipped article" title="Mark as a pending KB article"><span>Article</span></li>
+				<li class="tipped closetab" title="Close the ticket tab after reply"><span>Close Tab</span></li>
+				<li class="send"><span>Send</span></li>
+			</ul>
+		</nav>
+		<article>
+			<section>
+				<ul>
+					<li class="to-row">
+						<label>
+							<span class="expander" data-target="#{{baseId}}_cc_row">+/-</span>
+							To:
+						</label>
+						<div>
+							{{ ticket.person.display_name }}
+							{% if ticket.person_email %}
+								&lt;{{ ticket.person_email.email }}&gt;
+							{% elseif ticket.person.primary_email %}
+								&lt;{{ ticket.person.primary_email.email }}&gt;
+							{% endif %}
+						</div>
+					</li>
+					<li id="{{baseId}}_cc_row" class="cc-row" style="display: none;">
+						<label>CC:</label>
+						<div>
+							<input type="text" placeholder="Enter an email address..." id="{{baseId}}_cc_input"/>
+						</div>
+					</li>
+					<li>
+						<label>Assign:</label>
+						<div>
+							<a id="{{baseId}}_assign_btn">Assigned from John to <span class="new-val">me</span></a>
+						</div>
+					</li>
+					<li id="{{baseId}}_attach_row" class="attach-row" style="display: none">
+						<label><span>Attachments</span></label>
+						<div>
+							<ul class="files"></ul>
+							<br class="clear"/>
+						</div>
+					</li>
+				</ul>
+				<div class="input-wrap">
+					<textarea placeholder="Enter your reply..." id="{{baseId}}_replybox_txt" name="message"></textarea>
 				</div>
-				<div class="note-hide">
-					<label><input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-					Assign to <span id="{{baseId}}_agent_team_id_name" class="reply-agent-team-menu-trigger menu-trigger">my team</span></label>
-				</div>
-				<div>
-					<label><input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-					Mark as pending article</label>
-				</div>
-				<div class="note-hide">
-					<label><input type="checkbox" class="assignCheck" name="options[do_status]" />
-					Set as awaiting user</label>
-				</div>
-				<div>
-					<label><input type="checkbox" class="assignCheck" name="options[close_tab]" />
-					Close tab after</label>
-				</div>
-			</div>
-			<div class="reply-col">
-				<div class="reply-box-wrap"><textarea id="{{baseId}}_replybox_txt" name="message"></textarea></div>
-				<footer>
-					<button class="clean-white reply save-reply-trigger">Send Reply</button>
-					<div class="buttons-right">
-						<button class="clean-white text-snippets" id="{{baseId}}_text_snippets_btn">Text Snippets</button>
-						<button class="clean-white cc-people note-hide">CC People</button>
-						<button class="clean-white file-upload">Attach Files</button>
-						<input type="file" name="file-upload" style="display: none;" />
-					</div>
-					<div class="attach-list-area" style="display: none">
-						<strong>Attachments</strong>
-						<ul class="files"></ul>
-					</div>
-					<div class="cc-list-area" style="display: none"></div>
-					<br class="clear" />
-				</footer>
-			</div>
-
-			</form>
-
-			<script class="template-upload" type="text/x-jquery-tmpl">
-				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-			</script>
-			<script class="template-download" type="text/x-jquery-tmpl">
-				<li>
-					<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-					<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
-				</li>
-			</script>
+			</section>
 		</article>
-		{# /Reply Tab #}
+
 	</section>
 </div>
+
+<script class="template-upload" type="text/x-jquery-tmpl">
+	<li class="uploading">${name} (uploading)</li>
+</script>
+<script class="template-download" type="text/x-jquery-tmpl">
+	<li>
+		<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+		<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+	</li>
+</script>
+
+
+<div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Agents</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for agent in agents %}
+					<li>
+						<input type="radio" name="agent" value="{{ agent.id }}" />
+						<label><span class="agent-pic" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="teams">
+			<header>
+				<h3>Teams</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for team in agent_teams %}
+					<li>
+						<input type="radio" name="agent" value="{{ team.id }}" />
+						<label>{{ team.name }}</label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Followers</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for agent in agents %}
+					<li>
+						<input type="checkbox" name="participant_ids[]" value="{{ agent.id }}" />
+						<label><span class="agent-pic" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+</div>
+
+
+</form>
