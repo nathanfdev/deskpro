@@ -19,6 +19,7 @@
 					class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
 				{% endif %}
 			>{{message.person.name}}</h4>
+			<time class="full-time" datetime="{{idea.date_created|date('c')}}">{{idea.date_created|date('M j Y, H:isa')}}</time>
 			<time class="timeago" datetime="{{idea.date_created|date('c')}}"></time>
 		</header>
 		<div class="body-text">

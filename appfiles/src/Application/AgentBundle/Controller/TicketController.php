@@ -78,9 +78,6 @@ class TicketController extends AbstractController
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
-		if ($this->in->getBool('print')) {
-			$tpl = 'AgentBundle:Ticket:view-print.html.twig';
-		}
 
 		// Get or update the lock on this ticket
 		if (!$ticket->isLocked()) {

@@ -1788,7 +1788,7 @@ ul.activity-stream time {
 
 .flagged-wrap ul li span {
 	display: block;
-	background-position: 50% 0;
+	background-position: 0 50%;
 	background-repeat: no-repeat;
 	width: 16px;
 	height: 16px;
@@ -1805,3 +1805,7 @@ ul.activity-stream time {
 .flagged-wrap ul li.flag-purple span { background-image: url(../../images/icons/flag_purple.png); }
 .flagged-wrap ul li.flag-red span { background-image: url(../../images/icons/flag_red.png); }
 .flagged-wrap ul li.flag-yellow span { background-image: url(../../images/icons/flag_yellow.png); }
+
+.full-time {
+	display: none;
+}

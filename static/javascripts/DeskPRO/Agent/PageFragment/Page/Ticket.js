@@ -505,12 +505,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('more_menu_trigger'),
-			menuElement: $('.ticket-actions-menu:first', this.wrapper),
+			menuElement: this.getEl('more_menu'),
 			onItemClicked: function(info) {
 				var op = $(info.itemEl).data('op');
 
 				if (op == 'delete') {
 					self.showDeleteOverlay();
+				} else if (op == 'print') {
+					window.print();
 				}
 			}
 		});

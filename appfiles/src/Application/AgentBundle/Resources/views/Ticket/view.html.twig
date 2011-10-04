@@ -167,7 +167,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<ul>
 					<li class="flag-none tipped {% if not ticket_flagged %}on{% endif %}" data-value="none" title="No flag"><span></span></li>
 					{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
-						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span></span></li>
+						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span>{{ flag.flag_name(color) }}</span></li>
 					{% endfor %}
 				</ul>
 				<br class="clear"/>
@@ -208,6 +208,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 		<ul id="{{baseId}}_more_menu" style="display: none;">
 			<li data-op="delete">Delete</li>
+			<li data-op="print">Print</li>
 		</ul>
 	</section>
 </div>
