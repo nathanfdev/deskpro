@@ -47,11 +47,13 @@ class NewTask extends AbstractType
             'class' => 'Application\DeskPRO\Entity\AgentTeam',
             'property' => 'name',
             'required' => false,
+            'empty_value'=> '--Agent Team--'
         ));
         $builder->add('assigned_agent', 'entity', array(
             'class' => 'Application\DeskPRO\Entity\Person',
             'property' => 'name',
             'required' => false,
+            'empty_value'=> '--Agent--'
         ));
 >>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
     }

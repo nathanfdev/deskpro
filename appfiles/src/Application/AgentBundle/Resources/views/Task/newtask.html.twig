@@ -49,9 +49,9 @@ pageMeta.baseId = '{{ baseId }}';
             </div>
             <div class="content">
                 <h4>Title</h4>
-                    {{ form_errors(form.title) }}
-                    {{ form_widget(form.title, {'attr': {'class' : 'user-search'}}) }}
-                <span><a href="#" class="gear" id="{{baseId}}_gear_spn">Gear</a></span>
+                {{ form_errors(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class' : 'user-search isLeft'}}) }}
+                <span id="{{baseId}}_gear_spn" class="gear"></span>
             </div>
 <<<<<<< HEAD
 
@@ -91,18 +91,22 @@ pageMeta.baseId = '{{ baseId }}';
                 </div>
                     <div class="assign isLeft">
                     <h4>Assign</h4>
-                    <div class="">
-                        <div class="isLeft"> {{form_widget(form.assigned_agent_team)}}</div>
-                        <div class=""> {{form_widget(form.assigned_agent)}}</div>
+                    <div class="">                        
+                        <div class="isLeft"> {{form_widget(form.assigned_agent_team, {'attr': {'class': 'select-agent'}})}}</div>
+                        <div class=""> {{form_widget(form.assigned_agent, {'attr': {'class': 'select-agent'}})}}</div>
                     </div>
                 </div>
 >>>>>>> 37ce42c... set task creator as the current user
             </div>
+<<<<<<< HEAD
        </div>
 
 >>>>>>> e292b09... add view action in controller and the add view route
         
 >>>>>>> 28926c9... add new css file for task view
+=======
+       </div>        
+>>>>>>> f8b7d15... add gear image and the empty text in the agent team and agent select option
     </div>
     
     <div class="foot">

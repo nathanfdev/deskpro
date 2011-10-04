@@ -20,7 +20,7 @@ div.task-view{
     width: 30%;
 }
 .rightContent{
-    width: 65%;
+    width: 69%;
     margin-bottom: 5px;
     margin-top: 5px;
     padding-bottom: 5px;
@@ -39,12 +39,18 @@ div.task-view{
 .hasMarnigRight-10px{
     margin-right: 10px;
 }
-a.gear span{
+span.gear{
     display: block;
-    background-image: url("../../images/icons/cog.png") no-repeat;
+    background-image: url("../../images/icons/cog.png");
     width: 16px;
     height: 16px;
+    cursor: pointer;
+    margin-left: 135px;
+    position: relative;
 }
 .assign{
-    width: 215px;
+    width: 235px;
+}
+.select-agent{
+    width: 110px;
 }
