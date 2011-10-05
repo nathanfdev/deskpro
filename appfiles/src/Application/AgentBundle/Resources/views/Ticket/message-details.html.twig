@@ -1,73 +1,51 @@
 {% extends 'AgentBundle:Ticket:message-details-layout.html.twig' %}
 {% block current_page "unformatted" %}
-{% block content %}
-<table cellspacing="0" cellpadding="0" width="100%">
-	<tr>
-		<td>Message ID</td>
-		<td>{{ message.id }}</td>
-	</tr>
+{% block body %}
+<section class="description-area">
+<dl class="info-list">
+	<dt>Message ID</dt>
+	<dd>{{ message.id }}</dd>
 
-	<tr>
-		<td>Ticket ID</td>
-		<td>{{ ticket.id }}</td>
-	</tr>
+	<dt>Ticket ID</dt>
+	<dd>{{ ticket.id }}</dd>
 
-	<tr>
-		<td>Ticket Ref</td>
-		<td>{{ ticket.ref }}</td>
-	</tr>
+	<dt>Ticket Ref</dt>
+	<dd>{{ ticket.ref }}</dd>
 
-	<tr>
-		<td>Creation System</td>
-		<td>{{ message.creation_system }}</td>
-	</tr>
+	<dt>Creation System</dt>
+	<dd>{{ message.creation_system }}</dd>
 
 	{% if message.email_source %}
-	<tr>
-		<td>Gateway Source ID</td>
-		<td>{{ message.email_source.id }}</td>
-	</tr>
+		<dt>Gateway Source ID</dt>
+		<dd>{{ message.email_source.id }}</dd>
 	{% endif %}
 
 	{% if message.email %}
-	<tr>
-		<td>Sent From Address</td>
-		<td>{{ message.email }}</td>
-	</tr>
+		<dt>Sent From Address</dt>
+		<dd>{{ message.email }}</dd>
 	{% endif %}
 
 	{% if message.ip_address %}
-	<tr>
-		<td>IP Address</td>
-		<td>{{ message.ip_address }}</td>
-	</tr>
+		<dt>IP Address</dt>
+		<dd>{{ message.ip_address }}</dd>
 	{% endif %}
 
 	{% if message.visitor %}
-		<tr>
-			<td>Visitor ID</td>
-			<td>{{ message.visitor.id }}</td>
-		</tr>
+		<dt>Visitor ID</dt>
+		<dd>{{ message.visitor.id }}</dd>
 
-		<tr>
-			<td>User Agent</td>
-			<td>{{ message.visitor.user_agent }}</td>
-		</tr>
+		<dt>User Agent</dt>
+		<dd>{{ message.visitor.user_agent }}</dd>
 
-		<tr>
-			<td>First Visit Time</td>
-			<td>{{ message.visitor.date_created|date('M j, Y H:ia') }}</td>
-		</tr>
+		<dt>First Visit Time</dt>
+		<dd>{{ message.visitor.date_created|date('M j, Y H:ia') }}</dd>
 
-		<tr>
-			<td>Last Activity Time</td>
-			<td>{{ message.visitor.date_last|date('M j, Y H:ia') }}</td>
-		</tr>
+		<dt>Last Activity Time</dt>
+		<dd>{{ message.visitor.date_last|date('M j, Y H:ia') }}</dd>
 
-		<tr>
-			<td>Landing Page</td>
-			<td>{{ message.visitor.landing_page }}</td>
-		</tr>
+		<dt>Landing Page</dt>
+		<dd>{{ message.visitor.landing_page }}</dd>
 	{% endif %}
-</table>
+</dl>
+</section>
 {% endblock %}
