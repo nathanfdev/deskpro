@@ -11,6 +11,20 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		this.getElById('replybox_replytab_btn').click(function() {
+			$(this).addClass('on');
+			self.getElById('replybox_notetab_btn').removeClass('on');
+			$('.hide-note:not(.is-hidden)', self.el).show();
+			self.getElById('is_note').val('0');
+		});
+
+		this.getElById('replybox_notetab_btn').click(function() {
+			$(this).addClass('on');
+			self.getElById('replybox_replytab_btn').removeClass('on');
+			$('.hide-note', self.el).hide();
+			self.getElById('is_note').val('1');
+		});
+
 		//------------------------------
 		// Expanding cc row
 		//------------------------------
@@ -18,10 +32,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		$('.expander').click(function() {
 			var target = $($(this).data('target'));
 			if (target.is(':visible')) {
-				$(this).removeClass('expanded');
+				$(this).removeClass('expanded').addClass('is-hidden');
 				target.slideUp('fast');
 			} else {
-				$(this).addClass('expanded');
+				$(this).addClass('expanded').removeClass('is-hidden');
 				target.slideDown('fast');
 			}
 		});
@@ -41,10 +55,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			downloadTemplate: $('.template-download', this.replyBox)
 		});
 		this.el.bind('fileuploaddone', function() {
-			self.getElById('attach_row').slideDown();
+			self.getElById('attach_row').slideDown().removeClass('is-hidden');
 		});
 		this.el.bind('fileuploadstart', function() {
-			self.getElById('attach_row').slideDown();
+			self.getElById('attach_row').slideDown().removeClass('is-hidden');;
 		});
 
 		//------------------------------

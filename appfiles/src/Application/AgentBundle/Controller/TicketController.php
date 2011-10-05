@@ -210,7 +210,7 @@ class TicketController extends AbstractController
 
 		$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
 			$ticket,
-			array('since_id' => $since_message_id)
+			array('since_id' => $since_message_id, 'with_notes' => true)
 		);
 
 		if (!$ticket_attachments) {

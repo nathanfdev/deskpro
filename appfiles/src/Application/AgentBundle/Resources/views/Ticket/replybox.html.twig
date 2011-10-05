@@ -49,19 +49,19 @@
 
 		<nav id="{{replyBaseId}}_header_rows">
 			<ul class="option-buttons">
-				<li class="tipped attach" title="Add attachments">
+				<li class="tipped attach hide-note" title="Add attachments">
 					<input type="file" class="file" name="file-upload" />
 					<span>Attachments</span>
 				</li>
-				<li class="tipped snippets" id="{{replyBaseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
+				<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
 			</ul>
 
 			<ul class="option-buttons right">
-				<li class="tipped article toggle" title="Mark as a pending KB article">
+				<li class="tipped article toggle hide-note" title="Mark as a pending KB article">
 					<span>Article<em class="check"></em></span>
 					<input type="checkbox" name="options[do_kbpending]"/>
 				</li>
-				<li class="tipped closetab toggle" title="Close the ticket tab after reply">
+				<li class="tipped closetab toggle hide-note" title="Close the ticket tab after reply">
 					<span>Close Tab<em class="check"></em></span>
 					<input type="checkbox" name="options[close_tab]" />
 				</li>
@@ -71,7 +71,7 @@
 		<article>
 			<section>
 				<ul>
-					<li class="to-row">
+					<li class="to-row hide-note">
 						<label>
 							<span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
 							To:
@@ -85,7 +85,7 @@
 							{% endif %}
 						</div>
 					</li>
-					<li id="{{replyBaseId}}_cc_row" class="cc-row" {% if not user_parts|length %}style="display: none;"{% endif %}>
+					<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
 						<label>CC:</label>
 						<div>
 							<input
@@ -97,7 +97,7 @@
 							/>
 						</div>
 					</li>
-					<li>
+					<li class="hide-note">
 						<label>Status:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'open' %}changed{% endif %}">
 							<a class="status-trigger prop-change with-menu-click-position">
@@ -108,7 +108,7 @@
 							</a>
 						</div>
 					</li>
-					<li>
+					<li class="hide-note">
 						<label>Assign:</label>
 						<div id="{{replyBaseId}}_assign_detail">
 							<a id="{{replyBaseId}}_assign_btn" class="with-menu-click-position">
@@ -160,7 +160,7 @@
 							</a>
 						</div>
 					</li>
-					<li id="{{replyBaseId}}_attach_row" class="attach-row" style="display: none">
+					<li id="{{replyBaseId}}_attach_row" class="attach-row hide-note is-hidden" style="display: none">
 						<label><span>Attachments</span></label>
 						<div>
 							<ul class="files"></ul>
@@ -169,7 +169,7 @@
 					</li>
 				</ul>
 				<div class="input-wrap">
-					<textarea placeholder="Enter your reply..." id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
+					<textarea placeholder="Enter your message..." id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
 				</div>
 			</section>
 		</article>
