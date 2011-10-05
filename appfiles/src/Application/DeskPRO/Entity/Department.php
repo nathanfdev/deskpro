@@ -64,6 +64,9 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	 */
 	protected $is_chat_enabled = true;
 
+	protected $_usergroups = null;
+	protected $_people = null;
+
 	/**
 	 * @var int
 	 * @ORM_Mapping\Column(name="display_order", type="integer")
@@ -92,7 +95,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$this->parent = null;
 		}
 	}
-
 
 	/**
 	 * Get the 'full' name of this department by prepending the parents name to it.

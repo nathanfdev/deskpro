@@ -4,7 +4,7 @@
 {% endif %}
 	<tr data-item-id="{{ category.id }}" class="depth-{{ depth|default(0) }} product product-{{category.id}} {% if category.parent %}is-sub parent-{{ category.parent.id }}{% endif %} {% if category.children|length %}has-children{% endif %}" data-product-id="{{category.id}}">
 		<td class="title">
-			<a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="popout-trigger" data-height="300">
+			<a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="edit-title">
 				{{category.title}}
 			</a>
 		</td>

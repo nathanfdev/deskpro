@@ -177,4 +177,20 @@ class SettingsController extends AbstractController
 		// Redirect back to type
 		return $this->redirectRoute('admin_labels', array('label_type' => $label_type));
 	}
+
+	############################################################################
+	# save-setting
+	############################################################################
+
+	public function saveSingleSettingAction($setting_name, $security_token)
+	{
+		if (!$this->session->getEntity()->checkSecurityToken($setting_name, $security_token)) {
+			// TODO err
+			die('invalid token');
+		}
+
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

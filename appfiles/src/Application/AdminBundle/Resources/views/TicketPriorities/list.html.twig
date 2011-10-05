@@ -3,7 +3,7 @@
 {% block pagetitle %}
 	<h1>Ticket Priorities</h1>
 	<nav>
-		<button class="clean-white ">Create New Priority</button>
+		<a class="clean-white" href="{{ path('admin_ticketpris_edit', {'priority_id': '0'}) }}">Create New Priority</a>
 	</nav>
 {% endblock %}
 {% block prepage %}

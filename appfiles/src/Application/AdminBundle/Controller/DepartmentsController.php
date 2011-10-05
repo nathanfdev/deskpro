@@ -155,23 +155,17 @@ class DepartmentsController extends AbstractController
 			$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditDepartmentType($department), $department);
+		$form = $this->get('form.factory')->create(new EditDepartmentType($department->id ? false : true), $department);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
 				App::getOrm()->persist($department);
 				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:Departments:list-row.html.twig', array('department' => $department));
-
-				// Recreate form because parent_id field cant be changed, so we need to get rid of it
-				$form = EditDepartmentType::create($this->get('form.context'), 'department', array('department' => $department));
-				$form->setData($department);
+				$this->session->setFlash('saved', $department->title);
+				return $this->redirectRoute('admin_departments');
 			}
 		}
 
@@ -180,8 +174,6 @@ class DepartmentsController extends AbstractController
 		return $this->render('AdminBundle:Departments:edit.html.twig', array(
 			'department' => $department,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
 		));
 	}
 

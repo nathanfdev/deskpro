@@ -5,7 +5,7 @@
 	<tr data-item-id="{{ priority.id }}" class="depth-{{ depth|default(0) }} product product-{{priority.id}}" data-product-id="{{priority.id}}">
 		<td class="title">
 			<span class="priority">{{ priority.priority }}</span>
-			<a href="{{ path('admin_ticketpris_edit', {'priority_id': priority.id}) }}" class="popout-trigger" data-height="300">
+			<a href="{{ path('admin_ticketpris_edit', {'priority_id': priority.id}) }}" class="edit-title">
 				{{priority.title}}
 			</a>
 		</td>

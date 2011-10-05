@@ -59,30 +59,23 @@ class ProductsController extends AbstractController
 			$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditProductType($product), $product);
+		$form = $this->get('form.factory')->create(new EditProductType($product->id ? false : true), $product);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
 				App::getOrm()->persist($product);
 				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:Products:list-row.html.twig', array('product' => $product));
-
-				// Recreate form because parent_id field cant be changed, so we need to get rid of it
-				$form = $this->get('form.factory')->create(new EditProductType($product), $product);
+				$this->session->setFlash('saved', $product->title);
+				return $this->redirectRoute('admin_products');
 			}
 		}
 
 		return $this->render('AdminBundle:Products:edit.html.twig', array(
 			'product'   => $product,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
 		));
 	}
 
@@ -104,28 +97,29 @@ class ProductsController extends AbstractController
 	{
 		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 
-		$ids = array();
-
-		App::getOrm()->beginTransaction();
-		$this->_deleteProduct($product, $ids);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		$this->createJsonResponse(array(
-			'success' => true,
-			'deleted_ids' => $ids
+		return $this->render('AdminBundle:Products:delete.html.twig', array(
+			'product'  => $product,
 		));
 	}
 
-	protected function _deleteProduct($product, array &$ids)
+	public function doDeleteAction($product_id, $security_token)
 	{
-		if ($product->children) {
-			foreach ($product->children as $child) {
-				$this->_deleteProduct($child, $ids);
-			}
+		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_product', $security_token)) {
+			// TODO err
+			die('invalid token');
 		}
 
-		App::getOrm()->remove($product);
-		$ids[] = $product['id'];
+		$this->em->beginTransaction();
+		foreach ($product->children as $c) {
+			$this->em->remove($c);
+		}
+		$this->em->remove($product);
+		$this->em->flush();
+		$this->em->commit();
+
+		$this->session->setFlash('deleted', $product->title);
+		return $this->redirectRoute('admin_products');
 	}
 }

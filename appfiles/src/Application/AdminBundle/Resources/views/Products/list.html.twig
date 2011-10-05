@@ -16,14 +16,14 @@
 {% block pagetitle %}
 	<h1>Products</h1>
 	<nav>
-		<button class="clean-white ">Create New Product</button>
+		<a class="clean-white" href="{{ path('admin_products_edit', {'product_id': '0'}) }}">Create New Product</a>
 	</nav>
 {% endblock %}
 {% block content %}
 <div class="dp-page-box">
 
 <div class="page-content">
-	{{ design.structure_table() }}
+	{{ design.structure_table({ 'save_order_url': path('admin_products_updateorders') }) }}
 		{% for product in all_products %}
 			{% include 'AdminBundle:Products:list-row.html.twig' %}
 		{% endfor %}

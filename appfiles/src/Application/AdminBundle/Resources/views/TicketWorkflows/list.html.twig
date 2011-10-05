@@ -3,7 +3,7 @@
 {% block pagetitle %}
 	<h1>Ticket Workflows</h1>
 	<nav>
-		<button class="clean-white ">Create New Workflow</button>
+		<a class="clean-white" href="{{ path('admin_ticketworks_edit', {'workflow_id': '0'}) }}">Create New Workflow</a>
 	</nav>
 {% endblock %}
 {% block prepage %}
@@ -14,7 +14,7 @@
 <div class="dp-page-box">
 
 <div class="page-content">
-	{{ design.structure_table({'no_reorder': true}) }}
+	{{ design.structure_table({ 'save_order_url': path('admin_ticketworks_updateorders') }) }}
 		{% for workflow in all_workflows %}
 		{% include 'AdminBundle:TicketWorkflows:list-row.html.twig' %}
 	{% endfor %}

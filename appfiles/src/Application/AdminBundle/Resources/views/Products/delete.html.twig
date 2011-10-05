@@ -1,0 +1,28 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Delete Product</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_products') }}">&larr; Back to products</a>
+	</nav>
+{% endblock %}
+{% block page %}
+
+{% if category.children|length %}
+	<p>Are you sure you want to delete the product "<strong>{{ product.title }}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>:</p>
+
+	<ul class="bullet-list">
+		{% for c in product.children %}
+			<li>{{ c.title }}</li>
+		{% endfor %}
+	</ul>
+
+	<p>Any tickets that use any of these products will have it removed, resulting in the ticket having no product set on it.</p>
+{% else %}
+	<p>Are you sure you want to delete the product "<strong>{{ product.title }}</strong>"?</p>
+
+	<p>Any tickets that use this product will have it removed, resulting in the ticket having no product set on it.</p>
+{% endif %}
+
+<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">Yes, I am sure I want to delete</a>
+
+{% endblock %}

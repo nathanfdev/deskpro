@@ -9,7 +9,7 @@
 {% block pagetitle %}
 	<h1>Ticket Categories</h1>
 	<nav>
-		<button class="clean-white ">Create New Category</button>
+		<a class="clean-white" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
 	</nav>
 {% endblock %}
 {% block prepage %}
@@ -21,7 +21,7 @@
 <div class="dp-page-box">
 
 <div class="page-content">
-	{{ design.structure_table() }}
+	{{ design.structure_table({ 'save_order_url': path('admin_ticketcats_updateorders') }) }}
 		{% for category in all_categories %}
 			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% endfor %}

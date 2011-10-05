@@ -218,7 +218,26 @@
 	<div id="dp_admin_page_sidebar_right">{{ sidebar_right|raw }}</div>
 {% endif %}
 
-<div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %}">{% block content %}{% endblock %}</div>
+{% if app.session.hasFlash('saved') %}
+	<div class="alert-message success">
+		"{{ app.session.getFlash('saved') }}" was saved successfully
+	</div>
+{% endif %}
+{% if app.session.hasFlash('deleted') %}
+	<div class="alert-message success">
+		"{{ app.session.getFlash('deleted') }}" was deleted successfully
+	</div>
+{% endif %}
+
+<div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %}">
+	{% block content %}
+		<div class="dp-page-box">
+			<div class="page-content">
+				{% block page %}{% endblock %}
+			</div>
+		</div>
+	{% endblock %}
+</div>
 
 {% include 'AdminBundle:Main:layout-menus.html.twig' %}
 

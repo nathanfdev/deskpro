@@ -1,0 +1,16 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Delete Workflow</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; Back to workflows</a>
+	</nav>
+{% endblock %}
+{% block page %}
+
+<p>Are you sure you want to delete the workflow "<strong>{{ workflow.title }}</strong>"?</p>
+
+<p>Any tickets that use this workflow will have it unset, and have no workflow associated with them.</p>
+
+<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">Yes, I am sure I want to delete</a>
+
+{% endblock %}

@@ -51,7 +51,7 @@ class JsCompileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			return;
 		}
 
-		if ($pack_name != 'agent') {
+		if (!in_array($pack_name, array('agent', 'admin', 'user'))) {
 			$packs = array($pack_name => $packs);
 		}
 

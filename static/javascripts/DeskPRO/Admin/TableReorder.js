@@ -9,7 +9,24 @@ DeskPRO.Admin.TableReorder = new Orb.Class({
 		var self = this;
 
 		this.table = table;
-		this.updateUrl = this.table.data('reorder-save-url');
+
+		var sendUpdate = function() {
+			var postData = [];
+			$('tr[data-item-id]', table).each(function() {
+				if ($(this).data('item-id')) {
+					postData.push({
+						name: 'display_order[]',
+						value: $(this).data('item-id')
+					});
+				}
+			});
+
+			$.ajax({
+				url: table.data('reorder-save-url'),
+				type: 'POST',
+				data: postData
+			});
+		};
 
 		this.table.sortable({
 			items: 'tbody',
@@ -31,6 +48,9 @@ DeskPRO.Admin.TableReorder = new Orb.Class({
 				$('tr td:not(.title)', t).remove();
 				t.css('width', 300);
 				return t;
+			},
+			update: function() {
+				sendUpdate();
 			}
 		});
 
@@ -54,6 +74,9 @@ DeskPRO.Admin.TableReorder = new Orb.Class({
 					$('tr td:not(.title)', t).remove();
 					t.css('width', 300);
 					return t;
+				},
+				update: function() {
+					sendUpdate();
 				}
 			});
 		});

@@ -3,7 +3,7 @@
 {% block pagetitle %}
 	<h1>Departments</h1>
 	<nav>
-		<button class="clean-white">Create New Department</button>
+		<a class="clean-white" href="{{ path('admin_departments_edit', {'department_id': '0'}) }}">Create New Department</a>
 	</nav>
 {% endblock %}
 {% block prepage %}
@@ -16,7 +16,7 @@
 <div class="dp-page-box">
 
 <div class="page-content" data-element-handler="DeskPRO.Admin.Departments.AjaxSave">
-	{{ design.structure_table() }}
+	{{ design.structure_table({ 'save_order_url': path('admin_departments_updateorders') }) }}
 		{% for department in all_departments %}
 			{% include 'AdminBundle:Departments:list-row.html.twig' %}
 		{% endfor %}

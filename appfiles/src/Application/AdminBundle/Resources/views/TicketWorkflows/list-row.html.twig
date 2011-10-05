@@ -4,7 +4,7 @@
 {% endif %}
 	<tr data-item-id="{{ workflow.id }}" class="depth-{{ depth|default(0) }} product product-{{workflow.id}}" data-product-id="{{workflow.id}}">
 		<td class="title">
-			<a href="{{ path('admin_ticketworks_edit', {'workflow_id': workflow.id}) }}" class="popout-trigger" data-height="200" data-width="400">
+			<a href="{{ path('admin_ticketworks_edit', {'workflow_id': workflow.id}) }}" class="edit-title">
 				{{workflow.title}}
 			</a>
 		</td>

@@ -46,23 +46,28 @@ c.preventDefault()}).bind(this);if(b.is(".dbl-click-trigger")){b.dblclick(a)}els
 this.setOptions(a);this.el=this.options.element;if(this.options.trigger){$(this.options.trigger).click(this.open.bind(this))
 }},getElement:function(a){if(!a||a=="element"){this.el}else{if(a=="backdrop"){return this.backdrop}}},_init:function(){var a=this;
 if(this._hasInit){return}this._hasInit=true;this.backdrop=$('<div class="backdrop" />').hide().appendTo("body");if(!this.el.parent().is("body")){this.el.detach().appendTo("body")
-}this.el.click(function(b){b.stopPropagation()});this.backdrop.click(function(b){b.stopPropagation();a.close()});$(":checkbox",this.el).change(function(){a.clickCheckbox($(this))
-});$("section",this.el).each(function(){var b=$("ul :checkbox",this).length;$(this).data("total-count",b);if($(this).data("section-name")){$(this).addClass($(this).data("section-name"))
-}});$("header .all-check",this.el).click(function(){var b=a._findSection($(this));if($(this).is(":checked")){$("ul :checkbox",b).attr("checked",true)
-}else{$("ul :checkbox",b).attr("checked",false)}a.updateCountEls(b)});$("header input.filter-box",this.el).keyup(function(){a.updateFilter($(this))
-}).change(function(){a.updateFilter($(this))});this.fireEvent("init",[this])},clickCheckbox:function(a){var b=this._findSection(a);
-this.updateCountEls(b);this.fireEvent("checked",[this])},updateCountEls:function(b){var a=$("ul :checkbox:checked",b).length;
-var c=$(".selected-count",b);if(a){$(".num",c).text(a);c.show()}else{c.hide()}if(a==b.data("total-count")){$("header .all-check",b).attr("checked",true)
-}else{$("header .all-check",b).attr("checked",false)}},getCount:function(a){if(typeof a=="string"){a=$("section."+a,this.el)
-}return parseInt($(".selected-count .num",a).text()||0)},getSelected:function(a){if(typeof a=="string"){a=$("section."+a,this.el)
-}var b=[];$("li input:checked",a).each(function(){b.push($(this).val())});return b},getAllSelected:function(){var a={};$("section",this.el).each(function(){var b=$(this).data("section-name");
-a[b]=self.getSelected($(this))});return a},_findSection:function(a){return a.closest("section")},updateFilter:function(d){var b=d.val().trim().toLowerCase();
+}this.el.click(function(c){c.stopPropagation()});this.backdrop.click(function(c){c.stopPropagation();a.close()});$(":checkbox, :radio",this.el).change(function(){a.clickCheckbox($(this))
+});$("section",this.el).each(function(){var d=$("ul :checkbox",this).length;$(this).data("total-count",d);if($(this).data("section-name")){$(this).addClass($(this).data("section-name"))
+}var c=$(":checkbox, :radio",this).first();if(c.is(":radio")){$(this).data("input-type","radio")}else{$(this).data("input-type","checkbox")
+}});var b=false;this.el.delegate("li","click",function(d){if(b){return}b=true;var c=$(":radio, :checkbox",this);if(c.length){c.click()
+}b=false});$(":radio, :checkbox",this.el).change(function(){if($(this).is(":radio")){$(this).closest("section").find("li.on").removeClass("on")
+}if($(this).is(":checked")){$(this).closest("li").addClass("on")}else{$(this).closest("li").removeClass("on")}});$("header .all-check",this.el).click(function(){var c=a._findSection($(this));
+if($(this).is(":checked")){$("ul :checkbox",c).attr("checked",true)}else{$("ul :checkbox",c).attr("checked",false)}a.updateCountEls(c)
+});$("header input.filter-box",this.el).keyup(function(){a.updateFilter($(this))}).change(function(){a.updateFilter($(this))
+});this.fireEvent("init",[this])},clickCheckbox:function(a){var b=this._findSection(a);this.updateCountEls(b);this.fireEvent("checked",[this])
+},updateCountEls:function(b){var a=$("ul :checkbox:checked",b).length;var c=$(".selected-count",b);if(a){$(".num",c).text(a);
+c.show()}else{c.hide()}if(a==b.data("total-count")){$("header .all-check",b).attr("checked",true)}else{$("header .all-check",b).attr("checked",false)
+}},getCount:function(a){if(typeof a=="string"){a=$("section."+a,this.el)}return parseInt($(".selected-count .num",a).text()||0)
+},getSelected:function(a){if(typeof a=="string"){a=$("section."+a,this.el)}var b=[];$("li input:checked",a).each(function(){b.push($(this).val())
+});if(a.data("input-type")=="radio"){b=b.pop();if(!b){b=null}}return b},getAllSelected:function(){var a=this;var b={};$("section",this.el).each(function(){var c=$(this).data("section-name");
+b[c]=a.getSelected($(this))});return b},_findSection:function(a){return a.closest("section")},updateFilter:function(d){var b=d.val().trim().toLowerCase();
 var c=this._findSection(d);var a=$("li",c);if(!b){a.show();return}a.each(function(){var e=$("label",this).text().toLowerCase();
-if(e.indexOf(b)!==-1){$(this).show()}else{$(this).hide()}})},open:function(f){this._init();var g=$(window).width();var b=$(window).height();
-var e=$(f.target).offset().top;var c=$(f.target).offset().left;var a=this.el.width()+5;var d=this.el.height()+5;this.el.show();
-this.backdrop.show();if(c+a>g){c=c-a}if(e+d>b){e=e-d}this.el.css({top:e,left:c});this.el.addClass("open");this.fireEvent("open",[this])
-},close:function(){if(!this.isOpen()){return}this.el.hide().removeClass("open");this.backdrop.hide();this.fireEvent("close",[this])
-},isOpen:function(){if(this._hasInit&&this.el.is(".open")){return true}return false},destroy:function(){if(this._hasInit){this.el.remove();
+if(e.indexOf(b)!==-1){$(this).show()}else{$(this).hide()}})},open:function(a){this._init();var f=$(window).width();var b=$(window).height();
+var d=$(a.target).offset().top;var c=$(a.target).offset().left;var j=this.el.width()+5;var e=this.el.height()+5;this.el.show();
+this.backdrop.show();if(c+j>f){c=c-j}if(d+e>b){d=d-e}this.el.css({top:d,left:c});this.el.addClass("open");var i=$(".col",this.el);
+var g=0;i.each(function(){if($(this).height()>g){g=$(this).height()}});i.each(function(){if($(this).height()<g){$(this).height(g)
+}});this.fireEvent("open",[this])},close:function(){if(!this.isOpen()){return}this.el.hide().removeClass("open");this.backdrop.hide();
+this.fireEvent("close",[this])},isOpen:function(){if(this._hasInit&&this.el.is(".open")){return true}return false},destroy:function(){if(this._hasInit){this.el.remove();
 this.backdrop.remove()}}});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.Menu_Instances={};DeskPRO.UI.Menu=new Orb.Class({DisableParentCall:true,Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={triggerElement:null,customClassname:"",zIndex:1000000,menuElement:null,objectGroup:"default",subMenuConfig:null,initSubMenusNow:false,initMenuNow:false,parentMenu:null};
 this.hasInit=false;this.elements={};this.openTriggerEvent=null;this.openedTime=null;this.cachePosInfo=null;this.subMenus=[];
 this.openSubMenuId=null;this.parentMenu=null;this.objectId=Orb.uuid();if(a){this.setOptions(a)}if(this.options.parentMenu){this.parentMenu=this.options.parentMenu;

@@ -122,7 +122,7 @@ this.setDepartment(parseInt($("input.department_id",this.wrapper).val()||0));$("
 }this.closeEditMode()},replaceHolders:function(b){var a=$(b);this.holders.remove();this.holders=a.filter(".page-display-holders");
 this.inputHolders.remove();this.inputHolders=$(a).filter(".page-display-input");this.wrapper.append(this.holders);this.wrapper.append(this.inputHolders)
 },clearAll:function(){$(this.options.fieldTabSelector,this.sectionBodyTabs).remove();$(this.options.fieldTabContentSelector,this.sectionBodyTabContents).remove();
-$(this.options.fieldWrapSelector,this.sectionPropertiesContent).remove();this.sectionProperties.hide();$(".fields-show",this.sectionProperties).show();
+$(this.options.fieldWrapSelector,this.sectionPropertiesContent).remove();$(".fields-show",this.sectionProperties).show();
 var a=$(this.sectionPropertiesEditTpl);$(".close-trigger",a).click((function(b){b.preventDefault();this.closeEditMode("default")
 }).bind(this));$(".save-trigger",a).click((function(b){b.preventDefault();this.saveEditMode("default")}).bind(this));$(".fields-edit",this.sectionProperties).empty().hide().append(a)
 },setDepartment:function(c,b){c=parseInt(c);console.log("Setting %i",c);this.clearAll();if(c==this.departmentId&&!b){return
@@ -239,7 +239,7 @@ this.popover=null;this.popoverOuter=null;if(this.options.loadTimeout){this.autol
 }})},setHtml:function(a){this.pageSource=a;if(this.isWaiting){this.isWaiting=false;this._initFragment();this.open()}},_initPopover:function(){if(this._hasInit){return
 }this._hasInit=true;this.popoverOuter=$($("#popover_tpl").get(0).innerHTML);this.popover=$(".popover-inner",this.popoverOuter).first();
 this.popoverOuter.detach().appendTo("body");this.popoverOuter.click(function(d){d.stopPropagation()});var c=$(this.options.overFrom).offset();
-var b=c.top;var a=c.left-30;this.popoverOuter.css({position:"absolute",display:"none","z-index":999997,width:a+2+6,overflow:"auto",top:b-3,left:9,bottom:20});
+var b=c.top-4;var a=c.left-9;this.popoverOuter.css({position:"absolute",display:"none","z-index":999997,width:a+2+6,overflow:"auto",top:b-3,left:9,bottom:20});
 $(".close",this.popoverOuter).first().click((function(d){d.preventDefault();d.stopPropagation();this.isWaiting=false;var d={pop:this,cancel:false};
 this.fireEvent("closeTabClick",d);if(d.cancel){return}this.close()}).bind(this));if(this.options.tabRoute){$(".move-to-tab:first",this.popoverTabs).click((function(d){d.preventDefault();
 d.stopPropagation();this.isWaiting=false;DeskPRO_Window.runPageRoute(this.options.tabRoute);this.close()}).bind(this))}else{$(".move-to-tab:first",this.popoverTabs).remove()
@@ -396,8 +396,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket=new Orb.Class({Extends:DeskPRO.Agent.Page
 this.TYPENAME="ticket";this.wrapper=null;this.changeManager=null;this.valueForm=null;this.layout=null;this.popout=null;this.popout_overview=null;
 this.isMouseOverPopout=false;this.hasInitPopout=false;this.popoutPage=null;this.lastActiveDate=null},initPage:function(f){this.valueForm=$("form.value-form:first",this.wrapper);
 this.valueForm.submit(function(i){i.preventDefault()});this.changeManager=new DeskPRO.Agent.Ticket.ChangeManager(this);this.ticketDisplay=new DeskPRO.Agent.PageHelper.TicketDisplay(this,{wrapper:f});
-this.ownObject(this.ticketDisplay);this._initCustomFieldsEditor();var e=this;this._initMessage($("article.messages-wrap"));
-this._initTicketActionsMenu();this._initMessageActionsMenu();this._initLabels();if(this.meta.isDeleted){$("button.undelete-trigger",this.wrapper).click(this.doTicketUndelete.bind(this))
+this.ownObject(this.ticketDisplay);this._initCustomFieldsEditor();var e=this;this._initMessage($(".messages-wrap"));this._initTicketActionsMenu();
+this._initMessageActionsMenu();this._initLabels();if(this.meta.isDeleted){$("button.undelete-trigger",this.wrapper).click(this.doTicketUndelete.bind(this))
 }DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.opened",{ticketId:this.getMetaData("ticket_id")});DeskPRO_Window.getMessageBroker().sendMessage("ui.tab.opened",{type:"tickets",id:this.getMetaData("ticket_id")});
 DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(i){if(i.indexOf(this.getMetaData("ticket_id"))!==-1){DeskPRO_Window.removePage(this)
 }}).bind(this),this.pageUid);DeskPRO_Window.getMessageBroker().addMessageListener("tickets.new-messages."+this.getMetaData("ticket_id"),this.getNewTicketMessages.bind(this),this.pageUid);
@@ -411,22 +411,29 @@ if(i){$("article.message.with-attach",b).show()}}if(k){$("article.note-message",
 }if(j){$("div.log-row",b).show();$("div.log-batch",b).show()}else{$("div.log-row",b).hide();$("div.log-batch",b).hide()}}$(".tickets-msg-controls input",this.wrapper).click(function(){a()
 });this.getEl("merge_trigger").click(function(){var i=new DeskPRO.Agent.Widget.MergeTicket({ticketId:e.getMetaData("ticket_id"),destroyOnClose:true,onMergeSuccess:function(j){Array.each(DeskPRO_Window.getTabWatcher().findTabType("ticket"),function(k){var l=k.page.getMetaData("ticket_id");
 if(l==j.old_ticket_id||l==j.ticket_id){DeskPRO_Window.pageTabStrip.removeTabById(k.id)}});DeskPRO_Window.runPageRoute("ticket:"+BASE_URL+"agent/tickets/"+j.ticket_id);
-i.close()}});i.open()});this.ticketActions=new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);this.ownObject(this.ticketActions);
-this.ticketParticipants=new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);this.ownObject(this.ticketParticipants);
-this.ticketChecker=new DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker(this,{lastMessageId:this.meta.lastMessageId,lastLogId:this.meta.lastLogId,checkUrl:BASE_URL+"agent/tickets/"+this.getMetaData("ticket_id")+"/ajax-update-check"});
+i.close()}});i.open()});$("form.ticket-reply-form",this.getEl("replybox_wrap")).bind("replyboxsubmit",this.handleReplySave.bind(this));
+this.ticketActions=new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);this.ownObject(this.ticketActions);this.ticketParticipants=new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
+this.ownObject(this.ticketParticipants);this.ticketChecker=new DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker(this,{lastMessageId:this.meta.lastMessageId,lastLogId:this.meta.lastLogId,checkUrl:BASE_URL+"agent/tickets/"+this.getMetaData("ticket_id")+"/ajax-update-check"});
 this.ownObject(this.ticketChecker);if(this.meta.isLocked){this.ticketLocked=new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
-this.ownObject(this.ticketLocked)}},destroyPage:function(){if(this.updateCheckTimeout){this.updateCheckTimeout=window.clearTimeout(this.updateCheckTimeout)
+this.ownObject(this.ticketLocked)}},handleReplySave:function(b,d,a){var c=a.el;d.push({name:"client_messages_since",value:DeskPRO_Window.getLastClientMessageId()});
+d.push({name:"last_message_id",value:this.ticketChecker.getLastMessageId()});d.push({name:"last_log_id",value:this.ticketChecker.getLastLogId()});
+this.ticketChecker.pause(true);$.ajax({url:c.attr("action"),type:"POST",dataType:"json",data:d,context:this,success:function(e){this.handleTicketUpdate(e);
+if(e.close_tab){window.setTimeout((function(){this.closeSelf()}).bind(this),400)}else{var f=this.changeManager.getPropertyManager("agent_id");
+f.setIncomingValue(e.agent_id);var h=this.changeManager.getPropertyManager("agent_team_id");h.setIncomingValue(e.agent_team_id);
+var g=this.changeManager.getPropertyManager("status");g.setIncomingValue(e.status)}},complete:function(e,f){c.removeClass("loading");
+this.ticketChecker.unpause()}})},destroyPage:function(){if(this.updateCheckTimeout){this.updateCheckTimeout=window.clearTimeout(this.updateCheckTimeout)
 }DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.closed",{ticketId:this.getMetaData("ticket_id")})},handleTicketUpdate:function(e){if(e.client_messages){DeskPRO_Window.getMessageChanneler().handleMessageAjax(e.client_messages)
 }if(e.ticket_messages_block){var d=$(e.ticket_messages_block).hide();d.appendTo($(this.getEl("messages_wrap"))).slideDown("fast");
 var b=$("input.show-messages",this.wrapper).is(":checked");var g=$("input.show-attach",this.wrapper).is(":checked");var c=$("input.show-notes",this.wrapper).is(":checked");
 var f=$("input.show-logs",this.wrapper).is(":checked");var a=$(".messages-wrap",this.wrapper);if(!g){$(".attachment-list",d).hide()
 }if(!b){d.find("article.message:not(.note-message)").hide();if(g){d.find("article.message.has-attach").hide()}}if(!c){d.find("div.note-message").hide();
 if(!f){d.find("div.log-row").hide();d.find("div.log-batch").hide()}}this._initMessage(d)}if(e.updated_agent_parts_html){this.getEL("agent_part_list").html(e.updated_agent_parts_html);
-$(".agent-part-count",this.wrapper).text(e.updated_agent_parts_count)}},displayNewMessage:function(a,c){var b=$(a).hide();
-c=c||function(){};b.appendTo($(this.getEl("messages_wrap"))).slideDown("fast",c);this._initMessage(b);this.incCount("ticket-messages")
-},activate:function(){if(this.ticketChecker){this.ticketChecker.unpause()}},deactivate:function(){if(this.ticketChecker){this.ticketChecker.pause()
-}},_initMessage:function(b){var a=$("ul.attachment-list li.is-image a",b);a.colorbox({title:function(){var c=$(this).attr("href");
-return'<a href="'+c+'" target="_blank">Open In New Window</a>'},width:"50%",height:"50%",initialWidth:"200",initialHeight:"150",scalePhotos:true,photo:true,opacity:0.5,transition:"none"});
+$(".agent-part-count",this.wrapper).text(e.updated_agent_parts_count)}if(e.replybox_html){this.getEl("replybox_wrap").empty().append(e.replybox_html);
+DeskPRO_Window.initInterfaceServices(this.getEl("replybox_wrap"));$("form.ticket-reply-form",this.getEl("replybox_wrap")).bind("replyboxsubmit",this.handleReplySave.bind(this))
+}},displayNewMessage:function(a,c){var b=$(a).hide();c=c||function(){};b.appendTo($(this.getEl("messages_wrap"))).slideDown("fast",c);
+this._initMessage(b);this.incCount("ticket-messages")},activate:function(){if(this.ticketChecker){this.ticketChecker.unpause()
+}},deactivate:function(){if(this.ticketChecker){this.ticketChecker.pause()}},_initMessage:function(b){var a=$("ul.attachment-list li.is-image a",b);
+a.colorbox({title:function(){var c=$(this).attr("href");return'<a href="'+c+'" target="_blank">Open In New Window</a>'},width:"50%",height:"50%",initialWidth:"200",initialHeight:"150",scalePhotos:true,photo:true,opacity:0.5,transition:"none"});
 $(".log-row",b).each(function(){var d=$(".expand",this);var c=$(this);d.click(function(){var f=".expand-set";if($(this).data("set")){f=$(this).data("set")
 }var e=$(f,c);if(e.is(":visible")){e.slideUp();d.removeClass("open")}else{e.slideDown();d.addClass("open")}})})},incCount:function(c){var b=$("."+c+"-count",this.wrapper);
 var a=b.data("count")+1;b.data("count",a).html("("+a+")")},setCount:function(c,a){var b=$("."+c+"-count",this.wrapper);b.data("count",a).html("("+a+")")
@@ -461,12 +468,11 @@ DeskPRO_Window.removePage(a);DeskPRO_Window.loadPage(BASE_URL+"agent/tickets/"+a
 DeskPRO_Window.loadPage(BASE_URL+"agent/tickets/"+a.getMetaData("ticket_id"),{ignoreExist:true})})},_initMessageActionsMenu:function(){var a=this;
 this.messageActionsMenu=new DeskPRO.UI.Menu({triggerElement:null,menuElement:$(".ticket-message-edit-menu",this.wrapper),onItemClicked:function(d){console.log($(d.menu.getOpenTriggerElement()));
 a._doMessageAction($(d.itemEl).data("option-id"),$(d.menu.getOpenTriggerElement()).data("message-id"))}});this.ownObject(this.messageActionsMenu);
-var c=this.messageActionsMenu;var b=$(".messages-wrap:first",this.wrapper)[0];$(".ticket-message-edit-btn",b).live("click",function(d){c.openMenu(d)
-})},_doMessageAction:function(c,b){switch(c){case"view-details":var a=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:this.getMetaData("viewMessageUnformattedUrl").replace("{message_id}",b),destroyOnClose:true});
-a.openOverlay();break;case"quote":console.debug("todo loading indicator when loading _doMessageAction quote");$.ajax({url:this.getMetaData("getMessageQuoteUrl").replace("{message_id}",b),type:"GET",context:this,dataType:"json",success:function(f){var e=this.getEl("replybox_txt");
-e.val(f.message_quote+"\n\n"+e.val());e.focus()}});break;case"split":var d="Are you sure you want to split this ticket into two?";
-DeskPRO_Window.showConfirm(d,function(){$.ajax({url:BASE_URL+"agent/tickets/split/"+b,type:"POST",context:this,dataType:"json",success:function(e){console.log("Ticket split return %o",e);
-if(e.success){DeskPRO_Window.loadPage(BASE_URL+"agent/tickets/"+e.ticket_id)}}})});break}}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.Ticket");
+var c=this.messageActionsMenu;var b=$(".messages-wrap",this.wrapper)[0];$(".ticket-message-edit-btn",b).live("click",function(d){c.openMenu(d)
+})},_doMessageAction:function(e,c){switch(e){case"view-details":var b=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:this.getMetaData("viewMessageUnformattedUrl").replace("{message_id}",c),destroyOnClose:true});
+b.openOverlay();break;case"quote":var a=$("textarea.message-quote-"+c,this.wrapper).val();var d=this.getEl("replybox_txt");
+d.val(a+"\n\n"+d.val());d.focus();break;case"split":var f="Are you sure you want to split this ticket into two?";DeskPRO_Window.showConfirm(f,function(){$.ajax({url:BASE_URL+"agent/tickets/split/"+c,type:"POST",context:this,dataType:"json",success:function(g){console.log("Ticket split return %o",g);
+if(g.success){DeskPRO_Window.loadPage(BASE_URL+"agent/tickets/"+g.ticket_id)}}})});break}}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page.Ticket");
 DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(g,d){var c=this;
 this.page=g;this.options={replyBox:null};this.setOptions(d);var a;this.replyBox=a=this.options.replyBox;this.replyForm=this.getEl("reply_form");
 this.replyForm.submit(function(i){i.preventDefault()});$(".save-reply-trigger",this.replyBox).click(function(i){c.saveReply()
@@ -479,7 +485,8 @@ var e=this.getEl("newnote_followerslist");this.agentFollowersSelector=new DeskPR
 var i=$(j);i.appendTo(e)}}});$(".add-followers-trigger",a).click(function(i){c.agentFollowersSelector.open(i)});var f=$(".file-list",this.replyBox);
 $("input",f[0]).live("click",function(){var j=$(this);var i=j.parent();if(j.is(":checked")){i.removeClass("unchecked")}else{i.addClass("unchecked")
 }});this.replyBox.fileupload({url:this.page.getMetaData("uploadAttachUrl"),dropZone:a,autoUpload:true,uploadTemplate:$(".template-upload",this.replyBox),downloadTemplate:$(".template-download",this.replyBox)});
-this.replyBox.bind("fileuploaddone",function(){console.log("ere");$(".attach-list-area",c.replyBox).show()});$(".add-cc-trigger",this.replyBox).click(function(){var i=c.getEl("add_cc_txt");
+this.replyBox.bind("fileuploaddone",function(){console.log("ere");$(".attach-list-area",c.replyBox).show()});this.replyBox.bind("fileuploadstart",function(){console.log("ere");
+$(".attach-list-area",c.replyBox).show()});$(".add-cc-trigger",this.replyBox).click(function(){var i=c.getEl("add_cc_txt");
 var k=i.val();var j=$("<li>"+k+'<input type="hidden" name="new_parts[]" value="'+k+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
 $(".remove-trigger",j).click(function(l){l.preventDefault();l.stopPropagation();j.remove()});j.appendTo(c.getEl("cc_list"));
 i.val("")});this.assignAgentOptionBox=new DeskPRO.UI.OptionBox({element:$("#agent_optionbox_radio").clone(),trigger:$(".reply-agent-menu-trigger",this.replyBox),onClose:function(i){var k=i.getSelected("agents").pop();

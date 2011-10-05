@@ -46,6 +46,10 @@ admin_settings:
   pattern: /settings
   defaults: { _controller: AdminBundle:Settings:settings }
 
+admin_settings:
+  pattern: /settings/save-setting/{setting_name}/{security_token}
+  defaults: { _controller: AdminBundle:Settings:saveSingleSetting }
+
 admin_settings_adv:
   pattern: /settings/advanced
   defaults: { _controller: AdminBundle:Settings:advanced }
@@ -439,14 +443,19 @@ admin_products_edit:
   defaults: { _controller: AdminBundle:Products:edit }
   requirements: { product_id: "\d+" }
 
+admin_products_updateorders:
+  pattern: /products/update-orders
+  defaults: { _controller: AdminBundle:Products:updateOrders }
+
 admin_products_del:
   pattern: /products/{product_id}/delete
   defaults: { _controller: AdminBundle:Products:delete }
   requirements: { product_id: "\d+" }
 
-admin_products_updateorders:
-  pattern: /products/update-orders
-  defaults: { _controller: AdminBundle:Products:updateOrders }
+admin_products_dodel:
+  pattern: /products/{product_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:Products:doDelete }
+  requirements: { product_id: "\d+", security_token: "[a-zA-Z0-9\-]+" }
 
 ################################################################################
 # Departments
@@ -512,6 +521,16 @@ admin_ticketcats_updateorders:
   pattern: /tickets/categories/update-orders
   defaults: { _controller: AdminBundle:TicketCategories:updateOrders }
 
+admin_ticketcats_del:
+  pattern: /tickets/categories/{category_id}/delete
+  defaults: { _controller: AdminBundle:TicketCategories:delete }
+  requirements: { category_id: "\d+" }
+
+admin_ticketcats_dodel:
+  pattern: /tickets/categories/{category_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:TicketCategories:doDelete }
+  requirements: { category_id: "\d+", security_token: "[a-zA-Z0-9\-]+" }
+
 ################################################################################
 # Ticket Priorities
 ################################################################################
@@ -525,6 +544,16 @@ admin_ticketpris_edit:
   defaults: { _controller: AdminBundle:TicketPriorities:edit }
   requirements: { priority_id: "\d+" }
 
+admin_ticketpris_del:
+  pattern: /tickets/priorities/{priority_id}/delete
+  defaults: { _controller: AdminBundle:TicketPriorities:delete }
+  requirements: { priority_id: "\d+" }
+
+admin_ticketpris_dodel:
+  pattern: /tickets/priorities/{priority_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:TicketPriorities:doDelete }
+  requirements: { priority_id: "\d+", security_token: "[a-zA-Z0-9\-]+" }
+
 ################################################################################
 # Ticket Workflows
 ################################################################################
@@ -537,6 +566,16 @@ admin_ticketworks_edit:
   pattern: /tickets/workflows/{workflow_id}
   defaults: { _controller: AdminBundle:TicketWorkflows:edit }
   requirements: { workflow_id: "\d+" }
+
+admin_ticketworks_del:
+  pattern: /tickets/workflows/{workflow_id}/delete
+  defaults: { _controller: AdminBundle:TicketWorkflows:delete }
+  requirements: { workflow_id: "\d+" }
+
+admin_ticketworks_dodel:
+  pattern: /tickets/workflows/{workflow_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:TicketWorkflows:doDelete }
+  requirements: { workflow_id: "\d+", security_token: "[a-zA-Z0-9\-]+" }
 
 admin_ticketworks_updateorders:
   pattern: /tickets/workflows/update-orders
