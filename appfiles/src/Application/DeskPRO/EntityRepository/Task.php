@@ -135,6 +135,7 @@ class Task extends EntityRepository
                     ->where('p.id = :person_id AND aa.id IS NULL')
                     ->orWhere('aa.id = :agent_id')
                     ->where('t.is_completed = :is_completed')
+                    
                     ->setParameters(array(
                         'person_id' => $person['id'],
                         'agent_id' => $person['id'],
@@ -156,24 +157,41 @@ class Task extends EntityRepository
 	 */
 	public function countOverdueTasksForPerson(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			WHERE
-			(
-					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
-				OR
-					t.assigned_agent_id = ?1
-			)
-			AND t.is_completed = false
-			AND t.date_due < ?2
-		");
+//		$query = $this->getEntityManager()->createQuery("
+//			SELECT COUNT(t.id)
+//			FROM DeskPRO:Task t
+//			WHERE
+//			(
+//					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
+//				OR
+//					t.assigned_agent_id = ?1
+//			)
+//			AND t.is_completed = false
+//			AND t.date_due < ?2
+//		");
+//
+//		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
+//
+//		return $query->setParameter(1, $person['id'])
+//			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
+//			->getSingleScalarResult();
+                
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('COUNT(t.id)')
+                        ->from('DeskPRO:Task', 't')
+                        ->innerJoin('t.person', 'p')
+                        ->where('p.id = :person_id')
+                        ->where('t.is_completed = :is_completed')
+                        ->where('t.date_due = :date_due')
+                        ->setParameters( array(
+                            'person_id' => $person['id'],
+                            'is_completed' => false,
+                            'date_due' => $date
+                        ));
 
-		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
+                $query = $qb->getQuery();
+                return $query->getSingleScalarResult();
 
-		return $query->setParameter(1, $person['id'])
-			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
-			->getSingleScalarResult();
 	}
 
 	/**
@@ -298,8 +316,8 @@ class Task extends EntityRepository
 			SELECT COUNT(t.id)
 			FROM DeskPRO:Task t
 			WHERE t.person_id = ?1
-            AND t.assigned_agent_id IS NOT NULL
-            AND t.assigned_agent_id != ?1
+                        AND t.assigned_agent_id IS NOT NULL
+                        AND t.assigned_agent_id != ?1
 			AND t.is_completed = false
 		");
 
