@@ -216,18 +216,20 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</section>
 </div>
 
-<section class="main-content">
-	<ul class="tickets-msg-controls">
-		<li><label><input type="checkbox" class="show-messages" checked="checked" />Show messages</label></li>
-		<li><label><input type="checkbox" class="show-attach" checked="checked" />Show attachments</label></li>
-		<li><label><input type="checkbox" class="show-notes" checked="checked" />Show notes</label></li>
-		<li><label><input type="checkbox" class="show-logs" />Show logs</label></li>
-	</ul>
-
-	<div class="messages-wrap" id="{{baseId}}_messages_wrap">
+<div class="profile-box-container ticket-messages">
+	<header>
+		<h4>Messages</h4>
+		<ul class="tickets-msg-controls">
+			<li><label><input type="checkbox" class="show-messages" checked="checked" />Messages</label></li>
+			<li><label><input type="checkbox" class="show-attach" checked="checked" />Attachments</label></li>
+			<li><label><input type="checkbox" class="show-notes" checked="checked" />Agent Notes</label></li>
+			<li><label><input type="checkbox" class="show-logs" />Ticket Log</label></li>
+		</ul>
+	</header>
+	<section class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
-	</div>
-</section>
+	</section>
+</div>
 
 {% include 'AgentBundle:Ticket:replybox.html.twig' %}
 

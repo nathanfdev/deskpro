@@ -41,6 +41,10 @@ a:hover {
 	text-decoration: none;
 }
 
+[data-route] {
+	cursor: pointer;
+}
+
 span.user-link, a.user-link {
 	background-position: 0 50%;
 	background-repeat: no-repeat;

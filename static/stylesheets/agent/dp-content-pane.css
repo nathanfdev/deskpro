@@ -633,21 +633,27 @@ section.main-content {
 /*****************************************************************************/
 
 article.content-message {
-	margin: 8px 0 8px 0;
+	margin: 0 0 8px 0;
 }
 
 article.content-message .avatar {
 	background: #fff;
-	padding: 2px;
-	box-shadow: 0 1px 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,0,0,0.1), inset 0 0 2px 1px rgba(0,0,0,0.1);
-	border: 2px solid #f5f5f5;
+	/*
+	padding: 1px;
+	box-shadow: 0 0px 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,0,0,0.1), inset 0 0 2px 1px rgba(0,0,0,0.1);
+	*/
 	float: left;
-	behavior: url(../../static/vendor/PIE.htc);
+	width: 40px;
+	height: 40px;
+}
+article.content-message .avatar img {
+	margin: 0;
+	padding:  0;
 }
 
 article.content-message .content {
 	color: #000;
-	margin-left: 40px;
+	margin-left: 46px;
 
 	border-radius: 3px 3px 3px 3px;
 	behavior: url(../../static/vendor/PIE.htc);
@@ -670,6 +676,8 @@ article.content-message .content header {
 	color: #5B513D;
 	line-height: 22px;
 	padding-top: 1px;
+	height: 22px;
+	overflow: hidden;
 }
 
 article.content-message.note-message .content header {
@@ -688,7 +696,6 @@ article.content-message.note-message .content header {
 
 	color: #5B513D;
 	line-height: 22px;
-	padding-top: 1px;
 }
 
 article.content-message.agent-message .content header {
@@ -715,7 +722,7 @@ article.content-message .content header .message-counter {
 	float: right;
 	font-size: 10px;
 	margin-right: 6px;
-	line-height: 20px;
+	line-height: 23px;
 }
 
 article.content-message .content header .message-counter.with-gear {
@@ -1693,9 +1700,25 @@ ul.activity-stream time {
 	display: none;
 }
 
+.page-ticket .profile-box-container.ticket-messages h4 {
+	float: left;
+}
 
+.page-ticket .profile-box-container.ticket-messages .tickets-msg-controls {
+	float: left;
+	margin-left: 6px;
+	font-size: 10px;
+	line-height: 24px;
+
+}
+
+.page-ticket .profile-box-container.ticket-messages > section {
+	padding: 8px 8px 8px 5px;
+	padding-bottom: 0;
+}
 
 .log-batch {
+	margin:  0 0 8px 0;
     background-color: #F9F9F9;
     border: 1px solid #C9CBCB;
 

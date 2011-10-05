@@ -2,25 +2,19 @@
 	class="content-message message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %}"
 	data-message-id="{{message.id}}"
 >
-	<div class="avatar">
-		<img
-			src="{{ message.person.getPictureUrl(20) }}"
+	<div class="avatar"><img
+			src="{{ message.person.getPictureUrl(40) }}"
 			alt=""
-			width="20"
-			height="20"
+			width="40"
+			height="40"
 			{% if not message.person.is_agent %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"{% endif %}
-		/>
-	</div>
+		/></div>
 	<div class="content">
 		<header>
 			<span class="message-counter with-gear ticket-message-edit-btn" data-message-id="{{ message.id }}">#{{ loop.index }}</span>
-			<h4
-				{% if not message.person.is_agent %}
-					class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
-				{% endif %}
-			>{{message.person.name}}</h4>
-			<time class="full-time" datetime="{{idea.date_created|date('c')}}">{{idea.date_created|date('M j Y, H:ia')}}</time>
-			<time class="timeago" datetime="{{idea.date_created|date('c')}}"></time>
+			<h4	class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.name}}</h4>
+			<time class="full-time" datetime="{{message.date_created|date('c')}}">{{message.date_created|date('M j Y, H:ia')}}</time>
+			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>
 		</header>
 		<div class="body-text">
 			{{message.message_html|raw}}
