@@ -231,7 +231,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</section>
 </div>
 
-{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+<div id="{{baseId}}_replybox_wrap">
+	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+</div>
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">

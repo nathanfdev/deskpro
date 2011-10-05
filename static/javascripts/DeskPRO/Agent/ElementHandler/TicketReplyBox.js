@@ -184,7 +184,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.stopPropagation();
 
 			var formData = self.el.serializeArray();
-			self.el.trigger('replyboxsubmit', [formData, this]);
+			self.el.trigger('replyboxsubmit', [formData, self]);
 		});
 	},
 

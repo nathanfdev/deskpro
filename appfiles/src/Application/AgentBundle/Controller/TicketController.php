@@ -761,13 +761,13 @@ class TicketController extends AbstractController
 			}
 
 			// People cc emails
-			$user_parts_emails = $this->in->getCleanValueArray('user_parts', 'string', 'discard');
+			$user_parts_emails = $this->in->getString('user_parts');
+			$user_parts_emails = explode(',', $user_parts_emails);
 
-			$user_parts = array();
 			$got_user_ids = array();
 			$new_user_ids = array();
 			foreach ($user_parts_emails as $email) {
-				if (!$email_validator->isValid($email)) {
+				if (!$email || !$email_validator->isValid($email)) {
 					continue;
 				}
 
@@ -883,9 +883,45 @@ class TicketController extends AbstractController
 			$this->in->getUint('last_log_id')
 		);
 
+		// New reply box
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		$participant_ids = array();
+		$agent_parts = array();
+		$user_parts = array();
+
+		foreach ($participants as $p) {
+			$participant_ids[] = $p->person->id;
+			if ($p->person->is_agent) {
+				$agent_parts[] = $p;
+			} else {
+				$user_parts[] = $p;
+			}
+		}
+
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
+		$replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
+			'ticket' => $ticket,
+			'participants' => $participants,
+			'participant_ids' => $participant_ids,
+			'agent_parts' => $agent_parts,
+			'user_parts' => $user_parts,
+		));
+
 		$data = array_merge($data, array(
 			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
 			'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
+			'replybox_html' => $replybox,
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],

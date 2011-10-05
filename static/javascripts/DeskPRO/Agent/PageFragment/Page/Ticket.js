@@ -142,55 +142,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			mergeOverlay.open();
 		});
 
-		this.getEl('reply_form').bind('replyboxsubmit', (function(ev, formData) {
-			formData.push({
-				name: 'client_messages_since',
-				value: DeskPRO_Window.getLastClientMessageId()
-			});
-
-			formData.push({
-				name: 'last_message_id',
-				value: this.ticketChecker.getLastMessageId()
-			});
-			formData.push({
-				name: 'last_log_id',
-				value: this.ticketChecker.getLastLogId()
-			});
-
-			this.ticketChecker.pause(true);
-
-			$.ajax({
-				url: this.getEl('reply_form').attr('action'),
-				type: 'POST',
-				dataType: 'json',
-				data: formData,
-				context: this,
-				success: function(result) {
-					this.handleTicketUpdate(result);
-
-					if (result.close_tab) {
-						window.setTimeout((function() {
-							this.closeSelf();
-						}).bind(this), 400);
-					} else {
-						// Apply changed props
-						var agentProp = this.changeManager.getPropertyManager('agent_id');
-						agentProp.setIncomingValue(result.agent_id);
-
-						var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
-						agentTeamProp.setIncomingValue(result.agent_team_id);
-
-						var statusProp = this.changeManager.getPropertyManager('status');
-						statusProp.setIncomingValue(result.status);
-					}
-				},
-				complete: function(xhr, textStatus) {
-					this.getEl('reply_form').removeClass('loading');
-					this.ticketChecker.unpause();
-				}
-			});
-
-		}).bind(this));
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -209,6 +161,58 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
 			this.ownObject(this.ticketLocked);
 		}
+	},
+
+	handleReplySave: function(ev, formData, handler) {
+
+		var reply_form = handler.el;
+
+		formData.push({
+			name: 'client_messages_since',
+			value: DeskPRO_Window.getLastClientMessageId()
+		});
+
+		formData.push({
+			name: 'last_message_id',
+			value: this.ticketChecker.getLastMessageId()
+		});
+		formData.push({
+			name: 'last_log_id',
+			value: this.ticketChecker.getLastLogId()
+		});
+
+		this.ticketChecker.pause(true);
+
+		$.ajax({
+			url: reply_form.attr('action'),
+			type: 'POST',
+			dataType: 'json',
+			data: formData,
+			context: this,
+			success: function(result) {
+				this.handleTicketUpdate(result);
+
+				if (result.close_tab) {
+					window.setTimeout((function() {
+						this.closeSelf();
+					}).bind(this), 400);
+				} else {
+					// Apply changed props
+					var agentProp = this.changeManager.getPropertyManager('agent_id');
+					agentProp.setIncomingValue(result.agent_id);
+
+					var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
+					agentTeamProp.setIncomingValue(result.agent_team_id);
+
+					var statusProp = this.changeManager.getPropertyManager('status');
+					statusProp.setIncomingValue(result.status);
+				}
+			},
+			complete: function(xhr, textStatus) {
+				reply_form.removeClass('loading');
+				this.ticketChecker.unpause();
+			}
+		});
 	},
 
 	destroyPage: function() {
@@ -260,6 +264,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (data.updated_agent_parts_html) {
 			this.getEL('agent_part_list').html(data.updated_agent_parts_html);
 			$('.agent-part-count', this.wrapper).text(data.updated_agent_parts_count);
+		}
+
+		if (data.replybox_html) {
+			this.getEl('replybox_wrap').empty().append(data.replybox_html);
+			DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
+			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 		}
 	},
 
