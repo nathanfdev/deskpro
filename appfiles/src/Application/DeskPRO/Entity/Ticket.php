@@ -578,6 +578,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
 		}
 
+		if (!$person) {
+			return null;
+		}
+
 		if ($ticket_part = $this->hasParticipantPerson($person)) {
 			return $ticket_part;
 		}
@@ -607,6 +611,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
+		}
+
+		if (!$person) {
+			return null;
 		}
 
 		foreach ($this->participants as $k => $p) {

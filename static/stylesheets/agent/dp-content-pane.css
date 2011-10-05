@@ -2340,7 +2340,7 @@ ul.activity-stream time {
 
 }
 
-.ticketreply > article > section > ul > li .new-val {
+.ticketreply > article > section > ul > li .new-val-label {
 	font-weight: bold;
 }
 .ticketreply > article > section > ul > li {
@@ -2358,6 +2358,12 @@ ul.activity-stream time {
 	text-align: right;
 	margin-right: 15px;
 }
+
+.ticketreply > article > section > ul > li .prop-change { display: none; }
+.ticketreply > article > section > ul > li .prop-no-change { display: inline; }
+
+.ticketreply > article > section > ul > li .changed .prop-change { display: inline; }
+.ticketreply > article > section > ul > li .changed .prop-no-change { display: none; }
 
 .ticketreply > article > section ul li.attach-row > label span {
 	display: block;
@@ -2406,12 +2412,12 @@ ul.activity-stream time {
 }
 
 .ticketreply > article > section > ul > li > div {
-	margin-left: 65px;
+	margin-left: 75px;
 }
 
 .ticketreply > article > section .files li {
 	float: left;
-	margin-right: 15px;
+	margin-right: 5px;
 	white-space: nowrap;
 }
 

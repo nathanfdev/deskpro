@@ -142,53 +142,55 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			mergeOverlay.open();
 		});
 
-		/*
-		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
-			replyBox: this.getEl('replybox'),
-			onBeforeSaveReply: (function(info) {
-				info.formData.push({
-					name: 'client_messages_since',
-					value: DeskPRO_Window.getLastClientMessageId()
-				});
+		this.getEl('reply_form').bind('replyboxsubmit', (function(ev, formData) {
+			formData.push({
+				name: 'client_messages_since',
+				value: DeskPRO_Window.getLastClientMessageId()
+			});
 
-				info.formData.push({
-					name: 'last_message_id',
-					value: this.ticketChecker.getLastMessageId()
-				});
-				info.formData.push({
-					name: 'last_log_id',
-					value: this.ticketChecker.getLastLogId()
-				});
+			formData.push({
+				name: 'last_message_id',
+				value: this.ticketChecker.getLastMessageId()
+			});
+			formData.push({
+				name: 'last_log_id',
+				value: this.ticketChecker.getLastLogId()
+			});
 
-				this.ticketChecker.pause(true);
-			}).bind(this),
-			onSaveReplySuccess: (function(info) {
+			this.ticketChecker.pause(true);
 
-				this.handleTicketUpdate(info.result);
-				this.ticketChecker.unpause();
+			$.ajax({
+				url: this.getEl('reply_form').attr('action'),
+				type: 'POST',
+				dataType: 'json',
+				data: formData,
+				context: this,
+				success: function(result) {
+					this.handleTicketUpdate(result);
 
-				if (info.result.close_tab) {
-					window.setTimeout((function() {
-						console.log('ere');
-						this.closeSelf();
-					}).bind(this), 400);
-				} else {
+					if (result.close_tab) {
+						window.setTimeout((function() {
+							this.closeSelf();
+						}).bind(this), 400);
+					} else {
+						// Apply changed props
+						var agentProp = this.changeManager.getPropertyManager('agent_id');
+						agentProp.setIncomingValue(result.agent_id);
 
-					// Apply changed props
-					var agentProp = this.changeManager.getPropertyManager('agent_id');
-					agentProp.setIncomingValue(info.result.agent_id);
+						var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
+						agentTeamProp.setIncomingValue(result.agent_team_id);
 
-					var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
-					agentTeamProp.setIncomingValue(info.result.agent_team_id);
-
-					var statusProp = this.changeManager.getPropertyManager('status');
-					statusProp.setIncomingValue(info.result.status);
-
+						var statusProp = this.changeManager.getPropertyManager('status');
+						statusProp.setIncomingValue(result.status);
+					}
+				},
+				complete: function(xhr, textStatus) {
+					this.getEl('reply_form').removeClass('loading');
+					this.ticketChecker.unpause();
 				}
-			}).bind(this)
-		});
-		this.ownObject(this.replyBox);
-		*/
+			});
+
+		}).bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);

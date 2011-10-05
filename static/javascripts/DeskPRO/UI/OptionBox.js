@@ -59,7 +59,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		// Events on checkboxes and filter
 		//------------------------------
 
-		$(':checkbox', this.el).change(function() {
+		$(':checkbox, :radio', this.el).change(function() {
 			self.clickCheckbox($(this));
 		});
 
@@ -69,6 +69,13 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 			if ($(this).data('section-name')) {
 				$(this).addClass($(this).data('section-name'));
+			}
+
+			var opt = $(':checkbox, :radio', this).first();
+			if (opt.is(':radio')) {
+				$(this).data('input-type', 'radio');
+			} else {
+				$(this).data('input-type', 'checkbox');
 			}
 		});
 
@@ -157,10 +164,18 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			val.push($(this).val());
 		});
 
+		if (section.data('input-type') == 'radio') {
+			val = val.pop();
+			if (!val) {
+				val = null;
+			}
+		}
+
 		return val;
 	},
 
 	getAllSelected: function() {
+		var self = this;
 		var ret = {};
 
 		$('section', this.el).each(function() {

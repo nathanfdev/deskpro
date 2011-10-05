@@ -26,7 +26,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
-		this.getEl('cc_input').tokenField();
+		this.getElById('cc_input').tokenField();
 
 
 		//------------------------------
@@ -41,10 +41,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			downloadTemplate: $('.template-download', this.replyBox)
 		});
 		this.el.bind('fileuploaddone', function() {
-			self.getEl('attach_row').slideDown();
+			self.getElById('attach_row').slideDown();
 		});
 		this.el.bind('fileuploadstart', function() {
-			self.getEl('attach_row').slideDown();
+			self.getElById('attach_row').slideDown();
 		});
 
 		//------------------------------
@@ -73,26 +73,122 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.el.data('snippet-viewer-url'),
-			triggerElement: this.getEl('text_snippets_btn'),
+			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: function(info) {
-				self.getEl('replybox_txt').val(self.getEl('replybox_txt').val() + "\n\n" + info.snippet);
+				self.getElById('replybox_txt').val(self.getElById('replybox_txt').val() + "\n\n" + info.snippet);
 			}
 		});
 
+		//------------------------------
+		// Status
+		//------------------------------
+
+		var statusDetailEl = this.getElById('status_detail');
+		this.statusMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.status-trigger', statusDetailEl),
+			menuElement: this.getElById('status_menu'),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+				var val = item.data('status');
+
+				if (val == 'no-change') {
+					self.getElById('ticket_do_status').val(0);
+					statusDetailEl.removeClass('changed');
+				} else {
+					$('.new-val-label', statusDetailEl).text(item.text().trim());
+					self.getElById('ticket_do_status').val(1);
+					self.getElById('ticket_status').val(val);
+					statusDetailEl.addClass('changed');
+				}
+			}
+		});
+
+		//------------------------------
+		// Assignments
+		//------------------------------
+
+		var agentDetailEl  = this.getElById('assign_detail_agent');
+		var teamDetailEl   = this.getElById('assign_detail_agent_team');
+		var followDetailEl = this.getElById('assign_detail_followers');
 
 		//assign_btn
 		this.assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('agent_selector'),
-			trigger: this.getEl('assign_btn'),
+			element: this.getElById('agent_selector'),
+			trigger: this.getElById('assign_btn'),
 			onClose: function(ob) {
+				var selections = ob.getAllSelected();
 
+				var exist_agent_id      = parseInt(self.getElById('exist_agent_id').val());
+				var exist_agent_team_id = parseInt(self.getElById('exist_agent_team_id').val());
+
+				// Agent
+				var agent_id = parseInt(selections.agents || 0);
+				if (agent_id == exist_agent_id) {
+					agentDetailEl.removeClass('changed');
+					self.getElById('do_agent_id').val('0');
+				} else {
+					agentDetailEl.addClass('changed');
+					self.getElById('do_agent_id').val('0');
+					self.getElById('agent_id').val(agent_id);
+
+					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
+					$('.new-val-label', agentDetailEl).text(label);
+				}
+
+				// Agent Team
+				var agent_team_id = parseInt(selections.teams || 0);
+				if (agent_team_id == exist_agent_team_id) {
+					teamDetailEl.removeClass('changed');
+					self.getElById('do_agent_team_id').val('0');
+				} else {
+					teamDetailEl.addClass('changed');
+					self.getElById('do_agent_team_id').val('1');
+					self.getElById('agent_team_id').val(agent_team_id);
+
+					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
+					$('.new-val-label', teamDetailEl).text(label);
+				}
+
+				// Followers
+				var follower_names = [];
+				var inputs = $('.inputs', followDetailEl).empty();
+
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
+					follower_names.push(label);
+
+					var i = $('<input type="hidden" name="agent_parts[]" value="'+part_id+'" />');
+					inputs.append(i);
+				});
+				if (follower_names.length) {
+					$('.no-followers', followDetailEl).hide();
+					$('.is-followers', followDetailEl).show().find('.names').text(follower_names.join(', '));
+				} else {
+					$('.no-followers', followDetailEl).show();
+					$('.is-followers', followDetailEl).text('').hide();
+				}
 			}
 		});
 
-		console.log('init done');
+		//------------------------------
+		// Submit
+		//------------------------------
+
+		this.el.submit(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		});
+
+		this.getElById('send_btn').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var formData = self.el.serializeArray();
+			self.el.trigger('replyboxsubmit', [formData, this]);
+		});
 	},
 
-	getEl: function(id) {
+	getElById: function(id) {
 		var el = $('#' + this.baseId + '_' + id);
 		return el;
 	},

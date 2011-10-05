@@ -197,6 +197,23 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 
 	/**
+	 * Check if the user is part of a specific team
+	 *
+	 * @param $team_id
+	 * @return bool
+	 */
+	public function isTeamMember($team_id)
+	{
+		$this->getTeams();
+		if (isset($this->_agent_teams[$team_id])) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Add the user to a team.
 	 *
 	 * @param \Application\DeskPRO\Entity\AgentTeam $team

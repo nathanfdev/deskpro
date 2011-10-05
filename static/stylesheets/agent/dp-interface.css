@@ -756,6 +756,10 @@ a.clean-white {
 	overflow: hidden;
 }
 
+.optionbox section li.last-me {
+	border-bottom: 1px solid #CCD3DD;
+}
+
 .optionbox section li:hover {
 	background-color: #E6E8E8;
 }
