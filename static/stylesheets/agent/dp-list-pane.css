@@ -830,10 +830,10 @@ footer.results-nav .more button {
 
 section.mass-actions-overlay {
 	position: absolute;
-	top:    8px;
-	bottom: 11px;
-	left:   14px;
-	right:  18px;
+	top:    13px;
+	bottom: 10px;
+	left:   0px;
+	right:  16px;
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;

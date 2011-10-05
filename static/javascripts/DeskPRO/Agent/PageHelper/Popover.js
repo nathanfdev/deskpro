@@ -125,8 +125,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		});
 
 		var pos = $(this.options.overFrom).offset();
-		var top = pos.top;
-		var width = pos.left - 30;
+		var top = pos.top - 4;
+		var width = pos.left - 9;
 
 		this.popoverOuter.css({
 			'position': 'absolute',
