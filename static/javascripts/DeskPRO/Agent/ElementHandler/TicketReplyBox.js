@@ -47,6 +47,25 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getEl('attach_row').slideDown();
 		});
 
+		//------------------------------
+		// Toggle buttons
+		//------------------------------
+
+		$('.option-buttons', this.el).delegate('li.toggle', 'click', function() {
+			var check = $(':checkbox', this);
+			if (!check.length) {
+				return;
+			}
+
+			if (check.is(':checked')) {
+				check.attr('checked', false);
+				$(this).removeClass('on');
+			} else {
+				check.attr('checked', true);
+				$(this).addClass('on');
+			}
+		});
+
 
 		//------------------------------
 		// Snippets Viewer

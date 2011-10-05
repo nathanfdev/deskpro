@@ -2271,7 +2271,7 @@ ul.activity-stream time {
 
 .ticketreply > nav ul.option-buttons li.attach span { background-image: url(../../images/icons/attach.png); }
 .ticketreply > nav ul.option-buttons li.snippets span { background-image: url(../../images/icons/page_white_text.png); }
-.ticketreply > nav ul.option-buttons li.article span { background-image: url(../../images/icons/bookmark.png); }
+.ticketreply > nav ul.option-buttons li.article span { background-image: url(../../images/icons/document__pencil.png); }
 .ticketreply > nav ul.option-buttons li.closetab span { background-image: url(../../images/icons/tab_delete.png); }
 
 .ticketreply > nav ul.option-buttons li.attach {
@@ -2298,6 +2298,35 @@ ul.activity-stream time {
 	bottom: 0;
 	z-index: 1;
 	cursor: pointer;
+}
+
+.ticketreply > nav ul.option-buttons li.toggle {
+	position: relative;
+}
+
+.ticketreply > nav ul.option-buttons li.toggle.on {
+	background: #eaecef; /* Old browsers */
+	background: -moz-linear-gradient(top, #eaecef 0%, #ccd4dd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eaecef), color-stop(100%,#ccd4dd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaecef', endColorstr='#ccd4dd',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* W3C */
+}
+
+.ticketreply > nav ul.option-buttons li em.check {
+	background: url(../../images/icons/tick_small.png) no-repeat 0 0;
+	width: 7px;
+	height: 7px;
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	display: none;
+}
+
+.ticketreply > nav ul.option-buttons li.toggle.on em.check {
+	display: block;
 }
 
 .ticketreply > article {

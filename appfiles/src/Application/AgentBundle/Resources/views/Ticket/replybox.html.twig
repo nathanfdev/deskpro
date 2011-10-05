@@ -34,8 +34,14 @@
 			</ul>
 
 			<ul class="option-buttons right">
-				<li class="tipped article" title="Mark as a pending KB article"><span>Article</span></li>
-				<li class="tipped closetab" title="Close the ticket tab after reply"><span>Close Tab</span></li>
+				<li class="tipped article toggle" title="Mark as a pending KB article">
+					<span>Article<em class="check"></em></span>
+					<input type="checkbox" name="options[do_kbpending]"/>
+				</li>
+				<li class="tipped closetab toggle" title="Close the ticket tab after reply">
+					<span>Close Tab<em class="check"></em></span>
+					<input type="checkbox" name="options[close_tab]" />
+				</li>
 				<li class="send"><span>Send</span></li>
 			</ul>
 		</nav>
