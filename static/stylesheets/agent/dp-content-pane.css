@@ -2285,6 +2285,9 @@ ul.activity-stream time {
 
 }
 
+.ticketreply > article > section > ul > li .new-val {
+	font-weight: bold;
+}
 .ticketreply > article > section > ul > li {
 	border-bottom: 1px dotted #999;
 	padding:  6px 8px 5px 8px;

@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initCustomFieldsEditor();
 
 		var self = this;
-		this._initMessage($('article.messages-wrap'));
+		this._initMessage($('.messages-wrap'));
 
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
@@ -596,7 +596,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
 		var menu = this.messageActionsMenu;
-		var wrap = $('.messages-wrap:first', this.wrapper)[0];
+		var wrap = $('.messages-wrap', this.wrapper)[0];
 		$('.ticket-message-edit-btn', wrap).live('click', function(event) {
 			menu.openMenu(event);
 		});

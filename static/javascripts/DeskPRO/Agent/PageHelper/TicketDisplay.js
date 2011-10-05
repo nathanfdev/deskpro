@@ -180,8 +180,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		$(this.options.fieldTabContentSelector, this.sectionBodyTabContents).remove();
 		$(this.options.fieldWrapSelector, this.sectionPropertiesContent).remove();
 
-		this.sectionProperties.hide();
-
 		$('.fields-show', this.sectionProperties).show();
 
 		// Reset editable areas
