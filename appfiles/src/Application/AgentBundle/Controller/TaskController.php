@@ -68,7 +68,16 @@ class TaskController extends AbstractController
 			'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
 		);
 
-		return $this->renderJson('AgentBundle:Task:countPending.html.twig', array(
+//		return $this->renderJson('AgentBundle:Task:countPending.html.twig', array(
+//			'tasks' => array(
+//				'all' => $all_tasks,
+//				'person' => $person_tasks,
+//				'teams'  => $teams_tasks,
+//				'delegated'  => $delegated_tasks,
+//			)
+//		));
+
+		$data['section_html'] = $this->renderView('AgentBundle:Task:countPending.html.twig', array(
 			'tasks' => array(
 				'all' => $all_tasks,
 				'person' => $person_tasks,
@@ -76,6 +85,8 @@ class TaskController extends AbstractController
 				'delegated'  => $delegated_tasks,
 			)
 		));
+
+		return $this->createJsonResponse($data);
 	}
 
 	/**
@@ -170,6 +181,10 @@ class TaskController extends AbstractController
                             'success' => true,
                             'task_id' => $task->getId()
                         ));
+                    } else {
+                        return $this->createJsonResponse(array(
+                            'success' => false
+                ));
                     }
                 }
             } catch (\Doctrine\ORM\NoResultException $e) {

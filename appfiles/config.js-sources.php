@@ -19,6 +19,7 @@ $CONFIG['agent']['window-sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js',
+                'javascripts/DeskPRO/Agent/WindowElement/Section/Task.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Test.js',
 	)
 );

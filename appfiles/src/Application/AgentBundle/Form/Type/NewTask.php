@@ -31,8 +31,13 @@ class NewTask extends AbstractType
         $builder->add('date_due', 'datetime', array(            
 >>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
             'widget' => 'single_text',
+<<<<<<< HEAD
             'empty_value' => '',
             'format'=>'y/m/d',
+=======
+            'date_format'=>'M/d/y',
+            'required' => false,
+>>>>>>> d4e760f... add Task.js in the section and refactor the Task entity repository
         ));
         
 

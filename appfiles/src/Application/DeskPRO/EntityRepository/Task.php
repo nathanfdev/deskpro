@@ -26,23 +26,19 @@ class Task extends EntityRepository
 	 * @param Person $person The person
 	 * @return Array
 	 */
-	public function findPendingTasksForPerson(Entity\Person $person)
-	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:Task t
-			WHERE
-			(
-					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
-				OR
-					t.assigned_agent_id = ?1
-			)
-			AND t.is_completed = false
-			ORDER BY t.date_due ASC
-		");
-
-		return $query->setParameter(1, $person['id'])->getResult();
-	}
+        public function findPendingTasksForPerson(Entity\Person $person)
+        {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('t')
+                    ->from('DeskPRO:Task', 't')
+                    ->innerJoin('t.person', 'p')
+                    ->where('p.id= :person_id')
+                    ->setParameters(array('person_id' => $person['id']))
+            ;
+            $query = $qb->getQuery();
+            $tasks = $query->getResult();
+            return $tasks;
+        }
 
 	/**
 	 * Count pending tasks.
@@ -51,13 +47,14 @@ class Task extends EntityRepository
 	 */
 	public function countPendingTasks()
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			WHERE t.is_completed = false
-		");
-
-		return $query->getSingleScalarResult();
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('COUNT(t.id)')
+                    ->from('DeskPRO:Task', 't')
+                    ->where('t.is_completed = :is_completed')
+                    ->setParameter('is_completed', false)
+                    ;
+            $query = $qb->getQuery();
+            return $query->getSingleScalarResult();
 	}
 
 	/**
@@ -116,19 +113,39 @@ class Task extends EntityRepository
 	 */
 	public function countPendingTasksForPerson(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			WHERE
-			(
-					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
-				OR
-					t.assigned_agent_id = ?1
-			)
-			AND t.is_completed = false
-		");
+//            $query = $this->getEntityManager()->createQuery("
+//			SELECT COUNT(t.id)
+//			FROM DeskPRO:Task t
+//			WHERE
+//			(
+//					(t.person_id = ?1 AND t.assigned_agent_id IS NULL)
+//				OR
+//					t.assigned_agent_id = ?1
+//			)
+//			AND t.is_completed = false
+//		");
+//
+//            return $query->setParameter(1, $person['id'])->getSingleScalarResult();
 
-		return $query->setParameter(1, $person['id'])->getSingleScalarResult();
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('COUNT(t.id)')
+                    ->from('DeskPRO:Task', 't')
+                    ->innerJoin('t.person', 'p')
+                    ->leftJoin('t.assigned_agent', 'aa')
+                    ->where('p.id = :person_id AND aa.id IS NULL')
+                    ->orWhere('aa.id = :agent_id')
+                    ->where('t.is_completed = :is_completed')
+                    ->setParameters(array(
+                        'person_id' => $person['id'],
+                        'agent_id' => $person['id'],
+                        'is_completed' => false
+                        ))
+                    ;
+            $query = $qb->getQuery();
+            return $query->getSingleScalarResult();
+
+
+
 	}
 
 	/**
