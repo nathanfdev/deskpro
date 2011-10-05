@@ -614,18 +614,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				break;
 
 			case 'quote':
-				console.debug('todo loading indicator when loading _doMessageAction quote');
-				$.ajax({
-					url: this.getMetaData('getMessageQuoteUrl').replace('{message_id}', messageId),
-					type: 'GET',
-					context: this,
-					dataType: 'json',
-					success: function(data) {
-						var reply = this.getEl('replybox_txt');
-						reply.val(data.message_quote + "\n\n" + reply.val());
-						reply.focus();
-					}
-				});
+				var quote = $('textarea.message-quote-' + messageId, this.wrapper).val();
+				var reply = this.getEl('replybox_txt');
+				reply.val(quote + "\n\n" + reply.val());
+				reply.focus();
 				break;
 
 			case 'split':

@@ -169,6 +169,20 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->setMessage($message);
 	}
 
+	/**
+	 * Get a plain-text "quoted" version of the message. This is the message
+	 * wrapped to 75 characters and each line preceded with a >.
+	 *
+	 * @return string
+	 */
+	public function getMessageQuote()
+	{
+		$message_quote = wordwrap($this->getMessageText(), 75, "\n", true);
+		$message_quote = preg_replace('#^#m', "> ", $message_quote);
+
+		return $message_quote;
+	}
+
 	public function setMessageText($message)
 	{
 		$this->setMessage(Markdown::format($message));
