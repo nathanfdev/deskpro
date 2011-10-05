@@ -2274,6 +2274,32 @@ ul.activity-stream time {
 .ticketreply > nav ul.option-buttons li.article span { background-image: url(../../images/icons/bookmark.png); }
 .ticketreply > nav ul.option-buttons li.closetab span { background-image: url(../../images/icons/tab_delete.png); }
 
+.ticketreply > nav ul.option-buttons li.attach {
+	position: relative;
+	width: 29px;
+	overflow: hidden;
+}
+
+.ticketreply > nav ul.option-buttons li.attach input.file {
+	position: relative;
+	text-align: right;
+	-moz-opacity:0 ;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+	cursor: pointer;
+}
+
+.ticketreply > nav ul.option-buttons li.attach span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	cursor: pointer;
+}
+
 .ticketreply > article {
 	background-color: #fff;
 	-moz-border-radius: 3px;

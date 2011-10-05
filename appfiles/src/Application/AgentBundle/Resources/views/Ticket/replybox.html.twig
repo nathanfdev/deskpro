@@ -12,7 +12,6 @@
 <input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
 <input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="pending" />
 <input type="hidden" id="{{baseId}}_is_note" name="options[is_note]" value="0" />
-<input type="file" name="file-upload" style="display: none;" />
 
 <div class="profile-box-container reply-box-wrap">
 	<header>
@@ -27,7 +26,10 @@
 
 		<nav id="{{baseId}}_header_rows">
 			<ul class="option-buttons">
-				<li class="tipped attach" title="Add attachments"><span>Attachments</span></li>
+				<li class="tipped attach" title="Add attachments">
+					<input type="file" class="file" name="file-upload" />
+					<span>Attachments</span>
+				</li>
 				<li class="tipped snippets" id="{{baseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
 			</ul>
 
