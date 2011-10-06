@@ -43,6 +43,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		$(html).appendTo(this.wrapper);
 
 		this.initEditorOverlay();
+
+		this.fireEvent('replaceEditor', [this]);
 	},
 
 	initEditorOverlay: function() {

@@ -1485,6 +1485,10 @@ ul.activity-stream time {
 .profile-box-container.tabbed > section > article { display: none; }
 .profile-box-container.tabbed > section > article.on { display: block; }
 
+.property-col .profile-box-container.no-section section { display: none;}
+.property-col .profile-box-container.no-section header { border-radius: 3px;}
+
+
 .property-col .profile-box-container {
 	margin-left: 0;
 }

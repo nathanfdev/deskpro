@@ -15,7 +15,10 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		var self = this;
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/save-contact-data.json'
+			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/save-contact-data.json',
+			onReplaceEditor: function() {
+				self.refreshPropBox();
+			}
 		});
 		this.ownObject(this.contactEditor);
 
@@ -142,6 +145,32 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
+
+		this.refreshPropBox();
+	},
+
+	refreshPropBox: function() {
+
+		var contactBox = $('.profile-box-container.contact', this.el);
+
+		var has = false;
+		if ($('.contact-data-list > li', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.outside-display > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.addresses > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has) {
+			contactBox.addClass('no-section');
+		} else {
+			contactBox.removeClass('no-section');
+		}
 	},
 
 	//#########################################################################
