@@ -285,6 +285,11 @@ admin_customdefpeople_edit:
   defaults: { _controller: AdminBundle:CustomDefPeople:edit }
   requirements: { field_id: "\d+" }
 
+admin_customdefpeople_setenabled:
+  pattern: /people-fields/{field_id}/set-enabled/{is_enabled}
+  defaults: { _controller: AdminBundle:CustomDefPeople:setEnabled }
+  requirements: { field_id: "\d+" }
+
 admin_customdefpeople_test:
   pattern: /people-fields/{field_id}/test
   defaults: { _controller: AdminBundle:CustomDefPeople:test }
@@ -313,6 +318,11 @@ admin_customdeftickets_new_choosetype:
 admin_customdeftickets_edit:
   pattern: /ticket-fields/{field_id}/edit
   defaults: { _controller: AdminBundle:CustomDefTickets:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdeftickets_setenabled:
+  pattern: /ticket-fields/{field_id}/set-enabled
+  defaults: { _controller: AdminBundle:CustomDefTickets:setEnabled }
   requirements: { field_id: "\d+" }
 
 admin_customdeftickets_test:
@@ -397,6 +407,11 @@ admin_customdeforganizations_new_choosetype:
 admin_customdeforganizations_edit:
   pattern: /organization-fields/{field_id}/edit
   defaults: { _controller: AdminBundle:CustomDefOrganizations:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdeforganizations_setenabled:
+  pattern: /organization-fields/{field_id}/set-enabled/{is_enabled}
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:setEnabled }
   requirements: { field_id: "\d+" }
 
 admin_customdeforganizations_test:

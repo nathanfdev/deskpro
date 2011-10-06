@@ -114,6 +114,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $options = array();
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
+	 */
+	protected $is_enabled = true;
+
+	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
 	protected $_handler_instance = null;
@@ -301,7 +307,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get filter capabilties supported by the field.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getFilterCapabilities()

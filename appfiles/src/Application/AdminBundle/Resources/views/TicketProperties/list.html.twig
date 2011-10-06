@@ -14,6 +14,7 @@
 	class="dp-page-box"
 	data-element-handler="DeskPRO.Admin.ElementHandler.TicketPropertiesList"
 	data-set-setting-url="{{ path('admin_settings_set', {'setting_name': '_SETTING_NAME_', 'security_token': security_token('set_setting')}) }}"
+	data-set-field-url="{{ path('admin_customdeftickets_setenabled', {'field_id': '00000'})|replace({'00000': '_FIELD_ID_'}) }}"
 >
 
 {{ design.block_sections() }}
@@ -77,7 +78,7 @@
 			<h3><a href="{{ path('admin_ticketworks') }}">Ticket Workflows</a></h3>
 			<span class="count">{{counts.ticket_workflow}}</span>
 			<div class="check-control">
-				<input type="checkbox" checked="checked" class="onoff-slider" />
+				<input type="checkbox" {% if app.getSetting('core.enable_ticket_workflows') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_workflows" />
 			</div>
 		</header>
 		<p>
@@ -90,7 +91,7 @@
 			<header>
 				<h3><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">{{ field.title }}</a></h3>
 				<div class="check-control">
-					<input type="checkbox" checked="checked" class="onoff-slider" />
+					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />
 				</div>
 			</header>
 			<p>Custom field: {{ phrase(field.handler_class_phrase) }}</p>

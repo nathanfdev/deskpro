@@ -119,6 +119,24 @@ abstract class CustomDefAbstractController extends AbstractController
 	}
 
 
+	############################################################################
+	# set-enabled
+	############################################################################
+
+	public function setEnabledAction($field_id)
+	{
+		$field = $this->getFieldOr404($field_id);
+		$field->is_enabled = $this->in->getBool('is_enabled');
+
+		$this->em->transactional(function($em) use ($field) {
+			$em->persist($field);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+
 
 	############################################################################
 
@@ -152,7 +170,7 @@ abstract class CustomDefAbstractController extends AbstractController
 		return $field;
 	}
 
-		
+
 	/**
 	 * Get template vars used on all pages.
 	 *

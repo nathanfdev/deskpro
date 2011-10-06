@@ -17,5 +17,17 @@ DeskPRO.Admin.ElementHandler.TicketPropertiesList = new Orb.Class({
 				dataType: 'json'
 			});
 		});
+
+		$(':checkbox[data-field-id]', this.el).change(function() {
+			var val = $(this).is(':checked') ? 1 : 0;
+			var url = self.el.data('set-field-url').replace(/_FIELD_ID_/g, $(this).data('field-id'));
+
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: { is_enabled: val },
+				dataType: 'json'
+			});
+		});
 	}
 });
