@@ -23,8 +23,7 @@
 {# Bridge tries to auto-load these, but with the compiled scripts
 the detected path is incorrect so we have to hard-code them #}
 <script type="text/javascript">
-var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
-    Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
 </script>
 
 {{ html_js_pack('agent.vendors') }}

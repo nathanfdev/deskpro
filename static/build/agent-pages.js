@@ -1095,5 +1095,4 @@ $(".download-editor-wrap",this.getEl("content_ed")).show();if(!this._hasInitEd){
 this.wrapper.bind("fileuploadadd",function(){$("ul.file-list",a.getEl("content_ed")).empty()});this._hasInitEdBefore=true
 }},hideEditor:function(){$(".download-editor-wrap",this.getEl("content_ed")).hide();$(".download-content-wrap",this.getEl("content_ed")).show()
 }});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.Test=new Orb.Class({Extends:DeskPRO.Agent.PageFragment.Basic,initializeProperties:function(){this.parent();
-this.TYPENAME="test"},initPage:function(a){var b=new DeskPRO.Agent.PageHelper.Popover({pageUrl:BASE_URL+"agent/people/20001"});
-b.open();window.popover=b}});
+this.allowDupe=true;this.TYPENAME="test"},initPage:function(a){}});

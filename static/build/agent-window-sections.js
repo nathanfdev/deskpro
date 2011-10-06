@@ -33,8 +33,17 @@ this.contentEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTa
 $("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
 c.openOverlay()});if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()}this.activeNavClass=null;
 $(".show-hold-check",this.sectionEl).click(function(){a.toggleHoldDisplay()});this.filterGroupEditor=new DeskPRO.Agent.Widget.FilterGroupEditor({containerElement:"#tickets_outline .scroll-content",listElement:"#tickets_outline_sys_filters",boundListElement:"#tickets_outline_sys_hold_filters",triggerElement:"#ticket_filter_launch_editor",onGroupingChanged:function(c){a.refreshFilterGrouping([c])
-}})},onShow:function(){this.activeNavClass=null},highlightActiveSection:function(c){if(!this.isVisible()){return}var b=c.page;
-if(b.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+b.getMetaData("filter_id")}else{if(b.TYPENAME=="recyclebin"){this.activeNavClass=".archive-recycle-bin"
+}});if($("#tickets_outline_custom_filters .filter").not(".filter-hidden").length){$("#tickets_outline_custom_filters .no-data").hide()
+}else{$("#tickets_outline_custom_filters .no-data").show()}this.customFilterGroupEditor=new DeskPRO.Agent.Widget.FilterOptionsPop({containerElement:"#tickets_outline .scroll-content",listElement:"#tickets_outline_custom_filters",triggerElement:$(".launch-customfilters-editor",this.contentEl),onInit:function(c){c.controlRealEl.delegate(":checkbox","click",function(){var f=$(this).closest(".filter-row");
+var e=f.data("filter-id");var d=$("#tickets_outline_custom_filters .filter-"+e);if($(this).is(":checked")){d.removeClass("filter-hidden")
+}else{d.addClass("filter-hidden")}})},onInitRow:function(f,e,c){var d=$("#tickets_outline_custom_filters .filter-"+e);if(d.is(".filter-hidden")){$(":checkbox",f).attr("checked",false)
+}},onPreOpen:function(c){$("#tickets_outline_custom_filters li.filter-hidden").show();$("#tickets_outline_custom_filters").addClass("ed-open");
+$("#tickets_outline_custom_filters .no-data").hide()},onClose:function(d){$("#tickets_outline_custom_filters li.filter-hidden").slideUp(300);
+window.setTimeout(function(){$("#tickets_outline_custom_filters").removeClass("ed-open");if($("#tickets_outline_custom_filters .filter").not(".filter-hidden").length){$("#tickets_outline_custom_filters .no-data").hide()
+}else{$("#tickets_outline_custom_filters .no-data").show()}},310);var c=[];$("#tickets_outline_custom_filters li.filter").each(function(){var f=$(this).data("filter-id");
+var e;if($(this).is(".filter-hidden")){e="hidden"}else{e=""}c.push({name:"prefs[agent.ui.filter-visibility."+f+"]",value:e})
+});$.ajax({type:"POST",url:BASE_URL+"agent/misc/ajax-save-prefs",data:c})}})},onShow:function(){this.activeNavClass=null},highlightActiveSection:function(c){if(!this.isVisible()){return
+}var b=c.page;if(b.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+b.getMetaData("filter_id")}else{if(b.TYPENAME=="recyclebin"){this.activeNavClass=".archive-recycle-bin"
 }else{if(b.TYPENAME=="ticket-custom-filter"||b.TYPENAME=="ticket-flagged"){var d=b.getMetaData("view_extra");var a=b.getMetaData("view_name");
 switch(a){case"flag":if(d){this.activeNavClass=".nav-flag-"+d}break;case"label":if(d){this.activeNavClass=".nav-label-"+DeskPRO_Window.util.slugify(d)
 }break;case"spam":this.activeNavClass=".nav-archive-spam";break;case"validating":this.activeNavClass=".nav-archive-validating";

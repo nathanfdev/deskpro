@@ -246,11 +246,9 @@ return false}});return a},getTabByFragment:function(b){var a=this.findTabByFragm
 return false}});return a},getTabByRouteUrl:function(b){var a=this.findTabByRouteUrl(b);if(!a){return null}return this.getTabById(a)
 },getTabById:function(a){return this.tabManager.getTab(a)},addTab:function(a){var b="tab"+this.uniqueCounter++;this.tabManager.addTab(b,{html:a.getHtml(),page:a,title:a.getMetaData("title","Untitled"),callback_render:function(e,c,d){c=$(c);
 a.fireEvent("render",[c])},callback_remove_content:function(e,c,d){a.fireEvent("destroy")},callback_activate:function(){a.fireEvent("activate")
-},callback_deactivate:function(){a.fireEvent("deactivate")}});this.resizeTabListWidth();return b},addTabPlaceholder:function(a,c){var b=DeskPRO_Window.util.getPlainTpl($("#tab_loading_template"));
+},callback_deactivate:function(){a.fireEvent("deactivate")}});return b},addTabPlaceholder:function(a,c){var b=DeskPRO_Window.util.getPlainTpl($("#tab_loading_template"));
 var d=DeskPRO_Window.createPageFragment(b,"DeskPRO.Agent.PageFragment.Page.Loading");d.meta.routeUrl=a;d.meta.routeData=c;
-var e=this.addTab(d);if(c.tabLoad){c.tabLoad()}return e},resizeTabListWidth:function(){var a=0;$("> li",this.tabStrip).each(function(){a+=$(this).outerWidth()
-});if(a<this.tabStrip.parent().width()){a=this.tabStrip.parent().width()}this.tabStrip.css({width:a});if(this.tabStrip.width()>this.tabStrip.parent().width()){this.tabStrip.parent().addClass("with-scroller");
-a+=30;this.tabStrip.css({width:a})}else{this.tabStrip.parent().removeClass("with-scroller")}},_tabStripClick:function(e){if(this.cancelClickActivate){this.cancelClickActivate=false;
+var e=this.addTab(d);if(c.tabLoad){c.tabLoad()}return e},_tabStripClick:function(e){if(this.cancelClickActivate){this.cancelClickActivate=false;
 return}this.cancelClickActivate=true;var b=$(e.target);if(b.is("li")){var d=b}else{if(b.parent().is("li")){var d=b.parent()
 }else{var d=b.parentsUntil("li");if(d.length){d=d.parent()}}}if(!d.is("li")){console.log("not click %o",e.target);return}e.preventDefault();
 e.stopPropagation();var a=d.data("tab-id");if(b.is(".close")||e.which==2||e.isDbl){var c=this.getTabById(a);if(c.page&&c.page.fireEvent){e.deskpro={cancelClose:false};
@@ -258,18 +256,20 @@ c.page.fireEvent("closeTab",[e,c]);if(e.deskpro.cancelClose){return}}c.isCloseCl
 this.cancelClickActivate=false;return}this.tabManager.activateTab(a);this.cancelClickActivate=false},_onTabAdd:function(b){b.btnId=b.id;
 if(!b.page.getMetaData("url_fragment")&&b.page.TYPENAME!="loading"){}var c=b.page.getMetaData("tabIdClass","");var d='<li id="'+b.btnId+'" data-tab-id="'+b.id+'" class="tipped '+c;
 if(b.page.TYPENAME!="basic"){d+=" "+b.page.TYPENAME}if(b.page.getMetaData("tabTip")){if(b.page.getMetaData("tabTip").indexOf(".")===0){b.page.setMetaData("fetchTabTip",true);
-d+='" data-tipped="'+b.btnId+'_tip" data-tipped-options="inline: true, hook: \'topmiddle\'">'}else{d+='" data-tipped="'+b.tabTip+'" data-tipped-options="hook: \'topmiddle\'">'
-}}else{d+='" data-tipped="'+b.title+'" data-tipped-options="hook: \'topmiddle\'">'}d+="<a>";d+='<span class="tab-title">'+b.title+"</span>";
+d+='" data-tipped="'+b.btnId+'_tip" data-tipped-options="inline: true, hook: \'topmiddle\', showDelay: 1000">'}else{d+='" data-tipped="'+b.tabTip+'" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">'
+}}else{d+='" data-tipped="'+b.title+'" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">'}d+="<a>";d+='<span class="tab-title">'+b.title+"</span>";
 d+="</a>";d+='<span class="bound-fade"></span>';d+='<span class="close"></span>';d+="</li>";var a=$(d);if(b.page&&b.page.meta.tabPlaceholderId){var e=this.getTabById(b.page.meta.tabPlaceholderId);
 var f=e.btnId;loadingTabData=this.getTabById(b.page.meta.tabPlaceholderId);loadingTabData.isReplacing=true;this.removeTabById(b.page.meta.tabPlaceholderId);
-$("#"+f).replaceWith(a);if(!$("li.activeTabList",this.tabStrip).length){a.addClass("activeTabList")}}else{a.appendTo(this.tabStrip);
-this.resizeTabListWidth()}},_onTabDeactivate:function(a,b,c){$("#tiptip_holder").clearQueue().hide()},_onTabActivate:function(b){$("li",this.tabStrip).removeClass("activeTabList");
+$("#"+f).replaceWith(a);if(!$("li.activeTabList",this.tabStrip).length){a.addClass("activeTabList")}}else{a.appendTo(this.tabStrip)
+}this.recalculateScrolling()},recalculateScrolling:function(){var b=$("#tabNavigationPane");var a=0;$("li",this.tabStrip).each(function(){a+=$(this).outerWidth()
+});var d=b.is("with-overflow");var c=(b.width()<a);if(!d&&!c){}else{if(d&&!c){b.removeClass("with-overflow");this.tabStrip.scrollLeft(0)
+}else{if(!d&&c){b.addClass("with-overflow")}}}},_onTabDeactivate:function(a,b,c){$("#tiptip_holder").clearQueue().hide()},_onTabActivate:function(b){$("li",this.tabStrip).removeClass("activeTabList");
 var d=$("#"+b.btnId).addClass("activeTabList");if(d.is(".is-alerting")){d.removeClass("alert-highlight").removeClass("is-alerting");
 var c=d.data("alerting-timeout");if(c){window.clearTimeout(c);d.data("alerting-timeout",false)}}if(b.page.getMetaData("fetchTabTip")){b.page.setMetaData("fetchTabTip",null);
 var a=b.btnId+"_tip";if(!document.getElementById(a)){$("#"+b.wrapperId+" "+b.page.getMetaData("tabTip")).attr("id",a)}}DeskPRO_Window.updateWindowUrlFragment()
 },_onTabRemove:function(a){$("#tiptip_holder").clearQueue().hide();if(a.isReplacing){return}$("#"+a.btnId).remove();if(a.page.meta.routeData&&a.page.meta.routeData.xhr){a.page.meta.routeData.xhr.abort()
-}if(a.page.meta.routeData&&a.page.meta.routeData.tabUnload){a.page.meta.routeData.tabUnload()}this.resizeTabListWidth()}});
-Orb.createNamespace("DeskPRO.Agent.WindowElement");DeskPRO.Agent.TabWatcher=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={tabManager:null};
+}if(a.page.meta.routeData&&a.page.meta.routeData.tabUnload){a.page.meta.routeData.tabUnload()}this.recalculateScrolling()
+}});Orb.createNamespace("DeskPRO.Agent.WindowElement");DeskPRO.Agent.TabWatcher=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={tabManager:null};
 this.setOptions(a);this.tabManager=this.options.tabManager;this.selectionHistory=[];this.tabManager.addEvent("activateTab",this._activateTab,this);
 this.tabManager.addEvent("deactivateTab",this._deactivateTab,this);this.tabManager.addEvent("removeTab",this._removeTab,this);
 this.watchedTypes={}},_activateTab:function(c,d,a){var e=c.id;this.selectionHistory.erase(e);this.selectionHistory.push(e);

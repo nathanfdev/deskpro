@@ -289,13 +289,8 @@ $CONFIG['agent']['vendors'] = array(
 
 		'vendor/jquery/tag-it/tag-it.js',
 
-		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
-		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
-		'vendor/jquery/tipped/js/bridge/bridge.js',
 		'vendor/jquery/tipped/js/excanvas/excanvas.js',
 		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/skins-base-reset.js',
-		'vendor/jquery/tipped/js/tipped/skins.js',
 		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',

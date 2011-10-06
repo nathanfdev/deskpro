@@ -215,7 +215,33 @@ var a=c;this.controlRealEl.css("top",a+"px")},_startScrollWatch:function(){if(th
 this.scrollWatchTimer=null}},close:function(){if(!this.isOpen()){return}this._stopScrollWatch();this.controlEl.removeClass("open");
 this.controlEl.fadeOut();this.backdrop.hide();this.backdrop2.hide()},toggle:function(){if(this.isOpen()){this.close()}else{this.open()
 }},destroy:function(){if(this._hasInit){this.controlEl.remove();this.backdrop.remove();this.backdrop2.remove()}}});Orb.createNamespace("DeskPRO.Agent.Widget");
-DeskPRO.Agent.Widget.BackgroundPopout=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={loadUrl:null,tabRoute:null,initialTimeout:12000,periodicalTimeout:600000,autostart:true};
+DeskPRO.Agent.Widget.FilterOptionsPop=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={containerElement:null,listElement:null,elements:".filter",controlEl:"#ticket_customfilter_group_editor",triggerElement:null,scrollWatchTimeout:100};
+this.setOptions(a);if(this.options.triggerElement){this.enableTriggerElement(this.options.triggerElement)}},_initControl:function(){if(this._hasInit){return
+}this._hasInit=true;this.fireEvent("preInit",[this]);this.containerElement=$(this.options.containerElement);this.listElement=$(this.options.listElement);
+this.elements=this.options.elements;if(typeOf(this.elements)=="string"){this.elements=$(this.elements,this.listElement)}this.controlEl=$(this.options.controlEl);
+this.controlEl.detach().hide().appendTo("body");this.controlEl.click(this.close.bind(this));this.controlRealEl=$(".filter-group-editor",this.controlEl);
+this.controlRealEl.click(function(a){a.stopPropagation()});this.editorRowTpl=$(".editor-row-tpl",this.controlEl).first().get(0).innerHTML.trim();
+this.editorFieldsTpl=$(".editor-fields-tpl",this.controlEl).first().get(0).innerHTML.trim();this.elements.each((function(a,b){b=$(b);
+var e=b.data("filter-id");var d=$(this.editorRowTpl);var c=$(this.editorFieldsTpl);c.addClass("field-option");$(".field-wrap",d).append(c);
+d.addClass("filter-"+e);d.addClass("filter-row");d.data("filter-id",e);this.fireEvent("initRow",[d,e,this]);d.appendTo(this.controlRealEl)
+}).bind(this));this.backdrop=$('<div class="backdrop" />').hide().appendTo("body");this.backdrop.click(this.close.bind(this));
+this.backdrop2=$('<div class="backdrop" />').hide().appendTo("body");this.backdrop2.click(this.close.bind(this));$(".close",this.controlRealEl).first().click((function(a){a.preventDefault();
+a.stopPropagation();this.close()}).bind(this));this.fireEvent("init",[this])},enableTriggerElement:function(a){$(a).click((function(b){b.stopPropagation();
+b.preventDefault();this.toggle()}).bind(this))},getElement:function(){return this.controlEl},isOpen:function(){if(!this._hasInit){return false
+}return this.controlEl.is(".open")},open:function(){if(this.isOpen()){return}this._initControl();this.fireEvent("preOpen",[this]);
+this.controlEl.addClass("open");var c=this.containerElement.offset();var b=this.containerElement.outerHeight();var a=this.containerElement.outerWidth();
+this.controlEl.css({top:c.top,bottom:0,left:c.left+a+1,right:0});this.updatePositions();this.controlEl.addClass("open");this.controlEl.fadeIn();
+this.backdrop.css({left:c.left+a});this.backdrop2.css({left:0,width:c.left});this.backdrop.show();this.backdrop2.show();this._startScrollWatch();
+this.fireEvent("open",[this])},updatePositions:function(){var c=this.listElement;var a=c.outerHeight();this.controlRealEl.css({height:a,top:0,left:0});
+var b=this.listElement.offset().top-41;this.controlRealEl.css({"margin-top":b});$(this.options.elements,c).each((function(e,f){f=$(f);
+var h=f.data("filter-id");var g=f.position();var d=$(".filter-"+h,this.controlEl);d.css({top:g.top-b})}).bind(this))},syncScroll:function(){var b=this.listElement.height();
+if(!this.lastListElHeight||b!=this.lastListElHeight){this.updatePositions()}var c=this.containerElement.position().top;var d=this.listElement.position().top;
+var a=c;this.controlRealEl.css("top",a+"px")},_startScrollWatch:function(){if(this.scrollWatchTimer){window.clearTimeout(this.scrollWatchTimer)
+}this.scrollWatchTimer=window.setInterval(this.syncScroll.bind(this),this.options.scrollWatchTimeout)},_stopScrollWatch:function(){if(this.scrollWatchTimer){window.clearTimeout(this.scrollWatchTimer);
+this.scrollWatchTimer=null}},close:function(){if(!this.isOpen()){return}this.fireEvent("preClose",[this]);this._stopScrollWatch();
+this.controlEl.removeClass("open");this.controlEl.fadeOut();this.backdrop.hide();this.backdrop2.hide();this.fireEvent("close",[this])
+},toggle:function(){if(this.isOpen()){this.close()}else{this.open()}},destroy:function(){if(this._hasInit){this.controlEl.remove();
+this.backdrop.remove();this.backdrop2.remove()}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.BackgroundPopout=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={loadUrl:null,tabRoute:null,initialTimeout:12000,periodicalTimeout:600000,autostart:true};
 this.setOptions(a);this.template=null;this.xhr=null;this.timeout=null;this.pop=null;if(this.autostart){this.startTimeout()
 }},startTimeout:function(){var a;if(this.timeout){return}if(this.template){a=this.options.periodicalTimeout}else{a=this.options.initialTimeout
 }this.timeout=window.setTimeout(this.loadTemplate.bind(this),a)},loadTemplate:function(a){if(this.timeout){window.clearTimeout(this.timeout);

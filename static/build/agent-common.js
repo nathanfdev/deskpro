@@ -131,7 +131,7 @@ this.tpl=DeskPRO_Window.util.getPlainTpl($(".twitter-list-item-tpl",this.el));th
 })},at:function(b){return b.replace(/(^|[^\w]+)\@([a-zA-Z0-9_]{1,15}(\/[a-zA-Z0-9-_]+)*)/g,function(c,e,d){return e+'@<a href="http://twitter.com/'+d+'">'+d+"</a>"
 })},hash:function(b){return b.replace(/(^|[^&\w'"]+)\#([a-zA-Z0-9_^"^<]+)/g,function(c,e,d){return c.substr(-1)==='"'||c.substr(-1)=="<"?c:e+'#<a href="http://search.twitter.com/search?q=%23'+d+'">'+d+"</a>"
 })},clean:function(b){return this.hash(this.at(this.link(b)))}}}();$.ajax({url:"http://api.twitter.com/1/statuses/user_timeline.json?screen_name="+this.twitterUsername,dataType:"jsonp",context:this,success:function(b){Array.each(b,function(f,c){if(c>this.limit){return false
-}var d=$(this.tpl);var e=f.text;e=a.clean(e);$(".tweet",d).html(e);this.list.append(d);this.el.show()},this)}})}});Orb.createNamespace("DeskPRO.Agent.PageHelper");
+}var d=$(this.tpl);var e=f.text;e=a.clean(e);$(".tweet",d).html(e);this.list.append(d);this.el.show()},this)}})}});Orb.createNamespace("DeskPRO.Agent.ElementHandler");
 DeskPRO.Agent.ElementHandler.FormSaver=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){var a=this;this.textarea=$("textarea",this.el);
 this.list=null;this.resultHtmlKey=this.el.data("form-result-html-key")||"html";if(this.el.data("form-list-selector")){this.list=this.el.closest(this.el.data("form-list-selector"))
 }console.log(this.list);this.url=this.el.data("form-save-url");this.statusSave=$("header .save",this.el);this.statusSaved=$("header .saved",this.el);
@@ -142,7 +142,7 @@ this.statusSaved.hide();this.statusSaving.show();var a=$("input, textarea, selec
 this.statusSaved.show();this.statusSaving.hide();window.setTimeout((function(){this.statusSaved.fadeOut("slow")}).bind(this),1000)
 },success:function(c){if(this.list){var b=$(c[this.resultHtmlKey]);DeskPRO_Window.initInterfaceServices(b);if(this.el.parent().get(0)==this.list.get(0)){b.insertBefore(this.el)
 }else{this.list.append(b)}this.textarea.val("")}if(this.countEl){DeskPRO_Window.util.modCountEl(this.countEl,"+")}}})}});
-Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TicketReplyBox=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){this.baseId=this.el.data("base-id");
+Orb.createNamespace("DeskPRO.Agent.ElementHandler");DeskPRO.Agent.ElementHandler.TicketReplyBox=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){this.baseId=this.el.data("base-id");
 this.headerRows=$("")},initPage:function(){var a=this;this.getElById("replybox_replytab_btn").click(function(){$(this).addClass("on");
 a.getElById("replybox_notetab_btn").removeClass("on");$(".hide-note:not(.is-hidden)",a.el).show();a.getElById("is_note").val("0")
 });this.getElById("replybox_notetab_btn").click(function(){$(this).addClass("on");a.getElById("replybox_replytab_btn").removeClass("on");
@@ -166,7 +166,7 @@ m.push(q);var r=$('<input type="hidden" name="agent_parts[]" value="'+p+'" />');
 $(".is-followers",d).show().find(".names").text(m.join(", "))}else{$(".no-followers",d).show();$(".is-followers",d).text("").hide()
 }}});this.el.submit(function(f){f.preventDefault();f.stopPropagation()});this.getElById("send_btn").click(function(f){f.preventDefault();
 f.stopPropagation();var g=a.el.serializeArray();a.el.trigger("replyboxsubmit",[g,a])})},getElById:function(b){var a=$("#"+this.baseId+"_"+b);
-return a},destroy:function(){}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.ElementHandler.TabBox=new Orb.Class({Extends:DeskPRO.ElementHandler,initPage:function(){var a=$("nav ul",this.el).first();
+return a},destroy:function(){}});Orb.createNamespace("DeskPRO.Agent.ElementHandler");DeskPRO.Agent.ElementHandler.TabBox=new Orb.Class({Extends:DeskPRO.ElementHandler,initPage:function(){var a=$("nav ul",this.el).first();
 this.tabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("li",a),context:this.el})},destroy:function(){if(this.tabs){this.tabs.destroy();
 this.tabs=null}this.el=null}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.ElementHandler.ListRadio=new Orb.Class({Extends:DeskPRO.ElementHandler,init:function(){var a=this;
 this.list=$("ul, ol",this.el).first();this.list.delegate("li","click",function(){$("li",a.list).removeClass("on");$(this).addClass("on");
