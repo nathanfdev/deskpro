@@ -1,0 +1,97 @@
+<section class="source-section sys-filters-section">
+	<header>
+		<h1>My Task</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>My Team Task</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>Tasks I Delegated</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>All Tasks</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+</section>

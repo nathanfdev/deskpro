@@ -35,8 +35,57 @@ class TaskController extends AbstractController
 	 private $_entityManager;
          private $_currentUser;
          
+<<<<<<< HEAD
         /**
 >>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
+=======
+
+         public function getSectionDataAction()
+         {             
+
+                $task_repository = App::getEntityRepository('DeskPRO:Task');
+		$person = $this->person;
+
+		$all_tasks = array(
+			'total' => $task_repository->countPendingTasks(),
+			'overdue' => $task_repository->countOverdueTasks($person['timezone']),
+			'due_today' => $task_repository->countDueTodayTasks($person['timezone']),
+		);
+
+		$person_tasks = array(
+			'total' => $task_repository->countPendingTasksForPerson($person),
+			'overdue' => $task_repository->countOverdueTasksForPerson($person),
+			'due_today' => $task_repository->countDueTodayTasksForPerson($person),
+		);
+
+		$teams_tasks = array(
+			'total' => $task_repository->countPendingTaksForPersonTeams($person),
+			'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
+			'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
+		);
+
+		$delegated_tasks = array(
+			'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
+			'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
+			'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
+		);
+
+                $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
+			'tasks' => array(
+				'all' => $all_tasks,
+				'person' => $person_tasks,
+				'teams'  => $teams_tasks,
+				'delegated'  => $delegated_tasks,
+			)));
+
+                return $this->createJsonResponse(array(
+                    'section_html' => $section_html,                    
+                ));
+         }
+
+
+         /**
+>>>>>>> 64dc66e... add taks list in the windows section
 	 * Renders a JSON with the count of all the pending task for the current user.
 	 */
 	public function countPendingAction()

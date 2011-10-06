@@ -811,6 +811,9 @@ agent_task_view:
   pattern: /tasks/{task_id}
   defaults: { _controller: AgentBundle:Task:view }
   requirements: { task_id: "\d+" }
+agent_tasksearch_getsectiondata:
+  pattern: /task/get-section-data.json
+  defaults: { _controller: AgentBundle:Task:getSectionData }
 
 >>>>>>> e292b09... add view action in controller and the add view route
 ################################################################################
