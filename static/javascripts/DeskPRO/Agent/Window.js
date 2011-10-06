@@ -1757,6 +1757,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.parent().addClass('cancel-route')
 			}
 		});
+
+		$(document).delegate('.tipped', 'mouseover', function() {
+			if ($(this).is('.tipped-inited')) {
+				return;
+			}
+			var options = {};
+			if ($(this).data('tipped-options')) {
+				eval('options = {' + $(this).data('tipped-options') + '}');
+			}
+
+			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+			$(this).addClass('tipped-inited');
+		});
 	},
 
 	_initInterfacePopover: function(el, opennow) {
