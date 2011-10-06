@@ -69,10 +69,12 @@ class TicketPageZoneCollection implements PersonContextInterface
 
 		foreach ($dep_page_displays as $dep_id => $page_displays) {
 			$dep = App::findEntity('DeskPRO:Department', $dep_id);
-			$ticket_page_zone = new TicketPageZone($this->zone, $dep);
-			$ticket_page_zone->addPageDisplays($page_displays);
+			if ($dep) {
+				$ticket_page_zone = new TicketPageZone($this->zone, $dep);
+				$ticket_page_zone->addPageDisplays($page_displays);
 
-			$this->addPage($ticket_page_zone);
+				$this->addPage($ticket_page_zone);
+			}
 		}
 	}
 
@@ -86,7 +88,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 		if ($page->getZone() != $this->zone) {
 			throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
 		}
-		
+
 		$dep_id = $page->getDepartment()->getId();
 		$this->department_pages[$dep_id] = $page;
 	}
@@ -104,10 +106,10 @@ class TicketPageZoneCollection implements PersonContextInterface
 		}
 	}
 
-	
+
 	/**
 	 * Check if we havea  zone set for a department
-	 * 
+	 *
 	 * @param int|Department $department
 	 * @return bool
 	 */
@@ -121,7 +123,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 
 	/**
 	 * Get the page for a department
-	 * 
+	 *
 	 * @param int|Department $department
 	 * @return array|null
 	 */

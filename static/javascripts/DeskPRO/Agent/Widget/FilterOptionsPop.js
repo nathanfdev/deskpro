@@ -1,10 +1,9 @@
 Orb.createNamespace('DeskPRO.Agent.Widget');
 
 /**
- * A filter group editor positions rows in a popover overlay with rows
- * that match up to filter titles on the left.
+ * Positions a popover that scrolls with filter items
  */
-DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
+DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
@@ -25,13 +24,6 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			listElement: null,
 
 			/**
-			 * The list that is also attacehd to this editor
-			 *
-			 * @param {jQuery}
-			 */
-			boundListElement: null,
-
-			/**
 			 * The elements we'll apply this goruping on. This is
 			 * either a selector (run in the context of listElement),
 			 * or actual elements.
@@ -46,7 +38,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			 *
 			 * @option {jQuery}
 			 */
-			controlEl: '#ticket_filter_group_editor',
+			controlEl: '#ticket_customfilter_group_editor',
 
 			/**
 			 * Provide a selector or an element to automatically configure a trigger to open the eidtor
@@ -76,7 +68,6 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		this.containerElement = $(this.options.containerElement);
 		this.listElement = $(this.options.listElement);
-		this.boundListElement = $(this.options.boundListElement);
 
 		this.elements = this.options.elements;
 		if (typeOf(this.elements) == 'string') {
@@ -108,21 +99,11 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			field.addClass('field-option');
 			$('.field-wrap', row).append(field);
 
-			// See if there are any options that need to be removed
-			var ignore = el.data('grouping-ignore');
-			if (ignore) {
-				ignore = ignore.split(',');
-				Array.each(ignore, function(ig) {
-					$('[value="' + ig + '"]', field).remove();
-				});
-			}
-
-			var self = this;
-			field.change(function() {
-				self.fireEvent('groupingChanged', [parseInt(id), field.val(), field, self]);
-			});
-
 			row.addClass('filter-' + id);
+			row.addClass('filter-row');
+			row.data('filter-id', id);
+
+			this.fireEvent('initRow', [row, id, this]);
 
 			row.appendTo(this.controlRealEl);
 
@@ -187,6 +168,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		if (this.isOpen()) return;
 		this._initControl();
 
+		this.fireEvent('preOpen', [this]);
+
 		this.controlEl.addClass('open');
 
 		var containPos    = this.containerElement.offset();
@@ -219,6 +202,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		this.backdrop2.show();
 
 		this._startScrollWatch();
+
+		this.fireEvent('open', [this]);
 	},
 
 
@@ -229,12 +214,6 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	updatePositions: function() {
 
 		var listEl = this.listElement;
-		var boundMode = false;
-
-		if (!listEl.is(':visible')) {
-			listEl = this.boundListElement;
-			boundMode = true;
-		}
 
 		var listHeight = listEl.outerHeight();
 
@@ -246,7 +225,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		// Update where the position of the container is relative to the outer wrapper
 		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
-		var top = 25;
+		var top = this.listElement.offset().top - 41;
 
 		this.controlRealEl.css({
 			'margin-top': top /* so the sync below doesnt need to worry about where it is */
@@ -258,16 +237,10 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 			// Get its position within the wrapper, we'll copy it over
 			var pos = el.position();
-
-			if (boundMode) {
-				var otherFilterId = $('.filter-' + el.data('filter-name').replace('_w_hold', ''), this.listElement).data('filter-id');
-				var editEl = $('.filter-' + otherFilterId, this.controlEl);
-			} else {
-				var editEl = $('.filter-' + id, this.controlEl);
-			}
+			var editEl = $('.filter-' + id, this.controlEl);
 
 			editEl.css({
-				top: pos.top-25
+				top: pos.top-top
 			});
 		}).bind(this));
 	},
@@ -314,12 +287,16 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	close: function() {
 		if (!this.isOpen()) return;
 
+		this.fireEvent('preClose', [this]);
+
 		this._stopScrollWatch();
 
 		this.controlEl.removeClass('open');
 		this.controlEl.fadeOut();
 		this.backdrop.hide();
 		this.backdrop2.hide();
+
+		this.fireEvent('close', [this]);
 	},
 
 

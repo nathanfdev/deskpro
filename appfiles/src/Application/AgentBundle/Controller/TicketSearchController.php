@@ -150,6 +150,13 @@ class TicketSearchController extends AbstractController
 		}
 		$flags = array_values($flags);
 
+		//agent.ui.filter
+		$filter_show_options = App::getDb()->fetchAllKeyValue("
+			SELECT name, value_str
+			FROM people_prefs
+			WHERE person_id = ? AND name LIKE 'agent.ui.filter-visibility.%'
+		", array($this->person->id));
+
 		#------------------------------
 		# Misc
 		#------------------------------
@@ -164,6 +171,7 @@ class TicketSearchController extends AbstractController
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
 			'archive_counts' => $archive_counts,
+			'filter_show_options' => $filter_show_options,
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;

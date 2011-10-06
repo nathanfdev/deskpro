@@ -131,6 +131,37 @@ ul.source-list li h3.title {
 	padding: 6px 0 5px 10px;
 }
 
+ul.source-list li.filter-hidden {
+	display: none;
+}
+
+ul.source-list.ed-open li.filter-hidden {
+	display: block;
+	opacity: 0.4;
+}
+
+ul.source-list li.no-data {
+	padding: 4px 8px 8px 8px;
+	position: relative;
+	color: #7C838B;
+}
+
+ul.source-list.ed-open li.no-data {
+	display: none;
+}
+
+ul.source-list li.no-data span {
+	position: relative;
+	top: 2px;
+	display: inline-block;
+	background: url(../../images/icons/source-gear.png) no-repeat 50% 50%;
+	width: 11px;
+	height: 11px;
+	text-indent: -100px;
+	overflow: hidden;
+	opacity: 0.5;
+}
+
 ul.source-list li:last-of-type h3.title {
 	border-bottom: 1px solid #ced4d9;
 }
@@ -644,12 +675,22 @@ section.source-labels-cloud ul li.nav-selected span {
 
 
 
-#ticket_filter_group_editor {
+#ticket_filter_group_editor,
+#ticket_customfilter_group_editor {
 	position: absolute;
 	overflow: hidden;
 	z-index: 1000001;
 
 	background-color: rgba(255, 255, 255, 0.75);
+}
+
+#ticket_customfilter_group_editor label {
+	margin-left: 5px;
+}
+
+#ticket_customfilter_group_editor input {
+	margin: 0;
+	padding: 0;
 }
 
 .filter-group-editor {
