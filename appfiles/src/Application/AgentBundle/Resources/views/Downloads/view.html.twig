@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.DownloadsView';
 pageMeta.title = {{download.title|json_encode|raw}};
 pageMeta.download_id = {{download.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_downloads_view', {'download_id': download.id}) }}';
 pageMeta.permalink = '{{ url('user_downloads_file', {'slug': download.url_slug }) }}';
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'downloads'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_downloads_ajax_labels_save', {'download_id': download.id}) }}';

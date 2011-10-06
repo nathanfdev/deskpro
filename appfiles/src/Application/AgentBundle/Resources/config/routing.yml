@@ -1005,6 +1005,7 @@ agent_news_view:
   pattern: /news/post/{news_id}
   defaults: { _controller: AgentBundle:News:view }
   requirements: { news_id: "\d+" }
+  options: { fragment_name: 'n' }
 
 agent_news_revisionstab:
   pattern: /news/post/{news_id}/view-revisions
@@ -1050,6 +1051,7 @@ agent_downloads_view:
   pattern: /downloads/file/{download_id}
   defaults: { _controller: AgentBundle:Downloads:view }
   requirements: { download_id: "\d+" }
+  options: { fragment_name: 'd' }
 
 agent_downloads_info:
   pattern: /downloads/file/{download_id}/info

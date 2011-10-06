@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
 pageMeta.title = {{idea.title|json_encode|raw}};
 pageMeta.idea_id = {{idea.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_ideas_view', {'idea_id': idea.id}) }}';
 
 pageMeta.permalink = '{{ idea.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_ideas_ajax_labels_save', {'idea_id': idea.id}) }}';
