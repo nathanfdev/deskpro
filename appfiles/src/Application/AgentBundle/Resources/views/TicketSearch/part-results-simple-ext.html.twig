@@ -7,7 +7,7 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>
-				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+				<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">
 					{{ ticket.subject }}
 				</a>
 			</h3>
@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class="userinfo">
-		<a class="name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+		<a class="name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
 			<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
 		</a>
 		{% if ticket.person.organization %}
@@ -135,7 +135,7 @@
 						<span class="prop-title">Organization:</span>
 						<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 						{% if ticket.organization %}
-							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
+							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}" data-route-title="@text">{{ticket.organization.name}}</a>
 						{% else %}
 							None
 						{% endif %}

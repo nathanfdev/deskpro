@@ -7,8 +7,9 @@
 		<td class="subject">
 			<a
 				style="background: url({{ asset('images/ticket-status-' ~ ticket.status ~ '.png') }}) no-repeat center left; line-height: 13px; padding-left: 15px;"
-				class="with-route subject-link"
+				class="subject-link"
 				data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
+				data-route-title="@selector(.tipped)"
 			><span
 				class="tipped"
 				data-tipped="{{ path('agent_ticket_viewtip', {'ticket_id': ticket.id}) }}"
@@ -16,7 +17,7 @@
 			>{{ticket.subject}}</span></a>
 		</td>
 		<td>
-			<a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+			<a data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@text">
 				{{ticket.person.getDisplayName()}}
 			</a>
 		</td>
@@ -68,7 +69,7 @@
 				<td class="{{field}}">
 					<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 					{% if ticket.organization %}
-						<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
+						<a data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}" data-route-title="@text">{{ticket.organization.name}}</a>
 					{% else %}
 						None
 					{% endif %}

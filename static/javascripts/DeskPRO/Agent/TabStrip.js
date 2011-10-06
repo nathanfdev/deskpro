@@ -219,6 +219,13 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
 
+		if (routeData.title) {
+			page.meta.title = routeData.title;
+		}
+		if (routeData.forTypename) {
+			page.LOADING_TYPENAME = routeData.forTypename;
+		}
+
 		var id = this.addTab(page);
 
 		if (routeData.tabLoad) {
@@ -300,6 +307,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' ' + tabData.page.TYPENAME;
+			}
+
+			if (tabData.page.LOADING_TYPENAME) {
+				html += ' ' + tabData.page.LOADING_TYPENAME;
 			}
 
 			if (tabData.page.getMetaData('tabTip')) {

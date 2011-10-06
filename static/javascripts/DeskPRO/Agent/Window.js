@@ -754,10 +754,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 *
 	 * @param {String} route The route to match, like navpane:tickets:filters
 	 */
-	runPageRoute: function(route) {
+	runPageRoute: function(route, extraData) {
 		var found_listener = false;
 
 		var data = this.parseRoute(route);
+		if (extraData) {
+			data = Object.merge(extraData, data);
+		}
 
 		Object.each(this.routePrefixes, function(listeners, prefix) {
 			if (route.indexOf(prefix) == 0) {
@@ -829,13 +832,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (!el.data('route')) {
 			console.warn('Element has no route: %o', el);
+			return;
 		}
 
-		this.runPageRoute(el.data('route'));
+		var extraData = {};
+		if (el.data('route-title')) {
+			extraData.title = el.data('route-title');
+			if (extraData.title == '@text') {
+				extraData.title = el.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+			} else if (extraData.title == '@title') {
+				extraData.title = el.attr('title');
+			} else if (extraData.title.test(/^@selector\((.*?)\)$/)) {
+				var sel = extraData.title.match(/^@selector\((.*?)\)$/)[1];
+				var titleEl = null;
+				if (sel[0] == "#") {
+					titleEl = $(sel);
+				} else {
+					titleEl = $(sel, el);
+				}
 
-		if (el.data('route-alt')) {
-			this.runPageRoute(el.data('route-alt'));
+				if (titleEl && titleEl.length) {
+					extraData.title = titleEl.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+				} else {
+					delete extraData.title;
+				}
+			}
 		}
+
+		this.runPageRoute(el.data('route'), extraData);
 	},
 
 
@@ -898,11 +922,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadPage: function(url, routeData, callback) {
 
-		if ($('#pane_tabs li').length >= 10) {
-			DeskPRO_Window.showAlert('You have too many tabs open on the right. Close one before trying to open another', 'error');
-			return;
-		}
-
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
@@ -915,23 +934,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 		routeData.tabPlaceholderId = this.pageTabStrip.addTabPlaceholder(url, routeData);
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				var page = this.createPageFragment(data);
+			var page = this.createPageFragment(data);
 
-				page.setMetaData('routeUrl', url);
-				if (routeData) {
-					page.setMetaData('routeData', routeData);
-					if (routeData.tabPlaceholderId) {
-						page.setMetaData('tabPlaceholderId', routeData.tabPlaceholderId);
-					}
+			page.setMetaData('routeUrl', url);
+			if (routeData) {
+				page.setMetaData('routeData', routeData);
+				if (routeData.tabPlaceholderId) {
+					page.setMetaData('tabPlaceholderId', routeData.tabPlaceholderId);
 				}
-				if (routeData.fragment) {
-					page.setMetaData('fragment', routeData.fragment);
-				}
+			}
+			if (routeData.fragment) {
+				page.setMetaData('fragment', routeData.fragment);
+			}
 
-				this.addPageTab(page);
+			this.addPageTab(page);
 
-				if (callback) callback(page);
-			}).bind(this)
+			if (callback) callback(page);
+		}).bind(this)
 		);
 	},
 
@@ -1351,10 +1370,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', (function(routeData) {
+
+			routeData.forTypename = 'ticket';
+
 			var m = routeData.url.match(/tickets\/([0-9]+)/);
 			var ticketId = m[1];
 
