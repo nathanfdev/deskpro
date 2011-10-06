@@ -1080,6 +1080,7 @@ table.tickets-simple td {
 
 table.tickets-simple tr.more td {
 	text-align: center;
+	padding: 10px;
 }
 
 table.tickets-simple td.time {
