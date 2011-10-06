@@ -54,4 +54,8 @@
 
 <button class="btn primary save-trigger">Save</button>
 </form>
+
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_departments_del', {'department_id': department.id}) }}">delete</a>
+</div>
 {% endblock %}

@@ -500,6 +500,16 @@ admin_departments_edit:
   defaults: { _controller: AdminBundle:Departments:edit }
   requirements: { department_id: "\d+" }
 
+admin_departments_del:
+  pattern: /departments/{department_id}/delete
+  defaults: { _controller: AdminBundle:Departments:delete }
+  requirements: { department_id: "\d+" }
+
+admin_departments_dodel:
+  pattern: /departments/{department_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:Departments:doDelete }
+  requirements: { department_id: "\d+", security_token: "[a-zA-Z0-9\-]+" }
+
 admin_departments_designer:
   pattern: /departments/{department_id}/designer
   defaults: { _controller: AdminBundle:Departments:designer }

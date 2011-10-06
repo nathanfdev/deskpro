@@ -17,6 +17,13 @@
 
 <div class="page-content" data-element-handler="DeskPRO.Admin.Departments.AjaxSave">
 	{{ design.structure_table({ 'save_order_url': path('admin_departments_updateorders') }) }}
+		<thead>
+			<td>&nbsp;</td>
+			<th>Enable Tickets</th>
+			<th>Enable Chat</th>
+			<th>User Permissions</th>
+			<th>Agent Permissions</th>
+		</thead>
 		{% for department in all_departments %}
 			{% include 'AdminBundle:Departments:list-row.html.twig' %}
 		{% endfor %}
