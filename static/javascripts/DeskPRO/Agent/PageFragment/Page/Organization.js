@@ -219,13 +219,16 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	//#########################################################################
 
 	_initLabels: function() {
+
 		// Tags
-		this.labelsList = $(".org-tags ul", this.wrapper).tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".org-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'organizations',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 	},
 
 	saveLabels: function() {
