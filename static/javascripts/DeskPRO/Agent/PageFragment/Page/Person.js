@@ -21,7 +21,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
 			displayEl: this.getEl('contact_display'),
-			outsideEl: this.getEl('contact_outside')
+			outsideEl: this.getEl('contact_outside'),
+			onReplaceEditor: function() {
+				self.refreshPropBox();
+			}
 		});
 		this.ownObject(this.contactEditor);
 
@@ -177,6 +180,32 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
+
+		this.refreshPropBox();
+	},
+
+	refreshPropBox: function() {
+
+		var contactBox = $('.profile-box-container.contact', this.el);
+
+		var has = false;
+		if ($('.contact-data-list > li', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.outside-display > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.addresses > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has) {
+			contactBox.addClass('no-section');
+		} else {
+			contactBox.removeClass('no-section');
+		}
 	},
 
 	//#########################################################################
@@ -350,13 +379,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	//#########################################################################
 
 	_initLabels: function() {
+
 		// Tags
-		this.labelsList = $(".people-tags ul", this.wrapper).tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".people-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'people',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 	},
 
 	saveLabels: function() {

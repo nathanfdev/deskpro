@@ -58,11 +58,7 @@
 }
 
 .close-overlay:hover {
-	opacity: 1;
-
-	-webkit-box-shadow:0 0 5px red;
-    -moz-box-shadow: 0 0 5px red;
-    box-shadow: 0 0 5px red;
+	background: transparent url(../../../images/agent/closeOvelay-over.png) no-repeat 50% 50%;
 }
 
 /* The inner wrapper */

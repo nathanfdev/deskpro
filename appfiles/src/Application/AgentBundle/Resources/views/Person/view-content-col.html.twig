@@ -5,20 +5,65 @@
 >
 	<header>
 		<div class="controls">
-				<div class="is-loading">Saving</div>
-				<div class="saved" style="display: none">saved</div>
-				<div class="save" style="display: none">save</div>
-			</div>
+			<div class="is-loading">Saving</div>
+			<div class="saved" style="display: none">Saved</div>
+			<div class="save" style="display: none">Save</div>
+		</div>
 		<h4>Summary</h4>
 	</header>
 	<section>
-		<div class="wrap">
-			<input type="hidden" name="action" value="set-summary" />
-			<textarea id="{{baseId}}_summary" name="summary">{{ person.summary }}</textarea>
-		</div>
+		<input type="hidden" name="action" value="set-summary" />
+		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary">{{ person.summary }}</textarea></div>
 	</section>
 </div>
 {# /Box Summary #}
+
+{# Properties Box #}
+<div class="profile-box-container properties">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section>
+		<dl class="table-list">
+			<dt class="type-labels">Labels</dt>
+			<dd class="people-tags tags-wrap">
+				<ul>
+					{% for label in person.labels %}
+						<li><span>{{label.label}}</span></li>
+					{% endfor %}
+				</ul>
+			</dd>
+		</dl>
+		<br class="clear"/>
+
+		{% if custom_fields|length %}
+			{#
+			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
+			</dl>
+			<dl id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
+			</dl>
+			<br class="clear"/>
+			#}
+		{% endif %}
+
+		<dl class="table-list">
+			<dt class="type-labels">Timezone</dt>
+			<dd>
+				<select id="{{baseId}}_timezone">
+					{% for tz in timezone_options %}
+						<option value="{{tz}}" {% if person.timezone == tz %}selected="selected"{% endif %}>{{ tz }}</option>
+					{% endfor %}
+				</select>
+				<span class="timezone-info">
+					{% include 'AgentBundle:Person:view-bit-timezoneinfo.html.twig' %}
+				</span>
+			</dd>
+		</dl>
+	</section>
+</div>
+{# /Properties Box #}
 
 {# Interaction Tabs #}
 {% if person_tickets_count or person_chats_count %}
@@ -40,12 +85,14 @@
 					{% for ticket in person_tickets_initial %}
 						<tr>
 							<td>
-								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
 							</td>
 							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
-							<td class="time" width="25">
-								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
-							</td>
 						</tr>
 					{% endfor %}
 					{% if person_tickets|length %}
@@ -60,12 +107,14 @@
 					{% for ticket in person_tickets %}
 						<tr>
 							<td>
-								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
 							</td>
 							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
-							<td class="time" width="25">
-								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
-							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -91,7 +140,7 @@
 			<ul>
 				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
 				<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>
-				<li data-tab-for="#{{baseId}}_tracking_tab">Browser Info</li>
+				<li data-tab-for="#{{baseId}}_tracking_tab">Detail</li>
 			</ul>
 		</nav>
 	</header>
@@ -113,12 +162,12 @@
 						<header>
 							<div class="controls">
 								<div class="is-loading">Saving</div>
-								<div class="saved" style="display: none">saved</div>
-								<div class="save" style="display: none">save</div>
+								<div class="saved" style="display: none">Saved</div>
+								<div class="save" style="display: none">Save</div>
 							</div>
-							<h3>New Comment</h3>
+							<h3>New Note</h3>
 						</header>
-						<textarea name="note"></textarea>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter note ..."></textarea></div>
 					</li>
 				</ul>
 			</div>
@@ -155,6 +204,12 @@
 		{# Tracking Tab #}
 		<article id="{{baseId}}_tracking_tab">
 			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="label" width="80">ID</td>
+					<td class="value">
+						{{ person.id }}
+					</td>
+				</tr>
 				<tr>
 					<td class="label" width="80">Created</td>
 					<td class="value">

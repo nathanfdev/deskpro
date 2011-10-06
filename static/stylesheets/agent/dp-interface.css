@@ -580,6 +580,9 @@ a.clean-white {
 .clean-white.inner-arrow.no-sep span.arrow {
 	border-left: none;
 }
+.clean-white.large.inner-arrow.no-sep span.arrow {
+	right: 18px !important;
+}
 
 .clean-white.inner-arrow.small span.arrow {
 	top: 0;

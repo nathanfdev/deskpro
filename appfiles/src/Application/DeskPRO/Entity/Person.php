@@ -1719,7 +1719,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if ($user_offset >= 0) {
 				$user_offset = "+$user_offset";
 			} else {
-				$user_offset = "-$user_offset";
+				$user_offset = "$user_offset";
 			}
 		}
 
