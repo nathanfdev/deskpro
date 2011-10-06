@@ -51,6 +51,13 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 
 		var menuEl = $('<ul id="dp_tabstrip_menu" />').hide().appendTo('body');
+		menuEl.delegate('li', 'mouseover', function() {
+			$('li.over', tabStrip).removeClass('over');
+			$('#' + $(this).data('tab-el-id')).addClass('over');
+		});
+		menuEl.mouseout(function() {
+			$('li.over', tabStrip).removeClass('over');
+		});
 		this.tabMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#tabDropdownPicker'),
 			menuElement: menuEl,
@@ -61,6 +68,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 					var li = $('<li />');
 					li.data('tab-id', $(this).data('tab-id'));
+					li.data('tab-el-id', $(this).attr('id'));
 					li.append(title);
 
 					if ($(this).is('.activeTabList')) {
@@ -88,6 +96,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 						scroll_el.scrollLeft(tabPos);
 					}
 				}
+			},
+			onClose: function() {
+				$('li.over', tabStrip).removeClass('over');
 			}
 		});
 	},
