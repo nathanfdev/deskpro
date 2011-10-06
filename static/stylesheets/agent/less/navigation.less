@@ -1,0 +1,165 @@
+#dp_nav{
+	background: #363c42 url(../../images/agent/navBack.png) repeat-y scroll 0 0;
+	width: 54px;
+}
+#dp_nav_sections{
+	background: #383B40;
+	border-top: 1px solid #292C31;
+	bottom: 0;
+	box-shadow: -2px -5px 4px #222222 inset;
+	font-size: 10px;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	width: 55px;
+	z-index: 99999;
+	behavior: url(../../static/vendor/PIE.htc);
+}
+
+#dp_nav_sections ul{
+	position: relative;
+	margin: 60px 0 0;
+	padding: 0;
+}
+
+#dp_nav_sections li{
+	background: url(../../images/agent/navPaneBack.png) repeat-y top left;
+	border-bottom: 1px solid #272A2E;
+	box-shadow: 0 1px 0 #303439 inset;
+	float: left;
+	width: 100%;
+	cursor: pointer;
+	padding: 1px 0 0 1px;
+	position: relative;
+}
+#dp_nav_sections li:first-child{
+	margin-top:-1px;
+	border-top: 1px solid #272A2E;
+	box-shadow: 0 1px 0 #3C3F44 inset;
+}
+#dp_nav_sections li.dpNavActive{
+	background: url(../../images/agent/pointerNav.png) no-repeat 44px 18px #1f2225;
+	padding: 0;
+	z-index: 999;
+	box-shadow: none;
+	border: 1px solid #17191B;
+	box-shadow: 0 -1px 0 #17191B;
+}
+#dp_nav_sections li.dpNavActive:first-child{
+	margin-top: 0;
+	border-top: 1px solid #17191B;
+	box-shadow: 0 -1px 0 #17191B;
+}
+
+#dp_nav_sections li .navCounterRed, #DP-chatOnlineCount .navCounterRed{
+	border-radius: 7px;
+	background-image: -moz-linear-gradient(top, #bf4d4e, #943232);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf4d4e), to(#943232));
+	box-shadow: 0 1px 5px rgba(0,0,0,0.25), inset 0 1px 0 #d58181;
+	-pie-background: linear-gradient(#bf4d4e, #943232);
+	behavior: url(../../static/vendor/PIE.htc);
+	border: 1px solid #592d2d;
+	display: block;
+	right: 5px;
+	padding: 1px 2px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	z-index: 99;
+}
+#dp_nav_sections li .navCounterRed {
+	font-size: 8px !important;
+}
+.count-badge.first { 
+	top: 0px !important;
+	position: absolute;
+}
+.count-badge{ 
+	top: 3px  !important;
+	position: absolute;
+	font-family: Tahoma, Arial, sans-serif;
+}
+
+#dp_nav_sections li.dpNavActive .count-badge {
+	margin-top: -1px;
+}
+
+#dp_nav_sections li span, #DP-chatOnlineCount span{
+	color: #fff;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #000000;
+	padding: 1px 2px 0 1px;
+}
+#dp_nav_sections li a span, #DP-chatOnlineCount a span{
+	font-size: 10px;
+}
+
+#dp_nav_sections li a{
+	color: #FFFFFF;
+	float: left;
+	font-size: 11px !important;
+	padding: 7px 0 9px;
+	text-align: center;
+}
+#dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span {
+	background: url(../../images/agent/navIcon.png) no-repeat;
+ 	color: #FFFFFF;
+    float: left;
+    font-weight: normal;
+    height: 7px;
+    margin: 0 10px;
+    padding: 28px 0 0;
+    width: 33px;
+}
+
+#dp_nav_sections li a span.ticketNavIcon{
+	background-position: 0 0;
+}
+#dp_nav_sections li:hover a span.ticketNavIcon {
+	background-position: 0 -757px;
+}
+#dp_nav_sections li a span.chatNavIcon{
+	background-position: 0 -58px;
+}
+#dp_nav_sections li:hover a span.chatNavIcon {
+	background-position: 0 -814px;
+}
+#dp_nav_sections li a span.twitterNavIcon{
+	background-position: 0 -115px;
+}
+#dp_nav_sections li:hover a span.twitterNavIcon {
+	background-position: 0 -871px;
+}
+#dp_nav_sections li a span.peopleNavIcon{
+	background-position: 0 -177px;
+}
+#dp_nav_sections li:hover a span.peopleNavIcon {
+	background-position: 0 -933px;
+}
+#dp_nav_sections li a span.ideasNavIcon{
+	background-position: 0 -237px;
+}
+#dp_nav_sections li:hover a span.ideasNavIcon {
+	background-position: 0 -993px;
+}
+#dp_nav_sections li a span.publishNavIcon{
+	background-position:0 -298px;
+}
+#dp_nav_sections li:hover a span.publishNavIcon {
+	background-position:0 -1054px;
+}
+
+#dp_nav_sections li a span.tasksNavIcon{
+	background-position: -1px -467px;
+}
+#dp_nav_sections li:hover a span.tasksNavIcon {
+	background-position:-1px -1165px;
+}
+
+#dp_nav_sections li a span.dealsNavIcon{
+	background-position: -2px -526px;
+}
+#dp_nav_sections li:hover a span.dealsNavIcon {
+	background-position:-2px -1224px;
+}
