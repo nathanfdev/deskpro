@@ -331,6 +331,7 @@ $CONFIG['admin']['admin-handlers'] = array(
 		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
 		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
 		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
 	)
 );
 

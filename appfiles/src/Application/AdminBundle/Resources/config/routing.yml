@@ -46,7 +46,7 @@ admin_settings:
   pattern: /settings
   defaults: { _controller: AdminBundle:Settings:settings }
 
-admin_settings:
+admin_settings_set:
   pattern: /settings/save-setting/{setting_name}/{security_token}
   defaults: { _controller: AdminBundle:Settings:saveSingleSetting }
 

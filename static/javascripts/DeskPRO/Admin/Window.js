@@ -95,6 +95,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		this.initFeatures();
 
+		DeskPRO.ElementHandler_Exec();
+
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}

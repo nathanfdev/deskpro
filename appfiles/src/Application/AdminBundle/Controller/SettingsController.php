@@ -184,7 +184,7 @@ class SettingsController extends AbstractController
 
 	public function saveSingleSettingAction($setting_name, $security_token)
 	{
-		if (!$this->session->getEntity()->checkSecurityToken($setting_name, $security_token)) {
+		if (!$this->session->getEntity()->checkSecurityToken('set_setting', $security_token)) {
 			// TODO err
 			die('invalid token');
 		}

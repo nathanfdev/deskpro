@@ -1,4 +1,4 @@
-Orb.createNamespace('DeskPRO.Agent.PageHelper');
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,

@@ -1,4 +1,4 @@
-Orb.createNamespace('DeskPRO.Agent.PageHelper');
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 /**
  * Any wrapper that has 'nav ul' for tabs. The wrapper acts

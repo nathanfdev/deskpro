@@ -10,7 +10,11 @@
 	</nav>
 {% endblock %}
 {% block content %}
-<div class="dp-page-box">
+<div
+	class="dp-page-box"
+	data-element-handler="DeskPRO.Admin.ElementHandler.TicketPropertiesList"
+	data-set-setting-url="{{ path('admin_settings_set', {'setting_name': '_SETTING_NAME_', 'security_token': security_token('set_setting')}) }}"
+>
 
 {{ design.block_sections() }}
 
@@ -19,7 +23,7 @@
 			<h3><a href="{{ path('admin_departments') }}">Departments</a></h3>
 			<span class="count">{{counts.department}}</span>
 			<div class="check-control">
-				<input type="checkbox" checked="checked" class="onoff-slider" />
+				<input type="checkbox" {% if app.getSetting('core.enable_departments') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_departments" />
 			</div>
 		</header>
 		<p>
@@ -32,7 +36,7 @@
 			<h3><a href="{{ path('admin_products') }}">Products</a></h3>
 			<span class="count">{{counts.product}}</span>
 			<div class="check-control">
-				<input type="checkbox" checked="checked" class="onoff-slider" />
+				<input type="checkbox" {% if app.getSetting('core.enable_products') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_products" />
 			</div>
 		</header>
 		<p>
@@ -47,7 +51,7 @@
 			<h3><a href="{{ path('admin_ticketcats') }}">Ticket Categories</a></h3>
 			<span class="count">{{counts.ticket_category}}</span>
 			<div class="check-control">
-				<input type="checkbox" checked="checked" class="onoff-slider" />
+				<input type="checkbox" {% if app.getSetting('core.enable_ticket_categories') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_categories" />
 			</div>
 		</header>
 		<p>
@@ -60,7 +64,7 @@
 			<h3><a href="{{ path('admin_ticketpris') }}">Ticket Priorities</a></h3>
 			<span class="count">{{counts.ticket_priority}}</span>
 			<div class="check-control">
-				<input type="checkbox" checked="checked" class="onoff-slider" />
+				<input type="checkbox" {% if app.getSetting('core.enable_ticket_priorities') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_priorities" />
 			</div>
 		</header>
 		<p>
