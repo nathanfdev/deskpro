@@ -9,10 +9,10 @@ a=$("div.rendered-value",c)}var b=$($(c).data("editable-for"),this.options.baseE
 b.addClass("editable-fields-on").hide().appendTo(c).fadeIn("fast");$("input, textarea, select",b).addClass("unchanged").change(function(){$(this).removeClass("unchanged")
 }).keypress(function(){$(this).removeClass("unchanged")}).filter(":visible").first().focus()});var d={editable:c,rendered_els:a,form_elements:b,form_elements_container:e};
 c.addClass("editing").parent().addClass("editing");this.documentClickSubmitOn=true;this.activeEdits.push(d)},submitOpen:function(){if(!this.activeEdits.length){return
-}var f=$(".editable-fields-on :input, .editable-ajax-data :input",this.options.baseElement).filter(":not(.unchanged)").serializeArray();
-var d=this.activeEdits.length;var e=[];var g=null;while(g=this.activeEdits.pop()){this.setEditinfoLoading(g);e.push(g)}var a=Orb.uuid();
-this.sendingEdits[a]=e;if(f.length){var c=this;var b=Object.merge({success:function(i,j,h){console.log("ajax-save data: %o",i);
-c.handleAjaxSuccess(a,i)},error:function(h,j,i){console.log("ajax-save error: %s",j);c.handleAjaxFailure(a)},context:this,dataType:"json",data:f},this.options.ajax);
+}var f=$(".editable-fields-on :input, .editable-ajax-data :input",this.options.baseElement).serializeArray();var d=this.activeEdits.length;
+var e=[];var g=null;while(g=this.activeEdits.pop()){this.setEditinfoLoading(g);e.push(g)}var a=Orb.uuid();this.sendingEdits[a]=e;
+if(f.length){var c=this;var b=Object.merge({success:function(i,j,h){console.log("ajax-save data: %o",i);c.handleAjaxSuccess(a,i)
+},error:function(h,j,i){console.log("ajax-save error: %s",j);c.handleAjaxFailure(a)},context:this,dataType:"json",data:f},this.options.ajax);
 console.log("ajax-save: %s",b.url);console.log("ajax-save data: %o",b.data);$.ajax(b)}else{this.handleAjaxSuccess(a,{})}},handleAjaxSuccess:function(b,d){var i=this.sendingEdits[b];
 delete this.sendingEdits[b];var g=null;var c=null;while(c=i.pop()){var f=this._findDataFromEditinfo(c,d);var e=null;if(f){if(f.errors){continue
 }else{if(f.html){e=f.html}}}if(!e){var h=$('input[type="text"], textarea, select',c.form_elements).serializeArray();var a=[];
