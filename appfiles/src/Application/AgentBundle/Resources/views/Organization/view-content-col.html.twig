@@ -6,16 +6,14 @@
 	<header>
 		<div class="controls">
 			<div class="is-loading">Saving</div>
-			<div class="saved" style="display: none">saved</div>
-			<div class="save" style="display: none">save</div>
+			<div class="saved" style="display: none">Saved</div>
+			<div class="save" style="display: none">Save</div>
 		</div>
 		<h4>Summary</h4>
 	</header>
 	<section>
-		<div class="wrap">
-			<input type="hidden" name="action" value="set-summary" />
-			<textarea id="{{baseId}}_summary" name="summary">{{ org.summary }}</textarea>
-		</div>
+		<input type="hidden" name="action" value="set-summary" />
+		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary">{{ org.summary }}</textarea></div>
 	</section>
 </div>
 {# /Box Summary #}
@@ -124,12 +122,12 @@
 						<header>
 							<div class="controls">
 								<div class="is-loading">Saving</div>
-								<div class="saved" style="display: none">saved</div>
-								<div class="save" style="display: none">save</div>
+								<div class="saved" style="display: none">Saved</div>
+								<div class="save" style="display: none">Save</div>
 							</div>
 							<h3>New Comment</h3>
 						</header>
-						<textarea name="note"></textarea>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter comment ..."></textarea></div>
 					</li>
 				</ul>
 			</div>

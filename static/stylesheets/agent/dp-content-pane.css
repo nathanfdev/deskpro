@@ -1266,38 +1266,45 @@ ul.activity-stream time {
 .notes-wrap .new-note header .controls {
 	float: right;
 	line-height: 100%;
+	margin-top: 4px;
+	margin-right: 4px;
 }
 
 .notes-wrap .new-note header {
-	background-color: #DDDEE1;
-	padding: 4px 8px 2px 8px;
+	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
+	behavior: url(js/lib/PIE.htc);
+	height: 22px;
+
 	font-size: 10px;
 	border-bottom:  1px solid #C8C9CD;
-	border-top:  1px solid #C8C9CD;
 }
 
 .notes-wrap .new-note header h3 {
 	font-size: 10px;
-	font-weight: normal;
+	font-weight: bold;
+	color: #738699;
+	padding: 0px 8px;
+	line-height: 25px;
+	text-transform: uppercase;
+	font-family: Helvetica, Arial;
 }
 
+.notes-wrap .new-note .saved {
+	margin:  4px 4px 0 0;
+}
 .notes-wrap .new-note .is-loading {
 	background: url(../../images/loading-arrows-xsmall-whitebg.gif) no-repeat 0 0;
 	width: 11px;
 	height: 11px;
 	overflow: hidden;
 	text-indent: -100px;
-}
-
-.notes-wrap .new-note header .save {
-	cursor: pointer;
-	text-decoration: underline;
-	color: #4769B3;
+	margin:  2px 4px 0 0;
 }
 
 .notes-wrap .new-note textarea {
-	margin:  5px;
-	width: 90%;
+	width: 98%;
 }
 
 .profile .summary {
@@ -1466,12 +1473,38 @@ ul.activity-stream time {
 	height: 11px;
 	overflow: hidden;
 	text-indent: -100px;
+	margin-top: 2px;
 }
 
-.profile-box-container > header .save {
+.profile-box-container > header .saved {
+	margin-top: 1px;
+}
+
+.profile-box-container > header .save,
+.notes-wrap .new-note header .save {
 	cursor: pointer;
-	text-decoration: underline;
-	color: #4769B3;
+	color: #808080;
+
+	background: rgb(255,255,255); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* IE10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* W3C */
+
+	border: 1px solid #DEDFDF;
+
+	-webkit-box-shadow: inset 0px 0px 1px 1px #fff;
+	-moz-box-shadow: inset 0px 0px 1px 1px #fff;
+	box-shadow: inset 0px 0px 1px 1px #fff;
+
+	text-shadow: none;
+	font-size: 10px;
+
+	padding: 1px 5px;
+	border-radius: 4px;
 }
 
 .profile-box-container > section {
