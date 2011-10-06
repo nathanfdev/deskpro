@@ -300,6 +300,7 @@ agent_org_view:
   pattern: /organizations/{organization_id}
   defaults: { _controller: AgentBundle:Organization:view }
   requirements: { organization_id: "\d+" }
+  options: { fragment_name: 'o' }
 
 agent_org_new:
   pattern: /organizations/new
