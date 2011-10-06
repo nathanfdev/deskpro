@@ -347,10 +347,12 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			w += $(this).outerWidth();
 		}).length;
 
-		this.tabStrip.width(w + (21 * num));
+		w += 21 * num;
+
+		this.tabStrip.width(w);
 
 		var isScroll    = tabPane.is('.with-overflow');
-		var needsScroll = (tabPane.width()+50 < w);
+		var needsScroll = (tabPane.width() < w);
 
 		// Not scrolling and not needed
 		if (!isScroll && !needsScroll) {
