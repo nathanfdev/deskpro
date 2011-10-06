@@ -132,6 +132,7 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
 		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
