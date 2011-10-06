@@ -2676,3 +2676,65 @@ body.popup section.body textarea.fill {
 	width: 95%;
 	height: 95%;
 }
+
+
+
+
+
+.change-picture-overlay {
+	width: 280px;
+}
+
+.change-picture-overlay.with-existing {
+	width: 350px;
+}
+
+.change-picture-overlay header {
+	margin-top: -3px;
+	margin-bottom: 5px;
+}
+
+.change-picture-overlay header h3 {
+	font-size: 14px;
+	color: #444;
+}
+
+.change-picture-overlay header .upload-control {
+	float: right;
+	position: relative;
+}
+
+.change-picture-overlay header .upload-control input {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 80px;
+	opacity: 0;
+	z-index: 2;
+}
+
+.change-picture-overlay header .upload-control button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1;
+}
+
+.change-picture-overlay header .save-control {
+	float: right;
+}
+
+.change-picture-overlay.with-existing .existing-picture,
+.change-picture-overlay.with-existing .new-picture {
+	float: left;
+	width: 165px;
+}
+
+.change-picture-overlay.with-existing .existing-picture {
+	margin-right: 10px;
+}
+
+.change-picture-overlay p {
+	text-align: center;
+	font-size: 10px;
+}

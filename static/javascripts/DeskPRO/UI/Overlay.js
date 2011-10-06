@@ -158,6 +158,25 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 
 	/**
+	 * Recalculate positions
+	 */
+	reposition: function() {
+		var w = this.elements.wrapperOuter.outerWidth();
+		var pageW = $(window).width();
+		var leftForCenter = (pageW / 2) - (w / 2);
+
+		var h = this.elements.wrapperOuter.outerHeight();
+		var pageH = $(window).height();
+		var topForCenter = (pageH / 2) - (h / 2);
+
+		this.elements.wrapperOuter.css({
+			'top': topForCenter,
+			'left': leftForCenter
+		});
+	},
+
+
+	/**
 	 * Standard naming for UI elements. Alias for closeOverlay.
 	 */
 	close: function() {
@@ -334,6 +353,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		if (!$('.overlay-footer:first', el).length) {
 			$('div.overlay-content:first', el).addClass('no-footer');
 		}
+
+		this.reposition();
 
 		this.fireEvent('contentSet', {
 			overlay: this,
