@@ -182,7 +182,6 @@ DeskPRO.Form.InlineEdit = new Class({
 		}
 
 		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement'])
-			.filter(':not(.unchanged)')
 			.serializeArray();
 
 		var is_multi = this.activeEdits.length;
