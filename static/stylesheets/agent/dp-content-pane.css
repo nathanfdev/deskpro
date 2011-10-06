@@ -46,33 +46,45 @@
 	-pie-background: linear-gradient(#DADBDE, #F0F1F3);
 	behavior: url(../../static/vendor/PIE.htc);
 	height: 37px;
-	position: relative;
+	position: absolute;
 	overflow: hidden;
 	border-bottom: 1px solid #B6BABF;
+	top: 0;
+	right: 0;
+	left: 0;
 }
 
 #tabNavSelectorLeft{
-	height: 31px;
-	left: 1px;
 	position: absolute;
+	left: 1;
+	top: 0;
+	bottom: 0;
 	width: 28px;
 	z-index: 99;
-	background: url(../../images/agent/tabSelect.png) no-repeat -6px -2px;
+	background: url(../../images/agent/tabnav-left.png) no-repeat 0 0;
 }
 #tabNavSelectorLeft:hover{
-	background-position: -6px -65px;
+	background: url(../../images/agent/tabnav-left-on.png) no-repeat 0 0;
 }
 #tabNavSelectorRight{
-	height: 30px;
 	position: absolute;
-	right: 35px;
+	top: 0;
+	bottom: 0;
+	right: 19px;
 	width: 32px;
 	z-index: 99;
-	background: url(../../images/agent/tabSelect.png) no-repeat 0 -131px;
+	background: url(../../images/agent/tabnav-right.png) no-repeat 0 0;
 }
 #tabNavSelectorRight:hover{
-	background-position: 0 -192px;
+	background: url(../../images/agent/tabnav-right-on.png) no-repeat 0 0;
 }
+
+#tabNavSelectorLeft, #tabNavSelectorRight, #tabDropdownPicker { display: none; }
+.with-overflow #tabNavSelectorLeft, .with-overflow #tabNavSelectorRight, .with-overflow #tabDropdownPicker {
+	display: block;
+	cursor: pointer;
+}
+
 #tabNavSelectorLeft a, #tabNavSelectorRight a{
 	cursor: pointer;
 	display: block;
@@ -93,16 +105,30 @@
 	-pie-background: linear-gradient(#6baccc, #5182b3);
 	behavior: url(../../static/vendor/PIE.htc);
 	z-index: 99;
-	height: 10px;
 	padding: 10px 5px;
 	position: absolute;
 	top: 0;
+	bottom: 0;
 	right: 0;
-	width: 25px;
-  	border-bottom: 1px solid #AAAEB3;
+	width: 16px;
+
+	overflow: hidden;
+
     border-left: 1px solid #4D7399;
 	box-shadow: 0 0 1px #FFFFFF inset;
 }
+
+#tabDropdownPicker a.tabSlideDown{
+	background: url(../../images/agent/imgSprt_ico.png) no-repeat 0px -1103px;
+	cursor: pointer;
+	display: block;
+	float: left;
+	height: 21px;
+	text-indent: -9999px;
+	width: 30px;
+}
+
+
 #tabDropdownPicker:hover{
 	background-image: -moz-linear-gradient(top, #6fa6c4, #375387);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6fa6c4), to(#375387));
@@ -110,12 +136,23 @@
 	behavior: url(../../static/vendor/PIE.htc);
 }
 
+.with-overflow .deskproTabList li:first-child {
+	margin-left: 24px;
+}
 
+.with-overflow .deskproTabList li:last-child {
+	margin-right: 24px;
+}
 
 .deskproTabList{
-	position: relative;
+	position: absolute;
 	height: 37px;
 	padding: 0 0 0 10px;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
 }
 
 .deskproTabList ul{

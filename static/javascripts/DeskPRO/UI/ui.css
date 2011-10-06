@@ -224,6 +224,12 @@
     font-size: 11px;
 }
 
+.deskpro-menu > ul > li.highlight {
+	-webkit-box-shadow: inset 0px 0px 4px 5px #ffffff;
+	-moz-box-shadow: inset 0px 0px 4px 5px #ffffff;
+	box-shadow: inset 0px 0px 4px 5px #ffffff;
+}
+
 .deskpro-menu > ul > li a, .deskpro-menu > ul > li span{
 	line-height: 17px;
 	display: block;
