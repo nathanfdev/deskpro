@@ -86,6 +86,10 @@
 				iScroll = 0;
 			}
 
+			if (oViewport[options.axis] >= oContent[options.axis]) {
+				iScroll = 0;
+			}
+
 			setSize();
 		};
 		this.tinyscrollbar_scrolltop = function(x) {
@@ -100,8 +104,6 @@
 			oScrollbar.obj.css(sCssSize, oTrack[options.axis]);
 			oTrack.obj.css(sCssSize, oTrack[options.axis]);
 			oThumb.obj.css(sCssSize, oThumb[options.axis]);
-
-			oContent.obj.css(sDirection, -iScroll);
 		};
 		function setEvents(){
 			oThumb.obj.bind('mousedown', start);
