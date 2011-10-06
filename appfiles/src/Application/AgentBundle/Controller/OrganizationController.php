@@ -59,7 +59,7 @@ class OrganizationController extends AbstractController
 
 		$notes = App::getEntityRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-		$org_tickets = App::getEntityRepository('DeskPRO:Ticket')->getOrganizationTickets($org, 5);
+		$org_tickets = App::getEntityRepository('DeskPRO:Ticket')->getRecentOrganizationTickets($org);
 		$org_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
 
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);

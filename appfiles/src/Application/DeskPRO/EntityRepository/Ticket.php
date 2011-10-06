@@ -155,6 +155,32 @@ class Ticket extends EntityRepository
 		return $tickets;
 	}
 
+	public function getRecentOrganizationTickets(Entity\Organization $org, $num = 30)
+	{
+		$ids = App::getDb()->fetchAllCol("
+			SELECT id,
+				CASE WHEN STATUS =  'open' THEN 1
+				WHEN STATUS =  'pending' THEN 2
+				ELSE 3
+				END AS status_order
+			FROM tickets
+			WHERE organization_id = {$org->id} AND status IN ('open', 'pending', 'closed', 'resolved')
+			ORDER BY status_order ASC, date_created DESC
+			LIMIT $num
+		", array($org->id));
+
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t INDEX BY t.id
+			WHERE t.id IN (?1)
+			ORDER BY t.id DESC
+		")->setParameters(array(1=>$ids))->setMaxResults($limit)->execute();
+
+		$tickets = \Orb\Util\Arrays::orderIdArray($ids, $tickets);
+
+		return $tickets;
+	}
+
 
 	/**
 	 * COunt the total number of tickets that belong to an org

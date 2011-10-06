@@ -69,13 +69,17 @@
 					{% for ticket in org_tickets %}
 						<tr>
 							<td>
-								By <a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ticket.person.display_name}}</a>:<br />
-								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+									</div>
+									<div class="line">
+										by <a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ticket.person.display_name}}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
 							</td>
 							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
-							<td class="time" width="25">
-								<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M j, Y') }}</time>
-							</td>
 						</tr>
 					{% endfor %}
 					{% if org_tickets|length < org_tickets_count %}
