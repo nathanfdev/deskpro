@@ -31,6 +31,35 @@
 /**
 * Transition effect
 */
+.noselect {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.boxmodel-border-box {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+}
+.box-header-gradient {
+  background-image: -moz-linear-gradient(top, #f0f1f3, #dadbde);
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#f0f1f3), to(#dadbde));
+  -pie-background: linear-gradient(#f0f1f3, #dadbde);
+  behavior: url(js/lib/PIE.htc);
+  height: 22px;
+}
+.box-header-gradient h3 {
+  font-size: 10px;
+  font-weight: bold;
+  color: #738699;
+  padding: 0px 8px;
+  line-height: 25px;
+  text-transform: uppercase;
+  font-family: Helvetica, Arial;
+}
 /*****************************************************************************
  * Layout
 /*****************************************************************************/
@@ -1442,6 +1471,14 @@ ul.activity-stream time {
   border-radius: 0 0 3px 3px;
   box-shadow: 0 1px 0 #ffffff, 0 1px 0 #ffffff inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
+.profile-box-container > section > p:first-child {
+  margin-top: 0;
+  padding-top: 6px;
+}
+.profile-box-container > section > p {
+  margin: 8px;
+  font-size: 10px;
+}
 .profile-box-container.tabbed > section > article {
   display: none;
 }
@@ -2627,4 +2664,32 @@ body.popup section.body textarea.fill {
   text-align: right;
   margin-top: 3px;
   margin-bottom: 3px;
+}
+.email-assoc-overlay .delete-button, .email-assoc-overlay .cancel-delete-button {
+  float: right;
+  margin: 3px 3px 0 0;
+}
+.email-assoc-overlay .overlay-content {
+  width: 400px;
+  height: 300px;
+  padding: 0;
+}
+.email-assoc-overlay .emails-exist table td {
+  padding: 0;
+}
+.email-assoc-overlay .emails-exist table td h3 {
+  padding: 6px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.email-assoc-overlay .emails-exist table td .controls-box {
+  -webkit-box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+}
+.email-assoc-overlay .controls-box li {
+  text-decoration: underline;
+  color: #4769b3;
+  cursor: pointer;
 }
