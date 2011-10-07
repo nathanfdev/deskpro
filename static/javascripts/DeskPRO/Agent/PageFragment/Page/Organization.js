@@ -30,6 +30,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
+			editableClass: '.person-name-editable',
 			ajax: {
 				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 			},
@@ -85,11 +86,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			});
 		});
 
-		this.getEl('add_searchbox').bind('personsearchboxclicknew', function(ev, term) {
-			DeskPRO_Window.newPersonLoader.open(function() {
+		this.getEl('add_searchbox').bind('personsearchboxclicknew', function(ev, term, sb) {
+			DeskPRO_Window.newPersonLoader.open(function(page) {
 				page.setGuessTerm(term);
 				page.setOrganization(self.meta.org_id);
 			});
+
+			sb.close();
+			sb.reset();
 		});
 
 		this.getEl('add_searchbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -133,13 +137,33 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					row.insertAfter(self.getEl('newmember_row_named'));
 
 					DeskPRO_Window.util.showSavePuff(row);
-
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
 				}
 			});
 
 			close_newmember_row();
 		});
+
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('new-org-user', function(info) {
+			if (!info.organization_id || info.organization_id != self.meta.org_id) {
+				return;
+			}
+
+			$.ajax({
+				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
+				data: { action: 'get-person-row', person_id: info.person_id },
+				type: 'GET',
+				context: this,
+				success: function(data) {
+					var row = $(data.row_html);
+					row.insertAfter(self.getEl('newmember_row_named'));
+
+					DeskPRO_Window.util.showSavePuff(row);
+					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
+				}
+			});
+		}, this);
 
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({

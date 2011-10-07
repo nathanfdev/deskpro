@@ -36,7 +36,6 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		orgSel.attr('name', 'newperson[organization_id]');
 		orgSel.css('width', 200);
 		orgSel.prepend('<option selected />');
-		orgSel.chosen();
 
 		this.orgSel = orgSel;
 
@@ -72,7 +71,17 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+					if (this.orgSel.val() && !this.fromCompanyTab) {
+						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+					}
+
+					if (this.orgSel.val() && this.fromCompanyTab) {
+						DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
+							organization_id: this.orgSel.val(),
+							person_id: data.person_id
+						});
+					}
+
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
@@ -83,13 +92,14 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 
 	setOrganization: function(org_id) {
 		this.orgSel.val(org_id);
+		this.fromCompanyTab = true;
 	},
 
 	setGuessTerm: function(term) {
 		if (term.indexOf('@') !== -1) {
-			this.getEl('email', term);
+			this.getEl('email').val(term);
 		} else {
-			this.getEl('name', term);
+			this.getEl('name').val(term);
 		}
 	},
 

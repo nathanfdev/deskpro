@@ -191,6 +191,13 @@ class OrganizationController extends AbstractController
 				}
 				break;
 
+			case 'get-person-row':
+				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				if ($person->organization->id = $org->id) {
+					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));
+				}
+				break;
+
 			case 'remove-person':
 				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person && $person->organization && $person->organization->id == $org->id) {
@@ -359,6 +366,11 @@ class OrganizationController extends AbstractController
 			'display_html' => $display_html,
 			'editor_overlay_html' => $editor_overlay_html
 		));
+	}
+
+	public function savePositionAction($organization_id)
+	{
+
 	}
 
 	############################################################################
