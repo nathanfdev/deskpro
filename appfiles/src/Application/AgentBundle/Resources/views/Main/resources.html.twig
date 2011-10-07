@@ -1,24 +1,7 @@
-<link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css') }}" type="text/css" media="screen"  />
-<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/jcrop/css/jquery.Jcrop.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/chosen/chosen.css') }}" type="text/css" media="screen" />
-
-<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('vendor/jquery/token-field/token-field.css') }}" type="text/css" media="screen" />
-
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/dp-interface.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/dp-source-pane.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/dp-list-pane.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/dp-content-pane.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/dp-agent-chat.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/navigation.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/header.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/overlayMacro.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/overlayCreateTicket.less') }}" type="text/css" media="screen,print" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/less/print.less') }}" type="text/css" media="print" />
+{{ html_css_pack('agent.vendors') }}
+{{ html_css_pack('agent.deskpro-ui') }}
+{{ html_css_pack('agent.interface') }}
+{{ html_css_pack('agent.interface-print') }}
 
 {# Bridge tries to auto-load these, but with the compiled scripts
 the detected path is incorrect so we have to hard-code them #}
