@@ -790,13 +790,12 @@ agent_tasks_count_pending:
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }
+
 agent_task_new:
   pattern: /tasks/new
   defaults: { _controller: AgentBundle:Task:new }
   options: { fragment_name: 'nt' }
 
-<<<<<<< HEAD
-=======
 agent_task_save:
   pattern: /tasks/save
   defaults: { _controller: AgentBundle:Task:create }
@@ -804,9 +803,6 @@ agent_task_save:
   requirements:
         _method:  POST
 
-<<<<<<< HEAD
->>>>>>> 28926c9... add new css file for task view
-=======
 agent_task_view:
   pattern: /tasks/{task_id}
   defaults: { _controller: AgentBundle:Task:view }
@@ -815,7 +811,7 @@ agent_tasksearch_getsectiondata:
   pattern: /task/get-section-data.json
   defaults: { _controller: AgentBundle:Task:getSectionData }
 
->>>>>>> e292b09... add view action in controller and the add view route
+
 ################################################################################
 # Publish
 ################################################################################

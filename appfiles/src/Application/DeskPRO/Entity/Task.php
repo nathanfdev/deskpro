@@ -78,11 +78,8 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The task's optional due date.
 	 * 
-<<<<<<< HEAD
+
 	 * @var DateTime
-=======
-	 * @var string
->>>>>>> d4e760f... add Task.js in the section and refactor the Task entity repository
 	 * @ORM_Mapping\Column(name="date_due", type="date", nullable=true)
 	 */
 	protected $date_due = null;

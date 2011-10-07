@@ -24,30 +24,17 @@ class NewTask extends AbstractType
         #------------------------------
 
         $builder->add('title', 'text');        
-<<<<<<< HEAD
-        $builder->add('date_due', 'date', array(
-            'input'  => 'string',
-=======
         $builder->add('date_due', 'datetime', array(            
->>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
             'widget' => 'single_text',
-<<<<<<< HEAD
-            'empty_value' => '',
-            'format'=>'y/m/d',
-=======
+            'empty_value' => '',            
             'date_format'=>'M/d/y',
             'required' => false,
->>>>>>> d4e760f... add Task.js in the section and refactor the Task entity repository
         ));
         
-
-        $builder->add('is_completed', 'text');
-        $builder->add('is_completed', 'choice', array(
+        $builder->add('visibility', 'choice', array(
             'choices' => array(0 => 'Public', 2 => 'Private'),
             'required' => true,
         ));
-<<<<<<< HEAD
-=======
         $builder->add('assigned_agent_team', 'entity', array(
             'class' => 'Application\DeskPRO\Entity\AgentTeam',
             'property' => 'name',
@@ -60,7 +47,7 @@ class NewTask extends AbstractType
             'required' => false,
             'empty_value'=> '--Agent--'
         ));
->>>>>>> 2b2db2b... add agent team and individual agent list in the new task form
+
     }
 
     public function getDefaultOptions(array $options)
