@@ -812,6 +812,7 @@ a.clean-white {
 
 .person-search-box {
 	position: absolute;
+	overflow: hidden;
 }
 
 .person-search-box section {
@@ -823,15 +824,18 @@ a.clean-white {
 
 	z-index: 100000;
 	border-radius: 0 0 6px 6px;
+	overflow: hidden;
 }
 
 .person-search-box ul li {
 	border-bottom:  1px solid #D9DBDB;
+	position: relative;
 }
 
 .person-search-box ul li a {
 	display: block;
 	padding: 3px 3px 3px 8px;
+	white-space: nowrap;
 }
 
 .person-search-box ul li a:hover {
@@ -860,6 +864,9 @@ a.clean-white {
 .person-search-box ul li:hover address {
 	color: #ccc;
 }
+
+.person-search-box ul li .bound-fade { .fade-away(rgba(255,255,255,0), rgba(255,255,255,1), 45px); }
+.person-search-box ul li:hover .bound-fade { .fade-away(rgba(47,127,208,0), rgba(47,127,208,1), 45px); }
 
 .person-search-box footer {
 	background-color: #F5F7FA;

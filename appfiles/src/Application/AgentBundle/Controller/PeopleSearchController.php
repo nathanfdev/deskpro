@@ -411,38 +411,33 @@ class PeopleSearchController extends AbstractController
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
 
+		$not_in_org = $this->in->getUint('exclude_org');
+
 		if (!$q && $this->in->getBool('start_with')) {
-			$people_list = $this->em->createQuery("
-				SELECT p, p_email
-				FROM DeskPRO:Person p
-				LEFT JOIN p.primary_email p_email
-				LEFT JOIN p.emails emails
-				LEFT JOIN p.organization org
-				ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
-			")->setMaxResults($limit)->getResult();
+			$people_list = App::getDb()->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
+				" . ($not_in_org ? " WHERE p.organization_id != $not_in_org " : '') . "
+				ORDER BY p.name ASC
+				LIMIT $limit
+			");
 		} else {
 
-			//TODO proper sql escape
-			$q = addslashes($q);
-
-			$people_list = $this->em->createQuery("
-				SELECT p, p_email
-				FROM DeskPRO:Person p
-				LEFT JOIN p.primary_email p_email
-				LEFT JOIN p.emails emails
-				LEFT JOIN p.organization org
+			$people_list = App::getDb()->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
 				WHERE
-					emails.email LIKE '$q%'
-					OR (
-						p.name LIKE '%$q%'
-						OR p.first_name LIKE '%$q%'
-						OR p.last_name LIKE '%$q%'
-						OR emails.email LIKE '%$q%'
-						OR org.name LIKE '%$q%'
-					)
+					(e.email LIKE ?
+					OR p.name LIKE ?
+					OR p.first_name LIKE ?
+					OR p.last_name LIKE ?)
+					" . ($not_in_org ? " AND p.organization_id != $not_in_org " : '') . "
 				GROUP BY p.id
-				ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
-			")->setMaxResults($limit)->getResult();
+				ORDER BY p.name ASC
+				LIMIT $limit
+			", array("%$q%", "%$q%", "%$q%", "%$q%"));
 		}
 
 		$format = $this->in->getString('format');

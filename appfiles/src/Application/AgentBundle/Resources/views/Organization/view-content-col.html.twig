@@ -39,15 +39,18 @@
 							<div
 								id="{{baseId}}_add_searchbox"
 								data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'exclude_org': org.id}) }}"
+								data-highlight-term="1"
 								data-touch-focus="1"
 								data-search-param="term"
 								data-position-bound="@parent(td)"
 							>
 								<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-									<li><a>
+									<li>
+										<a>
 										<span class="user-name"></span>
 										<address>&lt;<span class="user-email"></span>&gt;</address>
+										<div class="bound-fade"></div>
 									</a></li>
 								</script>
 								<div class="input-wrapper">

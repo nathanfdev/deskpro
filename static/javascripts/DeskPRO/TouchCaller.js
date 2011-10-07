@@ -36,7 +36,7 @@ DeskPRO.TouchCaller = new Orb.Class({
 		this.timeout = null;
 	},
 
-	touch: function(touch) {
+	touch: function(touch, force) {
 
 		if (typeof touch == 'undefined' || touch == null) {
 			this.lastTouch = null;
@@ -45,19 +45,21 @@ DeskPRO.TouchCaller = new Orb.Class({
 
 		this.touched = touch;
 
-		// Not different, nothing to do
-		if (this.lastTouch !== null && this.lastTouch == touch) {
-			return;
-		}
-
-		var now = new Date();
-		var diff = now.getTime() - this.lastTime.getTime();
-		if (diff < this.options.timeout) {
-			// Too soon. Wait until timeout expires
-			if (!this.timeout) {
-				this.timeout = window.setTimeout(this.exec.bind(this), diff);
+		if (!force) {
+			// Not different, nothing to do
+			if (this.lastTouch !== null && this.lastTouch == touch) {
+				return;
 			}
-			return;
+
+			var now = new Date();
+			var diff = now.getTime() - this.lastTime.getTime();
+			if (diff < this.options.timeout) {
+				// Too soon. Wait until timeout expires
+				if (!this.timeout) {
+					this.timeout = window.setTimeout(this.exec.bind(this), this.options.timeout);
+				}
+				return;
+			}
 		}
 
 		// If we got here, we need to run it
@@ -67,7 +69,7 @@ DeskPRO.TouchCaller = new Orb.Class({
 	exec: function() {
 		if (this.timeout) {
 			window.clearTimeout(this.timeout);
-			this.timeout
+			this.timeout = null;
 		}
 
 		this.lastTouch = this.touched;

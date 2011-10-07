@@ -19,7 +19,8 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.termInput.focus(function() {
 			self.open();
 			if (self.el.data('touch-focus')) {
-				self.updateCaller.touch();
+				// double touch forces an update
+				self.updateCaller.touch(self.getTerm(), true);
 			}
 		});
 	},
@@ -53,7 +54,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		//------------------------------
 
 		// Touch the timer so we will search in a few seconds
-		this.termInput.keypress(function() { updateCaller.touch(); }).change(function() { updateCaller.touch(); });
+		this.termInput.keyup(function() { updateCaller.touch(self.getTerm()); }).change(function() { updateCaller.touch(self.getTerm()); });
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.click(function(ev) { ev.stopPropagation(); });
@@ -172,10 +173,25 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 				Array.each(data, function(user) {
 					var row = $(this.tplHtml);
+
 					row.data('person-id', user.id);
 					row.attr('person-id', user.id);
-					$('.user-name', row).text(user.name);
-					$('.user-email', row).text(user.email);
+
+					if (this.el.data('highlight-term')) {
+						var term  = Orb.escapeHtml(this.getTerm());
+						var name  = Orb.escapeHtml(user.name);
+						var email = Orb.escapeHtml(user.email);
+
+						name  = name.replace('' + term, '<span class="highlight">' + term + '</span>');
+						email = email.replace('' + term, '<span class="highlight">' + term + '</span>');
+
+						$('.user-name', row).html(user.name);
+						$('.user-email', row).html(user.email);
+
+					} else {
+						$('.user-name', row).text(user.name);
+						$('.user-email', row).text(user.email);
+					}
 
 					if (!user.email || user.name == user.email) {
 						$('address', row).hide();

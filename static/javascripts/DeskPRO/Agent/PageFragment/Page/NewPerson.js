@@ -38,6 +38,8 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		orgSel.prepend('<option selected />');
 		orgSel.chosen();
 
+		this.orgSel = orgSel;
+
 		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
 		ugSel.data('placeholder', 'Choose usergroups');
 		ugSel.attr('name', 'newperson[usergroup_ids][]');
@@ -77,6 +79,18 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 				}
 			}
 		});
+	},
+
+	setOrganization: function(org_id) {
+		this.orgSel.val(org_id);
+	},
+
+	setGuessTerm: function(term) {
+		if (term.indexOf('@') !== -1) {
+			this.getEl('email', term);
+		} else {
+			this.getEl('name', term);
+		}
 	},
 
 	//#################################################################

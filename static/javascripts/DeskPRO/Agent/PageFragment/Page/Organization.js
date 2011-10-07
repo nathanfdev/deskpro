@@ -85,6 +85,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			});
 		});
 
+		this.getEl('add_searchbox').bind('personsearchboxclicknew', function(ev, term) {
+			DeskPRO_Window.newPersonLoader.open(function() {
+				page.setGuessTerm(term);
+				page.setOrganization(self.meta.org_id);
+			});
+		});
+
 		this.getEl('add_searchbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			self.getEl('newmember_person_name').text(name);
 			self.getEl('newmember_person_email').text(email);
