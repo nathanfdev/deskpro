@@ -19,7 +19,6 @@ use Application\DeskPRO\Entity;
 
 class Task extends EntityRepository
 {
-
 	/**
 	 * Find pending tasks assigned to the person.
 	 *
