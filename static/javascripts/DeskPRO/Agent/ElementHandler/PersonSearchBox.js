@@ -182,11 +182,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 						var name  = Orb.escapeHtml(user.name);
 						var email = Orb.escapeHtml(user.email);
 
-						name  = name.replace('' + term, '<span class="highlight">' + term + '</span>');
-						email = email.replace('' + term, '<span class="highlight">' + term + '</span>');
+						term = (term+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
+						name = name.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
+						email = email.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
 
-						$('.user-name', row).html(user.name);
-						$('.user-email', row).html(user.email);
+						$('.user-name', row).html(name);
+						$('.user-email', row).html(email);
 
 					} else {
 						$('.user-name', row).text(user.name);

@@ -368,9 +368,17 @@ class OrganizationController extends AbstractController
 		));
 	}
 
-	public function savePositionAction($organization_id)
+	public function savePositionAction($organization_id, $person_id)
 	{
+		$person = App::findEntity('DeskPRO:Person', $person_id);
+		if ($person) {
+			$person->organization_position = $this->in->getString('organization_position');
 
+			$this->em->persist($person);
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	############################################################################

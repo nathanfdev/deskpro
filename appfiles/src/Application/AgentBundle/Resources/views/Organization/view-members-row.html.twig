@@ -11,8 +11,16 @@
 			<div class="bound-fade"></div>
 		</div>
 	</td>
-	<td>
-		{{ person.organization_position }}
+	<td class="position-edit-trigger">
+		<span class="position-label">{{ person.organization_position }}</span>
+		<div class="position-edit" style="display: none">
+			<input
+				type="text"
+				class="integrated"
+				value="{{ person.organization_position }}"
+				data-save-url="{{ path('agent_org_save_member_pos', {'organization_id': org.id, 'person_id': person.id }) }}"
+			/>
+		</div>
 	</td>
 	<td width="5">
 		<span class="remove remove-icon">x</span>

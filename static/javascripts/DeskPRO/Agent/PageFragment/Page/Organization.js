@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
-			editableClass: '.person-name-editable',
+			editableClass: 'person-name-editable',
 			ajax: {
 				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 			},
@@ -164,6 +164,46 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				}
 			});
 		}, this);
+
+		this.getEl('members_list').delegate('.position-edit-trigger', 'click', function(ev) {
+			ev.stopPropagation();
+
+			var row = $(this).closest('.member-row');
+			var label = $('.position-label', row);
+			var input = $('.position-edit', row);
+			var inputTxt = $('.position-edit input', row);
+
+			label.fadeOut('fast', function() {
+				input.fadeIn('fast');
+				input.get(0).focus();
+			});
+
+			var done = function() {
+				var val = inputTxt.val();
+				label.text(val);
+
+				input.fadeOut('fast', function() {
+					label.fadeIn('fast');
+				});
+
+				$.ajax({
+					url: inputTxt.data('save-url'),
+					type: 'POST',
+					data: { organization_position: val }
+				});
+			};
+
+			if (!input.is('.has-init')) {
+				input.addClass('has-init');
+				input.click(function(ev){ev.stopPropagation();});
+				input.keypress(function() {
+					if (ev.keyCode == 13) {
+						done();
+					}
+				});
+				$(document).click(done);
+			}
+		});
 
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({

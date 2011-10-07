@@ -316,6 +316,11 @@ agent_org_ajaxsave:
   defaults: { _controller: AgentBundle:Organization:ajaxSave }
   requirements: { organization_id: "\d+" }
 
+agent_org_save_member_pos:
+  pattern: /organizations/{organization_id}/save-member-pos/{person_id}
+  defaults: { _controller: AgentBundle:Organization:savePosition }
+  requirements: { organization_id: "\d+" }
+
 agent_org_savecontactdata:
   pattern: /organizations/{organization_id}/save-contact-data.json
   defaults: { _controller: AgentBundle:Organization:saveContactData }

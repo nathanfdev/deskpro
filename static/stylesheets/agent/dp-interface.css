@@ -1009,6 +1009,11 @@ a.clean-white {
   padding: 3px 3px 3px 8px;
   white-space: nowrap;
 }
+
+.person-search-box ul li .highlight {
+	background-color: #EDDA4E;
+}
+
 .person-search-box ul li a:hover {
   background-color: #2F7FD0;
   color: #fff;
