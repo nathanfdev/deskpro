@@ -133,11 +133,15 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					self.getEl('newmember_position').val('');
 					self.getEl('newmember_person_id').val('0');
 
-					var row = $(data.row_html);
-					row.insertAfter(self.getEl('newmember_row_named'));
+					if (data.already_in_organization) {
+						DeskPRO_Window.showAlert('That user is already in an organization');
+					} else {
+						var row = $(data.row_html);
+						row.insertAfter(self.getEl('newmember_row_named'));
 
-					DeskPRO_Window.util.showSavePuff(row);
-					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
+						DeskPRO_Window.util.showSavePuff(row);
+						DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
+					}
 				}
 			});
 
@@ -218,6 +222,8 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
+		this._initEmailDomainAssoc();
+
 		this.refreshPropBox();
 	},
 
@@ -243,6 +249,138 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		} else {
 			contactBox.removeClass('no-section');
 		}
+	},
+
+	//#########################################################################
+	//# Email domain associations
+	//#########################################################################
+
+	_initEmailDomainAssoc: function(opennow) {
+
+		if (this.emailDomainOverlay) {
+			this.emailDomainOverlay.destroy();
+		}
+
+		var self = this;
+
+		var contain = this.getEl('email_assoc_box');
+		var trigger = $('.email-assoc-edit', contain);
+		var overlayEl = $('.email-assoc-overlay', contain);
+
+		var newInput = $('input.new-domain', contain);
+		var newContain = $('.profile-box-container.new', contain);
+
+		this.emailDomainOverlay = null;
+
+		var updateNew = function() {
+			if (newInput.val().trim()) {
+				$('.controls .save', newContain).show();
+			} else {
+				$('.controls .save', newContain).hide();
+			}
+		};
+
+		var open = function() {
+			if (!self.emailDomainOverlay) {
+				self.emailDomainOverlay = new DeskPRO.UI.Overlay({
+					triggerElement: trigger,
+					contentElement: overlayEl
+				});
+
+				newInput.keyup(updateNew).change(updateNew);
+
+				var replaceEditor = function(newDisplayHtml) {
+					self.getEl('email_assoc_box').empty().html(newDisplayHtml);
+					self._initEmailDomainAssoc(true);
+				};
+
+				$('.controls .save', newContain).click(function() {
+					$.ajax({
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/assign-domain',
+						type: 'POST',
+						data: { domain: newInput.val().trim() },
+						dataType: 'html',
+						success: function(newDisplayHtml) {
+							replaceEditor(newDisplayHtml);
+						}
+					});
+				});
+
+				var delBtn = $('.delete-button', overlayEl);
+				var cancelDelBtn = $('.cancel-delete-button', overlayEl);
+				var delSection = $('.delete-controls', overlayEl);
+
+				delBtn.click(function() {
+					var sect = $(this).closest('tr');
+					var delBtn = $('.delete-button', sect);
+					var cancelDelBtn = $('.cancel-delete-button', sect);
+					var delSection = $('.delete-controls', sect);
+
+					$('.delete-controls', sect).slideDown('fast');
+					delBtn.hide();
+					cancelDelBtn.show();
+					delSection.slideDown('fast');
+				});
+				cancelDelBtn.click(function() {
+					var sect = $(this).closest('tr');
+					var delBtn = $('.delete-button', sect);
+					var cancelDelBtn = $('.cancel-delete-button', sect);
+					var delSection = $('.delete-controls', sect);
+
+					cancelDelBtn.hide();
+					delBtn.show();
+					delSection.slideUp('fast');
+				});
+
+				$('.remove-email, .remove-email-users', overlayEl).click(function() {
+					var domain = $(this).closest('tr').data('domain');
+					var removeusers = $(this).is('.remove-email-users') ? 1 : 0;
+
+					$.ajax({
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/unassign-domain',
+						type: 'POST',
+						data: { domain: domain, remove_users: removeusers },
+						dataType: 'html',
+						success: function(newDisplayHtml) {
+							replaceEditor(newDisplayHtml);
+						}
+					});
+				});
+
+				$('.move-users', overlayEl).click(function() {
+					var domain = $(this).closest('tr').data('domain');
+
+					$.ajax({
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
+						type: 'POST',
+						data: { domain: domain },
+						dataType: 'html',
+						success: function(newDisplayHtml) {
+							replaceEditor(newDisplayHtml);
+						}
+					});
+				});
+
+				$('.move-all-users', overlayEl).click(function() {
+					var domain = $(this).closest('tr').data('domain');
+
+					$.ajax({
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
+						type: 'POST',
+						data: { domain: domain },
+						dataType: 'html',
+						success: function(newDisplayHtml) {
+							replaceEditor(newDisplayHtml);
+						}
+					});
+				});
+			}
+
+			self.emailDomainOverlay.open();
+		};
+
+		trigger.click(open);
+		if(opennow) open();
 	},
 
 	//#########################################################################

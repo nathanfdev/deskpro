@@ -78,13 +78,16 @@ class OrganizationController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
-		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+		$org_domain_data = $this->getOrgEmailDisplayData($org);
 
 		$org_members = App::getEntityRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
-			'org_email_domains'  => $org_email_domains,
+			'org_email_domains'             => $org_domain_data['org_email_domains'],
+			'org_count_domain_nonmembers'   => $org_domain_data['org_count_domain_nonmembers'],
+			'org_count_domain_takenmembers' => $org_domain_data['org_count_domain_takenmembers'],
+			'org_count_domain_members'      => $org_domain_data['org_count_domain_members'],
 			'org_members'        => $org_members,
 			'contact_data'       => $contact_data,
 			'org_usergroups'     => $org_usergroups,
@@ -182,7 +185,9 @@ class OrganizationController extends AbstractController
 
 			case 'add-person':
 				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
-				if ($person) {
+				if ($person->organization) {
+					$data['already_in_organization'] = true;
+				} elseif ($person) {
 					$person->organization = $org;
 					$person->organization_position = $this->in->getString('position');
 					$this->em->persist($person);
@@ -427,6 +432,91 @@ class OrganizationController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
+
+	############################################################################
+	# org domains
+	############################################################################
+
+	protected  function getOrgEmailDisplayData($org)
+	{
+		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+
+		$org_count_domain_nonmembers   = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains, $org);
+		$org_count_domain_takenmembers = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains);
+		$org_count_domain_members      = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org_email_domains);
+
+		return array(
+			'org'                => $org,
+			'org_email_domains'  => $org_email_domains,
+			'org_count_domain_nonmembers'   => $org_count_domain_nonmembers,
+			'org_count_domain_takenmembers' => $org_count_domain_takenmembers,
+			'org_count_domain_members'      => $org_count_domain_members,
+		);
+	}
+
+	public function assignDomainAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+		$domain = $this->in->getString('domain');
+
+		if ($org_domain_manager->isInUse($domain)) {
+			return $this->createResponse('<div class="error" data-error-code="in_use" />');
+		}
+
+		$org_domain_manager->assignDomain($domain, $org);
+
+		$data = $this->getOrgEmailDisplayData($org);
+
+		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);
+	}
+
+	public function unassignDomainAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+		$org_domain_manager->unassignDomain($orgdomain, $this->in->getBool('remove_users'));
+
+		$data = $this->getOrgEmailDisplayData($org);
+
+		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);
+	}
+
+	public function moveDomainUsersAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+		$domain = $this->in->getString('domain');
+
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+
+		return $this->createJsonResponse(array(
+			'count' => $count
+		));
+	}
+
+	public function moveTakenDomainUsersAction($organization_id)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
+		$domain = $this->in->getString('domain');
+
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+
+		$count = $org_domain_manager->moveOtherCompanyUsers($orgdomain);
+
+		return $this->createJsonResponse(array(
+			'count' => $count
+		));
+	}
+
 
 	############################################################################
 	# New person

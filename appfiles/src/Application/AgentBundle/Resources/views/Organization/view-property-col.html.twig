@@ -45,9 +45,14 @@
 		<dl class="table-list">
 			<dt class="type-labels">Created</dt>
 			<dd>
-				<time class="timeago" datetime="{{org.date_created|date('c')}}">{{org.date_created|date('M j, Y')}}</time>
+				<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('M j, Y') }}</time>
 			</dd>
 		</dl>
 	</section>
 </div>
 {# /Properties Box #}
+
+{# Email Associations Box #}
+<div id="{{baseId}}_email_assoc_box">
+	{% include 'AgentBundle:Organization:orgemail-display.html.twig' %}
+</div>

@@ -1,5 +1,23 @@
 @import "lib.less";
 
+.box-header-gradient {
+	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
+	behavior: url(js/lib/PIE.htc);
+	height: 22px;
+
+	h3 {
+		font-size: 10px;
+		font-weight: bold;
+		color: #738699;
+		padding: 0px 8px;
+		line-height: 25px;
+		text-transform: uppercase;
+		font-family: Helvetica, Arial;
+	}
+}
+
 /*****************************************************************************
  * Layout
 /*****************************************************************************/
@@ -1517,6 +1535,16 @@ ul.activity-stream time {
 	box-shadow: 0 1px 0 #FFFFFF, 0 1px 0 #FFFFFF inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
 
+.profile-box-container > section > p:first-child {
+	margin-top: 0;
+	padding-top: 6px;
+}
+
+.profile-box-container > section > p {
+	margin: 8px;
+	font-size: 10px;
+}
+
 .profile-box-container.tabbed > section > article { display: none; }
 .profile-box-container.tabbed > section > article.on { display: block; }
 
@@ -2779,4 +2807,38 @@ body.popup section.body textarea.fill {
 	text-align: right;
 	margin-top: 3px;
 	margin-bottom: 3px;
+}
+
+.email-assoc-overlay .delete-button,
+.email-assoc-overlay .cancel-delete-button {
+	float: right;
+	margin: 3px 3px 0 0;
+}
+
+
+.email-assoc-overlay .overlay-content {
+	width: 400px;
+	height: 300px;
+	padding: 0;
+}
+
+.email-assoc-overlay .emails-exist table td {
+	padding: 0;
+}
+
+.email-assoc-overlay .emails-exist table td h3 {
+	padding: 6px;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.email-assoc-overlay .emails-exist table td .controls-box {
+	.inner-shadow(0, 2px, 3px, 0.2);
+	padding: 4px;
+}
+
+.email-assoc-overlay .controls-box li {
+	text-decoration: underline;
+	color: @link-color;
+	cursor: pointer;
 }

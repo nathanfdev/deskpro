@@ -1,4 +1,5 @@
 @asset-url: "../../";
+@link-color: #4769B3;
 
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule { color: #000; }
@@ -114,4 +115,20 @@
 	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
 	background: -ms-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* IE10+ */
 	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+}
+
+
+.noselect {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.boxmodel-border-box {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 }
