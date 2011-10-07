@@ -308,21 +308,8 @@ class Task extends EntityRepository
 	 */
 	public function countOverdueDelegatedTasksForPerson(Entity\Person $person)
 	{
-//		$query = $this->getEntityManager()->createQuery("
-//			SELECT COUNT(t.id)
-//			FROM DeskPRO:Task t
-//			WHERE t.person_id = ?1
-//            AND t.assigned_agent_id IS NOT NULL
-//            AND t.assigned_agent_id != ?1
-//			AND t.is_completed = false
-//			AND t.date_due < ?2
-//		");
 
 		$date = new \DateTime('now', new \DateTimeZone($person['timezone']));
-
-//		return $query->setParameter(1, $person['id'])
-//			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
-//			->getSingleScalarResult();
 
                 $qb = $this->getEntityManager()->createQueryBuilder();
                 $qb->select('COUNT(t.id)')
