@@ -25,6 +25,7 @@ class Task extends EntityRepository
 	 * @param Person $person The person
 	 * @return Array
 	 */
+    
         public function findPendingTasksForPerson(Entity\Person $person)
         {
             $qb = $this->getEntityManager()->createQueryBuilder();
