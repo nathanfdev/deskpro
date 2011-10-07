@@ -85,28 +85,27 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			});
 		});
 
-		this.getEl('newmember_person_input').autocomplete({
-			focus: true,
-			delay: 300,
-			minLength: 2,
-			source: function(req, callback) {
-				$.ajax({
-					timeout: 8000,
-					type: 'POST',
-					url: BASE_URL + 'agent/people-search/search-quick',
-					data: {term: req.term, format: 'json', limit: 20},
-					dataType: 'json',
-					context: this,
-					success: function(data) {
-						callback(data);
-					}
-				});
-			},
-			select: (function(ev, ui) {
-				ev.preventDefault();
-				self.getEl('newmember_person_input').val(ui.item.email);
-				self.getEl('newmember_person_id').val(ui.item.value);
-			}).bind(this)
+		this.getEl('add_searchbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+			self.getEl('newmember_person_name').text(name);
+			self.getEl('newmember_person_email').text(email);
+			self.getEl('newmember_person_id').val(personId);
+			self.getEl('newmember_position').val('');
+
+			self.getEl('newmember_row').hide();
+			self.getEl('newmember_row_named').show();
+
+			sb.close();
+			sb.reset();
+		});
+
+		var close_newmember_row = function() {
+			self.getEl('add_searchbox_txt').val('');
+			self.getEl('newmember_row_named').hide();
+			self.getEl('newmember_row').show();
+		};
+
+		this.getEl('newmember_cancel_btn').click(function() {
+			close_newmember_row();
 		});
 
 		this.getEl('newmember_btn').click(function() {
@@ -124,13 +123,15 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					self.getEl('newmember_person_id').val('0');
 
 					var row = $(data.row_html);
-					row.insertAfter(self.getEl('newmember_row'));
+					row.insertAfter(self.getEl('newmember_row_named'));
 
 					DeskPRO_Window.util.showSavePuff(row);
 
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '+');
 				}
 			});
+
+			close_newmember_row();
 		});
 
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {

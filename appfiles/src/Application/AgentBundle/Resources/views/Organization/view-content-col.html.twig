@@ -37,62 +37,49 @@
 					<tr class="add-new-member" id="{{baseId}}_newmember_row">
 						<td colspan="3" class="textarea-section">
 							<div
+								id="{{baseId}}_add_searchbox"
 								data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-								data-search-url="{{ path('agent_peoplesearch_performquick') }}"
+								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+								data-touch-focus="1"
 								data-search-param="term"
 								data-position-bound="@parent(td)"
 							>
-								<input type="input" style="width: 98%" class="term integrated" placeholder="Add a person to this organization" class="user-input" />
+								<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+									<li><a>
+										<span class="user-name"></span>
+										<address>&lt;<span class="user-email"></span>&gt;</address>
+									</a></li>
+								</script>
+								<div class="input-wrapper">
+									<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="Add a person to this organization" class="user-input" />
+								</div>
 								<input type="hidden" name="person_id" class="person-id" value="" />
 								<div class="person-search-box" style="display: none">
 									<section>
-										<ul>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>fooasdasdasdsadbar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobasdar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobasdasdsadadasdadasdasdasdasdar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobaasdasdr@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobadsasdasdadaar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>fooasdadbar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foosdasdbar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobasdasdsadasdar@example.com</address>
-											</a></li>
-											<li><a>
-												<span>Seth Devito</span>
-												<address>foobar@exampasddadasdle.com</address>
-											</a></li>
+										<ul class="results-list">
+
 										</ul>
 										<footer>
 											<span class="create-user">Create a new person</span>
 										</footer>
 									</section>
 								</div>
+							</div>
+						</td>
+					</tr>
+					<tr class="add-new-member-named" style="display: none" id="{{baseId}}_newmember_row_named">
+						<td>
+							<div class="user-name" id="{{baseId}}_newmember_person_name"></div>
+							<div class="user-email" id="{{baseId}}_newmember_person_email"></div>
+						</td>
+						<td colspan="2">
+							<div class="position-input">
+								<input type="text" class="role" placeholder="Enter position" id="{{baseId}}_newmember_position" value="" />
+							</div>
+							<div class="controls">
+								<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
+								<button class="clean-white small" id="{{baseId}}_newmember_btn">Add</button>
+								<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">Cancel</button>
 							</div>
 						</td>
 					</tr>

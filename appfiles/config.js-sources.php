@@ -115,6 +115,18 @@ $CONFIG['agent']['pages'] = array(
 	)
 );
 
+$CONFIG['agent']['element-handlers'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-element-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
+	)
+);
+
 $CONFIG['agent']['common'] = array(
 	'mode' => 'yui',
 	'out' => 'agent-common.js',
@@ -128,14 +140,10 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
 		'javascripts/DeskPRO/ElementHandler.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
-		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
 		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
+		'javascripts/DeskPRO/TouchCaller.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',
 		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
 		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',

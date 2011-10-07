@@ -407,32 +407,43 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		//TODO proper sql escape
-		$q = addslashes($q);
-
 		$limit = $this->in->getUint('limit');
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
 
-		$people_list = $this->em->createQuery("
-			SELECT p, p_email
-			FROM DeskPRO:Person p
-			LEFT JOIN p.primary_email p_email
-			LEFT JOIN p.emails emails
-			LEFT JOIN p.organization org
-			WHERE
-				emails.email LIKE '$q%'
-				OR (
-					p.name LIKE '%$q%'
-					OR p.first_name LIKE '%$q%'
-					OR p.last_name LIKE '%$q%'
-					OR emails.email LIKE '%$q%'
-					OR org.name LIKE '%$q%'
-				)
-			GROUP BY p.id
-			ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
-		")->setMaxResults($limit)->getResult();
-		//")->setParameters(array($q, $q))->getResult();
+		if (!$q && $this->in->getBool('start_with')) {
+			$people_list = $this->em->createQuery("
+				SELECT p, p_email
+				FROM DeskPRO:Person p
+				LEFT JOIN p.primary_email p_email
+				LEFT JOIN p.emails emails
+				LEFT JOIN p.organization org
+				ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
+			")->setMaxResults($limit)->getResult();
+		} else {
+
+			//TODO proper sql escape
+			$q = addslashes($q);
+
+			$people_list = $this->em->createQuery("
+				SELECT p, p_email
+				FROM DeskPRO:Person p
+				LEFT JOIN p.primary_email p_email
+				LEFT JOIN p.emails emails
+				LEFT JOIN p.organization org
+				WHERE
+					emails.email LIKE '$q%'
+					OR (
+						p.name LIKE '%$q%'
+						OR p.first_name LIKE '%$q%'
+						OR p.last_name LIKE '%$q%'
+						OR emails.email LIKE '%$q%'
+						OR org.name LIKE '%$q%'
+					)
+				GROUP BY p.id
+				ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
+			")->setMaxResults($limit)->getResult();
+		}
 
 		$format = $this->in->getString('format');
 
