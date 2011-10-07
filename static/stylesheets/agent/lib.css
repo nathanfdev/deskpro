@@ -1,0 +1,33 @@
+/* Get around a bug in less, always have this rule or else compiler error */
+.less-rule {
+  color: #000;
+}
+/**
+* @color: Color for non-supportive browsers
+* @start: Color of start
+* @stop: Color of end
+*/
+/**
+* Set a 1px border of color on each side
+*/
+/**
+* Set a black drop shadow
+*/
+/**
+* Set rounded corners
+*/
+/**
+* Set a radius on each corner
+*/
+/**
+* Set opacity
+*/
+/**
+* Set an inner black shadow
+*/
+/**
+* Full box shadow
+*/
+/**
+* Transition effect
+*/
