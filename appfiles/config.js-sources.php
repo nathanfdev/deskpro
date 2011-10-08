@@ -19,6 +19,7 @@ $CONFIG['agent']['window-sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js',
+                'javascripts/DeskPRO/Agent/WindowElement/Section/Task.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Test.js',
 	)
 );
@@ -55,6 +56,7 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
+                'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 	)
 );
 
@@ -111,7 +113,8 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/IdeaView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
+                'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
 	)
 );
 

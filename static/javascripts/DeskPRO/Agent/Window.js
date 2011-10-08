@@ -698,6 +698,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['ideas_section'];
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			handler = this.sections['tickets_section'];
+		}else if (testcl('.Task')) {
+			handler = this.sections['tasks_section'];
 		}
 
 		if (!handler && this.DEBUG.useTestSection) {
@@ -1535,6 +1537,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/ideas/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new'
 		});
+                this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+			loadUrl: BASE_URL + 'agent/tasks/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new'
+		});
 
 		$('#create_ticket_btn').click(function() {
 			DeskPRO_Window.newTicketLoader.toggle();
@@ -1557,6 +1563,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_idea_btn').click(function() {
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
+                $('#create_task_btn').click(function() {
+                        $('form#newTaskForm input, form#newTaskForm select').val('');
+                        DeskPRO_Window.newTaskLoader.toggle();
+                });
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
 

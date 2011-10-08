@@ -1,0 +1,121 @@
+<section class="source-section sys-filters-section">
+	<header>
+		<h1>My Task</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'today'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'future'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.due_future|default(0) }}</span>
+                    Due In Future
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'overdue'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.person.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>My Team Task</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'today'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'future'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.due_future|default(0) }}</span>
+                    Due In Future
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'overdue'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.teams.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>Tasks I Delegated</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'total'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'today'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'future'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.due_future|default(0) }}</span>
+                    Due In Future
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'overdue'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.delegated.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+
+        <header>
+            <h1>All Tasks</h1>
+	</header>
+        <ul class="source-list">
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'total'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.total|default(0) }}</span>
+                    Total
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'today'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.due_today|default(0) }}</span>
+                    Due Today
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'future'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.due_future|default(0) }}</span>
+                    Due In Future
+		</h3>
+            </li>
+            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'overdue'}) }}">
+                <h3 class="title">
+                    <span class="list-counter" id="">{{ tasks.all.overdue|default(0) }}</span>
+                    Over Due
+		</h3>
+            </li>
+        </ul>
+</section>

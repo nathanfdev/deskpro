@@ -78,6 +78,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The task's optional due date.
 	 * 
+
 	 * @var DateTime
 	 * @ORM_Mapping\Column(name="date_due", type="date", nullable=true)
 	 */
@@ -352,6 +353,16 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		
 		$this->comments->add($comment);
 	}
+
+        public function setDueDate($due_date)
+        {
+            $this->due_date = DateTime($due_date);
+        }
+
+        public function getDueDate()
+        {
+            return $this->due_date;
+        }
 	
 	
 	

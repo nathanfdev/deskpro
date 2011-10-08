@@ -1,0 +1,60 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTask';
+pageMeta.title = 'New Task';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-new-ticket page-new-content">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
+<form action="{{ path('agent_task_save') }}" method="post" {{ form_enctype(form) }} id="newTaskForm">
+    
+    <div class="new-task">
+    <div class="task-view">
+        <div class="section title-section first isLeft leftContent" id="{{baseId}}_title_section">
+            <div class="step">
+                    <span class="num">1</span>
+                    <span class="check">Done</span>
+            </div>
+            <div class="content">
+                <h4>Title</h4>
+                {{ form_errors(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class' : 'user-search isLeft'}}) }}
+                <span id="{{baseId}}_gear_spn" class="gear"></span>
+            </div>
+        </div>
+      
+        <div class=" taskpropertiec-section isRight rightContent" id="{{baseId}}_task_proterties_section" style="display:none;">
+            <div class="content">
+                <div class="due-date isLeft hasMarnigRight-10px">
+                    <h4>Due Date</h4>
+                    {#% set sTime = form.date_due.get('value')| date('m/d/Y') %#}
+                    {{ form_widget(form.date_due, {'attr': {'class' : 'calender'}}) }}
+                </div>
+                <div class="visibility isLeft hasMarnigRight-10px">
+                    <h4>Visibility</h4>
+                    {{form_widget(form.visibility)}}
+                </div>
+                    <div class="assign isLeft">
+                    <h4>Assign</h4>
+                    <div class="">                        
+                        <div class="isLeft"> {{form_widget(form.assigned_agent_team, {'attr': {'class': 'select-agent'}})}}</div>
+                        <div class=""> {{form_widget(form.assigned_agent, {'attr': {'class': 'select-agent'}})}}</div>
+                    </div>
+                </div>
+            </div>
+       </div>        
+    </div>
+ <div class="foot">
+        <button id="{{baseId}}_save">Save & Close</button>
+    </div>
+    
+ 
+</form>
+<!--<div>
+    <a href="#" id="{#{baseId}#}_add_another_task">Add another task</a>
+</div>-->
