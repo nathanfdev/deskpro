@@ -1,0 +1,16 @@
+<article class="task {{ info.content_type }}-{{task.id}}">
+    <div class="comment-display">
+                <input
+			class="item-select"
+			type="checkbox"
+			value="{{ info.content_type }}.{{info.content_id}}"
+			data-content-type="{{ info.content_type }}"
+			data-task-id="{{ task.id }}"
+		/>
+		<div class="task-row">
+			<div class="rendered">
+				{{ task.title|raw }}
+			</div>
+		</div>
+    </div>
+</article>

@@ -103,6 +103,29 @@ class Task extends EntityRepository
             return $query->getSingleScalarResult();
 	}
 
+        /**
+	 * Count due in future tasks.
+	 *
+	 * @param string $time_zone The time zone
+	 * @return int
+	 */
+	public function countDueFutureTasks($time_zone)
+	{
+            $time_zone = new \DateTimeZone($time_zone);
+            $today = new \DateTime('today', $time_zone);            
+
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('COUNT(t.id)')
+                    ->from('DeskPRO:Task', 't')
+                    ->andWhere('t.date_due > :today')
+                    ->andWhere('t.is_completed = :is_completed')
+
+                    ->setParameters(array('is_completed' => false, 'today' => $today))
+                    ;
+            $query = $qb->getQuery();
+            return $query->getSingleScalarResult();
+	}
+
 	/**
 	 * Count pending tasks assigned to the person.
 	 *
@@ -188,6 +211,39 @@ class Task extends EntityRepository
 
 	}
 
+
+        /**
+	 * Count due in future tasks assigned to the person.
+	 *
+	 * @param Person $person The person
+	 * @return int
+	 */
+	public function countDueFutureTasksForPerson(Entity\Person $person)
+	{
+            $time_zone = new \DateTimeZone($person['timezone']);
+            $today = new \DateTime('today', $time_zone);
+            
+            $qb = $this->getEntityManager()->createQueryBuilder();
+
+            $qb->select('COUNT(t.id)')
+                ->from('DeskPRO:Task', 't')
+                ->innerJoin('t.person', 'p')
+                ->leftJoin('t.assigned_agent', 'aa')
+                ->andWhere('p.id = :person_id AND aa.id IS NULL')
+                ->orWhere('aa.id = :person_id')
+                ->andWhere('t.is_completed = :is_completed')
+                ->andWhere('t.date_due > :today ')
+                ->setParameters(array(
+                    'person_id' => $person['id'],
+                    'is_completed' => false,
+                    'today' => $today,                    
+                    ))
+            ;
+            $query = $qb->getQuery();
+            return $query->getSingleScalarResult();
+
+	}
+
 	/**
 	 * Count all pending tasks assigned to the person's teams.
 	 *
@@ -264,6 +320,33 @@ class Task extends EntityRepository
 			->getSingleScalarResult();
 	}
 
+        /**
+	 * Count due in future tasks assigned to the person's teams.
+	 *
+	 * @param Person $person The person
+	 * @return int
+	 */
+	public function countDueFutureTasksForPersonTeams(Entity\Person $person)
+	{
+		$query = $this->getEntityManager()->createQuery("
+			SELECT COUNT(t.id)
+			FROM DeskPRO:Task t
+			JOIN t.assigned_agent_team at
+			JOIN at.members m
+			WHERE m.id = :person_id
+			AND t.is_completed = false
+			AND t.date_due >= :today
+		");
+
+		$time_zone = new \DateTimeZone($person['timezone']);
+		$today = new \DateTime('today', $time_zone);
+		
+		return $query->setParameter('person_id', $person['id'])
+			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)			
+			->getSingleScalarResult();
+	}
+
+
 	/**
 	 * Count pending delegated tasks assigned to the person.
 	 *
@@ -289,9 +372,6 @@ class Task extends EntityRepository
                     ->innerJoin('t.person', 'p')
                     ->leftJoin('t.assigned_agent', 'aa')
                     ->where('p.id= :person_id AND aa.id IS NOT NULL AND aa.id != :person_id AND t.is_completed = :is_completed')
-//                    ->where('aa.id IS NOT NULL')
-//                    ->where('aa.id != :person_id')
-//                    ->where('t.is_completed = :is_completed')
                     ->setParameter('person_id', $person['id'])
                     ->setParameter('is_completed', false)
                     ;
@@ -379,7 +459,81 @@ class Task extends EntityRepository
                     ;
                 $query = $qb->getQuery();
                 return $query->getSingleScalarResult();
+	}
+
+        /**
+	 * Count due in future delegated tasks assigned to the person.
+	 *
+	 * @param Person $person The person
+	 * @return int
+	 */
+	public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
+	{
+		$time_zone = new \DateTimeZone($person['timezone']);
+		$today = new \DateTime('today', $time_zone);
+		
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('COUNT(t.id)')
+                    ->from('DeskPRO:Task', 't')
+                    ->innerJoin('t.person', 'p')
+                    ->leftJoin('t.assigned_agent', 'aa')
+                    ->where('p.id= :person_id')
+                    ->andWhere('aa.id IS NOT NULL')
+                    ->andWhere('aa.id != :person_id')
+                    ->andWhere('t.is_completed = :is_completed ')
+                    ->andWhere('t.date_due > :today')                    
+                    ->setParameter('person_id', $person['id'])
+                    ->setParameter('is_completed', false)
+                    ->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)                    
+                    ;
+                $query = $qb->getQuery();
+                return $query->getSingleScalarResult();
 
 	}
+
+        /**
+	 * All pending tasks assigned to the person.
+	 *
+	 * @param Person $person The person
+         * @param string $filter_type
+	 * @return task object
+	 */
+	public function filterPendingTasksForPerson(Entity\Person $person, $filter_type = 'total')
+	{
+            $time_zone = new \DateTimeZone($person['timezone']);
+            $today = new \DateTime('today', $time_zone);
+            $tomorrow = new \DateTime('tomorrow', $time_zone);
+            $date = new \DateTime('now', new \DateTimeZone($person['timezone']));
+
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('t');
+                    $qb->from('DeskPRO:Task', 't');
+                    $qb->innerJoin('t.person', 'p');
+                    $qb->leftJoin('t.assigned_agent', 'aa');
+                    $qb->andWhere('p.id = :person_id AND aa.id IS NULL');
+                    $qb->orWhere('aa.id = :person_id');
+                    $qb->andWhere('t.is_completed = :is_completed');
+                    if($filter_type == 'today')
+                    {
+                        $qb->andWhere('(t.date_due >= :today AND t.date_due < :tomorrow) OR t.date_due IS NULL');
+                        $qb->setParameter('today', $today);
+                        $qb->setParameter('tomorrow', $tomorrow);
+                    }else if($filter_type == 'future')
+                    {
+                        $qb->andWhere('t.date_due > :today ');
+                        $qb->setParameter('today', $today);
+                    }else if($filter_type == 'overdue')
+                    {
+                        $qb->andWhere('t.date_due < :date_due');
+                        $qb->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
+                    }
+
+                    $qb->setParameters(array('person_id'=> $person['id'], 'is_completed'=> false))
+                    ;
+            $query = $qb->getQuery();
+            return $query->getResult();
+
+	}
+
 
 }

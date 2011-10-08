@@ -30,34 +30,40 @@ class TaskController extends AbstractController {
 
     private $_entityManager;
     private $_currentUser;
+    private $_task_repository;
 
     public function getSectionDataAction() {
 
-        $task_repository = App::getEntityRepository('DeskPRO:Task');
+        $this->_loadModels();
+        $task_repository = $this->_task_repository;
         $person = $this->person;
 
         $all_tasks = array(
             'total' => $task_repository->countPendingTasks(),
             'overdue' => $task_repository->countOverdueTasks($person['timezone']),
             'due_today' => $task_repository->countDueTodayTasks($person['timezone']),
+            'due_future' => $task_repository->countDueFutureTasks($person['timezone']),
         );
 
         $person_tasks = array(
             'total' => $task_repository->countPendingTasksForPerson($person),
             'overdue' => $task_repository->countOverdueTasksForPerson($person),
             'due_today' => $task_repository->countDueTodayTasksForPerson($person),
+            'due_future' => $task_repository->countDueFutureTasksForPerson($person),
         );
 
         $teams_tasks = array(
             'total' => $task_repository->countPendingTaksForPersonTeams($person),
             'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
             'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
+            'due_future' => $task_repository->countDueFutureTasksForPersonTeams($person),
         );
 
         $delegated_tasks = array(
             'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
             'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
             'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
+            'due_future' => $task_repository->countDueFutureDelegatedTasksForPerson($person),
         );
 
         $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
@@ -100,15 +106,6 @@ class TaskController extends AbstractController {
             'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
             'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
         );
-
-//		return $this->renderJson('AgentBundle:Task:countPending.html.twig', array(
-//			'tasks' => array(
-//				'all' => $all_tasks,
-//				'person' => $person_tasks,
-//				'teams'  => $teams_tasks,
-//				'delegated'  => $delegated_tasks,
-//			)
-//		));
 
         $data['section_html'] = $this->renderView('AgentBundle:Task:countPending.html.twig', array(
                     'tasks' => array(
@@ -160,6 +157,23 @@ class TaskController extends AbstractController {
         return $this->render('AgentBundle:Task:view.html.twig');
     }
 
+    public function taskListAction($search_type = null, $search_categoty = null)
+    {
+        $this->_loadModels();
+        $person = $this->person;
+        
+        if($search_type == 'own')
+        {            
+            $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
+        }
+
+        $tpl = 'AgentBundle:Task:task-list.html.twig';
+        return $this->render($tpl, array(
+            'tasks' => $tasks,
+        ));
+        
+    }
+
     /**
      * Process data for add or update the task.
      * @param NewTask $form
@@ -202,6 +216,7 @@ class TaskController extends AbstractController {
 
         $this->_entityManager = $this->get('doctrine')->getEntityManager();
         $this->_currentUser = $user = App::getCurrentPerson();
+        $this->_task_repository = App::getEntityRepository('DeskPRO:Task');        
     }
 
 }

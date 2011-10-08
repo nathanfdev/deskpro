@@ -56,6 +56,7 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
+                'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 	)
 );
 

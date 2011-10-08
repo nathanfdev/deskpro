@@ -1,0 +1,12 @@
+<script>
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+</script>
+<div class="layout-content">
+    <div class="content">
+        {% include 'AgentBundle:Task:task-list-bar.html.twig' %}
+
+        <section class="task-list list-listing">
+            {% include 'AgentBundle:Task:task-list-page.html.twig' %}
+	</section>
+    </div>
+</div>

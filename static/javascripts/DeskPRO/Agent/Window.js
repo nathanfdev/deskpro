@@ -691,6 +691,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['ideas_section'];
 		} else if (testcl('.RecycleBin')) {
 			handler = this.sections['tickets_section'];
+		}else if (testcl('.Task')) {
+			handler = this.sections['tasks_section'];
 		}
 
 		if (!handler && this.DEBUG.useTestSection) {
@@ -1013,7 +1015,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 
-		var page = new fragment_class(html);
+		page = new fragment_class(html);
 		page.setMetaData(pageMeta);
 
 		return page;
