@@ -191,6 +191,11 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.listPage = page;
+
+		this.getListElement().remove();
+		this.listEl = null;
+		this.listContentEl = null;
+
 		var contentEl = $('section.content:first', this.getListElement());
 		contentEl.empty();
 		contentEl.html(page.html);
@@ -201,6 +206,14 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		page.fireEvent('render', [contentEl]);
 		page.fireEvent('activate');
+
+		var scrollEl = $('.with-scrollbar', this.getListElement());
+		if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
+			page.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
+				showEvent: 'show',
+				hideEvent: 'hide'
+			});
+		}
 	},
 
 

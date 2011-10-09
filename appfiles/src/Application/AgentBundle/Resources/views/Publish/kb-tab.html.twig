@@ -1,12 +1,17 @@
-<section id="publish_outline_kb" class="deskpro-tab-item">
-	<ul class="source-list with-tree" id="publish_outline_articlescat_list">
-		<li class="all">
-			<span class="edit-mode tipped" id="publish_outline_articlescat_editmode" title="Edit categories">edit mode</span>
-			<span class="add-new tipped" id="publish_outline_articlescat_addcat" title="Add category">add</span>
-			<span class="all-route title" data-route="listpane:{{ path('agent_kb_list') }}">
-				{{ kb_cats_counts['0_total']|default(0) }} Articles
-			</span>
-		</li>
-		{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
-	</ul>
-</section>
+<div id="publish_outline_kb_tab" class="deskpro-tab-item">
+	<section id="publish_outline_kb">
+		<ul class="source-list with-tree" id="publish_outline_articlescat_list">
+			<li class="all">
+				<span class="edit-mode tipped" id="publish_outline_articlescat_editmode" title="Edit category titles and structure">edit mode</span>
+				<span class="add-new-cat tipped" id="publish_outline_articlescat_addcat" title="Create a new category">create category</span>
+				<span class="add-new-article tipped" id="publish_outline_articles_add" title="Create a new article" data-newloader-name="newArticleLoader">create article</span>
+				<span class="all-route title" data-route="listpane:{{ path('agent_kb_list') }}">
+					{{ kb_cats_counts['0_total']|default(0) }} Articles
+				</span>
+			</li>
+			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
+		</ul>
+	</section>
+
+	{% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
+</div>

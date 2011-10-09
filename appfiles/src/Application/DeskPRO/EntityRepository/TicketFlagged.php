@@ -20,6 +20,17 @@ use Orb\Util\Arrays;
 
 class TicketFlagged extends EntityRepository
 {
+	public function getFlagForTicket($ticket, Entity\Person $person)
+	{
+		$color = App::getDb()->fetchColumn("
+			SELECT color
+			FROM tickets_flagged
+			WHERE ticket_id = ? AND person_id = ?
+		", array($ticket->id, $person->id));
+
+		return $color;
+	}
+
 	public function getFlagsForTickets($tickets, Entity\Person $person)
 	{
 		$ids = Arrays::flattenToIndex($tickets, 'id');

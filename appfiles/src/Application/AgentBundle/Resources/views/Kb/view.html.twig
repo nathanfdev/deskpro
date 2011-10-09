@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_kb_article', {'article_id': article.id}) }}';
 
 pageMeta.permalink = '{{ article.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';
@@ -13,9 +14,11 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page kb-page with-scrollbar">
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing page-kb-view">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
 
 <div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This article has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
@@ -25,54 +28,101 @@ pageMeta.baseId = '{{ baseId }}';
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
-<section class="ticket-header" id="{{baseId}}_article_header">
-	<div class="ticket-id">
-		<span>#{{ article.id }}</span>
+<header class="page-header">
+	<h4 class="id-number">#{{ article.id }}</h4>
+	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ article.title }}</h1>
+	<br class="clear" />
+	<div class="meta-line">
+		<div class="status the-status article-status"><span>{{ article.status }}</span></div>
+	</div>
+	<br class="clear" />
+</header>
+
+<section id="{{baseId}}_tabs_content_wrap" class="mid-page">
+	<dl class="table-list">
+		<dt class="type-labels">Labels</dt>
+		<dd>
+			<ul>
+				<div class="tags-wrap kb-tags">
+					<ul>
+						{% for label in article.labels %}
+							<li><span>{{label.label}}</span></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</ul>
+		</dd>
+
+		<dt class="">Categories</dt>
+		<dd>
+			<ul id="{{baseId}}_categories" class="add-remove-list">
+				{% for cat in article.categories %}
+					<li>
+						<span class="remove">remove</span>
+						{{ cat.full_title }}
+						<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
+					</li>
+				{% endfor %}
+				<li class="add">
+					<span class="add">add</span>
+					Add Category
+				</li>
+			</ul>
+		</dd>
+
+		<dt class="">Products</dt>
+		<dd>
+			<ul id="{{baseId}}_products" class="add-remove-list">
+				{% for prod in article.products %}
+					<li>
+						<span class="remove">remove</span>
+						{{ prod.full_title }}
+						<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+					</li>
+				{% endfor %}
+				<li class="add">
+					<span class="add">add</span>
+					Add Product
+				</li>
+			</ul>
+		</dd>
+
+		<dt>Rating</dt>
+		<dd>
+			{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
+			<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
+		</dd>
+	</dl>
+
+	<br class="clear" />
+
+	<div class="controls" id="{{baseId}}_action_buttons">
+		<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
+		<button class="clean-white permalink">Copy Permalink</button>
+		<button class="clean-white view-user-interface">View in user interface</button>
+		<br class="clear" />
 	</div>
 
-	{% if article.status_code != "hidden.validating" %}
-		<div class="the-status" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>
-			<div class="ticket-status article-status prop-status-icon tipped" title="{{ article.status }}">
-				<span class="ticket-{{article.status}}"></span>
-			</div>
-		</div>
-	{% endif %}
-
-	<div class="ticket-subject editable hover-edit no-cat" data-editable-for=".inline-editable .title">
-		{{ article.title }}
-	</div>
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<div class="assignments">
-		<div class="agent">
-			<div class="desc">
-				By {% for author in article.authors %}<cite>{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
-			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
-		</div>
-	</div>
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
+	<footer class="time-info">
 		<ul>
-			<li class="delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
-			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
-			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
-		</ul>
-	</nav>
+			{% if article.date_created == article.date_published %}
+				<li>
+					Created and published <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
+				</li>
+			{% else %}
+				<li>
+					Created <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
+				</li>
 
-	<div class="times">
-		{% if article.date_created == article.date_published %}
-			Created and published <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> at <time>{{article.date_created|date('H:ia M j Y')}}</time>.<br/>
-		{% else %}
-			Created <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> at <time>{{article.date_created|date('H:ia M j Y')}}</time>.<br/>
-
-			{# Makes sure its not a future date, which means auto-publish sometime in the future #}
-			{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
-				Published <time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>.<br/>
+				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
+				{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
+					<li>
+						Published <time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>
+					</li>
+				{% endif %}
 			{% endif %}
-		{% endif %}
 
-		<div id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
+			<li id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
 				<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
 					Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
 					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
@@ -90,235 +140,120 @@ pageMeta.baseId = '{{ baseId }}';
 					<li data-action="delete">Delete</li>
 					<li data-action="archive">Archive</li>
 				</ul>
-			</div>
-		<div id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
-			<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
-				Automatically publish
-				on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
-					{% if article.date_published %}{{ article.date_published|date('M j Y') }}{% else %}(click to set date){% endif %}</span>
-				<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-				(<span class="remove-auto-publish options-text">remove</span>)
-			</span>
-			<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
-				Set an automatic publish date
-			</span>
-		</div>
-	</div>
+			</li>
+			<li id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+				<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
+					Automatically publish
+					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
+						{% if article.date_published %}{{ article.date_published|date('M j Y') }}{% else %}(click to set date){% endif %}</span>
+					<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+					(<span class="remove-auto-publish options-text">remove</span>)
+				</span>
+				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
+					Set an automatic publish date
+				</span>
+			</li>
+		</ul>
+	</footer>
 </section>
 
-<div class="full-container-tabbed main-tabs">
-	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
-		<div class="full-container-tabbed-contents">
-			<div class="table-content">
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Labels</span>
-					</div>
-					<div class="col-table-content">
-						<div class="tags-wrap kb-tags">
-							<span class="tag-icon"></span>
-							<ul>
-								{% for label in article.labels %}
-									<li><span>{{label.label}}</span></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</div>
-				</div>
+<nav class="page-tabs" id="{{baseId}}_bodytabs">
+	<ul>
+		<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>Article</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>Comments (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>Revisions</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .kb-related-content"><span>Related Content</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>Search</span></li>
+	</ul>
+	<button class="clean-white small kb-editor-edit" style="float:right; margin: 6px 10px 0 0;">Edit</button>
+</nav>
 
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Categories</span>
-					</div>
-					<div class="col-table-content">
-						<ul id="{{baseId}}_categories" class="add-remove-list">
-							{% for cat in article.categories %}
-								<li>
-									<span class="remove">remove</span>
-									{{ cat.full_title }}
-									<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
-								</li>
-							{% endfor %}
-							<li class="add">
-								<span class="add">add</span>
-								Add Category
-							</li>
-						</ul>
-					</div>
-				</div>
-
-                <div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Products</span>
-					</div>
-					<div class="col-table-content">
-						<ul id="{{baseId}}_products" class="add-remove-list">
-							{% for prod in article.products %}
-								<li>
-									<span class="remove">remove</span>
-									{{ prod.full_title }}
-									<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
-								</li>
-							{% endfor %}
-							<li class="add">
-								<span class="add">add</span>
-								Add Product
-							</li>
-						</ul>
-					</div>
-				</div>
-
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Rating</span>
-					</div>
-					<div class="col-table-content">
-						{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
-						<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
-					</div>
-				</div>
-			</div>
+{# Tab Contents #}
+<div id="{{baseId}}_tab_contents" class="tabbed-page-contents">
+	{# Tab: Content #}
+	<div class="deskpro-tab-item kb-content on" style="display: block">
+		<div id="{{baseId}}_content_ed">
+		{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 		</div>
 	</div>
-</div>
+	{# /Tab: Content #}
 
-{# Main Tabs #}
-<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
-	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs">
-		<span class="kb-editor-edit"><a>edit</a></span>
-		<ul>
-			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.attach-tab"><a>Attach (<span id="{{baseId}}_count_attach">{{article.attachments|length|default(0)}}</span>)</a></li>
-			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.revisions"><a>Revisions</a></li>
-			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
-			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.search-tab"><a>Search</a></li>
-		</ul>
-	</div>
-	{# /Tab Triggers #}
-
-	{# Tab Contents #}
-	<div class="full-container-tabbed-contents-wrap">
-		{# Tab: Content #}
-		<div class="full-container-tabbed-contents tab-content kb-content" style="display: block">
-			<div id="{{baseId}}_content_ed">
-			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
-			</div>
-		</div>
-		{# /Tab: Content #}
-
-		{# Tab: Comments #}
-		<div class="full-container-tabbed-contents tab-content comments-tab">
-			<div class="article-comments">
-				<div class="full-tab-content">
-					<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-						{% for comment in article_comments %}
-							{% include 'AgentBundle:Kb:view-comment.html.twig' %}
-						{% endfor %}
-					</div>
-				</div>
-
-				<div class="message admin-message new-note">
-					<div class="message-avatar left">
-						<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-					</div>
-					<div class="message-body">
-						<div class="message-meta">
-							<span class="arrow-left"></span>
-							<h4>{{ app.user.display_name }}</h4>
-						</div>
-						<div class="message-text">
-							<p>
-								<textarea style="width:98%; height: 80px;"></textarea>
-								<div style="text-align:center; margin-top: 9px;">
-									<div class="loading-off">
-										<button class="dp-button x-small">Add Comment</button>
-									</div>
-									<div class="loading-on" style="display:none">
-										Saving ...
-									</div>
-								</div>
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		{# /Tab: Comments #}
-
-		{# Tab: Attachments #}
-		<div class="full-container-tabbed-contents tab-content attach-tab" id="{{baseId}}_attachtab" style="padding: 10px;">
-			<ul class="files file-list">
-				{% for attach in article.attachments %}
-					<li>
-						<a href="{{ attach.blob.download_url }}" target="_blank">{{ attach.blob.filename }}</a>
-						<span class="size">{{ attach.blob.readable_filesize }}</span>
-						(<span class="link-look delete" data-blob-id="{{ attach.blob.id }}">delete</span>)
-					</li>
-				{% endfor %}
-			</ul>
-			<br />
-			Attach more files:
-			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
-			<script class="template-upload" type="text/x-jquery-tmpl">
-				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-			</script>
-			<script class="template-download" type="text/x-jquery-tmpl">
-				<li class="uploaded">
-					<a href="${download_url}" target="_blank">${filename}</a>
-					<span class="size">${filesize_readable}</span>
-					(<span class="link-look delete" data-blob-id="${blob_id}">delete</span>)
-				</li>
-			</script>
-		</div>
-		{# /Tab: Attachments #}
-
-		{# Tab: Revisions #}
-		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content revisions">
-			{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
-		</div>
-		{# /Tab: Revisions #}
-
-		{# Tab: Related #}
-		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content kb-related-content">
-			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
-		</div>
-		{# /Tab: Related #}
-
-		{# Tab: Search #}
-		<div id="{{baseId}}_searchtab" class="full-container-tabbed-contents tab-content search-tab">
-			<div class="tags-wrap sticky-search-words">
-				<span class="tag-icon with-label">Search Words</span>
-				<ul>
-					{% for word in sticky_search_words %}
-						<li><span>{{word}}</span></li>
+	{# Tab: Comments #}
+	<div class="deskpro-tab-item comments-tab">
+		<div class="article-comments">
+			<div class="full-deskpro-tab-item">
+				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+					{% for comment in article_comments %}
+						{% include 'AgentBundle:Kb:view-comment.html.twig' %}
 					{% endfor %}
-				</ul>
-				<div class="explain">
-					When a user searches for any of these words, this page will always be listed in their top results.
 				</div>
 			</div>
 
-			<br />
-
-			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
-		{# /Tab: Search #}
 	</div>
-	{# /Tab Contents $}
+	{# /Tab: Comments #}
+
+	{# Tab: Revisions #}
+	<div id="{{baseId}}_revs" class="loaded deskpro-tab-item revisions">
+		{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
+	</div>
+	{# /Tab: Revisions #}
+
+	{# Tab: Related #}
+	<div id="{{baseId}}_related_content" class="deskpro-tab-item kb-related-content">
+		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+	</div>
+	{# /Tab: Related #}
+
+	{# Tab: Search #}
+	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
+		<div class="tags-wrap sticky-search-words">
+			<dl class="table-list">
+				<dt class="type-labels">Search Words</dt>
+				<dd>
+					<ul>
+						{% for word in sticky_search_words %}
+							<li><span>{{word}}</span></li>
+						{% endfor %}
+					</ul>
+					<div class="explain">
+						When a user searches for any of these words, this page will always be listed in their top results.
+					</div>
+				</dd>
+			</dl>
+		</div>
+
+		<br />
+
+		{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+	</div>
+	{# /Tab: Search #}
 </div>
-{# /Main Tabs #}
-
-<ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
-	{% if article.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
-	{% endif %}
-</ul>
-
+{# /Tab Contents #}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
@@ -327,11 +262,15 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-</div>
+<ul class="status-menu" data-option-name="status" style="display:none">
+	<li data-option-value="published">{{ phrase('agent.kb.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('agent.kb.hidden_status_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('agent.kb.status_archived') }}</li>
+	{% if article.person.id == app.user.id %}
+		<li data-option-value="hidden.draft">{{ phrase('agent.kb.hidden_status_draft') }}</li>
+	{% endif %}
+</ul>
 
-
-</div></div> {# scrollbar divs #}
-
-</div> {# main layout div #}
-
-{% include 'AgentBundle:MediaBrowser:overlay.html.twig' %}
+{# scroll containers #}
+</div></div></div></div>
+{# /scroll containers #}

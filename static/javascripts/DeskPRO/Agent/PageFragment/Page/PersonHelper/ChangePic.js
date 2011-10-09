@@ -24,6 +24,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 	},
 
 	_initOverlay: function() {
+		var self = this;
 		if (this.overlay) {
 			return;
 		}
@@ -32,7 +33,11 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 		this.wrapperEl.append('<div>Loading...</div>');
 
 		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: this.wrapperEl
+			contentElement: this.wrapperEl,
+			destroyOnClose: true,
+			onOverlayClosed: function() {
+				self.overlay = null;
+			}
 		});
 
 		$.ajax({
@@ -41,26 +46,31 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				this.wrapperEl.empty().append(html);
+				this.overlay.setContent($(html));
+				this.wrapperEl = this.overlay.getWrapper();
 				this._initControls();
 			}
 		});
 	},
 
 	_initControls: function() {
-		this.wrapperEl.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: this.wrapperEl,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', this.wrapperEl),
-			downloadTemplate: $('.template-download', this.wrapperEl)
-		});
+		var wrapper = this.overlay.getWrapper();
 
-		$('.save-trigger', this.wrapperEl).click(this._doSave.bind(this));
+		wrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', wrapper),
+			downloadTemplate: $('.template-download', wrapper)
+		}).bind('fileuploadstart', function() {
+			$('p.explain', wrapper).hide();
+		})
+
+		wrapper.delegate('.save-trigger', 'click', this._doSave.bind(this));
 	},
 
 	_doSave: function() {
-		var type = $('.set_pic_opt:checked', this.wrapperEl).val();
+		var type = $('.set_pic_opt', this.overlay.getWrapper()).val();
 
 		var newImgSrc = null;
 		var action = null;
@@ -87,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 				}
 
 				formData.push({ name: 'blob_id', value: blobId });
-				newImgSrc = $('img.pic-new', this.wrapperEl).attr('src');
+				newImgSrc = $('img.pic-new', this.wrapperEl).data('setted-size');
 
 				break;
 
@@ -114,7 +124,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 
 	close: function() {
 		if (this.overlay) {
-			this.overlay.close();
+			this.overlay.destroy();
+			this.overlay = null;
 		}
 	},
 

@@ -1,18 +1,19 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-<div class="tab-bottom-wrap" style="display: block">
+<div class="bottom-action-bar">
 	<div class="tab-bottom">
-		<div class="more-btn">
-			<button class="dp-button x-small">More Results</button>
-		</div>
-		<div class="check-count">
-			<span>0</span> selected
+		<div class="check-count selection-bar">
+			<span class="selected-count">0</span> selected
 
-			<button class="clean-gray xx-small perform-actions-trigger">
+			<button class="clean-white perform-actions-trigger">
 				<span>Perform Action</span>
 			</button>
 		</div>
 		<div class="results-count">
-			Showing 20 results of 340
+			Showing <span class="results-showing-count"></span> of {{ ticket_ids|length }} tickets
+		</div>
+		<div class="more-btn">
+			<button class="clean-white show-more is-not-loading">More Results</button>
+			<div class="is-loading"></div>
 		</div>
 	</div>
 

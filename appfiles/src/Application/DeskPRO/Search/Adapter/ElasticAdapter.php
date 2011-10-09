@@ -56,7 +56,11 @@ class ElasticAdapter extends AbstractAdapter
 	 */
 	public static function create($host, $port = \Elastica_Client::DEFAULT_PORT)
 	{
-		$client = new \Elastica_Client($host, $port);
+		$client = new \Elastica_Client(array(
+			'host' => $host,
+			'port' => $port
+		));
+
 		return new self($client);
 	}
 

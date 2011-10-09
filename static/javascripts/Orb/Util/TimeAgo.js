@@ -99,13 +99,8 @@ Orb.Util.TimeAgo = {
 
 				el.data("timeago", { datetime: new Date(s) });
 
-				var text = $.trim(el.text());
-
-                if (!el.data('timeago-no-ago')) {
-                    text += ' ' + self.phrases['ago'];
-                }
-
-				if (text.length > 0) el.attr("title", text);
+				var titleText = $.trim(el.text());
+				if (titleText.length > 0) el.attr("title", titleText);
 			}
 
 			var data = el.data('timeago');

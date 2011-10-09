@@ -17,12 +17,17 @@ use Application\DeskPRO\Entity;
 /**
  * New ticket acts as the processor and domain object for a newticket form
  */
-class NewTicket
+class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
 	 */
 	public $person;
+
+	/**
+	 * The person who is running this (ex an agent?)
+	 */
+	protected $person_context;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\TicketProps
@@ -35,6 +40,10 @@ class NewTicket
 
 	public $creation_system;
 
+	public $is_html = false;
+
+	protected $mode = 'untrusted';
+
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
 		if ($person AND !$person['id']) {
@@ -44,11 +53,19 @@ class NewTicket
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
 
-		for ($i = 0; $i < 100; $i++) {
+		for ($i = 0; $i < 500; $i++) {
 			$this->custom_ticket_fields["field_$i"] = null;
 		}
 
 		$this->creation_system = $creation_system;
+	}
+
+	public function setPersonContext(Entity\Person $person)
+	{
+		$this->person_context = $person;
+		if ($person->is_agent) {
+			$this->mode = 'trusted';
+		}
 	}
 
 	public function save()
@@ -61,37 +78,55 @@ class NewTicket
 			# Handle the person first
 			#------------------------------
 
-			$is_new_person = false;
+			$validating = null;
 
-			if ($this->person->person_obj) {
-				$person = $this->person->person_obj;
+			$person = null;
+			$email = null;
+			$email_validating = null;
+
+			if ($this->person_context->isGuest()) {
+
+				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
+
+				if ($email) {
+					$validating = 'existing';
+
+					$person = $email->person;
+
+					$email_validating = new Entity\PersonEmailValidating();
+					$email_validating->email = $email->email;
+					$email_validating->person = $person;
+					App::getOrm()->persist($email_validating);
+
+				} else {
+					$validating = 'new';
+
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
+
+					if (!$email_validating) {
+						$person = Entity\Person::newContactPerson();
+						$person->name = $this->person->name;
+						App::getOrm()->persist($person);
+
+						$email_validating = new Entity\PersonEmailValidating();
+						$email_validating->email = $this->person->email;
+						$email_validating->person = $person;
+						App::getOrm()->persist($email_validating);
+
+					} else {
+						$person = $email_validating->person;
+					}
+				}
 			} else {
+				$person = $this->person_context;
 
-				// We might still have a person if the Contact is
-				// is on record with an email addy, but still not a reg'd user
-				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->person->email);
-
-				if (!$person) {
-					$person = Entity\Person::newContactPerson();
-					$is_new_person = true;
+				if ($this->person->name) {
+					$person->name = $this->person->name;
+					App::getOrm()->persist($person);
 				}
 			}
 
-			$person['name'] = $this->person->name;
-
-			// Note that dupe emails shouldnt happen here
-			// The person should already be a person who
-			// has the address, or else we're just initializing it now
-
-			$email = $person->findEmailAddress($this->person->email);
-			if (!$email) {
-				$email = new Entity\PersonEmail();
-				$email['email'] = $this->person->email;
-				$email['is_validated'] = false;
-
-				$person->addEmailAddress($email);
-			}
-			App::getOrm()->persist($person);
+			App::getOrm()->flush();
 
 			#------------------------------
 			# Now ticket
@@ -101,7 +136,13 @@ class NewTicket
 			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;
-			$ticket['person_email'] = $email;
+			$ticket['validating'] = $validating;
+
+			if ($email_validating) {
+				$ticket->person_email_validating = $email_validating;
+			} else {
+				$ticket['person_email'] = $email;
+			}
 			$ticket['status'] = 'open';
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
@@ -114,6 +155,10 @@ class NewTicket
 			$ticket_message['message'] = $this->ticket->message;
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
+			}
+
+			if (!$this->is_html) {
+				$ticket_message['message'] = htmlspecialchars($ticket_message['message']);
 			}
 
 			$attach = false;
@@ -163,27 +208,31 @@ class NewTicket
 			$this->new_message = $ticket_message;
 			$ticket->addMessage($ticket_message);
 
-			if ($ticket->person_email['is_validated']) {
-				$ticket['status']        = Entity\Ticket::STATUS_OPEN;
+			if ($email_validating) {
+				$ticket['status'] = 'hidden.validating';
 			} else {
-				$ticket['status']        = Entity\Ticket::STATUS_HIDDEN;
-				$ticket['hidden_status'] = Entity\Ticket::HIDDEN_STATUS_VALIDATING;
+				$ticket['status'] = 'open';
 			}
 
-			$ticket['status']        = Entity\Ticket::STATUS_OPEN;
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$raw_custom_fields = isset($_POST['newticket']['custom_fields']) ? $_POST['newticket']['custom_fields'] : array();
+			$raw_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
 			foreach ($ticket_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($raw_custom_fields) as $info) {
 					$ticket->setCustomData($info[0], $info[1], $info[2]);
+					App::getOrm()->flush();
 				}
 			}
 
-			if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
-				App::getOrm()->rollback();
-				return $dupe_ticket;
-			}
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+
+			//if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+			//	App::getOrm()->rollback();
+			//	return $dupe_ticket;
+			//}
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();

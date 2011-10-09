@@ -78,10 +78,36 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 5);
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, null);
 		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
-		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 10);
+		$max = 5;
+		$person_tickets_initial = array();
+		foreach ($person_tickets as $t) {
+			if ($t->status == 'open') {
+				$person_tickets_initial[$t->id] = $t;
+				unset($person_tickets[$t->id]);
+				if (count($person_tickets_initial) >= $max) break;
+			}
+		}
+		if (count($person_tickets_initial) < $max) {
+			foreach ($person_tickets as $t) {
+				if ($t->status == 'pending') {
+					$person_tickets_initial[$t->id] = $t;
+					unset($person_tickets[$t->id]);
+					if (count($person_tickets_initial) >= $max) break;
+				}
+			}
+			if (count($person_tickets_initial) < $max) {
+				foreach ($person_tickets as $t) {
+					$person_tickets_initial[$t->id] = $t;
+					unset($person_tickets[$t->id]);
+					if (count($person_tickets_initial) >= $max) break;
+				}
+			}
+		}
+
+		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 50);
 
 		$contact_data = array();
 		foreach ($person->contact_data as $cd) {
@@ -100,6 +126,21 @@ class PersonController extends AbstractController
 		$person_usergroups_ids = $person->getPermissionsManager()->getUsergroupIds();
 		$person_org_usergroups_ids = $person->getPermissionsManager()->getOrganizationUsergroupIds();
 
+		// Org stuff
+		$org_members_count = null;
+		$org_contact_data = null;
+		if ($person->organization) {
+			$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+
+			$org_contact_data = array();
+			foreach ($person->organization->contact_data as $cd) {
+				if (!isset($contact_data[$cd->contact_type])) {
+					$contact_data[$cd->contact_type] = array();
+				}
+				$org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+			}
+		}
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
 			'person_usergroups_ids' => $person_usergroups_ids,
@@ -112,7 +153,10 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
+			'person_tickets_initial' => $person_tickets_initial,
 			'person_tickets_count' => $person_tickets_count,
+			'org_members_count' => $org_members_count,
+			'org_contact_data' => $org_contact_data,
 		));
 	}
 
@@ -237,6 +281,59 @@ class PersonController extends AbstractController
 				}
 				break;
 
+			case 'set-summary':
+				$person->summary = $this->in->getString('summary');
+				$this->em->persist($person);
+				break;
+
+			case 'set-organization':
+
+				$name = $this->in->getString('name');
+				if (!$name) {
+					$data['organization_id'] = 0;
+				} else {
+					$org = App::getEntityRepository('DeskPRO:Organization')->getByName($name);
+
+					if (!$org) {
+						$org = new Organization();
+						$org->name = $name;
+
+						$this->em->persist($org);
+						$this->em->flush();
+					}
+
+					$person->organization = $org;
+					$person->organization_position = $this->in->getString('position');
+
+					$this->em->persist($person);
+
+					// Org stuff
+					$org_members_count = null;
+					$org_contact_data = null;
+					if ($person->organization) {
+						$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+
+						$org_contact_data = array();
+						foreach ($person->organization->contact_data as $cd) {
+							if (!isset($contact_data[$cd->contact_type])) {
+								$contact_data[$cd->contact_type] = array();
+							}
+							$org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+						}
+					}
+
+					// Regenerate the HTML block
+					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
+						'person' => $person,
+						'org_members_count' => $org_members_count,
+						'org_contact_data' => $org_contact_data,
+					));
+
+					$data['organization_id'] = $org->id;
+					$data['html'] = $html;
+				}
+				break;
+
 			case 'password':
 				if ($this->in->getString('password')) {
 					$person->password = $this->in->getString('password');
@@ -338,6 +435,7 @@ class PersonController extends AbstractController
 		$this->em->beginTransaction();
 
 		// Editing emails
+		$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
 		foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
 			if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
 				if (!$email) {
@@ -345,14 +443,17 @@ class PersonController extends AbstractController
 					$person->emails->remove($email_id);
 				} else {
 					$person->emails[$email_id]->email = $email;
+					$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
 					$this->em->persist($person->emails[$email_id]);
 				}
 			}
 		}
 
 		// Adding emails
-		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $email) {
+		$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
 			$email_rec = $person->addEmailAddressString($email);
+			$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
 			$this->em->persist($email_rec);
 		}
 

@@ -28,7 +28,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id;
 
@@ -51,6 +51,21 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_tickets_enabled", type="boolean")
+	 */
+	protected $is_tickets_enabled = true;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_chat_enabled", type="boolean")
+	 */
+	protected $is_chat_enabled = true;
+
+	protected $_usergroups = null;
+	protected $_people = null;
 
 	/**
 	 * @var int
@@ -80,7 +95,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$this->parent = null;
 		}
 	}
-
 
 	/**
 	 * Get the 'full' name of this department by prepending the parents name to it.
@@ -120,7 +134,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		// so if *we* are the child, then there are no more
 		if ($this->parent) {
 			// empty collection
-			return new Doctrine\Common\Collections\ArrayCollection();
+			return new \Doctrine\Common\Collections\ArrayCollection();
 		}
 
 		return $this->children;
@@ -174,7 +188,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		}
 		return $this->title;
 	}
-	
+
 
 	public function __toString()
 	{

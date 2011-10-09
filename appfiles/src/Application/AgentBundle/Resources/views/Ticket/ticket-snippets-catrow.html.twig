@@ -1,3 +1,4 @@
 <li class="cat-title-{{category.id}}" data-category="{{ category.id }}" data-tab-for="article.cat-{{ category.id }}">
-	<label>{{ category.title }}</label>
+	{#<span class="count">{{ ticket_snippets[category.id]|length|default(0) }}</span>#}
+	<a>{{ category.title }}</a>
 </li>

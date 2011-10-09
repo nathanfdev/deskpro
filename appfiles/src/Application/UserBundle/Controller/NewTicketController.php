@@ -33,6 +33,11 @@ class NewTicketController extends AbstractController
 			Entity\Ticket::CREATED_WEB_PERSON,
 			$this->person
 		);
+		$newticket->setPersonContext($this->person);
+
+		if ($this->search_query && !$this->request->isPost()) {
+			$newticket->ticket->subject = $this->search_query;
+		}
 
 		$newticket_formtype = new NewTicketType($this->person);
 		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
@@ -42,73 +47,7 @@ class NewTicketController extends AbstractController
 		$errors = array();
 		$error_fields = array();
 
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
-
-			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'uint', 'discard');
-			$newticket->ticket->attach_ids_authed = true;
-
-			$validator = new \Application\UserBundle\Validator\NewTicketValidator();
-
-			if ($validator->isValid($newticket)) {
-
-				$ticket = $newticket->save();
-				$person = $ticket['person'];
-
-				// Its no longer a preticket, so we can delete the record
-				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
-					$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
-
-					// Must be same user
-					if ($preticket) {
-						if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-							$preticket = null;
-						}
-					}
-
-					if ($preticket) {
-						$this->em->remove($preticket);
-						$this->em->flush();
-					}
-				}
-
-				// If this is a new person, we'll forward them to full reg page
-				if ($person->isNewPerson()) {
-					$this->session->set('finish_register_person', $person['id']);
-					$this->session->set('finish_register_mode', array('type' => 'ticket', 'id' => $ticket['id']));
-					$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref']), true));
-
-					$ticket_access = $this->session->get('ticket_access', array());
-					$ticket_access[$ticket['id']] = array('person_id' => $ticket['person_id']);
-					$this->session->set('ticket_access', $ticket_access);
-
-					return $this->redirectRoute('user_register_finish');
-				}
-
-				// If the person is a user, but they arent logged in, then they have to now
-				if ($person['is_user'] AND $this->person['id'] != $person['id']) {
-					return $this->redirectRoute('user_login', array('return' => $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']))));
-				}
-
-				// If this isnt a new person but they arent registered, we have no choice but
-				// to show a standard thanks page.
-				// - We cant direct them right to the ticket because the user might be an imposter
-				// of an previously submitted email, and showing them the full ticket might reveal
-				// other personal info in custom fields/widgets
-				// - And we cant redirect them to full registration for the same reason
-				// - They'll get an email with a link to the web interface though, so at that point we know they're true
-				if (!$person['is_user']) {
-					$this->session->set('submitted_ticket', $ticket['ref']);
-					return $this->redirectRoute('user_tickets_new_thanks', array('ticket_ref' => $ticket['public_id']));
-				}
-
-				// We get here if the user is a real user and they're logged in
-				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']));
-			} else {
-				$errors = $validator->getErrors(true);
-				$error_fields = $validator->getErrorGroups(true);
-			}
-		}
+		$validator = new \Application\UserBundle\Validator\NewTicketValidator();
 
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -132,6 +71,70 @@ class NewTicketController extends AbstractController
 		$captcha_html = '';
 		if ($captcha) {
 			$captcha_html = $captcha->getHtml();
+		}
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+			$newticket->ticket->attach_ids_authed = true;
+
+			if ($validator->isValid($newticket)) {
+
+				$ticket = $newticket->save();
+				$person = $ticket['person'];
+
+				// Its no longer a preticket, so we can delete the record
+				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
+					$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+
+					// Must be same user
+					if ($preticket) {
+						if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+							$preticket = null;
+						}
+					}
+
+					if ($preticket) {
+						$this->em->remove($preticket);
+						$this->em->flush();
+					}
+				}
+
+				if ($ticket->person_email_validating) {
+					$this->session->setFlash('new_ticket_validating', $ticket->person_email_validating->getEmail());
+				}
+
+				// New users are always sent back to home with flash message.
+				if ($person->isNewPerson()) {
+					$go = 'front';
+
+				// Existing users are redirected to the ticket if they're using a validated email address.
+				// Otherwise they're sent back to the homepage just like an unregistered user is
+				} else {
+					if ($ticket->person_email_validating || $ticket->person->id != $this->person->id) {
+						$go = 'front';
+					} else {
+						$go = 'ticket';
+					}
+				}
+
+				if ($go == 'front') {
+					if ($ticket->person_email_validating) {
+						$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
+					} else {
+						$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
+					}
+					$this->session->setFlash('new_ticket', $ticket->getPublicId());
+
+					return $this->redirectRoute('user');
+				} else {
+					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
+				}
+			} else {
+				$errors = $validator->getErrors(true);
+				$error_fields = $validator->getErrorGroups(true);
+			}
 		}
 
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(

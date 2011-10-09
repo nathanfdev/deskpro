@@ -21,8 +21,11 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 	pageMeta.noResults = true;
 {% endif %}
 </script>
-<div class="layout-content">
-<div class="content">
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing page-validating-comments">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
 
 	{% include 'AgentBundle:Ideas:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:Ideas:filter-control-bar.html.twig' %}
@@ -32,5 +35,7 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 	<section class="ideas-simple-list list-listing">
 		{% include 'AgentBundle:Ideas:filter-page.html.twig' %}
 	</section>
-</div>
-</div>
+
+{# scroll containers #}
+</div></div></div></div>
+{# /scroll containers #}

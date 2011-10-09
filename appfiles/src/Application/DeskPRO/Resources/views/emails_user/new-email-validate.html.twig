@@ -1,0 +1,10 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	{{ layout.section_start('Validation required', 2) }}
+		To finish adding this secondonary email address to your account, simply click on the following validation link:<br />
+		<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
+			{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
+		</a>
+	{{ layout.section_end() }}
+{% endblock %}

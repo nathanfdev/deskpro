@@ -17,7 +17,48 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 
-<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
+<header class="page-header">
+	<nav class="actions" id="{{baseId}}_action_buttons">
+		<ul>
+			<li class="create-ticket"><button class="clean-white large">Create Ticket</button></li>
+			<li class="more"><button class="clean-white large inner-arrow no-sep">More <span class="arrow"></span></button></li>
+		</ul>
+	</nav>
+	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
+		<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
+	</div>
+	<div class="titlewrap">
+		<h1>
+			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('<em>Double-click to set Name</em>') }}</span>
+			<span class="edit-name-gear">edit name</span>
+			<div id="{{baseId}}_editname" style="display: none">
+				<input type="hidden" name="action" value="name" />
+				<input type="text" size="20" name="name" value="{{ person.name }}" />
+			</div>
+		</h1>
+		<div class="meta-line">
+			<div class="org"><span>
+				{% if person.organization %}
+					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}>
+						<span class="org-pos-display">{{ person.organization_position }}</span>
+					</span>
+					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
+				{% else %}
+					No Organization
+				{% endif %}
+			</span></div>
+		</div>
+	</div>
+
+	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
+		<li data-action="reset-password" class="reset-password">Reset Password</li>
+		<li data-action="" class="merge-trigger">Merge User</li>
+		<li data-action="" class="delete-trigger">Delete User</li>
+	</ul>
+	<br class="clear" />
+</header>
+
+<table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
 	<section class="content-col">
 		{% include 'AgentBundle:Person:view-content-col.html.twig' %}
 	</section>

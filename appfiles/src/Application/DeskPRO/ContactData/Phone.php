@@ -40,6 +40,7 @@ class Phone extends AbstractContactData
 	public function getTemplateVars(ContactDataAbstract $contact_record)
 	{
 		return array(
+			'comment' => $contact_record->comment,
 			'country_code' => $contact_record->field_1,
 			'number' => $contact_record->field_2,
 		);

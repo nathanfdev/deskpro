@@ -35,15 +35,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this.ownObject(this.validatingEdit);
 		}
 
-		var cw = this.wrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
-		$('time.timeago', this.wrapper).timeago();
-
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'articles',
 			content_id: this.meta.article_id,
@@ -128,8 +119,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs'),
+			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
@@ -204,9 +194,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			menuElement: $('.status-menu:first', this.wrapper),
 			onItemClicked: function(info) {
 				var status = $(info.itemEl).data('option-value');
+				var statusName = $(info.itemEl).text().trim();
 
-				$('.article-status', trigger).attr('title', status);
-				$('.article-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+				trigger.attr('title', status);
+				$('span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_')).text(statusName);
 
 				self.getEl('auto_unpub').hide();
 				self.getEl('auto_pub').hide();

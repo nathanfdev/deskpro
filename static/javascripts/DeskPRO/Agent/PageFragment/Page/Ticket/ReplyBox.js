@@ -63,6 +63,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		var tabNote = this.getEl('replybox_notetab_btn');
 
 		tabReply.click(function() {
+			self.getEl('is_note').val(0);
 			tabNote.removeClass('on');
 			tabReply.addClass('on');
 
@@ -70,6 +71,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			$('.note-hide', replyBox).show();
 		});
 		tabNote.click(function() {
+			self.getEl('is_note').val(1);
 			tabNote.addClass('on');
 			tabReply.removeClass('on');
 
@@ -107,15 +109,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		});
 
 		//------------------------------
-		// Text snippers
-		//------------------------------
-
-		var textSnippetsBtn = this.getEl('text_snippets_btn');
-		textSnippetsBtn.click(function() {
-			self.showTextSnippets();
-		});
-
-		//------------------------------
 		// Attachments
 		//------------------------------
 
@@ -132,10 +125,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 
 		this.replyBox.fileupload({
 			url: this.page.getMetaData('uploadAttachUrl'),
-			dropZone: this.barWrapper,
+			dropZone: replyBox,
 			autoUpload: true,
 			uploadTemplate: $('.template-upload', this.replyBox),
 			downloadTemplate: $('.template-download', this.replyBox)
+		});
+		this.replyBox.bind('fileuploaddone', function() {
+			console.log('ere');
+			$('.attach-list-area', self.replyBox).show();
+		});
+		this.replyBox.bind('fileuploadstart', function() {
+			console.log('ere');
+			$('.attach-list-area', self.replyBox).show();
 		});
 
 		//------------------------------
@@ -162,44 +163,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		// Main replybox menus
 		//------------------------------
 
-		this.assignAgentSelector = new DeskPRO.Agent.Widget.AgentSelector({
-			triggerElement: $('.reply-agent-menu-trigger', this.replyBox),
-			agentList: $('#agent_selector_list'),
-			multipleChoice: false,
-			onSelectionClick: function(info) {
-				var agentInfo = DeskPRO_Window.getAgentInfo(info.agentId);
+		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
+			element: $('#agent_optionbox_radio').clone(),
+			trigger: $('.reply-agent-menu-trigger', this.replyBox),
+			onClose: function(ob) {
+				var selected = ob.getSelected('agents').pop();
+				if (!selected) return;
+
+				var agentInfo = DeskPRO_Window.getAgentInfo(selected);
 				if (!agentInfo) return;
 
 				self.getEl('agent_id').val(agentInfo.id);
 				self.getEl('agent_id_name').text(agentInfo.name);
-				self.getEl('note_agent_id_name').text(agentInfo.name);
 			}
 		});
 
-		this.assignTeamMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.reply-agent-team-menu-trigger', this.replyBox),
-			menuElement: $('#agent_teams_menu'),
-			onItemClicked: function(info) {
-				var item = $(info.itemEl);
-				if (item.data('team-id')) {
-					var teamId = item.data('team-id');
-					var teamName = item.text().trim();
+		this.assignAgentTeamOptionBox = new DeskPRO.UI.OptionBox({
+			element: $('#agent_team_optionbox_radio').clone(),
+			trigger: $('.reply-agent-team-menu-trigger', this.replyBox),
+			onClose: function(ob) {
+				var selected = ob.getSelected('teams').pop();
+				if (!selected) return;
 
-					self.getEl('agent_team_id').val(teamId);
-					self.getEl('agent_team_id_name').text(teamName);
-					self.getEl('note_agent_team_id_name').text(teamName);
-				}
-			}
-		});
+				var teamName = $('#agent_teams_menu [data-team-id="' + selected + '"]').text().trim();
+				if (!teamName) return;
 
-		this.getEl('note_assign_opt').click(function(ev) {
-			if (self.getEl('note_agent_id_name').text().trim() == '') {
-				self.assignAgentSelector.open(ev);
-			}
-		});
-		this.getEl('note_assign_team_opt').click(function(ev) {
-			if (self.getEl('note_agent_team_id_name').text().trim() == '') {
-				self.assignTeamMenu.open(ev);
+				self.getEl('agent_team_id').val(selected);
+				self.getEl('agent_team_id_name').text(teamName);
 			}
 		});
 
@@ -209,7 +199,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: this.page.getUrl('snippetviewer'),
-			triggerElement: $('.ticket-snippets-trigger', this.replyBox),
+			triggerElement: this.getEl('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
 
@@ -282,28 +272,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	 * @return {Array}
 	 */
 	serializeFormData: function() {
-
-		var wrappers = $('.fields-both', this.replyBox);
-
-		if (this.getReplyType() == 'reply') {
-			wrappers = wrappers.add($('.reply-options', this.replyBox));
-		} else {
-			wrappers = wrappers.add($('.note-options', this.replyBox));
-		}
-
-		var fields = wrappers.find('input, select, textarea');
-
+		var fields = this.replyBox.find('input:visible, select:visible, textarea:visible, input[type="hidden"]');
 		return fields.serializeArray();
-	},
-
-	showTextSnippets: function() {
-		if (!this.textsnippetsOverlay) {
-			this.textsnippetsOverlay = new DeskPRO.UI.Overlay({
-				contentElement: this.getEl('text_snippets_overlay')
-			});
-		}
-
-		this.textsnippetsOverlay.open();
 	},
 
 	/**
@@ -315,12 +285,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			this._draftTimer = null;
 		}
 
-		$('textarea.reply', this.replyBox).val('');
-		$('.attachments ul.file-list', this.replyBox).html('');
+		this.getEl('replybox_txt').val('');
+		$('.attach-list-area ul.files', this.replyBox).html('');
 
 		// If we have a signature, then set it
 		if (this.page.getMetaData('agentSignature', false)) {
-			$('textarea.reply', this.replyBox).val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
+			this.getEl('replybox_txt').val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
 		}
 
 		// Reselect main reply tab

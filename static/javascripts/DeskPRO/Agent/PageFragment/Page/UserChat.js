@@ -50,13 +50,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	_initLayout: function() {
 
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
 		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 
 		var self = this;

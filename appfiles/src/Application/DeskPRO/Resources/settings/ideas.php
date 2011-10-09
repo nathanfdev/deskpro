@@ -30,4 +30,9 @@
 	 * How many votes until an idea is 'popular'?
 	 */
 	'core_ideas.popular_votes' => 10,
+
+	/**
+	 * Show ideas publicly even when they're validating?
+	 */
+	'core_ideas.show_validating' => 1,
 );

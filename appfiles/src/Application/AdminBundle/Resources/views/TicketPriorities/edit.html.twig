@@ -1,44 +1,40 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('priority', {{priority.id|default(0)}}, 'DeskPRO_Page_TicketPriorities');
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
-{% block page_id "ticket_priorities" %}
-{% block header %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
 	<h1>{% if priority.id %}Edit Priority{% else %}New Priority{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; Back to ticket priorities</a>
+	</nav>
 {% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_ticketpris_edit', {'priority_id': priority.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
 	</div>
-	<div class="row">
-		<label>Priority</label>
-		{{ form_widget(form.priority) }}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Priority</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.priority, {'attr': {'size': 4} }) }}
+		</div>
 	</div>
 </div>
 
-<br /><br />
-
 {{ form_rest(form) }}
-</form>
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
 
+<button class="btn primary save-trigger">Save</button>
+</form>
+
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}">delete</a>
+</div>
 {% endblock %}

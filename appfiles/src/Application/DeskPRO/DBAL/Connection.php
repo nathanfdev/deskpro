@@ -83,7 +83,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			}
 
 			if ($index_key !== null) {
-				$array[$row[$group_key]][$row[$index]] = $val;
+				$array[$row[$group_key]][$row[$index_key]] = $val;
 			} else {
 				$array[$row[$group_key]][] = $val;
 			}
@@ -113,7 +113,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			if ($row[$key_index] === null) {
 				$row[$key_index] = $nullkey;
 			}
-			
+
 			$array[$row[$key_index]] = $row[$val_index];
 		}
 

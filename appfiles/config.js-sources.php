@@ -80,6 +80,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/RelatedContentList.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
 		'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
+		'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
 		'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Results.js',
 
@@ -117,6 +118,18 @@ $CONFIG['agent']['pages'] = array(
 	)
 );
 
+$CONFIG['agent']['element-handlers'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-element-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
+	)
+);
+
 $CONFIG['agent']['common'] = array(
 	'mode' => 'yui',
 	'out' => 'agent-common.js',
@@ -129,7 +142,11 @@ $CONFIG['agent']['common'] = array(
 		'javascripts/Orb/Util/EventObj.js',
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/ElementHandler.js',
+		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/MessageBroker.js',
+		'javascripts/DeskPRO/IntervalCaller.js',
+		'javascripts/DeskPRO/TouchCaller.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',
 		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
 		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',
@@ -186,6 +203,7 @@ $CONFIG['agent']['deskpro-ui'] = array(
 	'files' => array(
 		'javascripts/DeskPRO/UI/LabelsInput.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
+		'javascripts/DeskPRO/UI/OptionBox.js',
 		'javascripts/DeskPRO/UI/Menu.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/DateChooser.js',
@@ -210,6 +228,7 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/MergeIdea.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
 		'javascripts/DeskPRO/Agent/Widget/FilterGroupEditor.js',
+		'javascripts/DeskPRO/Agent/Widget/FilterOptionsPop.js',
 
 		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
 
@@ -228,6 +247,7 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Ticket/Property/TicketField.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
 
 		'javascripts/DeskPRO/Agent/TicketList/MassActions/Widget.js',
 
@@ -264,7 +284,11 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/jquery.tinyscrollbar.js',
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/mwheelIntent.js',
+		'vendor/jquery/jquery.textarea-expander.js',
 		//'vendor/jquery/jquery.ajax-retry.js',
+
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/token-field/jquery.token-field.js',
 
 		'vendor/tiny_mce/jquery.tinymce.js',
 
@@ -277,13 +301,8 @@ $CONFIG['agent']['vendors'] = array(
 
 		'vendor/jquery/tag-it/tag-it.js',
 
-		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
-		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
-		'vendor/jquery/tipped/js/bridge/bridge.js',
 		'vendor/jquery/tipped/js/excanvas/excanvas.js',
 		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/skins-base-reset.js',
-		'vendor/jquery/tipped/js/tipped/skins.js',
 		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',
@@ -306,24 +325,21 @@ $CONFIG['admin']['admin-ui'] = array(
 		'javascripts/DeskPRO/Admin/Window.js',
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
-		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
+		'javascripts/DeskPRO/Admin/TableReorder.js',
+	)
+);
 
-		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
-
-		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
-
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js',
-		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js',
-
-		'javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js',
-		'javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js',
-		'javascripts/DeskPRO/Admin/WindowElement/MainMenu/AdminSearchBoxResults.js',
+/**
+ * Admin UI specific
+ */
+$CONFIG['admin']['admin-handlers'] = array(
+	'mode' => 'yui',
+	'out' => 'admin-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
+		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
+		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
 	)
 );
 
@@ -345,11 +361,13 @@ $CONFIG['user']['common'] = array(
 		'javascripts/Orb/Util/Events.js',
 		'javascripts/Orb/Util/TimeAgo.js',
 		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
+
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
@@ -359,9 +377,18 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
 		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
+		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
+		'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
+
 		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
 		'javascripts/DeskPRO/User/InlineSuggestions.js',
 		'javascripts/DeskPRO/User/InlineLoginForm.js',
+
+		'javascripts/DeskPRO/FormValidator/FormValidator.js',
+		'javascripts/DeskPRO/FormValidator/FieldValidator.js',
+		'javascripts/DeskPRO/FormValidator/LengthValidator.js',
+		'javascripts/DeskPRO/FormValidator/EmailValidator.js',
+		'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
 	)
 );
 

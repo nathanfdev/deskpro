@@ -1,4 +1,5 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% block section 'crm' %}
 {% block sub_section 'usergroups' %}
@@ -6,39 +7,28 @@
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/ProductsList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.ProductsList(false, {
-		'orderIdAttr': 'product-id',
-		orderUpdateUrl: '{{ path('admin_products_updateorders') }}'
-	});
-}
-</script>
 {% endblock %}
-{% block before_content %}
-	{{ admin.help_header_start('admin.help.products') }}
-		<h3>What are products?</h3>
-		
-		Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
-		is usually a real product or service your company offers, and use it categorize all kinds of content
-		like tickets, ideas and articles.
-	{{ admin.help_header_end() }}
+{% block prepage %}
+	Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
+	is usually a real product or service your company offers, and use it categorize all kinds of content
+	like tickets, ideas and articles.
+{% endblock %}
+{% block pagetitle %}
+	<h1>Products</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_products_edit', {'product_id': '0'}) }}">Create New Product</a>
+	</nav>
 {% endblock %}
 {% block content %}
+<div class="dp-page-box">
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_products_edit', {'product_id': '0'}) }}" data-height="200" data-width="400">Create New Product</a>
-</div>
-
-<div class="cat-lists" id="ticket_product_parentlist">
-{% for product in all_products %}
-	<ul class="item-list product-list-{{product.id}}" style="margin-top: 10px; margin-bottom: 10px;">
-		{% include 'AdminBundle:Products:list-row.html.twig' %}
-		{% for sub_prod in product.children %}
-			{% include 'AdminBundle:Products:list-row.html.twig' with {'product': sub_prod, 'is_sub': true } %}
+<div class="page-content">
+	{{ design.structure_table({ 'save_order_url': path('admin_products_updateorders') }) }}
+		{% for product in all_products %}
+			{% include 'AdminBundle:Products:list-row.html.twig' %}
 		{% endfor %}
-	</ul>
-{% endfor %}
+	{{ design.structure_table_end() }}
 </div>
 
+</div>
 {% endblock %}

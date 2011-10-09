@@ -5,16 +5,11 @@ DeskPRO.Agent.PageFragment.Page.Test = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
+		this.allowDupe = true;
 		this.TYPENAME = 'test';
 	},
 
 	initPage: function(el) {
 
-		var popover = new DeskPRO.Agent.PageHelper.Popover({
-			pageUrl: BASE_URL + 'agent/people/20001'
-		});
-		popover.open();
-
-		window.popover = popover;
 	}
 });

@@ -60,26 +60,53 @@ class TicketWorkflowsController extends AbstractController
 
 		$form = $this->get('form.factory')->create(new EditTicketWorkflowType(), $workflow);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
 				App::getOrm()->persist($workflow);
 				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:TicketWorkflows:list-row.html.twig', array('workflow' => $workflow));
+				$this->session->setFlash('saved', $workflow->title);
+				return $this->redirectRoute('admin_ticketworks');
 			}
 		}
 
 		return $this->render('AdminBundle:TicketWorkflows:edit.html.twig', array(
 			'workflow'  => $workflow,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
 		));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($workflow_id)
+	{
+		$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
+
+		return $this->render('AdminBundle:TicketWorkflows:delete.html.twig', array(
+			'workflow'  => $workflow,
+		));
+	}
+
+	public function doDeleteAction($workflow_id, $security_token)
+	{
+		$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_workflow', $security_token)) {
+			// TODO err
+			die('invalid token');
+		}
+
+		$this->em->beginTransaction();
+		$this->em->remove($workflow);
+		$this->em->flush();
+		$this->em->commit();
+
+		$this->session->setFlash('deleted', $workflow->title);
+		return $this->redirectRoute('admin_ticketworks');
 	}
 
 	############################################################################

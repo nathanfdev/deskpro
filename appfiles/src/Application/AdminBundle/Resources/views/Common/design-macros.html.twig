@@ -1,0 +1,32 @@
+{% macro block_sections() %}
+	<div class="block-sections">
+		<ul>
+{% endmacro %}
+{% macro block_sections_end() %}
+		</ul>
+	</div>
+{% endmacro %}
+
+{% macro block_sections_item() %}
+	<li>
+{% endmacro %}
+{% macro block_sections_item_end() %}
+	</li>
+{% endmacro %}
+
+
+
+{% macro structure_table(options) %}
+	<table
+		cellspacing="0"
+		cellpadding="0"
+		width="100%"
+		border="0"
+		class="{% if options.save_order_url %}with-reorderable{% endif %} structure-list"
+		{% if options.save_order_url %}data-reorder-save-url="{{ options.save_order_url }}"{% endif %}
+	>
+{% endmacro %}
+
+{% macro structure_table_end() %}
+	</table>
+{% endmacro %}

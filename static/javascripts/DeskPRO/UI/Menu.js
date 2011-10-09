@@ -267,8 +267,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 		// then we dont have to figure out position stuff again because we already did
 		// So we can use the cached info to make it a bit snappier
 		if (this.cachePosInfo && this.openedTime && this.parentMenu && this.parentMenu.openedTime && this.parentMenu.openedTime <= this.openedTime) {
-			var left = this.cachePosInfo.left;
-			var top = this.cachePosInfo.top;
+			var left  = this.cachePosInfo.left;
+			var top   = this.cachePosInfo.top;
+			var point = this.cachePosInfo.point;
 		} else {
 			var width = this.elements.wrapperOuter.outerWidth();
 			var height = this.elements.wrapperOuter.outerHeight();
@@ -287,30 +288,42 @@ DeskPRO.UI.Menu = new Orb.Class({
 					pageX = this.options.parentMenuItem.offset().left - width;
 				}
 
+			// If we have a target (usually a button)
+			// we can try a standard spot so it looks a bit cleaner when opening
+			} else if (event.target && !$(event.target).is('.with-menu-click-position')) {
+
+				var pageX = $(event.target).offset().left + ($(event.target).width() / 2);
+				var pageY = $(event.target).offset().top + ($(event.target).outerHeight()) + 2;
+
+
 			// If its a click event...
 			} else if (event.pageX) {
 				var pageX = event.pageX;
 				var pageY = event.pageY;
 
-			// Otherwise we should be in reference to an element...
+			// Otherwise we have no choice but to use the element...
 			} else {
-				var pageX = $(event.target).offset().top;
-				var pageY = $(event.target).offset().left;
+				var pageX = $(event.target).offset().left;
+				var pageY = $(event.target).offset().top;
 			}
+
+			var point = true;
 
 			// Determine which way to open the menu,
 			// We do this so the menu doesn't go off-screen if
 			// its near the edge
 			if (pageX+width < pageWidth) {
-				var left = pageX+4;
+				var left = pageX;
 			} else {
-				var left = pageX - width - 4;
+				var left = pageWidth - width - 4;
+				point = false;
 			}
 
 			if (pageY+height < pageHeight) {
 				var top = pageY;
 			} else {
-				var top = pageY - height + 4;
+				var top = pageHeight - height - 4;
+				point = false;
 			}
 
 			if (top < 0) {
@@ -319,7 +332,8 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 			this.cachePosInfo = {
 				left: left,
-				top: top
+				top: top,
+				point: point
 			};
 		}
 
@@ -335,6 +349,12 @@ DeskPRO.UI.Menu = new Orb.Class({
 				'left': 0,
 				'background': 'transparent'
 			}).show();
+		}
+
+		if (point) {
+			this.elements.wrapperOuter.addClass('with-point');
+		} else {
+			this.elements.wrapperOuter.removeClass('with-point');
 		}
 
 		this.elements.wrapperOuter.css({

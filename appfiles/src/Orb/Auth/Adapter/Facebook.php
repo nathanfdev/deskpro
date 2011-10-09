@@ -90,17 +90,18 @@ class Facebook extends AbstractCallbackAdatper
 			} catch (\FacebookApiException $e) { }
 		}
 
-		if ($me) {
+		if (!$me) {
 			return new Result(Result::FAILURE, null, array('error_code' => 'failed_session', 'error_message' => 'No active FB session'));
 		}
 
 		return $this->_meToResult($me);
 	}
 
-	
+
 	protected function _meToResult($me)
 	{
 		$identity = new \Orb\Auth\Identity($me['id'], $me);
+		$identity->setFriendlyIdentity($identity['link']);
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;

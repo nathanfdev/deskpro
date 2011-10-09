@@ -14,30 +14,26 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\Entity\Permission;
 
 use Orb\Util\Arrays;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
  */
-class Usergroups extends AbstractLoader
+class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\PersonContextInterface
 {
-	protected $perms = array();
+	protected $perms = null;
 
-	protected function init()
+	/**
+	 * @var int
+	 */
+	protected $person_id = 0;
+
+	public function setPersonContext(Person $person)
 	{
-		$properties = App::getOrm()->createQuery('
-			SELECT DeskPRO:UsergroupProperty p
-			WHERE usergroup_id IN ?1 AND property_type = ?2
-		')->setParameter(1, $this->usergroup_ids)
-		  ->setParameter(2, UsergroupPropertyPermission::PROPERTY_TYPE)
-		  ->getResult();
-
-		$this->perms = UsergroupPropertyPermission::coalescePermissionProperties($properties);
+		$this->person_id = $person->id;
 	}
-
-
 
 	/**
 	 * Get a permission value
@@ -47,13 +43,30 @@ class Usergroups extends AbstractLoader
 	 */
 	public function getPermission($name)
 	{
-		$this->_loadEffectivePermissions();
+		if ($this->perms === null) {
+			if ($this->person_id) {
+				$perms = App::getOrm()->createQuery('
+					SELECT DeskPRO:Permission p
+					WHERE usergroup IN ?1 OR person = ?2
+				')->setParameter(1, $this->usergroup_ids)
+				  ->setParameter(2, $this->person_id)
+				  ->getResult();
+			} else {
+				$perms = App::getOrm()->createQuery('
+					SELECT DeskPRO:Permission p
+					WHERE usergroup IN ?1
+				')->setParameter(1, $this->usergroup_ids)
+				  ->getResult();
+			}
 
-		if (!isset($this->_effective_permissions[$name])) {
+			$this->perms = Permission::getEffectivePermissions($perms);
+		}
+
+		if (!isset($this->perms[$name])) {
 			return null;
 		}
 
-		return $this->_effective_permissions[$name];
+		return $this->perms[$name];
 	}
 
 

@@ -33,6 +33,11 @@ class ArrayAccessWrapper implements StateHandlerInterface
 	 */
 	protected $_clear_state_method = null;
 
+	/**
+	 * A prefix to prefix all keys with
+	 * @var string
+	 */
+	protected $_prefix = '';
 
 	/**
 	 * @param $state_obj The array-like object that can save state
@@ -42,6 +47,17 @@ class ArrayAccessWrapper implements StateHandlerInterface
 		$this->_state_obj = $state_obj;
 	}
 
+
+	/**
+	 * Set the key prefix
+	 *
+	 * @param string $prefix
+	 * @return void
+	 */
+	public function setPrefix($prefix)
+	{
+		$this->_prefix = $prefix;
+	}
 
 
 	/**
@@ -69,7 +85,6 @@ class ArrayAccessWrapper implements StateHandlerInterface
 	}
 
 
-
 	/**
 	 * Clears all state data, or resets back into its initial state.
 	 *
@@ -89,7 +104,9 @@ class ArrayAccessWrapper implements StateHandlerInterface
 		// Otherwise if its traversable we can just clear each key
 		} elseif ($this->_state_obj instanceof \Traversable) {
 			foreach ($this->_state_obj as $k => $v) {
-				unset($this->_state_obj[$k]);
+				if (!$this->_prefix || strpos($k, $this->_prefix) === 0) {
+					unset($this->_state_obj[$k]);
+				}
 			}
 
 		// Uh oh, I have no idea how
@@ -99,24 +116,23 @@ class ArrayAccessWrapper implements StateHandlerInterface
 	}
 
 
-
 	public function offsetUnset($offset)
 	{
-		unset($this->_state_obj[$offset]);
+		unset($this->_state_obj[$this->_prefix . $offset]);
 	}
 
 	public function offsetSet($offset, $value)
 	{
-		$this->_state_obj[$offset] = $value;
+		$this->_state_obj[$this->_prefix . $offset] = $value;
 	}
 
 	public function offsetGet($offset)
 	{
-		return $this->_state_obj[$offset];
+		return $this->_state_obj[$this->_prefix . $offset];
 	}
 
 	public function offsetExists($offset)
 	{
-		return isset($this->_state_obj[$offset]);
+		return isset($this->_state_obj[$this->_prefix . $offset]);
 	}
 }

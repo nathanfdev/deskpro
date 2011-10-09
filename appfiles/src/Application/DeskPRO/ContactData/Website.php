@@ -27,6 +27,7 @@ class Website extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
+		$contact_record->comment = $input['comment'];
 		$contact_record->field_1 = $input['url'];
 	}
 
@@ -42,6 +43,7 @@ class Website extends AbstractContactData
 		$display = preg_replace('#/$#', '', $display);
 
 		return array(
+			'comment' => $contact_record->comment,
 			'url' => $contact_record->field_1,
 			'display' => $display
 		);

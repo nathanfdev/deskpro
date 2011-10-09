@@ -195,24 +195,18 @@ agent_people_ajaxsave:
   defaults: { _controller: AgentBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
+agent_people_savecontactdata:
+  pattern: /people/{person_id}/save-contact-data.json
+  defaults: { _controller: AgentBundle:Person:saveContactData }
+
 agent_people_changepicoverlay:
   pattern: /people/{person_id}/change-picture-overlay
   defaults: { _controller: AgentBundle:Person:changePictureOverlay }
   requirements: { person_id: "\d+" }
 
-agent_people_savecontactdata:
-  pattern: /people/{person_id}/save-contact-data.json
-  defaults: { _controller: AgentBundle:Person:saveContactData }
-  requirements: { person_id: "\d+" }
-
 agent_people_ajaxsave_emails:
   pattern: /people/{person_id}/ajax-save-emails
   defaults: { _controller: AgentBundle:Person:ajaxSaveEmails }
-  requirements: { person_id: "\d+" }
-
-agent_people_ajaxsave_contact:
-  pattern: /people/{person_id}/ajax-save-contact
-  defaults: { _controller: AgentBundle:Person:ajaxSaveContact }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_note:
@@ -306,6 +300,7 @@ agent_org_view:
   pattern: /organizations/{organization_id}
   defaults: { _controller: AgentBundle:Organization:view }
   requirements: { organization_id: "\d+" }
+  options: { fragment_name: 'o' }
 
 agent_org_new:
   pattern: /organizations/new
@@ -321,7 +316,32 @@ agent_org_ajaxsave:
   defaults: { _controller: AgentBundle:Organization:ajaxSave }
   requirements: { organization_id: "\d+" }
 
-agent_people_savecontactdata:
+agent_org_domain_assign:
+  pattern: /organizations/{organization_id}/assign-domain
+  defaults: { _controller: AgentBundle:Organization:assignDomain }
+  requirements: { organization_id: "\d+" }
+
+agent_org_domain_assign:
+  pattern: /organizations/{organization_id}/unassign-domain
+  defaults: { _controller: AgentBundle:Organization:unassignDomain }
+  requirements: { organization_id: "\d+" }
+
+agent_org_domain_moveusers:
+  pattern: /organizations/{organization_id}/domain/move-users
+  defaults: { _controller: AgentBundle:Organization:moveDomainUsers }
+  requirements: { organization_id: "\d+" }
+
+agent_org_domain_moveusers_exist:
+  pattern: /organizations/{organization_id}/domain/reassign-users
+  defaults: { _controller: AgentBundle:Organization:moveTakenDomainUsers }
+  requirements: { organization_id: "\d+" }
+
+agent_org_save_member_pos:
+  pattern: /organizations/{organization_id}/save-member-pos/{person_id}
+  defaults: { _controller: AgentBundle:Organization:savePosition }
+  requirements: { organization_id: "\d+" }
+
+agent_org_savecontactdata:
   pattern: /organizations/{organization_id}/save-contact-data.json
   defaults: { _controller: AgentBundle:Organization:saveContactData }
   requirements: { person_id: "\d+" }
@@ -372,6 +392,14 @@ agent_orgsearch_save_resultprefs:
   pattern: /people-search/save-result-prefs/{cache_id}
   defaults: { _controller: AgentBundle:OrganizationSearch:ajaxSaveResultPrefs }
   requirements: { cache_id: "\d+" }
+
+agent_orgsearch_quicknamesearch:
+  pattern: /organization-search/quick-name-search.json
+  defaults: { _controller: AgentBundle:OrganizationSearch:performQuickNameSearch }
+
+agent_orgsearch_namelookup:
+  pattern: /organization-search/name-lookup.json
+  defaults: { _controller: AgentBundle:OrganizationSearch:checkName }
 
 ################################################################################
 # Ticket Search
@@ -1028,6 +1056,7 @@ agent_news_view:
   pattern: /news/post/{news_id}
   defaults: { _controller: AgentBundle:News:view }
   requirements: { news_id: "\d+" }
+  options: { fragment_name: 'n' }
 
 agent_news_revisionstab:
   pattern: /news/post/{news_id}/view-revisions
@@ -1073,6 +1102,7 @@ agent_downloads_view:
   pattern: /downloads/file/{download_id}
   defaults: { _controller: AgentBundle:Downloads:view }
   requirements: { download_id: "\d+" }
+  options: { fragment_name: 'd' }
 
 agent_downloads_info:
   pattern: /downloads/file/{download_id}/info

@@ -15,14 +15,6 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		var self = this;
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			cw.tinyscrollbar_update();
-			self.fireEvent('resized');
-		});
-
 		this.form = $('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
 		});
@@ -44,7 +36,8 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		orgSel.attr('name', 'newperson[organization_id]');
 		orgSel.css('width', 200);
 		orgSel.prepend('<option selected />');
-		orgSel.chosen();
+
+		this.orgSel = orgSel;
 
 		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
 		ugSel.data('placeholder', 'Choose usergroups');
@@ -78,13 +71,36 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+					if (this.orgSel.val() && !this.fromCompanyTab) {
+						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
+					}
+
+					if (this.orgSel.val() && this.fromCompanyTab) {
+						DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
+							organization_id: this.orgSel.val(),
+							person_id: data.person_id
+						});
+					}
+
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
 				}
 			}
 		});
+	},
+
+	setOrganization: function(org_id) {
+		this.orgSel.val(org_id);
+		this.fromCompanyTab = true;
+	},
+
+	setGuessTerm: function(term) {
+		if (term.indexOf('@') !== -1) {
+			this.getEl('email').val(term);
+		} else {
+			this.getEl('name').val(term);
+		}
 	},
 
 	//#################################################################

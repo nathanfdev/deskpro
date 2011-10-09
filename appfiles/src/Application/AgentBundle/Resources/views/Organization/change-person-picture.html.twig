@@ -1,44 +1,39 @@
-<table cellpadding="50" cellspacing="0" width="100%">
+<div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %}">
 	{% if org.picture_blob %}
-	<tr>
-		<td class="img">
-			<img src="{{ org.getPictureUrl(80) }}" />
-		</td>
-		<td>
-			<label>
-				<input type="radio" name="set_pic_opt" class="set_pic_opt" value="nochange" /> Use the currently set picture
-			</label>
-		</td>
-	</tr>
+	<div class="existing-picture">
+		<header><h3>Existing Picture</h3></header>
+		<section>
+			<img src="{{ org.getPictureUrl(150) }}" />
+		</section>
+	</div>
 	{% endif %}
-
-	<tr class="upload-new-photo">
-		<td class="img">
-			<ul class="files file-list"></ul>
-		</td>
-		<td>
-			<label>
-				<input type="radio" name="set_pic_opt" class="set_pic_opt" value="newpic" />
-				Upload a new file (or drag and drop onto this area).
-			</label>
-			<br />
-			<div class="file-input">
-				<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+	<div class="new-picture">
+		<header>
+			<div class="upload-control">
+				<input type="file" name="file-upload" />
+				<button class="clean-white small">Upload File</button>
+			</div>
+			<h3>New Picture</h3>
+		</header>
+		<section>
+			<p class="explain">
+				Click the upload button above or drop a file onto this area.
+			</p>
+			<div class="files">
 			</div>
 
 			<script class="template-upload" type="text/x-jquery-tmpl">
-				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+				<p>Upliading ${name}...</p>
 			</script>
 			<script class="template-download" type="text/x-jquery-tmpl">
-				<li>
+				<div>
 					<input type="hidden" name="new_blob_id" class="new_blob_id" value="${blob_id}" />
-					<img src="${download_url}?s=80" class="pic-new" />
-				</li>
+					<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
+					<img src="${download_url}?s=150" class="pic-new" data-setted-size="${download_url}?s=60" />
+					<div><button class="clean-white save-trigger small">Set as new picture</button></div>
+				</div>
 			</script>
-		</td>
-	</tr>
-</table>
-
-<br />
-
-<center><button class="dp-button save-trigger">Save</button></center>
+		</section>
+	</div>
+	<br class="clear" />
+</div>

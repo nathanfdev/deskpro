@@ -22,23 +22,86 @@
 					</li>
 				{% endfor %}
 				{% if not no_comment_form %}
-				<li class="new-comment">
-					<form action="{{ form_action }}" method="post">
-						<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea><br/>
-
-						<input type="text" name="new_comment[email]" placeholder="Name..." style="margin-top: 5px; "/>
-						<input type="text" name="new_comment[email]" placeholder="Email..." />
-
-						{#
-						<span class="or-signin">
-							or sign in with
-							<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/twitter.png') }}" alt="" />
-							<img class="facebook" src="{{ asset('images/icons/social_media_mini_icons/facebook.png') }}" alt="" />
-						</span>
-						#}
-
-						<br />
-						<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+				<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
+					<form action="{{ form_action }}" method="post" class="with-form-validator">
+						<div class="login-area">
+							<div class="tabs-wrap">
+								<div>
+									<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea>
+								</div>
+								{% if not app.user.is_guest %}
+                                    <div class="dp-form">
+                                    	<div class="dp-form-row">
+											<div class="dp-form-label">
+												<label>Display name *</label>
+											</div>
+											<div class="dp-form-input">
+												<input
+													type="text"
+													name="new_comment[name]"
+													class="display-name-field"
+													value="{{ app.user.display_name }}"
+													data-field-validators="DeskPRO.Form.LengthValidator"
+													data-min-len="2"
+												/>
+											</div>
+										</div>
+                                    </div>
+                                    <div style="padding-top: 0">
+                                    	<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+                                    </div>
+								{% else %}
+									<div class="tab dp-form">
+										<div class="dp-form-row source-extra" style="display: none">
+											<div class="dp-form-label">
+												<label>Logged in as</label>
+											</div>
+											<div class="dp-form-input">
+												<span class="source-extra-name"></span>
+											</div>
+										</div>
+										<div class="dp-form-row">
+											<div class="dp-form-label">
+												<label>Display name *</label>
+											</div>
+											<div class="dp-form-input">
+												<input
+													type="text"
+													name="new_comment[name]"
+													class="display-name-field"
+													value=""
+													data-field-validators="DeskPRO.Form.LengthValidator"
+													data-min-len="2"
+												/>
+											</div>
+										</div>
+										<div class="dp-form-row email-address-row">
+											<div class="dp-form-label">
+												<label>Email address *</label>
+											</div>
+											<div class="dp-form-input">
+												<input type="text" name="new_comment[email]" />
+											</div>
+										</div>
+									</div>
+									<div style="padding-top: 0">
+										<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+									</div>
+								{% endif %}
+							</div>
+							{% if app.user.is_guest and app.usersources|length %}
+							<div class="nav">
+								<ul>
+									<li class="on" data-tab-for="#comments_login_local"><a class="btn small"><span>Guest</span></a></li>
+									{% for usersource in app.usersources %}
+										<li class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" data-auth-type="{{ get_type(usersource.adapter)|lower }}">
+											{{ render_usersource(usersource, 'button', {'button_type': 'button'}) }}
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+							{% endif %}
+						</div>
 					</form>
 				</li>
 				{% endif %}

@@ -30,7 +30,7 @@ interface ContentSearcherInterface
 	 * @param  $query
 	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function query($query_text);
+	public function query($query_text, $per_page = 25, $page = 1);
 
 	/**
 	 * Fetch lablled content

@@ -14,6 +14,14 @@ user_accept_upload:
   pattern:  /accept-temp-upload
   defaults: { _controller: UserBundle:Main:acceptTempUpload }
 
+user_validate_email:
+  pattern: /validate-email/{id}/{auth}
+  defaults: { _controller: UserBundle:Main:validateEmail }
+
+user_jstell_login:
+  pattern: /login/jstell/{jstell}/{security_token}/{usersource_id}
+  defaults: { _controller: UserBundle:Main:jstellLogin }
+
 ################################################################################
 # Login/logout
 ################################################################################
@@ -32,7 +40,7 @@ user_logout:
 
 user_login_authenticate_local:
   pattern: /login/authenticate-password
-  defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
+  defaults: { _controller: UserBundle:Login:authenticateLocal, usersource_id: 0 }
 
 user_login_authenticate:
   pattern: /login/authenticate/{usersource_id}
@@ -97,17 +105,13 @@ user_profile_emails_remove:
   pattern: /profile/emails/{email_id}/remove
   defaults: { _controller: UserBundle:Profile:removeEmail }
 
-user_profile_emails_validate:
-  pattern: /profile/emails/{email_id}/validate
-  defaults: { _controller: UserBundle:Profile:validateEmail }
+user_profile_emails_validate_remove:
+  pattern: /profile/emails/{email_id}/remove-validating
+  defaults: { _controller: UserBundle:Profile:removeEmailValidating }
 
 user_profile_emails_validate_sendlink:
   pattern: /profile/emails/{email_id}/validate/send-link
   defaults: { _controller: UserBundle:Profile:sendValidateEmailLink }
-
-user_profile_emails_validate_code:
-  pattern: /profile/emails/{email_id}/validate/{code}
-  defaults: { _controller: UserBundle:Profile:validateEmail }
 
 user_profile_emails_setdefault:
   pattern: /profile/emails/{email_id}/set-default

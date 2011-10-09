@@ -16,14 +16,14 @@
 							Ticket <a class="with-route" data-route="page:{{ object_path_agent(pending_article.ticket) }}">{{ pending_article.ticket.subject }}</a>
 						</h3>
 					</div>
-					<div class="top-row-right">
+					<div class="top-row-right buttons">
 						<div class="bound-faded"></div>
-						<span class="pending-create">Create</span>
-						<span class="pending-delete">Delete</span>
+						<button class="clean-white small pending-create">Create</button>
+						<button class="clean-white small pending-delete">Delete</button>
 					</div>
 				</div>
 			{% else %}
-				<div class="top-row-right" style="padding: 3px; float: right;">
+				<div class="top-row-right " style="padding: 3px; float: right;">
 					<div class="bound-faded"></div>
 					<span class="pending-create">Create</span>
 					<span class="pending-delete">Delete</span>

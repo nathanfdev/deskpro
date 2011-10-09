@@ -17,7 +17,7 @@ use \Doctrine\ORM\EntityRepository;
 
 class PermissionCache extends EntityRepository
 {
-	public function loadPermissionTypes($usergroup_key, array $types)
+	public function loadPermissionTypes($usergroup_key, $person_id, array $types)
 	{
 		// A simple filter to make sure only valid names are included
 		$types = array_filter($types, function($var) {
@@ -28,13 +28,19 @@ class PermissionCache extends EntityRepository
 			return array();
 		}
 
+		$key = $usergroup_key;
+
+		if ($person_id) {
+			$key .= ".$person_id";
+		}
+
 		$types = '\'' . implode('\',\'', $types) . '\'';
 
 		$caches = $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:PermissionCache c
 			WHERE c.name IN ($types) AND c.usergroup_key = ?1
-		")->setParameter(1, $usergroup_key)
+		")->setParameter(1, $key)
 		  ->getResult();
 
 		return $caches;

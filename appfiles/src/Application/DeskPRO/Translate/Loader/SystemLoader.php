@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
+use Orb\Util\Arrays;
+
 /**
  * Loads default phrases from filesystem-based lang packs
  */
@@ -38,6 +40,7 @@ class SystemLoader implements LoaderInterface
 		}
 
 		$lang_packs = array_unique($lang_packs);
+		$lang_packs = Arrays::removeFalsey($lang_packs);
 
 		$phrases = array();
 

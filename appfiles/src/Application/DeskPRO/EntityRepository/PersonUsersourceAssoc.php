@@ -20,20 +20,16 @@ class PersonUsersourceAssoc extends EntityRepository
 	/**
 	 * Finds the PersonUsersourceAssoc for a given identity.
 	 * If no association exists, null is returend.
-	 *
-	 * @param  int         $usersource_id
-	 * @param  string|int  $identity
-	 * @return Application\DeskPRO\Entity\PersonUsersourceAssoc
 	 */
-	public function getIdentityAssociation($usersource_id, $identity)
+	public function getIdentityAssociation($usersource, $identity)
 	{
 		try {
 			$assoc = $this->_em->createQuery("
 				SELECT f, p
 				FROM DeskPRO:PersonUsersourceAssoc f
 				LEFT JOIN f.person p
-				WHERE f.usersource_id = ?1 AND f.identity = ?2
-			")->setParameter(1, $usersource_id)->setParameter(2, $identity)->getSingleResult();
+				WHERE f.usersource = ?1 AND f.identity = ?2
+			")->setParameter(1, $usersource)->setParameter(2, $identity)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			return null;
 		}

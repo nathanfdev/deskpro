@@ -22,7 +22,7 @@ use Application\DeskPRO\Entity\LabelBlob;
 /**
  * A blob is just a pointer to data.
  *
- * @ORM_Mapping\Entity
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Blob")
  * @ORM_Mapping\Table(name="blobs")
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
@@ -162,7 +162,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	/**
 	 * Get the file extension
 	 *
@@ -175,7 +174,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 		return substr($this->filename, $pos+1);
 	}
-
 
 
 	/**
@@ -199,7 +197,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	/**
 	 * Get the filesize with B, KB, GB etc suffix.
 	 */
@@ -207,7 +204,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return Numbers::filesizeDisplay($this->filesize);
 	}
-
 
 
 	/**
@@ -219,7 +215,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->id . '-' . $this->authcode;
 	}
-
 
 
 	/**

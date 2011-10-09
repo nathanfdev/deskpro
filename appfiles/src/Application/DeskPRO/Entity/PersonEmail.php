@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
  *
- * @ORM_Mapping\Entity
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonEmail")
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="people_emails",
  *     indexes={
@@ -34,7 +34,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 *
 	 */
 	protected $id = null;
 
@@ -62,10 +61,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	protected $email_domain;
 
 	/**
+	 * TODO depciated use PersonEmailValidating
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_validated", type="boolean")
 	 */
-	protected $is_validated = false;
+	protected $is_validated = true;
 
 	/**
 	 * A comment or description of the email address. For example, "work" or "home."
@@ -76,12 +76,19 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	protected $comment = '';
 
 	/**
+	 * The original time the email was created. If validation is requried, this will be the time
+	 * that PersonEmailValidating record was created before this one.
+	 *
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
+	 * The time this email became valid. If validation is requried, then this is when
+	 * a PersonEmailValidating becomes a a PersonEmail. If its not required, then
+	 * this and date_created will be the same.
+	 *
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_validated",type="datetime", nullable=true)
 	 */
@@ -90,6 +97,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
+		$this->date_validated = new \DateTime();
+		$this->is_validated = true;
 	}
 
 	public function getEmailDomain()

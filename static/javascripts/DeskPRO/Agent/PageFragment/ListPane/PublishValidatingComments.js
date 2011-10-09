@@ -7,11 +7,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
-		this.ownObject(this.selectionBar);
-
 		this.actionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
 			menuElement: $('ul.actions-menu:first', this.wrapper),
 			onItemClicked: function(info) {
 				var data = [];
@@ -46,23 +42,41 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		});
 		this.ownObject(this.actionsMenu);
 
-		var findRowInfo = function(el) {
-			var row = $(el);
-			var x = 0;
-			while (!row.is('article')) {
-				if (x++ > 10) return;
-				row = row.parent();
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onButtonClick: function(ev) {
+				self.actionsMenu.open(ev);
 			}
+		});
+		this.ownObject(this.selectionBar);
+
+		var findRowInfo = function(el) {
+
+			var row = $(el);
+
+			var editRow = $(el).closest('div.edit-comment');
+			if (editRow.length) {
+				var row = $('article.' + editRow.data('content-type') + '-' + editRow.data('comment-id'));
+				return findRowInfo(row);
+			}
+
+			row = row.closest('article');
+
 			var check = $('input.item-select', row);
 			if (!check.length) {
 				return;
 			}
 
-			return {
+			var info = {
 				row: row,
 				contentType: $(check).data('content-type'),
 				commentId: $(check).data('comment-id')
 			};
+
+			var editRow = $('div.edit-' + info.contentType + '-' + info.commentId, self.wrapper);
+			console.log(editRow);
+			info.editRow = editRow;
+
+			return info;
 		};
 
 		this.wrapper.delegate('.validate-approve', 'click', function(ev) {
@@ -82,7 +96,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			ev.stopPropagation();
 
 			var info = findRowInfo(this);
-			self.editComment(info.contentType, info.commentId, info.row);
+			self.editComment(info.contentType, info.commentId, info.row, info);
 		});
 
 		this.wrapper.delegate('.comment-editsave-trigger', 'click', function(ev) {
@@ -99,16 +113,18 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 					var rendered = $('.rendered', info.row);
 					rendered.html(data.comment_html);
 
-					var wr = $('.edit-comment', info.row).hide();
-					$('.comment-display', info.row).show();
+					info.row.show();
+					info.editRow.hide();
 				}
 			});
 		});
 
 		this.wrapper.delegate('.comment-editcancel-trigger', 'click', function(ev) {
 			var info = findRowInfo(this);
-			var wr = $('.edit-comment', info.row).hide();
-			$('.comment-display', info.row).show();
+			var editEl = info.editRow;
+
+			info.row.show();
+			editEl.hide();
 		});
 
 		this.wrapper.delegate('.validate-create-ticket', 'click', function(ev) {
@@ -176,12 +192,14 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		});
 	},
 
-	editComment: function(typename, commentId, el) {
-		$('.comment-display', el).hide();
-		var wr = $('.edit-comment', el).show();
-		if (!wr.is('.rte-inited')) {
-			wr.addClass('rte-inited');
-			$('textarea', wr).tinymce({
+	editComment: function(typename, commentId, el, info) {
+
+		el.hide();
+		var editEl = info.editRow;
+
+		if (!editEl.is('.rte-inited')) {
+			editEl.addClass('rte-inited');
+			$('textarea', editEl).tinymce({
 				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
 
 				theme: 'advanced',
@@ -196,6 +214,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 				theme_advanced_statusbar_location: 'bottom'
 			});
 		}
+
+		editEl.show();
 	},
 
 	updateCount: function(action) {
@@ -206,6 +226,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			count++;
 		} else {
 			count--;
+		}
+
+		if (count < 0) {
+			count = 0;
 		}
 
 		var countEl = $('#publish_validating_comments_count').text(count);

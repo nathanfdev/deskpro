@@ -3,9 +3,6 @@ Orb.createNamespace('DeskPRO.Agent.Widget');
 /**
  * A filter group editor positions rows in a popover overlay with rows
  * that match up to filter titles on the left.
- *
- * (This is just a bit specific to the structure of ticket filters
- * in the position aspects)
  */
 DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 

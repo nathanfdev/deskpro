@@ -17,20 +17,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var self = this;
 
 		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
 
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json'
+			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
+			displayEl: this.getEl('contact_display'),
+			outsideEl: this.getEl('contact_outside'),
+			onReplaceEditor: function() {
+				self.refreshPropBox();
+			}
 		});
 		this.ownObject(this.contactEditor);
-
-		this.initNoteFormEditable();
-
-		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
 		var tzMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('timezone')
@@ -83,7 +79,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			baseElement: this.wrapper,
 			ajax: {
 				url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-			}
+			},
+			triggers: '.edit-name-gear'
 		});
 
 		// Attach click to wrapper because
@@ -153,7 +150,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			}
 		});
-		this.ownObject(this.moreactionMenu);
+		this.ownObject(this.moreactionsMenu);
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
@@ -163,6 +160,177 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this._initLabels();
 		this._initCustomFieldsEditor();
+
+		$('.profile-box-container.tabbed', this.wrapper).each(function() {
+			var simpleTabs = new DeskPRO.UI.SimpleTabs({
+				triggerElements: '> header li',
+				context: this
+			});
+
+			self.ownObject(simpleTabs);
+		});
+
+		this._initOrgEdit();
+
+		this.getEl('tickets_viewall').click(function(ev){
+			var row = $(this).closest('tr').remove();
+			self.getEl('tickets_rest').slideDown();
+		});
+
+		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
+
+		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
+
+		this.refreshPropBox();
+	},
+
+	refreshPropBox: function() {
+
+		var contactBox = $('.profile-box-container.contact', this.el);
+
+		var has = false;
+		if ($('.contact-data-list > li', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.outside-display > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has && $('.addresses > *', contactBox).length) {
+			has = true;
+		}
+
+		if (!has) {
+			contactBox.addClass('no-section');
+		} else {
+			contactBox.removeClass('no-section');
+		}
+	},
+
+	//#########################################################################
+	//# Org Edit
+	//#########################################################################
+
+	_initOrgEdit: function() {
+		var self = this;
+		$('.org-edit-trigger', this.wrapper).click(function(ev) {
+			ev.preventDefault();
+			self.toggleOrgEdit();
+		});
+
+		var orgDisplay = this.getEl('org_display_wrap');
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		this.getEl('org_edit_save').click(function() {
+			var postData = [];
+			postData.push({
+				name: 'action',
+				value: 'set-organization'
+			});
+			postData.push({
+				name: 'name',
+				value: $('.org-set', self.getEl('org_edit_wrap')).val().trim()
+			});
+			postData.push({
+				name: 'position',
+				value: $('.org-pos-set', self.getEl('org_edit_wrap')).val().trim()
+			});
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				success: function(data) {
+					orgDisplay.empty();
+					if (data.organization_id) {
+						orgDisplay.html(data.html);
+					}
+
+					self.toggleOrgEdit();
+				}
+			});
+		});
+
+		var currentLookupAjax = null;
+
+		var showhide_notice = function(onff) {
+			if (onff == 'on') {
+				self.getEl('org_create_notice').slideDown();
+			} else {
+				self.getEl('org_create_notice').slideUp();
+			}
+		};
+
+		var getname = function() {
+			return $('.org-set', self.getEl('org_edit_wrap')).val().trim();
+		}
+
+		var runlookup = function() {
+			if (currentLookupAjax) {
+				currentLookupAjax.abort();
+				currentLookupAjax = null;
+			}
+
+			var val = getname();
+
+			currentLookupAjax = $.ajax({
+				url: BASE_URL + 'agent/organization-search/name-lookup.json',
+				dataType: 'json',
+				data: {'name': val},
+				success: function(data) {
+					if (getname() != val) {
+						return;
+					}
+					if (data.organization_id) {
+						showhide_notice('off');
+					} else {
+						showhide_notice('on');
+					}
+				}
+			});
+		};
+
+		$('.org-set', this.getEl('org_edit_wrap')).autocomplete({
+			minLength: 2,
+			source: function(request, response) {
+				var name = getname();
+				$.ajax({
+					url: BASE_URL + 'agent/organization-search/quick-name-search.json',
+					data: { 'term': request.term },
+					dataType: 'json',
+					success: function(data) {
+						response(data.results);
+
+						if (getname() == name) {
+							if (!data.exact) {
+								showhide_notice('on');
+							} else {
+								showhide_notice('off');
+							}
+						} else {
+							showhide_notice('off');
+						}
+					}
+				})
+			}
+		}).blur(function() {
+			runlookup();
+		});
+	},
+
+	toggleOrgEdit: function() {
+		var orgDisplay = this.getEl('org_display_wrap');
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		if (orgEdit.is(':visible')) {
+			orgEdit.hide();
+			orgDisplay.show();
+		} else {
+			orgDisplay.hide();
+			orgEdit.show();
+		}
 	},
 
 	//#########################################################################
@@ -211,13 +379,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	//#########################################################################
 
 	_initLabels: function() {
+
 		// Tags
-		this.labelsList = $(".people-tags ul", this.wrapper).tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".people-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'people',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
+		this.ownObject(this.labelsInput);
 	},
 
 	saveLabels: function() {
@@ -241,43 +412,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			}
 		});
-	},
-
-	//#########################################################################
-	//# Note form stuff
-	//#########################################################################
-
-	initNoteFormEditable: function() {
-		this.notesSection = $('.notes-wrap:first', this.wrapper);
-
-		$('.new-note-form .trigger.save', this.notesSection).click((function() {
-			this.saveNote();
-		}).bind(this));
-	},
-
-	saveNote: function() {
-
-		$('.new-note-form', this.notesSection).addClass('saving');
-		var note = $('.new-note-form textarea', this.notesSection).val();
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-note',
-			data: {note: note},
-			success: this.handleNoteSave.bind(this)
-		});
-	},
-
-	handleNoteSave: function(data) {
-
-		$('.new-note-form textarea', this.notesSection).val('');
-
-		var list = $('.note-list', this.notesSection);
-		list.append(data.note_li_html);
-
-		$('.new-note-form', this.notesSection).removeClass('saving');
-
-		this.updateCounts();
 	}
 });

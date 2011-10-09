@@ -41,7 +41,7 @@ class DeskproContainer extends Container
 		$classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $this->camelize($id) . 'Service';
 
 		if (!class_exists($classname)) {
-			throw new \InvalidArgumentException("Invalid service `$id`");
+			throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
 		}
 
 		$obj = $classname::create($this);

@@ -58,13 +58,13 @@
 <section class="source-section custom-filters-section">
 	<header>
 		<h1>Filters</h1>
-		<span class="settings">edit display</span>
+		<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor">edit display</span>
 	</header>
 	<article id="custom_filters_wrap">
-		<ul class="source-list">
+		<ul id="tickets_outline_custom_filters" class="source-list">
 			{% for filter in custom_filters %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
@@ -74,6 +74,9 @@
 					</h3>
 				</li>
 			{% endfor %}
+			<li class="no-data launch-customfilters-editor">
+				Click <span class="gear-icon"></span> to show filters
+			</li>
 		</ul>
 	</article>
 </section>
@@ -168,6 +171,20 @@
 				<option value="total_user_waiting">Group By: Total Time Waiting</option>
 				<option value="date_created">Group By: Time Since Creation</option>
 			</select>
+		</script>
+	</section>
+</section>
+
+<section id="ticket_customfilter_group_editor">
+	<section class="filter-group-editor">
+		<span class="close"></span>
+		<script type="text/x-deskpro-plain" class="editor-row-tpl">
+			<div class="filter-row">
+				<div class="field-wrap"></div>
+			</div>
+		</script>
+		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
+			<label><input type="checkbox" checked="checked" /> Show</label>
 		</script>
 	</section>
 </section>

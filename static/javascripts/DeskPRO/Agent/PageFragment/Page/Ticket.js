@@ -21,56 +21,31 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
-		this.wrapper = el;
-		this.contentWrapper = $('.layout-content', this.wrapper).attr('id', Orb.getUniqueId());
-		this.barWrapper = $('.bar-wrapper', this.wrapper);
-
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
-		this.valueForm = $('form.value-form:first', this.contentWrapper);
+		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.submit(function(ev) {
 			// Never actually submit the form (would load a new page)
 			ev.preventDefault();
 		});
+
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
-
-		window.TICKET = this;
-
-		if (!this.meta.isDeleted) {
-			this._initCustomFieldsEditor();
-		}
-
-		var self = this;
-		this._initMessage($('div.messages-wrap'));
-
-		// Custom field widgets
-		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
 
 		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
 			wrapper: el
 		});
 		this.ownObject(this.ticketDisplay);
 
-		this.initFeaturesOnCollection(this.wrapper, {
-			routes: [],
-			times: ['.timeago']
-		});
+		this._initCustomFieldsEditor();
 
-		if (!this.meta.isDeleted) {
-			this._initTicketActionsMenu();
-			this._initMessageActionsMenu();
-			this._initFlagMenu();
-			this._initLabels();
-		} else {
+		var self = this;
+		this._initMessage($('.messages-wrap'));
+
+		this._initTicketActionsMenu();
+		this._initMessageActionsMenu();
+		this._initLabels();
+
+		if (this.meta.isDeleted) {
 			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
 		}
-
-		this._initPopout();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
@@ -83,53 +58,54 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 
-		Array.each(this.getMetaData('fieldHandlers', []), function(h) {
-			if (!h) return;
-
-			var handler_class = h.classname;
-			var field_wrap_id = h.wrap_id;
-
-			var h = new h($('#' + field_wrap_id), this);
-			h.initPage();
-		}, this);
-
 		this.addEvent('shortcutFocusReply', (function() {
 
 			// Scroll down
-			$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).scrollTop(100000);
+			$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).scrollTop(100000);
 
 			// Focus reply
 			$('textarea[name="message"]', this.ticketReply).focus();
 		}).bind(this));
 
-		$('.ticket-urgency', this.contentWrapper).mouseover(function() {
+		$('.ticket-urgency', this.wrapper).mouseover(function() {
 			Tipped.show(this);
 		});
 
 		var showMessages = $('input.show-messages', this.wrapper);
+		var showAttach = $('input.show-attach', this.wrapper);
 		var showNotes = $('input.show-notes', this.wrapper);
 		var showLogs = $('input.show-logs', this.wrapper);
-		var msgWrap = $('.messages-wrap', this.wrapper);
+		var msgWrap = this.getEl('messages_wrap');
 
 		function updateMessageTypes() {
 			var messages = showMessages.is(':checked');
 			var notes = showNotes.is(':checked');
 			var logs = showLogs.is(':checked');
+			var attach = showAttach.is(':checked');
 
-			if (!messages && !notes && !logs) {
+			if (!messages && !notes && !logs && !attach) {
 				messages = true;
 				showMessages.attr('checked', true);
 			}
 
-			if (messages) {
-				$('div.message:not(.note-message)', msgWrap).show();
+			if (attach) {
+				$('.attachment-list', msgWrap).show();
 			} else {
-				$('div.message:not(.note-message)', msgWrap).hide();
+				$('.attachment-list', msgWrap).hide();
+			}
+
+			if (messages) {
+				$('article.message:not(.note-message)', msgWrap).show();
+			} else {
+				$('article.message:not(.note-message)', msgWrap).hide();
+				if (attach) {
+					$('article.message.with-attach', msgWrap).show();
+				}
 			}
 			if (notes) {
-				$('div.note-message', msgWrap).show();
+				$('article.note-message', msgWrap).show();
 			} else {
-				$('div.note-message', msgWrap).hide();
+				$('article.note-message', msgWrap).hide();
 			}
 			if (logs) {
 				$('div.log-row', msgWrap).show();
@@ -140,90 +116,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		};
 
-		$('.message-controls input', this.wrapper).click(function() {
+		$('.tickets-msg-controls input', this.wrapper).click(function() {
 			updateMessageTypes();
 		});
 
-		// Goto reply
-		$('button.goto-reply', this.wrapper).click(function() {
-			cw.tinyscrollbar_scrolltop(1000000);
-		});
+		this.getEl('merge_trigger').click(function() {
+			var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
+				ticketId: self.getMetaData('ticket_id'),
+				destroyOnClose: true,
+				onMergeSuccess: function(data) {
 
-		this.moreActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.more', this.getEl('action_buttons')),
-			menuElement: this.getEl('more_actions_menu'),
-			onItemClicked: (function(info) {
-				var el = $(info.itemEl);
-				if (el.is('.merge-trigger')) {
-					var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
-						ticketId: this.getMetaData('ticket_id'),
-						destroyOnClose: true,
-						onMergeSuccess: function(data) {
-
-							// remove old tabs, theyre outdated
-							Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
-								var tid = tab.page.getMetaData('ticket_id');
-								if (tid == data.old_ticket_id || tid == data.ticket_id) {
-									DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
-								}
-							});
-
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-
-							mergeOverlay.close();
+					// remove old tabs, theyre outdated
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+						var tid = tab.page.getMetaData('ticket_id');
+						if (tid == data.old_ticket_id || tid == data.ticket_id) {
+							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
 						}
 					});
-					mergeOverlay.open();
+
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+
+					mergeOverlay.close();
 				}
-			}).bind(this)
+			});
+			mergeOverlay.open();
 		});
-		this.ownObject(this.moreActionsMenu);
 
-		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
-			replyBox: this.getEl('replybox'),
-			onBeforeSaveReply: (function(info) {
-				info.formData.push({
-					name: 'client_messages_since',
-					value: DeskPRO_Window.getLastClientMessageId()
-				});
-
-				info.formData.push({
-					name: 'last_message_id',
-					value: this.ticketChecker.getLastMessageId()
-				});
-				info.formData.push({
-					name: 'last_log_id',
-					value: this.ticketChecker.getLastLogId()
-				});
-
-				this.ticketChecker.pause(true);
-			}).bind(this),
-			onSaveReplySuccess: (function(info) {
-
-				this.handleTicketUpdate(info.result);
-				this.ticketChecker.unpause();
-
-				if (info.result.close_tab) {
-					window.setTimeout((function() {
-						console.log('ere');
-						this.closeSelf();
-					}).bind(this), 400);
-				} else {
-
-					// Apply changed props
-					var agentProp = this.changeManager.getPropertyManager('agent_id');
-					agentProp.setIncomingValue(info.result.agent_id);
-
-					var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
-					agentTeamProp.setIncomingValue(info.result.agent_team_id);
-
-					var statusProp = this.changeManager.getPropertyManager('status');
-					statusProp.setIncomingValue(info.result.status);
-
-				}
-			}).bind(this)
-		});
-		this.ownObject(this.replyBox);
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -242,6 +161,58 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
 			this.ownObject(this.ticketLocked);
 		}
+	},
+
+	handleReplySave: function(ev, formData, handler) {
+
+		var reply_form = handler.el;
+
+		formData.push({
+			name: 'client_messages_since',
+			value: DeskPRO_Window.getLastClientMessageId()
+		});
+
+		formData.push({
+			name: 'last_message_id',
+			value: this.ticketChecker.getLastMessageId()
+		});
+		formData.push({
+			name: 'last_log_id',
+			value: this.ticketChecker.getLastLogId()
+		});
+
+		this.ticketChecker.pause(true);
+
+		$.ajax({
+			url: reply_form.attr('action'),
+			type: 'POST',
+			dataType: 'json',
+			data: formData,
+			context: this,
+			success: function(result) {
+				this.handleTicketUpdate(result);
+
+				if (result.close_tab) {
+					window.setTimeout((function() {
+						this.closeSelf();
+					}).bind(this), 400);
+				} else {
+					// Apply changed props
+					var agentProp = this.changeManager.getPropertyManager('agent_id');
+					agentProp.setIncomingValue(result.agent_id);
+
+					var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
+					agentTeamProp.setIncomingValue(result.agent_team_id);
+
+					var statusProp = this.changeManager.getPropertyManager('status');
+					statusProp.setIncomingValue(result.status);
+				}
+			},
+			complete: function(xhr, textStatus) {
+				reply_form.removeClass('loading');
+				this.ticketChecker.unpause();
+			}
+		});
 	},
 
 	destroyPage: function() {
@@ -263,15 +234,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
 
 			var showMessages = $('input.show-messages', this.wrapper).is(':checked');
+			var showAttach = $('input.show-attach', this.wrapper).is(':checked');
 			var showNotes = $('input.show-notes', this.wrapper).is(':checked');
 			var showLogs = $('input.show-logs', this.wrapper).is(':checked');
 
-			console.log($('input.show-logs', this.wrapper));
-
 			var msgWrap = $('.messages-wrap', this.wrapper);
 
+			if (!showAttach) {
+				$('.attachment-list', new_messages).hide();
+			}
+
 			if (!showMessages) {
-				new_messages.find('div.message:not(.note-message)').hide();
+				new_messages.find('article.message:not(.note-message)').hide();
+				if (showAttach) {
+					new_messages.find('article.message.has-attach').hide();
+				}
 			}
 			if (!showNotes) {
 				new_messages.find('div.note-message').hide();
@@ -288,6 +265,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEL('agent_part_list').html(data.updated_agent_parts_html);
 			$('.agent-part-count', this.wrapper).text(data.updated_agent_parts_count);
 		}
+
+		if (data.replybox_html) {
+			this.getEl('replybox_wrap').empty().append(data.replybox_html);
+			DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
+			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+		}
 	},
 
 	displayNewMessage: function(html, slideCallback) {
@@ -302,11 +285,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	activate: function() {
-		this.ticketChecker.unpause();
+		if (this.ticketChecker) {
+			this.ticketChecker.unpause();
+		}
 	},
 
 	deactivate: function() {
-		this.ticketChecker.pause();
+		if (this.ticketChecker) {
+			this.ticketChecker.pause();
+		}
 	},
 
 	_initMessage: function(messageEl) {
@@ -333,7 +320,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					sel = $(this).data('set');
 				}
 
-				var expandEl = $(sel, messageEl);
+				var expandEl = $(sel, el);
 				if (expandEl.is(':visible')) {
 					expandEl.slideUp();
 					expandBtn.removeClass('open');
@@ -433,7 +420,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".ticket-tags ul", this.contentWrapper);
+		this.labelsList = $(".ticket-tags ul", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'tickets',
@@ -476,7 +463,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	getNewTicketMessages: function() {
-		var last_id = $('li.message-item:last', this.contentWrapper).data('message-id');
+		var last_id = $('li.message-item:last', this.wrapper).data('message-id');
 
 		$.ajax({
 			url: this.getMetaData('getMessagesUrl'),
@@ -523,54 +510,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		$('.wrap', this.custom_fields_display).html(html);
 	},
 
-
 	//#################################################################
-	//# Ticket flag
-	//#################################################################
-
-	_initFlagMenu: function() {
-		var self = this;
-		this.flagMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-flag:first', this.wrapper),
-			menuElement: $('.ticket-flag-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				self._handleFlagMenuClick(info);
-			}
-		});
-		this.ownObject(this.flagMenu);
-	},
-
-	_handleFlagMenuClick: function(info) {
-		var opt = 'flag';
-		var itemId = $(info.itemEl).data('flag');
-
-		var prop = this.getPropertyManager(opt);
-		this.changeManager.setInstantChange(prop, itemId);
-	},
-
-	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
-
-		DeskPRO_Window.getMessageBroker().sendMessage('filter-flagged.flag-changed', {
-			old_flag: old_flag,
-			new_flag: new_flag
-		});
-	},
-
-	//#################################################################
-	//# Message actions menu
+	//# Ticket actions menu
 	//#################################################################
 
 	_initTicketActionsMenu: function() {
 
 		var self = this;
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-actions-trigger:first', this.wrapper),
-			menuElement: $('.ticket-actions-menu:first', this.wrapper),
+			triggerElement: this.getEl('more_menu_trigger'),
+			menuElement: this.getEl('more_menu'),
 			onItemClicked: function(info) {
 				var op = $(info.itemEl).data('op');
 
 				if (op == 'delete') {
 					self.showDeleteOverlay();
+				} else if (op == 'print') {
+					window.print();
 				}
 			}
 		});
@@ -621,31 +577,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.removePage(self);
 
 				// Reload the ticket page
-				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true}, function(page) {
-					var ticket_title = self.getMetaData('title');
-					if (ticket_title.length > 20) {
-						ticket_title = ticket_title.substr(0, 20) + ' ...';
-					}
-					ticket_title = Orb.escapeHtml(ticket_title);
-					DeskPRO_Window.showUndoMessage("Deleted ticket \""+ticket_title+"\"", function() {
-						page.doTicketUndelete();
-					});
-				});
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 			}
 		});
 	},
 
 	doTicketUndelete: function() {
+		var self = this;
 		var prop = this.getPropertyManager('status');
-		this.changeManager.setInstantChange(prop, 'open');
+		this.changeManager.setInstantChange(prop, 'open', function() {
+			DeskPRO_Window.removePage(self);
+
+			// Reload the ticket page
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+		});
 	},
 
 	_initMessageActionsMenu: function() {
 		var self = this;
 		this.messageActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: null,
-			menuElement: $('.ticket-message-edit-menu:first', this.wrapper),
+			menuElement: $('.ticket-message-edit-menu', this.wrapper),
 			onItemClicked: function(info) {
+				console.log($(info.menu.getOpenTriggerElement()));
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
@@ -654,7 +608,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
 		var menu = this.messageActionsMenu;
-		var wrap = $('.messages-wrap:first', this.wrapper)[0];
+		var wrap = $('.messages-wrap', this.wrapper)[0];
 		$('.ticket-message-edit-btn', wrap).live('click', function(event) {
 			menu.openMenu(event);
 		});
@@ -672,19 +626,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				break;
 
 			case 'quote':
-				console.debug('todo loading indicator when loading _doMessageAction quote');
-				$.ajax({
-					url: this.getMetaData('getMessageQuoteUrl').replace('{message_id}', messageId),
-					type: 'GET',
-					context: this,
-					dataType: 'json',
-					success: function(data) {
-						var reply = $('.reply-form-fields:first textarea:first', this.ticketBar);
-						console.log(reply);
-						reply.val(data.message_quote + "\n\n" + reply.val());
-						reply.focus();
-					}
-				});
+				var quote = $('textarea.message-quote-' + messageId, this.wrapper).val();
+				var reply = this.getEl('replybox_txt');
+				reply.val(quote + "\n\n" + reply.val());
+				reply.focus();
 				break;
 
 			case 'split':
@@ -705,57 +650,5 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 				break;
 		}
-	},
-
-	//#################################################################
-	//# Popout
-	//#################################################################
-
-	_initPopout: function() {
-
-		this.personPopover = new DeskPRO.Agent.PageHelper.Popover({
-			pageUrl: this.getMetaData('viewPersonUrl'),
-			tabRoute: $('.person-overview', this.wrapper).data('route'),
-			loadTimeout: 500
-		});
-		this.ownObject(this.personPopover);
-
-		$('.person-overview', this.wrapper).css({'cursor': 'pointer'}).click((function(event) {
-
-			this.personPopover.toggle();
-		}).bind(this));
-
-		this.orgPopover = null;
-
-		var orgEl = $('.org-overview', this.wrapper);
-		if (orgEl.length) {
-			this.orgPopover = new DeskPRO.Agent.PageHelper.Popover({
-				pageUrl: this.getMetaData('viewOrgUrl'),
-				tabRoute: orgEl.data('route'),
-				loadTimeout: 1200
-			});
-			this.ownObject(this.orgPopover);
-
-			orgEl.css({'cursor': 'pointer'}).click((function(event) {
-				this.orgPopover.toggle();
-			}).bind(this));
-		}
-	},
-
-	updateCounts: function() {
-		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
-
-		$.ajax({
-			url: this.getMetaData('getUpdatedCountsUrl'),
-			type: 'GET',
-			context: this,
-			dataType: 'json',
-			success: function(counts) {
-				Object.each(counts, function(v,k) {
-					var sel = '.ticket-' + k + '-count';
-					$(sel, wrap).html('(' + v + ')');
-				});
-			}
-		});
 	}
 });

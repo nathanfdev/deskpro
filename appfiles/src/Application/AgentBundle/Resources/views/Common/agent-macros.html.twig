@@ -1,0 +1,19 @@
+{% macro name_or_me(person, noval) %}
+	{% if person.id == app.user.id %}
+		Me
+	{% elseif not person %}
+		{{ noval }}
+	{% else %}
+		{{ person.display_name }}
+	{% endif %}
+{% endmacro %}
+
+{% macro team_name_or_me(team, noval) %}
+	{% if app.user.getAgent().isTeamMember(team.id) and app.user.getAgent().isSingleTeams() %}
+		My team
+	{% elseif not team %}
+		{{ noval }}
+	{% else %}
+		{{ team.name }}
+	{% endif %}
+{% endmacro %}

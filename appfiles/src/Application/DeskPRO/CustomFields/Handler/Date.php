@@ -54,6 +54,7 @@ class Date extends HandlerAbstract
 
 		$value = null;
 		if (!empty($form_data[$name])) {
+			return array();
 			$value = $form_data[$name];
 			$value = strtotime($value);
 		}

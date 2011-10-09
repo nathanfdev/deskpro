@@ -117,6 +117,25 @@ class Organization extends \Doctrine\ORM\EntityRepository
 
 
 	/**
+	 * Fetch an organization by its name.
+	 *
+	 * @param string $name
+	 * @return \Application\DeskPRO\Entity\Organization
+	 */
+	public function getByName($name)
+	{
+		$name = trim($name);
+
+		return $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE
+				o.name = ?1
+		")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
+	}
+
+
+	/**
 	 * Invalidates caches
 	 */
 	public function invalidateCaches()

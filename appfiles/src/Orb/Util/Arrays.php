@@ -1515,15 +1515,17 @@ class Arrays
 	 */
 	public static function walkKeys($array, $callback)
 	{
-		$keys = array_keys($keys);
+		$keys = array_keys($array);
+		$new_keys = array();
 
 		foreach ($keys as $k) {
-			call_user_func($callback, array($k, $array[$k]));
+			call_user_func($callback, $k, $array[$k]);
+			$new_keys[] = $k;
 		}
 
 		$values = array_values($array);
 
-		$array = array_combine($keys, $values);
+		$array = array_combine($new_keys, $values);
 
 		return $array;
 	}

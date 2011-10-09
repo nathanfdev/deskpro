@@ -1,0 +1,28 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Delete Ticket Category</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; Back to ticket categories</a>
+	</nav>
+{% endblock %}
+{% block page %}
+
+{% if category.children|length %}
+	<p>Are you sure you want to delete the category "<strong>{{ category.title }}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>:</p>
+
+	<ul class="bullet-list">
+		{% for c in category.children %}
+			<li>{{ c.title }}</li>
+		{% endfor %}
+	</ul>
+
+	<p>Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category.</p>
+{% else %}
+	<p>Are you sure you want to delete the category "<strong>{{ category.title }}</strong>"?</p>
+
+	<p>Any tickets that belong this category will have it removed, resulting in the tickets having no category.</p>
+{% endif %}
+
+<a class="btn" href="{{ path('admin_ticketcats_dodel', {'category_id': category.id, 'security_token': security_token('delete_ticket_category')}) }}">Yes, I am sure I want to delete</a>
+
+{% endblock %}

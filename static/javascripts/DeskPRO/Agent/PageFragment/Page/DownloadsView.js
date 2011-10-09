@@ -32,13 +32,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		var btn = $('.download-editor-edit', this.wrap);
 		btn.click(this.showEditor.bind(this));
 
-		var cw = this.wrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
         $('time.timeago', this.wrapper).timeago();
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
@@ -102,10 +95,9 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs'),
+			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.dl-revs') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/view-revisions',
 						type: 'GET',

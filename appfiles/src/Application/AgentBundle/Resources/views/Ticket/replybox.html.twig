@@ -1,102 +1,289 @@
-<section class="ticket-reply">
-	<nav>
-		<ul>
-			<li class="on">Reply</li>
-			<li>Note</li>
-		</ul>
-	</nav>
-	<section class="reply-area reply-tab deskpro-tab-item on">
+{% import 'AgentBundle:Common:agent-macros.html.twig' as tools %}
+{% set replyBaseId = el_uid() %}
+<form
+	class="ticket-reply-form"
+	id="{{replyBaseId}}_reply_form"
+	method="post"
+	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
 
-		<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
+	data-upload-url="{{ path('agent_accept_upload') }}"
+	data-snippet-viewer-url="{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}"
+	data-base-id="{{replyBaseId}}"
+>
 
-		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+{% if ticket.agent.id == app.user.id %}
+	<input type="hidden" id="{{replyBaseId}}_do_agent_id" name="options[do_assign]" value="0" />
+{% else %}
+	<input type="hidden" id="{{replyBaseId}}_do_agent_id" name="options[do_assign]" value="1" />
+{% endif %}
 
-		<div class="options-col">
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>Assign to my team</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-				<label>Mark as pending KB Article</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_status]" />
-				<label>Set as awaiting user</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[close_tab]" />
-				<label>Close tab after reply</label>
-			</div>
-		</div>
-		<div class="reply-col">
-			<div class="reply-box-wrap"><textarea></textarea></div>
-			<footer>
-				<button class="clean-white reply">Send Reply</button>
-				<div class="buttons-right">
-					<button class="clean-white related-articles">Related Articles</button>
-					<button class="clean-white text-snippets">Text Snippets</button>
-					<button class="clean-white cc-people">CC People</button>
-					<button class="clean-white attach-files">Attach Files</button>
+<input type="hidden" id="{{replyBaseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+
+<input type="hidden" id="{{replyBaseId}}_do_agent_team_id" name="options[do_assign_team]" value="0" />
+<input type="hidden" id="{{replyBaseId}}_agent_team_id" name="options[agent_team_id]" value="0" />
+
+{% if ticket.status_code == 'open' %}
+	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="pending" />
+	<input type="hidden" id="{{replyBaseId}}_ticket_do_status" name="options[do_status]" value="1" />
+{% else %}
+	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="" />
+	<input type="hidden" id="{{replyBaseId}}_ticket_do_status" name="options[do_status]" value="0" />
+{% endif %}
+
+<input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
+
+<input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
+<input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
+
+<div class="profile-box-container reply-box-wrap">
+	<header>
+		<nav>
+			<ul>
+				<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">Reply</li>
+				<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type">Note</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="ticketreply">
+
+		<nav id="{{replyBaseId}}_header_rows">
+			<ul class="option-buttons">
+				<li class="tipped attach hide-note" title="Add attachments">
+					<input type="file" class="file" name="file-upload" />
+					<span>Attachments</span>
+				</li>
+				<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
+			</ul>
+
+			<ul class="option-buttons right">
+				<li class="tipped article toggle hide-note" title="Mark as a pending KB article">
+					<span>Article<em class="check"></em></span>
+					<input type="checkbox" name="options[do_kbpending]"/>
+				</li>
+				<li class="tipped closetab toggle hide-note" title="Close the ticket tab after reply">
+					<span>Close Tab<em class="check"></em></span>
+					<input type="checkbox" name="options[close_tab]" />
+				</li>
+				<li class="send" id="{{replyBaseId}}_send_btn"><span>Send</span></li>
+			</ul>
+		</nav>
+		<article>
+			<section>
+				<ul>
+					<li class="to-row hide-note">
+						<label>
+							<span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
+							To:
+						</label>
+						<div>
+							{{ ticket.person.display_name }}
+							{% if ticket.person_email %}
+								&lt;{{ ticket.person_email.email }}&gt;
+							{% elseif ticket.person.primary_email %}
+								&lt;{{ ticket.person.primary_email.email }}&gt;
+							{% endif %}
+						</div>
+					</li>
+					<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
+						<label>CC:</label>
+						<div>
+							<input
+								type="text"
+								placeholder="Enter an email address..."
+								name="user_parts"
+								value="{% for p in user_parts %}{{ p.person_email.email }}{% if not loop.last %},{% endif %}{% endfor %}"
+								id="{{replyBaseId}}_cc_input"
+							/>
+						</div>
+					</li>
+					<li class="hide-note">
+						<label>Status:</label>
+						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'open' %}changed{% endif %}">
+							<a class="status-trigger prop-change with-menu-click-position">
+								Change status from {{ phrase('agent.tickets.status_' ~ ticket.status) }} to <span class="new-val-label">{{ phrase('agent.tickets.status_pending') }}</span>
+							</a>
+							<a class="status-trigger prop-no-change with-menu-click-position">
+								Keep status set to {{ phrase('agent.tickets.status_' ~ ticket.status) }}
+							</a>
+						</div>
+					</li>
+					<li class="hide-note">
+						<label>Assign:</label>
+						<div id="{{replyBaseId}}_assign_detail">
+							<a id="{{replyBaseId}}_assign_btn" class="with-menu-click-position">
+							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
+								<span class="prop-change">
+									{% if ticket.agent %}
+										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">Me</span>,
+									{% else %}
+										Assign ticket to <span class="new-val-label">Me</span>,
+									{% endif %}
+								</span>
+								<span class="prop-no-change">
+									{% if ticket.agent %}
+										Keep assigned agent: {{ tools.name_or_me(ticket.agent) }},
+									{% else %}
+										Keep ticket unassigned,
+									{% endif %}
+								</span>
+							</span>
+							<span id="{{replyBaseId}}_assign_detail_agent_team">
+								<span class="prop-change">
+									{% if ticket.agent_team %}
+										Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">me</span>,
+									{% else %}
+										Assign team <span class="new-val-label"></span>,
+									{% endif %}
+								</span>
+								<span class="prop-no-change">
+									{% if ticket.agent_team %}
+										Keep assigend team {{ tools.team_name_or_me(ticket.agent_team) }},
+									{% else %}
+										Keep unassigned team,
+									{% endif %}
+								</span>
+							</span>
+							<span id="{{replyBaseId}}_assign_detail_followers">
+								<span class="no-followers" {% if agent_parts|length %}style="display: none"{% endif %}>
+									No followers
+								</span>
+								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
+									Followers: <span class="names">{% for p in agent_parts %}{{ p.person.display_name }}{% if not loop.last %}, {% endif %}{% endfor %}</span>
+									<div class="inputs" style="display: none">
+										{% for p in agent_parts %}
+											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
+										{% endfor %}
+									</div>
+								</span>
+							</span>
+							</a>
+						</div>
+					</li>
+					<li id="{{replyBaseId}}_attach_row" class="attach-row hide-note is-hidden" style="display: none">
+						<label><span>Attachments</span></label>
+						<div>
+							<ul class="files"></ul>
+							<br class="clear"/>
+						</div>
+					</li>
+				</ul>
+				<div class="input-wrap">
+					<textarea placeholder="Enter your message..." id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
 				</div>
-				<div class="attach-list-area" style="display: none"></div>
-				<div class="cc-list-area" style="display: none"></div>
-			</footer>
-		</div>
-
-		</form>
+			</section>
+		</article>
 
 	</section>
-	<section class="note-tab deskpro-tab-item">
+</div>
 
-		<form id="{{baseId}}_note_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}">
+<script class="template-upload" type="text/x-jquery-tmpl">
+	<li class="uploading">${name} (uploading)</li>
+</script>
+<script class="template-download" type="text/x-jquery-tmpl">
+	<li>
+		<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+		<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+	</li>
+</script>
 
-		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
-		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
-		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
 
-		<div class="options-col">
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign]" />
-				<label>Assign to me</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_assign_team]" />
-				<label>Assign to my team</label>
-			</div>
-			<div>
-				<input type="checkbox" class="assignCheck" name="options[do_kbpending]"/>
-				<label>Mark as pending KB Article</label>
-			</div>
-		</div>
-		<div class="reply-col">
-			<div class="reply-box-wrap"><textarea></textarea></div>
-			<footer>
-				<button class="clean-white reply">Send Reply</button>
-				<div class="buttons-right">
-					<button class="clean-white attach-files">Attach Files</button>
-				</div>
-				<div class="attach-list-area" style="display: none"></div>
-			</footer>
-		</div>
+<ul style="display: none" id="{{replyBaseId}}_status_menu">
+	<li data-status="no-change">Keep current status: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
+	{% if ticket.status != 'open' %}<li data-status="open">{{ phrase('agent.tickets.status_open') }}</li>{% endif %}
+	{% if ticket.status != 'pending' %}<li data-status="pending">{{ phrase('agent.tickets.status_pending') }}</li>{% endif %}
+	{% if ticket.status != 'resolved' %}<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>{% endif %}
+	{% if ticket.status != 'closed' %}<li data-status="closed">{{ phrase('agent.tickets.status_closed') }}</li>{% endif %}
+</ul>
 
-		</form>
+<div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Agents</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
+					<input type="radio" name="{{replyBaseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				</li>
 
-	</section>
+				<li>
+					<input type="radio" name="{{replyBaseId}}_agent" value="0" />
+					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+				</li>
 
-	<script class="template-upload" type="text/x-jquery-tmpl">
-		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-	</script>
-	<script class="template-download" type="text/x-jquery-tmpl">
-		<li>
-			<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
-			<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-		</li>
-	</script>
-</section>
+				{% for agent in agents %}
+					{% if agent.id != app.user.id %}
+						<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
+							<input type="radio" name="{{replyBaseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="teams">
+			<header>
+				<h3>Teams</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for team in app.user.getAgent().getTeams() %}
+					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
+						<input type="radio" name="{{replyBaseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+
+				<li class="{% if not ticket.agent_team %}on{% endif %}">
+					<input type="radio" name="{{replyBaseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
+					<label><span class="agent-team-label-0">No Team</span></label>
+				</li>
+
+				{% for team in agent_teams %}
+					{% if team.id not in app.user.getAgent().getTeamIds() %}
+						<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
+							<input type="radio" name="{{replyBaseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="followers">
+			<header>
+				<h3>Followers</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
+					<input type="checkbox" name="{{replyBaseId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				</li>
+
+				{% for agent in agents %}
+					{% if agent.id != app.user.id %}
+						<li {% if agent.id in participant_ids %}class="on"{% endif %}>
+							<input type="checkbox" name="{{replyBaseId}}_part" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+</div>
+
+
+</form>

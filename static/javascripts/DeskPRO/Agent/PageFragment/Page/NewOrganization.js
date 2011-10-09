@@ -15,14 +15,6 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		var self = this;
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			cw.tinyscrollbar_update();
-			self.fireEvent('resized');
-		});
-
 		this.form = $('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
 		});

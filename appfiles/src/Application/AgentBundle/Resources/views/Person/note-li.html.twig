@@ -1,17 +1,18 @@
-<div data-note-id="{{note.id}}" class="message note-{{note.id}} note-message user-message">
-	<div class="message-avatar left">
-		<img src="{{ note.agent.getPictureUrl(35) }}" alt="" width="35" height="35" />
-	</div>
-	<div class="message-body">
-		<div class="message-meta">
-			<span class="arrow-left"></span>
-			<h4>{{note.agent.name}}</h4>
-			<span class="timestamp"><time class="timeago" title="{{note.date_created|date('c')}}">{{note.date_created|date('Y-m-d')}}</time></span>
+<li data-note-id="{{note.id}}" class="note-{{note.id}} note">
+	<div class="message">
+		<div class="message-avatar">
+			<img src="{{ note.agent.getPictureUrl(25) }}" alt="" width="25" height="25" />
 		</div>
-		<div class="message-text">
-			<p>
-				{{note.note_html|raw}}
-			</p>
+		<div class="message-body">
+			<div class="message-meta">
+				<time class="timeago" title="{{note.date_created|date('c')}}">{{note.date_created|date('M j, Y')}}</time>
+				<h4>{{note.agent.name}}:</h4>
+			</div>
+			<div class="message-text">
+				<p>
+					{{note.note_html|raw}}
+				</p>
+			</div>
 		</div>
 	</div>
-</div>
+</li>

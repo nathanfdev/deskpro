@@ -34,8 +34,6 @@ class Product extends CategoryAbstract implements HasPhraseName
 	 */
 	protected $children;
 
-
-
 	/**
 	 * Return a unique ID that we can use to look up translations for this object
 	 *

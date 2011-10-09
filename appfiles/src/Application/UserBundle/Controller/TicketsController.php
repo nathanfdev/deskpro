@@ -204,19 +204,33 @@ class TicketsController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_ref);
 
 		$newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
-
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
+		$validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
+		$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
-				$newreply->save();
-				$ticket_message = $newreply->getNewMessage();
-			}
+		$newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+		$newreply->attach_ids_authed = true;
+
+		if ($validator->isValid($newreply)) {
+			$newreply->save();
+			$ticket_message = $newreply->getNewMessage();
+		} else {
+			$errors = $validator->getErrors(true);
+			$error_fields = $validator->getErrorGroups(true);
+
+			return $this->forward('UserBundle:TicketView:load', array(
+				'ticket_ref' => $ticket->getPublicId(),
+				'display_data' => array(
+					'errors' => $errors,
+					'error_fields' => $error_fields,
+					'newreply' => $newreply,
+					'newreply_form' => $form
+				)
+			));
 		}
 
-		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
 	}
 
 	################################################################################
@@ -322,23 +336,6 @@ class TicketsController extends AbstractController
 	# feedback
 	################################################################################
 
-	public function closeAction($ticket_ref)
-	{
-		$ticket = $this->getTicketOr404($ticket_ref);
-		$ticket->setStatus(Entity\Ticket::STATUS_CLOSED);
-
-		App::getOrm()->transactional(function($em) use ($ticket) {
-			$em->persist($ticket);
-			$em->flush();
-		});
-
-		if ($this->in->getString('back') == 'list') {
-			return $this->redirectRoute('user_tickets');
-		} else {
-			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
-		}
-	}
-
 	public function feedbackAction($ticket_ref, $message_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
@@ -429,6 +426,47 @@ class TicketsController extends AbstractController
 		));
 	}
 
+	public function closeAction($ticket_ref)
+	{
+		$ticket  = $this->getTicketOr404($ticket_ref);
+		$message = App::getEntityRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
+		$exist_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+
+		if ($this->in->getBool('process')) {
+			$feedback = false;
+			if ($this->in->getBool('with_feedback')) {
+				if ($exist_feedback) {
+					$feedback = $exist_feedback;
+				} else {
+					$feedback = new \Application\DeskPRO\Entity\TicketFeedback();
+					$feedback->ticket = $message->ticket;
+					$feedback->ticket_message = $message;
+					$feedback->person = $this->person;
+				}
+
+				$feedback->message = $this->in->getString('message');
+				$feedback->rating  = $this->in->getInt('rating');
+			}
+
+			$ticket->setStatus('resolved');
+
+			$this->em->transactional(function ($em) use ($ticket, $feedback) {
+				if ($feedback) {
+					$em->persist($feedback);
+				}
+				$em->persist($ticket);
+				$em->flush();
+			});
+
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+		}
+
+		return $this->render('UserBundle:Tickets:close.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message,
+			'exist_feedback' => $exist_feedback
+		));
+	}
 
 
 	/**

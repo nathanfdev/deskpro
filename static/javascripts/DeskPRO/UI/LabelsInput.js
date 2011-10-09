@@ -85,6 +85,29 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		}).bind(this);
 
 		this.tagit = $(this.options.list).tagit(tagitOptions);
+
+		var route = $(this.options.list).data('label-route');
+		if (route) {
+			$(this.options.list).click(function(ev) {
+				if ($(ev.target).is('.close')) {
+					return;
+				}
+
+				if ($(ev.target).is('li')) {
+					var li = $(ev.target);
+				} else {
+					var li = $(ev.target).closest('li');
+				}
+
+				if (li.is('.tagit-new')) {
+					return;
+				}
+
+				var tag = $('input', li).val();
+				var loadRoute = route.replace(/\{LABEL\}/g, tag, route);
+				DeskPRO_Window.runPageRoute(loadRoute);
+			});
+		}
 	},
 
 

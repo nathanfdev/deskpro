@@ -59,31 +59,58 @@ class TicketCategoriesController extends AbstractController
 			$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditTicketCategoryType($category), $category);
+		$form = $this->get('form.factory')->create(new EditTicketCategoryType($category->id ? false : true), $category);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
 				App::getOrm()->persist($category);
 				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:TicketCategories:list-row.html.twig', array('category' => $category));
-
-				// Recreate form because parent_id field cant be changed, so we need to get rid of it
-				$form = $this->get('form.factory')->create(new EditTicketCategoryType($category), $category);
+				$this->session->setFlash('saved', $category->title);
+				return $this->redirectRoute('admin_ticketcats');
 			}
 		}
 
 		return $this->render('AdminBundle:TicketCategories:edit.html.twig', array(
 			'category' => $category,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
 		));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($category_id)
+	{
+		$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
+
+		return $this->render('AdminBundle:TicketCategories:delete.html.twig', array(
+			'category'  => $category,
+		));
+	}
+
+	public function doDeleteAction($category_id, $security_token)
+	{
+		$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_category', $security_token)) {
+			// TODO err
+			die('invalid token');
+		}
+
+		$this->em->beginTransaction();
+		foreach ($category->children as $c) {
+			$this->em->remove($c);
+		}
+		$this->em->remove($category);
+		$this->em->flush();
+		$this->em->commit();
+
+		$this->session->setFlash('deleted', $category->title);
+		return $this->redirectRoute('admin_ticketcats');
 	}
 
 	############################################################################

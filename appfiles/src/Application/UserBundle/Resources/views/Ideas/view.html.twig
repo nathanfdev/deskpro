@@ -32,6 +32,10 @@
 
 					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': idea.labels} %}
 
+					{% if app.getSetting('core.facebook_like') %}
+						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': article.permalink} %}
+					{% endif %}
+
 					{% include 'UserBundle:Common:comments-box.html.twig' with {
 						'comments': comments,
 						'form_action': path('user_ideas_newcomment', {'idea_id': idea.id})

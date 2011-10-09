@@ -42,7 +42,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			 * The HTML element with the actual controls etc we'll use for this
 			 * Defaults to 'wrapper .mass-actions-overlay'
 			 */
-			templateElement: null
+			templateElement: null,
+
+			/**
+			 * Disable the previewing feature and handle list view
+			 */
+			isListView: false
 		};
 
 		this.setOptions(options);
@@ -97,13 +102,18 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			ev.stopPropagation();
 		});
 
-		// Three backdrops to surround each side of the list pane: left, right, top
-		var back1 = $('<div class="backdrop mass-actions" />');
-		var back2 = $('<div class="backdrop mass-actions" />');
-		var back3 = $('<div class="backdrop mass-actions" />');
+		if (this.options.isListView) {
+			this.backdropEls = $('<div class="backdrop fade" />');
 
-		this.backdropEls = $([back1.get(0), back2.get(0), back3.get(0)]);
-		this.backdropEls.css('z-index', '1000000').hide().appendTo('body');
+		} else {
+			// Three backdrops to surround each side of the list pane: left, right, top
+			var back1 = $('<div class="backdrop mass-actions" />');
+			var back2 = $('<div class="backdrop mass-actions" />');
+			var back3 = $('<div class="backdrop mass-actions" />');
+			this.backdropEls = $([back1.get(0), back2.get(0), back3.get(0)]);
+		}
+
+		this.backdropEls.css('z-index', '1000010').hide().appendTo('body');
 
 		this.backdropEls.click((function(ev) {
 			ev.stopPropagation();
@@ -215,6 +225,10 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		$('.apply-actions', this.wrapper).click((function(ev) {
 			this.apply();
+
+			if (this.options.isListView) {
+				this.close();
+			}
 		}).bind(this));
 	},
 
@@ -273,8 +287,9 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		};
 
 		formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo);
+
 		this.selectionBar.getChecked().each(function() {
-			rows.push($(this).closest('article.row-item').get(0));
+			rows.push($(this).closest('.row-item').get(0));
 		});
 
 		this.getActionFormValues(formData, true, formDataInfo);
@@ -299,7 +314,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			success: function(html) {
 				$('.preview-edit', this.listWrapper).removeClass('preview-edit');
 				$('.preview-edit-hide', this.listWrapper).remove();
-				$('article li.changed', this.listWrapper).removeClass('changed');
+				$('.row-item.changed', this.listWrapper).removeClass('changed');
 
 				this.resetForm();
 			}
@@ -336,12 +351,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		if (!specific_id) {
 			formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo);
 			this.selectionBar.getChecked().each(function() {
-				rows.push($(this).closest('article.row-item').get(0));
+				rows.push($(this).closest('.row-item').get(0));
 			});
 		} else {
 			formData = [{ name: 'result_ids[]', value: specific_id }];
 			formDataInfo.checkedCount = 1;
-			rows = [$('article.ticket-' + specific_id).get(0)];
+			rows = [$('.ticket-' + specific_id + '.row-item').get(0)];
 		}
 
 		this.getActionFormValues(formData, false, formDataInfo);
@@ -353,6 +368,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		rows = $(rows);
 		rows.addClass('loading');
+
+		if (this.options.isListView) {
+			formData.push({
+				'view_type': 'list'
+			});
+		}
 
 		var runningAjax = $.ajax({
 			url: BASE_URL + 'agent/ticket-search/get-page',
@@ -384,9 +405,9 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var resultWrap = $(html);
 		var listWrapper = this.listWrapper;
 
-		$('article.row-item', resultWrap).each(function() {
+		$('.row-item', resultWrap).each(function() {
 			var ticketId = $(this).data('ticket-id');
-			var row = $('article.ticket-' + ticketId, listWrapper);
+			var row = $('.ticket-' + ticketId + '.row-item', listWrapper);
 
 			// Clear existing preview edits if there are any
 			var existPrev = $('.preview-edit', row);
@@ -411,7 +432,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * When a ticket has been checked or uncheck, need to update the preview status of that ticket.
 	 */
 	handleCheckChange: function(el, is_checked) {
-		var row = $(el).closest('article.row-item');
+		var row = $(el).closest('.row-item');
 
 		if (is_checked) {
 			this.updatePreview(row.data('ticket-id'));
@@ -450,12 +471,26 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		//------------------------------
 
 		var pos = $('#dp_content').offset();
-		this.wrapper.css({
-			top: pos.top + 3,
-			left: pos.left + 3,
-			right: 3,
-			bottom: 3
-		});
+
+		if (this.options.isListView) {
+			var pageW = $(window).width();
+			var pageH = $(window).height();
+			var w = this.wrapper.outerWidth();
+
+			this.wrapper.css({
+				top: pos.top + 3,
+				left: (pageW / 2) - w,
+				right: 3,
+				bottom: 3
+			});
+		} else {
+			this.wrapper.css({
+				top: pos.top + 3,
+				left: pos.left + 3,
+				right: 3,
+				bottom: 3
+			});
+		}
 
 		//------------------------------
 		// The backdrops surround each side of the list pane
@@ -465,26 +500,28 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var topEnd = 41; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 
-		this.backdropEls.eq(0).css({
-			top: 0,
-			width: leftEnd,
-			bottom: 0,
-			left: 0
-		});
+		if (!this.options.isListView) {
+			this.backdropEls.eq(0).css({
+				top: 0,
+				width: leftEnd,
+				bottom: 0,
+				left: 0
+			});
 
-		this.backdropEls.eq(1).css({
-			top: 0,
-			height: topEnd,
-			width: contentStart - leftEnd,
-			left: leftEnd
-		});
+			this.backdropEls.eq(1).css({
+				top: 0,
+				height: topEnd,
+				width: contentStart - leftEnd,
+				left: leftEnd
+			});
 
-		this.backdropEls.eq(2).css({
-			top: 0,
-			right: 0,
-			bottom: 0,
-			left: contentStart
-		});
+			this.backdropEls.eq(2).css({
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: contentStart
+			});
+		}
 	},
 
 	/**

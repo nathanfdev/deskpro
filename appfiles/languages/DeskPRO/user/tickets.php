@@ -10,5 +10,4 @@
 	'user.tickets.workflow'               => 'Workflow',
 	'user.tickets.priority'               => 'Priority',
 	'user.tickets.id'                     => 'ID',
-
 );

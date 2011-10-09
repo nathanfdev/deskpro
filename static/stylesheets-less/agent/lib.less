@@ -1,0 +1,134 @@
+@asset-url: "../../";
+@link-color: #4769B3;
+
+/* Get around a bug in less, always have this rule or else compiler error */
+.less-rule { color: #000; }
+
+/**
+* @color: Color for non-supportive browsers
+* @start: Color of start
+* @stop: Color of end
+*/
+.gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
+	background: @color;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, @start), color-stop(1, @stop));
+	background: -ms-linear-gradient(bottom, @start, @stop);
+	background: -moz-linear-gradient(center bottom, @start 0%, @stop 100%);
+}
+
+/**
+* Set a 1px border of color on each side
+*/
+.bordered(@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
+	border-top: solid 1px @top-color;
+	border-left: solid 1px @left-color;
+	border-right: solid 1px @right-color;
+	border-bottom: solid 1px @bottom-color;
+}
+
+/**
+* Set a black drop shadow
+*/
+.drop-shadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
+	-webkit-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+	-moz-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+	box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+}
+
+/**
+* Set rounded corners
+*/
+.rounded(@radius: 2px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+}
+
+/**
+* Set a radius on each corner
+*/
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+	-webkit-border-top-right-radius: @topright;
+	-webkit-border-bottom-right-radius: @bottomright;
+	-webkit-border-bottom-left-radius: @bottomleft;
+	-webkit-border-top-left-radius: @topleft;
+	-moz-border-radius-topright: @topright;
+	-moz-border-radius-bottomright: @bottomright;
+	-moz-border-radius-bottomleft: @bottomleft;
+	-moz-border-radius-topleft: @topleft;
+	border-top-right-radius: @topright;
+	border-bottom-right-radius: @bottomright;
+	border-bottom-left-radius: @bottomleft;
+	border-top-left-radius: @topleft;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+}
+
+/**
+* Set opacity
+*/
+.opacity(@opacity: 0.5) {
+	-moz-opacity: @opacity;
+	-khtml-opacity: @opacity;
+	-webkit-opacity: @opacity;
+	opacity: @opacity;
+}
+
+/**
+* Set an inner black shadow
+*/
+.inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
+	-webkit-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+	-moz-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+	box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+}
+
+/**
+* Full box shadow
+*/
+.box-shadow(@arguments) {
+	-webkit-box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	box-shadow: @arguments;
+}
+
+/**
+* Transition effect
+*/
+.transition(@duration:0.2s, @ease:ease-out) {
+	-webkit-transition: all @duration @ease;
+	-moz-transition: all @duration @ease;
+	transition: all @duration @ease;
+}
+
+.fade-away(@rgba_start, @rgba_end, @width: 45px) {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: @width;
+
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left, @rgba_start 0%, @rgba_end 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* IE10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+}
+
+
+.noselect {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.boxmodel-border-box {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+}

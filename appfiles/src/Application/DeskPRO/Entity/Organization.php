@@ -59,6 +59,14 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	protected $name = null;
 
 	/**
+	 * The summary field as filled in by agents
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="summary", type="text")
+	 */
+	protected $summary = '';
+
+	/**
 	 * The org importance
 	 *
 	 * @var int

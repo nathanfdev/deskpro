@@ -73,17 +73,11 @@ class TicketController extends AbstractController
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
-		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
-			'ticket_id' => $ticket_id,
-			'person_id' => $this->person['id']
-		));
+		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
-		if ($this->in->getBool('print')) {
-			$tpl = 'AgentBundle:Ticket:view-print.html.twig';
-		}
 
 		// Get or update the lock on this ticket
 		if (!$ticket->isLocked()) {
@@ -152,13 +146,32 @@ class TicketController extends AbstractController
 			WHERE p.ticket = ?1
 		")->setParameter(1, $ticket)->execute();
 
+		$participant_ids = array();
+		$agent_parts = array();
+		$user_parts = array();
+
+		foreach ($participants as $p) {
+			$participant_ids[] = $p->person->id;
+			if ($p->person->is_agent) {
+				$agent_parts[] = $p;
+			} else {
+				$user_parts[] = $p;
+			}
+		}
+
 		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
 		$draft_text = '';
 		if ($draft_pref) {
 			$draft_text = $draft_pref->getValue();
 		}
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
 		return $this->render($tpl, array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
+
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
 
@@ -168,6 +181,9 @@ class TicketController extends AbstractController
 			'last_log_id' => $ticket_messages_blockcache['last_log_id'],
 
 			'participants' => $participants,
+			'participant_ids' => $participant_ids,
+			'agent_parts' => $agent_parts,
+			'user_parts' => $user_parts,
 
 			'custom_fields' => $custom_fields,
 
@@ -178,7 +194,7 @@ class TicketController extends AbstractController
 			'ticket_deleted' => $ticket_deleted,
 			'hard_delete_time' => $hard_delete_time,
 			'ticket_options' => $ticket_options,
-			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
+			'ticket_flagged' => $ticket_flagged,
 			'macros' => $macros,
 			'widgets' => $widgets,
 			'counts' => $counts,
@@ -194,7 +210,7 @@ class TicketController extends AbstractController
 
 		$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
 			$ticket,
-			array('since_id' => $since_message_id)
+			array('since_id' => $since_message_id, 'with_notes' => true)
 		);
 
 		if (!$ticket_attachments) {
@@ -430,6 +446,9 @@ class TicketController extends AbstractController
 	{
 		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
+
+		$this->em->persist($cat);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'category_id' => $cat['id'],
@@ -691,15 +710,21 @@ class TicketController extends AbstractController
 		$message['ip_address'] = $this->request->getClientIp();
 		$message->setMessageText($this->in->getString('message'));
 
-		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
+		if ($this->in->getBool('options.is_note')) {
+			$message['is_agent_note'] = true;
+		}
 
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		if (!$message['is_agent_note']) {
+			foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 
-			$attach = new Entity\TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
+				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
-			$message->addAttachment($attach);
+				$attach = new Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $this->person;
+
+				$message->addAttachment($attach);
+			}
 		}
 
 		if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
@@ -711,25 +736,7 @@ class TicketController extends AbstractController
 			$ticket->addMessage($message);
 		}
 
-		#------------------------------
-		# Handle actions
-		#------------------------------
-
-		if ($this->in->getBool('options.do_assign')) {
-			$ticket['agent_id'] = $this->in->getUint('options.agent_id');
-		}
-
-		if ($this->in->getBool('options.do_assign_team')) {
-			$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
-		}
-
-		if ($this->in->getBool('options.do_status')) {
-			$ticket['status'] = $this->in->getString('options.status');
-		}
-
-		if ($this->in->getBool('options.is_note')) {
-			$message['is_agent_note'] = true;
-		}
+		// havent persisted the messag yet, it was just for dupe checking
 
 		#------------------------------
 		# Handle CC'ing/parts
@@ -737,58 +744,73 @@ class TicketController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		$cc_person_ids = $this->in->getCleanValueArray('cc_person_ids', 'uint', 'discard');
-		$new_parts = $this->in->getCleanValueArray('new_parts', 'string', 'discard');
+		if (!$message['is_agent_note']) {
 
-		$new_parts_to_people = array();
+			$changed_parts = false;
 
-		foreach ($new_parts as $email) {
-			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
-			if (!$person) {
-				$person = Person::newContactPerson(array('email' => $email));
-				$this->em->persist($person);
-			}
+			$email_validator = new \Orb\Validator\StringEmail();
 
-			if ($person['is_agent']) {
-				continue;
-			}
-
-			$new_parts_to_people[] = $person;
-		}
-		$this->em->flush();
-
-		foreach ($new_parts_to_people as $person) {
-			$ticket->addParticipantPerson($person);
-			$cc_person_ids[] = $person['id'];
-		}
-
-		$tracker = $ticket->getTicketLogger();
-		$tracker->recordExtra('enabled_cc', $cc_person_ids);
-
-		// Delete any possible ticket draft
-		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
-		if ($draft_pref) {
-			App::getOrm()->remove($draft_pref);
-		}
-
-		$add_agent_parts = $this->in->getCleanValueArray('add_agent_part', 'uint', 'discard');
-		foreach ($add_agent_parts as $aid) {
-			$ticket->addParticipantPerson($aid);
-		}
-
-		$updated_agent_parts = false;
-		$updated_agent_parts_count = 0;
-		if ($add_agent_parts) {
-
-			$added = false;
-			foreach ($add_agent_parts as $p) {
-				if (!$ticket->hasParticipantPerson($p)) {
-					$ticket->addParticipantPerson($p);
-					$added = true;
+			$current_user_ids = array();
+			$current_agent_ids = array();
+			foreach ($ticket->participants as $p) {
+				if ($p->person->is_agent) {
+					$current_agent_ids[] = $p->person->id;
+				} else {
+					$current_user_ids[] = $p->person->id;
 				}
 			}
 
-			if ($added) {
+			// People cc emails
+			$user_parts_emails = $this->in->getString('user_parts');
+			$user_parts_emails = explode(',', $user_parts_emails);
+
+			$got_user_ids = array();
+			$new_user_ids = array();
+			foreach ($user_parts_emails as $email) {
+				if (!$email || !$email_validator->isValid($email)) {
+					continue;
+				}
+
+				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+				if ($person) {
+					$got_user_ids[] = $person->id;
+				} else {
+					$person = Person::newContactPerson(array('email' => $email));
+					$this->em->persist($person);
+					$this->em->flush();
+					$new_user_ids[] = $person->id;
+				}
+
+				$ticket->addParticipantPerson($person);
+			}
+
+			$remove_user_ids = array_diff($current_user_ids, $got_user_ids);
+			foreach ($remove_user_ids as $id) {
+				$ticket->removeParticipantPerson($id);
+			}
+
+			$got_agent_ids = $this->in->getCleanValueArray('agent_parts', 'string', 'discard');
+			foreach ($got_agent_ids as $id) {
+				$ticket->addParticipantPerson($id);
+			}
+
+			$remove_agent_ids = array_diff($current_agent_ids, $got_agent_ids);
+			foreach ($remove_agent_ids as $id) {
+				$ticket->removeParticipantPerson($id);
+			}
+
+			$this->em->flush();
+
+			if (count($got_agent_ids) != count($current_agent_ids) OR count($got_user_ids) != count($got_user_ids)) {
+				$changed_parts = true;
+			}
+
+			if ($changed_parts) {
+				if ($new_user_ids) {
+					$tracker = $ticket->getTicketLogger();
+					$tracker->recordExtra('enabled_cc', $new_user_ids);
+				}
+
 				$participants = App::getOrm()->createQuery("
 					SELECT p
 					FROM DeskPRO:TicketParticipant p
@@ -806,14 +828,38 @@ class TicketController extends AbstractController
 			}
 		}
 
-		if ($this->in->getBool('options.do_kbpending')) {
-			$kb_pending = new ArticlePendingCreate();
-			$kb_pending->fromArray(array(
-				'person' => $this->person,
-				'ticket' => $ticket,
-				'message' => $message
-			));
-			$this->em->persist($kb_pending);
+		#------------------------------
+		# Handle actions
+		#------------------------------
+
+		if (!$message['is_agent_note']) {
+			if ($this->in->getBool('options.do_assign')) {
+				$ticket['agent_id'] = $this->in->getUint('options.agent_id');
+			}
+
+			if ($this->in->getBool('options.do_assign_team')) {
+				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
+			}
+
+			if ($this->in->getBool('options.do_status')) {
+				$ticket['status'] = $this->in->getString('options.status');
+			}
+
+			if ($this->in->getBool('options.do_kbpending')) {
+				$kb_pending = new ArticlePendingCreate();
+				$kb_pending->fromArray(array(
+					'person' => $this->person,
+					'ticket' => $ticket,
+					'message' => $message
+				));
+				$this->em->persist($kb_pending);
+			}
+		}
+
+		// Delete any possible ticket draft
+		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		if ($draft_pref) {
+			App::getOrm()->remove($draft_pref);
 		}
 
 		$this->em->persist($ticket);
@@ -833,13 +879,49 @@ class TicketController extends AbstractController
 
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
-			$this->in->getUint('last_message_id'),
+			$message->id - 1,
 			$this->in->getUint('last_log_id')
 		);
 
+		// New reply box
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		$participant_ids = array();
+		$agent_parts = array();
+		$user_parts = array();
+
+		foreach ($participants as $p) {
+			$participant_ids[] = $p->person->id;
+			if ($p->person->is_agent) {
+				$agent_parts[] = $p;
+			} else {
+				$user_parts[] = $p;
+			}
+		}
+
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
+		$replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
+			'ticket' => $ticket,
+			'participants' => $participants,
+			'participant_ids' => $participant_ids,
+			'agent_parts' => $agent_parts,
+			'user_parts' => $user_parts,
+		));
+
 		$data = array_merge($data, array(
-			'updated_agent_parts_html' => $updated_agent_parts,
-			'updated_agent_parts_html_count' => $updated_agent_parts_count,
+			'updated_agent_parts_html' => isset($updated_agent_parts) ? $updated_agent_parts : '',
+			'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
+			'replybox_html' => $replybox,
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],

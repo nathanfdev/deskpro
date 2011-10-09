@@ -4,6 +4,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(tabStrip, tabManager) {
+
+		window.TAB_STRIP = this;
+
 		this.tabStrip = tabStrip;
 		this.tabManager = tabManager;
 		this.cancelClickActivate = false;
@@ -12,23 +15,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var self = this;
 
-		/* TODO: This is causing weird errors when closing, presume because close click being
-		misintrepeted as start of drag
-		this.tabStrip.sortable({
-			'axis': 'x',
-			'items': '> li',
-			'tolerance': 'intersect',
-			'containment': 'parent',
-			'deactivate': function() {
-				self.cancelClickActivate = true;
-			}
-		});
-		*/
-
-		// Mouseup because firefox doesnt respond to click
-		// for middle clicks
+		// Mouseup because firefox doesnt respond to click for middle clicks
 		this.tabStrip.mouseup(this._tabStripClick.bind(this));
-		//this.tabStrip.click(this._tabStripClick.bind(this));
 
 		this.tabManager.addEvents({
 			addTab: this._onTabAdd.bind(this),
@@ -41,20 +29,76 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		var w = (self.tabStrip.parent().width() / 2);
 		w = w - (w / 4);
 
-		scroll_el = this.tabStrip.parent();
-		$('.tabs_scroll_left').click(function() {
+		scroll_el = $('#tabNavigationPane .deskproTabList');
+		$('#tabNavSelectorLeft').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
 			scroll_el.animate({scrollLeft: '-=' + w}, 200);
 		});
-		$('.tabs_scroll_right').click(function() {
+		$('#tabNavSelectorRight').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
 			scroll_el.animate({scrollLeft: '+=' + w}, 200);
 		});
 
 		// Scroll wheel should scroll this baby horizontally
-		this.tabStrip.parent().mousewheel(function(ev, delta) {
+		this.tabStrip.mousewheel(function(ev, delta) {
 			if (delta > 0) {
 				scroll_el.animate({scrollLeft: '+=' + w}, 100);
 			} else {
 				scroll_el.animate({scrollLeft: '-=' + w}, 100);
+			}
+		});
+
+		var menuEl = $('<ul id="dp_tabstrip_menu" />').hide().appendTo('body');
+		menuEl.delegate('li', 'mouseover', function() {
+			$('li.over', tabStrip).removeClass('over');
+			$('#' + $(this).data('tab-el-id')).addClass('over');
+		});
+		menuEl.mouseout(function() {
+			$('li.over', tabStrip).removeClass('over');
+		});
+		this.tabMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('#tabDropdownPicker'),
+			menuElement: menuEl,
+			onBeforeMenuOpened: function() {
+				menuEl.empty();
+				$('li', tabStrip).each(function() {
+					var title = $('a', this).clone();
+
+					var li = $('<li />');
+					li.data('tab-id', $(this).data('tab-id'));
+					li.data('tab-el-id', $(this).attr('id'));
+					li.append(title);
+
+					if ($(this).is('.activeTabList')) {
+						li.addClass('highlight');
+					}
+
+					menuEl.append(li);
+				});
+			},
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+				var tabId = item.data('tab-id');
+				var tabEl = $('#' + tabId)
+				self.activateTabById(tabId);
+
+				// Make sure if the tabPane is scrolling, that the tab is in view
+				var tabEl = $('#tabNavigationPane li.activeTabList');
+				if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
+					var tabPos = tabEl.position().left;
+					var tabW = tabEl.width();
+					var w = scroll_el.width();
+					var scrollL = scroll_el.scrollLeft();
+
+					if (tabPos < scrollL || (tabPos+tabW) > (scrollL+w)) {
+						scroll_el.scrollLeft(tabPos);
+					}
+				}
+			},
+			onClose: function() {
+				$('li.over', tabStrip).removeClass('over');
 			}
 		});
 	},
@@ -165,18 +209,22 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			}
 		});
 
-		this.resizeTabListWidth();
-
 		return id;
 	},
 
 	addTabPlaceholder: function(url, routeData) {
-		var html = $('#tab_loading_template').get(0).innerHTML;
-		html = html.replace('%endScript%', '</scr' + 'ipt>');
+		var html = DeskPRO_Window.util.getPlainTpl($('#tab_loading_template'));
 
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
+
+		if (routeData.title) {
+			page.meta.title = routeData.title;
+		}
+		if (routeData.forTypename) {
+			page.LOADING_TYPENAME = routeData.forTypename;
+		}
 
 		var id = this.addTab(page);
 
@@ -185,28 +233,6 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		return id;
-	},
-
-	resizeTabListWidth: function() {
-		var w = 0;
-		$('> li', this.tabStrip).each(function() {
-			w += $(this).outerWidth();
-		});
-
-		if (w < this.tabStrip.parent().width()) {
-			w = this.tabStrip.parent().width();
-		}
-
-		this.tabStrip.css({width: w});
-
-		// See if we need to be showing the navigator
-		if (this.tabStrip.width() > this.tabStrip.parent().width()) {
-			this.tabStrip.parent().addClass('with-scroller');
-			w += 30; // for scroll indicators :)
-			this.tabStrip.css({width: w});
-		} else {
-			this.tabStrip.parent().removeClass('with-scroller');
-		}
 	},
 
 	_tabStripClick: function(event) {
@@ -283,6 +309,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				html += ' ' + tabData.page.TYPENAME;
 			}
 
+			if (tabData.page.LOADING_TYPENAME) {
+				html += ' ' + tabData.page.LOADING_TYPENAME;
+			}
+
 			if (tabData.page.getMetaData('tabTip')) {
 				if (tabData.page.getMetaData('tabTip').indexOf('.') === 0) {
 
@@ -293,12 +323,12 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 					// when the element is rendered.
 
 					tabData.page.setMetaData('fetchTabTip', true);
-					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, hook: \'topmiddle\'">';
+					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, hook: \'topmiddle\', showDelay: 1000">';
 				} else {
-					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="hook: \'topmiddle\'">';
+					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">';
 				}
 			} else {
-				html += '" data-tipped="' + tabData.title + '" data-tipped-options="hook: \'topmiddle\'">';
+				html += '" data-tipped="' + tabData.title + '" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">';
 			}
 
 			html += '<a>';
@@ -325,11 +355,44 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			}
 		} else {
 			li.appendTo(this.tabStrip);
-			this.resizeTabListWidth();
 		}
 
-		// Add tooltip
-		//$(li).tipTip({defaultPosition: 'bottom'});
+		this.recalculateScrolling();
+	},
+
+	recalculateScrolling: function() {
+
+		var tabPane = $('#tabNavigationPane');
+
+		var w = 0;
+		var num = $('li', this.tabStrip).each(function() {
+			w += $(this).outerWidth();
+		}).length;
+
+		w += 21 * num;
+
+		this.tabStrip.width(w);
+
+		var isScroll    = tabPane.is('.with-overflow');
+		var needsScroll = (tabPane.width() < w);
+
+		// Not scrolling and not needed
+		if (!isScroll && !needsScroll) {
+
+		// Current scrolling but not needed anymore
+		// > Remove scroller
+		} else if (isScroll && !needsScroll) {
+			console.debug('[TabStrip] Remove scrolling');
+
+			tabPane.removeClass('with-overflow');
+			this.tabStrip.scrollLeft(0);
+
+		// Not scrolling but needs to now
+		// > Add scroller
+		} else if (!isScroll && needsScroll) {
+			console.debug('[TabStrip] Add scrolling');
+			tabPane.addClass('with-overflow');
+		}
 	},
 
 	_onTabDeactivate: function(tabData, container, isActivating) {
@@ -383,6 +446,6 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			tabData.page.meta.routeData.tabUnload();
 		}
 
-		this.resizeTabListWidth();
+		this.recalculateScrolling();
 	}
 });

@@ -1,30 +1,32 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketCategoriesList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page_TicketCategories = new DeskPRO.Admin.PageHandler.TicketCategoriesList('#ticket_categories');
-};
-</script>
 {% endblock %}
-{% block page_id "ticket_categories" %}
+{% block pagetitle %}
+	<h1>Ticket Categories</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
+	</nav>
+{% endblock %}
+{% block prepage %}
+    <p>The primary grouping concept in DeskPRO is the department (and sub-departments). The second grouping concept is the category field. You only need to enable the category field if you require this further categorization of tickets.</p>
+
+    <p>Category choices can apply to all tickets or can be linked to tickets in specific departments. The category field is recommended when either all or some departments use the same choices. If you need a field that is only relevant to tickets of a certain department you will find it easier to manage by creating a custom field and linking that to the department in the editor.</p>
+{% endblock %}
 {% block content %}
+<div class="dp-page-box">
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
-</div>
-
-<div class="cat-lists" id="ticket_category_parentlist">
-{% for category in all_categories %}
-	<ul class="item-list categor-list-{{category.id}}" style="margin-top: 10px; margin-bottom: 10px;">
-		{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
-		{% for sub_cat in category.children %}
-			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true } %}
+<div class="page-content">
+	{{ design.structure_table({ 'save_order_url': path('admin_ticketcats_updateorders') }) }}
+		{% for category in all_categories %}
+			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% endfor %}
-	</ul>
-{% endfor %}
+	{{ design.structure_table_end() }}
 </div>
 
+</div>
 {% endblock %}

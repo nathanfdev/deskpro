@@ -13,8 +13,6 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.initFeaturesOnCollection(this.wrapper);
-
 		this.idea_id = this.getMetaData('idea_id');
 
 		this._initBasic();
@@ -32,15 +30,6 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			});
 			this.ownObject(this.validatingEdit);
 		}
-
-		var cw = this.wrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
-			// When size changes within the pane, need to re-size the scroll
-			cw.tinyscrollbar_update();
-		});
-
-		$('time.timeago', this.wrapper).timeago();
 
 		var btn = $('.idea-editor-edit', this.wrapper);
 		btn.click(this.showEditor.bind(this));

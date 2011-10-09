@@ -176,7 +176,7 @@ class Person extends \Doctrine\ORM\EntityRepository
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
 			WHERE p.organization = ?1
-			ORDER BY p.organization_position ASC, p.id ASC
+			ORDER BY p.last_name ASC, p.first_name ASC
 		")->execute(array(1=> $org));
 	}
 

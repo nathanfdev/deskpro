@@ -10,4 +10,7 @@
 
 	'user.profile.error_not_validated_email'           => 'Email address is not validated',
 	'user.profile.error_not_validated_setdefault'      => 'That email address has not been validated yet. You need to validate the email address before you can set it as your account default.',
+
+	'user.profile.error_invalid_email_code'            => 'The validation link seems to be invalid.',
+	'user.profile.error_dupe_email'                    => 'That email has already been validated.'
 );

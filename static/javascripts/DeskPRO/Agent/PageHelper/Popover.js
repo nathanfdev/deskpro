@@ -38,8 +38,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			overFrom: '#dp_content'
 		};
 
-		this.id = Orb.uuid();
-		DeskPRO.Agent.PageHelper.Popover_Instances[this.id] = this;
+		DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID] = this;
 
 		this.setOptions(options);
 
@@ -126,8 +125,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		});
 
 		var pos = $(this.options.overFrom).offset();
-		var top = pos.top;
-		var width = pos.left - 30;
+		var top = pos.top - 4;
+		var width = pos.left - 9;
 
 		this.popoverOuter.css({
 			'position': 'absolute',
@@ -176,9 +175,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
 		this.popover.html(this.pageSource);
-		this.page.initPage(this.popover);
 		this.pageSource = null;
 
+		if (this.page.meta.title) {
+			$('h1.tab-title', this.popoverOuter).text(this.page.meta.title);
+		}
+
+		this.page.fireEvent('render', [this.popover]);
 		this.fireEvent('pageInit', [this, this.page]);
 	},
 
@@ -242,12 +245,17 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.page) {
 			this.page.fireEvent('destroy');
+			this.page = null;
 		}
 
 		if (this.popover) {
 			this.popoverOuter.remove();
 		}
 
-		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.id];
+		this.popoverOuter = null;
+		this.popover = null;
+		this.options = null;
+
+		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID];
 	}
 });

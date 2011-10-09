@@ -20,14 +20,6 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		$x = App::getEntityRepository('DeskPRO:TicketPageDisplay')->find(26);
-
-		echo '<pre>';
-		echo print_r($x['data']);
-		echo '<br /><br /><br /><br /><br /><br />';
-		echo json_encode($x['data']);
-
-		exit;
-		return $this->render('AdminBundle:Test:index.html.twig', array('cat' => $cat));
+		return $this->render('AdminBundle:Test:index.html.twig');
 	}
 }

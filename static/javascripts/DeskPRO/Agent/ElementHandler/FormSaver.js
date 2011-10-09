@@ -1,0 +1,86 @@
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
+
+DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
+	Extends: DeskPRO.ElementHandler,
+
+	init: function() {
+		var self = this;
+		this.textarea = $('textarea', this.el);
+		this.list = null;
+		this.resultHtmlKey = this.el.data('form-result-html-key') || 'html';
+
+		// Optionally append ajax result to a list
+		if (this.el.data('form-list-selector')) {
+			this.list = this.el.closest(this.el.data('form-list-selector'));
+		}
+
+		console.log(this.list);
+
+		this.url = this.el.data('form-save-url');
+
+		this.statusSave   = $('header .save', this.el);
+		this.statusSaved  = $('header .saved', this.el);
+		this.statusSaving = $('header .is-loading', this.el);
+
+		this.statusSave.click(function(ev) {
+			ev.preventDefault();
+			self.save();
+		});
+
+		this.textarea.change(this.touch.bind(this));
+		this.textarea.keypress(this.touch.bind(this));
+
+		this.countEl = null;
+		if (this.el.data('form-count-el')) {
+			this.countEl = $(this.el.data('form-count-el'));
+		}
+	},
+
+	touch: function() {
+		this.statusSave.show();
+		this.statusSaved.hide();
+		this.statusSaving.hide();
+	},
+
+	save: function() {
+		this.statusSave.hide();
+		this.statusSaved.hide();
+		this.statusSaving.show();
+
+		var postData = $('input, textarea, select', this.el).serializeArray();
+
+		$.ajax({
+			url: this.url,
+			type: 'POST',
+			data: postData,
+			dataType: 'json',
+			context: this,
+			complete: function() {
+				this.statusSave.hide();
+				this.statusSaved.show();
+				this.statusSaving.hide();
+
+				window.setTimeout((function() {
+					this.statusSaved.fadeOut('slow');
+				}).bind(this), 1000);
+			},
+			success: function(data) {
+				if (this.list) {
+					var newRow = $(data[this.resultHtmlKey]);
+					DeskPRO_Window.initInterfaceServices(newRow);
+
+					if (this.el.parent().get(0) == this.list.get(0)) {
+						newRow.insertBefore(this.el);
+					} else {
+						this.list.append(newRow);
+					}
+					this.textarea.val('');
+				}
+
+				if (this.countEl) {
+					DeskPRO_Window.util.modCountEl(this.countEl, '+');
+				}
+			}
+		});
+	}
+});

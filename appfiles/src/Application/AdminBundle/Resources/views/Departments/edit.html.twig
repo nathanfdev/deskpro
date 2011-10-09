@@ -1,44 +1,61 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/DepartmentsEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentsEdit({{department.id|default(0)}}, {{department.parent_id|default(0)}});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
-{% block header %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
 	<h1>{% if department.id %}Edit Department{% else %}New Department{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_departments') }}">&larr; Back to Departments</a>
+	</nav>
 {% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_departments_edit', {'department_id': department.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
 	</div>
-	{% if form.parent_id %}
-		<div class="row">
-			<label>Parent Department</label>
-			{{ form_widget(form.parent_id) }}
+
+	{% if form.parent %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Parent Department</label>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.parent) }}
+			</div>
 		</div>
 	{% endif %}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Enable tickets in this department?</label>
+		</div>
+		<div class="dp-form-input">
+			<label>{{ form_widget(form.is_tickets_enabled) }} Enable</label>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Enable chat in this department?</label>
+		</div>
+		<div class="dp-form-input">
+			<label>{{ form_widget(form.is_chat_enabled) }} Enable</label>
+		</div>
+	</div>
 </div>
 
-<br /><br />
+{{ form_rest(form) }}
 
+<button class="btn primary save-trigger">Save</button>
 </form>
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
 
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_departments_del', {'department_id': department.id}) }}">delete</a>
+</div>
 {% endblock %}

@@ -157,29 +157,45 @@ class IdeasController extends AbstractController
 	public function newIdeaAction()
 	{
 		$newidea = new \Application\DeskPRO\Ideas\NewIdea(
-			$this->person,
 			App::getSession()->getVisitor()
 		);
+		$newidea->setPersonContext($this->person);
+
+		if ($this->search_query && !$this->request->isPost()) {
+			$newidea->title = $this->search_query;
+		}
 
 		// Initial value from coming from a category
 		if ($this->in->getUint('category_id')) {
 			$newidea->category_id = $this->in->getUint('category_id');
 		}
 
-		$form = $this->get('form.factory')->create(new NewIdeaType($this->person));
+		$form = $this->get('form.factory')->create(new NewIdeaType($this->person), $newidea);
+		$validator = new \Application\UserBundle\Validator\NewIdeaValidator();
+
+		$errors = null;
+		$error_fields = null;
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
+			if ($validator->isValid($newidea)) {
 				$idea = $newidea->save();
 
 				return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
+			} else {
+				$errors = $validator->getErrors(true);
+				$error_fields = $validator->getErrorGroups(true);
 			}
 		}
 
+		$idea_categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
 		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
 			'form' => $form->createView(),
+			'idea_categories' => $idea_categories,
+			'errors' => $errors,
+			'error_fields' => $error_fields,
 		));
 	}
 

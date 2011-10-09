@@ -1,6 +1,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 pageMeta.title         = 'Chat';
+pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
 pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';

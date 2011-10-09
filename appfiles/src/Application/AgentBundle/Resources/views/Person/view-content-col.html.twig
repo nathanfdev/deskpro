@@ -1,128 +1,299 @@
-<section class="ticket-header person-header" id="{{baseId}}_person_header">
-	<div class="ticket-id">
-		<span>#{{ person.id }}</span>
-	</div>
-	<div class="ticket-subject no-cat">
-		<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('<em>Double-click to set Name</em>') }}</span>
-		<div id="{{baseId}}_editname" style="display: none">
-			<input type="hidden" name="action" value="name" />
-			<input type="text" size="20" name="name" value="{{ person.name }}" />
+{# Box Summary #}
+<div class="profile-box-container summary"
+	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+	data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
+>
+	<header>
+		<div class="controls">
+			<div class="is-loading">Saving</div>
+			<div class="saved" style="display: none">Saved</div>
+			<div class="save" style="display: none">Save</div>
 		</div>
-	</div>
+		<h4>Summary</h4>
+	</header>
+	<section>
+		<input type="hidden" name="action" value="set-summary" />
+		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary">{{ person.summary }}</textarea></div>
+	</section>
+</div>
+{# /Box Summary #}
 
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
-		<ul>
-			<li class="create-ticket"><button class="clean-gray xx-small">Create Ticket</button></li>
-			<li class="more"><button class="clean-gray xx-small">More</button></li>
-		</ul>
-	</nav>
-
-	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li data-action="reset-password" class="reset-password">Reset Password</li>
-		<li data-action="" class="merge-trigger">Merge User</li>
-		<li data-action="" class="delete-trigger">Delete User</li>
-	</ul>
-</section>
-
-{% if activity_stream|length %}
-<div class="table-container">
-	<div class="table-title">
-		<h4>User Activity</h4>
-	</div>
-	<div class="table-content">
-		<div class="container-tabbed-content-tab">
-			<div class="row">
-				<ul class="activity-stream">
-					{% for action in activity_stream %}
-						<li>
-							<span class="time">{{ action.date_created|date('M j, Y') }}</span>
-							<span class="what">
-								{% if action.action_type == 'registered' %}
-									Registered an account
-								{% elseif action.action_type == 'new_ticket' %}
-									Submitted a new ticket
-									<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
-										{{ action.details.subject }}
-									</a>
-								{% elseif action.action_type == 'new_ticket_reply' %}
-									Replied to ticket
-									<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
-										{{ action.details.subject }}
-									</a>
-								{% endif %}
-							</span>
-						</li>
+{# Properties Box #}
+<div class="profile-box-container properties">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section>
+		<dl class="table-list">
+			<dt class="type-labels">Labels</dt>
+			<dd class="people-tags tags-wrap">
+				<ul>
+					{% for label in person.labels %}
+						<li><span>{{label.label}}</span></li>
 					{% endfor %}
 				</ul>
+			</dd>
+		</dl>
+		<br class="clear"/>
+
+		{% if custom_fields|length %}
+			{#
+			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
+			</dl>
+			<dl id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
+			</dl>
+			<br class="clear"/>
+			#}
+		{% endif %}
+
+		<dl class="table-list">
+			<dt class="type-labels">Timezone</dt>
+			<dd>
+				<select id="{{baseId}}_timezone">
+					{% for tz in timezone_options %}
+						<option value="{{tz}}" {% if person.timezone == tz %}selected="selected"{% endif %}>{{ tz }}</option>
+					{% endfor %}
+				</select>
+				<span class="timezone-info">
+					{% include 'AgentBundle:Person:view-bit-timezoneinfo.html.twig' %}
+				</span>
+			</dd>
+		</dl>
+	</section>
+</div>
+{# /Properties Box #}
+
+{# Interaction Tabs #}
+{% if person_tickets_count or person_chats_count %}
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul>
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">Tickets <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">Chats <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Tickets Tab #}
+		{% if person_tickets_count %}
+		<article id="{{baseId}}_tickets_tab" class="on">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_tickets_initial">
+					{% for ticket in person_tickets_initial %}
+						<tr>
+							<td>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
+							</td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
+						</tr>
+					{% endfor %}
+					{% if person_tickets|length %}
+						<tr class="more" >
+							<td colspan="100">
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">View all {{ person_tickets_count }} tickets</button>
+							</td>
+						</tr>
+					{% endif %}
+				</tbody>
+				<tbody id="{{baseId}}_tickets_rest" style="display: none;">
+					{% for ticket in person_tickets %}
+						<tr>
+							<td>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
+							</td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</article>
+		{% endif %}
+		{# /Tickets Tab #}
+
+		{% if person_chats_count %}
+		<article id="{{baseId}}_chats_tab">
+			Chats
+		</article>
+		{% endif %}
+	</section>
+</div>
+{# /Interaction Tabs #}
+{% endif %}
+
+{# Info Tabs #}
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
+				<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>
+				<li data-tab-for="#{{baseId}}_tracking_tab">Detail</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Notes Tab #}
+		<article id="{{baseId}}_notes_tab" class="on">
+			<div class="notes-wrap">
+				<ul>
+					{% for note in notes|reverse %}
+						{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
+					{% endfor %}
+					<li class="new-note"
+						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+						data-form-list-selector="ul"
+						data-form-result-html-key="note_li_html"
+						data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
+						data-form-count-el="#{{baseId}}_notes_count"
+					>
+						<header>
+							<div class="controls">
+								<div class="is-loading">Saving</div>
+								<div class="saved" style="display: none">Saved</div>
+								<div class="save" style="display: none">Save</div>
+							</div>
+							<h3>New Note</h3>
+						</header>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter note ..."></textarea></div>
+					</li>
+				</ul>
 			</div>
-		</div>
-	</div>
-</div>
-{% endif %}
+		</article>
+		{# /Notes Tab #}
 
-{# Box Notes #}
-{% if person_tickets|length %}
-<div class="table-container">
-	<div class="table-title">
-		<h4>Tickets</h4>
-	</div>
-	<div class="table-content">
-		<ul class="tickets-plain-list">
-			{% for ticket in person_tickets %}
-				<li>
-					<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a>
-				</li>
-			{% endfor %}
-			{% if person_tickets|length < person_tickets_count %}
-				<li>
-					User has <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch') }}">{{ person_tickets_count - person_tickets|length }} more</a> tickets
-				</li>
-			{% endif %}
-		</ul>
-	</div>
-</div>
-{% endif %}
-
-{# Box Notes #}
-<div class="table-container">
-	<div class="table-title">
-		<h4>Notes</h4>
-	</div>
-	<div class="table-content">
-		<div class="messages-wrap notes-wrap">
-			<div class="note-list">
-				{% for note in notes|reverse %}
-					{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
+		{# Activity Tab #}
+		<article id="{{baseId}}_activity_tab">
+			<ul class="activity-stream">
+				{% for action in activity_stream %}
+					<li>
+						<span class="what">
+							{% if action.action_type == 'registered' %}
+								Registered an account
+							{% elseif action.action_type == 'new_ticket' %}
+								Submitted a new ticket
+								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+									{{ action.details.subject }}
+								</a>
+							{% elseif action.action_type == 'new_ticket_reply' %}
+								Replied to ticket
+								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+									{{ action.details.subject }}
+								</a>
+							{% endif %}
+						</span>
+						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('M j, Y') }}</time>
+					</li>
 				{% endfor %}
-			</div>
+			</ul>
+		</article>
+		{# /Activity Tab #}
 
-			<div class="new-note-form message admin-message">
-				<div class="message-avatar left">
-					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-				</div>
-				<div class="message-body">
-					<div class="message-meta">
-						<span class="arrow-left"></span>
-						<h4>{{ app.user.display_name }}</h4>
-					</div>
-					<div class="message-text">
-						<p>
-							<textarea style="width:98%; height: 80px;"></textarea>
-						</p>
-						<div style="text-align:center; margin-top: 9px;">
-							<div class="trigger-row">
-								<button class="dp-button x-small trigger save">Add Note</button>
-							</div>
-							<div class="saving-row">
-								Saving ...
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+		{# Tracking Tab #}
+		<article id="{{baseId}}_tracking_tab">
+			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="label" width="80">ID</td>
+					<td class="value">
+						{{ person.id }}
+					</td>
+				</tr>
+				<tr>
+					<td class="label" width="80">Created</td>
+					<td class="value">
+						<time>{{person.date_created|date('H:ia M j Y')}}</time>
+						(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Creation By</td>
+					<td class="value">
+						{% if person.creation_system == 'web.person' %}
+							User registered using the website.
+						{% elseif person.creation_system == 'web.agent' %}
+							User created by an agent.
+						{% elseif person.creation_system == 'gateway.person' %}
+							User was created by submitting an email to the helpdesk.
+						{% else %}
+							{{ person.creation_system }}
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Last Login</td>
+					<td class="value">
+						{% if person.date_last_login %}
+							<time>{{person.date_last_login|date('H:ia M j Y')}}</time>
+							(<time class="timeago" datetime="{{person.date_last_login|date('c')}}"></time>)
+						{% else %}
+							Never
+						{% endif %}
+					</td>
+				</tr>
+				{% if session %}
+					<tr>
+						<td class="label">Online Now</td>
+						<td class="value">
+							Since
+							<time>{{session.date_created|date('H:ia M j Y')}}</time>
+							(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
+						</td>
+					</tr>
+					<tr>
+						<td class="label">Last Activity</td>
+						<td class="value">
+							<time>{{session.date_last|date('H:ia M j Y')}}</time>
+							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
+							on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+					</tr>
+					<tr>
+						<td class="label">Landing Page</td>
+						<td class="value">
+							User landed on page
+							<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
+							{% if session.visitor.ref_page %}
+								and came from
+								<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<td class="label">IP Address</td>
+						<td class="value">
+							{{ session.visitor.ip_address }}
+						</td>
+					</tr>
+					<tr>
+						<td class="label">User Agent</td>
+						<td class="value">
+							{{ session.visitor.user_agent }}
+						</td>
+					</tr>
+				{% endif %}
+				<tr>
+					<td class="label">Auto-responder?</td>
+					<td class="value">
+						<select id="{{baseId}}_is_autoresponder">
+							<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>No</option>
+							<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>Yes, this user auto-responds to emails</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</article>
+		{# /Tracking Tab #}
+	</section>
 </div>
-{# /Box Notes #}
+{# /Info Tabs #}

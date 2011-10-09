@@ -35,7 +35,7 @@
 						-->
 					</div>
 				{% endif %}
-				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data">
+				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
 				<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 				<input type="hidden" name="process" value="1" />
 
@@ -43,7 +43,7 @@
 				 # Email
 				 ###############}
 
-				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email } %}
+				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
 
 				<div class="dp-inline-non-login">
 				{###############
@@ -54,12 +54,15 @@
 						<label>Your Name *</label>
 					</div>
 					<div class="dp-form-input">
-						{{ form_widget(form.person.name) }}
-						{% if error_fields['person.name'] %}
-							<div class="dp-error-explain">
-								Please enter your name
-							</div>
-						{% endif %}
+						{{ form_widget(form.person.name, {
+							'attr': {
+								'data-field-validators': 'DeskPRO.Form.LengthValidator',
+								'data-min-len': 2
+							}
+						}) }}
+						<div class="dp-error-explain">
+							Please enter your name
+						</div>
 					</div>
 				</div>
 
@@ -70,7 +73,7 @@
 					<div class="dp-form-label">
 						<label>{{ phrase('user.department') }} *</label>
 					</div>
-					<div class="department_id_wrapper with-sub-options dp-form-input">
+					<div class="department_id_wrapper with-sub-options dp-form-input" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 						<div class="dp-select-wrapper">
 							<select name="newticket[ticket][department_id]" class="department_id parent-option">
 								<option value=""></option>
@@ -91,11 +94,9 @@
 								{% endif %}
 							{% endfor %}
 						</div>
-						{% if error_fields['ticket.department_id'] %}
-							<div class="dp-error-explain">
-								Please choose a department
-							</div>
-						{% endif %}
+						<div class="dp-error-explain">
+							Please choose a department
+						</div>
 					</div>
 				</div>
 
@@ -125,11 +126,9 @@
 							</div>
 							{% endif %}
 						{% endfor %}
-						{% if error_fields['ticket.category_id'] %}
-							<div class="dp-error-explain">
-								Please choose a category
-							</div>
-						{% endif %}
+						<div class="dp-error-explain">
+							Please choose a category
+						</div>
 					</div>
 				</div>
 
@@ -160,11 +159,9 @@
 							</div>
 							{% endif %}
 						{% endfor %}
-						{% if error_fields['ticket.product_id'] %}
-							<div class="dp-error-explain">
-								Please choose a product
-							</div>
-						{% endif %}
+						<div class="dp-error-explain">
+							Please choose a product
+						</div>
 					</div>
 				</div>
 				{% endif %}
@@ -179,11 +176,9 @@
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
-						{% if error_fields['ticket.priority_id'] %}
-							<div class="dp-error-explain">
-								Please choose a priority
-							</div>
-						{% endif %}
+						<div class="dp-error-explain">
+							Please choose a priority
+						</div>
 					</div>
 				</div>
 				{% endif %}
@@ -209,12 +204,15 @@
 						<label>{{ phrase('user.tickets.subject') }} *</label>
 					</div>
 					<div class="dp-form-input">
-						{{ form_widget(form.ticket.subject) }}
-						{% if error_fields['ticket.subject'] %}
-							<div class="dp-error-explain">
-								Please enter a subject of at least 5 characters
-							</div>
-						{% endif %}
+						{{ form_widget(form.ticket.subject, {
+							'attr': {
+								'data-field-validators': 'DeskPRO.Form.LengthValidator',
+								'data-min-len': 5
+							}
+						}) }}
+						<div class="dp-error-explain">
+							Please enter a subject of at least 5 characters
+						</div>
 					</div>
 				</div>
 
@@ -233,12 +231,16 @@
 						<label>What is your question?</label>
 					</div>
 					<div class="dp-form-input">
-						{{ form_widget(form.ticket.message, {'attr': {'class': 'dp-message'}}) }}
-						{% if error_fields['ticket.message'] %}
-							<div class="dp-error-explain">
-								Please enter at least 10 characters
-							</div>
-						{% endif %}
+						{{ form_widget(form.ticket.message, {
+							'attr': {
+								'class': 'dp-message',
+								'data-field-validators': 'DeskPRO.Form.LengthValidator',
+								'data-min-len': 10
+							}
+						}) }}
+						<div class="dp-error-explain">
+							Please enter at least 10 characters
+						</div>
 					</div>
 				</div>
 				<div class="dp-form-row">
@@ -257,11 +259,9 @@
 						</div>
 						<div class="dp-form-input">
 							{{ captcha_html|raw }}
-							{% if error_fields['person.name'] %}
-								<div class="dp-error-explain">
-									The code you entered is incorrect.
-								</div>
-							{% endif %}
+							<div class="dp-error-explain">
+								The code you entered is incorrect.
+							</div>
 						</div>
 					</div>
 				{% endif %}

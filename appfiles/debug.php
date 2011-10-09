@@ -45,6 +45,7 @@ $CONFIG['debug']['mail'] = array();
  */
 $CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor.jar';
 
+
 /**
  * Packs listed will be served in their raw form, not their compiled build form.
  * Useful for debugging since you dont need to re-compile the files each time.
@@ -52,6 +53,23 @@ $CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor
  */
 // TODO remove in distribution. Enabled just for devs
 $CONFIG['debug']['raw_js_packs'] = array('all');
+
+
+/**
+ * Same as above but for CSS
+ */
+//'agent.agent-ui', 'agent.misc', 'agent.deskpro-ui','agent.pages', 'agent.window-section'
+$CONFIG['debug']['raw_css_packs'] = array();
+//$CONFIG['debug']['raw_css_packs'][] = 'agent.vendors';
+//$CONFIG['debug']['raw_css_packs'][] = 'agent.interface';
+// TODO remove in distribution. Enabled just for devs
+$CONFIG['debug']['raw_css_packs'][] = 'all';
+
+/**
+ * True to use LESS css files with the Javascript loader
+ */
+// TODO remove in distribution. Enabled just for devs
+$CONFIG['debug']['use_less_css'] = true;
 
 $CONFIG['debug']['templates'] = array();
 

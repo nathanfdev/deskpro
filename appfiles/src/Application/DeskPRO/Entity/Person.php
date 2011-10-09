@@ -20,7 +20,6 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 use Application\DeskPRO\Entity;
 
 /**
@@ -35,6 +34,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
+	const CREATED_WEB_USERSOURCE = 'web.usersource';
 	const CREATED_GATEWAT_PERSON = 'gateway.person';
 
 	/**
@@ -125,7 +125,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
-	protected $creation_system;
+	protected $creation_system = 'web.person';
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -150,6 +150,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="last_name", type="text", nullable=true)
 	 */
 	protected $last_name = '';
+
+	/**
+	 * The summary field as filled in by agents
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="summary", type="text")
+	 */
+	protected $summary = '';
+
 
 	/**
 	 * A secret string used in various hashing or encryption schemes.
@@ -263,17 +272,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usersource associations
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
+	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person", indexBy="id")
 	 */
 	protected $usersource_assoc;
-
-	/**
-	 * Person scraper associations
-	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonScraperAssoc", mappedBy="person")
-	 */
-	protected $personscraper_assoc;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -893,7 +894,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return \Application\DeskPRO\Entity\Language
 	 */
-	public function getLangauge()
+	public function getLanguage()
 	{
 		if ($this->language) {
 			return $this->language;
@@ -1573,7 +1574,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				$m = null;
 				if (preg_match('#^(?P<first_name>[A-Za-z]{3,})\s+(?P<last_name>[A-Za-z]{3,})$#', $this->name, $m)) {
 					$this->first_name = $m['first_name'];
-					$this->last_name = $m['last_ame'];
+					$this->last_name = $m['last_name'];
 				}
 			}
 		} else {
@@ -1718,7 +1719,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if ($user_offset >= 0) {
 				$user_offset = "+$user_offset";
 			} else {
-				$user_offset = "-$user_offset";
+				$user_offset = "$user_offset";
 			}
 		}
 

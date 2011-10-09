@@ -1,0 +1,23 @@
+<div>
+	<div class="profile-box-container email-assoc">
+		<header>
+			<span class="edit-gear email-assoc-edit">edit</span>
+			<h4>Email Domain Associations</h4>
+		</header>
+		<section>
+			{% if not org_email_domains|length %}
+				<p>
+					Set an email domain to auto-associate users with this organization.
+				</p>
+			{% else %}
+				<p>
+					Users with emails at the domain
+					{% for domain in org_email_domains %}{{ domain }}{% if not loop.last %}, {% endif %}{% endfor %} will be automatically associated with this organization.
+				</p>
+			{% endif %}
+		</section>
+	</div>
+	<div class="email-assoc-overlay-wrapper" style="display: none">
+		{% include 'AgentBundle:Organization:orgemail-overlay.html.twig' %}
+	</div>
+</div>

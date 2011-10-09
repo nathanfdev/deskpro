@@ -119,6 +119,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $person_email = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\PersonEmailValidating
+	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmailValidating", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_email_validating_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $person_email_validating = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
@@ -206,6 +213,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
 	protected $hidden_status = null;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="validating", type="string", length=35, nullable=true)
+	 */
+	protected $validating = null;
 
 	/**
 	 * Is the ticket on hold?
@@ -521,7 +534,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			WHERE p.ticket = ?1
-		")->setParameter(1, $this)->execute();
+		")->setParameter(1, $this->id)->execute();
 
 		return $participants;
 	}
@@ -565,6 +578,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
 		}
 
+		if (!$person) {
+			return null;
+		}
+
 		if ($ticket_part = $this->hasParticipantPerson($person)) {
 			return $ticket_part;
 		}
@@ -594,6 +611,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
+		}
+
+		if (!$person) {
+			return null;
 		}
 
 		foreach ($this->participants as $k => $p) {
@@ -1311,6 +1332,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			App::getOrm()->remove($ticket_flagged);
 			$ticket_flagged = null;
 		} else {
+			App::getOrm()->persist($ticket_flagged);
 			$ticket_flagged['color'] = $color;
 		}
 

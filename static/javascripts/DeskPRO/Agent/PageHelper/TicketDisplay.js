@@ -134,7 +134,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.departmentId = null;
 
 		this.page = ticketPage;
-		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult, this);
+		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult.bind(this), this);
 
 		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 
@@ -148,6 +148,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			this.replaceHolders(data.holders);
 			this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0), true);
 		}
+
+		this.closeEditMode();
 	},
 
 	/**
@@ -177,8 +179,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		$(this.options.fieldTabSelector, this.sectionBodyTabs).remove();
 		$(this.options.fieldTabContentSelector, this.sectionBodyTabContents).remove();
 		$(this.options.fieldWrapSelector, this.sectionPropertiesContent).remove();
-
-		this.sectionProperties.hide();
 
 		$('.fields-show', this.sectionProperties).show();
 
@@ -239,21 +239,23 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 					var itemId = this.getItemId(item);
 
 					// only put fields with values in the display
-					if (1 || !itemEls.itemHolder.is('.no-value')) {
-						if (itemEls.itemHolder.data('custom-field-handler')) {
-							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
-						}
-
-						var displayWrap = $(this.sectionPropertiesWrapTpl);
-
-						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
-						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
-
-						displayWrap.appendTo(this.sectionPropertiesContent);
-						item.sectionEl = this.sectionPropertiesContent;
-
-						itemEls.itemHolder.remove(); //save mem, just remove the orig container
+					if (itemEls.itemHolder.data('custom-field-handler')) {
+						item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
 					}
+
+					var displayWrap = $(this.sectionPropertiesWrapTpl);
+
+					if (itemEls.itemHolder.is('.no-value')) {
+						displayWrap.addClass('no-value');
+					}
+
+					itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
+					itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
+
+					displayWrap.appendTo(this.sectionPropertiesContent);
+					item.sectionEl = this.sectionPropertiesContent;
+
+					itemEls.itemHolder.remove(); //save mem, just remove the orig container
 
 					var editWrap = $('.fields-edit-container', this.sectionProperties);
 					var itemInputHolder = $('> .' + itemId, this.inputHolders);
@@ -331,6 +333,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		showWrapper.hide();
 		editWrapper.show();
+
+		this.page.getEl('properties_controls').hide();
 	},
 
 	closeEditMode: function(section) {
@@ -339,6 +343,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		editWrapper.hide();
 		showWrapper.show();
+
+		this.page.getEl('properties_controls').show();
+
+		var editWrapper = $('.fields-edit', this.sectionProperties);
+		editWrapper.removeClass('loading');
 	},
 
 	saveEditMode: function(section) {
@@ -446,12 +455,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 * If all are hidden, then the section itself should be hidden
 	 */
 	updateSectionDisplay: function() {
-		if ($(this.options.fieldWrapSelector + ':first', this.sectionPropertiesContent).length) {
-			this.sectionProperties.show();
-		} else {
-			this.sectionProperties.hide();
-		}
-
 		var sectionBodyTabContents = this.sectionBodyTabContents;
 		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
 

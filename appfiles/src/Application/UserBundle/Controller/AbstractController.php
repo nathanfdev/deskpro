@@ -3,6 +3,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -11,6 +12,28 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
+
+	protected $search_query = '';
+
+	protected function init()
+	{
+		parent::init();
+
+		$tpl_globals = $this->container->get('templating.globals');
+		if (!$tpl_globals->getVariable('usersources')) {
+			 $tpl_globals->setVariable('usersources', App::getEntityRepository('DeskPRO:Usersource')->getAllUsersources());
+		}
+
+		if ($this->in->getString('q')) {
+			$this->search_query = $this->in->getString('q');
+		} else {
+			$referrer = $this->request->headers->get('Referer');
+			if ($referrer && ($q = Strings::extractRegexMatch('#search\?q=(.*?)(&|$)#', $referrer, 1))) {
+				$this->search_query = urldecode($q);
+			}
+		}
+		$tpl_globals->setVariable('search_query', $this->search_query);
+	}
 
 	public function preAction($action, $arguments = null)
 	{
@@ -46,7 +69,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * @param string $error_title
 	 * @return Response
 	 */
-	public function renderStandardError($error_message, $error_title = '', $code = 200, array $vars = array())
+	public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
 		if ($error_message AND $error_message[0] == '@') {
 			$error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));

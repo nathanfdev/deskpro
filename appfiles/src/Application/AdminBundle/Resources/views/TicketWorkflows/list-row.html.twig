@@ -1,11 +1,14 @@
-<li class="workflow workflow-{{workflow.id}}" data-workflow-id="{{workflow.id}}">
-	<div class="drag-handle">ORDER</div>
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit edit-trigger"><a href="{{ path('admin_ticketworks_edit', {'workflow_id': workflow.id}) }}" class="popout-trigger" data-height="200" data-width="400">edit</a></li>
-		</ul>
-	</div>
-	<div>
-		{{workflow.title}}
-	</div>
-</li>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% if not depth %}
+<tbody>
+{% endif %}
+	<tr data-item-id="{{ workflow.id }}" class="depth-{{ depth|default(0) }} product product-{{workflow.id}}" data-product-id="{{workflow.id}}">
+		<td class="title">
+			<a href="{{ path('admin_ticketworks_edit', {'workflow_id': workflow.id}) }}" class="edit-title">
+				{{workflow.title}}
+			</a>
+		</td>
+	</tr>
+{% if not depth %}
+</tbody>
+{% endif %}

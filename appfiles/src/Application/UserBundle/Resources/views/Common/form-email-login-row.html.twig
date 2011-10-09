@@ -11,39 +11,93 @@
 				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-inline-login-open">log in</a>.</em>
 			</div>
 			<div class="dp-form-input">
-				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" />
-				{% if error_fields[form_key_prefix~'email'] %}
-					<div class="dp-error-explain">
-						Enter a valid email address
-					</div>
-				{% endif %}
+				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+				<div class="dp-error-explain">
+					Enter a valid email address
+				</div>
 			</div>
 		</div>
 
-		<div class="dp-form-row dp-inline-login-pass">
-			<div class="dp-form-label">
-				<label>Password</label>
-			</div>
-			<div class="dp-form-input">
-				<input type="password" id="dp_inline_login_pass" />
-				<div class="dp-loading">
-					Logging in...
+		<div class="dp-form-row dp-inline-login-pass" style="display: none">
+			<div class="dp-login-section">
+				<div class="dp-form-label">
+					<label>Password</label>
+					<a class="forgot" href="{{ path('user_login_resetpass') }}">Lost?</a>
 				</div>
-				<div class="dp-btn-row">
-					<button class="btn primary dp-login-trigger">Log In</button>
-					<button class="btn dp-inline-login-open">Cancel</button>
+				<div class="dp-form-input">
+					<input type="password" id="dp_inline_login_pass" />
+					<div class="dp-loading">
+						Logging in...
+					</div>
+					<div class="dp-btn-row">
+						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">Log In</button>
+						<button class="btn dp-inline-login-open">Cancel</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-reset-section" style="display: none">
+				<div class="dp-reset-desc">
+					Forgot your password? Fill in your email address above, and then
+					click the button below.
+					<br />
+					<div class="dp-btn-row">
+						<div class="not-loading">
+							<button class="btn small dp-do-send">Send Reset Instructions</button>
+							<a class="back">or go back to the login form</a>
+						</div>
+						<div class="is-loading">
+							Please Wait
+						</div>
+					</div>
+				</div>
+				<div class="dp-reset-sent" style="display: none">
+					If we have an account with this email address, then we have sent you
+					instructions on how to reset your password.<br />
+					<a class="btn small back">Go back to the login form</a>
 				</div>
 			</div>
 		</div>
+
 	{% else %}
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>Your Email Address</label></em>
+		<div
+			class="dp-inline-email-manage with-handler"
+			{% if mode == 'advanced' %}
+			data-element-handler="DeskPRO.User.ElementHandler.InlineEmailManage"
+			data-security-token="{{ security_token('email_manage') }}"
+			{% endif %}
+		>
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Your Email Address</label>
+					{% if mode == 'advanced' %}
+					<em class="change-email"><a href="{{ path('user_profile') }}">Change email address</a></em>
+					<em class="change-email-close" style="display: none"><a>Done changing email</a></em>
+					{% endif %}
+				</div>
+				<div class="dp-form-input">
+					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
+
+				</div>
 			</div>
-			<div class="dp-form-input">
-				{{ app.user.primary_email_address }}
-				<input type="hidden" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" />
-			</div>
+			{% if mode == 'advanced' %}
+				<div class="dp-email-manage-controls" style="display: none">
+					<strong>Choose the email you want to use:</strong><br />
+					<ul>
+						{% for email in app.user.emails %}
+							<li>
+								<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+							</li>
+						{% endfor %}
+						<li>
+							<label>
+								<input type="radio" name="dp_inline_email_choice" value="NEW" />
+								New email:</label>
+							<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
+						</li>
+					</ul>
+				</div>
+			{% endif %}
 		</div>
 	{% endif %}
 </div>

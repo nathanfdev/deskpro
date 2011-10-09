@@ -31,17 +31,16 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 	{
 		$change_info = array(
 			'type' => 'user_notify',
-			'notify_type' => 'newreply',
+			'notify_type' => 'newticket',
 			'emailed' => array(),
 			'cced' => array()
 		);
-		
+
 		$vars = array(
-			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_ticket_confirm', array('ticket_subject' => $ticket['subject'])),
+			'email_subject' => new DelegatePhrase('user.emails.subj_ticket_reply', array('ticket_subject' => $ticket['subject'])),
 		);
 
 		$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $change_info);
-
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 }

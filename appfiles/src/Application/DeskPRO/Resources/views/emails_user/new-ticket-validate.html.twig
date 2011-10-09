@@ -1,12 +1,13 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{{ layout.section_start('Validation required', 2) }}
-		Your ticket "{{ticket.subject}}" will not be seen by our agents until you validate your email address.
-		Please click on the following link to validate:<br />
-		<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': ticket.code}) }}">
-			{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': ticket.code}) }}
+		Thank you for your recent email "{{ticket.subject}}."
+		Before our agents will read and reply to your email, you must validate your email address.
+		<br /><br />
+		Simply click on the following link to validate to your email address:<br />
+		<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
+			{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
 		</a>
 	{{ layout.section_end() }}
 {% endblock %}

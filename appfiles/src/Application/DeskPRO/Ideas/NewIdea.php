@@ -13,74 +13,191 @@ namespace Application\DeskPRO\Ideas;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\DeskPRO\Entity\Visitor;
 use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaVote;
+use Application\DeskPRO\Entity\Rating;
 
 /**
  * New idea acts as the processor and domain object for a newidea form
  */
-class NewIdea
+class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 {
 	public $category_id = 0;
 	public $title = '';
 	public $content = '';
-	public $votes = 1;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $person;
+	protected $person_context;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Visitor
-	 */
-	protected $visitor;
+	public $person_name = '';
+	public $person_email = '';
 
-	public function __construct(Person $person = null, Visitor $visitor = null)
+	public function __construct(Visitor $visitor = null, Person $person = null)
 	{
-		if ($person AND $person['id']) {
-			$this->person = $person;
+		$this->visitor = $visitor;
+
+		if ($person && !$person->isGuest()) {
+			$this->person_name = $person->name;
+			if ($person->primary_email) {
+				$this->person_email = $person->primary_email_address;
+			}
 		}
 
-		$this->visitor = $visitor;
+		if ($visitor && $visitor->name && !$this->person_name) {
+			$this->person_name = $visitor->name;
+		}
+		if ($visitor && $visitor->email && !$this->person_email) {
+			$this->person_email = $visitor->email;
+		}
+	}
+
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
+
+	public function getPersonContext()
+	{
+		return $this->person_context;
 	}
 
 	public function save()
 	{
 		App::getOrm()->beginTransaction();
 
-		$idea = new Idea();
+		try {
 
-		if ($this->person) {
-			$idea->person = $this->person;
-		} else {
-			//$idea->visitor = $this->visitor;
+			#------------------------------
+			# Handle the person first
+			#------------------------------
+
+			$status = 'visible';
+			$validating = null;
+
+			$person = null;
+			$email = null;
+			$email_validating = null;
+
+			if ($this->person_context->isGuest()) {
+
+				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
+
+				if ($email) {
+					$validating = 'existing';
+
+					$person = $email->person;
+
+					$email_validating = new PersonEmailValidating();
+					$email_validating->email = $email->email;
+					$email_validating->person = $person;
+					App::getOrm()->persist($email_validating);
+
+				} else {
+					$validating = 'new';
+
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
+
+					if (!$email_validating) {
+						$person = Entity\Person::newContactPerson();
+						$person->name = $this->person_name;
+						App::getOrm()->persist($person);
+
+						$email_validating = new PersonEmailValidating();
+						$email_validating->email = $this->person_email;
+						$email_validating->person = $person;
+						App::getOrm()->persist($email_validating);
+
+					} else {
+						$person = $email_validating->person;
+					}
+				}
+			} else {
+				$person = $this->person_context;
+
+				if ($this->person_name) {
+					$person->name = $this->person_name;
+					App::getOrm()->persist($person);
+				}
+			}
+
+			App::getOrm()->flush();
+
+			$idea = new Idea();
+
+			$idea['title']        = $this->title;
+			$idea['content']      = $this->content;
+			$idea['category_id']  = $this->category_id;
+			$idea['status']       = Idea::STATUS_NEW;
+			$idea['date_created'] = new \DateTime();
+			$idea['validating']   = $validating;
+
+			if ($validating) {
+				// TODO visibility based on setting
+				$idea->setStatusCode('hidden.validating');
+			}
+
+			App::getOrm()->persist($idea);
+			App::getOrm()->flush();
+
+			$rating = Rating::create(1);
+			$rating->person = $person;
+			if ($this->visitor) {
+				$rating->visitor = $this->visitor;
+			}
+			$idea->addRating($rating);
+
+			App::getOrm()->persist($rating);
+			App::getOrm()->persist($idea);
+
+			App::getOrm()->flush();
+
+			if ($email_validating) {
+				$email_validating->addValidatingContent('DeskPRO:Idea', $idea->id);
+				App::getOrm()->flush();
+			}
+
+			App::getOrm()->commit();
+
+			// Send confirmation email
+			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($idea, $person, $email_validating, $email, $validating) {
+
+				if ($validating == 'existing') {
+					$email_to       = $email->email;
+					$email_subject  = $tr->phrase('user_emails.subj_newidea_validate');
+				} elseif ($validating == 'new') {
+					$email_to       = $email_validating->email;
+					$email_subject  = $tr->phrase('user_emails.subj_newidea_validate');
+				} else {
+					$email_to       = $person->primary_email_address;
+					$email_subject  = $tr->phrase('user_emails.subj_newidea');
+				}
+
+				$vars = array(
+					'idea' => $idea,
+					'person' => $person,
+					'email_validating' => $email_validating,
+					'email' => $email,
+					'validating' => $validating,
+				);
+				$email_body = App::get('templating')->render('DeskPRO:emails_user:idea-new.html.twig', $vars);
+
+				$message = App::getMailer()->createMessage();
+				$message->setTo($email_to, $person->getDisplayName());
+				$message->setSubject($email_subject);
+				$message->setBody($email_body, 'text/html');
+				$message->enableQueueHint();
+
+				App::getMailer()->send($message);
+			});
+
+		} catch (\Exception $e) {
+			App::getOrm()->rollback();
+			throw $e;
 		}
-
-		$idea['title']        = $this->title;
-		$idea['content']      = $this->content;
-		$idea['category_id']  = $this->category_id;
-		$idea['status']       = Idea::STATUS_NEW;
-		$idea['date_created'] = new \DateTime();
-
-		App::getOrm()->persist($idea);
-		App::getOrm()->flush();
-
-		$vote = new IdeaVote();
-		$vote['idea'] = $idea;
-		if ($this->person['id']) {
-			$vote->person = $this->person;
-		} else {
-			$vote->visitor = $this->visitor;
-		}
-		$vote['num_ratings'] = $this->votes;
-		$vote['date_created'] = new \DateTime();
-
-		App::getOrm()->persist($vote);
-		App::getOrm()->flush();
-
-		App::getOrm()->commit();
 
 		return $idea;
 	}

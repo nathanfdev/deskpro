@@ -110,7 +110,9 @@ class Article extends ContentAbstract
 				$cat = App::findEntity('DeskPRO:ArticleCategory', $cat);
 			}
 
-			$set[$cat['id']] = $cat;
+			if ($cat) {
+				$set[$cat['id']] = $cat;
+			}
 		}
 
 		// Go through find which ones we need to add or remove

@@ -21,30 +21,34 @@ use Symfony\Component\Form\FormBuilder;
 
 class EditTicketCategoryType extends AbstractType
 {
-	protected $category;
+	protected $is_new;
 
-	public function __construct($category)
+	public function __construct($is_new)
 	{
-		$this->category = $category;
+		$this->is_new = $is_new;
 	}
 
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text');
 
-		$category = $this->category;
-		if (!$category['id']) {
-			$parent_options = App::getDb()->fetchAllKeyValue("
-				SELECT id, title
-				FROM ticket_categories
-				WHERE parent_id IS NULL
-				ORDER BY title ASC
-			");
-
-			if ($parent_options) {
-				Arrays::unshiftAssoc($parent_options, 0, '(none)');
-				$builder->add('parent_id', 'choice', array('choices' => $parent_options));
-			}
+		if ($this->is_new) {
+			$builder->add('parent', 'entity', array(
+				'class' => 'DeskPRO:TicketCategory',
+				'property' => 'title',
+				'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
+						return $er->createQueryBuilder('c')
+								->where('c.parent IS NULL')
+								->orderBy('c.display_order', 'ASC');
+				},
+				'empty_value' => '',
+				'required' => false,
+			));
 		}
+	}
+
+	public function getName()
+	{
+		return 'ticket_cat';
 	}
 }

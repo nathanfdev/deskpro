@@ -1,0 +1,16 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Delete Priority</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; Back to ticket priorities</a>
+	</nav>
+{% endblock %}
+{% block page %}
+
+<p>Are you sure you want to delete the priority "<strong>{{ priority.title }}</strong>"?</p>
+
+<p>Any tickets that use this priority will have it removed.</p>
+
+<a class="btn" href="{{ path('admin_ticketpris_dodel', {'priority_id': priority.id, 'security_token': security_token('delete_ticket_priority')}) }}">Yes, I am sure I want to delete</a>
+
+{% endblock %}

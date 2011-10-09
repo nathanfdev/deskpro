@@ -26,4 +26,9 @@ class EditTicketPriorityType extends AbstractType
 		$builder->add('title', 'text');
 		$builder->add('priority', 'text');
 	}
+
+	public function getName()
+	{
+		return 'ticket_priority';
+	}
 }

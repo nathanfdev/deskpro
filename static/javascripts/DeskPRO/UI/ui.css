@@ -26,17 +26,16 @@
 .deskpro-overlay-outer {
 	position: absolute;
 	z-index: 100001;
-	background: url("../../../images/bg-overlay-padding.png") repeat;
-	border: 1px solid #3c434d;
-	padding: 8px ;
 
-	-webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+	background-color: #FAFAFA;
+	border: 2px solid #0B374D;
+	border-radius: 6px;
+	-mox-border-radius: 6px;
 
-	-webkit-box-shadow:   inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
-    -moz-box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
-    box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
+	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
+	box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
+	margin: 10px;
 }
 
 .deskpro-overlay-outer.error {
@@ -45,30 +44,21 @@
 }
 
 .close-overlay {
+	background: transparent url(../../../images/agent/closeOvelay.png) no-repeat 50% 50%;
+	width: 35px;
+	height: 35px;
+	overflow: hidden;
+	text-indent: -100px;
+
 	display: block;
-	width: 29px;
-	height: 29px;
-	text-indent: -99999px;
-	background: url("../../../images/icn-sprite.png") left -1200px no-repeat;
 	position: absolute;
-	right: -15px;
-	top: -15px;
-
-	-webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20xpx;
-
-	-webkit-box-shadow:0 1px 5px rgba(0,0,0,.4);
-    -moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
-    box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	right: -18px;
+	top: -18px;
+	cursor: pointer;
 }
 
 .close-overlay:hover {
-	opacity: 1;
-
-	-webkit-box-shadow:0 0 5px red;
-    -moz-box-shadow: 0 0 5px red;
-    box-shadow: 0 0 5px red;
+	background: transparent url(../../../images/agent/closeOvelay-over.png) no-repeat 50% 50%;
 }
 
 /* The inner wrapper */
@@ -76,10 +66,9 @@
 	position: relative;
 	background: #fff;
 
-	-webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .overlay-title {
@@ -104,12 +93,10 @@
 
 .overlay-content {
 	padding: 10px;
-
-	-webkit-box-shadow: 0 1px 1px #959ba1;
-    -moz-box-shadow: 0 1px 1px #959ba1;
-    box-shadow: 0 1px 1px #959ba1;
-
 	min-width: 300px;
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .overlay-content.no-footer {
@@ -137,17 +124,20 @@
 }
 
 .deskpro-overlay.iframe {
-	background-color: transparent;
-	-moz-border-radius: 0px;
-	border-radius: 0px;
+
 }
 
 .deskpro-overlay.iframe .overlay-content {
 	padding: 0;
+	margin: 0;
 }
 
 .deskpro-overlay.iframe iframe {
 	background-color: #fff;
+	margin: 0;
+	padding: 0;
+	display: block;
+	border-radius: 5px;
 }
 
 .deskpro-overlay.no-padding .overlay-content {
@@ -159,28 +149,55 @@
 ***********************************************************************/
 
 .deskpro-menu-outer {
-    background-color: rgba(60, 60, 60, 0.85);
-	border: 1px solid #25282b;
+    background-color: #F0F0F0;
+	border: 1px solid #ABAFB3;
 
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 
-    -webkit-box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
-    -moz-box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
-    box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.deskpro-menu-outer.with-point:after {
+	border-color: transparent transparent #ABAFB3;
+    border-style: solid;
+    border-width: 5px;
+    content: "";
+    display: block;
+    height: 0;
+    left: 4px;
+    position: absolute;
+    top: -10px;
+    width: 0;
+    z-index: 100;
 }
 
 .deskpro-menu-inner {
-    color: #fff;
-	text-shadow: 0 -1px 0 #323437;
+    color: #787F84;
+	text-shadow: 0 1px 0 #fff;
 
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-	border: 3px solid rgba(255,255,255,.07);
+	box-shadow: 0 1px 0 #FFFFFF inset, 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
 
-    font-family: Arial,Helvetica,sans-serif;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+
+    font-family: Helvetica,Arial,sans-serif;
     font-size: 11px;
+}
+
+.with-point .deskpro-menu-inner:after {
+    border-color: transparent transparent #F0F0F0;
+    border-style: solid;
+    border-width: 5px;
+    content: "";
+    display: block;
+    height: 0;
+    left: 4px;
+    position: absolute;
+    top: -9px;
+    width: 0;
+    z-index: 101;
 }
 
 .deskpro-menu {
@@ -192,27 +209,41 @@
 }
 
 .deskpro-menu > ul > li {
-	padding: 4px 4px 4px 8px;;
+	padding: 3px 4px 3px 10px;
+	line-height: 17px;
 	border: 1px solid transparent;
+	border-bottom: 1px solid #E3E4E6;
 
-	-webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
     position: relative;
+
+	font-family: Helvetica,Arial,sans-serif;
+    font-size: 11px;
+}
+
+.deskpro-menu > ul > li.highlight {
+	-webkit-box-shadow: inset 0px 0px 4px 5px #ffffff;
+	-moz-box-shadow: inset 0px 0px 4px 5px #ffffff;
+	box-shadow: inset 0px 0px 4px 5px #ffffff;
+}
+
+.deskpro-menu > ul > li a, .deskpro-menu > ul > li span{
+	line-height: 17px;
+	display: block;
+}
+
+.deskpro-menu > ul > li:last-child {
+	border-bottom: 1px solid transparent;
 }
 
 .deskpro-menu > ul > li > a {
-    color: #fff;
+    color: #787F84;
     text-decoration: none;
 }
 
 .deskpro-menu > ul > li:not(.sep):not(.elm):not(.section-title):hover,
 .deskpro-menu > ul > li.hover, .deskpro-menu > ul > li.hover > a {
-    background: #323437;
-	border-top: 1px solid #27292b;
-	border-bottom: 1px solid #696b6f;
+    background: #FCFEFE;
 
-    color: #CCC;
 	cursor: pointer;
 
     -webkit-transition: color 0.2s ease-out;
@@ -244,7 +275,7 @@
 .deskpro-menu > ul > li > span.icon {
 	padding-left: 20px;
 	background-repeat: no-repeat;
-	background-position: center left;
+	background-position: 0 50%;
 }
 
 .deskpro-menu > ul > li > span.arrow {
@@ -252,9 +283,13 @@
 }
 
 .deskpro-menu > ul > li.section-title {
-	color: #cecece;
+	color: #6E7073;
 	padding-left: 3px;
+	padding-top: 2px;
 	padding-bottom: 3px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
 }
 
 .deskpro-menu li .count {

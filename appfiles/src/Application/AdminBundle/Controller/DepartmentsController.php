@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Application\AdminBundle\Form\EditDepartmentType;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 /**
  * Handles creating/editing of API keys
@@ -39,12 +40,106 @@ class DepartmentsController extends AbstractController
 			ORDER BY dep.display_order ASC
 		")->getResult();
 
+		$agents     = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$teams      = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$usergroups = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+		$current_options = App::getEntityRepository('DeskPRO:DepartmentPermission')->getPermissionsForAllDepartments();
+
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
-			'all_departments' => $all_departments
+			'all_departments' => $all_departments,
+			'agents' => $agents,
+			'teams' => $teams,
+			'usergroups' => $usergroups,
+			'current_options' => $current_options,
 		));
 	}
 
+	public function saveAgentsAction($department_id)
+	{
+		$department = App::findEntity('DeskPRO:Department', $department_id);
 
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		APp::getDb()->executeUpdate("
+			DELETE
+			FROM department_permissions
+			WHERE apply_type IN ('agent_team', 'person')
+			AND department_id = ?
+		", array($department_id));
+
+		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+		$agent_team_ids = $this->in->getCleanValueArray('agent_team_ids', 'uint', 'discard');
+
+		if ($agent_ids || $agent_team_ids) {
+			App::getDb()->beginTransaction();
+
+			if ($agent_ids) {
+				foreach ($agent_ids as $agent_id) {
+					App::getDb()->insert('department_permissions', array('apply_type' => 'person', 'department_id' => $department->id, 'person_id' => $agent_id));
+				}
+			}
+			if ($agent_team_ids) {
+				foreach ($agent_team_ids as $agent_team_id) {
+					App::getDb()->insert('department_permissions', array('apply_type' => 'agent_team', 'department_id' => $department->id, 'agent_team_id' => $agent_team_id));
+				}
+			}
+
+			App::getDb()->commit();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function saveUsergroupsAction($department_id)
+	{
+		$department = App::findEntity('DeskPRO:Department', $department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		APp::getDb()->executeUpdate("
+			DELETE
+			FROM department_permissions
+			WHERE apply_type = 'usergroup'
+			AND department_id = ?
+		", array($department_id));
+
+		$usergroup_ids = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
+
+		if ($usergroup_ids) {
+			App::getDb()->beginTransaction();
+			foreach ($usergroup_ids as $usergroup_id) {
+				App::getDb()->insert('department_permissions', array('apply_type' => 'usergroup', 'department_id' => $department->id, 'usergroup_id' => $usergroup_id));
+			}
+			App::getDb()->commit();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function saveFeatureStateAction($department_id)
+	{
+		$chat = $this->in->getBool('chat');
+		$tickets = $this->in->getBool('tickets');
+
+		$department = App::findEntity('DeskPRO:Department', $department_id);
+
+		if (!$department) {
+			throw $this->createNotFoundException();
+		}
+
+		$department->is_tickets_enabled = $tickets;
+		$department->is_chat_enabled= $chat;
+
+		App::getOrm()->transactional(function($em) use ($department) {
+			$em->persist($department);
+		});
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
 
 	############################################################################
 	# edit
@@ -61,23 +156,17 @@ class DepartmentsController extends AbstractController
 			$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditDepartmentType($department), $department);
+		$form = $this->get('form.factory')->create(new EditDepartmentType($department->id ? false : true), $department);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
 				App::getOrm()->persist($department);
 				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:Departments:list-row.html.twig', array('department' => $department));
-
-				// Recreate form because parent_id field cant be changed, so we need to get rid of it
-				$form = EditDepartmentType::create($this->get('form.context'), 'department', array('department' => $department));
-				$form->setData($department);
+				$this->session->setFlash('saved', $department->title);
+				return $this->redirectRoute('admin_departments');
 			}
 		}
 
@@ -86,8 +175,6 @@ class DepartmentsController extends AbstractController
 		return $this->render('AdminBundle:Departments:edit.html.twig', array(
 			'department' => $department,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
 		));
 	}
 
@@ -217,6 +304,82 @@ class DepartmentsController extends AbstractController
 		$html = $this->renderView('AdminBundle:Departments:designer-widget-choicerow.html.twig', array('widget' => $widget));
 
 		return $this->createJsonResponse(array('html' => $html));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($department_id)
+	{
+		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
+
+		// Count tickets in this department
+		$searcher = new TicketSearch();
+		$searcher->addTerm(TicketSearch::TERM_DEPARTMENT, TicketSearch::OP_IS, $department->id);
+
+		$tids = $searcher->getMatches(array('offset' => 0, 'limit' => 1001));
+		$ticket_count = count($tids);
+		unset($tids);
+
+		$departments = App::getEntityRepository('DeskPRO:Department')->getAll();
+
+		return $this->render('AdminBundle:Departments:delete.html.twig', array(
+			'department'  => $department,
+			'ticket_count' => $ticket_count,
+			'departments' => $departments
+		));
+	}
+
+	public function doDeleteAction($department_id, $security_token)
+	{
+		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
+		$move_department = null;
+
+		$searcher = new TicketSearch();
+		$searcher->addTerm(TicketSearch::TERM_DEPARTMENT, TicketSearch::OP_IS, $department->id);
+
+		$tids = $searcher->getMatches(array('offset' => 0, 'limit' => 1));
+		$has_tickets = false;
+		if (count($tids)) {
+			$has_tickets = true;
+		}
+
+		if ($has_tickets) {
+			$move_department = App::getEntityRepository('DeskPRO:Department')->find($this->in->getUint('move_to_department'));
+			if (!$move_department || count($move_department->children)) {
+				// TODO err
+				die('invalid new department');
+			}
+		}
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_department', $security_token)) {
+			// TODO err
+			die('invalid token');
+		}
+
+		$this->em->beginTransaction();
+
+		if ($has_tickets) {
+			$tree_ids = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
+			$tree_ids = implode(',', $tree_ids);
+
+			App::getDb()->executeUpdate("
+				UPDATE tickets
+				SET department_id = ?
+				WHERE department_id IN ($tree_ids)
+			", array($move_department->id));
+		}
+
+		foreach ($department->children as $c) {
+			$this->em->remove($c);
+		}
+		$this->em->remove($department);
+		$this->em->flush();
+		$this->em->commit();
+
+		$this->session->setFlash('deleted', $department->title);
+		return $this->redirectRoute('admin_departments');
 	}
 
 	############################################################################

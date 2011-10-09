@@ -1,0 +1,16 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<div class="dp-error-page">
+	<div class="dp-content-block">
+		<div class="dp-box">
+			<div class="dp-box-content-wrapper">
+				<div class="dp-box-content">
+					<p>
+						Thank you for validating your email address. {% if ticket_ids|length %}Our agents will now read and reply to all of your messages.{% endif %}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

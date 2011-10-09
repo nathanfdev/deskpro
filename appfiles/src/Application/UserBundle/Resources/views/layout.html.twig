@@ -11,7 +11,8 @@
 	{{ html_js_pack('user.common') }}
 
 	<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen, projection">
-	<link rel="stylesheet" href="{{ asset('stylesheets/user/main.css') }}" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="{{ asset('stylesheets/user/main.css') }}" type="text/css" media="screen, projection, print">
+	<link rel="stylesheet" href="{{ asset('stylesheets/user/main-print.css') }}" type="text/css" media="print">
 
 	<script type="text/javascript">
 		var BASE_URL = '{{ path('user') }}';
@@ -25,8 +26,8 @@
 		});
 	</script>
 
-	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name'))}}" />
-	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{app.getSetting('core.facebook_admins')}}" />{% endif %}
+	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
+	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 
 	{{ portal_css(['sidebar', 'pagetop']) }}
 	{{ portal_js(['sidebar', 'pagetop']) }}
@@ -41,7 +42,16 @@
 </div>
 
 <div id="dp_search_assist" style="display: none;">
-	ccccc
+	<div class="results"></div>
+	<div class="foot">
+		<h4>Did not find what you were looking for?</h4>
+		<ul>
+			<li class="ticket"><a href="{{ path('user_tickets_new') }}">Create Ticket</a></li>
+			<li class="idea"><a href="{{ path('user_ideas_newidea') }}">Create Idea</a></li>
+			<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">Chat Live</a></li>
+		</ul>
+		<br class="dp-clear" style="clear:left" />
+	</div>
 </div>
 
 {% if app.user.is_guest %}
@@ -58,6 +68,13 @@
 					<dt>Password <em class="forgot"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></dt>
 					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 				</dl>
+				<div style="float:right">
+					{% for usersource in app.usersources %}
+						{% if usersource.isCapable('button') %}
+							{{ render_usersource(usersource, 'button', {'button_type': 'icon'}) }}
+						{% endif %}
+					{% endfor %}
+				</div>
 				<input class="btn" type="submit" value="Log In" />
 			</div>
 			<div class="dp-reset-section" style="display: none">
@@ -92,7 +109,7 @@
 		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
-				<input type="text" id="deskpro_search" placeholder="Enter a question, keyword or topic..." />
+				<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="Enter a question, keyword or topic..." autocomplete="off" />
 				<button class="btn primary">Search</button>
 			</form>
 		</div>
@@ -114,6 +131,30 @@
 	{% endif %}
 
 	<div id="dp_content">
+		{% if app.session.hasFlash('new_ticket') %}
+			<div class="dp-content-block">
+				<div class="dp-box">
+					<div class="dp-box-content-wrapper">
+						<div class="dp-box-content">
+							<div class="alert-message block-message success">
+								<p>Your ticket has been created successfully.</p>
+								{% if app.session.hasFlash('new_ticket_validating_email') %}
+									<p>
+										<strong class="warn">Note:</strong> Since this is your first time submitting
+										 a ticket from {{ app.session.flash('new_ticket_validating_email') }}, you must
+										 validate your email address before our agents will respond. Check your email now
+										 and click the validation link we sent you.
+									 </p>
+								{% elseif app.session.hasFlash('new_ticket_email') %}
+									<p>Our agents will respond to your email address at {{ app.session.flash('new_ticket_email') }}.</p>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
 		{% block content %}{% endblock %}
 	</div>
 

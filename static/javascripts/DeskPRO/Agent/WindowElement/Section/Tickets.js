@@ -81,6 +81,79 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				self.refreshFilterGrouping([filterId]);
 			}
 		});
+
+		if ($('#tickets_outline_custom_filters .filter').not('.filter-hidden').length) {
+			$('#tickets_outline_custom_filters .no-data').hide();
+		} else {
+			$('#tickets_outline_custom_filters .no-data').show();
+		}
+
+		this.customFilterGroupEditor = new DeskPRO.Agent.Widget.FilterOptionsPop({
+			containerElement: '#tickets_outline .scroll-content',
+			listElement: '#tickets_outline_custom_filters',
+			triggerElement: $('.launch-customfilters-editor', this.contentEl),
+			onInit: function(ed) {
+				ed.controlRealEl.delegate(':checkbox', 'click', function() {
+					var row = $(this).closest('.filter-row');
+					var filter_id = row.data('filter-id');
+
+					var filter_row = $('#tickets_outline_custom_filters .filter-' + filter_id);
+					if ($(this).is(':checked')) {
+						filter_row.removeClass('filter-hidden');
+					} else {
+						filter_row.addClass('filter-hidden');
+					}
+				});
+			},
+			onInitRow: function(row, filter_id, ed) {
+				var filter_row = $('#tickets_outline_custom_filters .filter-' + filter_id);
+				if (filter_row.is('.filter-hidden')) {
+					$(':checkbox', row).attr('checked', false);
+				}
+			},
+			onPreOpen: function(ed) {
+				$('#tickets_outline_custom_filters li.filter-hidden').show();
+				$('#tickets_outline_custom_filters').addClass('ed-open');
+
+				$('#tickets_outline_custom_filters .no-data').hide();
+			},
+			onClose: function(ed) {
+				$('#tickets_outline_custom_filters li.filter-hidden').slideUp(300);
+				window.setTimeout(function() {
+					$('#tickets_outline_custom_filters').removeClass('ed-open');
+
+					if ($('#tickets_outline_custom_filters .filter').not('.filter-hidden').length) {
+						$('#tickets_outline_custom_filters .no-data').hide();
+					} else {
+						$('#tickets_outline_custom_filters .no-data').show();
+					}
+
+				}, 310);
+
+				var postData = [];
+				$('#tickets_outline_custom_filters li.filter').each(function() {
+					var id = $(this).data('filter-id');
+					var v;
+
+					if ($(this).is('.filter-hidden')) {
+						v = 'hidden';
+					} else {
+						v = '';
+					}
+
+					postData.push({
+						name: 'prefs[agent.ui.filter-visibility.' + id + ']',
+						value: v
+					});
+				});
+
+				$.ajax({
+					type: 'POST',
+					url: BASE_URL + 'agent/misc/ajax-save-prefs',
+					data: postData
+				});
+			}
+		});
 	},
 
 	onShow: function() {

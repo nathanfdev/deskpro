@@ -21,34 +21,41 @@ use Symfony\Component\Form\FormBuilder;
 
 class EditDepartmentType extends AbstractType
 {
-	protected $department;
+	protected $is_new;
 
-	public function __construct($department)
+	public function __construct($is_new)
 	{
-		$this->department = $department;
+		$this->is_new = $is_new;
 	}
 
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text');
 
-		$department = $this->department;
+		$builder->add('is_tickets_enabled', 'checkbox', array(
+			'required' => false,
+		));
+		$builder->add('is_chat_enabled', 'checkbox', array(
+			'required' => false,
+		));
 
-		if (!$department['id']) {
-			$parent_options = App::getDb()->fetchAllKeyValue("
-				SELECT id, title
-				FROM departments
-				WHERE parent_id IS NULL
-				ORDER BY title ASC
-			");
-
-			if ($parent_options) {
-				Arrays::unshiftAssoc($parent_options, 0, '(none)');
-
-				$builder->add('parent_id', 'choice', array(
-					'choices' => $parent_options
-				));
-			}
+		if ($this->is_new) {
+			$builder->add('parent', 'entity', array(
+				'class' => 'DeskPRO:Department',
+				'property' => 'title',
+				'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
+						return $er->createQueryBuilder('p')
+								->where('p.parent IS NULL')
+								->orderBy('p.display_order', 'ASC');
+				},
+				'empty_value' => '',
+				'required' => false,
+			));
 		}
+	}
+
+	public function getName()
+	{
+		return 'department';
 	}
 }

@@ -1,158 +1,117 @@
+{% import 'UserBundle:Common:macros.html.twig' as layout %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_search_labels') }}">Search Labels</a></li>
 {% endblock %}
 {% block content %}
-<div class="label-search">
 
-<table cellspacing="0" cellpadding="0" width="100%" class="header"><tr>
-	<td width="45%">
-		<div class="search-box">
-			<form action="{{ path('user_search_labels') }}" method="get">
-				<h3>Find pages labelled with:</h3>
-				<input type="text" name="label" value="{{ label }}" /> <button class="dp-button x-small">Find</button>
-			</form>
-		</div>
-	</td>
-	<td>
-		<div class="tag-cloud">
-			<h3>Or choose one of these popular labels:</h3>
-			<ul>
-				{% for c_label,css_class in cloud %}
-					<li class="{{css_class}}"><a href="{{ path('user_search_labels', {'label': c_label}) }}">{{ c_label }}</a></li>
-				{% endfor %}
-			</ul>
-		</div>
-	</td>
-</table>
+{{ layout.page_box('dp-search-page dp-labels-page') }}
+	{{ layout.page_content() }}
+	<strong>Find pages labelled with:</strong><br />
+	<input type="text" name="label" id="search_label" value="{{ label }}" /> <button class="btn small" onclick="var url = $(this).data('url').replace(/_LABEL_/, $('#search_label').val().trim()); window.location = url;" data-url="{{ path('user_search_labels', {'label': '_LABEL_'}) }}">Find</button>
 
-{# Articles #}
+	<div class="dp-tag-cloud">
+		<ul>
+			{% for c_label,css_class in cloud %}
+				<li class="dp-{{css_class}}"><a href="{{ path('user_search_labels', {'label': c_label}) }}">{{ c_label }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+
+	{{ layout.page_content_end() }}
+{{ layout.page_box_end() }}
+
 {% if results.articles.results|length %}
-<div class="content-item">
-	<div class="heading">
-		<h2><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles'}) }}">Articles</a></h2>
-	</div>
+	{{ layout.page_box() }}
+		{{ layout.page_title() }}
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles'}) }}">Articles</a></h1>
+		{{ layout.page_title_end() }}
 
-	<div class="tab-contents">
-		<div class="with-handler"
-			data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
-			data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': '00000'})|replace({'00000': '{page}'}) }}"
-		>
-			<div class="content-list">
-				<ul>
-					{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'articles', 'results': results.articles.results, 'show_more': results.articles.show_more} %}
-				</ul>
-			</div>
-			{% if results.articles.show_more %}
-			<div class="content-more">
-				<div class="is-not-loading">
-					<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': page+1}) }}">More</a>
+		{{ layout.page_content() }}
+			<div class="with-handler"
+				data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
+				data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': '00000'})|replace({'00000': '{page}'}) }}"
+			>
+				<div class="dp-search-list">
+					<ul>
+						{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'articles', 'results': results.articles.results, 'show_more': results.articles.show_more} %}
+					</ul>
 				</div>
-				<div class="is-loading">
-					<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+				{% if results.articles.show_more %}
+				<div class="content-more">
+					<div class="is-not-loading">
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': page+1}) }}">More</a>
+					</div>
+					<div class="is-loading">
+						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+					</div>
 				</div>
+				{% endif %}
 			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
-{% endif %}
+		{{ layout.page_content_end() }}
+	{{ layout.page_box_end() }}
+{% endif%}
 
-{# News #}
-{% if results.news.results|length %}
-<div class="content-item">
-	<div class="heading">
-		<h2><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'news'}) }}">News</a></h2>
-	</div>
+{% if results.articles.results|length %}
+	{{ layout.page_box() }}
+		{{ layout.page_title() }}
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads'}) }}">Downloads</a></h1>
+		{{ layout.page_title_end() }}
 
-	<div class="tab-contents">
-		<div class="with-handler"
-			data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
-			data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'news', 'page': '00000'})|replace({'00000': '{page}'}) }}"
-		>
-			<div class="content-list">
-				<ul>
-					{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'news', 'results': results.news.results, 'show_more': results.news.show_more} %}
-				</ul>
-			</div>
-			{% if results.news.show_more %}
-			<div class="content-more">
-				<div class="is-not-loading">
-					<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'news', 'page': page+1}) }}">More</a>
+		{{ layout.page_content() }}
+			<div class="with-handler"
+				data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
+				data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': '00000'})|replace({'00000': '{page}'}) }}"
+			>
+				<div class="dp-search-list">
+					<ul>
+						{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'downloads', 'results': results.downloads.results, 'show_more': results.downloads.show_more} %}
+					</ul>
 				</div>
-				<div class="is-loading">
-					<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+				{% if results.downloads.show_more %}
+				<div class="content-more">
+					<div class="is-not-loading">
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': page+1}) }}">More</a>
+					</div>
+					<div class="is-loading">
+						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+					</div>
 				</div>
+				{% endif %}
 			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
-{% endif %}
+		{{ layout.page_content_end() }}
+	{{ layout.page_box_end() }}
+{% endif%}
 
-{# Downloads #}
-{% if results.downloads.results|length %}
-<div class="content-item">
-	<div class="heading">
-		<h2><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads'}) }}">Downloads</a></h2>
-	</div>
+{% if results.articles.results|length %}
+	{{ layout.page_box() }}
+		{{ layout.page_title() }}
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas'}) }}">Ideas</a></h1>
+		{{ layout.page_title_end() }}
 
-	<div class="tab-contents">
-		<div class="with-handler"
-			data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
-			data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': '00000'})|replace({'00000': '{page}'}) }}"
-		>
-			<div class="content-list">
-				<ul>
-					{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'downloads', 'results': results.downloads.results, 'show_more': results.downloads.show_more} %}
-				</ul>
-			</div>
-			{% if results.downloads.show_more %}
-			<div class="content-more">
-				<div class="is-not-loading">
-					<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': page+1}) }}">More</a>
+		{{ layout.page_content() }}
+			<div class="with-handler"
+				data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
+				data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': '00000'})|replace({'00000': '{page}'}) }}"
+			>
+				<div class="dp-search-list">
+					<ul>
+						{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'ideas', 'results': results.ideas.results, 'show_more': results.ideas.show_more} %}
+					</ul>
 				</div>
-				<div class="is-loading">
-					<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+				{% if results.ideas.show_more %}
+				<div class="content-more">
+					<div class="is-not-loading">
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': page+1}) }}">More</a>
+					</div>
+					<div class="is-loading">
+						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
+					</div>
 				</div>
+				{% endif %}
 			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
-{% endif %}
+		{{ layout.page_content_end() }}
+	{{ layout.page_box_end() }}
+{% endif%}
 
-{# Ideas #}
-{% if results.ideas.results|length %}
-<div class="content-item">
-	<div class="heading">
-		<h2><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas'}) }}">Ideas</a></h2>
-	</div>
-
-	<div class="tab-contents">
-		<div class="with-handler"
-			data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
-			data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': '00000'})|replace({'00000': '{page}'}) }}"
-		>
-			<div class="content-list">
-				<ul>
-					{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'ideas', 'results': results.ideas.results, 'show_more': results.ideas.show_more} %}
-				</ul>
-			</div>
-			{% if results.ideas.show_more %}
-			<div class="content-more">
-				<div class="is-not-loading">
-					<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': page+1}) }}">More</a>
-				</div>
-				<div class="is-loading">
-					<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
-				</div>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
-{% endif %}
-
-</div>
 {% endblock %}

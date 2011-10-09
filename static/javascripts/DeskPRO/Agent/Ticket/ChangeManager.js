@@ -67,6 +67,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'ticket_field':
 				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this.ticketPage, { fieldId: type_id });
 				break;
+			case 'is_hold':
+				manager = new DeskPRO.Agent.Ticket.Property.Hold(this.ticketPage);
+				break;
 		}
 
 		if (manager === null && type.indexOf('_id') == -1) {
@@ -144,7 +147,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 	/**
 	 * Check if a change is currently in the queue waiting to be saved
-	 * 
+	 *
 	 * @param type
 	 */
 	hasChangedProperty: function(type) {
@@ -186,7 +189,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Set a property change now, no queueing. This will fall back into
 	 * queue mode if we're already in a queued state.
 	 */
-	setInstantChange: function(property, newValue) {
+	setInstantChange: function(property, newValue, callback) {
 
 		// We're already in multi-mode, add this to queue the changes
 		if (this.mode == 'multi') {
@@ -204,10 +207,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		this.fireEvent('changesApplied', { changes: [property, newValue] });
 
 		var classname = 'saving-' + property.getName().replace('.', '_');
-		this.ticketPage.contentWrapper.addClass(classname);
+		this.ticketPage.wrapper.addClass(classname);
 
 		(function() {
-			this.ticketPage.contentWrapper.removeClass(classname);
+			this.ticketPage.wrapper.removeClass(classname);
 		}).delay(650, this);
 
 		if (this.updateUrl) {
@@ -218,6 +221,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
+					if (callback) {
+						callback(data);
+					}
 					this.fireEvent('updateResult', [data]);
 				}
 			});
@@ -245,7 +251,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 			var classname = 'saving-' + name.replace('.', '_');
 			saving_classes.push(classname);
-			this.ticketPage.contentWrapper.addClass(classname);
+			this.ticketPage.wrapper.addClass(classname);
 
 			if (!property.isDisplayOnly()) {
 				this._addPropertyValueToData(data, property.getName(), property.getValue());
@@ -259,7 +265,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		(function() {
 			var classname = '';
 			while (classname = saving_classes.pop()) {
-				this.ticketPage.contentWrapper.removeClass(classname);
+				this.ticketPage.wrapper.removeClass(classname);
 			}
 		}).delay(650, this);
 

@@ -21,12 +21,13 @@ class NewReply
 {
 	public $message;
 
-	public $tmp_uploads = array();
-
 	/**
 	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
 	 */
 	public $new_upload = null;
+
+	public $attach_ids = array();
+	public $attach_ids_authed = false;
 
 	protected $ticket;
 	protected $person;
@@ -42,7 +43,7 @@ class NewReply
 	public function save()
 	{
 		$ticket_message = new TicketMessage();
-		$ticket_message['message'] = $this->message;
+		$ticket_message['message'] = htmlspecialchars($this->message);
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 
@@ -58,11 +59,32 @@ class NewReply
 			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
-			$attach = new TicketAttachment();
+			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
 
 			$ticket_message->addAttachment($attach);
+		}
+		// Existing (pre-uploaded temp) attachments
+		if ($this->attach_ids) {
+			foreach ($this->attach_ids as $blob_id) {
+				if ($this->attach_ids_authed) {
+					$blob = App::getEntityRepository('DeskPRO:Blob')->getByAuthId($blob_id);
+				} else {
+					$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+				}
+				if ($blob) {
+					$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person;
+
+					$ticket_message->addAttachment($attach);
+
+					$blob->is_temp = false;
+					App::getOrm()->persist($attach);
+					App::getOrm()->persist($blob);
+				}
+			}
 		}
 
 		$this->ticket->addMessage($ticket_message);
@@ -79,9 +101,6 @@ class NewReply
 
 		App::getOrm()->beginTransaction();
 		App::getOrm()->persist($ticket_message);
-		if ($attach) {
-			App::getOrm()->persist($attach);
-		}
 		App::getOrm()->persist($this->ticket);
 		App::getOrm()->flush();
 		App::getOrm()->commit();

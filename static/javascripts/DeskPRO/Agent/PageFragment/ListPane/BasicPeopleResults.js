@@ -22,17 +22,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 		this._initDisplayOptions();
 		this._initTermsOverlay();
 
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['abbr.timeago']
-		});
-
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
-
-		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', function() {
 			this._handleResize()
@@ -338,10 +331,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 		var html = data['html'];
 
 		var el = $(html);
-		this.initFeaturesOnCollection(el, {
-			routes: ['.with-route'],
-			times: ['abbr.timeago']
-		});
+		DeskPRO_Window.initInterfaceServices(el);
 
 		$('table.list', this.contentWrapper).append(el);
 

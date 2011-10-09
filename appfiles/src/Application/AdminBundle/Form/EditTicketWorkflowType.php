@@ -25,4 +25,9 @@ class EditTicketWorkflowType extends AbstractType
 	{
 		$builder->add('title', 'text');
 	}
+
+	public function getName()
+	{
+		return 'ticket_workflow';
+	}
 }

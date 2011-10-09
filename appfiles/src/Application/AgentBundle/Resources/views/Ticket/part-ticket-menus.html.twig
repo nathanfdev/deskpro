@@ -1,36 +1,14 @@
-{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
-<ul class="ticket-info-edit-menu" style="display:none">
-	<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
-	<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>
-	<li data-option-id="spam"><span class="icon icon-page-delete dev-feature-inactive">Mark as Spam</span></li>
-	<li class="sep">-</li>
-	<li data-option-id="print"><span class="icon print-ticket">Print Ticket</span></li>
-	<li data-option-id="merge"><span class="icon icon-page-merge dev-feature-inactive">Merge Ticket</span></li>
-	<li data-option-id="split"><span class="icon icon-page-split dev-feature-inactive">Split Ticket</span></li>
-	<li><span class="icon change-ticket-owner dev-feature-inactive">Change User Owner</span></li>
-</ul>
 <ul class="ticket-message-edit-menu" style="display:none">
-	<li data-option-id="view-details"><span class="icon view-unformatted">Detail</span></li>
-	<li data-option-id="quote"><span class="icon edit">Quote</span></li>
-	<li data-option-id="print"><span class="icon edit">Print single message</span></li>
-	<li data-option-id="edit"><span class="icon edit">Edit</span></li>
-	<li data-option-id="split"><span class="icon edit">Split ticket from here</span></li>
+	<li data-option-id="view-details">Detail</li>
+	<li data-option-id="quote">Quote</li>
+	<li data-option-id="split">Split ticket from here</li>
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
 	{% for macro in macros %}
 		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
 	{% endfor %}
-	{% if macros|length %}
-		<li class="sep">-</li>
-		<li data-no-macro="1">Edit macros</li>
-	{% else %}
-		<li data-no-macro="1">Create a macro</li>
-	{% endif %}
 </ul>
 
-<ul class="ticket-actions-menu" style="display:none">
-	<li data-op="delete">Delete ticket</li>
-</ul>
 <div class="delete-ticket-overlay overlay" style="display:none">
 	<div class="overlay-title">
 		<h4>Display Options</h4>

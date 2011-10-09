@@ -15,12 +15,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		var cw = this.contentWrapper;
-		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
-			cw.tinyscrollbar_update();
-		});
-
 		this.form = $('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
 		});

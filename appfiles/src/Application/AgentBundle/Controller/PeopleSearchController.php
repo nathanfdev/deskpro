@@ -271,7 +271,7 @@ class PeopleSearchController extends AbstractController
         $titles = array();
         $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
         $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['languages'] = App::getEntityRepository('DeskPRO:Langauge')->getNames();
+        $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
 		$vars['titles'] = $titles;
 
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
@@ -407,32 +407,38 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		//TODO proper sql escape
-		$q = addslashes($q);
-
 		$limit = $this->in->getUint('limit');
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
 
-		$people_list = $this->em->createQuery("
-			SELECT p, p_email
-			FROM DeskPRO:Person p
-			LEFT JOIN p.primary_email p_email
-			LEFT JOIN p.emails emails
-			LEFT JOIN p.organization org
-			WHERE
-				emails.email LIKE '$q%'
-				OR (
-					p.name LIKE '%$q%'
-					OR p.first_name LIKE '%$q%'
-					OR p.last_name LIKE '%$q%'
-					OR emails.email LIKE '%$q%'
-					OR org.name LIKE '%$q%'
-				)
-			GROUP BY p.id
-			ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
-		")->setMaxResults($limit)->getResult();
-		//")->setParameters(array($q, $q))->getResult();
+		$not_in_org = $this->in->getUint('exclude_org');
+
+		if (!$q && $this->in->getBool('start_with')) {
+			$people_list = App::getDb()->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
+				" . ($not_in_org ? " WHERE p.organization_id != $not_in_org " : '') . "
+				ORDER BY p.name ASC
+				LIMIT $limit
+			");
+		} else {
+
+			$people_list = App::getDb()->fetchAll("
+				SELECT p.id, p.first_name, p.last_name, e.email
+				FROM people p
+				LEFT JOIN people_emails e ON (e.person_id = p.id)
+				WHERE
+					(e.email LIKE ?
+					OR p.name LIKE ?
+					OR p.first_name LIKE ?
+					OR p.last_name LIKE ?)
+					" . ($not_in_org ? " AND p.organization_id != $not_in_org " : '') . "
+				GROUP BY p.id
+				ORDER BY p.name ASC
+				LIMIT $limit
+			", array("%$q%", "%$q%", "%$q%", "%$q%"));
+		}
 
 		$format = $this->in->getString('format');
 

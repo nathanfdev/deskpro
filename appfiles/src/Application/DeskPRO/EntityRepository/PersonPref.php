@@ -36,7 +36,7 @@ class PersonPref extends EntityRepository
 		$statement = $this->getEntityManager()->getConnection()->executeQuery("
 			SELECT name, value_str, value_array
 			FROM people_prefs
-			WHERE person_id = ? AND name = ?
+			WHERE person_id = ? AND name LIKE ?
 		", array($person_id, "$pref_group.%"));
 
 		$ret_prefs = array();

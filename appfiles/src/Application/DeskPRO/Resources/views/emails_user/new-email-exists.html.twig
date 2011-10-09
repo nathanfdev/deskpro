@@ -1,0 +1,15 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	{{ layout.section_start('Validation required', 2) }}
+		<p>
+			You recently tried to add this email address, {{ validating_email.email }}, as a secondary address on the
+		account whose primary email address is {{ person.primary_email_address }}.
+		</p>
+
+		<p>
+			However, {{ validating_email.email }} is already attached to a different account. If you'd like to merge these
+			two accounts together, please reply to this email and one of our agents will be happy to help.
+		</p>
+	{{ layout.section_end() }}
+{% endblock %}

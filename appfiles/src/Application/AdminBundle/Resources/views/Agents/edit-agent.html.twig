@@ -1,23 +1,127 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentEdit.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentEdit({{person.id|default(0)}});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParent({{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
 {% endblock %}
-{% block header %}
-	<h1>Edit Agent</h1>
+{% block pagetitle %}
+	<h1>Agent: {{ agent.name }}</h1>
 {% endblock %}
 {% block content %}
+<div class="dp-page-box agent-edit">
+	<div class="page-content">
+		<div class="permissions-table">
+			<table cellspacing="0" cellpadding="0">
+				<thead>
+					<tr>
+						<th width="300" style="text-align: left">
+							<select id="permission_type_switcher">
+								<option>Departments</option>
+								<option>Ticket Permissions</option>
+							</select>
+						</th>
+						<th width="5">&nbsp;</th>
+						<th width="100">Group A</th>
+						<th width="100">Group B</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Use ticket system</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Create tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td>View own and teams tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Modify own and teams tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Delete own and teams tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Resolve own and teams tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td>View unassigned tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Modify unassigned tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Delete unassigned tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Resolve unassigned tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td>View others tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Modify others tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Delete others tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+					<tr>
+						<td>Resolve others tickets</td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+						<td><input type="checkbox" class="onoff-slider" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 
+{#
 <form action="{{ path('admin_agents_edit', {'person_id': person.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
@@ -60,7 +164,7 @@ function _page_exec() {
 </div>
 
 </form>
-
+#}
 {% endblock %}
 {% block footer %}
 	<button class="dp-button small save-trigger">Save</button>

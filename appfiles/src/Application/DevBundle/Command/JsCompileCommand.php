@@ -51,7 +51,7 @@ class JsCompileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			return;
 		}
 
-		if ($pack_name != 'agent') {
+		if (!in_array($pack_name, array('agent', 'admin', 'user'))) {
 			$packs = array($pack_name => $packs);
 		}
 
@@ -96,9 +96,9 @@ class JsCompileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				$cmd = App::getConfig('debug.yui_compressor_cmd');
 
 				if ($pack['mode'] == 'yui-plain') {
-					$cmd .= ' -v --nomunge --preserve-semi --line-break 120 --type '.$type.' -o ' . $filepath . ' ' . $filepath_tmp . '';
+					$cmd .= ' -v --nomunge --preserve-semi --line-break 500 --type '.$type.' -o ' . $filepath . ' ' . $filepath_tmp . '';
 				} else {
-					$cmd .= ' -v --line-break 120 --type '.$type.' -o ' . $filepath . ' ' . $filepath_tmp . '';
+					$cmd .= ' -v --line-break 500 --type '.$type.' -o ' . $filepath . ' ' . $filepath_tmp . '';
 				}
 
 				echo "Running YUI compressor: $cmd";

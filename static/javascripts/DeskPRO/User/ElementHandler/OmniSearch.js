@@ -5,196 +5,131 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		this._initLoginBox();
-		
-		this.menuEl = $('#omni_search_menu_wrap');
-		this.menuEl.detach().appendTo('body');
-
 		var self = this;
-		
-		this.searchEl = $('#omni_search_txt');
-		this.searchEl.keypress(this.searchQueryUpdated.bind(this));
-		this.searchEl.focus(function() {
-			self.openMenu(true);
-		});
-		$(document).click(function() {
-			self.closeMenu();
-		});
 
-		this.searchEl.keypress(function() {
-			self.updateSearch();
-		});
+		this.backdrop    = $('<div class="dp-backdrop" />').hide().appendTo('body');
+		this.assistEl    = $('#dp_search_assist');
+		this.searchboxEl = $('#deskpro_search');
 
-		// When clicking the menu el itself, cancel bubble
-		// so it doesnt get to document click and close
-		this.menuEl.click(function(ev) { ev.stopPropagation(); });
-		this.searchEl.click(function(ev) { ev.stopPropagation(); });
+		this.resultsEl   = $('div.results', this.assistEl);
 
-		this.resultsWrapper = $('.results', this.menuEl);
+		this.searchboxEl.focus(this.activateAssist.bind(this));
 
-		// Make example terms clickable
-		$('.example-query', this.el).click(function(ev) {
-
-			ev.preventDefault();
+		this.backdrop.click(function(ev) {
 			ev.stopPropagation();
-
-			var text = $(this).text();
-			self.setSearchQuery(text);
-
-			self.searchEl.focus();
-			self.doUpdateSearch();
-		});
-	},
-
-	_initLoginBox: function() {
-		var self = this;
-		$('#omni_login_button').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			self.toggleLoginBox();
+			self.deactivateAssist();
 		});
 
-		this.omni_login_button = $('#omni_login_button');
-		this.omni_login_box = $('#omni_login_box');
-		this.omni_login_box.detach().appendTo('body');
+		this.isActivated = false;
 
-		this.omni_login_box.click(function(ev) {
-			ev.stopPropagation();
+		this.searchTimer = new DeskPRO.IntervalCaller({
+			touchResets: true,
+			touchRequired: true,
+			resetTimeForce: 1500,
+			timeout: 750,
+			autostart: true,
+			callback: this.updateResults.bind(this)
 		});
 
-		$(document).click(function() {
-			self.closeLoginBox();
-		});
-	},
-
-	toggleLoginBox: function() {
-		if (this.omni_login_box.is('.on')) {
-			this.closeLoginBox();
-		} else {
-			this.openLoginBox();
-		}
-	},
-
-	openLoginBox: function() {
-		this.omni_login_box.addClass('on');
-		this.omni_login_button.addClass('on');
-
-		var pos = this.omni_login_button.offset();
-
-		var top = pos.top + this.omni_login_button.outerHeight();
-		var left = (pos.left + this.omni_login_button.outerWidth()) - this.omni_login_box.outerWidth();
-
-		this.omni_login_box.css({
-			top: top,
-			left: left
-		});
-		this.omni_login_box.slideDown();
-	},
-
-	closeLoginBox: function() {
-		this.omni_login_box.removeClass('on');
-		this.omni_login_button.removeClass('on');
-		this.omni_login_box.slideUp('fast');
-	},
-
-	updateSearch: function() {
-
-		var terms = this.searchEl.val().trim();
-
-		if (!terms.length) {
-			this.resultsWrapper.empty();
-			this.closeMenu();
-
-			if (this.updateTimer) {
-				window.clearTimeout(this.updateTimer);
+		this.searchboxEl.keypress(function() {
+			if (!$(this).val().trim().length) {
+				self.close();
+			} else {
+				self.searchTimer.touch();
 			}
+		});
+
+		this.searchboxEl.focus(function() {
+			self.activateAssist();
+		});
+
+		this.lastTerms = null;
+
+		$('.foot a', this.assistEl).click(function(ev) {
+			var el = $(this);
+			if (el.is('.no-omni-trigger')) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var url = el.attr('href');
+			url = Orb.appendQueryData(url, 'q', self.searchboxEl.val().trim());
+
+			window.location = url;
+		});
+	},
+
+	activateAssist: function() {
+		this.isActivated = true;
+		this.updatePosition();
+
+		if (this.searchboxEl.val().trim().length && $('li', this.resultsEl).length) {
+			this.open();
+		} else {
+			this.close();
 		}
 
-		if (this.updateTimer) {
+		this.searchTimer.execNow();
+	},
+
+	open: function() {
+		this.assistEl.show();
+		this.backdrop.show();
+	},
+
+	deactivateAssist: function() {
+		this.isActivated = false;
+		this.close();
+	},
+
+	close: function() {
+		this.assistEl.hide();
+		this.backdrop.hide();
+	},
+
+	updatePosition: function() {
+		var pos = this.searchboxEl.offset();
+		var w = this.searchboxEl.outerWidth();
+		var h = this.searchboxEl.outerHeight();
+
+		this.assistEl.css({
+			top: pos.top + h,
+			left: pos.left - 1,
+			width: w - 1
+		});
+	},
+
+	updateResults: function() {
+
+		if (!this.isActivated) {
 			return;
 		}
 
-		this.updateTimer = this.doUpdateSearch.delay(250, this);
-	},
+		var terms = this.searchboxEl.val().trim();
 
-	doUpdateSearch: function() {
-		this.updateTimer = false;
-		var terms = this.searchEl.val().trim();
+		if (terms == this.lastTerms || terms === '') {
+			return;
+		}
 
-		if (!terms) return;
+		this.lastTerms = terms;
 
 		$.ajax({
 			url: BASE_URL + 'search/omnisearch/' + encodeURI(terms),
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				var ul = $(html);
+				var wrap = $(html);
+				this.resultsEl.empty();
 
-				this.resultsWrapper.empty().append(ul);
-				this.openMenu(true);
+				if (!$('li', wrap).length) {
+					this.close();
+				} else {
+					this.resultsEl.append(wrap);
+					this.open();
+				}
 			}
 		});
-	},
-
-	
-	/**
-	 * Opens the results menu.
-	 */
-	openMenu: function(only_with_results) {
-
-		if (only_with_results) {
-			if (!$('> ul', this.resultsWrapper).length) {
-				this.closeMenu();
-				return false;
-			}
-		}
-
-		this.updateMenuDims();
-
-		this.menuEl.fadeIn('fast');
-	},
-
-
-	/**
-	 * Close (hide) the results menu.
-	 */
-	closeMenu: function() {
-		this.menuEl.fadeOut('fast');
-	},
-
-
-	/**
-	 * Updates the menu element wrappers position and dimentions to make
-	 * sure its under the search box all the itme
-	 */
-	updateMenuDims: function() {
-		var pos = this.searchEl.offset();
-
-		var top   = pos.top + this.searchEl.outerHeight();
-		var left  = pos.left;
-		var width = this.searchEl.outerWidth();
-
-		this.menuEl.css({
-			top: top,
-			left: left,
-			width: width
-		});
-	},
-
-	/**
-	 * Set the search query in the text box
-	 *
-	 * @param query
-	 */
-	setSearchQuery: function(query) {
-		query = query.trim();
-
-		this.searchEl.val(query);
-		this.searchQueryUpdated();
-	},
-
-
-	searchQueryUpdated: function() {
-		//TODO when search implemented
 	}
 });
