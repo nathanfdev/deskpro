@@ -202,7 +202,6 @@ class TaskController extends AbstractController {
             $this->_loadModels();
             $task = $this->getTaskOr404($task_id);
             $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-
             $task->getLabelManager()->setLabelsArray($labels);
 
             $this->_entityManager->persist($task);

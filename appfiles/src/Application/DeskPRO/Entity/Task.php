@@ -121,8 +121,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $assigned_agent_team;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
+
+
+        /**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -335,11 +336,11 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	
 	/**
 	 * Adds a label
-	 * @param \Application\DeskPRO\Entity\LabelTicket $label
+	 * @param \Application\DeskPRO\Entity\LabelTask $label
 	 */
 	public function addLabel(LabelTask $label)
 	{
-		$label['ticket'] = $this;
+		$label['task'] = $this;
 		$this->labels->add($label);
 	}
 
