@@ -15,7 +15,7 @@ DeskPRO.Agent.WindowElement.Section.Task = new Orb.Class({
                     this._initSection(data);
                 }
             });        
-    },
+        },
 
 	_initSection: function(data) {
 		this.setHasInitialLoaded();

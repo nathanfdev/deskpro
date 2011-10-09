@@ -1,5 +1,7 @@
 <script>
-	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+    pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+    {% set baseId = el_uid() %}
+    pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content">
     <div class="content">

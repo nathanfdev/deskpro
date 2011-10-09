@@ -2,14 +2,35 @@
    <input type="checkbox" class="item-select" value="{{ task.id }}"/>
    <div class="top-row">
         <div class="top-row-left">
-                <h3>
-                        <a class="with-route name" data-route="task:">
-                                {{ task.title }}
-                        </a>
-                </h3>
+            <h3>
+                <a class="with-route name" data-route="task:{{path('agent_task_view', {'task_id': task.id|default('0')})}}">
+                        {{ task.title }}
+                </a>
+            </h3>
         </div>
    </div>
    <hr class="clear-top" />
+   <div>
+   </div>
+
+   <div class="profile-box-container comment"
+	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+	data-form-save-url="{{ path('agent_task_view', {'task_id': task.id}) }}"
+        style="display:none;">
+	<header>
+		<div class="controls">
+			<div class="is-loading">Saving</div>
+			<div class="saved" style="display: none">Saved</div>
+			<div class="save" style="display: none">Save</div>
+		</div>
+		<h4>Comment</h4>
+	</header>
+	<section>
+		<input type="hidden" name="action" value="set-summary" />
+		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary"></textarea></div>
+	</section>
+</div>
+   
     {% include 'AgentBundle:Task:task-item-footer.html.twig'%}
    
 </article>

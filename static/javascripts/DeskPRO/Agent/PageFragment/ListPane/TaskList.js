@@ -21,8 +21,16 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
+                this._initTaskProperty();
 
 	},
+
+        _initTaskProperty: function(){
+
+            $('.add-newproperty', this.wrapper).click(function(){                
+                $(this).parents('article').find('.comment').toggle();                
+            })
+        },
 
 	destroyPage: function() {
 
