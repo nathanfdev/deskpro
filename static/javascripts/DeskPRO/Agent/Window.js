@@ -474,8 +474,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initAlertOverlay();
 
 		if (typeof msg == 'string') {
-			var msg = $('<div/>');
-			msg.text(msg);
+			var msgEl = $('<div/>');
+			msgEl.text(msg);
+			msg = msgEl;
 		}
 
 		$('#alert_overlay_msg').empty().append(msg);
