@@ -612,6 +612,7 @@ class Task extends EntityRepository
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('t');
                     $qb->from('DeskPRO:Task', 't');
+                    $qb->innerJoin('t.person', 'p');
                     $qb->where('t.is_completed = :is_completed');
                     if($filter_type == 'today')
                     {

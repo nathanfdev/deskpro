@@ -21,6 +21,7 @@ use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
 
 /**

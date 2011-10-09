@@ -1,6 +1,6 @@
-<article class="task {{ info.content_type }}-{{task.id}}">
+<task class="task {{ info.content_type }}-{{task.id}}">
     <div class="task-display content">
-        <div class="col">
+        <div class="col isLeft hasMarnigRight-10px">
         <input
                 class="item-select"
                 type="checkbox"
@@ -16,5 +16,12 @@
                 </div>
             </div>
         </div>
+        <div class="task-comments">
+            
+        </div>
+        <div class="task-item-footer">
+            {% include 'AgentBundle:Task:task-item-footer.html.twig' %}
+        </div>
+        <div style="clear:both;"></div>
    </div>
-</article>
+</task>
