@@ -165,13 +165,24 @@ class TaskController extends AbstractController {
         if($search_type == 'own')
         {            
             $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
+            
+        }else if($search_type == 'team')
+        {
+            $tasks = $this->_task_repository->filterPendingTaksForPersonTeams($person, $search_categoty);
+        }
+        else if($search_type == 'delegate')
+        {
+            $tasks = $this->_task_repository->filterPendingDelegatedTasksForPerson($person, $search_categoty);
+        }
+        else if($search_type == 'all')
+        {
+            $tasks = $this->_task_repository->filterAllPendingTasks($search_categoty);
         }
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
             'tasks' => $tasks,
-        ));
-        
+        ));        
     }
 
     /**
