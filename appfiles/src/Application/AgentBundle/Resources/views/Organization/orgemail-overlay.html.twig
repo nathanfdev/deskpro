@@ -1,4 +1,5 @@
 <div class="email-assoc-overlay" data-overlay-apply-class="email-assoc-overlay">
+	{% if org_email_domains|length %}
 	<div class="profile-box-container emails-exist">
 		<header>
 			<h4>Email Domain Associations</h4>
@@ -33,6 +34,7 @@
 			</table>
 		</section>
 	</div>
+	{% endif %}
 
 	{# Box Summary #}
 	<div class="profile-box-container new">

@@ -333,7 +333,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				});
 
 				$('.remove-email, .remove-email-users', overlayEl).click(function() {
-					var domain = $(this).closest('tr').data('domain');
+					var domain = $(this).closest('tr').data('org-domain');
 					var removeusers = $(this).is('.remove-email-users') ? 1 : 0;
 
 					$.ajax({
@@ -348,7 +348,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				});
 
 				$('.move-users', overlayEl).click(function() {
-					var domain = $(this).closest('tr').data('domain');
+					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
 						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
@@ -362,7 +362,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				});
 
 				$('.move-all-users', overlayEl).click(function() {
-					var domain = $(this).closest('tr').data('domain');
+					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
 						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
