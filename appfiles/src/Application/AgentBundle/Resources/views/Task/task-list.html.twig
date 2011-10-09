@@ -4,9 +4,10 @@
 <div class="layout-content">
     <div class="content">
         {% include 'AgentBundle:Task:task-list-bar.html.twig' %}
-
-        <section class="task-list list-listing">
+    <section class="ticket-simple-list list-listing">
+        <section class="search-reuslts page-set" data-page="{{page}}">
             {% include 'AgentBundle:Task:task-list-page.html.twig' %}
 	</section>
+    </section>
     </div>
 </div>

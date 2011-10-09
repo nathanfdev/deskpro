@@ -158,6 +158,13 @@ class TaskController extends AbstractController {
         return $this->render('AgentBundle:Task:view.html.twig');
     }
 
+    /**
+     * render the task list
+     *
+     * @param string $search_type
+     * @param string $search_categoty
+     * @return html view of the task list
+     */
     public function taskListAction($search_type = null, $search_categoty = null)
     {
         $this->_loadModels();
@@ -184,6 +191,25 @@ class TaskController extends AbstractController {
         return $this->render($tpl, array(
             'tasks' => $tasks,
         ));        
+    }
+
+    public function checkDueDateAction($due_date = null)
+    {
+        $person = $this->person;
+        $time_zone = new \DateTimeZone($person['timezone']);
+        $today = new \DateTime('today', $time_zone);
+        $over_due = 0;
+        if($due_date < $today)
+        {
+            $over_due = 1;
+        }
+
+        $days_ago = (time() - $due_date->format('m-d-y'))/86400;
+        
+        return $this->render('AgentBundle:Task:task-due-date.html.twig', array(
+            'new-due_date' => $days_ago,
+            'over_due' => $over_due
+        ));
     }
 
     /**
