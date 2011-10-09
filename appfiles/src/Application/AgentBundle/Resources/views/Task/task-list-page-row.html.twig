@@ -29,7 +29,27 @@
 		<input type="hidden" name="action" value="set-summary" />
 		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary"></textarea></div>
 	</section>
-</div>
+    </div>
+      
+   <div class="profile-box-container properties task-label" style="display:none;">
+       <header>
+           <h4>Labels</h4>
+       </header>
+       <section>
+           <dl class="table-list">
+                <dt class="type-labels">Labels</dt>
+                <dd class="task-tags tags-wrap" title="{{ path('agent_task_ajax_labels_save', {'task_id': task.id}) }}">
+                    <ul>
+                            {% for label in task.labels %}
+                                    <li><span>{{label.label}}</span></li>
+                            {% endfor %}
+                    </ul>
+                </dd>
+            </dl>
+        <section/>
+
+   </div>
+    <div class="clear" />
    
     {% include 'AgentBundle:Task:task-item-footer.html.twig'%}
    

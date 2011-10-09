@@ -193,6 +193,24 @@ class TaskController extends AbstractController {
         ));        
     }
 
+    ############################################################################
+	# ajax-save-labels
+    ############################################################################
+
+    public function ajaxSaveLabelsAction($task_id)
+    {
+            $this->_loadModels();
+            $task = $this->getTaskOr404($task_id);
+            $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+            $task->getLabelManager()->setLabelsArray($labels);
+
+            $this->_entityManager->persist($task);
+            $this->_entityManager->flush();
+
+            return $this->createJsonResponse(array('success' => 1));
+    }
+
     public function checkDueDateAction($due_date = null)
     {
         $person = $this->person;
@@ -211,6 +229,20 @@ class TaskController extends AbstractController {
             'over_due' => $over_due
         ));
     }
+
+    /**
+	 * @return Application\DeskPRO\Entity\Task
+	 */
+	protected function getTaskOr404($task_id)
+	{
+		try {
+			$task = $this->_entityManager->find('DeskPRO:Task', $task_id);
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no task with ID $task_id");
+		}
+
+		return $task;
+	}
 
     /**
      * Process data for add or update the task.

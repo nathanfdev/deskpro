@@ -22,15 +22,59 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
                 this._initTaskProperty();
+                this._initLabels();
 
 	},
 
         _initTaskProperty: function(){
 
-            $('.add-newproperty', this.wrapper).click(function(){                
+            $('.add-comment', this.wrapper).click(function(){
                 $(this).parents('article').find('.comment').toggle();                
             })
+            $('.add-label', this.wrapper).click(function(){
+                $(this).parents('article').find('.task-label').toggle();
+            })
         },
+
+        //#########################################################################
+	//# Labels
+	//#########################################################################
+
+	_initLabels: function() {
+
+		// Tags
+		this.labelsList = $(".task-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'task',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
+		});
+		this.ownObject(this.labelsInput);
+	},
+
+	saveLabels: function() {
+		if (this._saveLabelsTimeout) {
+			window.clearTimeout(this._saveLabelsTimeout);
+		}
+
+		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+	},
+
+	_doSaveLabels: function() {
+		var data = $(':input', this.labelsList).serializeArray();
+                var url =   this.labelsList.parents('article').find('.task-tags').attr('title');
+		$.ajax({
+			url: url,//this.getMetaData('labelsSaveUrl'),
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+
+			}
+		});
+	},
 
 	destroyPage: function() {
 

@@ -138,7 +138,12 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociation", mappedBy="task")
 	 */
 	protected $task_associations;
-	
+
+        /**
+	 * Label manager for adding/removing labels
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
+	protected $_label_manager = null;
 
 
 	/**
@@ -363,7 +368,15 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         {
             return $this->due_date;
         }
-	
+
+        public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelTask');
+		}
+
+		return $this->_label_manager;
+	}
 	
 	
 }

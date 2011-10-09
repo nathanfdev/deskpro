@@ -1,5 +1,6 @@
 <script>
     pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+    pageMeta.labelsSaveUrl = '{{ path('agent_task_ajax_labels_save', {'task_id': task.id}) }}';
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>
