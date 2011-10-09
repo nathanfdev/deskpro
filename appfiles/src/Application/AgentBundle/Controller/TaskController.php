@@ -194,21 +194,35 @@ class TaskController extends AbstractController {
     }
 
     ############################################################################
-	# ajax-save-labels
+	# ajax-save-labels for task
     ############################################################################
 
     public function ajaxSaveLabelsAction($task_id)
     {
-            $this->_loadModels();
-            $task = $this->getTaskOr404($task_id);
-            $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-            $task->getLabelManager()->setLabelsArray($labels);
+        $this->_loadModels();
+        $task = $this->getTaskOr404($task_id);
+        $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+        $task->getLabelManager()->setLabelsArray($labels);
 
-            $this->_entityManager->persist($task);
-            $this->_entityManager->flush();
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
 
-            return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(array('success' => 1));
     }
+
+
+    public function setVisibilityAction($task_id, $visibility)
+    {
+        $this->_loadModels();
+        $task = $this->getTaskOr404($task_id);
+        $task->setVisibility($visibility);
+
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
+
+        return $this->createJsonResponse(array('success' => 1));
+    }
+
 
     public function checkDueDateAction($due_date = null)
     {

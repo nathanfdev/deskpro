@@ -30,10 +30,55 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
             $('.add-comment', this.wrapper).click(function(){
                 $(this).parents('article').find('.comment').toggle();                
-            })
+            });
             $('.add-label', this.wrapper).click(function(){
                 $(this).parents('article').find('.task-label').toggle();
-            })
+            });
+
+            $('.add-public', this.wrapper).click(function(){
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    context: this,                    
+                    dataType: 'json',
+                    success: function(data) {
+                        $(this).parents('article').find('li.public-task').slideUp('slow');
+                        $(this).parents('article').find('li.private-task').slideDown('slow');
+                    }
+		});
+                
+                return false;
+
+            });
+            $('.add-private', this.wrapper).click(function(){
+                    $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    context: this,
+                    dataType: 'json',
+                    success: function(data) {
+                        $(this).parents('article').find('li.private-task').slideUp('slow');
+                        $(this).parents('article').find('li.public-task').slideDown('slow');
+                    }
+		});
+                return false;
+            });
+        },
+
+        setVisibility: function(url){
+            
+            $.ajax({
+                    url: url,//this.getMetaData('labelsSaveUrl'),
+                    type: 'POST',
+                    context: this,
+                    //data: data,
+                    dataType: 'json',
+                    success: function(data) {
+
+                    }
+		});
+                return false;
+
         },
 
         //#########################################################################

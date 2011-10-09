@@ -9,9 +9,12 @@
         <li>
             <a href="#" class="add-delegate"> Delegate</a>
         </li>        
-        <li >
-            <a href="#" class="add-public"> Public</a>
-        </li>
+        <li class="public-task" style="display:{% if task.visibility == 2 %}block;{% else %} none; {% endif%}">
+            <a href="{{path('agent_task_set_visibility', {'task_id': task.id, 'visibility': 2})}}" class="add-public"> Public</a>
+        </li>                
+        <li class="private-task" style="display:{% if task.visibility == 0 %}block;{% else %} none; {% endif%}">
+            <a href="{{path('agent_task_set_visibility', {'task_id': task.id, 'visibility': 0})}}" class="add-private"> Private</a>
+        </li>        
         <li >
             <a href="#" class="add-due-date"> Change Due Date</a>
         </li>

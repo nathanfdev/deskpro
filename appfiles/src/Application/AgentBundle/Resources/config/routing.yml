@@ -849,6 +849,11 @@ agent_task_ajax_labels_save:
   defaults: { _controller: AgentBundle:Task:ajaxSaveLabels }
   requirements: { task_id: "\d+" }
 
+agent_task_set_visibility:
+  pattern: /tasks/visibility/{task_id}/{visibility}
+  defaults: { _controller: AgentBundle:Task:setVisibility, task_id: null, visibility: null }
+  requirements: { task_id: "\d+", visibility: "\d+"  }
+
 ################################################################################
 # Publish
 ################################################################################
