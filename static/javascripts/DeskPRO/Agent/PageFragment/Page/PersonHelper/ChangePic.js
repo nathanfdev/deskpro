@@ -64,7 +64,9 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			downloadTemplate: $('.template-download', wrapper)
 		}).bind('fileuploadstart', function() {
 			$('p.explain', wrapper).hide();
-		})
+		}).bind('fileuploadadd', function() {
+			$('.files', wrapper).empty();
+		});
 
 		wrapper.delegate('.save-trigger', 'click', this._doSave.bind(this));
 	},
