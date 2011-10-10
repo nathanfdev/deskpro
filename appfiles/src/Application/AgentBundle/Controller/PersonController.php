@@ -354,21 +354,23 @@ class PersonController extends AbstractController
 				break;
 
 			case 'password':
-				if ($this->in->getString('password')) {
-					$person->password = $this->in->getString('password');
-					$this->em->persist($person);
+				if ($this->person->hasPerm('users.set-password')) {
+					if ($this->in->getString('password')) {
+						$person->password = $this->in->getString('password');
+						$this->em->persist($person);
 
-					if ($this->in->getBool('send_email')) {
-						$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
-							'person' => $person
-						));
+						if ($this->in->getBool('send_email')) {
+							$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+								'person' => $person
+							));
 
-						$message = App::getMailer()->createMessage();
-						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-						$message->setSubject('New Password');
-						$message->setBody($email_body, 'text/html');
-						$message->enableQueueHint();
-						App::getMailer()->send($message);
+							$message = App::getMailer()->createMessage();
+							$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+							$message->setSubject('New Password');
+							$message->setBody($email_body, 'text/html');
+							$message->enableQueueHint();
+							App::getMailer()->send($message);
+						}
 					}
 				}
 				break;
@@ -454,33 +456,36 @@ class PersonController extends AbstractController
 		$this->em->beginTransaction();
 
 		// Editing emails
-		$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
-		foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
-			if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
-				if (!$email) {
-					$this->em->remove($person->emails[$email_id]);
-					$person->emails->remove($email_id);
-				} else {
-					$person->emails[$email_id]->email = $email;
-					$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
-					$this->em->persist($person->emails[$email_id]);
+		if ($this->person->hasPerm('users.add-emails')) {
+			$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
+			foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
+				if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
+					if (!$email) {
+						$this->em->remove($person->emails[$email_id]);
+						$person->emails->remove($email_id);
+					} else {
+						$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
+						$this->em->persist($person->emails[$email_id]);
+					}
 				}
+			}
+
+			// Adding emails
+			$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+			foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
+				$email_rec = $person->addEmailAddressString($email);
+				$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
+				$this->em->persist($email_rec);
 			}
 		}
 
-		// Adding emails
-		$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
-		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
-			$email_rec = $person->addEmailAddressString($email);
-			$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
-			$this->em->persist($email_rec);
-		}
-
 		// Removing emails
-		foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-			if (isset($person->emails[$email_id])) {
-				$this->em->remove($person->emails[$email_id]);
-				$person->emails->remove($email_id);
+		if ($this->person->hasPerm('users.remove-emails')) {
+			foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+				if (isset($person->emails[$email_id])) {
+					$this->em->remove($person->emails[$email_id]);
+					$person->emails->remove($email_id);
+				}
 			}
 		}
 

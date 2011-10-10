@@ -7,10 +7,12 @@
 				{% for email in person.emails %}
 					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}">
 						<div class="controls">
-							<span class="remove">x</span>
+							{% if app.user.hasPerm('users.delete-emails') %}
+								<span class="remove">x</span>
+							{% endif %}
 						</div>
 						<div class="input">
-							<input type="text" class="single-input" name="emails[{{ email.id }}]" value="{{ email.email }}" placeholder="Email address "/>
+							<span>{{ email.email }}</span>
 						</div>
 						<div class="label">
 							<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="Add a label" />
@@ -18,10 +20,12 @@
 					<br class="clear" /></li>
 				{% endfor %}
 			</ul>
+			{% if app.user.hasPerm('users.add-emails') %}
 			<a class="add-trigger">
 				<em class="with-none">Add an email address</em>
 				<em class="with-some">Add another</em>
 			</a>
+			{% endif %}
 		</div>
 		<script type="text/x-deskpro-plain" class="tpl-new-row">
 			<li>

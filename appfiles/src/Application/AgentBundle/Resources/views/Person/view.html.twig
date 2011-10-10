@@ -49,7 +49,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li data-action="reset-password" class="reset-password">Reset Password</li>
+		{% if app.user.hasPerm('users.set-password') %}<li data-action="reset-password" class="reset-password">Reset Password</li>{% endif %}
 		<li data-action="" class="merge-trigger">Merge User</li>
 		<li data-action="" class="delete-trigger">Delete User</li>
 	</ul>

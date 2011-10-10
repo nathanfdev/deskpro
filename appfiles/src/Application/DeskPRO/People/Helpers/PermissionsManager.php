@@ -257,6 +257,23 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	}
 
 
+	/**
+	 * Get a normal usergruop permission.
+	 * This is a shortcut for the usergroups loader.
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	public function hasPerm($name)
+	{
+		// TODO until admin interface for perms is done
+		if ($name == 'users.delete-emails' || $name == 'users.set-password' || $name == 'users.add-emails') {
+			return true;
+		}
+		return $this->get('Usergroups')->getPermission($name) ? true : false;
+	}
+
+
 
 	/**
 	 * Get the full name of the loader for a given permission type name.
@@ -275,6 +292,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		return array(
 			'getPermissionsManager' => '_getthis',
 			'getPermsLoader'        => 'get',
+			'hasPerm'               => 'hasPerm',
+			'has_perm'               => 'hasPerm',
 		);
 	}
 

@@ -121,7 +121,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				if (action == 'reset-password') {
 					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password:<br /><br /><label style="font-size: 11px;"><input type="checkbox" class="send_email" value="1" /> Send the user an email with their new password</label></div>',
+						'<div>Enter a new password. The user will be notified.</div>',
 						function(val, wrap) {
 							var postData = [];
 							postData.push({

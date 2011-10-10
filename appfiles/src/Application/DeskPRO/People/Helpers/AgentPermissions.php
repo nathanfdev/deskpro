@@ -102,7 +102,6 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	}
 
 
-
 	public function offsetExists($offset)
 	{
 		$o = array('allowed_dep_ids', 'disallowed_dep_ids');
