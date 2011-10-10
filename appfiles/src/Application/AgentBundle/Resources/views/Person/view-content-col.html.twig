@@ -138,7 +138,7 @@
 		<nav>
 			<ul>
 				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
-				<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>
+				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">Detail</li>
 			</ul>
 		</nav>
@@ -174,6 +174,7 @@
 		{# /Notes Tab #}
 
 		{# Activity Tab #}
+		{% if activity_stream|length %}
 		<article id="{{baseId}}_activity_tab">
 			<ul class="activity-stream">
 				{% for action in activity_stream %}
@@ -198,6 +199,7 @@
 				{% endfor %}
 			</ul>
 		</article>
+		{% endif %}
 		{# /Activity Tab #}
 
 		{# Tracking Tab #}
