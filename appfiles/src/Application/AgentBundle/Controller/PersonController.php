@@ -726,6 +726,24 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
+	# delete
+	############################################################################
+
+	public function deletePerson($person_id, $security_token)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token) OR !$this->person->hasPerm('users.delete')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$edit_manager = $this->container->getSystemService('person_edit_manager');
+		$edit_manager->delete($person);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
 	# New person
 	############################################################################
 

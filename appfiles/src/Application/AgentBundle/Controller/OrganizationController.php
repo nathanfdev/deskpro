@@ -522,6 +522,24 @@ class OrganizationController extends AbstractController
 		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);
 	}
 
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deletePerson($organization_id, $security_token)
+	{
+		$org = $this->getOrgOr404($organization_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_org', $security_token) OR !$this->person->hasPerm('orgs.delete')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$edit_manager = $this->container->getSystemService('org_edit_manager');
+		$edit_manager->delete($org);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 
 	############################################################################
 	# New person
