@@ -321,7 +321,7 @@ agent_org_domain_assign:
   defaults: { _controller: AgentBundle:Organization:assignDomain }
   requirements: { organization_id: "\d+" }
 
-agent_org_domain_assign:
+agent_org_domain_unassign:
   pattern: /organizations/{organization_id}/unassign-domain
   defaults: { _controller: AgentBundle:Organization:unassignDomain }
   requirements: { organization_id: "\d+" }

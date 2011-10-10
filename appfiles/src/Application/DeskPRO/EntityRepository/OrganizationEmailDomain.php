@@ -71,6 +71,14 @@ class OrganizationEmailDomain extends \Doctrine\ORM\EntityRepository
 
 	protected function _getCounts($org, $domains, $op)
 	{
+		if (!$domains) {
+			if (is_array($domains)) {
+				return array();
+			} else {
+				return 0;
+			}
+		}
+
 		$org_id = is_object($org) ? $org : $org->id;
 
 		$single = false;

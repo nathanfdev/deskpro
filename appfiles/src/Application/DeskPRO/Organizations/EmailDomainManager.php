@@ -90,6 +90,8 @@ class EmailDomainManager
 				SET people.organization_id = ?
 				WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
 			", array($orgdomain->organization->id, $orgdomain->domain));
+
+			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
@@ -109,6 +111,8 @@ class EmailDomainManager
 				SET people.organization_id = ?
 				WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
 			", array($orgdomain->organization->id, $orgdomain->domain));
+
+			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
@@ -134,6 +138,7 @@ class EmailDomainManager
 			}
 
 			$this->em->remove($orgdomain);
+			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();

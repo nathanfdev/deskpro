@@ -76,6 +76,15 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 	public function countDomainsWithOtherCompany($domains, $org)
 	{
 		$single = false;
+
+		if (!$domains) {
+			if (!is_array($domains)) {
+				return 0;
+			} else {
+				return array();
+			}
+		}
+
 		if (!is_array($domains)) {
 			$domains = array($domains);
 			$single = true;
@@ -83,14 +92,6 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 
 		// Init all to zero
 		$results = array_combine($domains, array_fill(0, count($domains), 0));
-
-		if (!$domains) {
-			if ($is_single) {
-				return 0;
-			} else {
-				return $results;
-			}
-		}
 
 		$domains = App::getDb()->quoteIn($domains);
 
@@ -120,6 +121,14 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 	 */
 	public function countDomainsWithNoCompany($domains)
 	{
+		if (!$domains) {
+			if (!is_array($domains)) {
+				return 0;
+			} else {
+				return array();
+			}
+		}
+		
 		$single = false;
 		if (!is_array($domains)) {
 			$domains = array($domains);
