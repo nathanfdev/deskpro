@@ -23,14 +23,14 @@ class NewTask extends AbstractType
         # Basic fields
         #------------------------------
 
-        $builder->add('title', 'text');        
-        $builder->add('date_due', 'datetime', array(            
+        $builder->add('title', 'text');
+        $builder->add('date_due', 'datetime', array(
             'widget' => 'single_text',
-            'empty_value' => '',            
+            'empty_value' => '',
             'date_format'=>'M/d/y',
             'required' => false,
         ));
-        
+
         $builder->add('visibility', 'choice', array(
             'choices' => array(0 => 'Public', 2 => 'Private'),
             'required' => true,
@@ -41,13 +41,18 @@ class NewTask extends AbstractType
             'required' => false,
             'empty_value'=> '--Agent Team--'
         ));
+
         $builder->add('assigned_agent', 'entity', array(
             'class' => 'Application\DeskPRO\Entity\Person',
+			'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
+				return $er->createQueryBuilder('p')
+						->where('p.is_agent = true')
+						->orderBy('p.name', 'ASC');
+			},
             'property' => 'name',
             'required' => false,
             'empty_value'=> '--Agent--'
         ));
-
     }
 
     public function getDefaultOptions(array $options)
