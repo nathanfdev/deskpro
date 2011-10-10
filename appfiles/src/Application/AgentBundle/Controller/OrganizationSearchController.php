@@ -255,26 +255,35 @@ class OrganizationSearchController extends AbstractController
 
 	public function performQuickNameSearchAction()
 	{
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 20;
+
 		$q = $this->in->getString('q');
 		if (!$q) {
 			$q = $this->in->getString('term');
 		}
 
-		$limit = $this->in->getUint('limit');
-		if (!$limit) $limit = 20;
-
-		$orgs_list = $this->em->createQuery("
-			SELECT o
-			FROM DeskPRO:Organization o
-			WHERE o.name LIKE ?1
-			ORDER BY o.name ASC
-		")->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
+		if ($q) {
+			$orgs_list = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:Organization o
+				WHERE o.name LIKE ?1
+				ORDER BY o.name ASC
+			")->setParameter(1, "%$q%")->setMaxResults($limit)->getResult();
+		} else {
+			$orgs_list = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:Organization o
+				ORDER BY o.name ASC
+			")->setMaxResults($limit)->getResult();
+		}
 
 		$json = array('results' => array(), 'exact' => false);
 
 		foreach ($orgs_list as $org) {
 			$json['results'][] = array(
 				'id' => $org['id'],
+				'name' => $org['name'],
 				'value' => $org['name'],
 				'label' => $org['name']
 			);
@@ -290,6 +299,10 @@ class OrganizationSearchController extends AbstractController
 
 		if ($org) {
 			$json['exact'] = $org->id;
+		}
+
+		if ($this->in->getString('format') == 'json') {
+			$json = $json['results'];
 		}
 
 		return $this->createJsonResponse($json);

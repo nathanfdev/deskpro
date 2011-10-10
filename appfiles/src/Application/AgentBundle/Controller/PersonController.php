@@ -289,9 +289,12 @@ class PersonController extends AbstractController
 			case 'set-organization':
 
 				$name = $this->in->getString('name');
-				if (!$name) {
-					$data['organization_id'] = 0;
-				} else {
+				$id = $this->in->getUint('id');
+				$org = null;
+
+				if ($id) {
+					$org = App::getEntityRepository('DeskPRO:Organization')->find($id);
+				} elseif ($name) {
 					$org = App::getEntityRepository('DeskPRO:Organization')->getByName($name);
 
 					if (!$org) {
@@ -301,7 +304,9 @@ class PersonController extends AbstractController
 						$this->em->persist($org);
 						$this->em->flush();
 					}
+				}
 
+				if ($org) {
 					$person->organization = $org;
 					$person->organization_position = $this->in->getString('position');
 
@@ -331,7 +336,21 @@ class PersonController extends AbstractController
 
 					$data['organization_id'] = $org->id;
 					$data['html'] = $html;
+				} else {
+
+					$person->organization = null;
+					$person->organization_position = '';
+					$this->em->persist($person);
+
+					// Regenerate the HTML block
+					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
+						'person' => $person,
+					));
+
+					$data['organization_id'] = 0;
+					$data['html'] = $html;
 				}
+
 				break;
 
 			case 'password':

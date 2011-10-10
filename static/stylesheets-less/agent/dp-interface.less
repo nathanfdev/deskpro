@@ -1067,6 +1067,7 @@ a.clean-white {
 .person-search-box {
 	position: absolute;
 	overflow: hidden;
+	.drop-shadow(0, 0, 5px, 0.2);
 }
 
 .person-search-box section {
@@ -1129,9 +1130,14 @@ a.clean-white {
 	text-align: center;
 }
 
-.person-search-box footer span.create-user {
+.person-search-box footer span.create-user,
+.person-search-box footer span.create-org {
 	background: url("@{asset-url}/images/icons/add.png") no-repeat 0 50%;
 	padding:  6px;
 	padding-left: 18px;
 	cursor: pointer;
+}
+
+.person-search-box.org {
+
 }

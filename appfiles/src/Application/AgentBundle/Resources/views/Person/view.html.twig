@@ -39,9 +39,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="meta-line">
 			<div class="org"><span>
 				{% if person.organization %}
-					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}>
-						<span class="org-pos-display">{{ person.organization_position }}</span>
-					</span>
+					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
 					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
 					No Organization

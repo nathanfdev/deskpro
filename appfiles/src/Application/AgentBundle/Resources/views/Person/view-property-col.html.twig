@@ -15,9 +15,17 @@
 <div id="{{baseId}}_contact_outside"></div>
 
 {# Organization Box #}
-<div class="profile-box-container summary">
-	<header>
-		<span class="edit-gear org-edit-trigger">edit</span>
+<div class="profile-box-container summary" id="{{baseId}}_org_box">
+	<header id="{{baseId}}_org_display_header">
+		<div class="controls">
+			<span class="edit-gear org-edit-trigger">edit</span>
+			<div class="is-loading">Saving</div>
+			<button class="cancel" style="display: none">Cancel</button>
+			<button class="save" id="{{baseId}}_org_edit_save" style="display: none">Save</button>
+			<button class="remove-org" id="{{baseId}}_org_edit_remove_org" style="display: none">Remove</button>
+			<button class="is-loading">Saving</button>
+			<button class="saved" style="display: none">Saved</button>
+		</div>
 		<h4>Organization</h4>
 	</header>
 	<section>
@@ -27,11 +35,41 @@
 			{% endif %}
 		</div>
 		<div class="org-edit" style="display: none" id="{{baseId}}_org_edit_wrap">
-			<input type="text" class="org-set" placeholder="Company name" value="{{ person.organization.name }}" />
-			<span class="new-company-notice" id="{{baseId}}_org_create_notice" style="display: none">No company with that name exists yet. A new one will be created.</span>
-			<input type="text" class="org-pos-set" placeholder="Position" value="{{ person.organization_position }}" />
+			<div
+				class="org-input"
+				id="{{baseId}}_org_searchbox"
+				data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+				data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+				data-position-bound="@parent(.org-input)"
+			>
+				Organization:
+				<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+				<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li>
+						<a>
+						<span class="org-name"></span>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="person-search-box org" style="display: none">
+					<section>
+						<ul class="results-list">
 
-			<button class="clean-white small" id="{{baseId}}_org_edit_save">Set Organization</button>
+						</ul>
+						<footer>
+							<span class="create-org">Create a new organization</span>
+						</footer>
+					</section>
+				</div>
+			</div>
+			<div class="pos-input" {% if not person.organization %}style="display: none"{% endif %}>
+				<label>Position:</label>
+				<input type="text" class="org-pos-set" placeholder="Set a position..." value="{{ person.organization_position }}" />
+			</div>
 		</div>
 	</section>
 </div>

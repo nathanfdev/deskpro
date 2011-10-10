@@ -1755,6 +1755,9 @@ a.clean-white {
 .person-search-box {
   position: absolute;
   overflow: hidden;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 .person-search-box section {
   background-color: #fff;
@@ -1856,7 +1859,7 @@ a.clean-white {
   border-radius: 0 0 7px 7px;
   text-align: center;
 }
-.person-search-box footer span.create-user {
+.person-search-box footer span.create-user, .person-search-box footer span.create-org {
   background: url("../..//images/icons/add.png") no-repeat 0 50%;
   padding: 6px;
   padding-left: 18px;
