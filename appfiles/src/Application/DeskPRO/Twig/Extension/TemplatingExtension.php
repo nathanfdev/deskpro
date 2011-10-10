@@ -71,6 +71,7 @@ class TemplatingExtension extends \Twig_Extension
 			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
 			'security_token' => new \Twig_Function_Method($this, 'securityToken'),
 			'render_usersource' => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
+			'get_data' => new \Twig_Function_Method($this, 'getData'),
         );
     }
 
@@ -86,8 +87,25 @@ class TemplatingExtension extends \Twig_Extension
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
+			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
         );
     }
+
+	public function getData($id)
+	{
+		switch ($id) {
+			case 'country_names':
+				return \Orb\Data\Countries::getCountryNames();
+				break;
+			default:
+				return null;
+		}
+	}
+
+	public function lowercase($string)
+	{
+		return strtolower($string);
+	}
 
 	public function emphasizeWords($string, $words)
 	{

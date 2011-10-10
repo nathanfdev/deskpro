@@ -11,6 +11,9 @@ namespace Orb\Data;
 
 use Orb\Util\Arrays;
 
+/**
+ * Source: http://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.164D-2009-PDF-E.pdf
+ */
 class CountryCallingCodes
 {
 	/**
@@ -259,7 +262,7 @@ class CountryCallingCodes
 	 *
 	 * @return array
 	 */
-	public function getData()
+	public static function getData()
 	{
 		return self::$codes;
 	}
@@ -270,7 +273,7 @@ class CountryCallingCodes
 	 *
 	 * @return array
 	 */
-	public function getCountryCodeToCallingCode()
+	public static function getCountryCodeToCallingCode()
 	{
 		static $map = null;
 

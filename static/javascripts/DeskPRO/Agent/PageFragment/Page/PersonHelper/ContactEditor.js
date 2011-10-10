@@ -100,13 +100,31 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			});
 		});
 
-		contactEditor.delegate('.remove', 'click', function(ev) {
-			var el = $(this);
+		var checkFields = function(rowTypeEl) {
+			var row = $('li', rowTypeEl).last();
 
-			var row = el;
-			while (!row.is('li')) {
-				row = row.parent();
+			if (row.is('.new')) {
+				var fields = $('input, textarea, select', row);
+				var show = false;
+				fields.each(function() {
+					if ($(this).val()) {
+						show = true;
+					}
+				});
+			} else {
+				show = true;
 			}
+
+			if (show) {
+				$('.with-some', rowTypeEl).show();
+			} else {
+				$('.with-some', rowTypeEl).hide();
+			}
+		};
+
+		contactEditor.delegate('.remove', 'click', function(ev) {
+			var rowTypeEl = $(this).closest('.row-type');
+			var row = $(this).closest('li');
 
 			var removeName = row.data('remove-name');
 			var removeVal  = row.data('remove-value');
@@ -116,38 +134,47 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				input.attr('name', removeName);
 				input.val(removeVal);
 
-				input.appendTo($('.contact-edit-list', contactEditor));
+				input.appendTo(contactEditor);
 			}
 
 			row.fadeOut('fast', function() {
 				row.remove();
+				checkFields(rowTypeEl);
 			});
+
+			var lis = $('li', rowTypeEl);
+
+			if (lis.length < 2) { /* two because the fade is going now and it hasnt been removed yet */
+				rowTypeEl.removeClass('with-values');
+			}
 		});
 
-		this.contactNewMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.add-new-type-trigger', this.wrapper),
-			menuElement: $('.add-new-type-menu:first', this.wrapper),
-			initMenuNow: true,
-			onItemClicked: (function(info) {
-				var wrap = this.contactOverlay.elements.wrapper;
+		contactEditor.delegate('.add-trigger', 'click', function(ev) {
+			var rowTypeEl = $(this).closest('.row-type');
 
-				var item = $(info.itemEl);
-				var tpl = $('.' + item.data('tpl'), wrap).get(0).innerHTML;
-				tpl = tpl.replace(/%id%/g, Orb.uuid());
+			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl));
+			tpl = tpl.replace(/%id%/g, Orb.uuid());
 
-				var el = $(tpl);
-				el.appendTo($('.contact-edit-list ul', wrap));
-			}).bind(this)
+			var el = $(tpl);
+			el.addClass('new');
+			el.appendTo($('ul', rowTypeEl));
+
+			DeskPRO_Window.initInterfaceServices(el);
+
+			$('input, textarea, select', el).bind('change blur keyup', function() {
+				checkFields(rowTypeEl);
+			});
+
+			$('.with-some', rowTypeEl).hide();
+
+			rowTypeEl.addClass('with-values');
 		});
 	},
 
 	destroy: function() {
 		if (this.contactOverlay) {
 			this.contactOverlay.destroy();
-		}
-
-		if (this.contactNewMenu) {
-			this.contactNewMenu.destroy();
+			this.contactOverlay = null;
 		}
 	}
 });

@@ -460,8 +460,8 @@ class PersonController extends AbstractController
 		// Removing emails
 		foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
 			if (isset($person->emails[$email_id])) {
-				$person->emails->remove($email_id);
 				$this->em->remove($person->emails[$email_id]);
+				$person->emails->remove($email_id);
 			}
 		}
 

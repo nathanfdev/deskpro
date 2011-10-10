@@ -127,6 +127,7 @@ $CONFIG['agent']['element-handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 	)
 );
 

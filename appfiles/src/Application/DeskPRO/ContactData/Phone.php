@@ -28,8 +28,9 @@ class Phone extends AbstractContactData
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
 		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
-		$contact_record->field_1 = isset($input['country_code']) ? $input['country_code'] : '';
+		$contact_record->field_1 = isset($input['country_calling_code']) ? $input['country_calling_code'] : '';
 		$contact_record->field_2 = isset($input['number']) ? $input['number'] : '';
+		$contact_record->field_3 = isset($input['type']) ? $input['type'] : 'phone';
 	}
 
 	/**
@@ -41,8 +42,9 @@ class Phone extends AbstractContactData
 	{
 		return array(
 			'comment' => $contact_record->comment,
-			'country_code' => $contact_record->field_1,
+			'country_calling_code' => $contact_record->field_1,
 			'number' => $contact_record->field_2,
+			'type' => $contact_record->field_3,
 		);
 	}
 }
