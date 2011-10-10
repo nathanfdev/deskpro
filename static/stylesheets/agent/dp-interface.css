@@ -1371,6 +1371,10 @@ textarea.integrated:focus, input.integrated:focus {
   padding: 0px 16px 0px 7px;
   line-height: 15px;
   font-size: 11px;
+  cursor: pointer;
+}
+.tags-wrap ul li span:hover {
+  color: #000;
 }
 .tags-wrap ul li em {
   font-style: normal;

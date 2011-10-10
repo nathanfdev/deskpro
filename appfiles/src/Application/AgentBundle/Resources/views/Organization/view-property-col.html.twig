@@ -21,7 +21,7 @@
 		<dl class="table-list">
 			<dt class="type-labels">Labels</dt>
 			<dd class="org-tags tags-wrap">
-				<ul>
+				<ul data-label-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
 					{% for label in org.labels %}
 						<li><span>{{label.label}}</span></li>
 					{% endfor %}
