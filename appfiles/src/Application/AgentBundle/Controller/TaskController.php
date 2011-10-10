@@ -158,6 +158,13 @@ class TaskController extends AbstractController {
         return $this->render('AgentBundle:Task:view.html.twig');
     }
 
+    /**
+     * render the task list
+     *
+     * @param string $search_type
+     * @param string $search_categoty
+     * @return html view of the task list
+     */
     public function taskListAction($search_type = null, $search_categoty = null)
     {
         $this->_loadModels();
@@ -185,6 +192,70 @@ class TaskController extends AbstractController {
             'tasks' => $tasks,
         ));        
     }
+
+    ############################################################################
+	# ajax-save-labels for task
+    ############################################################################
+
+    public function ajaxSaveLabelsAction($task_id)
+    {
+        $this->_loadModels();
+        $task = $this->getTaskOr404($task_id);
+        $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+        $task->getLabelManager()->setLabelsArray($labels);
+
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
+
+        return $this->createJsonResponse(array('success' => 1));
+    }
+
+
+    public function setVisibilityAction($task_id, $visibility)
+    {
+        $this->_loadModels();
+        $task = $this->getTaskOr404($task_id);
+        $task->setVisibility($visibility);
+
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
+
+        return $this->createJsonResponse(array('success' => 1));
+    }
+
+
+    public function checkDueDateAction($due_date = null)
+    {
+        $person = $this->person;
+        $time_zone = new \DateTimeZone($person['timezone']);
+        $today = new \DateTime('today', $time_zone);
+        $over_due = 0;
+        if($due_date < $today)
+        {
+            $over_due = 1;
+        }
+
+        $days_ago = (time() - $due_date->format('m-d-y'))/86400;
+        
+        return $this->render('AgentBundle:Task:task-due-date.html.twig', array(
+            'new-due_date' => $days_ago,
+            'over_due' => $over_due
+        ));
+    }
+
+    /**
+	 * @return Application\DeskPRO\Entity\Task
+	 */
+	protected function getTaskOr404($task_id)
+	{
+		try {
+			$task = $this->_entityManager->find('DeskPRO:Task', $task_id);
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no task with ID $task_id");
+		}
+
+		return $task;
+	}
 
     /**
      * Process data for add or update the task.

@@ -1,27 +1,56 @@
-<task class="task {{ info.content_type }}-{{task.id}}">
-    <div class="task-display content">
-        <div class="col isLeft hasMarnigRight-10px">
-        <input
-                class="item-select"
-                type="checkbox"
-                value="{{ info.content_type }}.{{info.content_id}}"
-                data-content-type="{{ info.content_type }}"
-                data-task-id="{{ task.id }}"
-        />
+<article class="row-item task task-{{task.id}}">
+   <input type="checkbox" class="item-select" value="{{ task.id }}"/>
+   <div class="top-row">
+        <div class="top-row-left">
+            <h3>
+                <a class="with-route name" data-route="task:{{path('agent_task_view', {'task_id': task.id|default('0')})}}">
+                        {{ task.title }}
+                </a>
+            </h3>
         </div>
-        <div class="col">
-            <div class="task-row">
-                <div class="rendered">
-                        {{ task.title|raw }}
-                </div>
-            </div>
-        </div>
-        <div class="task-comments">
-            
-        </div>
-        <div class="task-item-footer">
-            {% include 'AgentBundle:Task:task-item-footer.html.twig' %}
-        </div>
-        <div style="clear:both;"></div>
    </div>
-</task>
+   <hr class="clear-top" />
+   <div>
+   </div>
+
+   <div class="profile-box-container comment"
+	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+	data-form-save-url="{{ path('agent_task_view', {'task_id': task.id}) }}"
+        style="display:none;">
+	<header>
+		<div class="controls">
+			<div class="is-loading">Saving</div>
+			<div class="saved" style="display: none">Saved</div>
+			<div class="save" style="display: none">Save</div>
+		</div>
+		<h4>Comment</h4>
+	</header>
+	<section>
+		<input type="hidden" name="action" value="set-summary" />
+		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary"></textarea></div>
+	</section>
+    </div>
+      
+   <div class="profile-box-container properties task-label" style="display:none;">
+       <header>
+           <h4>Labels</h4>
+       </header>
+       <section>
+           <dl class="table-list">
+                <dt class="type-labels">Labels</dt>
+                <dd class="task-tags tags-wrap" title="{{ path('agent_task_ajax_labels_save', {'task_id': task.id}) }}">
+                    <ul>
+                            {% for label in task.labels %}
+                                    <li><span>{{label.label}}</span></li>
+                            {% endfor %}
+                    </ul>
+                </dd>
+            </dl>
+        <section/>
+
+   </div>
+    <div class="clear" />
+   
+    {% include 'AgentBundle:Task:task-item-footer.html.twig'%}
+   
+</article>

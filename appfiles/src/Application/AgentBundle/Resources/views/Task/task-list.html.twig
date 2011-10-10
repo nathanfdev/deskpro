@@ -1,12 +1,16 @@
 <script>
-	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+    pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
+    pageMeta.labelsSaveUrl = '{{ path('agent_task_ajax_labels_save', {'task_id': task.id}) }}';
+    {% set baseId = el_uid() %}
+    pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content">
     <div class="content">
         {% include 'AgentBundle:Task:task-list-bar.html.twig' %}
-
-        <section class="task-list list-listing">
+    <section class="ticket-simple-list list-listing">
+        <section class="search-reuslts page-set" data-page="{{page}}">
             {% include 'AgentBundle:Task:task-list-page.html.twig' %}
 	</section>
+    </section>
     </div>
 </div>

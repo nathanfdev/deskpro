@@ -844,6 +844,15 @@ agent_task_list:
   pattern: /task/list/{search_type}/{search_categoty}
   defaults: { _controller: AgentBundle:Task:taskList, search_type: null, search_categoty: null}
 
+agent_task_ajax_labels_save:
+  pattern: /task/{task_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Task:ajaxSaveLabels }
+  requirements: { task_id: "\d+" }
+
+agent_task_set_visibility:
+  pattern: /tasks/visibility/{task_id}/{visibility}
+  defaults: { _controller: AgentBundle:Task:setVisibility, task_id: null, visibility: null }
+  requirements: { task_id: "\d+", visibility: "\d+"  }
 
 ################################################################################
 # Publish
