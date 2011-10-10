@@ -1734,54 +1734,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.popover_inited = {};
 
-		// Accept clicks on routes
-		$(document).delegate('[data-route]', 'click', function(ev) {
-			if ($(this).is('.as-popover')) {
-				return;
-			}
-			ev.preventDefault();
-			self.runPageRouteFromElement($(this));
-		});
-
-		// Accept clicks on popovers
-		// Keeps track of which tabs have them open so they can be reused
-		$('#dp_content_wrap').delegate('.as-popover', 'click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			self._initInterfacePopover($(this)).toggle();
-		});
-
-		$(document).delegate('.person-tip', 'mouseover', function() {
-			var el = $(this);
-			var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
-			el.addClass('tipped');
-			el.attr('data-tipped', tipUrl);
-			el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
-
-			el.click(function(ev) {
-				Tipped.toggle(this);
-			});
-
-			if (el.is('.with-route')) {
-				el.addClass('cancel-route')
-			}
-			if (el.parent().is('.with-route')) {
-				el.parent().addClass('cancel-route')
-			}
-		});
-
-		$(document).delegate('.tipped', 'mouseover', function() {
-			if ($(this).is('.tipped-inited')) {
-				return;
-			}
-			var options = {};
-			if ($(this).data('tipped-options')) {
-				eval('options = {' + $(this).data('tipped-options') + '}');
-			}
-
-			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
-			$(this).addClass('tipped-inited');
-		});
+		this.initInterfaceLayerEvents(document);
 	},
 
 	_initInterfacePopover: function(el, opennow) {
@@ -1819,21 +1772,77 @@ DeskPRO.Agent.Window = new Orb.Class({
 			popover = popover_inited[route].popover;
 		}
 
-		console.log(popover);
-
 		popover_inited[route].count++;
 
 		var tabWrapper = el.closest('.with-page-fragment');
 		if (tabWrapper.length) {
 			var page = tabWrapper.data('page-fragment');
 			page.addEvent('destroy', function() {
-				popover_inited[route].count--;
+				if (popover_inited[route]) {
+					popover_inited[route].count--;
+					if (popover_inited[route].count < 1) {
+						popover_inited[route].popover.destroy();
+						delete popover_inited[route];
+					}
+				}
 			});
 		} else {
 			popover.options.destroyOnClose = true;
 		}
 
 		return popover;
+	},
+
+	initInterfaceLayerEvents: function(context) {
+		var self = this;
+		// Accept clicks on routes
+		$(context).delegate('[data-route]', 'click', function(ev) {
+			if ($(this).is('.as-popover')) {
+				return;
+			}
+			ev.preventDefault();
+			self.runPageRouteFromElement($(this));
+		});
+
+		// Accept clicks on popovers
+		// Keeps track of which tabs have them open so they can be reused
+		$(context).delegate('.as-popover', 'click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self._initInterfacePopover($(this)).toggle();
+		});
+
+		$(context).delegate('.person-tip', 'mouseover', function() {
+			var el = $(this);
+			var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
+			el.addClass('tipped');
+			el.attr('data-tipped', tipUrl);
+			el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
+
+			el.click(function(ev) {
+				Tipped.toggle(this);
+			});
+
+			if (el.is('.with-route')) {
+				el.addClass('cancel-route')
+			}
+			if (el.parent().is('.with-route')) {
+				el.parent().addClass('cancel-route')
+			}
+		});
+
+		$(context).delegate('.tipped', 'mouseover', function() {
+			if ($(this).is('.tipped-inited')) {
+				return;
+			}
+			var options = {};
+			if ($(this).data('tipped-options')) {
+				eval('options = {' + $(this).data('tipped-options') + '}');
+			}
+
+			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+			$(this).addClass('tipped-inited');
+		});
 	},
 
 	initInterfaceServices: function(context) {

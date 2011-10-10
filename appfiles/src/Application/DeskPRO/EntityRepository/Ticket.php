@@ -159,8 +159,10 @@ class Ticket extends EntityRepository
 	{
 		$ids = App::getDb()->fetchAllCol("
 			SELECT id,
-				CASE WHEN STATUS =  'open' THEN 1
-				WHEN STATUS =  'pending' THEN 2
+				CASE WHEN `status` =  'open' THEN 1
+				WHEN `status` =  'pending' THEN 2
+				WHEN `status` =  'resolved' THEN 3
+				WHEN `status` =  'closed' THEN 4
 				ELSE 3
 				END AS status_order
 			FROM tickets

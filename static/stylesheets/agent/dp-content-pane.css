@@ -2675,10 +2675,8 @@ body.popup section.body textarea.fill {
   height: 95%;
 }
 .change-picture-overlay {
-  width: 280px;
-}
-.change-picture-overlay.with-existing {
-  width: 350px;
+  width: 500px;
+  min-height: 300px;
 }
 .change-picture-overlay header {
   margin-top: -3px;
@@ -2691,6 +2689,10 @@ body.popup section.body textarea.fill {
 .change-picture-overlay header .upload-control {
   float: right;
   position: relative;
+  width: 83px;
+  overflow: hidden;
+  text-align: right;
+  height: 16px;
 }
 .change-picture-overlay header .upload-control input {
   position: absolute;
@@ -2699,6 +2701,11 @@ body.popup section.body textarea.fill {
   width: 80px;
   opacity: 0;
   z-index: 2;
+  width: 79px;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 .change-picture-overlay header .upload-control button {
   position: absolute;
@@ -2711,7 +2718,7 @@ body.popup section.body textarea.fill {
 }
 .change-picture-overlay.with-existing .existing-picture, .change-picture-overlay.with-existing .new-picture {
   float: left;
-  width: 165px;
+  width: 225px;
 }
 .change-picture-overlay.with-existing .existing-picture {
   margin-right: 10px;
@@ -2754,9 +2761,12 @@ body.popup section.body textarea.fill {
   float: right;
   margin: 3px 3px 0 0;
 }
-.email-assoc-overlay .overlay-content {
+.email-assoc-overlay {
   width: 400px;
   height: 300px;
+  padding: 0;
+}
+.email-assoc-overlay .overlay-content {
   padding: 0;
 }
 .email-assoc-overlay .emails-exist table td {
