@@ -50,9 +50,6 @@ $CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor
  * Packs listed will be served in their raw form, not their compiled build form.
  * Useful for debugging since you dont need to re-compile the files each time.
  * Possible values are in config.assets.php
- *
- * Note: 'all' means everything except vendors. If you change/add something to vendors,
- * then you must recompile.
  */
 // TODO remove in distribution. Enabled just for devs
 $CONFIG['debug']['raw_assets'] = array();
