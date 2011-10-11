@@ -46,3 +46,9 @@
 [submodule "appfiles/vendor/Stof/DoctrineExtensionsBundle"]
 	path = appfiles/vendor/Stof/DoctrineExtensionsBundle
 	url = git://github.com/stof/StofDoctrineExtensionsBundle.git
+[submodule "appfiles/vendor/AsseticBundle"]
+	path = appfiles/vendor/AsseticBundle
+	url = https://github.com/symfony/AsseticBundle.git
+[submodule "appfiles/vendor/assetic"]
+	path = appfiles/vendor/assetic
+	url = https://github.com/kriswallsmith/assetic.git
