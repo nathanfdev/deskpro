@@ -13,23 +13,38 @@
    <div>
    </div>
 
-   <div class="profile-box-container comment"
-	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
-	data-form-save-url="{{ path('agent_task_view', {'task_id': task.id}) }}"
-        style="display:none;">
-	<header>
-		<div class="controls">
-			<div class="is-loading">Saving</div>
-			<div class="saved" style="display: none">Saved</div>
-			<div class="save" style="display: none">Save</div>
-		</div>
-		<h4>Comment</h4>
-	</header>
-	<section>
-		<input type="hidden" name="action" value="set-summary" />
-		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary"></textarea></div>
-	</section>
+
+ <article id="{{baseId}}_comment_tab" class="on">
+    <div class="notes-wrap">
+        <ul>
+
+            {% for comment in task.comments|reverse %}
+                    {% include 'AgentBundle:Task:comment-li.html.twig' with {'comment': comment} %}
+                {% endfor %}
+            
+                <li class="new-note"
+                        data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+                        data-form-list-selector="ul"
+                        data-form-result-html-key="comment_li_html"
+                        data-form-save-url="{{ path('agent_task_ajaxsave_comment', {'task_id': task.id}) }}"
+                        style="display:none;"
+                        
+
+                >
+                        <header>
+                                <div class="controls">
+                                        <div class="is-loading">Saving</div>
+                                        <div class="saved" style="display: none">Saved</div>
+                                        <div class="save" style="display: none">Save</div>
+                                </div>
+                                <h3>New Comment</h3>
+                        </header>
+                        <div class="textarea-section"><textarea class="integrated" name="comment" placeholder="Enter comment ..."></textarea></div>
+                </li>
+        </ul>
     </div>
+</article>
+
       
    <div class="profile-box-container properties task-label" style="display:none;">
        <header>

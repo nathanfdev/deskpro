@@ -28,8 +28,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
         _initTaskProperty: function(){
 
-            $('.add-comment', this.wrapper).click(function(){
-                $(this).parents('article').find('.comment').toggle();                
+            $('.add-comment', this.wrapper).click(function(){                
+                $(this).parents('article').find('article').find('li.new-note').toggle();
             });
             $('.add-label', this.wrapper).click(function(){
                 $(this).parents('article').find('.task-label').toggle();

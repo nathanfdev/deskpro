@@ -210,6 +210,42 @@ class TaskController extends AbstractController {
         return $this->createJsonResponse(array('success' => 1));
     }
 
+    ############################################################################
+	# /agent/task/:task_id/ajax-save-comment           agent_task_ajaxsave_comment
+	############################################################################
+
+	// TODO error checking
+	public function ajaxSaveCommentAction($task_id)
+	{
+            $this->_loadModels();
+
+            if ($task_id) {
+                    $task = $this->getTaskOr404($task_id);
+            } else {
+                    $task = new Task();
+            }
+
+            $comment_txt = $this->in->getString('comment');
+
+            $em = App::getOrm();
+            //$em->beginTransaction();
+
+            $comment = new TaskComment($this->person, $comment_txt);
+            $comment['person'] = $this->person;
+            $comment['task'] = $task;
+            $comment['content'] = $comment_txt;
+
+            $em->persist($comment);
+            $em->flush();
+            //$em->commit();
+
+            return $this->createJsonResponse(array(
+                    'success' => true,
+                    'task_id' => $task_id,
+                    'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment))
+            ));
+	}
+
 
     public function setVisibilityAction($task_id, $visibility)
     {
