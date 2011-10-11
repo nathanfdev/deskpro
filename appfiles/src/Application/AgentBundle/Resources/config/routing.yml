@@ -351,8 +351,8 @@ agent_org_savecontactdata:
   requirements: { person_id: "\d+" }
 
 agent_org_delete:
-  pattern: /people/{person_id}/delete/{security_token}
-  defaults: { _controller: AgentBundle:Person:deleteOrganization }
+  pattern: /organizations/{organization_id}/delete/{security_token}
+  defaults: { _controller: AgentBundle:Organization:deleteOrganization }
 
 agent_org_ajaxsave_note:
   pattern: /organizations/{organization_id}/ajax-save-note

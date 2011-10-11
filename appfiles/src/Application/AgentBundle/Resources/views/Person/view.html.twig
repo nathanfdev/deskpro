@@ -50,8 +50,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
 		{% if app.user.hasPerm('users.set-password') %}<li data-action="reset-password" class="reset-password">Reset Password</li>{% endif %}
-		<li data-action="" class="merge-trigger">Merge User</li>
-		<li data-action="" class="delete-trigger">Delete User</li>
+		{% if app.user.hasPerm('users.delete') %}
+			<li
+				data-action="delete"
+				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
+				class="delete-trigger">Delete User</li>{% endif %}
 	</ul>
 	<br class="clear" />
 </header>

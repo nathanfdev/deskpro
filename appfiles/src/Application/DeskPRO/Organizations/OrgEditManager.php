@@ -46,9 +46,11 @@ class OrgEditManager
 
 		try {
 			$this->em->remove($org);
+			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;
 		}
+	}
 }

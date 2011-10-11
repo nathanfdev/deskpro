@@ -473,6 +473,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->addPropertyChangedListener($person_logger);
 	}
 
+	public function hasPerm($name)
+	{
+		return $this->getHelper('PermissionsManager')->hasPerm($name);
+	}
+
 	public function getOrganizationId()
 	{
 		if ($this->organization) {

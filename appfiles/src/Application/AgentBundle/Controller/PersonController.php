@@ -729,7 +729,7 @@ class PersonController extends AbstractController
 	# delete
 	############################################################################
 
-	public function deletePerson($person_id, $security_token)
+	public function deletePersonAction($person_id, $security_token)
 	{
 		$person = $this->getPersonOr404($person_id);
 
@@ -738,7 +738,7 @@ class PersonController extends AbstractController
 		}
 
 		$edit_manager = $this->container->getSystemService('person_edit_manager');
-		$edit_manager->delete($person);
+		$edit_manager->deleteUser($person);
 
 		return $this->createJsonResponse(array('success' => true));
 	}

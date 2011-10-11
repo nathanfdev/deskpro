@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Organizations;
+namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -46,6 +46,7 @@ class PersonEditManager
 
 		try {
 			$this->em->remove($person);
+			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {
 			$this->em->rollback();

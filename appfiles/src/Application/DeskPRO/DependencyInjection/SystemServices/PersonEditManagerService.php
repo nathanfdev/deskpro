@@ -12,7 +12,7 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Organizations\PersonEditManager;
+use Application\DeskPRO\People\PersonEditManager;
 
 class PersonEditManagerService
 {

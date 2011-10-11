@@ -526,7 +526,7 @@ class OrganizationController extends AbstractController
 	# delete
 	############################################################################
 
-	public function deletePerson($organization_id, $security_token)
+	public function deleteOrganizationAction($organization_id, $security_token)
 	{
 		$org = $this->getOrgOr404($organization_id);
 
@@ -535,7 +535,7 @@ class OrganizationController extends AbstractController
 		}
 
 		$edit_manager = $this->container->getSystemService('org_edit_manager');
-		$edit_manager->delete($org);
+		$edit_manager->deleteOrganization($org);
 
 		return $this->createJsonResponse(array('success' => true));
 	}

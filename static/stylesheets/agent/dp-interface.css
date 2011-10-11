@@ -217,6 +217,10 @@ span.team-link, a.team-link {
   padding-left: 23px;
   padding: 2px 0 2px 23px;
 }
+strong.warning {
+  color: #f00;
+  font-weight: bold;
+}
 .tab-loading {
   margin: 20px;
   background: url("../..//images/loading-big-circle.gif") no-repeat 50% 50%;

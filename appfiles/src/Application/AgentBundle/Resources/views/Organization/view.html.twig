@@ -18,7 +18,15 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="more"><button class="clean-white delete-trigger">Delete</button></li>
+			<li>
+				{% if app.user.hasPerm('orgs.delete') %}
+				<button
+					id="{{baseId}}_delete_btn"
+					class="clean-white delete-trigger"
+					data-delete-url="{{ path('agent_org_delete', {'organization_id': org.id, 'security_token': security_token('delete_org') }) }}"
+				>Delete</button>
+				{% endif %}
+			</li>
 		</ul>
 	</nav>
 	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
@@ -35,9 +43,6 @@ pageMeta.baseId = '{{ baseId }}';
 		</h1>
 	</div>
 
-	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li data-action="" class="delete-trigger">Delete Organization</li>
-	</ul>
 	<br class="clear" />
 </header>
 
