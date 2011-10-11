@@ -1,16 +1,95 @@
 <?php
+/**
+ * This file is a set of asset bundles.
+ * The key in this array is the bundle ID, and t
+ */
 
 $CONFIG = array();
 
+$CONFIG['OPTIONS'] = array(
+	'java_path' => '/usr/bin/java',
+	'yui_compressor' => '/usr/local/bin/yuicompressor.jar',
+	'nodejs' => '/usr/local/bin/node',
+	'less' => '/usr/local/lib/node_modules/less/bin/lessc',
+	'smartsprites' => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+);
+
 ###############################################################################
-# Agent
+# JAVASCRIPTS
 ###############################################################################
 
-$CONFIG['agent'] = array();
+$CONFIG['agent_all'] = array(
+	'out' => 'js/agent-all.js',
+	'references' => array(
+		'agent_vendors',
+		'agent_common',
+		'agent_deskpro_ui',
+		'agent_misc',
+		'agent_agent_ui',
+		'agent_window_sections',
+		'agent_pages',
+		'agent_pages_lists',
+		'agent_element_handlers',
+	)
+);
 
-$CONFIG['agent']['window-sections'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-window-sections.js',
+$CONFIG['agent_alltest'] = array(
+	'out' => 'js/agent-all-test.js',
+	'references' => array(
+		'agent_deskpro_ui',
+		'agent_misc',
+	)
+);
+
+$CONFIG['agent_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.layout.min.js',
+		'vendor/jquery/jquery.localscroll.js',
+		'vendor/jquery/jquery.mousewheel.js',
+		'vendor/jquery/jquery.scrollTo.js',
+		'vendor/jquery/jquery.sizes.min.js',
+		'vendor/jquery/jquery.tinyscrollbar.js',
+		'vendor/jquery/jquery.hotkeys.js',
+		'vendor/jquery/mwheelIntent.js',
+		'vendor/jquery/jquery.textarea-expander.js',
+		'vendor/jquery/jquery.ajax-retry.js',
+
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/token-field/jquery.token-field.js',
+
+		'vendor/tiny_mce/jquery.tinymce.js',
+
+		'vendor/jquery/colorbox/jquery.colorbox-min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
+
+		'vendor/jquery/tag-it/tag-it.js',
+
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
+	)
+);
+
+$CONFIG['agent_window_sections'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-window-sections.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
@@ -24,9 +103,10 @@ $CONFIG['agent']['window-sections'] = array(
 	)
 );
 
-$CONFIG['agent']['pages-lists'] = array(
+$CONFIG['agent_pages_lists'] = array(
 	'mode' => 'yui',
-	'out' => 'agent-pages-lists.js',
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-pages-lists.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
@@ -56,13 +136,13 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
-                'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 	)
 );
 
-$CONFIG['agent']['pages'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-pages.js',
+$CONFIG['agent_pages'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-pages.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
 		'javascripts/DeskPRO/Agent/PageHelper/TicketMassActions.js',
@@ -114,13 +194,13 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
-                'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
 	)
 );
 
-$CONFIG['agent']['element-handlers'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-element-handlers.js',
+$CONFIG['agent_element_handlers'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-element-handlers.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
@@ -132,9 +212,9 @@ $CONFIG['agent']['element-handlers'] = array(
 	)
 );
 
-$CONFIG['agent']['common'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-common.js',
+$CONFIG['agent_common'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-common.js',
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
@@ -156,9 +236,9 @@ $CONFIG['agent']['common'] = array(
 	)
 );
 
-$CONFIG['agent']['agent-ui'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-ui.js',
+$CONFIG['agent_agent_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/Agent/Window.js',
@@ -199,9 +279,9 @@ $CONFIG['agent']['agent-ui'] = array(
 	)
 );
 
-$CONFIG['agent']['deskpro-ui'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-deskpro-ui.js',
+$CONFIG['agent_deskpro_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-deskpro-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/UI/LabelsInput.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
@@ -213,9 +293,9 @@ $CONFIG['agent']['deskpro-ui'] = array(
 	)
 );
 
-$CONFIG['agent']['misc'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-misc.js',
+$CONFIG['agent_misc'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-misc.js',
 	'files' => array(
 		'javascripts/DeskPRO/Form/InlineEdit.js',
 		'javascripts/DeskPRO/Form/RuleBuilder.js',
@@ -266,9 +346,9 @@ $CONFIG['agent']['misc'] = array(
 /**
  * Vendor files for agent interface
  */
-$CONFIG['agent']['vendors'] = array(
-	'mode' => 'yui',
-	'out' => 'agent-vendors.js',
+$CONFIG['agent_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-vendors.js',
 	'files' => array(
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
@@ -312,17 +392,12 @@ $CONFIG['agent']['vendors'] = array(
 	)
 );
 
-
-###############################################################################
-# Admin
-###############################################################################
-
 /**
  * Admin UI specific
  */
-$CONFIG['admin']['admin-ui'] = array(
-	'mode' => 'yui',
-	'out' => 'admin-ui.js',
+$CONFIG['admin_admin_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/admin-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/Admin/Window.js',
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
@@ -334,9 +409,9 @@ $CONFIG['admin']['admin-ui'] = array(
 /**
  * Admin UI specific
  */
-$CONFIG['admin']['admin-handlers'] = array(
-	'mode' => 'yui',
-	'out' => 'admin-handlers.js',
+$CONFIG['admin_admin_handlers'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/admin-handlers.js',
 	'files' => array(
 		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
 		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
@@ -345,16 +420,9 @@ $CONFIG['admin']['admin-handlers'] = array(
 	)
 );
 
-
-###############################################################################
-# User
-###############################################################################
-
-$CONFIG['user'] = array();
-
-$CONFIG['user']['common'] = array(
-	'mode' => 'yui',
-	'out' => 'user-common.js',
+$CONFIG['user_common'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/user-common.js',
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
@@ -394,9 +462,9 @@ $CONFIG['user']['common'] = array(
 	)
 );
 
-$CONFIG['user']['vendors'] = array(
-	'mode' => 'yui',
-	'out' => 'user-vendors.js',
+$CONFIG['user_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/user-vendors.js',
 	'files' => array(
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery.cookie.js',
@@ -410,5 +478,75 @@ $CONFIG['user']['vendors'] = array(
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
+	)
+);
+
+
+
+###############################################################################
+# CSS
+###############################################################################
+
+$CONFIG['agent_css'] = array(
+	'out' => 'css/agent-all.css',
+	'references' => array(
+		'agent_vendors_css',
+		'agent_deskpro_ui_css',
+		'agent_interface_css',
+		'agent_interface_print_css'
+	)
+);
+
+$CONFIG['agent_deskpro_ui_css'] = array(
+	'out' => 'css/deskpro-ui.css',
+	'filters' => array('css_path'),
+	'files' => array(
+		'javascripts/DeskPRO/UI/ui.css',
+	)
+);
+
+$CONFIG['agent_interface_css'] = array(
+	'out' => 'css/agent-interface.css',
+	'filters' => array('less', 'smartsprites'),
+	'filter_options' => array(
+		'smartsprites' => array('root_dir' => realpath(DP_ROOT . '/../static'))
+	),
+	'files' => array(
+		'stylesheets-less/agent/dp-interface.less',
+		'stylesheets-less/agent/dp-interface.less',
+		'stylesheets-less/agent/dp-source-pane.less',
+		'stylesheets-less/agent/dp-list-pane.less',
+		'stylesheets-less/agent/dp-content-pane.less',
+		'stylesheets-less/agent/dp-agent-chat.less',
+		'stylesheets-less/agent/navigation.less',
+		'stylesheets-less/agent/header.less',
+		'stylesheets-less/agent/overlayMacro.less',
+		'stylesheets-less/agent/overlayCreateTicket.less',
+	)
+);
+
+
+$CONFIG['agent_interface_print_css'] = array(
+	'out' => 'css/agent-interface-print.css',
+	'filters' => array('css_path'),
+	'media' => 'print',
+	'files' => array(
+		'stylesheets-less/agent/print.less',
+	)
+);
+
+$CONFIG['agent_vendors_css'] = array(
+	'out' => 'css/agent-vendors.css',
+	'filters' => array('css_path'),
+	'files' => array(
+		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
+		'vendor/jquery/tipped/css/tipped.css',
+		'vendor/jquery/colorbox/colorbox.css',
+		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
+		'vendor/jquery/chosen/chosen.css',
+
+		'vendor/jquery/markitup/markitup/skins/simple/style.css',
+		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
+		'vendor/jquery/token-field/token-field.css',
 	)
 );

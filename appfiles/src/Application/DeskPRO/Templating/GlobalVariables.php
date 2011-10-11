@@ -49,6 +49,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSession()->getVisitor();
 	}
 
+	public function isDebug()
+	{
+		return App::isDebug();
+	}
+
 	public function __get($name)
 	{
 		if (isset($this->variables[$name])) {

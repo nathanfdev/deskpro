@@ -20,15 +20,16 @@ $loader->registerNamespaces(array(
     'Bundle'                       => DP_ROOT.'/src',
 	'Orb'                          => DP_ROOT.'/src',
 
-    'Symfony'                      => DP_ROOT.'/vendor/symfony/src',
-    'Doctrine\\Common'             => DP_ROOT.'/vendor/doctrine-common/lib',
-    'Doctrine\\DBAL\\Migrations'   => DP_ROOT.'/vendor/doctrine-migrations/lib',
-    'Doctrine\\DBAL'               => DP_ROOT.'/vendor/doctrine-dbal/lib',
-    'Doctrine'                     => DP_ROOT.'/vendor/doctrine/lib',
-	'Zend'                         => DP_ROOT.'/vendor/zend/library',
-	'Gedmo'                        => DP_ROOT.'/vendor/DoctrineExtensions/lib',
-	'Stof'                         => DP_ROOT.'/vendor',
-	'FOQ'                          => DP_ROOT.'/vendor',
+	'Assetic'                        => DP_ROOT.'/vendor/assetic/src',
+	'Symfony'                        => DP_ROOT.'/vendor/symfony/src',
+    'Doctrine\\Common'               => DP_ROOT.'/vendor/doctrine-common/lib',
+    'Doctrine\\DBAL\\Migrations'     => DP_ROOT.'/vendor/doctrine-migrations/lib',
+    'Doctrine\\DBAL'                 => DP_ROOT.'/vendor/doctrine-dbal/lib',
+    'Doctrine'                       => DP_ROOT.'/vendor/doctrine/lib',
+	'Zend'                           => DP_ROOT.'/vendor/zend/library',
+	'Gedmo'                          => DP_ROOT.'/vendor/DoctrineExtensions/lib',
+	'Stof'                           => DP_ROOT.'/vendor',
+	'FOQ'                            => DP_ROOT.'/vendor',
 ));
 
 $loader->registerPrefixes(array(
