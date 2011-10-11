@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;
@@ -627,30 +629,38 @@ section.source-labels-cloud ul li.nav-selected span {
   top: 1px;
 }
 #tickets_outline_flags_list span.flag {
-  background: url("../..//images/agent/flagIco.png") no-repeat;
   background-repeat: no-repeat;
   padding-left: 10px;
+  width: 6px;
+  height: 9px;
 }
 #tickets_outline_flags_list span.flag-blue {
-  background-position: 0px 2px;
+  background-image: url(../../images/flag-blue.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-green {
-  background-position: 0px -23px;
+  background-image: url(../../images/flag-green.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-orange {
-  background-position: 0px -48px;
+  background-image: url(../../images/flag-orange.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-pink {
-  background-position: 0px -73px;
+  background-image: url(../../images/flag-pink.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-purple {
-  background-position: 0px -98px;
+  background-image: url(../../images/flag-purple.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-red {
-  background-position: 0px -123px;
+  background-image: url(../../images/flag-red.png);
+  /** sprite-ref: mysprite; */
 }
 #tickets_outline_flags_list span.flag-yellow {
-  background-position: 0px -148px;
+  background-image: url(../../images/flag-yellow.png);
+  /** sprite-ref: mysprite; */
 }
 #ticket_filter_group_editor, #ticket_customfilter_group_editor {
   position: absolute;

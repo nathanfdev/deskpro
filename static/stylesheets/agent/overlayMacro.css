@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;

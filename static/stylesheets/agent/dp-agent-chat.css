@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;
@@ -145,9 +147,6 @@
   cursor: pointer;
   padding: 4px 0 3px;
 }
-#agent_chat_panel > header li a span {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat;
-}
 #agent_chat_panel > header li a span.user-icon {
   background-position: 0 -1281px;
   padding: 0 8px 0 23px;
@@ -177,7 +176,9 @@
   background-position: 0 -1246px;
 }
 #agent_chat_panel .close-btn {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -1336px;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/agentchat-button-closebtn-on.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   display: block;
   height: 15px;
   width: 16px;
@@ -327,7 +328,7 @@
   text-shadow: 0 1px 0 #000;
 }
 .agentChat div span.closeTrigger {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -1335px;
+  background-image: url(../../images/agent/agentchat-button-closebtn-on.png);
   height: 12px;
   padding: 2px;
   position: absolute;
@@ -390,7 +391,9 @@
   float: left;
 }
 .messageBoxHead span.minimize {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -1455px;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/agentchat-win-min.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   cursor: pointer;
   float: right;
   height: 16px;
@@ -474,14 +477,22 @@
   float: left;
 }
 .chatMsgSend span.bubbleLeft {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -1515px;
+  background-position: top right;
+  background-repeat: none;
+  background: url(../../images/agent/agentchat-msg-left.png);
+  /** sprite-ref: ui-icons; sprite-alignment: left */
+
   bottom: 1px;
   left: -11px;
   padding: 4px 8px;
   position: absolute;
 }
 .chatMsgRecieve span.bubbleRight {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -1538px;
+  background-position: top right;
+  background-repeat: none;
+  background: url(../../images/agent/agentchat-msg-right.png);
+  /** sprite-ref: ui-icons; sprite-alignment: right */
+
   bottom: 1px;
   right: -11px;
   padding: 4px 8px;

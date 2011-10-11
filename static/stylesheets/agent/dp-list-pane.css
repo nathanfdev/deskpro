@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;
@@ -147,7 +149,8 @@
   margin-top: 2px;
 }
 .list-control-bar ul li.display-options a {
-  background: url("../..//images/agent/imgSprt_ico.png") repeat-x 0 -799px;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/controlbar-display-options.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   float: left;
   height: 6px;
   padding: 5px;
@@ -159,7 +162,8 @@
   margin-top: 3px;
 }
 .list-control-bar ul li.detail-view a {
-  background: url("../..//images/agent/imgSprt_ico.png") repeat-x 0 -924px;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/controlbar-detail-view.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   text-indent: -9999px;
   width: 16px;
   float: right;
