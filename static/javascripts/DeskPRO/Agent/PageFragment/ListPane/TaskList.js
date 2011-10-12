@@ -28,6 +28,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 	},
 
         _initTaskProperty: function(){
+            
             $('.calender').datepicker();
             
             $('.add-comment', this.wrapper).click(function(){                
@@ -40,6 +41,11 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
             $('.add-due-date', this.wrapper).click(function(){ 
                 $(this).parents('article').find('.task-due-date').toggle();
+            });
+
+            $('.add-delegate', this.wrapper).click(function(){
+                $(this).parents('article').find('.task-delegate').toggle();
+
             });
 
             $('.add-public', this.wrapper).click(function(){

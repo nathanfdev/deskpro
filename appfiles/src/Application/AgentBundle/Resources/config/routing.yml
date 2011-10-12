@@ -811,9 +811,9 @@ agent_twitter_getsectiondata:
 # Tasks
 ################################################################################
 
-agent_tasks_count_pending:
-  pattern: /tasks/pending/count
-  defaults: { _controller: AgentBundle:Task:countPending }
+#agent_tasks_count_pending:
+#  pattern: /tasks/pending/count
+#  defaults: { _controller: AgentBundle:Task:countPending }
 
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
@@ -862,6 +862,11 @@ agent_task_ajaxsave_comment:
 agent_task_ajaxsave_duedate:
   pattern: /task/{task_id}/ajax-save-due-date
   defaults: { _controller: AgentBundle:Task:ajaxSaveDueDate }
+  requirements: { person_id: "\d+" }
+
+agent_task_ajaxsave_delegate:
+  pattern: /task/{task_id}/ajax-save-delegate
+  defaults: { _controller: AgentBundle:Task:ajaxSaveDelegate }
   requirements: { person_id: "\d+" }
 
 ################################################################################

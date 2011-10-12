@@ -33,6 +33,11 @@ class TaskController extends AbstractController {
     private $_currentUser;
     private $_task_repository;
 
+    /**
+     * Generate the category wise list gor task.
+     * @return html 
+     */
+
     public function getSectionDataAction() {
 
         $this->_loadModels();
@@ -80,56 +85,10 @@ class TaskController extends AbstractController {
         ));
     }
 
-    public function countPendingAction() {
-        $task_repository = App::getEntityRepository('DeskPRO:Task');
-        $person = $this->person;
-
-        $all_tasks = array(
-            'total' => $task_repository->countPendingTasks(),
-            'overdue' => $task_repository->countOverdueTasks($person['timezone']),
-            'due_today' => $task_repository->countDueTodayTasks($person['timezone']),
-        );
-
-        $person_tasks = array(
-            'total' => $task_repository->countPendingTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayTasksForPerson($person),
-        );
-
-        $teams_tasks = array(
-            'total' => $task_repository->countPendingTaksForPersonTeams($person),
-            'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
-            'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
-        );
-
-        $delegated_tasks = array(
-            'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
-        );
-
-        $data['section_html'] = $this->renderView('AgentBundle:Task:countPending.html.twig', array(
-                    'tasks' => array(
-                        'all' => $all_tasks,
-                        'person' => $person_tasks,
-                        'teams' => $teams_tasks,
-                        'delegated' => $delegated_tasks,
-                    )
-                ));
-
-        return $this->createJsonResponse($data);
-    }
-
-    /**
-     * Renders an html list with all the pending task for the current user.
-     */
-    public function listPendingAction() {
-
-    }
-
+    
     /**
      * Render the new task form.
-     * @return <type>
+     * @return html 
      */
     public function newAction() {
         $form = $this->get('form.factory')->create(new NewTask(), new Task())->createView();
@@ -193,10 +152,13 @@ class TaskController extends AbstractController {
         ));        
     }
 
-    ############################################################################
-	# ajax-save-labels for task
-    ############################################################################
-
+    
+    /**
+     * Save labels for tasks.
+     *
+     * @param intiger $task_id
+     * @return json
+     */
     public function ajaxSaveLabelsAction($task_id)
     {
         $this->_loadModels();
@@ -210,56 +172,66 @@ class TaskController extends AbstractController {
         return $this->createJsonResponse(array('success' => 1));
     }
 
-    ############################################################################
-	# /agent/task/:task_id/ajax-save-comment           agent_task_ajaxsave_comment
-	############################################################################
-
 	// TODO error checking
-	public function ajaxSaveCommentAction($task_id = null)
-	{
-            $this->_loadModels();
 
-            if ($task_id) {
-                    $task = $this->getTaskOr404($task_id);
-            } else {
-                    $task = new Task();
-            }
+    /**
+     * Save the comment for tasks
+     *
+     * @param intiger $task_id
+     * @return comment list in li format
+     */
+    public function ajaxSaveCommentAction($task_id = null)
+    {
+        $this->_loadModels();
 
-            $comment_txt = $this->in->getString('comment');
-
-            $em = App::getOrm();
-            //$em->beginTransaction();
-
-            $comment = new TaskComment($this->person, $comment_txt);
-            $comment['person'] = $this->person;
-            $comment['task'] = $task;
-            $comment['content'] = $comment_txt;
-
-            $em->persist($comment);
-            $em->flush();
-            //$em->commit();
-
-            return $this->createJsonResponse(array(
-                    'success' => true,
-                    'task_id' => $task_id,
-                    'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment))
-            ));
-	}
-
-        public function ajaxSaveDueDateAction($task_id = null)
-        {
-            $this->_loadModels();
-            $task = $this->getTaskOr404($task_id);
-
-            $date_due = $this->in->getString('date_due');
-            $task->setDueDate($date_due);
-            $this->_entityManager->persist($task);
-            $this->_entityManager->flush();            
-            //print $date_due; exit;
-            return $this->createJsonResponse(array('success' => 1));
+        if ($task_id) {
+                $task = $this->getTaskOr404($task_id);
+        } else {
+                $task = new Task();
         }
 
+        $comment_txt = $this->in->getString('comment');
 
+        $comment = new TaskComment($this->person, $comment_txt);
+        $comment['person'] = $this->person;
+        $comment['task'] = $task;
+        $comment['content'] = $comment_txt;
+
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
+
+        return $this->createJsonResponse(array(
+                'success' => true,
+                'task_id' => $task_id,
+                'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment))
+        ));
+    }
+
+    /**
+     * Update the due date for tasks.
+     *
+     * @param intiger $task_id
+     * @return json
+     */
+    public function ajaxSaveDueDateAction($task_id = null)
+    {
+        $this->_loadModels();
+        $task = $this->getTaskOr404($task_id);
+
+        $date_due = $this->in->getString('date_due');
+        $task->setDueDate($date_due);
+        $this->_entityManager->persist($task);
+        $this->_entityManager->flush();
+        return $this->createJsonResponse(array('success' => 1));
+    }
+
+    /**
+     * Update the task visbility from public to private or vice versa
+     *
+     * @param intiger $task_id
+     * @param intiger 0/2 $visibility
+     * @return json
+     */
     public function setVisibilityAction($task_id, $visibility)
     {
         $this->_loadModels();
