@@ -215,7 +215,7 @@ class TaskController extends AbstractController {
 	############################################################################
 
 	// TODO error checking
-	public function ajaxSaveCommentAction($task_id)
+	public function ajaxSaveCommentAction($task_id = null)
 	{
             $this->_loadModels();
 
@@ -245,6 +245,19 @@ class TaskController extends AbstractController {
                     'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment))
             ));
 	}
+
+        public function ajaxSaveDueDateAction($task_id = null)
+        {
+            $this->_loadModels();
+            $task = $this->getTaskOr404($task_id);
+
+            $date_due = $this->in->getString('date_due');
+            $task->setDueDate($date_due);
+            $this->_entityManager->persist($task);
+            $this->_entityManager->flush();            
+            //print $date_due; exit;
+            return $this->createJsonResponse(array('success' => 1));
+        }
 
 
     public function setVisibilityAction($task_id, $visibility)

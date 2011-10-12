@@ -79,7 +79,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's optional due date.
 	 * 
 
-	 * @var DateTime
+	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_due", type="date", nullable=true)
 	 */
 	protected $date_due = null;
@@ -362,12 +362,12 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 
         public function setDueDate($due_date)
         {
-            $this->due_date = DateTime($due_date);
+            $this->date_due = new \DateTime($due_date);
         }
 
         public function getDueDate()
         {
-            return $this->due_date;
+            return $this->date_due;
         }
 
         public function getLabelManager()

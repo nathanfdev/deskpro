@@ -853,9 +853,15 @@ agent_task_set_visibility:
   pattern: /tasks/visibility/{task_id}/{visibility}
   defaults: { _controller: AgentBundle:Task:setVisibility, task_id: null, visibility: null }
   requirements: { task_id: "\d+", visibility: "\d+"  }
+
 agent_task_ajaxsave_comment:
   pattern: /task/{task_id}/ajax-save-comment
   defaults: { _controller: AgentBundle:Task:ajaxSaveComment }
+  requirements: { person_id: "\d+" }
+
+agent_task_ajaxsave_duedate:
+  pattern: /task/{task_id}/ajax-save-due-date
+  defaults: { _controller: AgentBundle:Task:ajaxSaveDueDate }
   requirements: { person_id: "\d+" }
 
 ################################################################################

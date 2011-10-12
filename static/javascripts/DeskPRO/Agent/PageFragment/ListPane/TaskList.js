@@ -23,16 +23,23 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		this.contentWrapper = $('div.content:first', this.wrapper);
                 this._initTaskProperty();
                 this._initLabels();
+                //this.getEl('date_due').datepicker();
 
 	},
 
         _initTaskProperty: function(){
-
+            $('.calender').datepicker();
+            
             $('.add-comment', this.wrapper).click(function(){                
                 $(this).parents('article').find('article').find('li.new-note').toggle();
             });
+
             $('.add-label', this.wrapper).click(function(){
                 $(this).parents('article').find('.task-label').toggle();
+            });
+
+            $('.add-due-date', this.wrapper).click(function(){ 
+                $(this).parents('article').find('.task-due-date').toggle();
             });
 
             $('.add-public', this.wrapper).click(function(){
