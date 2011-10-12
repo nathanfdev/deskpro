@@ -425,11 +425,27 @@ class AsseticManager
 				$filter->setLineBreak(1000);
 				break;
 			case 'css':
-				$filter = new \Assetic\Filter\Yui\CssCompressorFilter(
-					$this->options->get('yui_compressor'),
-					$this->options->get('java_path')
-				);
-				$filter->setLineBreak(1000);
+				$filter = new \Assetic\Filter\CssMinFilter();
+				$filter->setFilters(array(
+					"ImportImports"                 => false,
+					"RemoveComments"                => true,
+					"RemoveEmptyRulesets"           => true,
+					"RemoveEmptyAtBlocks"           => true,
+					"ConvertLevel3AtKeyframes"      => false,
+					"ConvertLevel3Properties"       => false,
+					"Variables"                     => false,
+					"RemoveLastDelarationSemiColon" => true
+				));
+				$filter->setPlugins(array(
+					"Variables"                     => false,
+					"ConvertFontWeight"             => false,
+					"ConvertHslColors"              => false,
+					"ConvertRgbColors"              => false,
+					"ConvertNamedColors"            => true,
+					"CompressColorValues"           => true,
+					"CompressUnitValues"            => true,
+					"CompressExpressionValues"      => true
+				));
 				break;
 			case 'css_path':
 				$filter = new \Assetic\Filter\CssRewriteFilter();

@@ -47,6 +47,7 @@ $loader->registerClassNames(array(
 	'DeskPRO\\Kernel\\CliKernel'         => DP_ROOT.'/sys/Kernel/CliKernel.php',
 	'DeskPRO\\Kernel\\SysKernel'         => DP_ROOT.'/sys/Kernel/SysKernel.php',
 
+	'CssMin'                          => DP_ROOT.'/vendor/cssmin/cssmin.php',
 	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',
 	'Facebook'                        => DP_ROOT.'/vendor/facebook/src/facebook.php',
 	'FacebookApiException'            => DP_ROOT.'/vendor/facebook/src/facebook.php',
@@ -70,6 +71,7 @@ class_exists('Markdown_Parser');
 class_exists('FineDiff');
 class_exists('Facebook');
 class_exists('FacebookApiException');
+class_exists('CssMin');
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 AnnotationRegistry::registerLoader(function($class) use ($loader) {
