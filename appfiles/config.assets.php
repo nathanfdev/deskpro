@@ -19,7 +19,6 @@ $CONFIG['OPTIONS'] = array(
 ###############################################################################
 
 $CONFIG['agent'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-all.js',
 	'references' => array(
 		'agent_vendors',
@@ -44,7 +43,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
-		'vendor/jquery/jquery.form.js',
 		'vendor/jquery/jquery.layout.min.js',
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
@@ -66,8 +64,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 
-		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
-
 		'vendor/jquery/tag-it/tag-it.js',
 
 		'vendor/jquery/tipped/js/excanvas/excanvas.js',
@@ -80,6 +76,7 @@ $CONFIG['agent_vendors'] = array(
 );
 
 $CONFIG['agent_window_sections'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-window-sections.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
@@ -95,6 +92,7 @@ $CONFIG['agent_window_sections'] = array(
 );
 
 $CONFIG['agent_pages_lists'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-pages-lists.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
@@ -130,6 +128,7 @@ $CONFIG['agent_pages_lists'] = array(
 );
 
 $CONFIG['agent_pages'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-pages.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
@@ -187,6 +186,7 @@ $CONFIG['agent_pages'] = array(
 );
 
 $CONFIG['agent_element_handlers'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-element-handlers.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
@@ -200,6 +200,7 @@ $CONFIG['agent_element_handlers'] = array(
 );
 
 $CONFIG['agent_common'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-common.js',
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
@@ -223,6 +224,7 @@ $CONFIG['agent_common'] = array(
 );
 
 $CONFIG['agent_agent_ui'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/BasicWindow.js',
@@ -265,6 +267,7 @@ $CONFIG['agent_agent_ui'] = array(
 );
 
 $CONFIG['agent_deskpro_ui'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-deskpro-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/UI/LabelsInput.js',
@@ -278,6 +281,7 @@ $CONFIG['agent_deskpro_ui'] = array(
 );
 
 $CONFIG['agent_misc'] = array(
+	'filters' => array('yui'),
 	'out' => 'js/agent-misc.js',
 	'files' => array(
 		'javascripts/DeskPRO/Form/InlineEdit.js',
@@ -326,53 +330,6 @@ $CONFIG['agent_misc'] = array(
 	)
 );
 
-/**
- * Vendor files for agent interface
- */
-$CONFIG['agent_vendors'] = array(
-	'out' => 'js/agent-vendors.js',
-	'files' => array(
-		'vendor/jquery/jquery.min.js',
-		'vendor/jquery/jquery-ui/jquery-ui.min.js',
-		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
-
-		'vendor/jquery/jquery.cookie.js',
-		'vendor/jquery/jquery.history.js',
-		'vendor/jquery/jquery.form.js',
-		'vendor/jquery/jquery.form.js',
-		'vendor/jquery/jquery.layout.min.js',
-		'vendor/jquery/jquery.localscroll.js',
-		'vendor/jquery/jquery.mousewheel.js',
-		'vendor/jquery/jquery.scrollTo.js',
-		'vendor/jquery/jquery.sizes.min.js',
-		'vendor/jquery/jquery.tinyscrollbar.js',
-		'vendor/jquery/jquery.hotkeys.js',
-		'vendor/jquery/mwheelIntent.js',
-		'vendor/jquery/jquery.textarea-expander.js',
-		//'vendor/jquery/jquery.ajax-retry.js',
-
-		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
-		'vendor/jquery/token-field/jquery.token-field.js',
-
-		'vendor/tiny_mce/jquery.tinymce.js',
-
-		'vendor/jquery/colorbox/jquery.colorbox-min.js',
-
-		'vendor/jquery/fileupload/jquery.fileupload.js',
-		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
-
-		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
-
-		'vendor/jquery/tag-it/tag-it.js',
-
-		'vendor/jquery/tipped/js/excanvas/excanvas.js',
-		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/tipped.js',
-
-		'vendor/mootools/mootools-core.min.js',
-		'vendor/modernizr.min.js',
-	)
-);
 
 /**
  * Admin UI specific
@@ -485,7 +442,7 @@ $CONFIG['agent_deskpro_ui_css'] = array(
 
 $CONFIG['agent_interface_css'] = array(
 	'out' => 'css/agent-interface.css',
-	'filters' => array('less', 'css_path'),
+	'filters' => array('less'),
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-interface.less',

@@ -1,11 +1,8 @@
 @import "lib.less";
 
 #DP-NotificationSection{
-	background-attachment: scroll;
-    background-color: transparent;
-    background-image: url("@{asset-url}/images/agent/headerDiv.png");
-    background-position: right top;
     background-repeat: no-repeat;
+    background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right */;
 	float: left;
 	height: 41px;
 	width: 217px;
@@ -47,7 +44,7 @@
 .notifMenuWrap a.iconImg{
     background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	font-size: 10px;
 	color: #fff;
 	cursor: pointer;
@@ -57,7 +54,7 @@
 .notifMenuWrap a.chat{
   	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     float: left;
     height: 13px;
     padding: 5px 4px;
@@ -239,14 +236,14 @@
 .notifMail{
 	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	    float: left;
 	    padding: 11px;
 }
 .notifChat{
 	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	padding: 10px;
 }
 .notifMail .counter{
@@ -310,7 +307,6 @@
 
 /* Search Categories */
 #dp_omnibox_wrap{
-	background: url("@{asset-url}/images/agent/headerBack.png") repeat-x top left;
 	position: relative;
 	float: left;
 	height: 41px;
@@ -516,20 +512,10 @@
 	float: right;
 }
 
-.headerDiv{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: right top;
-}
-
 #dp_header{
 	background-color:#2d5680;
-	background-image: url("@{asset-url}/images/agent/headerBack.png");
 	background-repeat: repeat-x;
-	background-attachment: scroll;
-	background-position: 0 0;
+	background-image: url("../../images/agent/headerBack.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
 	height: 41px;
 	position: absolute;
 	top: 0;
@@ -604,7 +590,7 @@
 .DP-createTicket #createContentTrigger a span{
 	background-repeat: no-repeat;
 	background-position: 7px 5px;
-    background-image: url(../../images/agent/header-plus.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
+    background-image: url(../../images/agent/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	float: left;
 	padding: 0 0 0 20px;
 	display: block;
@@ -755,11 +741,8 @@
 
 /* Interfaces Switcher */
 #DP-InterfaceSwitcher{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: left; */;
 	width: 180px;
 	position: relative;
 	float: right;
@@ -789,7 +772,7 @@
 .adminSwitcher a{
 	background-repeat: no-repeat;
 	background-position: 0 5px;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #F2F9FF;
 	font-size: 11px;
 	font-weight: normal;
@@ -802,8 +785,7 @@
 }
 .adminSwitcher a span{
     background-repeat: no-repeat;
-    background-position: 0 50%;
-    background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
+    background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px; sprite-margin-bottom: 10px; */;
 	float: right;
 	height: 20px;
 	padding: 5px 12px 0 0;
@@ -863,7 +845,7 @@
 }
 .dropdownSwitcherWrap li a:focus span{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	padding: 0 40px 0 2px;
 	width: 100%;
 }
@@ -901,11 +883,8 @@
 
 /* Status Admin */
 #DP-StatusSection{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	width: 107px;
 	position: relative;
 	float: right;
@@ -934,24 +913,26 @@
 
 .DP-adminStatus li.agentStatus a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     margin-right: 15px;
-	position: relative
+	position: relative;
+	height: 12px;
 }
 .DP-adminStatus li.agentStatus a:hover, #dpHeader .actions li.agentStatus a.on{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.networkStatIndicator a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-right: 6px;
 	width: 17px;
+	height: 12px;
 }
 .DP-adminStatus li.networkStatIndicator a:hover, .DP-adminStatus li.networkStatIndicator a.on{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.soundIcon {
@@ -959,12 +940,13 @@
 }
 .DP-adminStatus li.soundIcon a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-left: 10px;
+	height: 15px;
 }
 .DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.off{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 .DP-adminStatus li a .dropdowninfo{
 	position: relative;
@@ -1081,11 +1063,8 @@
 
 /* User Control Section */
 #DP-UserSection{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;

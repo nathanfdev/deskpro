@@ -45,10 +45,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		ugSel.attr('multiple', 'multiple');
 		ugSel.css('width', '400');
 		ugSel.prepend('<option selected />');
-		ugSel.chosen();
+		//ugSel.chosen();
 
 		var tzSel = this.getEl('timezone');
-		tzSel.chosen();
+		//tzSel.chosen();
 	},
 
 	closeSelf: function() {
