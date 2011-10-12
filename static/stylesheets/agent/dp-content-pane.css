@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;
@@ -173,7 +175,6 @@
   box-shadow: 0 0 1px #FFFFFF inset;
 }
 #tabDropdownPicker a.tabSlideDown {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0px -1103px;
   cursor: pointer;
   display: block;
   float: left;
@@ -376,7 +377,9 @@
   text-shadow: none;
 }
 .deskproTabList li a {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -468px;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   font-size: 11px;
   color: #676D73;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -570,7 +573,9 @@ section.description-area .info-list dd a:hover {
   color: #6c83a6;
 }
 section.description-area .info-list dd span.expand {
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -845px;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/expand.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   padding: 0 7px;
 }
 section.description-area .controls {
@@ -848,7 +853,9 @@ article.content-message .content header .message-counter {
 }
 article.content-message .content header .message-counter.with-gear {
   cursor: pointer;
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -777px;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/gear-dark.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
   padding-left: 16px;
 }
 article.content-message .content header time {
@@ -2139,7 +2146,8 @@ ul.activity-stream time {
   position: absolute;
   top: 0;
   right: 0;
-  background: url("../..//images/agent/imgSprt_ico.png") no-repeat;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   cursor: pointer;
   background-position: 5px -893px;
   float: left;

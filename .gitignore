@@ -9,6 +9,7 @@
 # cache and log files
 /appfiles/sys/cache/
 /appfiles/sys/logs/
+/static/build
 
 # Per-site files
 /appfiles/config.php

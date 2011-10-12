@@ -1,3 +1,5 @@
+/** sprite: flag-icons; sprite-image: url('../../images/sprite-flag-icons.png'); sprite-layout: vertical */
+/** sprite: ui-icons; sprite-image: url('../../images/ui-icons.png'); sprite-layout: vertical */
 /* Get around a bug in less, always have this rule or else compiler error */
 .less-rule {
   color: #000;
@@ -87,6 +89,9 @@
   top: 0;
 }
 .notifMenuWrap a.iconImg {
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
   background: url("../..//images/agent/imgSprt_ico.png") no-repeat;
   font-size: 10px;
   color: #fff;
