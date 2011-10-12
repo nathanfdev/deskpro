@@ -121,7 +121,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				if (action == 'reset-password') {
 					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password:<br /><br /><label style="font-size: 11px;"><input type="checkbox" class="send_email" value="1" /> Send the user an email with their new password</label></div>',
+						'<div>Enter a new password. The user will be notified.</div>',
 						function(val, wrap) {
 							var postData = [];
 							postData.push({
@@ -145,6 +145,20 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								dataType: 'json',
 								data: postData
 							});
+						}
+					);
+				} else if (action == 'delete') {
+					DeskPRO_Window.showConfirm(
+						$('<div>Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>. Their tickets and other resources will be removed.'),
+						function() {
+							$.ajax({
+								url: $(info.itemEl).data('delete-url'),
+								type: 'POST',
+								success: function() {
+									DeskPRO_Window.showAlert('The user was deleted');
+								}
+							});
+							self.closeSelf();
 						}
 					);
 				}
@@ -214,15 +228,59 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	_initOrgEdit: function() {
 		var self = this;
-		$('.org-edit-trigger', this.wrapper).click(function(ev) {
+		$('.org-edit-trigger, .cancel', this.getEl('org_display_header')).click(function(ev) {
 			ev.preventDefault();
 			self.toggleOrgEdit();
+			refreshBox();
+
+			if ($(this).is('.cancel')) {
+				if (self.getEl('org_searchbox').is('.is-new')) {
+					$('.org-name', self.getEl('org_edit_wrap')).val('');
+				}
+				self.getEl('org_searchbox').removeClass('is-new').removeClass('is-set');
+			}
 		});
 
 		var orgDisplay = this.getEl('org_display_wrap');
 		var orgEdit    = this.getEl('org_edit_wrap');
 
-		this.getEl('org_edit_save').click(function() {
+		//orgEnableBtn
+		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
+			$('.pos-input', orgEdit).show();
+			self.orgEnableBtn('save');
+		}).bind('orgsearchboxcreate', function(ev, term, name) {
+			$('.pos-input', orgEdit).show();
+			self.orgEnableBtn('save');
+		}).bind('orgsearchreverted', function(ev, term, name) {
+			if (self.getEl('org_searchbox').is('.is-new') || ($('.org-id', orgEdit).val() && $('.org-id', orgEdit).val() != '0')) {
+				self.orgEnableBtn('save');
+			} else {
+				self.orgEnableBtn('cancel');
+			}
+		});
+
+		$('.pos-input', orgEdit).keyup(function() {
+			if (self.getEl('org_searchbox').is('.is-new') || ($('.org-id', orgEdit).val() && $('.org-id', orgEdit).val() != '0')) {
+				self.orgEnableBtn('save');
+			}
+		});
+
+		var refreshBox = function() {
+			var box = self.getEl('org_box');
+			box.removeClass('no-section');
+			if (orgEdit.is(':visible')) {
+
+			} else {
+				if (!$('> *', orgDisplay).length) {
+					box.addClass('no-section');
+				}
+			}
+		};
+
+		var saveFn = function() {
+
+			self.orgEnableBtn('saving');
+
 			var postData = [];
 			postData.push({
 				name: 'action',
@@ -230,7 +288,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 			postData.push({
 				name: 'name',
-				value: $('.org-set', self.getEl('org_edit_wrap')).val().trim()
+				value: $('.org-name', self.getEl('org_edit_wrap')).val().trim()
+			});
+			postData.push({
+				name: 'id',
+				value: $('.org-id', self.getEl('org_edit_wrap')).val().trim()
 			});
 			postData.push({
 				name: 'position',
@@ -248,76 +310,39 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						orgDisplay.html(data.html);
 					}
 
+					self.getEl('org_searchbox').removeClass('is-new').removeClass('is-set');
+
 					self.toggleOrgEdit();
+
+					refreshBox();
 				}
 			});
-		});
-
-		var currentLookupAjax = null;
-
-		var showhide_notice = function(onff) {
-			if (onff == 'on') {
-				self.getEl('org_create_notice').slideDown();
-			} else {
-				self.getEl('org_create_notice').slideUp();
-			}
 		};
 
-		var getname = function() {
-			return $('.org-set', self.getEl('org_edit_wrap')).val().trim();
+		this.getEl('org_edit_save').click(saveFn);
+		this.getEl('org_edit_remove_org').click(function() {
+			$('.org-id', self.getEl('org_edit_wrap')).val('0');
+			$('.org-name', self.getEl('org_edit_wrap')).val('');
+			$('.pos-input', orgEdit).hide();
+			saveFn();
+		});
+
+		refreshBox();
+	},
+
+	orgEnableBtn: function(name) {
+		var names = ['org-edit-trigger', 'saved', 'save', 'cancel', 'is-loading', 'remove-org'];
+		var els = $('.' + names.join(', .'), this.getEl('org_display_header')).hide();
+		els.filter('.' + name).show();
+
+		if (name == 'save') {
+			els.filter('.cancel').show();
+		} else if (name == 'cancel') {
+			var orgid = $('.org-id', this.getEl('org_edit_wrap')).val();
+			if (orgid && orgid != '0') {
+				els.filter('.remove-org').show();
+			}
 		}
-
-		var runlookup = function() {
-			if (currentLookupAjax) {
-				currentLookupAjax.abort();
-				currentLookupAjax = null;
-			}
-
-			var val = getname();
-
-			currentLookupAjax = $.ajax({
-				url: BASE_URL + 'agent/organization-search/name-lookup.json',
-				dataType: 'json',
-				data: {'name': val},
-				success: function(data) {
-					if (getname() != val) {
-						return;
-					}
-					if (data.organization_id) {
-						showhide_notice('off');
-					} else {
-						showhide_notice('on');
-					}
-				}
-			});
-		};
-
-		$('.org-set', this.getEl('org_edit_wrap')).autocomplete({
-			minLength: 2,
-			source: function(request, response) {
-				var name = getname();
-				$.ajax({
-					url: BASE_URL + 'agent/organization-search/quick-name-search.json',
-					data: { 'term': request.term },
-					dataType: 'json',
-					success: function(data) {
-						response(data.results);
-
-						if (getname() == name) {
-							if (!data.exact) {
-								showhide_notice('on');
-							} else {
-								showhide_notice('off');
-							}
-						} else {
-							showhide_notice('off');
-						}
-					}
-				})
-			}
-		}).blur(function() {
-			runlookup();
-		});
 	},
 
 	toggleOrgEdit: function() {
@@ -327,9 +352,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		if (orgEdit.is(':visible')) {
 			orgEdit.hide();
 			orgDisplay.show();
+			this.orgEnableBtn('org-edit-trigger');
 		} else {
 			orgDisplay.hide();
 			orgEdit.show();
+			this.orgEnableBtn('cancel');
 		}
 	},
 

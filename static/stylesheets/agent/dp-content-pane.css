@@ -1032,7 +1032,7 @@ section.ticket-reply article.reply-area .attach-list-area span {
 }
 .profile header.page-header .meta-line .org {
   font-size: 13px;
-  padding: 5px 0 0 3px;
+  padding: 5px 0 0 10px;
 }
 .profile {
   background-color: #ECEEF0;
@@ -1412,6 +1412,10 @@ ul.activity-stream time {
   cursor: pointer;
   margin: 3px 5px 0 0;
 }
+.profile-box-container > header .controls .edit-gear {
+  margin-top: 0;
+  margin-right: 0;
+}
 .profile-box-container > header .controls {
   float: right;
   line-height: 100%;
@@ -1428,7 +1432,7 @@ ul.activity-stream time {
 .profile-box-container > header .saved {
   margin-top: 1px;
 }
-.profile-box-container > header .save, .notes-wrap .new-note header .save {
+.profile-box-container > header .save, .profile-box-container > header .controls button, .notes-wrap .new-note header .save {
   cursor: pointer;
   color: #808080;
   background: #ffffff;
@@ -1461,6 +1465,7 @@ ul.activity-stream time {
   box-shadow: inset 0px 0px 1px 1px #fff;
   text-shadow: none;
   font-size: 10px;
+  line-height: 100%;
   padding: 1px 5px;
   border-radius: 4px;
 }
@@ -1515,7 +1520,7 @@ ul.activity-stream time {
   margin-bottom: 0;
 }
 .property-col .profile-box-container dt {
-  font-size: 9px;
+  font-size: 8px;
 }
 .contact-list {
   position: relative;
@@ -1596,31 +1601,116 @@ ul.activity-stream time {
   border-top: 1px solid #CAD0D7;
 }
 .profile-contact-editor.deskpro-overlay {
-  background-color: #ECEEF0;
+  background-color: #fff;
 }
 .profile-contact-editor-wrapper {
   width: 680px;
-  height: 450px;
+  height: 620px;
   overflow: auto;
   padding: 0;
 }
-.profile-contact-editor .add-row {
-  background-color: #fff;
-  border: 1px solid #ACB6BF;
-  border-radius: 4px;
-  padding: 2px;
-  margin-top: 3px;
-  box-shadow: 0 1px 0 #ffffff, 0 1px 0 #ffffff inset, 0 0 1px rgba(255, 255, 255, 0.3) inset;
+.profile-contact-editor-wrapper .row-type {
+  border-bottom: 1px solid #acb6bf;
+  padding: 10px 0 10px 0;
+  clear: left;
 }
-.profile-contact-editor .add-row:hover {
-  background-color: #DDE8F2;
+.profile-contact-editor-wrapper .row-type:last-child {
+  border-bottom: none;
 }
-.add-new-type-trigger {
-  display: block;
-  padding: 2px 0 2px 15px;
-  background: url("../..//images/action-add.png") no-repeat 0 50%;
+.profile-contact-editor-wrapper .row-type h4 {
+  font-family: 'Myriad Pro', 'Myriad', helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #404040;
+  float: left;
+}
+.profile-contact-editor-wrapper .country-code {
+  width: 50px;
+}
+.profile-contact-editor-wrapper .phone-number {
+  width: 250px;
+}
+.profile-contact-editor-wrapper .row-type.phone input.phone-number {
+  width: 120px;
+}
+.profile-contact-editor-wrapper .row-type input.single-input {
+  width: 300px;
+}
+.profile-contact-editor-wrapper .row-type .contact-info {
+  margin-left: 110px;
+}
+.profile-contact-editor-wrapper .row-type .add-trigger em {
+  font-style: normal;
+}
+.profile-contact-editor-wrapper .row-type .add-trigger em.with-some {
+  display: none;
+}
+.profile-contact-editor-wrapper .row-type.with-values .add-trigger em.with-some {
+  display: inline;
+}
+.profile-contact-editor-wrapper .row-type.with-values .add-trigger em.with-none {
+  display: none;
+}
+.profile-contact-editor-wrapper .row-type .add-trigger {
+  color: #9aa2ac;
+  text-decoration: none;
+  clear: both;
+}
+.profile-contact-editor-wrapper li {
+  padding-bottom: 5px;
+}
+.profile-contact-editor-wrapper .row-type .controls {
+  float: right;
+}
+.profile-contact-editor-wrapper .row-type .controls .remove {
+  float: right;
+  disply: block;
+  background: url("../..//images/icons/cross.png") no-repeat 50% 50%;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+  text-indent: -100px;
+  margin-left: 5px;
   cursor: pointer;
-  font-size: 11px;
+  opacity: 0.7;
+}
+.profile-contact-editor-wrapper .row-type .controls .remove:hover {
+  opactiy: 1;
+}
+.profile-contact-editor-wrapper .row-type .label {
+  float: left;
+  margin-left: 5px;
+}
+.profile-contact-editor-wrapper .row-type .label input[type="text"] {
+  width: 120px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
+  color: #9aa2ac;
+  cursor: pointer;
+}
+.profile-contact-editor-wrapper .row-type .label input[type="text"]:focus {
+  color: #404040;
+  background-color: #fefefe;
+}
+.profile-contact-editor-wrapper .row-type .input {
+  float: left;
+}
+.profile-contact-editor-wrapper .row-type.address textarea {
+  width: 300px;
+}
+.profile-contact-editor-wrapper .row-type.address .line-2 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.profile-contact-editor-wrapper .row-type.address .line-2 input {
+  width: 95px;
+  marign-right: 6px;
+}
+.profile-contact-editor-wrapper .save-wrapper {
+  text-align: center;
+  padding: 30px;
 }
 .contact-edit-list li {
   position: relative;
@@ -1678,25 +1768,58 @@ ul.activity-stream time {
   cursor: pointer;
 }
 .profile .org-edit {
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+  padding: 0;
+}
+.profile .org-edit input[type="text"] {
+  border: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 120px;
+}
+.profile .org-edit .org-input {
   padding: 4px;
-  width: 80%;
-  text-align: center;
-  margin: 0 auto 0 auto;
+}
+.profile .org-edit .org-input {
+  background: url("../..//images/icons/mag-right.png") no-repeat 100% 50%;
+  padding-right: 15px;
+  margin-right: 4px;
+}
+.profile .org-edit .org-input.is-new {
+  background-image: url("../..//images/icons/pencil.png");
+  padding-right: 18px;
+}
+.profile .org-edit .org-input.is-set {
+  background-image: url("../..//images/icons/tick.png");
+  padding-right: 18px;
+}
+.profile .org-edit .org-input.is-new input[type="text"] {
+  color: #246626;
+}
+.profile .org-edit .pos-input {
+  border-top: 1px dotted #999;
+  padding: 4px;
+}
+.profile .org-edit label {
+  display: inline;
 }
 .profile .org-edit .new-company-notice {
+  background-color: #F2F3F8;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border-top: 1px dotted #999;
+  padding: 4px;
   font-size: 9px;
   display: block;
   line-height: 100%;
   margin-top: -1px;
-  padding-bottom: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  color: #399D40;
-  width: 85%;
-}
-.profile .org-edit input[type="text"] {
-  width: 100%;
-  margin-bottom: 3px;
+  color: #888;
+  text-align: center;
 }
 .contact-list-wrapper.org > strong {
   font-size: 12px;
@@ -2590,10 +2713,8 @@ body.popup section.body textarea.fill {
   height: 95%;
 }
 .change-picture-overlay {
-  width: 280px;
-}
-.change-picture-overlay.with-existing {
-  width: 350px;
+  width: 500px;
+  min-height: 300px;
 }
 .change-picture-overlay header {
   margin-top: -3px;
@@ -2606,6 +2727,10 @@ body.popup section.body textarea.fill {
 .change-picture-overlay header .upload-control {
   float: right;
   position: relative;
+  width: 83px;
+  overflow: hidden;
+  text-align: right;
+  height: 16px;
 }
 .change-picture-overlay header .upload-control input {
   position: absolute;
@@ -2614,6 +2739,11 @@ body.popup section.body textarea.fill {
   width: 80px;
   opacity: 0;
   z-index: 2;
+  width: 79px;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 .change-picture-overlay header .upload-control button {
   position: absolute;
@@ -2626,7 +2756,7 @@ body.popup section.body textarea.fill {
 }
 .change-picture-overlay.with-existing .existing-picture, .change-picture-overlay.with-existing .new-picture {
   float: left;
-  width: 165px;
+  width: 225px;
 }
 .change-picture-overlay.with-existing .existing-picture {
   margin-right: 10px;
@@ -2669,9 +2799,12 @@ body.popup section.body textarea.fill {
   float: right;
   margin: 3px 3px 0 0;
 }
-.email-assoc-overlay .overlay-content {
+.email-assoc-overlay {
   width: 400px;
   height: 300px;
+  padding: 0;
+}
+.email-assoc-overlay .overlay-content {
   padding: 0;
 }
 .email-assoc-overlay .emails-exist table td {

@@ -56,8 +56,6 @@
  # RESOURCE LOADING
  ####################}
 
-{% include 'AgentBundle:Main:resources.html.twig' %}
-{% include 'AgentBundle:Main:page-init.html.twig' %}
 {% include 'AgentBundle:Main:global-templates.html.twig' %}
 
 </div>{# /dp_window #}
@@ -71,6 +69,7 @@
 	<div class="slider"></div>
 </div>
 
+{% include 'AgentBundle:Main:resources.html.twig' %}
 {% if js_debug.devbar %}
 	<div id="dp_devbar">
 		<a class="reload-active-tab">Reload active tab</a>
@@ -78,5 +77,6 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/devbar.js') }}"></script>
 {% endif %}
 
+{% include 'AgentBundle:Main:page-init.html.twig' %}
 </body>
 </html>

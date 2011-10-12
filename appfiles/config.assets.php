@@ -1,0 +1,552 @@
+<?php
+/**
+ * This file is a set of asset bundles.
+ * The key in this array is the bundle ID, and t
+ */
+
+$CONFIG = array();
+
+$CONFIG['OPTIONS'] = array(
+	'java_path' => '/usr/bin/java',
+	'yui_compressor' => '/usr/local/bin/yuicompressor.jar',
+	'nodejs' => '/usr/local/bin/node',
+	'less' => '/usr/local/lib/node_modules/less/bin/lessc',
+	'smartsprites' => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+);
+
+###############################################################################
+# JAVASCRIPTS
+###############################################################################
+
+$CONFIG['agent_all'] = array(
+	'out' => 'js/agent-all.js',
+	'references' => array(
+		'agent_vendors',
+		'agent_common',
+		'agent_deskpro_ui',
+		'agent_misc',
+		'agent_agent_ui',
+		'agent_window_sections',
+		'agent_pages',
+		'agent_pages_lists',
+		'agent_element_handlers',
+	)
+);
+
+$CONFIG['agent_alltest'] = array(
+	'out' => 'js/agent-all-test.js',
+	'references' => array(
+		'agent_deskpro_ui',
+		'agent_misc',
+	)
+);
+
+$CONFIG['agent_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.layout.min.js',
+		'vendor/jquery/jquery.localscroll.js',
+		'vendor/jquery/jquery.mousewheel.js',
+		'vendor/jquery/jquery.scrollTo.js',
+		'vendor/jquery/jquery.sizes.min.js',
+		'vendor/jquery/jquery.tinyscrollbar.js',
+		'vendor/jquery/jquery.hotkeys.js',
+		'vendor/jquery/mwheelIntent.js',
+		'vendor/jquery/jquery.textarea-expander.js',
+		'vendor/jquery/jquery.ajax-retry.js',
+
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/token-field/jquery.token-field.js',
+
+		'vendor/tiny_mce/jquery.tinymce.js',
+
+		'vendor/jquery/colorbox/jquery.colorbox-min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
+
+		'vendor/jquery/tag-it/tag-it.js',
+
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
+	)
+);
+
+$CONFIG['agent_window_sections'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-window-sections.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Publish.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Task.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Test.js',
+	)
+);
+
+$CONFIG['agent_pages_lists'] = array(
+	'mode' => 'yui',
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-pages-lists.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicOrganizationResults.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbGlossary.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingComments.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+	)
+);
+
+$CONFIG['agent_pages'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-pages.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
+		'javascripts/DeskPRO/Agent/PageHelper/TicketMassActions.js',
+		'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
+		'javascripts/DeskPRO/Agent/PageHelper/TicketDisplay.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListSearchForm.js',
+		'javascripts/DeskPRO/Agent/PageHelper/CategoryEdit.js',
+		'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
+		'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
+		'javascripts/DeskPRO/Agent/PageHelper/Popover.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ValidatingEdit.js',
+		'javascripts/DeskPRO/Agent/PageHelper/RelatedContent.js',
+		'javascripts/DeskPRO/Agent/PageHelper/RelatedContentList.js',
+		'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
+		'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
+		'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
+		'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
+		'javascripts/DeskPRO/Agent/PageHelper/Results.js',
+
+		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/ReplyBox.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketChecker.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/Participants.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketFields.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewArticle.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewPerson.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewOrganization.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDownload.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewNews.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewIdea.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/IdeaView.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
+	)
+);
+
+$CONFIG['agent_element_handlers'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-element-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
+	)
+);
+
+$CONFIG['agent_common'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-common.js',
+	'files' => array(
+		'javascripts/Orb/modernizr-ext.js',
+		'javascripts/Orb/Orb.js',
+		'javascripts/Orb/Class.js',
+		'javascripts/Orb/Util/Options.js',
+		'javascripts/Orb/Util/Events.js',
+		'javascripts/Orb/Util/EventObj.js',
+		'javascripts/Orb/Util/TimeAgo.js',
+		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/ElementHandler.js',
+		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
+		'javascripts/DeskPRO/MessageBroker.js',
+		'javascripts/DeskPRO/IntervalCaller.js',
+		'javascripts/DeskPRO/TouchCaller.js',
+		'javascripts/DeskPRO/AjaxPoller/Poller.js',
+		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
+		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',
+		'javascripts/DeskPRO/MessageChanneler/AjaxChanneler.js',
+	)
+);
+
+$CONFIG['agent_agent_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/BasicWindow.js',
+		'javascripts/DeskPRO/Agent/Window.js',
+		'javascripts/DeskPRO/Agent/Layout/DeskproWindow.js',
+		'javascripts/DeskPRO/Agent/Layout/WindowLayout.js',
+		'javascripts/DeskPRO/Agent/Layout/FooterLayout.js',
+		'javascripts/DeskPRO/Agent/Layout/FooterActionbarLayout.js',
+		'javascripts/DeskPRO/Agent/TabManager.js',
+		'javascripts/DeskPRO/Agent/TabStrip.js',
+		'javascripts/DeskPRO/Agent/TabWatcher.js',
+		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
+		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
+
+		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
+
+		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
+
+		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
+
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js',
+
+		// Omnisearch
+		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',
+		'javascripts/DeskPRO/Agent/OmniSearchBox.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Context/ContextAbstract.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Context/TicketsContext.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericInputTerm.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericMenuTerm.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericDateTerm.js',
+	)
+);
+
+$CONFIG['agent_deskpro_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-deskpro-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/UI/LabelsInput.js',
+		'javascripts/DeskPRO/UI/Overlay.js',
+		'javascripts/DeskPRO/UI/OptionBox.js',
+		'javascripts/DeskPRO/UI/Menu.js',
+		'javascripts/DeskPRO/UI/SimpleTabs.js',
+		'javascripts/DeskPRO/UI/DateChooser.js',
+		'javascripts/DeskPRO/UI/CatListEditor.js',
+	)
+);
+
+$CONFIG['agent_misc'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-misc.js',
+	'files' => array(
+		'javascripts/DeskPRO/Form/InlineEdit.js',
+		'javascripts/DeskPRO/Form/RuleBuilder.js',
+		'javascripts/DeskPRO/FaviconBadge.js',
+		'javascripts/DeskPRO/Agent/MediaBrowser.js',
+		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
+
+		'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
+		'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
+		'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
+		'javascripts/DeskPRO/Agent/Widget/MergeTicket.js',
+		'javascripts/DeskPRO/Agent/Widget/MergeIdea.js',
+		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
+		'javascripts/DeskPRO/Agent/Widget/FilterGroupEditor.js',
+		'javascripts/DeskPRO/Agent/Widget/FilterOptionsPop.js',
+
+		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
+
+		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
+		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
+		'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
+
+		'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Agent.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Department.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/AgentTeam.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/StandardOption.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Status.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Reply.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/TicketField.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
+
+		'javascripts/DeskPRO/Agent/TicketList/MassActions/Widget.js',
+
+		'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/StandardOption.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/NewReply.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
+	)
+);
+
+/**
+ * Vendor files for agent interface
+ */
+$CONFIG['agent_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/agent-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.layout.min.js',
+		'vendor/jquery/jquery.localscroll.js',
+		'vendor/jquery/jquery.mousewheel.js',
+		'vendor/jquery/jquery.scrollTo.js',
+		'vendor/jquery/jquery.sizes.min.js',
+		'vendor/jquery/jquery.tinyscrollbar.js',
+		'vendor/jquery/jquery.hotkeys.js',
+		'vendor/jquery/mwheelIntent.js',
+		'vendor/jquery/jquery.textarea-expander.js',
+		//'vendor/jquery/jquery.ajax-retry.js',
+
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/token-field/jquery.token-field.js',
+
+		'vendor/tiny_mce/jquery.tinymce.js',
+
+		'vendor/jquery/colorbox/jquery.colorbox-min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
+
+		'vendor/jquery/tag-it/tag-it.js',
+
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
+	)
+);
+
+/**
+ * Admin UI specific
+ */
+$CONFIG['admin_admin_ui'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/admin-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/Admin/Window.js',
+		'javascripts/DeskPRO/Admin/PopoutWindow.js',
+		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
+		'javascripts/DeskPRO/Admin/TableReorder.js',
+	)
+);
+
+/**
+ * Admin UI specific
+ */
+$CONFIG['admin_admin_handlers'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/admin-handlers.js',
+	'files' => array(
+		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
+		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
+		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
+	)
+);
+
+$CONFIG['user_common'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/user-common.js',
+	'files' => array(
+		'javascripts/Orb/modernizr-ext.js',
+		'javascripts/Orb/Orb.js',
+		'javascripts/Orb/Class.js',
+		'javascripts/Orb/Util/Options.js',
+		'javascripts/Orb/Util/Events.js',
+		'javascripts/Orb/Util/TimeAgo.js',
+		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/IntervalCaller.js',
+		'javascripts/DeskPRO/MessageBroker.js',
+		'javascripts/DeskPRO/BasicWindow.js',
+		'javascripts/DeskPRO/UI/SimpleTabs.js',
+		'javascripts/DeskPRO/UI/Overlay.js',
+		'javascripts/DeskPRO/User/Window.js',
+
+		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
+		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
+		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
+		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
+		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
+		'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
+		'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
+		'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
+		'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
+		'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
+		'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
+
+		'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
+		'javascripts/DeskPRO/User/InlineSuggestions.js',
+		'javascripts/DeskPRO/User/InlineLoginForm.js',
+
+		'javascripts/DeskPRO/FormValidator/FormValidator.js',
+		'javascripts/DeskPRO/FormValidator/FieldValidator.js',
+		'javascripts/DeskPRO/FormValidator/LengthValidator.js',
+		'javascripts/DeskPRO/FormValidator/EmailValidator.js',
+		'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
+	)
+);
+
+$CONFIG['user_vendors'] = array(
+	'filters' => array('yui_simple'),
+	'out' => 'js/user-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
+	)
+);
+
+
+
+###############################################################################
+# CSS
+###############################################################################
+
+$CONFIG['agent_css'] = array(
+	'out' => 'css/agent-all.css',
+	'references' => array(
+		'agent_vendors_css',
+		'agent_deskpro_ui_css',
+		'agent_interface_css',
+		'agent_interface_print_css'
+	)
+);
+
+$CONFIG['agent_deskpro_ui_css'] = array(
+	'out' => 'css/deskpro-ui.css',
+	'filters' => array('css_path'),
+	'files' => array(
+		'javascripts/DeskPRO/UI/ui.css',
+	)
+);
+
+$CONFIG['agent_interface_css'] = array(
+	'out' => 'css/agent-interface.css',
+	'filters' => array('less', 'smartsprites'),
+	'filter_options' => array(
+		'smartsprites' => array('root_dir' => realpath(DP_ROOT . '/../static'))
+	),
+	'files' => array(
+		'stylesheets-less/agent/dp-interface.less',
+		'stylesheets-less/agent/dp-interface.less',
+		'stylesheets-less/agent/dp-source-pane.less',
+		'stylesheets-less/agent/dp-list-pane.less',
+		'stylesheets-less/agent/dp-content-pane.less',
+		'stylesheets-less/agent/dp-agent-chat.less',
+		'stylesheets-less/agent/navigation.less',
+		'stylesheets-less/agent/header.less',
+		'stylesheets-less/agent/overlayMacro.less',
+		'stylesheets-less/agent/overlayCreateTicket.less',
+	)
+);
+
+
+$CONFIG['agent_interface_print_css'] = array(
+	'out' => 'css/agent-interface-print.css',
+	'filters' => array('css_path'),
+	'media' => 'print',
+	'files' => array(
+		'stylesheets-less/agent/print.less',
+	)
+);
+
+$CONFIG['agent_vendors_css'] = array(
+	'out' => 'css/agent-vendors.css',
+	'filters' => array('css_path'),
+	'files' => array(
+		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
+		'vendor/jquery/tipped/css/tipped.css',
+		'vendor/jquery/colorbox/colorbox.css',
+		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
+		'vendor/jquery/chosen/chosen.css',
+
+		'vendor/jquery/markitup/markitup/skins/simple/style.css',
+		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
+		'vendor/jquery/token-field/token-field.css',
+	)
+);

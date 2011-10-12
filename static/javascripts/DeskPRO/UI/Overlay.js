@@ -175,6 +175,12 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		});
 	},
 
+	recalcForResize: function() {
+		if (!this.isOpen()) return;
+
+		this.reposition();
+	},
+
 
 	/**
 	 * Standard naming for UI elements. Alias for closeOverlay.
@@ -216,6 +222,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	initOverlay: function() {
 
 		if (this.hasInit) return true;
+
+		$(window).bind('resize.' + this.OBJ_ID, this.recalcForResize.bind(this));
 
 		if (this.options.isModal) {
 			this.elements.modal = $('<div class="deskpro-overlay-overlay '+this.options.customClassname+'" style="display:none" />');
@@ -345,10 +353,10 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		if (this.options.addClose) {
-			$('div.overlay-content:first', this.elements.wrapper).prepend('<a class="close-overlay close-trigger">Close</a>');
+			$('div.overlay-content:first', this.elements.outerWrapper).prepend('<a class="close-overlay close-trigger">Close</a>');
 		}
 
-		$('.overlay-close-trigger, .close-trigger', this.elements.wrapper).click((function (ev) {
+		$('.overlay-close-trigger, .close-trigger', this.elements.outerWrapper).click((function (ev) {
 			ev.preventDefault();
 			this.closeOverlay();
 		}).bind(this));
@@ -419,6 +427,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		this.isThisDestroyed = true;
 
 		this.fireEvent('destroyed', [this]);
+		$(window).unbind('.' + this.OBJ_ID);
 	},
 
 

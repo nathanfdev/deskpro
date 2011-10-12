@@ -1,39 +1,43 @@
-<div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %}">
-	{% if org.picture_blob %}
-	<div class="existing-picture">
-		<header><h3>Existing Picture</h3></header>
-		<section>
-			<img src="{{ org.getPictureUrl(150) }}" />
-		</section>
+<div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %} mass-actions-overlay">
+	<div class="overlay-title">
+		<h4>Change picture for for {{ org.name }}</h4>
 	</div>
-	{% endif %}
-	<div class="new-picture">
-		<header>
-			<div class="upload-control">
-				<input type="file" name="file-upload" />
-				<button class="clean-white small">Upload File</button>
-			</div>
-			<h3>New Picture</h3>
-		</header>
-		<section>
-			<p class="explain">
-				Click the upload button above or drop a file onto this area.
-			</p>
-			<div class="files">
-			</div>
-
-			<script class="template-upload" type="text/x-jquery-tmpl">
-				<p>Upliading ${name}...</p>
-			</script>
-			<script class="template-download" type="text/x-jquery-tmpl">
-				<div>
-					<input type="hidden" name="new_blob_id" class="new_blob_id" value="${blob_id}" />
-					<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
-					<img src="${download_url}?s=150" class="pic-new" data-setted-size="${download_url}?s=60" />
-					<div><button class="clean-white save-trigger small">Set as new picture</button></div>
+	<div class="overlay-content">
+		{% if org.picture_blob %}
+		<div class="existing-picture">
+			<header><h3>Existing Picture</h3></header>
+			<section>
+				<img src="{{ org.getPictureUrl(150) }}" />
+			</section>
+		</div>
+		{% endif %}
+		<div class="new-picture">
+			<header>
+				<div class="upload-control">
+					<input type="file" name="file-upload" />
+					<button class="clean-white small">Upload File</button>
 				</div>
-			</script>
-		</section>
+				<h3>New Picture</h3>
+			</header>
+			<section>
+				<p class="explain">
+					Click the upload button above or drop a file onto this area.
+				</p>
+				<div class="files">
+				</div>
+
+				<script class="template-upload" type="text/x-jquery-tmpl">
+					<p>Upliading ${name}...</p>
+				</script>
+				<script class="template-download" type="text/x-jquery-tmpl">
+					<div>
+						<input type="hidden" name="new_blob_id" class="new_blob_id" value="${blob_id}" />
+						<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
+						<img src="${download_url}?s=150" class="pic-new" data-setted-size="${download_url}?s=60" />
+						<div><button class="clean-white save-trigger small">Set as new picture</button></div>
+					</div>
+				</script>
+			</section>
+		</div>
 	</div>
-	<br class="clear" />
 </div>

@@ -72,12 +72,6 @@ doctrine:
         host: 'from_user_config.db'
         logging: true
 
-stof_doctrine_extensions:
-  default_locale: en_US
-  orm:
-    default:
-      tree: true
-
 swiftmailer:
   transport: 'deskpro.mail.delegating_transport'
 

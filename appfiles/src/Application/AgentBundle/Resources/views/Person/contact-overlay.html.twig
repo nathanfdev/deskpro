@@ -1,36 +1,44 @@
 {% extends 'AgentBundle:Common:profile-contact-overlay.html.twig' %}
 {% block list_extra %}
-	{% for email in person.emails %}
-		<li class="email" data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}">
-			<div class="type">Email</div>
-			<div class="input">
+	<div class="row-type website {% if person.emails|length %}with-values{% endif %}">
+		<h4>Email Address</h4>
+		<div class="contact-info">
+			<ul>
+				{% for email in person.emails %}
+					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}">
+						<div class="controls">
+							{% if app.user.hasPerm('users.delete-emails') %}
+								<span class="remove">x</span>
+							{% endif %}
+						</div>
+						<div class="input">
+							<span>{{ email.email }}</span>
+						</div>
+						<div class="label">
+							<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="Add a label" />
+						</div>
+					<br class="clear" /></li>
+				{% endfor %}
+			</ul>
+			{% if app.user.hasPerm('users.add-emails') %}
+			<a class="add-trigger">
+				<em class="with-none">Add an email address</em>
+				<em class="with-some">Add another</em>
+			</a>
+			{% endif %}
+		</div>
+		<script type="text/x-deskpro-plain" class="tpl-new-row">
+			<li>
+				<div class="controls">
+					<span class="remove">x</span>
+				</div>
+				<div class="input">
+					<input type="text" class="single-input" name="new_emails[]" value="" placeholder="Email address" />
+				</div>
 				<div class="label">
-					<input type="text" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="Label" />
+					<input type="text" size="8" name="new_emails_comment[]" value="" placeholder="Add a label" />
 				</div>
-				<div class="field">
-					<input type="text" name="emails[{{ email.id }}]" value="{{ email.email }}" />
-				</div>
-			</div>
-			<div class="remove">-</div>
-		</li>
-	{% endfor %}
-{% endblock %}
-{% block newmenu_options_extra %}
-	<li data-tpl="tpl-new-email">Email</li>
-{% endblock %}
-{% block newtpl_extra %}
-	<script type="text/x-deskpro-plain" class="tpl-new-email">
-		<li class="email new">
-			<div class="type">Email</div>
-			<div class="input">
-				<div class="label">
-					<input type="text" name="new_emails_comment[]" value="" placeholder="Label" />
-				</div>
-				<div class="field">
-					<input type="text" name="new_emails[]" value="" placeholder="Email address" />
-				</div>
-			</div>
-			<div class="remove">-</div>
-		</li>
-	</script>
+			<br class="clear" /></li>
+		</script>
+	</div>
 {% endblock %}

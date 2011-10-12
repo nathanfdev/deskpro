@@ -1,0 +1,423 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage DeskPRO
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Assetic;
+
+class AsseticManager
+{
+	/**
+	 * @var string
+	 */
+	protected $static_path;
+
+	/**
+	 * The directory under static that we'll write built assets to.
+	 * This is also the directory we'll try to fetch assets from with the asset helper
+	 * for serving files.
+	 *
+	 * @var string
+	 */
+	protected $build_subdir;
+
+	/**
+	 * The path where files are written to
+	 * @var string
+	 */
+	protected $write_path;
+
+	/**
+	 * @var \Application\DeskPRO\Templating\Asset\UrlPackage
+	 */
+	protected $asset_helper;
+
+	/**
+	 * @var \Assetic\AssetManager
+	 */
+	protected $asset_manager;
+
+	/**
+	 * @var \Assetic\FilterManager
+	 */
+	protected $filter_manager;
+
+	/**
+	 * Config (usually config.assets.php) that holds info about assets
+	 * @var array
+	 */
+	protected $asset_config = null;
+
+	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	protected $options;
+
+	/**
+	 * @var bool
+	 */
+	protected $debug = false;
+
+	/**
+	 * True to detect when a file is updated when fetching its public path
+	 * to automatically update it.
+	 *
+	 * @var bool
+	 */
+	protected $auto_update = 1;
+
+	/**
+	 * Keeps track of which assets use others
+	 * @var array
+	 */
+	protected $dep_map = array();
+
+	public function __construct(array $asset_config, $static_path, $build_subdir, $debug = false)
+	{
+		$this->debug = $debug;
+
+		$this->static_path  = $static_path;
+		$this->build_subdir = $build_subdir;
+		$this->write_path   = $static_path . '/' . $this->build_subdir;
+
+		$this->asset_manager = new \Assetic\AssetManager();
+		$this->filter_manager = new \Assetic\FilterManager();
+
+		$options = array();
+		if (isset($asset_config['OPTIONS'])) {
+			$options = $asset_config['OPTIONS'];
+			unset($asset_config['OPTIONS']);
+		}
+
+		$options = new \Orb\Util\OptionsArray($options);
+		$this->options = $options;
+
+		$this->asset_config = $asset_config;
+
+		foreach ($asset_config as $name => $info) {
+			if (isset($info['references'])) {
+				foreach ($info['references'] as $sub_name) {
+					if (!isset($this->dep_map[$sub_name])) {
+						$this->dep_map[$sub_name] = array();
+					}
+
+					$this->dep_map[$sub_name][] = $name;
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return \Assetic\Factory\AssetCollection
+	 */
+	public function getBuildAsset($name)
+	{
+		$info = $this->getBundleConfig($name);
+		$this->getAssetBundle($name);
+
+		$factory = new \Assetic\Factory\AssetFactory($this->write_path);
+		$factory->setDebug($this->debug);
+		$factory->setAssetManager($this->asset_manager);
+
+		$asset = $factory->createAsset(array('@' . $name));
+
+		return $asset;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return string
+	 */
+	public function dumpBuild($name)
+	{
+		$asset = $this->getBuildAsset($name);
+		return $asset->dump();
+	}
+
+
+	/**
+	 * Write the bundle file to the filesystem
+	 *
+	 * @param $name
+	 * @return void
+	 */
+	public function writeBuildFile($name)
+	{
+		$info = $this->getBundleConfig($name);
+		$asset = $this->getBuildAsset($name);
+
+		$file = $this->write_path . '/' . $info['out'];
+		$dir = dirname($file);
+
+		if (!file_exists($dir)) {
+			mkdir($dir, 0644, true);
+		}
+
+		if (!is_dir($dir)) {
+			throw \RuntimeException("Bad asset write path `$dir`");
+		}
+
+		file_put_contents($file, $asset->dump());
+
+		// Also need to update any that use this
+		if (isset($this->dep_map[$name])) {
+			foreach ($this->dep_map[$name] as $parent_name) {
+				//$this->writeBuildFile($parent_name);
+			}
+		}
+	}
+
+
+	/**
+	 * Write a build file only if its stale
+	 *
+	 * @param $name
+	 * @return void
+	 */
+	public function writeBuildFileIfStale($name)
+	{
+		if ($this->isBuildStale($name)) {
+			$this->writeBuildFile($name);
+		}
+	}
+
+
+	/**
+	 * Templting helper used with fetching URLs
+	 *
+	 * @param $asset_helper
+	 * @return void
+	 */
+	public function setAssetHelper($asset_helper)
+	{
+		$this->asset_helper = $asset_helper;
+	}
+
+
+	/**
+	 * Get the public path to an asset build file
+	 *
+	 * @param $name
+	 * @return string
+	 */
+	public function getUrl($name)
+	{
+		if ($this->auto_update && $this->isBuildStale($name)) {
+			$this->writeBuildFile($name);
+		}
+
+		$info = $this->getBundleConfig($name);
+		return $this->asset_helper->getUrl($this->build_subdir . '/' . $info['out']);
+	}
+
+
+	/**
+	 * Get an array of paths to all the raw files in a bundle
+	 *
+	 * @param $name
+	 * @return string[]
+	 */
+	public function getRawUrls($name)
+	{
+		$info = $this->getBundleConfig($name);
+
+		$urls = array();
+
+		foreach ($info['files'] as $f) {
+			$urls[] = $this->asset_helper->getUrl($f);
+		}
+
+		return $urls;
+	}
+
+
+	/**
+	 * Check to see if a build file is out of date.
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	public function isBuildStale($name)
+	{
+		$info = $this->getBundleConfig($name);
+		$build_file = $this->write_path . '/' . $info['out'];
+
+		if (!file_exists($build_file)) {
+			return true;
+		}
+
+		$asset = $this->getAssetBundle($name);
+
+		$build_time  = filemtime($build_file);
+		$bundle_time = $asset->getLastModified();
+
+		return ($build_time < $bundle_time);
+	}
+
+
+	/**
+	 * Check if a build exists
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	public function isBuildExist($name)
+	{
+		$info = $this->getBundleConfig($name);
+		$build_file = $this->write_path . '/' . $info['out'];
+
+		return file_exists($build_file);
+	}
+
+
+	/**
+	 * Gets an asset bundle, initializing it if needed
+	 *
+	 * @param string $name
+	 * @return \Assetic\Asset\AssetCollection
+	 */
+	public function getAssetBundle($name)
+	{
+		if ($this->asset_manager->has($name)) {
+			return $this->asset_manager->get($name);
+		}
+
+		$info = $this->getBundleConfig($name);
+		$filters = array();
+		if (isset($info['filters'])) {
+			foreach ($info['filters']  as $f) {
+				$filters[] = $this->getFilter($f, isset($info['filter_options'][$f]) ? $info['filter_options'][$f] : array());
+			}
+		}
+
+		$coll = new \Assetic\Asset\AssetCollection(array(), $filters);
+		if (isset($info['files'])) {
+			foreach ($info['files'] as $f) {
+				$path = $this->static_path . '/' . $f;
+				$coll->add(new \Assetic\Asset\FileAsset($path));
+			}
+		}
+
+		if (isset($info['references'])) {
+			foreach ($info['references'] as $r) {
+				$this->getAssetBundle($r);
+				$coll->add(new \Assetic\Asset\AssetReference($this->asset_manager, $r));
+			}
+		}
+
+		$this->asset_manager->set($name, $coll);
+		return $coll;
+	}
+
+
+	/**
+	 * Get all asset bundles
+	 *
+	 * @return array
+	 */
+	public function getAllAssetBundles()
+	{
+		$bundles = array();
+		foreach ($this->asset_config as $name) {
+			$bundles[$name] = $this->getAssetBundle($name);
+		}
+
+		return $bundles;
+	}
+
+
+	/**
+	 * Get an array of all defined asset names
+	 *
+	 * @return array
+	 */
+	public function getAllBundleNames()
+	{
+		return array_keys($this->asset_config);
+	}
+
+
+	/**
+	 * Get bundle configuration
+	 *
+	 * @param string $name
+	 * @return array
+	 */
+	public function getBundleConfig($name)
+	{
+		return isset($this->asset_config[$name]) ? $this->asset_config[$name] : null;
+	}
+
+
+	/**
+	 * Get a filter or initialize it if its not created yet.
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function getFilter($name, array $options = array())
+	{
+		// Trim off ? which means not to use it in debug
+		if ($name[0] == '?') {
+			$name = substr($name, 1);
+		}
+
+		$filter = null;
+
+		switch ($name) {
+			case 'yui_simple':
+				$filter = new \Assetic\Filter\Yui\JsCompressorFilter(
+					$this->options->get('yui_compressor'),
+					$this->options->get('java_path')
+				);
+				$filter->setDisableOptimizations(true);
+				$filter->setNomunge(true);
+				$filter->setLineBreak(1000);
+				break;
+			case 'yui':
+				$filter = new \Assetic\Filter\Yui\JsCompressorFilter(
+					$this->options->get('yui_compressor'),
+					$this->options->get('java_path')
+				);
+				$filter->setLineBreak(1000);
+				break;
+			case 'css':
+				$filter = new \Assetic\Filter\Yui\CssCompressorFilter(
+					$this->options->get('yui_compressor'),
+					$this->options->get('java_path')
+				);
+				$filter->setLineBreak(1000);
+				break;
+			case 'css_path':
+				$filter = new \Assetic\Filter\CssRewriteFilter();
+				break;
+			case 'null':
+				$filter = new \Orb\Assetic\Filter\Null();
+				break;
+			case 'smartsprites':
+				$filter = new \Orb\Assetic\Filter\SmartSprites(
+					$this->options->get('smartsprites'),
+					$options
+				);
+				break;
+			case 'less':
+				$filter = new \Orb\Assetic\Filter\Lessc(
+					$this->options->get('less')
+				);
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid filter `$name`");
+		}
+
+		return $filter;
+	}
+}

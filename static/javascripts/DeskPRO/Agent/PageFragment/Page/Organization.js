@@ -44,14 +44,22 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			editable.handleDocumentClick(ev);
 		});
 
-		this.moreactionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.more', this.getEl('action_buttons')),
-			menuElement: this.getEl('more_actions_menu'),
-			onItemClicked: function(info) {
-				var action = $(info.itemEl).data('action');
-			}
+		this.getEl('delete_btn').click(function() {
+			var url = $(this).data('delete-url');
+			DeskPRO_Window.showConfirm(
+				$('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanantly deleted</strong>.'),
+				function() {
+					$.ajax({
+						url: url,
+						type: 'POST',
+						success: function() {
+							DeskPRO_Window.showAlert('The organization was deleted');
+						}
+					});
+					self.closeSelf();
+				}
+			);
 		});
-		this.ownObject(this.moreactionsMenu);
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",

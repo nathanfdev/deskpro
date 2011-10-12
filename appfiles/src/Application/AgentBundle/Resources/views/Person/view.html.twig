@@ -29,7 +29,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="titlewrap">
 		<h1>
-			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('<em>Double-click to set Name</em>') }}</span>
+			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('Double-click to set Name') }}</span>
 			<span class="edit-name-gear">edit name</span>
 			<div id="{{baseId}}_editname" style="display: none">
 				<input type="hidden" name="action" value="name" />
@@ -39,9 +39,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="meta-line">
 			<div class="org"><span>
 				{% if person.organization %}
-					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}>
-						<span class="org-pos-display">{{ person.organization_position }}</span>
-					</span>
+					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
 					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
 					No Organization
@@ -51,9 +49,12 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		<li data-action="reset-password" class="reset-password">Reset Password</li>
-		<li data-action="" class="merge-trigger">Merge User</li>
-		<li data-action="" class="delete-trigger">Delete User</li>
+		{% if app.user.hasPerm('users.set-password') %}<li data-action="reset-password" class="reset-password">Reset Password</li>{% endif %}
+		{% if app.user.hasPerm('users.delete') %}
+			<li
+				data-action="delete"
+				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
+				class="delete-trigger">Delete User</li>{% endif %}
 	</ul>
 	<br class="clear" />
 </header>

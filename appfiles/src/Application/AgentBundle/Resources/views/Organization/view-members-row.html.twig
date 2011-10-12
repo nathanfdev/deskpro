@@ -3,9 +3,9 @@
 		<div class="fade-container">
 			<div class="line">
 				<a
-					class="as-popover tipped"
+					class="as-popover {% if person.primary_email_address %}tipped{% endif %}"
 					data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}"
-					title="{{ person.primary_email_address }}"
+					{% if person.primary_email_address %}title="{{ person.primary_email_address }}"{% endif %}
 				>{{ person.display_name }}</a>
 			</div>
 			<div class="bound-fade"></div>

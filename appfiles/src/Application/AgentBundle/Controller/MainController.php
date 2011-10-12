@@ -56,6 +56,9 @@ class MainController extends AbstractController
 		$idea_active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$idea_closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
+		// Countr code
+		$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
@@ -69,6 +72,7 @@ class MainController extends AbstractController
 			'restore_state' => $restore_state,
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
+			'phone_country_info' => $phone_country_info,
 
 			'download_categories'  => $download_categories,
 			'article_categories'   => $article_categories,

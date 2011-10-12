@@ -107,7 +107,7 @@
 										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
 									</div>
 									<div class="line">
-										by <a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ticket.person.display_name}}</a>
+										by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}">{{ticket.person.display_name}}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>

@@ -141,10 +141,6 @@ class App
 	 */
 	public static function setKernel(\Symfony\Component\HttpKernel\Kernel $kernel)
 	{
-		if (self::$_kernel !== null) {
-			throw new \BadMethodCallException('The kernel has already been set');
-		}
-
 		self::$_kernel = $kernel;
 		self::$_environment = $kernel->getEnvironment();
 		self::$_debug = $kernel->isDebug();
@@ -793,6 +789,37 @@ class App
 		}
 
 		self::$_fileconfig[$name] = $CONFIG;
+	}
+
+
+	/**
+	 * Read a config array from a standardly named config file.
+	 *
+	 * @throws \RuntimeException|\UnexpectedValueException
+	 * @param string $name
+	 * @return array
+	 */
+	public static function getConfigFromFile($name)
+	{
+		if (!$name OR $name != self::DEFAULT_NAME) {
+			$name = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
+			$filename = 'config.' . $name . '.php';
+		} else {
+			$filename = 'config.php';
+		}
+
+		$filepath = DP_ROOT . "/$filename";
+
+		if (!file_exists($filepath)) {
+			throw new \RuntimeException("$filename does not exist");
+		}
+
+		require($filepath);
+		if (!isset($CONFIG)) {
+			throw new \UnexpectedValueException("$filename does not define \$CONFIG");
+		}
+
+		return $CONFIG;
 	}
 
 

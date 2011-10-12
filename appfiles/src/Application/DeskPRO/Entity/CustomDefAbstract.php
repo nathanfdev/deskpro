@@ -114,6 +114,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $options = array();
 
 	/**
+	 * Can the field be viewed by the user?
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="is_user_enabled", type="boolean")
+	 */
+	protected $is_user_enabled = true;
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */

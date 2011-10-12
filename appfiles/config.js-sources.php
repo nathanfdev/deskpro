@@ -19,7 +19,7 @@ $CONFIG['agent']['window-sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js',
-                'javascripts/DeskPRO/Agent/WindowElement/Section/Task.js',
+        'javascripts/DeskPRO/Agent/WindowElement/Section/Task.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Test.js',
 	)
 );
@@ -127,6 +127,8 @@ $CONFIG['agent']['element-handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 	)
 );
 

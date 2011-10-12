@@ -245,6 +245,18 @@
 	</div>
 </script>
 
+{# Phone-country code menu #}
+<ul id="phone_countrycode_menu">
+	{% for info in phone_country_info %}
+		<li
+			class="{{ info.country_code }}"
+			data-country-name="{{ info.country_name }}"
+			data-country-code="{{ info.country_code }}"
+			data-calling-code="{{ info.calling_code }}"
+		><span class="icon-flag icon-flag-{{info.country_code|lower}}">{{ info.calling_code }} {{ info.country_name }}</span></li>
+	{% endfor %}
+</ul>
+
 {##############################################################}
 {# Articles related #}
 {##############################################################}
@@ -423,38 +435,58 @@
 	<div class="tab-loading"></div>
 </script>
 
-<div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
-	<div class="overlay-content">
-		<p>A network exception occurred and your last request did not complete. Please try again.</p>
-		<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
+<div id="global_ajax_error" style="display:none;">
+	<div class="ajax-error-overlay mass-actions-overlay">
+		<div class="overlay-title">
+			<h4>Network Error</h4>
+		</div>
+		<div class="overlay-content">
+			<p>A network exception occurred and your last request did not complete. Please try again.</p>
+			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
+		</div>
 	</div>
 </div>
-<div id="alert_overlay" style="display:none; min-width: 150px;">
-	<div class="overlay-content">
-		<p id="alert_overlay_msg"></p>
-	</div>
-	<div class="overlay-actions">
-		<button class="close-trigger dp-button small">Dismiss</button>
+<div id="alert_overlay" style="display:none;">
+	<div class="alert-overlay mass-actions-overlay">
+		<div class="overlay-title">
+			<h4>Alert</h4>
+		</div>
+		<div class="overlay-content">
+			<p id="alert_overlay_msg"></p>
+		</div>
+		<div class="overlay-footer">
+			<button class="close-trigger clean-white">Dismiss</button>
+		</div>
 	</div>
 </div>
-<div id="confirm_overlay" style="display:none; min-width: 150px;">
-	<div class="overlay-content">
-		<p id="confirm_overlay_msg"></p>
+<div id="confirm_overlay" style="display:none;">
+	<div class="confirm-overlay mass-actions-overlay">
+		<div class="overlay-title">
+			<h4>Confirm</h4>
+		</div>
+		<div class="overlay-content">
+			<p id="confirm_overlay_msg"></p>
+		</div>
 	</div>
-	<div class="overlay-actions">
-		<button class="okay-trigger dp-button small green">Okay</button>
-		<button class="cancel-trigger dp-button small">Cancel</button>
+	<div class="overlay-footer">
+		<button class="okay-trigger clean-white">Okay</button>
+		<button class="cancel-trigger clean-white">Cancel</button>
 	</div>
 </div>
 
-<div id="prompt_overlay" style="display:none; min-width: 150px;">
-	<div class="overlay-content">
-		<p id="prompt_overlay_msg"></p>
-		<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
-	</div>
-	<div class="overlay-actions">
-		<button class="okay-trigger dp-button small green">Okay</button>
-		<button class="cancel-trigger dp-button small">Cancel</button>
+<div id="prompt_overlay" style="display:none;">
+	<div class="prompt-overlay mass-actions-overlay">
+		<div class="overlay-title">
+			<h4>Input</h4>
+		</div>
+		<div class="overlay-content">
+			<p id="prompt_overlay_msg"></p>
+			<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
+		</div>
+		<div class="overlay-footer">
+			<button class="okay-trigger clean-white">Okay</button>
+			<button class="cancel-trigger clean-white">Cancel</button>
+		</div>
 	</div>
 </div>
 

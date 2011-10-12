@@ -71,6 +71,10 @@ class TemplatingExtension extends \Twig_Extension
 			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
 			'security_token' => new \Twig_Function_Method($this, 'securityToken'),
 			'render_usersource' => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
+			'get_data' => new \Twig_Function_Method($this, 'getData'),
+			'dp_asset' => new \Twig_Function_Method($this, 'getAssetic'),
+			'dp_asset_raw' => new \Twig_Function_Method($this, 'getAsseticRaw'),
+			'dp_asset_html' => new \Twig_Function_Method($this, 'htmlGetAssetic', array('is_safe' => array('html'))),
         );
     }
 
@@ -86,8 +90,73 @@ class TemplatingExtension extends \Twig_Extension
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
+			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
         );
     }
+
+	public function getAssetic($name)
+	{
+		$assetic_manager = $this->container->getSystemService('assetic_manager');
+		return $assetic_manager->getUrl($name);
+	}
+
+	public function getAsseticRaw($name)
+	{
+		$assetic_manager = $this->container->getSystemService('assetic_manager');
+		return $assetic_manager->getRawUrls($name);
+	}
+
+	public function htmlGetAssetic($name, $options = array())
+	{
+		$raw_packs = App::getConfig('debug.raw_assets', array());
+
+		if (in_array($name, $raw_packs) OR in_array('all', $raw_packs)) {
+			$urls = $this->getAsseticRaw($name);
+		} else {
+			$urls = array($this->getAssetic($name));
+		}
+
+		$html = array();
+
+		foreach ($urls as $url) {
+			$type = Strings::getExtension($url);
+			switch ($type) {
+				case 'js':
+					$html[] = '<script type="text/javascript" src="' . $url . '"></script>';
+					break;
+				case 'css':
+					if (!isset($options['media'])) {
+						$options['media'] = 'screen,print';
+					}
+					$html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+					break;
+				case 'less':
+					if (!isset($options['media'])) {
+						$options['media'] = 'screen,print';
+					}
+					$html[] = '<link rel="stylesheet/less" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+					break;
+			}
+		}
+
+		return implode("\n", $html);
+	}
+
+	public function getData($id)
+	{
+		switch ($id) {
+			case 'country_names':
+				return \Orb\Data\Countries::getCountryNames();
+				break;
+			default:
+				return null;
+		}
+	}
+
+	public function lowercase($string)
+	{
+		return strtolower($string);
+	}
 
 	public function emphasizeWords($string, $words)
 	{

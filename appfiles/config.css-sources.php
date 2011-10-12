@@ -62,7 +62,7 @@ $CONFIG['agent']['vendors'] = array(
 	'mode' => 'yui',
 	'media' => 'screen',
 	'files' => array(
-		'vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css',
+		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
 		'vendor/jquery/tipped/css/tipped.css',
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/jcrop/css/jquery.Jcrop.css',

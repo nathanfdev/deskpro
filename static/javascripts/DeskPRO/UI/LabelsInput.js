@@ -106,6 +106,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				var tag = $('input', li).val();
 				var loadRoute = route.replace(/\{LABEL\}/g, tag, route);
 				DeskPRO_Window.runPageRoute(loadRoute);
+
+				ev.stopPropagation();
 			});
 		}
 	},

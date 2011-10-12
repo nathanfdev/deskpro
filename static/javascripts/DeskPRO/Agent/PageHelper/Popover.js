@@ -33,7 +33,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			/**
 			 * Destroy the popover when it closes?
 			 */
-			destroyOnClose: false,
+			destroyOnClose: 'auto',
 
 			overFrom: '#dp_content'
 		};
@@ -119,7 +119,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.popoverOuter.detach().appendTo('body');
 
-		// Prevent bubbling up from clicks on the popover page
+		// We want to contain clicks and such to this layer,
+		// so we'll init events on it and then...
+		DeskPRO_Window.initInterfaceLayerEvents(this.popoverOuter);
+
+		// ...prevent bubbling so it doesnt activate anything below
 		this.popoverOuter.click(function(ev) {
 			ev.stopPropagation();
 		});
@@ -155,7 +159,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}).bind(this));
 
 		if (this.options.tabRoute) {
-			$('.move-to-tab:first', this.popoverTabs).click((function(ev) {
+			$('.move-to-tab:first', this.popoverOuter).click((function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 
@@ -165,7 +169,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				this.close();
 			}).bind(this));
 		} else {
-			$('.move-to-tab:first', this.popoverTabs).remove();
+			$('.move-to-tab:first', this.popoverOuter).remove();
 		}
 	},
 
@@ -237,6 +241,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popoverOuter.hide();
 
 		if (this.options.destroyOnClose) {
+			if (this.options.destroyOnClose == 'auto') {
+				if (this.options.loadTimeout) {
+					return;
+				}
+			}
 			this.destroy();
 		}
 	},
@@ -257,5 +266,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.options = null;
 
 		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID];
+
+		this.fireEvent('destroy', [this]);
 	}
 });

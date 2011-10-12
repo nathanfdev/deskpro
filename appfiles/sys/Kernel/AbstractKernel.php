@@ -26,10 +26,12 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$name = array_pop($name);
 		$this->name = $name;
 
-		if ($this->isDebug()) {
-			define('DP_DEBUG', true);
-		} else {
-			define('DP_DEBUG', false);
+		if (!defined('DP_DEBUG')) {
+			if ($this->isDebug()) {
+				define('DP_DEBUG', true);
+			} else {
+				define('DP_DEBUG', false);
+			}
 		}
 
 		App::setKernel($this);
@@ -85,9 +87,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
-			new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-
 			new \Application\DeskPRO\DeskPROBundle(),
 		);
 
