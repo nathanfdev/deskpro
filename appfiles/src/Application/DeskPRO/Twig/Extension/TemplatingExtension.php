@@ -109,6 +109,7 @@ class TemplatingExtension extends \Twig_Extension
 	public function htmlGetAssetic($name, $options = array())
 	{
 		$raw_packs = App::getConfig('debug.raw_assets', array());
+		$less_use_css = App::getConfig('debug.less_use_css_dir', false);
 
 		if (in_array($name, $raw_packs) OR in_array('all', $raw_packs)) {
 			$urls = $this->getAsseticRaw($name);
@@ -134,7 +135,14 @@ class TemplatingExtension extends \Twig_Extension
 					if (!isset($options['media'])) {
 						$options['media'] = 'screen,print';
 					}
-					$html[] = '<link rel="stylesheet/less" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+
+					if ($less_use_css) {
+						$url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
+						$url = str_replace('.less', '.css', $url);
+						$html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+					} else {
+						$html[] = '<link rel="stylesheet/less" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+					}
 					break;
 			}
 		}
