@@ -299,7 +299,7 @@
 	text-shadow: none;
 }
 .deskproTabList li a{
-    background-position: top left;
+    background-position: 1px 9px;
     background-repeat: no-repeat;
     background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
 	font-size: 11px;
@@ -332,7 +332,8 @@
 	width: 13px;
 }
 .deskproTabList li.important:hover span.close, .deskproTabList li.activeTabList:hover span.close{
-	background: url("@{asset-url}/images/close-small.png");
+    background-repeat: no-repeat;
+    background-image: url(../../images/agent/tab-close.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
 }
 .deskproTabList li.activeTabList a.open {
 	background-position: 0 -1046px !important;
@@ -802,13 +803,13 @@ article.content-message .content header .message-counter {
 	float: right;
 	font-size: 10px;
 	margin-right: 6px;
-	line-height: 23px;
+	line-height: 22px;
 }
 
 article.content-message .content header .message-counter.with-gear {
 	cursor: pointer;
-	background-position: top left;
     background-repeat: no-repeat;
+	background-position: 0 4px;
     background-image: url(../../images/agent/gear-dark.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
 	padding-left: 16px;
 }
