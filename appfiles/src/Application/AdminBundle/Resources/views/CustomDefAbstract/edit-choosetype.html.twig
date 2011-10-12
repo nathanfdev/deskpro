@@ -1,84 +1,45 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('', 0);
-}
-</script>
-{% endblock %}
-{% block header %}
-	<h1>Choose field type</h1>
-{% endblock %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block content %}
+<div
+	class="dp-page-box"
+>
 
 <form action="{{ path(route_basename~'edit', {'field_id': 0}) }}" class="form">
+{{ design.block_sections() }}
 
-<ul class="item-list">
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Text</strong><br />
-			This is a simple one-line text box. There are also some specialty types:<br />
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\TextUrl" /> URL<br />
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\TextEmail" /> Email addres<br />
-		</div>
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" checked="checked" /> Text</label></h3></header>
+		<p>This is a simple one-line text box.</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /> Textarea</label></h3></header>
+		<p>This is a multi-line text box that can be used for longer entries like descriptions or notes.</p>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /> Choice</label></h3></header>
+		<p>This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes.</p>
+	{{ design.block_sections_item_end() }}
+
+	{#
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" /> Date</label></h3></header>
+		<p>Thie date field lets you select a date using a calendar widget.</p>
+	{{ design.block_sections_item_end() }}
+	#}
+
+	{{ design.block_sections_item() }}
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> Display</label></h3></header>
+		<p>This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input.</p>
+	{{ design.block_sections_item_end() }}
+
+	<li class="footer">
+		<button class="clean-white">Continue</button>
 	</li>
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Textarea</strong><br />
-			This is a multi-line text box that can be used for longer entries like descriptions or notes.
-		</div>
-	</li>
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Choice</strong><br />
-			This is a drop-down select box or radio buttons that let a user choose from a set of predefined options.
-		</div>
-	</li>
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\ChoiceMulti" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Mulitple Choice</strong><br />
-			This is a select box or group of checkboxes that let a user choose multiple values from a set of predefined options.
-		</div>
-	</li>
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Date</strong><br />
-			Thie date field lets you select a date using a calendar widget.
-		</div>
-	</li>
-	<li>
-		<div style="float:left">
-			<input type="radio" name="editcustomfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" />
-		</div>
-		<div style="margin-left: 50px;">
-			<strong>Display</strong><br />
-			This is a widget field that lets you enter any kind of HTML.
-		</div>
-	</li>
-</ul>
+
+{{ design.block_sections_end() }}
 
 </form>
-
-{% endblock %}
-{% block footer %}
-	<button class="dp-button green save-trigger">Continue</button>
-
 {% endblock %}

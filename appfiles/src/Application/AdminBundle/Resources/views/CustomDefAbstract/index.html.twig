@@ -1,33 +1,35 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'priorities' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
-}
-</script>
-{% endblock %}
 {% block content %}
+<div
+	class="dp-page-box"
+	data-element-handler="DeskPRO.Admin.ElementHandler.CustomFieldList"
+	data-set-field-url="{{ path(route_basename~'setenabled', {'field_id': '00000'})|replace({'00000': '_FIELD_ID_'}) }}"
+>
 
-<div style="text-align: right">
-	<a class="dp-button green popout-trigger" href="{{ path(route_basename~'new_choosetype') }}">Create New Field</a>
-	<br /><br />
-</div>
+{{ design.block_sections() }}
 
-<ul class="item-list">
 	{% for field in fields %}
-		{% include 'AdminBundle:CustomDefAbstract:list-row.html.twig' %}
+		{{ design.block_sections_item() }}
+			<header>
+				<h3><a href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">{{field.title}}</a></h3>
+				<div class="check-control">
+					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />
+				</div>
+			</header>
+			<p>
+				Field type: {{ phrase(field.getHandlerClassPhrase()) }}
+			</p>
+		{{ design.block_sections_item_end() }}
 	{% else %}
-		<li>
-			You have no custom fields defined.
-		</li>
+		{{ design.block_sections_item() }}
+		<p>
+			You have not created any fields yet.
+		</p>
+		{{ design.block_sections_item_end() }}
 	{% endfor %}
-</ul>
 
-{% endblock %}
-{% block sidebar %}
+{{ design.block_sections_end() }}
+
+</div>
 {% endblock %}

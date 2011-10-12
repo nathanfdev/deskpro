@@ -354,6 +354,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
 		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
 	)
 );
 
@@ -476,6 +477,7 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
 		'vendor/jquery/chosen/chosen.css',
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.css',
 
 		'vendor/jquery/markitup/markitup/skins/simple/style.css',
 		'vendor/jquery/markitup/markitup/sets/markdown/style.css',

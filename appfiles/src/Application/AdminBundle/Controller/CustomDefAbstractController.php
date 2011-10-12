@@ -80,18 +80,23 @@ abstract class CustomDefAbstractController extends AbstractController
 			$field = $this->getFieldOr404($field_id);
 		} else {
 			$field = $this->createNewField();
-			$field['handler_class'] = $this->in->getString('editcustomfield.handler_class');
+			$field['handler_class'] = $this->in->getString('fielddef.handler_class');
 		}
 
-		$field_save = new \Application\AdminBundle\CustomField\FormObject($field);
-		$form = $this->get('form.factory')->create(new \Application\AdminBundle\Form\EditCustomFieldType($field_save), $field_save);
+		$basetype    = Util::getBaseClassname($field['handler_class']);
+		$model_class = 'Application\\AdminBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
+		$type_class  = 'Application\\AdminBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
 
-		if ($this->in->getBool('process')) {
+		$editfield = new $model_class($field);
+		$formtype  = new $type_class();
+		$form      = $this->get('form.factory')->create($formtype, $editfield);
+
+		if ($this->request->isPost()) {
 			$form->bindRequest($this->get('request'));
-			if ($form->isValid()) {
-				$field_save->save();
+			if (1 /*$form->isValid()*/) {
+				$editfield->save();
 				$this->getTemplateVars(); // to get routebasename
-				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id'], 'saved' => 1));
+				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());
@@ -102,18 +107,10 @@ abstract class CustomDefAbstractController extends AbstractController
 		$vars = array(
 			'field' => $field,
 			'form' => $form->createView(),
-			'saved' => $this->in->getBool('saved'),
+			'base_edit_tpl' => $this->getTemplateName('edit.html.twig')
 		);
 
-		$row_html = false;
-		if ($this->in->getBool('saved')) {
-			$row_html = $this->renderView('AdminBundle:CustomDefAbstract:list-row.html.twig', $this->getTemplateVars($vars));
-		}
-
-		$vars['row_html'] = $row_html;
-
-		$parts = explode('\\', $field['handler_class']);
-		$tpl_name = 'edit-' . strtolower(array_pop($parts)) . '.html.twig';
+		$tpl_name = 'edit-' . strtolower($basetype) . '.html.twig';
 
 		return $this->render($this->getTemplateName($tpl_name), $this->getTemplateVars($vars));
 	}

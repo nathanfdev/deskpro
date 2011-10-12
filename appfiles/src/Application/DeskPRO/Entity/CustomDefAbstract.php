@@ -264,7 +264,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setOption($name, $value)
 	{
-		$this->options[$name] = $value;
+		if ($value === null) {
+			unset($this->options[$name]);
+		} else {
+			$this->options[$name] = $value;
+		}
 	}
 
 
@@ -280,7 +284,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$phrase = $this->handler_class;
 		$phrase = str_replace('Application\\DeskPRO\\CustomFields\\Handler\\', '', $phrase);
 		$phrase = str_replace('\\', '_', $phrase);
-		$phrase = "core.field_type_$phrase";
+		$phrase = "agent.field_type_$phrase";
 		$phrase = strtolower($phrase);
 
 		return $phrase;
