@@ -59,7 +59,14 @@ class MainController extends AbstractController
 		// Countr code
 		$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
 
+		if (App::getConfig('debug.raw_assets')) {
+			$has_raw_assets = true;
+		} else {
+			$has_raw_assets = false;
+		}
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
+			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
