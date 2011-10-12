@@ -507,10 +507,11 @@ $CONFIG['agent_deskpro_ui_css'] = array(
 
 $CONFIG['agent_interface_css'] = array(
 	'out' => 'css/agent-interface.css',
-	'filters' => array('less', 'smartsprites'),
+	'filters' => array('less'),
 	'filter_options' => array(
 		'smartsprites' => array('root_dir' => realpath(DP_ROOT . '/../static'))
 	),
+	'post_filters' => array('smartsprites'),
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-interface.less',

@@ -34,6 +34,8 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 	{
 		$this->setDefinition(array(
 			new InputArgument('pack', InputArgument::REQUIRED, 'The packs to compile separated by comma. Example: agent_vendors. Or ALL for everything'),
+			new InputOption('regex', 'p', InputOption::VALUE_NONE, 'Pack name is interpretted as a regex'),
+			new InputOption('reload', 'r', InputOption::VALUE_NONE, 'Files are regenerated even if they arent stale'),
 		))->setName('dpdev:assetic');
 	}
 
@@ -44,8 +46,16 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
 		$bundles = array();
 
-		if ($packs == 'ALL') {
-			$bundles = $assetic_manager->getAllBundleNames();
+		if ($packs == 'ALL' || $input->getOption('regex')) {
+			if ($input->getOption('regex')) {
+				foreach ($assetic_manager->getAllBundleNames() as $k) {
+					if (preg_match('#' . $packs . '#', $k)) {
+						$bundles[] = $k;
+					}
+				}
+			} else {
+				$bundles = $assetic_manager->getAllBundleNames();
+			}
 		} else {
 			foreach (explode(',', $packs) as $p) {
 				$p = trim($p);
@@ -53,9 +63,16 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			}
 		}
 
+		$reload = $input->getOption('reload');
+
 		foreach ($bundles as $name) {
 			echo "[PROCESSING] $name ... ";
-			$assetic_manager->writeBuildFileIfStale($name);
+			if ($reload) {
+				echo 'reload ';
+				$assetic_manager->writeBuildFile($name);
+			} else {
+				$assetic_manager->writeBuildFileIfStale($name);
+			}
 			echo " Done\n";
 		}
 	}

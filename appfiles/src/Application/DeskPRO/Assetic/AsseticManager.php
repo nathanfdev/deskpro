@@ -11,6 +11,9 @@
 
 namespace Application\DeskPRO\Assetic;
 
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+
 class AsseticManager
 {
 	/**
@@ -166,7 +169,38 @@ class AsseticManager
 			throw \RuntimeException("Bad asset write path `$dir`");
 		}
 
-		file_put_contents($file, $asset->dump());
+		$content = $asset->dump();
+
+		if (isset($info['post_filters'])) {
+			$bundle_asset = $this->getAssetBundle($name);
+			$first = Arrays::getFirstItem($bundle_asset->all());
+
+			$ext = Strings::getExtension($file);
+			$hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
+			$new_file = dirname($file) . '/' . $hash . '.' . $ext;
+
+			file_put_contents($new_file, $content);
+
+			$filters = array();
+			foreach ($info['post_filters'] as $f) {
+				$filters[] = $this->getFilter($f);
+			}
+			$new_asset = new \Assetic\Asset\FileAsset($new_file, $filters);
+
+			$factory = new \Assetic\Factory\AssetFactory($this->write_path);
+			$factory->setDebug($this->debug);
+			$am = new \Assetic\AssetManager();
+			$am->set('tmp', $new_asset);
+			$factory->setAssetManager($am);
+			$post_asset = $factory->createAsset('@tmp');
+
+			$content = $post_asset->dump();
+
+			unset($filters, $new_asset, $factory, $am, $post_asset);
+			unlink($new_file);
+		}
+
+		file_put_contents($file,  $content);
 
 		// Also need to update any that use this
 		if (isset($this->dep_map[$name])) {
