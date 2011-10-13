@@ -21,10 +21,10 @@ class TicketFieldsManagerService
 		$m = new FieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
-				'entity_class'       => 'Application\\DeskPRO\\EntityRepository\\CustomDefTicket',
+				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
 				'entity_name'        => 'DeskPRO:CustomDefTicket',
-				'data_entity_name'   => 'Application\\DeskPRO\\EntityRepository\\CustomDataTicket',
-				'data_entity_class'  => 'DeskPRO:CustomDataTicket',
+				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataTicket',
+				'data_entity_name'   => 'DeskPRO:CustomDataTicket',
 			)
 		);
 

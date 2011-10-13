@@ -1795,54 +1795,63 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initInterfaceLayerEvents: function(context) {
 		var self = this;
-		// Accept clicks on routes
-		$(context).delegate('[data-route]', 'click', function(ev) {
-			if ($(this).is('.as-popover')) {
-				return;
-			}
-			ev.preventDefault();
-			self.runPageRouteFromElement($(this));
-		});
+
+		window.setTimeout(function() {
+			// Accept clicks on routes
+			$(context).delegate('[data-route]', 'click', function(ev) {
+				if ($(this).is('.as-popover')) {
+					return;
+				}
+				ev.preventDefault();
+				self.runPageRouteFromElement($(this));
+			});
+		}, 120);
 
 		// Accept clicks on popovers
 		// Keeps track of which tabs have them open so they can be reused
-		$(context).delegate('.as-popover', 'click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			self._initInterfacePopover($(this)).toggle();
-		});
-
-		$(context).delegate('.person-tip', 'mouseover', function() {
-			var el = $(this);
-			var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
-			el.addClass('tipped');
-			el.attr('data-tipped', tipUrl);
-			el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
-
-			el.click(function(ev) {
-				Tipped.toggle(this);
+		window.setTimeout(function() {
+			$(context).delegate('.as-popover', 'click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				self._initInterfacePopover($(this)).toggle();
 			});
+		}, 60);
 
-			if (el.is('.with-route')) {
-				el.addClass('cancel-route')
-			}
-			if (el.parent().is('.with-route')) {
-				el.parent().addClass('cancel-route')
-			}
-		});
+		window.setTimeout(function() {
+			$(context).delegate('.person-tip', 'mouseover', function() {
+				var el = $(this);
+				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
+				el.addClass('tipped');
+				el.attr('data-tipped', tipUrl);
+				el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
 
-		$(context).delegate('.tipped', 'mouseover', function() {
-			if ($(this).is('.tipped-inited')) {
-				return;
-			}
-			var options = {};
-			if ($(this).data('tipped-options')) {
-				eval('options = {' + $(this).data('tipped-options') + '}');
-			}
+				el.click(function(ev) {
+					Tipped.toggle(this);
+				});
 
-			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
-			$(this).addClass('tipped-inited');
-		});
+				if (el.is('.with-route')) {
+					el.addClass('cancel-route')
+				}
+				if (el.parent().is('.with-route')) {
+					el.parent().addClass('cancel-route')
+				}
+			});
+		}, 70);
+
+		window.setTimeout(function() {
+			$(context).delegate('.tipped', 'mouseover', function() {
+				if ($(this).is('.tipped-inited')) {
+					return;
+				}
+				var options = {};
+				if ($(this).data('tipped-options')) {
+					eval('options = {' + $(this).data('tipped-options') + '}');
+				}
+
+				Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+				$(this).addClass('tipped-inited');
+			});
+		}, 80);
 	},
 
 	initInterfaceServices: function(context) {
@@ -1870,9 +1879,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		DeskPRO.ElementHandler_Exec(context);
+		window.setTimeout(function() {
+			DeskPRO.ElementHandler_Exec(context);
+		}, 5);
 
-		$('.timeago', context).timeago();
+		window.setTimeout(function() {
+			$('.timeago', context).timeago();
+		}, 10);
 	}
 });
 

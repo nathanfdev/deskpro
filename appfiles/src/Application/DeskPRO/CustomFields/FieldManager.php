@@ -109,8 +109,11 @@ class FieldManager
 	 */
 	public function getDisplayArray($field_data = array(), $field_group = null)
 	{
+		if (!$field_group) {
+			$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		}
+
 		$custom_fields = array();
-		$has_value = false;
 		foreach ($this->getFields() as $f_def) {
 			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
 
@@ -133,6 +136,7 @@ class FieldManager
 
 			$custom_fields[$f_def['id']] = array(
 				'elId'            => Util::requestUniqueIdString(),
+				'hasValue'        => ($value !== null),
 				'id'              => $f_def['id'],
 				'name'            => 'field_' . $f_def['id'],
 				'handler'         => $f_def->getHandler(),
@@ -195,10 +199,12 @@ class FieldManager
 		// Create a map of keys
 		$data_keys = array();
 		foreach ($field_datas as $k => $v) {
-			$data_keys[$v['field']['id']] = $k;
+			$data_keys[$v->field->id] = $k;
 		}
 
-		return $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
+		$data = $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
+
+		return $data;
 	}
 
 	protected function _createDataHierarchy($data_keys, $field_datas, $field_defs)
@@ -206,13 +212,19 @@ class FieldManager
 		$structure = array();
 
 		foreach ($field_defs as $def) {
-			$structure[$def['id']] = array('value' => null, 'children' => null);
+
+			$item = array('value' => null, 'children' => null);
+
 			if (isset($data_keys[$def['id']])) {
-				$structure[$def['id']]['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+				$item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
 			}
 
 			if ($def['children']) {
-				$structure[$def['id']]['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $def['children']);
+				$item['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $def['children']);
+			}
+
+			if ($item['value'] || $item['children']) {
+				$structure[$def['id']] = $item;
 			}
 		}
 
@@ -229,11 +241,20 @@ class FieldManager
 	 */
 	public function saveFormToObject(array $form, $object)
 	{
-		foreach ($this->getFields() as $field_def) {
-			foreach ($field_def->getHandler()->getDataFromForm($form_data) as $info) {
-				$this->setCustomDataOnObject($object, $field_def, $info);
-				$ticket->setCustomData($info[0], $info[1], $info[2]);
+		$this->em->beginTransaction();
+
+		try {
+			foreach ($this->getFields() as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($form) as $info) {
+					$this->setCustomDataOnObject($object, $field_def, $info);
+				}
 			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
 	}
 
@@ -246,25 +267,51 @@ class FieldManager
 	 */
 	public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
 	{
-		$field_id = $field_def->id;
-		$prop = $this->options->get('custom_data_property');
+		$this->em->beginTransaction();
 
-		list(, $value_type, $value) = $in_data;
+		try {
+			list($set_field_id, $value_type, $value) = $in_data;
 
-		// Remove whatever we have before
-		// We'll just re-insert if its still there
-		$this->removeCustomDataOnObject($object, $field_def);
+			// Remove whatever we have before
+			// We'll just re-insert if its still there
+			$this->removeCustomDataOnObject($object, $field_def);
+			$this->em->flush();
 
-		// No value
-		if ($value === null) {
-			return null;
+			// The field we're actually saving under
+			// Usually the same as $field_def, but not always
+			// Ex: Choice fields we save under the actual choice option
+			$set_field = null;
+
+			if ($field_def->id == $set_field_id) {
+				$set_field = $field_def;
+			} else {
+				foreach ($field_def->children as $c) {
+					if ($c->id == $set_field_id) {
+						$set_field = $c;
+						break;
+					}
+				}
+			}
+
+			// No value
+			if ($value === null || $set_field === null) {
+				return null;
+			}
+
+			$custom_data = $this->createDataClass();
+			$custom_data['field'] = $set_field;
+			$custom_data[$value_type] = $value;
+
+			$object->addCustomData($custom_data);
+			$this->em->persist($custom_data);
+			$this->em->flush();
+
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
-
-		$custom_data = $this->createDataClass();
-		$custom_data['field'] = $field_def;
-		$custom_data[$value_type] = $value;
-
-		$object->addCustomData($custom_data);
 
 		return $custom_data;
 	}
@@ -279,13 +326,18 @@ class FieldManager
 	{
 		$prop = $this->options->get('custom_data_property');
 		if ($field_def->parent) {
-			if (isset($object->$prop[$field_def->parent->id])) {
-				$object->$prop->remove($field_def->parent->id);
+			foreach ($object->$prop as $v) {
+				if ($v->field->id == $field_def->parent->id) {
+					$this->em->remove($v);
+					$object->$prop->removeElement($v);
+				}
 			}
 		}
 
-		if (isset($object->$prop[$field_id])) {
-			$this->$prop->remove($field_id);
+		foreach ($object->$prop as $v) {
+			if ($v->field->id == $field_def->id) {
+				$object->$prop->removeElement($v);
+			}
 		}
 	}
 

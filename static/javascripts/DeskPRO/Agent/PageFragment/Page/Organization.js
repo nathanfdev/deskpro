@@ -233,6 +233,54 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this._initEmailDomainAssoc();
 
 		this.refreshPropBox();
+
+		// TODO Refactor this and same from Person.js into helper
+		var fieldsRendered = this.getEl('custom_fields_rendered');
+		var fieldsForm = this.getEl('custom_fields_editable');
+		var box = $('.profile-box-container.properties ', el);
+
+		var propToggle = function(what) {
+			if (what == 'display') {
+				$('.prop-edit-trigger', box).show();
+				$('.is-loading', box).hide();
+				$('.save', box).hide();
+				$('.cancel', box).hide();
+				fieldsForm.hide();
+				fieldsRendered.show();
+			} else {
+				$('.prop-edit-trigger', box).hide();
+				$('.is-loading', box).hide();
+				$('.save', box).show();
+				$('.cancel', box).show();
+				fieldsRendered.hide();
+				fieldsForm.show();
+			}
+		};
+
+		$('.prop-edit-trigger', box).click(function() {
+			propToggle('form');
+		});
+		$('.save', box).click(function() {
+			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+			$('.is-loading', box).show();
+			$('.save', box).hide();
+			$('.cancel', box).hide();
+
+			$.ajax({
+				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRendered.empty().html(rendered);
+					propToggle('display');
+				}
+			});
+		});
+		$('.cancel', box).click(function() {
+			propToggle('display');
+		});
 	},
 
 	refreshPropBox: function() {

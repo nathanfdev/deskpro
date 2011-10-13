@@ -21,10 +21,10 @@ class OrgFieldsManagerService
 		$m = new FieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
-				'entity_class'       => 'Application\\DeskPRO\\EntityRepository\\CustomDefOrganization',
+				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
 				'entity_name'        => 'DeskPRO:CustomDefOrganization',
-				'data_entity_name'   => 'Application\\DeskPRO\\EntityRepository\\CustomDataOrganization',
-				'data_entity_class'  => 'DeskPRO:CustomDataOrganization',
+				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataOrganization',
+				'data_entity_name'   => 'DeskPRO:CustomDataOrganization',
 			)
 		);
 

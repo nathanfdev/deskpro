@@ -1,5 +1,5 @@
 {% for f in custom_fields %}
-	{% if f.rendered %}
+	{% if f.hasValue %}
 		<dt class="type-labels">{{ f.title }}</dt>
 		<dd class="people-tags tags-wrap">
 			{{ render_custom_field(f) }}

@@ -21,10 +21,10 @@ class PersonFieldsManagerService
 		$m = new FieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
-				'entity_class'       => 'Application\\DeskPRO\\EntityRepository\\CustomDefPerson',
+				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
 				'entity_name'        => 'DeskPRO:CustomDefPerson',
-				'data_entity_name'   => 'Application\\DeskPRO\\EntityRepository\\CustomDataPerson',
-				'data_entity_class'  => 'DeskPRO:CustomDataPerson',
+				'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
+				'data_entity_name'   => 'DeskPRO:CustomDataPerson',
 			)
 		);
 

@@ -1,20 +1,6 @@
-{% if usergroup_names %}
-<tr>
-	<td class="label" width="80">Username</td>
-	<td class="value">
-		<select name="usergroups[]" multiple="multiple">
-			{% for id,title in usergroup_names %}
-				<option value="{{id}}" {% if org.usergroups[id] %}selected="selected"{% endif %}>{{ title }}</option>
-			{% endfor %}
-		</select>
-	</td>
-</tr>
-{% endif %}
 {% for f in custom_fields %}
-	<tr>
-		<td class="label" width="80">{{ f.title }}</td>
-		<td class="value">
-			{{ render_custom_field_form(f) }}
-		</td>
-	</tr>
+	<dt class="type-labels">{{ f.title }}</dt>
+	<dd class="people-tags tags-wrap">
+		{{ render_custom_field_form(f) }}
+	</dd>
 {% endfor %}

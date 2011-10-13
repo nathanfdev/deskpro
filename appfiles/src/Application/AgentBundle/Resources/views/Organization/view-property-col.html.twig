@@ -13,8 +13,14 @@
 {# /Box Contact #}
 
 {# Properties Box #}
-<div class="profile-box-container summary">
+<div class="profile-box-container properties">
 	<header>
+		<div class="controls">
+			<span class="edit-gear prop-edit-trigger"></span>
+			<div class="is-loading">Saving</div>
+			<button class="cancel" style="display: none">Cancel</button>
+			<button class="save" style="display: none">Save</button>
+		</div>
 		<h4>Properties</h4>
 	</header>
 	<section>
@@ -30,15 +36,12 @@
 		</dl>
 
 		{% if custom_fields|length %}
-			{#
 			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
 				{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
 			</dl>
-			<dl id="{{baseId}}_custom_fields_editable" style="display: none">
+			<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
 				{% include 'AgentBundle:Organization:view-customfields-edit-rows.html.twig' %}
 			</dl>
-			<br class="clear"/>
-			#}
 		{% endif %}
 
 		<dl class="table-list">

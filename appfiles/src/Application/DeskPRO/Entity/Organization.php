@@ -75,7 +75,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	protected $importance = 0;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true, indexBy="id")
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 

@@ -173,7 +173,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.ownObject(this.changePic);
 
 		this._initLabels();
-		this._initCustomFieldsEditor();
 
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({
@@ -196,6 +195,54 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
 		this.refreshPropBox();
+
+
+		var fieldsRendered = this.getEl('custom_fields_rendered');
+		var fieldsForm = this.getEl('custom_fields_editable');
+		var box = $('.profile-box-container.properties ', el);
+
+		var propToggle = function(what) {
+			if (what == 'display') {
+				$('.prop-edit-trigger', box).show();
+				$('.is-loading', box).hide();
+				$('.save', box).hide();
+				$('.cancel', box).hide();
+				fieldsForm.hide();
+				fieldsRendered.show();
+			} else {
+				$('.prop-edit-trigger', box).hide();
+				$('.is-loading', box).hide();
+				$('.save', box).show();
+				$('.cancel', box).show();
+				fieldsRendered.hide();
+				fieldsForm.show();
+			}
+		};
+
+		$('.prop-edit-trigger', box).click(function() {
+			propToggle('form');
+		});
+		$('.save', box).click(function() {
+			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+			$('.is-loading', box).show();
+			$('.save', box).hide();
+			$('.cancel', box).hide();
+
+			$.ajax({
+				url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRendered.empty().html(rendered);
+					propToggle('display');
+				}
+			});
+		});
+		$('.cancel', box).click(function() {
+			propToggle('display');
+		});
 	},
 
 	refreshPropBox: function() {
@@ -358,47 +405,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			orgEdit.show();
 			this.orgEnableBtn('cancel');
 		}
-	},
-
-	//#########################################################################
-	//# Custom fields
-	//#########################################################################
-
-	_initCustomFieldsEditor: function() {
-
-		var fieldsRenderedWrap, fieldsEditWrap;
-
-		fieldsRenderedWrap = this.fieldsRenderedWrap = this.getEl('custom_fields_rendered');
-		fieldsEditWrap = this.fieldsEditWrap = this.getEl('custom_fields_editable');
-
-		var toggle = (function() {
-			if (fieldsRenderedWrap.is(':visible')) {
-				fieldsRenderedWrap.hide();
-				fieldsEditWrap.show();
-			} else {
-				fieldsEditWrap.hide();
-				fieldsRenderedWrap.show();
-			}
-		}).bind(this);;
-
-		$('.show-edit-custom-fields', this.wrapper).click(function() {
-			toggle();
-		});
-
-		$('.save-custom-fields', this.wrapper).click((function() {
-			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
-
-			$.ajax({
-				url: BASE_URL + 'agent/person/' + this.meta.person_id + '/ajax-save-custom-fields',
-				type: 'POST',
-				data: formData,
-				dataType: 'html',
-				success: function(rendered) {
-					fieldsRenderedWrap.empty().html(rendered);
-					toggle();
-				}
-			});
-		}).bind(this));
 	},
 
 	//#########################################################################

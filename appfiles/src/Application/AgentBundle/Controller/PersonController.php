@@ -384,49 +384,27 @@ class PersonController extends AbstractController
 	{
 		$person = $this->getPersonOr404($person_id);
 
-		$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$this->em->beginTransaction();
 
-		if (!empty($_POST['custom_fields'])) {
-			foreach ($user_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-					$person->setCustomData($info[0], $info[1], $info[2]);
-				}
+		try {
+			$field_manager = $this->container->getSystemService('person_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $person);
 			}
 
-			App::getOrm()->persist($person);
-			App::getOrm()->flush();
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
 
-		// Custom fields
-		$user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $user_field_defs);
-
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
-
-		// Usergroups
-		$db = App::getDb();
-		$db->delete('person2usergroups', array('person_id' => $person['id']));
-
-		$usergroups_ids = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
-		foreach ($usergroups_ids as $u) {
-			$db->insert('person2usergroups', array(
-				'person_id' => $person['id'],
-				'usergroup_id' => $u
-			));
-		}
-
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-
-		$person->loadHelper('PermissionsManager');
-		$person_org_usergroups_ids = $person->getPermissionsManager()->getOrganizationUsergroupIds();
+		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 
 		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
 			'person' => $person,
 			'custom_fields' => $custom_fields,
-			'person_usergroups_ids' => $usergroups_ids,
-			'person_org_usergroups_ids' => $person_org_usergroups_ids,
 		));
 	}
 
