@@ -79,7 +79,7 @@
 	left: 1;
 	top: 0;
 	bottom: 0;
-	width: 24px;
+	width: 18px;
 	z-index: 99;
 	background: url("@{asset-url}/images/agent/tabnav-left.png") no-repeat 100% 0;
 }
@@ -90,8 +90,8 @@
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	right: 27px;
-	width: 25px;
+	right: 18px;
+	width: 18px;
 	z-index: 99;
 	background: url("@{asset-url}/images/agent/tabnav-right.png") no-repeat 0 0;
 }
@@ -120,21 +120,16 @@
 
 #tabDropdownPicker{
 	display: none;
-	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
-	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url("@{asset-url}/static/vendor/PIE.htc");
+	background: url(../../images/agent/tabnav-drop.png) no-repeat 0 0;
 	z-index: 99;
-	padding: 10px 5px;
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	right: 0;
-	width: 16px;
+	width: 18px;
+	height: 37px;
 
 	overflow: hidden;
-
-    border-left: 1px solid #4D7399;
 	box-shadow: 0 0 1px #FFFFFF inset;
 }
 
@@ -152,10 +147,7 @@
 
 
 #tabDropdownPicker:hover{
-	background-image: -moz-linear-gradient(top, #6fa6c4, #375387);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6fa6c4), to(#375387));
-	-pie-background: linear-gradient(#6fa6c4, #375387);
-	behavior: url("@{asset-url}/static/vendor/PIE.htc");
+	background: url(../../images/agent/tabnav-drop-on.png) no-repeat 0 0;
 }
 
 .with-overflow.far-left #tabNavSelectorLeft {	display:none !important; }
@@ -367,15 +359,31 @@ ul#dp_tabstrip_menu > li a.close {
     position: absolute;
     top: 5px;
     right: 4px;
-    opacity: 0.4;
+    display: none;
+    z-index: 2;
 }
 
-ul#dp_tabstrip_menu > li a.close:hover {
-	opacity: 1;
+ul#dp_tabstrip_menu > li:hover a.close {
+	display: block;
 }
 
+ul#dp_tabstrip_menu li {
+	max-width: 200px;
+	overflow: hidden;
+}
 
+ul#dp_tabstrip_menu li span.tab-title {
+	white-space: nowrap;
+}
 
+ul#dp_tabstrip_menu > li .bound-fade {
+	.fade-away(rgba(240,240,240, 0.5), rgba(240,240,240, 1), 52px);
+	z-index: 1;
+}
+ul#dp_tabstrip_menu > li:hover .bound-fade,
+ul#dp_tabstrip_menu > li.highlight .bound-fade {
+	.fade-away(rgba(255,255,255, 0.5), rgba(255,255,255, 1), 52px);
+}
 
 /*****************************************************************************
  * Header elements

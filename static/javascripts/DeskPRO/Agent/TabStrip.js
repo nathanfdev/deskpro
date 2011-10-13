@@ -122,8 +122,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
 
-				var start = scroll_el.scrollLeft() - 77;
-				var end = start+scroll_el.outerWidth() + 77;
+				var start = scroll_el.scrollLeft();
+				var end = start+scroll_el.outerWidth();
 
 				var col = [];
 
@@ -136,7 +136,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 					x += tabW;
 					var tabRight = x + tabW;
 
-					if (!((tabLeft >= start) && (tabRight <= end))) {
+					if (!((tabLeft >= start) && (tabRight <= end+60))) {
 						col.push(tabEl.get(0));
 					}
 				});
@@ -150,12 +150,14 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				var title = $('a', this).clone();
 
 				var close = $('<a class="close"></a>');
+				var fade = $('<div class="bound-fade"></div>');
 
 				var li = $('<li />');
 				li.data('tab-id', $(this).data('tab-id'));
 				li.data('tab-el-id', $(this).attr('id'));
 				li.append(title);
 				li.append(close);
+				li.append(fade);
 
 				if ($(this).is('.activeTabList')) {
 					li.addClass('highlight');
@@ -463,7 +465,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			w += $(this).outerWidth();
 		}).length;
 
-		//w += 14 * num;
+		w += 14 * num;
 
 		this.tabStrip.width(w);
 
