@@ -73,7 +73,7 @@ class AsseticManager
 	 *
 	 * @var bool
 	 */
-	protected $auto_update = 1;
+	protected $auto_update = false;
 
 	/**
 	 * Keeps track of which assets use others
