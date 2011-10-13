@@ -42,8 +42,24 @@ DeskPRO.Admin.Window = new Orb.Class({
 						});
 					}, 225);
 				});
+			},
+
+			/**
+			 * Get a "plain" article. ie of type="text/x-deskpro-plain"
+			 *
+			 * @param el
+			 * @return {String}
+			 */
+			getPlainTpl: function(el) {
+				var el = $(el);
+				var html = el.get(0).innerHTML;
+
+				html = html.replace(/%startScript%/g, '<script>');
+				html = html.replace(/%endScript%/g, '</script>');
+
+				return html;
 			}
-		}
+		};
 	},
 
 	initPage: function() {

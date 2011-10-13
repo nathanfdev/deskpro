@@ -162,7 +162,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $messages;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true,indexBy="id")
 	 */
 	protected $custom_data;
 

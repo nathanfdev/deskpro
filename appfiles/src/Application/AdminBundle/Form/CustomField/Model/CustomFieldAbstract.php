@@ -45,6 +45,8 @@ abstract class CustomFieldAbstract
 		}
 
 		$this->_em = App::getOrm();
+
+		$this->init();
 	}
 
 	protected function init() {}
@@ -65,12 +67,15 @@ abstract class CustomFieldAbstract
 
 		$field->setOption('required', $this->required);
 
+		$this->setFieldProperties();
+
 		$this->_em->beginTransaction();
 		try {
 			$this->_em->persist($field);
 			$this->_em->flush();
 
 			$this->saveAdditional();
+			$this->_em->flush();
 
 			$this->_em->commit();
 		} catch (\Exception $e) {

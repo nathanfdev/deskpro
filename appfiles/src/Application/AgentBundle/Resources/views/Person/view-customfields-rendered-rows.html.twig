@@ -1,22 +1,8 @@
-{% if usergroup_names %}
-<tr>
-	<td class="label" width="80">Usergroups</td>
-	<td class="value">
-		{% for id in person_usergroups_ids %}
-			{{ usergroup_names[id] }}{% if not loop.last %}, {% endif %}
-		{% else %}
-			None
-		{% endfor %}
-	</td>
-</tr>
-{% endif %}
 {% for f in custom_fields %}
-	{% if person.hasCustomField(f.id) %}
-	<tr>
-		<td class="label" width="80">{{f.title}}</td>
-		<td class="value">
+	{% if f.rendered %}
+		<dt class="type-labels">{{ f.title }}</dt>
+		<dd class="people-tags tags-wrap">
 			{{ render_custom_field(f) }}
-		</td>
-	</tr>
+		</dd>
 	{% endif %}
 {% endfor %}

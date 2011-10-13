@@ -22,6 +22,12 @@ class Choice extends HandlerAbstract
 	protected $multiple = false;
 	protected $expanded = false;
 
+	public function init()
+	{
+		$this->multiple = $this->field_def->getOption('multiple', false);
+		$this->expanded = $this->field_def->getOption('expanded', false);
+	}
+
 	public function renderHtml(array $data, array $template_vars = array())
 	{
 		$data['value'] = $this->_getRenderableString($data);

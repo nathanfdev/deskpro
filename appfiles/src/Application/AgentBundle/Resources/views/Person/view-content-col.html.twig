@@ -36,15 +36,12 @@
 		</dl>
 
 		{% if custom_fields|length %}
-			{#
 			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
 				{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
 			</dl>
-			<dl id="{{baseId}}_custom_fields_editable" style="display: none">
+			<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
 				{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
 			</dl>
-			<br class="clear"/>
-			#}
 		{% endif %}
 
 		<dl class="table-list">

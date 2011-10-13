@@ -8,6 +8,9 @@ use Application\DeskPRO\Entity\TicketFilter;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Orb\Util\Util;
 
+/**
+ * @deprecated Use the FieldFanager with the field manager service
+ */
 abstract class AbstractFields
 {
 	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefAbstract';
@@ -20,16 +23,14 @@ abstract class AbstractFields
 	 */
 	public function getFields()
 	{
-		$fields = App::getOrm()->getRepository(static::ENTITY_NAME)->getFields();
+		$fields = App::getOrm()->getRepository(static::ENTITY_NAME)->getTopFields();
 
 		return $fields;
 	}
 
 	public function getEnabledFields()
 	{
-		//TODO
-
-		return $this->getFields();
+		return App::getOrm()->getRepository(static::ENTITY_NAME)->getEnabledTopFields();
 	}
 
 	public function getFieldFromId($field_id)

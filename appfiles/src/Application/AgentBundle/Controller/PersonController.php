@@ -64,14 +64,8 @@ class PersonController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		// Custom fields
-		$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $user_field_defs);
-
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
+		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 
 		#------------------------------
 		# Misc info needed

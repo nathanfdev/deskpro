@@ -49,7 +49,7 @@ abstract class CustomDefAbstractController extends AbstractController
 	{
 		$this->rememberLastPage();
 
-		$existing_fields = $this->getApi()->getFields();
+		$existing_fields = $this->getApi()->getEnabledFields();
 
 		return $this->render($this->getTemplateName('index.html.twig'), $this->getTemplateVars(array(
 			'fields' => $existing_fields
@@ -106,6 +106,7 @@ abstract class CustomDefAbstractController extends AbstractController
 
 		$vars = array(
 			'field' => $field,
+			'editfield' => $editfield,
 			'form' => $form->createView(),
 			'base_edit_tpl' => $this->getTemplateName('edit.html.twig')
 		);

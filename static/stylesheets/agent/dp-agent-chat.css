@@ -2,10 +2,10 @@
 .noselect{-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;}
 .boxmodel-border-box{box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;}
 #agent_chat_section{background-image:-moz-linear-gradient(top, #eef0f2, #e4e6e9);background-image:-webkit-gradient(linear, center top, center bottom, from(#eef0f2), to(#e4e6e9));-pie-background:linear-gradient(#eef0f2, #e4e6e9);border-radius:5px 5px 0 0;border-top:1px solid #212326;border-left:1px solid #212326;border-right:1px solid #212326;box-shadow:0 1px 0 #FFFFFF inset;bottom:0;cursor:pointer;height:25px;left:8px;position:absolute;width:37px;z-index:9999;}
-#chat_online_count{background:url("../..//images/agent/navIcon.png") no-repeat;color:#FFFFFF;float:left;font-weight:normal;height:7px;margin:0 10px;padding:28px 0 0;width:33px;}
+#chat_online_count{background-repeat:no-repeat;background-image:url("../../images/agent/agent-chat.png") ;color:#FFFFFF;float:left;font-weight:normal;height:7px;padding:28px 0 0;width:33px;}
 #agent_chat_section:hover{background:#d2d4d6;}
 #chat_online_count{position:relative;}
-#chat_online_count{background-position:0 -350px;padding:11px 1px 5px 24px;width:100%;margin:0;color:#000000;text-shadow:0 1px 0 #fff;font-family:Tahoma,Arial,sans-serif;font-size:10px;}
+#chat_online_count{padding:11px 1px 5px 24px;width:100%;margin:2px 0 0 2px;color:#000000;text-shadow:0 1px 0 #fff;font-family:Tahoma,Arial,sans-serif;font-size:10px;}
 #agent_chat_panel{display:none;background:#fafafa;border:1px solid #b6babf;border-radius:5px 5px 0 0;position:absolute;right:0;bottom:0;left:8px;width:300px;z-index:99999;height:350px;}
 #agent_chat_panel.open{display:block;}
 #agent_chat_panel header{background-image:-moz-linear-gradient(top, #eff1f2, #dadcde);background-image:-webkit-gradient(linear, center top, center bottom, from(#eff1f2), to(#dadcde));-pie-background:linear-gradient(#eff1f2, #dadcde);box-shadow:0 1px 0 rgba(255, 255, 255, 0.35) inset,inset 0 1px 0 rgba(255, 255, 255, 0.15);border-bottom:1px solid #b6babf;border-radius:5px 5px 0 0;float:left;height:20px;padding:6px 0 0 5px;width:295px;}

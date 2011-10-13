@@ -240,7 +240,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true, indexBy="id")
 	 */
 	protected $custom_data;
 

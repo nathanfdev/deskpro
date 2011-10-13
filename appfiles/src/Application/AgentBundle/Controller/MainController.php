@@ -27,11 +27,8 @@ class MainController extends AbstractController
         $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
 
 		// Person menu needs these
-		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
-
-		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
-		$org_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($org_field_defs);
+		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
+		$org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
 
 		// Ticket options for search pane of tickets menu
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);

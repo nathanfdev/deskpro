@@ -35,7 +35,7 @@ class CustomDataPerson extends CustomDataAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefPerson
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefPerson", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
 	 * @ORM_Mapping\Id
 	 */

@@ -84,6 +84,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	//protected $children = null;
 
@@ -126,6 +127,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
+
+	/**
+	 * @var int
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
 
 	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler

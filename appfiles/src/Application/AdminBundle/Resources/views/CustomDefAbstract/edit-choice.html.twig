@@ -23,7 +23,29 @@
 			<label>Options</label>
 		</div>
 		<div class="dp-form-input">
-			{{ form_widget(form.choices) }}
+			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
+				<header>
+					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">Add</button>
+				</header>
+				<ul class="list">
+					{% for id,choice in editfield.choices %}
+					<li class="item" data-choice-id="{{ id }}">
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="label">{{ choice }}</div>
+						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist:{{ id }}:{{ choice }}" />
+					</li>
+					{% endfor %}
+				</ul>
+				<script type="text/x-deskpro-plain" class="row-tpl">
+					<li class="item new" data-choice-id="new">
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="label"></div>
+						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
+					</li>
+				</script>
+			</div>
 		</div>
 	</div>
 {% endblock %}
