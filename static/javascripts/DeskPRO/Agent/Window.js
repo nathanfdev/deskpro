@@ -1574,6 +1574,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
 
+		// Create toggle
+		$('#createContentTrigger').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var pos = $(this).offset();
+			var w = $(this).outerWidth();
+			var h= $(this).outerHeight();
+
+			var list = $('#createTicketToggle');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: pos.top,
+				left: pos.left
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.click(close);
+			list.click(close);
+		});
+
 
 		// Interface toggle
 		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').click(function(ev) {
@@ -1593,9 +1620,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			list.show();
 
 			var backdrop = $('<div class="backdrop" />').appendTo('body');
-			backdrop.click(function() {
+
+			var close = function() {
 				list.hide();
 				backdrop.remove();
+			};
+			backdrop.click(close);
+			list.click(close);
+			$('ul', list).click(function(ev) {
+				ev.stopPropagation();
 			});
 		});
 	},

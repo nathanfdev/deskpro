@@ -86,7 +86,7 @@
 .ie .DP-createTicket #createContentTrigger a{position:relative;}
 .DP-createTicket #createContentTrigger:hover a{background-image:-moz-linear-gradient(top, #75a8cd, #5688c9);background-image:-webkit-gradient(linear, center top, center bottom, from(#75a8cd), to(#5688c9));-pie-background:linear-gradient(#75a8cd, #5688c9);behavior:url("../../static/vendor/PIE.htc");position:relative;}
 .DP-createTicket #createContentTrigger a span{background-repeat:no-repeat;background-position:7px 5px;background-image:url(../../images/agent/header-plus.png) ;float:left;padding:0 0 0 20px;display:block;height:25px;}
-#createTicketToggle{left:19px;position:absolute;top:8px;z-index:9999;}
+#createTicketToggle{left:19px;position:absolute;top:8px;z-index:100001;}
 .createDropdown ul{background:rgba(242, 242, 242, 0.98);border-bottom:1px solid #B6BABF;border-left:1px solid #B6BABF;border-radius:0 0 4px 4px;border-right:1px solid #B6BABF;box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);text-align:left;float:left;width:160px;position:relative;z-index:1;behavior:url("../../static/vendor/PIE.htc");}
 .ie .createDropdown ul{background:#f2f2f2;}
 .createDropdown ul.createBtnPopups li{display:block;float:left;width:140px;padding:0 10px;}
