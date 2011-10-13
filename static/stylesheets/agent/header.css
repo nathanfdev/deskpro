@@ -86,7 +86,12 @@
 .ie .DP-createTicket #createContentTrigger a{position:relative;}
 .DP-createTicket #createContentTrigger:hover a{background-image:-moz-linear-gradient(top, #75a8cd, #5688c9);background-image:-webkit-gradient(linear, center top, center bottom, from(#75a8cd), to(#5688c9));-pie-background:linear-gradient(#75a8cd, #5688c9);behavior:url("../../static/vendor/PIE.htc");position:relative;}
 .DP-createTicket #createContentTrigger a span{background-repeat:no-repeat;background-position:7px 5px;background-image:url(../../images/agent/header-plus.png) ;float:left;padding:0 0 0 20px;display:block;height:25px;}
-#createTicketToggle{left:19px;position:absolute;top:8px;z-index:100001;}
+#createTicketToggle{left:19px;position:absolute;top:8px;z-index:100000001;}
+#agent_status .label-away,#agent_status .label-dnd{display:none;position:absolute;top:-2px;left:20px;width:40px;height:15px;color:#000;background:transparent !important;font-style:normal;font-size:10px;color:#fff;}
+#agent_status{position:relative;text-indent:0;}
+#agent_status.away,#agent_status.dnd{padding-right:30px;}
+#agent_status.away .label-away{display:block;}
+#agent_status.dnd .label-dnd{display:block;}
 #agent_status_menu{left:19px;position:absolute;top:8px;z-index:100000001;}
 #agent_status_menu .createDropdown{margin-top:18px;margin-left:6px;}
 #agent_status_menu .createDropdown ul{border-radius:4px !important;}
@@ -127,7 +132,7 @@
 .adminSwitcher:hover{background-image:-moz-linear-gradient(top, #5c93ba, #4670aa);background-image:-webkit-gradient(linear, center top, center bottom, from(#5c93ba), to(#4670aa));-pie-background:linear-gradient(#5c93ba, #4670aa);behavior:url("../../static/vendor/PIE.htc");position:relative;}
 .dropdownSwitcherWrap ul li a span{margin-left:2px;background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding-left:23px;}
 .dropdownSwitcherWrap ul li:hover a span{background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher.png) ;}
-#interfacesToggle{position:absolute;z-index:100002;position:absolute;display:none;}
+#interfacesToggle{position:absolute;z-index:100000001;position:absolute;display:none;}
 .dropdownSwitcherWrap ul{margin-left:1px;background-image:-moz-linear-gradient(top, #f2f2f2, #f2f2f2);background-image:-webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));-pie-background:linear-gradient(#f2f2f2, #f2f2f2);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);border-radius:0 0 4px 4px;border-left:1px solid #B6BABF;border-right:1px solid #B6BABF;border-bottom:1px solid #B6BABF;text-align:left;width:147px;position:relative;z-index:100001;}
 .dropdownSwitcherWrap li{display:block;padding:3px 5px;width:100%;}
 .dropdownSwitcherWrap li a{text-shadow:0 1px 0 #fff;font-size:11px;font-weight:normal;color:#9DA2A6;line-height:25px;display:block;padding:0 0 0 2px !important;}
@@ -136,7 +141,7 @@
 .switcherHeader{height:21px;padding:3px 0 0 10px !important;width:139px !important;z-index:100003;}
 .switcherHeader a{background-repeat:no-repeat;background-position:0 3px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding:0 0 0 22px !important;}
 .firefox .windows .switcherHeader a,.safari .windows .switcherHeader a{padding:0 24px 0 18px !important;}
-#DP-StatusSection{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;width:107px;position:relative;float:right;height:41px;}
+#DP-StatusSection{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;position:relative;float:right;height:41px;}
 .DP-adminStatus{height:31px;padding:9px 10px 5px 15px;position:relative;}
 .DP-adminStatus ul{margin:0;padding:0;}
 .DP-adminStatus li{float:left;padding:4px 0;}

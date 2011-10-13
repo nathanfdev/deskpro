@@ -601,7 +601,42 @@
 	left: 19px;
 	position: absolute;
 	top: 8px;
-	z-index: 100001;
+	z-index: 100000001;
+}
+
+#agent_status .label-away,
+#agent_status .label-dnd {
+    display: none;
+    position: absolute;
+    top: -2px;
+    left: 20px;
+    width: 40px;
+    height: 15px;
+    color:#000;
+
+    background: transparent !important;
+    font-style: normal;
+    font-size: 10px;
+    color: #fff;
+}
+
+#agent_status .label-away {
+
+}
+#agent_status .label-dnd {
+
+}
+
+#agent_status { position: relative; text-indent: 0;}
+#agent_status.away, #agent_status.dnd {
+	padding-right: 30px;
+}
+
+#agent_status.away .label-away { display: block; }
+#agent_status.dnd .label-dnd{ display: block; }
+
+.DP-adminStatus li.agentStatus a {
+
 }
 
 #agent_status_menu {
@@ -900,7 +935,7 @@
 /* Dropdown - Switcher Interfaces */
 #interfacesToggle{
     position: absolute;
-    z-index: 100002;
+    z-index: 100000001;
 	position: absolute;
 	display: none;
 }
@@ -986,7 +1021,6 @@
 #DP-StatusSection{
 	background-repeat: no-repeat;
 	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
-	width: 107px;
 	position: relative;
 	float: right;
 	height: 41px;
