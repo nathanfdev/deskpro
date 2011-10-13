@@ -94,22 +94,29 @@
 .createDropdown ul.createBtnPopups li:hover:first-child{margin-top:2px;}
 .createDropdown ul.createBtnPopups li:last-child{margin-bottom:5px;}
 .createDropdown ul.createBtnPopups li:hover:last-child{margin-bottom:5px;}
-.createDropdown ul.createBtnPopups li a{border:1px solid transparent;padding:0 5px;color:#9DA2A6;cursor:pointer;display:block;font-size:11px;line-height:23px;text-shadow:0 1px 0 #FFFFFF;}
-.createDropdown ul.createBtnPopups li span{background:url("../..//images/agent/imgSprt_ico.png") no-repeat;display:block;padding:0 0 0 22px;}
-.createDropdown ul.createBtnPopups li:hover a{background-image:-moz-linear-gradient(top, #72b8d8, #578bbf);background-image:-webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));-pie-background:linear-gradient(#72b8d8, #578bbf);behavior:url("../../static/vendor/PIE.htc");border:1px solid #4B7095;border-radius:3px;box-shadow:0 1px 0px rgba(255, 255, 255, 0.2) inset;color:#FFFFFF;text-shadow:0 1px 0 #000000;position:relative;}
+.createDropdown ul.createBtnPopups li a{border:1px solid transparent;color:#717579;cursor:pointer;display:block;font-size:11px;line-height:23px;text-shadow:0 1px 1px #FFFFFF;}
+.createDropdown ul.createBtnPopups li span{display:block;padding:0 0 0 25px;}
+.createDropdown ul.createBtnPopups li:hover a{background-image:-moz-linear-gradient(top, #72b8d8, #578bbf);background-image:-webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));-pie-background:linear-gradient(#72b8d8, #578bbf);behavior:url("../../static/vendor/PIE.htc");border:1px solid #4B7095;border-radius:3px;box-shadow:0 1px 0px rgba(255, 255, 255, 0.2) inset;color:#FFFFFF;text-shadow:0 1px 1px #000000;position:relative;}
 .createDropdown ul.createBtnPopups li:hover span{line-height:23px;margin:0;padding:0 0 0 25px;}
-.createDropdown ul.createBtnPopups li a span.createTicket{background-position:0 -469px;}
-.createDropdown ul.createBtnPopups li a span.createTicket:hover{background-position:0px -591px;}
-.createDropdown ul.createBtnPopups li a span.createArticle{background-position:0 -493px;}
-.createDropdown ul.createBtnPopups li a:hover span.createArticle{background-position:0px -616px;}
-.createDropdown ul.createBtnPopups li a span.createNews{background-position:0 -517px;}
-.createDropdown ul.createBtnPopups li a:hover span.createNews{background-position:0px -640px;}
-.createDropdown ul.createBtnPopups li a span.createDownload{background-position:0 -541px;}
-.createDropdown ul.createBtnPopups li a:hover span.createDownload{background-position:0px -663px;}
-.createDropdown ul.createBtnPopups li a span.createIdeas{background-position:0 -565px;}
-.createDropdown ul.createBtnPopups li a:hover span.createIdeas{background-position:0px -687px;}
+.createDropdown ul.createBtnPopups li kbd{margin-left:4px;margin-right:4px;float:right;font-family:"Lucida Sans Unicode","Trebuchet MS","Lucida Grande",Geneva,Verdana,sans-serif;font-size:9px;width:6px;text-align:center;display:block;}
+.createDropdown ul.createBtnPopups li a span.createTicket{background-repeat:no-repeat;background-position:4px 7px;background-image:url(../../images/agent/tabtype-ticket.png) ;}
+.createDropdown ul.createBtnPopups li a span.createTicket:hover{background-repeat:no-repeat;background-position:4px 7px;background-image:url(../../images/agent/tabtype-ticket-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createPerson{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createPerson{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createOrg{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createOrg{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createTask{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createTask{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createArticle{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createArticle{background-repeat:no-repeat;background-position:6px 7px;background-image:url(../../images/agent/tabtype-content-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createNews{background-repeat:no-repeat;background-position:4px 7px;background-image:url(../../images/agent/tabtype-news.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createNews{background-repeat:no-repeat;background-position:4px 7px;background-image:url(../../images/agent/tabtype-news-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createDownload{background-repeat:no-repeat;background-position:5px 6px;background-image:url(../../images/agent/tabtype-download.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createDownload{background-repeat:no-repeat;background-position:5px 6px;background-image:url(../../images/agent/tabtype-download-white.png) ;}
+.createDropdown ul.createBtnPopups li a span.createIdeas{background-repeat:no-repeat;background-position:7px 6px;background-image:url(../../images/agent/tabtype-idea.png) ;}
+.createDropdown ul.createBtnPopups li a:hover span.createIdeas{background-repeat:no-repeat;background-position:7px 6px;background-image:url(../../images/agent/tabtype-idea-white.png) ;}
 .createHeader,.switcherHeader{background-image:-moz-linear-gradient(top, #f2f2f2, #f2f2f2);background-image:-webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));box-shadow:inset 0 1px 2px rgba(0, 0, 0, 0.25);-pie-background:linear-gradient(#f2f2f2, #f2f2f2);behavior:url("../../static/vendor/PIE.htc");border-radius:3px 3px 0 0;border-top:1px solid #314559;border-left:1px solid #314559;border-right:1px solid #314559;border-radius:4px 4px 0 0;color:#737980;height:26px;padding:5px 0 1px 7px;position:relative;text-shadow:0 1px 0 #FFFFFF;width:62px;}
-.createHeader a,.switcherHeader a{background:url("../..//images/agent/imgSprt_ico.png") no-repeat 0 -459px;color:#737980;cursor:pointer;font-size:11px;text-shadow:0 1px 0 #FFFFFF;}
+.createHeader a,.switcherHeader a{background-repeat:no-repeat;background-position:0px 5px;background-image:url(../../images/agent/toolbar-plus.png) ;color:#737980;cursor:pointer;font-size:11px;text-shadow:0 1px 0 #FFFFFF;}
 .createHeader a{padding:0 15px;}
 #DP-InterfaceSwitcher{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;width:180px;position:relative;float:right;height:41px;}
 .DP-adminSwitch{padding:8px 16px;float:left;}
@@ -117,6 +124,8 @@
 .adminSwitcher a{background-repeat:no-repeat;background-position:0 5px;background-image:url(../../images/agent/interface-switcher.png) ;color:#F2F9FF;font-size:11px;font-weight:normal;line-height:22px;float:left;height:22px;padding:0 4px 0 23px;width:110px;text-shadow:0 1px 0 #000;}
 .adminSwitcher a span{background-repeat:no-repeat;background-position:0 10px;background-image:url(../../images/agent/dropdown-white.png) ;float:right;height:20px;padding:5px 12px 0 0;position:relative;}
 .adminSwitcher:hover{background-image:-moz-linear-gradient(top, #5c93ba, #4670aa);background-image:-webkit-gradient(linear, center top, center bottom, from(#5c93ba), to(#4670aa));-pie-background:linear-gradient(#5c93ba, #4670aa);behavior:url("../../static/vendor/PIE.htc");position:relative;}
+.dropdownSwitcherWrap ul li a span{margin-left:2px;background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding-left:20px;}
+.dropdownSwitcherWrap ul li:hover a span{background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher.png) ;}
 #interfacesToggle{position:absolute;z-index:100002;position:absolute;display:none;}
 .dropdownSwitcherWrap ul{margin-left:1px;background-image:-moz-linear-gradient(top, #f2f2f2, #f2f2f2);background-image:-webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));-pie-background:linear-gradient(#f2f2f2, #f2f2f2);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);border-radius:0 0 4px 4px;border-left:1px solid #B6BABF;border-right:1px solid #B6BABF;border-bottom:1px solid #B6BABF;text-align:left;width:147px;position:relative;z-index:100001;}
 .dropdownSwitcherWrap li{display:block;padding:3px 5px;width:100%;}
@@ -124,7 +133,7 @@
 .dropdownSwitcherWrap li a:focus span{background-repeat:no-repeat;background-image:url(../../images/agent/interface-switcher-on.png) ;padding:0 40px 0 2px;width:100%;}
 .dropdownSwitcherWrap li:hover a{background-image:-moz-linear-gradient(top, #72b8d8, #578bbf);background-image:-webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));-pie-background:linear-gradient(#72b8d8, #578bbf);behavior:url("../../static/vendor/PIE.htc");border:1px solid #406080;border-radius:3px;box-shadow:0 1px 0px rgba(255, 255, 255, 0.2) inset;color:#FFFFFF;line-height:20px;margin:0;padding:2px 0 1px 3px !important;text-shadow:0 1px 0 #333333;width:90%;position:relative;}
 .switcherHeader{height:21px;padding:3px 0 0 10px !important;width:139px !important;z-index:100003;}
-.switcherHeader a{background-position:0 -382px !important;padding:0 0 0 26px !important;}
+.switcherHeader a{background-repeat:no-repeat;background-position:0 3px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding:0 0 0 26px !important;}
 .firefox .windows .switcherHeader a,.safari .windows .switcherHeader a{padding:0 24px 0 18px !important;}
 #DP-StatusSection{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;width:107px;position:relative;float:right;height:41px;}
 .DP-adminStatus{height:31px;padding:9px 10px 5px 15px;position:relative;}

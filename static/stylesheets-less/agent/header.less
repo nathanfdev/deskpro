@@ -642,18 +642,17 @@
 
 .createDropdown ul.createBtnPopups li a{
 	border: 1px solid transparent;
-	padding: 0 5px;
-	color: #9DA2A6;
+
+	color: #717579;
 	cursor: pointer;
 	display: block;
 	font-size: 11px;
 	line-height: 23px;
-	text-shadow: 0 1px 0 #FFFFFF;
+	text-shadow: 0 1px 1px #FFFFFF;
 }
 .createDropdown ul.createBtnPopups li span{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat;
     display: block;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 25px;
 }
 
 .createDropdown ul.createBtnPopups li:hover a{
@@ -665,7 +664,7 @@
 	border-radius: 3px;
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
 	color: #FFFFFF;
-	text-shadow: 0 1px 0 #000000;
+	text-shadow: 0 1px 1px #000000;
 	position: relative;
 }
 
@@ -675,39 +674,104 @@
     padding: 0 0 0 25px;
 
 }
+
+.createDropdown ul.createBtnPopups li kbd {
+	margin-left: 4px;
+	margin-right: 4px;
+	float: right;
+	font-family: @body-font;
+	font-size: 9px;
+	width: 6px;
+	text-align: center;
+	display: block;
+}
+
 .createDropdown ul.createBtnPopups li a span.createTicket{
-	background-position: 0 -469px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
-	background-position: 0px -591px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createPerson{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createPerson {
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createOrg{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createOrg{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createTask{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createTask {
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createArticle{
-	background-position: 0 -493px;
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createArticle {
-	background-position: 0px -616px;
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createNews{
-	background-position: 0 -517px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createNews {
-	background-position: 0px -640px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createDownload{
-	background-position: 0 -541px;
+	background-repeat: no-repeat;
+	background-position: 5px 6px;
+	background-image: url(../../images/agent/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createDownload {
-	background-position: 0px -663px;
+	background-repeat: no-repeat;
+	background-position: 5px 6px;
+	background-image: url(../../images/agent/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createIdeas {
-	background-position: 0 -565px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createIdeas {
-	background-position: 0px -687px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createHeader, .switcherHeader{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
@@ -728,7 +792,9 @@
 	width: 62px;
 }
 .createHeader a, .switcherHeader a{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -459px;
+	background-repeat: no-repeat;
+	background-position: 0px 5px;
+    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 0px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #737980;
 	cursor: pointer;
 	font-size: 11px;
@@ -799,6 +865,25 @@
 	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
+
+.dropdownSwitcherWrap ul li a span {
+    margin-left: 2px;
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    padding-left: 20px;
+}
+
+.dropdownSwitcherWrap ul li:hover a span {
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createTicket:hover{
+
+}
+
 /* Dropdown - Switcher Interfaces */
 #interfacesToggle{
     position: absolute;
@@ -874,7 +959,9 @@
 	z-index: 100003;
 }
 .switcherHeader a{
-	background-position: 0 -382px !important;
+	background-repeat: no-repeat;
+	background-position: 0 3px;
+    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
 	padding: 0 0 0 26px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
