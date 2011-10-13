@@ -116,6 +116,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initPage: function() {
+
+		$('#dp_loading').remove();
+
 		this._initBasic();
 		this._initSections();
 		this._initRoutes();

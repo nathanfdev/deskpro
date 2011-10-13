@@ -7,7 +7,7 @@
 
 	<title>DeskPRO</title>
 
-	<script type="text/javascript" src="{{ dp_asset('agent_vendors') }}" />
+	{% include 'AgentBundle:Main:resources.html.twig' with {'no_interface_date': true} %}
 
 	<script>
 		var BASE_URL = '{{ path('user') }}';
@@ -22,7 +22,6 @@
 	</script>
 </head>
 <body>
-
 
 </body>
 </html>
