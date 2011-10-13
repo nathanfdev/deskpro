@@ -30,23 +30,66 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		w = w - (w / 4);
 
 		scroll_el = $('#tabNavigationPane .deskproTabList');
+		var ul = $('> ul', scroll_el);
+
+		var updatePosClasses = function(offset) {
+			if (!offset) offset = 0;
+			var scroll = scroll_el.scrollLeft();
+			scroll += offset;
+
+			if (scroll <= 0) {
+				$('#tabNavigationPane').addClass('far-left');
+				$('#tabNavigationPane').removeClass('far-right');
+			} else {
+
+				var start = scroll - 77;
+				var end = start+scroll_el.outerWidth() + 77;
+
+				var x = 0;
+				var stop = true;
+				var tabLeft, tabRight;
+				$('li', tabStrip).each(function() {
+					var tabEl = $(this);
+					var tabW = tabEl.outerWidth();
+					tabLeft = x;
+					x += tabW;
+					tabRight = x;
+				});
+
+				$('#tabNavigationPane').removeClass('far-left');
+				if (((tabLeft >= start) && (tabRight <= end))) {
+					$('#tabNavigationPane').addClass('far-right');
+				} else {
+					$('#tabNavigationPane').removeClass('far-right');
+				}
+			}
+		};
+
 		$('#tabNavSelectorLeft').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			scroll_el.animate({scrollLeft: '-=' + w}, 200);
+			scroll_el.animate({scrollLeft: '-=' + w}, 200, function() {
+
+			});
+			updatePosClasses(-200);
 		});
 		$('#tabNavSelectorRight').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			scroll_el.animate({scrollLeft: '+=' + w}, 200);
+			scroll_el.animate({scrollLeft: '+=' + w}, 200, function() {
+
+			});
+			updatePosClasses(200);
 		});
 
 		// Scroll wheel should scroll this baby horizontally
 		this.tabStrip.mousewheel(function(ev, delta) {
 			if (delta > 0) {
 				scroll_el.animate({scrollLeft: '+=' + w}, 100);
+				updatePosClasses(100);
 			} else {
 				scroll_el.animate({scrollLeft: '-=' + w}, 100);
+				updatePosClasses(-100);
 			}
 		});
 
@@ -58,25 +101,75 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		menuEl.mouseout(function() {
 			$('li.over', tabStrip).removeClass('over');
 		});
+		menuEl.delegate('.close', 'click', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			var item = $(this).closest('li');
+			var tabId = item.data('tab-id');
+
+			self.tabManager.removeTab(tabId);
+
+			updateMenuItems();
+			if (!$('li', menuEl).length) {
+				self.tabMenu.close();
+			}
+		});
+
+		var updateMenuItems = function() {
+			menuEl.empty();
+			var tabEl = $('#tabNavigationPane li.activeTabList');
+
+			if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
+
+				var start = scroll_el.scrollLeft() - 77;
+				var end = start+scroll_el.outerWidth() + 77;
+
+				var col = [];
+
+				var x = 0;
+				$('li', tabStrip).each(function() {
+					var tabEl = $(this);
+					var tabW = tabEl.outerWidth();
+					var tabLeft = x;
+
+					x += tabW;
+					var tabRight = x + tabW;
+
+					if (!((tabLeft >= start) && (tabRight <= end))) {
+						col.push(tabEl.get(0));
+					}
+				});
+
+				var lis = $(col);
+			} else {
+				var lis = $('li', tabStrip);
+			}
+
+			lis.each(function() {
+				var title = $('a', this).clone();
+
+				var close = $('<a class="close"></a>');
+
+				var li = $('<li />');
+				li.data('tab-id', $(this).data('tab-id'));
+				li.data('tab-el-id', $(this).attr('id'));
+				li.append(title);
+				li.append(close);
+
+				if ($(this).is('.activeTabList')) {
+					li.addClass('highlight');
+				}
+
+				menuEl.append(li);
+			});
+		}
+
 		this.tabMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#tabDropdownPicker'),
 			menuElement: menuEl,
 			onBeforeMenuOpened: function() {
-				menuEl.empty();
-				$('li', tabStrip).each(function() {
-					var title = $('a', this).clone();
-
-					var li = $('<li />');
-					li.data('tab-id', $(this).data('tab-id'));
-					li.data('tab-el-id', $(this).attr('id'));
-					li.append(title);
-
-					if ($(this).is('.activeTabList')) {
-						li.addClass('highlight');
-					}
-
-					menuEl.append(li);
-				});
+				updateMenuItems();
 			},
 			onItemClicked: function(info) {
 				var item = $(info.itemEl);
@@ -94,6 +187,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 					if (tabPos < scrollL || (tabPos+tabW) > (scrollL+w)) {
 						scroll_el.scrollLeft(tabPos);
+						updatePosClasses();
 					}
 				}
 			},
@@ -369,7 +463,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			w += $(this).outerWidth();
 		}).length;
 
-		w += 21 * num;
+		//w += 14 * num;
 
 		this.tabStrip.width(w);
 
@@ -386,12 +480,14 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			tabPane.removeClass('with-overflow');
 			this.tabStrip.scrollLeft(0);
+			$('#tabNavigationPane').removeClass('far-left').removeClass('far-right');
 
 		// Not scrolling but needs to now
 		// > Add scroller
 		} else if (!isScroll && needsScroll) {
 			console.debug('[TabStrip] Add scrolling');
 			tabPane.addClass('with-overflow');
+			$('#tabNavigationPane').addClass('far-left').removeClass('far-right');
 		}
 	},
 

@@ -79,19 +79,19 @@
 	left: 1;
 	top: 0;
 	bottom: 0;
-	width: 28px;
+	width: 24px;
 	z-index: 99;
-	background: url("@{asset-url}/images/agent/tabnav-left.png") no-repeat 0 0;
+	background: url("@{asset-url}/images/agent/tabnav-left.png") no-repeat 100% 0;
 }
 #tabNavSelectorLeft:hover{
-	background: url("@{asset-url}/images/agent/tabnav-left-on.png") no-repeat 0 0;
+	background: url("@{asset-url}/images/agent/tabnav-left-on.png") no-repeat 100% 0;
 }
 #tabNavSelectorRight{
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	right: 19px;
-	width: 32px;
+	right: 27px;
+	width: 25px;
 	z-index: 99;
 	background: url("@{asset-url}/images/agent/tabnav-right.png") no-repeat 0 0;
 }
@@ -112,10 +112,10 @@
 	text-indent: -9999px;
 }
 #tabNavSelectorLeft a.tabSlideLeft{
- 	padding: 7px 11px;
+ 	padding: 0;
 }
 #tabNavSelectorRight a.tabSlideRight{
-	padding: 7px 16px;
+	padding: 0;
 }
 
 #tabDropdownPicker{
@@ -145,6 +145,9 @@
 	height: 21px;
 	text-indent: -9999px;
 	width: 30px;
+	background-repeat: no-repeat;
+	background-position: 5px 6px;
+	background-image: url(../../images/agent/dropdown-white.png);
 }
 
 
@@ -155,13 +158,8 @@
 	behavior: url("@{asset-url}/static/vendor/PIE.htc");
 }
 
-.with-overflow .deskproTabList li:first-child {
-	margin-left: 24px;
-}
-
-.with-overflow .deskproTabList li:last-child {
-	margin-right: 24px;
-}
+.with-overflow.far-left #tabNavSelectorLeft {	display:none !important; }
+.with-overflow.far-right #tabNavSelectorRight {	display:none !important; }
 
 .deskproTabList{
 	position: absolute;
@@ -248,12 +246,6 @@
 	behavior: url("@{asset-url}/static/vendor/PIE.htc");
 	position: relative;
 }
-.deskproTabList li.activeTabList:hover span.close{
-	background-position: -18px -1137px;
-}
-.deskproTabList li.activeTabList span.close:hover{
-	background-position: 0 -1137px;
-}
 
 .deskproTabList li.important:hover{
 	background-image: -moz-linear-gradient(top, #93bcdc, #4b7ebb);
@@ -277,6 +269,8 @@
 	background: -ms-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* IE10+ */
 	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f5f7fa', endColorstr='#f5f7fa',GradientType=1 )"; /* IE6-9 */
 	background: linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* W3C */
+
+	z-index: 1;
 }
 
 .deskproTabList li .bound-fade {
@@ -292,6 +286,8 @@
 	background: -ms-linear-gradient(left, rgba(186,190,195,0) 0%,rgba(186,190,195,1) 100%); /* IE10+ */
 	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00babec3', endColorstr='#babec3',GradientType=1 )"; /* IE6-9 */
 	background: linear-gradient(left, rgba(186,190,195,0) 0%,rgba(186,190,195,1) 100%); /* W3C */
+
+	z-index: 1;
 }
 
 .deskproTabList li.activeTabList a{
@@ -314,6 +310,19 @@
 	overflow: hidden;
 	white-space: nowrap;
 }
+.deskproTabList li.person a,
+.deskproTabList li.organization a {
+	background-position: 1px 9px;
+    background-repeat: no-repeat;
+    background-image: url(../../images/agent/tabtype-person.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 1px; sprite-margin-top: 9px; sprite-margin-bottom: 15px; */;
+}
+.deskproTabList li.article a,
+.deskproTabList li.download a,
+.deskproTabList li.idea a {
+	background-position: 5px 9px;
+    background-repeat: no-repeat;
+    background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 9px; sprite-margin-bottom: 15px; */;
+}
 .ie .deskproTabList li a{
 	padding: 4px 10px 6px 18px;
 }
@@ -331,8 +340,9 @@
 	right: 3px;
 	top: 8px;
 	width: 13px;
+	z-index: 2;
 }
-.deskproTabList li.important:hover span.close, .deskproTabList li.activeTabList:hover span.close{
+.deskproTabList li:hover span.close {
     background-repeat: no-repeat;
     background-image: url(../../images/agent/tab-close.png) /** sprite-ref: ui-v; sprite-alignment: right */;
 }
@@ -347,7 +357,22 @@
 	position: relative;
 }
 
+ul#dp_tabstrip_menu > li a.close {
+	background-repeat: no-repeat;
+    background-image: url(../../images/agent/tab-close.png) /** sprite-ref: ui-v; sprite-alignment: right */;
+    display: block;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 4px;
+    opacity: 0.4;
+}
 
+ul#dp_tabstrip_menu > li a.close:hover {
+	opacity: 1;
+}
 
 
 
