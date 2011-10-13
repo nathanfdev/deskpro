@@ -18,6 +18,17 @@
 	</section>
     </section>
     </div>
+    <div class="extra-fields">
+    <ul>
+        <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'complete', 'search_categoty': 'total'}) }}">
+            <h3 class="title">
+                Total Completed Task: 
+                <span class="list-counter" id="total-colpeted-task">{{ total_complete_task|default(0) }}</span>
+                
+            </h3>
+        </li>
+        </u>
+    </div>
 </div>
 
 {# Page Containers #}

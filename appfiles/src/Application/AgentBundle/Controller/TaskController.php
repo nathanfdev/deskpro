@@ -129,26 +129,22 @@ class TaskController extends AbstractController {
         $this->_loadModels();
         $person = $this->person;
         
-        if($search_type == 'own')
-        {            
+        if ($search_type == 'own') {
             $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
-            
-        }else if($search_type == 'team')
-        {
+        } else if ($search_type == 'team') {
             $tasks = $this->_task_repository->filterPendingTaksForPersonTeams($person, $search_categoty);
-        }
-        else if($search_type == 'delegate')
-        {
+        } else if ($search_type == 'delegate') {
             $tasks = $this->_task_repository->filterPendingDelegatedTasksForPerson($person, $search_categoty);
-        }
-        else if($search_type == 'all')
-        {
+        } else if ($search_type == 'all') {
             $tasks = $this->_task_repository->filterAllPendingTasks($search_categoty);
+        } else if($search_type == 'complete'){
+            $tasks = $this->_task_repository->allCompleteTasks();
         }
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
             'tasks' => $tasks,
+            'total_complete_task' => $this->_task_repository->countCompleteTasks()
         ));        
     }
 
@@ -249,6 +245,7 @@ class TaskController extends AbstractController {
     {
         $this->_loadModels();
         $data = $this->in->getCleanValueArray('ids', 'array', 'string');
+        
         foreach ($data as $value) {
             $task = $this->getTaskOr404($value[0]);
             $task->setIsCompleted(true);
@@ -258,7 +255,7 @@ class TaskController extends AbstractController {
         
         return $this->createJsonResponse(array(
 			'success' => true,
-			'affected' => ''
+			'total_complete_task' => $this->_task_repository->countCompleteTasks()
 		));
     }
 
