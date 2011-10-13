@@ -92,7 +92,7 @@
 					<li id="create_organization_btn"><a><span class="createOrg">Organization <kbd>o</kbd></span></a></li>
 					<li id="create_article_btn"><a><span class="createArticle">Article <kbd>k</kbd></span></a></li>
 					<li id="create_news_btn"><a><span class="createNews">News Entry <kbd>n</kbd></span></a></li>
-					<li id="create_donwload_btn"><a><span class="createDownload">Download <kbd>d</kbd></span></a></li>
+					<li id="create_download_btn"><a><span class="createDownload">Download <kbd>d</kbd></span></a></li>
 					<li id="create_idea_btn"><a><span class="createIdeas">Ideas <kbd>i</kbd></span></a></li>
 				</ul>
 			</div>
@@ -116,11 +116,10 @@
 					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
 				</div>
 				<ul>
-					<li class="logggedAs"><p>Logged in as</p></li>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 					<li class="setting" id="user_settings_link"><a>Settings</a></li>
 					<li class="help"><a>Help</a></li>
-					<li class="logout"><a href="{{ path('agent_logout') }}">Log out</a></li>
+					<li class="logout"><a href="{{ path('user_logout', {'auth': security_token('user_logout')}) }}">Log out</a></li>
 				</ul>
 			</div>
 		</div>

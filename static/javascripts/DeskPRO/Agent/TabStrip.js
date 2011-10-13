@@ -534,6 +534,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			return;
 		}
 
+		Tipped.remove('#' + tabData.btnId);
 		$('#' + tabData.btnId).remove();
 
 		if (tabData.page.meta.routeData && tabData.page.meta.routeData.xhr) {
@@ -545,5 +546,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		this.recalculateScrolling();
+
+		DeskPRO_Window.updateWindowUrlFragment();
 	}
 });

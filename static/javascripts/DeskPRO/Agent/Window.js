@@ -249,6 +249,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var currentTab = this.pageTabStrip.getActiveTab();
 
+		// No current tab means there are no tabs open at all
+		if (!currentTab) {
+			jQuery.history.load('');
+			return;
+		}
+
 		var tabs = this.pageTabStrip.getTabs();
 		Object.each(tabs, function(tab, id) {
 			var tabPage = tab.page;
@@ -1414,12 +1420,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Settings is a window
 		$('#user_settings_link').click(function() {
-			var overlay = new DeskPRO.UI.Overlay({
-				contentMethod: 'iframe',
-				iframeUrl: BASE_URL + 'agent/settings'
-			});
-
-			overlay.openOverlay();
+			window.open(BASE_URL + 'agent/settings');
 		});
 
 		// Global AJAX handler for errors if no error handler is attached
