@@ -137,17 +137,6 @@ class AsseticManager
 
 
 	/**
-	 * @param string $name
-	 * @return string
-	 */
-	public function dumpBuild($name)
-	{
-		$asset = $this->getBuildAsset($name);
-		return $asset->dump();
-	}
-
-
-	/**
 	 * Write the bundle file to the filesystem
 	 *
 	 * @param $name
@@ -343,7 +332,9 @@ class AsseticManager
 
 		if (isset($info['references'])) {
 			foreach ($info['references'] as $r) {
-				$this->getAssetBundle($r);
+				$ref_info = $this->getAssetBundle($r);
+
+
 				$coll->add(new \Assetic\Asset\AssetReference($this->asset_manager, $r));
 			}
 		}

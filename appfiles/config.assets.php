@@ -20,6 +20,7 @@ $CONFIG['OPTIONS'] = array(
 
 $CONFIG['agent'] = array(
 	'out' => 'js/agent-all.js',
+	'post_filters' => array('yui_simple'),
 	'references' => array(
 		'agent_vendors',
 		'agent_common',
@@ -76,7 +77,6 @@ $CONFIG['agent_vendors'] = array(
 );
 
 $CONFIG['agent_window_sections'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-window-sections.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
@@ -92,7 +92,6 @@ $CONFIG['agent_window_sections'] = array(
 );
 
 $CONFIG['agent_pages_lists'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-pages-lists.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
@@ -128,7 +127,6 @@ $CONFIG['agent_pages_lists'] = array(
 );
 
 $CONFIG['agent_pages'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-pages.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
@@ -186,7 +184,6 @@ $CONFIG['agent_pages'] = array(
 );
 
 $CONFIG['agent_element_handlers'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-element-handlers.js',
 	'files' => array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
@@ -200,7 +197,6 @@ $CONFIG['agent_element_handlers'] = array(
 );
 
 $CONFIG['agent_common'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-common.js',
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
@@ -224,7 +220,6 @@ $CONFIG['agent_common'] = array(
 );
 
 $CONFIG['agent_agent_ui'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/BasicWindow.js',
@@ -267,7 +262,6 @@ $CONFIG['agent_agent_ui'] = array(
 );
 
 $CONFIG['agent_deskpro_ui'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-deskpro-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/UI/LabelsInput.js',
@@ -281,7 +275,6 @@ $CONFIG['agent_deskpro_ui'] = array(
 );
 
 $CONFIG['agent_misc'] = array(
-	'filters' => array('yui_simple'),
 	'out' => 'js/agent-misc.js',
 	'files' => array(
 		'javascripts/DeskPRO/Form/InlineEdit.js',
