@@ -916,16 +916,9 @@ a.clean-white {
 
     display: none;
 
-    background: rgb(255,255,255);
-    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1)));
-    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 )";
-    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: #fff;
 
-    padding: 15px 8px 15px 8px;
+    padding: 10px 8px 8px 8px;
     border: 2px solid rgba(128,128,128,0.5);
 
     -webkit-box-shadow: 1px 1px 5px 0px #6e6e6e;
@@ -941,9 +934,22 @@ a.clean-white {
 
 #volume_controls .slider {
     height: 100px;
+    margin-left: 2px;
 }
 
-
+#volume_controls .mute-toggle {
+	display: block;
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+	cursor: pointer;
+	width: 14px;
+	height: 14px;
+	overflow: hidden;
+	margin-top: 5px;
+}
+#volume_controls .mute-toggle.off {
+	background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+}
 
 
 #agent_status_away_overlay {

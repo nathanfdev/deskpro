@@ -82,16 +82,17 @@
 #DP-CreateSection{position:relative;float:left;width:100px;height:41px;}
 .DP-createTicket{overflow:hidden;font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;margin-left:20px;margin-top:7px;}
 .DP-createTicket #createContentTrigger{padding-top:2px;}
-.DP-createTicket #createContentTrigger a{background-image:-moz-linear-gradient(top, #529dcd, #3567b2);background-image:-webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));-pie-background:linear-gradient(#529dcd, #3567b2);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 1px 0 #386da1,0 1px 0 #95caec inset,0 0 1px 1px rgba(255, 255, 255, 0.2) inset;border:1px solid #314559;border-radius:3px;color:#f2f9ff;cursor:pointer;float:left;font-size:11px;font-weight:normal;height:19px;line-height:19px;padding:1px 10px 0 0;text-align:center;text-shadow:0 1px 0 #000000;position:relative;}
+.DP-createTicket #createContentTrigger a{background-image:-moz-linear-gradient(top, #529dcd, #3567b2);background-image:-webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));-pie-background:linear-gradient(#529dcd, #3567b2);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 1px 0 #386da1,0 1px 0 #95caec inset,0 0 1px 1px rgba(255, 255, 255, 0.2) inset;border:1px solid #314559;border-radius:3px;color:#f2f9ff;cursor:pointer;float:left;font-size:11px;font-weight:normal;height:19px;line-height:19px;padding:1px 10px 0 0;text-align:center;text-shadow:0 1px 1px rgba(0, 0, 0, 0.5);position:relative;}
 .ie .DP-createTicket #createContentTrigger a{position:relative;}
 .DP-createTicket #createContentTrigger:hover a{background-image:-moz-linear-gradient(top, #75a8cd, #5688c9);background-image:-webkit-gradient(linear, center top, center bottom, from(#75a8cd), to(#5688c9));-pie-background:linear-gradient(#75a8cd, #5688c9);behavior:url("../../static/vendor/PIE.htc");position:relative;}
 .DP-createTicket #createContentTrigger a span{background-repeat:no-repeat;background-position:7px 5px;background-image:url(../../images/agent/header-plus.png) ;float:left;padding:0 0 0 20px;display:block;height:25px;}
 #createTicketToggle{left:19px;position:absolute;top:8px;z-index:100001;}
-.createDropdown ul{background:rgba(242, 242, 242, 0.98);border-bottom:1px solid #B6BABF;border-left:1px solid #B6BABF;border-radius:0 0 4px 4px;border-right:1px solid #B6BABF;box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);text-align:left;float:left;width:160px;position:relative;z-index:1;behavior:url("../../static/vendor/PIE.htc");}
+#agent_status_menu{left:19px;position:absolute;top:8px;z-index:100000001;}
+#agent_status_menu .createDropdown{margin-top:18px;margin-left:6px;}
+#agent_status_menu .createDropdown ul{border-radius:4px !important;}
+.createDropdown ul{padding-top:5px;background:rgba(242, 242, 242, 0.98);border-bottom:1px solid #B6BABF;border-left:1px solid #B6BABF;border-radius:0 0 4px 4px;border-right:1px solid #B6BABF;box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);text-align:left;position:relative;z-index:1;behavior:url("../../static/vendor/PIE.htc");}
 .ie .createDropdown ul{background:#f2f2f2;}
-.createDropdown ul.createBtnPopups li{display:block;float:left;width:140px;padding:0 10px;}
-.createDropdown ul.createBtnPopups li:first-child{margin-top:2px;}
-.createDropdown ul.createBtnPopups li:hover:first-child{margin-top:2px;}
+.createDropdown ul.createBtnPopups li{display:block;width:140px;padding:0 5px;}
 .createDropdown ul.createBtnPopups li:last-child{margin-bottom:5px;}
 .createDropdown ul.createBtnPopups li:hover:last-child{margin-bottom:5px;}
 .createDropdown ul.createBtnPopups li a{border:1px solid transparent;color:#717579;cursor:pointer;display:block;font-size:11px;line-height:23px;text-shadow:0 1px 1px #FFFFFF;}
@@ -121,10 +122,10 @@
 #DP-InterfaceSwitcher{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;width:180px;position:relative;float:right;height:41px;}
 .DP-adminSwitch{padding:8px 16px;float:left;}
 .adminSwitcher{background-image:-moz-linear-gradient(top, #5a90b8, #3c6094);background-image:-webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));-pie-background:linear-gradient(#436ba3, #3c6094);box-shadow:0 1px 0 #386da1, inset 0 1px 0 #75b3da, inset 0 0 1px #5283af;behavior:url("../../static/vendor/PIE.htc");border:1px solid #314559;border-radius:3px;float:left;height:20px;padding:0 9px 2px;cursor:pointer;float:left;width:130px;position:relative;}
-.adminSwitcher a{background-repeat:no-repeat;background-position:0 5px;background-image:url(../../images/agent/interface-switcher.png) ;color:#F2F9FF;font-size:11px;font-weight:normal;line-height:22px;float:left;height:22px;padding:0 4px 0 23px;width:110px;text-shadow:0 1px 0 #000;}
+.adminSwitcher a{background-repeat:no-repeat;background-position:0 5px;background-image:url(../../images/agent/interface-switcher.png) ;color:#F2F9FF;font-size:11px;font-weight:normal;line-height:22px;float:left;height:22px;padding:0 4px 0 23px;width:110px;text-shadow:0 1px 1px rgba(0, 0, 0, 0.5);}
 .adminSwitcher a span{background-repeat:no-repeat;background-position:0 10px;background-image:url(../../images/agent/dropdown-white.png) ;float:right;height:20px;padding:5px 12px 0 0;position:relative;}
 .adminSwitcher:hover{background-image:-moz-linear-gradient(top, #5c93ba, #4670aa);background-image:-webkit-gradient(linear, center top, center bottom, from(#5c93ba), to(#4670aa));-pie-background:linear-gradient(#5c93ba, #4670aa);behavior:url("../../static/vendor/PIE.htc");position:relative;}
-.dropdownSwitcherWrap ul li a span{margin-left:2px;background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding-left:20px;}
+.dropdownSwitcherWrap ul li a span{margin-left:2px;background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding-left:23px;}
 .dropdownSwitcherWrap ul li:hover a span{background-repeat:no-repeat;background-position:0 2px;background-image:url(../../images/agent/interface-switcher.png) ;}
 #interfacesToggle{position:absolute;z-index:100002;position:absolute;display:none;}
 .dropdownSwitcherWrap ul{margin-left:1px;background-image:-moz-linear-gradient(top, #f2f2f2, #f2f2f2);background-image:-webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));-pie-background:linear-gradient(#f2f2f2, #f2f2f2);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 0 1px rgba(255, 255, 255, 0.9) inset,0 4px 5px -3px rgba(0, 0, 0, 0.2);border-radius:0 0 4px 4px;border-left:1px solid #B6BABF;border-right:1px solid #B6BABF;border-bottom:1px solid #B6BABF;text-align:left;width:147px;position:relative;z-index:100001;}
@@ -133,7 +134,7 @@
 .dropdownSwitcherWrap li a:focus span{background-repeat:no-repeat;background-image:url(../../images/agent/interface-switcher-on.png) ;padding:0 40px 0 2px;width:100%;}
 .dropdownSwitcherWrap li:hover a{background-image:-moz-linear-gradient(top, #72b8d8, #578bbf);background-image:-webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));-pie-background:linear-gradient(#72b8d8, #578bbf);behavior:url("../../static/vendor/PIE.htc");border:1px solid #406080;border-radius:3px;box-shadow:0 1px 0px rgba(255, 255, 255, 0.2) inset;color:#FFFFFF;line-height:20px;margin:0;padding:2px 0 1px 3px !important;text-shadow:0 1px 0 #333333;width:90%;position:relative;}
 .switcherHeader{height:21px;padding:3px 0 0 10px !important;width:139px !important;z-index:100003;}
-.switcherHeader a{background-repeat:no-repeat;background-position:0 3px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding:0 0 0 26px !important;}
+.switcherHeader a{background-repeat:no-repeat;background-position:0 3px;background-image:url(../../images/agent/interface-switcher-dark.png) ;padding:0 0 0 22px !important;}
 .firefox .windows .switcherHeader a,.safari .windows .switcherHeader a{padding:0 24px 0 18px !important;}
 #DP-StatusSection{background-repeat:no-repeat;background-image:url("../..//images/agent/headerDiv.png") ;width:107px;position:relative;float:right;height:41px;}
 .DP-adminStatus{height:31px;padding:9px 10px 5px 15px;position:relative;}
@@ -141,12 +142,12 @@
 .DP-adminStatus li{float:left;padding:4px 0;}
 .DP-adminStatus li a{display:block;text-indent:-9999px;height:16px;width:16px;}
 .DP-adminStatus li.agentStatus a{background-repeat:no-repeat;background-image:url(../../images/agent/agent-status.png) ;margin-right:15px;position:relative;height:12px;}
-.DP-adminStatus li.agentStatus a:hover,#dpHeader .actions li.agentStatus a.on{background-repeat:no-repeat;background-image:url(../../images/agent/agent-status-away.png) ;}
+#dpHeader .actions li.agentStatus a.on{background-repeat:no-repeat;background-image:url(../../images/agent/agent-status-away.png) ;}
 .DP-adminStatus li.networkStatIndicator a{background-repeat:no-repeat;background-image:url(../../images/agent/network-status.png) ;margin-right:6px;width:17px;height:12px;}
-.DP-adminStatus li.networkStatIndicator a:hover,.DP-adminStatus li.networkStatIndicator a.on{background-repeat:no-repeat;background-image:url(../../images/agent/network-status-on.png) ;}
+.DP-adminStatus li.networkStatIndicator a.on{background-repeat:no-repeat;background-image:url(../../images/agent/network-status-on.png) ;}
 .DP-adminStatus li.soundIcon{padding-top:2px;}
 .DP-adminStatus li.soundIcon a{background-repeat:no-repeat;background-image:url(../../images/agent/sound-on.png) ;margin-left:10px;height:15px;}
-.DP-adminStatus li.soundIcon a:hover,.DP-adminStatus li.soundIcon a.off{background-repeat:no-repeat;background-image:url(../../images/agent/sound-off.png) ;}
+.DP-adminStatus li.soundIcon a.off{background-repeat:no-repeat;background-image:url(../../images/agent/sound-off.png) ;}
 .DP-adminStatus li a .dropdowninfo{position:relative;z-index:9999;}
 .DP-adminStatus li a span{background-image:-moz-linear-gradient(top, #262626, #111111);background-image:-webkit-gradient(linear, center top, center bottom, from(#262626), to(#111111));behavior:url("../../static/vendor/PIE.htc");box-shadow:0 0 1px rgba(255, 255, 255, 0.2) inset,0 0 2px rgba(0, 0, 0, 0.3);border-radius:5px 5px 5px 5px;line-height:16px;font-size:11px;font-weight:bold;padding:5px 10px;min-width:100px;max-width:200px;display:none;color:#FFF;border:1px solid #000;position:relative;}
 .ie .DP-adminStatus li a span{background:#111;}
@@ -156,6 +157,9 @@
 .DP-adminStatus li.agentStatus a span:after{left:160px;}
 .ie .DP-adminStatus li.agentStatus a span{width:170px;left:-170px;}
 .ie .DP-adminStatus li.agentStatus a span:after{left:170px;}
+#network_status_tip .network-status-red{display:none;}
+#network_status_tip.error .network-status-red{display:block;}
+#network_status_tip.error .network-status-green{display:none;}
 .DP-adminStatus li.networkStatIndicator a span{left:-135px;padding:5px 30px 5px 10px;top:10px;width:110px;}
 .DP-adminStatus li.networkStatIndicator a span:after{left:135px;}
 .ie .DP-adminStatus li.networkStatIndicator a span{width:130px;left:-158px;}

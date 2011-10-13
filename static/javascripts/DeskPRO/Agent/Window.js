@@ -1247,6 +1247,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (is_success) {
 				$('#network_status_indicator').addClass('active');
 				$('#network_status_indicator span').html('0');
+				$('#network_status_tip').removeClass('error');
 			} else {
 				$('#network_status_indicator').removeClass('active');
 				var spanEl = $('#network_status_indicator span');
@@ -1254,6 +1255,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				num++;
 
 				spanEl.html(num);
+
+				$('#network_status_tip').addClass('error');
 			}
 		}
 	},
@@ -1445,13 +1448,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		// Online/offline
-		$('#agent_status').click(function(ev) {
-			ev.preventDefault();
-			self.toggleAgentStatus();
-		});
-
 		this.volume = 0.8;
+
+		var updateVolumeUi = function() {
+			if (self.volume == 0 || self.volume == 0.0) {
+				self.volume = 0;
+				$('#sound_icon').addClass('off');
+				$('#sound_icon_in').addClass('off');
+			} else {
+				$('#sound_icon').removeClass('off');
+				$('#sound_icon_in').removeClass('off');
+			}
+
+			$('audio').each(function() {
+				this.volume = self.volume;
+			});
+
+			$('#volume_controls .slider').slider('value', self.volume * 100);
+		}
 
 		// Volume slider
 		$('#volume_controls .slider').slider({
@@ -1462,17 +1476,25 @@ DeskPRO.Agent.Window = new Orb.Class({
 			value: 80,
 			slide: function(event, ui) {
 				self.volume = parseInt(ui.value) / 100;
+				$('#sound_icon_in').data('last-value', $('#volume_controls .slider').slider('value'));
+				updateVolumeUi();
+			}
+		});
 
-				if (self.volume == 0 || self.volume == 0.0) {
-					self.volume = 0;
-					$('#sound_icon').addClass('off');
-				} else {
-					$('#sound_icon').removeClass('off');
+		$('#sound_icon_in').data('last-value', $('#volume_controls .slider').slider('value'));
+
+		$('#sound_icon_in').click(function(ev) {
+			ev.stopPropagation();
+			if ($(this).is('.off')) {
+				var last = $(this).data('last-value');
+				if (last == 0 || last == 0.0) {
+					last = 80;
 				}
-
-				$('audio').each(function() {
-					this.volume = self.volume;
-				});
+				self.volume = parseInt(last) / 100;
+				updateVolumeUi();
+			} else {
+				self.volume = 0;
+				updateVolumeUi();
 			}
 		});
 
@@ -1494,7 +1516,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#volume_controls_back').show();
 			$('#volume_controls').css({
 				'top': 30,
-				'left': $('#sound_icon').offset().left - 7
+				'left': $('#sound_icon').offset().left - 9
 			});
 
 			$('#volume_controls').fadeIn();
@@ -1631,14 +1653,50 @@ DeskPRO.Agent.Window = new Orb.Class({
 				ev.stopPropagation();
 			});
 		});
+
+		// Status
+		$('#agent_status_trigger').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var pos = $(this).offset();
+			var w = $(this).outerWidth();
+			var h= $(this).outerHeight();
+
+			var list = $('#agent_status_menu');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: pos.top,
+				left: pos.left
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.click(close);
+			list.click(close);
+			$('#agent_status_away_overlay').click(close);
+		});
+
+		$('#agent_status_menu .status_go_available').click(function() {
+			self.toggleAgentStatus('available');
+		});
+		$('#agent_status_menu .status_go_away').click(function() {
+			self.toggleAgentStatus('away');
+		});
+		$('#agent_status_menu .status_go_dnd').click(function() {
+			self.toggleAgentStatus('dnd');
+		});
 	},
 
-	toggleAgentStatus: function(force_back) {
+	toggleAgentStatus: function(status) {
 		var statusEl = $('#agent_status');
 
-		force_back = force_back || false;
-
-		if (force_back || statusEl.is('.off')) {
+		if (status == 'available') {
 			$('#agent_status_away_overlay').remove();
 			statusEl.removeClass('off');
 
@@ -1647,7 +1705,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				type: 'GET'
 			});
 
-		} else {
+		} else if (status == 'away') {
 			var overlayEl = $('<div id="agent_status_away_overlay" />').appendTo('body');
 
 			statusEl.addClass('off');

@@ -574,7 +574,7 @@
 	line-height: 19px;
 	padding: 1px 10px 0 0;
 	text-align: center;
-	text-shadow: 0 1px 0 #000000;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 	position: relative;
 }
 .ie .DP-createTicket #createContentTrigger a{
@@ -603,7 +603,25 @@
 	top: 8px;
 	z-index: 100001;
 }
+
+#agent_status_menu {
+	left: 19px;
+	position: absolute;
+	top: 8px;
+	z-index: 100000001;
+}
+
+#agent_status_menu .createDropdown {
+	margin-top: 18px;
+	margin-left: 6px;
+}
+
+#agent_status_menu .createDropdown ul {
+	border-radius: 4px !important;
+}
+
 .createDropdown ul{
+    padding-top: 5px;
 	background: rgba(242,242,242,0.98);
 	border-bottom: 1px solid #B6BABF;
 	border-left: 1px solid #B6BABF;
@@ -611,8 +629,6 @@
 	border-right: 1px solid #B6BABF;
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	text-align: left;
-	float: left;
-	width: 160px;
 	position: relative;
 	z-index: 1;
 	behavior: url("../../static/vendor/PIE.htc");
@@ -623,15 +639,12 @@
 
 .createDropdown ul.createBtnPopups li{
 	display: block;
-	float: left;
 	width: 140px;
-	padding: 0 10px;
+	padding: 0 5px;
 }
-.createDropdown ul.createBtnPopups li:first-child{
-	margin-top: 2px;
-}
+
 .createDropdown ul.createBtnPopups li:hover:first-child{
-	margin-top: 2px;
+
 }
 .createDropdown ul.createBtnPopups li:last-child{
 	margin-bottom: 5px;
@@ -847,7 +860,7 @@
 	height: 22px;
 	padding: 0 4px 0 23px;
 	width: 110px;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
 .adminSwitcher a span{
     background-repeat: no-repeat;
@@ -871,7 +884,7 @@
 	background-repeat: no-repeat;
 	background-position: 0 2px;
     background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
-    padding-left: 20px;
+    padding-left: 23px;
 }
 
 .dropdownSwitcherWrap ul li:hover a span {
@@ -962,7 +975,7 @@
 	background-repeat: no-repeat;
 	background-position: 0 3px;
     background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
-	padding: 0 0 0 26px !important;
+	padding: 0 0 0 22px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
 	padding: 0 24px 0 18px !important;
@@ -1006,7 +1019,7 @@
 	position: relative;
 	height: 12px;
 }
-.DP-adminStatus li.agentStatus a:hover, #dpHeader .actions li.agentStatus a.on{
+#dpHeader .actions li.agentStatus a.on{
 	background-repeat: no-repeat;
     background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
@@ -1018,7 +1031,7 @@
 	width: 17px;
 	height: 12px;
 }
-.DP-adminStatus li.networkStatIndicator a:hover, .DP-adminStatus li.networkStatIndicator a.on{
+.DP-adminStatus li.networkStatIndicator a.on{
     background-repeat: no-repeat;
     background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
@@ -1032,7 +1045,7 @@
 	margin-left: 10px;
 	height: 15px;
 }
-.DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.off{
+.DP-adminStatus li.soundIcon a.off{
     background-repeat: no-repeat;
     background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
@@ -1095,6 +1108,9 @@
 	left: 170px;
 }
 
+#network_status_tip .network-status-red { display: none; }
+#network_status_tip.error .network-status-red { display: block; }
+#network_status_tip.error .network-status-green { display: none; }
 
 .DP-adminStatus li.networkStatIndicator a span{
 	left: -135px;

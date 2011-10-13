@@ -94,7 +94,6 @@
 					<li id="create_news_btn"><a><span class="createNews">News Entry <kbd>n</kbd></span></a></li>
 					<li id="create_donwload_btn"><a><span class="createDownload">Download <kbd>d</kbd></span></a></li>
 					<li id="create_idea_btn"><a><span class="createIdeas">Ideas <kbd>i</kbd></span></a></li>
-
 				</ul>
 			</div>
 		</div>
@@ -127,25 +126,7 @@
 		</div>
 	<!-- END USER SECTION -->
 	</div>
-	<!-- BEGIN STATUS SECTION -->
-	<div id="DP-StatusSection">
-		<div class="DP-adminStatus">
-			<ul>
-				<li class="agentStatus">
-					<a class="tipped on" id="agent_status" data-tipped="Toggle your away status" data-tipped-options="hook: 'bottommiddle'">Away</a>
-				</li>
-				<li class="networkStatIndicator">
-					<a class="tipped" data-tipped="Network status<br /><div class='network-status-green'>Everything seems okay</div><div class='network-status-red'>Red: Network problems, you may have been disconnected</div>" data-tipped-options="hook: 'bottommiddle'">
-						Network
-					</a>
-				</li>
-				<li class="soundIcon">
-					<a class="tipped" id="sound_icon" title="Change or mute sound notifications" data-tipped-options="hook: 'bottommiddle'">Sound</a>
-				</li>
-			</ul>
-		</div>
-	<!-- END STATUS SECTION -->
-	</div>
+
 	<!-- BEGIN INTERFACE SECTION -->
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
@@ -167,7 +148,36 @@
 			</ul>
 		</div>
 		</div>
-	<!-- END INTERFACE SECTION -->
 	</div>
+	<!-- END INTERFACE SECTION -->
+
+	<!-- BEGIN STATUS SECTION -->
+	<div id="DP-StatusSection">
+		<div class="DP-adminStatus">
+			<ul>
+				<li class="agentStatus" id="agent_status_trigger">
+					<a class="tipped on" id="agent_status" data-tipped="Toggle your away status" data-tipped-options="hook: 'bottommiddle'">Away</a>
+					<div id="agent_status_menu" style="display:none;">
+						<div class="createDropdown">
+							<ul class="createBtnPopups">
+								<li class="status_go_available"><a><span class="createTicket">Available</span></a></li>
+								<li class="status_go_away"><a><span class="createTask">Away</span></a></li>
+								<li class="status_go_dnd"><a><span class="createPerson">Do Not Disturb</span></a></li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li class="networkStatIndicator">
+					<a class="tipped" data-tipped="<div id='network_status_tip'>Network status<br /><div class='network-status-green'>Everything seems okay</div><div class='network-status-red'>Red: Network problems, you may have been disconnected</div></div>" data-tipped-options="hook: 'bottommiddle'">
+						Network
+					</a>
+				</li>
+				<li class="soundIcon">
+					<a class="tipped" id="sound_icon" title="Change or mute sound notifications" data-tipped-options="hook: 'bottommiddle'">Sound</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- END STATUS SECTION -->
 <!-- END HEADER BAR -->
 </div>
