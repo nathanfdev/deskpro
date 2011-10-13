@@ -23,7 +23,57 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		this.contentWrapper = $('div.content:first', this.wrapper);
                 this._initTaskProperty();
                 this._initLabels();
-                //this.getEl('date_due').datepicker();
+
+                this.actionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
+			menuElement: $('ul.actions-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var data = [];
+				var lines = [];
+				$('input.item-select:checked', this.wrapper).each(function() {
+					lines.push($(this).parent().get(0));
+					var typename = $(this).data('content-type');
+					var id = $(this).data('content-id');
+
+					data.push({
+						name: 'ids[]',
+						value: id
+					});
+				});
+
+				if (!data.length) {
+					return;
+				}
+
+				var action = $(info.itemEl).data('action');
+
+				$.ajax({
+					url: BASE_URL + 'agent/task/drafts/mass-actions/' + action,
+					data: data,
+					type: 'POST',
+					dataType: 'json',
+					context: this,
+					success: function(data) {
+//						if (data.affected) {
+//							Array.each(data.affected, function(info) {
+//								DeskPRO_Window.getMessageBroker().sendMessage('publish.drafts.list-remove', info);
+//							}, this);
+//						}
+					}
+				});
+			}
+		});
+		this.ownObject(this.actionsMenu);
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onButtonClick: function(ev) {
+				self.actionsMenu.open(ev);
+			}
+		});
+		this.ownObject(this.selectionBar);
+
+
+
 
 	},
 

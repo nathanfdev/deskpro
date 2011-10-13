@@ -245,6 +245,24 @@ class TaskController extends AbstractController {
     }
 
 
+    public function draftsMassActionsAction()
+    {
+        $this->_loadModels();
+        $data = $this->in->getCleanValueArray('ids', 'array', 'string');
+        foreach ($data as $value) {
+            $task = $this->getTaskOr404($value[0]);
+            $task->setIsCompleted(true);
+            $this->_entityManager->persist($task);
+        }
+        $this->_entityManager->flush();
+        
+        return $this->createJsonResponse(array(
+			'success' => true,
+			'affected' => ''
+		));
+    }
+
+
     public function checkDueDateAction($due_date = null)
     {
         $person = $this->person;
