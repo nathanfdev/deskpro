@@ -43,9 +43,6 @@
 [submodule "appfiles/vendor/metadata"]
 	path = appfiles/vendor/metadata
 	url = https://github.com/schmittjoh/metadata.git
-[submodule "appfiles/vendor/Stof/DoctrineExtensionsBundle"]
-	path = appfiles/vendor/Stof/DoctrineExtensionsBundle
-	url = git://github.com/stof/StofDoctrineExtensionsBundle.git
 [submodule "appfiles/vendor/assetic"]
 	path = appfiles/vendor/assetic
 	url = https://github.com/kriswallsmith/assetic.git
