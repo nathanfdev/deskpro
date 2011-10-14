@@ -13,10 +13,10 @@ table{border-collapse:collapse;border-spacing:0;}
 td{vertical-align:top;}
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}
 a,button,input,textarea,submit{outline:0 none;padding:0;margin:0;}
-body{background-color:#eaebed;font:normal 11px "Lucida Sans Unicode","Trebuchet MS","Lucida Grande",Geneva,Verdana,sans-serif;color:#324c66;}
+body{background-color:#eaebed;font-size:11px;font-weight:normal;line-height:18px;font-family:"Lucida Sans Unicode","Trebuchet MS","Lucida Grande",Geneva,Verdana,sans-serif;color:#404040;}
 h1,h2,h3,h4,h5,h6{font-family:'Myriad Pro','Myriad',helvetica,arial,sans-serif;}
-a{color:#4769B3;outline:none;text-decoration:none;cursor:pointer;}
-a:hover{color:#376CDE;text-decoration:none;}
+a{color:#3964b9;outline:none;text-decoration:none;cursor:pointer;}
+a:hover{color:#4682f8;text-decoration:none;}
 [data-route]{cursor:pointer;}
 span.user-link,a.user-link{background-position:0 50%;background-repeat:no-repeat;padding-left:23px;padding:2px 0 2px 23px;}
 span.agent-link,a.agent-link{background-position:0 50%;background-repeat:no-repeat;padding-left:23px;padding:2px 0 2px 23px;}
@@ -324,7 +324,7 @@ strong.warning{color:#f00;font-weight:bold;}
 .right{float:right;}
 .clear{clear:both;height:0;width:0;overflow:hidden;margin:0;padding:0;border:none;line-height:1px;}
 img{border:none;}
-input[type="text"],input[type="password"],textarea{background-color:#fff;color:#000;padding:1px;border:1px solid #BDBFBF;font-size:11px;font-family:Verdana,'Lucida Grande',Helvetica,Arial,sans-serif;-moz-border-radius:3px;border-radius:3px;}
+input[type="text"],input[type="password"],textarea{background-color:#fff;color:#000;padding:1px;border:1px solid #BDBFBF;font-size:11px;font-family:"Lucida Sans Unicode","Trebuchet MS","Lucida Grande",Geneva,Verdana,sans-serif;-moz-border-radius:3px;border-radius:3px;}
 .nosel{-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;}
 .dp-checkbox{width:9px;height:10px;text-indent:-100px;overflow:hidden;background:transparent url("../..//images/checkbox.png") no-repeat 50% 100%;display:inline-block;}
 .dp-checkbox.checked{background-image:url("../..//images/checkbox-checked.png");}
@@ -379,7 +379,7 @@ button.clean-gray.x-small{padding:1px 4px;margin:0;font-size:11px;}
 button.clean-gray.xx-small{padding:1px 3px;margin:0;font-size:10px;}
 button.clean-gray.xxx-small{padding:0px 3px;margin:0;font-size:10px;line-height:100%;}
 button.clean-gray.disabled{opacity:0.8;cursor:default;color:#777879;}
-button.clean-white,a.clean-white{position:relative;background:-moz-linear-gradient(top, #fafcfd 0%, #f0f2f3 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafcfd), color-stop(100%, #f0f2f3));-pie-background:linear-gradient(#f0f2f3, #fafcfd);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 1px 0 rgba(255, 255, 255, 0.6),0 1px 0 rgba(255, 255, 255, 0.5) inset,0 0 0 1px rgba(255, 255, 255, 0.25) inset;border:1px solid #b6babf;border-radius:3px 3px 3px 3px;color:#626A73;padding:2px 6px 2px 8px;cursor:pointer;font-size:10px;font:bold 10px/12px 'Helvetica Neue',sans-serif;position:relative;white-space:nowrap;}
+button.clean-white,a.clean-white{position:relative;background:-moz-linear-gradient(top, #fafcfd 0%, #f0f2f3 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fafcfd), color-stop(100%, #f0f2f3));-pie-background:linear-gradient(#f0f2f3, #fafcfd);behavior:url("../../static/vendor/PIE.htc");box-shadow:0 1px 0 rgba(255, 255, 255, 0.6),0 1px 0 rgba(255, 255, 255, 0.5) inset,0 0 0 1px rgba(255, 255, 255, 0.25) inset;border:1px solid #b6babf;border-radius:3px 3px 3px 3px;color:#626A73;padding:2px 6px 2px 8px;cursor:pointer;font-size:10px;font:bold 10px/15px Arial,Helvetica,sans-serif;position:relative;white-space:nowrap;}
 a.clean-white{display:inline-block;margin:0;}
 .clean-white.small{padding:0px 5px 0px 5px;}
 .clean-white:hover{-webkit-box-shadow:0px 0px 2px 0px rgba(100, 100, 100, 0.5);-moz-box-shadow:0px 0px 2px 0px rgba(100, 100, 100, 0.5);box-shadow:0px 0px 2px 0px rgba(100, 100, 100, 0.5);}

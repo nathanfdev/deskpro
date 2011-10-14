@@ -8,12 +8,29 @@
 @link-color: #4769B3;
 @box-border-color: #ACB6BF;
 
-@heading-font: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+//-----------------------------------------------
+// Fonts
+//-----------------------------------------------
+
+@heading-font-alt: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+@heading-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 @body-font: "Lucida Sans Unicode", "Trebuchet MS", "Lucida Grande", Geneva, Verdana, sans-serif;
 @body-font-bold: Helvetica, Arial, sans-serif;
+@small-status-font: Tahoma, Arial, sans-serif;
+@button-font: Arial, Helvetica, sans-serif;
+@input-font: @body-font;
+//"Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+@toolbar-font: @heading-font;
+@count-badge-font:"Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 
+@source-heading-font: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
 
-/* Get around a bug in less, always have this rule or else compiler error */
+@body-text-color: #404040;
+@body-text-color-alt: lighten(@body-text-color, 18%);
+@link-text-color: #3964B9;
+@link-text-color-hover: saturate(lighten(@link-text-color, 15%), 40%);
+
+// Get around a bug in less, always have this rule or else compiler error
 .less-rule { color: #000; }
 
 /**

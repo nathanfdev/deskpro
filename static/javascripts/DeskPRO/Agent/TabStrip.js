@@ -33,36 +33,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		var ul = $('> ul', scroll_el);
 
 		var updatePosClasses = function(offset) {
-			if (!offset) offset = 0;
-			var scroll = scroll_el.scrollLeft();
-			scroll += offset;
-
-			if (scroll <= 0) {
-				$('#tabNavigationPane').addClass('far-left');
-				$('#tabNavigationPane').removeClass('far-right');
-			} else {
-
-				var start = scroll - 77;
-				var end = start+scroll_el.outerWidth() + 77;
-
-				var x = 0;
-				var stop = true;
-				var tabLeft, tabRight;
-				$('li', tabStrip).each(function() {
-					var tabEl = $(this);
-					var tabW = tabEl.outerWidth();
-					tabLeft = x;
-					x += tabW;
-					tabRight = x;
-				});
-
-				$('#tabNavigationPane').removeClass('far-left');
-				if (((tabLeft >= start) && (tabRight <= end))) {
-					$('#tabNavigationPane').addClass('far-right');
-				} else {
-					$('#tabNavigationPane').removeClass('far-right');
-				}
-			}
+			self.recalcScrollControls(offset);
 		};
 
 		$('#tabNavSelectorLeft').click(function(ev) {
@@ -77,7 +48,6 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 			scroll_el.animate({scrollLeft: '+=' + w}, 200, function() {
-
 			});
 			updatePosClasses(200);
 		});
@@ -122,8 +92,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
 
-				var start = scroll_el.scrollLeft();
-				var end = start+scroll_el.outerWidth();
+				var scroll = scroll_el.scrollLeft();
+				var start = scroll - (18 + 4);
+				var end = start+scroll_el.outerWidth() + (18 + 18 + 5); /* scroll btn, drop, some extra margin */
 
 				var col = [];
 
@@ -136,7 +107,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 					x += tabW;
 					var tabRight = x + tabW;
 
-					if (!((tabLeft >= start) && (tabRight <= end+60))) {
+					if (!((tabLeft >= start) && (tabLeft <= end))) {
 						col.push(tabEl.get(0));
 					}
 				});
@@ -460,13 +431,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var tabPane = $('#tabNavigationPane');
 
-		var w = 0;
-		var num = $('li', this.tabStrip).each(function() {
-			w += $(this).outerWidth();
-		}).length;
-
-		w += 14 * num;
-
+		var w = this.getTabsWidth();
 		this.tabStrip.width(w);
 
 		var isScroll    = tabPane.is('.with-overflow');
@@ -489,8 +454,50 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		} else if (!isScroll && needsScroll) {
 			console.debug('[TabStrip] Add scrolling');
 			tabPane.addClass('with-overflow');
-			$('#tabNavigationPane').addClass('far-left').removeClass('far-right');
+			$('#tabNavigationPane').removeClass('far-left').removeClass('far-right');
+			this.recalcScrollControls();
 		}
+	},
+
+	recalcScrollControls: function(offset) {
+		var scroll_el = $('#tabNavigationPane .deskproTabList');
+		var ul = $('> ul', scroll_el);
+
+		if (!offset) offset = 0;
+		var scroll = scroll_el.scrollLeft();
+		scroll += offset;
+
+		if (scroll <= 0) {
+			$('#tabNavigationPane').addClass('far-left');
+			$('#tabNavigationPane').removeClass('far-right');
+		} else {
+
+			var start = scroll + 18 + 4;
+			var end = start+scroll_el.outerWidth() + 18 + 18 + 4; /* scroll btn, drop, some extra margin */
+
+			$('#tabNavigationPane').removeClass('far-left');
+
+			var lastTab = $('#tabNavigationPane li').last();
+			var tabLeft  = lastTab.offset().left;
+			var tabRight = tabLeft + lastTab.outerWidth() + 4;
+
+			if (((tabLeft >= start) && (tabRight <= end))) {
+				$('#tabNavigationPane').addClass('far-right');
+			} else {
+				$('#tabNavigationPane').removeClass('far-right');
+			}
+		}
+	},
+
+	getTabsWidth: function() {
+		var w = 0;
+		var num = $('li', this.tabStrip).each(function() {
+			w += $(this).outerWidth() + 4; /* 4px margin-right */
+		}).length;
+
+		w += 18 + 5; // the dropdown menu is 18px, plus a bit of margin
+
+		return w;
 	},
 
 	_onTabDeactivate: function(tabData, container, isActivating) {

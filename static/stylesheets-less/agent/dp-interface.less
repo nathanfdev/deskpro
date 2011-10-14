@@ -25,21 +25,24 @@ a, button, input, textarea, submit {
 
 body {
 	background-color: #eaebed;
-	font: normal 11px "Lucida Sans Unicode", "Trebuchet MS", "Lucida Grande", Geneva, Verdana, sans-serif;
-	color: #324c66;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 18px;
+	font-family: @body-font;
+	color: @body-text-color;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: 'Myriad Pro', 'Myriad', helvetica, arial, sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: @heading-font-alt }
 
 a {
-	color: #4769B3;
+	color: @link-text-color;
 	outline: none;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 a:hover {
-	color: #376CDE;
+	color: @link-text-color-hover;
 	text-decoration: none;
 }
 
@@ -499,7 +502,7 @@ input[type="text"], input[type="password"], textarea {
 	padding: 1px;
 	border: 1px solid #BDBFBF;
 	font-size: 11px;
-	font-family: Verdana, 'Lucida Grande', Helvetica, Arial, sans-serif;
+	font-family: @input-font;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
@@ -792,7 +795,7 @@ a.clean-white {
 	padding: 2px 6px 2px 8px;
 	cursor: pointer;
 	font-size: 10px;
-	font: bold 10px/12px 'Helvetica Neue',sans-serif;
+	font: bold 10px/15px @button-font;
 	position: relative;
 	white-space: nowrap;
 }

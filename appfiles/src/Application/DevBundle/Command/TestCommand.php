@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\Output;
 
 use Application\DeskPRO\App;
 
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
@@ -31,6 +32,54 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo "Test";
+		$notfound = array();
+
+		$search_paths = array(
+			realpath(DP_ROOT . '/../static/stylesheets-less'),
+			realpath(DP_ROOT . '/../static/stylesheets'),
+			realpath(DP_ROOT . '/src/Application/AdminBundle/Resources'),
+			realpath(DP_ROOT . '/src/Application/AgentBundle/Resources'),
+			realpath(DP_ROOT . '/src/Application/UserBundle/Resources'),
+		);
+
+		$path = realpath(DP_ROOT . '/../static/images');
+
+		$it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+		foreach ($it as $filename => $file) {
+
+			$filename = $file->getFilename();
+			if ($filename[0] == '.') {
+				continue;
+			}
+
+			$nicepath = str_replace($path, '', $file->getRealPath());
+			echo "[Check] $nicepath ... ";
+
+			$found = false;
+			foreach ($search_paths as $search_path) {
+				exec('grep -m 1 -l -r \'' . $file->getFilename() . '\' ' . $search_path, $out);
+				$out = Arrays::removeEmptyString($out);
+
+				if ($out && !empty($out)) {
+					$found = true;
+					break;
+				}
+			}
+
+			if (!$found) {
+				echo "\tNot Found";
+				$notfound[] = $nicepath;
+			} else {
+				echo "\tFound";
+			}
+
+			echo "\n";
+		}
+
+		if ($notfound) {
+			echo "\n\n";
+			echo "These files were not found:\n";
+			echo "\t " . implode("\n\t ", $notfound) . "\n";
+		}
 	}
 }
