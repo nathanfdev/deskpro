@@ -1795,6 +1795,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		console.debug('Switching to %s', section_id);
 
 		var handler = this.sections[section_id];
+		if (!handler) {
+			console.error('Invalid section: %s', section_id);
+			return;
+		}
 		var btn = $('#' + section_id);
 
 		// Already on

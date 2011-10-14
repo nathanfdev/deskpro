@@ -18,6 +18,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		this.selectionHistory = [];
 
 		this.tabManager.addEvent('activateTab', this._activateTab, this);
+		this.tabManager.addEvent('addTab', this._addTab, this);
 		this.tabManager.addEvent('deactivateTab', this._deactivateTab, this);
 		this.tabManager.addEvent('removeTab', this._removeTab, this);
 
@@ -34,6 +35,17 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
 				watcher.fireEvent('watchedTabActivated', [tab]);
+			});
+		}
+	},
+
+	_addTab: function(tab, containerEl, tabManager) {
+		var id = tab.id;
+
+		var typename = this.getTabType(tab);
+		if (this.watchedTypes[typename]) {
+			Array.each(this.watchedTypes[typename], function(watcher) {
+				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
 	},
@@ -64,13 +76,18 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 *
 	 * @param string typename
 	 * @param {Object} watcher
+	 * @param {Boolean} notifyOfExisting Cycle through the already open tabs of the type and notify the watcher with the 'watchedTabAdded' event
 	 */
-	addTabTypeWatcher: function(typename, watcher) {
+	addTabTypeWatcher: function(typename, watcher, notifyOfExisting) {
 		if (!this.watchedTypes[typename]) {
 			this.watchedTypes[typename] = [];
 		}
 
 		this.watchedTypes[typename].push(watcher);
+
+		Array.each(DeskPRO_Window.getTabWatcher().findTabType(typename), function(tab) {
+			watcher.fireEvent('watchedTabAdded', tab);
+		});
 	},
 
 

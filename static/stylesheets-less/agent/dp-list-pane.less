@@ -13,6 +13,7 @@
 	box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.15);
 	behavior: url("../../static/vendor/PIE.htc");
 	z-index: 1;
+	line-height: 16px;
 }
 
 #dp_list > section {
@@ -270,6 +271,15 @@
 	position: relative;
 }
 
+.list-listing .row-item.open {
+    border-bottom: 1px solid #B4C4D7;
+	background-color: #D4E7FC;
+
+	-webkit-box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
 .list-listing .row-item:last-of-type {
 	border-bottom: none;
 }
@@ -283,6 +293,7 @@
 .list-listing .extra-fields ul li {
 	float: left;
 	border: 1px solid #D4D7D9;
+	background-color: #fff;
 	margin-right: 5px;
 	font-size: 10px;
 	line-height: 100%;
@@ -315,7 +326,7 @@
 
 .list-listing .row-item .item-select {
 	float: left;
-	margin: 5px;
+	margin: 6px 5px 5px 5px;
 }
 
 .list-listing .row-item .loading-arrow {
@@ -387,25 +398,32 @@
 	margin-left: 75px;
 	background-color: #F5F7FA;
 }
+.list-listing .row-item.open .top-row .top-row-right {
+	background-color: #D4E7FC;
+}
 
 .list-listing .row-item .top-row .top-row-right.buttons {
 	margin-top: -2px;
 }
 
 .list-listing .row-item .top-row-right .bound-fade {
+    .fade-away(rgba(245,247,250,0), rgba(245,247,250,1));
+
 	position: absolute;
 	left: -75px;
 	top: 0;
 	bottom: 0;
 	width:75px;
+}
 
-	background: -moz-linear-gradient(left, rgba(245,247,250,0) 0%, rgba(245,247,250,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(245,247,250,0)), color-stop(100%,rgba(245,247,250,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Opera11.10+ */
-	background: -ms-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* IE10+ */
-	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f5f7fa', endColorstr='#f5f7fa',GradientType=1 )"; /* IE6-9 */
-	background: linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* W3C */
+.list-listing .row-item.open .top-row-right .bound-fade {
+	.fade-away(rgba(212,231,252,0), rgba(212,231,252,1));
+
+	position: absolute;
+	left: -75px;
+	top: 0;
+	bottom: 0;
+	width:75px;
 }
 
 .list-listing .row-item .top-row .top-row-right, .list-listing .row-item .top-row-right .urgency a{
@@ -438,7 +456,6 @@
 	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
-
 .list-listing .row-item .status{
 	background: #93C8A8;
 	border-radius: 10px;
@@ -446,6 +463,10 @@
 	float: left;
 	padding: 1px 5px;
 	color: #fff;
+}
+
+.list-listing .row-item .top-row-right {
+	line-height: 15px;
 }
 
 .list-listing .row-item .status.resolved, .list-listing .row-item .status.closed {
@@ -470,7 +491,7 @@
 
 .list-listing .row-item .userinfo {
 	position: relative;
-	margin-top: 19px;
+	margin-top: 20px;
 	height: 18px;
 	overflow:  hidden;
 	white-space: nowrap;
@@ -489,21 +510,19 @@
 }
 
 .list-listing .row-item .userinfo .bound-fade {
+    .fade-away(rgba(245,247,250,0), rgba(245,247,250,1));
+
 	position: absolute;
 	right: 0;
 	top: 0;
 	bottom: 0;
 	width:80px;
 	border-right: 5px solid #F5F7FA;
+}
 
-
-	background: -moz-linear-gradient(left, rgba(245,247,250,0) 0%, rgba(245,247,250,1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(245,247,250,0)), color-stop(100%,rgba(245,247,250,1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* Opera11.10+ */
-	background: -ms-linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* IE10+ */
-	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f5f7fa', endColorstr='#f5f7fa',GradientType=1 )"; /* IE6-9 */
-	background: linear-gradient(left, rgba(245,247,250,0) 0%,rgba(245,247,250,1) 100%); /* W3C */
+.list-listing .row-item.open .userinfo .bound-fade {
+	.fade-away(rgba(212,231,252,0), rgba(212,231,252,1));
+	border-right: 5px solid #D4E7FC;
 }
 
 
