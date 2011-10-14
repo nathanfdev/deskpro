@@ -940,10 +940,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
+		if (!routeData.isBackgroundLoad) {
+			if (this.loadingListPage) {
+				this.loadingListPage.abort();
+				this.loadingListPage = null;
+			}
+		}
+
 		$('#dp_list > section').removeClass('on');
 		$('#dp_list_loading').addClass('on');
 
-		this._doAjaxLoadRoute(url, routeData, (function(data) {
+		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
+
+			if (!routeData.isBackgroundLoad) {
+				this.loadingListPage = null;
+			}
 
 			$('#dp_list_loading').removeClass('on');
 
@@ -958,6 +969,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			if (callback) callback(page);
 		}).bind(this));
+
+		if (!routeData.isBackgroundLoad) {
+			this.loadingListPage = xhr;
+		}
 	},
 
 
@@ -1053,6 +1068,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			routeData.xhr = xhr;
 		}
+
+		return xhr;
 	},
 
 
