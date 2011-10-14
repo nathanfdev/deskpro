@@ -100,13 +100,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.massActions);
 
-		this.addEvent('watchedTabAdded', function(tab) {
-			$('article.ticket-' + tab.page.meta.ticket_id, el).addClass('open');
-		});
-		this.addEvent('watchedTabRemoved', function(tab) {
-			$('article.ticket-' + tab.page.meta.ticket_id, el).removeClass('open');
-		});
-		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this, true);
+		this.enableHighlightOpenRows('ticket', 'ticket_id', 'article.ticket-');
 	},
 
 	_handleResize: function() {

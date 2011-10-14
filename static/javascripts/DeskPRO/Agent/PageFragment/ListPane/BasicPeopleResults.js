@@ -27,9 +27,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 			$('.no-more-results', this.contentWrapper).show();
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', function() {
-			this._handleResize()
-		}, this);
+		this.enableHighlightOpenRows('ticket', 'ticket_id', 'article.ticket-');
 	},
 
 	activate: function() {

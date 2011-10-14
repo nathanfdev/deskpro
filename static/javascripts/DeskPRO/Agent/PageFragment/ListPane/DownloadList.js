@@ -40,6 +40,8 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 			contentListEl: this.listWrapper
 		});
 		this.ownObject(this.relatedContentList);
+
+		this.enableHighlightOpenRows('download', 'download_id', 'article.download-');
 	},
 
 	initVisibleTicket: function() {

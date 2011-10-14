@@ -40,6 +40,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			contentListEl: this.listWrapper
 		});
 		this.ownObject(this.relatedContentList);
+
+		this.enableHighlightOpenRows('article', 'article_id', 'article.article-');
 	},
 
 	initVisibleTicket: function() {

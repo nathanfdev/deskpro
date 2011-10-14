@@ -129,6 +129,8 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			}
 		});
 		this.ownObject(this.massActionsMenu);
+
+		this.enableHighlightOpenRows('person', 'person_id', 'article.person-');
 	},
 
 	destroyPage: function() {
