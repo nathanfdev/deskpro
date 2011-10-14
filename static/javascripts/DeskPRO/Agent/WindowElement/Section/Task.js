@@ -6,6 +6,8 @@ DeskPRO.Agent.WindowElement.Section.Task = new Orb.Class({
 	init: function() {
             this.buttonEl = $('#tasks_section');
 
+			this.urlFragmentName = 'tasks';
+
             this.setSectionElement($('<section id="task_outline"></section>'));
 
             $.ajax({
@@ -14,7 +16,7 @@ DeskPRO.Agent.WindowElement.Section.Task = new Orb.Class({
                 success: function(data) {
                     this._initSection(data);
                 }
-            });        
+            });
         },
 
 	_initSection: function(data) {

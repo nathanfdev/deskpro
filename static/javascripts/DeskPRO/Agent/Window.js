@@ -140,6 +140,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		},
 		{ unescape: ",/:" });
 
+		if (!this.openSection) {
+			this.switchToSection($('#dp_nav [data-section-handler]').first().attr('id'));
+		}
+
 		/**
 		 * After everything is init'ed we'll start our GC
 		 */
@@ -171,9 +175,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// anyway by the fragment_type in routing.yml
 
 		var segments = browserHash.split(',');
+		var activateSection = null;
 		var activateTabId = null;
 
 		Array.each(segments, function (hash, i) {
+
+			var m;
+			if (m = hash.match(/app\.([a-zA-Z]+)/)) {
+				activateSection = m[1]
+				return;
+			}
 
 			// Active tab has .o on it, like ticket.o:1234
 			// So detect that, and then remove the .o
@@ -232,6 +243,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (activateTabId) {
 			this.pageTabStrip.activateTabById(activateTabId);
 		}
+		if (activateSection) {
+			var activateSectionId = null;
+			Object.each(this.sections, function(section, id) {
+				if (section.urlFragmentName && section.urlFragmentName == activateSection) {
+					activateSectionId = id;
+					return false;
+				}
+			});
+
+			if (activateSectionId) {
+				this.switchToSection(activateSectionId);
+			}
+		}
 	},
 
 	updateWindowUrlFragment: function() {
@@ -242,38 +266,44 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var segments = [];
 
-		var listPage = this.getCurrentListPage();
-		if (listPage && listPage.getMetaData('url_fragment')) {
-			segments.push(listPage.getMetaData('url_fragment'));
-		}
-
-		var currentTab = this.pageTabStrip.getActiveTab();
-
-		// No current tab means there are no tabs open at all
-		if (!currentTab) {
-			jQuery.history.load('');
-			return;
-		}
-
-		var tabs = this.pageTabStrip.getTabs();
-		Object.each(tabs, function(tab, id) {
-			var tabPage = tab.page;
-			var hash = tabPage.getMetaData('url_fragment');
-
-			if (hash) {
-				if (tab.id == currentTab.id) {
-					if (hash.indexOf(':') !== -1) {
-						// ticket:123 to ticket.o:123
-						hash = hash.replace(/:/, '.o:');
-					} else {
-						// somename to somename.o
-						hash = hash + '.o';
-					}
-				}
-
-				segments.push(hash);
+		if (this.openSection) {
+			if (this.openSection.urlFragmentName) {
+				segments.push('app.' + this.openSection.urlFragmentName);
 			}
-		});
+			if (this.openSection.listPage && this.openSection.listPage.getMetaData('url_fragment')) {
+				segments.push(this.openSection.listPage.getMetaData('url_fragment'));
+			}
+		}
+
+		if (this.pageTabStrip) {
+			var currentTab = this.pageTabStrip.getActiveTab();
+
+			// No current tab means there are no tabs open at all
+			if (!currentTab) {
+				jQuery.history.load('');
+				return;
+			}
+
+			var tabs = this.pageTabStrip.getTabs();
+			Object.each(tabs, function(tab, id) {
+				var tabPage = tab.page;
+				var hash = tabPage.getMetaData('url_fragment');
+
+				if (hash) {
+					if (tab.id == currentTab.id) {
+						if (hash.indexOf(':') !== -1) {
+							// ticket:123 to ticket.o:123
+							hash = hash.replace(/:/, '.o:');
+						} else {
+							// somename to somename.o
+							hash = hash + '.o';
+						}
+					}
+
+					segments.push(hash);
+				}
+			});
+		}
 
 		var browserHash = '';
 		browserHash = segments.join(',');
@@ -1735,7 +1765,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initSections: function() {
 
 		var self = this;
-		var first = null;
 		$('#dp_nav [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
@@ -1750,10 +1779,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 			}
 
-			if (!first) {
-				first = el;
-			}
-
 			var handlerClass = Orb.getNamespacedObject(handlerClassName);
 			var handler = new handlerClass();
 
@@ -1763,13 +1788,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.click(function() { self.switchToSection(el.attr('id')) });
 			}
 		});
-
-		if (first) {
-			this.switchToSection(first.attr('id'));
-		}
 	},
 
-	switchToSection: function(section_id) {
+	switchToSection: function(section_id, no_load_list) {
 
 		console.debug('Switching to %s', section_id);
 
@@ -1799,7 +1820,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#dp_list_loading').removeClass('on');
 
-		handler.fireEvent('show');
+		handler.fireEvent('show', [no_load_list]);
 		var sectionEl = handler.getSectionElement();
 		if (sectionEl) {
 			sectionEl.addClass('on');
@@ -1808,9 +1829,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (listEl) {
 			listEl.addClass('on');
 		}
-		handler.fireEvent('aftershow');
+		handler.fireEvent('aftershow', [no_load_list]);
 
 		this.openSection = handler;
+
+		this.updateWindowUrlFragment();
 	},
 
 	getOpenSection: function() {
@@ -2035,15 +2058,3 @@ function toggle_visibility(elId, parentId) {
 		el.show();
 	}
 }
-
-//var jQuery_Ajax = $.ajax;
-//var dp_noPollAjax = function(settings) {
-//	if (settings.dpIsPolling) {
-//		return;
-//	}
-//
-//	jQuery_Ajax(settings);
-//};
-//
-//$.ajax = dp_noPollAjax;
-//

@@ -4,7 +4,9 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
-		this.buttonEl = $('#tickets_section');
+		this.buttonEl = $('#people_section');
+
+		this.urlFragmentName = 'people';
 
 		this.setSectionElement($('<section id="people_outline"></section>'));
 

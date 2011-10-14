@@ -6,6 +6,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#tickets_section');
 
+		this.urlFragmentName = 'tickets';
+
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated, this);

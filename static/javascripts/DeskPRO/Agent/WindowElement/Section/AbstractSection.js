@@ -265,13 +265,15 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	_onShowSetVisible: function() { this._isVisible = true },
 	_onHideSetVisible: function() { this._isVisible = false },
 
-	_onFirstShowFire: function() {
+	_onFirstShowFire: function(no_load_list) {
 		if (this.has_shown) return;
 		this.has_shown = true;
 
 		this.fireEvent('firstshow');
 
-		this._loadAutoLoadRoutes();
+		if (!no_load_list) {
+			this._loadAutoLoadRoutes();
+		}
 	},
 
 	_loadAutoLoadRoutes: function() {

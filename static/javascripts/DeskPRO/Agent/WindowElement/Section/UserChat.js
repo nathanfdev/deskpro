@@ -7,6 +7,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.buttonEl = $('#chat_section');
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 
+		this.urlFragmentName = 'userchat';
+
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
 		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
