@@ -28,8 +28,9 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		if (!this.options.button) {
 			this.options.button = $('.perform-actions-trigger:first', this.selectionBar);
 		}
-		this.button = $(this.options.button);
-		this.button.addClass('disabled');
+		this.button = $(this.options.button);		
+                this.button.addClass('disabled');
+                
 		this.button.click(this.buttonClicked.bind(this));
 
 		this.controlCheck = $('.selection-control', this.page.wrapper).click(function() {

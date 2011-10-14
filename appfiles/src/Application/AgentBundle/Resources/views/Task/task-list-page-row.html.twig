@@ -1,5 +1,6 @@
 <article class="row-item task task-{{task.id}}">
-   <input type="checkbox" class="item-select" value="{{ task.id }}" data-content-id="{{ task.id }}" data-content-type="{{ task.id }}"/>
+   <input type="checkbox" class="item-select" value="{{ task.id }}" data-content-id="{{ task.id }}" data-content-type="{{ task.id }}"
+          {% if task.is_completed == true %} checked="checked" {% endif %}/>
    <div class="top-row">
         <div class="top-row-left">
             <h3>

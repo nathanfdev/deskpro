@@ -128,6 +128,7 @@ class TaskController extends AbstractController {
     {
         $this->_loadModels();
         $person = $this->person;
+        $task_type = false;
         
         if ($search_type == 'own') {
             $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
@@ -139,12 +140,14 @@ class TaskController extends AbstractController {
             $tasks = $this->_task_repository->filterAllPendingTasks($search_categoty);
         } else if($search_type == 'complete'){
             $tasks = $this->_task_repository->allCompleteTasks();
+            $task_type = true;
         }
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
             'tasks' => $tasks,
-            'total_complete_task' => $this->_task_repository->countCompleteTasks()
+            'total_complete_task' => $this->_task_repository->countCompleteTasks(),
+             'task_type' => $task_type
         ));        
     }
 
@@ -241,14 +244,15 @@ class TaskController extends AbstractController {
     }
 
 
-    public function draftsMassActionsAction()
+    public function draftsMassActionsAction($action)
     {
         $this->_loadModels();
         $data = $this->in->getCleanValueArray('ids', 'array', 'string');
         
+        $action = ($action == 'complete') ? true : false;
         foreach ($data as $value) {
             $task = $this->getTaskOr404($value[0]);
-            $task->setIsCompleted(true);
+            $task->setIsCompleted($action);
             $this->_entityManager->persist($task);
         }
         $this->_entityManager->flush();

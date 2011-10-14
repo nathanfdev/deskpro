@@ -30,23 +30,38 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			onItemClicked: function(info) {
 				var data = [];
 				var lines = [];
-				$('input.item-select:checked', this.wrapper).each(function() {
-					lines.push($(this).parent().get(0));
-					var typename = $(this).data('content-type');
-					var id = $(this).data('content-id');
+				var action = $(info.itemEl).data('action');
+                                
+                                if(action == 'complete')
+                                {
+                                    $('input.item-select:checked', this.wrapper).each(function() {
+                                        lines.push($(this).parent().get(0));
+                                        var typename = $(this).data('content-type');
+                                        var id = $(this).data('content-id');
 
-					data.push({
-						name: 'ids[]',
-						value: id
-					});
-				});
+                                        data.push({
+                                            name: 'ids[]',
+                                            value: id
+                                        });
+                                    });
+                                } else if(action == 'uncomplete')
+                                  {
+                                    $('input.item-select:not(:checked)', this.wrapper).each(function() {
+                                        lines.push($(this).parent().get(0));                                        
+                                            var typename = $(this).data('content-type');
+                                            var id = $(this).data('content-id');
+
+                                            data.push({
+                                                name: 'ids[]',
+                                                value: id
+                                            });
+                                    });
+                                 }
 
 				if (!data.length) {
 					return;
 				}
-
-				var action = $(info.itemEl).data('action');
-
+                                
 				$.ajax({
 					url: BASE_URL + 'agent/task/drafts/mass-actions/' + action,
 					data: data,
@@ -54,6 +69,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 					dataType: 'json',
 					context: this,
 					success: function(data) {
+                                            $('span#total-noOf-completed-task', this.wrapper).html(data.total_complete_task +' Completed Task');
+                                            console.log(data.total_complete_task);
 //						if (data.affected) {
 //							Array.each(data.affected, function(info) {
 //								DeskPRO_Window.getMessageBroker().sendMessage('publish.drafts.list-remove', info);
