@@ -68,7 +68,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.activeNavClass = null;
 
-		$('.show-hold-check', this.sectionEl).click(function() {
+		$('.hold-ticket-count', this.sectionEl).click(function() {
 			self.toggleHoldDisplay();
 		});
 
