@@ -4,6 +4,11 @@
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>
+{# Page Containers #}
+<div class="profile layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /Page Containers #}
 <div class="layout-content">
     <div class="content">
         {% include 'AgentBundle:Task:task-list-bar.html.twig' %}
@@ -13,4 +18,20 @@
 	</section>
     </section>
     </div>
+    
+    <div class="extra-fields">
+    <ul>
+        <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'complete', 'search_categoty': 'total'}) }}">
+            
+            <span id="total-noOf-completed-task">{{ total_complete_task|default(0) }} Completed Task</span>
+        </li>
+        </u>
+    </div>
 </div>
+
+{# Page Containers #}
+</div></div>
+</div>
+{# /Page Containers #}
+
+

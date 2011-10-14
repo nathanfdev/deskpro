@@ -6,6 +6,7 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 	init: function() {
 		var self = this;
 		this.textarea = $('textarea', this.el);
+                this.inout = $('input:text', this.el); // Added by Abdullah Kiser inorder to catch the touch event.
 		this.list = null;
 		this.resultHtmlKey = this.el.data('form-result-html-key') || 'html';
 
@@ -29,6 +30,11 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 
 		this.textarea.change(this.touch.bind(this));
 		this.textarea.keypress(this.touch.bind(this));
+
+                // Added by Abdullah Kiser inorder to catch the touch event.
+                this.inout.change(this.touch.bind(this));
+		this.inout.keypress(this.touch.bind(this));
+
 
 		this.countEl = null;
 		if (this.el.data('form-count-el')) {

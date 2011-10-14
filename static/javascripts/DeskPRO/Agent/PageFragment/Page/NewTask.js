@@ -59,5 +59,9 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
         _initComponent: function()
         {
             $('.calender').datepicker();
-        }
+        },
+
+	destroyPage: function() {
+            this.fireEvent('destroy', [this]);
+	}
 });

@@ -28,12 +28,16 @@
 
 
 <header class="list-selection-bar">
-	<input type="checkbox" class="selection-control" /> <span class="selected-count">0</span> selected
-	<a class="perform-action perform-actions-trigger disabled">
+	<input type="checkbox" class="selection-control" {% if task_type == true %} checked="checked" {% endif %} /> <span class="selected-count"> {% if task_type == true %}{{total_complete_task}}{% else%} 0 {% endif%}</span> selected
+	<a class="perform-action perform-actions-trigger {% if task_type == false %} disabled {% endif %} ">
             <span>Perform Action</span>
 	</a>
 	<ul class="actions-menu" style="display: none">
-            <li data-action="approve">Approve Selected</li>
+            {% if task_type == true %}
+            <li data-action="uncomplete">Uncomplete Selected Task</li>
+            {% else %}
+            <li data-action="complete">Complete Selected Task</li>
+            {% endif %}
             <li data-action="delete">Delete Selected</li>
 	</ul>
 </header>

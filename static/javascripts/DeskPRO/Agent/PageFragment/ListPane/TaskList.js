@@ -24,15 +24,95 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
                 this._initTaskProperty();
                 this._initLabels();
 
+                this.actionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
+			menuElement: $('ul.actions-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var data = [];
+				var lines = [];
+				var action = $(info.itemEl).data('action');
+                                
+                                if(action == 'complete')
+                                {
+                                    $('input.item-select:checked', this.wrapper).each(function() {
+                                        lines.push($(this).parent().get(0));
+                                        var typename = $(this).data('content-type');
+                                        var id = $(this).data('content-id');
+
+                                        data.push({
+                                            name: 'ids[]',
+                                            value: id
+                                        });
+                                    });
+                                } else if(action == 'uncomplete')
+                                  {
+                                    $('input.item-select:not(:checked)', this.wrapper).each(function() {
+                                        lines.push($(this).parent().get(0));                                        
+                                            var typename = $(this).data('content-type');
+                                            var id = $(this).data('content-id');
+
+                                            data.push({
+                                                name: 'ids[]',
+                                                value: id
+                                            });
+                                    });
+                                 }
+
+				if (!data.length) {
+					return;
+				}
+                                
+				$.ajax({
+					url: BASE_URL + 'agent/task/drafts/mass-actions/' + action,
+					data: data,
+					type: 'POST',
+					dataType: 'json',
+					context: this,
+					success: function(data) {
+                                            $('span#total-noOf-completed-task', this.wrapper).html(data.total_complete_task +' Completed Task');
+                                            console.log(data.total_complete_task);
+//						if (data.affected) {
+//							Array.each(data.affected, function(info) {
+//								DeskPRO_Window.getMessageBroker().sendMessage('publish.drafts.list-remove', info);
+//							}, this);
+//						}
+					}
+				});
+			}
+		});
+		this.ownObject(this.actionsMenu);
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+			onButtonClick: function(ev) {
+				self.actionsMenu.open(ev);
+			}
+		});
+		this.ownObject(this.selectionBar);
+
+
+
+
 	},
 
         _initTaskProperty: function(){
-
-            $('.add-comment', this.wrapper).click(function(){
-                $(this).parents('article').find('.comment').toggle();                
+            
+            $('.calender').datepicker();
+            
+            $('.add-comment', this.wrapper).click(function(){                
+                $(this).parents('article').find('article').find('li.new-note').toggle();
             });
+
             $('.add-label', this.wrapper).click(function(){
                 $(this).parents('article').find('.task-label').toggle();
+            });
+
+            $('.add-due-date', this.wrapper).click(function(){ 
+                $(this).parents('article').find('.task-due-date').toggle();
+            });
+
+            $('.add-delegate', this.wrapper).click(function(){
+                $(this).parents('article').find('.task-delegate').toggle();
+
             });
 
             $('.add-public', this.wrapper).click(function(){

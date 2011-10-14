@@ -1,0 +1,57 @@
+<<<<<<< HEAD
+<link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css') }}" type="text/css" media="screen"  />
+<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/jcrop/css/jquery.Jcrop.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/chosen/chosen.css') }}" type="text/css" media="screen" />
+
+<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
+
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-interface.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-source-pane.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-list-pane.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-content-pane.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-agent-chat.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/navigation.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/header.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/overlayMacro.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/overlayCreateTicket.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/textsnippets.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/taskView.css') }}" type="text/css" media="screen" />
+=======
+{{ html_css_pack('agent.vendors') }}
+{{ html_css_pack('agent.deskpro-ui') }}
+{{ html_css_pack('agent.interface') }}
+{{ html_css_pack('agent.interface-print') }}
+>>>>>>> 73cd0d2486ef178179ded1f8e34ff09e56f68a80
+
+{# Bridge tries to auto-load these, but with the compiled scripts
+the detected path is incorrect so we have to hard-code them #}
+<script type="text/javascript">
+var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+</script>
+
+<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+{{ html_js_pack('agent.vendors') }}
+
+<script>
+{# At this point we should have css in the header so it display properly,
+showing it now gives some visual feedback and illusion of speed #}
+$('#loading_css_header').remove();
+</script>
+
+{{ html_js_pack('agent.common') }}
+{{ html_js_pack('agent.deskpro-ui') }}
+{{ html_js_pack('agent.misc') }}
+{{ html_js_pack('agent.agent-ui') }}
+{{ html_js_pack('agent.window-sections') }}
+{{ html_js_pack('agent.pages') }}
+{{ html_js_pack('agent.pages-lists') }}
+
+<script type="text/javascript" src="{{ asset('vendor/jquery/chosen/chosen.jquery.min.js') }}"></script>
+
+{% if not no_interface_date %}
+<script src="{{ path('agent_interface_data_js') }}"></script>
+{% endif %}

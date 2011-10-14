@@ -40,6 +40,41 @@ class Task extends EntityRepository
             return $tasks;
         }
 
+        /**
+	 * All completed tasks.
+	 *
+	 * @return collection of task object
+	 */
+	public function allCompleteTasks()
+	{
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('t')
+                    ->from('DeskPRO:Task', 't')
+                    ->innerJoin('t.person', 'p')
+                    ->where('t.is_completed = :is_completed')
+                    ->setParameter('is_completed', true)
+                    ;
+            $query = $qb->getQuery(); 
+            return $query->getResult();
+	}
+
+        /**
+	 * Count completed tasks.
+	 *
+	 * @return int
+	 */
+	public function countCompleteTasks()
+	{
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('COUNT(t.id)')
+                    ->from('DeskPRO:Task', 't')
+                    ->where('t.is_completed = :is_completed')
+                    ->setParameter('is_completed', true)
+                    ;
+            $query = $qb->getQuery();
+            return $query->getSingleScalarResult();
+	}
+
 	/**
 	 * Count pending tasks.
 	 *
