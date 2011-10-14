@@ -879,6 +879,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var extraData = {};
+		extraData.routeTriggerEl = el;
 		if (el.data('route-title')) {
 			extraData.title = el.data('route-title');
 			if (extraData.title == '@text') {
@@ -900,6 +901,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 					delete extraData.title;
 				}
 			}
+		}
+		if (el.data('route-openclass')) {
+			extraData.toggleOpenClass = el.data('route-openclass');
 		}
 
 		this.runPageRoute(el.data('route'), extraData);
@@ -969,12 +973,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
 				this.pageTabStrip.removeTabById(existTab.id);
+				if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+					routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+				}
 				return;
 			}
 		}
 
 		// Add a temporary tab to the tabstrip
 		routeData.tabPlaceholderId = this.pageTabStrip.addTabPlaceholder(url, routeData);
+
+		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+			routeData.routeTriggerEl.addClass(routeData.toggleOpenClass);
+		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 			var page = this.createPageFragment(data);

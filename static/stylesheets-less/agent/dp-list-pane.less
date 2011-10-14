@@ -216,7 +216,7 @@
 	position: relative;
 }
 .list-selection-bar input.selection-control{
-	margin: 6px 5px 0;
+	margin: 6px 5px 0 4px;
 }
 .list-selection-bar span.selected-count{
 	font-size: 11px;
@@ -257,7 +257,6 @@
 
 .list-listing{
 	border-bottom: 1px solid #E1E3E6;
-	border-top: 1px solid #FCFDFE;
 	padding: 0;
 	width: 100%;
 	position: relative;
@@ -271,13 +270,26 @@
 	position: relative;
 }
 
-.list-listing .row-item.open {
-    border-bottom: 1px solid #B4C4D7;
-	background-color: #D4E7FC;
+.list-listing .row-item:first-child {
+	border-top: none;
+padding-top: 1px;
+}
 
-	-webkit-box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
-	-moz-box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
-	box-shadow: inset 1px 0px 2px 0px rgba(0, 0, 0, 0.3);
+.list-listing .row-item.open {
+	background-color: #D4E7FC;
+}
+
+.list-listing .row-item .shadow-giver { disaply: none; }
+.list-listing .row-item.open .shadow-giver {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	-webkit-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
 }
 
 .list-listing .row-item:last-of-type {
@@ -326,7 +338,7 @@
 
 .list-listing .row-item .item-select {
 	float: left;
-	margin: 6px 5px 5px 5px;
+	margin: 7px 5px 5px 4px;
 }
 
 .list-listing .row-item .loading-arrow {
@@ -390,9 +402,18 @@
 .list-listing .row-item .top-row .top-row-left h3 a:hover{
 	color: #3586A9;
 }
+.list-listing .row-item.open .top-row .top-row-left h3 a{
+	text-shadow: none;
+}
+.list-listing .row-item .userinfo {
+	color: lighten(@body-text-color-alt, 15%);
+}
+.list-listing .row-item a.name {
+	color: @body-text-color;
+}
 .list-listing .row-item .top-row .top-row-right {
 	position: absolute;
-	top: 3px;
+	top: 8px;
 	right: 0;
 	padding-right: 8px;
 	margin-left: 75px;
@@ -426,10 +447,14 @@
 	width:75px;
 }
 
+.list-listing .row-item .top-row .top-row-right {
+	height: 16px;
+}
 .list-listing .row-item .top-row .top-row-right, .list-listing .row-item .top-row-right .urgency a{
 	color: #606B73;
 	float: right;
 	font-size: 11px;
+	line-height: 100%;
 }
 .list-listing .row-item .top-row-right .urgency a{
 	font-size: 9px;
@@ -462,6 +487,7 @@
 	font-size: 9px;
 	float: left;
 	padding: 1px 5px;
+	line-height: 100%;
 	color: #fff;
 }
 
@@ -495,18 +521,6 @@
 	height: 18px;
 	overflow:  hidden;
 	white-space: nowrap;
-}
-
-.list-listing .row-item .userinfo a.name {
-    color: #303338;
-}
-
-.list-listing .row-item .userinfo .email {
-    color: #484A4C;
-}
-
-.list-listing .row-item .userinfo .org {
-    color: #484A4C;
 }
 
 .list-listing .row-item .userinfo .bound-fade {
