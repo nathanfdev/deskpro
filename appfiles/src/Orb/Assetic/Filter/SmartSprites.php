@@ -20,7 +20,7 @@ class SmartSprites implements FilterInterface
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
-	protected $options;
+	public $options;
 
 	public function __construct($smartsprites_bin, array $options = array())
 	{
@@ -40,13 +40,16 @@ class SmartSprites implements FilterInterface
 
 	public function filterLoad(AssetInterface $asset)
 	{
-		$pb = new ProcessBuilder(array(
-			$this->smartsprites_bin
-		));
+		if ($this->options->get('ignore')) {
+			return;
+		}
+		$pb = new ProcessBuilder();
+		$pb->add($this->smartsprites_bin);
 
 		$pb->setWorkingDirectory(dirname($this->smartsprites_bin));
 
-		$tmpfile = $asset->getSourceRoot() . '/' . substr(sha1(time().rand(11111, 99999)), 0, 7) . '.css';
+		$prefix = preg_replace('#[^a-zA-Z\-_]#', '-', $asset->getSourcePath());
+		$tmpfile = $asset->getSourceRoot() . '/' . $prefix . '-' . substr(sha1(time().rand(11111, 99999)), 0, 7) . '.css';
 		$expect_outfile = str_replace('.css', '-sprite.css', $tmpfile);
 
 		if (!file_put_contents($tmpfile, $asset->getContent())) {
@@ -66,7 +69,7 @@ class SmartSprites implements FilterInterface
 				unlink($expect_outfile);
 			}
 
-			throw new \RuntimeException($proc->getErrorOutput());
+			throw new \RuntimeException("[SmartSprites] " . $proc->getCommandLine() . "\n\n" . $proc->getOutput() . "\n\n" . $proc->getErrorOutput());
 		}
 
 		// No file means SmartSprites just didnt need to do anything,

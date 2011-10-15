@@ -30,23 +30,36 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		w = w - (w / 4);
 
 		scroll_el = $('#tabNavigationPane .deskproTabList');
+		var ul = $('> ul', scroll_el);
+
+		var updatePosClasses = function(offset) {
+			self.recalcScrollControls(offset);
+		};
+
 		$('#tabNavSelectorLeft').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			scroll_el.animate({scrollLeft: '-=' + w}, 200);
+			scroll_el.animate({scrollLeft: '-=' + w}, 200, function() {
+
+			});
+			updatePosClasses(-200);
 		});
 		$('#tabNavSelectorRight').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			scroll_el.animate({scrollLeft: '+=' + w}, 200);
+			scroll_el.animate({scrollLeft: '+=' + w}, 200, function() {
+			});
+			updatePosClasses(200);
 		});
 
 		// Scroll wheel should scroll this baby horizontally
 		this.tabStrip.mousewheel(function(ev, delta) {
 			if (delta > 0) {
 				scroll_el.animate({scrollLeft: '+=' + w}, 100);
+				updatePosClasses(100);
 			} else {
 				scroll_el.animate({scrollLeft: '-=' + w}, 100);
+				updatePosClasses(-100);
 			}
 		});
 
@@ -58,25 +71,78 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		menuEl.mouseout(function() {
 			$('li.over', tabStrip).removeClass('over');
 		});
+		menuEl.delegate('.close', 'click', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			var item = $(this).closest('li');
+			var tabId = item.data('tab-id');
+
+			self.tabManager.removeTab(tabId);
+
+			updateMenuItems();
+			if (!$('li', menuEl).length) {
+				self.tabMenu.close();
+			}
+		});
+
+		var updateMenuItems = function() {
+			menuEl.empty();
+			var tabEl = $('#tabNavigationPane li.activeTabList');
+
+			if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
+
+				var scroll = scroll_el.scrollLeft();
+				var start = scroll - (18 + 4);
+				var end = start+scroll_el.outerWidth() + (18 + 18 + 5); /* scroll btn, drop, some extra margin */
+
+				var col = [];
+
+				var x = 0;
+				$('li', tabStrip).each(function() {
+					var tabEl = $(this);
+					var tabW = tabEl.outerWidth();
+					var tabLeft = x;
+
+					x += tabW;
+					var tabRight = x + tabW;
+
+					if (!((tabLeft >= start) && (tabLeft <= end))) {
+						col.push(tabEl.get(0));
+					}
+				});
+
+				var lis = $(col);
+			} else {
+				var lis = $('li', tabStrip);
+			}
+
+			lis.each(function() {
+				var title = $('a', this).clone();
+
+				var close = $('<a class="close"></a>');
+				var fade = $('<div class="bound-fade"></div>');
+
+				var li = $('<li />');
+				li.data('tab-id', $(this).data('tab-id'));
+				li.data('tab-el-id', $(this).attr('id'));
+				li.append(title);
+				li.append(close);
+				li.append(fade);
+
+				if ($(this).is('.activeTabList')) {
+					li.addClass('highlight');
+				}
+
+				menuEl.append(li);
+			});
+		}
+
 		this.tabMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#tabDropdownPicker'),
 			menuElement: menuEl,
 			onBeforeMenuOpened: function() {
-				menuEl.empty();
-				$('li', tabStrip).each(function() {
-					var title = $('a', this).clone();
-
-					var li = $('<li />');
-					li.data('tab-id', $(this).data('tab-id'));
-					li.data('tab-el-id', $(this).attr('id'));
-					li.append(title);
-
-					if ($(this).is('.activeTabList')) {
-						li.addClass('highlight');
-					}
-
-					menuEl.append(li);
-				});
+				updateMenuItems();
 			},
 			onItemClicked: function(info) {
 				var item = $(info.itemEl);
@@ -94,6 +160,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 					if (tabPos < scrollL || (tabPos+tabW) > (scrollL+w)) {
 						scroll_el.scrollLeft(tabPos);
+						updatePosClasses();
 					}
 				}
 			},
@@ -364,13 +431,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var tabPane = $('#tabNavigationPane');
 
-		var w = 0;
-		var num = $('li', this.tabStrip).each(function() {
-			w += $(this).outerWidth();
-		}).length;
-
-		w += 21 * num;
-
+		var w = this.getTabsWidth();
 		this.tabStrip.width(w);
 
 		var isScroll    = tabPane.is('.with-overflow');
@@ -386,13 +447,57 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			tabPane.removeClass('with-overflow');
 			this.tabStrip.scrollLeft(0);
+			$('#tabNavigationPane').removeClass('far-left').removeClass('far-right');
 
 		// Not scrolling but needs to now
 		// > Add scroller
 		} else if (!isScroll && needsScroll) {
 			console.debug('[TabStrip] Add scrolling');
 			tabPane.addClass('with-overflow');
+			$('#tabNavigationPane').removeClass('far-left').removeClass('far-right');
+			this.recalcScrollControls();
 		}
+	},
+
+	recalcScrollControls: function(offset) {
+		var scroll_el = $('#tabNavigationPane .deskproTabList');
+		var ul = $('> ul', scroll_el);
+
+		if (!offset) offset = 0;
+		var scroll = scroll_el.scrollLeft();
+		scroll += offset;
+
+		if (scroll <= 0) {
+			$('#tabNavigationPane').addClass('far-left');
+			$('#tabNavigationPane').removeClass('far-right');
+		} else {
+
+			var start = scroll + 18 + 4;
+			var end = start+scroll_el.outerWidth() + 18 + 18 + 4; /* scroll btn, drop, some extra margin */
+
+			$('#tabNavigationPane').removeClass('far-left');
+
+			var lastTab = $('#tabNavigationPane li').last();
+			var tabLeft  = lastTab.offset().left;
+			var tabRight = tabLeft + lastTab.outerWidth() + 4;
+
+			if (((tabLeft >= start) && (tabRight <= end))) {
+				$('#tabNavigationPane').addClass('far-right');
+			} else {
+				$('#tabNavigationPane').removeClass('far-right');
+			}
+		}
+	},
+
+	getTabsWidth: function() {
+		var w = 0;
+		var num = $('li', this.tabStrip).each(function() {
+			w += $(this).outerWidth() + 4; /* 4px margin-right */
+		}).length;
+
+		w += 18 + 5; // the dropdown menu is 18px, plus a bit of margin
+
+		return w;
 	},
 
 	_onTabDeactivate: function(tabData, container, isActivating) {
@@ -436,6 +541,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			return;
 		}
 
+		Tipped.remove('#' + tabData.btnId);
 		$('#' + tabData.btnId).remove();
 
 		if (tabData.page.meta.routeData && tabData.page.meta.routeData.xhr) {
@@ -447,5 +553,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		this.recalculateScrolling();
+
+		DeskPRO_Window.updateWindowUrlFragment();
 	}
 });

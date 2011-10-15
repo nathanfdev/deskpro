@@ -35,7 +35,8 @@ class CustomDefPerson extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefPerson", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;
 }

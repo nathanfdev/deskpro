@@ -29,7 +29,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('agent');
+				$return = $this->get('router')->generate('admin');
 			} else {
 				$return = $this->request->getRequestUri();
 			}

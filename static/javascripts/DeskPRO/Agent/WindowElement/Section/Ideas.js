@@ -6,6 +6,8 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#ideas_section');
 
+		this.urlFragmentName = 'ideas';
+
 		this.setSectionElement($('<section id="ideas_outline"></section>'));
 
 		$.ajax({

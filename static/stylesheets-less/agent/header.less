@@ -1,11 +1,8 @@
 @import "lib.less";
 
 #DP-NotificationSection{
-	background-attachment: scroll;
-    background-color: transparent;
-    background-image: url("@{asset-url}/images/agent/headerDiv.png");
-    background-position: right top;
     background-repeat: no-repeat;
+    background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right */;
 	float: left;
 	height: 41px;
 	width: 217px;
@@ -47,7 +44,7 @@
 .notifMenuWrap a.iconImg{
     background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	font-size: 10px;
 	color: #fff;
 	cursor: pointer;
@@ -57,7 +54,7 @@
 .notifMenuWrap a.chat{
   	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     float: left;
     height: 13px;
     padding: 5px 4px;
@@ -101,7 +98,7 @@
 	text-align: center;
 	z-index: 99;
 	text-indent: 0;
-	font-family: Tahoma, Arial, sans-serif;
+	font-family: @count-badge-font;
 }
 .notifMenuWrap span#ticketsCounter{
 	left: 17px;
@@ -239,14 +236,14 @@
 .notifMail{
 	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	    float: left;
 	    padding: 11px;
 }
 .notifChat{
 	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	padding: 10px;
 }
 .notifMail .counter{
@@ -310,7 +307,6 @@
 
 /* Search Categories */
 #dp_omnibox_wrap{
-	background: url("@{asset-url}/images/agent/headerBack.png") repeat-x top left;
 	position: relative;
 	float: left;
 	height: 41px;
@@ -516,20 +512,10 @@
 	float: right;
 }
 
-.headerDiv{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: right top;
-}
-
 #dp_header{
 	background-color:#2d5680;
-	background-image: url("@{asset-url}/images/agent/headerBack.png");
 	background-repeat: repeat-x;
-	background-attachment: scroll;
-	background-position: 0 0;
+	background-image: url("../../images/agent/headerBack.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
 	height: 41px;
 	position: absolute;
 	top: 0;
@@ -563,7 +549,7 @@
 }
 .DP-createTicket{
 	overflow: hidden;
-	font-family: Helvetica,'Helvetica Neue',Arial,sans-serif;
+	font-family: @toolbar-font;
 	margin-left: 20px;
 	margin-top: 7px;
 }
@@ -585,14 +571,13 @@
 	font-size: 11px;
 	font-weight: normal;
 	height: 19px;
-	line-height: 19px;
-	padding: 1px 0 0;
+	line-height: 18px;
+	padding: 1px 10px 0 0;
 	text-align: center;
-	text-shadow: 0 1px 0 #000000;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 	position: relative;
 }
 .ie .DP-createTicket #createContentTrigger a{
-
 	position: relative;
 }
 .DP-createTicket #createContentTrigger:hover a{
@@ -603,9 +588,12 @@
 	position: relative;
 }
 .DP-createTicket #createContentTrigger a span{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 7px -429px;
+	background-repeat: no-repeat;
+	background-position: 7px 5px;
+    background-image: url(../../images/agent/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	float: left;
-	padding: 0 9px 0 20px;
+	padding: 0 0 0 20px;
+	display: block;
 	height: 25px;
 }
 /* DP Create Ticket Dropdown */
@@ -613,45 +601,62 @@
 	left: 19px;
 	position: absolute;
 	top: 8px;
-	z-index: 9999;
+	z-index: 100000001;
 }
-/*.createDropdown{
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
-	left: 19px;
-    width: 160px;
+
+#agent_status .label-away,
+#agent_status .label-dnd {
+    display: none;
     position: absolute;
-    text-align: left;
-    top: 41px;
-    z-index: 9999;
-	color: #9da2a6;
-	text-shadow: 0 1px 0 #fff;
-	border-radius: 0 0 4px 4px;
-	border-left: 1px solid #B6BABF;
-	border-right: 1px solid #B6BABF;
-	border-bottom: 1px solid #B6BABF;
-	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
+    top: -2px;
+    left: 20px;
+    width: 40px;
+    height: 15px;
+    color:#000;
+
+    background: transparent !important;
+    font-style: normal;
+    font-size: 10px;
+    color: #fff;
 }
-.createDropdown{
-	background-image: -moz-linear-gradient(center top , #F2F2F2, #F2F2F2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
-	border-bottom: 1px solid #B6BABF;
-	border-left: 1px solid #B6BABF;
-	border-radius: 0 0 4px 4px;
-	border-right: 1px solid #B6BABF;
-	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
-	color: #9DA2A6;
-	float: left;
-	height: 134px;
-	margin: 10px 18px;
-	position: relative;
-	text-align: left;
-	text-shadow: 0 1px 0 #FFFFFF;
-	width: 160px;
-	z-index: 1;
-}*/
+
+#agent_status .label-away {
+
+}
+#agent_status .label-dnd {
+
+}
+
+#agent_status { position: relative; text-indent: 0;}
+#agent_status.away, #agent_status.dnd {
+	padding-right: 30px;
+}
+
+#agent_status.away .label-away { display: block; }
+#agent_status.dnd .label-dnd{ display: block; }
+
+.DP-adminStatus li.agentStatus a {
+
+}
+
+#agent_status_menu {
+	left: 19px;
+	position: absolute;
+	top: 8px;
+	z-index: 100000001;
+}
+
+#agent_status_menu .createDropdown {
+	margin-top: 18px;
+	margin-left: 6px;
+}
+
+#agent_status_menu .createDropdown ul {
+	border-radius: 4px !important;
+}
 
 .createDropdown ul{
+    padding-top: 5px;
 	background: rgba(242,242,242,0.98);
 	border-bottom: 1px solid #B6BABF;
 	border-left: 1px solid #B6BABF;
@@ -659,8 +664,6 @@
 	border-right: 1px solid #B6BABF;
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	text-align: left;
-	float: left;
-	width: 160px;
 	position: relative;
 	z-index: 1;
 	behavior: url("../../static/vendor/PIE.htc");
@@ -671,15 +674,12 @@
 
 .createDropdown ul.createBtnPopups li{
 	display: block;
-	float: left;
 	width: 140px;
-	padding: 0 10px;
+	padding: 0 5px;
 }
-.createDropdown ul.createBtnPopups li:first-child{
-	margin-top: 2px;
-}
+
 .createDropdown ul.createBtnPopups li:hover:first-child{
-	margin-top: 2px;
+
 }
 .createDropdown ul.createBtnPopups li:last-child{
 	margin-bottom: 5px;
@@ -690,18 +690,17 @@
 
 .createDropdown ul.createBtnPopups li a{
 	border: 1px solid transparent;
-	padding: 0 5px;
-	color: #9DA2A6;
+
+	color: #717579;
 	cursor: pointer;
 	display: block;
 	font-size: 11px;
 	line-height: 23px;
-	text-shadow: 0 1px 0 #FFFFFF;
+	text-shadow: 0 1px 1px #FFFFFF;
 }
 .createDropdown ul.createBtnPopups li span{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat;
     display: block;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 25px;
 }
 
 .createDropdown ul.createBtnPopups li:hover a{
@@ -713,7 +712,7 @@
 	border-radius: 3px;
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
 	color: #FFFFFF;
-	text-shadow: 0 1px 0 #000000;
+	text-shadow: 0 1px 1px #000000;
 	position: relative;
 }
 
@@ -723,39 +722,104 @@
     padding: 0 0 0 25px;
 
 }
+
+.createDropdown ul.createBtnPopups li kbd {
+	margin-left: 4px;
+	margin-right: 4px;
+	float: right;
+	font-family: @body-font;
+	font-size: 9px;
+	width: 6px;
+	text-align: center;
+	display: block;
+}
+
 .createDropdown ul.createBtnPopups li a span.createTicket{
-	background-position: 0 -469px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
-	background-position: 0px -591px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createPerson{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createPerson {
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createOrg{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createOrg{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createTask{
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+}
+.createDropdown ul.createBtnPopups li a:hover span.createTask {
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createArticle{
-	background-position: 0 -493px;
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createArticle {
-	background-position: 0px -616px;
+	background-repeat: no-repeat;
+	background-position: 6px 7px;
+	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createNews{
-	background-position: 0 -517px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createNews {
-	background-position: 0px -640px;
+	background-repeat: no-repeat;
+	background-position: 4px 7px;
+	background-image: url(../../images/agent/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createDownload{
-	background-position: 0 -541px;
+	background-repeat: no-repeat;
+	background-position: 5px 6px;
+	background-image: url(../../images/agent/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createDownload {
-	background-position: 0px -663px;
+	background-repeat: no-repeat;
+	background-position: 5px 6px;
+	background-image: url(../../images/agent/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createIdeas {
-	background-position: 0 -565px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createIdeas {
-	background-position: 0px -687px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createHeader, .switcherHeader{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
@@ -776,7 +840,9 @@
 	width: 62px;
 }
 .createHeader a, .switcherHeader a{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -459px;
+	background-repeat: no-repeat;
+	background-position: 0px 5px;
+    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 0px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #737980;
 	cursor: pointer;
 	font-size: 11px;
@@ -789,18 +855,16 @@
 
 /* Interfaces Switcher */
 #DP-InterfaceSwitcher{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	background-position: 0 100%;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	width: 180px;
 	position: relative;
 	float: right;
 	height: 41px;
 }
 .DP-adminSwitch{
-	padding: 8px 16px;
+	padding: 8px 14px;
 	float: left;
 }
 .adminSwitcher{
@@ -822,21 +886,24 @@
 
 .adminSwitcher a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+	background-position: 0 5px;
+    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #F2F9FF;
 	font-size: 11px;
 	font-weight: normal;
 	line-height: 22px;
 	float: left;
 	height: 22px;
-	padding: 0 4px 0 26px;
+	padding: 0 4px 0 23px;
 	width: 110px;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
 .adminSwitcher a span{
-	background-position: left -1182px;
+    background-repeat: no-repeat;
+    background-position: 0 10px;
+    background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px; sprite-margin-bottom: 10px; */;
 	float: right;
-	height: 10px;
+	height: 20px;
 	padding: 5px 12px 0 0;
 	position: relative;
 }
@@ -847,10 +914,29 @@
 	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
+
+.dropdownSwitcherWrap ul li a span {
+    margin-left: 2px;
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    padding-left: 23px;
+}
+
+.dropdownSwitcherWrap ul li:hover a span {
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+}
+
+.createDropdown ul.createBtnPopups li a span.createTicket:hover{
+
+}
+
 /* Dropdown - Switcher Interfaces */
 #interfacesToggle{
     position: absolute;
-    z-index: 100002;
+    z-index: 100000001;
 	position: absolute;
 	display: none;
 }
@@ -894,7 +980,7 @@
 }
 .dropdownSwitcherWrap li a:focus span{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	padding: 0 40px 0 2px;
 	width: 100%;
 }
@@ -922,8 +1008,10 @@
 	z-index: 100003;
 }
 .switcherHeader a{
-	background-position: 0 -382px !important;
-	padding: 0 0 0 26px !important;
+	background-repeat: no-repeat;
+	background-position: 0 3px;
+    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
+	padding: 0 0 0 22px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
 	padding: 0 24px 0 18px !important;
@@ -932,12 +1020,8 @@
 
 /* Status Admin */
 #DP-StatusSection{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
-	width: 107px;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;
@@ -965,30 +1049,40 @@
 
 .DP-adminStatus li.agentStatus a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     margin-right: 15px;
-	position: relative
+	position: relative;
+	height: 12px;
 }
-.DP-adminStatus li.agentStatus a:hover, #dpHeader .actions li.agentStatus a.on{
+#dpHeader .actions li.agentStatus a.on{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-icons; sprite-alignment: left */;
+    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.networkStatIndicator a{
-	background-position: 0 -91px;
+	background-repeat: no-repeat;
+    background-image: url(../../images/agent/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-right: 6px;
 	width: 17px;
+	height: 12px;
 }
-.DP-adminStatus li.networkStatIndicator a:hover, .DP-adminStatus li.networkStatIndicator a.on{
-	background-position: 0 -201px;
+.DP-adminStatus li.networkStatIndicator a.on{
+    background-repeat: no-repeat;
+    background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
-.DP-adminStatus li.soundIcon a{
-	background-position: 0px -222px;
-	margin-left: 10px;
+.DP-adminStatus li.soundIcon {
+	padding-top: 2px;
 }
-.DP-adminStatus li.soundIcon a:hover, .DP-adminStatus li.soundIcon a.off{
-	background-position: 0 -158px;
+.DP-adminStatus li.soundIcon a{
+	background-repeat: no-repeat;
+    background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+	margin-left: 10px;
+	height: 15px;
+}
+.DP-adminStatus li.soundIcon a.off{
+    background-repeat: no-repeat;
+    background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 .DP-adminStatus li a .dropdowninfo{
 	position: relative;
@@ -1049,6 +1143,9 @@
 	left: 170px;
 }
 
+#network_status_tip .network-status-red { display: none; }
+#network_status_tip.error .network-status-red { display: block; }
+#network_status_tip.error .network-status-green { display: none; }
 
 .DP-adminStatus li.networkStatIndicator a span{
 	left: -135px;
@@ -1105,11 +1202,8 @@
 
 /* User Control Section */
 #DP-UserSection{
-	background-color: transparent;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png");
 	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: left top;
+	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;
@@ -1117,7 +1211,7 @@
 }
 
 #DP-userControl{
-	font-family: Helvetica,'Helvetica Neue',Arial,sans-serif;
+	font-family: @toolbar-font;
 	height: 36px;
 	overflow: hidden;
 	padding: 6px 0 0 7px;
@@ -1176,7 +1270,7 @@
 	right: 18px;
     position: absolute;
 	top: 41px;
-	z-index: 10000;
+	z-index: 10000000;
 }
 
 
@@ -1191,7 +1285,7 @@
 	border-right: 1px solid #B6BABF;
 	border-bottom: 1px solid #B6BABF;
 	width: 180px;
-    z-index: 9999;
+    z-index: 10000000;
 	position: relative;
 }
 

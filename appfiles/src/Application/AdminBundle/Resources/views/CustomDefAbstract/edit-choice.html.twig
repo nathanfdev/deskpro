@@ -1,19 +1,51 @@
 {% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
-{% block custom_form %}
-<div class="block" id="block-tables">
-	<div class="content">
-		<h2 class="title">Options</h2>
-		<div class="inner">
-			<table class="table">
-				<tr class="even">
-					<td>
-						{{ form_widget(form.choices_flat) }}
-						<br /><small>One option per line. Currently there is no way to edit the value of an option (i.e., update the text), it'll just delete
-						the old value and then create a new one.</small>
-					</td>
-				</tr>
-			</table>
+{% block form_extra %}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Multiple Choice</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.multiple) }} Allow the user to select multiple options
 		</div>
 	</div>
-</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Expanded view</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.expanded) }} Show radio buttons or checkboxes instead of a select box
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Options</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
+				<header>
+					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">Add</button>
+				</header>
+				<ul class="list">
+					{% for id,choice in editfield.choices %}
+					<li class="item" data-choice-id="{{ id }}">
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="label">{{ choice }}</div>
+						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist:{{ id }}:{{ choice }}" />
+					</li>
+					{% endfor %}
+				</ul>
+				<script type="text/x-deskpro-plain" class="row-tpl">
+					<li class="item new" data-choice-id="new">
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="label"></div>
+						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
+					</li>
+				</script>
+			</div>
+		</div>
+	</div>
 {% endblock %}

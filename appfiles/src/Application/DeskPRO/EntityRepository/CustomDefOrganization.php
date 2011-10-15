@@ -15,17 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDefOrganization extends EntityRepository
+class CustomDefOrganization extends CustomDefAbstract
 {
-	/**
-	 * @return array
-	 */
-	public function getFields()
-	{
-		return $this->_em->createQuery("
-			SELECT f
-			FROM DeskPRO:CustomDefOrganization f
-			WHERE f.parent IS NULL
-		")->execute();
-	}
+
 }

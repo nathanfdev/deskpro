@@ -84,6 +84,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	//protected $children = null;
 
@@ -126,6 +127,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
+
+	/**
+	 * @var int
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
 
 	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
@@ -264,7 +271,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setOption($name, $value)
 	{
-		$this->options[$name] = $value;
+		if ($value === null) {
+			unset($this->options[$name]);
+		} else {
+			$this->options[$name] = $value;
+		}
 	}
 
 
@@ -280,7 +291,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$phrase = $this->handler_class;
 		$phrase = str_replace('Application\\DeskPRO\\CustomFields\\Handler\\', '', $phrase);
 		$phrase = str_replace('\\', '_', $phrase);
-		$phrase = "core.field_type_$phrase";
+		$phrase = "agent.field_type_$phrase";
 		$phrase = strtolower($phrase);
 
 		return $phrase;

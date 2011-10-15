@@ -6,6 +6,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#tickets_section');
 
+		this.urlFragmentName = 'tickets';
+
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated, this);
@@ -68,7 +70,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.activeNavClass = null;
 
-		$('.show-hold-check', this.sectionEl).click(function() {
+		$('.hold-ticket-count', this.sectionEl).click(function() {
 			self.toggleHoldDisplay();
 		});
 

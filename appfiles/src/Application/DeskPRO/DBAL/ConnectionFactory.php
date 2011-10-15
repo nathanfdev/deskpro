@@ -56,8 +56,6 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
 		}
 
-		$evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
-
 		return $conn;
 	}
 }

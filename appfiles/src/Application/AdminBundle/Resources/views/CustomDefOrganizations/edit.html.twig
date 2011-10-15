@@ -1,0 +1,13 @@
+{% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
+{% block pagetitle %}
+	<h1>
+		{% if field.id %}
+			Edit Field: {{ field.title }}
+		{% else %}
+			New Field: {{ phrase(field.getHandlerClassPhrase()) }}
+		{% endif %}
+	</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_customdeforganizations') }}">Back to list</a>
+	</nav>
+{% endblock %}

@@ -56,10 +56,11 @@ $CONFIG['debug']['raw_assets'] = array();
 $CONFIG['debug']['raw_assets'][] = 'all';
 
 /**
- * True to use LESS css files with the Javascript loader
+ * True to rename use .css from stylesheets/ instead of .less from stylesheets-less.
+ * This is only useful if you are auto-compiling LESS stylesheets to CSS which
+ * may be useful in development.
  */
-// TODO remove in distribution. Enabled just for devs
-$CONFIG['debug']['use_less_css'] = true;
+//$CONFIG['debug']['less_use_css_dir'] = true;
 
 $CONFIG['debug']['templates'] = array();
 

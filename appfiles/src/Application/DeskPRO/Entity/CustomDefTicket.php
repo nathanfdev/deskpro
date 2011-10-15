@@ -36,6 +36,7 @@ class CustomDefTicket extends CustomDefAbstract
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;
 }

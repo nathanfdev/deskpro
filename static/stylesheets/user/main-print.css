@@ -28,4 +28,6 @@
 
 .dp-content-block {
 	box-shadow: none;
+	white-space: nowrap;
 }
+

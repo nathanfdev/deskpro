@@ -6,6 +6,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#publish_section');
 
+		this.urlFragmentName = 'publish';
+
 		this.setSectionElement($('<section id="publish_outline"></section>'));
 
 		$.ajax({

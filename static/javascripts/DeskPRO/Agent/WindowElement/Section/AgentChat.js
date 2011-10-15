@@ -8,6 +8,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.chatsWrapper = $('#agent_chats_wrapper');
 		this.setSectionElement($('<section id="agent_chat_outline"></section>'));
 
+		this.urlFragmentName = 'agentchat';
+
 		$('#agent_chat_conversation').template('agent_chat_conversation');
 		$('#agent_groupchat_conversation').template('agent_groupchat_conversation');
 		$('#agent_chat_message').template('agent_chat_message');

@@ -5,38 +5,16 @@
 	<meta name="robots" content="NOINDEX" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css') }}" type="text/css" media="screen"  />
-    <link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/jcrop/css/jquery.Jcrop.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/chosen/chosen.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-checkbox/jquery.checkbox.css') }}" type="text/css" media="screen" />
-
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
-
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-interface.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-source-pane.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-list-pane.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-content-pane.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/dp-agent-chat.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/navigation.css') }}" type="text/css" media="screen" />
-    <link rel="stylesheet" href="{{ asset('stylesheets/agent/header.css') }}" type="text/css" media="screen" />
+	{{ dp_asset_html('agent_vendors_css') }}
+	{{ dp_asset_html('agent_deskpro_ui_css') }}
+	{{ dp_asset_html('agent_interface_css') }}
     <link rel="stylesheet" href="{{ asset('stylesheets/admin/main.css') }}" type="text/css" media="screen" />
 
-    {# Bridge tries to auto-load these, but with the compiled scripts
-    the detected path is incorrect so we have to hard-code them #}
-    <script type="text/javascript">
-    var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
-        Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
-    </script>
-
-    {{ html_js_pack('agent.vendors') }}
-    {{ html_js_pack('agent.common') }}
-    {{ html_js_pack('agent.deskpro-ui') }}
-    {{ html_js_pack('admin.admin-ui') }}
-    {{ html_js_pack('admin.admin-handlers') }}
+	{{ dp_asset_html('agent_vendors') }}
+	{{ dp_asset_html('agent_common') }}
+	{{ dp_asset_html('agent_deskpro_ui') }}
+    {{ dp_asset_html('admin_admin_ui') }}
+    {{ dp_asset_html('admin_admin_handlers') }}
 
     <script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';

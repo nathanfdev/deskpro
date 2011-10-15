@@ -19,12 +19,12 @@
 }
 
 #chat_online_count {
-	background: url("@{asset-url}/images/agent/navIcon.png") no-repeat;
+    background-repeat: no-repeat;
+	background-image: url("../../images/agent/agent-chat.png") /** sprite-ref: ui-v; sprite-alignment: left; */;
  	color: #FFFFFF;
     float: left;
     font-weight: normal;
     height: 7px;
-    margin: 0 10px;
     padding: 28px 0 0;
     width: 33px;
 }
@@ -37,13 +37,12 @@
 }
 
 #chat_online_count {
-	background-position:0 -350px;
 	padding: 11px 1px 5px 24px;
 	width: 100%;
-	margin: 0;
+	margin: 2px 0 0 2px;
 	color: #000000;
 	text-shadow: 0 1px 0 #fff;
-	font-family: Tahoma, Arial, sans-serif;
+	font-family: @small-status-font;
 	font-size: 10px;
 }
 
@@ -99,7 +98,7 @@
 	margin: 0 5px 0 1px;
 	padding: 0 5px;
 
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: @heading-font;
 
 	height: 20px;
 	overflow: hidden;
@@ -147,7 +146,7 @@
 #agent_chat_panel .close-btn {
     background-position: top right;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/agentchat-button-closebtn-on.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
+    background-image: url(../../images/agent/agentchat-button-closebtn-on.png) /** sprite-ref: ui-v; sprite-alignment: right */;
 	display: block;
 	height: 15px;
 	width: 16px;
@@ -240,7 +239,7 @@
 	height: 34px;
 	line-height: 34px;
 
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: @heading-font;
 	font-weight: bold;
 	font-size: 11px;
 
@@ -393,7 +392,7 @@
 .messageBoxHead span.minimize{
     background-position: top right;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/agentchat-win-min.png) /** sprite-ref: ui-icons; sprite-alignment: right */;
+    background-image: url(../../images/agent/agentchat-win-min.png) /** sprite-ref: ui-v; sprite-alignment: right */;
 	cursor: pointer;
 	float: right;
 	height: 16px;
@@ -484,7 +483,7 @@
 .chatMsgSend span.bubbleLeft{
 	background-position: top right;
     background-repeat: none;
-	background: url(../../images/agent/agentchat-msg-left.png); /** sprite-ref: ui-icons; sprite-alignment: left */
+	background-image: url(../../images/agent/agentchat-msg-left.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	bottom: 1px;
 	left: -11px;
 	padding: 4px 8px;
@@ -493,7 +492,7 @@
 .chatMsgRecieve span.bubbleRight{
     background-position: top right;
     background-repeat: none;
-	background: url(../../images/agent/agentchat-msg-right.png); /** sprite-ref: ui-icons; sprite-alignment: right */
+	background-image: url(../../images/agent/agentchat-msg-right.png) /** sprite-ref: ui-v; sprite-alignment: right */;
 	bottom: 1px;
 	right: -11px;
 	padding: 4px 8px;

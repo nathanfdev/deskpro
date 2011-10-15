@@ -1,13 +1,13 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
-<article class="row-item ticket-{{ ticket.id }}" data-ticket-id="{{ ticket.id }}">
+<article class="row-item ticket-{{ ticket.id }}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
 	<div class="loading-arrow">loading</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>
-				<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">
+				<a class="subject">
 					{{ ticket.subject }}
 				</a>
 			</h3>
@@ -167,6 +167,7 @@
 		<br class="clear" />
 	</div>
 	{% endif %}
+	<div class="shadow-giver"></div>
 </article>
 
 {% endfor%}

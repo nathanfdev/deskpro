@@ -295,6 +295,11 @@ admin_customdefpeople_test:
   defaults: { _controller: AdminBundle:CustomDefPeople:test }
   requirements: { field_id: "\d+" }
 
+admin_customdefpeople_setenabled:
+  pattern: /people-fields/{field_id}/set-enabled
+  defaults: { _controller: AdminBundle:CustomDefPeople:setEnabled }
+  requirements: { field_id: "\d+" }
+
 ################################################################################
 # Ticket Features
 ################################################################################
@@ -417,6 +422,11 @@ admin_customdeforganizations_setenabled:
 admin_customdeforganizations_test:
   pattern: /organization-fields/{field_id}/test
   defaults: { _controller: AdminBundle:CustomDefOrganizations:test }
+  requirements: { field_id: "\d+" }
+
+admin_customdeforganizations_setenabled:
+  pattern: /organization-fields/{field_id}/set-enabled
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:setEnabled }
   requirements: { field_id: "\d+" }
 
 ################################################################################

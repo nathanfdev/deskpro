@@ -99,6 +99,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
 		this.ownObject(this.massActions);
+
+		this.enableHighlightOpenRows('ticket', 'ticket_id', 'article.ticket-');
 	},
 
 	_handleResize: function() {

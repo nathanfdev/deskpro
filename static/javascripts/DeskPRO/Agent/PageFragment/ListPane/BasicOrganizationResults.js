@@ -28,9 +28,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 			$('.no-more-results', this.contentWrapper).show();
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', function() {
-			this._handleResize()
-		}, this);
+		this.addEvent('watchedTabAdded', function(tab) {
+			$('article.org-' + tab.page.meta.org_id, el).addClass('open');
+		});
+		this.addEvent('watchedTabRemoved', function(tab) {
+			$('article.org-' + tab.page.meta.org_id, el).removeClass('open');
+		});
+		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('organization', this, true);
 	},
 
 	//#########################################################################

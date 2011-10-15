@@ -1,29 +1,6 @@
-{% if usergroup_names %}
-<tr>
-	<td class="label" width="80">Username</td>
-	<td class="value">
-		<select name="usergroups[]" multiple="multiple">
-			{% for id,title in usergroup_names %}
-				<option value="{{id}}" {% if id in person_usergroups_ids %}selected="selected"{% endif %}>{{ title }}</option>
-			{% endfor %}
-		</select>
-		{% if person_org_usergroups_ids %}
-			<br />
-			These groups have been inherited from the users organization and will always apply:<br />
-			<ul>
-				{% for id in person_org_usergroups_ids %}
-					<li>{{ usergroup_names[id] }}</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	</td>
-</tr>
-{% endif %}
 {% for f in custom_fields %}
-	<tr>
-		<td class="label" width="80">{{ f.title }}</td>
-		<td class="value">
-			{{ render_custom_field_form(f) }}
-		</td>
-	</tr>
+	<dt class="type-labels">{{ f.title }}</dt>
+	<dd class="people-tags tags-wrap">
+		{{ render_custom_field_form(f) }}
+	</dd>
 {% endfor %}

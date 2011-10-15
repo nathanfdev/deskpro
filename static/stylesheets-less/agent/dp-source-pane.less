@@ -11,6 +11,7 @@
 	border-right-style: solid;
 	border-right-color: #b6babf;
 	overflow: hidden;
+	line-height: 16px;
 }
 
 #dp_source > section {
@@ -64,14 +65,14 @@ section.source-section header {
 
 section.source-section header h1 {
 	font-size: 11px;
-	font-family: Arial, "Lucida Grande", Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @heading-font;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 	color: #738699;
 	text-transform: uppercase;
 	padding: 0;
 	margin: 0 0 0 5px;
-	line-height: 27px;
+	line-height: 24px;
 }
 
 section.source-section header span.settings {
@@ -85,7 +86,7 @@ section.source-section header span.settings {
 	overflow: hidden;
 	text-indent: -100px;
 
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 7px -862px;
+	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 7px -863px;
 	border-left: 1px solid #ADB7C0;
 
 	cursor: pointer;
@@ -128,7 +129,7 @@ ul.source-list li h3.title {
 	cursor: pointer;
 	color: #575E66;
 	font-weight: bold;
-	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @source-heading-font;
 	font-size: 11px;
 	padding: 6px 0 5px 10px;
 }
@@ -186,7 +187,7 @@ ul.source-list li span.title {
 	display: block;
 	color: #6C7680;
 	font-weight: bold;
-	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @source-heading-font;
 	font-size: 11px;
 	padding: 3px 0 2px 10px;
 	border-top: 1px solid transparent;
@@ -204,12 +205,12 @@ ul.source-list li:not(.nav-selected) > .item-wrap > span.title:hover {
 	border-top: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
 	position: relative;
-	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @source-heading-font;
 	cursor: pointer;
 }
 
 ul.source-list li .list-counter {
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: @count-badge-font;
 	font-size: 10px;
 	line-height: 14px;
 	color: #fff;
@@ -422,12 +423,12 @@ section.source-tabs ul {
 section.source-tabs ul li {
 	border-right: 1px solid #B4BABF;
 	float: left;
-	display: inline;
+	display: block;
 	padding: 0;
 	height: 23px;
 	position: relative;
 
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: @source-heading-font;
 	font-weight: normal;
 	text-transform: uppercase;
 }
@@ -435,12 +436,14 @@ section.source-tabs ul li {
 section.source-tabs ul li span {
 	color: #959da6;
 	font-size: 11px;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: @toolbar-font;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #fff;
-	padding: 6px 11px;
+	padding: 0 11px;
 	float: left;
+	display: block;
 	cursor: pointer;
+	line-height: 23px;
 }
 
 section.source-tabs ul li.on span {
@@ -448,7 +451,7 @@ section.source-tabs ul li.on span {
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
 	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
 	behavior: url("../../static/vendor/PIE.htc");
-	height: 13px;
+	height: 24px;
 	position: relative;
 	border-bottom: none !important;
 }
@@ -500,7 +503,7 @@ section.source-switcher-tabs ul li {
 	position: relative;
 	cursor: pointer;
 
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: @source-heading-font;
 	display: inline;
 }
 
@@ -533,7 +536,7 @@ section.source-labels-list {}
 section.source-labels-list dl dt {
 	float: left;
 	font-size: 11px;
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: @body-font;
 	font-weight: bold;
 	padding: 1px 0 0 4px;
 	text-shadow: 0 1px 0 #FFFFFF;
@@ -643,15 +646,17 @@ section.source-labels-cloud ul li.nav-selected span {
 
 	float: right;
 	font-size: 10px;
-	font-family: Arial, "Lucida Grande", Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @toolbar-font;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 	color: #738699;
 	text-transform: uppercase;
-	line-height: 27px;
+	line-height: 24px;
 
 	/* margin right for settings button */
 	margin-right: 33px;
+	cursor: default;
+	.noselect;
 }
 
 #tickets_outline section.sys-filters-section .hold-ticket-count .dp-checkbox {
@@ -661,18 +666,33 @@ section.source-labels-cloud ul li.nav-selected span {
 
 
 #tickets_outline_flags_list span.flag {
-	background-repeat: no-repeat;
 	padding-left: 10px;
 	width: 6px;
 	height: 9px;
 }
-#tickets_outline_flags_list span.flag-blue      { background-image: url(../../images/flag-blue.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-green     { background-image: url(../../images/flag-green.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-orange    { background-image: url(../../images/flag-orange.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-pink      { background-image: url(../../images/flag-pink.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-purple    { background-image: url(../../images/flag-purple.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-red       { background-image: url(../../images/flag-red.png); /** sprite-ref: mysprite; */}
-#tickets_outline_flags_list span.flag-yellow    { background-image: url(../../images/flag-yellow.png); /** sprite-ref: mysprite; */}
+
+#tickets_outline_flags_list span.flag-blue      {
+    background-repeat: no-repeat;
+    background-image: url(../../images/flag-blue.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-green {
+    background-image: url(../../images/flag-green.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-orange    {
+    background-image: url(../../images/flag-orange.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-pink      {
+    background-image: url(../../images/flag-pink.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-purple    {
+    background-image: url(../../images/flag-purple.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-red       {
+    background-image: url(../../images/flag-red.png) /** sprite-ref: ui-v; */;
+}
+#tickets_outline_flags_list span.flag-yellow    {
+    background-image: url(../../images/flag-yellow.png) /** sprite-ref: ui-v; */;
+}
 
 
 
@@ -722,7 +742,7 @@ section.source-labels-cloud ul li.nav-selected span {
 	border-top: 1px solid transparent;
 	border-bottom: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
-	font-family: "Lucida Grande", Arial, Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+	font-family: @source-heading-font;
 
 	position: absolute;
 	display: block;
@@ -819,7 +839,7 @@ section.source-labels-cloud ul li.nav-selected span {
 	float: left;
 	font-size: 11px;
 	font-weight: bold;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: @body-font;
 	color: #6D7073;
 	behavior: url("js/lib/PIE.htc");
 	position: relative;
@@ -904,7 +924,7 @@ input.dp-cat-input:focus {
 
 
 .glossary-edit-dlg .word {
-	font-family: "Lucida Grande",Arial,Helvetica,Tahoma,Geneva,Verdana,sans-serif;
+	font-family: @source-heading-font;
 	font-size: 13px;
 	font-weight: bold;
 	display: block;

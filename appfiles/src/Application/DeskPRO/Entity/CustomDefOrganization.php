@@ -35,6 +35,7 @@ class CustomDefOrganization extends CustomDefAbstract
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefOrganization", mappedBy="parent", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;
 }

@@ -36,7 +36,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		ugSel.attr('multiple', 'multiple');
 		ugSel.css('width', '400');
 		ugSel.prepend('<option selected />');
-		ugSel.chosen();
+		//ugSel.chosen();
 	},
 
 	closeSelf: function() {

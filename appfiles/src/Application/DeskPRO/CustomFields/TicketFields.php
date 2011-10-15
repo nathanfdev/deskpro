@@ -6,6 +6,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
+/**
+ * @deprecated Use the FieldFanager with the field manager service
+ */
 class TicketFields extends AbstractFields
 {
 	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefTicket';

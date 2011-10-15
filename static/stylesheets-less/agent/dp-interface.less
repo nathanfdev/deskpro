@@ -25,21 +25,24 @@ a, button, input, textarea, submit {
 
 body {
 	background-color: #eaebed;
-	font: normal 11px "Lucida Sans Unicode", "Trebuchet MS", "Lucida Grande", Geneva, Verdana, sans-serif;
-	color: #324c66;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 18px;
+	font-family: @body-font;
+	color: @body-text-color;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: 'Myriad Pro', 'Myriad', helvetica, arial, sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: @heading-font-alt }
 
 a {
-	color: #4769B3;
+	color: @link-text-color;
 	outline: none;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 a:hover {
-	color: #376CDE;
+	color: @link-text-color-hover;
 	text-decoration: none;
 }
 
@@ -499,7 +502,7 @@ input[type="text"], input[type="password"], textarea {
 	padding: 1px;
 	border: 1px solid #BDBFBF;
 	font-size: 11px;
-	font-family: Verdana, 'Lucida Grande', Helvetica, Arial, sans-serif;
+	font-family: @input-font;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
@@ -792,7 +795,7 @@ a.clean-white {
 	padding: 2px 6px 2px 8px;
 	cursor: pointer;
 	font-size: 10px;
-	font: bold 10px/12px 'Helvetica Neue',sans-serif;
+	font: bold 10px/15px @button-font;
 	position: relative;
 	white-space: nowrap;
 }
@@ -819,11 +822,13 @@ a.clean-white {
 	padding-right: 0;
 }
 
-.clean-white.arrow span {
-	background-image: url("@{asset-url}/images/icons/bullet_arrow_down.png");
-	background-position: 100% 50%;
-	background-repeat: no-repeat;
-	padding-right: 16px;
+.clean-white.arrow em {
+    background-repeat: no-repeat;
+    background-position: 0 5px;
+    background-image: url(../../images/agent/button-downarrow.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+	margin-left: 8px;
+	line-height: 12px;
+	padding: 0 12px 0 0;
 }
 
 /*
@@ -914,16 +919,9 @@ a.clean-white {
 
     display: none;
 
-    background: rgb(255,255,255);
-    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1)));
-    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
-    filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 )";
-    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: #fff;
 
-    padding: 15px 8px 15px 8px;
+    padding: 10px 8px 8px 8px;
     border: 2px solid rgba(128,128,128,0.5);
 
     -webkit-box-shadow: 1px 1px 5px 0px #6e6e6e;
@@ -939,9 +937,22 @@ a.clean-white {
 
 #volume_controls .slider {
     height: 100px;
+    margin-left: 2px;
 }
 
-
+#volume_controls .mute-toggle {
+	display: block;
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+	cursor: pointer;
+	width: 14px;
+	height: 14px;
+	overflow: hidden;
+	margin-top: 5px;
+}
+#volume_controls .mute-toggle.off {
+	background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+}
 
 
 #agent_status_away_overlay {
@@ -1160,3 +1171,5 @@ a.clean-white {
 .person-search-box.org {
 
 }
+
+.deskpro-tabstrip ul li { float: left; margin-right : 10px;}

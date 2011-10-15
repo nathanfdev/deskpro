@@ -138,5 +138,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 			}
 		});
 		this.ownObject(this.massActionsMenu);
+
+		this.enableHighlightOpenRows('idea', 'idea_id', 'article.idea-');
 	}
 });

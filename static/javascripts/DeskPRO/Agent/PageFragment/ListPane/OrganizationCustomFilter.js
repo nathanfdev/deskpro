@@ -14,5 +14,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationCustomFilter = new Orb.Class({
 	initPage: function(el) {
 		this.parent(el);
 		this.resultTypeId = this.getMetaData('cache_id');
+
+		this.enableHighlightOpenRows('organization', 'org_id', 'article.org-');
 	}
 });

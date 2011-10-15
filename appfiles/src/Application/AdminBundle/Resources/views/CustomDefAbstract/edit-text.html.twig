@@ -1,4 +1,29 @@
-{% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
-{% block custom_form %}
+{% extends base_edit_tpl %}
+{% block form_extra %}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Minimum number of characters</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.min_length, { 'attr': { 'size': '5', 'style': 'width:150px' }}) }}
+		</div>
+	</div>
 
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Maximum number of characters</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.max_length, { 'attr': { 'size': '5', 'style': 'width:150px' }}) }}
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Match regular expression</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.regex) }}
+		</div>
+	</div>
 {% endblock %}

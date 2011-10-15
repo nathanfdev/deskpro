@@ -7,7 +7,7 @@ the detected path is incorrect so we have to hard-code them #}
 var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
 </script>
 
-{% if app.isDebug() %}
+{% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
 	{{ dp_asset_html('agent_vendors_css') }}
 	{{ dp_asset_html('agent_deskpro_ui_css') }}
 	{{ dp_asset_html('agent_interface_css') }}
@@ -22,13 +22,13 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 	{{ dp_asset_html('agent_pages') }}
 	{{ dp_asset_html('agent_pages_lists') }}
 	{{ dp_asset_html('agent_element_handlers') }}
+
+	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 {% else %}
 	{{ dp_asset_html('agent') }}
 	{{ dp_asset_html('agent_css') }}
+	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 {% endif %}
-
-<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('vendor/jquery/chosen/chosen.jquery.min.js') }}"></script>
 
 {% if not no_interface_date %}
 <script src="{{ path('agent_interface_data_js') }}"></script>

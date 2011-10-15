@@ -1,55 +1,36 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/FieldEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.FieldEdit({{ field.id|default(0) }});
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block page %}
 
-	{% if saved %}
-		DeskPRO_Page.tellParentUpdated();
-		DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
-{% block header %}
-	<h1>{% if field.id %}Edit Field{% else %}New Field{% endif %}: {{ phrase(field.handler_class_phrase) }}</h1>
-{% endblock %}
-{% block content %}
-
-{% set form_url %}{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}{% endset %}
-
-<form action="{{form_url}}" method="post">
+<form action="{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}" method="post">
 {{ form_widget(form.handler_class) }}
-<input type="hidden" name="process" value="1" />
 
-{% block edit_properties %}
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
 	</div>
+
+	{% block form_required %}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Require</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.required) }} Require user to input a value for this field
+		</div>
+	</div>
+	{% endblock %}
+
+	{% block form_extra_top %}{% endblock %}
+	{% block form_extra %}{% endblock %}
 </div>
-{% endblock %}
 
-{% block custom_form %}{% endblock %}
-
-<div class="form-panel">
-	<div class="row">
-		<label>Custom Display Template</label>
-		{{ form_widget(form.custom_display_html) }}
-	</div>
-	<div class="row">
-		<label>Custom Form Template</label>
-		{{ form_widget(form.custom_form_html) }}
-	</div>
-</div>
+<button class="btn primary save-trigger">Save</button>
 
 </form>
 
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
 {% endblock %}

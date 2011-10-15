@@ -47,9 +47,8 @@ class Lessc implements FilterInterface
 			$hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
 			$output = $tempDir.DIRECTORY_SEPARATOR.$hash.'.css';
 
-			$pb = new ProcessBuilder(array(
-				$this->lessc_bin
-			));
+			$pb = new ProcessBuilder();
+			$pb->add($this->lessc_bin);
 
 			$pb->add($source_file)->add($output);
 			$proc = $pb->getProcess();
@@ -66,7 +65,7 @@ class Lessc implements FilterInterface
 					}
 				}
 
-				throw new \RuntimeException($proc->getOutput());
+				throw new \RuntimeException("[Lessc] " . $pb->getProcess()->getCommandLine() . " " . $proc->getOutput() . "\n\n" . $proc->getErrorOutput());
 			} elseif (!file_exists($output)) {
 				throw new \RuntimeException('Error creating output file.');
 			}

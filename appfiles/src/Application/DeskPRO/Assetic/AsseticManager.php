@@ -11,6 +11,9 @@
 
 namespace Application\DeskPRO\Assetic;
 
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+
 class AsseticManager
 {
 	/**
@@ -70,7 +73,7 @@ class AsseticManager
 	 *
 	 * @var bool
 	 */
-	protected $auto_update = 1;
+	protected $auto_update = false;
 
 	/**
 	 * Keeps track of which assets use others
@@ -134,17 +137,6 @@ class AsseticManager
 
 
 	/**
-	 * @param string $name
-	 * @return string
-	 */
-	public function dumpBuild($name)
-	{
-		$asset = $this->getBuildAsset($name);
-		return $asset->dump();
-	}
-
-
-	/**
 	 * Write the bundle file to the filesystem
 	 *
 	 * @param $name
@@ -166,7 +158,38 @@ class AsseticManager
 			throw \RuntimeException("Bad asset write path `$dir`");
 		}
 
-		file_put_contents($file, $asset->dump());
+		$content = $asset->dump();
+
+		if (isset($info['post_filters'])) {
+			$bundle_asset = $this->getAssetBundle($name);
+			$first = Arrays::getFirstItem($bundle_asset->all());
+
+			$ext = Strings::getExtension($file);
+			$hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
+			$new_file = dirname($file) . '/' . $hash . '.' . $ext;
+
+			file_put_contents($new_file, $content);
+
+			$filters = array();
+			foreach ($info['post_filters'] as $f) {
+				$filters[] = $this->getFilter($f);
+			}
+			$new_asset = new \Assetic\Asset\FileAsset($new_file, $filters);
+
+			$factory = new \Assetic\Factory\AssetFactory($this->write_path);
+			$factory->setDebug($this->debug);
+			$am = new \Assetic\AssetManager();
+			$am->set('tmp', $new_asset);
+			$factory->setAssetManager($am);
+			$post_asset = $factory->createAsset('@tmp');
+
+			$content = $post_asset->dump();
+
+			unset($filters, $new_asset, $factory, $am, $post_asset);
+			unlink($new_file);
+		}
+
+		file_put_contents($file,  $content);
 
 		// Also need to update any that use this
 		if (isset($this->dep_map[$name])) {
@@ -309,7 +332,9 @@ class AsseticManager
 
 		if (isset($info['references'])) {
 			foreach ($info['references'] as $r) {
-				$this->getAssetBundle($r);
+				$ref_info = $this->getAssetBundle($r);
+
+
 				$coll->add(new \Assetic\Asset\AssetReference($this->asset_manager, $r));
 			}
 		}
@@ -391,11 +416,27 @@ class AsseticManager
 				$filter->setLineBreak(1000);
 				break;
 			case 'css':
-				$filter = new \Assetic\Filter\Yui\CssCompressorFilter(
-					$this->options->get('yui_compressor'),
-					$this->options->get('java_path')
-				);
-				$filter->setLineBreak(1000);
+				$filter = new \Assetic\Filter\CssMinFilter();
+				$filter->setFilters(array(
+					"ImportImports"                 => false,
+					"RemoveComments"                => true,
+					"RemoveEmptyRulesets"           => true,
+					"RemoveEmptyAtBlocks"           => true,
+					"ConvertLevel3AtKeyframes"      => false,
+					"ConvertLevel3Properties"       => false,
+					"Variables"                     => false,
+					"RemoveLastDelarationSemiColon" => true
+				));
+				$filter->setPlugins(array(
+					"Variables"                     => false,
+					"ConvertFontWeight"             => false,
+					"ConvertHslColors"              => false,
+					"ConvertRgbColors"              => false,
+					"ConvertNamedColors"            => true,
+					"CompressColorValues"           => true,
+					"CompressUnitValues"            => true,
+					"CompressExpressionValues"      => true
+				));
 				break;
 			case 'css_path':
 				$filter = new \Assetic\Filter\CssRewriteFilter();

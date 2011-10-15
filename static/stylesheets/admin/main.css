@@ -521,6 +521,13 @@ background: linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10
 	top: -3px;
 }
 
+.block-sections > ul > li.footer {
+	margin-top: -8px;
+	padding:  8px;
+	background-color: #DFE5EB;
+	border-radius: 5px;
+	text-align: center;
+}
 
 .onoff-slider {}
 
@@ -972,4 +979,98 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 .delete-link-wrap a {
 	color: #D4000D;
 	text-decoration: underline;
+}
+
+
+
+
+.choices-builder {
+	width: 500px;
+	background-color: #ECF2FA;
+	border-radius: 6px;
+}
+
+.choices-builder header {
+	background-color: #DFE5EB;
+	padding: 5px;
+	border-radius: 6px 6px 0 0;
+}
+
+.choices-builder header input {
+	width: 400px !important;
+	font-size: 11px;
+	padding: 1px;
+}
+
+.choices-builder header button {
+	width: 78px;
+}
+
+.choices-builder > ul > li {
+	padding: 5px;
+	border-bottom: 1px solid #fff;
+}
+
+.choices-builder > ul > li > div.controls {
+	float: left;
+	margin-right: 2px;
+	visibility: hidden;
+	opacity: 0.5;
+}
+
+.choices-builder > ul > li > div.controls.right {
+	float: right;
+	margin-right: 0;
+	margin-left: 2px;
+}
+
+.choices-builder:hover > ul > li > div.controls {
+	visibility: visible;
+}
+.choices-builder > ul > li > div.controls:hover {
+	opacity: 1;
+}
+
+.choices-builder > ul > li div.controls li {
+	float: left;
+	margin-right: 1px;
+}
+
+.choices-builder > ul > li div.controls li.drag a {
+	display: block;
+	background:  url(../../images/drag_handle.png) no-repeat 0 0;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: move;
+}
+
+.choices-builder > ul > li div.controls li.remove a {
+	display: block;
+	background:  url(../../images/icons/cross.png) no-repeat 0 0;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+}
+
+.choices-builder > ul.dragging li.drag,
+.choices-builder > ul.dragging li.remove {
+	visibility: hidden;
+}
+
+.choices-builder > ul.dragging li.ui-sortable-helper li.drag {
+	visibility: visible !important;
+}
+
+.choices-builder > ul.dragging li.ui-sortable-helper {
+	border-bottom:  none;
+	background-color: #DFE5EB;
+}
+
+.choices-builder input.rename {
+	font-size: 11px;
+	padding: 1px;
 }

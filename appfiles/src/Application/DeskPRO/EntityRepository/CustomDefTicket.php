@@ -15,37 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDefTicket extends EntityRepository
+class CustomDefTicket extends CustomDefAbstract
 {
-	protected $_fields = null;
 
-	protected function _initFields()
-	{
-		if ($this->_fields !== null) return;
-		$this->_fields = array();
-
-		if (true /*($this->_fields = App::getCache('common')->load('custom_def_ticket_fields')) === false*/) {
-			$all_fields = $this->findAll();
-
-			foreach ($all_fields as $f) {
-				if (!$f['parent']) {
-					$this->_fields[] = $f;
-				}
-			}
-
-			//App::getCache('common')->save($this->_fields, null, array('custom_def_ticket_fields'));
-		}
-
-		return $this->_fields;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getFields()
-	{
-		$this->_initFields();
-		return $this->_fields;
-	}
 }

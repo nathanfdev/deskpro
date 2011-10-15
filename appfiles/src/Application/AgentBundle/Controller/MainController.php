@@ -27,11 +27,8 @@ class MainController extends AbstractController
         $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
 
 		// Person menu needs these
-		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
-
-		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
-		$org_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($org_field_defs);
+		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
+		$org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
 
 		// Ticket options for search pane of tickets menu
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -59,7 +56,14 @@ class MainController extends AbstractController
 		// Countr code
 		$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
 
+		if (App::getConfig('debug.raw_assets')) {
+			$has_raw_assets = true;
+		} else {
+			$has_raw_assets = false;
+		}
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
+			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),

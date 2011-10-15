@@ -144,7 +144,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</dl>
 
 			<div class="controls">
-				<button class="clean-white arrow" id="{{baseId}}_assign_to_btn"><span>Assign To</span></button>
+				<button class="clean-white arrow" id="{{baseId}}_assign_to_btn"><span>Assign To</span><em></em></button>
 				<button class="clean-white"><span>Manage CC users</span></button>
 				<br class="clear" />
 			</div>
@@ -204,9 +204,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<button class="clean-white properties-edit-trigger edit-fields-trigger"><span>Edit Properties</span></button>
 			<button class="clean-white" id="{{baseId}}_merge_trigger"><span>Merge Ticket</span></button>
 			{% if macros|length %}
-				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>Macros</span></button>
+				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>Macros</span><em></em></button>
 			{% endif %}
-			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>More</span></button>
+			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>More</span><em></em></button>
 		</div>
 
 		<ul id="{{baseId}}_more_menu" style="display: none;">

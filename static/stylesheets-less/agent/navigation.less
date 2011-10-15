@@ -1,7 +1,9 @@
 @import "lib.less";
 
 #dp_nav{
-	background: #363c42 url("@{asset-url}/images/agent/navBack.png") repeat-y scroll 0 0;
+    background-color: #363c42;
+    background-position: repeat-y;
+	background-image: url("../../images/agent/navBack.png") /** sprite-ref: ui-h; sprite-alignment: right; sprite-alignment: repeat; */;
 	width: 54px;
 }
 #dp_nav_sections{
@@ -26,7 +28,9 @@
 }
 
 #dp_nav_sections li{
-	background: url("@{asset-url}/images/agent/navPaneBack.png") repeat-y top left;
+    background-color: #363c42;
+    background-position: repeat-y;
+	background-image: url("../../images/agent/navPaneBack.png") /** sprite-ref: ui-h; sprite-alignment: repeat; */;
 	border-bottom: 1px solid #272A2E;
 	box-shadow: 0 1px 0 #303439 inset;
 	float: left;
@@ -41,7 +45,10 @@
 	box-shadow: 0 1px 0 #3C3F44 inset;
 }
 #dp_nav_sections li.dpNavActive{
-	background: url("@{asset-url}/images/agent/pointerNav.png") no-repeat 44px 18px #1f2225;
+    background-color: #1f2225;
+    background-position: 44px 18px;
+    background-repeat: no-repeat;
+	background-image: url("@{asset-url}/images/agent/pointerNav.png") /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 18px; sprite-margin-bottom: 18px; sprite-margin-left: 55px; */;
 	padding: 0;
 	z-index: 999;
 	box-shadow: none;
@@ -80,7 +87,7 @@
 .count-badge{
 	top: 3px  !important;
 	position: absolute;
-	font-family: Tahoma, Arial, sans-serif;
+	font-family: @count-badge-font;
 }
 
 #dp_nav_sections li.dpNavActive .count-badge {
@@ -105,7 +112,6 @@
 	text-align: center;
 }
 #dp_nav_sections li a span, #dp_nav_sections li.dpNavActive a span {
-	background: url("@{asset-url}/images/agent/navIcon.png") no-repeat;
  	color: #FFFFFF;
     float: left;
     font-weight: normal;
@@ -116,52 +122,84 @@
 }
 
 #dp_nav_sections li a span.ticketNavIcon{
-	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/nav-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.ticketNavIcon {
-	background-position: 0 -757px;
+	background-repeat: no-repeat;
+	background-position: 6px 6px;
+    background-image: url(../../images/agent/nav-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li a span.chatNavIcon{
-	background-position: 0 -58px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-chat.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.chatNavIcon {
-	background-position: 0 -814px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-chat-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li a span.twitterNavIcon{
-	background-position: 0 -115px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-twitter.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.twitterNavIcon {
-	background-position: 0 -871px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-twitter-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li a span.peopleNavIcon{
-	background-position: 0 -177px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-people.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.peopleNavIcon {
-	background-position: 0 -933px;
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/nav-people-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li a span.ideasNavIcon{
-	background-position: 0 -237px;
+	background-repeat: no-repeat;
+	background-position: 9px 0;
+    background-image: url(../../images/agent/nav-ideas.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 9px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.ideasNavIcon {
-	background-position: 0 -993px;
+	background-repeat: no-repeat;
+	background-position: 9px 0;
+    background-image: url(../../images/agent/nav-ideas-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 9px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li a span.publishNavIcon{
-	background-position:0 -298px;
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/nav-publish.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.publishNavIcon {
-	background-position:0 -1054px;
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/nav-publish-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 
 #dp_nav_sections li a span.tasksNavIcon{
-	background-position: -1px -467px;
+	background-repeat: no-repeat;
+	background-position: 5px 0;
+    background-image: url(../../images/agent/nav-tasks.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.tasksNavIcon {
-	background-position:-1px -1165px;
+	background-repeat: no-repeat;
+	background-position: 5px 0;
+    background-image: url(../../images/agent/nav-tasks-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 
 #dp_nav_sections li a span.dealsNavIcon{
-	background-position: -2px -526px;
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/nav-deals.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_nav_sections li:hover a span.dealsNavIcon {
-	background-position:-2px -1224px;
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/nav-deals-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }

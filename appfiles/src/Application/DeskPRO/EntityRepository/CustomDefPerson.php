@@ -15,17 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDefPerson extends EntityRepository
+class CustomDefPerson extends CustomDefAbstract
 {
-	/**
-	 * @return array
-	 */
-	public function getFields()
-	{
-		return $this->_em->createQuery("
-			SELECT f
-			FROM DeskPRO:CustomDefPerson f
-			WHERE f.parent IS NULL
-		")->execute();
-	}
+
 }

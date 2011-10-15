@@ -1,0 +1,353 @@
+<?php
+
+namespace Application\DeskPRO\CustomFields;
+
+use Application\DeskPRO\App;
+use Orb\Util\Util;
+
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Doctrine\ORM\EntityManager;
+
+/**
+ * The custom field manager handles fetching custom fields, rendering them
+ * and saving them.
+ *
+ * == Terms ==
+ * - `field` or `field_def` is a field definition (CustomDefAbstract).
+ *   A field can have children (such as a select box).
+ * - `object` is the object that a field is attached to (Ticket, Person, Organization)
+ * - `custom_data` is a flat array on an object that stores the data for a field (CustomDataAbstract). It's flat
+ *   because Doctrine/database doesn't care about hierarchy.
+ * - `field_data` is a re-structured array based off of `custom_data` that has the proper hierarchy defined by the `field_def`s
+ * - `display_array` takes a `field_def` and `field_data` to produce an array that has data that can be rendered in a template as
+ *   a value or a form.
+ */
+class FieldManager
+{
+	/**
+	 * @var \Doctrine\ORM\Doctrine\DBAL\Connection
+	 */
+	protected $db;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	protected $options;
+
+	/**
+	 * Array of fields
+	 * @var array
+	 */
+	protected $fields = null;
+
+	/**
+	 * @param \Doctrine\ORM\EntityManager $em
+	 */
+	public function __construct(EntityManager $em, array $options)
+	{
+		$this->em = $em;
+		$this->db = $em->getConnection();
+
+		$this->options = new \Orb\Util\CheckedOptionsArray($options);
+		$this->options->ensureRequired(array(
+			'entity_class',
+			'entity_name',
+			'data_entity_name',
+			'data_entity_class',
+		));
+
+		$this->options->setArrayDefault(array(
+			'custom_data_property' => 'custom_data'
+		));
+	}
+
+	/**
+	 * Get a collection of all top-level (parent) fields
+	 *
+	 * @return array
+	 */
+	public function getFields()
+	{
+		if ($this->fields === null) {
+			$this->fields = array();
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+			foreach ($all_fields as $f) {
+				if (!$f->parent) {
+					$this->fields[$f->id] = $f;
+				}
+			}
+		}
+
+		return $this->fields;
+	}
+
+
+	/**
+	 * Get a field from an ID
+	 *
+	 * @param $field_id
+	 * @return \Application\DeskPRO\Entity\CustomDefAbstract
+	 */
+	public function getFieldFromId($field_id)
+	{
+		$this->getFields();
+		return isset($this->fields[$field_id]) ? $this->fields[$field_id] : null;
+	}
+
+
+	/**
+	 * Get a display array for rendering a field
+	 *
+	 * @param array $field_data  An array of structured data from the database
+	 * @param null $field_group       Optionally a form group to add form fields to
+	 * @return array
+	 */
+	public function getDisplayArray($field_data = array(), $field_group = null)
+	{
+		if (!$field_group) {
+			$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		}
+
+		$custom_fields = array();
+		foreach ($this->getFields() as $f_def) {
+			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
+
+			$f = $f_def->getHandler()->getFormField($value);
+
+			$name = 'field_' . $f_def['id'];
+
+			if ($field_group) {
+				$field_group->add($f);
+				$form = $field_group->getForm();
+				$formView = $form->createView();
+				$formView = $formView[$name];
+			} else {
+				$form = $f->getForm();
+				$formView = $form->createView();
+			}
+
+			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
+			if ($rendered) $has_value = true;
+
+			$custom_fields[$f_def['id']] = array(
+				'elId'            => Util::requestUniqueIdString(),
+				'hasValue'        => ($value !== null),
+				'id'              => $f_def['id'],
+				'name'            => 'field_' . $f_def['id'],
+				'handler'         => $f_def->getHandler(),
+				'field_def'       => $f_def,
+				'title'           => $f_def['title'],
+				'form'            => $form,
+				'formView'        => $formView,
+				'value'           => $value,
+				'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
+			);
+		}
+
+		return $custom_fields;
+	}
+
+
+	/**
+	 * Create a field display array from an object
+	 *
+	 * @param $object
+	 * @param null $field_group
+	 * @return void
+	 */
+	public function getDisplayArrayForObject($object, $field_group = null)
+	{
+		$field_data = $this->getFieldDataForObject($object);
+		return $this->getDisplayArray($field_data, $field_group);
+	}
+
+
+	/**
+	 * Take custom field data from an obejct and return a field data array.
+	 *
+	 * @param $object
+	 * @return array
+	 */
+	public function getFieldDataForObject($object)
+	{
+		$prop = $this->options->get('custom_data_property');
+		$data = $object->$prop;
+
+		return $this->createFieldDataFromArray($data);
+	}
+
+
+	/**
+	 * This converts a collection of data items into an array structure
+	 * that matches the hierarchy of field definitions.
+	 *
+	 * Custom field values in the database are 'flat', and when displaying values
+	 * we need to pass a proper structure to a field defition for rendering. This is
+	 * easy for simple fields like text or textarea, but we need this method for
+	 * complex fields that have multiple levels, like a choice.
+	 *
+	 * @param $field_datas
+	 * @return array
+	 */
+	public function createFieldDataFromArray($field_datas)
+	{
+		// Create a map of keys
+		$data_keys = array();
+		foreach ($field_datas as $k => $v) {
+			$data_keys[$v->field->id] = $k;
+		}
+
+		$data = $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
+
+		return $data;
+	}
+
+	protected function _createDataHierarchy($data_keys, $field_datas, $field_defs)
+	{
+		$structure = array();
+
+		foreach ($field_defs as $def) {
+
+			$item = array('value' => null, 'children' => null);
+
+			if (isset($data_keys[$def['id']])) {
+				$item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+			}
+
+			if ($def['children']) {
+				$item['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $def['children']);
+			}
+
+			if ($item['value'] || $item['children']) {
+				$structure[$def['id']] = $item;
+			}
+		}
+
+		return $structure;
+	}
+
+
+	/**
+	 * Save a posted form of custom field data to an object
+	 *
+	 * @param array $form_data
+	 * @param $object
+	 * @return void
+	 */
+	public function saveFormToObject(array $form, $object)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			foreach ($this->getFields() as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($form) as $info) {
+					$this->setCustomDataOnObject($object, $field_def, $info);
+				}
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param $object
+	 * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+	 * @param array $in_data
+	 * @return array|null
+	 */
+	public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			list($set_field_id, $value_type, $value) = $in_data;
+
+			// Remove whatever we have before
+			// We'll just re-insert if its still there
+			$this->removeCustomDataOnObject($object, $field_def);
+			$this->em->flush();
+
+			// The field we're actually saving under
+			// Usually the same as $field_def, but not always
+			// Ex: Choice fields we save under the actual choice option
+			$set_field = null;
+
+			if ($field_def->id == $set_field_id) {
+				$set_field = $field_def;
+			} else {
+				foreach ($field_def->children as $c) {
+					if ($c->id == $set_field_id) {
+						$set_field = $c;
+						break;
+					}
+				}
+			}
+
+			// No value
+			if ($value === null || $set_field === null) {
+				return null;
+			}
+
+			$custom_data = $this->createDataClass();
+			$custom_data['field'] = $set_field;
+			$custom_data[$value_type] = $value;
+
+			$object->addCustomData($custom_data);
+			$this->em->persist($custom_data);
+			$this->em->flush();
+
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		return $custom_data;
+	}
+
+
+	/**
+	 * @param $object
+	 * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+	 * @return void
+	 */
+	public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
+	{
+		$prop = $this->options->get('custom_data_property');
+		if ($field_def->parent) {
+			foreach ($object->$prop as $v) {
+				if ($v->field->id == $field_def->parent->id) {
+					$this->em->remove($v);
+					$object->$prop->removeElement($v);
+				}
+			}
+		}
+
+		foreach ($object->$prop as $v) {
+			if ($v->field->id == $field_def->id) {
+				$object->$prop->removeElement($v);
+			}
+		}
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDataAbstract
+	 */
+	public function createDataClass()
+	{
+		$classname = $this->options->get('data_entity_class');
+		return new $classname;
+	}
+}
