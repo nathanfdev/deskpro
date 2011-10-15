@@ -196,7 +196,7 @@ class TaskController extends AbstractController {
         $comment['task'] = $task;
         $comment['content'] = $comment_txt;
 
-        $this->_entityManager->persist($task);
+        $this->_entityManager->persist($comment);
         $this->_entityManager->flush();
 
         return $this->createJsonResponse(array(
