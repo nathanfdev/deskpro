@@ -22,7 +22,8 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\DiscriminatorMap({
  * 	"person" = "TaskAssociatedPerson",
  * 	"ticket" = "TaskAssociatedTicket",
- *  "organization" = "TaskAssociatedOrganization"
+ *  "organization" = "TaskAssociatedOrganization",
+ *      "deal" = "TaskAssociatedDeal"
  * })
  * @ORM_Mapping\Table(name="task_associations")
  */

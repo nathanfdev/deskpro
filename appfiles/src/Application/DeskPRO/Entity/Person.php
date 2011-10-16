@@ -393,6 +393,19 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_person_logger = null;
 
+        /**
+	 * The deals created by this user.
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 */
+	protected $deals;
+
+	/**
+	 * The deals assigned to this user.
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
+	 */
+	protected $assigned_deals;
 
 
 
@@ -453,6 +466,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->task_comments          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
+                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
