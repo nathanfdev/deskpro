@@ -1766,8 +1766,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 		statusEl.data('status', status);
 
+		$('#agent_status_away_overlay').remove();
+
 		if (status == 'available') {
-			$('#agent_status_away_overlay').remove();
 			statusEl.removeClass('away').removeClass('dnd');
 
 			$.ajax({
