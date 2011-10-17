@@ -61,6 +61,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('attach_row').slideDown().removeClass('is-hidden');;
 		});
 
+		this.el.delegate('.remove-attach-trigger', 'click', function() {
+
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getElById('attach_row'));
+				if (!rows.length) {
+					self.getElById('attach_row').slideUp().addClass('is-hidden');
+				}
+			});
+		});
+
 		//------------------------------
 		// Toggle buttons
 		//------------------------------
