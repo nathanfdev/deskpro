@@ -237,12 +237,16 @@
 	padding: 3px 4px 3px 10px;
 	line-height: 17px;
 	border: 1px solid transparent;
-	border-bottom: 1px solid #E3E4E6;
+	border-top:  1px solid #E3E4E6;
 
     position: relative;
 
 	font-family: Helvetica,Arial,sans-serif;
     font-size: 11px;
+}
+
+.deskpro-menu > ul > li:first-child {
+	border-top-color: transparent;
 }
 
 .deskpro-menu > ul > li.highlight {
@@ -278,8 +282,6 @@
 
 .deskpro-menu > ul > li.on {
     background: #323437;
-	border-top: 1px solid #27292b;
-	border-bottom: 1px solid #696b6f;
 
     color: #CCC;
 	cursor: pointer;
@@ -289,12 +291,17 @@
     transition: color 0.2s ease-out;
 }
 
+.deskpro-menu > ul > li + .deskpro-menu > ul > li.sep {
+	border-top-color: transparent;
+}
+
 .deskpro-menu > ul > li.sep {
-	border-bottom: 1px solid #A3A3A3;
-	height: 3px;
+	border: none;
+	border-top: 1px solid #C1C1C5;
+	height: 0;
 	overflow: hidden;
 	padding: 0;
-	margin: 0 0 3px 0;
+	margin: 0;
 }
 
 .deskpro-menu > ul > li > span.icon {
