@@ -949,7 +949,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		if (!routeData.isBackgroundLoad) {
+		if (routeData && !routeData.isBackgroundLoad) {
 			$('#dp_list > section').removeClass('on');
 			$('#dp_list_loading').addClass('on');
 		}
@@ -1990,7 +1990,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				ev.stopPropagation();
 
-				if ($(this).is('.row-item') && $(ev.target).is('input, a, button, textarea')) {
+				if ($(this).is('.row-item') && (!$(ev.target).is('.click-through') && $(ev.target).is('input, a, button, textarea'))) {
 					return;
 				}
 
