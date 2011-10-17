@@ -427,78 +427,83 @@ class PersonController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		// Editing emails
-		if ($this->person->hasPerm('users.add-emails')) {
-			$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
-			foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
-				if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
-					if (!$email) {
+		try {
+			// Editing emails
+			if ($this->person->hasPerm('users.add-emails')) {
+				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
+				foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
+					if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
+						if (!$email) {
+							$this->em->remove($person->emails[$email_id]);
+							$person->emails->remove($email_id);
+						} else {
+							$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
+							$this->em->persist($person->emails[$email_id]);
+						}
+					}
+				}
+
+				// Adding emails
+				$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
+					$email_rec = $person->addEmailAddressString($email);
+					$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
+					$this->em->persist($email_rec);
+				}
+			}
+
+			// Removing emails
+			if ($this->person->hasPerm('users.remove-emails')) {
+				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+					if (isset($person->emails[$email_id])) {
 						$this->em->remove($person->emails[$email_id]);
 						$person->emails->remove($email_id);
-					} else {
-						$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
-						$this->em->persist($person->emails[$email_id]);
 					}
 				}
 			}
 
-			// Adding emails
-			$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
-			foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
-				$email_rec = $person->addEmailAddressString($email);
-				$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
-				$this->em->persist($email_rec);
-			}
-		}
+			// Adding contact data
+			foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
+				foreach ($inputs as $input) {
+					try {
+						$contact_data = new PersonContactData();
+						$contact_data->contact_type = $type;
+						$contact_data->applyFormData($input);
 
-		// Removing emails
-		if ($this->person->hasPerm('users.remove-emails')) {
-			foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-				if (isset($person->emails[$email_id])) {
-					$this->em->remove($person->emails[$email_id]);
-					$person->emails->remove($email_id);
+						$contact_data->person = $person;
+
+						$this->em->persist($contact_data);
+						$person->contact_data->add($contact_data);
+					} catch (\Exception $e) {
+						throw $e;
+					}
 				}
 			}
-		}
 
-		// Adding contact data
-		foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
-			foreach ($inputs as $input) {
-				try {
-					$contact_data = new PersonContactData();
-					$contact_data->contact_type = $type;
-					$contact_data->applyFormData($input);
+			// Editing values
+			foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+				if (!isset($person->contact_data[$id])) {
+					continue;
+				}
 
-					$contact_data->person = $person;
+				$person->contact_data[$id]->applyFormData($input);
+				$this->em->persist($person->contact_data[$id]);
+			}
 
-					$this->em->persist($contact_data);
-					$person->contact_data->add($contact_data);
-				} catch (\Exception $e) {
-					throw $e;
+			// Removing values
+			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
+				if (isset($person->contact_data[$id])) {
+					$this->em->remove($person->contact_data[$id]);
+					$person->contact_data->remove($id);
 				}
 			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
-
-		// Editing values
-		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
-			if (!isset($person->contact_data[$id])) {
-				continue;
-			}
-
-			$person->contact_data[$id]->applyFormData($input);
-			$this->em->persist($person->contact_data[$id]);
-		}
-
-		// Removing values
-		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
-			if (isset($person->contact_data[$id])) {
-				$this->em->remove($person->contact_data[$id]);
-				$person->contact_data->remove($id);
-			}
-		}
-
-		$this->em->flush();
-		$this->em->commit();
 
 		$contact_data = array();
 		foreach ($person->contact_data as $cd) {
