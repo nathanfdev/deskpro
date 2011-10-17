@@ -19,31 +19,26 @@
 }
 
 #chat_online_count {
+    position: relative;
     background-repeat: no-repeat;
 	background-image: url("../../images/agent/agent-chat.png") /** sprite-ref: ui-v; sprite-alignment: left; */;
  	color: #FFFFFF;
     float: left;
-    font-weight: normal;
     height: 7px;
-    padding: 28px 0 0;
-    width: 33px;
-}
 
-#agent_chat_section:hover{
-	background: #d2d4d6;
-}
-#chat_online_count {
-	position: relative;
-}
-
-#chat_online_count {
-	padding: 11px 1px 5px 24px;
-	width: 100%;
+    padding: 3px 0 11px 20px;
+	width: 36px - 20;
 	margin: 2px 0 0 2px;
 	color: #000000;
 	text-shadow: 0 1px 0 #fff;
 	font-family: @small-status-font;
+	font-weight: normal;
 	font-size: 10px;
+	text-align: center;
+}
+
+#agent_chat_section:hover{
+	background: #d2d4d6;
 }
 
 
@@ -110,15 +105,17 @@
 	font-size: 10px;
 	font-weight: bold;
 	cursor: pointer;
-	padding: 4px 0 3px;
+	padding: 0px 0 3px;
 }
 #agent_chat_panel > header li a span.user-icon{
-	background-position: 0 -1281px;
-	padding: 0 8px 0 23px;
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/whosonline-tab-agent.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-bottom: 8px; */;
+	padding: 0 0px 0 18px;
 }
 #agent_chat_panel > header li a span.team-icon{
-	background-position: 0 -1215px;
-	padding: 0 7px 0 26px;
+    background-repeat: no-repeat;
+	background-image: url(../../images/agent/whosonline-tab-team.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-bottom: 8px; */;
+	padding: 0 0px 0 20px;
 }
 #agent_chat_panel > header li:hover{
 	background-image: -moz-linear-gradient(top, #93bcdc, #4b7ebb);
@@ -136,11 +133,14 @@
 
 #agent_chat_panel > header li.on a span.user-icon{
 	color: #2d5680;
-	background-position: 0 -1312px;
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/whosonline-tab-agent-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-bottom: 8px; */;
 }
 #agent_chat_panel > header li.on a span.team-icon{
 	color: #2d5680;
-	background-position: 0 -1246px;
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/whosonline-tab-team-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-bottom: 8px; */;
+	padding: 0 0px 0 20px;
 }
 
 #agent_chat_panel .close-btn {
@@ -271,13 +271,193 @@
 
 
 
-#agentChatWrapper{
+#agent_chats_wrapper {
 	position: absolute;
 	bottom: 0;
 	left: 60px;
 	z-index: 10000;
 	display: block;
 }
+
+#agent_chats_wrapper section.agent-chat {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
+#agent_chats_wrapper section.agent-chat nav {
+	background-image: -moz-linear-gradient(top, #6ea4c3, #375288);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6ea4c3), to(#375288));
+
+	border-right: 1px solid #334d66;
+	border-left: 1px solid #334d66;
+	border-top: 1px solid #334d66;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+	cursor: pointer;
+	padding: 5px;
+	position: absolute;
+	width: 75px;
+	bottom: 0;
+	height: 16px;
+	overflow: hidden;
+
+	a {
+	    display: block;
+		position: absolute;
+		top: 0; right: 5px; bottom: 0; left: 5px;
+		background-repeat: no-repeat;
+		background-position: 0 50%;
+
+		padding: 0 0 0 18px;
+
+		line-height: 26px;
+
+		color: #fff;
+		width: 100px;
+		white-space: nowrap;
+	}
+
+	.close-trigger {
+		position: absolute;
+	    display: block;
+		background-image: url(../../images/agent/agentchat-button-closebtn.png);
+		height: 16px;
+		right: 5px;
+		top: 5px;
+		text-indent: -100px;
+		width: 16px;
+		cursor:pointer;
+		.imgel;
+	}
+}
+
+#agent_chats_wrapper section.agent-chat.open nav {
+	background-image: -moz-linear-gradient(top, #edeff2, #e1e3e6);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#edeff2), to(#e1e3e6));
+
+	border-right: 1px solid #b6babf;
+	border-left: 1px solid #b6babf;
+	border-top: 1px solid #b6babf;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+
+	.rounded(0);
+
+	a {
+		color: #000;
+	}
+
+	.close-trigger {
+		background-image: url(../../images/agent/agentchat-button-closebtn-on.png);
+		width: 14px;
+		height: 14px;
+
+	}
+}
+
+#agent_chats_wrapper section.agent-chat.open section.window { display: block; }
+#agent_chats_wrapper section.agent-chat section.window {
+    display: none;
+    height: 340px;
+    width: 315px;
+
+    header {
+        border: 1px solid #b6babf;
+    	background-image: -moz-linear-gradient(top, #f1f3f5, #e4e7eb);
+		background-image: -webkit-gradient(linear, center top, center bottom, from(#f1f3f5), to(#e4e7eb));
+
+		border-radius: 5px 5px 0 0;
+		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+		position: absolute;
+		top: 0; right: 0; left: 0;
+
+		height: 36px;
+
+		h2 {
+			font-size: 14px;
+			font-weight: bold;
+			color: #2d5680;
+			text-shadow: 0 1px 0 #fff;
+			float: left;
+			padding: 10px;
+		}
+
+		span.minimize {
+		    background-position: top right;
+			background-repeat: no-repeat;
+			background-image: url(../../images/agent/agentchat-win-min.png) /** sprite-ref: ui-v; sprite-alignment: right */;
+			cursor: pointer;
+			float: right;
+			height: 16px;
+			margin: 11px 8px 0 7px;
+			text-indent: -9999px;
+			width: 16px;
+		}
+    }
+
+    .messages-box {
+		position: absolute;
+		top: 37px; right: 0; bottom: 77px; left: 0;
+
+    	background: #E4E7EB;
+		border: 1px solid #b6babf;
+		border-bottom: 1px solid #C9CED5;
+		box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
+		padding: 5px 5px 5px 7px;
+    }
+
+    .input-message-wrap {
+		background: #edeff2;
+		border-radius: 0 0 5px 0px;
+		box-shadow: inset 0 1px 0 #fff, 0 1px 0 1px rgba(255, 255, 255, 0.2) inset;
+
+		border: 1px solid #b6babf;
+		border-top: none;
+
+		position: absolute;
+		right: 0; bottom: 26px; left: 0;
+		height: 50px;
+	}
+
+	.input-message-wrap .input-message {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+		padding: 4px;
+
+		.border-radius(0, 0, 4px, 0);
+
+		background-color: #fff;
+	}
+
+	.input-message-wrap .input-message textarea {
+		width: 95%;
+		height: 95%;
+
+		border: none;
+		margin: 0;
+		padding: 0;
+		outline: none;
+		background: transparent;
+		resize: none;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .agentChat{
 	position: absolute;

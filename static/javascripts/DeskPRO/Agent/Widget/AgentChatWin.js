@@ -48,9 +48,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.uuid = Orb.uuid();
+		this.uuid = this.OBJ_ID;
 		this.convoId = this.options.convoId;
-		
+
 		this.chatsWrapper = $('#agent_chats_wrapper');
 
 		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = this;
@@ -97,8 +97,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			var newContainer = $.tmpl('agent_chat_conversation', {
 				local_id: this.uuid,
 				to_agent_name: agentInfo.name,
+				to_agent_shortname: agentInfo.shortName,
 				to_agent_id: agentInfo.id,
-				to_agent_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 30)
+				to_agent_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 15)
 			});
 		} else {
 			var newContainer = $.tmpl('agent_groupchat_conversation', {
@@ -141,6 +142,11 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			ev.stopPropagation();
 			self.destroy();
 		});
+
+		$('.minimize', nav).click(function(ev) {
+			ev.stopPropagation();
+			self.destroy();
+		});
 	},
 
 	_fireSendMessage: function() {
@@ -156,7 +162,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		this.showMyMessage(msg);
 	},
 
-	
+
 	/**
 	 * Get the convo ID
 	 *
@@ -179,7 +185,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	/**
 	 * Send a new message
-	 * 
+	 *
 	 * @param {String} message
 	 */
 	sendMessage: function(message) {
@@ -225,7 +231,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		});
 	},
 
-	
+
 	/**
 	 * Show a new incoming message from someone
 	 *
@@ -273,7 +279,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		this.wrapper.removeClass('open');
 	},
 
-	
+
 	/**
 	 * Remove the chat window
 	 */
