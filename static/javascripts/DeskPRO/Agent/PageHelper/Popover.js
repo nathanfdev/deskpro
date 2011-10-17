@@ -135,7 +135,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popoverOuter.css({
 			'position': 'absolute',
 			'display': 'none',
-			'z-index': 999997,
+			'z-index': 1000050,
 			'width': width+2+6, //2px for thi sborder, 6px for the popover border
 			'overflow': 'auto',
 			'top': top-3,

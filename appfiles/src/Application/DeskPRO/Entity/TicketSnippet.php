@@ -70,85 +70,10 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function snippetFormatted(Ticket $ticket = null, Person $person = null, array $pattern = null)
 	{
-		if ($ticket && !$person) {
-			$person = $ticket->person;
-		}
-
 		$snippet = $this->snippet;
 
-		// Basic replacements
-		$repl = array(
-			'var.time'          => date('h:ia'),
-			'var.time24'        => date('H:i'),
-			'var.date'          => date('F d, Y'),
-			'me.name'       => App::getCurrentPerson()->getDisplayName(),
-			'me.email'      => App::getCurrentPerson()->getPrimaryEmailAddress(),
-
-			'ticket.subject'          => $ticket->subject,
-			'ticket.department'       => $ticket->department ? $ticket->department->full_title : '',
-			'ticket.product'          => $ticket->product ? $ticket->product->full_title : '',
-			'ticket.category'         => $ticket->category ? $ticket->category->full_title : '',
-			'ticket.workflow'         => $ticket->workflow ? $ticket->workflow->title : '',
-			'ticket.priority'         => $ticket->priority ? $ticket->priority->title : '',
-			'ticket.date_created'     => date('F d, Y', $ticket->date_created->getTimestamp()),
-			'ticket.time_created'     => date('h:ia', $ticket->date_created->getTimestamp()),
-			'ticket.date_closed'      => $ticket->date_closed ? date('F d, Y', $ticket->date_closed->getTimestamp()) : '',
-			'ticket.time_closed'      => $ticket->date_closed ? date('h:ia', $ticket->date_closed->getTimestamp()) : '',
-			'ticket.date_resolved'    => $ticket->date_resolved ? date('F d, Y', $ticket->date_resolved->getTimestamp()) : '',
-			'ticket.time_resolved'    => $ticket->date_resolved ? date('h:ia', $ticket->date_resolved->getTimestamp()) : '',
-
-			'agent.name'     => $ticket->agent ? $ticket->agent->getDisplayName() : '',
-			'agent.email'    => $ticket->agent ? $ticket->agent->getPrimaryEmailAddress() : '',
-
-			'agent_team.name' => $ticket->agent_team ? $ticket->agent_team->name : '',
-
-			'user.name'                   => $person->getDisplayName(),
-			'user.email'                  => $person->getPrimaryEmailAddress(),
-			'user.organization_position'  => $person->organization_position,
-
-			'org.name' => $person->organization ? $person->organization->name : '',
-		);
-
-		// Custom ticket fields: {{ ticket.field23 }}
-		$field_manager = App::getSystemService('ticket_fields_manager');
-		$custom_fields = $field_manager->getRenderedToTextForObject($ticket);
-		foreach ($custom_fields as $f) {
-			$repl["ticket.field{$f['id']}"] = $f['rendered'];
-		}
-
-		// Custom user fields: {{ user.field23 }}
-		$field_manager = App::getSystemService('person_fields_manager');
-		$custom_fields = $field_manager->getRenderedToTextForObject($person);
-		foreach ($custom_fields as $f) {
-			$repl["user.field{$f['id']}"] = $f['rendered'];
-		}
-
-		// Custom user fields for current agent: {{ me.field23 }}
-		$field_manager = App::getSystemService('person_fields_manager');
-		$custom_fields = $field_manager->getRenderedToTextForObject(App::getCurrentPerson());
-		foreach ($custom_fields as $f) {
-			$repl["me.field{$f['id']}"] = $f['rendered'];
-		}
-
-		// Custom user fields for assigned agent: {{ agent.field23 }}
-		if ($ticket->agent) {
-			$field_manager = App::getSystemService('person_fields_manager');
-			$custom_fields = $field_manager->getRenderedToTextForObject($ticket->agent);
-			foreach ($custom_fields as $f) {
-				$repl["agent.field{$f['id']}"] = $f['rendered'];
-			}
-		}
-
-		// Custom org fields: {{ agent.field23 }}
-		if ($ticket->agent) {
-			$field_manager = App::getSystemService('org_fields_manager');
-			$custom_fields = $field_manager->getRenderedToTextForObject($person->organization);
-			foreach ($custom_fields as $f) {
-				$repl["org.field{$f['id']}"] = $f['rendered'];
-			}
-		}
-
 		if (!$pattern) {
+			// 0=>wrapstart, 1=>wrapend, 2=>render as html
 			$pattern = array('', '', false);
 		}
 
@@ -156,16 +81,95 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 			$snippet = nl2br(htmlspecialchars($snippet));
 		}
 
-		foreach ($repl as $k => $v) {
-			if ($pattern[2]) {
-				$v = htmlspecialchars($v);
+		// If we dont have a ticket, then no replacements
+		if ($ticket) {
+			if ($ticket && !$person) {
+				$person = $ticket->person;
 			}
-			$snippet = str_replace("{{ $k }}", $pattern[0] . $v . $pattern[1], $snippet);
-			$snippet = str_replace("{{{$k}}}", $pattern[0] . $v . $pattern[1], $snippet);
-		}
 
-		// Replace anything remaining with blanks,
-		$snippet = preg_replace('#\{\{[ ]?(var|me|agent|agent_team|user|org|ticket)\.([a-zA-Z0-9_]+)[ ]?\}\}#', '', $snippet);
+			// Basic replacements
+			$repl = array(
+				'var.time'          => date('h:ia'),
+				'var.time24'        => date('H:i'),
+				'var.date'          => date('F d, Y'),
+				'me.name'       => App::getCurrentPerson()->getDisplayName(),
+				'me.email'      => App::getCurrentPerson()->getPrimaryEmailAddress(),
+
+				'ticket.subject'          => $ticket->subject,
+				'ticket.department'       => $ticket->department ? $ticket->department->full_title : '',
+				'ticket.product'          => $ticket->product ? $ticket->product->full_title : '',
+				'ticket.category'         => $ticket->category ? $ticket->category->full_title : '',
+				'ticket.workflow'         => $ticket->workflow ? $ticket->workflow->title : '',
+				'ticket.priority'         => $ticket->priority ? $ticket->priority->title : '',
+				'ticket.date_created'     => date('F d, Y', $ticket->date_created->getTimestamp()),
+				'ticket.time_created'     => date('h:ia', $ticket->date_created->getTimestamp()),
+				'ticket.date_closed'      => $ticket->date_closed ? date('F d, Y', $ticket->date_closed->getTimestamp()) : '',
+				'ticket.time_closed'      => $ticket->date_closed ? date('h:ia', $ticket->date_closed->getTimestamp()) : '',
+				'ticket.date_resolved'    => $ticket->date_resolved ? date('F d, Y', $ticket->date_resolved->getTimestamp()) : '',
+				'ticket.time_resolved'    => $ticket->date_resolved ? date('h:ia', $ticket->date_resolved->getTimestamp()) : '',
+
+				'agent.name'     => $ticket->agent ? $ticket->agent->getDisplayName() : '',
+				'agent.email'    => $ticket->agent ? $ticket->agent->getPrimaryEmailAddress() : '',
+
+				'agent_team.name' => $ticket->agent_team ? $ticket->agent_team->name : '',
+
+				'user.name'                   => $person->getDisplayName(),
+				'user.email'                  => $person->getPrimaryEmailAddress(),
+				'user.organization_position'  => $person->organization_position,
+
+				'org.name' => $person->organization ? $person->organization->name : '',
+			);
+
+			// Custom ticket fields: {{ ticket.field23 }}
+			$field_manager = App::getSystemService('ticket_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject($ticket);
+			foreach ($custom_fields as $f) {
+				$repl["ticket.field{$f['id']}"] = $f['rendered'];
+			}
+
+			// Custom user fields: {{ user.field23 }}
+			$field_manager = App::getSystemService('person_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject($person);
+			foreach ($custom_fields as $f) {
+				$repl["user.field{$f['id']}"] = $f['rendered'];
+			}
+
+			// Custom user fields for current agent: {{ me.field23 }}
+			$field_manager = App::getSystemService('person_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject(App::getCurrentPerson());
+			foreach ($custom_fields as $f) {
+				$repl["me.field{$f['id']}"] = $f['rendered'];
+			}
+
+			// Custom user fields for assigned agent: {{ agent.field23 }}
+			if ($ticket->agent) {
+				$field_manager = App::getSystemService('person_fields_manager');
+				$custom_fields = $field_manager->getRenderedToTextForObject($ticket->agent);
+				foreach ($custom_fields as $f) {
+					$repl["agent.field{$f['id']}"] = $f['rendered'];
+				}
+			}
+
+			// Custom org fields: {{ agent.field23 }}
+			if ($ticket->agent) {
+				$field_manager = App::getSystemService('org_fields_manager');
+				$custom_fields = $field_manager->getRenderedToTextForObject($person->organization);
+				foreach ($custom_fields as $f) {
+					$repl["org.field{$f['id']}"] = $f['rendered'];
+				}
+			}
+
+			foreach ($repl as $k => $v) {
+				if ($pattern[2]) {
+					$v = htmlspecialchars($v);
+				}
+				$snippet = str_replace("{{ $k }}", $pattern[0] . $v . $pattern[1], $snippet);
+				$snippet = str_replace("{{{$k}}}", $pattern[0] . $v . $pattern[1], $snippet);
+			}
+
+			// Replace anything remaining with blanks,
+			$snippet = preg_replace('#\{\{[ ]?(var|me|agent|agent_team|user|org|ticket)\.([a-zA-Z0-9_]+)[ ]?\}\}#', '', $snippet);
+		}
 
 		return $snippet;
 	}

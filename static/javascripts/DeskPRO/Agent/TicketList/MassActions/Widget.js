@@ -238,6 +238,17 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				this.close();
 			}
 		}).bind(this));
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
+			triggerElement: $('button.text-snippets', this.wrapper),
+			onSnippetClick: this._onSnippetClick.bind(this)
+		});
+	},
+
+	_onSnippetClick: function(info) {
+		var txt = $('.reply-wrap textarea', this.wrapper);
+		txt.val(txt.val() + info.snippet);
 	},
 
 	updateCount: function(num) {
