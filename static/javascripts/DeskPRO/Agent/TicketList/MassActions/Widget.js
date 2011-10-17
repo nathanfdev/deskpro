@@ -362,7 +362,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.getActionFormValues(formData, false, formDataInfo);
 
 		// If we dont have any tickets or actions then theres nothing to do
-		if (!formDataInfo.checkedCount) {
+		if (!formDataInfo.checkedCount || !formDataInfo.actionsCount) {
 			return;
 		}
 
