@@ -146,6 +146,22 @@
 	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
 }
 
+.fade-away-v(@rgba_start, @rgba_end, @height: 45px) {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: @height;
+
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(top, @rgba_start 0%, @rgba_end 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, @rgba_start 0%,@rgba_end 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, @rgba_start 0%,@rgba_end 100%); /* IE10+ */
+	background: linear-gradient(top, @rgba_start 0%,@rgba_end 100%); /* W3C */
+}
+
 
 .noselect {
   -webkit-user-select: none;

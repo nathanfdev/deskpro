@@ -2352,9 +2352,9 @@ padding: 30px;
 	right: 0;
 
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: right */;
+	background-position: 8px 6px;
+    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 8px; sprite-margin-top: 6px; */;
 	cursor: pointer;
-	background-position: 5px -893px;
 	float: left;
 	width: 20px;
 	height: 20px;
@@ -2431,10 +2431,59 @@ padding: 30px;
 	padding: 8px;
 }
 
-.snippets-overlay .snippet-sections li .content {
+.snippets-overlay .snippet-sections li .content.show {
+    position: relative;
 	color: #4C5359;
 	font-size: 10px;
+	max-height: 37px;
+	overflow: hidden;
 }
+
+.snippets-overlay .snippet-sections li .content.show .fadeaway {
+    display: none;
+	.fade-away-v(rgba(250,250,250,0), rgba(250,250,250,1), 20px);
+}
+
+.snippets-overlay .snippet-sections li .content.show .fadeaway .expand {
+	position: absolute;
+	right: 0; bottom: 0; left: 0;
+	height: 7px;
+
+	background: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
+	opacity: 0.6;
+
+	.rounded(5px);
+}
+.snippets-overlay .snippet-sections li .content.show .fadeaway .unexpand {
+	display: none;
+	position: absolute;
+	right: 0; bottom: 0; left: 0;
+	height: 7px;
+
+	background: url(../../images/agent/button-uparrow.png) no-repeat 50% 50%;
+	opacity: 0.6;
+
+	.rounded(5px);
+}
+
+.snippets-overlay .snippet-sections li .content.long .fadeaway { display: block; }
+.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway { background: transparent; }
+.snippets-overlay .snippet-sections li .content.long.expanded { padding-bottom: 15px; }
+.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .expand { display: none; }
+.snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .unexpand { display: block; }
+
+.snippets-overlay .snippet-sections li .content.long.expanded {
+	max-height: 500px;
+	overflow: auto;
+}
+
+.snippets-overlay .snippet-sections li .content .fadeaway .expand:hover,
+.snippets-overlay .snippet-sections li .content .fadeaway .unexpand:hover {
+	cursor: pointer;
+	background-color: #CED0D0;
+	opacity: 1;
+}
+
 .snippets-overlay .snippet-sections li label {
 	color: #2D5680;
 	font-weight: bold;
@@ -2459,8 +2508,20 @@ padding: 30px;
 	display: block;
 }
 
-.snippets-overlay .insertBtn{
+.snippets-overlay .show .controls {
 	float: right;
+}
+
+.snippets-overlay .controls .edit-trigger {
+	.iconbase(16px, 16px);
+	background-repeat: no-repeat;
+	background-image: url(../../images/icons/edit-gear.png);
+	margin-right: 4px;
+	float: left;
+	cursor: pointer;
+}
+.snippets-overlay .insertBtn {
+	float: left;
 }
 .snippets-overlay .insertBtn a{
 	color: #77828c;
@@ -2482,6 +2543,32 @@ padding: 30px;
 
 	font-family: @heading-font;
 }
+
+.snippets-overlay > nav li {
+	position: relative;
+}
+.snippets-overlay > nav li a {
+
+}
+
+.snippets-overlay > nav li .edit-cat-trigger {
+    .iconbase(16px, 16px);
+    position: absolute;
+    top: 5px; right: 4px;
+
+
+	background: url(../../images/icons/edit-gear.png) no-repeat 0 0;
+	z-index: 2;
+}
+
+.snippets-overlay > nav li:hover .edit-cat-trigger {
+	display: inline-block;
+}
+
+.snippets-overlay .replacement {
+	color: #A95F43;
+}
+
 .firefox .snippets-overlay .insertBtn a{
 	padding: 3px 5px 2px;
 }

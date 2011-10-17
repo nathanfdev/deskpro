@@ -1,6 +1,9 @@
 <li class="snippet snippet-{{ snippet.id }}" data-snippet-id="{{ snippet.id }}">
 	<div class="show">
-		<div class="insertBtn snippet-trigger" data-snippet-id="{{ snippet.id }}"><a>Insert</a></div>
+		<div class="controls">
+			<span class="edit-trigger"></span>
+			<div class="insertBtn snippet-trigger" data-snippet-id="{{ snippet.id }}"><a>Insert</a></div>
+		</div>
 		<label>{{ snippet.title }}</label>
 		<div class="content show">
 			{% if no_formatting %}
@@ -9,6 +12,10 @@
 				<div class="content formatted">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
 				<textarea class="value formatted" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
 			{% endif %}
+			<div class="fadeaway">
+				<span class="expand"></span>
+				<span class="unexpand"></span>
+			</div>
 		</div>
 	</div>
 	<div class="edit" style="display: none">
@@ -20,7 +27,8 @@
 				<div style="float:right;font-size: 9px; color: #B60004;">
 					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">delete</span>
 				</div>
-				<button class="clean-white save-snippet-trigger">Save Snippet</button>
+				<button class="clean-white save-snippet-trigger">Update</button>
+				<button class="clean-white cancel-snippet-trigger">Cancel</button>
 			</div>
 		</form>
 	</div>

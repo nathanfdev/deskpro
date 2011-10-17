@@ -18,7 +18,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		// Set up the tabs
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('nav > ul > li', this.wrapper),
-			context: this.wrapper
+			context: this.wrapper,
+			onTabSwitch: function(info) {
+				$('li.snippet', info.tabContent).each(function() {
+					self.processSnippetRow($(this));
+				});
+			}
 		});
 		this.ownObject(this.catTabs);
 
@@ -53,6 +58,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.fireEvent('snippetClick', [evData]);
 
 			self.closeSelf();
+		});
+
+		this.wrapper.delegate('.fadeaway', 'click', function(ev) {
+			var contentShow = $(this).closest('.content.show');
+			contentShow.toggleClass('expanded');
+		});
+
+		this.wrapper.delegate('.add-snippet-trigger', 'click', function(ev) {
+			var row = $(this).closest('li');
+			$('.display', row).slideUp('fast', function() {
+				$('.input', row).slideDown('fast');
+			});
 		});
 
 		this._initEditing();
@@ -119,7 +136,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 
 		this.wrapper.delegate('.save-snippet-trigger', 'click', function(ev) {
-			console.log('click')
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -127,8 +143,21 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.saveSnippet($(row));
 		});
 
-		this.wrapper.delegate('.snippet .show', 'dblclick', function(ev) {
-			var row = $(this).parent();
+		this.wrapper.delegate('.cancel-snippet-trigger', 'click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var row = $(this).closest('li.snippet');
+			$('.edit', row).slideUp('fast', function() {
+				$('.show', row).slideDown();
+			});
+		});
+
+		this.wrapper.delegate('.snippet .edit-trigger', 'click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var row = $(this).closest('li.snippet');
 
 			$('.show', row).slideUp('fast', function() {
 				$('.edit', row).slideDown();
@@ -152,8 +181,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('nav li', 'dblclick', function(ev) {
-			self.editCategory($(this));
+		this.wrapper.delegate('.edit-cat-trigger', 'click', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			var row = $(this).closest('li');
+			self.editCategory(row);
 		});
 	},
 
@@ -281,10 +314,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	saveSnippet: function(row) {
 		var data = $('input, textarea', row).serializeArray();
 
-		if (this.wrapper.data('ticket-id')) {
+		if (this.meta.ticket_id) {
 			data.push({
 				name: 'ticket_id',
-				value: this.wrapper.data('ticket-id')
+				value: this.meta.ticket_id
 			});
 		}
 
@@ -301,11 +334,24 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				if (row.is('.new-snippet')) {
 					$('.cat-' + data.category_id + ' .new-snippet', this.wrapper).before(new_row);
 					$('input[name="title"], textarea[name="snippet"]', row).val('');
+
+					$('.input', row).slideUp('fast', function() {
+						$('.display', row).slideDown('fast');
+					});
+
 				} else {
 					$('.snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
 				}
 				new_row.slideDown();
+				this.processSnippetRow(new_row);
 			}
 		});
+	},
+
+	processSnippetRow: function(row) {
+		var show = $('.content.show', row);
+		if (show.height() >= 30) {
+			show.css('max-height', '30').addClass('long');
+		}
 	}
 });

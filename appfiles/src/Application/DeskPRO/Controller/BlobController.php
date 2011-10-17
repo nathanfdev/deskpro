@@ -32,6 +32,7 @@ class BlobController extends AbstractController
 	protected function getDownloadResponse($blob, array $options = array())
 	{
 		$response = $this->container->get('response');
+
 		$response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
 		$response->headers->set('Content-Length', $blob['filesize']);
 

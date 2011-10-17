@@ -214,7 +214,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	 * @param info
 	 */
 	_onSnippetClick: function(info) {
-		this.getEl('replybox_txt').val(this.getEl('replybox_txt').val() + "\n\n" + info.snippet);
+		this.getEl('replybox_txt').val(this.getEl('replybox_txt').val() + info.snippet);
 	},
 
 	/**

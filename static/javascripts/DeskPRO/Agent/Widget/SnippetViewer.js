@@ -24,10 +24,11 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 
 		this.pop = new DeskPRO.Agent.PageHelper.Popover({
 			pageUrl: this.options.viewUrl,
+			destroyOnClose: false,
 			onPageInit: function(pop, page) {
 				page.addEvent('closeSelf', function(ev) {
 					ev.cancel = true;
-					self.destroyPop();
+					self.close();
 				});
 
 				page.addEvent('snippetClick', function(ev) {
