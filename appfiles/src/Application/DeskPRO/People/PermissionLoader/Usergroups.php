@@ -44,19 +44,20 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	public function getPermission($name)
 	{
 		if ($this->perms === null) {
+			$ids_string = implode(',', $this->usergroup_ids);
 			if ($this->person_id) {
-				$perms = App::getOrm()->createQuery('
-					SELECT DeskPRO:Permission p
-					WHERE usergroup IN ?1 OR person = ?2
-				')->setParameter(1, $this->usergroup_ids)
-				  ->setParameter(2, $this->person_id)
+				$perms = App::getOrm()->createQuery("
+					SELECT p
+					FROM DeskPRO:Permission p
+					WHERE p.usergroup IN ($ids_string) OR p.person = ?1
+				")->setParameter(1, $this->person_id)
 				  ->getResult();
 			} else {
-				$perms = App::getOrm()->createQuery('
-					SELECT DeskPRO:Permission p
-					WHERE usergroup IN ?1
-				')->setParameter(1, $this->usergroup_ids)
-				  ->getResult();
+				$perms = App::getOrm()->createQuery("
+					SELECT p
+					FROM DeskPRO:Permission p
+					WHERE p.usergroup IN ($ids_string)
+				")->getResult();
 			}
 
 			$this->perms = Permission::getEffectivePermissions($perms);

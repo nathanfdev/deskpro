@@ -207,14 +207,17 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		}
 
 		if ($do_cache) {
-			App::getOrm()->beginTransaction();
+			try {
+				foreach ($do_cache as $c) {
+					App::getOrm()->persist($c);
+				}
 
-			foreach ($do_cache as $c) {
-				App::getOrm()->persist($c);
+				App::getOrm()->flush();
+				App::getOrm()->commit();
+			} catch (\Exception $e) {
+				App::getOrm()->rollback();
+				throw $e;
 			}
-
-			App::getOrm()->flush();
-			App::getOrm()->commit();
 		}
 	}
 

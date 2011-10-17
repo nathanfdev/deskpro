@@ -39,8 +39,9 @@ class PermissionCache extends EntityRepository
 		$caches = $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:PermissionCache c
-			WHERE c.name IN ($types) AND c.usergroup_key = ?1
-		")->setParameter(1, $key)
+			WHERE c.name IN ($types) AND (c.usergroup_key = ?1 OR c.usergroup_key = ?2)
+		")->setParameter(1, $usergroup_key)
+		  ->setParameter(2, $key)
 		  ->getResult();
 
 		return $caches;
