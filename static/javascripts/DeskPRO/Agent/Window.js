@@ -740,6 +740,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['tickets_section'];
 		}else if (testcl('.Task')) {
 			handler = this.sections['tasks_section'];
+		}else if (testcl('.Deal')) {
+			handler = this.sections['deals_section'];
 		}
 
 		if (!handler && this.DEBUG.useTestSection) {
