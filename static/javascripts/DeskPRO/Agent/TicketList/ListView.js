@@ -59,17 +59,20 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 				this._isIniting = false;
 				this._hasInit = true;
 
+				this.fireEvent('ajaxLoaded', [this]);
+
 				this.open();
 			}
 		});
 	},
 
 	reload: function() {
+		this.showInnerLoading();
+
 		var page = this.page;
 		window.setTimeout(function() {
 			page.switchViewType('list');
 		}, 50);
-		this.close();
 	},
 
 	open: function() {
@@ -95,6 +98,14 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 	close: function() {
 		if (!this._hasInit || !this.isOpen()) return;
 		this.destroy();
+	},
+
+	showInnerLoading: function() {
+		$('.full-loading', this.wrapper).show();
+	},
+
+	hideInnerLoading: function() {
+		$('.full-loading', this.wrapper).hide();
 	},
 
 	/**

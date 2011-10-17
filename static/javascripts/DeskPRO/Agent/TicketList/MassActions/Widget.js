@@ -55,7 +55,15 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.viewHandler     = this.options.viewHandler;
 		this.selectionBar    = this.options.selectionBar || page.selectionBar;
 		this.fetchPreviewUrl = this.options.fetchPreviewUrl || page.meta.fetchResultsUrl;
-		this.listWrapper     = this.options.listWrapper || $('.list-listing', page.wrapper);
+		this.listWrapper     = this.options.listWrapper;
+
+		if (!this.listWrapper) {
+			if (this.options.isListView) {
+				this.listWrapper = $('.table-result-list table', page.wrapper);
+			} else {
+				this.listWrapper = $('.list-listing', page.wrapper);
+			}
+		}
 
 		this.wrapper = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.backdropEls = null;
@@ -312,6 +320,13 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				rows.removeClass('loading');
 			},
 			success: function(html) {
+
+				if (this.options.isListView) {
+					this.close();
+					this.page.meta.pageReloader();
+					return;
+				}
+
 				$('.preview-edit', this.listWrapper).removeClass('preview-edit');
 				$('.preview-edit-hide', this.listWrapper).remove();
 				$('.row-item.changed', this.listWrapper).removeClass('changed');
@@ -336,6 +351,11 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * Updates the listing with a preview of the changes we're making
 	 */
 	updatePreview: function(specific_id) {
+
+		// No previews on list view
+		if (this.options.isListView) {
+			return;
+		}
 
 		if (this.runningAjax) {
 			this.runningAjax.abort();
@@ -368,12 +388,6 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		rows = $(rows);
 		rows.addClass('loading');
-
-		if (this.options.isListView) {
-			formData.push({
-				'view_type': 'list'
-			});
-		}
 
 		var runningAjax = $.ajax({
 			url: BASE_URL + 'agent/ticket-search/get-page',
@@ -477,12 +491,13 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			var pageW = $(window).width();
 			var pageH = $(window).height();
 
-			var w = 500;
+			var w = 665;
 
 			this.wrapper.css({
 				top: pos.top + 3,
 				left: (pageW-w) / 2,
-				width: w
+				width: w,
+				bottom: 30
 			});
 		} else {
 			this.wrapper.css({

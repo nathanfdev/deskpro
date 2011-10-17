@@ -667,12 +667,15 @@ padding-top: 1px;
 
 }
 
+.table-result-list table {
+	table-layout: fixed;
+}
+
 .table-result-list table thead {
 	background: -moz-linear-gradient(top, #e6e9ec 0%, #d8dbdf 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6e9ec), to(#d8dbdf));
 	-pie-background: linear-gradient(#e6e9ec, #d8dbdf);
 	behavior: url("../../static/vendor/PIE.htc");
-	height: 31px;
 	border-bottom: 1px solid #d5d5d5;
 	border-top: 1px solid #e3e6e9;
 	position: relative;
@@ -680,25 +683,40 @@ padding-top: 1px;
 
 .table-result-list table thead th {
 	border-right: #C8C9CD;
-	padding: 8px 0 8px 5px;
+	padding: 4px 0 4px 5px;
 	font-size: 12px;
 	color: #595959;
 	text-shadow: 0 1px 0 #FFFFFF;
-	font-family: @body-font;
+	font-family: @heading-font;
 	text-align: left;
+	line-height: 100%;
+
+	white-space: nowrap;
+	text-overflow: clipped;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .table-result-list table thead th.check-all {
-
+    padding-right: 6px;
+    text-align: center;
 }
 
 .table-result-list table tbody td {
 	padding:  5px 8px 5px 8px;
-	background-color: #fff;
+	background-color: #F5F7FA;
+	border-bottom: 1px solid #E1E3E6;
+	border-top: 1px solid #fff;
+	white-space: nowrap;
+	text-overflow: clipped;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-.table-result-list table tbody tr:nth-child(even) td {
-	background-color: #F5F5F5;
+.table-result-list table tbody tr.open td {
+	background-color: #D4E7FC;
 }
 
 .bottom-action-bar {
@@ -983,6 +1001,7 @@ section.mass-actions-overlay > footer button {
 section.mass-actions-overlay > article {
 	position: absolute;
 	top: 36px; right: 0; bottom: 45px; left: 0;
+	overflow: auto;
 }
 
 section.mass-actions-overlay > article .layout-content {
@@ -1241,6 +1260,7 @@ section.dp-overlay > footer button {
 section.dp-overlay > article {
 	position: absolute;
 	top: 36px; right: 0; bottom: 45px; left: 0;
+	overflow: auto;
 }
 
 section.dp-overlay > article .layout-content {
@@ -1291,4 +1311,34 @@ section.dp-overlay > article.no-footer {
 
 .dp-overlay-container.ticketlist article {
 	overflow: auto;
+}
+
+.dp-overlay-container.ticketlist .full-loading {
+	position: absolute;
+	top: 36px; right: 0; bottom: 45px; left: 0;
+	background-color: rgba(255, 255, 255, 0.8);
+	text-align: center;
+}
+
+.dp-overlay-container.ticketlist .full-loading em {
+	display: block;
+	text-align: center;
+
+	background: url(../../images/loading-big-circle.gif) no-repeat 50% 0;
+	padding: 40px 0 0 0;
+	margin-top: 35px;
+
+	font-style: normal;
+	font-weight: bold;
+	font-family: @heading-font-alt;
+	font-size: 13px;
+}
+
+.dp-overlay-container.ticketlist footer.no-more-results .more-btn {
+	display: none;
+}
+
+.dp-overlay-container.ticketlist header .display-options-trigger {
+	float: right;
+	margin: 7px 15px 0 0;
 }

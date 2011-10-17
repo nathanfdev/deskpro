@@ -33,6 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <section class="dp-overlay">
 	<header>
+		<button class="display-options-trigger clean-white small">Display Options</button>
 		<span class="close close-trigger">close</span>
 		<h1>Tickets</h1>
 	</header>
@@ -47,6 +48,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</table>
 		</div>
 	</article>
+	<div class="full-loading" style="display: none">
+		<em>Loading</em>
+	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			<div class="check-count selection-bar">
 				<span class="selected-count">0</span> selected

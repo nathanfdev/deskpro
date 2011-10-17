@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.massActions);
 
-		this.enableHighlightOpenRows('ticket', 'ticket_id', 'article.ticket-');
+		this.enableHighlightOpenRows('ticket', 'ticket_id', '.row-item.ticket-');
 	},
 
 	_handleResize: function() {
@@ -349,8 +349,18 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
 
 		if (view_type == 'list') {
-			var listview = new DeskPRO.Agent.TicketList.ListView(this);
-			listview.open();
+			var oldlist = this.listview;
+			this.listview = new DeskPRO.Agent.TicketList.ListView(this);
+
+			if (oldlist && !oldlist.OBJ_DESTROYED) {
+				this.listview.addEvent('ajaxLoaded', function() {
+					if (!oldlist.OBJ_DESTROYED) {
+						oldlist.destroy();
+					}
+				});
+			}
+
+			this.listview.open();
 			return;
 		}
 
