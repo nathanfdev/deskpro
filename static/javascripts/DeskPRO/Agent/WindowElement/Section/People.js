@@ -41,5 +41,7 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
+
+		this.fireEvent('sectionInit');
 	}
 });

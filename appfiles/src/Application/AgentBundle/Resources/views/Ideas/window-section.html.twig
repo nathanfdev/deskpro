@@ -25,7 +25,7 @@
 
 <section id="ideas_outline_status" class="deskpro-tab-item">
 	<ul class="source-list">
-		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
+		<li class="auto-load-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
 			<span class="title">
 				<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
 				New

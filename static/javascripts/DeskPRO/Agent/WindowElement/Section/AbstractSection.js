@@ -183,7 +183,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 *
 	 * @param {DeskPRO.Agent.PageFragment.ListPane.Basic} page
 	 */
-	setListPageFragment: function(page) {
+	setListPageFragment: function(page, noswitch) {
 
 		if (this.listPage) {
 			this.listPage.fireEvent('destroy');
@@ -200,12 +200,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		contentEl.empty();
 		contentEl.html(page.html);
 
-		this.getListElement().addClass('on');
-
-		$('#dp_list_loading').removeClass('on');
-
 		page.fireEvent('render', [contentEl]);
-		page.fireEvent('activate');
 
 		var scrollEl = $('.with-scrollbar', this.getListElement());
 		if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
@@ -213,6 +208,13 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 				showEvent: 'show',
 				hideEvent: 'hide'
 			});
+		}
+
+		$('#dp_list_loading').removeClass('on');
+
+		if (!noswitch) {
+			this.getListElement().addClass('on');
+			page.fireEvent('activate');
 		}
 	},
 
@@ -271,22 +273,30 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		this.fireEvent('firstshow');
 
-		if (!no_load_list) {
+		if (!no_load_list && this.hasLoaded) {
 			this._loadAutoLoadRoutes();
 		}
 	},
 
-	_loadAutoLoadRoutes: function() {
+	_loadAutoLoadRoutes: function(isBackgroundLoad) {
+
+		if (this._hasRunAutoLoadRoutes || this.listPage || !this.hasLoaded) return;
+		this._hasRunAutoLoadRoutes = true;
+
 		if (DeskPRO_Window.getDebug('noAutoLoadList')) {
 			return;
 		}
 
-		var el = $('.auto-load-route', this.sectionEl);
+		var el = $('.auto-load-route', this.sectionEl).first();
 		if (!el.length || !el.data('route')) {
 			return;
 		}
 
-		DeskPRO_Window.runPageRoute(el.data('route'));
+		if (isBackgroundLoad) {
+			DeskPRO_Window.runPageRoute(el.data('route'), { isBackgroundLoad: true });
+		} else {
+			DeskPRO_Window.runPageRoute(el.data('route'));
+		}
 	},
 
 	_onShowActivateList: function() {

@@ -235,6 +235,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			// Perform count calcs now
 			this.recountChildCounts(listEl);
 		}, this);
+
+		this.fireEvent('sectionInit');
 	},
 
 	recountChildCounts: function(ul) {

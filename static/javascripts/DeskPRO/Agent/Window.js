@@ -715,7 +715,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.setListPage(page);
 	},
 
-	setListPage: function(page) {
+	setListPage: function(page, noswitch) {
 
 		// Route a list page fragment into the proper
 		// section
@@ -751,10 +751,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		handler.setListPageFragment(page)
+		handler.setListPageFragment(page, noswitch);
 		this.listPage = page;
 
-		this.updateWindowUrlFragment();
+		if (!noswitch) {
+			this.updateWindowUrlFragment();
+		}
 	},
 
 	getListPage: function() {
@@ -947,8 +949,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		$('#dp_list > section').removeClass('on');
-		$('#dp_list_loading').addClass('on');
+		if (!routeData.isBackgroundLoad) {
+			$('#dp_list > section').removeClass('on');
+			$('#dp_list_loading').addClass('on');
+		}
 
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
@@ -965,7 +969,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				page.setMetaData('routeData', routeData);
 			}
 
-			this.setListPage(page);
+			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
 		}).bind(this));
@@ -1793,6 +1797,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initSections: function() {
 
 		var self = this;
+		var count = -1;
+
+		var secttimeout = 2500;
+
 		$('#dp_nav [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
@@ -1809,6 +1817,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var handlerClass = Orb.getNamespacedObject(handlerClassName);
 			var handler = new handlerClass();
+
+			if (++count) {
+				handler.addEvent('sectionInit', function() {
+					window.setTimeout(function() { handler._loadAutoLoadRoutes(true); }, secttimeout);
+					secttimeout += (400 * count);
+				});
+			} else {
+				// First one, load it for real
+				handler.addEvent('sectionInit', function() {
+					handler._loadAutoLoadRoutes();
+				});
+			}
 
 			self.sections[el.attr('id')] = handler;
 

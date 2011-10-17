@@ -13,7 +13,7 @@
 		<ul id="tickets_outline_sys_filters" class="source-list">
 			{% for filter in sys_filters %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
@@ -27,7 +27,7 @@
 					{% endif %}
 					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
 				>
-					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>
@@ -39,7 +39,7 @@
 		<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
 			{% for filter in sys_filters_hold %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
@@ -64,11 +64,14 @@
 		<ul id="tickets_outline_custom_filters" class="source-list">
 			{% for filter in custom_filters %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
-					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3
+						class="title {% if loop.first %}auto-load-route{% endif %}"
+						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+					>
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>

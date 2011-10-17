@@ -64,10 +64,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			overlay.openOverlay();
 		});
 
-		if (this.isVisible() && !DeskPRO_Window.loadingListFragment) {
-			this._loadAutoLoadRoutes();
-		}
-
 		this.activeNavClass = null;
 
 		$('.hold-ticket-count', this.sectionEl).click(function() {
@@ -156,6 +152,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				});
 			}
 		});
+
+		this.fireEvent('sectionInit');
 	},
 
 	onShow: function() {
