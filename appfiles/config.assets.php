@@ -311,6 +311,7 @@ $CONFIG['agent_misc'] = array(
 		'javascripts/DeskPRO/Agent/Ticket/Property/Hold.js',
 
 		'javascripts/DeskPRO/Agent/TicketList/MassActions/Widget.js',
+		'javascripts/DeskPRO/Agent/TicketList/ListView.js',
 
 		'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',

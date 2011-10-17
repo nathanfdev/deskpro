@@ -1,0 +1,134 @@
+Orb.createNamespace('DeskPRO.Agent.PageHelper');
+
+DeskPRO.Agent.TicketList.ListView = new Orb.Class({
+	Implements: [Orb.Util.Events, Orb.Util.Options],
+
+	initialize: function(page, options)  {
+
+		var self = this;
+
+		this.page = page;
+
+		this.options = {
+
+		};
+		this.setOptions(options);
+		this.page.addEvent('destroy', (function() {
+			this.destroy();
+		}).bind(this));
+	},
+
+	_initOverlay: function() {
+
+		if (this._isIniting) return;
+		if (this._hasInit) return
+		this._isIniting = true;
+
+		var new_url = this.page.meta.viewTypeUrl.replace('$view_type', 'list');
+
+		$.ajax({
+			url: new_url,
+			dataType: 'html',
+			context:  this,
+			success: function(html) {
+
+				this.wrapper = $('<div class="dp-overlay-container ticketlist" />').appendTo('body');
+				this.wrapper.html(html);
+
+				this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
+				this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
+
+				this.backdropEl.click((function(ev) {
+					ev.stopPropagation();
+					this.close();
+				}).bind(this));
+
+				$('header .close-trigger', this.wrapper).first().click((function(ev) {
+					ev.stopPropagation();
+					ev.preventDefault();
+					this.close();
+				}).bind(this));
+
+				var page = DeskPRO_Window.createPageFragment(html);
+				page.setMetaData('routeUrl', new_url);
+				page.setMetaData('pageReloader', this.reload.bind(this));
+				page.setMetaData('overlay', this);
+				page.fireEvent('render', [this.wrapper]);
+				page.fireEvent('activate');
+
+				this._isIniting = false;
+				this._hasInit = true;
+
+				this.open();
+			}
+		});
+	},
+
+	reload: function() {
+		var page = this.page;
+		window.setTimeout(function() {
+			page.switchViewType('list');
+		}, 50);
+		this.close();
+	},
+
+	open: function() {
+		this._initOverlay();
+		if (!this._hasInit) return;
+
+		this.updatePositions();
+
+		this.wrapper.addClass('open');
+		this.backdropEl.show();
+
+		this.fireEvent('opened', [this]);
+	},
+
+	isOpen: function() {
+		if (!this._hasInit || !this.wrapper.is('.open')) {
+			return false;
+		}
+
+		return true;
+	},
+
+	close: function() {
+		if (!this._hasInit || !this.isOpen()) return;
+		this.destroy();
+	},
+
+	/**
+	 * Update the positions of the elements
+	 */
+	updatePositions: function() {
+		this.wrapper.css({
+			top: 20,
+			right: 20,
+			bottom: 20,
+			left: 20
+		});
+	},
+
+
+	destroy: function() {
+		if (this._isIniting) {
+			this.runningAjax.abort();
+			this.runningAjax = null;
+			this._isIniting = false;
+		}
+		if (this._hasInit) {
+			this.page.destroy();
+		}
+		if (this.wrapper) {
+			this.wrapper.remove();
+		}
+		if (this.backdropEl) {
+			this.backdropEl.remove();
+		}
+
+		delete this.wrapper;
+		delete this.backdropEl;
+		delete this.options;
+		delete this.page;
+	}
+});

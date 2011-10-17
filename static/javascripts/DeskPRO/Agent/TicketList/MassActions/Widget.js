@@ -473,15 +473,16 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var pos = $('#dp_content').offset();
 
 		if (this.options.isListView) {
+
 			var pageW = $(window).width();
 			var pageH = $(window).height();
-			var w = this.wrapper.outerWidth();
+
+			var w = 500;
 
 			this.wrapper.css({
 				top: pos.top + 3,
-				left: (pageW / 2) - w,
-				right: 3,
-				bottom: 3
+				left: (pageW-w) / 2,
+				width: w
 			});
 		} else {
 			this.wrapper.css({

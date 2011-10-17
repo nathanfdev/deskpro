@@ -18,10 +18,12 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this.setOptions(options);
 
 		if (!this.options.triggerElement) {
-			this.options.triggerElement = $('.display-options-trigger:first', this.page.wrapper);
+			this.options.triggerElement = $('.display-options-trigger', this.page.wrapper);
 		}
 
-		$(this.options.triggerElement).click((function() {
+		$(this.options.triggerElement).click((function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
 			this.open();
 		}).bind(this));
 
@@ -132,55 +134,20 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var url = this.options.refreshUrl;
 
 		if (this.options.isListView) {
-
-			if (this.page.meta.overlay) {
-				this.page.meta.overlay.close();
-			}
-
-			var w = $(window).width() - 100;
-			var h = $(window).height() - 100;
-
-			var contentEl = $('<div>Loading...</div>');
-			contentEl.width(w);
-			contentEl.height(h);
-			contentEl.css('overflow', 'auto');
-
-			var overlay = new DeskPRO.UI.Overlay({
-				contentElement: contentEl,
-				destroyOnClose: true,
-				customClassname: 'no-padding',
-				maxWidth: w,
-				maxHeight: h
+			var page = this.page;
+			$.ajax({
+				timeout: 20000,
+				type: 'POST',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
+				data: data,
+				context: this,
+				complete: function() {
+					this.close();
+				},
+				success: function() {
+					page.meta.pageReloader();
+				}
 			});
-			overlay.openOverlay();
-
-			var pageReloader = function(new_url) {
-				$.ajax({
-					timeout: 20000,
-					type: 'GET',
-					url: new_url,
-					dataType: 'html',
-					success: function(html) {
-
-						self.destroy();
-
-						if (overlay.isDestroyed()) {
-							return;
-						}
-
-						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
-						page.setMetaData('routeUrl', new_url);
-						page.setMetaData('pageReloader', pageReloader);
-						page.setMetaData('overlay', overlay);
-
-						contentEl.html(page.html);
-						page.fireEvent('render', [contentEl]);
-						page.fireEvent('activate');
-					}
-				});
-			}
-
-			pageReloader(url);
 		} else {
 			$.ajax({
 				timeout: 20000,
@@ -189,7 +156,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				data: data,
 				context: this,
 				complete: function() {
-					self.close();
+					this.close();
 				},
 				success: function() {
 					DeskPRO_Window.loadListPane(url);

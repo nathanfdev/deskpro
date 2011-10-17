@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 <script>
 {% if filter.sys_name %}
 	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runnamedfilter', {'filter_name': filter.sys_name}) }}';
@@ -30,21 +31,39 @@ pageMeta.ticketResultIds = {{ ticket_ids|json_encode|raw }};
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="overlay-tickets-layout">
-	<div class="layout-content">
-		<div class="content">
-			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
-			{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+<section class="dp-overlay">
+	<header>
+		<span class="close close-trigger">close</span>
+		<h1>Tickets</h1>
+	</header>
+	<article>
+		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
 
-			<div class="table-result-list">
-				<table cellspacing="0" width="100%">
-					{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
-					{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
-				</table>
-			</div>
+		<div class="table-result-list">
+			<table cellspacing="0" width="100%">
+				{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+				{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+			</table>
 		</div>
-	</div>
-	<div class="layout-footer is-ticket-list">
-	{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}
-	</div>
-</div>
+	</article>
+	<footer class="is-ticket-list bottom-action-bar">
+			<div class="check-count selection-bar">
+				<span class="selected-count">0</span> selected
+
+				<button class="clean-white perform-actions-trigger">
+					<span>Perform Action</span>
+				</button>
+			</div>
+			<div class="results-count">
+				Showing <span class="results-showing-count"></span> of {{ ticket_ids|length }} tickets
+			</div>
+			<div class="more-btn">
+				<button class="clean-white show-more is-not-loading">More Results</button>
+				<div class="is-loading"></div>
+			</div>
+
+        	{% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %}
+        </div>
+	</footer>
+</section>
