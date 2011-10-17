@@ -940,7 +940,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
-		if (!routeData.isBackgroundLoad) {
+		if (routeData && !routeData.isBackgroundLoad) {
 			if (this.loadingListPage) {
 				this.loadingListPage.abort();
 				this.loadingListPage = null;
@@ -952,7 +952,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
-			if (!routeData.isBackgroundLoad) {
+			if (routeData && !routeData.isBackgroundLoad) {
 				this.loadingListPage = null;
 			}
 
@@ -970,7 +970,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (callback) callback(page);
 		}).bind(this));
 
-		if (!routeData.isBackgroundLoad) {
+		if (routeData && !routeData.isBackgroundLoad) {
 			this.loadingListPage = xhr;
 		}
 	},

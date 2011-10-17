@@ -1,25 +1,23 @@
-<div class="display-options overlay">
-	<div class="overlay-title">
-		<h4>Display Options</h4>
-	</div>
-
-	<div class="overlay-content">
-		<div style="float: right;">
-			{% block other_options %}{% endblock %}
-		</div>
-		<div style="margin-right: 250px;">
-			<strong>Display Elements</strong><br />
+<div class="dp-overlay-container display-options">
+	<section class="dp-overlay">
+		<header>
+			<span class="close close-trigger">close</span>
+			<h1>Dislpay Options</h1>
+		</header>
+		<article>
 			<ul class="sortable-list">
 				{% block display_elements_list %}{% endblock %}
 			</ul>
-		</div>
-	</div>
-	<div class="overlay-actions">
-		<div class="loading-off">
-			<button class="save-trigger dp-button small">Save</button>
-		</div>
-		<div class="loading-on" style="display:none">
-			<span>Saving ...</span>
-		</div>
-	</div>
+
+			{% block other_options %}{% endblock %}
+		</article>
+		<footer>
+			<div class="loading-off">
+				<button class="save-trigger clean-white">Apply</button>
+			</div>
+			<div class="loading-on" style="display:none">
+				<span>Saving ...</span>
+			</div>
+		</footer>
+	</section>
 </div>
