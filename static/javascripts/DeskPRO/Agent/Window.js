@@ -1966,7 +1966,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($(this).is('.as-popover')) {
 					return;
 				}
+
+				ev.stopPropagation();
+
+				if ($(this).is('.row-item') && $(ev.target).is('input, a, button, textarea')) {
+					return;
+				}
+
 				ev.preventDefault();
+
 				self.runPageRouteFromElement($(this));
 			});
 		}, 120);
