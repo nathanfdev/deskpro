@@ -140,7 +140,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			'overflow': 'auto',
 			'top': top-3,
 			'left': 9,
-			'bottom': 20 // account for border+shadows
+			'bottom': 10 // account for border+shadows
 		});
 
 		$('.close', this.popoverOuter).first().click((function(ev) {

@@ -502,28 +502,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		//------------------------------
 
 		var pos = $('#dp_content').offset();
+		var top = pos.top - 4;
 
-		if (this.options.isListView) {
-
-			var pageW = $(window).width();
-			var pageH = $(window).height();
-
-			var w = 665;
-
-			this.wrapper.css({
-				top: pos.top + 3,
-				left: (pageW-w) / 2,
-				width: w,
-				bottom: 30
-			});
-		} else {
-			this.wrapper.css({
-				top: pos.top + 3,
-				left: pos.left + 3,
-				right: 3,
-				bottom: 3
-			});
-		}
+		this.wrapper.css({
+			top: pos.top - 4,
+			left: pos.left + 8,
+			right: 3,
+			bottom: 10
+		});
 
 		//------------------------------
 		// The backdrops surround each side of the list pane
