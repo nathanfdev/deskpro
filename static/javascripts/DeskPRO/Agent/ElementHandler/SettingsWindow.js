@@ -1,0 +1,105 @@
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
+
+DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
+	Extends: DeskPRO.ElementHandler,
+
+	initPage: function() {
+		window.SETTINGS_WINDOW = this;
+		this.el.bind('dp_open', this.open.bind(this));
+		this.el.bind('dp_close', this.close.bind(this));
+	},
+
+	_lazyInit: function() {
+		var self = this;
+
+		if (this._hasInit) return;
+		this._hasInit = true;
+
+		this.el.css({
+			top: 42,
+			bottom: 10,
+			width: 700,
+			left: ($(window).width() - 700) / 2
+		});
+
+		$('.close-trigger', this.el).first().click(function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			self.el.trigger('dp_close');
+		});
+
+		this.topTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('#settingswin_nav > li'),
+			context: this.el,
+			onTabSwitch: function(ev) {
+				var wrapper = $(ev.tabContent);
+				$('#settingswin_pages .on').removeClass('on');
+
+				wrapper.addClass('on');
+
+				if (!wrapper.data('page-fragment')) {
+					$.ajax({
+						dataType: 'text',
+						url: wrapper.data('page-url'),
+						type: 'GET',
+						context: this,
+						success: function(html) {
+							var page = DeskPRO_Window.createPageFragment(html);
+							page.settingsWindow = self;
+							wrapper.html(page.html);
+							delete page.html;
+
+							page.fireEvent('render', [wrapper]);
+							page.fireEvent('activate');
+
+							wrapper.data('page-fragment', page);
+						}
+					});
+				} else {
+					wrapper.data('page-fragment').fireEvent('activate');
+				}
+			}
+		});
+	},
+
+	_cleanupOld: function() {
+
+	},
+
+	showSavePuff: function() {
+		$('#settingswin_saved_overlay').fadeIn(250, function() {
+			$('#settingswin_pages .on').scrollTop(0);
+
+			window.setTimeout(function() {
+				$('#settingswin_saved_overlay').fadeOut(250);
+			}, 1200);
+		});
+	},
+
+	open: function() {
+		this._lazyInit();
+
+		if (this._cleanupTimer) {
+			window.clearTimeout(this._cleanupTimer);
+			this._cleanupTimer = null;
+		}
+
+		this.el.show();
+	},
+
+	isOpen: function() {
+		if (this._hasInit && this.el.is(':visible')) {
+			return true;
+		}
+
+		return false;
+	},
+
+	close: function() {
+		if (this.isOpen()) {
+			this.el.hide();
+
+			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
+		}
+	}
+});

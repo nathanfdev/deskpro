@@ -1,0 +1,41 @@
+<div class="dp-overlay-container" id="settingswin" data-element-handler="DeskPRO.Agent.ElementHandler.SettingsWindow">
+	<section class="dp-overlay no-footer">
+		<header>
+			<span class="close close-trigger">close</span>
+			<nav>
+				<ul id="settingswin_nav">
+					<li data-tab-for="#settingswin_profile">Profile</li>
+					<li data-tab-for="#settingswin_ticket_notifications">Ticket Notifications</li>
+					<li data-tab-for="#settingswin_notifications">Notifications</li>
+					<li data-tab-for="#settingswin_macros">Macros</li>
+					<li data-tab-for="#settingswin_filters">FIlters</li>
+				</ul>
+			</nav>
+		</header>
+		<article id="settingswin_pages">
+			<section
+				id="settingswin_profile"
+				data-page-url="{{ path('agent_settings') }}"
+			></section>
+			<section
+				id="settingswin_ticket_notifications"
+				data-page-url="{{ path('agent_settings_ticketnotif') }}"
+			></section>
+			<section
+				id="settingswin_notifications"
+				data-page-url="{{ path('agent_settings_othernotif') }}"
+			></section>
+			<section
+				id="settingswin_macros"
+				data-page-url=""
+			></section>
+			<section
+				id="settingswin_filters"
+				data-page-url=""
+			></section>
+		</article>
+		<section id="settingswin_saved_overlay" style="display:none">
+			<h3>Saved</h3>
+		</section>
+	</section>
+</div>

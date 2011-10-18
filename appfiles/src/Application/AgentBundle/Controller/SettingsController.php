@@ -8,39 +8,76 @@ use Application\DeskPRO\UI\RuleBuilder;
 
 class SettingsController extends AbstractController
 {
-	public function indexAction()
-    {
-		if ($this->isPostRequest()) {
-			$person = $this->person;
-			$prefs = array();
+	############################################################################
+	# Profile
+	############################################################################
 
-			$prefs[] = $person->setPreference('agent.ticket_signature', $this->in->getString('ticket_signature'));
-
-			if ($this->in->getBool('favicon_count_toggle')) {
-				$prefs[] = $person->setPreference('agent.ui.favicon_count', $this->in->getString('favicon_count'));
-			} else {
-				$prefs[] = $person->setPreference('agent.ui.favicon_count', false);
-			}
-
-			$prefs[] = $person->setPreference('agent.ui.desktop_notifications', $this->in->getBool('desktop_notifications'));
-
-			App::getOrm()->transactional(function ($em) use ($person, $prefs) {
-				$em->persist($person);
-
-				foreach ($prefs as $pref) {
-					$em->persist($pref);
-				}
-
-				$em->flush();
-			});
-		}
+	public function profileAction()
+	{
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
+		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         return $this->render('AgentBundle:Settings:index.html.twig', array(
-			'ticket_signature' => $this->person->getPref('agent.ticket_signature'),
-			'favicon_count' => $this->person->getPref('agent.ui.favicon_count'),
-			'desktop_notifications' => $this->person->getPref('agent.ui.desktop_notifications'),
+			'form' => $form->createView(),
+			'edit_profile' => $edit_profile
 		));
     }
+
+	public function profileSaveAction()
+	{
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
+		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
+
+		$form->bindRequest($this->get('request'));
+
+		$edit_profile->save();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# Ticket Notifications
+	############################################################################
+
+	public function ticketNotificationsAction()
+	{
+		$filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
+		$all_filters      = $filter_info['all_filters'];
+		$sys_filters      = $filter_info['sys_filters'];
+		$sys_filters_hold = $filter_info['sys_filters_hold'];
+		$custom_filters   = $filter_info['custom_filters'];
+
+		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
+			'all_filters' => $all_filters,
+			'sys_filters' => $sys_filters,
+			'sys_filters_hold' => $sys_filters_hold,
+			'custom_filters' => $custom_filters,
+		));
+	}
+
+	public function ticketNotificationsSaveAction()
+	{
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# General Notifications
+	############################################################################
+
+	public function otherNotificationsAction()
+	{
+		return $this->render('AgentBundle:Settings:other-notifications.html.twig', array(
+
+		));
+	}
+
+	public function otherNotificationsSaveAction()
+	{
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 
 	############################################################################
 	# Upload picture

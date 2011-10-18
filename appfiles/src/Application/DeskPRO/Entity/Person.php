@@ -1161,6 +1161,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->primary_email['email'];
 	}
 
+	public function getPrimaryEmail()
+	{
+		return $this->primary_email;
+	}
+
 
 	/**
 	 * Alias for getPrimaryEmailAddress

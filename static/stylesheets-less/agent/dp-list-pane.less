@@ -1174,6 +1174,30 @@ section.dp-overlay > header {
 	padding-left: 12px;
 }
 
+section.dp-overlay > header nav {
+	margin-left: -12px;
+	height: 35px;
+	overflow: hidden;
+	.border-radius(0, 0, 0, 6px);
+}
+section.dp-overlay > header nav ul li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+
+	background-color: rgba(255, 255, 255, 0.5);
+	border-right: 1px solid #ACB2B9;
+	text-align: center;
+	padding: 0 8px 0 8px;
+	cursor: pointer;
+}
+section.dp-overlay > header nav ul li.on,
+section.dp-overlay > header nav ul li:hover {
+	background-color: rgba(255, 255, 255, 1);
+	.inner-shadow(1px, 1px, 3px, 0.3);
+}
+
 section.dp-overlay > header .close {
 	background: transparent url("@{asset-url}/images/agent/closeOvelay.png") no-repeat 50% 50%;
 	width: 35px;
@@ -1268,6 +1292,7 @@ section.dp-overlay > article .layout-content {
 	overflow: hidden;
 }
 
+section.dp-overlay.no-footer > article,
 section.dp-overlay > article.no-footer {
 	bottom: 0;
 }

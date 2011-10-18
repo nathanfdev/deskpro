@@ -112,7 +112,27 @@ agent_login_callback:
 
 agent_settings:
   pattern: /settings
-  defaults: { _controller: AgentBundle:Settings:index }
+  defaults: { _controller: AgentBundle:Settings:profile }
+
+agent_settings_profile_save:
+  pattern: /settings/profile/save.json
+  defaults: { _controller: AgentBundle:Settings:profileSave }
+
+agent_settings_ticketnotif:
+  pattern: /settings/ticket-notifications
+  defaults: { _controller: AgentBundle:Settings:ticketNotifications }
+
+agent_settings_ticketnotif_save:
+  pattern: /settings/ticket-notifications/save.json
+  defaults: { _controller: AgentBundle:Settings:ticketNotificationsSave }
+
+agent_settings_othernotif:
+  pattern: /settings/other-notifications
+  defaults: { _controller: AgentBundle:Settings:otherNotifications }
+
+agent_settings_othernotif_save:
+  pattern: /settings/other-notifications/save.json
+  defaults: { _controller: AgentBundle:Settings:otherNotificationsSave }
 
 agent_settings_picture:
   pattern: /settings/picture

@@ -3189,3 +3189,95 @@ body.popup section.body textarea.fill {
 	color: @link-color;
 	cursor: pointer;
 }
+
+
+
+
+
+#settingswin {
+	z-index: 99999999;
+}
+
+#settingswin_pages > section {
+	padding: 10px;
+	display: none;
+}
+#settingswin_pages > section.on {
+	display: block;
+}
+
+
+#settingswin_saved_overlay {
+	position: absolute;
+	top: 36px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+
+	background: #fff;
+
+	.inner-shadow(0, 0, 12px, 0.5);
+}
+
+#settingswin_saved_overlay h3 {
+
+    background: url(../../images/check-big.png) no-repeat 50% 0;
+
+	display: block;
+	text-align: center;
+	margin-top: 50px;
+	padding-top: 30px;
+}
+
+.dp-form .dp-form-row {
+	margin-bottom: 15px;
+	clear: left;
+}
+
+.dp-form input[type="text"], .dp-form input[type="password"], .dp-form textarea {
+	width: 70%;
+}
+
+
+.dp-form .dp-form-label {
+	font-size: 11px;
+}
+
+.dp-form .dp-form-label label {
+	font-weight: bold;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 13px;
+}
+
+.dp-form .dp-form-input {
+	margin-top: 4px;
+}
+
+.dp-form .dp-form-input label {
+	margin-right: 8px;
+	padding-left: 2px;
+}
+
+.dp-form .dp-form-label em.required {
+	padding-left: 8px;
+	color: #888;
+}
+
+.dp-form .dp-form-label em.desc {
+	padding-left: 8px;
+	color: #888;
+}
+
+.dp-form .dp-form-label em.desc a{
+	font-style: italic;
+}
+
+.dp-form .dp-form-label em.note {
+	padding-left: 8px;
+	color: #6C380B;
+}
+.dp-form .dp-form-label em.note a {
+	color: #6C380B;
+	text-decoration: underline;
+}

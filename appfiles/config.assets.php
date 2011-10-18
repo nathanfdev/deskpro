@@ -28,6 +28,7 @@ $CONFIG['agent'] = array(
 		'agent_misc',
 		'agent_agent_ui',
 		'agent_window_sections',
+		'agent_settingswin',
 		'agent_pages',
 		'agent_pages_lists',
 		'agent_element_handlers',
@@ -73,6 +74,16 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
+	)
+);
+
+$CONFIG['agent_settingswin'] = array(
+	'out' => 'js/agent-settingswin.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/ElementHandler/SettingsWindow.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
 	)
 );
 
@@ -151,7 +162,6 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketChecker.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/Participants.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketFields.js',

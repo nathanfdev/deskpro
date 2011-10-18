@@ -1482,7 +1482,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Settings is a window
 		$('#user_settings_link').click(function() {
-			window.open(BASE_URL + 'agent/settings');
+			$('#settingswin').trigger('dp_open');
 		});
 
 		// Global AJAX handler for errors if no error handler is attached
@@ -2045,6 +2045,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$(this).addClass('tipped-inited');
 			});
 		}, 80);
+
+		window.setTimeout(function() {
+			DeskPRO.ElementHandler_Exec(context);
+		}, 5);
+
+		window.setTimeout(function() {
+			$('.timeago', context).timeago();
+		}, 10);
 	},
 
 	initInterfaceServices: function(context) {

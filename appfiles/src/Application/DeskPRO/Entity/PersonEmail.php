@@ -162,7 +162,9 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	public function setEmail($email)
 	{
 		$this->email = strtolower($email);
-		list (, $this->email_domain) = explode('@', $email, 2);
+		list (, $email_domain) = explode('@', $email, 2);
+
+		$this->email_domain = $email_domain;
 	}
 
 
