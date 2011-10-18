@@ -351,6 +351,17 @@ $CONFIG['admin_admin_handlers'] = array(
 	)
 );
 
+
+
+$CONFIG['user'] = array(
+	'out' => 'js/user-all.js',
+	'post_filters' => array('yui_simple'),
+	'references' => array(
+		'user_vendors',
+		'user_common',
+	)
+);
+
 $CONFIG['user_common'] = array(
 	'out' => 'js/user-common.js',
 	'files' => array(
@@ -475,5 +486,50 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/markitup/markitup/skins/simple/style.css',
 		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
 		'vendor/jquery/token-field/token-field.css',
+	)
+);
+
+$CONFIG['agent_vendors_css'] = array(
+	'out' => 'css/agent-vendors.css',
+	'filters' => array('css_path'),
+	'files' => array(
+		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
+		'vendor/jquery/tipped/css/tipped.css',
+		'vendor/jquery/colorbox/colorbox.css',
+		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
+		'vendor/jquery/chosen/chosen.css',
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.css',
+
+		'vendor/jquery/markitup/markitup/skins/simple/style.css',
+		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
+		'vendor/jquery/token-field/token-field.css',
+	)
+);
+
+
+
+$CONFIG['user_css'] = array(
+	'out' => 'css/user-all.css',
+	'post_filters' => array('css'),
+	'references' => array(
+		'user_interface_css',
+	)
+);
+
+$CONFIG['user_interface_css'] = array(
+	'out' => 'css/user-interface.css',
+	'filters' => array('css_path'),
+	'media' => 'screen',
+	'files' => array(
+		'stylesheets/user/main.css',
+	)
+);
+
+$CONFIG['user_interface_print_css'] = array(
+	'out' => 'css/user-interface-print.css',
+	'filters' => array('css_path'),
+	'media' => 'print',
+	'files' => array(
+		'stylesheets/user/main-print.css',
 	)
 );

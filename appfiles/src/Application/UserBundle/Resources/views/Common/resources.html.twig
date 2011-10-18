@@ -1,23 +1,23 @@
+{% if app.isDebug() %}
+	{{ dp_asset_html('user_vendors') }}
+	{{ dp_asset_html('user_common') }}
+	{{ dp_asset_html('user_interface_css') }}
+	{{ dp_asset_html('user_interface_print_css', {'media':'print'}) }}
+{% else %}
+	{{ dp_asset_html('user') }}
+	{{ dp_asset_html('user_interface_css') }}
+	{{ dp_asset_html('user_css') }}
+	{{ dp_asset_html('user_interface_print_css', {'media':'print'}) }}
+{% endif %}
+
 <script type="text/javascript">
-var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
-    Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+	var BASE_URL = '{{ path('user') }}';
+	var ASSETS_BASE_URL = '{{ asset('') }}';
+	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
 </script>
 <script type="text/javascript">
-var IdeaVotesRemaining  = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesRemaining()|default(0) }}');
-var IdeaVotesUsed       = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesUsed()|default(0) }}');
-var IdeaVotesMaxPerIdea = parseInt('{{ app.getSetting('core_ideas.max_votes_ideas') }}');
-var IdeaVotesAllowed    = parseInt('{{ app.getSetting('core_ideas.votes_per_person') }}');
+	window.DeskPRO_Window = new DeskPRO.User.Window();
+	$(document).ready(function() {
+		window.DeskPRO_Window.initPage();
+	});
 </script>
-
-{{ html_js_pack('user.vendors') }}
-{{ html_js_pack('user.common') }}
-
-<link rel="stylesheet" href="{{ asset('vendor/blueprint/screen.css') }}" type="text/css" media="screen, projection">
-<link rel="stylesheet" href="{{ asset('vendor/blueprint/print.css') }}" type="text/css" media="print">
-<link rel="stylesheet" href="{{ asset('vendor/blueprint/plugins/liquid/liquid.css') }}" type="text/css" media="screen, projection">
-<!--[if lt IE 8]>
-<link rel="stylesheet" href="{{ asset('vendor/blueprint/ie.css') }}" type="text/css" media="screen, projection">
-<![endif]-->
-
-<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen, projection">
-<link rel="stylesheet" href="{{ asset('stylesheets/user.css') }}" type="text/css" media="screen, projection">
