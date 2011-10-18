@@ -37,11 +37,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	protected $person;
 
 	/**
-	 * @ORM_Mapping\Id
-	 */
-	protected $person_id;
-
-	/**
 	 * The name of the pref
 	 *
 	 * @var string

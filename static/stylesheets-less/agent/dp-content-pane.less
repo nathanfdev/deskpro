@@ -3206,6 +3206,10 @@ body.popup section.body textarea.fill {
 	display: block;
 }
 
+#settingswin_pages > section > .page-loading {
+	padding: 50px;
+	background: url(../../images/loading-big-circle.gif) no-repeat 50% 50%;
+}
 
 #settingswin_saved_overlay {
 	position: absolute;
@@ -3229,6 +3233,104 @@ body.popup section.body textarea.fill {
 	margin-top: 50px;
 	padding-top: 30px;
 }
+
+#settingswin header.pageheader {
+	margin: -10px -10px 10px -10px;
+	background-color: #EEEEEF;
+	border-bottom: 1px solid #ABAFB5;
+	padding-left: 8px;
+}
+
+#settingswin header.pageheader nav {
+	height:	25px;
+}
+
+#settingswin header.pageheader nav ul li {
+	display: block;
+	margin-top: 4px;
+	margin-right: 4px;
+	.border-radius(4px, 0, 0, 4px);
+	padding: 0 4px 0 4px;
+
+	float: left;
+	height:	20px;
+	line-height: 20px;
+	background-color: #E6E7E8;
+	border: 1px solid #ABAFB5;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
+#settingswin header.pageheader nav ul li.on,
+#settingswin header.pageheader nav ul li:hover {
+	background-color: #fff;
+	margin-top: 5px;
+}
+
+#settingswin .check-grid {
+	border: 1px solid #ABAFB5;
+}
+
+#settingswin .check-grid > table thead th {
+	font-family: @heading-font;
+	font-weight: bold;
+	font-size: 9px;
+	line-height: 100%;
+
+	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	border-bottom: 1px solid #c2c6cc;
+
+	padding: 1px 0 1px 0;
+	vertical-align: middle;
+}
+
+#settingswin .check-grid > table td {
+	padding: 2px 0 2px 0;
+}
+
+#settingswin .check-grid > table td.title {
+	padding-left: 5px;
+}
+
+#settingswin .check-grid > table td.prop {
+	text-align: center;
+	background-color: #E8E8E8;
+}
+
+#settingswin .check-grid > table td.prop.new {
+    background-color: #DADBDE;
+	border-left: 1px solid #C2C6CC;
+	border-right: 1px solid #C2C6CC;
+}
+
+#settingswin .check-grid > header:first-of-type {
+	border-top: none;
+}
+
+#settingswin .check-grid > header {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 )"; /* IE6-9 */
+	background: linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* W3C */
+	border-bottom: 1px solid #B3B6B8;
+	border-top: 1px solid #c2c6cc;
+
+	line-height: 22px;
+	padding-left: 5px;
+	font-family: @heading-font;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+
+
+
 
 .dp-form .dp-form-row {
 	margin-bottom: 15px;

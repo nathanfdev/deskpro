@@ -45,74 +45,11 @@ class TicketSearchController extends AbstractController
 		# Filters
 		#------------------------------
 
-		$all_filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
-
-		$order = $this->person->getPref('agent.ui.ticket-filters-order');
-		if ($order) {
-			$filters_unordered = $all_filters;
-			$all_filters = array();
-
-			foreach ($order as $id) {
-				if (isset($filters_unordered[$id])) {
-					$all_filters[$id] = $filters_unordered[$id];
-					unset($filters_unordered[$id]);
-				}
-			}
-
-			if (count($filters_unordered)) {
-				foreach ($filters_unordered as $id => $q) {
-					$all_filters[$id] = $q;
-				}
-			}
-		}
-
-		// Order them into sys/other
-		$sys_filters = array();
-		$sys_filters_hold = array();
-		$custom_filters = array();
-
-		foreach ($all_filters as $id => $filter) {
-			if ($filter['sys_name']) {
-				if (strpos($filter['sys_name'], '_w_hold')) {
-					$sys_filters_hold[$filter['sys_name']] = $filter;
-				} else {
-				$sys_filters[$filter['sys_name']] = $filter;
-				}
-			} else {
-				$custom_filters[$id] = $filter;
-			}
-		}
-
-		// Force order of sys
-		$sys_filters_unordered = $sys_filters;
-		$sys_filters = array();
-		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
-			if (isset($sys_filters_unordered[$id])) {
-				$sys_filters[$id] = $sys_filters_unordered[$id];
-				unset($sys_filters_unordered[$id]);
-			}
-		}
-
-		$sys_filters_unordered = $sys_filters_hold;
-		$sys_filters_hold = array();
-		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
-			$id .= '_w_hold';
-			if (isset($sys_filters_unordered[$id])) {
-				$sys_filters_hold[$id] = $sys_filters_unordered[$id];
-				unset($sys_filters_unordered[$id]);
-			}
-		}
-
-		if (count($sys_filters_unordered)) {
-			foreach ($sys_filters_unordered as $id => $q) {
-				$sys_filters[$id] = $q;
-			}
-		}
-
-		if (!$this->person->getHasTeams()) {
-			unset($sys_filters['agent_team']);
-			unset($sys_filters_unordered['agent_team_w_hold']);
-		}
+		$filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
+		$all_filters      = $filter_info['all_filters'];
+		$sys_filters      = $filter_info['sys_filters'];
+		$sys_filters_hold = $filter_info['sys_filters_hold'];
+		$custom_filters   = $filter_info['custom_filters'];
 
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');

@@ -18,7 +18,7 @@ class SettingsController extends AbstractController
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-        return $this->render('AgentBundle:Settings:index.html.twig', array(
+        return $this->render('AgentBundle:Settings:profile.html.twig', array(
 			'form' => $form->createView(),
 			'edit_profile' => $edit_profile
 		));
@@ -49,16 +49,24 @@ class SettingsController extends AbstractController
 		$sys_filters_hold = $filter_info['sys_filters_hold'];
 		$custom_filters   = $filter_info['custom_filters'];
 
+		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
+
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters' => $all_filters,
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
 			'custom_filters' => $custom_filters,
+			'my_subs' => $my_subs,
 		));
 	}
 
 	public function ticketNotificationsSaveAction()
 	{
+		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
+
+		$person_editor = $this->container->getSystemService('person_edit_manager');
+		$person_editor->saveFilterSubscriptions($this->person, $subs);
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 
@@ -68,13 +76,19 @@ class SettingsController extends AbstractController
 
 	public function otherNotificationsAction()
 	{
+		$my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
 		return $this->render('AgentBundle:Settings:other-notifications.html.twig', array(
-
+			'my_prefs' => $my_prefs,
 		));
 	}
 
 	public function otherNotificationsSaveAction()
 	{
+		$prefs = $this->in->getCleanValueArray('notify_prefs', 'bool', 'string');
+
+		$person_editor = $this->container->getSystemService('person_edit_manager');
+		$person_editor->saveNotificationPreferences($this->person, $prefs);
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 
@@ -131,6 +145,8 @@ class SettingsController extends AbstractController
 	 */
 	public function ticketFiltersAction()
 	{
+		return $this->createResponse('not updated yet');
+
 		$filters_all = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
 
 		$filters = array();
@@ -213,6 +229,8 @@ class SettingsController extends AbstractController
 
 	public function ticketMacrosAction()
     {
+		return $this->createResponse('not updated yet');
+
 		$all_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->findAll();
 
 		if (!count($all_macros)) {
