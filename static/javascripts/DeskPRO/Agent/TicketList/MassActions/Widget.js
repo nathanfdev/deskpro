@@ -248,7 +248,13 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 	_onSnippetClick: function(info) {
 		var txt = $('.reply-wrap textarea', this.wrapper);
-		txt.val(txt.val() + info.snippet);
+		var val = txt.val();
+		if (val.length) {
+			val += " ";
+		}
+		val += info.snippet;
+
+		txt.val(val);
 	},
 
 	updateCount: function(num) {

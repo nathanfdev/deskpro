@@ -102,7 +102,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			viewUrl: this.el.data('snippet-viewer-url'),
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: function(info) {
-				self.getElById('replybox_txt').val(self.getElById('replybox_txt').val() + "\n\n" + info.snippet);
+				var val = self.getElById('replybox_txt').val();
+				if (val.length) {
+					val += " ";
+				}
+				val += info.snippet;
+				self.getElById('replybox_txt').val(val);
 			}
 		});
 
