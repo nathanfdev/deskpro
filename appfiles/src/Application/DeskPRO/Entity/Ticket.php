@@ -1436,7 +1436,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setHiddenStatus($hstatus)
 	{
-		$this->setStatus('hidden.' . $hstatus);
+		if (!$hstatus) {
+			if ($this->status == 'hidden') {
+				$this->setStatus('open');
+			}
+		} else {
+			$this->setStatus('hidden.' . $hstatus);
+		}
 	}
 
 	public function getStatusCode()

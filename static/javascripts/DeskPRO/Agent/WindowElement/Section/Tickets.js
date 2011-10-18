@@ -93,7 +93,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			onInit: function(ed) {
 				ed.controlRealEl.delegate(':checkbox', 'click', function() {
 					var row = $(this).closest('.filter-row');
-					var filter_id = row.data('filter-id');
+					var filter_id = parseInt(row.data('filter-id'));
 
 					var filter_row = $('#tickets_outline_custom_filters .filter-' + filter_id);
 					if ($(this).is(':checked')) {
@@ -130,7 +130,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				var postData = [];
 				$('#tickets_outline_custom_filters li.filter').each(function() {
-					var id = $(this).data('filter-id');
+					var id = parseInt($(this).data('filter-id'));
 					var v;
 
 					if ($(this).is('.filter-hidden')) {
@@ -246,7 +246,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				var data = [];
 
 				$('ul#tickets_outline_filters_list > li').each(function() {
-					var id = $(this).data('filter-id');
+					var id = parseInt($(this).data('filter-id'));
 					if (id) {
 						data.push({ name: 'prefs[agent.ui.ticket-filters-order][]', value: id });
 					}
@@ -279,7 +279,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('li.filter', this.sectionEl).each((function(i, el) {
 			el = $(el);
 
-			var filterId = el.data('filter-id');
+			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
 			} else {
@@ -323,7 +323,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#tickets_outline_sys_hold_filters li.filter', this.sectionEl).each((function(i, el) {
 			el = $(el);
 
-			var filterId = el.data('filter-id');
+			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
 				total += this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
@@ -335,7 +335,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#tickets_outline_sys_filters li.filter', this.sectionEl).each((function(i, el) {
 			el = $(el);
 
-			var filterId = el.data('filter-id');
+			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
 				total -= this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
@@ -369,7 +369,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		var page = null;
-		if (this.listPage && this.listPage.meta.filter_id == data.filter_id) {
+		if (this.listPage && parseInt(this.listPage.meta.filter_id) == filterId) {
 			page = this.listPage;
 		}
 
@@ -377,20 +377,20 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			this.filterTicketIds[filterId].include(ticketId);
 
 			var count = this.filterTicketIds[filterId].length;
-			this.setFilterCount(data.filter_id, count);
+			this.setFilterCount(filterId, count);
 
-			if (page && data.ticket_id) {
-				page.addTicket(data.ticket_id);
+			if (page && ticketId) {
+				page.addTicket(ticketId);
 			}
 
 		} else if (data.op == 'del') {
 			this.filterTicketIds[filterId].erase(ticketId);
 
 			var count = this.filterTicketIds[filterId].length;
-			this.setFilterCount(data.filter_id, count);
+			this.setFilterCount(filterId, count);
 
-			if (page && data.ticket_id) {
-				page.delTicket(data.ticket_id);
+			if (page && ticketId) {
+				page.delTicket(ticketId);
 			}
 		}
 
@@ -411,7 +411,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var boundFilterId = null;
 			if (filterEl.data('filter-name')) {
 				boundFilterEl = $('.filter-' + filterEl.data('filter-name') + '_w_hold', this.sectionEl);
-				boundFilterId = boundFilterEl.data('filter-id');
+				boundFilterId = parseInt(boundFilterEl.data('filter-id'));
 			}
 
 			if (!this.filterTicketIds[filterId] && (!boundFilterId || !this.filterTicketIds[boundFilterId])) {

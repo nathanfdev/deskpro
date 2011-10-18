@@ -51,6 +51,13 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		}
 	},
 
+	getLastMessageId: function() {
+		return this.lastMessageId;
+	},
+
+	setLastMessageId: function(messageId) {
+		this.lastMessageId = messageId;
+	},
 
 	//#########################################################################
 	//# Handle subcriptions

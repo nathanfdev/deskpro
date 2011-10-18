@@ -77,17 +77,24 @@ class ListUpdater
 	 */
 	protected $scope_checks = 0;
 
-	
+
 	public function __construct(TicketChangeTracker $tracker, $mode = self::MODE_SHALLOW)
 	{
 		$this->tracker = $tracker;
 		$this->mode = $mode;
+
+		if (App::getConfig('debug.log_ticket_listupdater')) {
+			$logger = new \Orb\Log\Logger();
+			$writer = new \Orb\Log\Writer\Stream(DP_ROOT . '/sys/logs/ticket-list-updater.log');
+			$logger->addWriter($writer);
+			$this->setDebugLogger($logger);
+		}
 	}
 
 
 	/**
 	 * Sets a debug logger
-	 * 
+	 *
 	 * @param $logger
 	 * @return void
 	 */
@@ -102,11 +109,11 @@ class ListUpdater
 
 		$this->logger->log($message, Logger::DEBUG);
 	}
-	
+
 
 	/**
 	 * Check terms in a filter to see if this change could have affected it
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
 	 * @return bool
 	 */
@@ -114,7 +121,7 @@ class ListUpdater
 	{
 		$searcher = $filter->getSearcher();
 		$affected_fields = $searcher->getAffectedFields();
-		
+
 		foreach ($this->changed_fields as $f) {
 			if (in_array($f, $affected_fields)) {
 				return true;
@@ -128,7 +135,7 @@ class ListUpdater
 	/**
 	 * Runs through a filter and gets client messages to send to clients
 	 * about any updates that affect it.
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
 	 * @return array
 	 */
@@ -184,14 +191,14 @@ class ListUpdater
 
 			$searcher = $filter->getSearcher();
 			$searcher->setPerson($agent);
-			
+
 			$orig_match = $searcher->doesTicketMatch($orig_ticket);
 			$new_match  = $searcher->doesTicketMatch($new_ticket);
 
 			if (!$orig_match AND !$new_match) {
 				// Nothing changed
 				$this->logMessage("-- Nothing changed (both no-match)");
-				
+
 			} else if ($orig_match AND $new_match) {
 				// Nothing changed again
 				$this->logMessage("-- Nothing changed (both match)");
@@ -302,13 +309,28 @@ class ListUpdater
 		}
 	}
 
-	
+
 	/**
 	 * Runs the checks, inserts the client messages if there are any.
 	 */
 	public function run()
 	{
 		$this->initVars();
+
+		$orig_ticket = $this->tracker->getOriginalTicket();
+		$new_ticket = $this->tracker->getTicket();
+
+		if ($this->logger) {
+			$key_props = array('status', 'hidden_status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'agent_id', 'agent_team_id');
+			$this->logMessage("Key orig_ticket properties:");
+			foreach ($key_props as $k) {
+				$this->logMessage("-- $k: {$orig_ticket[$k]}");
+			}
+			$this->logMessage("Key new_ticket properties:");
+			foreach ($key_props as $k) {
+				$this->logMessage("-- $k: {$new_ticket[$k]}");
+			}
+		}
 
 		if ($this->tracker->isExtraSet('ticket_created')) {
 

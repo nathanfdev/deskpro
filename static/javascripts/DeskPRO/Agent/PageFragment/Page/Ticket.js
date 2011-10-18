@@ -150,13 +150,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ticketParticipants = new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
 		this.ownObject(this.ticketParticipants);
 
-		this.ticketChecker = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker(this, {
-			lastMessageId: this.meta.lastMessageId,
-			lastLogId: this.meta.lastLogId,
-			checkUrl: BASE_URL + 'agent/tickets/'+this.getMetaData('ticket_id')+'/ajax-update-check'
-		});
-		this.ownObject(this.ticketChecker);
-
 		if (this.meta.isLocked) {
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
 			this.ownObject(this.ticketLocked);
@@ -174,14 +167,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		formData.push({
 			name: 'last_message_id',
-			value: this.ticketChecker.getLastMessageId()
+			value: this.getLastMessageId()
 		});
 		formData.push({
 			name: 'last_log_id',
-			value: this.ticketChecker.getLastLogId()
+			value: DeskPRO_Window.getMessageChanneler().getLastMessageId()
 		});
-
-		this.ticketChecker.pause(true);
 
 		$.ajax({
 			url: reply_form.attr('action'),
@@ -210,9 +201,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			},
 			complete: function(xhr, textStatus) {
 				reply_form.removeClass('loading');
-				this.ticketChecker.unpause();
 			}
 		});
+	},
+
+	getLastMessageId: function() {
+		return parseInt($('.article.message', this.getEl('messages_wrap')).last().data('message-id') || 0);
+	},
+
+	getLastLogId: function() {
+		return parseInt($('.log-row', this.getEl('messages_wrap')).last().data('log-id') || 0);
 	},
 
 	destroyPage: function() {
@@ -282,18 +280,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this._initMessage(new_message);
 		this.incCount('ticket-messages');
-	},
-
-	activate: function() {
-		if (this.ticketChecker) {
-			this.ticketChecker.unpause();
-		}
-	},
-
-	deactivate: function() {
-		if (this.ticketChecker) {
-			this.ticketChecker.pause();
-		}
 	},
 
 	_initMessage: function(messageEl) {
