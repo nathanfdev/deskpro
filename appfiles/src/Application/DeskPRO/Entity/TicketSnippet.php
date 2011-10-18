@@ -81,6 +81,47 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 			$snippet = nl2br(htmlspecialchars($snippet));
 		}
 
+		$repl = array(
+			'var.time'          => date('h:ia'),
+			'var.time24'        => date('H:i'),
+			'var.date'          => date('F d, Y'),
+			'me.name'       => App::getCurrentPerson()->getDisplayName(),
+			'me.email'      => App::getCurrentPerson()->getPrimaryEmailAddress(),
+		);
+
+		// Custom user fields for current agent: {{ me.field23 }}
+		$field_manager = App::getSystemService('person_fields_manager');
+		$custom_fields = $field_manager->getRenderedToTextForObject(App::getCurrentPerson());
+		foreach ($custom_fields as $f) {
+			$repl["me.field{$f['id']}"] = $f['rendered'];
+		}
+
+		if ($person) {
+			$repl = array_merge(array(
+				'user.name'                   => $person->getDisplayName(),
+				'user.email'                  => $person->getPrimaryEmailAddress(),
+				'user.organization_position'  => $person->organization_position,
+
+				'org.name' => $person->organization ? $person->organization->name : '',
+			), $repl);
+
+			// Custom user fields: {{ user.field23 }}
+			$field_manager = App::getSystemService('person_fields_manager');
+			$custom_fields = $field_manager->getRenderedToTextForObject($person);
+			foreach ($custom_fields as $f) {
+				$repl["user.field{$f['id']}"] = $f['rendered'];
+			}
+
+			// Custom org fields: {{ agent.field23 }}
+			if ($person->organization) {
+				$field_manager = App::getSystemService('org_fields_manager');
+				$custom_fields = $field_manager->getRenderedToTextForObject($person->organization);
+				foreach ($custom_fields as $f) {
+					$repl["org.field{$f['id']}"] = $f['rendered'];
+				}
+			}
+		}
+
 		// If we dont have a ticket, then no replacements
 		if ($ticket) {
 			if ($ticket && !$person) {
@@ -88,13 +129,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			// Basic replacements
-			$repl = array(
-				'var.time'          => date('h:ia'),
-				'var.time24'        => date('H:i'),
-				'var.date'          => date('F d, Y'),
-				'me.name'       => App::getCurrentPerson()->getDisplayName(),
-				'me.email'      => App::getCurrentPerson()->getPrimaryEmailAddress(),
-
+			$repl = array_merge(array(
 				'ticket.subject'          => $ticket->subject,
 				'ticket.department'       => $ticket->department ? $ticket->department->full_title : '',
 				'ticket.product'          => $ticket->product ? $ticket->product->full_title : '',
@@ -112,33 +147,13 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 				'agent.email'    => $ticket->agent ? $ticket->agent->getPrimaryEmailAddress() : '',
 
 				'agent_team.name' => $ticket->agent_team ? $ticket->agent_team->name : '',
-
-				'user.name'                   => $person->getDisplayName(),
-				'user.email'                  => $person->getPrimaryEmailAddress(),
-				'user.organization_position'  => $person->organization_position,
-
-				'org.name' => $person->organization ? $person->organization->name : '',
-			);
+			), $repl);
 
 			// Custom ticket fields: {{ ticket.field23 }}
 			$field_manager = App::getSystemService('ticket_fields_manager');
 			$custom_fields = $field_manager->getRenderedToTextForObject($ticket);
 			foreach ($custom_fields as $f) {
 				$repl["ticket.field{$f['id']}"] = $f['rendered'];
-			}
-
-			// Custom user fields: {{ user.field23 }}
-			$field_manager = App::getSystemService('person_fields_manager');
-			$custom_fields = $field_manager->getRenderedToTextForObject($person);
-			foreach ($custom_fields as $f) {
-				$repl["user.field{$f['id']}"] = $f['rendered'];
-			}
-
-			// Custom user fields for current agent: {{ me.field23 }}
-			$field_manager = App::getSystemService('person_fields_manager');
-			$custom_fields = $field_manager->getRenderedToTextForObject(App::getCurrentPerson());
-			foreach ($custom_fields as $f) {
-				$repl["me.field{$f['id']}"] = $f['rendered'];
 			}
 
 			// Custom user fields for assigned agent: {{ agent.field23 }}
@@ -149,27 +164,18 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 					$repl["agent.field{$f['id']}"] = $f['rendered'];
 				}
 			}
-
-			// Custom org fields: {{ agent.field23 }}
-			if ($ticket->agent) {
-				$field_manager = App::getSystemService('org_fields_manager');
-				$custom_fields = $field_manager->getRenderedToTextForObject($person->organization);
-				foreach ($custom_fields as $f) {
-					$repl["org.field{$f['id']}"] = $f['rendered'];
-				}
-			}
-
-			foreach ($repl as $k => $v) {
-				if ($pattern[2]) {
-					$v = htmlspecialchars($v);
-				}
-				$snippet = str_replace("{{ $k }}", $pattern[0] . $v . $pattern[1], $snippet);
-				$snippet = str_replace("{{{$k}}}", $pattern[0] . $v . $pattern[1], $snippet);
-			}
-
-			// Replace anything remaining with blanks,
-			$snippet = preg_replace('#\{\{[ ]?(var|me|agent|agent_team|user|org|ticket)\.([a-zA-Z0-9_]+)[ ]?\}\}#', '', $snippet);
 		}
+
+		foreach ($repl as $k => $v) {
+			if ($pattern[2]) {
+				$v = htmlspecialchars($v);
+			}
+			$snippet = str_replace("{{ $k }}", $pattern[0] . $v . $pattern[1], $snippet);
+			$snippet = str_replace("{{{$k}}}", $pattern[0] . $v . $pattern[1], $snippet);
+		}
+
+		// Replace anything remaining with blanks,
+		//$snippet = preg_replace('#\{\{[ ]?(var|me|agent|agent_team|user|org|ticket)\.([a-zA-Z0-9_]+)[ ]?\}\}#', '', $snippet);
 
 		return $snippet;
 	}

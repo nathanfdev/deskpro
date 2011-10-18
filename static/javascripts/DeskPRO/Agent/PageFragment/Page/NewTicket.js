@@ -244,6 +244,24 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		this.getEl('message').change(fn).blur(fn).keypress(fn);
+
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
+			triggerElement: this.getEl('text_snippets_btn'),
+			positionMode: this.meta.isPopover ? 'over' : 'side',
+			onSnippetClick: function(info) {
+				var val = self.getEl('message').val();
+				if (val.length) {
+					val += " ";
+				}
+				val += info.snippet;
+				self.getEl('message').val(val);
+			}
+		});
 	},
 
 	//#########################################################################
