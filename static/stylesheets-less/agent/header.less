@@ -717,7 +717,6 @@
 }
 
 .createDropdown ul.createBtnPopups li:hover span{
-    line-height: 23px;
     margin: 0;
     padding: 0 0 0 25px;
 
@@ -958,48 +957,33 @@
 	width: 147px;
 	position: relative;
 	z-index: 100001;
+	padding: 2px 0 2px 0;
 }
 
 .dropdownSwitcherWrap li{
 	display: block;
-	padding: 3px 5px;
-	width: 100%;
+	padding: 2px 5px;
+	line-height: 23px;
 }
 .dropdownSwitcherWrap li a{
 	text-shadow: 0 1px 0 #fff;
 	font-size: 11px;
 	font-weight: normal;
 	color: #9DA2A6;
-	line-height: 25px;
 	display: block;
-	padding: 0 0 0 2px !important;
-}
-
-.dropdownSwitcherWrap li a{
-
-}
-.dropdownSwitcherWrap li a:focus span{
-	background-repeat: no-repeat;
-    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	padding: 0 40px 0 2px;
-	width: 100%;
+	padding: 0 0 0 2px!important;
+	border: 1px solid transparent;
 }
 
 .dropdownSwitcherWrap li:hover a {
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
-	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url("../../static/vendor/PIE.htc");
 	border: 1px solid #406080;
 	border-radius: 3px;
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
 	color: #FFFFFF;
-	line-height: 20px;
 	margin: 0;
-	padding: 2px 0 1px 3px !important;
-	text-shadow: 0 1px 0 #333333;
-	width: 90%;
-	position: relative;
+	text-shadow: 0 1px 1px #333333;
 }
 .switcherHeader{
 	height: 21px;
@@ -1007,11 +991,11 @@
 	width: 139px !important;
 	z-index: 100003;
 }
-.switcherHeader a{
+.switcherHeader span {
 	background-repeat: no-repeat;
 	background-position: 0 3px;
     background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
-	padding: 0 0 0 22px !important;
+	padding: 0 0 0 20px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
 	padding: 0 24px 0 18px !important;
