@@ -39,7 +39,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</header>
 	<article>
 		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
 
 		<div class="table-result-list">
 			<table cellspacing="0" width="100%">
@@ -67,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="is-loading"></div>
 			</div>
 
-        	{% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %}
+        	{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
         </div>
 	</footer>
 </section>
