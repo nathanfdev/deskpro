@@ -2437,6 +2437,7 @@ padding: 30px;
 	font-size: 10px;
 	max-height: 37px;
 	overflow: hidden;
+	min-height: 28px;
 }
 
 .snippets-overlay .snippet-sections li .content.show .fadeaway {
@@ -2471,6 +2472,12 @@ padding: 30px;
 .snippets-overlay .snippet-sections li .content.long.expanded { padding-bottom: 15px; }
 .snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .expand { display: none; }
 .snippets-overlay .snippet-sections li .content.long.expanded .fadeaway .unexpand { display: block; }
+
+.snippets-overlay .snippet-sections li .content.show .nobreak { display: none; }
+.snippets-overlay .snippet-sections li .content.show-nobreak .nobreak { display: block; }
+.snippets-overlay .snippet-sections li .content.show-nobreak .real { display: none; }
+.snippets-overlay .snippet-sections li .content.show-nobreak.expanded .nobreak { display: none; }
+.snippets-overlay .snippet-sections li .content.show-nobreak.expanded .real { display: block; }
 
 .snippets-overlay .snippet-sections li .content.long.expanded {
 	max-height: 500px;

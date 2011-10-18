@@ -351,6 +351,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	processSnippetRow: function(row) {
 		var show = $('.content.show', row);
 		if (show.height() >= 30) {
+			show.addClass('show-nobreak');
 			show.css('max-height', '30').addClass('long');
 		}
 	}

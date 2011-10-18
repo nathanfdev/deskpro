@@ -91,6 +91,7 @@ class TemplatingExtension extends \Twig_Extension
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
+			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
         );
     }
 
@@ -104,6 +105,15 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$assetic_manager = $this->container->getSystemService('assetic_manager');
 		return $assetic_manager->getRawUrls($name);
+	}
+
+	public function stripLinebreaks($str)
+	{
+		$str = str_replace(array("\r\n", "\n"), " ", $str);
+		$str = str_replace(array("<br />", "<br/>", "<br>"), " ", $str);
+		$str = str_replace(array("<p>", "</p>", "<p />", "<p/>"), " ", $str);
+
+		return $str;
 	}
 
 	public function htmlGetAssetic($name, $options = array())

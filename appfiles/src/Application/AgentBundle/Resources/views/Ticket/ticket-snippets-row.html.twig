@@ -9,7 +9,10 @@
 			{% if no_formatting %}
 				<div class="content raw">{{ snippet.snippet }}</div>
 			{% else %}
-				<div class="content formatted">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
+				<div class="content formatted">
+					<div class="real">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
+					<div class="nobreak">{{ snippet.snippetFormattedHtml(ticket, person)|strip_linebreaks|raw }}</div>
+				</div>
 				<textarea class="value formatted" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
 			{% endif %}
 			<div class="fadeaway">
