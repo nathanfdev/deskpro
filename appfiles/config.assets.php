@@ -245,10 +245,6 @@ $CONFIG['agent_agent_ui'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
 
-		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
-		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
-
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
 
 		// Omnisearch
