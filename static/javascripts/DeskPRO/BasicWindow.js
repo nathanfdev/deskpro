@@ -11,7 +11,7 @@ DeskPRO.BasicWindow = new Orb.Class({
 
 		$('html').addClass('window-active');
 		window.setTimeout(function() { $('html').addClass('window-active'); }, 1000); // because modernizer resets the className attr
-		
+
 		var _winshow = function() { $(document).trigger('windowshow'); $('html').addClass('window-active'); };
 		var _winhide = function() { $(document).trigger('windowhide'); $('html').removeClass('window-active'); };
 		if (/*@cc_on!@*/false) {
