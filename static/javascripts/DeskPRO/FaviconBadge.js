@@ -16,7 +16,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 	updateBadge: function(num, do_animate) {
 		if (!this.supported) return;
-		
+
 		var img = document.createElement('img');
 		var self = this;
 
@@ -64,8 +64,8 @@ DeskPRO.FaviconBadge = new Orb.Class({
 			function alternate() {
 
 				if (runs++ > 10) {
-					cancelAnimation();
-					return;
+					//cancelAnimation();
+					//return;
 				}
 
 				if (!self.badgeEl) {
@@ -85,7 +85,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 				if (timeout) window.clearTimeout(timeout);
 				badge1();
 
-				$(window).unbind('focus', cancelAnimation);
+				$(document).unbind('windowshow', cancelAnimation);
 				$(window).unbind('mousemove', cancelAnimation);
 
 				self.currentCancel = null;
@@ -99,7 +99,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 				var runs = 0;
 				alternate();
 
-				$(window).bind('focus', cancelAnimation);
+				$(document).bind('windowshow', cancelAnimation);
 				$(window).bind('mousemove', cancelAnimation);
 			} else {
 				badge1();
@@ -114,6 +114,10 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		var canvasContext = canvas.getContext('2d');
 
 		canvasContext.drawImage(img, 0, 0);
+
+		if (!num) {
+			return canvas;
+		}
 		canvasContext.font = '11px "helvetica", sans-serif';
 
 		if (alt) {

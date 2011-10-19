@@ -1479,22 +1479,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			favicon: '#favicon'
 		});
 
-		if (this.options.faviconCount) {
-			this.getMessageBroker().addMessageListener('agent.ui.badge_updated', function(data) {
-
-				if (self.optionsfaviconCount == 'tickets') {
-					if (data.sectionId != 'tickets') return;
-					var count = data.count;
-				} else {
-					var count = 0;
-					Object.each(self.sections, function(section) {
-						count += section.getBadgeCount();
-					});
-				}
-
-				self.faviconBadge.updateBadge(count);
+		this.notifications.addEvent('modCount', function(data) {
+			var count = 0;
+			$('#notificationWrap .notif-item .counter').each(function() {
+				count += parseInt($(this).text().trim());
 			});
-		}
+
+			var doanim = false;
+			if (!$(document).is('.window-active')) {
+				doanim = true;
+			}
+
+			self.faviconBadge.updateBadge(count, true);
+		});
 
 		this.volume = 0.8;
 

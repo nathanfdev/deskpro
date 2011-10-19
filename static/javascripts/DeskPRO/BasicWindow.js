@@ -9,6 +9,21 @@ DeskPRO.BasicWindow = new Orb.Class({
 
 	initialize: function(options) {
 
+		$(document).addClass('window-active');
+		var _winshow = function() { $(document).trigger('windowshow'); $('html').addClass('window-active'); };
+		var _winhide = function() { $(document).trigger('windowhide'); $('html').removeClass('window-active'); };
+		if (/*@cc_on!@*/false) {
+			document.onfocusin  = _winshow;
+			document.onfocusout = _winhide;
+		} else {
+			window.onfocus  = _winshow;
+			window.onblur  = _winhide;
+		}
+
+		// html5
+		window.onpageshow = _winshow();
+		window.onpagehide = _winhide();
+
 		this.DEBUG = {};
 		this.options = this.getDefaultOptions();
 		this.registry = {};
@@ -83,7 +98,7 @@ DeskPRO.BasicWindow = new Orb.Class({
 
 	/**
 	 * Get a debug option
-	 * 
+	 *
 	 * @param name
 	 * @return mixed
 	 */

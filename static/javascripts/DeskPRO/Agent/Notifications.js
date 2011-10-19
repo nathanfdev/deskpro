@@ -61,7 +61,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var el2  = $('#notificationDropdown .notif-' + type);
 
 		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el2 };
-		this.fireEvent('modCount', ev);
+		this.fireEvent('beforeModCount', ev);
 
 		if (op == '=') {
 			var newcount = count || 0;
@@ -101,6 +101,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			this.fireEvent('typeShow', [type, el]);
 		}
+
+		this.fireEvent('modCount', ev);
 	},
 
 	_lazyInitMenu: function() {
