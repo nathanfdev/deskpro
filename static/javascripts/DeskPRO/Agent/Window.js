@@ -1478,8 +1478,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 
-		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
-
 		// Settings is a window
 		$('#user_settings_link').click(function() {
 			$('#settingswin').trigger('dp_open');
