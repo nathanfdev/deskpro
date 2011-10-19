@@ -20,9 +20,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 					<tr>
 						<th></th>
 						<th width="60">New</th>
-						<th width="60">User<br />Activity</th>
-						<th width="60">Agent<br />Activity</th>
-						<th width="60">Property<br />Changes</th>
+						<th width="60">User<br />Messages</th>
+						<th width="60">Agent<br />Messages</th>
+						<th width="60">All</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -32,7 +32,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							<td class="prop new"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_new]" value="1" {% if my_subs[filter.id].email_new %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_user_activity]" value="1" {% if my_subs[filter.id].email_user_activity %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_agent_activity]" value="1" {% if my_subs[filter.id].email_agent_activity %}checked="checked"{% endif %} /></td>
-							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_property_change]" value="1" {% if my_subs[filter.id].email_property_change %}checked="checked"{% endif %} /></td>
+							<td class="prop all"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_property_change]" value="1" {% if my_subs[filter.id].email_property_change %}checked="checked"{% endif %} /></td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -56,7 +56,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 								<td class="prop new"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_new]" value="1" {% if my_subs[filter.id].email_new %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_user_activity]" value="1" {% if my_subs[filter.id].email_user_activity %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_agent_activity]" value="1" {% if my_subs[filter.id].email_agent_activity %}checked="checked"{% endif %} /></td>
-							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_property_change]" value="1" {% if my_subs[filter.id].email_property_change %}checked="checked"{% endif %} /></td>
+							<td class="prop all"><input type="checkbox" name="filter_sub[{{ filter.id }}][email_property_change]" value="1" {% if my_subs[filter.id].email_property_change %}checked="checked"{% endif %} /></td>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -84,7 +84,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 							<td class="prop new"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_new]" value="1" {% if my_subs[filter.id].alert_new %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_user_activity]" value="1" {% if my_subs[filter.id].alert_user_activity %}checked="checked"{% endif %} /></td>
 							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_agent_activity]" value="1" {% if my_subs[filter.id].alert_agent_activity %}checked="checked"{% endif %} /></td>
-							<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} /></td>
+							<td class="prop all"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} /></td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -108,7 +108,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 								<td class="prop new"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_new]" value="1" {% if my_subs[filter.id].alert_new %}checked="checked"{% endif %} /></td>
 								<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_user_activity]" value="1" {% if my_subs[filter.id].alert_user_activity %}checked="checked"{% endif %} /></td>
 								<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_agent_activity]" value="1" {% if my_subs[filter.id].alert_agent_activity %}checked="checked"{% endif %} /></td>
-								<td class="prop"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} /></td>
+								<td class="prop all"><input type="checkbox" name="filter_sub[{{ filter.id }}][alert_property_change]" value="1" {% if my_subs[filter.id].alert_property_change %}checked="checked"{% endif %} /></td>
 							</tr>
 						{% endfor %}
 					</tbody>

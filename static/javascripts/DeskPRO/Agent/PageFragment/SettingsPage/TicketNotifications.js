@@ -34,5 +34,15 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 				}
 			});
 		});
+
+		// "All" boxes need to check others
+		$('td.prop.all :checkbox', this.el).click(function() {
+			var row = $(this).closest('tr');
+			var checked = $(this).is(':checked');
+
+			if (checked) {
+				$(':checkbox', row).attr('checked', true);
+			}
+		});
 	}
 });
