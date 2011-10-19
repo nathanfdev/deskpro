@@ -29,12 +29,12 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			return;
 		}
 
-		this.wrapperEl = $('<div class="change-person-picture" />');
-		this.wrapperEl.append('<div>Loading...</div>');
+		this.wrapperEl = $('<div class="change-picture-overlay"><div class="overlay-content" style="width: 400px; height: 300px; "/><div>Loading...</div></div>');
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: this.wrapperEl,
 			destroyOnClose: true,
+			zIndex: 'top',
 			onOverlayClosed: function() {
 				self.overlay = null;
 			}
