@@ -100,28 +100,6 @@ class Idea extends ContentAbstract
 		}
 	}
 
-	public function getUserEmail()
-	{
-		if ($this->person) {
-			return $this->person->getPrimaryEmailAddress();
-		} elseif ($this->first_comment['user_email']) {
-			return $this->first_comment['user_email'];
-		} else {
-			return '';
-		}
-	}
-
-	public function getUserName()
-	{
-		if ($this->person) {
-			return $this->person->getDisplayName();
-		} elseif ($this->first_comment['user_name']) {
-			return $this->first_comment['user_name'];
-		} else {
-			return '';
-		}
-	}
-
 	public function addComment(IdeaComment $comment)
 	{
 		$comment->idea = $this;
