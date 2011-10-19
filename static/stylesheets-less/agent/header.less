@@ -2,6 +2,7 @@
 
 #DP-NotificationSection{
     background-repeat: no-repeat;
+    background-position: 100% 0;
     background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right */;
 	float: left;
 	height: 41px;
@@ -27,7 +28,6 @@
     height: 23px;
     padding: 0;
     position: relative;
-    width: 60px;
 }
 .notifications:hover{
 	background-image: -moz-linear-gradient(top, #57a7d9, #396fbf);
@@ -79,7 +79,7 @@
 	width: 15px;
 }
 
-.counter{
+.notif-item .counter {
 	background-image: -moz-linear-gradient(top, #bf6060, #804040);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf6060), to(#804040));
 	-pie-background: linear-gradient(#bf6060, #804040);
@@ -90,7 +90,8 @@
 	color: #fff;
 	font-size: 8px;
 	font-weight: bold;
-	padding: 1px 5px;
+	padding: 1px 3px;
+	line-height: 100%;
 	left: 0;
 	position: absolute;
 	top: -5px;
@@ -109,12 +110,9 @@
 
 /* Notification Dropdown */
 #notificationDropdown{
-	left: 136px;
 	position: absolute;
 	top: 41px;
-}
-.ie #notificationDropdown{
-	top: 0px;
+	z-index: 100001;
 }
 .notifDropdown{
 	background: rgba(242,242,242, 0.98);
@@ -123,7 +121,7 @@
 	border-top: medium none transparent !important;
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	position: relative;
-	width: 380px;
+	width: 450px;
 	float: left;
 	z-index: 999;
 	behavior: url("../../static/vendor/PIE.htc");
@@ -133,28 +131,41 @@
 	top: 41px;
 	display: block;
 }
-.notifDropdown ul#notification{
+ul#dp_notify_list{
 	background: transparent;
 }
-.notifDropdown ul#notification li{
+ul#dp_notify_list li{
 	cursor: pointer;
 	width: 100%;
 	position: relative;
 }
-.notifDropdown ul#notification li a{
+ul#dp_notify_list li a{
 	width: auto;
 	float: left;
 }
-.notifDropdown ul#notification li span{
+ul#dp_notify_list li span{
 	font-size: 11px;
 	color: #9DA2A6;
 	text-shadow: 0 1px 0 #fff;
 	float: right;
 }
-.notifDropdown ul#notification li span.timeStamp{
-	padding: 5px 10px 5px 0;
+ul#dp_notify_list li .timeago {
+	float: right;
+	color: lighten(@body-text-color, 30%);
+	margin: 5px 5px 0 0;
 }
-.notifDropdown ul#notification li span.dismissHover{
+ul#dp_notify_list li .dismiss {
+	float: right;
+	.iconbase(10px, 10px);
+	background: url(../../images/icons/delete-small.png) no-repeat 0 0;
+	cursor: pointer;
+	margin: 10px 5px 0 0;
+	opacity: 0.5;
+}
+ul#dp_notify_list li em:hover {
+	opacity: 1;
+}
+ul#dp_notify_list li span.dismissHover{
 	position: absolute;
 	right: 10px;
 	top: 5px;
@@ -162,23 +173,19 @@
 	padding: 0;
 	display: none;
 }
-.notifDropdown ul#notification li:hover{
+ul#dp_notify_list li:hover{
 	background: rgba(255,255,255,0.5);
 }
-.notifDropdown ul#notification li:last-child:hover{
+ul#dp_notify_list li:last-child:hover{
 	background: transparent;
 }
 
-.notifDropdown ul#notification li span.timeStamp:hover span.dismissHover{
-	display: block;
-	background: #F8F8F8;
-	padding: 0px 0 1px 50px;
-}
-.notifDropdown ul#notification li.dismissAll{
+ul#dp_notify_list li.dismissAll{
 	padding: 5px 10px;
-	width: auto;
+	text-align: center;
 }
-.notifDropdown ul#notification li.dismissAll a{
+ul#dp_notify_list li.dismissAll a{
+    display: inline;
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
 	-pie-background: linear-gradient(#6baccc, #5182b3);
@@ -187,15 +194,15 @@
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-radius: 3px;
 	color: #fff;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 0 rgba(0,0,0, 0.5);
 	font-size: 11px;
 	font-weight: bold;
 	text-align: center;
 	padding: 3px 10px 4px;
-	width: 338px;
 	position: relative;
+	font-family: @heading-font;
 }
-.notifDropdown ul#notification li.dismissAll a:hover{
+ul#dp_notify_list li.dismissAll a:hover{
 	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
 	-pie-background: linear-gradient(#72b8d8, #578bbf);
@@ -203,16 +210,24 @@
 	position: relative;
 }
 
-.notifDropdown ul#notification li.notifPaging{
+ul#dp_notify_list li.notifPaging{
 	background-image: -moz-linear-gradient(top, #f6f6f6, #e9e9e9);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f6f6f6), to(#e9e9e9));
 	-pie-background: linear-gradient(#f6f6f6, #e9e9e9);
 	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
-.notifDropdown ul#notification li.notifPaging span{
+ul#dp_notify_list li.notifPaging span{
 	float: left;
 	padding: 5px 0 5px 9px;
+}
+
+ul#dp_notify_list li .info {
+	clear: both;
+	position: relative;
+	top: -4px;
+	margin-left: 10px;
+	font-size: 9px;
 }
 
 .notifHead{
@@ -233,21 +248,24 @@
 	width: 60px;
 	cursor: pointer;
 }
+.notif-item {
+	float: left;
+	display: block;
+	width: 28px;
+	height: 23px;
+}
 .notifMail{
-	background-position:top left;
+	background-position: 7px 7px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	    float: left;
-	    padding: 11px;
+    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 7px; */;
 }
 .notifChat{
-	background-position:top left;
+	background-position: 6px 6px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	padding: 10px;
+    background-image: url(../../images/agent/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 6px; */;
 }
 .notifMail .counter{
-	left: 17px;
+	left: 18px;
 	position: absolute;
 	top: -5px;
 }
@@ -257,8 +275,8 @@
 	top: -5px;
 }
 /* Pagination Notification Menu*/
-.notifDropdown ul#notification li.notifPaging ul#notifPages{}
-.notifDropdown ul#notification li.notifPaging ul#notifPages li{
+ul#dp_notify_list li.notifPaging ul#notifPages{}
+ul#dp_notify_list li.notifPaging ul#notifPages li{
 	border-bottom: medium none;
 	display: inline;
 	width: auto;
@@ -266,7 +284,7 @@
 	text-shadow: 0 1px 0 #fff;
 	padding: 0 2px;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.mark{
+ul#dp_notify_list li.notifPaging ul#notifPages li.mark{
 	color: #BEBEBE;
 	font-size: 10px;
 	font-weight: normal;
@@ -274,29 +292,29 @@
 	cursor: text;
 	background: transparent !important;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.active,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.pages:hover,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.pText:hover{
+ul#dp_notify_list li.notifPaging ul#notifPages li.active,
+ul#dp_notify_list li.notifPaging ul#notifPages li.pages:hover,
+ul#dp_notify_list li.notifPaging ul#notifPages li.pText:hover{
 	padding: 4px 2px;
 	background: transparent;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.right{
+ul#dp_notify_list li.notifPaging ul#notifPages li.right{
 	float: right;
 
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.off a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.off a{
 	color: #b8c0c5 !important;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.off:hover a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.off:hover a{
 	background: transparent;
 	border: 1px solid transparent;
 }
 
-.notifDropdown ul#notification li.notifPaging ul#notifPages li a{
+ul#dp_notify_list li.notifPaging ul#notifPages li a{
 	padding: 5px 4px;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.active a,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li:hover a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.active a,
+ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	background: #fff;
 	border: 1px solid #a5a6a7;
 	border-radius: 10px 10px 10px 10px;
@@ -408,22 +426,22 @@
 	behavior: url("../../static/vendor/PIE.htc");
 }
 
-.searchCatDropdown ul, .notifDropdown ul#notification{
+.searchCatDropdown ul, ul#dp_notify_list{
 	margin: 0;
 }
 
-.searchCatDropdown li, .notifDropdown ul#notification li{
+.searchCatDropdown li, ul#dp_notify_list li{
 	border-bottom: 1px solid #e3e4e6;
 	display: block;
 	float: left;
 	width: 100%;
 }
-.searchCatDropdown li:last-child, .notifDropdown ul#notification li:last-child{
+.searchCatDropdown li:last-child, ul#dp_notify_list li:last-child{
 	border: none;
 }
 
-.searchCatDropdown li a, .notifDropdown ul#notification li a{
-	color: #9DA2A6;
+.searchCatDropdown li a, ul#dp_notify_list li a{
+	color: #404040;
     display: block;
     font-size: 11px;
     padding: 5px 10px;

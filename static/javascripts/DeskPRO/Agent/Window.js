@@ -1431,18 +1431,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
 		this.messageChanneler.subscribeChannel('agent-notification');
+		this.messageChanneler.subscribeChannel('agent-notify');
+		this.messageChanneler.subscribeChannel('agent-notify.tickets');
 
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
 			interval: 5000
-		});
-
-		var self = this;
-
-		this.notifier = new DeskPRO.Agent.Notifier.Notifier({
-			notifySummaryButton: $('#notify_button'),
-			notifyList: $('#notify_list')
 		});
 	},
 
@@ -1476,6 +1471,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initWindowInterface: function() {
 		var self = this;
 
+		this.notifications = new DeskPRO.Agent.Notifications();
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 
 		// Settings is a window
@@ -1976,6 +1972,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return popover;
 	},
 
+	/**
+	 * Attaches central handlers on a layer. These handlers are added to the document,
+	 * but if you have a new layer that prevents propagation up to the document,
+	 * then you'll need to init it as a new layer with its own handlers.
+	 *
+	 * @param context
+	 */
 	initInterfaceLayerEvents: function(context) {
 		var self = this;
 

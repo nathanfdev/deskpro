@@ -1,0 +1,16 @@
+<li class="ticket" data-type="tickets" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+	<em class="dismiss"></em>
+	<time class="timeago"></time>
+	<a>{{ ticket.subject }}</a>
+	<div class="info">
+		{% if is_new_ticket %}
+			New ticket by {{ performer.name }} ({{ performer.primary_email_address }})
+		{% elseif is_new_agent_reply %}
+			New agent reply by {{ performer.name }}
+		{% elseif is_new_user_reply %}
+			New agent reply by {{ performer.name }}
+		{% else %}
+			Updated by {{ performer.name }}
+		{% endif %}
+	</div>
+</li>

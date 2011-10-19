@@ -114,6 +114,14 @@ class TriggerExecutor
 		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 		$trigger->terms = array();
 		$trigger->actions = array(
+			array('type' => 'agent_alert_notification', 'options' => array())
+		);
+
+		array_unshift($all_triggers, $trigger);
+
+		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+		$trigger->terms = array();
+		$trigger->actions = array(
 			array('type' => 'agent_notification', 'options' => array())
 		);
 

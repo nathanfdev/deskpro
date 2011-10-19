@@ -45,9 +45,16 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
 
+		$this->person_context = App::getCurrentPerson();
+
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
 		}
+	}
+
+	public function getPersonPerformer()
+	{
+		return $this->person_context;
 	}
 
 	public function getLog()
