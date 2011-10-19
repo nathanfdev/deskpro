@@ -1486,7 +1486,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 
 			var doanim = false;
-			if (!$(document).is('.window-active')) {
+			if (!$('html').is('.window-active')) {
 				doanim = true;
 			}
 
