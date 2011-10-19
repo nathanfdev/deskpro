@@ -46,6 +46,10 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			this.setupTriggerElement($(this.options.triggerElement));
 		}
 
+		if (this.options.zIndex == 'none') {
+			this.options.zIndex = '';
+		}
+
 		if (this.options.escapeClose) {
 			$(document).keydown((function (ev) {
 				if (ev.which == 27) {
@@ -101,12 +105,13 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			return;
 		}
 
-		if (!this.options.zIndex) {
-			this.options.zIndex = Orb.findHighestZindex()+1;
+		var zindex = this.options.zIndex;
+		if (zindex == 'top') {
+			var zindex = Orb.findHighestZindex()+1;
 		}
 
 		this.elements.modal.css({
-			'z-index': this.options.zIndex,
+			'z-index': zindex,
 			'position': 'absolute',
 			'top': 0,
 			'right': 0,
@@ -147,7 +152,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		this.elements.wrapperOuter.css({
-			'z-index': this.options.zIndex+1,
+			'z-index': (zindex ? zindex+1 : ''),
 			'position': 'absolute',
 			'left': leftForCenter
 		});

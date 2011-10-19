@@ -560,8 +560,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (this._alertOverlay) return;
 
 		this._alertOverlay = new DeskPRO.UI.Overlay({
+			zIndex: 'none', // the .window-alert sets the zindex
 			contentElement: $('#alert_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			customClassname: 'window-alert',
 			onContentSet: function(eventData) {
 				$('.close-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -584,7 +585,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._confirmOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#confirm_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			zIndex: 'top',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -610,7 +611,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._promptOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#prompt_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			zIndex: 'top',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();

@@ -20,6 +20,7 @@ class SettingsProfile
 	public $email;
 	public $timezone = 'UTC';
 	public $password = '';
+	public $password2 = '';
 	public $ticket_signature = '';
 
 	/**

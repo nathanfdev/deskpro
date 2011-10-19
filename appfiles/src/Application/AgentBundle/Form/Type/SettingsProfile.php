@@ -24,6 +24,7 @@ class SettingsProfile extends AbstractType
 			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
 		));
 		$builder->add('password', 'password', array('required' => false));
+		$builder->add('password2', 'password', array('required' => false));
 		$builder->add('ticket_signature', 'textarea', array('required' => false));
     }
 

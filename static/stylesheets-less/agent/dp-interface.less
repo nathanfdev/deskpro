@@ -46,6 +46,16 @@ a:hover {
 	text-decoration: none;
 }
 
+// Anything that should be the absolute top of the z-index stack
+// should use this
+.window-alert {
+	z-index: 999999999999999998;
+}
+
+.deskpro-overlay-outer.window-alert {
+	z-index: 999999999999999999;
+}
+
 [data-route] {
 	cursor: pointer;
 }

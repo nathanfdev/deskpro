@@ -40,8 +40,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>Change Password</label></div>
-			<div class="dp-form-input">
-				{{ form_widget(form.password) }}
+			<div class="dp-form-input double-password">
+				{{ form_widget(form.password, {'attr': { 'placeholder': 'New password', 'class': 'password1' }}) }}
+				{{ form_widget(form.password2, {'attr': { 'placeholder': 'Repeat password', 'class': 'password2' }}) }}
 				<br /><em class="desc">Leave this field blank to keep your password the same</em>
 			</div>
 		</div>

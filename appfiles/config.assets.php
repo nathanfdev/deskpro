@@ -41,11 +41,10 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
-
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
-		'vendor/jquery/jquery.layout.min.js',
+
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
 		'vendor/jquery/jquery.scrollTo.js',
