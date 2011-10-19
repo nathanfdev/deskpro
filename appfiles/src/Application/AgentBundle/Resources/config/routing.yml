@@ -182,10 +182,6 @@ agent_people_newfrompane:
   pattern: /people-search/new-person
   defaults: { _controller: AgentBundle:Person:newPersonFromPane }
 
-agent_people:
-  pattern: /people
-  defaults: { _controller: AgentBundle:PeopleSearch:index }
-
 agent_people_view:
   pattern: /people/{person_id}
   defaults: { _controller: AgentBundle:Person:view }
