@@ -1,0 +1,224 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Tickets
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Tickets\TicketChangeInspector;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
+
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches;
+
+use Orb\Log\Logger;
+
+/**
+ * Builds a list of people who should be notified,
+ * and how they are to be notified based on preferences.
+ *
+ * Actual notifications are sent via triggers where the list can
+ * be mutated etc.
+ */
+class NotifyListBuilder
+{
+	/**
+	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketListener
+	 */
+	protected $tracker;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches
+	 */
+	protected $filter_detector;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
+	 * @var array
+	 */
+	protected $notify_list = null;
+
+	public function __construct(TicketChangeTracker $tracker, DetectFilterMatches $filter_detector)
+	{
+		$this->tracker = $tracker;
+		$this->filter_detector = $filter_detector;
+		$this->em = App::getOrm();
+	}
+
+	/**
+	 * This gets a raw notification list based off of subscriptions.
+	 *
+	 * The resulting array will look like this:
+	 *
+	 * <code>
+	 * array(
+	 *     agent_id => array(
+	 *			filter_id => array(
+	 *              agent => Agent,
+	 *              filter => TicketFilter,
+	 *              is_new => true/false,
+	 *              is_update => true/false,
+	 *              types => array(email, alert)
+	 *          )
+	 *     )
+	 * );
+	 * </code>
+	 *
+	 * Note that this means that each ticket might have multiple alerts for an agent
+	 * for different fitlers. If you implement this, be sure to eg dont sent multiple
+	 * emails.
+	 *
+	 * @return array
+	 */
+	public function getNotifyList()
+	{
+		if ($this->notify_list !== null) return $this->notify_list;
+
+		$filter_changes = $this->filter_detector->getFilterMatches();
+		$ticket = $this->tracker->getTicket();
+
+		$status_change  = $this->tracker->getChangedProperty('status');
+		$hstatus_change = $this->tracker->getChangedProperty('hidden_status');
+
+		$notify_new         = false;
+		$notify_agent_reply = false;
+		$notify_user_reply  = false;
+
+		if ($this->tracker->isExtraSet('ticket_created') || ($ticket->status_code == 'open' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating'))) {
+			$this->tracker->logMessage("[NotifyListBuilder] notify_new");
+			$notify_new = true;
+		}
+		$messages = $this->tracker->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if ($message->person->is_agent) {
+				$this->tracker->logMessage("[NotifyListBuilder] notify_agent_reply");
+				$notify_agent_reply = true;
+			} else {
+				$this->tracker->logMessage("[NotifyListBuilder] notify_user_reply");
+				$notify_user_reply = true;
+			}
+		}
+
+		// Fetch the filter subscriptions for the agents we've found and the filters affected
+		$agent_ids = array();
+		$filter_ids = array();
+		foreach ($filter_changes as $change_info) {
+			$filter_ids[] = $change_info['filter']->id;
+
+			foreach ($change_info['add'] as $agent) {
+				$agent_ids[] = $agent->id;
+			}
+			foreach ($change_info['orig_match'] as $agent) {
+				$agent_ids[] = $agent->id;
+			}
+		}
+
+		$this->tracker->logMessage("[NotifyListBuilder] " . count($agent_ids) . " agents and " . count($filter_ids) . " filters");
+
+		$agent_subs = $this->em->getRepository('DeskPRO:TIcketFilterSubscription')->getForAgents($agent_ids, $filter_ids);
+
+		// Build a list of who should be notified and how
+		$this->notify_list = array();
+
+		foreach ($filter_changes as $change_info) {
+			$filter = $change_info['filter'];
+
+			// Notify about tickets entering a list
+			// AKA a ticket changed such that it was added into a new list it wasnt before
+			foreach ($change_info['add'] as $agent) {
+				if (!isset($agent_subs[$agent->id][$filter->id])) continue;
+				$sub = $agent_subs[$agent->id][$filter->id];
+
+				$types = array();
+
+				// New ticket entering a list
+				// - If its new, then we check subs for everyone
+				// - Other notify types, we have to ignore 'all' for entering a lise
+				if ($notify_new || $filter->sys_name != 'all') {
+					if ($sub->email_property_change || $sub->email_new) {
+						$types[] = 'email';
+					}
+					if ($sub->alert_property_change || $sub->alert_new) {
+						$types[] = 'alert';
+					}
+				}
+
+				if ($types) {
+					$this->addToNotifyList($agent, $filter, 'new', $types);
+				}
+			}
+
+			// Notify about changes done to a ticket in a subscribed list
+			// AKA a ticket changed but we want to notify subscribers in whatever filter it was in last
+			foreach ($change_info['orig_match'] as $agent) {
+				if (!isset($agent_subs[$agent->id][$filter->id])) continue;
+
+				$sub = $agent_subs[$agent->id][$filter->id];
+
+				$types = array();
+				if ($sub->email_property_change) {
+					$types[] = 'email';
+				} else {
+					if ($notify_agent_reply && $sub->email_agent_activity) {
+						$types[] = 'email';
+					}
+					if ($notify_user_reply && $sub->email_user_activity) {
+						$types[] = 'email';
+					}
+				}
+				if ($sub->alert_property_change) {
+					$types[] = 'alert';
+				} else {
+					if ($notify_agent_reply && $sub->alert_agent_activity) {
+						$types[] = 'alert';
+					}
+					if ($notify_user_reply && $sub->alert_user_activity) {
+						$types[] = 'alert';
+					}
+				}
+
+				if ($types) {
+					$this->addToNotifyList($agent, $filter, 'update', $types);
+				}
+			}
+		}
+
+		$this->tracker->logMessage("[NotifyListBuilder] " . count($this->notify_list) . " agents with notifications");
+		$this->tracker->logMessage("[NotifyListBuilder] " . \Orb\Util\Util::debugVar($this->notify_list));
+
+		return $this->notify_list;
+	}
+
+	protected function addToNotifyList($agent, $filter, $changetype, array $notify_types)
+	{
+		if (!isset($this->notify_list[$agent->id])) {
+			$this->notify_list[$agent->id] = array();
+		}
+		if (!isset($this->notify_list[$agent->id][$filter->id])) {
+			$this->notify_list[$agent->id][$filter->id] = array(
+				'agent'   => $agent,
+				'filter'  => $filter,
+				'is_new'     => false,
+				'is_update'  => false,
+				'types'   => array()
+			);
+		}
+
+		$this->notify_list[$agent->id][$filter->id]["is_$changetype"] = true;
+		$this->notify_list[$agent->id][$filter->id]['types'] = array_merge($this->notify_list[$agent->id][$filter->id]['types'], $notify_types);
+		$this->notify_list[$agent->id][$filter->id]['types'] = array_unique($this->notify_list[$agent->id][$filter->id]['types']);
+	}
+}

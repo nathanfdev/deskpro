@@ -121,7 +121,6 @@ class Person extends \Doctrine\ORM\EntityRepository
 		return $online_agents;
 	}
 
-
 	/**
 	 * Find a person by their email address.
 	 *

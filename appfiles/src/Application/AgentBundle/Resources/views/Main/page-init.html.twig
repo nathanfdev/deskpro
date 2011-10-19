@@ -45,9 +45,5 @@
 				window.DeskPRO_Window.runPageRoute('{{i[0]}}:{{ path(i[1], i[2]) }}');
 			{% endfor %}
 		{% endif %}
-
-		window.setTimeout(function() {
-			$('#settingswin').trigger('dp_open');
-		}, 20);
 	});
 </script>

@@ -203,6 +203,15 @@ class AgentTeam extends EntityRepository
 	}
 
 
+	public function getTeamToAgentsMap()
+	{
+		return App::getDb()->fetchAllGrouped("
+			SELECT team_id, person_id
+			FROM agent_team_members
+		", array(), 'team_id', null, 'person_id');
+	}
+
+
 	/**
 	 * Invalidates caches associated with agent teams
 	 */

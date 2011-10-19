@@ -1,7 +1,6 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{{ layout.section_start(ticket.subject) }}
 		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
 	{{ layout.section_end() }}
@@ -21,9 +20,12 @@
 			{% endfor %}
 		</table>
 	{{ layout.section_end() }}
-	{{ layout.section_start() }}
+	{{ layout.section_start('Messages') }}
 		{% for message in messages %}
 			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
 		{% endfor %}
 	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{tac.access_code}})
 {% endblock %}

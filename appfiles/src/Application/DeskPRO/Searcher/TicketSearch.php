@@ -177,6 +177,26 @@ class TicketSearch extends SearcherAbstract
 	}
 
 
+	/**
+	 * Check an array of fields to see if this searcher has any of them
+	 *
+	 * @param array $fields
+	 * @return void
+	 */
+	public function hasAnyAffectedFields(array $fields)
+	{
+		$this->getSqlParts();
+
+		$affected_fields = $this->getAffectedFields();
+		foreach ($fields as $f) {
+			if (in_array($f, $affected_fields)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Run the search and return an array of matching ID's.

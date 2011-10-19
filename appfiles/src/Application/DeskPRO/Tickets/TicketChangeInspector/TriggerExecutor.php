@@ -64,6 +64,8 @@ class TriggerExecutor
 	{
 		if ($this->is_performing) return;
 
+		$this->tracker->logMessage('[TriggerExecutor] run');
+
 		$this->is_performing = true;
 
 		$status_change  = $this->tracker->getChangedProperty('status');
@@ -104,6 +106,22 @@ class TriggerExecutor
 
 			$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
 		}
+
+		#------------------------------
+		# Add built-in agent notifications based off prefs
+		#------------------------------
+
+		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+		$trigger->terms = array();
+		$trigger->actions = array(
+			array('type' => 'agent_notification', 'options' => array())
+		);
+
+		array_unshift($all_triggers, $trigger);
+
+		#------------------------------
+		# Execute triggers
+		#------------------------------
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 		$factory->addGlobalOption('tracker', $this->tracker);

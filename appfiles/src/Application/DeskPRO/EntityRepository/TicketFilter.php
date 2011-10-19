@@ -26,6 +26,16 @@ class TicketFilter extends EntityRepository
 		return $this->getAllForAgents($online_agents);
 	}
 
+	public function getAll()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+		")->execute();
+
+		return $filters;
+	}
+
 	public function getAllForAgents($agents)
 	{
 		$agent_ids = array();
