@@ -15,8 +15,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended-' + this.meta.conversation_id, this.chatHasEnded, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated-' + this.meta.conversation_id, this.handleUpdateParts, this);
 
-		this._initLayout();
-
 		var self = this;
 		var messageTextarea = $('.new-message', this.barWrapper);
 		messageTextarea.keypress(function(ev) {
@@ -45,20 +43,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 			self.showUploadOverlay();
-		});
-	},
-
-	_initLayout: function() {
-
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
-
-		var self = this;
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.contentWrapper,
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
-			onTabSwitch: function(info) {
-
-			}
 		});
 	},
 
