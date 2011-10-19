@@ -128,7 +128,7 @@ class NotifyListBuilder
 
 		$this->tracker->logMessage("[NotifyListBuilder] " . count($agent_ids) . " agents and " . count($filter_ids) . " filters");
 
-		$agent_subs = $this->em->getRepository('DeskPRO:TIcketFilterSubscription')->getForAgents($agent_ids, $filter_ids);
+		$agent_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgents($agent_ids, $filter_ids);
 
 		// Build a list of who should be notified and how
 		$this->notify_list = array();
