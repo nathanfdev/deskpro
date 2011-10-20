@@ -69,6 +69,18 @@ class TicketFilter extends EntityRepository
 		return $filters;
 	}
 
+	public function getPersonalFilters($agent)
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			WHERE q.person = ?1
+			ORDER BY q.title ASC
+		")->execute(array(1=> $agent));
+
+		return $filters;
+	}
+
 	/**
 	 * Gets an array of all global filters.
 	 *

@@ -100,9 +100,6 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 
 		var article = $('section.dp-overlay > article', this.wrapper);
 
-		console.log('here');
-		console.log(article.data('width'));
-
 		var w = parseInt(article.data('width'));
 		var h = parseInt(article.data('height'));
 

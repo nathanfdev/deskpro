@@ -38,23 +38,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 				wrapper.addClass('on');
 
 				if (!wrapper.data('page-fragment')) {
-					$.ajax({
-						dataType: 'text',
-						url: wrapper.data('page-url'),
-						type: 'GET',
-						context: this,
-						success: function(html) {
-							var page = DeskPRO_Window.createPageFragment(html);
-							page.settingsWindow = self;
-							wrapper.html(page.html);
-							delete page.html;
-
-							page.fireEvent('render', [wrapper]);
-							page.fireEvent('activate');
-
-							wrapper.data('page-fragment', page);
-						}
-					});
+					self._loadPageForTabTarget(wrapper);
 				} else {
 					wrapper.data('page-fragment').fireEvent('activate');
 				}
@@ -62,8 +46,47 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		});
 	},
 
-	_cleanupOld: function() {
+	_loadPageForTabTarget: function(wrapper) {
+		var self = this;
+		$.ajax({
+			dataType: 'text',
+			url: wrapper.data('page-url'),
+			type: 'GET',
+			context: this,
+			success: function(html) {
+				var page = DeskPRO_Window.createPageFragment(html);
+				page.settingsWindow = self;
+				wrapper.html(page.html);
+				delete page.html;
 
+				page.fireEvent('render', [wrapper]);
+				page.fireEvent('activate');
+
+				wrapper.data('page-fragment', page);
+			}
+		});
+	},
+
+	reloadTab: function(name) {
+		var tab = $('#settingswin_nav li.tab-' + name);
+		var target = $(tab.data('tab-for'));
+
+		var page = target.data('page-fragment');
+		if (page) {
+			page.fireEvent('destroy');
+		}
+
+		target.empty();
+		target.append('<div class="page-loading"></div>');
+
+		if (tab.is('.on')) {
+			this._loadPageForTabTarget(target);
+		}
+	},
+
+	_cleanupOld: function() {
+		// TODO
+		// after settings window is hidden for a while, clear all of the page fragments to reduce memory
 	},
 
 	showSavePuff: function() {
@@ -100,6 +123,10 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			this.el.hide();
 
 			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
+
+			if (this.reloadInterface) {
+				window.location = window.location;
+			}
 		}
 	}
 });

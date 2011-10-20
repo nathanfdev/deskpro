@@ -165,6 +165,11 @@ agent_settings_ticketfilters_edit:
   defaults: { _controller: AgentBundle:Settings:ticketFilterEdit }
   requirements: { filter_id: "\d+" }
 
+agent_settings_ticketfilters_edit_save:
+  pattern: /settings/ticket-filters/{filter_id}/edit/save
+  defaults: { _controller: AgentBundle:Settings:ticketFilterEditSave }
+  requirements: { filter_id: "\d+" }
+
 agent_settings_ticketfilters_del:
   pattern: /settings/ticket-filters/{filter_id}/delete
   defaults: { _controller: AgentBundle:Settings:ticketFilterDelete }

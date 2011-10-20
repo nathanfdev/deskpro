@@ -3397,3 +3397,85 @@ body.popup section.body textarea.fill {
 	width: 600px;
 	height: 400px;
 }
+
+
+
+.search-form .term {
+	font-size: 11px;
+	line-height: 15px;
+	background-color: #F5F7FA;
+
+	padding: 4px;
+	margin: 0 0 9px 0;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+
+	-webkit-box-shadow: 0px 0px 2px #a5abb5;
+    -moz-box-shadow: 0px 0px 2px #a5abb5;
+    box-shadow: 0px 0px 2px #a5abb5;
+}
+
+.search-form .term:hover {
+-webkit-box-shadow: 0px 0px 2px #737880;
+-moz-box-shadow: 0px 0px 2px #737880;
+box-shadow: 0px 0px 2px #737880;
+}
+
+.search-form .controls {
+    margin-left: 16px;
+}
+
+.search-form .term .type, .search-form .term .op, .search-form .term .options {
+	display: inline;
+}
+
+.search-form .term .remove {
+	width: 11px;
+	background: transparent url("../../images/action-remove.png") no-repeat center center;
+	text-indent: -1000px;
+	overflow: hidden;
+	cursor: pointer;
+	float: left;
+}
+
+.search-form .add-term {
+	width: 11px;
+	background: transparent url("../../images/action-add.png") no-repeat center center;
+	text-indent: -1000px;
+	overflow: hidden;
+	cursor: pointer;
+	float: left;
+	margin-right: 5px;
+}
+
+.field-overlay {
+	z-index: 99999999999;
+}
+
+
+
+ul.item-list {
+
+}
+
+ul.item-list > li {
+	padding: 2px 0 2px 0;
+}
+
+ul.item-list > li ul.controls > li {
+	float: left;
+}
+
+ul.item-list > li ul.controls > li.delete {
+	.iconbase(10px, 10px);
+	background-image: url(../../images/icons/delete-small.png);
+	margin-left: 4px;
+	cursor: pointer;
+}
+ul.item-list > li ul.controls > li.edit{
+	.iconbase(10px, 10px);
+	background-image: url(../../images/icons/edit-small.png);
+	margin-left: 4px;
+	cursor: pointer;
+}

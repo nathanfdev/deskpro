@@ -145,16 +145,7 @@ class SettingsController extends AbstractController
 	 */
 	public function ticketFiltersAction()
 	{
-		return $this->createResponse('not updated yet');
-
-		$filters_all = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
-
-		$filters = array();
-		foreach ($filters_all as $q) {
-			if (!$q['sys_name']) {
-				$filters[] = $q;
-			}
-		}
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
 
 		return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
 			'filters' => $filters
@@ -185,14 +176,6 @@ class SettingsController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 		$term_options['custom_ticket_fields'] = $custom_fields;
 
-		$is_saved = false;
-		if ($this->isPostRequest()) {
-			$errors = $this->_processEditFilter($filter);
-			if (!$errors) {
-				$is_saved = true;
-			}
-		}
-
 		return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
 			'term_options' => $term_options,
 			'filter' => $filter,
@@ -200,17 +183,27 @@ class SettingsController extends AbstractController
 		));
 	}
 
-	public function _processEditFilter(Entity\TicketFilter $filter)
+	public function ticketFilterEditSaveAction($filter_id)
 	{
+		if ($filter_id) {
+			$filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+			if ($filter AND $filter['sys_name']) {
+				$filter = null;
+			}
+
+			if (!$filter) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
+			}
+		} else {
+			$filter = new Entity\TicketFilter;
+		}
+
 		$filter['title']    = $this->in->getString('filter.title');
+		$filter['person']   = $this->person;
 		$filter['order_by'] = $this->in->getString('filter.order_by');
 
 		$term_rules = RuleBuilder::newTermsBuilder();
 		$filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-		if (!$filter['person_id']) {
-			$filter['person'] = $this->person;
-		}
 
 		$filter['is_global'] = true;
 		$filter['is_enabled'] = true;
@@ -218,7 +211,7 @@ class SettingsController extends AbstractController
 		$this->em->persist($filter);
 		$this->em->flush();
 
-		return null;
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 

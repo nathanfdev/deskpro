@@ -22,7 +22,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.options = {
 			triggerElement: null,
 			customClassname: '',
-			zIndex: 1000000,
+			zIndex: 99999999999999,
 			menuElement: null,
 			objectGroup: 'default',
 			subMenuConfig: null,
