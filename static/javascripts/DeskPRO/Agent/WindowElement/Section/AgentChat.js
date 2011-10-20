@@ -105,7 +105,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
 			console.log(agentIds);
-			agentIds = agentIds.split(',');
+			agentIds = (agentIds+"").split(',');
 			console.log(agentIds);
 
 			self.newChatWindow(agentIds);
