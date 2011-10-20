@@ -73,6 +73,26 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate
 		return $this->options;
 	}
 
+	public function __get($name)
+	{
+		return $this->get($name);
+	}
+
+	public function __set($name, $value)
+	{
+		$this->set($name, $value);
+	}
+
+	public function __isset($name)
+	{
+		return $this->has($name);
+	}
+
+	public function	__unset($name)
+	{
+		return $this->remove($name);
+	}
+
 	public function offsetGet($k)
 	{
 		return $this->get($k);

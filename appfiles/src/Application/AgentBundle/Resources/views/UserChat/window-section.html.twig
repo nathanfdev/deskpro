@@ -1,13 +1,21 @@
-
-<ul class="nav-list">
-	<li id="userchat_navitem_0" class="auto-load-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
-		<span class="list-counter">0</span>
-		Unassigned
-	</li>
-	{% for id,name in agent_names %}
-		<li id="userchat_navitem_{{id}}" class="agent-chat-count with-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': id}) }}" style="display:none">
-			<span class="list-counter">0</span>
-			{{ name }}
+<section class="source-section sys-filters-section">
+	<header>
+		<h1>Active Chats</h1>
+	</header>
+	<ul class="source-list">
+		<li class="auto-load-route">
+			<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
+				<span class="list-counter" id="userchat_list_0_counter">0</span>
+				Unassigned
+			</h3>
 		</li>
-	{% endfor %}
-</ul>
+		{% for agent_id,agent_name in agent_names %}
+			<li style="display: none" id="userchat_list_{{ agent_id }}">
+				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
+					<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">0</span>
+					{{ agent_name }}
+				</h3>
+			</li>
+		{% endfor %}
+	</ul>
+</section>

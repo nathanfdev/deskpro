@@ -1373,7 +1373,3 @@ agent_userchat_end:
 agent_userchat_getsectiondata:
   pattern: /chat/get-section-data.json
   defaults: { _controller: AgentBundle:UserChat:getSectionData }
-
-agent_userchat_getsectioncounts:
-  pattern: /chat/get-section-counts.json
-  defaults: { _controller: AgentBundle:UserChat:updateListNumbers }

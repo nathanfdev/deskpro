@@ -17,6 +17,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 
 use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * A conversation between one or more people
@@ -164,6 +165,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $_created_messages = array();
 
 	protected $_user_participants = null;
+
+	public function getChannelId($name = false)
+	{
+		return 'chat_convo.' . $this->id . ($name ? '.' . $name : '');
+	}
 
 	/**
 	 * @static
@@ -472,6 +478,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getAgentId()
+	{
+		if ($this->agent) {
+			return $this->agent->id;
+		}
+
+		return 0;
+	}
+
+	public function getDepartmentId()
+	{
+		if ($this->department) {
+			return $this->department->id;
+		}
+
+		return 0;
+	}
+
 	public function getCreatedMessages()
 	{
 		return $this->_created_messages;
@@ -480,5 +504,66 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	public function _clearCreatedMessages()
 	{
 		$this->_created_messages = array();
+	}
+
+	public function getSubjectLine()
+	{
+		if ($this->subject) {
+			return $this->subject;
+		}
+
+		$name_parts = array();
+		if ($this->person) {
+			$name_parts[] = $this->person->display_name;
+			$name_parts[] = $this->person->getPrimaryEmailAddress();
+		} else {
+			$name_parts[] = $this->person_name ? $this->person_name : '';
+			$name_parts[] = $this->person_email ? $this->person_email : '';
+		}
+
+		$name_parts = Arrays::removeFalsey($name_parts);
+
+		if (!$name_parts) {
+			$name_parts[] = "Chat {$this->id}";
+		}
+
+		if ($this->department) {
+			$name_parts[] = " in {$this->department->full_title}";
+		}
+
+		return implode(' ', $name_parts);
+	}
+
+
+	/**
+	 * Get a basic array of information. These are generally used in templates or with
+	 * client messages to render the message.
+	 *
+	 * @return array
+	 */
+	public function getInfo()
+	{
+		$info = array();
+
+		$info['conversation_id'] = $this->id;
+
+		if ($this->person) {
+			$info['author_id'] = $this->person->id;
+			$info['author_name'] = $this->person->display_name;
+			$info['author_email'] = $this->person->getPrimaryEmailAddress();
+			$info['author_type'] = $this->person->is_agent ? 'agent' : 'user';
+		} else {
+			$info['author_id'] = 0;
+			$info['author_name'] = $this->person_name ? $this->person_name : '';
+			$info['author_email'] = $this->person_email ? $this->person_email : '';
+			$info['author_type'] = 'user';
+		}
+
+		$info['subject_line']  = $this->getSubjectLine();
+		$info['agent_id']      = $this->agent ? $this->agent->id : 0;
+		$info['department_id'] = $this->department_id;
+		$info['date_created']  = $this->date_created->getTimestamp();
+
+		return $info;
 	}
 }

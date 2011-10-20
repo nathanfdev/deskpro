@@ -11,10 +11,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-message-' + this.meta.conversation_id, this.handleNewMessage, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended-' + this.meta.conversation_id, this.chatHasEnded, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated-' + this.meta.conversation_id, this.handleUpdateParts, this);
-
 		var self = this;
 		var messageTextarea = $('.new-message', this.barWrapper);
 		messageTextarea.keypress(function(ev) {

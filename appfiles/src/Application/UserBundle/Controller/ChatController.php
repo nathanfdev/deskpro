@@ -35,7 +35,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 * @var \Orb\Input\Reader\Reader
 	 */
 	public $in;
-	
+
 	public function init()
 	{
 		$this->in = $this->get('deskpro.core.input_reader');
@@ -46,13 +46,19 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat,
 	 * and the channels are hard-coded for chat. The chat client
 	 * doesnt need to maintain a list of subscriptions.
-	 * 
+	 *
 	 * @param  $session_code
 	 */
 	public function pollAction($session_code)
 	{
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$person_id = ($session AND $session->person ? $session->person['id'] : null);
+		$chat_manager = $this->getChatManager($session_code);
+		$session = $chat_manager->getSession();
+		$convo = $chat_manager->getChat();
+
+		// Nothing to do if we have no convo
+		if (!$convo) {
+			return $this->createJsonResponse(array());
+		}
 
 		// Not uint because -1 will be used when no messages have ever existed
 		$since = $this->in->getInt('since');
@@ -66,21 +72,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			}
 
 		} else {
-
-			if (mt_rand(1,10) <= 5) {
-				$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
-				if ($conversation) {
-					$status_check = new ChatStatusCheck($conversation, $session);
-					$status_check->runChecks();
-				}
-			}
-
-			$channels = array(
-				'chat.message',
-				'chat.chat-ended',
-				'chat.proactive',
-				'chat_user.chat-assigned',
-			);
+			$channels = array();
+			$channels[] = $convo->getChannelId();
 
 			$data = array();
 			if ($since) {
@@ -101,11 +94,11 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 						$data['last_id'] = $message['id'];
 					}
 				}
-
-				if ($data['last_id'] == -1) {
-					unset($data['last_id']);
-				}
 			}
+		}
+
+		if ($data['last_id'] == -1) {
+			unset($data['last_id']);
 		}
 
 		return $this->createJsonpResponse($data);
@@ -114,78 +107,22 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 	/**
 	 * Handles a user sending a new message
-	 * 
+	 *
 	 * @param  $session_code
 	 */
 	public function sendMessageAction($session_code)
 	{
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
+		$chat_manager = $this->getChatManager($session_code);
+		$convo = $chat_manager->getChat();
 
-		App::getOrm()->beginTransaction();
-
-		$is_new_convo = false;
-		if (!$conversation) {
-			$conversation = ChatConversation::newForUserSession($session);
-
-			$dep_id = $this->in->getUint('department_id');
-			if ($dep_id) {
-				$dep = App::findEntity('DeskPRO:Department', $dep_id);
-				$conversation->department = $dep;
-			}
-
-			if ($this->in->getBool('is_window')) {
-				$conversation['is_window'] = true;
-			}
-			$is_new_convo = true;
+		if (!$convo) {
+			$convo = $chat_manager->startChat($_REQUEST);
+		} elseif ($this->in->getString('content')) {
+			$chat_manager->addUserMessage($convo, $this->in->getString('content'));
 		}
-
-		$chat_message = $conversation->addNewMessageForSession(
-			$this->in->getString('content'),
-			$session
-		);
-
-		App::getOrm()->persist($conversation);
-		App::getOrm()->flush();
-
-		$client_messages = array();
-
-		if ($is_new_convo) {
-
-			if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
-
-				$assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
-				$conversation->agent = $assign_agent;
-
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
-					$session['id'],
-					$conversation,
-					$chat_message
-				));
-			} else {
-
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
-					$session['id'],
-					$conversation,
-					$chat_message
-				));
-			}
-		}
-		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(
-			$session['id'],
-			$chat_message
-		));
-
-		foreach ($client_messages as $cm) {
-			App::getOrm()->persist($cm);
-		}
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
 
 		$response = $this->createJsonpResponse(array(
-			'conversation_id' => $conversation['id'],
-			'new_message_id'  => $chat_message['id']
+			'conversation_id' => $convo['id'],
 		));
 		$response->setLastModified(date_create('-1 day'));
 		$response->setExpires(date_create("-1 day"));
@@ -200,19 +137,16 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 */
 	public function userTypingAction($session_code)
 	{
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
+		$chat_manager = $this->getChatManager($session_code);
+		$convo = $chat_manager->getChat();
 
-		if (!$conversation) {
-			return $this->createJsonpResponse();
+		if (!$convo) {
+			return $this->createJsonpResponse(array());
 		}
 
-		$client_messages = ChatClientMessageGenerator::createUserTypingMessages($conversation, $this->in->getString('partial_message'));
-		foreach ($client_messages as $cm) {
-			App::getOrm()->persist($cm);
-		}
+		$chat_manager->setUserTypingIndicator($conversation, $this->in->getString('partial_message'));
 
-		return $this->createJsonpResponse();
+		return $this->createJsonpResponse(array());
 	}
 
 
@@ -249,14 +183,17 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			));
 		}
 
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
+		$convo = $chat_manager->getChat();
+
 		$convo_messages = false;
-		if ($conversation) {
+		if ($convo) {
 			$convo_messages = App::getOrm()->createQuery("
 				SELECT m
 				FROM DeskPRO:ChatMessage m
 				WHERE m.conversation = ?1
 				ORDER BY m.id DESC
-			")->setParameter(1, $conversation)->execute();
+			")->setParameter(1, $convo)->execute();
 		}
 
 		$department_sel = null;
@@ -288,7 +225,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
 			'convo_messages' => $convo_messages,
-			'conversation' => $conversation,
+			'conversation' => $convo,
 			'department_sel' => $department_sel,
 			'proactive' => $proactive
 		));
@@ -304,30 +241,15 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 */
 	public function chatEndedAction($session_code)
 	{
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
+		$chat_manager = $this->getChatManager($session_code);
+		$convo = $chat_manager->getChat();
 
-		if ($conversation['status'] != ChatConversation::STATUS_ENDED) {
-			$conversation['status'] = ChatConversation::STATUS_ENDED;
+		if (!$convo) {
+			return $this->createResponse('');
+		}
 
-			$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
-				$session['id'],
-				$conversation
-			);
-
-			foreach ($conversation->getCreatedMessages() as $msg) {
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages($session['id'], $msg));
-			}
-
-			App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-				$em->persist($conversation);
-
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-
-				$em->flush();
-			});
+		if ($convo['status'] != ChatConversation::STATUS_ENDED) {
+			$chat_manager->endChatUser($convo);
 		}
 
 		if ($this->in->getBool('process')) {
@@ -337,10 +259,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				FROM DeskPRO:ChatMessage m
 				WHERE m.conversation = ?1
 				ORDER BY m.id DESC
-			")->setParameter(1, $conversation)->execute();
+			")->setParameter(1, $convo)->execute();
 
 			$vars = array(
-				'convo' => $conversation,
+				'convo' => $convo,
 				'convo_messages' => $convo_messages
 			);
 
@@ -357,13 +279,13 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 			return $this->render('UserBundle:Chat:chat-ended-thanks.html.twig', array(
 				'session'  => $session,
-				'convo'    => $conversation,
+				'convo'    => $convo,
 			));
 
 		} else {
 			return $this->render('UserBundle:Chat:chat-ended.html.twig', array(
 				'session'  => $session,
-				'convo'    => $conversation,
+				'convo'    => $convo,
 			));
 		}
 	}
@@ -416,5 +338,20 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$response->headers->setCookie($cookie);
 
 		return $response;
+	}
+
+
+	/**
+	 * @param $session_code
+	 * @return \Application\DeskPRO\Chat\UserChat\UserChatManager
+	 */
+	public function getChatManager($session_code)
+	{
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		if (!$session) {
+			return null;
+		}
+
+		return $this->container->getSystemObject('user_chat_manager', array('session' => $session));
 	}
 }

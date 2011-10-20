@@ -13,6 +13,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		this._del_subs = [];
 		this._del_subs_timeout = null;
 
+		this.count = 0;
+
 		this.lastMessageId = -1;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
@@ -23,6 +25,10 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		this.poller.addData((function () {
 			if (!this.lastMessageId) return null;
 			return { 'since': this.lastMessageId };
+		}).bind(this), 'since', { recurring: true });
+
+		this.poller.addData((function () {
+			return { 'count': ++this.count };
 		}).bind(this), 'since', { recurring: true });
 
 		this.poller.addData({is_initial_poll:1}, 'is_initial_poll');

@@ -2,10 +2,13 @@
 <script type="text/x-jquery-tmpl" id="new_user_chat_alert">
 	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="new_user_chat_alert_${conversation_id}" data-play-sound="new-chat">
 		<header><h3>New Chat</h3></header>
-		<div class="messages"></div>
+		<div class="messages">
+			${subject_line}
+			${initial_message}
+		</div>
 		<footer>
-			<button class="dp-button x-small dismiss-trigger">Dismiss</button>
-			<button class="dp-button x-small accept-trigger">Take Chat</button>
+			<button class="clean-white small dismiss-trigger">Dismiss</button>
+			<button class="clean-white small accept-trigger">Take Chat</button>
 		</footer>
 	</section>
 </script>

@@ -3527,3 +3527,286 @@ ul.item-list > li ul.controls > li.edit{
 	color: #A9ABAD;
 	margin: 4px 5px 0 0;
 }
+
+
+section.new-user-chat-alert {
+    position: absolute;
+    top: 45px;
+    left: 65px;
+
+    width: 280px;
+
+    background-color: rgba(49, 56, 71, 0.8);
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    -webkit-box-shadow: 0px 1px 4px #454545;
+    -moz-box-shadow: 0px 1px 4px #454545;
+    box-shadow: 0px 1px 4px #454545;
+    z-index: 99999999999;
+}
+
+section.new-user-chat-alert header {
+    background-color: rgba(26, 28, 38, 0.5);
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    margin: 1px;
+
+    padding: 5px 0 5px 8px;
+
+    color: #fff;
+
+    text-shadow: 1px 0px 0px #000;
+    filter: ~"dropshadow(color=#000000, offx=1, offy=0)";
+}
+
+section.new-user-chat-alert div.messages {
+    background-color: rgba(255, 255, 255, 0.9);
+    height: 75px;
+    margin: 4px;
+    overflow: auto;
+
+    font-size: 11px;
+}
+
+section.new-user-chat-alert div.messages article {
+    padding: 5px;
+}
+
+section.new-user-chat-alert div.messages .author {
+    display: inline;
+    padding-right: 5px;
+}
+
+section.new-user-chat-alert div.messages .message {
+    display: inline;
+}
+
+section.new-user-chat-alert footer {
+    margin-top: 8px;
+    padding: 5px;
+    text-align: center;
+}
+
+
+
+
+.userchat-page {
+	background-color: #ECEEF0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.userchat-page > header.page-header {
+	background-color: #fff;
+}
+
+.userchat-page > header.page-header h1 {
+	margin-left: 0;
+}
+
+.userchat-page > header.page-header .meta-line {
+	margin-top:4px;
+	margin-left:0;
+	float: right;
+}
+.userchat-page > header.page-header .meta-line span {
+	margin-left: 0;
+}
+.userchat-page > header.page-header .assigned {
+	clear: left;
+
+}
+
+.userchat-page > .profile-box-container {
+    position: absolute;
+	top: 55px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+.userchat-page > .profile-box-container > section,
+.userchat-page > .profile-box-container > section > article {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+.userchat-page > .profile-box-container > section {
+	top: 24px;
+}
+
+
+
+.chatreply {
+	font-size: 11px;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 80px;
+}
+
+.chatreply > nav {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 )"; /* IE6-9 */
+	background: linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* W3C */
+	height: 22px;
+	border-top: 1px solid #B3B6B8;
+	border-bottom: 1px solid #B3B6B8;
+	position: relative;
+	position: relative;
+
+	overflow: hidden;
+
+	position: relative;
+}
+
+.chatreply > nav ul.option-buttons.right {
+	border-left: 1px solid #B3B6B8;
+	float: right;
+}
+
+.chatreply > nav ul.option-buttons li {
+
+	background: #f9f9f9; /* Old browsers */
+	background: -moz-linear-gradient(top, #f9f9f9 0%, #dddddd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#dddddd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* IE10+ */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#dddddd',GradientType=0 )"; /* IE6-9 */
+	background: linear-gradient(top, #f9f9f9 0%,#dddddd 100%); /* W3C */
+
+	float: left;
+	display: block;
+	height: 22px;
+	border-right: 1px solid #B3B6B8;
+	cursor: pointer;
+}
+
+.chatreply > nav ul.option-buttons li.send span {
+	background: url("@{asset-url}/images/icons/email_go.png") no-repeat 0 50%;
+	width: auto;
+	padding-left: 22px;
+	text-indent: 0;
+	line-height: 23px;
+}
+.chatreply > nav ul.option-buttons li.send {
+	line-height: 23px;
+	padding: 0 10px 0 10px;
+
+	background: #eaecef; /* Old browsers */
+	background: -moz-linear-gradient(top, #eaecef 0%, #ccd4dd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eaecef), color-stop(100%,#ccd4dd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* IE10+ */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaecef', endColorstr='#ccd4dd',GradientType=0 )"; /* IE6-9 */
+	background: linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* W3C */
+
+	border-right: none;
+}
+
+.chatreply > nav ul.option-buttons li:hover {
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	-moz-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+}
+
+.chatreply > nav ul.option-buttons li span {
+	display: block;
+	background: url("@{asset-url}/images/icons/bulb.png") no-repeat 50% 50%;
+	width: 29px;
+	height: 22px;
+	text-indent: -100px;
+	overflow: hidden;
+}
+
+.chatreply > nav ul.option-buttons li.attach span { background-image: url("@{asset-url}/images/icons/attach.png"); }
+.chatreply > nav ul.option-buttons li.snippets span { background-image: url("@{asset-url}/images/icons/page_white_text.png"); }
+.chatreply > nav ul.option-buttons li.article span { background-image: url("@{asset-url}/images/icons/document__pencil.png"); }
+.chatreply > nav ul.option-buttons li.closetab span { background-image: url("@{asset-url}/images/icons/tab_delete.png"); }
+
+.chatreply > nav ul.option-buttons li.attach {
+	position: relative;
+	width: 29px;
+	overflow: hidden;
+}
+
+.chatreply > nav ul.option-buttons li.attach input.file {
+	position: relative;
+	text-align: right;
+	-moz-opacity:0 ;
+	filter: ~"alpha(opacity: 0)";
+	opacity: 0;
+	z-index: 2;
+	cursor: pointer;
+}
+
+.chatreply > nav ul.option-buttons li.attach span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	cursor: pointer;
+}
+
+.chatreply > nav ul.option-buttons li.toggle {
+	position: relative;
+}
+
+.chatreply > nav ul.option-buttons li.toggle.on {
+	background: #eaecef; /* Old browsers */
+	background: -moz-linear-gradient(top, #eaecef 0%, #ccd4dd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eaecef), color-stop(100%,#ccd4dd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* IE10+ */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaecef', endColorstr='#ccd4dd',GradientType=0 )"; /* IE6-9 */
+	background: linear-gradient(top, #eaecef 0%,#ccd4dd 100%); /* W3C */
+}
+
+.chatreply > nav ul.option-buttons li em.check {
+	background: url("@{asset-url}/images/icons/tick_small.png") no-repeat 0 0;
+	width: 7px;
+	height: 7px;
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	display: none;
+}
+
+.chatreply .input-wrap {
+	position: relative;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+	padding: 0px;
+}
+
+.chatreply .input-wrap textarea {
+	background-color: transparent;
+	border: none;
+	margin: 0;
+	padding: 5px;
+	width: 97%;
+	height: 47px;
+	resize: none;
+}

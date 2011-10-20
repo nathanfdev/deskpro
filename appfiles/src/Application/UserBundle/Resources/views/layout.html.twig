@@ -146,7 +146,7 @@
 	</div>
 </div>
 
-{% if false and not app.getSetting('user.disable_chat_element') %}
+{% if not app.getSetting('user.disable_chat_element') %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
 {% endif %}
 </body>

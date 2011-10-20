@@ -15,61 +15,39 @@ pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': con
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content with-scrollbar">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
+<div class="userchat-page">
 
-<div class="inner-box-tab-content-2 chat">
-	<div style="float:right">
-		<div class="menu-trigger agent_id">
-			Assigned Agent:
-			<span class="agent_id val">
-				{% if convo.agent %}
-					{{convo.agent.display_name}}
-				{% else %}
-					Unassigned
-				{% endif %}
-			</span>
-		</div>
-		<div class="menu-trigger convo_participants">
-			Other Participants: <ul class="comma-list" style="display: inline">{% for agent in convo.participants %}
-				<li class="agent-{{agent.id}}">{{agent.display_name}}</li>
-			{% else %}
-				<li class="agent-0">None</li>
-			{% endfor %}
+<header class="page-header">
+	<div class="meta-line">
+		<div class="category set-department"><span>Department: <span class="label-department-id">{{ convo.department.full_title }}</span></span></div>
+	</div>
+	<h1>
+		Chat with {% if convo.person %}
+			{{ convo.person.display_name }} &lt;{{ convo.person.primary_email_address }}&gt;
+		{% elseif convo.person_name or convo.person_email %}
+			{{ convo.person_name }} &lt;{{ convo.person_email }}&gt;
+		{% else %}
+			Anonymous
+		{% endif %}
+	</h1>
+	<div class="assigned">
+		<label>Chat assigned to: </label>
+		<a class="agent-link prop-agent-id" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name }}</a>
+	</div>
+</header>
+
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_chat" class="on">Chat</li>
+				<li data-tab-for="#{{baseId}}_userinfo">User Information</li>
 			</ul>
-		</div>
-	</div>
-	{% if convo.person %}
-		Chat with {{convo.person.display_name}}
-	{% else %}
-		Chat with guest
-	{% endif %}
-</div>
-<div class="chat-status">
-	{% if convo.status == 'open' %}
-		Chat is <span class="open">open</span><span class="ended" style="display:none">ended</span>
-	{% else %}
-		Chat is <span class="ended">ended</span>
-	{% endif %}
-</div>
-
-{# Main Tabs #}
-<div class="full-container-tabbed messages-container">
-	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs">
-		<ul>
-			<li class="tab-trigger chat-messages on" data-tab-for=".tab-content.chat-messages"><a>Messages</a></li>
-		</ul>
-	</div>
-	{# /Tab Triggers #}
-
-	{# Tab Contents #}
-	<div class="full-container-tabbed-contents-wrap">
-
-		{# Chat Messages #}
-		<div class="full-container-tabbed-contents tab-content chat-messages" data-tab-trigger=".tab-trigger.chat-messages">
-			<div class="messages-wrapper">
+		</nav>
+	</header>
+	<section>
+		<article id="{{baseId}}_chat" class="on chat-tab">
+			<div class="messages">
 				{% for message in convo_messages|reverse %}
 					<div class="message {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%}">
 						<span class="author {% if message.is_sys %}{% elseif message.author.is_agent and message.author.id != convo.person.id %}{% else %}person-overview{% endif %}">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</span>
@@ -83,86 +61,29 @@ pageMeta.baseId = '{{ baseId }}';
 					</div>
 				{% endfor %}
 			</div>
-		</div>
-		{# /Chat Messages #}
+			<div class="chatreply" id="{{baseId}}_replybox">
+				<nav>
+					<ul class="option-buttons">
+						<li class="tipped attach" title="Send File">
+							<input type="file" class="file" name="file-upload" />
+							<span>Send File</span>
+						</li>
+						<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="Quick Replies"><span>Quick Replies</span></li>
+					</ul>
 
-	</div>
-	{# /Tab Contents #}
-
-	<ul class="person-popout-tabs" style="display:none">
-		<li class="move-to-tab"><a>Move into tab</a></li>
-		<li class="close"><a>Close</a></li>
-	</ul>
-	<div class="person-popout-outer" style="display:none"></div>
-	<div class="person-popout" style="display:none">
-		Loading ...
-	</div>
-</div>
-{# /Main Tabs #}
-
-</div></div>
-</div>
-<div class="layout-footer chat">
-	<div class="tab-bottom-wrap">
-		<div class="tab-bottom">
-			<input type="text" class="new-message" />
-			<div class="bar-actions">
-				<ul>
-					<li class="attach"><a>File</a></li>
-					{% if quick_replies|length %}
-					<li class="macros"><a>Quick Replies</a></li>
-					{% endif %}
-				</ul>
+					<ul class="option-buttons right">
+						<li class="send" id="{{replyBaseId}}_send_btn"><span>Send</span></li>
+					</ul>
+				</nav>
+				<div class="input-wrap">
+					<textarea placeholder="" id="{{baseId}}_replybox_txt" name="message"></textarea>
+				</div>
 			</div>
-		</div>
-	</div>
+		</article>
+		<article id="{{baseId}}_userinfo">
+			Userinfo
+		</article>
+	</section>
 </div>
 
-<div id="{{baseId}}_upfile_overlay" class="userchat-send-file" style="display: none;">
-	<script class="template-upload" type="text/x-jquery-tmpl">
-		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-	</script>
-	<script class="template-download" type="text/x-jquery-tmpl">
-		<li class="uploaded">
-			<input type="hidden" name="send_blob_id" class="send_blob_id" value="${blob_id}" />
-			<a href="${download_url}" target="_blank">${filename}</a>
-			<span class="size">${filesize_readable}</span>
-		</li>
-	</script>
-	<div class="file-input">
-		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
-		<br />
-		Or drag and drop a file onto this window.
-	</div>
-	<ul class="files file-list"></ul><br />
-
-	<button class="dp-button x-small send-trigger">Send File</button>
 </div>
-
-{% if quick_replies|length %}
-<ul class="menu quick-replies" style="display:none">
-	{% for qr in quick_replies %}
-	<li data-qr-id="{{ qr.id }}">{{ qr.title }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-
-<ul class="menu agent_id" style="display:none">
-	<li class="agent-0" data-option-id="0">Unassigned</li>
-	<li class="agent-{{app.user.id}} assign-to-me" data-option-id="{{app.user.id}}">Assign to me</li>
-	<li class="sep">-</li>
-	{% for id,title in agent_names %}
-		<li class="agent-{{id}}" data-option-id="{{id}}" style="line-height: 15px">
-			<div style="margin-right: 5px; float: left">
-				<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 15}) }}" alt="" width="15" height="15" />
-			</div>
-			{{title}}
-		</li>
-	{% endfor %}
-</ul>
-
-{% if convo.status == 'open' %}
-<ul class="end-menu menu" style="display:none">
-	<li>End chat (close chat to new replies)</li>
-</ul>
-{% endif %}

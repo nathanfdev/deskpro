@@ -360,24 +360,6 @@ class UserChatController extends AbstractController
 	}
 
 
-
-	public function updateListNumbersAction()
-	{
-		$counts = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenChatsForAgents();
-
-		// Also run through timeout checks now for any chats this agent has
-		if (!empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
-			$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($this->person);
-			foreach ($convos as $convo) {
-				$status_check = new ChatStatusCheck($convo, App::getSession()->getEntity());
-				$status_check->runChecks();
-			}
-		}
-
-		return $this->createJsonResponse(array('counts' => $counts));
-	}
-
-
 	public function listChatsAction($agent_id)
 	{
 		$agent = null;

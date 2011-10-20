@@ -50,11 +50,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
 					count -= num;
 					if (count < 0) count = 0;
-				} else {
+				} else if (op == '+' || op == 'add') {
 					count += num;
+ 				} else {
+					count = num;
 				}
 
 				el.text(count);
+
+				return count;
 			},
 
 			/**

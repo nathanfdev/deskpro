@@ -15,13 +15,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
 
 		this._initMessageHandlers();
-
-		this.poller = new DeskPRO.AjaxPoller.Poller({
-			ajaxUrl: BASE_URL + 'agent/chat/get-section-counts.json',
-			interval: 5000,
-			alwaysRequest: true
-		});
-		this.poller.addEvent('ajaxSuccess', this.handleUpdateCounts, this);
 	},
 
 	onShow: function() {
@@ -59,25 +52,27 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	_initMessageHandlers: function() {
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new-chat');
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.chat-ended');
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.chat-assigned');
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.added-as-part');
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated', this.handlePartsUpdated, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.added-as-part', this.handleAddedAsPart, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new', this.handleNewChat, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.reassigned', this.handleReassignedChat, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.unassigned', this.handleUnassignedChat, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', this.handleEndedChat, this);
 	},
 
-	handleNewMessage: function(data) {
-		DeskPRO_Window.getMessageBroker().sendMessage('chat.new-message-' + data.conversation_id, data);
+	modListingCount: function(id, op, count) {
+		var el = $('#userchat_list_' + id + '_counter');
+		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
+
+		if (id != '0') {
+			if (newCount < 1) {
+				el.closest('li').hide();
+			} else {
+				el.closest('li').show();
+			}
+		}
 	},
 
 	handleChatEnded: function(data) {
+		this.modListingCount(data.agent_id, '-');
 		DeskPRO_Window.getMessageBroker().sendMessage('chat.chat-ended-' + data.conversation_id, data);
 	},
 
@@ -86,15 +81,35 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleNewChat: function(data) {
-		this.showNewChatAlert(data.conversation_id, {
+		this.modListingCount(data.agent_id, '+');
+		if (!data.agent_id) {
+			this.showNewChatAlert(data, {
+				name: data.author_name,
+				message: data.initial_message || data.subject_line
+			});
+		}
+	},
+
+	handleUnassignedChat: function(data) {
+		this.modListingCount(data.old_agent_id, '-');
+		this.modListingCount(0, '+');
+
+		this.showNewChatAlert(data, {
 			name: data.author_name,
-			message: data.message
+			message: data.subject_line
 		});
 	},
 
-	handleChatAssigned: function(data) {
-		var el = $('#new_user_chat_alert_' + data.conversation_id);
-		el.remove();
+	handleReassignedChat: function(data) {
+		this.modListingCount(data.old_agent_id, '+');
+		this.modListingCount(data.agent_id, '+');
+
+		$('#new_user_chat_alert_' + data.conversation_id).remove();
+	},
+
+	handleEndedChat: function(data) {
+		this.modListingCount(data.agent_id, '-');
+		$('#new_user_chat_alert_' + data.conversation_id).remove();
 	},
 
 	handleAddedAsPart: function(data) {
@@ -132,8 +147,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 	},
 
-	showNewChatAlert: function(conversation_id, initial_message) {
-		var alertEl = $.tmpl('new_user_chat_alert');
+	showNewChatAlert: function(data) {
+		var conversation_id = data.conversation_id;
+		var alertEl = $.tmpl('new_user_chat_alert', data);
 		alertEl.appendTo('body');
 		DeskPRO_Window.handleSoundElements(alertEl);
 
@@ -153,10 +169,5 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 			alertEl.remove();
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
-
-		if (initial_message) {
-			var messageEl = $.tmpl('new_user_chat_alert_message', initial_message);
-			$('div.messages', alertEl).append(messageEl).scrollTop(10000);
-		}
 	}
 });

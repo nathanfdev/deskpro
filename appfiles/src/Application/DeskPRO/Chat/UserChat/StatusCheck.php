@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Chat;
+namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
 
@@ -98,12 +98,12 @@ class StatusCheck
 			App::getOrm()->flush();
 		}
 	}
-	
+
 
 	/**
 	 * The checks run by the user:
 	 * - Check if agent has tiemdout
-	 * 
+	 *
 	 * @return void
 	 */
 	public function runChecksByUser()
