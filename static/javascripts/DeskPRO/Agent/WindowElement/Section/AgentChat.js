@@ -122,6 +122,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 				}
 			}
 		});
+
+		$('#agent_chat_panel .view-history-trigger').click(function(ev) {
+			DeskPRO_Window.switchToSection('agent_chat_section');
+			self.close();
+		});
 	},
 
 	close: function() {

@@ -1,27 +1,8 @@
-<script>
-pageMeta.title = 'History: {{agent.display_name}}';
+{% extends 'AgentBundle:Common:common-listing.html.twig' %}
+{% block pagemeta %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory';
-pageMeta.pageUrl = '{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}?partial=1&page=$page';
-{% if not agent_chats %}
-	pageMeta.noResults = true;
-{% endif %}
-</script>
-<div class="content">
+{% endblock pagemeta %}
 
-	<header class="section-header">
-		<h1>History: {{agent.display_name}}</h1>
-	</header>
-
-	<section class="chat-list deskpro-results-list">
-		{% include 'AgentBundle:AgentChat:list-part.html.twig' %}
-	</section>
-
-	<div class="loading-more">
-		Loading more results ...
-	</div>
-	<div class="no-more-results">
-		There are no more results.
-	</div>
-</div>
-
-</div>
+{% block listing %}
+	{% include 'AgentBundle:AgentChat:list-part.html.twig' %}
+{% endblock listing %}

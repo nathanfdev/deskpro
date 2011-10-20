@@ -63,7 +63,25 @@ class AgentChatController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'conversation_id' => $info['conversation']['id'],
-			'new_message_id'  => $info['chat_message']['id']
+			'new_message_id'  => $info['new_message']['id']
+		));
+	}
+
+	/**
+	 * Replay the last few messages between these same participants
+	 */
+	public function replayLastConversationAction()
+	{
+		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+
+		$info = $this->agent_chat->getLastConversationMessages($this->in->getString('content'), $agent_ids, $convo_id);
+
+		// Recreating the payload used with client messages
+
+
+		return $this->createJsonResponse(array(
+			'last_conversation_id' => $info['conversation']['id'],
+			'messages'  => $message_info
 		));
 	}
 
@@ -104,7 +122,7 @@ class AgentChatController extends AbstractController
 				'picture_url' => $sess->person->getPictureUrl(10)
 			);
 		}
-		
+
 		return $this->createJsonResponse(array(
 			'agent_info'    => $agent_info,
 			'online_agents' => $online_agents

@@ -41,20 +41,20 @@
 </script>
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message">
-	<article>
-		{{if author_picture}}
-			<img src="${author_picture}" />
-		{{/if}}
-		<cite>${author_name}:</cite> ${message}
-	</article>
+	<div class="chatRecieve">
+		<div class="chatMsgRecieve">
+			${message}
+			<span class="bubbleLeft"></span>
+		</div>
+	</div>
 </script>
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message_me">
-	<article>
-		{% endraw %}
-		<img src="{{ app.user.getPictureUrl(20) }}" />
-		{% raw %}
-		<cite>Me:</cite> ${message}
-	</article>
+	<div class="chatSend">
+		<div class="chatMsgSend">
+			${message}
+			<span class="bubbleLeft"></span>
+		</div>
+	</div>
 </script>
 {% endraw %}

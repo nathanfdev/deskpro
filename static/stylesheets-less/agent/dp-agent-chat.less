@@ -604,7 +604,7 @@
 	position: relative;
 }
 
-.messageContainer{
+.messages-container{
 	font-size: 11px;
 	line-height: 12px;
 	float: left;
@@ -612,25 +612,25 @@
 	margin-bottom: 5px;
 }
 
-.messageContainer .chatSend, .messageContainer .chatRecieve{
+.messages-container .chatSend, .messages-container .chatRecieve{
 	color: #626973;
 	font-size: 11px;
 	line-height: 22px;
 	text-shadow: 0 1px 0 #fff;
 	padding: 3px 5px;
 }
-.messageContainer .chatSend{
+.messages-container .chatSend{
 	float: left;
 }
-.messageContainer .chatRecieve{
-	float: left;
+.messages-container .chatRecieve{
+	float: right;
 }
 
-.messageContainer .timeChat, .messageContainer .dateChat{
+.messages-container .timeChat, .messages-container .dateChat{
 	font-size: 10px;
 	color: #a1a8b2;
 }
-.messageContainer .dateChat{
+.messages-container .dateChat{
 	padding: 3px 0;
 	text-align: center;
 }
@@ -643,6 +643,7 @@
 	position: relative;
 	width: 205px;
 }
+
 .chatSend .chatMsgSend{
 	background-image: -moz-linear-gradient(top, #f2f2f2, #eaeaea);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#eaeaea));
@@ -661,22 +662,19 @@
 	float: left;
 }
 .chatMsgSend span.bubbleLeft{
-	background-position: top right;
-    background-repeat: none;
+    .iconbase(8px, 8px);
 	background-image: url(../../images/agent/agentchat-msg-left.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	bottom: 1px;
-	left: -11px;
-	padding: 4px 8px;
 	position: absolute;
+	bottom: 1px;
+	left: -7px;
 }
 .chatMsgRecieve span.bubbleRight{
-    background-position: top right;
-    background-repeat: none;
+    .iconbase(8px, 8px);
 	background-image: url(../../images/agent/agentchat-msg-right.png) /** sprite-ref: ui-v; sprite-alignment: right */;
-	bottom: 1px;
-	right: -11px;
-	padding: 4px 8px;
 	position: absolute;
+	bottom: 1px;
+	bottom: 1px;
+	right: -7px;
 }
 .chatSend .timeChat{
 	float: right;

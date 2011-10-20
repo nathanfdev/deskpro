@@ -1,16 +1,21 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for convo in conversations %}
-		<article class="chat_convo chat_convo-{{convo.id}} with-route" data-route="page:{{ path('agent_agentchat_view', {'conversation_id': convo.id}) }}">
-			<div class="chat-participants">
-				<ul>
-					{% for p in convo.participants %}{% if p.id != app.user.id %}
-					<address>
-						{{ p.display_name }}
-					</address>
-					{% endif %}{% endfor %}
-				</ul>
+		<article
+			class="row-item convo-{{ convo.id }} without-selection"
+			data-convo-id="{{ convo.id }}"
+			data-route="page:{{ path('agent_agentchat_view', {'conversation_id': convo.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
+						<a class="subject click-through">
+							{% for p in convo.participants %}{% if p.id != app.user.id %}{% if not loop.first %}, {% endif %}{{ p.display_name }}{% endif %}{% endfor %}
+						</a>
+					</h3>
+				</div>
 			</div>
-			<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
+			<div class="userinfo general">
+				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
+			</div>
 		</article>
 	{% endfor %}
 </section>

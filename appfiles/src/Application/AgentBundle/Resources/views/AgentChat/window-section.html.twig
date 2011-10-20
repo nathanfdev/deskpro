@@ -1,8 +1,14 @@
-<header class="section-header">
-	<h1>Chat History</h1>
-</header>
-<ul class="nav-list">
-	{% for agent in agent_chatted %}
-		<li class="with-route" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}">{{ agent.display_name }}</li>
-	{% endfor %}
-</ul>
+<section class="source-section sys-filters-section">
+	<header>
+		<h1>Chat History</h1>
+	</header>
+	<ul class="source-list">
+		{% for agent in agent_chatted %}
+			<li>
+				<h3 class="title" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}">
+					{{ agent.display_name }}
+				</h3>
+			</li>
+		{% endfor %}
+	</ul>
+</section>

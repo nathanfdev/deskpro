@@ -1,24 +1,39 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.AgentChatTranscript';
 pageMeta.title         = 'Chat Transcript';
 pageMeta.conversation_id = {{convo.id}};
 </script>
-<div class="layout-content with-scrollbar">
-
-	<strong>Participants:</strong><br />
-	<div class="chat-participants">
-		<ul>
+{{ agentui.scroll_containers('agentchat-page') }}
+	<header class="page-header">
+		<h1>
 			{% for p in convo.participants %}
-			<address>
-				{{ p.display_name }}
-			</address>
+				{% if loop.last %} and {% endif %}{{ p.display_name }}{% if not loop.last %},{% endif %}
 			{% endfor %}
-		</ul>
+		</h1>
+		<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
+	</header>
+
+	<div class="profile-box-container">
+		<header>
+			<h4>Chat Transcript</h4>
+		</header>
+		<section class="chat-transcript">
+			{% for message in convo_messages %}
+				<div class="row">
+					<time>{{ convo.date_created|date('h:ia') }}</time>
+					<div class="name">
+						{% if message.is_sys %}
+							&nbsp;
+						{% else %}
+							{{ message.author.display_name }}
+						{% endif %}
+					</div>
+					<div class="message">
+						{{ message.content }}
+					</div>
+				</div>
+			{% endfor %}
+		</section>
 	</div>
-
-	<textarea style="width: 95%; height: 250px; margin: 10px auto 10px auto;">
-{% for message in convo_messages %}&lt;{{message.author.display_name}}&gt;: {{message.content}}
-
-{% endfor %}
-	</textarea>
-</div>
+{{ agentui.scroll_containers_end() }}
