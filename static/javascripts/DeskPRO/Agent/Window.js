@@ -925,6 +925,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 
+	loadRouteOverlay: function(routeData) {
+
+		var positionAbove = null;
+		var trigger = routeData.routeTriggerEl;
+		if (trigger) {
+			var parent = trigger.parentsUntil('body').last();
+			if (parent.length && parent.parent().is('body')) {
+				positionAbove = parent;
+			}
+		}
+
+		var fragmentOverlay = new DeskPRO.Agent.PageHelper.FragmentOverlay({
+			routeData: routeData,
+			positionAbove: positionAbove
+		});
+	},
+
 
 	/**
 	 * Load a URL and treat it as a list pane.
@@ -1455,6 +1472,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
+		this.addPageRouteLoader('poppage', this.loadRouteOverlay.bind(this));
 
 		var self = this;
 	},

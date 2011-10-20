@@ -1133,6 +1133,19 @@ section.mass-actions-overlay .macro-load {
 .dp-overlay-container.loading .loading-off { display: none; }
 .dp-overlay-container.loading .loading-on { display: block; }
 
+.backdrop.dp-fragment-overlay-backdrop {
+	z-index: 999999991;
+}
+.dp-overlay-container.fragment-overlay {
+	min-width: 350px;
+	min-height: 400px;
+	z-index: 999999992;
+}
+
+.dp-overlay-container.overlay-loading section.dp-overlay article {
+	background: #fff url(../../images/loading-big-circle.gif) no-repeat 50% 20px;
+}
+
 section.dp-overlay {
 	position: absolute;
 	top:    13px;
@@ -1282,6 +1295,10 @@ section.dp-overlay > article {
 	position: absolute;
 	top: 36px; right: 0; bottom: 45px; left: 0;
 	overflow: auto;
+}
+
+section.dp-overlay > article.padded {
+	padding: 10px;
 }
 
 section.dp-overlay > article .layout-content {

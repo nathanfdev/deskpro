@@ -83,6 +83,9 @@ $CONFIG['agent_settingswin'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Macros.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
 	)
 );
 
@@ -149,6 +152,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
 		'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Popover.js',
+		'javascripts/DeskPRO/Agent/PageHelper/FragmentOverlay.js',
 		'javascripts/DeskPRO/Agent/PageHelper/ValidatingEdit.js',
 		'javascripts/DeskPRO/Agent/PageHelper/RelatedContent.js',
 		'javascripts/DeskPRO/Agent/PageHelper/RelatedContentList.js',
