@@ -101,7 +101,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			});
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id);
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {ignoreExist:true});
 			}
 		}
 	},
@@ -126,7 +126,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.reassigned', data);
 
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id);
+			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {ignoreExist:true});
 		}
 	},
 
