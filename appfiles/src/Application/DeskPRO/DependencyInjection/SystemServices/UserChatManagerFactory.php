@@ -20,8 +20,6 @@ class UserChatManagerFactory
 {
 	public static function create(DeskproContainer $container, CheckedOptionsArray $options)
 	{
-		$options->ensureRequired(array('session'));
-
 		$o = new UserChatManager(
 			$options->session,
 			$container->get('doctrine.orm.entity_manager'),

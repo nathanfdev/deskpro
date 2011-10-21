@@ -66,9 +66,11 @@ class UserChatManager
 		$this->db = $em->getConnection();
 		$this->tr = $translate;
 
-		$this->session     = $session;
-		$this->visitor     = $session->getVisitor();
-		$this->person      = $session->getPerson();
+		if ($session) {
+			$this->session     = $session;
+			$this->visitor     = $session->getVisitor();
+			$this->person      = $session->getPerson();
+		}
 	}
 
 
@@ -322,10 +324,69 @@ class UserChatManager
 
 
 	/**
+	 * Mark an agent as timed out and unassign the chat
+	 *
+	 * @throws \Exception
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @return void
+	 */
+	public function agentTimeout(ChatConversation $convo)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$this->addSystemMessage(
+				$convo,
+				'user.chat.msg_agent_timeout',
+				array('name' => $convo->agent->display_name),
+				array('agent_timed_out' => true)
+			);
+			$this->unassignAgent($convo);
+
+			$this->em->flush();
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * Mark a user as timed out and end the chat
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @return void
+	 */
+	public function userTimeout(ChatConversation $convo)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$this->addSystemMessage(
+				$convo,
+				'user.chat.msg_user_timeout',
+				array(),
+				array('user_timed_out' => true)
+			);
+			$this->endChat($convo);
+
+			$this->em->flush();
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * @param $reason
 	 * @return void
 	 */
-	public function endChat(ChatConversation $convo, Person $author, $reason = '')
+	public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
 	{
 		// Already ended
 		if ($convo->status == 'ended') {
