@@ -5,14 +5,14 @@
 	<ul class="source-list">
 		<li class="auto-load-route">
 			<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
-				<span class="list-counter" id="userchat_list_0_counter">0</span>
+				<span class="list-counter" id="userchat_list_0_counter">{{ counts[0]|default(0) }}</span>
 				Unassigned
 			</h3>
 		</li>
 		{% for agent_id,agent_name in agent_names %}
-			<li style="display: none" id="userchat_list_{{ agent_id }}">
+			<li {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
 				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
-					<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">0</span>
+					<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">{{ counts[agent_id]|default(0) }}</span>
 					{{ agent_name }}
 				</h3>
 			</li>

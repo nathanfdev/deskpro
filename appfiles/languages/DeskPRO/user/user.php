@@ -1,5 +1,6 @@
 <?php return array(
 
+	'user.none' => 'None',
 	'user.department' => 'Department',
 	'user.product'    => 'Product',
 

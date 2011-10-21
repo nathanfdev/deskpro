@@ -1370,6 +1370,10 @@ agent_userchat_end:
   pattern: /chat/end-chat/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:endChat }
 
+agent_userchat_changeprop:
+  pattern: /chat/change-props/{conversation_id}
+  defaults: { _controller: AgentBundle:UserChat:changeProperties }
+
 agent_userchat_getsectiondata:
   pattern: /chat/get-section-data.json
   defaults: { _controller: AgentBundle:UserChat:getSectionData }

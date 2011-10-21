@@ -21,6 +21,17 @@ use Doctrine\ORM\EntityRepository;
 
 class ChatConversation extends EntityRepository
 {
+	public function getOpenChatsForAgent(PersonEntity $person)
+	{
+		$chats = $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE c.agent = ?1 AND c.status = 'open'
+		")->setParameter(1, $person)->execute();
+
+		return $chats;
+	}
+
 	/**
 	 * Gets an array of agent_id=>num that counts how many chats they have open.
 	 *
@@ -175,6 +186,16 @@ class ChatConversation extends EntityRepository
 		}
 
 		return $conversation;
+	}
+
+	public function getPastChatsForVisitor($visitor)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE c.visitor = ?1 AND c.status = 'ended'
+			ORDER BY c.id ASC
+		")->setParameter(1, $visitor)->execute();
 	}
 
 	public function getLatestChatForSession($session, $active = true)

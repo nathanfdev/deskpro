@@ -51,11 +51,22 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.updateBadge(unassigned);
 	},
 
+	isChatOpen: function(convoId) {
+		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
+		Array.each(chatTabs, function(tab) {
+			if (tab.page.meta.conversation_id == convoId) {
+				return true;
+			}
+		}, this);
+
+		return false;
+	},
+
 	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new', this.handleNewChat, this);
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.reassigned', this.handleReassignedChat, this);
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.unassigned', this.handleUnassignedChat, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', this.handleEndedChat, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', this.handleChatEnded, this);
 	},
 
 	modListingCount: function(id, op, count) {
@@ -72,8 +83,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleChatEnded: function(data) {
+		$('#new_user_chat_alert_' + data.conversation_id).remove();
 		this.modListingCount(data.agent_id, '-');
-		DeskPRO_Window.getMessageBroker().sendMessage('chat.chat-ended-' + data.conversation_id, data);
+		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.ended', data);
 	},
 
 	handlePartsUpdated: function(data) {
@@ -87,6 +99,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				name: data.author_name,
 				message: data.initial_message || data.subject_line
 			});
+		} else {
+			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id);
+			}
 		}
 	},
 
@@ -98,13 +114,20 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			name: data.author_name,
 			message: data.subject_line
 		});
+
+		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.unassigned', data);
 	},
 
 	handleReassignedChat: function(data) {
-		this.modListingCount(data.old_agent_id, '+');
+		this.modListingCount(data.old_agent_id, '-');
 		this.modListingCount(data.agent_id, '+');
 
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
+		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.reassigned', data);
+
+		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
+			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id);
+		}
 	},
 
 	handleEndedChat: function(data) {

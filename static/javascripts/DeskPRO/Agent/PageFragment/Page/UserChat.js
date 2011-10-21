@@ -3,20 +3,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
+	initializeProperties: function() {
+		this.TYPENAME = 'userchat';
+	},
+
 	initPage: function(el) {
+		var self = this
 
-		this.destroyEls = [];
+		if (!this.meta.isEnded) {
+			var messageTextarea = this.getEl('replybox_txt');
 
-		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
-		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
-
-		var self = this;
-		var messageTextarea = $('.new-message', this.barWrapper);
-		messageTextarea.keypress(function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();
-
+			var sendMsg = function() {
 				var msg = messageTextarea.val().trim();
 				messageTextarea.val('');
 
@@ -25,21 +22,87 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 
 				self.sendMessage(msg);
-				self.addMessageRow(self.meta.youName, msg);
+				self.addMessageRow(self.meta.youName, msg, 'agent');
 			}
-		});
 
-		this._initMenus();
+			messageTextarea.keypress(function(ev) {
+				if (ev.keyCode == 13 && !ev.metaKey) {
+					ev.preventDefault();
+					sendMsg();
+				}
+			});
 
-		if (this.meta.viewPersonUrl) {
-			this._initPopout();
+			this.getEl('send_btn').click(function() {
+				sendMsg();
+			});
+
+			this.getEl('send_file').click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				self.showUploadOverlay();
+			});
+
+			this.getEl('end_btn').click(function() {
+				self.endChat();
+			});
+
+			this.addEvent('destroy', function() {
+				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + this.meta.conversation_id);
+				self.reassignConvo(0);
+			});
 		}
 
-		$('.bar-actions .attach', this.wrapper).click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			self.showUploadOverlay();
+		this._initMenus();
+		this._initAssignControl();
+
+		this.tabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li', this.getEl('tabs'))
 		});
+
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ended', this.chatHasEnded, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this);
+	},
+
+	handleNewMessageCm: function(data, name) {
+
+		// Ignore our own messages, unless its a file then we have a rendered version from the server
+		if (data.author_id == DESKPRO_PERSON_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
+			return;
+		}
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html);
+
+		// Add 'pop' sound
+		var alertEl = $.tmpl('user_chat_newmsg_sound');
+		alertEl.appendTo(this.el);
+		DeskPRO_Window.handleSoundElements(alertEl);
+	},
+
+	chatReassignedTo: function(agent_id) {
+
+		var btnEl = this.getEl('assign_btn');
+
+		if (agent_id == "0") {
+			var pic = '';
+			var agentInfo = {
+				name: 'Unassigned'
+			};
+		} else {
+			var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+			if (!agentInfo) {
+				return;
+			}
+
+			var pic = agentInfo.pictureUrlSizable.replace('{SIZE}', 20);
+		}
+
+		btnEl.css('background-image', pic);
+		btnEl.text(agentInfo.name);
+		btnEl.data('agent-id', agent_id);
 	},
 
 	handleUpdateParts: function(data) {
@@ -48,9 +111,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	updateActiveAgentList: function(assigned, parts) {
 		var assigned_name = DeskPRO_Window.getDisplayName('agent', agent_id) || 'Unassigned';
-		$('span.agent_id.val', this.wrapper).html(assigned_name);
+		$('span.agent_id.val', this.el).html(assigned_name);
 
-		var ul = $('.convo_participants ul', this.wrapper);
+		var ul = $('.convo_participants ul', this.el);
 		ul.empty();
 
 		if (!parts.lenght) {
@@ -63,96 +126,55 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 	},
 
+	userTyping: function(data) {
+		if (!data.preview || !data.preview.length) {
+			this.getEl('user_typing').hide();
+			return;
+		}
+
+		var el = this.getEl('user_typing');
+		$('.message', el).text(data.preview);
+		el.detach().appendTo(this.getEl('messages_box'));
+		el.show();
+	},
+
 	_initMenus: function() {
 		var self = this;
 		this.qrMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('li.macros:first', this.barWrapper),
-			menuElement: $('ul.quick-replies:first', this.wrapper),
+			triggerElement: this.getEl('quick_replies'),
+			menuElement: $('ul.quick-replies:first', this.el),
 			onItemClicked: function(info) {
 				var qr_id = $(info.itemEl).data('qr-id');
 				self.loadQuickReply(qr_id);
 			}
 		});
 
-		this.assignMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('div.agent_id.menu-trigger:first, .convo_participants', this.wrapper),
-			menuElement: $('ul.agent_id.menu:first', this.wrapper),
-			onBeforeMenuOpened: function(info) {
-				var list = info.menu.elements.list;
-				$('li.sep', list).show();
-				$('li.assign-to-me', list).show();
+		//------------------------------
+		// Department
+		//------------------------------
 
-				$('li[data-option-id]', list).each(function() {
-					var id = $(this).data('option-id');
-					var onlineEl = $('#agent_online_list > li.agent-' + id);
-					if (onlineEl.length || id == DESKPRO_PERSON_ID || id == '0') {
-						$(this).show();
-					} else {
-						$(this).hide();
-					}
-				});
-
-				var trigger = $(info.menu.getOpenTriggerElement());
-
-				var part = false;
-				if (trigger.is('.convo_participants')) {
-					part = true;
-				} else {
-					var parents = trigger.parentsUntil('.convo_participants');
-					if (parents.eq(0).parent().is('.convo_participants')) {
-						part = true;
-					}
-				}
-
-				if (part) {
-					$('li.agent-0', list).hide();
-					$('li.agent-' + DESKPRO_PERSON_ID, list).hide();
-					$('li.assign-to-me', list).hide();
-					$('li.sep', list).hide();
-				}
-			},
+		this.depMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('dep_btn'),
+			menuElement: $('#department_menu').clone(),
 			onItemClicked: function(info) {
-				var agent_id = $(info.itemEl).data('option-id');
+				var item = $(info.itemEl);
+				var depId = item.data('department-id');
 
-				var trigger = $(info.menu.getOpenTriggerElement());
-				var part = false;
-				if (trigger.is('.convo_participants')) {
-					part = true;
-				} else {
-					var parents = trigger.parentsUntil('.convo_participants');
-					if (parents.eq(0).parent().is('.convo_participants')) {
-						part = true;
-					}
+				// The same
+				if (depId == self.getEl('dep_btn').data('department-id')) {
+					return;
 				}
 
-				console.log('part %i', part);
+				$('.label-department-id', self.getEl('dep_btn')).text(item.data('full-title'));
+				self.getEl('dep_btn').data('department-id', depId)
 
-				if (part) {
-					var wrap = $('.convo_participants', this.wrapper);
-					var checkEl = $('li.agent-' + agent_id, wrap);
-					if (!checkEl.length) {
-						$('li.agent-0', wrap).remove();
-						$('<li class="agent-'+agent_id+'">'+DeskPRO_Window.getDisplayName('agent', agent_id)+'</li>').appendTo($('ul', wrap));
-
-						self.addPart(agent_id);
-					}
-				} else {
-					self.reassignConvo(agent_id);
-					$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned');
-				}
+				DeskPRO_Window.util.ajaxWithClientMessages({
+					url: BASE_URL + 'agent/chat/change-props/' + self.meta.conversation_id,
+					data: [{ name: 'props[department_id]', value: depId }],
+					type: 'POST'
+				});
 			}
 		});
-
-		var endMenuEl = $('ul.end-menu', this.wrapper);
-		if (endMenuEl.length) {
-			this.endMenu = new DeskPRO.UI.Menu({
-				triggerElement: $('div.chat-status:first', this.wrapper),
-				menuElement: endMenuEl,
-				onItemClicked: function(info) {
-					self.endChat();
-				}
-			});
-		}
 	},
 
 	loadQuickReply: function(qr_id) {
@@ -161,21 +183,28 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			context: this,
 			contentType: 'json',
 			success: function(data) {
-				var textarea = $('.new-message', this.barWrapper);
+				var textarea = this.getEl('replybox_txt');
 				textarea.val(textarea.val() + data.reply).focus();
 			}
 		});
 	},
 
 	endChat: function() {
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id
+		});
+	},
+
+	leaveChat: function() {
+		if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+			return;
+		}
 		$.ajax({
-			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id,
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/0',
+			data: { 'leaving': true },
 			context: this,
 			contentType: 'json'
 		});
-
-		this.addMessageRow('*', 'Chat ended', 'sys');
-		this.chatHasEnded();
 	},
 
 	chatHasEnded: function() {
@@ -183,11 +212,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (this.hasEnded) return;
 		this.hasEnded = true;
 
-		var el = $('.chat-status:first', this.wrapper);
-		$('.open', el).hide();
-		$('.ended', el).show();
-
-		this.barWrapper.hide();
+		this.getEl('replybox').hide().addClass('chat-ended');
 	},
 
 	addPart: function(agent_id) {
@@ -196,36 +221,19 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			context: this,
 			contentType: 'json'
 		});
-
-		this.addMessageRow('*', (DeskPRO_Window.getDisplayName('agent', agent_id)) + ' joined', 'sys');
 	},
 
 	reassignConvo: function(agent_id) {
-		$.ajax({
-			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id,
-			context: this,
-			contentType: 'json'
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id
 		});
-
-		this.addMessageRow('*', 'Chat assigned to ' + (DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned'), 'sys');
-	},
-
-	handleNewMessage: function(data) {
-		DeskPRO_Window.pageTabStrip.alertTab(this.meta.tabIdClass);
-
-		if (data.message_html) {
-			this.addMessageRow(data.author_name, data.message_html, data.author_type, true);
-		} else {
-			this.addMessageRow(data.author_name, data.message, data.author_type);
-		}
-
-		// Add 'pop' sound
-		var alertEl = $.tmpl('user_chat_newmsg_sound');
-		alertEl.appendTo(this.wrapper);
-		DeskPRO_Window.handleSoundElements(alertEl);
 	},
 
 	addMessageRow: function(name, msg, type, is_html) {
+
+		if (type == 'user') {
+			this.userTyping({ preview: '' });
+		}
 
 		if (type == 'sys') {
 			name = '* ';
@@ -238,9 +246,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			popoutclass = " person-overview";
 		}
 
-		var html = ['<div class="message '+type+'">'];
-			html.push('<span class="author' + popoutclass + '">' + name + '</span>');
-			html.push('<span class="message"></span>');
+		var html = ['<div class="row '+type+'">'];
+			html.push('<time class="timeago"></time>');
+			html.push('<div class="name' + popoutclass + '">' + name + '</div>');
+			html.push('<div class="message"></div>');
 		html.push('</div>');
 
 		var row = $(html.join(''));
@@ -252,17 +261,69 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			$('.message', row).html(msg);
 		}
 
-		row.appendTo($('.chat-messages .messages-wrapper', this.wrapper));
 
-		$('.scroll-viewport', this.wrapper).scrollTop(10000);
+		$('time', row).attr('datetime', (new Date()).toString());
+		DeskPRO_Window.initInterfaceServices(row);
+
+		row.appendTo(this.getEl('messages_box'));
+
+		this.getEl('messages_box').scrollTop(10000);
 	},
 
 	sendMessage: function(msg) {
-		$.ajax({
+		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
-			data: {content: msg},
-			context: this,
-			contentType: 'json'
+			data: {content: msg}
+		});
+	},
+
+	//#################################################################
+	//# Reassignment
+	//#################################################################
+
+	_initAssignControl: function() {
+		var self = this;
+		var btnEl = this.getEl('assign_btn');
+
+		//assign_btn
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('agent_selector'),
+			trigger: this.getEl('assign_btn'),
+			onOpen: function(ob) {
+				var wrap = ob.getElement();
+
+				var any = false;
+				$('.agent-row', wrap).each(function() {
+					var aid = $(this).data('agent-id');
+					var check = $('#agent_online_list .agent-' + aid);
+					if (!check.length) {
+						$(this).hide();
+					} else {
+						$(this).show();
+						any = true;
+					}
+				});
+
+				var list = $('.with-agents-online', wrap);
+				var nolist = $('.without-agents-online', wrap);
+				if (!any) {
+					list.hide();
+					nolist.show();
+				} else {
+					list.hide();
+					nolist.show();
+				}
+			},
+			onClose: function(ob) {
+				var agentId = parseInt(ob.getSelected('agents')) || 0;
+				var currentValue = parseInt(btnEl.data('agent-id'));
+
+				if (agentId == currentValue) {
+					return;
+				}
+
+				self.reassignConvo(agentId);
+			}
 		});
 	},
 
@@ -282,7 +343,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var o;
 		var overlayWrapper = this.getEl('upfile_overlay');
 		this.uploadOverlay = o = new DeskPRO.UI.Overlay({
-			contentElement: overlayWrapper
+			contentElement: overlayWrapper,
+			customClassname: 'normal-size'
 		});
 
 		var list = $('.file-list', overlayWrapper);
@@ -306,170 +368,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				return;
 			}
 
-			$.ajax({
+			DeskPRO_Window.util.ajaxWithClientMessages({
 				url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
 				data: {send_blob_id: blobId},
-				context: self,
-				contentType: 'json',
-				success: function(data) {
-					var chat_data = data.chat_data;
-					this.addMessageRow(chat_data.author_name, chat_data.message_html, chat_data.author_type, true);
-				}
 			});
 
 			self.uploadOverlay.close();
 			$('ul.file-list', overlayWrapper).empty();
 		});
-	},
-
-	//#################################################################
-	//# Popout
-	//#################################################################
-
-	_initPopout: function() {
-		var self = this;
-		var el = this.wrapper;
-
-		// AJAX load the fragment now
-		var url = this.getMetaData('viewPersonUrl');
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			type: 'GET',
-			success: function(html) {
-				self.personPopoutHtml = html;
-				if (self.personPopoutWaiting) {
-					self.personPopoutWaiting = false;
-					self._initPopoutPageFragment();
-				}
-			}
-		});
-
-		$('.person-overview', el).css({'cursor': 'pointer'}).click(function(event) {
-			self.isMouseOverPopout = true;
-			self.openPopOut(event);
-		});
-	},
-
-	_initPopoutEls: function() {
-
-		if (this._initPopoutEls_done) return;
-		this._initPopoutEls_done = true;
-
-		var el = this.contentWrapper;
-		var self = this;
-
-		this.popout = $('.person-popout:first', el);
-		this.popout.click(function(event) {
-			// Any clicks that bubble here should stop now
-			event.stopPropagation();
-		});
-		this.popout.detach().appendTo('body');
-
-		this.popoutOuter = $('.person-popout-outer:first', el);
-		this.popoutOuter.detach().appendTo('body');
-
-		this.popoutTabs = $('.person-popout-tabs:first', el);
-		this.popoutTabs.detach().appendTo('body');
-
-		var self = this;
-		$('.close:first', this.popoutTabs).click(function() {
-			self.closePopout();
-		});
-
-		$('.move-to-tab:first', this.popoutTabs).click(function(ev) {
-			ev.stopPropagation();
-			DeskPRO_Window.runPageRouteFromElement($('.person-overview', self.wrapper));
-			self.closePopout();
-		});
-	},
-
-	openPopOut: function(event) {
-
-		this._initPopoutEls();
-
-		// Already open
-		if (this.popout.is(':visible')) {
-			return;
-		}
-
-		var orig = $('.person-overview:first', this.wrapper);
-		var pos = orig.offset();
-		var wrapper_pos = this.wrapper.offset();
-
-		// can use the left position of the element to roughly
-		// determine how wide the columns are
-		// so we want it to stretch as far as we can, minus some wriggle room
-		var width = pos.left - 35;
-
-		// ... but not too big
-		if (width > 780) {
-			width = 780;
-		}
-
-		var show_popout = true;
-		if (width < 400) {
-			show_popout = false;
-		}
-
-		if (show_popout) {
-			this.popout.css({
-				'position': 'absolute',
-				'display': 'block',
-				'z-index': 999998,
-				'width': width,
-				'overflow': 'auto'
-			});
-
-			// Separate on purpose, we need the outerWidth which
-			// wont be correct until the above rules are applied
-			this.popout.css({
-				'top': (wrapper_pos.top - 8),
-				'left': (pos.left - this.popout.outerWidth() - 20),
-				'bottom': 30
-			});
-
-			var poppos = this.popout.offset();
-			this.popoutOuter.css({
-				'position': 'absolute',
-				'display': 'block',
-				'z-index': 999997,
-				'width': width+2+6, //2px for thi sborder, 6px for the popout border
-				'overflow': 'auto',
-				'top': poppos.top-1,
-				'left': poppos.left-1,
-				'bottom': 29 //popout bottom (30) -1 for the white border
-			});
-
-			this.popoutTabs.css({
-				'z-index': 999996,
-				'display': 'block',
-				'top': (wrapper_pos.top - 30),
-				'left': (pos.left - 260)
-			});
-		}
-
-		if (!this.hasInitPopout && show_popout) {
-			if (this.personPopoutHtml) {
-				this._initPopoutPageFragment();
-			} else {
-				this.personPopoutWaiting = true;
-			}
-		}
-	},
-
-	closePopout: function() {
-		this.popout.hide();
-		this.popoutOuter.hide();
-		this.popoutTabs.hide();
-	},
-
-	_initPopoutPageFragment: function() {
-
-		this.popoutPage = DeskPRO_Window.createPageFragment(this.personPopoutHtml);
-		this.popout.html(this.personPopoutHtml);
-		this.personPopoutHtml = null;
-		this.popoutPage.initPage(this.popout);
-		this.hasInitPopout = true;
 	}
 });

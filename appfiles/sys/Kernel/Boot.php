@@ -24,9 +24,11 @@ class Boot
 			$request = Request::createfromGlobals();
 		}
 
-		if (preg_match('#^/(agent|admin|api|dev)/#', $request->getPathInfo())) {
+		$path = $request->getPathInfo();
+
+		if (preg_match('#^/(agent|admin|api|dev)/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
-		} elseif (preg_match('#^/_sys/?#', $request->getPathInfo())) {
+		} elseif (preg_match('#^/_sys/?#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';

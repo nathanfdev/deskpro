@@ -3499,13 +3499,17 @@ ul.item-list > li ul.controls > li.edit{
 	clear: left;
 }
 
-.agentchat-page .chat-transcript .row {
+.userchat-page > .profile-box-container > section > article > .messages.chat-ended  {
+	bottom: 0;
+}
+
+.chat-transcript .row {
 	backgorund-color: #fff;
 	border-bottom: 1px solid #ECEEF0;
 	font-size :10px;
 }
 
-.agentchat-page .chat-transcript .row .name {
+.chat-transcript .row .name {
 	float: left;
 	font-weight: bold;
 	font-family: @heading-font;
@@ -3516,12 +3520,41 @@ ul.item-list > li ul.controls > li.edit{
 	background-color: #F5F7FA;
 }
 
-.agentchat-page .chat-transcript .row .message {
+.chat-transcript .row.agent .name {
+	color: #9097A5;
+}
+
+.chat-transcript .row.user-typing {
+
+}
+
+.chat-transcript .row.user-typing {
+	background-color: #F0F0F0;
+}
+.chat-transcript .row.user-typing .name {
+	color: #444;
+	font-weight: normal;
+	font-style: italic;
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: #F0F0F0;
+	font-family: @body-font;
+}
+.chat-transcript .row.user-typing .message {
+    color: #444;
+	font-style: italic;
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: #F0F0F0;
+	font-family: @body-font;
+}
+
+.chat-transcript .row .message {
 	margin-left: 160px;
 	padding: 3px;
 }
 
-.agentchat-page .chat-transcript .row time {
+.chat-transcript .row time {
 	float: right;
 	font-size: 9px;
 	color: #A9ABAD;
@@ -3643,10 +3676,22 @@ section.new-user-chat-alert footer {
 	left: 0px;
 }
 
+.userchat-page > .profile-box-container > section > article.info-tab {
+	overflow: auto;
+}
+
 .userchat-page > .profile-box-container > section {
 	top: 24px;
 }
 
+.userchat-page > .profile-box-container > section > article > .messages {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 80px;
+	left: 0;
+	overflow: auto;
+}
 
 
 .chatreply {

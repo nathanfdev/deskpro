@@ -55,9 +55,20 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$session = $chat_manager->getSession();
 		$convo = $chat_manager->getChat();
 
-		// Nothing to do if we have no convo
+
 		if (!$convo) {
-			return $this->createJsonResponse(array());
+			// It might've been closed, but we still want the events to tell about it being closed!
+			if ($this->in->getUint('conversation_id')) {
+				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
+					$convo = null;
+				}
+			}
+
+			// Nothing to do if we have no convo
+			if (!$convo) {
+				return $this->createJsonResponse(array());
+			}
 		}
 
 		// Not uint because -1 will be used when no messages have ever existed
@@ -99,6 +110,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		if ($data['last_id'] == -1) {
 			unset($data['last_id']);
+		}
+
+		if ($convo) {
+			$data['conversation_id'] = $convo->id;
 		}
 
 		return $this->createJsonpResponse($data);
@@ -144,7 +159,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			return $this->createJsonpResponse(array());
 		}
 
-		$chat_manager->setUserTypingIndicator($conversation, $this->in->getString('partial_message'));
+		$chat_manager->setUserTypingIndicator($convo, $this->in->getString('partial_message'));
 
 		return $this->createJsonpResponse(array());
 	}
@@ -243,6 +258,16 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	{
 		$chat_manager = $this->getChatManager($session_code);
 		$convo = $chat_manager->getChat();
+		$session = $chat_manager->getSession();
+
+		if (!$convo) {
+			if ($this->in->getUint('conversation_id')) {
+				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
+					$convo = null;
+				}
+			}
+		}
 
 		if (!$convo) {
 			return $this->createResponse('');
@@ -250,6 +275,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		if ($convo['status'] != ChatConversation::STATUS_ENDED) {
 			$chat_manager->endChatUser($convo);
+		}
+
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonpResponse(array('ended' => true));
 		}
 
 		if ($this->in->getBool('process')) {

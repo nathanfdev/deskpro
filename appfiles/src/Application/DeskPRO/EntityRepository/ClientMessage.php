@@ -22,7 +22,7 @@ class ClientMessage extends EntityRepository
 {
 	/**
 	 * Get message data suitable to return
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @param \Application\DeskPRO\HttpFoundation\Session $session
 	 * @param int $since
@@ -91,7 +91,7 @@ class ClientMessage extends EntityRepository
 
 	/**
 	 * Get messages for a client for specific channels
-	 * 
+	 *
 	 * @param  $client_id
 	 * @param null $person_id
 	 * @param array $channels
@@ -120,7 +120,10 @@ class ClientMessage extends EntityRepository
 		$qb->select('m');
 		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
 
-		$qb->andWhere('m.created_by_client != :n_created_by_client');
+		// Dont get our own messages, unless they're chat messages then we'll
+		// handle them specially in the code. But we deliver them anyway to consolodate
+		// some UI syncing based on return of AJAX requests
+		$qb->andWhere('m.created_by_client != :n_created_by_client OR (m.channel LIKE \'chat.%\') OR (m.channel LIKE \'chat_convo.%\')');
 		$params['n_created_by_client'] = $client_id;
 
 		if ($person_id) {
@@ -189,6 +192,14 @@ class ClientMessage extends EntityRepository
 		$channels = array();
 		foreach ($channels_obj as $ch) {
 			$channels[] = $ch['channel'];
+		}
+
+		$person = App::findEntity('DeskPRO:Person', $person_id);
+		if ($person->is_agent && $since_id) {
+			$channels[] = 'chat.new';
+			$channels[] = 'chat.reassigned';
+			$channels[] = 'chat.unassigned';
+			$channels[] = 'chat.ended';
 		}
 
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);

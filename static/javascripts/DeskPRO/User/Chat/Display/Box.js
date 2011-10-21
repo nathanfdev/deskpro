@@ -8,8 +8,6 @@ var DpChat_Display = (function() {
 	var messageWrapper = null;
 	var findingAgentEl = null;
 
-	var typingFuncTime = null;
-
 	var self = this;
 
 	var $ = null;
@@ -78,6 +76,7 @@ var DpChat_Display = (function() {
 				html.push('<div class="dpchat-finding-agent">Please wait while we find an agent to take your chat.</div>');
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
+			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a></div>')
 		html.push('</div>');
 
 		var el = $(html.join(''));
@@ -95,7 +94,6 @@ var DpChat_Display = (function() {
 			ev.stopPropagation();
 
 			var altData = getAltFormData();
-			console.log(altData);
 			DpChat.sendMessage('', altData);
 			self.addMessageRow(false, false, 'justStart');
 		});
@@ -115,9 +113,13 @@ var DpChat_Display = (function() {
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');
-		messageTextarea.keypress(function(ev) {
+		messageTextarea.keyup(function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
-
+		});
+		messageTextarea.change(function(ev) {
+			DpChat.userTypingIndicator(messageTextarea.val());
+		});
+		messageTextarea.keypress(function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				doSend();
@@ -131,6 +133,10 @@ var DpChat_Display = (function() {
 		});
 	};
 
+	this.getMessage = function() {
+		return $('#dpchat_input > textarea').val();
+	};
+
 	var doSend = function() {
 		var messageTextarea = $('#dpchat_input > textarea');
 
@@ -139,10 +145,6 @@ var DpChat_Display = (function() {
 
 		if (!msg.length) {
 			return;
-		}
-
-		if (typingFuncTime) {
-			window.clearTimeout(typingFuncTime);
 		}
 
 		DpChat.sendMessage(msg, getAltFormData());
@@ -255,7 +257,6 @@ var DpChat_Display = (function() {
 
 		var el = $(html.join(''));
 		if (is_html) {
-			console.log(message);
 			$('.dpchat-msg', el).html(message);
 		} else {
 			message = DpChat.util.escapeHtml(message);
@@ -269,6 +270,18 @@ var DpChat_Display = (function() {
 
 		return el;
 	};
+
+	this.showEnd = function() {
+		$('#dpchat_input').hide();
+		$('#dpchat_endchat').hide();
+		$('#dpchat_ended').show();
+
+		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinisehdUrl()).click(function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			window.open(DpChat.getFinisehdUrl());
+		});
+	},
 
 	this.destroy = function() {
 		chatBox.remove();

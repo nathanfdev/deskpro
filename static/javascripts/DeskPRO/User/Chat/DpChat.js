@@ -69,6 +69,9 @@ var DpChat = (function() {
 
 	var showProactiveChat = false;
 
+	var conversationId = 0;
+	var lastMessageId = 0;
+
 	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
@@ -267,22 +270,13 @@ var DpChat = (function() {
 	var ajaxPoller = this.ajaxPoller = {
 		options: {
 			interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
-			alwaysRequest: true,
 			initialDelay: 1500
 		},
 		filterdData: [],
 		disable: false,
 		maxDelayTimers: [],
-		lastMessageId: null,
 
 		init: function() {
-
-			var selfPoller = this;
-			this.addData(function () {
-				if (!selfPoller.lastMessageId) return null;
-				return { 'name': 'since', 'value': selfPoller.lastMessageId};
-			}, 'since', { recurring: true });
-
 			this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
 		},
 
@@ -309,7 +303,7 @@ var DpChat = (function() {
 
 			this._clearDelays();
 
-			if (this.disable || (!this.options.alwaysRequest && !this.filterdData.length)) {
+			if (this.disable) {
 				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 				return;
 			}
@@ -346,10 +340,14 @@ var DpChat = (function() {
 				sent_info.push([item_orig_data, item_name, item_opts]);
 			}
 
-			if (!this.options.alwaysRequest && !sent_info.length) {
-				this._handleAjaxSuccess({}, sent_info);
-				return;
-			}
+			send_data.push({
+				name: 'since',
+				value: lastMessageId
+			});
+			send_data.push({
+				name: 'conversation_id',
+				value: conversationId
+			});
 
 			//------------------------------
 			// Send data
@@ -363,7 +361,15 @@ var DpChat = (function() {
 				data: send_data,
 				dataType: 'jsonp',
 				success: function (data) {
-					this._handleAjaxSuccess(data, sent_info);
+					if (data.conversation_id) {
+						conversationId = data.conversation_id;
+					}
+					if (data.last_id) {
+						lastMessageId = data.last_id;
+					}
+					this._handleAjaxSuccess({
+						messages: data.messages
+					}, sent_info);
 				}
 			});
 		},
@@ -393,16 +399,11 @@ var DpChat = (function() {
 				return;
 			}
 
-			if (data.last_id) {
-				this.lastMessageId = data.last_id;
-			}
-
 			if (data.messages.length) {
-				console.log('Messages: %o', data.messages);
-
 				var message = null;
 				while (message = data.messages.shift()) {
-					messageBroker.sendMessage(message[0], message[1]);
+					var name = message[0].replace(/chat_convo\.([0-9]+)\./, '');
+					messageBroker.sendMessage(name, message[1]);
 				}
 			}
 
@@ -435,9 +436,6 @@ var DpChat = (function() {
 		hasStarted = true;
 		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
 
-		ajaxPoller.options.interval = 2000;
-		ajaxPoller.disable = false;
-
 		data = data || [];
 		data.push({
 			name: 'content',
@@ -450,7 +448,12 @@ var DpChat = (function() {
 			context: this,
 			crossDomain: true,
 			data: data,
-			dataType: 'jsonp'
+			dataType: 'jsonp',
+			success: function() {
+				ajaxPoller.options.interval = 2000;
+				ajaxPoller.disable = false;
+				ajaxPoller.send();
+			}
 		});
 	};
 
@@ -465,9 +468,12 @@ var DpChat = (function() {
 
 	var sendTypingIndicator;
 	sendTypingIndicator = function() {
-		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
-		typingIndicatorMsg = $.trim(typingIndicatorMsg);
-		if (!typingIndicatorMsg.length) return;
+		if (typingIndicatorTime) {
+			window.clearTimeout(typingIndicatorTime);
+			typingIndicatorTime = null;
+		}
+
+		typingIndicatorMsg = $.trim(DpChat_Display.getMessage());
 
 		$.ajax({
 			cache: false,
@@ -539,19 +545,18 @@ var DpChat = (function() {
 			hasStarted = true;
 
 			for (var i = 0; i < initialMessages.length; i++) {
-				console.log(initialMessages);
-				if (initialMessages[i].message_html) {
+				if (initialMessages[i].is_html) {
 					display.addMessageRow(
-						initialMessages[i].name,
-						initialMessages[i].message_html,
-						initialMessages[i].type,
+						initialMessages[i].author_name,
+						initialMessages[i].content,
+						initialMessages[i].author_type,
 						true
 					);
 				} else {
 					display.addMessageRow(
-						initialMessages[i].name,
-						initialMessages[i].message,
-						initialMessages[i].type
+						initialMessages[i].author_name,
+						initialMessages[i].content,
+						initialMessages[i].author_type
 					);
 				}
 			}
@@ -563,9 +568,7 @@ var DpChat = (function() {
 			chatAssigned({agent_id:1});
 		}
 
-		messageBroker.addMessageListener('chat.message', addIncomingMessage);
-		messageBroker.addMessageListener('chat.chat-ended', endChat);
-		messageBroker.addMessageListener('chat_user.chat-assigned', chatAssigned);
+		messageBroker.addMessageListener('newmessage', addIncomingMessage);
 
 		if (showProactiveChat) {
 			display.showProactive();
@@ -598,22 +601,43 @@ var DpChat = (function() {
 	};
 
 	var addIncomingMessage = function(data) {
-		if (data.message_html) {
-			display.addMessageRow(data.author_name, data.message_html, data.author_type, true);
+		if (data.metadata.chat_unassigned) {
+			chatAssigned({ agent_id: 0 });
+		}
+		if (data.metadata.chat_assigned) {
+			chatAssigned({ agent_id: data.metadata.assigned_to });
+		}
+
+		if (data.is_html) {
+			display.addMessageRow(data.author_name, data.content, data.author_type, true);
 		} else {
-			display.addMessageRow(data.author_name, data.message, data.author_type);
+			display.addMessageRow(data.author_name, data.content, data.author_type);
+		}
+
+		if (data.metadata.chat_ended) {
+			endChat();
 		}
 	};
 
 	var endChat = this.endChat = function() {
-
 		if (hasEnded) return; //already ended
 		hasEnded = true;
-
-		display.openIframeOverlay(options.deskproUrl + 'chat/chat-finished/' + sessionCode);
-		display.destroy();
 		ajaxPoller.disable = true;
 		ajaxPoller._clearDelays();
+
+		$.ajax({
+			cache: false,
+			url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId,
+			context: this,
+			crossDomain: true,
+			dataType: 'jsonp'
+		});
+
+		DpChat_Display.showEnd();
+	};
+
+	this.getFinisehdUrl = function() {
+		return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
 	};
 
 	return this;

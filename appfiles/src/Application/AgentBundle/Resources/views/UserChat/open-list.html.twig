@@ -1,35 +1,42 @@
-<script>
+{% extends 'AgentBundle:Common:common-listing.html.twig' %}
+{% block pagemeta %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.OpenChats';
 pageMeta.agent_id = {{ agent.id|default(0)}};
-</script>
-<header class="section-header">
-	<h1>
-		{% if agent %}
-			{{ agent.display_name }}
-		{% else %}
-			Unassigned
-		{% endif %}
-	</h1>
-</header>
-<div class="pad">
-	<div class="inner-box-tab-content box-list no-pad">
-		<table class="list" cellspacing="0" width="100%">
-			<thead class="display-options-trigger dbl-click-trigger nosel">
-				<tr>
-					<th>Subject</th>
-					<th>User</th>
-					<th>Time</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for convo in convos %}
-					<tr class="line-1 with-route" data-route="page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}">
-						<td>{{ convo.subject }}</td>
-						<td>{{ convo.person_name|default('Guest') }}</td>
-						<td>{{ convo.date_created|date('H:m') }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-</div>
+{% endblock pagemeta %}
+{% block listing %}
+    <section class="search-reuslts page-set">
+    	{% for convo in convos %}
+    		<article
+    			class="row-item convo-{{ convo.id }} without-selection"
+    			data-convo-id="{{ convo.id }}"
+    			data-route="page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+    			<div class="top-row">
+    				<div class="top-row-left">
+    					<h3>
+    						<a class="subject click-through">
+    							{{ convo.subjectLine }}
+    						</a>
+    					</h3>
+    				</div>
+    			</div>
+    			<div class="userinfo general">
+    				By {% if convo.person %}
+						<a
+							class="user-link as-popover"
+							data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
+						>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
+					{% elseif convo.person_name or convo.person_email %}
+						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
+					{% else %}
+						Anonymous
+					{% endif %}
+    				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
+    			</div>
+    		</article>
+    	{% else %}
+    		<article class="row-item">
+	    		<p style="padding: 15px;">There are no open chats.</p>
+    		</article>
+    	{% endfor %}
+    </section>
+{% endblock listing %}

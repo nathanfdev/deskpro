@@ -43,6 +43,14 @@
 	border: 1px solid #633737;
 }
 
+.deskpro-overlay-outer.normal-size {
+
+}
+.deskpro-overlay.normal-size {
+	width: 400px;
+	height: 300px;
+}
+
 .close-overlay {
 	background: transparent url(../../../images/agent/closeOvelay.png) no-repeat 50% 50%;
 	width: 35px;

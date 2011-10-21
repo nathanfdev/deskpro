@@ -1,11 +1,10 @@
-{% extends 'UserBundle::layout-simple-popup.html.twig' %}
-{% block head %}
-<style>
-#container {
-	margin: 8px;
-}
-</style>
-{% endblock %}
+{% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-	Your chat transcript has been sent! You can now close this popup.
+	<div class="dp-content-block dp-profile-page">
+		<div class="dp-box">
+			<div class="dp-box-content-wrapper">
+				Your chat transcript has been sent.
+			</div>
+		</div>
+	</div>
 {% endblock %}

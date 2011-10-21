@@ -62,6 +62,9 @@ class MainController extends AbstractController
 			$has_raw_assets = false;
 		}
 
+		// Auto-load chats in tabs if assigned to an agent
+		$open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
@@ -85,6 +88,7 @@ class MainController extends AbstractController
 			'idea_categories'      => $idea_categories,
 			'idea_active_status_cats' => $idea_active_status_cats,
 			'idea_closed_status_cats' => $idea_closed_status_cats,
+			'open_chats' => $open_chats,
 		));
     }
 }

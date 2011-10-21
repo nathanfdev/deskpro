@@ -11,4 +11,6 @@
 	'user.chat.assigned_to' => 'Chat assigned to {{name}}',
 	'user.chat.user_joined' => '{{name}} joined the chat',
 	'user.chat.user_left'   => '{{name}} left the chat',
+
+	'user.chat.set_department' => '{{name}} set department to {{department}}',
 );

@@ -106,6 +106,41 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 			},
 
+			ajaxWithClientMessages: function(options) {
+
+				if (!options.data) {
+					options.data = [];
+				}
+
+				// Assume a k:v object, convert it to an array
+				if (!options.data.push) {
+					var newData = [];
+					Object.each(options.data, function(v, k) {
+						newData.push({ name: k, value: v});
+					});
+
+					options.data = newData;
+				}
+
+				options.data.push({
+					name: 'client_messages_since',
+					value: DeskPRO_Window.getLastClientMessageId()
+				});
+
+				var old_success = options.success || function() {};
+
+				options.success = function(data) {
+					if (data.client_messages) {
+						DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
+					}
+					old_success(data);
+				}
+
+				options.dataType = 'json';
+
+				$.ajax(options);
+			},
+
 			slugify: function(str) {
 				str = str.replace(/[^a-zA-Z0-9\-]/g, '-');
 				str = str.replace(/\-{2,}/g, '-');

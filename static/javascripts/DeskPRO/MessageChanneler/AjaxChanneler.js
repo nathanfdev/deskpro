@@ -76,7 +76,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			window.clearTimeout(this._add_subs_timeout);
 		}
 
-		this._add_subs_timeout = this._sendSubscribeChannels.delay(300, this);
+		this._add_subs_timeout = this._sendSubscribeChannels.delay(10, this);
 
 		if (callback) {
 			this.messageBroker.addMessageListener(channel, callback, context);
@@ -109,15 +109,15 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			window.clearTimeout(this._del_subs_timeout);
 		}
 
-		this._del_subs_timeout = this._sendUnsubscribeChannels.delay(300, this);
+		this._del_subs_timeout = this._sendUnsubscribeChannels.delay(10, this);
 	},
 
 	_sendUnsubscribeChannels: function() {
 		var data = [];
-		Array.each(this._add_subs, function(v){
+		Array.each(this._del_subs, function(v){
 			data.push({ name: 'channels[]', value: v });
 		});
-		this._add_subs = [];
+		this._del_subs = [];
 
 		$.ajax({
 			url: this.options.ajaxUnsubscribeUrl,

@@ -369,11 +369,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this->_user_participants[] = $person;
 		}
 
-		// Insert left message if they arent a part and arent assigned
-		if (!$suppress_sys_msg and $person['id'] != $this->agent['id']) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_joined', array('person_name' => $person['display_name'])));
-		}
-
 		return $person;
 	}
 
@@ -395,11 +390,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->participants as $k => $p) {
 			if ($p['id'] == $person['id']) {
 				$this->participants->remove($k);
-
-				// Insert left message if they arent a part and arent assigned
-				if (!$suppress_sys_msg and $p['id'] != $this->agent['id']) {
-					$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_left', array('person_name' => $p['display_name'])));
-				}
 
 				return $p;
 			}
@@ -429,8 +419,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 				$this['date_ended'] = new \DateTime();
 			}
 
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_ended'));
-
 		} else {
 			if ($this->date_ended) {
 				$this['date_ended'] = null;
@@ -459,12 +447,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->agent = $agent;
 		if ($agent AND !$this->date_assigned) {
 			$this['date_assigned'] = new \DateTime();
-		}
-
-		if ($agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name' => $agent['display_name'])));
-		} elseif ($old_agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name' => $old_agent['display_name'])));
 		}
 
 		// Make sure the user isnt both assigned and a part

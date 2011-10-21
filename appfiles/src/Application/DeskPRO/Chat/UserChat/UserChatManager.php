@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Translate\Translate;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Visitor;
 use Application\DeskPRO\Entity\ChatConversation;
@@ -177,6 +178,53 @@ class UserChatManager
 
 
 	/**
+	 * Change the department of a chat
+	 *
+	 * @throws \Exception
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param \Application\DeskPRO\Entity\Department|null $dep
+	 * @param \Application\DeskPRO\Entity\Person $who
+	 * @return
+	 */
+	public function setDepartment(ChatConversation $convo, Department $dep = null, Person $who)
+	{
+		// Already the departmetn
+		if (!$dep && !$convo->department) {
+			return;
+		}
+		if ($dep && $convo->department && $convo->department->id == $dep->id) {
+			return;
+		}
+
+		$old_dep_id = $convo->department_id;
+
+		$this->em->beginTransaction();
+		try {
+			$convo->department = $dep;
+			$this->em->persist($convo);
+
+			if ($dep) {
+				$dep_name = $dep->full_title;
+			} else {
+				$dep_name = $this->tr->phrase('user.none');
+			}
+			$this->addSystemMessage(
+				$convo,
+				'user.chat.set_department',
+				array('name' => $who->display_name, 'department' => $dep_name),
+				array('department_changed' => true, 'new_department_id' => $convo->department_id)
+			);
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * Assigns a chat to an agent
 	 *
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
@@ -189,6 +237,11 @@ class UserChatManager
 			throw new \InvalidArgumentException("Person `{$agent->id}` is not an agent");
 		}
 
+		// Already assigned to that agent
+		if ($convo->agent && $convo->agent->id == $agent->id) {
+			return;
+		}
+
 		$old_agent_id = $convo->agent_id;
 
 		$this->em->beginTransaction();
@@ -196,7 +249,7 @@ class UserChatManager
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true));
+			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true, 'assigned_to' => $agent->id));
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
@@ -225,6 +278,11 @@ class UserChatManager
 	 */
 	public function unassignAgent(ChatConversation $convo)
 	{
+		// Already unassigned
+		if (!$convo->agent) {
+			return;
+		}
+
 		$old_agent_id = $convo->getAgentId();
 
 		$this->em->beginTransaction();
@@ -233,7 +291,6 @@ class UserChatManager
 			$this->em->persist($convo);
 
 			$this->addSystemMessage($convo, 'user.chat.unassigned', array(), array('chat_unassigned' => true));
-			$this->em->persist($cm);
 
 			// Try to reassign
 			if ($this->auto_assigner) {
@@ -245,13 +302,14 @@ class UserChatManager
 
 			// If no agent auto-assigned,
 			// need to broadcast an alert to other agents
-			if (!$convo->agent) {
+			if (!$convo->agent && $convo->status == 'open') {
 				$cm = new ClientMessage();
 				$cm->fromArray(array(
 					'channel' => 'chat.unassigned',
 					'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
 					'created_by_client' => $this->session->getId(),
 				));
+				$this->em->persist($cm);
 			}
 
 			$this->em->flush();
@@ -269,6 +327,11 @@ class UserChatManager
 	 */
 	public function endChat(ChatConversation $convo, Person $author, $reason = '')
 	{
+		// Already ended
+		if ($convo->status == 'ended') {
+			return;
+		}
+
 		$convo->status = 'ended';
 
 		$this->em->beginTransaction();
@@ -277,9 +340,9 @@ class UserChatManager
 			$this->em->persist($convo);
 
 			if ($author) {
-				$this->addSystemMessage($convo, 'ended_by', array('name' => $author->getDisplayName()), array('chat_ended'));
+				$this->addSystemMessage($convo, 'user.chat.ended_by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
 			} else {
-				$this->addSystemMessage($convo, 'ended', array(), array('chat_ended'));
+				$this->addSystemMessage($convo, 'user.chat.ended', array(), array('chat_ended' => true));
 			}
 
 			$cm = new ClientMessage();
@@ -309,6 +372,11 @@ class UserChatManager
 	 */
 	public function endChatUser(ChatConversation $convo)
 	{
+		// Already ended
+		if ($convo->status == 'ended') {
+			return;
+		}
+
 		$convo->status = 'ended';
 
 		$this->em->beginTransaction();
@@ -316,7 +384,7 @@ class UserChatManager
 		try {
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'ended_user', array(), array('chat_ended'));
+			$this->addSystemMessage($convo, 'user.chat.ended_user', array(), array('chat_ended'));
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
@@ -376,6 +444,12 @@ class UserChatManager
 			unset($metadata['user_hidden']);
 		}
 
+		if (isset($metadata['is_html'])) {
+			$msg->is_html = true;
+			unset($metadata['is_html']);
+		}
+
+		$msg->metadata = $metadata;
 		$convo->addMessage($msg);
 
 		$this->em->beginTransaction();
@@ -389,10 +463,11 @@ class UserChatManager
 				$channel = $convo->getChannelId('newmessage_hidden');
 			}
 
+			$data = $msg->getInfo();
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $channel,
-				'data' => $msg->getInfo(),
+				'data' => $data,
 				'created_by_client' => $this->session->getId()
 			));
 
@@ -416,7 +491,7 @@ class UserChatManager
 	 */
 	public function addSystemMessage(ChatConversation $convo, $message_id, array $vars = array(), $metadata = array())
 	{
-		$message = $this->tr->phrase('user.chat.' . $message_id, $vars);
+		$message = $this->tr->phrase($message_id, $vars);
 
 		$msg = new ChatMessage();
 		$msg->is_sys = true;
@@ -448,6 +523,7 @@ class UserChatManager
 				'data' => $msg->getInfo(),
 				'created_by_client' => $this->session->getId()
 			));
+			$this->em->persist($cm);
 
 			$this->em->flush();
 			$this->em->commit();
@@ -470,15 +546,13 @@ class UserChatManager
 		$this->em->beginTransaction();
 
 		try {
-			$this->em->persist($msg);
-			$this->em->persist($convo);
-
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $convo->getChannelId('usertyping'),
 				'data' => array('preview' => $preview_string),
 				'created_by_client' => $this->session->getId()
 			));
+			$this->em->persist($cm);
 
 			$this->em->flush();
 			$this->em->commit();
@@ -486,8 +560,6 @@ class UserChatManager
 			$this->em->rollback();
 			throw $e;
 		}
-
-		return $msg;
 	}
 
 
