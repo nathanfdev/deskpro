@@ -168,13 +168,13 @@ pageMeta.baseId = '{{ baseId }}';
 			<input type="text" class="filter-box" placeholder="Filter..." />
 		</header>
 		<ul class="with-agents-online">
-			<li>
-				<input type="radio" name="{{baseId}}_agent" value="0" />
+			<li class="agent-row agent-0">
+				<input type="radio" name="{{baseId}}_agent" value="0" style="display: none" />
 				<label><span class="agent-pic agent-label-0">Unassigned</span></label>
 			</li>
 
-			<li class="me last-me {% if convo.agent.id == app.user.id %}on{% endif %}">
-				<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if convo.agent.id == app.user.id or not convo.agent %}checked="checked"{% endif %} />
+			<li class="me last-me agent-row agent-{{ app.user.id }} {% if convo.agent.id == app.user.id %}on{% endif %}">
+				<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if convo.agent.id == app.user.id or not convo.agent %}checked="checked"{% endif %} style="display: none" />
 				<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
 			</li>
 
@@ -188,9 +188,6 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 			{% endfor %}
 		</ul>
-		<div class="without-agents-online" style="padding: 5px; display: none;">
-			There are no other agents online to take this chat.
-		</div>
 	</section>
 </div>
 

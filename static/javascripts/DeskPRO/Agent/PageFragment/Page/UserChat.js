@@ -376,6 +376,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				var any = false;
 				$('.agent-row', wrap).each(function() {
+					if ($(this).is('.agent-0, .me')) return;
+
 					var aid = $(this).data('agent-id');
 					var check = $('#agent_online_list .agent-' + aid);
 					if (!check.length) {
@@ -386,15 +388,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					}
 				});
 
-				var list = $('.with-agents-online', wrap);
-				var nolist = $('.without-agents-online', wrap);
-				if (!any) {
-					list.hide();
-					nolist.show();
-				} else {
-					list.hide();
-					nolist.show();
-				}
+				$('input:checked', wrap).each(function() {
+					$(this).closest('li').addClass('on');
+				});
 			},
 			onClose: function(ob) {
 				var agentId = parseInt(ob.getSelected('agents')) || 0;

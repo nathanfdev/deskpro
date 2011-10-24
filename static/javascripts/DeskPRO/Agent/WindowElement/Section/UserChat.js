@@ -14,6 +14,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
 		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
 
+		this.dismissedChats = {};
+
 		this._initMessageHandlers();
 	},
 
@@ -97,10 +99,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleNewChat: function(data) {
 		this.modListingCount(data.agent_id, '+');
 		if (!data.agent_id) {
-			this.showNewChatAlert(data, {
-				name: data.author_name,
-				message: data.initial_message || data.subject_line
-			});
+			if (!this.dismissedChats[data.conversation_id]) {
+				this.showNewChatAlert(data, {
+					name: data.author_name,
+					message: data.initial_message || data.subject_line
+				});
+			}
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
@@ -112,10 +116,17 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.modListingCount(data.old_agent_id, '-');
 		this.modListingCount(0, '+');
 
-		this.showNewChatAlert(data, {
-			name: data.author_name,
-			message: data.subject_line
-		});
+		// Means we were the agent, but unassassigned ourselves
+		if (data.old_agent_id && data.old_agent_id == DESKPRO_PERSON_ID) {
+			this.dismissedChats[data.conversation_id] = true;
+		}
+
+		if (!this.dismissedChats[data.conversation_id]) {
+			this.showNewChatAlert(data, {
+				name: data.author_name,
+				message: data.subject_line
+			});
+		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.unassigned', data);
 	},
@@ -123,6 +134,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleReassignedChat: function(data) {
 		this.modListingCount(data.old_agent_id, '-');
 		this.modListingCount(data.agent_id, '+');
+
+		// Means we were the agent, but unassassigned ourselves
+		if (data.old_agent_id && data.old_agent_id == DESKPRO_PERSON_ID) {
+			this.dismissedChats[data.conversation_id] = true;
+		}
 
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.reassigned', data);
@@ -135,6 +151,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleEndedChat: function(data) {
 		this.modListingCount(data.agent_id, '-');
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
+
+		if (this.dismissedChats[data.conversation_id]) {
+			delete this.dismissedChats[data.conversation_id];
+		}
 	},
 
 	handleAddedAsPart: function(data) {
@@ -179,12 +199,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.handleSoundElements(alertEl);
 
 		var audio = $('audio', alertEl).get(0);
+		var self = this;
 
 		$('.dismiss-trigger', alertEl).click(function() {
 			if (audio) {
 				audio.pause();
 			}
 			alertEl.remove();
+			self.dismissedChats[data.conversation_id] = true;
 		});
 		$('.accept-trigger', alertEl).click(function(ev) {
 			ev.stopPropagation();
