@@ -182,6 +182,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewIdea.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonSession.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',

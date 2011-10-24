@@ -40,7 +40,7 @@ class PersonController extends AbstractController
 		));
 	}
 
-	public function viewAction($person_id)
+	public function viewAction($person_id, $with_warn_for_email = false)
 	{
 		if ($person_id) {
 			$person = $this->getPersonOr404($person_id);
@@ -112,6 +112,11 @@ class PersonController extends AbstractController
 		}
 
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionForPerson($person);
+		if ($session) {
+			$visitor = $session->visitor;
+		} else {
+			$visitor = $this->em->getRepository('DeskPRO:Visitor')->getVisitorForPerson($person);
+		}
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -135,11 +140,16 @@ class PersonController extends AbstractController
 			}
 		}
 
+		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
+		$person_chats_count = count($person_chats);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
+			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
 			'person_usergroups_ids' => $person_usergroups_ids,
 			'person_org_usergroups_ids' => $person_org_usergroups_ids,
 			'session' => $session,
+			'visitor' => $visitor,
 			'timezone_options' => $timezone_options,
 			'usergroup_names' => $usergroup_names,
 			'contact_data' => $contact_data,
@@ -147,6 +157,8 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
+			'person_chats' => $person_chats,
+			'person_chats_count' => $person_chats_count,
 			'person_tickets_initial' => $person_tickets_initial,
 			'person_tickets_count' => $person_tickets_count,
 			'org_members_count' => $org_members_count,
@@ -162,8 +174,28 @@ class PersonController extends AbstractController
 	{
 		$session = App::findEntity('DeskPRO:Session', $session_id);
 
-		return $this->render('AgentBundle:Person:session-info.html.twig', array(
-			'session' => $session
+		if ($session->is_person) {
+			return $this->viewAction($session->person->id);
+		}
+
+		$visitor = $session->visitor;
+		$related_person = null;
+		if ($session->visitor->email) {
+			$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($session->visitor->email);
+
+			if ($related_person) {
+				return $this->viewAction($related_person->id, $session->visitor->email);
+			}
+		}
+
+		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($session->visitor);
+		$person_chats_count = count($person_chats);
+
+		return $this->render('AgentBundle:Person:view-session.html.twig', array(
+			'person_chats'       => $person_chats,
+			'person_chats_count' => $person_chats_count,
+			'session'            => $session,
+			'visitor'            => $visitor,
 		));
 	}
 

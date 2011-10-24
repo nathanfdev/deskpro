@@ -60,10 +60,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this._initMenus();
 		this._initAssignControl();
 
-		this.tabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li', this.getEl('tabs'))
-		});
-
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this);

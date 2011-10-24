@@ -130,6 +130,16 @@ class UserChatManager
 			$this->em->persist($convo);
 			$this->em->flush();
 
+			// Update the visitor name/email while we have a chance,
+			// its used elsewhere and stays for a long time
+			if ($convo->person_name) {
+				$this->visitor->name = $convo->person_name;
+			}
+			if ($convo->person_email) {
+				$this->visitor->email = $convo->person_email;
+			}
+			$this->em->persist($this->visitor);
+
 			if ($is_new_convo) {
 				$this->addSystemMessage($convo, 'user.chat.msg_started', array(), array(
 					'user_hidden' => true,

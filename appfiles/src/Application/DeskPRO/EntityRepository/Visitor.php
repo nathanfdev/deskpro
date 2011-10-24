@@ -38,6 +38,22 @@ class Visitor extends EntityRepository
 	}
 
 
+
+	/**
+	 * @return Visitor
+	 */
+	public function getVisitorForPerson($person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT v
+			FROM DeskPRO:Visitor v
+			WHERE v.person = ?1
+			ORDER BY v.id DESC
+		")->setMaxResults(1)
+		  ->setParameter(1, $person)
+		  ->getOneOrNullResult();
+	}
+
 	/**
 	 * @return Visitor
 	 */

@@ -198,6 +198,18 @@ class ChatConversation extends EntityRepository
 		")->setParameter(1, $visitor)->execute();
 	}
 
+	public function getPastChatsForPerson($person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
+			ORDER BY c.id ASC
+		")->setParameter(1, $person)
+		  ->setParameter(2, $person->getPrimaryEmailAddress())
+		  ->execute();
+	}
+
 	public function getLatestChatForSession($session, $active = true)
 	{
 		try {

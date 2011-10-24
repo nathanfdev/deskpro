@@ -243,6 +243,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.cancel', box).click(function() {
 			propToggle('display');
 		});
+
+		var tabWarn = $('.full-tab-warn', this.el);
+		if (tabWarn.length) {
+			$('.dismiss-trigger', tabWarn).click(function() {
+				tabWarn.fadeOut('fast', function() {
+					tabWarn.remove();
+				});
+			});
+		}
 	},
 
 	refreshPropBox: function() {

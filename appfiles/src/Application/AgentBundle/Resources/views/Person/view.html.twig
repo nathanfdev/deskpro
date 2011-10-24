@@ -72,6 +72,19 @@ pageMeta.baseId = '{{ baseId }}';
 {% include 'AgentBundle:Person:contact-overlay.html.twig' %}
 
 {# Page Containers #}
-</div></div>
+</div>
+{% if with_warn_for_email %}
+<div class="full-tab-warn">
+	<div class="message">
+		The email address {{ with_warn_for_email }} matches this profile. But
+		because the user has not logged in to the helpdesk, we cannot verify their
+		identity. Be careful not to release any sensitive information.
+		<div class="controls">
+			<button class="clean-white dismiss-trigger">Okay</button>
+		</div>
+	</div>
+</div>
+{% endif %}
+</div>
 </div>
 {# /Page Containers #}
