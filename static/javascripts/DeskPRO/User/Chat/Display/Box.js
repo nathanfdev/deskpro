@@ -80,6 +80,14 @@ var DpChat_Display = (function() {
 		html.push('</div>');
 
 		var el = $(html.join(''));
+
+		if (options.formValues && options.formValues.length) {
+			var x = 0;
+			for (x = 0; x < options.formValues.length; x++) {
+				$('[name="' + options.formValues[x][0] + '"]', el).val(options.formValues[x][1]);
+			}
+		}
+
 		el.appendTo('body');
 		chatBox = el;
 

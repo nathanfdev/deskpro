@@ -96,6 +96,7 @@ class UserChatManager
 		$convo = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($this->session);
 
 		$is_new_convo = false;
+		$new_person = false;
 		if (!$convo) {
 			$convo = new ChatConversation();
 			$convo->session = $this->session;
@@ -115,8 +116,28 @@ class UserChatManager
 			}
 			if (isset($chat_options['email'])) {
 				$convo->person_email = $chat_options['email'];
+
+				$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($chat_options['email']);
+				if ($related_person) {
+					$convo->person = $related_person;
+				} else {
+					$new_person = Person::newContactPerson();
+					if ($convo->person_name) {
+						$new_person->name = $convo->person_name;
+					}
+					$new_person->setEmail($convo->person_email);
+				}
 			}
 			$is_new_convo = true;
+
+			// Update the visitor name/email while we have a chance,
+			// its used elsewhere and stays for a long time
+			if ($convo->person_name) {
+				$this->visitor->name = $convo->person_name;
+			}
+			if ($convo->person_email) {
+				$this->visitor->email = $convo->person_email;
+			}
 		}
 
 		if ($is_window_mode) {
@@ -127,18 +148,14 @@ class UserChatManager
 
 		try {
 
-			$this->em->persist($convo);
-			$this->em->flush();
+			if ($new_person) {
+				$this->em->persist($new_person);
+				$this->em->flush();
+			}
 
-			// Update the visitor name/email while we have a chance,
-			// its used elsewhere and stays for a long time
-			if ($convo->person_name) {
-				$this->visitor->name = $convo->person_name;
-			}
-			if ($convo->person_email) {
-				$this->visitor->email = $convo->person_email;
-			}
+			$this->em->persist($convo);
 			$this->em->persist($this->visitor);
+			$this->em->flush();
 
 			if ($is_new_convo) {
 				$this->addSystemMessage($convo, 'user.chat.msg_started', array(), array(

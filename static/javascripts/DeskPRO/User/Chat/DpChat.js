@@ -72,6 +72,8 @@ var DpChat = (function() {
 	var conversationId = 0;
 	var lastMessageId = 0;
 
+	var formVars = [];
+
 	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
@@ -229,6 +231,16 @@ var DpChat = (function() {
 		var url = options.deskproUrl + 'chat/ignore-proactive';
 		var el = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
 	};
+
+	/**
+	 * Sets a value to be used in the template form
+	 *
+	 * @param {String} k
+	 * @param {Mixed} v
+	 */
+	this.setFormVar = function(k, v) {
+		formVars.push([k, v]);
+	}
 
 	//#################################################################
 	//# Simple implementations of message broker and poller
@@ -537,7 +549,8 @@ var DpChat = (function() {
 		ajaxPoller.init();
 		display.initDisplay({
 			jQuery: $,
-			departmentSelect: departmentSelect
+			departmentSelect: departmentSelect,
+			formValues: formVars
 		});
 
 		if (initialMessages) {
