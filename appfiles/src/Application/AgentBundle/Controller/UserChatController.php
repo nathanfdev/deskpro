@@ -63,7 +63,6 @@ class UserChatController extends AbstractController
 			'convo_messages' => $convo_messages,
 			'quick_replies' => $quick_replies,
 			'convo' => $convo,
-			'agent_names' => $agent_names,
 			'session' => $session,
 			'visitor' => $visitor,
 			'other_chats' => $other_chats,

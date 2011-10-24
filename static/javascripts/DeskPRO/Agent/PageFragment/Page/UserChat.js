@@ -376,20 +376,23 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var overlayWrapper = this.getEl('upfile_overlay');
 		this.uploadOverlay = o = new DeskPRO.UI.Overlay({
 			contentElement: overlayWrapper,
-			customClassname: 'normal-size'
+			customClassname: 'userchat-send-file'
 		});
 
 		var list = $('.file-list', overlayWrapper);
 
+		var drops = $([overlayWrapper.get(0), this.getEl('replybox').get(0)]);
+
 		overlayWrapper.fileupload({
 			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: overlayWrapper,
+			dropZone: drops,
 			autoUpload: true,
 			uploadTemplate: $('.template-upload', overlayWrapper),
 			downloadTemplate: $('.template-download', overlayWrapper)
 		});
 		overlayWrapper.bind('fileuploadadd', function() {
             $('ul.file-list', overlayWrapper).empty();
+			self.uploadOverlay.open();
         });
 
 		$('button.send-trigger', overlayWrapper).click(function() {

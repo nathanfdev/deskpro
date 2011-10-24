@@ -190,7 +190,19 @@ pageMeta.baseId = '{{ baseId }}';
 </ul>
 {% endif %}
 
-<div id="{{baseId}}_upfile_overlay" class="userchat-send-file" style="display: none;">
+<section id="{{baseId}}_upfile_overlay" style="display: none;">
+	<div class="overlay-title">
+		<h4>Send File</h4>
+	</div>
+	<div class="overlay-content">
+		<div class="file-input">
+			<input type="file" name="file-upload" multiple="multiple" size="15" /> (or drag a file onto this window)
+		</div>
+		<ul class="files file-list"></ul><br />
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white send-trigger">Send File</button>
+	</div>
 	<script class="template-upload" type="text/x-jquery-tmpl">
 		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
 	</script>
@@ -201,15 +213,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<span class="size">${filesize_readable}</span>
 		</li>
 	</script>
-	<div class="file-input">
-		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
-		<br />
-		Or drag and drop a file onto this window.
-	</div>
-	<ul class="files file-list"></ul><br />
-
-	<button class="dp-button x-small send-trigger">Send File</button>
-</div>
+</section>
 
 
 <div class="optionbox" id="{{baseId}}_agent_selector">
