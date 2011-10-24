@@ -565,13 +565,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._alertOverlay.openOverlay();
 	},
 
-	showConfirm: function(msg, callback_yes, callback_no) {
+	showConfirm: function(msg, callback_yes, callback_no, phrase_yes, phrase_no) {
 		this._initConfirmOverlay();
+
+		phrase_yes = phrase_yes || 'Okay';
+		phrase_no = phrase_no || 'Cancel';
 
 		this._confirmOverlay_callback_yes = callback_yes || function() { };
 		this._confirmOverlay_callback_no = callback_no || function() { };
 
 		$('#confirm_overlay_msg').html(msg);
+		$('#confirm_overlay_msg .okay-trigger').text(phrase_yes);
+		$('#confirm_overlay_msg .cancel-trigger').text(phrase_no);
+
 		this._confirmOverlay.openOverlay();
 	},
 
@@ -1486,7 +1492,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: 5000
+			interval: 2000
 		});
 	},
 

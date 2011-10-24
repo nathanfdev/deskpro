@@ -93,7 +93,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
-		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id);
+		var meta = {};
+		if (!data.metadata.new_user_track) {
+			meta.type = 'user-track';
+		}
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata);
 
 		// Add 'pop' sound
 		var alertEl = $.tmpl('user_chat_newmsg_sound');
@@ -155,6 +159,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		$('.prop-msg', el).text(data.preview);
 		el.detach().appendTo(this.getEl('messages_box'));
 		el.show();
+
+		this.getEl('messages_box').scrollTop(10000);
 	},
 
 	_initMenus: function() {
@@ -228,7 +234,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
-	addMessageRow: function(name, msg, type, is_html, message_id) {
+	addMessageRow: function(name, msg, type, is_html, message_id, metadata) {
 
 		if (message_id && $('.message-' + message_id, this.getEl('messages_box')).length) {
 			return;
@@ -249,7 +255,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			popoutclass = " person-overview";
 		}
 
-		var html = ['<div class="row '+type+'"><div class="message-content">'];
+		var addclass = '';
+		if (metadata && metadata.new_user_track) {
+			addclass = 'user-track';
+		}
+		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {
 				html.push('<div class="message prop-msg"></div><time></time>');
 			} else if (type == 'agent') {

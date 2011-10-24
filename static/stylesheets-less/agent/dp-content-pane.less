@@ -3536,16 +3536,47 @@ ul.item-list > li ul.controls > li.edit{
 .chat-transcript .row.sys {
 	font-size: 9px;
 	line-height: 115%;
-	color: #8D9092;
+	color: #000;
 	text-align: center;
 
 	padding: 2px 17px 2px 17px;
 
 	.message {
-	    display: inline;
+		display: inline;
+		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;
+		border: 1px solid #E1AC6C !important;
+		display: inline-block;
+		background-color: #FFC57A;
+		.rounded(3px);
+		line-height: 100%;
+		padding: 8px 6px 8px 6px;
+	}
+	.message-content {
 	}
 
-	.message-content {
+	time {
+		margin-left: 8px;
+		display: inline;
+
+	}
+
+	a {
+		color: #636568;
+	}
+	a:hover {
+		color: #000;
+	}
+}
+
+.chat-transcript .row.sys.user-track {
+
+	height: 12px;
+    text-align: right;
+    color: #8D9092;
+    .message {
+        float: right;
+        box-shadow: none;
+		border: none !important;
 		display: inline-block;
 		background-color: #E7EBEE;
 		.rounded(15px);
@@ -3554,15 +3585,9 @@ ul.item-list > li ul.controls > li.edit{
 	}
 
 	time {
-		margin-left: 8px;
-		display: inline;
-	}
-
-	a {
-		color: #636568;
-	}
-	a:hover {
-		color: #000;
+		color: #A9ABAD;
+		float:right;
+		margin-right: 5px;
 	}
 }
 
@@ -3604,21 +3629,34 @@ ul.item-list > li ul.controls > li.edit{
 }
 
 .chat-transcript .row.user-typing {
-    opacity: 0.8;
 	padding-right: 8px;
+	opacity: 0.8;
 
 	.chatRecieve {
 		max-width: 85%;
 	}
 
+	.chatRecieve {
+		text-shadow: none;
+	}
+
+	label {
+		font-weight: bold;
+		font-family: @heading-font;
+		font-size: 10px !important;
+	}
+
 	.chatMsgRecieve {
 		width: auto;
 		min-width: 50px;
-		font-style: italic;
+		padding: 3px 5px;
+		line-height: 100%;
 	}
 
 	.prop-msg {
 		display: inline;
+		font-style: italic;
+		font-size: 10px !important;
 	}
 }
 

@@ -55,7 +55,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_chat" class="on chat-tab">
 			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
-					<div class="row {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
+
+					<div class="row {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
 							<div class="message-content">
 								<div class="message">
@@ -102,8 +103,8 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="message-content">
 						<div class="chatRecieve">
 							<div class="chatMsgRecieve">
+								<label>Typing: </label>
 								<div class="prop-msg"></div>
-								<span class="dots">...</span>
 								<span class="bubbleRight"></span>
 							</div>
 						</div>
