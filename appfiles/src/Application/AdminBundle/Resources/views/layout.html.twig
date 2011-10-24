@@ -104,7 +104,7 @@
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 					<li class="setting" id="user_settings_link"><a>Settings</a></li>
 					<li class="help"><a>Help</a></li>
-					<li class="logout"><a href="{{ path('agent_logout') }}">Log out</a></li>
+					<li class="logout"><a href="{{ path('admin_logout', {'auth': security_token('user_logout')}) }}">Log out</a></li>
 				</ul>
 			</div>
 		</div>

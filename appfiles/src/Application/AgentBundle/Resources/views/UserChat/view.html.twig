@@ -55,8 +55,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_chat" class="on chat-tab">
 			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
-					<div class="row {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%}">
-						<time class="timeago" datetime="{{ message.date_created|date('c') }}"></time>
+					<div class="row {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
+						<time>{{ message.date_created|date('g:ia') }}</time>
 						<div class="name">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</div>
 						<div class="message">
 							{% if message.is_html %}

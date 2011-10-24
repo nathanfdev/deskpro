@@ -3,9 +3,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>Log In</title>
-	<script type="text/javascript">
-	if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
-	</script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
 	<style type="text/css">
 		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
@@ -94,20 +91,39 @@
 		p.error {
 			margin-bottom: 8px;
 		}
+
+		.exist-session {
+			text-align: center;
+
+		}
+
+		.exist-session h4 {
+			padding-top: 82px;
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			font-size: 12px;
+			font-weight: bold;
+			background-repeat: no-repeat;
+			background-position: 50% 0;
+		}
+
+		.exist-session input[type="password"] {
+			width: 150px;
+			margin: 8px auto 0 auto;
+			text-align: center;
+		}
 	</style>
-	<script type="text/javascript">
-	$(document).ready(function() {
-		$('<iframe id="preload_iframe" src="{{ path('agent_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
-	});
-	</script>
 </head>
 <body>
 
-<form action="{{ path('agent_login_authenticate_local') }}" method="post">
+<form action="{{ path('admin_login_authenticate_local') }}" method="post">
 <div id="login_wrapper">
 	<div id="login_box">
 		<header>
-			<h1>Log In</h1>
+			{% if agent_session %}
+				<h1>Enter your password</h1>
+			{% else %}
+				<h1>Log In</h1>
+			{% endif %}
 		</header>
 		<article>
 			<input type="hidden" name="agent_login" value="1" />
@@ -118,19 +134,32 @@
 				<p class="error">Invalid login. Please try again.</p>
 			{% endif %}
 
-			<table cellspacing="0" cellpadding="0" border="0" width="100%">
-				<tr>
-					<td>Email:</td>
-					<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
-				</tr>
-				<tr>
-					<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
-					<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
-				</tr>
-			</table>
+			{% if agent_session %}
+				<div class="exist-session">
+					<h4 style="background-image: url({{ agent_session.person.getPictureUrl(75) }});">{{ agent_session.person.display_name }}</h4>
+
+					<input type="hidden" name="email" id="email" value="{{ agent_session.person.primary_email_address }}" />
+					<input type="password" value="" name="password" id="password" size="40" placeholder="Re-enter your password" tabindex="2" />
+				</div>
+			{% else %}
+				<table cellspacing="0" cellpadding="0" border="0" width="100%">
+					<tr>
+						<td>Email:</td>
+						<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
+					</tr>
+					<tr>
+						<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
+						<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
+					</tr>
+				</table>
+			{% endif %}
 		</article>
 		<footer>
-			<button id="login_btn" tabindex="3">Log In</button>
+			{% if agent_session %}
+				<button id="login_btn" tabindex="3">Continue</button>
+			{% else %}
+				<button id="login_btn" tabindex="3">Log In</button>
+			{% endif %}
 		</footer>
 	</div>
 </div>

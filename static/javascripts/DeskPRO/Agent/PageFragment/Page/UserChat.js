@@ -71,10 +71,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	handleNewMessageCm: function(data, name) {
 
 		// Ignore our own messages, unless its a file then we have a rendered version from the server
-		if (data.author_id == DESKPRO_PERSON_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
+		if (data.author_type && data.author_type == 'agent' && data.from_client == DESKPRO_SESSION_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
 			return;
 		}
-		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html);
+
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id);
 
 		// Add 'pop' sound
 		var alertEl = $.tmpl('user_chat_newmsg_sound');
@@ -229,7 +230,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
-	addMessageRow: function(name, msg, type, is_html) {
+	addMessageRow: function(name, msg, type, is_html, message_id) {
+
+		if (message_id && $('.message-' + message_id, this.getEl('messages_box')).length) {
+			return;
+		}
 
 		if (type == 'user') {
 			this.userTyping({ preview: '' });
@@ -247,12 +252,39 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		var html = ['<div class="row '+type+'">'];
-			html.push('<time class="timeago"></time>');
+			html.push('<time></time>');
 			html.push('<div class="name' + popoutclass + '">' + name + '</div>');
 			html.push('<div class="message"></div>');
 		html.push('</div>');
 
 		var row = $(html.join(''));
+
+		var d = new Date();
+
+		var a_p = "am";
+		var curr_hour = d.getHours();
+		if (d.getHours() > 12) {
+			a_p = "pm";
+		}
+		if (curr_hour == 0) {
+			curr_hour = 12;
+		} else if (curr_hour > 12) {
+			curr_hour = curr_hour - 12;
+		}
+
+		var curr_min = d.getMinutes();
+		curr_min = curr_min + "";
+		if (curr_min.length == 1) {
+			curr_min = "0" + curr_min;
+		}
+
+
+		$('time', row).text(curr_hour + ":" + curr_min + "" + a_p);
+
+		if (message_id) {
+			row.addClass('message-' + message_id);
+		}
+
 		if (is_html) {
 			$('.message', row).html(msg);
 		} else {

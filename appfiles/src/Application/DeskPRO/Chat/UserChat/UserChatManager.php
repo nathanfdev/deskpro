@@ -106,7 +106,7 @@ class UserChatManager
 
 			if (isset($chat_options['department_id'])) {
 				$dep = $this->em->getRepository('DeskPRO:Department')->find($chat_options['department_id']);
-				if ($convo->department) {
+				if ($dep) {
 					$convo->department = $dep;
 				}
 			}
@@ -137,12 +137,16 @@ class UserChatManager
 				}
 			}
 
+			$this->em->flush();
+
 			$newchat_cm_data = $convo->getInfo();
 
 			if (isset($chat_options['content']) && $chat_options['content']) {
 				$this->addUserMessage($convo, $chat_options['content']);
 				$newchat_cm_data['initial_message'] = $chat_options['content'];
-			}
+
+
+			$this->em->flush();}
 
 			if ($is_new_convo) {
 				$cm = new ClientMessage();
@@ -253,6 +257,8 @@ class UserChatManager
 
 			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true, 'assigned_to' => $agent->id));
 
+			$this->em->flush();
+
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'chat.reassigned',
@@ -301,6 +307,8 @@ class UserChatManager
 					$this->assignAgent($convo, $assign_agent);
 				}
 			}
+
+			$this->em->flush();
 
 			// If no agent auto-assigned,
 			// need to broadcast an alert to other agents
@@ -406,6 +414,8 @@ class UserChatManager
 				$this->addSystemMessage($convo, 'user.chat.ended', array(), array('chat_ended' => true));
 			}
 
+			$this->em->flush();
+
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'chat.ended',
@@ -446,6 +456,8 @@ class UserChatManager
 			$this->em->persist($convo);
 
 			$this->addSystemMessage($convo, 'user.chat.ended_user', array(), array('chat_ended'));
+
+			$this->em->flush();
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
@@ -519,6 +531,8 @@ class UserChatManager
 			$this->em->persist($msg);
 			$this->em->persist($convo);
 
+			$this->em->flush();
+
 			$channel = $convo->getChannelId('newmessage');
 			if ($msg->is_user_hidden) {
 				$channel = $convo->getChannelId('newmessage_hidden');
@@ -577,6 +591,8 @@ class UserChatManager
 			if ($msg->is_user_hidden) {
 				$channel = $convo->getChannelId('newmessage_hidden');
 			}
+
+			$this->em->flush();
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(

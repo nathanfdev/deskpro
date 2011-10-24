@@ -19,6 +19,9 @@ use Application\DeskPRO\App;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
+	protected $tpl_prefix = 'UserBundle:Login';
+	protected $route_prefix = 'user';
+
 	/**
 	 * @var \Application\DeskPRO\Controller\Helper\LoginHelper
 	 */
@@ -30,8 +33,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		$this->login_helper = new LoginHelper(
 			$this,
-			'UserBundle:Login',
-			'user'
+			$this->tpl_prefix,
+			$this->route_prefix
 		);
 	}
 
@@ -48,7 +51,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		return $this->render('UserBundle:Login:index.html.twig', array(
+		return $this->render($this->tpl_prefix . ':index.html.twig', array(
 			'return' => $return
 		));
 	}
@@ -56,7 +59,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	public function logoutAction($auth)
 	{
 		if (!$this->session->getEntity()->checkSecurityToken('user_logout', $auth)) {
-			return $this->redirectRoute('user');
+			return $this->redirectRoute($this->route_prefix);
 		}
 
 		// When an agent actually logs out, we should be clearing the state
@@ -71,7 +74,31 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$this->session->replace(array());
 		$this->session->save();
 
-		return $this->redirectRoute('user');
+		if ($this->in->getString('quicklogout') == 'ajax') {
+			if ($this->in->getString('callback')) {
+				return $this->createJsonpResponse(array('logged_out' => true));
+			} else {
+				return $this->createJsonResponse(array('logged_out' => true));
+			}
+		} elseif ($this->in->getString('quicklogout') == 'pop') {
+			$html = <<<HTML
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script type="text/javascript">
+window.close();
+window.onload = function() { window.close(); };
+</script>
+</head>
+<body>
+</body>
+</html>
+HTML;
+
+			$this->createResponse($html);
+		}
+
+		return $this->redirectRoute($this->route_prefix);
 	}
 
 	public function authenticateLocalAction($usersource_id)
@@ -85,15 +112,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		if (!$result->isValid()) {
 			$this->session->setFlash('login_failed', true);
 
-			if ($this->in->getBool('agent_login')) {
-				$url = $this->generateUrl('user') . 'agent/login?' . http_build_query(array(
-					'return' => $return
-				));
-
-				return $this->redirect($url);
-			} else {
-				return $this->redirectRoute('user_login', array('return' => $return));
-			}
+			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
 		$identity = $result->getIdentity();
@@ -104,6 +123,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		App::getOrm()->flush();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
+		$this->session->set('dp_interface', DP_INTERFACE);
+		$this->session->save();
 
 		if ($person['is_agent']) {
 
@@ -132,7 +153,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		if ($return) {
 			return $this->redirect($return);
 		} else {
-			return $this->redirectRoute('user');
+			return $this->redirectRoute($this->route_prefix);
 		}
 	}
 
@@ -175,7 +196,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			// Otherwise its an error
 			} else {
 				$this->session->setFlash('login_failed', true);
-				return $this->redirectRoute('user_login', array('return' => $return));
+				return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 			}
 
 		#------------------------------
@@ -197,13 +218,13 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				if ($return) {
 					return $this->redirect($return);
 				} else {
-					return $this->redirectRoute('user');
+					return $this->redirectRoute($this->route_prefix);
 				}
 
 			// Error, go back to login
 			} else {
 				$this->session->setFlash('login_failed', true);
-				return $this->redirectRoute('user_login', array('return' => $return));
+				return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 			}
 		}
 	}
@@ -217,7 +238,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		// It must be a callback type to be here, so if not redirect back to login
 		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
 			$this->session->setFlash('login_failed', true);
-			return $this->redirectRoute('user_login', array('return' => $return));
+			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
 		$adapter->setCallbackContext($_REQUEST);
@@ -237,19 +258,19 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				$this->session->remove('auth_return');
 				return $this->redirect($return);
 			} else {
-				return $this->redirectRoute('user');
+				return $this->redirectRoute($this->route_prefix);
 			}
 
 		// Error, go back to login
 		} else {
 			$this->session->setFlash('login_failed', true);
-			return $this->redirectRoute('user_login', array('return' => $return));
+			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 	}
 
 	public function resetPasswordAction($invalid_email = false, $invalid_code = false)
 	{
-		return $this->render('UserBundle:Login:reset-password.html.twig', array(
+		return $this->render($this->tpl_prefix . 'Login:reset-password.html.twig', array(
 			'invalid_email' => $invalid_email,
 			'invalid_code' => $invalid_code
 		));
@@ -314,7 +335,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' =>1 ));
 		}
-		return $this->render('UserBundle:Login:reset-password-sent.html.twig', array());
+		return $this->render($this->tpl_prefix . 'Login:reset-password-sent.html.twig', array());
 	}
 
 	public function resetPasswordNewPassAction($code)
@@ -341,11 +362,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 					$em->flush();
 				});
 
-				return $this->redirectRoute('user_login');
+				return $this->redirectRoute($this->route_prefix . '_login');
 			}
 		}
 
-		return $this->render('UserBundle:Login:reset-password-newpass.html.twig', array(
+		return $this->render($this->tpl_prefix . 'Login:reset-password-newpass.html.twig', array(
 			'code' => $code_data->getCode()
 		));
 	}

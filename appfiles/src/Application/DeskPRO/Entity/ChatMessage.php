@@ -163,6 +163,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		$info = array();
 
 		$info['conversation_id'] = $this->conversation->id;
+		$info['message_id'] = $this->id;
 
 		if ($this->is_sys) {
 			$info['author_id'] = 0;

@@ -37,7 +37,6 @@
 	'core.use_gravatar' => 1,
 	'core.use_default_gravatar' => 1,
 
-	'core.sessions_cookie_name' => 'dpsid',
 	'core.sessions_lifetime' => 3600,
 
 	'core.use_mail_queue'  => 'never',

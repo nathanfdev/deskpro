@@ -1036,13 +1036,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 	loadPage: function(url, routeData, callback) {
 
 		if (!routeData || (!routeData.ignoreExist)) {
-			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
-			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
-				this.pageTabStrip.removeTabById(existTab.id);
-				if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
-					routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+			if (!routeData.noToggle) {
+				var existTab = this.pageTabStrip.getTabByRouteUrl(url);
+				if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
+					this.pageTabStrip.removeTabById(existTab.id);
+					if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+						routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
+					}
+					return;
 				}
-				return;
 			}
 		}
 

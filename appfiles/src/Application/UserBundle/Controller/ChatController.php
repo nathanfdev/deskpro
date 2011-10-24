@@ -281,6 +281,12 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			return $this->createJsonpResponse(array('ended' => true));
 		}
 
+		$person = $session->getPerson();
+		$person->loadHelper('HelpdeskUser', array(
+			'session' => $session,
+			'visitor' => $session->getVisitor()
+		));
+
 		if ($this->in->getBool('process')) {
 
 			$convo_messages = App::getOrm()->createQuery("
@@ -328,7 +334,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	{
 		// First lets see if anyone is even available for chatting
 		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
-			//return $this->createResponse('');
+			return $this->createResponse('');
 		}
 
 		$session = null;

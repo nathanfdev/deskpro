@@ -62,10 +62,13 @@ class ClientMessage extends EntityRepository
 				// 2 => data
 				// 3 => (optional) flags
 
+				$msg_data = $handler->getMessage('ajax');
+				$msg_data['from_client'] = $message['created_by_client'];
+
 				$info = array(
 					$message['id'],
 					$message['channel'],
-					$handler->getMessage('ajax')
+					$msg_data
 				);
 
 				if ($message['id'] < $since && $with_last_since) {

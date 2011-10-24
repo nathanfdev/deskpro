@@ -38,6 +38,18 @@ admin_portal_uploadfavicon:
   pattern: /portal/upload-favicon
   defaults: { _controller: AdminBundle:Portal:uploadFavicon }
 
+admin_login:
+  pattern: /login
+  defaults: { _controller: AdminBundle:Login:index }
+
+admin_logout:
+  pattern: /logout/{auth}
+  defaults: { _controller: AdminBundle:Login:logout }
+
+admin_login_authenticate_local:
+  pattern: /login/authenticate-password
+  defaults: { _controller: AdminBundle:Login:authenticateLocal, usersource_id: 0 }
+
 ################################################################################
 # Settings
 ################################################################################
