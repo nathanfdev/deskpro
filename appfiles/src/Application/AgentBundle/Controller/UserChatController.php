@@ -50,8 +50,6 @@ class UserChatController extends AbstractController
 			ORDER BY m.id DESC
 		")->setParameter(1, $convo)->execute();
 
-		$quick_replies = App::getEntityRepository('DeskPRO:ChatQuickReply')->getRepliesForPerson($this->person);
-
 		$session = $convo->session;
 		$visitor = $convo->visitor;
 		$other_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
@@ -67,26 +65,6 @@ class UserChatController extends AbstractController
 			'visitor' => $visitor,
 			'other_chats' => $other_chats,
 			'agents' => $agents,
-		));
-	}
-
-
-	/**
-	 * [JSON] Get a QR
-	 *
-	 * @param  $conversation_id
-	 * @param  $quick_reply_id
-	 */
-	public function getQuickReplyAction($conversation_id, $quick_reply_id)
-	{
-		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
-		$qr = App::findEntity('DeskPRO:ChatQuickReply', $quick_reply_id);
-
-		$reply = $qr->getReplyForConversation($convo);
-
-		return $this->createJsonResponse(array(
-			'qr_id' => $qr['id'],
-			'reply' => $reply,
 		));
 	}
 

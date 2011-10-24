@@ -78,7 +78,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<li class="tipped attach" title="Send File" id="{{baseId}}_send_file">
 							<span>Send File</span>
 						</li>
-						{% if quick_replies|length %}<li class="tipped snippets hide-note" id="{{baseId}}_quick_replies" title="Quick Replies"><span>Quick Replies</span></li>{% endif %}
+						<li class="tipped snippets hide-note" id="{{baseId}}_quick_replies" title="Quick Replies"><span>Quick Replies</span></li>
 					</ul>
 
 					<ul class="option-buttons right">
@@ -181,14 +181,6 @@ pageMeta.baseId = '{{ baseId }}';
 		</article>
 	</section>
 </div>
-
-{% if quick_replies|length %}
-<ul class="menu quick-replies" style="display:none">
-	{% for qr in quick_replies %}
-	<li data-qr-id="{{ qr.id }}">{{ qr.title }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
 
 <section id="{{baseId}}_upfile_overlay" style="display: none;">
 	<div class="overlay-title">

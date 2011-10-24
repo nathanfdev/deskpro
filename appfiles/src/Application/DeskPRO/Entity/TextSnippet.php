@@ -1,0 +1,129 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
+use Orb\Util\Arrays;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+
+/**
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TextSnippet")
+ * @ORM_Mapping\Table(name="text_snippets")
+ */
+class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
+{
+	/**
+	 * @var int
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 */
+	protected $id = null;
+
+	/**
+	 * Who created the snippet
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $person = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\TextSnippetCategory
+	 * @ORM_Mapping\ManyToOne(targetEntity="TextSnippetCategory", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $category;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
+	 */
+	protected $title;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="snippet", type="text")
+	 */
+	protected $snippet;
+
+	protected function process(array $options)
+	{
+		$options = new \Orb\Util\OptionsArray($options);
+		$options->setDefault('wrap_left', '');
+		$options->setDefault('wrap_right', '');
+		$options->setDefault('is_html', true);
+
+		$person_context = $options->get('person_context');
+		if (!$person_context) {
+			$person_context = App::getCurrentPerson();
+		}
+
+		$d = $person_context->getDateTime();
+
+		$repl = array_merge(array(
+			'var.time'      => date('h:ia', $d->getTimestamp()),
+			'var.time24'    => date('H:i', $d->getTimestamp()),
+			'var.date'      => date('F d, Y', $d->getTimestamp()),
+			'me.name'       => $person_context->getDisplayName(),
+			'me.email'      => $person_context->getPrimaryEmailAddress(),
+		), $options->get('replacements', array()));
+
+		$wrap_l = $options->get('wrap_left');
+		$wrap_r = $options->get('wrap_right');
+		$is_html = $options->get('is_html');
+
+		$snippet = $this->snippet;
+		if ($is_html) {
+			$snippet = nl2br(htmlspecialchars($this->snippet));
+		}
+
+		foreach ($repl as $k => $v) {
+			if ($is_html) {
+				$v = nl2br(htmlspecialchars($v));
+			}
+			$snippet = str_replace("{{ $k }}", $wrap_l . $v . $wrap_r, $snippet);
+			$snippet = str_replace("{{{$k}}}", $wrap_l . $v . $wrap_r, $snippet);
+		}
+
+		return $snippet;
+	}
+
+	/**
+	 * @param array $options
+	 * @return void
+	 */
+	public function format(array $options = array())
+	{
+		return $this->process($options);
+	}
+
+	public function formatHtml(array $options = array())
+	{
+		$options = array_merge($options, array('is_html' => true));
+		return $this->format($options);
+	}
+
+	/**
+	 * Format a snippet for displaying as a preview. This is where the terms are highlighed.
+	 *
+	 * @param array $options
+	 * @return void
+	 */
+	public function formatPreviewHtml(array $options = array())
+	{
+		$options = array_merge($options, array('wrap_left' => '<span class="replacement">', 'wrap_right' => '</span>', 'is_html' => true));
+		return $this->format($options);
+	}
+}

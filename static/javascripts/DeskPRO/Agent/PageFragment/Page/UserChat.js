@@ -66,6 +66,23 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this);
+
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
+			triggerElement: this.getEl('quick_replies'),
+			onSnippetClick: function(info) {
+				var val = self.getEl('replybox_txt').val();
+				if (val.length) {
+					val += " ";
+				}
+				val += info.snippet;
+				self.getEl('replybox_txt').val(val);
+			}
+		});
 	},
 
 	handleNewMessageCm: function(data, name) {
@@ -141,14 +158,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	_initMenus: function() {
 		var self = this;
-		this.qrMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('quick_replies'),
-			menuElement: $('ul.quick-replies:first', this.el),
-			onItemClicked: function(info) {
-				var qr_id = $(info.itemEl).data('qr-id');
-				self.loadQuickReply(qr_id);
-			}
-		});
 
 		//------------------------------
 		// Department
@@ -174,18 +183,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					data: [{ name: 'props[department_id]', value: depId }],
 					type: 'POST'
 				});
-			}
-		});
-	},
-
-	loadQuickReply: function(qr_id) {
-		$.ajax({
-			url: BASE_URL + 'agent/chat/get-qr/' + this.meta.conversation_id + '/' + qr_id,
-			context: this,
-			contentType: 'json',
-			success: function(data) {
-				var textarea = this.getEl('replybox_txt');
-				textarea.val(textarea.val() + data.reply).focus();
 			}
 		});
 	},

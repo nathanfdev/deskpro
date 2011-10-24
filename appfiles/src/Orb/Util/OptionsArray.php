@@ -63,6 +63,13 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate
 		$this->options = array_merge($options, $this->options);
 	}
 
+	public function setDefault($name, $value)
+	{
+		if (!$this->has($name)) {
+			$this->options[$name] = $value;
+		}
+	}
+
 	public function setAll(array $options)
 	{
 		$this->options = $options;

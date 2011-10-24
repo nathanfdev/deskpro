@@ -51,6 +51,36 @@ agent_set_agent_status:
   pattern: /misc/set-agent-status/{status}
   defaults: { _controller: AgentBundle:Misc:setAgentStatus }
 
+
+agent_snippetviewer:
+  pattern: /misc/snippet-viewer/view/{typename}
+  defaults: { _controller: AgentBundle:Misc:snippetsViewer }
+
+agent_snippetviewer_newcat:
+  pattern: /misc/snippet-viewer/new-cat
+  defaults: { _controller: AgentBundle:Misc:newSnippetCat }
+
+agent_snippetviewer_savesnippet:
+  pattern: /misc/snippet-viewer/save-snippet
+  defaults: { _controller: AgentBundle:Misc:saveSnippet }
+
+agent_snippetviewer_delsnippet:
+  pattern: /misc/snippet-viewer/delete-snippet
+  defaults: { _controller: AgentBundle:Misc:deleteSnippet }
+
+agent_snippetviewer_savecat:
+  pattern: /misc/snippet-viewer/save-category
+  defaults: { _controller: AgentBundle:Misc:saveSnippetCat }
+
+agent_snippetviewer_editcat:
+  pattern: /misc/snippet-viewer/edit-category
+  defaults: { _controller: AgentBundle:Misc:editSnippetCat }
+
+agent_snippetviewer_delcat:
+  pattern: /misc/snippet-viewer/delete-category
+  defaults: { _controller: AgentBundle:Misc:deleteSnippetCat }
+
+
 agent_recyclebin:
   pattern: /recycle-bin
   defaults: { _controller: AgentBundle:RecycleBin:list }
@@ -1353,10 +1383,6 @@ agent_userchat_send_messageview:
 agent_userchat_send_filemessage:
   pattern: /chat/send-file-message/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:sendFile }
-
-agent_userchat_getqr:
-  pattern: /chat/get-qr/{conversation_id}/{quick_reply_id}
-  defaults: { _controller: AgentBundle:UserChat:getQuickReply }
 
 agent_userchat_assign:
   pattern: /chat/assign/{conversation_id}/{agent_id}

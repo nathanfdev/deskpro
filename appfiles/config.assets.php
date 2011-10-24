@@ -163,6 +163,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/Results.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TextSnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
