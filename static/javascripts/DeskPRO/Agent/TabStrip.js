@@ -257,6 +257,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	addTab: function(page) {
 
 		var id = 'tab' + this.uniqueCounter++;
+
+		page.meta.tabId = id;
+
 		this.tabManager.addTab(id, {
 			html: page.getHtml(),
 			page: page,

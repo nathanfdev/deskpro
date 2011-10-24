@@ -47,8 +47,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			});
 
 			this.addEvent('destroy', function() {
-				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + this.meta.conversation_id);
-				self.reassignConvo(0);
+				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
+
+				if (self.closeAction == 'unassign') {
+					self.reassignConvo(0);
+				} else if (self.closeAction == 'end') {
+					self.endChat();
+				}
 			});
 		}
 
@@ -84,6 +89,44 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				self.getEl('replybox_txt').val(val);
 			}
 		});
+
+		//------------------------------
+		// Intercept close events and cancel, so we
+		// can confirm
+		//------------------------------
+
+		this.closeAction = false;
+		this._confirmCloseOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.getEl('closetab_prompt'),
+			addClassname: 'normal-size',
+			onContentSet: function(eventData) {
+				$('.unassign-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+					self.closeAction = 'unassign';
+					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+				});
+				$('.end-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+					self.closeAction = 'end';
+					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+				});
+				$('.cancel-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+				});
+			}
+		});
+
+		this.addEvent('closeTab', function(event) {
+			// Already ended or not assigned to us
+			if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+				return;
+			}
+
+			if (this.closeAction) return;
+			event.deskpro.cancelClose = true;
+
+			this._confirmCloseOverlay.open();
+		}, this);
 	},
 
 	handleNewMessageCm: function(data, name) {
