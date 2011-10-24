@@ -62,6 +62,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.hidden_newmessage', this.handleNewMessageCm, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ended', this.chatHasEnded, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
@@ -151,7 +152,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		var el = this.getEl('user_typing');
-		$('.message', el).text(data.preview);
+		$('.prop-msg', el).text(data.preview);
 		el.detach().appendTo(this.getEl('messages_box'));
 		el.show();
 	},
@@ -248,11 +249,15 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			popoutclass = " person-overview";
 		}
 
-		var html = ['<div class="row '+type+'">'];
-			html.push('<time></time>');
-			html.push('<div class="name' + popoutclass + '">' + name + '</div>');
-			html.push('<div class="message"></div>');
-		html.push('</div>');
+		var html = ['<div class="row '+type+'"><div class="message-content">'];
+			if (type == 'sys') {
+				html.push('<div class="message prop-msg"></div><time></time>');
+			} else if (type == 'agent') {
+				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time>');
+			} else if (type == 'user') {
+				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
+			}
+		html.push('</div></div>');
 
 		var row = $(html.join(''));
 
@@ -283,16 +288,15 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		if (is_html) {
-			$('.message', row).html(msg);
+			$('.prop-msg', row).html(msg);
 		} else {
 			msg = Orb.escapeHtml(msg);
 			//msg = Orb.linkUrls(msg);
-			$('.message', row).html(msg);
+			$('.prop-msg', row).html(msg);
 		}
 
 
 		$('time', row).attr('datetime', (new Date()).toString());
-		DeskPRO_Window.initInterfaceServices(row);
 
 		row.appendTo(this.getEl('messages_box'));
 

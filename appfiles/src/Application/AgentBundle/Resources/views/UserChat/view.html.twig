@@ -56,20 +56,58 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
 				{% for message in convo_messages|reverse %}
 					<div class="row {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
-						<time>{{ message.date_created|date('g:ia') }}</time>
-						<div class="name">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</div>
-						<div class="message">
-							{% if message.is_html %}
-								{{message.content|raw}}
-							{% else %}
-								{{message.content}}
-							{% endif %}
-						</div>
+						{% if message.is_sys %}
+							<div class="message-content">
+								<div class="message">
+									{% if message.is_html %}
+										{{message.content|raw}}
+									{% else %}
+										{{message.content}}
+									{% endif %}
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
+						{% elseif message.author.is_agent and message.author.id != convo.person.id %}
+							<div class="message-content">
+								<div class="chatSend">
+									<div class="chatMsgSend">
+										{% if message.is_html %}
+											{{message.content|raw}}
+										{% else %}
+											{{message.content}}
+										{% endif %}
+										<span class="bubbleLeft"></span>
+									</div>
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
+						{% else %}
+							<div class="message-content">
+								<div class="chatRecieve">
+									<div class="chatMsgRecieve">
+										{% if message.is_html %}
+											{{message.content|raw}}
+										{% else %}
+											{{message.content}}
+										{% endif %}
+										<span class="bubbleRight"></span>
+									</div>
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
+						{% endif %}
 					</div>
 				{% endfor %}
 				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
-					<div class="name">User Typing</div>
-					<div class="message"></div>
+					<div class="message-content">
+						<div class="chatRecieve">
+							<div class="chatMsgRecieve">
+								<div class="prop-msg"></div>
+								<span class="dots">...</span>
+								<span class="bubbleRight"></span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" {% if convo.status != 'open' %}style="display: none"{% endif %}>

@@ -206,7 +206,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$convo_messages = App::getOrm()->createQuery("
 				SELECT m
 				FROM DeskPRO:ChatMessage m
-				WHERE m.conversation = ?1
+				WHERE m.conversation = ?1 AND m.is_user_hidden = false
 				ORDER BY m.id DESC
 			")->setParameter(1, $convo)->execute();
 		}
@@ -236,6 +236,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			}
 		}
 
+		// If the user is on a new page, tell the agent
+		if ($convo) {
+			$chat_manager->addUserTrack($convo, $session->getVisitor()->getLastPage());
+		}
 
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
@@ -292,7 +296,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$convo_messages = App::getOrm()->createQuery("
 				SELECT m
 				FROM DeskPRO:ChatMessage m
-				WHERE m.conversation = ?1
+				WHERE m.conversation = ?1 AND m.is_user_hidden = false
 				ORDER BY m.id DESC
 			")->setParameter(1, $convo)->execute();
 

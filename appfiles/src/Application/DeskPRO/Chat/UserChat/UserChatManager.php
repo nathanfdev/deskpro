@@ -130,6 +130,14 @@ class UserChatManager
 			$this->em->persist($convo);
 			$this->em->flush();
 
+			if ($is_new_convo) {
+				$this->addSystemMessage($convo, 'user.chat.msg_started', array(), array(
+					'user_hidden' => true,
+					'is_html' => false,
+				));
+				$this->addUserTrack($convo, $this->visitor->getLastPage());
+			}
+
 			if (!$convo->agent && $this->auto_assigner) {
 				$assign_agent = $this->auto_assigner->getAgent($convo);
 				if ($assign_agent) {
@@ -267,6 +275,44 @@ class UserChatManager
 			));
 
 			$this->em->persist($cm);
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Add a new user track (the page theyre viewing) message
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param string $url
+	 * @return void
+	 */
+	public function addUserTrack(ChatConversation $convo, $url)
+	{
+		$this->em->beginTransaction();
+		try {
+			$convo->agent = null;
+			$this->em->persist($convo);
+
+			$url_show = preg_replace('#^https?://(www\.)?#i', '', $url);
+			if (strlen($url_show) > 50) {
+				$url_show = substr($url_show, 0, 50) . '...';
+			}
+
+			$url = htmlspecialchars($url);
+			$url_show = htmlspecialchars($url_show);
+
+			$label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$url_show</a>";
+
+			$this->addSystemMessage($convo, 'user.chat.msg_new_user_track', array('label' => $label), array(
+				'new_user_track' => $url,
+				'user_hidden' => true,
+				'is_html' => true,
+			));
 
 			$this->em->flush();
 			$this->em->commit();
@@ -577,6 +623,11 @@ class UserChatManager
 			unset($metadata['user_hidden']);
 		}
 
+		if (isset($metadata['is_html'])) {
+			$msg->is_html = true;
+			unset($metadata['is_html']);
+		}
+
 		$msg->metadata = $metadata;
 
 		$convo->addMessage($msg);
@@ -589,7 +640,7 @@ class UserChatManager
 
 			$channel = $convo->getChannelId('newmessage');
 			if ($msg->is_user_hidden) {
-				$channel = $convo->getChannelId('newmessage_hidden');
+				$channel = $convo->getChannelId('hidden_newmessage');
 			}
 
 			$this->em->flush();

@@ -14,6 +14,8 @@
 
 	'user.chat.set_department' => '{{name}} set department to {{department}}',
 
+	'user.chat.msg_started'             => 'Chat started',
 	'user.chat.msg_agent_timeout'       => '{{name}} is not responding. This ticket will be reassigned to another agnet.',
 	'user.chat.msg_user_timeout'        => 'User has timed out',
+	'user.chat.msg_new_user_track'      => 'User is viewing: {{label}}',
 );

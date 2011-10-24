@@ -129,6 +129,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_last;
 
+	protected $_changed_last_page = false;
 	protected $is_new = false;
 
 	public function __construct()
@@ -155,6 +156,25 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$id_enc = Util::baseEncode($this->id, Util::BASE36_ALPHABET);
 		return $id_enc . '-' . $this->auth;
+	}
+
+
+	/**
+	 * Set the last page
+	 * @param string $page
+	 * @return void
+	 */
+	public function setLastPage($page)
+	{
+		if ($page != $this->last_page) {
+			$this->setModelField('last_page', $page);
+			$this->_changed_last_page = true;
+		}
+	}
+
+	public function hasChangedLastPage()
+	{
+		return $this->_changed_last_page;
 	}
 
 
