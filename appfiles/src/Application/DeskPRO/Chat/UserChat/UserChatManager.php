@@ -239,6 +239,15 @@ class UserChatManager
 				array('department_changed' => true, 'new_department_id' => $convo->department_id)
 			);
 
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => 'chat.depchange',
+				'data' => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
+				'created_by_client' => $this->session->getId(),
+			));
+
+			$this->em->persist($cm);
+
 			$this->em->flush();
 			$this->em->commit();
 		} catch (\Exception $e) {

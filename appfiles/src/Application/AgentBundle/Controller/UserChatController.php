@@ -252,22 +252,64 @@ class UserChatController extends AbstractController
 			GROUP BY agent_id
 		");
 
+		$dep_counts = App::getDb()->fetchAllKeyValue("
+			SELECT IF(department_id, department_id, 0) AS department_id, COUNT(*) AS count
+			FROM chat_conversations c
+			WHERE c.status = 'open' AND c.agent_id IS NULL
+			GROUP BY department_id
+		");
+
+		$dep_counts['0_total'] = 0;
+
+		// Departments
+		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+
+		foreach ($departments as $dep) {
+			$c_id = $dep['id'];
+			$total = 0;
+			if (isset($dep_counts[$c_id])) {
+				$total = $dep_counts[$c_id];
+			}
+
+			foreach ($dep['children'] as $child_dep) {
+				$child_id = $child_dep['id'];
+				$dep_counts[$child_id . '_total'] = 0;
+				if (isset($dep_counts[$child_id])) {
+					$dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
+					$total += $dep_counts[$child_id];
+				}
+			}
+
+			$dep_counts["{$c_id}_total"] = $total;
+			$dep_counts['0_total'] += $total;
+		}
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
 			'counts' => $initial_counts,
+			'dep_counts' => $dep_counts,
 			'agent_names' => $agent_names,
+			'departments' => $departments
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
 	}
 
 
-	public function listChatsAction($agent_id)
+	public function listChatsAction()
 	{
+		$agent_id = $this->in->getInt('agent_id');
 		$agent = null;
 		if ($agent_id) {
 			$agent = App::findEntity('DeskPRO:Person', $agent_id);
 		}
-		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($agent);
+
+		$department_id = $this->in->getInt('department_id');
+		$department = null;
+		if ($department_id) {
+			$department = App::findEntity('DeskPRO:Department', $department_id);
+		}
+
+		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, $department);
 
 		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
 			'agent' => $agent,

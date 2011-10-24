@@ -70,6 +70,29 @@ class ChatConversation extends EntityRepository
 		return $convos;
 	}
 
+	public function getOpenForAgentAndDepartment($agent, $department)
+	{
+		$params = array();
+
+		$qb = $this->createQueryBuilder('c');
+		$qb->orderBy('c.id', 'DESC');
+		$qb->where('c.status = :status');
+		$params['status'] = 'open';
+
+		if ($agent) {
+			$qb->andWhere('c.agent = :agent');
+			$params['agent'] = $agent;
+		} else {
+			$qb->andWhere('c.agent IS NULL');
+		}
+		if ($department) {
+			$qb->andWhere('c.department = :dep');
+			$params['dep'] = $department;
+		}
+
+		return $qb->getQuery()->execute($params);
+	}
+
 
 	public function getAgentList($agent)
 	{

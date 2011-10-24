@@ -1373,7 +1373,7 @@ agent_userchat_view:
   options: { fragment_name: 'c' }
 
 agent_userchat_listopen:
-  pattern: /chat/list-open/{agent_id}
+  pattern: /chat/list-open
   defaults: { _controller: AgentBundle:UserChat:listChats }
 
 agent_userchat_send_messageview:
