@@ -1009,6 +1009,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
+			if (!routeData) {
+				routeData = {};
+			}
 			if (routeData && !routeData.isBackgroundLoad) {
 				this.loadingListPage = null;
 			}
