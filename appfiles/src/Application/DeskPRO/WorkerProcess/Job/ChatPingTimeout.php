@@ -28,21 +28,22 @@ class ChatPingTimeout extends AbstractJob
 		#------------------------------
 
 		$cutoff = date('Y-m-d H:m:s', time() - 20); // 20 secs for agents
-		$chat_ids = App::getDb()->fetchAllCol("
-			SELECT c.id
+		$timeouts = App::getDb()->fetchAllKeyValue("
+			SELECT c.id, p.person_id
 			FROM chat_conversations c
-			LEFT JOIN sessions AS s ON s.person_id = c.agent_id
-			WHERE c.agent_id IS NOT NULL
-			AND c.date_last < $cutoff
+			LEFT JOIN chat_conversation_to_person p ON p.conversation_id = c.id
+			LEFT JOIN sessions AS s ON s.person_id = p.person_id
+			c.date_last < $cutoff
 			ORDER BY s.id DESC
 		");
 
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = App::getSystemObject('user_chat_manager', array('session' => null));
 
-		while ($chat_id = array_pop($chat_ids)) {
+		foreach ($timeouts as $chat_id => $agent_id) {
 			$chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
-			$chat_manager->agentTimeout($chat);
+			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
+			$chat_manager->agentTimeout($chat, $agent);
 		}
 
 		#------------------------------

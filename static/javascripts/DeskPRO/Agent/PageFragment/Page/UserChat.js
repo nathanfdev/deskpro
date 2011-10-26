@@ -49,10 +49,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.addEvent('destroy', function() {
 				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
 
+				if (self.meta.isEnded) {
+					return;
+				}
+
 				if (self.closeAction == 'unassign') {
-					self.reassignConvo(0);
+					self.leaveConvo('unassign');
 				} else if (self.closeAction == 'end') {
-					self.endChat();
+					self.leaveConvo('end');
 				}
 			});
 		}
@@ -162,13 +166,51 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			var pic = agentInfo.pictureUrlSizable.replace('{SIZE}', 20);
 		}
 
+		$('li', this.getEl('agent_parts')).show();
+		if (agent_id != '0') {
+			$('li.agent-' + agent_id, this.getEl('agent_parts')).hide();
+		}
+		if ($('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').hide();
+		} else {
+			this.getEl('agent_parts_none').show();
+		}
+
 		btnEl.css('background-image', pic);
 		btnEl.text(agentInfo.name);
 		btnEl.data('agent-id', agent_id);
 	},
 
-	handleUpdateParts: function(data) {
-		this.updateActiveAgentList(data.agent_id, data.participant_ids);
+	addPart: function(agent_id) {
+		if ($('.agent-' + agent_id, this.getEl('agent_parts')).length) {
+			return;
+		}
+
+		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+
+		var li = $('<li><a></a></li>');
+		li.addClass('agent-' + agent_id);
+		$('a', li).text(agentInfo.name).addClass('agent-link').css({
+			'background-image': agentInfo.pictureUrlSizable.replace('{SIZE}', 20)
+		})
+
+		this.getEl('agent_parts').append(li);
+
+		if (this.getEl('assign_btn').data('agent-id') == agent_id) {
+			li.hide();
+		}
+
+		if ($('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').show();
+		}
+	},
+
+	removePart: function(agent_id) {
+		$('.agent-' + agent_id, this.getEl('agent_parts')).remove();
+
+		if (!$('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').hide();
+		}
 	},
 
 	updateActiveAgentList: function(assigned, parts) {
@@ -273,6 +315,21 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
+	leaveConvo: function(after) {
+		var self = this;
+
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
+			complete: function() {
+				if (after && after == 'unassign') {
+					self.reassignConvo(0);
+				} else if (after && after == 'end') {
+					self.endChat();
+				}
+			}
+		});
+	},
+
 	addMessageRow: function(name, msg, type, is_html, message_id, metadata) {
 
 		if (message_id && $('.message-' + message_id, this.getEl('messages_box')).length) {
@@ -359,6 +416,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
+	sendInvite: function(agent_id) {
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/invite/' + this.meta.conversation_id + '/' + agent_id
+		});
+	},
+
 	//#################################################################
 	//# Reassignment
 	//#################################################################
@@ -402,6 +465,46 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				self.reassignConvo(agentId);
 			}
+		})
+
+		// Participants
+		this.partOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('agentpart_selector'),
+			trigger: this.getEl('agent_parts_btn'),
+			onOpen: function(ob) {
+				var wrap = ob.getElement();
+
+				var any = false;
+				$('.agent-row', wrap).each(function() {
+					if ($(this).is('.agent-0, .me')) return;
+
+					var aid = $(this).data('agent-id');
+					var check = $('#agent_online_list .agent-' + aid);
+					var check2 = $('li.agent-' + aid, self.getEl('agent_parts'));
+
+					if (!check.length && !check2.length) {
+						$(this).hide();
+					} else {
+						$(this).show();
+						any = true;
+					}
+				});
+
+				if (!any) {
+					self.getEl('agentpart_sel_none').hide();
+				} else {
+					self.getEl('agentpart_sel_none').show();
+				}
+			}
+		})
+
+		this.getEl('agentpart_selector').delegate('.invite-trigger', 'click', function(ev) {
+			ev.preventDefault();
+			self.partOptionBox.close();
+
+			var row = $(this).closest('li');
+			var agentId = row.data('agent-id');
+			self.sendInvite(agentId);
 		});
 	},
 

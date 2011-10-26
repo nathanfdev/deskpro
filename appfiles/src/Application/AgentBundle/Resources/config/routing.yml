@@ -1396,6 +1396,14 @@ agent_userchat_end:
   pattern: /chat/end-chat/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:endChat }
 
+agent_userchat_leave:
+  pattern: /chat/leave/{conversation_id}
+  defaults: { _controller: AgentBundle:UserChat:leaveChat }
+
+agent_userchat_invite:
+  pattern: /chat/invite/{conversation_id}/{agent_id}
+  defaults: { _controller: AgentBundle:UserChat:sendInvite }
+
 agent_userchat_changeprop:
   pattern: /chat/change-props/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:changeProperties }

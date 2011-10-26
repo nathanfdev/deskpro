@@ -55,6 +55,16 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="assigned">
 		<label>Chat assigned to: </label>
 		<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
+		<br />
+		<label>Other agents in this chat: </label>
+		<ul class="agent-parts-link" id="{{baseId}}_agent_parts">
+			<li id="{{ baseId }}_agent_parts_btn"><em class="invite-button">Invite another agent</em></li>
+			{% for part in convo.participants %}
+				{% if not part.id == convo.id %}
+					<li class="agent-{{ part.id }}" data-agent-id="{{ part.id }}"><a class="agent-link" style="background-image: url('{{ part.getPictureUrl(20) }}');">{{ part.display_name }}</a></li>
+				{% endif %}
+			{% endfor %}
+		</ul>
 	</div>
 </header>
 
@@ -196,6 +206,28 @@ pageMeta.baseId = '{{ baseId }}';
 					</li>
 				{% endif %}
 			{% endfor %}
+		</ul>
+	</section>
+</div>
+<div class="optionbox" id="{{baseId}}_agentpart_selector">
+	<section data-section-name="agents">
+		<header>
+			<h3>Invite Agent</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul class="with-agents-online">
+			{% for agent in agents %}
+				{% if agent.id != app.user.id %}
+					<li class="agent-row agent-{{ agent.id }}" data-agent-id="{{ agent.id }}">
+						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<button class="clean-white small invite-trigger">Invite</button>
+						<div class="bound-fade"></div>
+					</li>
+				{% endif %}
+			{% endfor %}
+			<li id="{{baseId}}_agentpart_sel_none">
+				There are no other agents you can invite.
+			</li>
 		</ul>
 	</section>
 </div>

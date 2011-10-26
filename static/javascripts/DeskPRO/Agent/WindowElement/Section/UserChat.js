@@ -10,6 +10,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.urlFragmentName = 'userchat';
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
+		$('#invite_chat_alert').template('invite_chat_alert');
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
 		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
 		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
@@ -86,6 +87,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.unassigned', this.handleUnassignedChat, this);
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', this.handleChatEnded, this);
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.depchange', this.handleDepChange, this);
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.invited', this.handleInvited, this);
 	},
 
 	modListingCount: function(id, op, count) {
@@ -182,6 +184,36 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.unassigned', data);
 	},
 
+	handleInvited: function(data) {
+		$('#invite_chat_alert_' + data.conversation_id).remove();
+		this.showInviteAlert(data);
+	},
+
+	showInviteAlert: function(data) {
+		var conversation_id = data.conversation_id;
+		var alertEl = $.tmpl('invite_chat_alert', data);
+		alertEl.appendTo('body');
+		DeskPRO_Window.handleSoundElements(alertEl);
+
+		var audio = $('audio', alertEl).get(0);
+		var self = this;
+
+		$('.dismiss-trigger', alertEl).click(function() {
+			if (audio) {
+				audio.pause();
+			}
+			alertEl.remove();
+		});
+		$('.accept-trigger', alertEl).click(function(ev) {
+			ev.stopPropagation();
+			DeskPRO_Window.runPageRouteFromElement(this);
+			if (audio) {
+				audio.pause();
+			}
+			alertEl.remove();
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+	},
+
 	handleReassignedChat: function(data) {
 		this.modListingCount(data.old_agent_id, '-');
 		this.modListingCount(data.agent_id, '+');
@@ -200,41 +232,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
 			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
-		}
-	},
-
-	handleAddedAsPart: function(data) {
-
-		console.log(data);
-
-		// Make suer we arent already viewing it
-		var checkEl = $('#deskpro_tabstrip li.user_chat_tab_' + data.conversation_id);
-		if (checkEl.length) {
-			return;
-		}
-
-		var conversation_id = data.conversation_id;
-		var initial_message = {
-			name: data.author_name,
-			message: data.message
-		};
-
-		var alertEl = $.tmpl('added_part_user_chat_alert');
-		alertEl.appendTo('body');
-		DeskPRO_Window.handleSoundElements(alertEl);
-
-		$('.dismiss-trigger', alertEl).click(function() {
-			alertEl.remove();
-		});
-		$('.accept-trigger', alertEl).click(function(ev) {
-			ev.stopPropagation();
-			DeskPRO_Window.runPageRouteFromElement(this);
-			alertEl.remove();
-		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
-
-		if (initial_message) {
-			var messageEl = $.tmpl('new_user_chat_alert_message', initial_message);
-			$('div.messages', alertEl).append(messageEl).scrollTop(10000);
 		}
 	},
 

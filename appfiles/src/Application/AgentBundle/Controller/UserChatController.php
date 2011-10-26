@@ -32,14 +32,11 @@ class UserChatController extends AbstractController
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-		$is_assigned = false;
-		$is_part = false;
 		if ($convo->status == 'open') {
+			$chat_manager->personJoined($convo, $this->person);
+
 			if (!$convo['agent']) {
 				$chat_manager->assignAgent($convo, $this->person);
-				$is_assigned = true;
-			} elseif ($convo['agent']['id'] != $this->person['id'] AND !$convo->hasParticipant($this->person)) {
-				//$is_part = true;
 			}
 		}
 
@@ -59,7 +56,6 @@ class UserChatController extends AbstractController
 
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
-			'quick_replies' => $quick_replies,
 			'convo' => $convo,
 			'session' => $session,
 			'visitor' => $visitor,
@@ -90,6 +86,30 @@ class UserChatController extends AbstractController
 		}
 
 		return $this->createJsonCmResponse();
+	}
+
+	/**
+	 * Reassign a chat
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function sendInviteAction($conversation_id, $agent_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'chat.invited',
+			'data' => $convo->getInfo(),
+			'for_person' => $agent,
+			'created_by_client' => $this->session->getId()
+		));
+		$this->em->persist($cm);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	/**
@@ -181,7 +201,6 @@ class UserChatController extends AbstractController
 
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
-
 		$chat_manager->endChat($convo, $this->person, '');
 
 		return $this->createJsonCmResponse();
@@ -203,6 +222,25 @@ class UserChatController extends AbstractController
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 		$chat_manager->addMessage($convo, $this->person, $this->in->getString('content'));
+
+		return $this->createJsonCmResponse();
+	}
+
+
+	/**
+	 * End a chat
+	 *
+	 * @param  $conversation_id
+	 */
+	public function leaveChatAction($conversation_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		if ($convo->status == 'open') {
+			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+			$chat_manager->personLeft($convo, $this->person);
+		}
 
 		return $this->createJsonCmResponse();
 	}

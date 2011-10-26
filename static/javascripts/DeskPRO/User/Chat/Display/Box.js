@@ -311,13 +311,9 @@ var DpChat_Display = (function() {
 		}
 
 		if (meta.chat_assigned) {
-			if (meta.old_assigned_name) {
-				message = meta.old_assigned_name + ' left and ' + meta.assigned_name + ' joined';
-			} else {
-				message = meta.assigned_name + ' joined';
-			}
+			return;
 		} else if (meta.chat_unassigned) {
-			message = meta.old_assigned_name + ' left';
+			return;
 		}
 
 		var html = [];

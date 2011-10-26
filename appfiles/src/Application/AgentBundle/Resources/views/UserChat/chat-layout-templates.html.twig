@@ -25,6 +25,32 @@
 	</section>
 </script>
 
+<script type="text/x-jquery-tmpl" id="invite_chat_alert">
+	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="invite_chat_alert_${conversation_id}" data-play-sound="new-chat">
+		<header><h3>You have been invited to join a chat</h3></header>
+		<div class="messages">
+			{{if author_name || author_email}}
+				<div class="meta">
+					{{if author_name || author_email}}
+						By <em>${author_name} {{if author_email}}&lt;${author_email}&gt;</em>{{/if}}
+					{{/if}}
+					{{if department_id}}in <em>${department_name}</em>{{/if}}
+				</div>
+			{{else}}
+				<div class="meta">
+					Chat ${conversation_id} by Anonymous
+					{{if department_id}}in <em>${department_name}</em>{{/if}}
+				</div>
+			{{/if}}
+			{{if subject_line}}<p>${subject_line}</p>{{/if}}
+		</div>
+		<footer>
+			<button class="clean-white small dismiss-trigger">Dismiss</button>
+			<button class="clean-white small accept-trigger">Join Chat</button>
+		</footer>
+	</section>
+</script>
+
 <script type="text/x-jquery-tmpl" id="added_part_user_chat_alert">
 	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="added_part_user_chat_alert_${conversation_id}" data-play-sound="new-chat">
 		<header><h3>Added as a participant</h3></header>

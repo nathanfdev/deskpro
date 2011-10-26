@@ -219,6 +219,62 @@ class UserChatManager
 
 
 	/**
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param \Application\DeskPRO\Entity\Person $who
+	 * @return void
+	 */
+	public function personJoined(ChatConversation $convo, Person $person)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$convo->addParticipant($person);
+
+			$this->addSystemMessage(
+				$convo,
+				'user.chat.user_joined',
+				array('name' => $person->display_name),
+				array('user_joined' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
+			);
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param \Application\DeskPRO\Entity\Person $who
+	 * @return void
+	 */
+	public function personLeft(ChatConversation $convo, Person $person)
+	{
+		$this->em->beginTransaction();
+		try {
+
+			$convo->removeParticipant($person);
+
+			$this->addSystemMessage(
+				$convo,
+				'user.chat.user_left',
+				array('name' => $person->display_name),
+				array('user_left' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
+			);
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
 	 * Change the department of a chat
 	 *
 	 * @throws \Exception
@@ -429,7 +485,7 @@ class UserChatManager
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
 	 * @return void
 	 */
-	public function agentTimeout(ChatConversation $convo)
+	public function agentTimeout(ChatConversation $convo, Person $person)
 	{
 		$this->em->beginTransaction();
 		try {
@@ -440,7 +496,12 @@ class UserChatManager
 				array('name' => $convo->agent->display_name),
 				array('agent_timed_out' => true)
 			);
-			$this->unassignAgent($convo);
+
+			$this->personLeft($convo, $person);
+
+			if ($convo->agent && $convo->agent->id == $person->id) {
+				$this->unassignAgent($convo);
+			}
 
 			$this->em->flush();
 			$this->em->commit();
