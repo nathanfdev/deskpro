@@ -15,644 +15,664 @@ if (DpChat_EnableDebug) {
  * This itself loads the display adapter for the theme, and then sets up and handles proper routing
  * of chat messages etc.
  */
-var DpChat = (function() {
-	var options = {
-		protocol: null,
-		staticUrl: null,
-		deskproUrl: null,
-		displayType: 'Box'
-	};
+var DpChatMake = function() {
+	var DpChat = (function() {
+		var options = {
+			protocol: null,
+			staticUrl: null,
+			deskproUrl: null,
+			displayType: 'Box'
+		};
 
-	var self = this;
+		var self = this;
 
-	var hasStarted = false;
+		var hasStarted = false;
 
-	/**
-	 * Scoped reference to jQuery
-	 * @var {jQuery}
-	 */
-	var $ = null;
+		/**
+		 * Scoped reference to jQuery
+		 * @var {jQuery}
+		 */
+		var $ = null;
 
-	/**
-	 * The display handler that defines the theme etc
-	 */
-	var display = null;
+		/**
+		 * The display handler that defines the theme etc
+		 */
+		var display = null;
 
-	/**
-	 * The session code of this users session
-	 * @var {Integer}
-	 */
-	var sessionCode = null;
+		/**
+		 * The session code of this users session
+		 * @var {Integer}
+		 */
+		var sessionCode = null;
 
-	/**
-	 * Any previous messages that'll be pushed into the chat window upon load
-	 * @var {Array}
-	 */
-	var initialMessages = null;
+		/**
+		 * Any previous messages that'll be pushed into the chat window upon load
+		 * @var {Array}
+		 */
+		var initialMessages = null;
 
-	/**
-	 * HTML for a select box if department selector is enabled
-	 * @var {String}
-	 */
-	var departmentSelect = null;
+		/**
+		 * HTML for a select box if department selector is enabled
+		 * @var {String}
+		 */
+		var departmentSelect = null;
 
-	/**
-	 * If no one is available for chat
-	 * @var {Boolean}
-	 */
-	var notAvailable = null;
+		/**
+		 * If no one is available for chat
+		 * @var {Boolean}
+		 */
+		var notAvailable = null;
 
-	var scriptDisplay = null;
-	var scriptSession = null;
+		var scriptDisplay = null;
+		var scriptSession = null;
 
-	var hasEnded = false;
+		var hasEnded = false;
 
-	var showProactiveChat = false;
+		var showProactiveChat = false;
 
-	var conversationId = 0;
-	var lastMessageId = 0;
+		var conversationId = 0;
+		var lastMessageId = 0;
 
-	var formVars = [];
+		var formVars = [];
+		var doAutoOpen = false;
 
-	/**
-	 * This is a pre-init that is called automatically when the client has downloaded
-	 * this source file. It ensures jQuery first, and then runs initScript that starts
-	 * our actual chat init.
-	 */
-	this.init = function() {
+		/**
+		 * This is a pre-init that is called automatically when the client has downloaded
+		 * this source file. It ensures jQuery first, and then runs initScript that starts
+		 * our actual chat init.
+		 */
+		this.init = function(autoOpen) {
+			doAutoOpen = autoOpen;
 
-		DpChatConsole.log('DpChat.init');
+			DpChatConsole.log('DpChat.init');
 
-		if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.6.') === -1) {
+			if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.6.') === -1) {
 
-			DpChatConsole.log('DpChat.init: loading jquery');
+				DpChatConsole.log('DpChat.init: loading jquery');
 
-			var initJquery = function() {
-				DpChatConsole.log('DpChat.init: jquery loaded');
-				$ = window.jQuery.noConflict(true);
-				initScript();
-			};
+				var initJquery = function() {
+					DpChatConsole.log('DpChat.init: jquery loaded');
+					$ = window.jQuery.noConflict(true);
+					initScript();
+				};
 
-			var script_tag = document.createElement('script');
-			script_tag.setAttribute("type", "text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
-			script_tag.setAttribute("async", 'true');
-			script_tag.onload = function() {
-				initJquery();
-			};
-			script_tag.onreadystatechange = function () { // Same thing but for IE
-				if (this.readyState == 'complete' || this.readyState == 'loaded') {
+				var script_tag = document.createElement('script');
+				script_tag.setAttribute("type", "text/javascript");
+				script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
+				script_tag.setAttribute("async", 'true');
+				script_tag.onload = function() {
 					initJquery();
-				}
-			};
+				};
+				script_tag.onreadystatechange = function () { // Same thing but for IE
+					if (this.readyState == 'complete' || this.readyState == 'loaded') {
+						initJquery();
+					}
+				};
 
-			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
-		} else {
+				(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+			} else {
 
-			DpChatConsole.log('DpChat.init: already have jquery');
+				DpChatConsole.log('DpChat.init: already have jquery');
 
-			$ = window.jQuery;
-			initScript();
-		}
-	};
-
-
-	/**
-	 * initScript() is called from init() and loads the resources for the theme, and
-	 * also fetches the users session code and existing chat data, if there is any from previous pages.
-	 */
-	var initScript = function() {
-
-		DpChatConsole.log('DpChat.initScript');
-
-		if (window.DpChat_Options) {
-			options = $.extend({}, options, window.DpChat_Options);
-		}
-
-		// Box.js
-		scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
-
-		// DeskPRO script that sets/gets session and initial messages
-		var url = options.deskproUrl + 'chat/chat-session?_1=';
-		url += encodeURIComponent(document.location.href);
-		url += '&amp;_2=' + encodeURIComponent(document.referrer);
-		url += '&amp;___='+(new Date().getTime());
-
-		if (options.displayType == 'DpWindow') {
-			url += '&amp;is_window=1';
-		}
-
-		scriptSession = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
-
-		// Box.css
-		$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
-	};
+				$ = window.jQuery;
+				initScript();
+			}
+		};
 
 
-	/**
-	 * When the display source file is loaded by the client, it calls DpChat.setDisplay() to set itself.
-	 * If the sessionCode is already fetched, then the main chat app can finally be fully set up.
-	 *
-	 * @param display
-	 */
-	this.setDisplay = function(_display) {
-		DpChatConsole.log('DpChat.setDisplay(%o)', _display);
-		display = _display;
+		/**
+		 * initScript() is called from init() and loads the resources for the theme, and
+		 * also fetches the users session code and existing chat data, if there is any from previous pages.
+		 */
+		var initScript = function() {
 
-		mainRunner();
-	};
+			DpChatConsole.log('DpChat.initScript');
 
-
-	/**
-	 * When the session source file is loaded by the client, it calls this DpChat.setSessionCode() to set itself.
-	 * Just like setDisplay, it checks if all values are set and if they are, main() is called to fully run the chat.
-	 *
-	 * @param sessionCode
-	 */
-	this.setSessionCode = function(_sessionCode, _showProactive) {
-		DpChatConsole.log('DpChat.setSessionCode(%o)', _sessionCode);
-		sessionCode = _sessionCode;
-		showProactiveChat = _showProactive;
-
-		mainRunner();
-	};
-
-	/**
-	 * The session source can call DpChat.setInitialMessages() to load messages that were exchanged on a previous
-	 * page.
-	 */
-	this.setInitialMessages = function(_initialMessages) {
-		DpChatConsole.log('DpChat.setInitialMessages(%o)', _initialMessages);
-		initialMessages = _initialMessages;
-	};
-
-	/**
-	 * The session source can tell DpChat to set the select box options
-	 */
-	this.setDepartmentSelect = function(_departmentSelect) {
-		DpChatConsole.log('DpChat.setDepartmentSelect(%o)', _departmentSelect);
-		departmentSelect = _departmentSelect;
-	};
-
-	/**
-	 * Called from the session source to say no one is available for chat
-	 */
-	this.setNotAvailable = function() {
-		DpChatConsole.log('DpChat.setNotAvailable');
-		notAvailable = true;
-	};
-
-	/**
-	 * Pop the chat out into a new window
-	 */
-	this.popChat = function() {
-		hasEnded = true;
-		display.destroy();
-		ajaxPoller.disable = true;
-		ajaxPoller._clearDelays();
-
-		var url = options.deskproUrl + 'chat/chat-window/' + sessionCode;
-		var win = window.open(url,'dpchat','width=650,height=500,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=1');
-		return win;
-	};
-
-	/**
-	 * Opens the chat panel
-	 */
-	this.openChatPanel = function() {
-		display.showChatPanel();
-	};
-
-	/**
-	 * Called when a user hides a proactive. We insert a script request so it
-	 * sets the cookie on the correct domain
-	 */
-	this.proactiveHidden = function() {
-		var url = options.deskproUrl + 'chat/ignore-proactive';
-		var el = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
-	};
-
-	/**
-	 * Sets a value to be used in the template form
-	 *
-	 * @param {String} k
-	 * @param {Mixed} v
-	 */
-	this.setFormVar = function(k, v) {
-		formVars.push([k, v]);
-	}
-
-	//#################################################################
-	//# Simple implementations of message broker and poller
-	//#################################################################
-
-	var messageBroker = this.messageBroker = {
-		messageListeners: {},
-
-		sendMessage: function (name, data) {
-
-			if (this.messageListeners[name] !== undefined) {
-				for (var x = 0; x < this.messageListeners[name].length; x++) {
-					this.messageListeners[name][x](data, name);
-				}
+			if (window.DpChat_Options) {
+				options = $.extend({}, options, window.DpChat_Options);
 			}
 
-			var nameparts = name.split('.');
-			var cur_name = null;
+			// Box.js
+			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
 
-			while (nameparts.pop()) {
-				cur_name = nameparts.join('.') + '.*';
-				if (this.messageListeners[cur_name] !== undefined) {
-					for (var x = 0; x < this.messageListeners[cur_name].length; x++) {
-						this.messageListeners[cur_name][x](data, name);
+			// DeskPRO script that sets/gets session and initial messages
+			var url = options.deskproUrl + 'chat/chat-session?_1=';
+			url += encodeURIComponent(document.location.href);
+			url += '&amp;_2=' + encodeURIComponent(document.referrer);
+			url += '&amp;___='+(new Date().getTime());
+
+			if (options.displayType == 'DpWindow') {
+				url += '&amp;is_window=1';
+			}
+
+			scriptSession = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
+
+			// Box.css
+			$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
+		};
+
+
+		/**
+		 * When the display source file is loaded by the client, it calls DpChat.setDisplay() to set itself.
+		 * If the sessionCode is already fetched, then the main chat app can finally be fully set up.
+		 *
+		 * @param display
+		 */
+		this.setDisplay = function(_display) {
+			DpChatConsole.log('DpChat.setDisplay(%o)', _display);
+			display = _display;
+
+			mainRunner();
+		};
+
+
+		/**
+		 * When the session source file is loaded by the client, it calls this DpChat.setSessionCode() to set itself.
+		 * Just like setDisplay, it checks if all values are set and if they are, main() is called to fully run the chat.
+		 *
+		 * @param sessionCode
+		 */
+		this.setSessionCode = function(_sessionCode, _showProactive) {
+			DpChatConsole.log('DpChat.setSessionCode(%o)', _sessionCode);
+			sessionCode = _sessionCode;
+			showProactiveChat = _showProactive;
+
+			mainRunner();
+		};
+
+		/**
+		 * The session source can call DpChat.setInitialMessages() to load messages that were exchanged on a previous
+		 * page.
+		 */
+		this.setInitialMessages = function(_initialMessages) {
+			DpChatConsole.log('DpChat.setInitialMessages(%o)', _initialMessages);
+			initialMessages = _initialMessages;
+		};
+
+		/**
+		 * The session source can tell DpChat to set the select box options
+		 */
+		this.setDepartmentSelect = function(_departmentSelect) {
+			DpChatConsole.log('DpChat.setDepartmentSelect(%o)', _departmentSelect);
+			departmentSelect = _departmentSelect;
+		};
+
+		/**
+		 * Called from the session source to say no one is available for chat
+		 */
+		this.setNotAvailable = function() {
+			DpChatConsole.log('DpChat.setNotAvailable');
+			notAvailable = true;
+		};
+
+		/**
+		 * Pop the chat out into a new window
+		 */
+		this.popChat = function() {
+			hasEnded = true;
+			display.destroy();
+			ajaxPoller.disable = true;
+			ajaxPoller._clearDelays();
+
+			var url = options.deskproUrl + 'chat/chat-window/' + sessionCode;
+			var win = window.open(url,'dpchat','width=650,height=500,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=1');
+			return win;
+		};
+
+		/**
+		 * Opens the chat panel
+		 */
+		this.openChatPanel = function() {
+			display.showChatPanel();
+		};
+
+		/**
+		 * Called when a user hides a proactive. We insert a script request so it
+		 * sets the cookie on the correct domain
+		 */
+		this.proactiveHidden = function() {
+			var url = options.deskproUrl + 'chat/ignore-proactive';
+			var el = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
+		};
+
+		/**
+		 * Sets a value to be used in the template form
+		 *
+		 * @param {String} k
+		 * @param {Mixed} v
+		 */
+		this.setFormVar = function(k, v) {
+			formVars.push([k, v]);
+		}
+
+		//#################################################################
+		//# Simple implementations of message broker and poller
+		//#################################################################
+
+		var messageBroker = this.messageBroker = {
+			messageListeners: {},
+
+			sendMessage: function (name, data) {
+
+				if (this.messageListeners[name] !== undefined) {
+					for (var x = 0; x < this.messageListeners[name].length; x++) {
+						this.messageListeners[name][x](data, name);
 					}
 				}
+
+				var nameparts = name.split('.');
+				var cur_name = null;
+
+				while (nameparts.pop()) {
+					cur_name = nameparts.join('.') + '.*';
+					if (this.messageListeners[cur_name] !== undefined) {
+						for (var x = 0; x < this.messageListeners[cur_name].length; x++) {
+							this.messageListeners[cur_name][x](data, name);
+						}
+					}
+				}
+			},
+
+			addMessageListener: function(name, callback) {
+				if (this.messageListeners[name] === undefined) {
+					this.messageListeners[name] = [];
+				}
+
+				this.messageListeners[name].push(callback);
 			}
-		},
+		};
 
-		addMessageListener: function(name, callback) {
-			if (this.messageListeners[name] === undefined) {
-				this.messageListeners[name] = [];
-			}
+		var ajaxPoller = this.ajaxPoller = {
+			options: {
+				interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
+				initialDelay: 1500
+			},
+			filterdData: [],
+			disable: false,
+			maxDelayTimers: [],
 
-			this.messageListeners[name].push(callback);
-		}
-	};
-
-	var ajaxPoller = this.ajaxPoller = {
-		options: {
-			interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
-			initialDelay: 1500
-		},
-		filterdData: [],
-		disable: false,
-		maxDelayTimers: [],
-
-		init: function() {
-			this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
-		},
+			init: function() {
+				this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
+			},
 
 
 
-		addData: function(data, name, options) {
-			name = name || 'default';
-			options = options || {};
+			addData: function(data, name, options) {
+				name = name || 'default';
+				options = options || {};
 
-			if (options.addedTime === undefined) {
-				options.addedTime = new Date();
-			}
+				if (options.addedTime === undefined) {
+					options.addedTime = new Date();
+				}
 
-			if (options.maxDelay) {
-				Function_Delay(function() {
-					this.send();
-				}, options.maxDelay, this);
-			}
+				if (options.maxDelay) {
+					Function_Delay(function() {
+						this.send();
+					}, options.maxDelay, this);
+				}
 
-			this.filterdData.push([name, data, options]);
-		},
+				this.filterdData.push([name, data, options]);
+			},
 
-		send: function() {
+			send: function() {
 
-			this._clearDelays();
+				this._clearDelays();
 
-			if (this.disable) {
+				if (this.disable) {
+					this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
+					return;
+				}
+
+				//------------------------------
+				// Build data to send
+				//------------------------------
+
+				var now = new Date();
+
+				var send_data = [];
+				var sent_info = [];
+
+				var filterdData = this.filterdData;
+				this.filterdData = [];
+
+				var item = null;
+				while (item = filterdData.shift()) {
+					var item_name = item[0];
+					var item_data = item_orig_data = item[1];
+					var item_opts = item[2];
+
+					if (item_opts.minDelay && !(item_opts.minDelayAfterOne && !item_opts.sentCount)) {
+						// If its too soon, add it back immediately
+						if (item_opts.minDelay > (now.getTime() - item_opts.addedTime.getTime())) {
+							this.addData(item_orig_data, item_name, item_opts);
+							continue;
+						}
+					}
+
+					item_data = item_data(item_name, {}, item_opts);
+					send_data.push(item_data);
+
+					sent_info.push([item_orig_data, item_name, item_opts]);
+				}
+
+				send_data.push({
+					name: 'since',
+					value: lastMessageId
+				});
+				send_data.push({
+					name: 'conversation_id',
+					value: conversationId
+				});
+
+				//------------------------------
+				// Send data
+				//------------------------------
+
+				$.ajax({
+					cache: false,
+					url: options.deskproUrl + 'chat/poll/' + sessionCode,
+					context: this,
+					crossDomain: true,
+					data: send_data,
+					dataType: 'jsonp',
+					success: function (data) {
+						if (data.conversation_id) {
+							conversationId = data.conversation_id;
+						}
+						if (data.last_id) {
+							lastMessageId = data.last_id;
+						}
+						this._handleAjaxSuccess({
+							messages: data.messages
+						}, sent_info);
+					}
+				});
+			},
+
+			_handleAjaxSuccess: function (data, sent_info) {
+
+				var item = null;
+				while (item = sent_info.shift()) {
+					var item_name = item[0];
+					var item_data = item[1];
+					var item_opts = item[2];
+
+					if (item_opts.recurring) {
+						item_opts.lastSent = new Date();
+
+						if (item_opts.sentCount === undefined) item_opts.sentCount = 0;
+						item_opts.sentCount++;
+
+						// Delete addedTime so minDelay check will reset too
+						delete item_opts.addedTime;
+
+						this.addData(item_name, item_data, item_opts);
+					}
+				}
+
+				if (data.messages === undefined) {
+					return;
+				}
+
+				if (data.messages.length) {
+					var message = null;
+					while (message = data.messages.shift()) {
+						var name = message[0].replace(/chat_convo\.([0-9]+)\./, '');
+						messageBroker.sendMessage(name, message[1]);
+					}
+				}
+
+				// Start auto timer
 				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
-				return;
-			}
+			},
 
-			//------------------------------
-			// Build data to send
-			//------------------------------
+			_clearDelays: function() {
 
-			var now = new Date();
+				this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
+				this.autoSendTimeout = null;
 
-			var send_data = [];
-			var sent_info = [];
-
-			var filterdData = this.filterdData;
-			this.filterdData = [];
-
-			var item = null;
-			while (item = filterdData.shift()) {
-				var item_name = item[0];
-				var item_data = item_orig_data = item[1];
-				var item_opts = item[2];
-
-				if (item_opts.minDelay && !(item_opts.minDelayAfterOne && !item_opts.sentCount)) {
-					// If its too soon, add it back immediately
-					if (item_opts.minDelay > (now.getTime() - item_opts.addedTime.getTime())) {
-						this.addData(item_orig_data, item_name, item_opts);
-						continue;
-					}
+				var t = null;
+				while (t = this.maxDelayTimers.pop()) {
+					window.clearTimeout(t);
 				}
-
-				item_data = item_data(item_name, {}, item_opts);
-				send_data.push(item_data);
-
-				sent_info.push([item_orig_data, item_name, item_opts]);
 			}
+		};
 
-			send_data.push({
-				name: 'since',
-				value: lastMessageId
-			});
-			send_data.push({
-				name: 'conversation_id',
-				value: conversationId
-			});
 
-			//------------------------------
-			// Send data
-			//------------------------------
+		/**
+		 * Sends a new chat message. The server decides if the chat should be new or not
+		 *
+		 * @param message
+		 */
+		this.sendMessage = function(message, data) {
+
+			DpChatConsole.log('DpChat.sendMessage: %s', message);
+
+			hasStarted = true;
+			if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
+
+			data = data || [];
+			data.push({
+				name: 'content',
+				value: message
+			});
 
 			$.ajax({
 				cache: false,
-				url: options.deskproUrl + 'chat/poll/' + sessionCode,
+				url: options.deskproUrl + 'chat/send-message/' + sessionCode,
 				context: this,
 				crossDomain: true,
-				data: send_data,
+				data: data,
 				dataType: 'jsonp',
-				success: function (data) {
-					if (data.conversation_id) {
-						conversationId = data.conversation_id;
-					}
-					if (data.last_id) {
-						lastMessageId = data.last_id;
-					}
-					this._handleAjaxSuccess({
-						messages: data.messages
-					}, sent_info);
+				success: function() {
+					ajaxPoller.options.interval = 2000;
+					ajaxPoller.disable = false;
+					ajaxPoller.send();
 				}
 			});
-		},
+		};
 
-		_handleAjaxSuccess: function (data, sent_info) {
+		var typingIndicatorTime = null;
+		var typingIndicatorMsg = null;
+		this.userTypingIndicator = function(message) {
+			if (!hasStarted) return;
+			if (typingIndicatorTime) return;
 
-			var item = null;
-			while (item = sent_info.shift()) {
-				var item_name = item[0];
-				var item_data = item[1];
-				var item_opts = item[2];
+			typingIndicatorTime = Function_Delay(sendTypingIndicator, 1000, self);
+		};
 
-				if (item_opts.recurring) {
-					item_opts.lastSent = new Date();
-
-					if (item_opts.sentCount === undefined) item_opts.sentCount = 0;
-					item_opts.sentCount++;
-
-					// Delete addedTime so minDelay check will reset too
-					delete item_opts.addedTime;
-
-					this.addData(item_name, item_data, item_opts);
-				}
+		var sendTypingIndicator;
+		sendTypingIndicator = function() {
+			if (typingIndicatorTime) {
+				window.clearTimeout(typingIndicatorTime);
+				typingIndicatorTime = null;
 			}
 
-			if (data.messages === undefined) {
+			typingIndicatorMsg = $.trim(DpChat_Display.getMessage());
+
+			$.ajax({
+				cache: false,
+				url: options.deskproUrl + 'chat/user-typing/' + sessionCode,
+				context: this,
+				crossDomain: true,
+				data: {'partial_message': typingIndicatorMsg},
+				dataType: 'jsonp'
+			});
+		};
+
+		//#################################################################
+		//# Util
+		//#################################################################
+
+		var Function_Delay = function(fn, delay, bind, args) {
+			args = args || [];
+			bind = bind || fn;
+
+			var timeout = window.setTimeout(function() {
+				fn.apply(bind, args);
+			}, delay);
+			return timeout;
+		};
+
+		var escapeHtml = function(string) {
+			return string.replace(/&/g, "&amp;")
+				.replace(/>/g, "&gt;")
+				.replace(/</g, "&lt;")
+				.replace(/"/g, "&quot;");
+		};
+
+		var linkUrls = function(string) {
+			return string
+				.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
+		};
+
+		this.util = {
+			escapeHtml: escapeHtml,
+			linkUrls: linkUrls,
+			Function_Delay: Function_Delay
+		};
+
+		//#################################################################
+		//# Main
+		//#################################################################
+
+		/**
+		 * Called in the setX methods to run main once all data has been collected
+		 */
+		var mainRunner = function() {
+			if (display && sessionCode) {
+				main();
+			}
+		};
+
+		var main = function() {
+
+			DpChatConsole.log('DpChat.main');
+
+			ajaxPoller.init();
+			display.initDisplay({
+				jQuery: $,
+				departmentSelect: departmentSelect,
+				formValues: formVars
+			});
+
+			if (initialMessages) {
+
+				hasStarted = true;
+
+				for (var i = 0; i < initialMessages.length; i++) {
+					if (initialMessages[i].is_html) {
+						display.addMessageRow(
+							initialMessages[i].author_name,
+							initialMessages[i].content,
+							initialMessages[i].author_type,
+							true
+						);
+					} else {
+						display.addMessageRow(
+							initialMessages[i].author_name,
+							initialMessages[i].content,
+							initialMessages[i].author_type
+						);
+					}
+				}
+
+				display.showChatPanel();
+				ajaxPoller.options.interval = 2000;
+				ajaxPoller.send();
+
+				chatAssigned({agent_id:1});
+			}
+
+			messageBroker.addMessageListener('newmessage', addIncomingMessage);
+
+			if (showProactiveChat) {
+				display.showProactive();
+			}
+
+			// Attach click event to any chat triggers to open new chat window
+			$('.dp-chat-trigger').click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				DpChat.showChatPanel();
+			});
+			$('.dp-chat-window-trigger').click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				DpChat.popChat();
+			});
+
+			if (doAutoOpen) {
+				display.showChatPanel();
+			}
+		};
+
+		var chatAssigned = function(data) {
+			if (!display.showAssignedStatus) {
 				return;
 			}
+			var isAssigned = true;
+			if (data.agent_id == 0) {
+				isAssigned = false;
+			}
+			display.showAssignedStatus(isAssigned);
+		};
 
-			if (data.messages.length) {
-				var message = null;
-				while (message = data.messages.shift()) {
-					var name = message[0].replace(/chat_convo\.([0-9]+)\./, '');
-					messageBroker.sendMessage(name, message[1]);
-				}
+		var addIncomingMessage = function(data) {
+			if (data.metadata.chat_unassigned) {
+				chatAssigned({ agent_id: 0 });
+			}
+			if (data.metadata.chat_assigned) {
+				chatAssigned({ agent_id: data.metadata.assigned_to });
 			}
 
-			// Start auto timer
-			this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
-		},
-
-		_clearDelays: function() {
-
-			this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
-			this.autoSendTimeout = null;
-
-			var t = null;
-			while (t = this.maxDelayTimers.pop()) {
-				window.clearTimeout(t);
-			}
-		}
-	};
-
-
-	/**
-	 * Sends a new chat message. The server decides if the chat should be new or not
-	 *
-	 * @param message
-	 */
-	this.sendMessage = function(message, data) {
-
-		DpChatConsole.log('DpChat.sendMessage: %s', message);
-
-		hasStarted = true;
-		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
-
-		data = data || [];
-		data.push({
-			name: 'content',
-			value: message
-		});
-
-		$.ajax({
-			cache: false,
-			url: options.deskproUrl + 'chat/send-message/' + sessionCode,
-			context: this,
-			crossDomain: true,
-			data: data,
-			dataType: 'jsonp',
-			success: function() {
-				ajaxPoller.options.interval = 2000;
-				ajaxPoller.disable = false;
-				ajaxPoller.send();
-			}
-		});
-	};
-
-	var typingIndicatorTime = null;
-	var typingIndicatorMsg = null;
-	this.userTypingIndicator = function(message) {
-		if (!hasStarted) return;
-		if (typingIndicatorTime) return;
-
-		typingIndicatorTime = Function_Delay(sendTypingIndicator, 1000, self);
-	};
-
-	var sendTypingIndicator;
-	sendTypingIndicator = function() {
-		if (typingIndicatorTime) {
-			window.clearTimeout(typingIndicatorTime);
-			typingIndicatorTime = null;
-		}
-
-		typingIndicatorMsg = $.trim(DpChat_Display.getMessage());
-
-		$.ajax({
-			cache: false,
-			url: options.deskproUrl + 'chat/user-typing/' + sessionCode,
-			context: this,
-			crossDomain: true,
-			data: {'partial_message': typingIndicatorMsg},
-			dataType: 'jsonp'
-		});
-	};
-
-	//#################################################################
-	//# Util
-	//#################################################################
-
-	var Function_Delay = function(fn, delay, bind, args) {
-		args = args || [];
-		bind = bind || fn;
-
-		var timeout = window.setTimeout(function() {
-			fn.apply(bind, args);
-		}, delay);
-		return timeout;
-	};
-
-	var escapeHtml = function(string) {
-		return string.replace(/&/g, "&amp;")
-			.replace(/>/g, "&gt;")
-			.replace(/</g, "&lt;")
-			.replace(/"/g, "&quot;");
-	};
-
-	var linkUrls = function(string) {
-		return string
-			.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
-	};
-
-	this.util = {
-		escapeHtml: escapeHtml,
-		linkUrls: linkUrls,
-		Function_Delay: Function_Delay
-	};
-
-	//#################################################################
-	//# Main
-	//#################################################################
-
-	/**
-	 * Called in the setX methods to run main once all data has been collected
-	 */
-	var mainRunner = function() {
-		if (display && sessionCode) {
-			main();
-		}
-	};
-
-	var main = function() {
-
-		DpChatConsole.log('DpChat.main');
-
-		ajaxPoller.init();
-		display.initDisplay({
-			jQuery: $,
-			departmentSelect: departmentSelect,
-			formValues: formVars
-		});
-
-		if (initialMessages) {
-
-			hasStarted = true;
-
-			for (var i = 0; i < initialMessages.length; i++) {
-				if (initialMessages[i].is_html) {
-					display.addMessageRow(
-						initialMessages[i].author_name,
-						initialMessages[i].content,
-						initialMessages[i].author_type,
-						true
-					);
-				} else {
-					display.addMessageRow(
-						initialMessages[i].author_name,
-						initialMessages[i].content,
-						initialMessages[i].author_type
-					);
-				}
+			if (data.is_html) {
+				display.addMessageRow(data.author_name, data.content, data.author_type, true);
+			} else {
+				display.addMessageRow(data.author_name, data.content, data.author_type);
 			}
 
-			display.showChatPanel();
-			ajaxPoller.options.interval = 2000;
-			ajaxPoller.send();
+			if (data.metadata.chat_ended) {
+				endChat();
+			}
+		};
 
-			chatAssigned({agent_id:1});
-		}
+		var endChat = this.endChat = function() {
+			if (hasEnded) return; //already ended
+			hasEnded = true;
+			ajaxPoller.disable = true;
+			ajaxPoller._clearDelays();
 
-		messageBroker.addMessageListener('newmessage', addIncomingMessage);
+			$.ajax({
+				cache: false,
+				url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId,
+				context: this,
+				crossDomain: true,
+				dataType: 'jsonp'
+			});
 
-		if (showProactiveChat) {
-			display.showProactive();
-		}
+			DpChat_Display.showEnd();
+		};
 
-		// Attach click event to any chat triggers to open new chat window
-		$('.dp-chat-trigger').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
+		this.getFinisehdUrl = function() {
+			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
+		};
 
-			DpChat.showChatPanel();
-		});
-		$('.dp-chat-window-trigger').click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
+		this.endChatReboot = function() {
+			console.log('destroy');
+			window.DpChat_Display.destroy();
+			delete window.DpChat_Display;
+			delete window.DpChat;
 
-			DpChat.popChat();
-		});
-	};
+			window.DpChat = window.DpChatMake();
+			window.DpChat.init(true);
+		};
 
-	var chatAssigned = function(data) {
-		if (!display.showAssignedStatus) {
-			return;
-		}
-		var isAssigned = true;
-		if (data.agent_id == 0) {
-			isAssigned = false;
-		}
-		display.showAssignedStatus(isAssigned);
-	};
-
-	var addIncomingMessage = function(data) {
-		if (data.metadata.chat_unassigned) {
-			chatAssigned({ agent_id: 0 });
-		}
-		if (data.metadata.chat_assigned) {
-			chatAssigned({ agent_id: data.metadata.assigned_to });
-		}
-
-		if (data.is_html) {
-			display.addMessageRow(data.author_name, data.content, data.author_type, true);
-		} else {
-			display.addMessageRow(data.author_name, data.content, data.author_type);
-		}
-
-		if (data.metadata.chat_ended) {
-			endChat();
-		}
-	};
-
-	var endChat = this.endChat = function() {
-		if (hasEnded) return; //already ended
-		hasEnded = true;
-		ajaxPoller.disable = true;
-		ajaxPoller._clearDelays();
-
-		$.ajax({
-			cache: false,
-			url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId,
-			context: this,
-			crossDomain: true,
-			dataType: 'jsonp'
-		});
-
-		DpChat_Display.showEnd();
-	};
-
-	this.getFinisehdUrl = function() {
-		return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
-	};
-
-	return this;
-})();
-DpChat.init();
+		return this;
+	})();
+	return DpChat;
+};
+window.DpChat = DpChatMake();
+window.DpChat.init();

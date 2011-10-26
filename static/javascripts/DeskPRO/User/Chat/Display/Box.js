@@ -76,7 +76,7 @@ var DpChat_Display = (function() {
 				html.push('<div class="dpchat-finding-agent">Please wait while we find an agent to take your chat.</div>');
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
-			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a></div>')
+			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
 		html.push('</div>');
 
 		var el = $(html.join(''));
@@ -90,6 +90,10 @@ var DpChat_Display = (function() {
 
 		el.appendTo('body');
 		chatBox = el;
+
+		$('#dpchat_start_new').click(function() {
+			DpChat.endChatReboot();
+		});
 
 		DpChatConsole.log('DpChat_Display.initDisplay: chatBox %o', chatBox);
 

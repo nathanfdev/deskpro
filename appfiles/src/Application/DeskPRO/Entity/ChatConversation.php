@@ -490,15 +490,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$line = '';
 
 		foreach ($this->messages as $message) {
-			if (!$message->is_sys && (!$message->person || !($message->person && $message->person->is_agent))) {
-				if ($message->is_html) {
-					$line .= strip_tags($message->content);
-				} else {
-					$line .= $message->content;
-				}
-				if (strlen($line) >= 190) {
-					continue;
-				}
+			if ($message->is_sys) continue;
+			if ($message->author && $message->author->is_agent) continue;
+
+			if ($message->is_html) {
+				$line .= strip_tags($message->content);
+			} else {
+				$line .= $message->content;
+			}
+			if (strlen($line) >= 190) {
+				continue;
 			}
 		}
 
