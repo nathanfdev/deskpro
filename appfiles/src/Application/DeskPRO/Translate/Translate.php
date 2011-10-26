@@ -464,7 +464,7 @@ class Translate implements PersonContextInterface
 			$language = $this->_loaded_languages[$language];
 		}
 
-		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $language);
+		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $language->getLocale());
 	}
 
 
@@ -619,6 +619,7 @@ class Translate implements PersonContextInterface
 		if ($this->_phrase_selector !== null) return $this->_phrase_selector;
 
 		$this->_phrase_selector = new \Symfony\Component\Translation\MessageSelector();
+		return $this->_phrase_selector;
 	}
 
 	/**
