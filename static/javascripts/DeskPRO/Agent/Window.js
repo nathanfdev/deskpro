@@ -273,7 +273,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
 				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash });
+				this.loadPage(url, { url_fragment: hash, noToggle: true });
 			}
 		}, this);
 
@@ -1042,14 +1042,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 	loadPage: function(url, routeData, callback) {
 
 		if (!routeData || (!routeData.ignoreExist)) {
-			if (!routeData.noToggle) {
-				var existTab = this.pageTabStrip.getTabByRouteUrl(url);
-				if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
-					this.pageTabStrip.removeTabById(existTab.id);
-					if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
-						routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
-					}
-					return;
+			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
+			if (existTab && routeData.noToggle) {
+				return;
+			}
+			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
+				this.pageTabStrip.removeTabById(existTab.id);
+				if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
+					routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
 				}
 			}
 		}
