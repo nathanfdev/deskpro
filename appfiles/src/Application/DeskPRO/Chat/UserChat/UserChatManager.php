@@ -174,16 +174,16 @@ class UserChatManager
 
 			$this->em->flush();
 
-			$newchat_cm_data = $convo->getInfo();
-
 			if (isset($chat_options['content']) && $chat_options['content']) {
 				$this->addUserMessage($convo, $chat_options['content']);
 				$newchat_cm_data['initial_message'] = $chat_options['content'];
 
-
-			$this->em->flush();}
+				$this->em->flush();
+			}
 
 			if ($is_new_convo) {
+				$newchat_cm_data = $convo->getInfo();
+
 				$cm = new ClientMessage();
 				$cm->fromArray(array(
 					'channel' => 'chat.new',

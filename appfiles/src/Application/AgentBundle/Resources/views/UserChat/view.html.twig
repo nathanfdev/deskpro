@@ -1,6 +1,15 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
-pageMeta.title         = 'Chat';
+{% if convo.person %}
+	pageMeta.title = {{ convo.person.display_contact|json_encode|raw }};
+{% elseif convo.person_name or convo.person_email %}
+	var t = [];
+	{% if convo.person_name %}t.push({{ convo.person_name|json_encode|raw }});{% endif %}
+	{% if convo.person_email %}t.push({{ '<' ~ convo.person_email ~ '>'|json_encode|raw }});{% endif %}
+	pageMeta.title = t.join(' ');
+{% else %}
+	pageMeta.title = 'Chat ' + convo.id;
+{% endif %}
 pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
 pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};

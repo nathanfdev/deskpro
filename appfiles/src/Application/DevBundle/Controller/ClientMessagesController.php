@@ -15,6 +15,7 @@ class ClientMessagesController extends \Application\DeskPRO\HttpKernel\Controlle
 {
 	public function indexAction()
 	{
+		$cm = null;
 		if (!empty($_POST['client_message'])) {
 
 			$arr = $_POST['client_message'];
@@ -26,13 +27,17 @@ class ClientMessagesController extends \Application\DeskPRO\HttpKernel\Controlle
 
 			App::getOrm()->persist($cm);
 			App::getOrm()->flush();
-
-			$data_str = Arrays::toEqualsLines($cm['data']);
-		} else {
-			$cm = null;
-			$data_str = '';
 		}
-		
+
+		if (isset($_GET['lookup'])) {
+			$cm = App::findEntity('DeskPRO:ClientMessage', $_GET['lookup']);
+		}
+
+		$data_str = '';
+		if ($cm) {
+			$data_str = Arrays::toEqualsLines($cm['data']);
+		}
+
 		return $this->render('DevBundle:ClientMessages:index.html.php', array(
 			'cm' => $cm,
 			'data_str' => $data_str

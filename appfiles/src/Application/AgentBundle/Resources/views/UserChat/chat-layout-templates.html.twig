@@ -3,8 +3,20 @@
 	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="new_user_chat_alert_${conversation_id}" data-play-sound="new-chat">
 		<header><h3>New Chat</h3></header>
 		<div class="messages">
-			${subject_line}
-			${initial_message}
+			{{if author_name || author_email}}
+				<div class="meta">
+					{{if author_name || author_email}}
+						By <em>${author_name} {{if author_email}}&lt;${author_email}&gt;</em>{{/if}}
+					{{/if}}
+					{{if department_id}}in <em>${department_name}</em>{{/if}}
+				</div>
+			{{else}}
+				<div class="meta">
+					Chat ${conversation_id} by Anonymous
+					{{if department_id}}in <em>${department_name}</em>{{/if}}
+				</div>
+			{{/if}}
+			{{if subject_line}}<p>${subject_line}</p>{{/if}}
 		</div>
 		<footer>
 			<button class="clean-white small dismiss-trigger">Dismiss</button>

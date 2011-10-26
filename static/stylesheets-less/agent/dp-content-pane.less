@@ -3697,12 +3697,32 @@ section.new-user-chat-alert header {
 }
 
 section.new-user-chat-alert div.messages {
-    background-color: rgba(255, 255, 255, 0.9);
-    height: 75px;
     margin: 4px;
     overflow: auto;
 
     font-size: 11px;
+}
+
+section.new-user-chat-alert div.messages .meta {
+	font-size: 9px;
+	background-color: #fff;
+	padding: 2px 6px 2px 5px;
+	line-height: 120%;
+
+	.border-radius(4px, 0, 0, 4px);
+}
+
+section.new-user-chat-alert div.messages .meta em {
+
+}
+
+section.new-user-chat-alert div.messages p {
+    background-color: rgba(255, 255, 255, 0.9);
+	padding: 2px 8px 2px 8px;
+	max-height: 70px;
+	overflow: auto;
+
+	.border-radius(0, 4px, 4px, 0);
 }
 
 section.new-user-chat-alert div.messages article {

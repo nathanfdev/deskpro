@@ -145,10 +145,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.modListingCount(data.agent_id, '+');
 		if (!data.agent_id) {
 			if (!this.dismissedChats[data.conversation_id]) {
-				this.showNewChatAlert(data, {
-					name: data.author_name,
-					message: data.initial_message || data.subject_line
-				});
+				var info_line = [];
+				this.showNewChatAlert(data);
 			}
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {

@@ -265,16 +265,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this['date_first_agent_message'] = new \DateTime();
 		}
 
-		if (!$this->subject) {
-			if ($message->author AND $message->author['is_agent']) {
-				if ($this->is_agent) {
-					$this->subject = substr($message['content'], 0, 45);
-				}
-			} else {
-				$this->subject = substr($message['content'], 0, 45);
-			}
-		}
-
 		$message->conversation = $this;
 		$this->messages->add($message);
 
@@ -494,26 +484,31 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			return $this->subject;
 		}
 
-		$name_parts = array();
-		if ($this->person) {
-			$name_parts[] = $this->person->display_name;
-			$name_parts[] = $this->person->getPrimaryEmailAddress();
-		} else {
-			$name_parts[] = $this->person_name ? $this->person_name : '';
-			$name_parts[] = $this->person_email ? $this->person_email : '';
+		// TODO this needs to be improved so it doesnt load
+		// the whole messages graph
+
+		$line = '';
+
+		foreach ($this->messages as $message) {
+			if (!$message->is_sys && (!$message->person || !($message->person && $message->person->is_agent))) {
+				if ($message->is_html) {
+					$line .= strip_tags($message->content);
+				} else {
+					$line .= $message->content;
+				}
+				if (strlen($line) >= 190) {
+					continue;
+				}
+			}
 		}
 
-		$name_parts = Arrays::removeFalsey($name_parts);
-
-		if (!$name_parts) {
-			$name_parts[] = "Chat {$this->id}";
+		if (!$line) {
+			$line = 'Chat ' . $this->id;
 		}
 
-		if ($this->department) {
-			$name_parts[] = " in {$this->department->full_title}";
-		}
+		$line = substr($line, 0, 190);
 
-		return implode(' ', $name_parts);
+		return $line;
 	}
 
 
@@ -530,21 +525,23 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$info['conversation_id'] = $this->id;
 
 		if ($this->person) {
-			$info['author_id'] = $this->person->id;
-			$info['author_name'] = $this->person->display_name;
-			$info['author_email'] = $this->person->getPrimaryEmailAddress();
-			$info['author_type'] = $this->person->is_agent ? 'agent' : 'user';
+			$info['author_id']     = $this->person->id;
+			$info['author_name']   = $this->person->display_name;
+			$info['author_email']  = $this->person->getPrimaryEmailAddress();
+			$info['author_type']   = $this->person->is_agent ? 'agent' : 'user';
 		} else {
-			$info['author_id'] = 0;
-			$info['author_name'] = $this->person_name ? $this->person_name : '';
-			$info['author_email'] = $this->person_email ? $this->person_email : '';
-			$info['author_type'] = 'user';
+			$info['author_id']     = 0;
+			$info['author_name']   = $this->person_name ? $this->person_name : '';
+			$info['author_email']  = $this->person_email ? $this->person_email : '';
+			$info['author_type']   = 'user';
 		}
 
-		$info['subject_line']  = $this->getSubjectLine();
-		$info['agent_id']      = $this->agent ? $this->agent->id : 0;
-		$info['department_id'] = $this->department_id;
-		$info['date_created']  = $this->date_created->getTimestamp();
+		$info['subject_line']     = $this->getSubjectLine();
+		$info['agent_id']         = $this->agent ? $this->agent->id : 0;
+		$info['agent_name']       = $this->agent ? $this->agent->getDisplayName() : '';
+		$info['department_id']    = $this->department_id;
+		$info['department_name']  = $this->department ? $this->department->getFullTitle() : '';
+		$info['date_created']     = $this->date_created->getTimestamp();
 
 		return $info;
 	}

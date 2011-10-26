@@ -602,8 +602,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function getDisplayContact()
 	{
 		$display = $this->getDisplayName();
-		if ($this->getPrimaryEmailAddress()) {
-			$display .= " ({$this->getPrimaryEmailAddress()})";
+		if ($this->getPrimaryEmailAddress() && $display != $this->getPrimaryEmailAddress()) {
+			$display .= " &lt;{$this->getPrimaryEmailAddress()}&gt;";
 		}
 
 		return $display;
