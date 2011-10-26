@@ -5,6 +5,13 @@ DpChat_Options.staticUrl = '{{ asset_url('') }}';
 DpChat_Options.deskproUrl = '{{ url('user') }}';
 DpChat_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
 {% if constant('DP_DEBUG') %}var DpChat_EnableDebug = true;{% endif %}
+{% if app.getSetting('interceptLeavingDomains') %}
+DpChat_Options.interceptLeavingDomains = [
+	{% for domain in app.getSetting('user.chat_intercept_leaving_domains')|explode(',') %}
+		{{ domain|json_encode|raw }}{% if not loop.last %},{% endif %}
+	{% endfor %}
+];
+{% endif %}
 
 (function() {
 	var scr = document.createElement('script');

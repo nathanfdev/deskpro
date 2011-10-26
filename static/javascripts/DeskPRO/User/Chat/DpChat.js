@@ -132,6 +132,38 @@ var DpChatMake = function() {
 				options = $.extend({}, options, window.DpChat_Options);
 			}
 
+			if (window.DpChat_Options.interceptLeavingDomains) {
+				$(document).delegate('a', 'click', function(ev) {
+					if ($(this).is('dp-no-touch')) {
+						return;
+					}
+
+					var href = $(this).attr('href');
+					if (!href) return;
+
+					var m = href.match(/:\/\/(.[^/]+)/)[1];
+					if (!m || !m[1]) return;
+
+					var domain = m[1];
+
+					var foundDomain = false;
+
+					Array.each(DpChat_Options.interceptLeavingDomains, function(checkDomain) {
+						if (domain == checkDomain || domain.indexOf(checkDomain) !== -1) {
+							foundDomain = true;
+							return false;
+						}
+					});
+
+					if (!foundDomain) {
+						if (!confirmGoingAway()) {
+							ev.preventDefault();
+							ev.stopPropagation();
+						}
+					}
+				});
+			}
+
 			// Box.js
 			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
 
@@ -149,6 +181,12 @@ var DpChatMake = function() {
 
 			// Box.css
 			$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
+		};
+
+		var confirmGoingAway = function() {
+			if (hasStarted && !hasEnded) {
+				return confirm('Are you sure you want to leave our website? Your chat will be closed.');
+			}
 		};
 
 

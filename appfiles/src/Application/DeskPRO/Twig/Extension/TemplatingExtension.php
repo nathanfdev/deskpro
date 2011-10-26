@@ -88,6 +88,7 @@ class TemplatingExtension extends \Twig_Extension
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
 			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
+			'explode' => new \Twig_Filter_Method($this, 'explodeString'),
         );
     }
 
@@ -101,6 +102,17 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$assetic_manager = $this->container->getSystemService('assetic_manager');
 		return $assetic_manager->getRawUrls($name);
+	}
+
+	public function explodeString($string, $del = ',') {
+		$ret = array();
+		$string = (string)$string;
+
+		foreach (explode($del, $string) as $p) {
+			$ret[] = trim($p);
+		}
+
+		return $ret;
 	}
 
 	public function stripLinebreaks($str)
