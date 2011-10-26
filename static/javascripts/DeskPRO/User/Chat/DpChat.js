@@ -508,6 +508,8 @@ var DpChatMake = function() {
 					ajaxPoller.send();
 				}
 			});
+
+			display.showAssignedStatus(false);
 		};
 
 		var typingIndicatorTime = null;
@@ -676,7 +678,7 @@ var DpChatMake = function() {
 			}
 		};
 
-		var endChat = this.endChat = function() {
+		var endChat = this.endChat = function(callback) {
 			if (hasEnded) return; //already ended
 			hasEnded = true;
 			ajaxPoller.disable = true;
@@ -687,7 +689,8 @@ var DpChatMake = function() {
 				url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId,
 				context: this,
 				crossDomain: true,
-				dataType: 'jsonp'
+				dataType: 'jsonp',
+				complete: callback || function() {}
 			});
 
 			DpChat_Display.showEnd();

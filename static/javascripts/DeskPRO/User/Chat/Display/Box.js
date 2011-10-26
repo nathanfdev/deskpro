@@ -7,6 +7,8 @@ var DpChat_Display = (function() {
 	var chatBoxBtn = null;
 	var messageWrapper = null;
 	var findingAgentEl = null;
+	var findingAgentLongEl = null;
+	var noAgentTimer = null;
 
 	var self = this;
 
@@ -73,7 +75,8 @@ var DpChat_Display = (function() {
 			}
 			html.push('<div id="dpchat_messages" ' + (options.departmentSelect ? 'style="display:none"' : '') + '>');
 				html.push('<div class="dpchat-info dpchat-instruction">Type in your question to get started</div>');
-				html.push('<div class="dpchat-finding-agent">Please wait while we find an agent to take your chat.</div>');
+				html.push('<div class="dpchat-finding-agent" style="display: none">Please wait while we find an agent to take your chat.</div>');
+				html.push('<div class="dpchat-finding-agent-long" style="display: none">We are still trying to find an agent to take your chat but it is taking longer than we thought. Maybe you want to <a href="'+DpChat_Options.deskproUrl+'tickets/new">send us an email</a> instead?</div>');
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
 			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
@@ -100,6 +103,19 @@ var DpChat_Display = (function() {
 
 		messageWrapper = $('#dpchat_messages');
 		findingAgentEl = $('.dpchat-finding-agent', messageWrapper);
+		findingAgentLongEl = $('.dpchat-finding-agent-long', messageWrapper);
+
+		$('a', findingAgentLongEl).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var href = $(this).attr('href');
+			chatBox.hide();
+			chatBoxBtn.hide();
+			DpChat.endChat(function() {
+				window.location = href;
+			});
+		});
 
 		var self = this;
 		$('#dpchat_preform_submit').click(function(ev) {
@@ -107,6 +123,7 @@ var DpChat_Display = (function() {
 			ev.stopPropagation();
 
 			var altData = getAltFormData();
+			altData.startNew = true;
 			DpChat.sendMessage('', altData);
 			self.addMessageRow(false, false, 'justStart');
 		});
@@ -176,11 +193,23 @@ var DpChat_Display = (function() {
 	};
 
 	this.showAssignedStatus = function(isAssigned) {
+		findingAgentLongEl.hide();
 		if (!isAssigned) {
+			if (noAgentTimer) window.clearTimeout(noAgentTimer);
+			noAgentTimer = window.setTimeout(function() { DpChat_Display.showTicketLink(); }, 30000);
+
 			findingAgentEl.detach().appendTo(messageWrapper).show();
 		} else {
+			if (noAgentTimer) window.clearTimeout(noAgentTimer);
+			noAgentTimer = null;
+
 			findingAgentEl.hide();
 		}
+	};
+
+	this.showTicketLink = function() {
+		findingAgentEl.hide();
+		findingAgentLongEl.detach().appendTo(messageWrapper).show();
 	};
 
 	this.showProactive = function() {
