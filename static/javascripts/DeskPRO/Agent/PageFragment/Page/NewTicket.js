@@ -127,10 +127,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			sb.close();
 			sb.reset();
 		});
-		searchbox.bind('personsearchboxclicknew', function(ev, term, sb) {
+		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
 			$.ajax({
 				type: 'GET',
 				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+				data: { 'email': term },
 				dataType: 'html',
 				context: this,
 				success: function(html) {

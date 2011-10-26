@@ -1393,6 +1393,9 @@ class TicketController extends AbstractController
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
 		}
+		if (!$person && $this->in->getString('email')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+		}
 
 		if (!$person) {
 			$person = new Person();

@@ -52,19 +52,21 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 		this.ownObject(this.selectionBar);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('kb.pending_article_removed', function(data) {
-			self.removeFromList(data.pending_article_id)
+			self.removeFromList(data.pending_article_id);
 		});
 
-		$('.add-new-trigger', this.wrapper).click(function() {
-			var formWrap = $('.add-new-form', self.wrapper);
-			if (formWrap.is(':visible')) {
-				formWrap.slideUp();
-			} else {
-				formWrap.slideDown();
-			}
+		var newFormOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.getEl('add_new_overlay'),
+			zIndex: 'top'
 		});
 
-		$('.save-new-trigger', this.wrapper).click(this.saveNewPendingArticle.bind(this));
+		$('.add-new-trigger', this.el).click(function() {
+			newFormOverlay.open();
+		});
+		$('.save-new-trigger', this.getEl('add_new_overlay')).click(function() {
+			self.saveNewPendingArticle();
+			newFormOverlay.close();
+		});
 
 		$('section.pending-articles-list', this.wrapper).delegate('.pending-delete', 'click', function(ev) {
 			ev.stopPropagation();
@@ -134,8 +136,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 	},
 
 	saveNewPendingArticle: function() {
-		var formWrap = $('.add-new-form', this.wrapper);
-		var val = $('.add-new-form textarea', this.wrapper).val().trim();
+		var formWrap = this.getEl('add_new_overlay');
+		var val = $('textarea', this.getEl('add_new_overlay')).val().trim();
 
 		if (!val) {
 			formWrap.slideUp();
