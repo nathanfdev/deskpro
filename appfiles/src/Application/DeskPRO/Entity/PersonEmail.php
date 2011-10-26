@@ -161,10 +161,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setEmail($email)
 	{
-		$this->email = strtolower($email);
+		$this->setModelField('email', strtolower($email));
 		list (, $email_domain) = explode('@', $email, 2);
 
-		$this->email_domain = $email_domain;
+		$this->setModelField('email_domain', $email_domain);
 	}
 
 

@@ -24,6 +24,7 @@ class NewTicket extends AbstractType
 
 		$user_builder = $builder->create('person', 'form', array('data_class' => 'Application\\AgentBundle\\Form\\Model\\NewTicketPerson'));
 		$user_builder->add('id', 'hidden');
+		$user_builder->add('name', 'text', array('required' => false));
 		$user_builder->add('email_address', 'text', array('required' => false));
 		$user_builder->add('organization', 'text', array('required' => false));
 		$user_builder->add('organization_position', 'text', array('required' => false));
@@ -48,11 +49,8 @@ class NewTicket extends AbstractType
 		$builder->add('workflow_id', 'text', array('required' => false));
 		$builder->add('product_id', 'text', array('required' => false));
 
-		$builder->add('new_parts', 'collection', array(
-			'type' => 'hidden',
+		$builder->add('new_parts', 'hidden', array(
 			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
 		));
 
 		$builder->add('attach', 'collection', array(

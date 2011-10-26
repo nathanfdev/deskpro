@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Form\Model;
 class NewTicketPerson
 {
 	public $id;
+	public $name;
 	public $email_address;
 	public $organization = 0;
 	public $organization_position;

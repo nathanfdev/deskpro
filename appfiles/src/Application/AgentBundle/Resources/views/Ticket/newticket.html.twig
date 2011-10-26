@@ -1,4 +1,4 @@
-<script>
+ <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = 'New Ticket';
 pageMeta.ticket_id = 0;
@@ -16,7 +16,6 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <form id="{{baseId}}_newticket">
-<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" id="{{baseId}}_person_id"/>
 
 <input type="hidden" name="for_comment_type" id="{{baseId}}_for_comment_type" value="" />
 <input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
@@ -38,11 +37,43 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">Done</span>
 	</div>
 	<div class="content">
-		<h4>User</h4>
-		<input type="text" name="newticket[person][email_address]" id="{{baseId}}_usersearch" class="user-search" /> <button class="clean-gray xx-small" id="{{baseId}}_me_btn">Me</button>
-		<div class="user-info" id="{{baseId}}_userinfo" style="display: none"></div>
-		<div class="user-info new" id="{{baseId}}_guest_userinfo" style="display: none"></div>
+		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
+		<div id="{{baseId}}_choose_user">
+			<div
+				id="{{baseId}}_user_searchbox"
+				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+				data-highlight-term="1"
+				data-touch-focus="1"
+				data-search-param="term"
+				data-position-bound="#{{baseId}}_userselect"
+			>
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" />
 
+				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+					<li>
+						<a>
+						<span class="user-name"></span>
+						<address>&lt;<span class="user-email"></span>&gt;</address>
+						<div class="bound-fade"></div>
+					</a></li>
+				</script>
+				<div class="person-search-box" style="display: none">
+					<section>
+						<ul class="results-list">
+
+						</ul>
+						<footer>
+							<span class="create-user">Create a new person</span>
+						</footer>
+					</section>
+				</div>
+			</div>
+		</div>
+		<div id="{{baseId}}_user_choice">
+
+		</div>
 		<br class="clear" />
 	</div>
 </div>
@@ -63,7 +94,7 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4 class="light">Status</h4>
+			<h4>Status</h4>
 			<select name="newticket[status]">
 				<option value="open" selected="selected">Awaiting agent</option>
 				<option value="pending">Awaiting user</option>
@@ -71,20 +102,13 @@ pageMeta.baseId = '{{ baseId }}';
 			</select>
 		</div>
 		<div class="col">
-			<h4 class="light">Agent</h4>
-			<button class="clean-gray xxx-small" id="{{baseId}}_assign_agent_choose"><span class="selected-agent" id="{{baseId}}_assigned_agent">Me</span></button>
-			<input type="hidden" name="newticket[agent_id]" value="{{ app.user.id }}" id="{{baseId}}_agent_id" />
-		</div>
-		<div class="col">
-			<h4 class="light">Agent Team</h4>
-			{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
-				'name': "newticket[agent_team_id]",
-				'id': baseId ~ '_agent_team',
-				'agent_teams': ticket_options.agent_teams,
-				'with_blank': true,
-				'with_my_teams': true,
-				'with_my_team_default': true
-			} %}
+			<h4>Assignment</h4>
+			<input type="hidden" name="newticket[agent_id]" value="0" id="{{baseId}}_agent_id" />
+			<input type="hidden" name="newticket[agent_team_id]" value="0" id="{{baseId}}_agent_team_id" />
+			<span id="{{baseId}}_assign_btn" class="agent-prop-links">
+				<span id="{{baseId}}_agent_label">Me</span> and
+				<span id="{{baseId}}_agent_team_label">No Team</span>
+			</span>
 		</div>
 		<br class="clear" />
 	</div>
@@ -97,7 +121,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Subject</h4>
-		<input type="text" name="newticket[subject]" id="{{baseId}}_subject" value="" />
+		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
 	</div>
 </div>
 
@@ -186,9 +210,14 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab CC #}
 				<div class="tab-cc" style="display: none">
 					<div class="cc-input">
-						<input type="text" class="new-cc" id="{{baseId}}_add_cc_txt" /> <button class="clean-gray xxx-small add-cc-trigger">Add</button>
+						<input
+							type="text"
+							placeholder="Enter an email address..."
+							name="newticket[new_parts]"
+							value=""
+							class="new-cc" id="{{baseId}}_add_cc_txt"
+						/>
 					</div>
-					<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
 				</div>
 				{# /Tab CC #}
 
@@ -218,10 +247,75 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="foot">
-	<div class="finishCreateTicket"><a class="submit-trigger">Create</a></div>
+	<button class="submit-trigger clean-white">Create Ticket</button>
 </div>
 
 </form>
+
+<div class="optionbox reply-agent-team-ob newticket" id="{{baseId}}_agent_selector">
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Agents</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				</li>
+
+				<li>
+					<input type="radio" name="{{baseId}}_agent" value="0" />
+					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+				</li>
+
+				{% for agent in agents %}
+					{% if agent.id != app.user.id %}
+						<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
+							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="teams">
+			<header>
+				<h3>Teams</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for team in app.user.getAgent().getTeams() %}
+					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
+						<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+
+				<li class="{% if not ticket.agent_team %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
+					<label><span class="agent-team-label-0">No Team</span></label>
+				</li>
+
+				{% for team in agent_teams %}
+					{% if team.id not in app.user.getAgent().getTeamIds() %}
+						<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
+							<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+</div>
 
 {# scroll containers #}
 </div></div>

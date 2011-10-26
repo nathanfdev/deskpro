@@ -1313,7 +1313,12 @@ class TicketController extends AbstractController
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
 			'ticket_options' => $ticket_options,
 		));
 	}
@@ -1387,8 +1392,6 @@ class TicketController extends AbstractController
 		$person = false;
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
-		} elseif ($email = $this->in->getString('email_address')) {
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 		}
 
 		if (!$person) {

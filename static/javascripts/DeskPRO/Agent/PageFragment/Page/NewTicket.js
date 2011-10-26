@@ -89,58 +89,63 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	_initUserSection: function() {
 		var self = this;
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+		var rechooseBtn = this.getEl('switch_user');
 
-		this.getEl('me_btn').click((function(ev) {
-			ev.preventDefault();
-
-			var me = DeskPRO_Window.getAgentInfo(DESKPRO_PERSON_ID);
-			this.getEl('usersearch').val(me.email);
-			this.setUser(me.id);
-		}).bind(this));
-
-		this.getEl('usersearch').autocomplete({
-			focus: true,
-			delay: 300,
-			minLength: 2,
-			source: function(req, callback) {
-				$.ajax({
-					timeout: 8000,
-					type: 'POST',
-					url: BASE_URL + 'agent/people-search/search-quick',
-					data: {term: req.term, format: 'json', limit: 20},
-					dataType: 'json',
-					context: this,
-					success: function(data) {
-						console.log(data);
-						callback(data);
-					},
-					complete: function() {
-						this.usersearchAjaxQuitCount = 0;
-						this.usersearchAjax = null;
-					}
-				});
-			},
-			select: (function(ev, ui) {
-				this.setUser(ui.item.value);
-
-				ev.preventDefault();
-
-				this.getEl('usersearch').val(ui.item.email);
-			}).bind(this)
+		rechooseBtn.click(function() {
+			showUserChoice();
 		});
 
-		this.getEl('usersearch').blur((function() {
-			if (!$('input.person_id', this.wrapper).length) {
-				this.setUser(0);
-			}
-		}).bind(this));
-		this.getEl('usersearch').keypress((function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				if (!parseInt(this.val('person_id').val())) {
-					this.setUser(0);
+		var showUserChoice = function() {
+			userfields.empty();
+			userfields.hide();
+			searchbox.show();
+			rechooseBtn.hide();
+		};
+
+		var placeUserRow = function(html) {
+			userfields.empty();
+			userfields.html(html);
+
+			rechooseBtn.show();
+			searchbox.hide();
+			userfields.show();
+		};
+
+		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					$('input.person-id', self.searchbox).val(personId);
+					placeUserRow(html);
 				}
-			}
-		}).bind(this));
+			});
+			sb.close();
+			sb.reset();
+		});
+		searchbox.bind('personsearchboxclicknew', function(ev, term, sb) {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					placeUserRow(html);
+
+					if (term.indexOf('@') !== -1) {
+						$('input.email', userfields).val(term);
+					} else {
+						$('input.name', userfields).val(term);
+					}
+				}
+			});
+			sb.close();
+			sb.reset();
+		});
 	},
 
 	clearUser: function() {
@@ -202,6 +207,32 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initDepartmentSection: function() {
+
+		//------------------------------
+		// Assign ...
+		//------------------------------
+
+		var obEl = this.getEl('agent_selector');
+		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
+			element: obEl,
+			trigger: this.getEl('assign_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
+				// Agent
+				var agent_id = parseInt(selections.agents || 0);
+				self.getEl('agent_id').val(agent_id);
+				var label = $('.agent-label-' + agent_id, obEl).text().trim();
+				self.getEl('agent_label').text(label);
+
+				// Agent Team
+				var agent_team_id = parseInt(selections.teams || 0);
+				self.getEl('agent_team_id').val(agent_team_id);
+				var label = $('.agent-team-label-' + agent_team_id, obEl).text().trim();
+				self.getEl('agent_team_label').text(label);
+			}
+		});
+
 		var self = this;
 		this.getEl('dep').change(function() {
 			if (parseInt($(this).val())) {
@@ -294,26 +325,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 		this.ownObject(this.otherTabs);
 
-		// Agent selector
-		this.assignAgentSelector = new DeskPRO.Agent.Widget.AgentSelector({
-			agentList: $('#agent_selector_list'),
-			showNone: true,
-			multipleChoice: false,
-			triggerElement: this.getEl('assign_agent_choose'),
-			onSelectionChanged: (function(info) {
-				var agentId = parseInt(info.selection);
-				if (!info.selection) {
-					this.getEl('assigned_agent').text('Unassigned');
-					this.getEl('agent_id').val('0');
-				} else {
-					var agentInfo = DeskPRO_Window.getAgentInfo(agentId);
-					this.getEl('assigned_agent').text(agentInfo.name);
-					this.getEl('agent_id').val(agentId);
-				}
-			}).bind(this)
-		});
-		this.ownObject(this.assignAgentSelector);
-
 		// Add CC's
 		var self = this;
 		$('.add-cc-trigger', this.wrapper).click(function() {
@@ -331,6 +342,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 			txt.val('');
 		});
+
+		this.getEl('add_cc_txt').tokenField();
 
 		// Attachments
 		var list = $('.file-list', this.wrapper);

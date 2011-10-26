@@ -33,14 +33,38 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		var el = $('#set_agent_and_team_optionbox_radio').clone();
 		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
 			element: el,
-			trigger: this.getEl('assign_to_btn')
+			trigger: this.getEl('assign_to_btn'),
+			onClose: function() {
+				// Agent
+				var agent_id = parseInt(selections.agents || 0);
+				if (agent_id == exist_agent_id) {
+					self.getElById('do_agent_id').val('0');
+				} else {
+					self.getElById('do_agent_id').val('0');
+					self.getElById('agent_id').val(agent_id);
+
+					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
+					$('.new-val-label', agentDetailEl).text(label);
+				}
+
+				// Agent Team
+				var agent_team_id = parseInt(selections.teams || 0);
+				if (agent_team_id == exist_agent_team_id) {
+					self.getElById('do_agent_team_id').val('0');
+				} else {
+					self.getElById('do_agent_team_id').val('1');
+					self.getElById('agent_team_id').val(agent_team_id);
+
+					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
+					$('.new-val-label', teamDetailEl).text(label);
+				}
+			}
 		});
 		el.delegate('button', 'click', function() {
 			var btn = $(this);
 
 			if (btn.data('type') == 'team') {
 				var teamId = btn.data('team-id');
-
 				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
 				self.changeManager.setInstantChange(agentTeamProp, teamId);
 			} else {

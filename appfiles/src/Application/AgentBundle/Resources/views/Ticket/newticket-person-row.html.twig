@@ -1,19 +1,17 @@
-<input type="hidden" class="person_id" value="{{ person.id }}" />
-<dl>
-	<dt>Name</dt>
-	<dd>
-		<input type="text" name="person[name]" value="{{ person.name }}" />
-		{% if person.id %}
-			<a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">view profile</a>
-		{% endif %}
-	</dd>
+<div class="col">
+	<h4>Email Address</h4>
+	{% if person.id %}
+		{{ person.primary_email_address }}
+	{% else %}
+		<input type="text" name="newticket[person][email_address]" class="email" value="{{ person.primary_email_address }}" />
+	{% endif %}
+</div>
 
-	<dt class="more" {% if not person.organization %}style="display:none"{% endif %}>Organization</dt>
-	<dd class="more" {% if not person.organization %}style="display:none"{% endif %}>
-		<input type="text" name="person[organization]" />
-		(Position: <input type="text" name="person[organization_position]" />)
-	</dd>
-</dl>
+<div class="col">
+	<h4>Name</h4>
+	<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" />
+	{% if person.id %}
+		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">view profile</a>
+	{% endif %}
+</div>
 <br class="clear" />
-
-<button class="clean-gray xx-small more-fields">More...</button>

@@ -420,6 +420,7 @@ span.createTicketLabel{
 .page-new-content .section .col {
     float: left;
     margin-right: 10px;
+    min-width: 120px;
 }
 
 .page-new-content .user-section .more {
@@ -443,6 +444,10 @@ span.createTicketLabel{
 	width: 400px;
 }
 
+.page-new-content .user-section .switch-user {
+	float: right;
+	margin: -4px 5px 0 0;
+}
 
 .page-new-content dl dt {
 	clear: left;
@@ -467,13 +472,17 @@ span.createTicketLabel{
 }
 
 .page-new-content .other-section nav {
-    height: 18px;
-    background-color: #E1EBF9;
-    border: 1px solid #CBD4DF;
+    height: 22px;
+    border: 1px solid #ACB6BF;
 
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+
+    background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
+	position: relative;
+	overflow: hidden;
 }
 
 .page-new-content .other-section nav.on {
@@ -491,15 +500,39 @@ span.createTicketLabel{
 
 .page-new-content .other-section nav li {
     border-right: 1px solid #CBD4DF;
-    padding: 3px 17px 3px 8px;
+    padding: 0 17px 0 8px;
+    height: 22px;
     float: left;
-    line-height: 100%;
     cursor: pointer;
-    background: url("@{asset-url}/images/icons/bullet_arrow_down.png") no-repeat 100% 50%;
+    background: #EBEEF1 url("@{asset-url}/images/icons/bullet_arrow_down.png") no-repeat 100% 50%;
     font-weight: bold;
+
+	overflow: hidden;
+	line-height: 22px;
+
+	display: block;
+	float: left;
+
+	font-size: 10px;
+	font-weight: bold;
+	color: #738699;
+	padding: 0px 17px 0 8px;
+
+	font-family: @heading-font;
+	text-shadow: 0 1px 0 #FFFFFF;
+
+	text-transform:uppercase;
+	cursor: pointer;
+
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 .page-new-content .other-section nav.on li.on {
-    background: #fff url("@{asset-url}/images/icons/bullet_arrow_up.png") no-repeat 100% 50%;
+    color: #404040;
+    background: #C7CFD5 url("@{asset-url}/images/icons/bullet_arrow_up.png") no-repeat 100% 50%;
 }
 
 .page-new-content .other-section .tab-container .content-wrapper {
