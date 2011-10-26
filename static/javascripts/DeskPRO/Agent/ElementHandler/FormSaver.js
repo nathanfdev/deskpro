@@ -53,7 +53,24 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 		this.statusSaved.hide();
 		this.statusSaving.show();
 
-		var postData = $('input, textarea, select', this.el).serializeArray();
+		var formEls  = $('input, textarea, select', this.el);
+		var postData = formEls.serializeArray();
+
+		var doSend = true;
+		var checkBlankEls = formEls.filter('[data-not-blank]').each(function(){
+			if ($(this).val().trim() === '') {
+				doSend = false;
+				return false;
+			}
+		});
+
+		if (!doSend) {
+			this.statusSave.hide();
+			this.statusSaved.hide();
+			this.statusSaving.hide();
+			return;
+		}
+
 
 		$.ajax({
 			url: this.url,
