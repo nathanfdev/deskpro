@@ -561,23 +561,17 @@ var DpChatMake = function() {
 				hasStarted = true;
 
 				for (var i = 0; i < initialMessages.length; i++) {
+					var info = initialMessages[i];
+					info.is_initial = true;
 					if (initialMessages[i].is_html) {
-						display.addMessageRow(
-							initialMessages[i].author_name,
-							initialMessages[i].content,
-							initialMessages[i].author_type,
-							true,
-							{is_initial:true}
-						);
-					} else {
-						display.addMessageRow(
-							initialMessages[i].author_name,
-							initialMessages[i].content,
-							initialMessages[i].author_type,
-							false,
-							{is_initial:true}
-						);
+						info.is_html = true;
 					}
+					display.addMessageRow(
+						initialMessages[i].author_name,
+						initialMessages[i].content,
+						initialMessages[i].author_type,
+						info
+					);
 				}
 
 				display.showChatPanel();
@@ -624,17 +618,19 @@ var DpChatMake = function() {
 		};
 
 		var addIncomingMessage = function(data) {
+			if (data.is_html) {
+				if (!data.metadata) {
+					data.metadata = {};
+				}
+				data.metadata.is_html = true;
+			}
+			display.addMessageRow(data.author_name, data.content, data.author_type, data.metadata);
+
 			if (data.metadata.chat_unassigned) {
 				chatAssigned({ agent_id: 0 });
 			}
 			if (data.metadata.chat_assigned) {
 				chatAssigned({ agent_id: data.metadata.assigned_to });
-			}
-
-			if (data.is_html) {
-				display.addMessageRow(data.author_name, data.content, data.author_type, true);
-			} else {
-				display.addMessageRow(data.author_name, data.content, data.author_type);
 			}
 
 			if (data.metadata.chat_ended) {

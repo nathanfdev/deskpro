@@ -293,13 +293,18 @@ class UserChatManager
 		}
 
 		$old_agent_id = $convo->agent_id;
+		$old_agent_name = '';
+
+		if ($convo->agent) {
+			$old_agent_name = $convo->agent->getDisplayName();
+		}
 
 		$this->em->beginTransaction();
 		try {
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true, 'assigned_to' => $agent->id));
+			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true, 'assigned_to' => $agent->id, 'assigned_name' => $agent->getDisplayName(), 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
 
 			$this->em->flush();
 
@@ -372,15 +377,19 @@ class UserChatManager
 		if (!$convo->agent) {
 			return;
 		}
+		$old_agent_id = $convo->agent_id;
+		$old_agent_name = '';
 
-		$old_agent_id = $convo->getAgentId();
+		if ($convo->agent) {
+			$old_agent_name = $convo->agent->getDisplayName();
+		}
 
 		$this->em->beginTransaction();
 		try {
 			$convo->agent = null;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.unassigned', array(), array('chat_unassigned' => true));
+			$this->addSystemMessage($convo, 'user.chat.unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
 
 			// Try to reassign
 			if ($this->auto_assigner) {

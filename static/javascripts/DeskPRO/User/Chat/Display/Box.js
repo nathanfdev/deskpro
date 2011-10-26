@@ -252,10 +252,14 @@ var DpChat_Display = (function() {
 	 * @param message
 	 * @param type
 	 */
-	this.addMessageRow = function(name, message, type, is_html, meta) {
-
+	this.addMessageRow = function(name, message, type, meta) {
 		if (!meta) {
 			meta = {};
+		}
+
+		var is_html = false;
+		if (meta.is_html) {
+			is_html = true;
 		}
 
 		$('#dpchat_preform').hide();
@@ -275,6 +279,16 @@ var DpChat_Display = (function() {
 			name = '* ';
 		} else {
 			name = name + ': ';
+		}
+
+		if (meta.chat_assigned) {
+			if (meta.old_assigned_name) {
+				message = meta.old_assigned_name + ' left and ' + meta.assigned_name + ' joined';
+			} else {
+				message = meta.assigned_name + ' joined';
+			}
+		} else if (meta.chat_unassigned) {
+			message = meta.old_assigned_name + ' left';
 		}
 
 		var html = [];
