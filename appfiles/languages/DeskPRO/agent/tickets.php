@@ -59,4 +59,6 @@
 	'agent.tickets.filter_participant' => 'Tickets I Follow',
 	'agent.tickets.filter_unassigned'  => 'Unassigned Tickets',
 	'agent.tickets.filter_all'         => 'All Tickets',
+
+	'agent.tickets.results_num_summary' => 'Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}} tickets'
 );
