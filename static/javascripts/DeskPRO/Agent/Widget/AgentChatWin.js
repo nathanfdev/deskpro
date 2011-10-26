@@ -245,7 +245,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		var newMessage = $.tmpl('agent_chat_message', {
 			author_id: agent_id,
 			author_name: agentInfo.name,
-			author_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 20),
+			author_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 25),
 			message: message
 		});
 

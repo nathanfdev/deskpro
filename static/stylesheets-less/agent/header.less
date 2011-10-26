@@ -510,12 +510,12 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 #DP-StatusSection{
 	position: relative;
 	float: right;
-	width: ;
 }
 
 #DP-UserSection{
 	position: relative;
 	float: right;
+	padding-right: 5px;
 }
 
 
@@ -1210,14 +1210,13 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	position: relative;
 	float: right;
 	height: 41px;
-	width: 60px;
 }
 
 #DP-userControl{
 	font-family: @toolbar-font;
-	height: 36px;
+	height: 35px;
 	overflow: hidden;
-	padding: 6px 0 0 7px;
+	padding: 5px 0 0 7px;
 	position: relative;
 }
 
@@ -1237,7 +1236,13 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .userWrapper a{
 	cursor: pointer;
 	float: left;
-	padding: 4px 4px 1px;
+	padding: 3px 4px 0px 4px;
+}
+
+.userWrapper a img {
+	position: relative;
+	top: 1px;
+	.rounded(4px);
 }
 
 .currentUserAvatar span{

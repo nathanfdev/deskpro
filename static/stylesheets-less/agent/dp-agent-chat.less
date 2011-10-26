@@ -286,12 +286,14 @@
 }
 
 #agent_chats_wrapper section.agent-chat nav {
-	background-image: -moz-linear-gradient(top, #6ea4c3, #375288);
+	background-image: -moz-linear-gradient(top, desaturate(lighten(#6ea4c3, 20%), 20%), desaturate(lighten(#375288, 20%), 20%));
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6ea4c3), to(#375288));
 
 	border-right: 1px solid #334d66;
 	border-left: 1px solid #334d66;
 	border-top: 1px solid #334d66;
+	border-color: desaturate(lighten(#334d66, 20%), 20%);
+
 	border-radius: 5px 5px 0 0;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 0 0 1px rgba(255,255,255,0.2) inset;
 	cursor: pointer;
@@ -316,6 +318,8 @@
 		color: #fff;
 		width: 100px;
 		white-space: nowrap;
+
+		text-shadow: 1px 0px 0px rgba(0, 0, 0, 0.6);
 	}
 
 	.close-trigger {
@@ -329,6 +333,15 @@
 		width: 16px;
 		cursor:pointer;
 		.imgel;
+	}
+}
+
+#agent_chats_wrapper section.agent-chat.new-message nav {
+    border-color: #334d66;
+	background-image: -moz-linear-gradient(top, #6ea4c3, #375288);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#6ea4c3), to(#375288));
+	a {
+		opacity: 1;
 	}
 }
 
@@ -661,6 +674,33 @@
 	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0px 1px rgba(255, 255, 255, 0.3) inset;
 	float: left;
 }
+
+.chatSend, .chatRecieve {
+	position: relative;
+}
+
+.chatSend .avatar img, .chatRecieve .avatar img {
+	.rounded(4px);
+}
+
+.with-avatar .chatSend {
+	padding-left: 34px;
+}
+.chatSend .avatar {
+ position: absolute;
+ bottom: -4px;
+ left:0;
+}
+
+.with-avatar .chatRecieve {
+	padding-right: 34px;
+}
+.chatRecieve .avatar {
+ position: absolute;
+ bottom: -4px;
+ right:0;
+}
+
 .chatMsgSend span.bubbleLeft{
     .iconbase(8px, 8px);
 	background-image: url(../../images/agent/agentchat-msg-left.png) /** sprite-ref: ui-v; sprite-alignment: left */;

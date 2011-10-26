@@ -1,6 +1,6 @@
 {% raw %}
 <script type="text/x-jquery-tmpl" id="agent_chat_conversation">
-	<section class="agent-chat" id="agent_chat_conversation_${local_id}">
+	<section class="agent-chat with-avatar" id="agent_chat_conversation_${local_id}">
 		<nav>
 			{{if to_agent_picture}}
 			<a class="with-picture" style="background-image: url('${to_agent_picture}');">
@@ -28,7 +28,7 @@
 </script>
 
 <script type="text/x-jquery-tmpl" id="agent_groupchat_conversation">
-	<section class="agent-chat" id="agent_groupchat_conversation_${to_agent_id}">
+	<section class="agent-chat with-avatar" id="agent_groupchat_conversation_${to_agent_id}">
 		<nav>
 			<span class="close-trigger">x</span>
 			<a>Group</a>
@@ -42,6 +42,7 @@
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message">
 	<div class="chatRecieve">
+		<div class="avatar"><img src="${author_picture}" class="tipped" title="${author_name}" /></div>
 		<div class="chatMsgRecieve">
 			${message}
 			<span class="bubbleLeft"></span>
@@ -51,6 +52,7 @@
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message_me">
 	<div class="chatSend">
+		<div class="avatar"><img src="{% endraw %}{{ app.user.getPictureUrl(25) }}{% raw %}" /></div>
 		<div class="chatMsgSend">
 			${message}
 			<span class="bubbleLeft"></span>
