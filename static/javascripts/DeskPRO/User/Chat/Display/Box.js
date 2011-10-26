@@ -77,6 +77,7 @@ var DpChat_Display = (function() {
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
 			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
+			html.push('<div id="dpchat_sound_tpl" style="display:none"><audio preload="preload"><source src="' + DpChat_Options.staticUrl + 'sounds/pop.mp3" /><source src="' + DpChat_Options.staticUrl + 'sounds/pop.ogg" /></audio></div>');
 		html.push('</div>');
 
 		var el = $(html.join(''));
@@ -143,6 +144,17 @@ var DpChat_Display = (function() {
 			ev.stopPropagation();
 			doSend();
 		});
+	};
+
+	var playSound = function() {
+		var audio = $('#dpchat_sound_tpl > audio').clone();
+		audio.attr('preload', null);
+		audio.bind('ended', function() {
+			$(this).remove();
+		});
+
+		audio.appendTo('body');
+		audio.get(0).play();
 	};
 
 	this.getMessage = function() {
@@ -240,7 +252,11 @@ var DpChat_Display = (function() {
 	 * @param message
 	 * @param type
 	 */
-	this.addMessageRow = function(name, message, type, is_html) {
+	this.addMessageRow = function(name, message, type, is_html, meta) {
+
+		if (!meta) {
+			meta = {};
+		}
 
 		$('#dpchat_preform').hide();
 		$('#dpchat_messages').show();
@@ -279,6 +295,12 @@ var DpChat_Display = (function() {
 		el.appendTo(messageWrapper);
 
 		messageWrapper.scrollTop(100000);
+
+		DpChat_Display.showChatPanel();
+
+		if (type == 'agent' && !meta.is_initial) {
+			playSound();
+		}
 
 		return el;
 	};

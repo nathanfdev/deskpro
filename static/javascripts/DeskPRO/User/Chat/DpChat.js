@@ -566,13 +566,16 @@ var DpChatMake = function() {
 							initialMessages[i].author_name,
 							initialMessages[i].content,
 							initialMessages[i].author_type,
-							true
+							true,
+							{is_initial:true}
 						);
 					} else {
 						display.addMessageRow(
 							initialMessages[i].author_name,
 							initialMessages[i].content,
-							initialMessages[i].author_type
+							initialMessages[i].author_type,
+							false,
+							{is_initial:true}
 						);
 					}
 				}
