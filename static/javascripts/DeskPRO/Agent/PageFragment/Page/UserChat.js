@@ -152,6 +152,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var alertEl = $.tmpl('user_chat_newmsg_sound');
 		alertEl.appendTo(this.el);
 		DeskPRO_Window.handleSoundElements(alertEl);
+
+
 	},
 
 	chatReassignedTo: function(agent_id) {
@@ -413,6 +415,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		row.appendTo(this.getEl('messages_box'));
 
 		this.getEl('messages_box').scrollTop(10000);
+
+		this.alertTab();
 	},
 
 	sendMessage: function(msg) {

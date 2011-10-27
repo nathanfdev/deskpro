@@ -430,6 +430,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return this.tabWatcher;
 	},
 
+	/**
+	 * Get the tab strip
+	 */
+	getTabStrip: function() {
+		return this.pageTabStrip;
+	},
 
 	/**
 	 * Get a name for some type of basic thing (department, category etc).

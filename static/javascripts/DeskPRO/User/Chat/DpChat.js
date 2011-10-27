@@ -651,7 +651,7 @@ var DpChatMake = function() {
 				return;
 			}
 			var isAssigned = true;
-			if (data.agent_id == 0) {
+			if (!parseInt(data.agent_id)) {
 				isAssigned = false;
 			}
 			display.showAssignedStatus(isAssigned);
@@ -664,6 +664,9 @@ var DpChatMake = function() {
 				}
 				data.metadata.is_html = true;
 			}
+
+			DpChatConsole.log('DpChat_Display:addIncomingMessage: %o', data);
+
 			display.addMessageRow(data.author_name, data.content, data.author_type, data.metadata);
 
 			if (data.metadata.chat_unassigned) {
@@ -701,7 +704,7 @@ var DpChatMake = function() {
 		};
 
 		this.endChatReboot = function() {
-			console.log('destroy');
+			DpChatConsole.log('DpChat_Display.endChatReboot');
 			window.DpChat_Display.destroy();
 			delete window.DpChat_Display;
 			delete window.DpChat;

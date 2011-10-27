@@ -258,11 +258,9 @@ span.gear{
 	background: linear-gradient(left, rgba(234,236,238,0) 0%,rgba(221,223,225,1) 85%,rgba(219,221,223,1) 100%); /* W3C */
 }
 
-.deskproTabList li.important{
+.deskproTabList li.is-alerting{
 	background-image: -moz-linear-gradient(top, #6da3c2, #375388);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6da3c2), to(#375388));
-	-pie-background: linear-gradient(#6da3c2, #375388);
-	behavior: url("@{asset-url}/static/vendor/PIE.htc");
 	border-right: 1px solid #4d7399;
 	border-left: 1px solid #4d7399;
 	border-top: 1px solid #4d7399;
@@ -290,12 +288,32 @@ span.gear{
 	position: relative;
 }
 
-.deskproTabList li.important:hover{
+.deskproTabList li.is-alerting:hover,
+.deskproTabList li.is-alerting.alert-highlight {
 	background-image: -moz-linear-gradient(top, #93bcdc, #4b7ebb);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#93bcdc), to(#4b7ebb));
-	-pie-background: linear-gradient(#93bcdc, #4b7ebb);
-	behavior: url("@{asset-url}/static/vendor/PIE.htc");
 	position: relative;
+}
+
+.deskproTabList li.is-alerting .bound-fade {
+	background: -moz-linear-gradient(left, rgba(82,124,166,0) 0%, rgba(82,124,166,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(82,124,166,0)), color-stop(100%,rgba(82,124,166,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba(82,124,166,0) 0%,rgba(82,124,166,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba(82,124,166,0) 0%,rgba(82,124,166,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, rgba(82,124,166,0) 0%,rgba(82,124,166,1) 100%); /* IE10+ */
+	background: linear-gradient(left, rgba(82,124,166,0) 0%,rgba(82,124,166,1) 100%); /* W3C */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00527ca6', endColorstr='#527ca6',GradientType=1 )"; /* IE6-9 */
+}
+
+.deskproTabList li.is-alerting:hover .bound-fade,
+.deskproTabList li.is-alerting.alert-highlight .bound-fade {
+	background: -moz-linear-gradient(left, rgba(110,156,203,0) 0%, rgba(110,156,203,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(110,156,203,0)), color-stop(100%,rgba(110,156,203,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba(110,156,203,0) 0%,rgba(110,156,203,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba(110,156,203,0) 0%,rgba(110,156,203,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, rgba(110,156,203,0) 0%,rgba(110,156,203,1) 100%); /* IE10+ */
+	background: linear-gradient(left, rgba(110,156,203,0) 0%,rgba(110,156,203,1) 100%); /* W3C */
+	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#006e9ccb', endColorstr='#6e9ccb',GradientType=1 )"; /* IE6-9 */
 }
 
 .deskproTabList li.activeTabList .bound-fade {
@@ -382,8 +400,7 @@ span.gear{
 .ie .deskproTabList li a{
 	padding: 4px 10px 6px 18px;
 }
-.deskproTabList li.important a{
-	background-position: 0 -592px;
+.deskproTabList li.is-alerting a{
 	color: #FFFFFF;
 	text-shadow: 0 1px 0 #000000;
 }

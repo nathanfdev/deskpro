@@ -170,13 +170,31 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 	},
 
-	alertTab: function(tabIdClass) {
-		var el = $('li.' + tabIdClass, this.tabStrip);
+	alertTab: function(tab) {
+		var tabId = tab.btnId;
+
+		var el = $('#' + tabId);
 		if (!el.length || el.is('.activeTabList') || el.is('.is-alerting')) return;
 
 		el.addClass('is-alerting');
-		var timeout = this._alertTabDoHighlight.periodical(1500, this, [el]);
+		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
 		el.data('alerting-timeout', timeout);
+	},
+
+	clearAlertTab: function(tab) {
+		var tabId = tab.btnId;
+
+		var el = $('#' + tabId);
+		if (!el.length) return;
+
+		el.removeClass('alert-highlight').removeClass('is-alerting');
+
+		var timeout = el.data('alerting-timeout');
+		if (timeout) {
+			window.clearTimeout(timeout);
+		}
+
+		el.data('alerting-timeout', null);
 	},
 
 	_alertTabDoHighlight: function(el) {
@@ -513,14 +531,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		$('li', this.tabStrip).removeClass('activeTabList');
 		var tabEl = $('#' + tabData.btnId).addClass('activeTabList');
 
-		if (tabEl.is('.is-alerting')) {
-			tabEl.removeClass('alert-highlight').removeClass('is-alerting');
-			var alertingTimeout = tabEl.data('alerting-timeout');
-			if (alertingTimeout) {
-				window.clearTimeout(alertingTimeout);
-				tabEl.data('alerting-timeout', false);
-			}
-		}
+		this.clearAlertTab(tabData);
+
 		// Now that the tab has been rendered, we'll have access to
 		// the tip element, so we should give it the appropriate ID
 		// so Tipped can find it

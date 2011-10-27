@@ -78,7 +78,11 @@ class UserChatController extends AbstractController
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		if ($agent_id) {
+			$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		} else {
+			$agent = null;
+		}
 		if ($agent) {
 			$chat_manager->assignAgent($convo, $agent);
 		} else {

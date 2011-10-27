@@ -199,11 +199,13 @@ var DpChat_Display = (function() {
 			noAgentTimer = window.setTimeout(function() { DpChat_Display.showTicketLink(); }, 30000);
 
 			findingAgentEl.detach().appendTo(messageWrapper).show();
+			DpChatConsole.log('DpChat_Display.showAssignedStatus: not assigned');
 		} else {
 			if (noAgentTimer) window.clearTimeout(noAgentTimer);
 			noAgentTimer = null;
 
 			findingAgentEl.hide();
+			DpChatConsole.log('DpChat_Display.showAssignedStatus: assigned');
 		}
 	};
 

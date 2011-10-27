@@ -436,9 +436,7 @@ class UserChatManager
 		$old_agent_id = $convo->agent_id;
 		$old_agent_name = '';
 
-		if ($convo->agent) {
-			$old_agent_name = $convo->agent->getDisplayName();
-		}
+		$old_agent_name = $convo->agent->getDisplayName();
 
 		$this->em->beginTransaction();
 		try {
