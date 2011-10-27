@@ -308,6 +308,10 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var teamRow = $('li.assign-team', this.wrapper);
 		var followersRow = $('li.add-followers', this.wrapper);
 
+		if (this.assignOptionBox) {
+			this.assignOptionBox.destroy();
+		}
+
 		this.assignOptionBox = new DeskPRO.UI.OptionBox({
 			element: this.getElById('agent_selector'),
 			trigger: this.getElById('assign_btn'),
@@ -362,6 +366,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				} else {
 					noneRow.show();
 				}
+
+				self.updatePreview();
 			}
 		});
 	},
