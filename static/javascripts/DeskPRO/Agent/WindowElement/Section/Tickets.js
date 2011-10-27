@@ -153,6 +153,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
+		$('.launch-customfilters-settings', this.contentEl).click(function() {
+			$('#settingswin').trigger('dp_open', 'filters');
+		});
+
 		this.fireEvent('sectionInit');
 	},
 

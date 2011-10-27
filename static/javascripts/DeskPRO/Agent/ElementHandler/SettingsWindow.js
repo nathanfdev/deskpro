@@ -99,8 +99,20 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		});
 	},
 
-	open: function() {
+	open: function(ev, tabName) {
+		if (tabName) {
+			var tabEl = $('#settingswin_nav > li.tab-' + tabName);
+		}
+		if (tabName && !this._hasInit) {
+			$('#settingswin_nav > li').removeClass('on');
+			tabEl.addClass('on');
+		}
+
 		this._lazyInit();
+
+		if (tabName && tabEl) {
+			this.topTabs.activateTab(tabEl);
+		}
 
 		if (this._cleanupTimer) {
 			window.clearTimeout(this._cleanupTimer);
