@@ -7,7 +7,9 @@ use Application\DeskPRO\Entity;
 use Application\AgentBundle\FragmentRouter;
 
 use Orb\Util\Util;
+use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class MiscController extends AbstractController
 {
@@ -377,6 +379,39 @@ class MiscController extends AbstractController
 		return $this->createJsonResponse(array(
 			'snippet_id' => $snippet_id,
 			'category_id' => $category_id
+		));
+	}
+
+	public function redirectExternalAction($url)
+	{
+		$urlinfo = parse_url($url);
+
+		return $this->render('AgentBundle:Misc:redirect-external.html.twig', array(
+			'url' => $url,
+			'urlinfo' => $urlinfo
+		));
+	}
+
+	public function redirectExternalInfoAction($url)
+	{
+		$urlinfo = parse_url($url);
+
+		$page = @file_get_contents($url);
+		$info = array();
+
+		$info['title'] = Strings::extractRegexMatch('#<title>(.*?)</title>#im', $page, 1);
+		$info['ip'] = gethostbyname($urlinfo['host']);
+		$info['hostname'] = gethostbyname($info['ip']);
+		$info['size'] = strlen($page);
+		$info['size_readable'] = Numbers::filesizeDisplay($info['size']);
+
+		$info['num_images'] = substr_count($page, '<img');
+		$info['num_scripts'] = substr_count($page, '<script');
+
+		return $this->render('AgentBundle:Misc:redirect-external-info.html.twig', array(
+			'url' => $url,
+			'urlinfo' => $urlinfo,
+			'info' => $info,
 		));
 	}
 }

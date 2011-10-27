@@ -17,7 +17,7 @@
 			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>
 		</header>
 		<div class="body-text">
-			{{message.message_html|raw}}
+			{{message.message_html|safe_link_urls_html }}
 			{% if ticket_message_attachments[message.id] %}
 				<ul class="attachment-list">
 					{% for attach_id in ticket_message_attachments[message.id] %}

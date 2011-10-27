@@ -77,6 +77,8 @@ class TemplatingExtension extends \Twig_Extension
 	public function getFilters()
     {
         return array(
+			'safe_link_urls' => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
+			'safe_link_urls_html' => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat' => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
@@ -91,6 +93,28 @@ class TemplatingExtension extends \Twig_Extension
 			'explode' => new \Twig_Filter_Method($this, 'explodeString'),
         );
     }
+
+	public function safeLinkUrlsHtml($text)
+	{
+		$text = preg_replace_callback('#(https?:\/\/[^\s<>]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		}, $text);
+
+		return $text;
+	}
+
+	public function safeLinkUrls($text)
+	{
+		$text = htmlspecialchars($text);
+
+		$text = preg_replace_callback('#(https?:\/\/[^\s]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		}, $text);
+
+		return $text;
+	}
 
 	public function getAssetic($name)
 	{

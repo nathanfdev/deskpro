@@ -405,7 +405,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			$('.prop-msg', row).html(msg);
 		} else {
 			msg = Orb.escapeHtml(msg);
-			//msg = Orb.linkUrls(msg);
+			msg = DeskPRO_Window.util.linkUrls(msg);
+
 			$('.prop-msg', row).html(msg);
 		}
 

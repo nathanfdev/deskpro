@@ -113,7 +113,7 @@ pageMeta.baseId = '{{ baseId }}';
 										{% if message.is_html %}
 											{{message.content|raw}}
 										{% else %}
-											{{message.content}}
+											{{message.content|standard_format}}
 										{% endif %}
 										<span class="bubbleRight"></span>
 									</div>

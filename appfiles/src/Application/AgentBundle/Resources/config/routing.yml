@@ -51,6 +51,15 @@ agent_set_agent_status:
   pattern: /misc/set-agent-status/{status}
   defaults: { _controller: AgentBundle:Misc:setAgentStatus }
 
+agent_redirect_out:
+  pattern: /redirect-out/{url}
+  defaults: { _controller: AgentBundle:Misc:redirectExternal }
+  requirements: { url: ".+" }
+
+agent_redirect_out_info:
+  pattern: /redirect-out-info/{url}
+  defaults: { _controller: AgentBundle:Misc:redirectExternalInfo }
+  requirements: { url: ".+" }
 
 agent_snippetviewer:
   pattern: /misc/snippet-viewer/view/{typename}

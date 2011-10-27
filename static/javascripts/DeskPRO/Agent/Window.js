@@ -148,6 +148,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				str = str.replace(/\-$/, '');
 
 				return str;
+			},
+
+			linkUrls: function(string) {
+				string = string||'';
+				return string
+					.replace(/(https?:\/\/[^\s]+)/gi, '<a target="_blank" href="' + BASE_URL + 'agent/redirect-out/$1">$1</a>');
 			}
 		};
 	},
