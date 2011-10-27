@@ -47,7 +47,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			/**
 			 * Disable the previewing feature and handle list view
 			 */
-			isListView: false
+			isListView: false,
+
+			/**
+			 * Reset the widget every time its closed
+			 */
+			resetOnClose: true
 		};
 
 		this.setOptions(options);
@@ -65,7 +70,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			}
 		}
 
-		this.wrapper = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		this.wrapper = this.wrapperEl.clone();
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());
@@ -85,6 +91,24 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			}).bind(this));
 		}
 	},
+
+
+	/**
+	 * Resets the wrapper back to the original, and then runs all of the init again.
+	 */
+	reset: function() {
+		var wasopen = this.isOpen();
+		this.close();
+
+		this.wrapper.remove();
+		this.wrapper = this.wrapperEl.clone();
+		this._hasInit = false;
+
+		if (wasopen) {
+			this.open();
+		}
+	},
+
 
 	/**
 	 * Get the main wrapper element around the mass actions UI controls.
@@ -655,6 +679,10 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.fireEvent('closed', [this]);
 
 		this.clearPreview();
+
+		if (this.options.resetOnClose) {
+			this.reset();
+		}
 	},
 
 
