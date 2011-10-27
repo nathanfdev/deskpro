@@ -1086,6 +1086,7 @@ section.mass-actions-overlay .macro-load {
 	box-shadow: 0 1px 5px #C7C7C7;
 	height: 18px;
 	padding: 10px;
+	padding-top: 4px;
 	position: relative;
 }
 
@@ -1362,3 +1363,26 @@ section.dp-overlay > article.no-footer {
 	float: right;
 	margin: 7px 15px 0 0;
 }
+
+
+
+.mass-actions dt {
+	padding: 8px 8px 4px 8px;
+	font-family: @heading-font;
+	font-weight: bold;
+}
+
+.mass-actions dd {
+	padding: 0px 8px 0px 8px;
+}
+
+.mass-actions .assignments em {
+	font-style: normal;
+	color: @link-color;
+	cursor: pointer;
+}
+.mass-actions .assignments em:hover {
+	color: @link-text-color-hover;
+}
+
+.mass-actions .assignments li { display: inline; margin-right: 10px; }

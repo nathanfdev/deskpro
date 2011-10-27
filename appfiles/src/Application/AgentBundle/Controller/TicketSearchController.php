@@ -446,7 +446,12 @@ class TicketSearchController extends AbstractController
 
 		$order_by = $results_helper;
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
 		$vars = array_merge($vars, array(
+			'agents'             => $agents,
+			'agent_teams'        => $agent_teams,
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'tickets'            => $tickets,

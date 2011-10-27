@@ -71,6 +71,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		}
 
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
 		this.backdropEls = null;
 
@@ -124,11 +125,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * Inits the overlay controls lazily on first open
 	 */
 	_initOverlay: function() {
+		var self = this;
 		if (this._hasInit) return;
 		this._hasInit = true;
 
 		this.wrapper.detach().appendTo('body');
 		this.wrapper.css('z-index', '1000100');
+
+		this.baseId = this.wrapper.data('base-id');
 
 		this.wrapper.click(function(ev) {
 			ev.stopPropagation();
@@ -165,7 +169,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var tpl = DeskPRO_Window.util.getPlainTpl($('.radio-tpl', this.wrapper));
 
 		var groupedRadios = {};
-		$(':radio', this.wrapper).each(function() {
+		$(':radio.button-toggle', this.wrapper).each(function() {
 			var name = $(this).attr('name');
 			if (!groupedRadios[name]) {
 				groupedRadios[name] = [];
@@ -174,7 +178,6 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			groupedRadios[name].push(this);
 		});
 
-		var self = this;
 		Object.each(groupedRadios, function(els) {
 			var newEls = [];
 			els = $(els);
@@ -265,13 +268,110 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
-			triggerElement: $('button.text-snippets', this.wrapper),
+			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: this._onSnippetClick.bind(this)
+		});
+
+		//------------------------------
+		// Upload handling
+		//------------------------------
+
+		this.wrapper.fileupload({
+			url: this.wrapper.data('upload-url'),
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.replyBox),
+			downloadTemplate: $('.template-download', this.replyBox)
+		});
+		this.wrapper.bind('fileuploaddone', function() {
+			self.getElById('attach_row').slideDown();
+		});
+		this.wrapper.bind('fileuploadstart', function() {
+			self.getElById('attach_row').slideDown();
+		});
+
+		this.wrapper.delegate('.remove-attach-trigger', 'click', function() {
+
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getElById('attach_row'));
+				if (!rows.length) {
+					self.getElById('attach_row').slideUp().addClass('is-hidden');
+				}
+			});
+		});
+
+		var noneRow = $('li.no-changes', this.wrapper);
+		var agentRow = $('li.assign-agent', this.wrapper);
+		var teamRow = $('li.assign-team', this.wrapper);
+		var followersRow = $('li.add-followers', this.wrapper);
+
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getElById('agent_selector'),
+			trigger: this.getElById('assign_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
+				var agent_id = parseInt(selections.agents || -1);
+				var agent_team_id = parseInt(selections.teams || -1);
+
+				if (agent_id != -1) {
+					var input = $('<input type="hidden" name="actions[agent]" />').val(agent_id);
+					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
+					$('.label', agentRow).empty().text(label).append(input);
+					agentRow.show();
+				} else {
+					$('.label', agentRow).empty();
+					agentRow.hide();
+				}
+
+				if (agent_team_id != -1) {
+					var input = $('<input type="hidden" name="actions[agent_team]" />').val(agent_team_id);
+					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
+					$('.label', teamRow).empty().text(label).append(input);
+					teamRow.show();
+				} else {
+					$('.label', teamRow).empty();
+					teamRow.hide();
+				}
+
+				// Followers
+				var follower_names = [];
+				var follower_inputs = [];
+
+				var rowLabel = $('.label', followersRow).empty();
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
+					follower_names.push(label);
+
+					var i = $('<input type="hidden" name="actions[add_participants][]" value="'+part_id+'" />');
+					follower_inputs.push(i.get(0));
+				});
+				if (follower_names.length) {
+					$('.label', followersRow).empty().text(follower_names.join(', ')).append($(follower_inputs));
+					followersRow.show();
+				} else {
+					$('.label', followersRow).empty()
+					followersRow.hide();
+				}
+
+				if (agentRow.is(':visible') || teamRow.is(':visible') || followersRow.is(':visible')) {
+					noneRow.hide();
+				} else {
+					noneRow.show();
+				}
+			}
 		});
 	},
 
+	getElById: function(id) {
+		return $('#' + this.baseId + '_' + id);
+	},
+
 	_onSnippetClick: function(info) {
-		var txt = $('.reply-wrap textarea', this.wrapper);
+		var txt = this.getElById('replybox_txt');
 		var val = txt.val();
 		if (val.length) {
 			val += " ";
