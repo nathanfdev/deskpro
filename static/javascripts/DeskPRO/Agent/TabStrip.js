@@ -87,7 +87,6 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 
 		var updateMenuItems = function() {
-			menuEl.empty();
 			var tabEl = $('#tabNavigationPane li.activeTabList');
 
 			if ($('#tabNavigationPane').is('.with-overflow') && tabEl.length) {
@@ -117,26 +116,12 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				var lis = $('li', tabStrip);
 			}
 
+			$('> li', menuEl).hide().removeClass('shown');
 			lis.each(function() {
-				var title = $('a', this).clone();
-
-				var close = $('<a class="close"></a>');
-				var fade = $('<div class="bound-fade"></div>');
-
-				var li = $('<li />');
-				li.data('tab-id', $(this).data('tab-id'));
-				li.data('tab-el-id', $(this).attr('id'));
-				li.append(title);
-				li.append(close);
-				li.append(fade);
-
-				if ($(this).is('.activeTabList')) {
-					li.addClass('highlight');
-				}
-
-				menuEl.append(li);
+				$('#' + $(this).attr('id') + '_mi').show().addClass('shown');
 			});
 		}
+		this.updateMenuItems = updateMenuItems;
 
 		this.tabMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#tabDropdownPicker'),
@@ -170,6 +155,16 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 	},
 
+	isTabInView: function(tab) {
+		this.updateMenuItems();
+		var check = $('#' + tab.btnId);
+		if (check.length) {
+			return true;
+		}
+
+		return false;
+	},
+
 	alertTab: function(tab) {
 		var tabId = tab.btnId;
 
@@ -179,6 +174,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		el.addClass('is-alerting');
 		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
 		el.data('alerting-timeout', timeout);
+
+		this.updateAlertingMenuItems();
 	},
 
 	clearAlertTab: function(tab) {
@@ -195,9 +192,40 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		el.data('alerting-timeout', null);
+
+		var menuEl = $('#' + tabId + '_mi');
+		menuEl.removeClass('is-alerting');
+		this.updateAlertingMenuItems();
+	},
+
+	updateAlertingMenuItems: function() {
+		this.updateMenuItems();
+		var lis = $('#dp_tabstrip_menu li.is-alerting.shown');
+
+		var el = $('#tabDropdownPicker');
+		var menu = $('#dp_tabstrip_menu');
+
+		if (lis.length) {
+			if (!el.is('.is-alerting')) {
+				el.addClass('is-alerting');
+
+				var timeout = (function() { el.toggleClass('alert-highlight'); menu.toggleClass('alert-highlight'); }).periodical(700, this);
+				el.data('alerting-timeout', timeout);
+			}
+		} else {
+			var timeout = el.data('alerting-timeout');
+			if (timeout) {
+				window.clearTimeout(timeout);
+			}
+			el.data('alerting-timeout', null);
+			el.removeClass('is-alerting').removeClass('alert-highlight');
+			menu.removeClass('alert-highlight');
+		}
 	},
 
 	_alertTabDoHighlight: function(el) {
+		var menuEl = $('#' + el.attr('id') + '_mi').addClass('is-alerting');
+		this.updateAlertingMenuItems();
 		el.toggleClass('alert-highlight');
 	},
 
@@ -445,6 +473,21 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			li.appendTo(this.tabStrip);
 		}
 
+		// Add the menu button
+		var title = $('a', li).clone();
+		var close = $('<a class="close"></a>');
+		var fade = $('<div class="bound-fade"></div>');
+
+		var menuLi = $('<li />');
+		menuLi.attr('id', $(li).attr('id') + '_mi');//mi for menu item ;-)
+		menuLi.data('tab-id', $(li).data('tab-id'));
+		menuLi.data('tab-el-id', $(li).attr('id'));
+		menuLi.append(title);
+		menuLi.append(close);
+		menuLi.append(fade);
+
+		$('#dp_tabstrip_menu').append(menuLi);
+
 		this.recalculateScrolling();
 	},
 
@@ -508,6 +551,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				$('#tabNavigationPane').removeClass('far-right');
 			}
 		}
+
+		this.updateAlertingMenuItems();
 	},
 
 	getTabsWidth: function() {
@@ -567,6 +612,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			tabData.page.meta.routeData.tabUnload();
 		}
 
+		$('#' + tabData.btnId + '_mi');
 		this.recalculateScrolling();
 
 		DeskPRO_Window.updateWindowUrlFragment();

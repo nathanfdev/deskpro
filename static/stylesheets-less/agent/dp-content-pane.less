@@ -184,6 +184,10 @@ span.gear{
 	box-shadow: 0 0 1px #FFFFFF inset;
 }
 
+#tabDropdownPicker.alert-highlight {
+	background: url(../../images/agent/tabnav-drop-alerting.png) no-repeat 0 0;
+}
+
 #tabDropdownPicker a.tabSlideDown{
 	cursor: pointer;
 	display: block;
@@ -461,6 +465,11 @@ ul#dp_tabstrip_menu > li .bound-fade {
 	.fade-away(rgba(240,240,240, 0.5), rgba(240,240,240, 1), 52px);
 	z-index: 1;
 }
+ul#dp_tabstrip_menu.alert-highlight > li.is-alerting .bound-fade {
+	.fade-away(rgba(86,135,192, 0.5), rgba(86,135,192, 1), 52px);
+	z-index: 1;
+}
+
 ul#dp_tabstrip_menu > li:hover .bound-fade,
 ul#dp_tabstrip_menu > li.highlight .bound-fade {
 	.fade-away(rgba(255,255,255, 0.5), rgba(255,255,255, 1), 52px);
