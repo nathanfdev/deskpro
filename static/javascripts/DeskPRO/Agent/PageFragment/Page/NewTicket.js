@@ -105,12 +105,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		var placeUserRow = function(html) {
-			userfields.empty();
-			userfields.html(html);
-
-			rechooseBtn.show();
-			searchbox.hide();
-			userfields.show();
+			self.placeUserRow(html);
 		};
 
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -154,53 +149,30 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('new_userinfo').hide();
 	},
 
-	setUser: function(person_id) {
-
-		this.getEl('user_section').removeClass('done');
-
-		var data = [];
-
-		person_id = parseInt(person_id) || 0;
-
-		if (!person_id) {
-			data.push({
-				name: 'email_address',
-				value: this.getEl('usersearch').val()
-			});
-			this.getEl('person_id').val(0);
-		} else {
-			this.getEl('person_id').val(person_id);
-		}
-
+	setUser: function(person_id, session_id) {
 		$.ajax({
 			type: 'GET',
-			url: BASE_URL + 'agent/tickets/new/get-person-row/' + person_id,
-			data: data,
+			url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+			data: { 'person_id': person_id, 'session_id': session_id },
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				this.getEl('new_userinfo').hide();
-				this.getEl('userinfo').empty().html(html).show();
-
-				var person_id = parseInt($('.person_id', this.getEl('userinfo')).val());
-				this.getEl('person_id').val(person_id);
-
-				if (person_id) {
-					this.getEl('user_section').addClass('done');
-				}
-
-				var self = this;
-				$('button.more-fields', this.getEl('userinfo')).click(function() {
-					self.getEl('user_section').addClass('more-on');
-					$(this).remove();
-				});
+				this.placeUserRow(html);
 			}
 		});
 	},
 
-	setGuestUser: function() {
-		this.getEl('userinfo').hide();
-		this.getEl('new_userinfo').show();
+	placeUserRow: function(html) {
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+		var rechooseBtn = this.getEl('switch_user');
+
+		userfields.empty();
+		userfields.html(html);
+
+		rechooseBtn.show();
+		searchbox.hide();
+		userfields.show();
 	},
 
 	//#########################################################################

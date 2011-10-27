@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 	{% if convo.person_email %}t.push({{ '<' ~ convo.person_email ~ '>'|json_encode|raw }});{% endif %}
 	pageMeta.title = t.join(' ');
 {% else %}
-	pageMeta.title = 'Chat ' + convo.id;
+	pageMeta.title = 'Chat ' + {{ convo.id }};
 {% endif %}
 pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
@@ -17,10 +17,13 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended '%}true{% endif %}false;
 
+pageMeta.session_id = {{ convo.session.id }};
 {% if convo.person.id %}
 pageMeta.viewPersonUrl = '{{ path('agent_people_view', {'person_id': convo.person.id}) }}';
+pageMeta.person_id = {{ convo.person.id }};
 {% elseif convo.session %}
 pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}';
+pageMeta.person_id = 0;
 {% endif %}
 
 {% set baseId = el_uid() %}
@@ -138,7 +141,8 @@ pageMeta.baseId = '{{ baseId }}';
 						<li class="tipped attach" title="Send File" id="{{baseId}}_send_file">
 							<span>Send File</span>
 						</li>
-						<li class="tipped snippets hide-note" id="{{baseId}}_quick_replies" title="Quick Replies"><span>Quick Replies</span></li>
+						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="Quick Replies"><span>Quick Replies</span></li>
+						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="Create Ticket"><span>Create Ticket</span></li>
 					</ul>
 
 					<ul class="option-buttons right">

@@ -1389,6 +1389,10 @@ class TicketController extends AbstractController
 
 	public function newticketGetPersonRowAction($person_id)
 	{
+		if (!$person_id && $this->in->getUint('person_id')) {
+			$person_id = $this->in->getUint('person_id');
+		}
+
 		$person = false;
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
@@ -1397,8 +1401,22 @@ class TicketController extends AbstractController
 			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
 		}
 
+		$session = null;
+		if ($this->in->getUint('session_id')) {
+			$session = $this->em->find('DeskPRO:Session', $this->in->getUint('session_id'));
+		}
+		if ($session && $session->person) {
+			$person = $session;
+		}
+
 		if (!$person) {
 			$person = new Person();
+			if ($session) {
+				$person->name = $session->visitor->name;
+				if ($session->visitor->email) {
+					$person->setEmail($session->visitor->email);
+				}
+			}
 		}
 
 		return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', array(

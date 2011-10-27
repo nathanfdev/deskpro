@@ -127,6 +127,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			this._confirmCloseOverlay.open();
 		}, this);
+
+		this.getEl('create_ticket_btn').click(function() {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				page.setUser(self.meta.person_id, self.meta.session_id);
+			});
+		});
 	},
 
 	handleNewMessageCm: function(data, name) {
@@ -491,9 +497,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				});
 
 				if (!any) {
-					self.getEl('agentpart_sel_none').hide();
-				} else {
 					self.getEl('agentpart_sel_none').show();
+				} else {
+					self.getEl('agentpart_sel_none').hide();
 				}
 			}
 		})
