@@ -253,8 +253,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	 * @param id
 	 */
 	getEl: function(id) {
-		if (this.getMetaData('baseId')) {
-			id = this.getMetaData('baseId') + '_' + id;
+		if (this.meta && this.meta.baseId) {
+			id = this.meta.baseId + '_' + id;
 		}
 
 		return $('#' + id);
