@@ -102,6 +102,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			userfields.hide();
 			searchbox.show();
 			rechooseBtn.hide();
+			self.loadSnippetsViewer();
 		};
 
 		var placeUserRow = function(html) {
@@ -115,8 +116,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				dataType: 'html',
 				context: this,
 				success: function(html) {
-					$('input.person-id', self.searchbox).val(personId);
+					$('input.person-id', searchbox).val(personId);
 					placeUserRow(html);
+					self.loadSnippetsViewer();
 				}
 			});
 			sb.close();
@@ -142,11 +144,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			sb.close();
 			sb.reset();
 		});
-	},
-
-	clearUser: function() {
-		this.getEl('userinfo').hide().empty();
-		this.getEl('new_userinfo').hide();
 	},
 
 	setUser: function(person_id, session_id) {
@@ -248,14 +245,29 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		this.getEl('message').change(fn).blur(fn).keypress(fn);
+		this.getEl('text_snippets_btn').click(function(ev) {
+			ev.preventDefault();
+			self.openSnippetsViewer();
+		});
 
-		//------------------------------
-		// Snippets Viewer
-		//------------------------------
+		this.loadSnippetsViewer();
+	},
+
+	loadSnippetsViewer: function() {
+
+		if (this.snippetsViewer) {
+			this.snippetsViewer.destroy();
+		}
+
+		var url = BASE_URL + 'agent/tickets/0/snippet-viewer';
+
+		var person_id = parseInt(this.getEl('person_id').val());
+		if (person_id) {
+			url += '?person_id=' + person_id;
+		}
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
-			triggerElement: this.getEl('text_snippets_btn'),
+			viewUrl: url,
 			positionMode: this.meta.isPopover ? 'over' : 'side',
 			onSnippetClick: function(info) {
 				var val = self.getEl('message').val();
@@ -266,6 +278,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.getEl('message').val(val);
 			}
 		});
+	},
+
+	openSnippetsViewer: function() {
+		this.snippetsViewer.open();
 	},
 
 	//#########################################################################

@@ -380,6 +380,10 @@ class TicketController extends AbstractController
 			$person = null;
 		}
 
+		if (!$person && $this->in->getUint('person_id')) {
+			$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+		}
+
 		$ticket_snippets = App::getEntityRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
 		$ticket_snippet_cats = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
 
