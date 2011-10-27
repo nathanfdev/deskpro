@@ -194,7 +194,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				});
 				if (follower_names.length) {
 					$('.no-followers', followDetailEl).hide();
-					$('.is-followers', followDetailEl).show().find('.names').text(follower_names.join(', '));
+					var f = $('.is-followers', followDetailEl).show();
+					f.find('.names').text(follower_names.join(', '));
+					f.find('.count').text(follower_names.length);
 				} else {
 					$('.no-followers', followDetailEl).show();
 					$('.is-followers', followDetailEl).text('').hide();
