@@ -1198,3 +1198,34 @@ a.clean-white {
 }
 
 .deskpro-tabstrip ul li { float: left; margin-right : 10px;}
+
+
+#password_confirm {
+	width: 400px;
+	height: 200px;
+	z-index: 99999999999999;
+}
+
+#password_confirm .error-wrap {
+    display: none;
+    padding: 0 4px 0 4px;
+    margin-left: 8px;
+    margin-right: 8px;
+    background-color: #FFDCC9;
+    .rounded(4px);
+}
+#password_confirm.with-error .error-wrap { display: block; }
+
+#password_confirm .input-wrap {
+	margin-top: 15px;
+	text-align: center;
+}
+
+#password_confirm .input-wrap input {
+    text-align: center;
+	width: 75%;
+}
+
+#password_confirm .explain-wrap {
+	padding: 8px;
+}

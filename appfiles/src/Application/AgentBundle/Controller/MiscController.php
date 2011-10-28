@@ -414,4 +414,15 @@ class MiscController extends AbstractController
 			'info' => $info,
 		));
 	}
+
+	public function getPasswordConfirmCodeAction()
+	{
+		$password = $this->in->getString('password');
+		if (!$this->person->checkPassword($password)) {
+			return $this->createJsonResponse(array('invalid' => true));
+		}
+
+		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->password);
+		return $this->createJsonResponse(array('code' => $code));
+	}
 }

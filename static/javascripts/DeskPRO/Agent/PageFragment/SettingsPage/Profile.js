@@ -15,17 +15,36 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 		var form = $('form', this.el);
 
+		var startEmail = $('#settings_profile_email').val();
+
+		var changePass = false;
+		var changeEmail = false;
+
 		var verifyPasswords = function() {
 			var pass1 = $('input.password1', form);
 			var pass2 = $('input.password2', form);
 
 			if (pass1.val().length) {
+				changePass = true;
 				if (pass1.val() != pass2.val()) {
 					DeskPRO_Window.showAlert('Please enter the same password into both password fields', 'error');
 					return false;
 				}
+			} else {
+				changePass = false;
+			}
+			return true;
+		};
+
+		var checkEmailChange = function() {
+			if ($('#settings_profile_email').val() != startEmail) {
+				changeEmail = true;
+			} else {
+				changeEmail = false;
 			}
 		};
+
+		var passCode = null;
 
 		form.submit(function(ev) {
 			ev.preventDefault();
@@ -34,15 +53,41 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			if (!verifyPasswords()) {
 				return;
 			}
+			checkEmailChange();
+
+			if ((changePass || changeEmail) && !passCode) {
+				$('#password_confirm').trigger('dp_open', {
+					explain: "Confirm these changes to your profile by entering your current password.",
+					success: function(code) {
+						passCode = code;
+						form.submit();
+					}
+				});
+				return;
+			}
 
 			var data = $(this).serializeArray();
+			if (passCode) {
+				data.push({
+					name: 'authcode',
+					name: passCode
+				});
+			}
 			$.ajax({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: data,
 				dataType: 'json',
+				complete: function() {
+					changePass = false;
+					changeEmail = false;
+					passCode = null;
+					$('input.password1', form).val('');
+					$('input.password2', form).val('');
+				},
 				success: function() {
 					self.settingsWindow.showSavePuff();
+					startEmail = $('#settings_profile_email').val();
 				}
 			});
 		});

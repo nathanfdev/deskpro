@@ -498,6 +498,23 @@
 	</div>
 </div>
 
+<section class="dp-overlay" id="password_confirm" data-element-handler="DeskPRO.Agent.ElementHandler.PasswordPrompt">
+	<header>
+		<span class="close close-trigger">close</span>
+		<h1>Enter your password</h1>
+	</header>
+	<article>
+		<div class="explain-wrap"></div>
+		<div class="error-wrap">You entered an incorrect password. Try again.</div>
+		<div class="input-wrap">
+			<input type="password" class="password-input" value="" />
+		</div>
+	</article>
+	<footer>
+		<button class="continue-trigger clean-white">Continue</button>
+	</footer>
+</section>
+
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
 

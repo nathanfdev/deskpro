@@ -13,7 +13,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>Email</label></div>
 			<div class="dp-form-input">
-				{{ form_widget(form.email) }}
+				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
 		</div>
 
@@ -56,5 +56,5 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 	</div>
 
-	<button type="submit" class="clean-white">Save</button>
+	<button type="submit" class="clean-white submit-trigger">Save</button>
 </form>

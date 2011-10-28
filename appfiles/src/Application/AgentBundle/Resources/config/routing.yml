@@ -61,6 +61,10 @@ agent_redirect_out_info:
   defaults: { _controller: AgentBundle:Misc:redirectExternalInfo }
   requirements: { url: ".+" }
 
+agent_password_confirm_code:
+  pattern: /password-confirm-code.json
+  defaults: { _controller: AgentBundle:Misc:getPasswordConfirmCode }
+
 agent_snippetviewer:
   pattern: /misc/snippet-viewer/view/{typename}
   defaults: { _controller: AgentBundle:Misc:snippetsViewer }

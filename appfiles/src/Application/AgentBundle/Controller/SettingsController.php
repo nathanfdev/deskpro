@@ -32,6 +32,13 @@ class SettingsController extends AbstractController
 
 		$form->bindRequest($this->get('request'));
 
+		if ($edit_profile->requiresAuth()) {
+			$code = $this->in->getString('authcode');
+			if (!$this->session->getEntity()->checkSecurityToken('password_confirm' . $this->person->password, $code)) {
+				return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_auth'));
+			}
+		}
+
 		$edit_profile->save();
 
 		return $this->createJsonResponse(array('success' => true));
