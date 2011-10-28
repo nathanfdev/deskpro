@@ -2156,6 +2156,44 @@ DeskPRO.Agent.Window = new Orb.Class({
 		window.setTimeout(function() {
 			$('.timeago', context).timeago();
 		}, 10);
+
+		$('input.dp-checkbox', context).each(function() {
+			var input = $(this);
+			if (!input.attr('id')) {
+				input.attr('id', Orb.getUniqueId('dp_chk'));
+			}
+
+			var id = input.attr('id');
+
+			input.hide().addClass('with-dp-checkbox');
+
+			var check = $('<span class="dp-checkbox" data-bound="#'+id+'" />');
+
+			check.attr('id', Orb.getUniqueId('dp_chk'));
+			if (input.is(':checked')) {
+				check.addClass('checked');
+			}
+
+			input.data('bound', '#' + check.attr('id'));
+
+			check.insertAfter(input)
+
+			input.change(function(ev) {
+				if ($(this).is(':checked')) {
+					check.addClass('checked');
+				} else {
+					check.removeClass('checked');
+				}
+			});
+			check.click(function(ev) {
+				ev.stopPropagation();
+				if (input.is(':checked')) {
+					$(this).addClass('checked');
+				} else {
+					$(this).removeClass('checked');
+				}
+			});
+		});
 	}
 });
 
