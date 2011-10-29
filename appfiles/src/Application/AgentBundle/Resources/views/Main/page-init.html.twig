@@ -34,6 +34,12 @@
 				disableUrlFragments: {% if js_debug.disableUrlFragments%}true{% else %}false{% endif %},
 				useTestSection: {% if js_debug.useTestSection%}true{% else %}false{% endif %}
 			};
+
+			{% if js_debug.pollerInterval %}
+				DP_POLLER_INTERVAL = {{ js_debug.pollerInterval }};
+			{% else %}
+				DP_POLLER_INTERVAL = 2000;
+			{% endif %}
 		{% endif %}
 
 		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');

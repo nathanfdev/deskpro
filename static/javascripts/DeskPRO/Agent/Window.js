@@ -1507,7 +1507,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: 2000
+			interval: DP_POLLER_INTERVAL
 		});
 	},
 
