@@ -138,10 +138,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						type: 'POST'
 					});
 				},
-				onTitlesUpdated: function(titles) {
+				onCatUpdated: function(categoryId, newTitle, newUgs) {
+
+					var postData = [];
+					postData.push({
+						name: 'title',
+						value: newTitle
+					});
+
+					Array.each(newUgs, function(id) {
+						postData.push({
+							name: 'usergroup_ids[]',
+							value: id
+						});
+					});
+
 					$.ajax({
-						url: BASE_URL + 'agent/publish/categories/'+type+'/update-titles',
-						data: makeTitleData(titles),
+						url: BASE_URL + 'agent/publish/categories/'+type+'/update/' + categoryId,
+						data: postData,
 						type: 'POST'
 					});
 				},

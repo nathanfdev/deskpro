@@ -22,7 +22,7 @@ use Orb\Util\Strings;
 class CategoryHierarchy
 {
 	/**
-	 * @var \Application\DeskPRO\EntityRepository\AbstractEntityRepository
+	 * @var \Application\DeskPRO\EntityRepository\AbstractCategoryRepository
 	 */
 	protected $repos;
 
@@ -519,5 +519,30 @@ class CategoryHierarchy
 		}
 
 		return $counts;
+	}
+
+	public function getCategoriesForUsergroups(array $usergroup_ids)
+	{
+		$permission_table_name = $this->repos->getPermissionTableName();
+
+		if (!$permission_table_name) {
+			throw new \BadMethodCallException('There is no permissions table set');
+		}
+
+		$usergroup_ids = array_filter($usergroup_ids, function ($val) {
+			return ctype_digit($val);
+		});
+
+		if (!$usergroup_ids) {
+			return array();
+		}
+
+		$cat_ids = App::getDb()->fetchAllCol("
+			SELECT category_id
+			FROM {$permission_table_name}
+			WHERE usergroup_id IN (" . implode(',', $usergroup_ids) . ")
+		");
+
+		return $cat_ids;
 	}
 }

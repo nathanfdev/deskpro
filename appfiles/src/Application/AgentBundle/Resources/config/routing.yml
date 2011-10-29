@@ -1029,6 +1029,10 @@ agent_publish_cats_updatetitles:
   pattern: /publish/categories/{type}/update-titles
   defaults: { _controller: AgentBundle:Publish:updateCategoryTitles }
 
+agent_publish_cats_update:
+  pattern: /publish/categories/{type}/update/{category_id}
+  defaults: { _controller: AgentBundle:Publish:updateCategory }
+
 agent_publish_cats_updatestructure:
   pattern: /publish/categories/{type}/update-structure
   defaults: { _controller: AgentBundle:Publish:updateCategoryStructure }

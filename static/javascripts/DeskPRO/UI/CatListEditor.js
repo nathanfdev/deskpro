@@ -340,6 +340,12 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			top: elPos.top - 10
 		});
 
+		var ids = (li.data('usergroup-ids') || '').split(',');
+		$(':checkbox.usergroup', this.edit).prop('checked', false);
+		Array.each(ids, function(id) {
+			$('input.usergroup-' + id, this.edit).prop('checked', true);
+		}, this);
+
 		this.editBack.show();
 		this.editTab.show();
 		this.edit.show();
@@ -357,15 +363,36 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			var titleEl = $('.title-edit:first', li);
 			var oldTitle = titleEl.text().trim();
 			var dataId = li.data(this.options.dataId);
+			var updatedTitle = false;
+			var updatedUgs = false;
 
 			if (newTitle != oldTitle) {
+				updatedTitle = true;
+
 				titleEl.text(newTitle);
 
 				var titles = {};
 				titles[dataId] = newTitle;
 				this.fireEvent('titlesUpdated', [titles, this]);
 			}
+
+			var ug_ids = [];
+			$('input.usergroup:checked', this.edit).each(function() {
+				ug_ids.push($(this).val());
+			});
+			var ug_ids_string = ug_ids.join(',');
+
+			if (li.data('usergroup-ids') != ug_ids_string) {
+				updatedUgs = true;
+				li.data('usergroup-ids', ug_ids_string);
+			}
+
+			if (updatedTitle || updatedUgs) {
+				this.fireEvent('catUpdated', [li.data('category-id'), newTitle, ug_ids, li, this]);
+			}
 		}
+
+
 
 		this.editBack.hide();
 		this.editTab.hide();

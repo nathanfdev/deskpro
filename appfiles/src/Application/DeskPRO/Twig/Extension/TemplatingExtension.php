@@ -91,6 +91,9 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
 			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
 			'explode' => new \Twig_Filter_Method($this, 'explodeString'),
+			'split' => new \Twig_Filter_Method($this, 'explodeString'),
+			'join' => new \Twig_Filter_Method($this, 'implodeArray'),
+			'implode' => new \Twig_Filter_Method($this, 'implodeArray'),
         );
     }
 
@@ -126,6 +129,11 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$assetic_manager = $this->container->getSystemService('assetic_manager');
 		return $assetic_manager->getRawUrls($name);
+	}
+
+	public function implodeArray(array $array, $sep = ', ')
+	{
+		return implode($array, $sep);
 	}
 
 	public function explodeString($string, $del = ',') {

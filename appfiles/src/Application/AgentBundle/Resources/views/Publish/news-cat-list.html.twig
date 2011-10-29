@@ -1,5 +1,8 @@
 {% for cat in cats %}
-	<li class="news-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}" data-category-id="{{ cat.id }}">
+	<li
+		class="news-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}" data-category-id="{{ cat.id }}"
+		data-usergroup-ids="{{ news_cats_usergroups[cat.id]|default([])|join(',') }}"
+	>
 		<span class="edit-cat">edit</span>
 		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>delete</span>
 		<span class="sub-toggle">expand</span>

@@ -51,6 +51,11 @@ class ArticleCategory extends AbstractCategoryRepository
 		return $this->_comment_helper;
 	}
 
+	public function getPermissionTableName()
+	{
+		return 'article_category2usergroup';
+	}
+
 	public function getCategoriesById(array $ids)
 	{
 		$ids = Arrays::removeFalsey($ids);

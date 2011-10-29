@@ -60,4 +60,6 @@
 	'agent.tab_loading' => 'Loading...',
 
 	'agent.recycle_bin' => 'Recycle Bin',
+
+	'agent.usergroup_everyone' => 'Everyone',
 );

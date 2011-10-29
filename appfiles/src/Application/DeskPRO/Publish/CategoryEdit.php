@@ -106,6 +106,45 @@ class CategoryEdit
 		return $cats;
 	}
 
+	public static function update($type, $category_id, $title, array $usergroup_ids)
+	{
+		$entity = self::getEntityNameFor($type);
+		$perm_table = App::getEntityRepository($entity)->getPermissionTableName();
+		$cat = App::getOrm()->find($entity, $category_id);
+
+		if (!$cat) {
+			throw new \InvalidArgumentException();
+		}
+
+		$usergroup_ids = Arrays::castToType($usergroup_ids, 'integer');
+		$usergroup_ids = Arrays::removeFalsey($usergroup_ids);
+		$usergroup_ids = array_unique($usergroup_ids);
+
+		App::getOrm()->beginTransaction();
+
+		try {
+			$cat->title = $title;
+
+			if ($perm_table) {
+				App::getDb()->delete($perm_table, array('category_id' => $cat->id));
+
+				foreach ($usergroup_ids as $uid) {
+					App::getDb()->insert($perm_table, array(
+						'category_id' => $cat->id,
+						'usergroup_id' => $uid
+					));
+				}
+			}
+
+			App::getOrm()->persist($cat);
+			App::getOrm()->commit();
+
+		} catch (\Exception $e) {
+			App::getOrm()->rollback();
+			throw $e;
+		}
+	}
+
 
 	/**
 	 * Update orders. $orders is an array of ID's in the order you want them.

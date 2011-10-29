@@ -33,4 +33,11 @@ class NewsCategory extends CategoryAbstract
 	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
+
+	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="news_category2usergroup", joinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")})
+	 */
+	protected $usergroups;
 }

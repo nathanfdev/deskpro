@@ -54,6 +54,11 @@ class NewsCategory extends AbstractCategoryRepository
 		return $this->_comment_helper;
 	}
 
+	public function getPermissionTableName()
+	{
+		return 'news_category2usergroup';
+	}
+
 	/**
 	 * Get an array of categories
 	 *

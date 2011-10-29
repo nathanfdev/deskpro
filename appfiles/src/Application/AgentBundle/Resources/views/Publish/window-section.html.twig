@@ -51,12 +51,16 @@
 	<span class="close-trigger">x</span>
 	<h5>Usergroup Permissions</h5>
 	<div class="list">
-		<label><input type="checkbox" /> Usergroup 1</label>
-		<label><input type="checkbox" /> Usergroup 2</label>
-		<label><input type="checkbox" /> Usergroup 3</label>
-		<label><input type="checkbox" /> Usergroup 4</label>
-		<label><input type="checkbox" /> Usergroup 5</label>
-		<label><input type="checkbox" /> Usergroup 6</label>
+		{% for ug in usergroups %}
+			<label>
+				<input type="checkbox" class="usergroup usergroup-{{ ug.id }} {% if ug.sys_name == 'everyone' %}everyone{% endif %}" value="{{ ug.id }}" />
+				{% if ug.sys_name %}
+					{{ phrase('agent.usergroup_' ~ ug.sys_name) }}
+				{% else %}
+					{{ ug.title }}
+				{% endif %}
+			</label>
+		{% endfor %}
 	</div>
 </div>
 <div id="publish_cat_editor_shadowbreak" class="cat-editor-shadow-breaker" style="display: none" />
