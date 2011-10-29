@@ -1,14 +1,17 @@
+{% macro render_options(k, cat, selected, depth) %}
+	{% set id = cat.id|default(k) %}
+	{% set title = cat.title|default(cat.name|default(cat)) %}
+	<option value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
+
+	{% if cat.children %}
+		{% for subk,subcat in cat.children %}
+			{{ _self.render_options(subk, subcat, selected, depth+1) }}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
 <select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr }}>
 	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
 	{% for k,cat in categories %}
-		{% set id = cat.id|default(k) %}
-		{% set title = cat.title|default(cat.name|default(cat)) %}
-		<option value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{{ title }}</option>
-		
-		{% if cat.children %}
-			{% for subcat in cat.children %}
-				<option value="{{subcat.id}}" {% if subcat.id == selected %}selected="selected"{% endif %}>-- {{subcat.title|default(cat.name)}}</option>
-			{% endfor %}
-		{% endif %}
+		{{ _self.render_options(k, cat, selected, 0) }}
 	{% endfor %}
 </select>
