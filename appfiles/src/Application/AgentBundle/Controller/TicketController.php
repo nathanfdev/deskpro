@@ -282,6 +282,8 @@ class TicketController extends AbstractController
 
 		$ticket_messages_block = '';
 
+		$all_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
+
 		if ($ticket_messages) {
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-batch.html.twig', array(
 				'ticket' => $ticket,
@@ -290,6 +292,7 @@ class TicketController extends AbstractController
 				'ticket_attachments' => $ticket_attachments,
 				'ticket_message_logs' => $ticket_message_logs,
 				'ticket_logs' => $ticket_logs,
+				'all_feedback' => $all_feedback,
 			));
 		}
 

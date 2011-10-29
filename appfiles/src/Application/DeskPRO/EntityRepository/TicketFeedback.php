@@ -14,9 +14,12 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
 use Application\DeskPRO\Entity\TicketFeedback as TicketFeedbackEntity;
-use \Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
+
+use Orb\Util\Arrays;
 
 class TicketFeedback extends EntityRepository
 {
@@ -46,5 +49,21 @@ class TicketFeedback extends EntityRepository
 		}
 
 		return $feedback;
+	}
+
+	public function getFeedbackForTicket(TicketEntity $ticket)
+	{
+		$res = $this->getEntityManager()->createQuery("
+			SELECT f
+			FROM DeskPRO:TicketFeedback f
+			WHERE f.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		if (!$res) {
+			return array();
+		}
+
+		$res = Arrays::keyFromData($res, 'message_id');
+		return $res;
 	}
 }

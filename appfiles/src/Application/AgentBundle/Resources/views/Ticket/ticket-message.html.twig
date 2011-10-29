@@ -33,6 +33,14 @@
 				</ul>
 			{%endif%}
 		</div>
+		{% if all_feedback[message.id] %}
+			{% set feedback = all_feedback[message.id] %}
+			<div class="feedback">
+				{{ feedback.person.display_name }} found this message
+				{% if feedback.rating > 0 %}<em class="helpful">helpful</em>{% else %}<em class="unhelpful">unhelpful</em>{% endif %}
+				{% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
+			</div>
+		{% endif %}
 	</div>
 	<textarea class="message-quote-{{message.id}}" style="display: none">{{ message.message_quote }}</textarea>
 </article>

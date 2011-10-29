@@ -175,7 +175,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->id && $new_status == 'visible') {
 			$this->setModelField('is_reviewed' , true);
 		}
-		
+
 		$this->setModelField('status', $new_status);
 	}
 

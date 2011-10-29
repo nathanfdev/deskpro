@@ -949,6 +949,30 @@ article.content-message .content .body-text {
 	padding: 6px;
 }
 
+article.content-message .content .feedback {
+	margin: 4px;
+	background-color: #E1E2E5;
+	padding: 4px;
+	font-size: 10px;
+	.rounded(4px);
+}
+
+article.content-message .content .feedback em {
+	font-weight: bold;
+	font-family: @body-font-bold;
+}
+
+article.content-message .content .feedback em.helpful {
+	color: #387A4A;
+}
+article.content-message .content .feedback em.unhelpful {
+	color: #7D6250;
+}
+
+article.content-message .content .feedback p {
+	padding-left: 8px;
+}
+
 .tabbed-page-contents {
 	margin: 10px;
 }
