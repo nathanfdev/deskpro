@@ -8,18 +8,15 @@
 
 	pageMeta.filter_id = {{filter_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&partial=1&page=$page';
-	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&';
-	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&page=$page';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&';
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
 {% endif %}
+pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
 
 {% if filter.sys_name == 'agent' %}pageMeta.groupingIgnore=["agent","agent_team"];{% endif %}
 {% if filter.sys_name == 'agent_team' %}pageMeta.groupingIgnore=["agent","agent_team"];{% endif %}
