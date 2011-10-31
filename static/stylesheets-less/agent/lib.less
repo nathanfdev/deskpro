@@ -2,7 +2,6 @@
 /** sprite: ui-v; sprite-image: url('../../build/images/sprite-ui-v.png'); sprite-layout: vertical */
 /** sprite: ui-h; sprite-image: url('../../build/images/sprite-ui-h.png'); sprite-layout: horizontal */
 
-@asset-url: "../../";
 @text-color: #404040;
 @subtle-text-color: #9AA2AC;
 @link-color: #4769B3;
@@ -33,16 +32,81 @@
 // Get around a bug in less, always have this rule or else compiler error
 .less-rule { color: #000; }
 
-/**
-* @color: Color for non-supportive browsers
-* @start: Color of start
-* @stop: Color of end
-*/
-.gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
-	background: @color;
-	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, @start), color-stop(1, @stop));
-	background: -ms-linear-gradient(bottom, @start, @stop);
-	background: -moz-linear-gradient(center bottom, @start 0%, @stop 100%);
+.size(@height: 5px, @width: 5px) {
+	height: @height;
+	width: @width;
+}
+
+.square(@size: 5px) {
+	.size(@size, @size);
+}
+
+.set-size(@height: 5px, @width: 5px) {
+	height: @height;
+	width: @width;
+	overflow: hidden;
+}
+.set-square(@size: 5px) {
+	.size(@size, @size);
+	overflow: hidden;
+}
+
+.box-shadow(@shadow: 0 1px 3px rgba(0,0,0,.25)) {
+  -webkit-box-shadow: @shadow;
+  -moz-box-shadow: @shadow;
+  box-shadow: @shadow;
+}
+
+.box-shadow-two(@shadow: 0 1px 3px rgba(0,0,0,.25), @shadow2: 0 1px 3px rgba(0,0,0,.25)) {
+  -webkit-box-shadow: @shadow, @shadow2;
+  -moz-box-shadow: @shadow, @shadow2;
+  box-shadow: @shadow, @shadow2;
+}
+
+.box-shadow-three(@shadow: 0 1px 3px rgba(0,0,0,.25), @shadow2: 0 1px 3px rgba(0,0,0,.25), @shadow3: 0 1px 3px rgba(0,0,0,.25)) {
+  -webkit-box-shadow: @shadow, @shadow2;
+  -moz-box-shadow: @shadow, @shadow2;
+  box-shadow: @shadow, @shadow2;
+}
+
+.transition(@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	transition: @transition;
+}
+
+.gradient-h(@startColor: #555, @endColor: #333) {
+	background-color: @endColor;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, right top, from(@startColor), to(@endColor)); /* Konqueror */
+	background-image: -moz-linear-gradient(left, @startColor, @endColor); /* FF 3.6+ */
+	background-image: -ms-linear-gradient(left, @startColor, @endColor); /* IE10 */
+	background-image: -webkit-gradient(linear, left top, right top, color-stop(0%, @startColor), color-stop(100%, @endColor)); /* Safari 4+, Chrome 2+ */
+	background-image: -webkit-linear-gradient(left, @startColor, @endColor); /* Safari 5.1+, Chrome 10+ */
+	background-image: -o-linear-gradient(left, @startColor, @endColor); /* Opera 11.10 */
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@startColor,@endColor)); /* IE6 & IE7 */
+	-ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@startColor,@endColor); /* IE8+ */
+	background-image: linear-gradient(left, @startColor, @endColor); /* the standard */
+}
+.gradient(@startColor: #555, @endColor: #333) {
+	background-color: @endColor;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)); /* Konqueror */
+	background-image: -moz-linear-gradient(@startColor, @endColor); /* FF 3.6+ */
+	background-image: -ms-linear-gradient(@startColor, @endColor); /* IE10 */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @startColor), color-stop(100%, @endColor)); /* Safari 4+, Chrome 2+ */
+	background-image: -webkit-linear-gradient(@startColor, @endColor); /* Safari 5.1+, Chrome 10+ */
+	background-image: -o-linear-gradient(@startColor, @endColor); /* Opera 11.10 */
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor)); /* IE6 & IE7 */
+	-ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor); /* IE8+ */
+	background-image: linear-gradient(@startColor, @endColor); /* the standard */
+}
+
+.opacity(@opacity: 100) {
+	filter: e(%("alpha(opacity=%d)", @opacity));
+	-khtml-opacity: @opacity / 100;
+	-moz-opacity: @opacity / 100;
+	opacity: @opacity / 100;
 }
 
 /**
@@ -77,20 +141,22 @@
 /**
 * Set a radius on each corner
 */
-.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+.border-radius(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-left-radius: @topleft;
 	-webkit-border-top-right-radius: @topright;
 	-webkit-border-bottom-right-radius: @bottomright;
 	-webkit-border-bottom-left-radius: @bottomleft;
-	-webkit-border-top-left-radius: @topleft;
+	-moz-border-radius-topleft: @topleft;
 	-moz-border-radius-topright: @topright;
 	-moz-border-radius-bottomright: @bottomright;
 	-moz-border-radius-bottomleft: @bottomleft;
-	-moz-border-radius-topleft: @topleft;
+	border-top-left-radius: @topleft;
 	border-top-right-radius: @topright;
 	border-bottom-right-radius: @bottomright;
 	border-bottom-left-radius: @bottomleft;
-	border-top-left-radius: @topleft;
-	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
 }
 
 /**

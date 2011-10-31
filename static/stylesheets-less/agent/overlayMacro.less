@@ -19,18 +19,15 @@
 	width: 900px;
 	margin: 80px 0 0 200px;
 	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.9);
-	behavior: url("../../static/vendor/PIE.htc");
 	z-index: 999999;
 }
 
 .macroHead{
 	background: -moz-linear-gradient(top, #edeeef 0%, #e0e1e3 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#edeeef), to(#e0e1e3));
-	-pie-background: linear-gradient(#edeeef, #e0e1e3);
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 	padding: 5px 0;
-	border-radius: 8px 8px 0 0;
+	.border-radius(8px, 8px, 0, 0);
 	border-bottom: 1px solid #a1aab3;
 }
 
@@ -46,8 +43,6 @@
 .macroAction{
 	background: -moz-linear-gradient(top, #edeff0 0%, #e9ebec 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#edeff0), to(#e9ebec));
-	-pie-background: linear-gradient(#edeff0, #e9ebec);
-	behavior: url("../../static/vendor/PIE.htc");
 	border-bottom: 1px solid #C2C7CC;
 	box-shadow: 0 1px 5px #c7c7c7;
 	clear: both;
@@ -74,11 +69,9 @@
 .overlayBtn{
 	background: -moz-linear-gradient(top, #fefefe 0%, #fefefe 50%, #ededed 50%, #fefefe 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#fefefe), to(#ededed), color-stop(50%, #fefefe), color-stop(50%, #ededed));
-	-pie-background: linear-gradient(#fefefe, #ededed);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #FFFFFF, 0 0 0 1px #FFFFFF inset;
 	border: 1px solid #898989;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	box-shadow: 0 1px 0 #fff;
 	padding: 2px 5px 1px;
 	position: relative;
@@ -165,8 +158,7 @@
 	border-width: 1px;
 	border-style: solid;
 	border-color: #c8cacc;
-	border-radius: 2px;
-	behavior: url("../../static/vendor/PIE.htc");
+	.border-radius(2px, 2px, 2px, 2px);
 	position: relative;
 	z-index: 1;
 }
@@ -193,7 +185,6 @@ span.addAttachment{}
 	outline: none;
 	width: 400px;
 	margin: 0;
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 	z-index: 2;
 }
@@ -215,11 +206,9 @@ span.addAttachment{}
 .macroViewChanges, .ticketTableFoot{
 	background: -moz-linear-gradient(top, #d5d9dd 0%, #babfc4 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#d5d9dd), to(#babfc4));
-	-pie-background: linear-gradient(#d5d9dd, #babfc4);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: inset 0 1px 0 #e4e7e9;
 	border-top: 1px solid #a1aab3;
-	border-radius: 0 0 8px 8px;
+	.border-radius(0, 0, 8px, 8px);
 	float: left;
 	height: 30px;
 	padding: 15px 0 0;
@@ -231,11 +220,9 @@ span.addAttachment{}
 .macroViewChanges a, .ticketTableFoot li#more a{
 	background: -moz-linear-gradient(top, #598eb6 0%, #3c6094 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#598eb6), to(#3c6094));
-	-pie-background: linear-gradient(#598eb6, #3c6094);
-	behavior: url("../../static/vendor/PIE.htc");
 	border: 1px solid #3f5973;
 	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
-	border-radius: 4px;
+	.border-radius(4px, 4px, 4px, 4px);
 	color: #fafafa;
 	text-shadow: 0 1px 0 #000;
     font-size: 11px;
@@ -249,12 +236,10 @@ span.addAttachment{}
 .macroViewChanges a:hover, .ticketTableFoot li#more a:hover{
 	background: -moz-linear-gradient(top, #6099c4 0%, #436ba3 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#6099c4), to(#436ba3));
-	-pie-background: linear-gradient(#6099c4, #436ba3);
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
 .closeOverlay{
-	background: url("@{asset-url}/images/agent/closeOvelay.png") no-repeat top left;
+	background: url("../../images/agent/closeOvelay.png") no-repeat top left;
 	height: 35px;
 	width: 35px;
 	position: absolute;
@@ -283,8 +268,6 @@ span.addAttachment{}
 .ticketTableheading{
 	background: -moz-linear-gradient(top, #e6e9ec 0%, #d8dbdf 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6e9ec), to(#d8dbdf));
-	-pie-background: linear-gradient(#e6e9ec, #d8dbdf);
-	behavior: url("../../static/vendor/PIE.htc");
 	height: 31px;
 	border-bottom: 1px solid #d5d5d5;
 	border-top: 1px solid #e3e6e9;
@@ -297,7 +280,7 @@ span.addAttachment{}
 	padding: 9px 0 8px 5px;
 }
 .ticketTableheading ul#ticketTableHead li{
-	background: url("@{asset-url}/images/agent/divOverlay.jpg") no-repeat bottom right;
+	background: url("../../images/agent/divOverlay.jpg") no-repeat bottom right;
 	display: inline;
 	float: left;
 	padding: 10px 0 7px 5px;
@@ -320,7 +303,7 @@ padding: 9px 0 7px 5px;
 }
 
 .ticketTableheading ul#ticketTableHead li span.pointDown{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -1613px;
+	background: url("../../images/agent/imgSprt_ico.png") no-repeat 0 -1613px;
 	padding: 5px;
 	float: right;
 	padding: 5px 10px 5px 0;
@@ -382,7 +365,7 @@ padding: 9px 0 7px 5px;
 	padding: 3px 0px 2px 5px;
 }
 .tableContent ul#contentTicketTable li ul.subTable li span.eye{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -1638px;
+	background: url("../../images/agent/imgSprt_ico.png") no-repeat 0 -1638px;
 	padding: 0 10px;
 	text-indent: -1999px;
 }

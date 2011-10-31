@@ -57,7 +57,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 			$found = false;
 			foreach ($search_paths as $search_path) {
-				exec('grep -m 1 -l -r \'' . $file->getFilename() . '\' ' . $search_path, $out);
+				exec('grep -m 1 -l -n -r \'' . $file->getFilename() . '\' ' . $search_path, $out);
 				$out = Arrays::removeEmptyString($out);
 
 				if ($out && !empty($out)) {
@@ -70,7 +70,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 				echo "\tNot Found";
 				$notfound[] = $nicepath;
 			} else {
-				echo "\tFound";
+				//echo "\tFound";
 			}
 
 			echo "\n";

@@ -11,7 +11,6 @@
 	border-right-style: solid;
 	border-right-color: #8D9094;
 	box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.15);
-	behavior: url("../../static/vendor/PIE.htc");
 	z-index: 1;
 	line-height: 16px;
 }
@@ -41,7 +40,7 @@
 	left: 0;
 	display: none;
 
-	background: url("@{asset-url}/images/loading-big-circle.gif") no-repeat 50% 20px;
+	background: url("../../images/loading-big-circle.gif") no-repeat 50% 20px;
 }
 
 #dp_list_loading.on {
@@ -55,8 +54,6 @@
 .list-control-bar{
 	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
-	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
-	behavior: url("../../static/vendor/PIE.htc");
 	height: 25px;
 	position: relative;
 	border-bottom: 1px solid #B6BABF;
@@ -82,11 +79,9 @@
 .list-control-bar ul li a.button, a.performActTrigger{
 	background-image: -moz-linear-gradient(top, #fafcfd, #f0f2f3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#fafcfd), to(#f0f2f3));
-	-pie-background: linear-gradient(#fafcfd, #f0f2f3);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
-	border-radius: 3px 3px 3px 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 3px 6px;
 	float: left;
 	color: #626a73;
@@ -100,12 +95,10 @@
 .list-control-bar ul li a.button:hover, a.performActTrigger:hover{
 	background-image: -moz-linear-gradient(top, #f0f2f3, #fafcfd);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#f0f2f3), to(#fafcfd));
-	-pie-background: linear-gradient(#f0f2f3, #fafcfd);
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
 .list-control-bar ul li span.sep {
-	background: url("@{asset-url}/images/agent/divGrdt.jpg") no-repeat 0 0;
+	background: url("../../images/agent/divGrdt.jpg") no-repeat 0 0;
 	height: 30px;
 	padding: 10px 2px;
 	width: 2px;
@@ -182,7 +175,7 @@
 }
 .list-grouping-bar li span{
     line-height: 13px;
-	border-radius: 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	background: #fff;
 	float: right;
 	font-size: 9px;
@@ -213,8 +206,6 @@
 .list-selection-bar{
 	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
-	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #FFFFFF;
 	border-bottom: 1px solid #B3B8BD;
 	clear: both;
@@ -233,11 +224,9 @@
 .list-selection-bar a.perform-action {
 	background-image: -moz-linear-gradient(top, #fafcfd, #f0f2f3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#fafcfd), to(#f0f2f3));
-	-pie-background: linear-gradient(#fafcfd, #f0f2f3);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
-	border-radius: 3px 3px 3px 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 3px 6px;
 	float: left;
 	color: #626a73;
@@ -255,7 +244,7 @@
 }
 
 .list-selection-bar .perform-action.disabled {
-	opacity: 0.7;
+	.opacity(70);
 	color: #B2BABF;
 	cursor: not-allowed;
 }
@@ -313,9 +302,7 @@
 	font-size: 10px;
 	line-height: 100%;
 	padding:  3px 4px 2px 4px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+	.border-radius(4px, 4px, 4px, 4px);
 }
 
 .list-listing .extra-fields ul li.changed {
@@ -353,7 +340,7 @@
 	overflow: hidden;
 	text-indent: -100px;
 
-	background: transparent url("@{asset-url}/images/loading-arrows-xsmall-whitebg.gif") no-repeat 50% 50%;
+	background: transparent url("../../images/loading-arrows-xsmall-whitebg.gif") no-repeat 50% 50%;
 }
 
 .list-listing .row-item.loading .item-select { display: none }
@@ -384,9 +371,7 @@
 	top: 0px;
 	float: left;
 	background-color: #E8DD7F;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	margin-right: 5px;
 	padding: 0 2px 0 2px;
 	min-width: 12px;
@@ -488,16 +473,15 @@
 
 .list-listing .row-item .top-row-right .urgency a {
 	background: #bf6060;
-	border-radius: 10px 10px 10px 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	padding: 1px 4px;
 	color: #fff;
 	text-shadow: none;
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
 .list-listing .row-item .status{
 	background: #93C8A8;
-	border-radius: 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	font-size: 9px;
 	float: left;
 	padding: 1px 5px;
@@ -676,8 +660,6 @@
 .table-result-list table thead {
 	background: -moz-linear-gradient(top, #e6e9ec 0%, #d8dbdf 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6e9ec), to(#d8dbdf));
-	-pie-background: linear-gradient(#e6e9ec, #d8dbdf);
-	behavior: url("../../static/vendor/PIE.htc");
 	border-bottom: 1px solid #d5d5d5;
 	border-top: 1px solid #e3e6e9;
 	position: relative;
@@ -754,7 +736,7 @@
 .bottom-action-bar .is-loading {
 	height: 16px;
 	width: 16px;
-	background: url("@{asset-url}/images/loading-small.gif") 50% 50%;
+	background: url("../../images/loading-small.gif") 50% 50%;
 }
 
 .overlay-tickets-layout {
@@ -790,8 +772,6 @@
 footer.results-nav {
 	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
-	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #FFFFFF;
 	border-top: 1px solid #B3B8BD;
 	border-bottom: 1px solid #B3B8BD;
@@ -822,7 +802,7 @@ footer.results-nav .loading {
 	display: none;
 
 	float: right;
-	background: url("@{asset-url}/images/loading-small.gif") no-repeat 50% 50%;
+	background: url("../../images/loading-small.gif") no-repeat 50% 50%;
 	width: 16px;
 	height: 15px;
 
@@ -840,11 +820,9 @@ footer.results-nav .more {
 footer.results-nav .more button {
 	background-image: -moz-linear-gradient(top, #fafcfd, #f0f2f3);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#fafcfd), to(#f0f2f3));
-	-pie-background: linear-gradient(#fafcfd, #f0f2f3);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
-	border-radius: 3px 3px 3px 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
@@ -867,7 +845,7 @@ footer.results-nav .more button {
 
 .backdrop.mass-actions {
 	background-color: #fff;
-	opacity: 0.6;
+	.opacity(60);
 }
 
 .mass-actions-overlay-container {
@@ -888,8 +866,7 @@ section.mass-actions-overlay {
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;
-	border-radius: 6px;
-	-mox-border-radius: 6px;
+	.border-radius(6px, 6px, 6px, 6px);
 
 	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
 	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
@@ -911,19 +888,13 @@ section.mass-actions-overlay > header {
 	background: linear-gradient(top, rgba(237,238,239,1) 0%,rgba(219,220,221,1) 100%); /* W3C */
 
 	border-bottom: 1px solid #ACB2B9;
-
-	-moz-border-radius-topleft: 9px;
-	-moz-border-radius-topright: 9px;
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-bottomleft: 0px;
-	-webkit-border-radius: 9px 9px 0px 0px;
-	border-radius: 9px 9px 0px 0px;
+	.border-radius(9px, 9px, 0px, 0px);
 	padding-left: 12px;
 }
 
 section.mass-actions-overlay > header .close,
 .mass-actions-overlay .close-trigger {
-	background: transparent url("@{asset-url}/images/agent/closeOvelay.png") no-repeat 50% 50%;
+	background: transparent url("../../images/agent/closeOvelay.png") no-repeat 50% 50%;
 	width: 35px;
 	height: 35px;
 	overflow: hidden;
@@ -970,12 +941,7 @@ section.mass-actions-overlay > footer {
 	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4e7e9', endColorstr='#babfc4',GradientType=0 )"; /* IE6-9 */
 	background: linear-gradient(top, rgba(228,231,233,1) 0%,rgba(186,191,196,1) 100%); /* W3C */
 
-	-moz-border-radius-topleft: 0px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 9px;
-	-moz-border-radius-bottomleft: 9px;
-	-webkit-border-radius: 0px 0px 9px 9px;
-	border-radius: 0px 0px 9px 9px;
+	.border-radius(0px, 0px, 9px, 9px);
 
 	text-align: center;
 }
@@ -983,11 +949,9 @@ section.mass-actions-overlay > footer {
 section.mass-actions-overlay > footer button {
 	background: -moz-linear-gradient(top, #598eb6 0%, #3c6094 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#598eb6), to(#3c6094));
-	-pie-background: linear-gradient(#598eb6, #3c6094);
-	behavior: url("js/lib/PIE.htc");
 	border: 1px solid #3f5973;
 	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
-	border-radius: 4px;
+	.border-radius(4px, 4px, 4px, 4px);
 	color: #fafafa;
 	text-shadow: 0 1px 0 #000;
     font-size: 11px;
@@ -1027,8 +991,6 @@ section.mass-actions-overlay > article .clean-white {
 section.mass-actions-overlay > nav {
 	background-image: -moz-linear-gradient(top, #F0F1F3, #DADBDE);
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#F0F1F3), to(#DADBDE));
-	-pie-background: linear-gradient(#F0F1F3, #DADBDE);
-	behavior: url("../../static/vendor/PIE.htc");
 	height: 27px;
 	clear: both;
 	border-bottom: 1px solid #c2c6cc;
@@ -1069,8 +1031,7 @@ section.mass-actions-overlay .reply-wrap textarea {
 	padding: 0;
 
 	border: 1px solid #C8CACC;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
 }
 
@@ -1098,7 +1059,7 @@ section.mass-actions-overlay .macro-load {
 
 .backdrop.dp-overlay-backdrop {
 	background-color: #fff;
-	opacity: 0.6;
+	.opacity(60);
 }
 
 .dp-overlay-container {
@@ -1137,8 +1098,7 @@ section.dp-overlay {
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;
-	border-radius: 6px;
-	-mox-border-radius: 6px;
+	.border-radius(6px, 6px, 6px, 6px);
 
 	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
 	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
@@ -1161,12 +1121,7 @@ section.dp-overlay > header {
 
 	border-bottom: 1px solid #ACB2B9;
 
-	-moz-border-radius-topleft: 9px;
-	-moz-border-radius-topright: 9px;
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-bottomleft: 0px;
-	-webkit-border-radius: 9px 9px 0px 0px;
-	border-radius: 9px 9px 0px 0px;
+	.border-radius(9px, 9px, 0px, 0px);
 	padding-left: 12px;
 }
 
@@ -1174,7 +1129,7 @@ section.dp-overlay > header nav {
 	margin-left: -12px;
 	height: 35px;
 	overflow: hidden;
-	.border-radius(0, 0, 0, 6px);
+	.border-radius(6px, 0, 0, 0);
 }
 section.dp-overlay > header nav ul li {
 	display: block;
@@ -1195,7 +1150,7 @@ section.dp-overlay > header nav ul li:hover {
 }
 
 section.dp-overlay > header .close {
-	background: transparent url("@{asset-url}/images/agent/closeOvelay.png") no-repeat 50% 50%;
+	background: transparent url("../../images/agent/closeOvelay.png") no-repeat 50% 50%;
 	width: 35px;
 	height: 35px;
 	overflow: hidden;
@@ -1242,12 +1197,7 @@ section.dp-overlay > footer {
 	filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4e7e9', endColorstr='#babfc4',GradientType=0 )"; /* IE6-9 */
 	background: linear-gradient(top, rgba(228,231,233,1) 0%,rgba(186,191,196,1) 100%); /* W3C */
 
-	-moz-border-radius-topleft: 0px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 9px;
-	-moz-border-radius-bottomleft: 9px;
-	-webkit-border-radius: 0px 0px 9px 9px;
-	border-radius: 0px 0px 9px 9px;
+	.border-radius(0px, 0px, 9px, 9px);
 
 	text-align: center;
 }
@@ -1255,11 +1205,9 @@ section.dp-overlay > footer {
 section.dp-overlay > footer button {
 	background: -moz-linear-gradient(top, #598eb6 0%, #3c6094 100%);
 	background: -webkit-gradient(linear, center top, center bottom, from(#598eb6), to(#3c6094));
-	-pie-background: linear-gradient(#598eb6, #3c6094);
-	behavior: url("js/lib/PIE.htc");
 	border: 1px solid #3f5973;
 	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
-	border-radius: 4px;
+	.border-radius(4px, 4px, 4px, 4px);
 	color: #fafafa;
 	text-shadow: 0 1px 0 #000;
     font-size: 11px;
