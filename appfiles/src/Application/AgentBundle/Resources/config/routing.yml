@@ -186,8 +186,13 @@ agent_settings_ticketmacros:
   defaults: { _controller: AgentBundle:Settings:ticketMacros }
 
 agent_settings_ticketmacros_edit:
-  pattern: /settings/ticket-macros/{macro_id}
+  pattern: /settings/ticket-macros/{macro_id}/edit
   defaults: { _controller: AgentBundle:Settings:ticketMacroEdit }
+  requirements: { macro_id: "\d+" }
+
+agent_settings_ticketmacros_edit_save:
+  pattern: /settings/ticket-macros/{macro_id}/save
+  defaults: { _controller: AgentBundle:Settings:ticketMacroEditSave }
   requirements: { macro_id: "\d+" }
 
 agent_settings_ticketmacros_new:

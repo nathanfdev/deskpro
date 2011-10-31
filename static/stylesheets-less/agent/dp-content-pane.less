@@ -3276,7 +3276,6 @@ body.popup section.body textarea.fill {
 
 .search-form .term {
 	font-size: 11px;
-	line-height: 15px;
 	background-color: #F5F7FA;
 
 	padding: 4px;
@@ -3300,6 +3299,24 @@ box-shadow: 0px 0px 2px #737880;
 
 .search-form .term .type, .search-form .term .op, .search-form .term .options {
 	display: inline;
+}
+
+.search-form .term .type {
+	cursor: pointer;
+}
+
+.search-form .term .type:hover {
+	text-decoration: underline;
+	color: #000;
+}
+
+.search-form .term .options .menu-trigger, .search-form .term .options input {
+	cursor: pointer;
+	background-color: #FFFFFF;
+	border: 1px solid #BABABA;
+	line-height: 100%;
+	padding: 0 3px 0 3px;
+	.rounded(4px);
 }
 
 .search-form .term .remove {

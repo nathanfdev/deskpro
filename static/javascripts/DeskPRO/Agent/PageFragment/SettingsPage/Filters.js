@@ -10,12 +10,28 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		var self = this;
 		this.el = el;
+		var self = this;
 
 		$('#settingswin').bind('dp_settings_filtersupdated', function() {
 			self.settingsWindow.reloadInterface = true;
 			self.settingsWindow.reloadTab('filters');
+		});
+
+		this.el.delegate('.delete-filter', 'click', function() {
+			var row = $(this).closest('tr');
+			var url = $(this).data('delete-url');
+
+			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this filter?', function() {
+				$.ajax({
+					url: url,
+					success: function() {
+						row.fadeOut(function() {
+							row.remove();
+						});
+					}
+				});
+			});
 		});
 	}
 });

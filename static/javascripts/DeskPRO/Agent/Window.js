@@ -632,7 +632,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._confirmOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#confirm_overlay'),
-			zIndex: 'top',
+			zIndex: '99999999999999999999',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -918,6 +918,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 	runPageRouteFromElement: function(el) {
 
 		el = $(el);
+
+		if (el.is('.route-do-confirm')) {
+			if (!el.is('.did-confirm')) {
+				DeskPRO_Window.showConfirm('Are you sure?', function() {
+					el.addClass('did-confirm');
+					DeskPRO_Window.runPageRouteFromElement(el);
+				});
+				return;
+			}
+			el.removeClass('did-confirm');
+		}
 
 		if (el.is('.cancel-route')) {
 			return;

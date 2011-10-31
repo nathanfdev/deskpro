@@ -8,7 +8,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="Status" data-rule-type="status">
+	<div class="type" title="Set Status" data-rule-type="status">
 		<div class="options">
 			<select name="status">
 				<option value="open">Open</option>
@@ -17,7 +17,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Department" data-rule-type="department">
+	<div class="type" title="Set Department" data-rule-type="department">
 		<div class="options">
 			<select name="department">
 				{% for id,title in term_options.departments %}
@@ -26,16 +26,18 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Category" data-rule-type="category">
-		<div class="options">
-			<select name="category">
-				{% for id,title in term_options.categories %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
+	{% if term_options.categories %}
+		<div class="type" title="Set Category" data-rule-type="category">
+			<div class="options">
+				<select name="category">
+					{% for id,label in term_options.categories %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-	</div>
-	<div class="type" title="Product" data-rule-type="product">
+	{% endif %}
+	<div class="type" title="Set Product" data-rule-type="product">
 		<div class="options">
 			<select name="product">
 				{% for id,title in term_options.products %}
@@ -44,7 +46,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Priority" data-rule-type="priority">
+	<div class="type" title="Set Priority" data-rule-type="priority">
 		<div class="options">
 			<select name="priority">
 				{% for id,title in term_options.priorities %}
@@ -53,7 +55,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Workflow" data-rule-type="workflow">
+	<div class="type" title="Set Workflow" data-rule-type="workflow">
 		<div class="options">
 			<select name="workflow">
 				{% for id,title in term_options.ticket_workflows %}
@@ -62,7 +64,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Agent" data-rule-type="agent">
+	<div class="type" title="Set Agent" data-rule-type="agent">
 		<div class="options">
 			<select name="agent">
 				{% for id,title in term_options.agents %}
@@ -71,7 +73,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Agent Team" data-rule-type="agent_team">
+	<div class="type" title="Set Agent Team" data-rule-type="agent_team">
 		<div class="options">
 			<select name="agent_team">
 				{% for id,title in term_options.agent_teams %}
@@ -113,14 +115,14 @@
 			<input type="text" name="num" />
 		</div>
 	</div>
-	<div class="type" title="Ticket Reply" data-rule-type="reply">
+	<div class="type" title="Add Ticket Reply" data-rule-type="reply">
 		<div class="options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
 		</div>
 	</div>
 	{% if term_options.custom_ticket_fields %}
 		{% for field in term_options.custom_ticket_fields %}
-			<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+			<div class="type" title="Set {{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>
@@ -138,121 +140,11 @@
 	</div>
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
-			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
+			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
 		{% endfor %}
 	{% endif %}
-	{% if trigger.event_trigger == 'new_ticket' %}
-		<div class="type" title="Send new ticket notification to agents" data-rule-type="agent_notification_new_ticket">
-			<div class="options">
-				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<optgroup label="Agents">
-						<option value="default_agents">Default agents based on their own preferences</option>
-						<option value="assigned_agent">Assigned agent</option>
-						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agent subscribers</option>
-					</optgroup>
-					<optgroup label="Specific Agent Teams">
-						{% for id,label in term_options.agent_teams %}
-							<option value="agent_team.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-					<optgroup label="Specific Agents">
-						{% for id,label in term_options.agents %}
-							<option value="agent.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-				</select>
-				<input type="hidden" name="custom_template" class="custom_template" value="" />
-				<input type="hidden" name="custom_template_name" class="custom_template_name" value="" />
-				<input type="hidden" name="custom_template_default" class="custom_template_default" value="DeskPRO:emails_agent:new-ticket.html.twig" />
-				<a href="{{ path('admin_styles_editorpopup', {'opener_id': '_opener_id_', 'template': '_template_', 'template_orig': '_template_orig_'}) }}" class="popout-trigger use_custom_template" data-height="400" data-width="725">Change email template</a>
-			</div>
-		</div>
-		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_ticket">
-			<div class="options">
-				from <select name="from_address">
-					<option value="default">default account</option>
-					{% for id,title in from_names %}
-						<option value="{{id}}">{{title}}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-	{% if trigger.event_trigger == 'new_reply' %}
-		<div class="type" title="Send new reply notification to agents" data-rule-type="agent_notification_new_reply">
-			<div class="options">
-				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<optgroup label="Agents">
-						<option value="default_agents">Default agents based on their own preferences</option>
-						<option value="assigned_agent">Assigned agent</option>
-						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agents subscribers</option>
-					</optgroup>
-					<optgroup label="Specific Agent Teams">
-						{% for id,label in term_options.agent_teams %}
-							<option value="agent_team.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-					<optgroup label="Specific Agents">
-						{% for id,label in term_options.agents %}
-							<option value="agent.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-				</select>
-			</div>
-		</div>
-		<div class="type" title="Send new reply notification to users" data-rule-type="user_notification_new_reply">
-			<div class="options">
-				<input type="hidden" name="user_notification_new_reply" value="1" />
-			</div>
-		</div>
-	{% endif %}
-	{% if trigger.event_trigger == 'property_change' %}
-		<div class="type" title="Send notification to agents: Updated" data-rule-type="agent_notification_property_change">
-			<div class="options">
-				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<optgroup label="Agents">
-						<option value="default_agents">Agents (default based on preferences)</option>
-						<option value="assigned_agent">Assigned agent</option>
-						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agent subscribers</option>
-					</optgroup>
-					<optgroup label="Specific Agents">
-						{% for id,label in term_options.agents %}
-							<option value="agent.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-					<optgroup label="Specific Agent Teams">
-						{% for id,label in term_options.agent_teams %}
-							<option value="agent_team.{{id}}">{{label}}</option>
-						{% endfor %}
-					</optgroup>
-				</select>
-				From: <select name="from_address[]">
-					<option value="">Default</option>
-					{% for id,title in from_names %}
-						<option value="{{id}}">{{title}}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-	<div class="type" title="Set template suffix" data-rule-type="notification_template">
-		<div class="options">
-			Set the template group to use for all notifications sent:
-			<input type="text" name="template_suffix" value="" />
-			<br />
-			<small>Example: "my-tpl" means a new ticket notification would look for new-ticket-my-tpl.html.twig template</small>
-		</div>
-	</div>
-	<div class="type" title="Disable email notifications set from a previous rule" data-rule-type="notification_disable">
-		<div class="options">
-			<input type="hidden" name="disable_notifications" value="1" />
-		</div>
-	</div>
 </div>

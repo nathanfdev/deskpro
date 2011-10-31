@@ -84,6 +84,7 @@ $CONFIG['agent_settingswin'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketNotifications.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/OtherNotifications.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Macros.js',
+		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/MacroEdit.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
 		'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
 	)

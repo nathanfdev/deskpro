@@ -221,6 +221,19 @@ class SettingsController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function ticketFilterDeleteAction($filter_id)
+	{
+		$filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+		if (!$filter) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find filter");
+		}
+
+		App::getOrm()->remove($filter);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 
 
 	############################################################################
@@ -229,8 +242,6 @@ class SettingsController extends AbstractController
 
 	public function ticketMacrosAction()
     {
-		return $this->createResponse('not updated yet');
-
 		$all_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->findAll();
 
 		if (!count($all_macros)) {
@@ -259,29 +270,11 @@ class SettingsController extends AbstractController
 			$macro['person'] = $this->person;
 		}
 
-		if ($this->isPostRequest()) {
-
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-
-			$macro['title'] = $this->in->getString('macro.title');
-			$macro['is_global'] = false;
-
-			$action_rules = RuleBuilder::newActionsBuilder();
-			$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
-
-			$macro['actions'] = $actions;
-
-			App::getOrm()->persist($macro);
-			App::getOrm()->flush();
-
-			return $this->redirectRoute('agent_settings_ticketmacros', array('saved' => 1));
-		}
-
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
-		// People studd
+		// People stuff
 		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
@@ -290,6 +283,34 @@ class SettingsController extends AbstractController
 			'ticket_options' => $ticket_options,
 			'macro' => $macro
 		));
+	}
+
+	public function ticketMacroEditSaveAction($macro_id)
+	{
+		if ($macro_id) {
+
+			$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+			if (!$macro) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
+			}
+
+		} else {
+			$macro = new Entity\TicketMacro();
+			$macro['person'] = $this->person;
+		}
+
+		$macro['title'] = $this->in->getString('macro.title');
+		$macro['is_global'] = false;
+
+		$action_rules = RuleBuilder::newActionsBuilder();
+		$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
+
+		$macro['actions'] = $actions;
+
+		App::getOrm()->persist($macro);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function ticketMacroDeleteAction($macro_id)
@@ -302,6 +323,6 @@ class SettingsController extends AbstractController
 		App::getOrm()->remove($macro);
 		App::getOrm()->flush();
 
-		return $this->redirectRoute('agent_settings_ticketmacros');
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

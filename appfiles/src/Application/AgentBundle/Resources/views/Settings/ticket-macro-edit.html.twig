@@ -1,5 +1,46 @@
-{% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
-{% block head %}
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit';
+
+{% if macro %}
+pageMeta.actions = {{macro.actions|json_encode|raw}};
+{% endif %}
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+<header>
+	<span class="close close-trigger">close</span>
+	<h1>{% if macro.id %}Edit Macto{% else %}New Macro{% endif %}</h1>
+</header>
+<article class="padded" data-width="600" data-height="400">
+	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketmacros_edit_save', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
+
+	<div class="dp-form">
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Macro Title</label></div>
+			<div class="dp-form-input">
+				<input type="input" name="macro[title]" class="input-title" value="{{macro.title}}" />
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Actions</label></div>
+			<div class="dp-form-input">
+				<div class="search-form" id="{{baseId}}_actions_list">
+					<div class="search-terms"></div>
+					<div class="term"><span class="add-term">+</span> Add a new action</div>
+				</div>
+				{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_actions_tpl', 'term_options': ticket_options } %}
+			</div>
+		</div>
+	</div>
+
+	</form>
+</article>
+<footer>
+	<button class="clean-white" id="{{baseId}}_save_btn">Save</button>
+</footer>
+{% block nullblock %}
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	// Set up search builder
@@ -34,32 +75,4 @@ $(document).ready(function() {
 	}
 });
 </script>
-{% endblock %}
-{% block body %}
-
-<form action="{{ path('agent_settings_ticketmacros_edit', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
-
-<div class="form-panel">
-	<div class="row">
-		<label for="macro_title">Macro title</label>
-		<input type="text" name="macro[title]" value="{{macro.title}}" class="input-title" id="macro_title" />
-	</div>
-
-	<div class="row">
-		<label>Actions</label>
-		<div class="search-form">
-			<div class="action-terms"></div>
-			<div class="term"><span class="add-term">+</span> Add a new action</div>
-		</div>
-	</div>
-</div>
-
-<div style="text-align:center">
-	<button type="submit" class="dp-button">Save Macro</button>
-</div>
-
-</form>
-
-{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {'term_options': ticket_options} %}
-
 {% endblock %}
