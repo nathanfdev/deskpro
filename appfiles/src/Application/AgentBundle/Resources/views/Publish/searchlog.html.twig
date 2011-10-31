@@ -1,102 +1,113 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishSearchLog';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content">
-<div class="content">
+{{ agentui.scroll_containers() }}
 
-<header class="grouping-bar">
+<header class="list-grouping-bar">
 	<ul id="{{ baseId }}_tabs">
 		<li data-tab-for="#{{ baseId }}_recentsearches" class="on">
-			<span class="prop">Recent Searches</span>
+			<a>Recent Searches</a>
 		</li>
 		<li data-tab-for="#{{ baseId }}_popularsearches">
-			<span class="prop">Popular Searchs</span>
+			<a>Popular Searchs</a>
 		</li>
 		<li data-tab-for="#{{ baseId }}_popularlowsearches">
-			<span class="prop">Popular Searches With Low Results</span>
+			<a>Popular Searches With Low Results</a>
 		</li>
 	</ul>
 	<br style="clear: both; height: 1px; overflow: hidden; "/>
 </header>
 
 <div id="{{ baseId }}_recentsearches" style="display: none;">
-	<div class="top-explain">
-		These are the 100 most recent searches done by users.
-	</div>
-	<div class="inner-box-tab-content box-list">
-		<table class="list" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-					<td>Search Terms</td>
-					<td width="100">Matches</td>
-				</tr>
-			</thead>
-			<tbody>
-				{% for search in recent_searches %}
-					<tr class="line-1">
-						<td>{{ search.query }}</td>
-						<td>{{ search.num_results }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+	<div class="profile-box-container">
+		<header>
+			<h4>100 most recent searches</h4>
+		</header>
+		<section>
+			<article>
+				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Search Terms</th>
+							<th width="100">Matches</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for search in recent_searches %}
+							<tr class="line-1">
+								<td>{{ search.query }}</td>
+								<td>{{ search.num_results }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</article>
+		</section>
 	</div>
 </div>
 
 <div id="{{ baseId }}_popularsearches" style="display: none;">
-	<div class="top-explain">
-		These are the terms searched for most often.
-	</div>
-	<div class="inner-box-tab-content box-list">
-		<table class="list" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-					<td>Search Terms</td>
-					<td width="100">Frequency</td>
-					<td width="100">Matches</td>
-				</tr>
-			</thead>
-			<tbody>
-				{% for search in popular_searches %}
-					<tr class="line-1">
-						<td>{{ search.query }}</td>
-						<td>{{ search.num_searches }}</td>
-						<td>{{ search.num_results }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+	<div class="profile-box-container">
+		<header>
+			<h4>The most popular search terms</h4>
+		</header>
+		<section>
+			<article>
+				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Search Terms</th>
+							<th width="100">Frequency</th>
+							<th width="100">Matches</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for search in popular_searches %}
+							<tr class="line-1">
+								<td>{{ search.query }}</td>
+								<td>{{ search.num_searches }}</td>
+								<td>{{ search.num_results }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</article>
+		</section>
 	</div>
 </div>
 
 <div id="{{ baseId }}_popularlowsearches" style="display: none;">
-	<div class="top-explain">
-		These are the most popular search terms that get 0 results.
-	</div>
-	<div class="inner-box-tab-content box-list">
-		<table class="list" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-					<td>Search Terms</td>
-					<td width="100">Frequency</td>
-					<td width="100">Matches</td>
-				</tr>
-			</thead>
-			<tbody>
-				{% for search in popular_searches_low %}
-					<tr class="line-1">
-						<td>{{ search.query }}</td>
-						<td>{{ search.num_searches }}</td>
-						<td>{{ search.num_results }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+	<div class="profile-box-container">
+		<header>
+			<h4>The most popular search terms that returned the least results</h4>
+		</header>
+		<section>
+			<article>
+				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Search Terms</th>
+							<th width="100">Frequency</th>
+							<th width="100">Matches</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for search in popular_searches_low %}
+							<tr class="line-1">
+								<td>{{ search.query }}</td>
+								<td>{{ search.num_searches }}</td>
+								<td>{{ search.num_results }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</article>
+		</section>
 	</div>
 </div>
 
-</div>
-</div>
+{{ agentui.scroll_containers_end() }}
