@@ -55,9 +55,5 @@
 		{% for convo in open_chats %}
 			window.DeskPRO_Window.runPageRoute('page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}', {noToggle:true});
 		{% endfor %}
-
-		window.setTimeout(function() {
-			$('#settingswin').trigger('dp_open');
-		}, 15);
 	});
 </script>
