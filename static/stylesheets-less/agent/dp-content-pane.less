@@ -50,7 +50,9 @@ div.task-view{
 }
 span.gear{
     display: block;
-    background-image: url("../../images/agent/icons/cog.png");
+    background-repeat: no-repeat;
+	background-position: 0 0;
+    background-image: url("../../images/agent/icons/cog.png") /** sprite-ref: ui-v */;
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -126,10 +128,14 @@ span.gear{
 	bottom: 0;
 	width: 18px;
 	z-index: 99;
-	background: url("../../images/agent/tabnav-left.png") no-repeat 100% 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/tabnav-left.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorLeft:hover{
-	background: url("../../images/agent/tabnav-left-on.png") no-repeat 100% 0;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/tabnav-left-on.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorRight{
 	position: absolute;
@@ -138,10 +144,14 @@ span.gear{
 	right: 18px;
 	width: 18px;
 	z-index: 99;
-	background: url("../../images/agent/tabnav-right.png") no-repeat 0 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/tabnav-right.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorRight:hover{
-	background: url("../../images/agent/tabnav-right-on.png") no-repeat 0 0;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/tabnav-right-on.png") /** sprite-ref: ui-v */;
 }
 
 #tabNavSelectorLeft, #tabNavSelectorRight, #tabDropdownPicker { display: none; }
@@ -165,7 +175,9 @@ span.gear{
 
 #tabDropdownPicker{
 	display: none;
-	background: url(../../images/agent/tabnav-drop.png) no-repeat 0 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url(../../images/agent/tabnav-drop.png) /** sprite-ref: ui-v */;
 	z-index: 99;
 	position: absolute;
 	top: 0;
@@ -179,7 +191,9 @@ span.gear{
 }
 
 #tabDropdownPicker.alert-highlight {
-	background: url(../../images/agent/tabnav-drop-alerting.png) no-repeat 0 0;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url(../../images/agent/tabnav-drop-alerting.png) /** sprite-ref: ui-v */;
 }
 
 #tabDropdownPicker a.tabSlideDown{
@@ -191,7 +205,7 @@ span.gear{
 	width: 30px;
 	background-repeat: no-repeat;
 	background-position: 5px 6px;
-	background-image: url(../../images/agent/dropdown-white.png);
+	background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-v; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 10px */;
 }
 
 
@@ -676,7 +690,9 @@ dl.table-list dt.type-labels {
 
 .add-remove-list li span.add {
 	display: block;
-	background: url("../../images/agent/icons/action-add.png") no-repeat 50% 50%;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/action-add.png") /** sprite-ref: ui-v */;
 	width: 11px;
 	height: 11px;
 	overflow: hidden;
@@ -691,7 +707,9 @@ dl.table-list dt.type-labels {
 
 .add-remove-list li span.remove {
 	display: block;
-	background: url("../../images/agent/icons/action-remove.png") no-repeat 50% 50%;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/action-remove.png") /** sprite-ref: ui-v */;
 	width: 11px;
 	height: 11px;
 	overflow: hidden;
@@ -1358,7 +1376,9 @@ ul.activity-stream time {
 	margin:  4px 4px 0 0;
 }
 .notes-wrap .new-note .is-loading {
-	background: url("../../images/spinners/loading-arrows-xsmall-whitebg.gif") no-repeat 0 0;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/spinners/loading-arrows-xsmall-whitebg.gif");
 	width: 11px;
 	height: 11px;
 	overflow: hidden;
@@ -1397,7 +1417,9 @@ ul.activity-stream time {
 	height: 16px;
 	overflow: hidden;
 	text-indent: -100px;
-	background: url("../../images/agent/icons/cog.png") no-repeat 0 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/cog.png") /** sprite-ref: ui-v */;
 	cursor: pointer;
 }
 
@@ -1505,7 +1527,9 @@ ul.activity-stream time {
 	height: 16px;
 	overflow: hidden;
 	text-indent: -100px;
-	background: url("../../images/agent/icons/cog.png") no-repeat 0 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/cog.png") /** sprite-ref: ui-v */;
 	cursor: pointer;
 	margin: 3px 5px 0 0;
 }
@@ -1522,7 +1546,9 @@ ul.activity-stream time {
 }
 
 .profile-box-container > header .is-loading {
-	background: url("../../images/spinners/loading-arrows-xsmall-whitebg.gif") no-repeat 0 0;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background: url("../../images/spinners/loading-arrows-xsmall-whitebg.gif");
 	width: 11px;
 	height: 11px;
 	overflow: hidden;
@@ -1786,7 +1812,9 @@ ul.activity-stream time {
 .profile-contact-editor-wrapper .row-type .controls .remove {
 	float: right;
 	disply: block;
-	background: url("../../images/agent/icons/cross.png") no-repeat 50% 50%;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/cross.png") /** sprite-ref: ui-v */;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -1898,7 +1926,9 @@ padding: 30px;
 	top: 7px;
 	width: 16px;
 	height: 16px;
-	background: url("../../images/agent/icons/cross.png") no-repeat 50% 50%;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/cross.png") /** sprite-ref: ui-v */;
 	overflow: hidden;
 	text-indent: -100px;
 	cursor: pointer;
@@ -1922,17 +1952,21 @@ padding: 30px;
 }
 
 .profile .org-edit .org-input {
-	background: url("../../images/agent/mag-right.png") no-repeat 100% 50%;
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/mag-right.png") /** sprite-ref: ui-v; sprite-align: right; sprite-margin-bottom: 10px; */;
 	padding-right: 15px;
 	margin-right: 4px;
 }
 
 .profile .org-edit .org-input.is-new {
-	background-image: url("../../images/agent/pencil.png");
+    background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/pencil.png") /** sprite-ref: ui-v; sprite-align: right; sprite-margin-bottom: 10px; */;
 	padding-right: 18px;
 }
 .profile .org-edit .org-input.is-set {
-	background-image: url("../../images/agent/tick.png");
+	background-image: url("../../images/agent/tick.png") /** sprite-ref: ui-v; sprite-align: right; sprite-margin-bottom: 10px; */;
 	padding-right: 18px;
 }
 
@@ -1987,7 +2021,9 @@ padding: 30px;
 	text-indent: -100px;
 	float: right;
 
-	background: url("../../images/agent/icons/action-remove.png") no-repeat 0 0;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/icons/action-remove.png") /** sprite-ref: ui-v */;
 	.opacity(50);
 	cursor: pointer;
 }
@@ -2329,7 +2365,7 @@ padding: 30px;
 	right: 0; bottom: 0; left: 0;
 	height: 7px;
 
-	background: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
+	background-image: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
 	.opacity(60);
 
 	.rounded(5px);
@@ -2402,7 +2438,7 @@ padding: 30px;
 .snippets-overlay .controls .edit-trigger {
 	.iconbase(16px, 16px);
 	background-repeat: no-repeat;
-	background-image: url(../../images/agent/icons/cog.png);
+	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v */;
 	margin-right: 4px;
 	float: left;
 	cursor: pointer;
@@ -2441,7 +2477,7 @@ padding: 30px;
     top: 5px; right: 4px;
 
 
-	background: url(../../images/agent/icons/cog.png) no-repeat 0 0;
+	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v */;
 	z-index: 2;
 }
 
@@ -2498,7 +2534,7 @@ padding: 30px;
 	position: absolute;
 	top: -8px;
 	right: -8px;
-	background:  url("../../images/agent/close-small.png") no-repeat 0 0;
+	background-image: url("../../images/agent/close-small.png") /** sprite-ref: ui-v */;
 	width: 13px;
 	height: 13px;
 	overflow: hidden;
@@ -2527,7 +2563,7 @@ padding: 30px;
 
     width: 13px;
     height: 13px;
-    background: url("../../images/agent/close-small.png") no-repeat 0 0;
+    background-image: url("../../images/agent/close-small.png") /** sprite-ref: ui-v */;
 
     text-indent: -1000px;
     overflow: hidden;
@@ -2595,17 +2631,19 @@ padding: 30px;
 
 .ticketreply > nav ul.option-buttons li span {
 	display: block;
-	background: url("../../images/agent/icons/bulb.png") no-repeat 50% 50%;
+	background-repeat: no-repeat;
+	background-position: 6px;
+	background-image: url("../../images/agent/icons/bulb.png") /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px */;
 	width: 29px;
 	height: 22px;
 	text-indent: -100px;
 	overflow: hidden;
 }
 
-.ticketreply > nav ul.option-buttons li.attach span    { background-image: url("../../images/agent/icons/attach.png"); }
-.ticketreply > nav ul.option-buttons li.snippets span  { background-image: url("../../images/agent/icons/page.png"); }
-.ticketreply > nav ul.option-buttons li.article span   { background-image: url("../../images/agent/icons/document_pencil.png"); }
-.ticketreply > nav ul.option-buttons li.closetab span  { background-image: url("../../images/agent/icons/tab_delete.png"); }
+.ticketreply > nav ul.option-buttons li.attach span    { background-image: url("../../images/agent/icons/attach.png")          /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
+.ticketreply > nav ul.option-buttons li.snippets span  { background-image: url("../../images/agent/icons/page.png")            /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
+.ticketreply > nav ul.option-buttons li.article span   { background-image: url("../../images/agent/icons/document_pencil.png") /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
+.ticketreply > nav ul.option-buttons li.closetab span  { background-image: url("../../images/agent/icons/tab_delete.png")      /** sprite-ref: ui-v; sprite-margin-left: 6px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */; }
 
 .ticketreply > nav ul.option-buttons li.attach {
 	position: relative;
@@ -2640,7 +2678,7 @@ padding: 30px;
 }
 
 .ticketreply > nav ul.option-buttons li em.check {
-	background: url("../../images/agent/icons/tick_small.png") no-repeat 0 0;
+	background-image: url("../../images/agent/icons/tick_small.png") /** sprite-ref: ui-v */;
 	width: 7px;
 	height: 7px;
 	position: absolute;
@@ -2691,7 +2729,7 @@ padding: 30px;
 .ticketreply > article > section ul li.attach-row > label span {
 	display: block;
 	float: right;
-	background: url("../../images/agent/icons/attach.png") no-repeat 50% 50%;
+	background-image: url("../../images/agent/icons/attach.png") /** sprite-ref: ui-v */;
 	width: 16px;
 	height: 16px;
 	line-height: 100px;
@@ -2720,11 +2758,11 @@ padding: 30px;
 	overflow: hidden;
 	line-height: 100px;
 	cursor: pointer;
-	background: url("../../images/agent/icons/expand.png") no-repeat 0 0;
+	background-image: url("../../images/agent/icons/expand.png") /** sprite-ref: ui-v */;
 }
 
 .ticketreply > article > section li .expander.expanded {
-	background-image: url("../../agent/images/icons/collapse.png");
+	background-image: url("../../agent/images/icons/collapse.png") /** sprite-ref: ui-v */;
 }
 
 .ticketreply > article > section li input[type="text"] {
@@ -3289,13 +3327,13 @@ ul.item-list > li ul.controls > li {
 
 ul.item-list > li ul.controls > li.delete {
 	.iconbase(10px, 10px);
-	background-image: url(../../images/agent/icons/delete-small.png);
+	background-image: url(../../images/agent/icons/delete-small.png) /** sprite-ref: ui-v */;
 	margin-left: 4px;
 	cursor: pointer;
 }
 ul.item-list > li ul.controls > li.edit{
 	.iconbase(10px, 10px);
-	background-image: url(../../images/agent/icons/edit-small.png);
+	background-image: url(../../images/agent/icons/edit-small.png) /** sprite-ref: ui-v */;
 	margin-left: 4px;
 	cursor: pointer;
 }
@@ -3735,7 +3773,7 @@ section.new-user-chat-alert footer {
 }
 
 .chatreply > nav ul.option-buttons li em.check {
-	background: url("../../images/agent/icons/tick_small.png") no-repeat 0 0;
+	background-image: url("../../images/agent/icons/tick_small.png") /** sprite-ref: ui-v */;
 	width: 7px;
 	height: 7px;
 	position: absolute;
@@ -3819,7 +3857,7 @@ ul.agent-parts-link li {
     display: inline-block !important;
     text-indent: -100px !important;
     line-height: 250px;
-    background-image: url(../../images/agent/icons/action-add.png);
+    background-image: url(../../images/agent/icons/action-add.png) /** sprite-ref: ui-v */;
     cursor: pointer;
 }
 
