@@ -32,11 +32,6 @@ use Orb\Util\Numbers;
  */
 class TicketSearchController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('AgentBundle:TicketSearch:list-blank.html.twig');
-	}
-
 	public function getSectionDataAction()
 	{
 		$data = array();
@@ -241,34 +236,6 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function filtersPaneAction()
-	{
-		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
-
-		$order = $this->person->getPref('agent.ui.ticket-filters-order');
-		if ($order) {
-			$filters_unordered = $filters;
-			$filters = array();
-
-			foreach ($order as $id) {
-				if (isset($filters_unordered[$id])) {
-					$filters[$id] = $filters_unordered[$id];
-					unset($filters_unordered[$id]);
-				}
-			}
-
-			if (count($filters_unordered)) {
-				foreach ($filters_unordered as $id => $q) {
-					$filters[$id] = $q;
-				}
-			}
-		}
-
-		return $this->render('AgentBundle:TicketSearch:pane-filters.html.twig', array(
-			'filters' => $filters
-		));
-	}
-
 	public function runFilterAction($filter_id)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
@@ -346,17 +313,6 @@ class TicketSearchController extends AbstractController
 		return $this->_getResponseForTickets('filter', $filter['id'], $helper, $vars);
 	}
 
-	public function getFilterSummaryAction($filter_id)
-	{
-		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
-		$searcher = $filter->getSearcher();
-
-		return $this->render('AgentBundle:TicketSearch:filter-tip-summary.html.twig', array(
-			'title' => $filter['title'],
-			'terms_summary' => $searcher->getSummary()
-		));
-	}
-
 	public function runNamedFilterAction($filter_name)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
@@ -371,7 +327,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		$is_partial = false;
-		$tpl = 'AgentBundle:TicketSearch:'.$type.'-results-'.$view_type.'.html.twig';
+		$tpl = 'AgentBundle:TicketSearch:filter-results-'.$view_type.'.html.twig';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
 			$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
@@ -540,157 +496,8 @@ class TicketSearchController extends AbstractController
 	}
 
 	############################################################################
-	# search (natural language search)
-	############################################################################
-
-	public function searchQueryAction()
-	{
-		$q = $this->in->getString('q');
-
-		$is_search = false;
-		$results = false;
-
-		if ($q) {
-			$searcher = new TicketSearcher(App::get('deskpro.elastica.manager'), $this->person);
-
-			$is_search = true;
-			$results = $searcher->search($q);
-		}
-
-		return $this->render('AgentBundle:TicketSearch:search-query-results.html.twig', array(
-			'is_search' => $is_search,
-			'results'   => $results,
-			'query' => $q
-		));
-	}
-
-	############################################################################
-	# deleted-list
-	############################################################################
-
-	// TODO handling if search results with the cache etc should be refactored
-	// theres dupe code, particularly around updating results based on new order
-
-	/**
-	 * Listing of soft-deleted tickets
-	 */
-	public function deletedListAction()
-	{
-		$result_cache = false;
-		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-			if ($result_cache['person_id'] != $this->person['id']) {
-				$result_cache = false;
-			}
-		}
-
-		#------------------------------
-		# If there's no result set, we're running it for the first time
-		#------------------------------
-
-		if (!$result_cache) {
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->addTerm('deleted', 'is', 1);
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new Entity\ResultCache();
-			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => '', 'group_by' => '');
-			$result_cache['results'] = $results;
-			$result_cache['num_results'] = count($results);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
-
-			// Default display fields based on our search
-			$result_cache->setExtraData('display_fields', array('deleted_reason'));
-
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
-		}
-
-		#------------------------------
-		# Re-do search if we changed order
-		#------------------------------
-
-		// Prefs are saved into extra[]. Of order_by doesn't match
-		// the order_by in criteria, that means the user changed it
-		// and we have to re-do the search
-
-		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
-			$criteria = $result_cache['criteria'];
-			$criteria['order_by'] = $result_cache['extra']['order_by'];
-
-			$result_cache['criteria'] = $criteria;
-
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setTerms($result_cache['criteria']['terms']);
-			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
-
-			$results = $searcher->getMatches();
-			$result_cache['results'] = $results;
-			$result_cache['num_results'] = count($results);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
-
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
-		}
-
-		#------------------------------
-		# Serve results
-		#------------------------------
-
-		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
-
-		// Fetch deleted ticket info
-		$deleted_tickets = null;
-		if ($result_cache['results']) {
-			$deleted_tickets = App::getOrm()->createQuery("
-				SELECT d
-				FROM DeskPRO:TicketDeleted d INDEX BY d.ticket_id
-				LEFT JOIN d.by_person p
-				WHERE d.ticket_id IN (" . implode(',', $result_cache['results']) . ")
-			");
-		}
-
-		$vars = array(
-			'cache' => $result_cache,
-			'cache_id' => $result_cache['id'],
-			'deleted_tickets' => $deleted_tickets,
-			'show_deleted_reason' => true,
-			'disable_actions' => true
-		);
-
-		$pref_name = 'agent.ui.ticket-filter-display-fields.' . $result_cache['id'];
-		if (!empty($result_cache['extra'][$pref_name])) {
-			$vars['display_fields'] = $result_cache['extra'][$pref_name];
-		}
-
-		$vars['page_title'] = 'Deleted';
-
-		return $this->_getResponseForTickets('deleted-list', $result_cache['id'], $results_helper, $vars);
-	}
-
-	############################################################################
 	# find-pane
 	############################################################################
-
-	public function newCustomFilterAction()
-	{
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
-		$ticket_options['custom_ticket_fields'] = $custom_fields;
-
-		// People stuff
-		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
-		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
-
-		return $this->render('AgentBundle:TicketSearch:custom-filter-newsearch.html.twig', array(
-			'ticket_options' => $ticket_options,
-		));
-	}
 
 	public function runCustomFilterAction()
 	{
@@ -706,34 +513,15 @@ class TicketSearchController extends AbstractController
 		# If there's no result set, we're running it for the first time
 		#------------------------------
 
-		$is_new_recentsearch = false;
-		$recent_search_id = 0;
-
 		if (!$result_cache) {
-
-			$recent_searches = $this->person->getPref('agent.recent-searches');
 
 			$term_rules = RuleBuilder::newTermsBuilder();
 
-
 			$order_by = null;
-			$terms = null;
-			if ($recent_search_id = $this->in->getString('recent_search_id')) {
-				if (isset($recent_searches[$recent_search_id])) {
-					$terms = $recent_searches[$recent_search_id]['terms'];
-					$order_by = $recent_searches[$recent_search_id]['order_by'];
-				} else {
-					$recent_search_id = null;
-				}
-			} else {
-				$recent_search_id = null;
-			}
-
-			if (!$terms) {
-				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-			}
+			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
 
 			$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 			$has_user_terms = false;
@@ -773,27 +561,6 @@ class TicketSearchController extends AbstractController
 			// Default display fields based on our search
 			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($searcher));
 
-			// If this isnt already a recent search, add it to recent searches now
-			if (!$recent_search_id) {
-				if (!$recent_searches) {
-					$recent_searches = array();
-				}
-				if (count($recent_searches) >= 5) {
-					$recent_searches = array_slice($recent_searches, 0, 4, true);
-				}
-
-				$recent_search_id = uniqid('search_').mt_rand(1000,9999);
-				Arrays::unshiftAssoc($recent_searches, $recent_search_id, array(
-					'id' => $recent_search_id,
-					'terms' => $terms,
-					'order_by' => $order_by,
-					'summary' => $searcher->getSummary()
-				));
-
-				$this->person->setPreference('agent.recent-searches', $recent_searches);
-				$is_new_recentsearch = true;
-			}
-
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
 		}
@@ -813,6 +580,7 @@ class TicketSearchController extends AbstractController
 			$result_cache['criteria'] = $criteria;
 
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
 			$searcher->setTerms($result_cache['criteria']['terms']);
 			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
 
@@ -835,8 +603,7 @@ class TicketSearchController extends AbstractController
 			'cache'               => $result_cache,
 			'cache_id'            => $result_cache['id'],
 			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
-			'is_new_recentsearch' => $is_new_recentsearch, // this triggers recent search list update
-			'recent_search_id'    => $recent_search_id
+			'ticket_ids'          => $results
 		);
 
 		$search_form = array(
@@ -858,77 +625,7 @@ class TicketSearchController extends AbstractController
 			$vars['page_title'] = $this->in->getString('page_title');
 		}
 
-		// Used in the templates/JS pages to highlight active nav elements
-		if ($this->in->getString('view_name')) {
-			$vars['view_name'] = $this->in->getString('view_name');
-			if ($this->in->getString('view_extra')) {
-				$vars['view_extra'] = $this->in->getString('view_extra');
-			}
-		}
-
 		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
-	}
-
-	public function getRecentSearchesListAction()
-	{
-		$recent_searches = $this->person->getPref('agent.recent-searches');
-
-		return $this->render('AgentBundle:TicketSearch:window-recentsearch-list.html.twig', array(
-			'recent_searches' => $recent_searches
-		));
-	}
-
-	############################################################################
-	# overview-pane
-	############################################################################
-
-	public function overviewPaneAction()
-	{
-		return $this->render('AgentBundle:TicketSearch:pane-overview.html.twig', array(
-
-		));
-	}
-
-	public function overviewNavAction()
-	{
-		$group1 = $this->in->getString('group1');
-		$group2 = $this->in->getString('group2');
-
-		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
-		$grouper->setGrouping($group1, $group2);
-		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
-
-		$mode_crit = '';
-		if ($this->in->getString('mode') == 'agent') {
-			$mode_crit = "terms[0][type]=agent&terms[0][op]=is&terms[0][options][agent]=-1";
-		} elseif ($this->in->getString('mode') == 'agent_team') {
-			$mode_crit = "terms[0][type]=agent_team&terms[0][op]=is&terms[0][options][agent_team]=-1";
-		} elseif ($this->in->getString('mode') == 'participant') {
-			$mode_crit = "terms[0][type]=participant&terms[0][op]=is&terms[0][options][person_id]=".$this->person['id'];
-		} elseif ($this->in->getString('mode') == 'unassigned') {
-			$mode_crit = "terms[0][type]=agent&terms[0][op]=is&terms[0][options][agent]=0";
-		} else {
-			// all, no crit
-		}
-
-		$results = $grouper->getDisplayArray();
-
-		unset($results['items'][-1]);// TODO 0 is the 'total', we'll use that later in the UI
-
-		// TODO: Need a cleaner way of converting a group into a searchable item
-		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runcustomfilter') . "?page_title=\$page_title&$mode_crit&terms[5][type]=status&terms[5][op]=is&terms[5][options][status]=open&terms[6][type]=$group1_nosuf&terms[6][op]=is&terms[6][options][$group1_nosuf]=\$group1_id";
-
-		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[7][type]=$group2_nosuf&terms[7][op]=is&terms[7][options][$group2_nosuf]=\$group2_id";
-
-		//print_r($results['group1_structure']);
-
-		return $this->render('AgentBundle:TicketSearch:overview-listing.html.twig', array(
-			'results' => $results,
-			'list_url_group1' => $list_url_group1,
-			'list_url_group2' => $list_url_group2,
-		));
 	}
 
 	############################################################################
@@ -960,62 +657,6 @@ class TicketSearchController extends AbstractController
 			'labels_cloud' => $cloud,
 		));
 	}
-
-	############################################################################
-	# flagged
-	############################################################################
-
-	public function flaggedPaneAction()
-	{
-		$flags = array('blue','green','orange','pink','purple','red','yellow');
-		$flags = array_combine(array_values($flags), $flags);
-
-		$order = $this->person->getPref('agent.ui.ticket-flag-order');
-		if ($order) {
-			$flags_unordered = $flags;
-			$flags = array();
-
-			foreach ($order as $id) {
-				if (isset($flags_unordered[$id])) {
-					$flags[] = $flags_unordered[$id];
-					unset($flags_unordered[$id]);
-				}
-			}
-
-			if (count($flags_unordered)) {
-				foreach ($flags_unordered as $id) {
-					$flags[] = $id;
-				}
-			}
-		}
-		return $this->render('AgentBundle:TicketSearch:pane-flagged.html.twig', array(
-			'flags' => $flags
-		));
-	}
-
-	public function runFlaggedAction($flag)
-	{
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
-
-		$tickets = App::getApi('tickets.filters')->getTicketsFromFlagged($flag, $this->person, $page, 50);
-
-		$tpl = 'AgentBundle:TicketSearch:flagged-results.html.twig';
-		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:part-results-list.html.twig';
-			if (!count($tickets)) {
-				return $this->createResponse('');
-			}
-		}
-
-		return $this->render($tpl, array(
-			'flag' => $flag,
-			'tickets' => $tickets,
-			'page' => $page,
-			'display_fields' => array('person', 'agent')
-		));
-	}
-
 
 	############################################################################
 	# save-result-prefs

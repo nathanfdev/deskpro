@@ -43,6 +43,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_CREATION_SYSTEM           = 'creation_system';
 	const TERM_RECEIVING_GATEWAY         = 'receiving_gateway';
 	const TERM_HOLD                      = 'is_hold';
+	const TERM_FLAGGED                   = 'flagged';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -773,6 +774,22 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch($field, $op, $choice);
 					break;
 
+				case self::TERM_FLAGGED:
+
+					$this->affected_fields[] = 'tickets_flagged';
+					$joins[] = 'tickets_flagged';
+
+					$color = $choice;
+					if ($color == 'any') {
+						$this->summary[] = "Flagged";
+						$wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
+					} else {
+						$this->summary[] = "Flagged with color {$color}";
+						$wheres[] = '(tickets_flagged.person_id = '. $this->person->id . ' AND ' . $this->_stringMatch('tickets_flagged.color', $op, $color) . ')';
+					}
+
+					break;
+
 				case self::TERM_LABEL:
 					$this->affected_fields[] = 'ticket.labels';
 					$this->_normalizeOpAndChoice($op, $choice);
@@ -944,6 +961,10 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice. true);
+					break;
+
+				default:
+					throw new \InvalidArgumentException("Unknown term: $term");
 					break;
 			}
 		}

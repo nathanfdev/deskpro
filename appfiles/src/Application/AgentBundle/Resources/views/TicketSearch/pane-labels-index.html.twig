@@ -12,7 +12,7 @@
 			<dd>
 				<ul>
 					{% for label in labels %}
-						<li class="nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><span>{{label}}</span></li>
+						<li class="nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><span>{{label}}</span></li>
 					{% endfor %}
 				</ul>
 			</dd>
@@ -22,7 +22,7 @@
 <section class="source-labels-cloud" id="ticket_labels_cloud" style="display: none;">
 	<ul>
 		{% for label,css_class in labels_cloud %}
-			<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><span>{{label}}</span></li>
+			<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}&amp;view_name=label&amp;view_extra={{label}}"><span>{{label}}</span></li>
 		{% else %}
 			<li>You haven't labeled any tickets. Load a ticket to label it.</li>
 		{% endfor %}
