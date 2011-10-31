@@ -33,7 +33,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			/**
 			 * Destroy the popover when it closes?
 			 */
-			destroyOnClose: 'auto',
+			destroyOnClose: false,
 
 			overFrom: '#dp_content',
 
@@ -277,11 +277,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popoverOuter.hide();
 
 		if (this.options.destroyOnClose) {
-			if (this.options.destroyOnClose == 'auto') {
-				if (this.options.loadTimeout) {
-					return;
-				}
-			}
 			this.destroy();
 		}
 	},

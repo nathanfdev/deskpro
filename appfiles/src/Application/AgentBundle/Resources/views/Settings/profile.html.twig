@@ -24,18 +24,28 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Change Picture</label></div>
+		<div class="dp-form-row new-picture">
+			<div class="dp-form-label"><label>Picture</label></div>
 			<div class="dp-form-input">
 				<table cellspacing="0" cellpadding="0"><tr>
-				{% if app.person.picture_blob %}
-					<td><img src="{{ app.person.getPictureUrl(80) }}" /><br /><em class="desc">Your current picture</em></td>
+				{% if app.user.picture_blob %}
+					<td style="padding-right: 15px;"><img src="{{ app.user.getPictureUrl(80) }}" /><br /><em class="desc">Your current picture</em></td>
 				{% endif %}
 				<td>
-					Upload a new picture:
+					<input type="file" name="file-upload" />
+					<div class="files"></div>
 				</td>
 				</tr></table>
 			</div>
+			<script class="template-upload" type="text/x-jquery-tmpl">
+				<p>Upliading ${name}...</p>
+			</script>
+			<script class="template-download" type="text/x-jquery-tmpl">
+				<div>
+					<input type="hidden" name="settings_profile[new_picture_blob_id]" class="new_blob_id" value="${blob_auth_id}" />
+					<img src="${download_url}?s=80" class="pic-new" data-setted-size="${download_url}?s=60" />
+				</div>
+			</script>
 		</div>
 
 		<div class="dp-form-row">

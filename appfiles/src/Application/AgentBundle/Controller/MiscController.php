@@ -202,6 +202,8 @@ class MiscController extends AbstractController
 
 		return $this->createJsonResponse(array(array(
 			'blob_id' => $blob['id'],
+			'blob_auth' => $blob->authcode,
+			'blob_auth_id' => $blob->id . '-' . $blob->authcode,
 			'download_url' => $blob->getDownloadUrl(true),
 			'filename' => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize()

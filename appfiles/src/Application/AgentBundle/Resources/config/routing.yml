@@ -529,10 +529,6 @@ agent_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
   defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
 
-agent_ticketsearch_flaggedpane:
-  pattern: /ticket-search/flagged-pane
-  defaults: { _controller: AgentBundle:TicketSearch:flaggedPane }
-
 agent_ticketsearch_findpane:
   pattern: /ticket-search/find-pane
   defaults: { _controller: AgentBundle:TicketSearch:findPane }
@@ -544,10 +540,6 @@ agent_ticketsearch_customfilter:
 agent_ticketsearch_runcustomfilter:
   pattern: /ticket-search/custom-filter/run
   defaults: { _controller: AgentBundle:TicketSearch:runCustomFilter }
-
-agent_ticketsearch_deletedlist:
-  pattern: /ticket-search/deleted-list
-  defaults: { _controller: AgentBundle:TicketSearch:deletedList }
 
 agent_ticketsearch_search:
   pattern: /ticket-search/search
@@ -581,10 +573,6 @@ agent_ticketsearch_runnamedfilter:
   pattern: /ticket-search/filter/{filter_name}
   defaults: { _controller: AgentBundle:TicketSearch:runNamedFilter }
   options: { fragment_name: 'inbox', fragment_type: 'list' }
-
-agent_ticketsearch_runflag:
-  pattern: /ticket-search/flag/{flag}
-  defaults: { _controller: AgentBundle:TicketSearch:runFlagged }
 
 agent_ticketsearch_save_resultprefs:
   pattern: /ticket-search/save-result-prefs/{cache_id}

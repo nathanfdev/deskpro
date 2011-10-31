@@ -22,6 +22,7 @@ class SettingsProfile
 	public $password = '';
 	public $password2 = '';
 	public $ticket_signature = '';
+	public $new_picture_blob_id = false;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -64,6 +65,13 @@ class SettingsProfile
 			$person->name = $this->name;
 			$person->timezone = $this->timezone;
 
+			if ($this->new_picture_blob_id) {
+				$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
+				if ($blob) {
+					$person->picture_blob = $blob;
+				}
+			}
+
 			$primary_email = $person->getPrimaryEmail();
 			if ($primary_email->email != $this->email) {
 				$new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
@@ -83,6 +91,7 @@ class SettingsProfile
 
 			$person->setPreference('agent.ticket_signature', $this->ticket_signature);
 
+			$this->em->persist($person);
 			$this->em->flush();
 			$this->em->commit();
 

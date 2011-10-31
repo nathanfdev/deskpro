@@ -15,6 +15,16 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 		var form = $('form', this.el);
 
+		form.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: form,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', form),
+			downloadTemplate: $('.template-download', form)
+		}).bind('fileuploadadd', function() {
+			$('.files', form).empty();
+		});
+
 		var startEmail = $('#settings_profile_email').val();
 
 		var changePass = false;
