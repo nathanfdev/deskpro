@@ -8,16 +8,30 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 
 <br />
 
-<ul class="item-list">
-	{% for filter in filters %}
-		<li>
-			<div style="float:right">
-				<ul class="controls">
-					<li class="delete" data-route="poppage:{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}"></li>
-					<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}">/li>
-				</ul>
-			</div>
-			{{filter.title}}
-		</li>
-	{% endfor %}
-</ul>
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th>Ticket Fitlers</th>
+				<th width="50"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for filter in filters %}
+				<tr>
+					<td>{{ filter.title }}</td>
+					<td class="prop" style="text-align: center;">
+						<ul class="controls">
+							<li class="delete" data-route="poppage:{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}"></li>
+							<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}"></li>
+						</ul>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="2">You have not defiend any custom filters.</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

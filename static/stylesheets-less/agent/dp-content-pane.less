@@ -3141,6 +3141,9 @@ body.popup section.body textarea.fill {
 	border: 1px solid #ABAFB5;
 }
 
+#settingswin .check-grid.item-list > table thead th {
+	padding: 4px 0 4px 0;
+}
 #settingswin .check-grid > table thead th {
 	font-family: @heading-font;
 	font-weight: bold;
@@ -3156,6 +3159,17 @@ body.popup section.body textarea.fill {
 
 #settingswin .check-grid > table td {
 	padding: 2px 0 2px 0;
+}
+
+#settingswin .check-grid.item-list > table td {
+	border-top: 1px solid #DCE2E9;
+}
+
+#settingswin .check-grid.item-list > table td {
+	vertical-align: middle;
+}
+#settingswin .check-grid.item-list > table td {
+	padding: 0 0 0 5px;
 }
 
 #settingswin .check-grid > table td.title {
@@ -3321,17 +3335,17 @@ ul.item-list > li {
 	padding: 2px 0 2px 0;
 }
 
-ul.item-list > li ul.controls > li {
+.item-list ul.controls > li {
 	float: left;
 }
 
-ul.item-list > li ul.controls > li.delete {
+.item-list ul.controls > li.delete {
 	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/delete-small.png) /** sprite-ref: ui-v */;
 	margin-left: 4px;
 	cursor: pointer;
 }
-ul.item-list > li ul.controls > li.edit{
+.item-list ul.controls > li.edit{
 	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/edit-small.png) /** sprite-ref: ui-v */;
 	margin-left: 4px;
