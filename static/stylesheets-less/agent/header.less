@@ -3,7 +3,7 @@
 #DP-NotificationSection{
     background-repeat: no-repeat;
     background-position: 100% 0;
-    background-image: url("../../images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right */;
+    background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right */;
 	float: left;
 	height: 41px;
 	width: 217px;
@@ -38,7 +38,7 @@
 .notifMenuWrap a.iconImg{
     background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	font-size: 10px;
 	color: #fff;
 	cursor: pointer;
@@ -48,7 +48,7 @@
 .notifMenuWrap a.chat{
   	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     float: left;
     height: 13px;
     padding: 5px 4px;
@@ -147,7 +147,7 @@ ul#dp_notify_list li .timeago {
 ul#dp_notify_list li .dismiss {
 	float: right;
 	.iconbase(10px, 10px);
-	background: url(../../images/icons/delete-small.png) no-repeat 0 0;
+	background: url(../../images/agent/icons/delete-small.png) no-repeat 0 0;
 	cursor: pointer;
 	margin: 10px 5px 0 0;
 	.opacity(50);
@@ -235,12 +235,12 @@ ul#dp_notify_list li .info {
 .notifMail{
 	background-position: 7px 7px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 7px; */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 7px; */;
 }
 .notifChat{
 	background-position: 6px 6px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 6px; */;
+    background-image: url(../../images/agent/tabs/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 6px; */;
 }
 .notifMail .counter{
 	left: 18px;
@@ -319,7 +319,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	padding: 4px 0 4px 20px;
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
-	background-image: url(../../images/icons/mag-left.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+	background-image: url(../../images/agent/icons/mag-left.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 }
 .searchBoxWrap #dp_omniinput {
 	outline: none;
@@ -359,7 +359,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
     width: 20px;
     height: 20px;
 
-    background: url(../../images/close-small.png) no-repeat 100% 0;
+    background: url(../../images/agent/close-small.png) no-repeat 100% 0;
 
     text-indent: -100px;
     overflow:hidden;
@@ -423,148 +423,6 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 
 
-
-
-
-
-
-.searchType, .searchBy{
-	margin: 0 5px 0 0;
-	float: left;
-}
-.searchType{
-	.border-radius(10px, 10px, 10px, 10px);
-	.gradient(#98AEB3, #98AEB3);
-	position: relative;
-}
-.searchType a, .searchBy span{
-	color: #FFF;
-	text-shadow: 0 1px 0 #000;
-	cursor: pointer;
-	float: left;
-	font-size: 10px;
-	padding: 1px 6px;
-}
-.searchBy{
-	text-shadow: none;
-	cursor: pointer;
-	color: #2b3233;
-}
-.searchBy span{
-	background: #d2d8d9;
-	.border-radius(10px, 0, 0, 10px);
-	color: #2b3233;
-	text-shadow: none;
-	position: relative;
-}
-.searchBy a{
-	background-color: #DFE4E6;
-	color: #2B3233;
-	float: left;
-	font-size: 10px;
-	line-height: 12px;
-	padding: 1px 5px;
-	.border-radius(0, 10px, 10px, 0);
-	position: relative;
-}
-
-.searchBy a span.close{
-	background: url("../../images/agent/imgSprt_ico.png") no-repeat 0 -1428px;
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
-.searchBy a:hover{
-	background-color: #DFE4E6;
-}
-.searchBy a:hover span.close{
-	display: block;
-}
-/* DP Search Dropdown */
-#searchDropdown{
-	left: 21px;
-	position: absolute;
-	top: 28px;
-	right: 20px;
-	z-index: 9999;
-}
-.searchCatDropdown{
-	background: #f2f2f2;
-	box-shadow: 0 2px 1px 0 #D2D2D2 inset;
-	.border-radius(5px, 5px, 5px, 5px);
-	border: 1px solid #B6BABF;
-	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
-	position: relative;
-	z-index: 9999;
-	float: left;
-}
-
-.searchCatDropdown ul, ul#dp_notify_list{
-	margin: 0;
-}
-
-.searchCatDropdown li, ul#dp_notify_list li{
-	border-bottom: 1px solid #e3e4e6;
-	display: block;
-	float: left;
-	width: 100%;
-}
-.searchCatDropdown li:last-child, ul#dp_notify_list li:last-child{
-	border: none;
-}
-
-.searchCatDropdown li a, ul#dp_notify_list li a{
-	color: #404040;
-    display: block;
-    font-size: 11px;
-    padding: 5px 10px;
-    text-shadow: 0 1px 0 #FFFFFF;
-}
-
-.searchCatDropdown li:hover a{
-	background: #f9f9f9;
-}
-
-.searchCatDropdown li a span{
-	background: url("../../images/agent/imgSprt_ico.png") no-repeat 0 -405px;
-	display: block;
-	padding: 0 0 0 20px;
-}
-.searchCatDropdown li a span.createTicket{
-	background-position: 0 -733px;
-}
-.searchCatDropdown li a span.people{
-	background-position: 0 -713px;
-}
-.searchCatDropdown li a span.createIdeas{
-	background-position: 0 -756px;
-}
-
-.searchCatDropdown li.last{
-	display: block;
-	padding: 5px;
-	width: 400px;
-}
-.searchCatDropdown li.last a{
-	.gradient(#6baccc, #5182b3);
-	border: 1px solid #4b7095;
-	box-shadow: inset 0 1px 0 #82bdd7;
-	.border-radius(3px, 3px, 3px, 3px);
-	color: #FFFFFF;
-	float: left;
-	padding: 4px 1px;
-	text-align: center;
-	text-shadow: 0 1px 0 #000000;
-	width: 395px;
-	position: relative;
-}
-.searchCatDropdown li.last a:hover{
-	.gradient(#72b8d8, #578bbf);
-	position: relative;
-}
-/* End of DP Search Dropdown */
-
 #DP-CreateSection{
 	position: relative;
 	float: left;
@@ -601,7 +459,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 #dp_header{
 	background-color:#2d5680;
 	background-repeat: repeat-x;
-	background-image: url("../../images/agent/headerBack.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
+	background-image: url("../../images/agent/header/header-bg.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
 	height: 41px;
 	position: absolute;
 	top: 0;
@@ -675,7 +533,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .DP-createTicket #createContentTrigger a span{
 	background-repeat: no-repeat;
 	background-position: 7px 5px;
-    background-image: url(../../images/agent/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	float: left;
 	padding: 0 0 0 20px;
 	display: block;
@@ -818,89 +676,89 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .createDropdown ul.createBtnPopups li a span.createTicket{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createPerson{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createPerson {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createOrg{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createOrg{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createTask{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createTask {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createArticle{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createArticle {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createNews{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createNews {
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createDownload{
 	background-repeat: no-repeat;
 	background-position: 5px 6px;
-	background-image: url(../../images/agent/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createDownload {
 	background-repeat: no-repeat;
 	background-position: 5px 6px;
-	background-image: url(../../images/agent/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createIdeas {
 	background-repeat: no-repeat;
 	background-position: 7px 6px;
-	background-image: url(../../images/agent/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createIdeas {
 	background-repeat: no-repeat;
 	background-position: 7px 6px;
-	background-image: url(../../images/agent/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createHeader, .switcherHeader{
 	.gradient(#f2f2f2, #f2f2f2);
@@ -935,7 +793,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 #DP-InterfaceSwitcher{
 	background-repeat: no-repeat;
 	background-position: 0 100%;
-	background-image: url("../../images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
+	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	width: 180px;
 	position: relative;
 	float: right;
@@ -962,7 +820,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .adminSwitcher a{
 	background-repeat: no-repeat;
 	background-position: 0 5px;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #F2F9FF;
 	font-size: 11px;
 	font-weight: normal;
@@ -991,14 +849,14 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
     margin-left: 2px;
 	background-repeat: no-repeat;
 	background-position: 0 2px;
-    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
     padding-left: 23px;
 }
 
 .dropdownSwitcherWrap ul li:hover a span {
 	background-repeat: no-repeat;
 	background-position: 0 2px;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
@@ -1075,7 +933,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 /* Status Admin */
 #DP-StatusSection{
 	background-repeat: no-repeat;
-	background-image: url("../../images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
+	background-image: url("../../images/agent/header/header-div.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;
@@ -1103,7 +961,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 
 .DP-adminStatus li.agentStatus a {
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     margin-right: 15px;
 	position: relative;
 	height: 12px;
@@ -1111,19 +969,19 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .DP-adminStatus li.agentStatus a.away,
 .DP-adminStatus li.agentStatus a.dnd {
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.networkStatIndicator a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-right: 6px;
 	width: 17px;
 	height: 12px;
 }
 .DP-adminStatus li.networkStatIndicator a.on{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.soundIcon {
@@ -1131,13 +989,13 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 .DP-adminStatus li.soundIcon a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-left: 10px;
 	height: 15px;
 }
 .DP-adminStatus li.soundIcon a.off{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 .DP-adminStatus li a .dropdowninfo{
 	position: relative;
@@ -1222,36 +1080,6 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	text-indent: 0;
 }
 
-
-.DP-adminStatus li.soundIcon .dropdowninfo{
-	background: url("../../images/agent/bgVol.png") no-repeat 0 0;
-	height: 80px;
-	left: 68px;
-	padding: 13px 14px;
-	position: absolute;
-	top: 32px;
-	width: 9px;
-	z-index: 9999;
-}
-.DP-adminStatus li.soundIcon .dropdowninfo .slider{
-	background:url("../../images/agent/volumeSlider.png") no-repeat 0 0;
-	width: 9px;
-	height: 82px;
-}
-.DP-adminStatus li.soundIcon .dropdowninfo .slider a.btnSlider{
-	background:url("../../images/agent/volBtnSlide.png") no-repeat 0 0;
-	height: 21px;
-	position: absolute;
-	right: 7px;
-	top: 21px;
-	width: 21px;
-	cursor:pointer;
-}
-
-.DP-adminStatus li.soundIcon a:hover .dropdowninfo{
-	display: block;
-}
-/* END Status Admin */
 
 /* User Control Section */
 #DP-UserSection{
@@ -1355,18 +1183,20 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	display: block;
 }
 .userProfileDropdown li a{
-	background: url("../../images/agent/imgSprt_ico.png") no-repeat;
-	padding: 2px 0 1px 30px;
+	padding: 0 0 0 25px;
 }
 .userProfileDropdown li.myAccount a, .userProfileDropdown li.myAccount:hover a{
-	background-position: 9px -254px;
+
 }
 .userProfileDropdown li.setting a, .userProfileDropdown li.setting:hover a{
-	background-position: 9px -278px;
+	background-repeat: no-repeat;
+	background-position: 8px 6px;
+	background-image: url(../../images/agent/header/menu-settings.png);
 }
 .userProfileDropdown li.help a, .userProfileDropdown li.help:hover a{
-	background-position: 9px -301px;
-	padding: 3px 0 0 29px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/header/menu-help.png);
 }
 
 .userProfileDropdown li p{
@@ -1385,7 +1215,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 
 .userProfileDropdown li:hover a{
-	background: #f8f8f8 url("../../images/agent/imgSprt_ico.png") no-repeat;
+	backgroundcolor: #f8f8f8;
 	color: #737a80;
 }
 .userProfileDropdown li:last-child:hover a{

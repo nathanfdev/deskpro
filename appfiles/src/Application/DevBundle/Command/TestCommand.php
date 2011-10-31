@@ -53,7 +53,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 			}
 
 			$nicepath = str_replace($path, '', $file->getRealPath());
-			echo "[Check] $nicepath ... ";
 
 			$found = false;
 			foreach ($search_paths as $search_path) {
@@ -67,6 +66,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 			}
 
 			if (!$found) {
+				echo "[Check] $nicepath ... ";
 				echo "\tNot Found";
 				$notfound[] = $nicepath;
 			} else {
