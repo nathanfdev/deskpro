@@ -72,6 +72,18 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 					}
 				}
 			}
+
+			$(this).attr('size', $(this).val().length+2);
+		});
+
+		this.inputEl.focus(function() {
+			self.wrapperEl.addClass('focus');
+		}).blur(function() {
+			self.wrapperEl.removeClass('focus');
+		});
+
+		$(this.wrapperEl).click(function() {
+			self.inputEl.focus();
 		});
 
 		$('.remove-all-terms-trigger:first', this.wrapperEl).click(function(ev) {
@@ -157,7 +169,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 	/**
 	 * Change the active context
-	 * 
+	 *
 	 * @param {String} id The context ID
 	 */
 	activateContext: function(id) {
@@ -185,7 +197,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		return this.getContext(this.activeContextId);
 	},
 
-	
+
 	/**
 	 * Get the ID of the active context
 	 *
@@ -241,7 +253,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		if (el.data('handler') && el.data('handler').destroy) {
 			el.data('handler').destroy();
 		}
-		
+
 		el.remove();
 
 		if (!$('.term:first', this.wrapperEl).length) {
@@ -256,7 +268,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 	},
 
-	
+
 	/**
 	 * Clear the search terms
 	 */

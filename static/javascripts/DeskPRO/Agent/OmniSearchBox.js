@@ -5,8 +5,8 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 
 	getDefaultOptions: function() {
 		return {
-			wrapperEl: '#omnisearch',
-			inputEl: '#omnisearch_input',
+			wrapperEl: '#dp_omnibox',
+			inputEl: '#dp_omniinput',
 			contextBtnEl: '#omnisearch_type'
 		};
 	},
@@ -14,7 +14,9 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 	init: function() {
 
 		var self = this;
-		
+
+		this.wrapperEl.detach().appendTo('body');
+
 		//-----
 		// Tickets
 		//-----

@@ -36,6 +36,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		$('#dp_list').width(listWidth);
 		$('#dp_omnibox_wrap').width(listWidth-1); // -1 for border
+		$('#dp_omnibox').width(listWidth-23); // -1 for border
 		$('#dp_content').css('left', this.LEFT_START + listWidth + 1); //+1 for border
 
 		this.fireEvent('resized', [this]);
