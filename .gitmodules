@@ -43,3 +43,6 @@
 [submodule "appfiles/vendor/assetic"]
 	path = appfiles/vendor/assetic
 	url = https://github.com/kriswallsmith/assetic.git
+[submodule "appfiles/vendor/profiler/Profiler/LiveBundle"]
+	path = appfiles/vendor/profiler/Profiler/LiveBundle
+	url = git@github.com:dsyph3r/ProfilerLiveBundle.git

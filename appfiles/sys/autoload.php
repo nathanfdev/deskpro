@@ -28,6 +28,7 @@ $loader->registerNamespaces(array(
     'Doctrine'                       => DP_ROOT.'/vendor/doctrine/lib',
 	'Zend'                           => DP_ROOT.'/vendor/zend/library',
 	'FOQ'                            => DP_ROOT.'/vendor',
+	'Profiler'                       => DP_ROOT.'/vendor/profiler',
 ));
 
 $loader->registerPrefixes(array(

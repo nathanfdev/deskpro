@@ -766,7 +766,6 @@ admin_tickets_filters_new:
   pattern: /tickets/filters/new
   defaults: { _controller: AdminBundle:TicketFilters:newChooseType }
 
-
 ################################################################################
 # Article Fields
 ################################################################################
@@ -830,3 +829,19 @@ admin_customdefideas_setenabled:
   pattern: /idea-fields/{field_id}/set-enabled
   defaults: { _controller: AdminBundle:CustomDefIdeas:setEnabled }
   requirements: { field_id: "\d+" }
+
+################################################################################
+# Profiler
+################################################################################
+
+ProfilerLiveBundle:
+  resource: "@ProfilerLiveBundle/Resources/config/routing.yml"
+  prefix:   /
+  
+_profiler:
+  resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
+  prefix:   /_profiler
+  
+_wdt:
+  resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
+  prefix:   /_wdt

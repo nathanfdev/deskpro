@@ -15,7 +15,7 @@ class AgentKernel extends AbstractKernel
 			new \Application\AdminBundle\AdminBundle(),
 			new \Application\AgentBundle\AgentBundle(),
 		);
-
+		
 		return $bundles;
 	}
 

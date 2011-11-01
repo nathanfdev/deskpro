@@ -22,11 +22,21 @@ class DelegateLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	 */
 	protected $registered_loggers = array();
 
-	public function addLogger(\Doctrine\DBAL\Logging\SQLLogger $logger)
+	public function addLogger(\Doctrine\DBAL\Logging\SQLLogger $logger, $identifier)
 	{
-		$this->registered_loggers[] = $logger;
+		$this->registered_loggers[$identifier] = $logger;
 	}
-
+	
+	public function getLogger($identifier)
+	{
+		if (isset($this->registered_loggers[$identifier])) {
+			return $this->registered_loggers[$identifier];
+		}
+		else {
+			return null;
+		}
+	}
+	
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
 		foreach ($this->registered_loggers as $logger) {
