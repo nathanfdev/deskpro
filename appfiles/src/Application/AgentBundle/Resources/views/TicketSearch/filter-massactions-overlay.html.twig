@@ -1,4 +1,8 @@
-<div class="mass-actions-overlay-container">
+<div
+	class="mass-actions-overlay-container mass-actions"
+	data-base-id="{{baseId}}"
+	data-upload-url="{{ path('agent_accept_upload') }}"
+>
 	<script type="text/x-deskpro-plain" class="radio-tpl">
 		<button class="clean-white radio"><span class="radio-title"></span></button>
 	</script>
@@ -26,36 +30,27 @@
 				<dt>Change Status</dt>
 				<dd>
 					<label class="radio-item" data-attach-class="status status-resolved">
-						<input type="radio" name="actions[status]" value="resolved" />
+						<input type="radio" name="actions[status]" value="resolved" class="button-toggle" />
 						<span class="radio-title">Resolve Ticket</span>
 					</label>
 					<label class="radio-item" data-attach-class="status status-pending">
-						<input type="radio" name="actions[status]" value="pending" />
+						<input type="radio" name="actions[status]" value="pending" class="button-toggle" />
 						<span class="radio-title">Set Awaiting User</span>
 					</label>
 					<label class="radio-item" data-attach-class="status status-open">
-						<input type="radio" name="actions[status]" value="open" />
+						<input type="radio" name="actions[status]" value="open" class="button-toggle" />
 						<span class="radio-title">Set Awaiting Agent</span>
 					</label>
 				</dd>
 
-				<dt>Change Ownership</dt>
-				<dd>
-					<select name="actions[agent]">
-						<option value="">Assign Agent</option>
-						<option value="{{ app.user.id }}">Assign to me</option>
-						<option value=""></option>
-						{% for id,name in ticket_options.agents %}
-							<option value="{{ id }}">{{ name }}</option>
-						{% endfor %}
-					</select>
-					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
-						'name': 'actions[agent_team]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': 'Assign Team',
-						'agent_teams': ticket_options.agent_teams
-					} %}
+				<dt>Assignments</dt>
+				<dd class="assignments">
+					<ul id="{{baseId}}_assign_btn">
+						<li class="no-changes"><em>Set assignments</em></li>
+						<li style="display:none" class="assign-agent"><em>Assign agent</em>: <span class="label"></span></li>
+						<li style="display:none" class="assign-team"><em>Assign team</em>: <span class="label"></span></li>
+						<li style="display:none" class="add-followers"><em>Add followers</em>: <span class="label"></span></li>
+					</ul>
 				</dd>
 
 				<dt>Change Property</dt>
@@ -101,19 +96,50 @@
 					} %}
 				</dd>
 			</dl>
-			<div class="reply-area">
-				<nav>
-					<ul>
-						<li class="on">Reply</li>
-					</ul>
-				</nav>
-				<div class="reply-wrap">
-					<textarea name="actions[reply][reply_text]"></textarea>
-				</div>
-				<div class="reply-foot">
-					<button class="clean-white text-snippets">Text Snippets</button>
-					<button class="clean-white attach-files">Attach Files</button>
-				</div>
+			<div class="profile-box-container reply-box-wrap">
+				<header>
+					<nav>
+						<ul><li>Reply</li></ul>
+					</nav>
+				</header>
+				<section class="ticketreply">
+					<nav id="{{baseId}}_header_rows">
+						<ul class="option-buttons">
+							<li class="tipped attach hide-note" title="Add attachments">
+								<input type="file" class="file" name="file-upload" />
+								<span>Attachments</span>
+							</li>
+							<li class="tipped snippets hide-note" id="{{baseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
+						</ul>
+					</nav>
+					<article>
+						<section>
+							<ul id="{{baseId}}_attach_row" style="display: none">
+								<li class="attach-row">
+									<label><span>Attachments</span></label>
+									<div>
+										<ul class="files"></ul>
+										<br class="clear"/>
+									</div>
+								</li>
+
+								<script class="template-upload" type="text/x-jquery-tmpl">
+									<li class="uploading">${name} (uploading)</li>
+								</script>
+								<script class="template-download" type="text/x-jquery-tmpl">
+									<li>
+										<input type="hidden" name="actions[reply][attach_ids][]" value="${blob_id}" />
+										<em class="remove-attach-trigger">remove attachment</em>
+										<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+									</li>
+								</script>
+							</ul>
+							<div class="input-wrap">
+								<textarea placeholder="Enter a mass reply" id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
+							</div>
+						</section>
+					</article>
+				</section>
 			</div>
 		</article>
 		<footer>
@@ -122,4 +148,102 @@
 			</button>
 		</footer>
 	</section>
+
+    <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
+    	<div class="col">
+    		<section data-section-name="agents">
+    			<header>
+    				<h3>Agents</h3>
+    				<input type="text" class="filter-box" placeholder="Filter..." />
+    			</header>
+    			<ul>
+    				<li class="on">
+    					<input type="radio" name="{{baseId}}_agent" value="-1" checked="checked" />
+    					<label>Do not change agent</label>
+    				</li>
+
+    				<li class="me last-me">
+    					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" />
+    					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+    				</li>
+
+    				<li>
+    					<input type="radio" name="{{baseId}}_agent" value="0" />
+    					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+    				</li>
+
+    				{% for agent in agents %}
+    					{% if agent.id != app.user.id %}
+    						<li>
+    							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" />
+    							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+    							<div class="bound-fade"></div>
+    						</li>
+    					{% endif %}
+    				{% endfor %}
+    			</ul>
+    		</section>
+    	</div>
+    	<div class="col">
+    		<section data-section-name="teams">
+    			<header>
+    				<h3>Teams</h3>
+    				<input type="text" class="filter-box" placeholder="Filter..." />
+    			</header>
+    			<ul>
+    				<li class="on">
+    					<input type="radio" name="{{baseId}}_agent_team" value="-1" checked="checked" />
+    					<label>Do not change team</label>
+    				</li>
+    				{% for team in app.user.getAgent().getTeams() %}
+    					<li class="me {% if loop.last %}last-me{% endif %}">
+    						<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" />
+    						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+    						<div class="bound-fade"></div>
+    					</li>
+    				{% endfor %}
+
+    				<li class="on">
+    					<input type="radio" name="{{baseId}}_agent_team" value="0" />
+    					<label><span class="agent-team-label-0">No Team</span></label>
+    				</li>
+
+    				{% for team in agent_teams %}
+    					{% if team.id not in app.user.getAgent().getTeamIds() %}
+    						<li>
+    							<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" />
+    							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+    							<div class="bound-fade"></div>
+    						</li>
+    					{% endif %}
+    				{% endfor %}
+    			</ul>
+    		</section>
+    	</div>
+    	<div class="col">
+    		<section data-section-name="followers">
+    			<header>
+    				<h3>Followers</h3>
+    				<input type="text" class="filter-box" placeholder="Filter..." />
+    			</header>
+    			<ul>
+    				<li class="me last-me">
+    					<input type="checkbox" name="{{baseId}}_part" value="{{ app.user.id }}" />
+    					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+    				</li>
+
+    				{% for agent in agents %}
+    					{% if agent.id != app.user.id %}
+    						<li>
+    							<input type="checkbox" name="{{baseId}}_part" value="{{ agent.id }}" />
+    							<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+    							<div class="bound-fade"></div>
+    						</li>
+    					{% endif %}
+    				{% endfor %}
+    			</ul>
+    		</section>
+    	</div>
+    	<br class="clear" />
+    </div>
 </div>

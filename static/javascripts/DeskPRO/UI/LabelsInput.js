@@ -37,6 +37,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		var tagitOptions = {
 			enableBackspace: false,
 			fieldName: this.options.fieldName,
+			unique: true,
 			onchange: (function(labels) {
 				this.fireEvent('change', [this.getLabels()]);
 			}).bind(this)

@@ -50,10 +50,19 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 
         $cookieDefaults = session_get_cookie_params();
 
+		$cookie_name = 'dpsid';
+		if (DP_INTERFACE == 'agent') {
+			$cookie_name .= '-agent';
+		} elseif (DP_INTERFACE == 'admin') {
+			$cookie_name .= '-admin';
+		}
+
+		$this->options['name'] = $cookie_name;
+
         $this->options = array_merge(array(
-            'name'          => 'dpsid',
+            'name'          => $cookie_name,
             'lifetime'      => $cookieDefaults['lifetime'],
-            'path'          => $cookieDefaults['path'],
+            'path'          => '/',
             'domain'        => $cookieDefaults['domain'],
             'secure'        => $cookieDefaults['secure'],
             'httponly'      => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
@@ -81,8 +90,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			array($this, 'sessionDestroy'),
 			array($this, 'sessionGC')
 		);
-
-		$this->options['name'] = App::getSetting('core.sessions_cookie_name');
 
 		// this is COOKIE liftime. We always want it to be a session cookie
 		// (exists until browser closes). It shouldnt be the lifetime of the session,

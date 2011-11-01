@@ -1,34 +1,34 @@
-<thead class="display-options-trigger dbl-click-trigger nosel">
+<thead>
 	<tr>
 		{% if not disable_actions %}
-			<th class="check-all check no-option-trigger" width="5" valign="middle" style="vertical-align: middle;"><input type="checkbox" class="check-all-box selection-control" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
+			<th width="20" class="check-all check" width="5" valign="middle" style="vertical-align: middle;"><input type="checkbox" class="check-all-box selection-control" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
 		{% endif %}
-		<th class="">Subject</th>
+		<th width="20%">Subject</th>
 		<th>User</th>
+		{% set perc = (80 / display_fields|length) %}
 		{% for field in display_fields %}
-			{% if field == 'deleted_reason' %}<th data-field="deleted_reason">Deleted Reason</th>
-			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>
-			{% elseif field == 'person_organization' %}<th data-field="person_organization">Organization</th>
-			{% elseif field == 'department' %}<th data-field="department">Department</th>
-			{% elseif field == 'category' %}<th data-field="category">Category</th>
-			{% elseif field == 'product' %}<th data-field="product">Product</th>
-			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
-			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
-			{% elseif field == 'agent_team' %}<th data-field="agent_team">Team</th>
-			{% elseif field == 'date_created' %}<th data-field="date_created">Date Opened</th>
+			{% if field == 'deleted_reason' %}<th width="{{perc}}%" data-field="deleted_reason">Deleted Reason</th>
+			{% elseif field == 'person_email' %}<th width="{{perc}}%" data-field="person">User Email</th>
+			{% elseif field == 'person_organization' %}<th width="{{perc}}%" data-field="person_organization">Organization</th>
+			{% elseif field == 'department' %}<th width="{{perc}}%" data-field="department">Department</th>
+			{% elseif field == 'category' %}<th width="{{perc}}%" data-field="category">Category</th>
+			{% elseif field == 'product' %}<th width="{{perc}}%" data-field="product">Product</th>
+			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">Organization</th>
+			{% elseif field == 'agent' %}<th width="{{perc}}%" data-field="agent">Agent</th>
+			{% elseif field == 'agent_team' %}<th width="{{perc}}%" data-field="agent_team">Team</th>
+			{% elseif field == 'date_created' %}<th width="{{perc}}%" data-field="date_created">Date Opened</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}
-					<th data-field="ticket_fields[{{f.id}}]">{{f.title}}</th>
+					<th width="{{perc}}%" data-field="ticket_fields[{{f.id}}]">{{f.title}}</th>
 					{% endif %}
 				{% endfor %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}
-					<th data-field="person_fields[{{f.id}}]">{{f.title}}</th>
+					<th width="{{perc}}%" data-field="person_fields[{{f.id}}]">{{f.title}}</th>
 					{% endif %}
 				{% endfor %}
 			{% endif %}
 		{% endfor %}
-		{% if show_flag and 0 %}<th class="flag not-draggable not-resizable" width="5"></th>{% endif %}
 	</tr>
 </thead>

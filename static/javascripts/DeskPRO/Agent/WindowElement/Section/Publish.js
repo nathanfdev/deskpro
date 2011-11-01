@@ -138,10 +138,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						type: 'POST'
 					});
 				},
-				onTitlesUpdated: function(titles) {
+				onCatUpdated: function(categoryId, newTitle, newUgs) {
+
+					var postData = [];
+					postData.push({
+						name: 'title',
+						value: newTitle
+					});
+
+					Array.each(newUgs, function(id) {
+						postData.push({
+							name: 'usergroup_ids[]',
+							value: id
+						});
+					});
+
 					$.ajax({
-						url: BASE_URL + 'agent/publish/categories/'+type+'/update-titles',
-						data: makeTitleData(titles),
+						url: BASE_URL + 'agent/publish/categories/'+type+'/update/' + categoryId,
+						data: postData,
 						type: 'POST'
 					});
 				},
@@ -235,6 +249,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			// Perform count calcs now
 			this.recountChildCounts(listEl);
 		}, this);
+
+		this.fireEvent('sectionInit');
 	},
 
 	recountChildCounts: function(ul) {
@@ -320,7 +336,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		var el = $('.glossary-add-dlg:first', this.glossaryWrapper);
 		this.addDlg = new DeskPRO.UI.Overlay({
-			contentElement: el
+			contentElement: el,
+			customClassname: 'normal-size'
 		});
 
 		$('.save-trigger', el).click(this.saveNewWord.bind(this));
@@ -333,7 +350,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		var el = $('.glossary-edit-dlg:first', this.glossaryWrapper);
 		this.editDlg = new DeskPRO.UI.Overlay({
-			contentElement: el
+			contentElement: el,
+			customClassname: 'normal-size'
 		});
 
 		$('.save-trigger', el).click(this.saveEditWord.bind(this));

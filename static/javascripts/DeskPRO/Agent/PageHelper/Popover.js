@@ -35,7 +35,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			 */
 			destroyOnClose: 'auto',
 
-			overFrom: '#dp_content'
+			overFrom: '#dp_content',
+
+			/**
+			 * 'side' or 'over'
+			 */
+			positionMode: 'side'
 		};
 
 		DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID] = this;
@@ -111,6 +116,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	_initPopover: function() {
 
+		var self = this;
+
 		if (this._hasInit) return;
 		this._hasInit = true;
 
@@ -128,20 +135,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			ev.stopPropagation();
 		});
 
-		var pos = $(this.options.overFrom).offset();
-		var top = pos.top - 4;
-		var width = pos.left - 9;
-
-		this.popoverOuter.css({
-			'position': 'absolute',
-			'display': 'none',
-			'z-index': 999997,
-			'width': width+2+6, //2px for thi sborder, 6px for the popover border
-			'overflow': 'auto',
-			'top': top-3,
-			'left': 9,
-			'bottom': 20 // account for border+shadows
-		});
+		this.updatePositions();
 
 		$('.close', this.popoverOuter).first().click((function(ev) {
 			ev.preventDefault();
@@ -171,6 +165,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		} else {
 			$('.move-to-tab:first', this.popoverOuter).remove();
 		}
+
+		// Handle window resizes
+		$(window).resize(function() {
+			if (self._resizeTimeout) {
+				window.clearTimeout(self._resizeTimeout);
+			}
+
+			self._resizeTimeout = self.updatePositions.delay(350, self);
+		});
 	},
 
 	_initFragment: function() {
@@ -185,8 +188,41 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			$('h1.tab-title', this.popoverOuter).text(this.page.meta.title);
 		}
 
+		this.page.meta.isPopover = true;
+
 		this.page.fireEvent('render', [this.popover]);
 		this.fireEvent('pageInit', [this, this.page]);
+	},
+
+	updatePositions: function() {
+		var pos = $(this.options.overFrom).offset();
+		var top = pos.top - 4;
+		var width = pos.left - 9;
+
+		// Beside
+		if (this.options.positionMode == 'side') {
+			this.popoverOuter.css({
+				'position': 'absolute',
+				'z-index': 1000050,
+				'width': width+2+6, //2px for thi sborder, 6px for the popover border
+				'overflow': 'auto',
+				'top': top-3,
+				'left': 9,
+				'bottom': 10 // account for border+shadows
+			});
+
+		// Over
+		} else {
+			this.popoverOuter.css({
+				'position': 'absolute',
+				'z-index': 1000050,
+				'overflow': 'auto',
+				top: pos.top - 4,
+				left: pos.left + 8,
+				right: 3,
+				bottom: 10
+			});
+		}
 	},
 
 	isOpen: function() {
@@ -212,12 +248,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			return;
 		}
 
-		// Go through other instances and make sure the others arent open
+		// Go through other instances and make sure the others arent open on the same side
 		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
-			if (inst.isOpen()) {
+			if (inst.isOpen() && inst.options.positionMode == this.options.positionMode) {
 				inst.close();
 			}
-		});
+		}, this);
 
 		this.popoverOuter.show();
 	},

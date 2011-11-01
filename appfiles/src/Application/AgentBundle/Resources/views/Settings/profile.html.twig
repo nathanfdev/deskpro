@@ -1,0 +1,60 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
+</script>
+<form action="{{ path('agent_settings_profile_save') }}" method="post">
+	<div class="dp-form">
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Name</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.name) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Email</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Timezone</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.timezone) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Change Picture</label></div>
+			<div class="dp-form-input">
+				<table cellspacing="0" cellpadding="0"><tr>
+				{% if app.person.picture_blob %}
+					<td><img src="{{ app.person.getPictureUrl(80) }}" /><br /><em class="desc">Your current picture</em></td>
+				{% endif %}
+				<td>
+					Upload a new picture:
+				</td>
+				</tr></table>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Change Password</label></div>
+			<div class="dp-form-input double-password">
+				{{ form_widget(form.password, {'attr': { 'placeholder': 'New password', 'class': 'password1' }}) }}
+				{{ form_widget(form.password2, {'attr': { 'placeholder': 'Repeat password', 'class': 'password2' }}) }}
+				<br /><em class="desc">Leave this field blank to keep your password the same</em>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Ticket Signature</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.ticket_signature) }}
+				<br /><em class="desc">This signature will be appended automatically when you send ticket replies</em>
+			</div>
+		</div>
+	</div>
+
+	<button type="submit" class="clean-white submit-trigger">Save</button>
+</form>

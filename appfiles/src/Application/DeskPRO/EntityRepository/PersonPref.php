@@ -44,7 +44,7 @@ class PersonPref extends EntityRepository
 		while ($pref = $statement->fetch(\PDO::FETCH_ASSOC)) {
 			$pref_name = $pref['name'];
 			if ($trim_group_prefix) {
-				$pref_name = substr($pref_name, $preg_group_len);
+				$pref_name = substr($pref_name, $pref_group_len);
 			}
 
 			if ($pref['value_array']) {

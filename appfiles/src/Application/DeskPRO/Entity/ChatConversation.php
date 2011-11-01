@@ -17,6 +17,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 
 use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * A conversation between one or more people
@@ -165,6 +166,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_user_participants = null;
 
+	public function getChannelId($name = false)
+	{
+		return 'chat_convo.' . $this->id . ($name ? '.' . $name : '');
+	}
+
 	/**
 	 * @static
 	 * @param \Application\DeskPRO\Entity\Session $session
@@ -257,16 +263,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if (!$this->date_first_agent_message AND $message->author AND $message->author['is_agent']) {
 			$this['date_first_agent_message'] = new \DateTime();
-		}
-
-		if (!$this->subject) {
-			if ($message->author AND $message->author['is_agent']) {
-				if ($this->is_agent) {
-					$this->subject = substr($message['content'], 0, 45);
-				}
-			} else {
-				$this->subject = substr($message['content'], 0, 45);
-			}
 		}
 
 		$message->conversation = $this;
@@ -363,11 +359,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this->_user_participants[] = $person;
 		}
 
-		// Insert left message if they arent a part and arent assigned
-		if (!$suppress_sys_msg and $person['id'] != $this->agent['id']) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_joined', array('person_name' => $person['display_name'])));
-		}
-
 		return $person;
 	}
 
@@ -389,11 +380,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->participants as $k => $p) {
 			if ($p['id'] == $person['id']) {
 				$this->participants->remove($k);
-
-				// Insert left message if they arent a part and arent assigned
-				if (!$suppress_sys_msg and $p['id'] != $this->agent['id']) {
-					$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_left', array('person_name' => $p['display_name'])));
-				}
 
 				return $p;
 			}
@@ -422,8 +408,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			if (!$this->date_ended) {
 				$this['date_ended'] = new \DateTime();
 			}
-
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_ended'));
 
 		} else {
 			if ($this->date_ended) {
@@ -455,12 +439,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this['date_assigned'] = new \DateTime();
 		}
 
-		if ($agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name' => $agent['display_name'])));
-		} elseif ($old_agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name' => $old_agent['display_name'])));
-		}
-
 		// Make sure the user isnt both assigned and a part
 		if ($agent) {
 			$this->removeParticipant($agent, true);
@@ -472,6 +450,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getAgentId()
+	{
+		if ($this->agent) {
+			return $this->agent->id;
+		}
+
+		return 0;
+	}
+
+	public function getDepartmentId()
+	{
+		if ($this->department) {
+			return $this->department->id;
+		}
+
+		return 0;
+	}
+
 	public function getCreatedMessages()
 	{
 		return $this->_created_messages;
@@ -480,5 +476,74 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	public function _clearCreatedMessages()
 	{
 		$this->_created_messages = array();
+	}
+
+	public function getSubjectLine()
+	{
+		if ($this->subject) {
+			return $this->subject;
+		}
+
+		// TODO this needs to be improved so it doesnt load
+		// the whole messages graph
+
+		$line = '';
+
+		foreach ($this->messages as $message) {
+			if ($message->is_sys) continue;
+			if ($message->author && $message->author->is_agent) continue;
+
+			if ($message->is_html) {
+				$line .= strip_tags($message->content);
+			} else {
+				$line .= $message->content;
+			}
+			if (strlen($line) >= 190) {
+				continue;
+			}
+		}
+
+		if (!$line) {
+			$line = 'Chat ' . $this->id;
+		}
+
+		$line = substr($line, 0, 190);
+
+		return $line;
+	}
+
+
+	/**
+	 * Get a basic array of information. These are generally used in templates or with
+	 * client messages to render the message.
+	 *
+	 * @return array
+	 */
+	public function getInfo()
+	{
+		$info = array();
+
+		$info['conversation_id'] = $this->id;
+
+		if ($this->person) {
+			$info['author_id']     = $this->person->id;
+			$info['author_name']   = $this->person->display_name;
+			$info['author_email']  = $this->person->getPrimaryEmailAddress();
+			$info['author_type']   = $this->person->is_agent ? 'agent' : 'user';
+		} else {
+			$info['author_id']     = 0;
+			$info['author_name']   = $this->person_name ? $this->person_name : '';
+			$info['author_email']  = $this->person_email ? $this->person_email : '';
+			$info['author_type']   = 'user';
+		}
+
+		$info['subject_line']     = $this->getSubjectLine();
+		$info['agent_id']         = $this->agent ? $this->agent->id : 0;
+		$info['agent_name']       = $this->agent ? $this->agent->getDisplayName() : '';
+		$info['department_id']    = $this->department_id;
+		$info['department_name']  = $this->department ? $this->department->getFullTitle() : '';
+		$info['date_created']     = $this->date_created->getTimestamp();
+
+		return $info;
 	}
 }

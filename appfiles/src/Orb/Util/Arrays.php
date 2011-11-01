@@ -883,6 +883,38 @@ class Arrays
 	}
 
 
+	/**
+	 * Same as castToType except recursively goes into subarrays
+	 *
+	 * @param  array   $array     The array to work on
+	 * @param  string  $val_type  The type to cast values to
+	 * @param  string  $key_type  The type to cast keys to
+	 * @return array
+	 */
+	public static function castToTypeDeep(array $array, $val_type = 'string', $key_type = null)
+	{
+	    $ret = array();
+
+	    foreach ($array as $k => $v) {
+	        if ($key_type !== null) {
+	            settype($k, $key_type);
+	        }
+
+	        if ($val_type !== null) {
+				if (is_array($v)) {
+					$v = self::castToTypeDeep($v, $val_type, $key_type);
+				} else {
+					settype($v, $val_type);
+				}
+	        }
+
+	        $ret[$k] = $v;
+	    }
+
+	    return $ret;
+	}
+
+
 
 	/**
 	 * Get the Nth key in the array. Obviously only useful for

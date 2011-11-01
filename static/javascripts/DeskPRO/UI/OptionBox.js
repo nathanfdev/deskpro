@@ -41,6 +41,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		//------------------------------
 
 		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
+		this.backdrop.css('z-index', 10000000-1);
 
 		if (!this.el.parent().is('body')) {
 			this.el.detach().appendTo('body');
@@ -240,17 +241,29 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		this.el.addClass('open');
 
 		var cols = $('.col', this.el);
-		var max = 0;
-		cols.each(function() {
-			if ($(this).height() > max) {
-				max = $(this).height();
+		if (cols.length) {
+			var max = 0;
+			var w = 0;
+			cols.each(function() {
+				w += $(this).width();
+				if ($(this).height() > max) {
+					max = $(this).height();
+				}
+			});
+			cols.each(function() {
+				if ($(this).height() < max) {
+					$(this).height(max);
+				}
+			});
+
+			w += (2 * cols.length);  // border/margin on the cols
+
+			if (max > 300) {
+				w += $.getScrollbarWidth(); // it has a scrollbar
 			}
-		});
-		cols.each(function() {
-			if ($(this).height() < max) {
-				$(this).height(max);
-			}
-		});
+
+			this.el.width(w);
+		}
 
 		this.fireEvent('open', [this]);
 	},

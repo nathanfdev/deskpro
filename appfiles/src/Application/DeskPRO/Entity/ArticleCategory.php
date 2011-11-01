@@ -35,6 +35,13 @@ class ArticleCategory extends CategoryAbstract
 	protected $children;
 
 	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="article_category2usergroup", joinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")})
+	 */
+	protected $usergroups;
+
+	/**
 	 * If this is true, then all categories and articles under this one
 	 * are considered agent KB articles and wont be displayed in
 	 * the user interface

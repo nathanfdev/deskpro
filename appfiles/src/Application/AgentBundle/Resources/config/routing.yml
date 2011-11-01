@@ -51,6 +51,49 @@ agent_set_agent_status:
   pattern: /misc/set-agent-status/{status}
   defaults: { _controller: AgentBundle:Misc:setAgentStatus }
 
+agent_redirect_out:
+  pattern: /redirect-out/{url}
+  defaults: { _controller: AgentBundle:Misc:redirectExternal }
+  requirements: { url: ".+" }
+
+agent_redirect_out_info:
+  pattern: /redirect-out-info/{url}
+  defaults: { _controller: AgentBundle:Misc:redirectExternalInfo }
+  requirements: { url: ".+" }
+
+agent_password_confirm_code:
+  pattern: /password-confirm-code.json
+  defaults: { _controller: AgentBundle:Misc:getPasswordConfirmCode }
+
+agent_snippetviewer:
+  pattern: /misc/snippet-viewer/view/{typename}
+  defaults: { _controller: AgentBundle:Misc:snippetsViewer }
+
+agent_snippetviewer_newcat:
+  pattern: /misc/snippet-viewer/new-cat
+  defaults: { _controller: AgentBundle:Misc:newSnippetCat }
+
+agent_snippetviewer_savesnippet:
+  pattern: /misc/snippet-viewer/save-snippet
+  defaults: { _controller: AgentBundle:Misc:saveSnippet }
+
+agent_snippetviewer_delsnippet:
+  pattern: /misc/snippet-viewer/delete-snippet
+  defaults: { _controller: AgentBundle:Misc:deleteSnippet }
+
+agent_snippetviewer_savecat:
+  pattern: /misc/snippet-viewer/save-category
+  defaults: { _controller: AgentBundle:Misc:saveSnippetCat }
+
+agent_snippetviewer_editcat:
+  pattern: /misc/snippet-viewer/edit-category
+  defaults: { _controller: AgentBundle:Misc:editSnippetCat }
+
+agent_snippetviewer_delcat:
+  pattern: /misc/snippet-viewer/delete-category
+  defaults: { _controller: AgentBundle:Misc:deleteSnippetCat }
+
+
 agent_recyclebin:
   pattern: /recycle-bin
   defaults: { _controller: AgentBundle:RecycleBin:list }
@@ -80,21 +123,21 @@ agent_client_messages_unsubscribe_channels:
 # Login/logout
 ################################################################################
 
-agent_login:
-  pattern: /login
-  defaults: { _controller: AgentBundle:Login:index }
-
 agent_login_preload_sources:
   pattern: /login/preload-sources
   defaults: { _controller: AgentBundle:Login:preloadSources }
 
+agent_login:
+  pattern: /login
+  defaults: { _controller: AgentBundle:Login:index }
+
 agent_logout:
-  pattern: /logout
+  pattern: /logout/{auth}
   defaults: { _controller: AgentBundle:Login:logout }
 
 agent_login_authenticate_local:
   pattern: /login/authenticate-password
-  defaults: { _controller: AgentBundle:Login:authenticate, usersource_id: 0 }
+  defaults: { _controller: AgentBundle:Login:authenticateLocal, usersource_id: 0 }
 
 agent_login_authenticate:
   pattern: /login/authenticate/{usersource_id}
@@ -112,7 +155,27 @@ agent_login_callback:
 
 agent_settings:
   pattern: /settings
-  defaults: { _controller: AgentBundle:Settings:index }
+  defaults: { _controller: AgentBundle:Settings:profile }
+
+agent_settings_profile_save:
+  pattern: /settings/profile/save.json
+  defaults: { _controller: AgentBundle:Settings:profileSave }
+
+agent_settings_ticketnotif:
+  pattern: /settings/ticket-notifications
+  defaults: { _controller: AgentBundle:Settings:ticketNotifications }
+
+agent_settings_ticketnotif_save:
+  pattern: /settings/ticket-notifications/save.json
+  defaults: { _controller: AgentBundle:Settings:ticketNotificationsSave }
+
+agent_settings_othernotif:
+  pattern: /settings/other-notifications
+  defaults: { _controller: AgentBundle:Settings:otherNotifications }
+
+agent_settings_othernotif_save:
+  pattern: /settings/other-notifications/save.json
+  defaults: { _controller: AgentBundle:Settings:otherNotificationsSave }
 
 agent_settings_picture:
   pattern: /settings/picture
@@ -145,6 +208,11 @@ agent_settings_ticketfilters_edit:
   defaults: { _controller: AgentBundle:Settings:ticketFilterEdit }
   requirements: { filter_id: "\d+" }
 
+agent_settings_ticketfilters_edit_save:
+  pattern: /settings/ticket-filters/{filter_id}/edit/save
+  defaults: { _controller: AgentBundle:Settings:ticketFilterEditSave }
+  requirements: { filter_id: "\d+" }
+
 agent_settings_ticketfilters_del:
   pattern: /settings/ticket-filters/{filter_id}/delete
   defaults: { _controller: AgentBundle:Settings:ticketFilterDelete }
@@ -161,10 +229,6 @@ agent_settings_ticketfilters_new:
 agent_people_newfrompane:
   pattern: /people-search/new-person
   defaults: { _controller: AgentBundle:Person:newPersonFromPane }
-
-agent_people:
-  pattern: /people
-  defaults: { _controller: AgentBundle:PeopleSearch:index }
 
 agent_people_view:
   pattern: /people/{person_id}
@@ -976,6 +1040,10 @@ agent_publish_cats_updatetitles:
   pattern: /publish/categories/{type}/update-titles
   defaults: { _controller: AgentBundle:Publish:updateCategoryTitles }
 
+agent_publish_cats_update:
+  pattern: /publish/categories/{type}/update/{category_id}
+  defaults: { _controller: AgentBundle:Publish:updateCategory }
+
 agent_publish_cats_updatestructure:
   pattern: /publish/categories/{type}/update-structure
   defaults: { _controller: AgentBundle:Publish:updateCategoryStructure }
@@ -1333,7 +1401,7 @@ agent_userchat_view:
   options: { fragment_name: 'c' }
 
 agent_userchat_listopen:
-  pattern: /chat/list-open/{agent_id}
+  pattern: /chat/list-open
   defaults: { _controller: AgentBundle:UserChat:listChats }
 
 agent_userchat_send_messageview:
@@ -1343,10 +1411,6 @@ agent_userchat_send_messageview:
 agent_userchat_send_filemessage:
   pattern: /chat/send-file-message/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:sendFile }
-
-agent_userchat_getqr:
-  pattern: /chat/get-qr/{conversation_id}/{quick_reply_id}
-  defaults: { _controller: AgentBundle:UserChat:getQuickReply }
 
 agent_userchat_assign:
   pattern: /chat/assign/{conversation_id}/{agent_id}
@@ -1360,10 +1424,18 @@ agent_userchat_end:
   pattern: /chat/end-chat/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:endChat }
 
+agent_userchat_leave:
+  pattern: /chat/leave/{conversation_id}
+  defaults: { _controller: AgentBundle:UserChat:leaveChat }
+
+agent_userchat_invite:
+  pattern: /chat/invite/{conversation_id}/{agent_id}
+  defaults: { _controller: AgentBundle:UserChat:sendInvite }
+
+agent_userchat_changeprop:
+  pattern: /chat/change-props/{conversation_id}
+  defaults: { _controller: AgentBundle:UserChat:changeProperties }
+
 agent_userchat_getsectiondata:
   pattern: /chat/get-section-data.json
   defaults: { _controller: AgentBundle:UserChat:getSectionData }
-
-agent_userchat_getsectioncounts:
-  pattern: /chat/get-section-counts.json
-  defaults: { _controller: AgentBundle:UserChat:updateListNumbers }

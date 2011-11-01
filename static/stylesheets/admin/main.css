@@ -587,7 +587,7 @@ table.structure-list td.title a {
 
 table.structure-list td.title a.edit-title {
 	padding-right: 19px;
-	background: url(../../images/icons/edit-gear.png) no-repeat 100% 50%;
+	background: url(../../images/agent/icons/cog.png) no-repeat 100% 50%;
 }
 
 table.structure-list td:first-child { border-left:1px solid #ddd; }
@@ -747,7 +747,7 @@ table.structure-list span.priority {
 	float: left;
 	width: 16px;
 	height: 16px;
-	background: url(../../images/icons/application_view_tile.png) no-repeat 0 0;
+	background: url(../../images/agent/icons/application_view_tile.png) no-repeat 0 0;
 	cursor: pointer;
 	overflow: hidden;
 	text-indent: -100px;
@@ -1038,7 +1038,7 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 
 .choices-builder > ul > li div.controls li.drag a {
 	display: block;
-	background:  url(../../images/drag_handle.png) no-repeat 0 0;
+	background:  url(../../images/agent/drag_handle.png) no-repeat 0 0;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -1048,7 +1048,7 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 
 .choices-builder > ul > li div.controls li.remove a {
 	display: block;
-	background:  url(../../images/icons/cross.png) no-repeat 0 0;
+	background:  url(../../images/agent/icons/cross.png) no-repeat 0 0;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;

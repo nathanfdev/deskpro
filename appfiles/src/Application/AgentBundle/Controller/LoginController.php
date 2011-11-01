@@ -16,8 +16,11 @@ use Application\DeskPRO\Controller\Helper\LoginHelper;
 
 use Application\DeskPRO\App;
 
-class LoginController extends \Application\DeskPRO\Controller\AbstractController
+class LoginController extends \Application\UserBundle\Controller\LoginController
 {
+	protected $tpl_prefix = 'AgentBundle:Login';
+	protected $route_prefix = 'agent';
+
 	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.

@@ -27,94 +27,40 @@ class UserChatController extends AbstractController
 {
 	public function viewAction($conversation_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		$is_assigned = false;
-		$is_part = false;
-		if (!$conversation['agent']) {
-			$conversation['agent'] = $this->person;
-			$is_assigned = true;
-		} elseif ($conversation['agent']['id'] != $this->person['id'] AND !$conversation->hasParticipant($this->person)) {
-			$conversation->addParticipant($this->person);
-			$is_part = true;
-		}
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-		App::getOrm()->persist($conversation);
+		if ($convo->status == 'open') {
+			$chat_manager->personJoined($convo, $this->person);
 
-		$client_messages = array();
-		foreach ($conversation->getCreatedMessages() as $msg) {
-			$client_messages = ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg);
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					App::getOrm()->persist($cm);
-				}
+			if (!$convo['agent']) {
+				$chat_manager->assignAgent($convo, $this->person);
 			}
 		}
-
-		if ($is_assigned) {
-			$client_messages = ChatClientMessageGenerator::createChatAssignedMessages(
-				App::getSession()->getEntityId(),
-				$conversation
-			);
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					App::getOrm()->persist($cm);
-				}
-			}
-		}
-
-		if ($is_assigned OR $is_part) {
-			$client_messages = ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
-				App::getSession()->getEntityId(),
-				$conversation
-			);
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					App::getOrm()->persist($cm);
-				}
-			}
-		}
-
-		App::getOrm()->flush();
 
 		$convo_messages = App::getOrm()->createQuery("
 			SELECT m
 			FROM DeskPRO:ChatMessage m
 			WHERE m.conversation = ?1
 			ORDER BY m.id DESC
-		")->setParameter(1, $conversation)->execute();
+		")->setParameter(1, $convo)->execute();
 
-		$quick_replies = App::getEntityRepository('DeskPRO:ChatQuickReply')->getRepliesForPerson($this->person);
+		$session = $convo->session;
+		$visitor = $convo->visitor;
+		$other_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
-		// Needed for agent assign menu
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-		$agent_names = $ticket_options['agents'];
+		// For selector
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
-			'quick_replies' => $quick_replies,
-			'convo' => $conversation,
-			'agent_names' => $agent_names
-		));
-	}
-
-
-	/**
-	 * [JSON] Get a QR
-	 *
-	 * @param  $conversation_id
-	 * @param  $quick_reply_id
-	 */
-	public function getQuickReplyAction($conversation_id, $quick_reply_id)
-	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
-		$qr = App::findEntity('DeskPRO:ChatQuickReply', $quick_reply_id);
-
-		$reply = $qr->getReplyForConversation($conversation);
-
-		return $this->createJsonResponse(array(
-			'qr_id' => $qr['id'],
-			'reply' => $reply,
+			'convo' => $convo,
+			'session' => $session,
+			'visitor' => $visitor,
+			'other_chats' => $other_chats,
+			'agents' => $agents,
 		));
 	}
 
@@ -127,47 +73,75 @@ class UserChatController extends AbstractController
 	 */
 	public function assignChatAction($conversation_id, $agent_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		$old_assigned = $conversation->agent;
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-		$agent = App::findEntity('DeskPRO:Person', $agent_id);
-		if (!$agent) {
+		if ($agent_id) {
+			$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		} else {
 			$agent = null;
 		}
-		$conversation->setAgent($agent);
-
-		$client_messages = array();
-		foreach ($conversation->getCreatedMessages() as $msg) {
-			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
+		if ($agent) {
+			$chat_manager->assignAgent($convo, $agent);
+		} else {
+			$chat_manager->unassignAgent($convo);
 		}
 
-		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createChatAssignedMessages(
-			App::getSession()->getEntityId(),
-			$conversation
-		));
-
-		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
-			App::getSession()->getEntityId(),
-			$conversation
-		));
-
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
-
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
-
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-
-		));
+		return $this->createJsonCmResponse();
 	}
+
+	/**
+	 * Reassign a chat
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function sendInviteAction($conversation_id, $agent_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+
+		$cm = new ClientMessage();
+		$cm->fromArray(array(
+			'channel' => 'chat.invited',
+			'data' => $convo->getInfo(),
+			'for_person' => $agent,
+			'created_by_client' => $this->session->getId()
+		));
+		$this->em->persist($cm);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	/**
+	 * Changes properties
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function changePropertiesAction($conversation_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+
+		$props = $this->in->getCleanValueArray('props', 'raw', 'string');
+
+		if (isset($props['department_id'])){
+			$dep = null;
+			if ($props['department_id']) {
+				$dep = $this->em->find('DeskPRO:Department', $props['department_id']);
+			}
+			$chat_manager->setDepartment($convo, $dep, $this->person);
+		}
+
+		return $this->createJsonCmResponse();
+	}
+
 
 	/**
 	 * Add a participant
@@ -177,33 +151,33 @@ class UserChatController extends AbstractController
 	 */
 	public function addPartAction($conversation_id, $agent_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
 		$agent = App::findEntity('DeskPRO:Person', $agent_id);
-		if (!$agent OR $conversation->hasParticipant($agent)) {
+		if (!$agent OR $convo->hasParticipant($agent)) {
 			return $this->createJsonResponse(array());
 		}
 
-		$conversation->addParticipant($agent);
+		$convo->addParticipant($agent);
 
 		$client_messages = array();
-		foreach ($conversation->getCreatedMessages() as $msg) {
+		foreach ($convo->getCreatedMessages() as $msg) {
 			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
 		}
 
 		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewAddedPartMessage(
 			App::getSession()->getEntityId(),
-			$conversation,
+			$convo,
 			$agent
 		));
 
 		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
 			App::getSession()->getEntityId(),
-			$conversation
+			$convo
 		));
 
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
+		App::getOrm()->transactional(function ($em) use ($convo, $client_messages) {
+			$em->persist($convo);
 
 			if ($client_messages) {
 				foreach ($client_messages as $cm) {
@@ -214,7 +188,9 @@ class UserChatController extends AbstractController
 			$em->flush();
 		});
 
-		return $this->createJsonResponse(array());
+		return $this->createJsonCmResponse(array(
+			'client_messages' => $client_messages
+		));
 	}
 
 
@@ -225,33 +201,13 @@ class UserChatController extends AbstractController
 	 */
 	public function endChatAction($conversation_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		$conversation['status'] = 'ended';
-		$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
-			App::getSession()->getEntityId(),
-			$conversation
-		);
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+		$chat_manager->endChat($convo, $this->person, '');
 
-		foreach ($conversation->getCreatedMessages() as $msg) {
-			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
-		}
-
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
-
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
-
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-
-		));
+		return $this->createJsonCmResponse();
 	}
 
 
@@ -262,37 +218,35 @@ class UserChatController extends AbstractController
 	{
 		if ($conversation_id instanceof ChatConversation) {
 			// sendAgentMessageAction calls this with the convo already
-			$conversation = $conversation_id;
+			$convo = $conversation_id;
 		} else {
-			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+			$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 		}
 
-		$chat_message = $conversation->addNewMessage(
-			$this->in->getString('content'),
-			$this->person
-		);
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+		$chat_manager->addMessage($convo, $this->person, $this->in->getString('content'));
 
-		$client_messages = ChatClientMessageGenerator::createNewMessageMessages(
-			App::getSession()->getEntityId(),
-			$chat_message
-		);
+		return $this->createJsonCmResponse();
+	}
 
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
 
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
+	/**
+	 * End a chat
+	 *
+	 * @param  $conversation_id
+	 */
+	public function leaveChatAction($conversation_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-			$em->flush();
-		});
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		if ($convo->status == 'open') {
+			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+			$chat_manager->personLeft($convo, $this->person);
+		}
 
-		return $this->createJsonResponse(array(
-			'conversation_id' => $conversation_id,
-			'new_message_id'  => $chat_message['id']
-		));
+		return $this->createJsonCmResponse();
 	}
 
 
@@ -300,9 +254,9 @@ class UserChatController extends AbstractController
 	{
 		if ($conversation_id instanceof ChatConversation) {
 			// sendAgentMessageAction calls this with the convo already
-			$conversation = $conversation_id;
+			$convo = $conversation_id;
 		} else {
-			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+			$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 		}
 
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
@@ -312,36 +266,16 @@ class UserChatController extends AbstractController
 			$msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
 		}
 
-		$chat_message = $conversation->addNewMessage(
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+		$chat_manager->addMessage(
+			$convo,
+			$this->person,
 			$msg,
-			$this->person
-		);
-		$chat_message->is_html = true;
-
-		$cm_data = null;
-		$client_messages = ChatClientMessageGenerator::createNewMessageMessages(
-			App::getSession()->getEntityId(),
-			$chat_message,
-			$cm_data
+			array('is_html' => true, 'type' => 'file', 'blob_id' => $blob->id)
 		);
 
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
-
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
-
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
-			'conversation_id' => $conversation_id,
-			'new_message_id'  => $chat_message['id'],
-			'chat_data'       => $cm_data,
-		));
+		return $this->createJsonCmResponse();
 	}
 
 
@@ -352,43 +286,99 @@ class UserChatController extends AbstractController
 	{
 		$agent_names = App::getEntityRepository('DeskPRO:Person')->getAgentNames();
 
+		// Initial counts
+		$initial_counts = App::getDb()->fetchAllKeyValue("
+			SELECT IF(agent_id, agent_id, 0) AS agent_id, COUNT(*) AS count
+			FROM chat_conversations c
+			WHERE c.status = 'open'
+			GROUP BY agent_id
+		");
+
+		$dep_counts = App::getDb()->fetchAllKeyValue("
+			SELECT IF(department_id, department_id, 0) AS department_id, COUNT(*) AS count
+			FROM chat_conversations c
+			WHERE c.status = 'open' AND c.agent_id IS NULL
+			GROUP BY department_id
+		");
+
+		$dep_counts['0_total'] = 0;
+
+		// Departments
+		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+
+		foreach ($departments as $dep) {
+			$c_id = $dep['id'];
+			$total = 0;
+			if (isset($dep_counts[$c_id])) {
+				$total = $dep_counts[$c_id];
+			}
+
+			foreach ($dep['children'] as $child_dep) {
+				$child_id = $child_dep['id'];
+				$dep_counts[$child_id . '_total'] = 0;
+				if (isset($dep_counts[$child_id])) {
+					$dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
+					$total += $dep_counts[$child_id];
+				}
+			}
+
+			$dep_counts["{$c_id}_total"] = $total;
+			$dep_counts['0_total'] += $total;
+		}
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
+			'counts' => $initial_counts,
+			'dep_counts' => $dep_counts,
 			'agent_names' => $agent_names,
+			'departments' => $departments
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
 	}
 
 
-
-	public function updateListNumbersAction()
+	public function listChatsAction()
 	{
-		$counts = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenChatsForAgents();
-
-		// Also run through timeout checks now for any chats this agent has
-		if (!empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
-			$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($this->person);
-			foreach ($convos as $convo) {
-				$status_check = new ChatStatusCheck($convo, App::getSession()->getEntity());
-				$status_check->runChecks();
-			}
-		}
-
-		return $this->createJsonResponse(array('counts' => $counts));
-	}
-
-
-	public function listChatsAction($agent_id)
-	{
+		$agent_id = $this->in->getInt('agent_id');
 		$agent = null;
 		if ($agent_id) {
 			$agent = App::findEntity('DeskPRO:Person', $agent_id);
 		}
-		$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($agent);
+
+		$department_id = $this->in->getInt('department_id');
+		$department = null;
+		if ($department_id) {
+			$department = App::findEntity('DeskPRO:Department', $department_id);
+		}
+
+		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, $department);
 
 		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
 			'agent' => $agent,
-			'convos' => $conversations
+			'convos' => $convos
 		));
+	}
+
+
+	/**
+	 * Creates a JSON response but with client messages as well
+	 *
+	 * @param array $other_data
+	 * @return \Application\DeskPRO\HttpKernel\Controller\Response
+	 */
+	protected function createJsonCmResponse(array $other_data = array())
+	{
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since')) {
+			$client_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
+		$other_data['client_messages'] = $client_messages;
+
+		return $this->createJsonResponse($other_data);
 	}
 }

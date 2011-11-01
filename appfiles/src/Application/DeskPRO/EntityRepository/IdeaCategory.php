@@ -54,6 +54,11 @@ class IdeaCategory extends AbstractCategoryRepository
 		return $this->_comment_helper;
 	}
 
+	public function getPermissionTableName()
+	{
+		return 'idea_category2usergroup';
+	}
+
 	/**
 	 * Get an array of categories
 	 *

@@ -24,12 +24,26 @@ class Boot
 			$request = Request::createfromGlobals();
 		}
 
-		if (preg_match('#^/(agent|admin|api|dev)/#', $request->getPathInfo())) {
+		$path = $request->getPathInfo();
+
+		if (preg_match('#^/agent/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
-		} elseif (preg_match('#^/_sys/?#', $request->getPathInfo())) {
+			define('DP_INTERFACE', 'agent');
+		} elseif (preg_match('#^/admin/#', $path)) {
+			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
+			define('DP_INTERFACE', 'admin');
+		} elseif (preg_match('#^/api/#', $path)) {
+			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
+			define('DP_INTERFACE', 'api');
+		} elseif (preg_match('#^/dev/#', $path)) {
+			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
+			define('DP_INTERFACE', 'dev');
+		} elseif (preg_match('#^/_sys/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
+			define('DP_INTERFACE', 'sys');
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
+			define('DP_INTERFACE', 'user');
 		}
 
 		$kernel = new $kernel_class($env, $debug);
@@ -39,6 +53,8 @@ class Boot
 	public static function bootCli($env = 'prod', $debug = false)
 	{
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
+
+		define('DP_INTERFACE', 'cli');
 
 		$application = new Application($kernel);
 		$application->run();

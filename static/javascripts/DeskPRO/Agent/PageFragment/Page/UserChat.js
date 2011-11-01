@@ -3,26 +3,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
+	initializeProperties: function() {
+		this.TYPENAME = 'userchat';
+	},
+
 	initPage: function(el) {
+		var self = this
 
-		this.destroyEls = [];
+		if (!this.meta.isEnded) {
+			var messageTextarea = this.getEl('replybox_txt');
 
-		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
-		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-message-' + this.meta.conversation_id, this.handleNewMessage, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended-' + this.meta.conversation_id, this.chatHasEnded, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated-' + this.meta.conversation_id, this.handleUpdateParts, this);
-
-		this._initLayout();
-
-		var self = this;
-		var messageTextarea = $('.new-message', this.barWrapper);
-		messageTextarea.keypress(function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();
-
+			var sendMsg = function() {
 				var msg = messageTextarea.val().trim();
 				messageTextarea.val('');
 
@@ -31,46 +22,210 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 
 				self.sendMessage(msg);
-				self.addMessageRow(self.meta.youName, msg);
+				self.addMessageRow(self.meta.youName, msg, 'agent');
 			}
-		});
 
-		this._initMenus();
+			messageTextarea.keypress(function(ev) {
+				if (ev.keyCode == 13 && !ev.metaKey) {
+					ev.preventDefault();
+					sendMsg();
+				}
+			});
 
-		if (this.meta.viewPersonUrl) {
-			this._initPopout();
+			this.getEl('send_btn').click(function() {
+				sendMsg();
+			});
+
+			this.getEl('send_file').click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				self.showUploadOverlay();
+			});
+
+			this.getEl('end_btn').click(function() {
+				self.endChat();
+			});
+
+			this.addEvent('destroy', function() {
+				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
+
+				if (self.meta.isEnded) {
+					return;
+				}
+
+				if (self.closeAction == 'unassign') {
+					self.leaveConvo('unassign');
+				} else if (self.closeAction == 'end') {
+					self.leaveConvo('end');
+				}
+			});
 		}
 
-		$('.bar-actions .attach', this.wrapper).click(function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			self.showUploadOverlay();
-		});
-	},
+		this._initMenus();
+		this._initAssignControl();
 
-	_initLayout: function() {
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.hidden_newmessage', this.handleNewMessageCm, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ended', this.chatHasEnded, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this);
 
-		var self = this;
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.contentWrapper,
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
-			onTabSwitch: function(info) {
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
 
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/misc/snippet-viewer/view/chat',
+			triggerElement: this.getEl('quick_replies'),
+			onSnippetClick: function(info) {
+				var val = self.getEl('replybox_txt').val();
+				if (val.length) {
+					val += " ";
+				}
+				val += info.snippet;
+				self.getEl('replybox_txt').val(val);
 			}
 		});
+
+		//------------------------------
+		// Intercept close events and cancel, so we
+		// can confirm
+		//------------------------------
+
+		this.closeAction = false;
+		this._confirmCloseOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.getEl('closetab_prompt'),
+			addClassname: 'normal-size',
+			onContentSet: function(eventData) {
+				$('.unassign-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+					self.closeAction = 'unassign';
+					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+				});
+				$('.end-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+					self.closeAction = 'end';
+					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+				});
+				$('.cancel-trigger').click(function() {
+					self._confirmCloseOverlay.close();
+				});
+			}
+		});
+
+		this.addEvent('closeTab', function(event) {
+			// Already ended or not assigned to us
+			if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+				return;
+			}
+
+			if (this.closeAction) return;
+			event.deskpro.cancelClose = true;
+
+			this._confirmCloseOverlay.open();
+		}, this);
+
+		this.getEl('create_ticket_btn').click(function() {
+			DeskPRO_Window.newTicketLoader.open(function(page) {
+				page.setUser(self.meta.person_id, self.meta.session_id);
+			});
+		});
 	},
 
-	handleUpdateParts: function(data) {
-		this.updateActiveAgentList(data.agent_id, data.participant_ids);
+	handleNewMessageCm: function(data, name) {
+
+		// Ignore our own messages, unless its a file then we have a rendered version from the server
+		if (data.author_type && data.author_type == 'agent' && data.from_client == DESKPRO_SESSION_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
+			return;
+		}
+
+		var meta = {};
+		if (!data.metadata.new_user_track) {
+			meta.type = 'user-track';
+		}
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata);
+
+		// Add 'pop' sound
+		var alertEl = $.tmpl('user_chat_newmsg_sound');
+		alertEl.appendTo(this.el);
+		DeskPRO_Window.handleSoundElements(alertEl);
+
+
+	},
+
+	chatReassignedTo: function(agent_id) {
+
+		var btnEl = this.getEl('assign_btn');
+
+		if (agent_id == "0") {
+			var pic = '';
+			var agentInfo = {
+				name: 'Unassigned'
+			};
+		} else {
+			var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+			if (!agentInfo) {
+				return;
+			}
+
+			var pic = agentInfo.pictureUrlSizable.replace('{SIZE}', 20);
+		}
+
+		$('li', this.getEl('agent_parts')).show();
+		if (agent_id != '0') {
+			$('li.agent-' + agent_id, this.getEl('agent_parts')).hide();
+		}
+		if ($('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').hide();
+		} else {
+			this.getEl('agent_parts_none').show();
+		}
+
+		btnEl.css('background-image', pic);
+		btnEl.text(agentInfo.name);
+		btnEl.data('agent-id', agent_id);
+	},
+
+	addPart: function(agent_id) {
+		if ($('.agent-' + agent_id, this.getEl('agent_parts')).length) {
+			return;
+		}
+
+		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+
+		var li = $('<li><a></a></li>');
+		li.addClass('agent-' + agent_id);
+		$('a', li).text(agentInfo.name).addClass('agent-link').css({
+			'background-image': agentInfo.pictureUrlSizable.replace('{SIZE}', 20)
+		})
+
+		this.getEl('agent_parts').append(li);
+
+		if (this.getEl('assign_btn').data('agent-id') == agent_id) {
+			li.hide();
+		}
+
+		if ($('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').show();
+		}
+	},
+
+	removePart: function(agent_id) {
+		$('.agent-' + agent_id, this.getEl('agent_parts')).remove();
+
+		if (!$('li:visible', this.getEl).length) {
+			this.getEl('agent_parts_none').hide();
+		}
 	},
 
 	updateActiveAgentList: function(assigned, parts) {
 		var assigned_name = DeskPRO_Window.getDisplayName('agent', agent_id) || 'Unassigned';
-		$('span.agent_id.val', this.wrapper).html(assigned_name);
+		$('span.agent_id.val', this.el).html(assigned_name);
 
-		var ul = $('.convo_participants ul', this.wrapper);
+		var ul = $('.convo_participants ul', this.el);
 		ul.empty();
 
 		if (!parts.lenght) {
@@ -83,119 +238,67 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 	},
 
-	_initMenus: function() {
-		var self = this;
-		this.qrMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('li.macros:first', this.barWrapper),
-			menuElement: $('ul.quick-replies:first', this.wrapper),
-			onItemClicked: function(info) {
-				var qr_id = $(info.itemEl).data('qr-id');
-				self.loadQuickReply(qr_id);
-			}
-		});
-
-		this.assignMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('div.agent_id.menu-trigger:first, .convo_participants', this.wrapper),
-			menuElement: $('ul.agent_id.menu:first', this.wrapper),
-			onBeforeMenuOpened: function(info) {
-				var list = info.menu.elements.list;
-				$('li.sep', list).show();
-				$('li.assign-to-me', list).show();
-
-				$('li[data-option-id]', list).each(function() {
-					var id = $(this).data('option-id');
-					var onlineEl = $('#agent_online_list > li.agent-' + id);
-					if (onlineEl.length || id == DESKPRO_PERSON_ID || id == '0') {
-						$(this).show();
-					} else {
-						$(this).hide();
-					}
-				});
-
-				var trigger = $(info.menu.getOpenTriggerElement());
-
-				var part = false;
-				if (trigger.is('.convo_participants')) {
-					part = true;
-				} else {
-					var parents = trigger.parentsUntil('.convo_participants');
-					if (parents.eq(0).parent().is('.convo_participants')) {
-						part = true;
-					}
-				}
-
-				if (part) {
-					$('li.agent-0', list).hide();
-					$('li.agent-' + DESKPRO_PERSON_ID, list).hide();
-					$('li.assign-to-me', list).hide();
-					$('li.sep', list).hide();
-				}
-			},
-			onItemClicked: function(info) {
-				var agent_id = $(info.itemEl).data('option-id');
-
-				var trigger = $(info.menu.getOpenTriggerElement());
-				var part = false;
-				if (trigger.is('.convo_participants')) {
-					part = true;
-				} else {
-					var parents = trigger.parentsUntil('.convo_participants');
-					if (parents.eq(0).parent().is('.convo_participants')) {
-						part = true;
-					}
-				}
-
-				console.log('part %i', part);
-
-				if (part) {
-					var wrap = $('.convo_participants', this.wrapper);
-					var checkEl = $('li.agent-' + agent_id, wrap);
-					if (!checkEl.length) {
-						$('li.agent-0', wrap).remove();
-						$('<li class="agent-'+agent_id+'">'+DeskPRO_Window.getDisplayName('agent', agent_id)+'</li>').appendTo($('ul', wrap));
-
-						self.addPart(agent_id);
-					}
-				} else {
-					self.reassignConvo(agent_id);
-					$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned');
-				}
-			}
-		});
-
-		var endMenuEl = $('ul.end-menu', this.wrapper);
-		if (endMenuEl.length) {
-			this.endMenu = new DeskPRO.UI.Menu({
-				triggerElement: $('div.chat-status:first', this.wrapper),
-				menuElement: endMenuEl,
-				onItemClicked: function(info) {
-					self.endChat();
-				}
-			});
+	userTyping: function(data) {
+		if (!data.preview || !data.preview.length) {
+			this.getEl('user_typing').hide();
+			return;
 		}
+
+		var el = this.getEl('user_typing');
+		$('.prop-msg', el).text(data.preview);
+		el.detach().appendTo(this.getEl('messages_box'));
+		el.show();
+
+		this.getEl('messages_box').scrollTop(10000);
 	},
 
-	loadQuickReply: function(qr_id) {
-		$.ajax({
-			url: BASE_URL + 'agent/chat/get-qr/' + this.meta.conversation_id + '/' + qr_id,
-			context: this,
-			contentType: 'json',
-			success: function(data) {
-				var textarea = $('.new-message', this.barWrapper);
-				textarea.val(textarea.val() + data.reply).focus();
+	_initMenus: function() {
+		var self = this;
+
+		//------------------------------
+		// Department
+		//------------------------------
+
+		this.depMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('dep_btn'),
+			menuElement: $('#department_menu').clone(),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+				var depId = item.data('department-id');
+
+				// The same
+				if (depId == self.getEl('dep_btn').data('department-id')) {
+					return;
+				}
+
+				$('.label-department-id', self.getEl('dep_btn')).text(item.data('full-title'));
+				self.getEl('dep_btn').data('department-id', depId)
+
+				DeskPRO_Window.util.ajaxWithClientMessages({
+					url: BASE_URL + 'agent/chat/change-props/' + self.meta.conversation_id,
+					data: [{ name: 'props[department_id]', value: depId }],
+					type: 'POST'
+				});
 			}
 		});
 	},
 
 	endChat: function() {
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id
+		});
+	},
+
+	leaveChat: function() {
+		if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+			return;
+		}
 		$.ajax({
-			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id,
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/0',
+			data: { 'leaving': true },
 			context: this,
 			contentType: 'json'
 		});
-
-		this.addMessageRow('*', 'Chat ended', 'sys');
-		this.chatHasEnded();
 	},
 
 	chatHasEnded: function() {
@@ -203,11 +306,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (this.hasEnded) return;
 		this.hasEnded = true;
 
-		var el = $('.chat-status:first', this.wrapper);
-		$('.open', el).hide();
-		$('.ended', el).show();
-
-		this.barWrapper.hide();
+		this.getEl('replybox').hide().addClass('chat-ended');
 	},
 
 	addPart: function(agent_id) {
@@ -216,36 +315,38 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			context: this,
 			contentType: 'json'
 		});
-
-		this.addMessageRow('*', (DeskPRO_Window.getDisplayName('agent', agent_id)) + ' joined', 'sys');
 	},
 
 	reassignConvo: function(agent_id) {
-		$.ajax({
-			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id,
-			context: this,
-			contentType: 'json'
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id
 		});
-
-		this.addMessageRow('*', 'Chat assigned to ' + (DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned'), 'sys');
 	},
 
-	handleNewMessage: function(data) {
-		DeskPRO_Window.pageTabStrip.alertTab(this.meta.tabIdClass);
+	leaveConvo: function(after) {
+		var self = this;
 
-		if (data.message_html) {
-			this.addMessageRow(data.author_name, data.message_html, data.author_type, true);
-		} else {
-			this.addMessageRow(data.author_name, data.message, data.author_type);
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
+			complete: function() {
+				if (after && after == 'unassign') {
+					self.reassignConvo(0);
+				} else if (after && after == 'end') {
+					self.endChat();
+				}
+			}
+		});
+	},
+
+	addMessageRow: function(name, msg, type, is_html, message_id, metadata) {
+
+		if (message_id && $('.message-' + message_id, this.getEl('messages_box')).length) {
+			return;
 		}
 
-		// Add 'pop' sound
-		var alertEl = $.tmpl('user_chat_newmsg_sound');
-		alertEl.appendTo(this.wrapper);
-		DeskPRO_Window.handleSoundElements(alertEl);
-	},
-
-	addMessageRow: function(name, msg, type, is_html) {
+		if (type == 'user') {
+			this.userTyping({ preview: '' });
+		}
 
 		if (type == 'sys') {
 			name = '* ';
@@ -258,31 +359,163 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			popoutclass = " person-overview";
 		}
 
-		var html = ['<div class="message '+type+'">'];
-			html.push('<span class="author' + popoutclass + '">' + name + '</span>');
-			html.push('<span class="message"></span>');
-		html.push('</div>');
+		var addclass = '';
+		if (metadata && metadata.new_user_track) {
+			addclass = 'user-track';
+		}
+		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
+			if (type == 'sys') {
+				html.push('<div class="message prop-msg"></div><time></time>');
+			} else if (type == 'agent') {
+				html.push('<div class="chatSend"><div class="chatMsgSend"><div class="prop-msg"></div><span class="bubbleLeft"></span></div></div><time></time>');
+			} else if (type == 'user') {
+				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
+			}
+		html.push('</div></div>');
 
 		var row = $(html.join(''));
-		if (is_html) {
-			$('.message', row).html(msg);
-		} else {
-			msg = Orb.escapeHtml(msg);
-			//msg = Orb.linkUrls(msg);
-			$('.message', row).html(msg);
+
+		var d = new Date();
+
+		var a_p = "am";
+		var curr_hour = d.getHours();
+		if (d.getHours() > 12) {
+			a_p = "pm";
+		}
+		if (curr_hour == 0) {
+			curr_hour = 12;
+		} else if (curr_hour > 12) {
+			curr_hour = curr_hour - 12;
 		}
 
-		row.appendTo($('.chat-messages .messages-wrapper', this.wrapper));
+		var curr_min = d.getMinutes();
+		curr_min = curr_min + "";
+		if (curr_min.length == 1) {
+			curr_min = "0" + curr_min;
+		}
 
-		$('.scroll-viewport', this.wrapper).scrollTop(10000);
+
+		$('time', row).text(curr_hour + ":" + curr_min + "" + a_p);
+
+		if (message_id) {
+			row.addClass('message-' + message_id);
+		}
+
+		if (is_html) {
+			$('.prop-msg', row).html(msg);
+		} else {
+			msg = Orb.escapeHtml(msg);
+			msg = DeskPRO_Window.util.linkUrls(msg);
+
+			$('.prop-msg', row).html(msg);
+		}
+
+
+		$('time', row).attr('datetime', (new Date()).toString());
+
+		row.appendTo(this.getEl('messages_box'));
+
+		this.getEl('messages_box').scrollTop(10000);
+
+		this.alertTab();
 	},
 
 	sendMessage: function(msg) {
-		$.ajax({
+		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
-			data: {content: msg},
-			context: this,
-			contentType: 'json'
+			data: {content: msg}
+		});
+	},
+
+	sendInvite: function(agent_id) {
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/invite/' + this.meta.conversation_id + '/' + agent_id
+		});
+	},
+
+	//#################################################################
+	//# Reassignment
+	//#################################################################
+
+	_initAssignControl: function() {
+		var self = this;
+		var btnEl = this.getEl('assign_btn');
+
+		//assign_btn
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('agent_selector'),
+			trigger: this.getEl('assign_btn'),
+			onOpen: function(ob) {
+				var wrap = ob.getElement();
+
+				var any = false;
+				$('.agent-row', wrap).each(function() {
+					if ($(this).is('.agent-0, .me')) return;
+
+					var aid = $(this).data('agent-id');
+					var check = $('#agent_online_list .agent-' + aid);
+					if (!check.length) {
+						$(this).hide();
+					} else {
+						$(this).show();
+						any = true;
+					}
+				});
+
+				$('input:checked', wrap).each(function() {
+					$(this).closest('li').addClass('on');
+				});
+			},
+			onClose: function(ob) {
+				var agentId = parseInt(ob.getSelected('agents')) || 0;
+				var currentValue = parseInt(btnEl.data('agent-id'));
+
+				if (agentId == currentValue) {
+					return;
+				}
+
+				self.reassignConvo(agentId);
+			}
+		})
+
+		// Participants
+		this.partOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('agentpart_selector'),
+			trigger: this.getEl('agent_parts_btn'),
+			onOpen: function(ob) {
+				var wrap = ob.getElement();
+
+				var any = false;
+				$('.agent-row', wrap).each(function() {
+					if ($(this).is('.agent-0, .me')) return;
+
+					var aid = $(this).data('agent-id');
+					var check = $('#agent_online_list .agent-' + aid);
+					var check2 = $('li.agent-' + aid, self.getEl('agent_parts'));
+
+					if (!check.length && !check2.length) {
+						$(this).hide();
+					} else {
+						$(this).show();
+						any = true;
+					}
+				});
+
+				if (!any) {
+					self.getEl('agentpart_sel_none').show();
+				} else {
+					self.getEl('agentpart_sel_none').hide();
+				}
+			}
+		})
+
+		this.getEl('agentpart_selector').delegate('.invite-trigger', 'click', function(ev) {
+			ev.preventDefault();
+			self.partOptionBox.close();
+
+			var row = $(this).closest('li');
+			var agentId = row.data('agent-id');
+			self.sendInvite(agentId);
 		});
 	},
 
@@ -302,20 +535,24 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var o;
 		var overlayWrapper = this.getEl('upfile_overlay');
 		this.uploadOverlay = o = new DeskPRO.UI.Overlay({
-			contentElement: overlayWrapper
+			contentElement: overlayWrapper,
+			customClassname: 'userchat-send-file'
 		});
 
 		var list = $('.file-list', overlayWrapper);
 
+		var drops = $([overlayWrapper.get(0), this.getEl('replybox').get(0)]);
+
 		overlayWrapper.fileupload({
 			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: overlayWrapper,
+			dropZone: drops,
 			autoUpload: true,
 			uploadTemplate: $('.template-upload', overlayWrapper),
 			downloadTemplate: $('.template-download', overlayWrapper)
 		});
 		overlayWrapper.bind('fileuploadadd', function() {
             $('ul.file-list', overlayWrapper).empty();
+			self.uploadOverlay.open();
         });
 
 		$('button.send-trigger', overlayWrapper).click(function() {
@@ -326,170 +563,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				return;
 			}
 
-			$.ajax({
+			DeskPRO_Window.util.ajaxWithClientMessages({
 				url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
 				data: {send_blob_id: blobId},
-				context: self,
-				contentType: 'json',
-				success: function(data) {
-					var chat_data = data.chat_data;
-					this.addMessageRow(chat_data.author_name, chat_data.message_html, chat_data.author_type, true);
-				}
 			});
 
 			self.uploadOverlay.close();
 			$('ul.file-list', overlayWrapper).empty();
 		});
-	},
-
-	//#################################################################
-	//# Popout
-	//#################################################################
-
-	_initPopout: function() {
-		var self = this;
-		var el = this.wrapper;
-
-		// AJAX load the fragment now
-		var url = this.getMetaData('viewPersonUrl');
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			type: 'GET',
-			success: function(html) {
-				self.personPopoutHtml = html;
-				if (self.personPopoutWaiting) {
-					self.personPopoutWaiting = false;
-					self._initPopoutPageFragment();
-				}
-			}
-		});
-
-		$('.person-overview', el).css({'cursor': 'pointer'}).click(function(event) {
-			self.isMouseOverPopout = true;
-			self.openPopOut(event);
-		});
-	},
-
-	_initPopoutEls: function() {
-
-		if (this._initPopoutEls_done) return;
-		this._initPopoutEls_done = true;
-
-		var el = this.contentWrapper;
-		var self = this;
-
-		this.popout = $('.person-popout:first', el);
-		this.popout.click(function(event) {
-			// Any clicks that bubble here should stop now
-			event.stopPropagation();
-		});
-		this.popout.detach().appendTo('body');
-
-		this.popoutOuter = $('.person-popout-outer:first', el);
-		this.popoutOuter.detach().appendTo('body');
-
-		this.popoutTabs = $('.person-popout-tabs:first', el);
-		this.popoutTabs.detach().appendTo('body');
-
-		var self = this;
-		$('.close:first', this.popoutTabs).click(function() {
-			self.closePopout();
-		});
-
-		$('.move-to-tab:first', this.popoutTabs).click(function(ev) {
-			ev.stopPropagation();
-			DeskPRO_Window.runPageRouteFromElement($('.person-overview', self.wrapper));
-			self.closePopout();
-		});
-	},
-
-	openPopOut: function(event) {
-
-		this._initPopoutEls();
-
-		// Already open
-		if (this.popout.is(':visible')) {
-			return;
-		}
-
-		var orig = $('.person-overview:first', this.wrapper);
-		var pos = orig.offset();
-		var wrapper_pos = this.wrapper.offset();
-
-		// can use the left position of the element to roughly
-		// determine how wide the columns are
-		// so we want it to stretch as far as we can, minus some wriggle room
-		var width = pos.left - 35;
-
-		// ... but not too big
-		if (width > 780) {
-			width = 780;
-		}
-
-		var show_popout = true;
-		if (width < 400) {
-			show_popout = false;
-		}
-
-		if (show_popout) {
-			this.popout.css({
-				'position': 'absolute',
-				'display': 'block',
-				'z-index': 999998,
-				'width': width,
-				'overflow': 'auto'
-			});
-
-			// Separate on purpose, we need the outerWidth which
-			// wont be correct until the above rules are applied
-			this.popout.css({
-				'top': (wrapper_pos.top - 8),
-				'left': (pos.left - this.popout.outerWidth() - 20),
-				'bottom': 30
-			});
-
-			var poppos = this.popout.offset();
-			this.popoutOuter.css({
-				'position': 'absolute',
-				'display': 'block',
-				'z-index': 999997,
-				'width': width+2+6, //2px for thi sborder, 6px for the popout border
-				'overflow': 'auto',
-				'top': poppos.top-1,
-				'left': poppos.left-1,
-				'bottom': 29 //popout bottom (30) -1 for the white border
-			});
-
-			this.popoutTabs.css({
-				'z-index': 999996,
-				'display': 'block',
-				'top': (wrapper_pos.top - 30),
-				'left': (pos.left - 260)
-			});
-		}
-
-		if (!this.hasInitPopout && show_popout) {
-			if (this.personPopoutHtml) {
-				this._initPopoutPageFragment();
-			} else {
-				this.personPopoutWaiting = true;
-			}
-		}
-	},
-
-	closePopout: function() {
-		this.popout.hide();
-		this.popoutOuter.hide();
-		this.popoutTabs.hide();
-	},
-
-	_initPopoutPageFragment: function() {
-
-		this.popoutPage = DeskPRO_Window.createPageFragment(this.personPopoutHtml);
-		this.popout.html(this.personPopoutHtml);
-		this.personPopoutHtml = null;
-		this.popoutPage.initPage(this.popout);
-		this.hasInitPopout = true;
 	}
 });

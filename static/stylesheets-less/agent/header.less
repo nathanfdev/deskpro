@@ -2,7 +2,8 @@
 
 #DP-NotificationSection{
     background-repeat: no-repeat;
-    background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right */;
+    background-position: 100% 0;
+    background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right */;
 	float: left;
 	height: 41px;
 	width: 217px;
@@ -16,24 +17,17 @@
 }
 
 .notifications{
-	background-image: -moz-linear-gradient(top, #529dcd, #3567b2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));
-	-pie-background: linear-gradient(#529dcd, #3567b2);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#529dcd, #3567b2);
 	border: 1px solid #314559;
 	box-shadow: 0 1px 0 #356599, 0 1px 0 #68BEEC inset, inset 0 0 0px 1px rgba(255, 255, 255, 0.1);
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
  	float: right;
     height: 23px;
     padding: 0;
     position: relative;
-    width: 60px;
 }
 .notifications:hover{
-	background-image: -moz-linear-gradient(top, #57a7d9, #396fbf);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#57a7d9), to(#396fbf));
-	-pie-background: linear-gradient(#57a7d9, #396fbf);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#57a7d9, #396fbf);
 	position: relative;
 }
 
@@ -44,7 +38,7 @@
 .notifMenuWrap a.iconImg{
     background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	font-size: 10px;
 	color: #fff;
 	cursor: pointer;
@@ -54,7 +48,7 @@
 .notifMenuWrap a.chat{
   	background-position:top left;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     float: left;
     height: 13px;
     padding: 5px 4px;
@@ -79,18 +73,16 @@
 	width: 15px;
 }
 
-.counter{
-	background-image: -moz-linear-gradient(top, #bf6060, #804040);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#bf6060), to(#804040));
-	-pie-background: linear-gradient(#bf6060, #804040);
-	behavior: url("../../static/vendor/PIE.htc");
-	border-radius: 10px;
+.notif-item .counter {
+	.gradient(#bf6060, #804040);
+	.border-radius(10px, 10px, 10px, 10px);
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 0px 1px rgba(255, 255, 255, 0.2) inset,  0 2px 3px rgba(0, 0, 0, 0.3);
 	border: 1px solid #543237;
 	color: #fff;
 	font-size: 8px;
 	font-weight: bold;
-	padding: 1px 5px;
+	padding: 1px 3px;
+	line-height: 100%;
 	left: 0;
 	position: absolute;
 	top: -5px;
@@ -109,52 +101,61 @@
 
 /* Notification Dropdown */
 #notificationDropdown{
-	left: 136px;
 	position: absolute;
 	top: 41px;
-}
-.ie #notificationDropdown{
-	top: 0px;
+	z-index: 100001;
 }
 .notifDropdown{
 	background: rgba(242,242,242, 0.98);
-	border-radius: 0 0 5px 5px;
+	.border-radius(0, 0, 5px, 5px);
 	border: 1px solid #B6BABF;
 	border-top: medium none transparent !important;
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	position: relative;
-	width: 380px;
+	width: 450px;
 	float: left;
 	z-index: 999;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 .ie .notifDropdown{
 	background: #f2f2f2;
 	top: 41px;
 	display: block;
 }
-.notifDropdown ul#notification{
+ul#dp_notify_list{
 	background: transparent;
 }
-.notifDropdown ul#notification li{
+ul#dp_notify_list li{
 	cursor: pointer;
 	width: 100%;
 	position: relative;
 }
-.notifDropdown ul#notification li a{
+ul#dp_notify_list li a{
 	width: auto;
 	float: left;
 }
-.notifDropdown ul#notification li span{
+ul#dp_notify_list li span{
 	font-size: 11px;
 	color: #9DA2A6;
 	text-shadow: 0 1px 0 #fff;
 	float: right;
 }
-.notifDropdown ul#notification li span.timeStamp{
-	padding: 5px 10px 5px 0;
+ul#dp_notify_list li .timeago {
+	float: right;
+	color: lighten(@body-text-color, 30%);
+	margin: 5px 5px 0 0;
 }
-.notifDropdown ul#notification li span.dismissHover{
+ul#dp_notify_list li .dismiss {
+	float: right;
+	.iconbase(10px, 10px);
+	background: url(../../images/agent/icons/delete-small.png) no-repeat 0 0;
+	cursor: pointer;
+	margin: 10px 5px 0 0;
+	.opacity(50);
+}
+ul#dp_notify_list li em:hover {
+	.opacity(100);
+}
+ul#dp_notify_list li span.dismissHover{
 	position: absolute;
 	right: 10px;
 	top: 5px;
@@ -162,67 +163,59 @@
 	padding: 0;
 	display: none;
 }
-.notifDropdown ul#notification li:hover{
+ul#dp_notify_list li:hover{
 	background: rgba(255,255,255,0.5);
 }
-.notifDropdown ul#notification li:last-child:hover{
+ul#dp_notify_list li:last-child:hover{
 	background: transparent;
 }
 
-.notifDropdown ul#notification li span.timeStamp:hover span.dismissHover{
-	display: block;
-	background: #F8F8F8;
-	padding: 0px 0 1px 50px;
-}
-.notifDropdown ul#notification li.dismissAll{
+ul#dp_notify_list li.dismissAll{
 	padding: 5px 10px;
-	width: auto;
+	text-align: center;
 }
-.notifDropdown ul#notification li.dismissAll a{
-	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
-	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url("../../static/vendor/PIE.htc");
+ul#dp_notify_list li.dismissAll a{
+    display: inline;
+	.gradient(#6baccc, #5182b3);
 	border: 1px solid #4B7095;
 	box-shadow: inset 0 1px 0 #82bdd7;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	color: #fff;
-	text-shadow: 0 1px 0 #000;
+	text-shadow: 0 1px 0 rgba(0,0,0, 0.5);
 	font-size: 11px;
 	font-weight: bold;
 	text-align: center;
 	padding: 3px 10px 4px;
-	width: 338px;
 	position: relative;
+	font-family: @heading-font;
 }
-.notifDropdown ul#notification li.dismissAll a:hover{
-	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
-	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url("../../static/vendor/PIE.htc");
+ul#dp_notify_list li.dismissAll a:hover{
+	.gradient(#72b8d8, #578bbf);
 	position: relative;
 }
 
-.notifDropdown ul#notification li.notifPaging{
-	background-image: -moz-linear-gradient(top, #f6f6f6, #e9e9e9);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f6f6f6), to(#e9e9e9));
-	-pie-background: linear-gradient(#f6f6f6, #e9e9e9);
-	behavior: url("../../static/vendor/PIE.htc");
+ul#dp_notify_list li.notifPaging{
+	.gradient(#f6f6f6, #e9e9e9);
 	position: relative;
 }
-.notifDropdown ul#notification li.notifPaging span{
+ul#dp_notify_list li.notifPaging span{
 	float: left;
 	padding: 5px 0 5px 9px;
 }
 
+ul#dp_notify_list li .info {
+	clear: both;
+	position: relative;
+	top: -4px;
+	margin-left: 10px;
+	font-size: 9px;
+}
+
 .notifHead{
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: 0 2px 1px 0 #D2D2D2 inset;
 	border-left: 1px solid #314559;
-	border-radius: 3px 3px 0 0;
+	.border-radius(3px, 3px, 0, 0);
 	border-right: 1px solid #314559;
 	border-top: 1px solid #314559;
 	height: 27px;
@@ -233,21 +226,24 @@
 	width: 60px;
 	cursor: pointer;
 }
+.notif-item {
+	float: left;
+	display: block;
+	width: 28px;
+	height: 23px;
+}
 .notifMail{
-	background-position:top left;
+	background-position: 7px 7px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	    float: left;
-	    padding: 11px;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 7px; */;
 }
 .notifChat{
-	background-position:top left;
+	background-position: 6px 6px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	padding: 10px;
+    background-image: url(../../images/agent/tabs/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 6px; */;
 }
 .notifMail .counter{
-	left: 17px;
+	left: 18px;
 	position: absolute;
 	top: -5px;
 }
@@ -257,8 +253,8 @@
 	top: -5px;
 }
 /* Pagination Notification Menu*/
-.notifDropdown ul#notification li.notifPaging ul#notifPages{}
-.notifDropdown ul#notification li.notifPaging ul#notifPages li{
+ul#dp_notify_list li.notifPaging ul#notifPages{}
+ul#dp_notify_list li.notifPaging ul#notifPages li{
 	border-bottom: medium none;
 	display: inline;
 	width: auto;
@@ -266,7 +262,7 @@
 	text-shadow: 0 1px 0 #fff;
 	padding: 0 2px;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.mark{
+ul#dp_notify_list li.notifPaging ul#notifPages li.mark{
 	color: #BEBEBE;
 	font-size: 10px;
 	font-weight: normal;
@@ -274,34 +270,33 @@
 	cursor: text;
 	background: transparent !important;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.active,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.pages:hover,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.pText:hover{
+ul#dp_notify_list li.notifPaging ul#notifPages li.active,
+ul#dp_notify_list li.notifPaging ul#notifPages li.pages:hover,
+ul#dp_notify_list li.notifPaging ul#notifPages li.pText:hover{
 	padding: 4px 2px;
 	background: transparent;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.right{
+ul#dp_notify_list li.notifPaging ul#notifPages li.right{
 	float: right;
 
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.off a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.off a{
 	color: #b8c0c5 !important;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.off:hover a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.off:hover a{
 	background: transparent;
 	border: 1px solid transparent;
 }
 
-.notifDropdown ul#notification li.notifPaging ul#notifPages li a{
+ul#dp_notify_list li.notifPaging ul#notifPages li a{
 	padding: 5px 4px;
 }
-.notifDropdown ul#notification li.notifPaging ul#notifPages li.active a,
-.notifDropdown ul#notification li.notifPaging ul#notifPages li:hover a{
+ul#dp_notify_list li.notifPaging ul#notifPages li.active a,
+ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	background: #fff;
 	border: 1px solid #a5a6a7;
-	border-radius: 10px 10px 10px 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	padding: 0px 3px;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 /* End of Notification Dropdown */
 
@@ -313,8 +308,8 @@
 	width: 467px;
 	border-right: 1px solid #3A4A59;
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.2);
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
+	cursor:	text;
 }
 .ie #dp_omnibox_wrap{
 	box-shadow: 2px 0 4px 0 #396388;
@@ -322,162 +317,111 @@
 
 .searchBoxWrap{
 	padding: 4px 0 4px 20px;
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	background-image: url(../../images/agent/icons/mag-left.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 }
-.searchBoxWrap #dpsearchbox{
+.searchBoxWrap #dp_omniinput {
 	outline: none;
 	border: none;
-	width: 245px;
+	min-width: 50px;
 	background-color: #FAFAFA;
 }
-.searchType, .searchBy{
-	margin: 0 5px 0 0;
-	float: left;
-}
-.searchType{
-	border-radius: 10px;
-	background-image: -moz-linear-gradient(top, #98AEB3, #98AEB3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#98AEB3), to(#98AEB3));
-	background: linear-gradient(#98AEB3, #98AEB3);
-	-pie-background: linear-gradient(#98AEB3, #98AEB3);
-	behavior: url("../../static/vendor/PIE.htc");
-	position: relative;
-}
-.searchType a, .searchBy span{
-	color: #FFF;
-	text-shadow: 0 1px 0 #000;
-	cursor: pointer;
-	float: left;
-	font-size: 10px;
-	padding: 1px 6px;
-}
-.searchBy{
-	text-shadow: none;
-	cursor: pointer;
-	color: #2b3233;
-}
-.searchBy span{
-	background: #d2d8d9;
-	border-radius: 10px 0 0 10px;
-	color: #2b3233;
-	text-shadow: none;
-	behavior: url("../../static/vendor/PIE.htc");
-	position: relative;
-}
-.searchBy a{
-	background-color: #DFE4E6;
-	color: #2B3233;
-	float: left;
-	font-size: 10px;
-	line-height: 12px;
-	padding: 1px 5px;
-	border-radius: 0 10px 10px 0;
-	position: relative;
-	behavior: url("../../static/vendor/PIE.htc");
+
+
+#dp_omnibox .term {
+    float: left;
+
+    color: #000;
+
+    border: 1px solid #E9EBF7;
+    background-color: #E9EBF7;
+    font-size: 10px;
+    text-shadow: none;
+
+    .border-radius(3px, 3px, 3px, 3px);
+    margin-left: 3px;
+
+    cursor: pointer;
+    position: relative;
 }
 
-.searchBy a span.close{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -1428px;
-	display: none;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
-.searchBy a:hover{
-	background-color: #DFE4E6;
-}
-.searchBy a:hover span.close{
-	display: block;
-}
-/* DP Search Dropdown */
-#searchDropdown{
-	left: 21px;
-	position: absolute;
-	top: 28px;
-	right: 20px;
-	z-index: 9999;
-}
-.searchCatDropdown{
-	background: #f2f2f2;
-	box-shadow: 0 2px 1px 0 #D2D2D2 inset;
-	border-radius: 5px;
-	border: 1px solid #B6BABF;
-	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
-	position: relative;
-	z-index: 9999;
-	float: left;
-	behavior: url("../../static/vendor/PIE.htc");
+#dp_omnibox .term .remove-term-trigger {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin-top: -7px;
+    margin-right: -10px;
+
+    width: 20px;
+    height: 20px;
+
+    background: url(../../images/agent/close-small.png) no-repeat 100% 0;
+
+    text-indent: -100px;
+    overflow:hidden;
 }
 
-.searchCatDropdown ul, .notifDropdown ul#notification{
-	margin: 0;
+#dp_omnibox .term:hover {
+    border: 1px solid #9A9BA3;
 }
 
-.searchCatDropdown li, .notifDropdown ul#notification li{
-	border-bottom: 1px solid #e3e4e6;
-	display: block;
-	float: left;
-	width: 100%;
-}
-.searchCatDropdown li:last-child, .notifDropdown ul#notification li:last-child{
-	border: none;
-}
-
-.searchCatDropdown li a, .notifDropdown ul#notification li a{
-	color: #9DA2A6;
+#dp_omnibox .term:hover .remove-term-trigger {
     display: block;
-    font-size: 11px;
-    padding: 5px 10px;
-    text-shadow: 0 1px 0 #FFFFFF;
 }
 
-.searchCatDropdown li:hover a{
-	background: #f9f9f9;
+#dp_omnibox .term .label {
+    display: block;
+    float: left;
+    white-space: nowrap;
+
+    color: #48494E;
+    border-right: 1px solid #D6D8E8;
+
+    padding: 0 3px 0 3px;
+
+
 }
 
-.searchCatDropdown li a span{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 0 -405px;
-	display: block;
-	padding: 0 0 0 20px;
-}
-.searchCatDropdown li a span.createTicket{
-	background-position: 0 -733px;
-}
-.searchCatDropdown li a span.people{
-	background-position: 0 -713px;
-}
-.searchCatDropdown li a span.createIdeas{
-	background-position: 0 -756px;
+#dp_omnibox .term .value {
+    display: block;
+    float: left;
+    white-space: nowrap;
+
+    padding: 0 3px 0 3px;
 }
 
-.searchCatDropdown li.last{
-	display: block;
-	padding: 5px;
-	width: 400px;
+#dp_omnibox .input-term input {
+    display: none;
 }
-.searchCatDropdown li.last a{
-	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
-	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url("../../static/vendor/PIE.htc");
-	border: 1px solid #4b7095;
-	box-shadow: inset 0 1px 0 #82bdd7;
-	border-radius: 3px 3px 3px 3px;
-	color: #FFFFFF;
-	float: left;
-	padding: 4px 1px;
-	text-align: center;
-	text-shadow: 0 1px 0 #000000;
-	width: 395px;
-	position: relative;
+
+#dp_omnibox .input-term.edit input {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    font-size: 10px;
+    color: 000;
+    text-shadow: none;
+    border: none;
+
+    margin-top: 1px;
+    padding: 1px;
 }
-.searchCatDropdown li.last a:hover{
-	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
-	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url("../../static/vendor/PIE.htc");
-	position: relative;
+
+#dp_omnibox .input-term.edit input:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }
-/* End of DP Search Dropdown */
+
+#dp_omnibox .input-term.edit .display-value {
+    display: none;
+}
+
 
 #DP-CreateSection{
 	position: relative;
@@ -492,12 +436,12 @@
 #DP-StatusSection{
 	position: relative;
 	float: right;
-	width: ;
 }
 
 #DP-UserSection{
 	position: relative;
 	float: right;
+	padding-right: 5px;
 }
 
 
@@ -515,7 +459,7 @@
 #dp_header{
 	background-color:#2d5680;
 	background-repeat: repeat-x;
-	background-image: url("../../images/agent/headerBack.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
+	background-image: url("../../images/agent/header/header-bg.png") /** sprite-ref: ui-v; sprite-alignment: repeat; */;
 	height: 41px;
 	position: absolute;
 	top: 0;
@@ -525,9 +469,10 @@
 
 #dp_omnibox{
 	height: 22px;
+	min-height: 22px;
 	margin: 7px 7px 0 6px;
 	position: absolute;
-	top: 0; right: 0; bottom: 0; left: 0;
+	top: 0; left: 275px;
 	font-size: 10px;
 	line-height: 12px;
 	color: #2b3233;
@@ -535,8 +480,12 @@
 	border: 1px solid #3a4a59;
 	border-radius:15px;
 	box-shadow: 0 1px 0 #3b71a9, inset 0 1px 3px rgba(0,0,0,0.15);
-	behavior: url("../../static/vendor/PIE.htc");
 	overflow: hidden;
+	z-index: 9999;
+}
+
+#dp_omnibox.focus {
+	height: auto;
 }
 
 /* DP Create Ticket */
@@ -558,13 +507,10 @@
 }
 
 .DP-createTicket #createContentTrigger a{
-	background-image: -moz-linear-gradient(top, #529dcd, #3567b2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#529dcd), to(#3567b2));
-	-pie-background: linear-gradient(#529dcd, #3567B2);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#529dcd, #3567b2);
 	box-shadow: 0 1px 0 #386da1, 0 1px 0 #95caec inset, 0 0 1px 1px rgba(255,255,255,0.2) inset;
 	border: 1px solid #314559;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	color: #f2f9ff;
 	cursor: pointer;
 	float: left;
@@ -581,16 +527,13 @@
 	position: relative;
 }
 .DP-createTicket #createContentTrigger:hover a{
-	background-image: -moz-linear-gradient(top, #75a8cd, #5688c9);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#75a8cd), to(#5688c9));
-	-pie-background: linear-gradient(#75a8cd, #5688c9);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#75a8cd, #5688c9);
 	position: relative;
 }
 .DP-createTicket #createContentTrigger a span{
 	background-repeat: no-repeat;
 	background-position: 7px 5px;
-    background-image: url(../../images/agent/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	float: left;
 	padding: 0 0 0 20px;
 	display: block;
@@ -660,13 +603,12 @@
 	background: rgba(242,242,242,0.98);
 	border-bottom: 1px solid #B6BABF;
 	border-left: 1px solid #B6BABF;
-	border-radius: 0 0 4px 4px;
+	.border-radius(0, 0, 4px, 4px);
 	border-right: 1px solid #B6BABF;
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
 	text-align: left;
 	position: relative;
 	z-index: 1;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 .ie .createDropdown ul{
 	background: #f2f2f2;
@@ -704,12 +646,10 @@
 }
 
 .createDropdown ul.createBtnPopups li:hover a{
-	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
-	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#72b8d8, #578bbf);
+
 	border: 1px solid #4B7095;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
 	color: #FFFFFF;
 	text-shadow: 0 1px 1px #000000;
@@ -717,7 +657,6 @@
 }
 
 .createDropdown ul.createBtnPopups li:hover span{
-    line-height: 23px;
     margin: 0;
     padding: 0 0 0 25px;
 
@@ -737,101 +676,98 @@
 .createDropdown ul.createBtnPopups li a span.createTicket{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createPerson{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createPerson {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createOrg{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createOrg{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createTask{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createTask {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createArticle{
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createArticle {
 	background-repeat: no-repeat;
 	background-position: 6px 7px;
-	background-image: url(../../images/agent/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-content-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createNews{
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-news.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createNews {
 	background-repeat: no-repeat;
 	background-position: 4px 7px;
-	background-image: url(../../images/agent/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-news-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 7px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createDownload{
 	background-repeat: no-repeat;
 	background-position: 5px 6px;
-	background-image: url(../../images/agent/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-download.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createDownload {
 	background-repeat: no-repeat;
 	background-position: 5px 6px;
-	background-image: url(../../images/agent/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-download-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createIdeas {
 	background-repeat: no-repeat;
 	background-position: 7px 6px;
-	background-image: url(../../images/agent/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-idea.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createDropdown ul.createBtnPopups li a:hover span.createIdeas {
 	background-repeat: no-repeat;
 	background-position: 7px 6px;
-	background-image: url(../../images/agent/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
+	background-image: url(../../images/agent/tabs/tabtype-idea-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; sprite-margin-bottom: 6px; */;
 }
 .createHeader, .switcherHeader{
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
+	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url("../../static/vendor/PIE.htc");
-	border-radius: 3px 3px 0 0;
+	.border-radius(3px, 3px, 0, 0);
 	border-top: 1px solid #314559;
 	border-left: 1px solid #314559;
 	border-right: 1px solid #314559;
-	border-radius: 4px 4px 0 0;
+	.border-radius(4px, 4px, 0, 0);
 	color: #737980;
 	height: 26px;
 	padding: 5px 0 1px 7px;
@@ -857,7 +793,7 @@
 #DP-InterfaceSwitcher{
 	background-repeat: no-repeat;
 	background-position: 0 100%;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
+	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	width: 180px;
 	position: relative;
 	float: right;
@@ -868,13 +804,10 @@
 	float: left;
 }
 .adminSwitcher{
-	background-image: -moz-linear-gradient(top, #5a90b8, #3c6094);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));
-	-pie-background: linear-gradient(#436ba3, #3c6094);
-	box-shadow: 0 1px 0 #386da1, inset 0 1px 0 #75b3da, inset 0 0 1px #5283af;
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#5a90b8, #3c6094);
 	border: 1px solid #314559;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
 	float: left;
 	height: 20px;
     padding: 0 9px 2px;
@@ -887,7 +820,7 @@
 .adminSwitcher a{
 	background-repeat: no-repeat;
 	background-position: 0 5px;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #F2F9FF;
 	font-size: 11px;
 	font-weight: normal;
@@ -908,10 +841,7 @@
 	position: relative;
 }
 .adminSwitcher:hover{
-	background-image: -moz-linear-gradient(top, #5c93ba, #4670aa);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#5c93ba), to(#4670aa));
-	-pie-background: linear-gradient(#5c93ba, #4670aa);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#5c93ba, #4670aa);
 	position: relative;
 }
 
@@ -919,14 +849,14 @@
     margin-left: 2px;
 	background-repeat: no-repeat;
 	background-position: 0 2px;
-    background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
     padding-left: 23px;
 }
 
 .dropdownSwitcherWrap ul li:hover a span {
 	background-repeat: no-repeat;
 	background-position: 0 2px;
-    background-image: url(../../images/agent/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
+    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
@@ -945,12 +875,9 @@
 
 .dropdownSwitcherWrap ul{
 	margin-left:1px;
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
-	border-radius: 0 0 4px 4px;
+	.border-radius(0, 0, 4px, 4px);
 	border-left: 1px solid #B6BABF;
 	border-right: 1px solid #B6BABF;
 	border-bottom: 1px solid #B6BABF;
@@ -958,48 +885,33 @@
 	width: 147px;
 	position: relative;
 	z-index: 100001;
+	padding: 2px 0 2px 0;
 }
 
 .dropdownSwitcherWrap li{
 	display: block;
-	padding: 3px 5px;
-	width: 100%;
+	padding: 2px 5px;
+	line-height: 23px;
 }
 .dropdownSwitcherWrap li a{
 	text-shadow: 0 1px 0 #fff;
 	font-size: 11px;
 	font-weight: normal;
 	color: #9DA2A6;
-	line-height: 25px;
 	display: block;
-	padding: 0 0 0 2px !important;
-}
-
-.dropdownSwitcherWrap li a{
-
-}
-.dropdownSwitcherWrap li a:focus span{
-	background-repeat: no-repeat;
-    background-image: url(../../images/agent/interface-switcher-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
-	padding: 0 40px 0 2px;
-	width: 100%;
+	padding: 0 0 0 2px!important;
+	border: 1px solid transparent;
 }
 
 .dropdownSwitcherWrap li:hover a {
-	background-image: -moz-linear-gradient(top, #72b8d8, #578bbf);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#72b8d8), to(#578bbf));
-	-pie-background: linear-gradient(#72b8d8, #578bbf);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#72b8d8, #578bbf);
+
 	border: 1px solid #406080;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	box-shadow: 0 1px 0px rgba(255, 255, 255, 0.2) inset ;
 	color: #FFFFFF;
-	line-height: 20px;
 	margin: 0;
-	padding: 2px 0 1px 3px !important;
-	text-shadow: 0 1px 0 #333333;
-	width: 90%;
-	position: relative;
+	text-shadow: 0 1px 1px #333333;
 }
 .switcherHeader{
 	height: 21px;
@@ -1007,11 +919,11 @@
 	width: 139px !important;
 	z-index: 100003;
 }
-.switcherHeader a{
+.switcherHeader span {
 	background-repeat: no-repeat;
 	background-position: 0 3px;
     background-image: url(../../images/agent/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
-	padding: 0 0 0 22px !important;
+	padding: 0 0 0 20px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{
 	padding: 0 24px 0 18px !important;
@@ -1021,7 +933,7 @@
 /* Status Admin */
 #DP-StatusSection{
 	background-repeat: no-repeat;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
+	background-image: url("../../images/agent/header/header-div.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;
@@ -1047,28 +959,29 @@
 	width: 16px;
 }
 
-.DP-adminStatus li.agentStatus a{
+.DP-adminStatus li.agentStatus a {
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/agent-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
     margin-right: 15px;
 	position: relative;
 	height: 12px;
 }
-#dpHeader .actions li.agentStatus a.on{
+.DP-adminStatus li.agentStatus a.away,
+.DP-adminStatus li.agentStatus a.dnd {
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/agent-status-away.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.networkStatIndicator a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/network-status.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-right: 6px;
 	width: 17px;
 	height: 12px;
 }
 .DP-adminStatus li.networkStatIndicator a.on{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/network-status-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 .DP-adminStatus li.soundIcon {
@@ -1076,13 +989,13 @@
 }
 .DP-adminStatus li.soundIcon a{
 	background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/sound-on.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 	margin-left: 10px;
 	height: 15px;
 }
 .DP-adminStatus li.soundIcon a.off{
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
+    background-image: url(../../images/agent/header/sound-off.png) /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 .DP-adminStatus li a .dropdowninfo{
 	position: relative;
@@ -1090,11 +1003,9 @@
 }
 
 .DP-adminStatus li a span{
-	background-image: -moz-linear-gradient(top, #262626, #111111);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#262626), to(#111111));
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#262626, #111111);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.2) inset, 0 0 2px rgba(0,0,0,0.3);
-	border-radius: 5px 5px 5px 5px;
+	.border-radius(5px, 5px, 5px, 5px);
 	line-height: 16px;
 	font-size: 11px;
 	font-weight: bold;
@@ -1170,61 +1081,29 @@
 }
 
 
-.DP-adminStatus li.soundIcon .dropdowninfo{
-	background: url("@{asset-url}/images/agent/bgVol.png") no-repeat 0 0;
-	height: 80px;
-	left: 68px;
-	padding: 13px 14px;
-	position: absolute;
-	top: 32px;
-	width: 9px;
-	z-index: 9999;
-}
-.DP-adminStatus li.soundIcon .dropdowninfo .slider{
-	background:url("@{asset-url}/images/agent/volumeSlider.png") no-repeat 0 0;
-	width: 9px;
-	height: 82px;
-}
-.DP-adminStatus li.soundIcon .dropdowninfo .slider a.btnSlider{
-	background:url("@{asset-url}/images/agent/volBtnSlide.png") no-repeat 0 0;
-	height: 21px;
-	position: absolute;
-	right: 7px;
-	top: 21px;
-	width: 21px;
-	cursor:pointer;
-}
-
-.DP-adminStatus li.soundIcon a:hover .dropdowninfo{
-	display: block;
-}
-/* END Status Admin */
-
 /* User Control Section */
 #DP-UserSection{
 	background-repeat: no-repeat;
-	background-image: url("@{asset-url}/images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
+	background-image: url("../../images/agent/headerDiv.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
 	position: relative;
 	float: right;
 	height: 41px;
-	width: 60px;
 }
 
 #DP-userControl{
 	font-family: @toolbar-font;
-	height: 36px;
+	height: 35px;
 	overflow: hidden;
-	padding: 6px 0 0 7px;
+	padding: 5px 0 0 7px;
 	position: relative;
 }
 
 
 .currentUserAvatar .userWrapper{
 	background: #f2f2f2;
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 2px 2px 0 #D2D2D2 inset, 0 2px 0 #D6D6D6 inset, 0 0 0 2px #E5E5E5 inset;
 	border: 1px solid #314559;
-	border-radius: 5px;
+	.border-radius(5px, 5px, 5px, 5px);
 	float: left;
 	position: relative;
 }
@@ -1234,7 +1113,13 @@
 .userWrapper a{
 	cursor: pointer;
 	float: left;
-	padding: 4px 4px 1px;
+	padding: 3px 4px 0px 4px;
+}
+
+.userWrapper a img {
+	position: relative;
+	top: 1px;
+	.rounded(4px);
 }
 
 .currentUserAvatar span{
@@ -1247,15 +1132,12 @@
 }
 /* User Profile Dropdown */
 .userProfileDropdownHeader{
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
+	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url("../../static/vendor/PIE.htc");
 	border-top: 1px solid #314559;
 	border-left: 1px solid #314559;
 	border-right: 1px solid #314559;
-	border-radius: 4px 4px 0 0;
+	.border-radius(4px, 4px, 0, 0);
     position: absolute;
     right: -1px;
 	top: -37px;
@@ -1275,12 +1157,9 @@
 
 
 .userProfileDropdown{
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f2f2f2);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f2f2f2), to(#f2f2f2));
-	-pie-background: linear-gradient(#f2f2f2, #f2f2f2);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 4px 5px -3px rgba(0, 0, 0, 0.2);
-	border-radius: 0 0 4px 4px;
+	.border-radius(0, 0, 4px, 4px);
 	border-left: 1px solid #B6BABF;
 	border-right: 1px solid #B6BABF;
 	border-bottom: 1px solid #B6BABF;
@@ -1304,18 +1183,20 @@
 	display: block;
 }
 .userProfileDropdown li a{
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat;
-	padding: 2px 0 1px 30px;
+	padding: 0 0 0 25px;
 }
 .userProfileDropdown li.myAccount a, .userProfileDropdown li.myAccount:hover a{
-	background-position: 9px -254px;
+
 }
 .userProfileDropdown li.setting a, .userProfileDropdown li.setting:hover a{
-	background-position: 9px -278px;
+	background-repeat: no-repeat;
+	background-position: 8px 6px;
+	background-image: url(../../images/agent/header/menu-settings.png);
 }
 .userProfileDropdown li.help a, .userProfileDropdown li.help:hover a{
-	background-position: 9px -301px;
-	padding: 3px 0 0 29px;
+	background-repeat: no-repeat;
+	background-position: 7px 6px;
+	background-image: url(../../images/agent/header/menu-help.png);
 }
 
 .userProfileDropdown li p{
@@ -1334,7 +1215,7 @@
 }
 
 .userProfileDropdown li:hover a{
-	background: #f8f8f8 url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat;
+	backgroundcolor: #f8f8f8;
 	color: #737a80;
 }
 .userProfileDropdown li:last-child:hover a{
@@ -1347,13 +1228,10 @@
 	border-bottom: none;
 }
 .userProfileDropdown li.logout a{
-	background-image: -moz-linear-gradient(top, #cd5353, #b43e3e);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#cd5353), to(#b43e3e));
-	-pie-background: linear-gradient(#cd5353, #b43e3e);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#cd5353, #b43e3e);
 	border: 1px solid #673434;
 	box-shadow: inset 0 1px 0 #d86565;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	display: block;
 	text-align: center;
 	color: #fff;
@@ -1364,11 +1242,8 @@
 	position: relative;
 }
 .userProfileDropdown li.logout:hover a{
-	background-image: -moz-linear-gradient(top, #d85858, #bf4242);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#d85858), to(#bf4242));
-	-pie-background: linear-gradient(#d85858, #bf4242);
-	behavior: url("../../static/vendor/PIE.htc");
-	border-radius: 3px;
+	.gradient(#d85858, #bf4242);
+	.border-radius(3px, 3px, 3px, 3px);
 	position: relative;
 }
 /* END User Control Section */

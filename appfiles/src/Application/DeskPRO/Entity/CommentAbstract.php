@@ -92,6 +92,15 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $validating = null;
 
 	/**
+	 * Has this comment been reviewed? Either validated, or
+	 * if it was published, seen to.
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_reviewed", type="boolean")
+	 */
+	protected $is_reviewed = false;
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
@@ -157,6 +166,17 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->email AND $visitor['email']) {
 			$this['email'] = $visitor['email'];
 		}
+	}
+
+	public function setStatus($new_status)
+	{
+		// any time after its created and the status is set
+		// to visible means someone has reviewed its
+		if ($this->id && $new_status == 'visible') {
+			$this->setModelField('is_reviewed' , true);
+		}
+
+		$this->setModelField('status', $new_status);
 	}
 
 	public function getContentHtml()

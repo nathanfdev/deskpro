@@ -171,6 +171,10 @@ class Ticket extends EntityRepository
 			LIMIT $num
 		", array($org->id));
 
+		if (!$ids) {
+			return array();
+		}
+
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t INDEX BY t.id

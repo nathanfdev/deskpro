@@ -8,39 +8,97 @@ use Application\DeskPRO\UI\RuleBuilder;
 
 class SettingsController extends AbstractController
 {
-	public function indexAction()
-    {
-		if ($this->isPostRequest()) {
-			$person = $this->person;
-			$prefs = array();
+	############################################################################
+	# Profile
+	############################################################################
 
-			$prefs[] = $person->setPreference('agent.ticket_signature', $this->in->getString('ticket_signature'));
+	public function profileAction()
+	{
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
+		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-			if ($this->in->getBool('favicon_count_toggle')) {
-				$prefs[] = $person->setPreference('agent.ui.favicon_count', $this->in->getString('favicon_count'));
-			} else {
-				$prefs[] = $person->setPreference('agent.ui.favicon_count', false);
-			}
-
-			$prefs[] = $person->setPreference('agent.ui.desktop_notifications', $this->in->getBool('desktop_notifications'));
-
-			App::getOrm()->transactional(function ($em) use ($person, $prefs) {
-				$em->persist($person);
-
-				foreach ($prefs as $pref) {
-					$em->persist($pref);
-				}
-
-				$em->flush();
-			});
-		}
-
-        return $this->render('AgentBundle:Settings:index.html.twig', array(
-			'ticket_signature' => $this->person->getPref('agent.ticket_signature'),
-			'favicon_count' => $this->person->getPref('agent.ui.favicon_count'),
-			'desktop_notifications' => $this->person->getPref('agent.ui.desktop_notifications'),
+        return $this->render('AgentBundle:Settings:profile.html.twig', array(
+			'form' => $form->createView(),
+			'edit_profile' => $edit_profile
 		));
     }
+
+	public function profileSaveAction()
+	{
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
+		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
+
+		$form->bindRequest($this->get('request'));
+
+		if ($edit_profile->requiresAuth()) {
+			$code = $this->in->getString('authcode');
+			if (!$this->session->getEntity()->checkSecurityToken('password_confirm' . $this->person->password, $code)) {
+				return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_auth'));
+			}
+		}
+
+		$edit_profile->save();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# Ticket Notifications
+	############################################################################
+
+	public function ticketNotificationsAction()
+	{
+		$filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
+		$all_filters      = $filter_info['all_filters'];
+		$sys_filters      = $filter_info['sys_filters'];
+		$sys_filters_hold = $filter_info['sys_filters_hold'];
+		$custom_filters   = $filter_info['custom_filters'];
+
+		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
+
+		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
+			'all_filters' => $all_filters,
+			'sys_filters' => $sys_filters,
+			'sys_filters_hold' => $sys_filters_hold,
+			'custom_filters' => $custom_filters,
+			'my_subs' => $my_subs,
+		));
+	}
+
+	public function ticketNotificationsSaveAction()
+	{
+		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
+
+		$person_editor = $this->container->getSystemService('person_edit_manager');
+		$person_editor->saveFilterSubscriptions($this->person, $subs);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# General Notifications
+	############################################################################
+
+	public function otherNotificationsAction()
+	{
+		$my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
+		return $this->render('AgentBundle:Settings:other-notifications.html.twig', array(
+			'my_prefs' => $my_prefs,
+		));
+	}
+
+	public function otherNotificationsSaveAction()
+	{
+		$prefs = $this->in->getCleanValueArray('notify_prefs', 'bool', 'string');
+
+		$person_editor = $this->container->getSystemService('person_edit_manager');
+		$person_editor->saveNotificationPreferences($this->person, $prefs);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 
 	############################################################################
 	# Upload picture
@@ -94,14 +152,7 @@ class SettingsController extends AbstractController
 	 */
 	public function ticketFiltersAction()
 	{
-		$filters_all = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
-
-		$filters = array();
-		foreach ($filters_all as $q) {
-			if (!$q['sys_name']) {
-				$filters[] = $q;
-			}
-		}
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
 
 		return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
 			'filters' => $filters
@@ -132,14 +183,6 @@ class SettingsController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 		$term_options['custom_ticket_fields'] = $custom_fields;
 
-		$is_saved = false;
-		if ($this->isPostRequest()) {
-			$errors = $this->_processEditFilter($filter);
-			if (!$errors) {
-				$is_saved = true;
-			}
-		}
-
 		return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
 			'term_options' => $term_options,
 			'filter' => $filter,
@@ -147,17 +190,27 @@ class SettingsController extends AbstractController
 		));
 	}
 
-	public function _processEditFilter(Entity\TicketFilter $filter)
+	public function ticketFilterEditSaveAction($filter_id)
 	{
+		if ($filter_id) {
+			$filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+			if ($filter AND $filter['sys_name']) {
+				$filter = null;
+			}
+
+			if (!$filter) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
+			}
+		} else {
+			$filter = new Entity\TicketFilter;
+		}
+
 		$filter['title']    = $this->in->getString('filter.title');
+		$filter['person']   = $this->person;
 		$filter['order_by'] = $this->in->getString('filter.order_by');
 
 		$term_rules = RuleBuilder::newTermsBuilder();
 		$filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-		if (!$filter['person_id']) {
-			$filter['person'] = $this->person;
-		}
 
 		$filter['is_global'] = true;
 		$filter['is_enabled'] = true;
@@ -165,7 +218,7 @@ class SettingsController extends AbstractController
 		$this->em->persist($filter);
 		$this->em->flush();
 
-		return null;
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 
@@ -176,6 +229,8 @@ class SettingsController extends AbstractController
 
 	public function ticketMacrosAction()
     {
+		return $this->createResponse('not updated yet');
+
 		$all_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->findAll();
 
 		if (!count($all_macros)) {

@@ -161,11 +161,13 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 		$force_term_types = array();
 		foreach ($force_terms as $term) {
-			if (strpos($term['type'], 'person_') === 0) {
-				$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
-				$has_user_terms = true;
-			} else {
-				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+			if ($term['op'] != 'ignore') {
+				if (strpos($term['type'], 'person_') === 0) {
+					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$has_user_terms = true;
+				} else {
+					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				}
 			}
 
 			$force_term_types[] = $term['type'];
@@ -306,5 +308,10 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	public function getResultsCount()
 	{
 		return count($this->getResults());
+	}
+
+	public function __toString()
+	{
+		return $this->id;
 	}
 }

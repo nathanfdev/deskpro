@@ -1,0 +1,256 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Tickets
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Tickets\TicketChangeInspector;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\ClientMessage;
+
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+
+use Orb\Log\Logger;
+
+/**
+ * This passes a ticket change through filters to determine which are affected by the change,
+ * and for whom it affects.
+ *
+ * This is done by:
+ * 1) Recreating the original ticket
+ * 2) Fetching all filters in the system and all agents
+ * 3) For each agent (the "scope") we execute the PHP-based filter check to see
+ * if it matched the original, and then again to see if it matches the new.
+ * Using this information we can determine if a ticket has entered or left a certain list,
+ * and for who.
+ *
+ * Note that we have to run through all agents all the time. These filter detections are
+ * used to both send real-time ClientMessage updates to sync UI's and send browser alerts,
+ * but also for email notifications where agents of course wont be online.
+ *
+ * Ways we can optimize this process in the future:
+ * - Pre-cache agents/permissions to prevent loading full collection of agents
+ * - Pre-cache filter criteria to prevent loading full collection of filters
+ */
+class DetectFilterMatches
+{
+	/**
+	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketListener
+	 */
+	protected $tracker;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+	/**
+	 * @var array
+	 */
+	protected $filter_changes = null;
+
+	public function __construct(TicketChangeTracker $tracker)
+	{
+		$this->tracker = $tracker;
+	}
+
+	protected function logMessage($message)
+	{
+		$this->tracker->logMessage('[DetectFilterMatches] ' . $message);
+	}
+
+	/**
+	 * Read the changelog to fetch an array of actual changed fields that we
+	 * can compare against that of the affected fields of a filter searcher.
+	 *
+	 * @return array
+	 */
+	public function getChangedFields()
+	{
+		$changed_fields = array();
+		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
+			switch ($prop) {
+				case 'agent':
+					$changed_fields[] = 'ticket.agent_id';
+					break;
+
+				case 'category':
+					$changed_fields[] = 'ticket.category_id';
+					break;
+
+				case 'department':
+					$changed_fields[] = 'ticket.department_id';
+					break;
+
+				case 'priority':
+					$changed_fields[] = 'ticket.priority_id';
+					break;
+
+				case 'product':
+					$changed_fields[] = 'ticket.product_id';
+					break;
+
+				case 'status':
+					$changed_fields[] = 'ticket.status';
+					break;
+
+				case 'hidden_status':
+					$changed_fields[] = 'ticket.hidden_status';
+					break;
+			}
+		}
+
+		$this->logMessage("Changed fields: " . implode(', ', $changed_fields));
+
+		return $changed_fields;
+	}
+
+
+	/**
+	 * Filters only matter if they contain a term that has changed.
+	 * So investigate the ticket changes, and then get an array of filters
+	 * that do indeed need to be checked.
+	 *
+	 * @return array
+	 */
+	public function getApplicableFilters()
+	{
+		$filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAll();
+		$filters_apply = array();
+
+		$this->logMessage("Filters to check: " . count($filters));
+
+		$changed_fields = $this->getChangedFields();
+
+		foreach ($filters as $filter) {
+			if ($filter->getSearcher()->hasAnyAffectedFields($changed_fields)) {
+				$filters_apply[] = $filter;
+			}
+		}
+
+		$this->logMessage("Passed filters: " . count($filters_apply));
+
+		return $filters_apply;
+	}
+
+
+	/**
+	 * Fetch an array of filters that were affected by a change.
+	 *
+	 * array(filterid=>array(add=>array(1,2), del=>array(3,4)))
+	 *
+	 * @return array
+	 */
+	public function getFilterMatches()
+	{
+		if ($this->filter_changes !== null) return $this->filter_changes;
+
+		$filters     = $this->getApplicableFilters();
+		$all_agents  = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$team2agents = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamToAgentsMap();
+
+		$orig_ticket = $this->tracker->getOriginalTicket();
+		$new_ticket  = $this->tracker->getTicket();
+
+		$changed = array();
+
+		$scope_counts = 0;
+		$time = microtime(true);
+
+		foreach ($filters as $filter) {
+
+			$changed[$filter->id] = array('add' => array(), 'del' => array(), 'orig_match' => array(), 'new_match' => array(), 'filter' => $filter);
+
+			$this->logMessage("Filter {$filter['id']} {$filter['title']}");
+
+			$agent_scopes = null;
+
+			if ($filter->is_global) {
+				$agent_scopes = $all_agents;
+			} else if ($filter->agent_team) {
+				if (isset($team2agents[$filter->agent_team->id])) {
+					$agent_scopes = array();
+					foreach ($team2agents[$filter->agent_team->id] as $id) {
+						$agent_scopes[] = $all_agents[$id];
+					}
+				}
+			} elseif ($filter->person) {
+				$agent_scopes = array($filter->person);
+			}
+
+			$this->logMessage("-- Affected agents: " . count($agent_scopes));
+
+			if (!$agent_scopes) {
+				continue;
+			}
+
+			foreach ($agent_scopes as $agent) {
+
+				$reset_status = false;
+				if ($filter->sys_name) {
+					// System filters are special in that we ignore status
+					// for notifications
+					$searcher = $filter->getSearcher(array(array('type' => 'status', 'op' => 'ignore'), array('type' => 'hidden_status', 'op' => 'ignore')));
+					$reset_status = true;
+				} else {
+					$searcher = $filter->getSearcher();
+				}
+				$searcher->setPerson($agent);
+
+				$orig_match = $searcher->doesTicketMatch($orig_ticket);
+				$new_match  = $searcher->doesTicketMatch($new_ticket);
+
+				if ($orig_match) {
+					$changed[$filter->id]['orig_match'][] = $agent;
+				}
+				if ($new_match) {
+					$changed[$filter->id]['new_match'][] = $agent;
+				}
+
+				if ($reset_status) {
+					$searcher = $filter->getSearcher();
+					$searcher->setPerson($agent);
+					$orig_match = $searcher->doesTicketMatch($orig_ticket);
+					$new_match  = $searcher->doesTicketMatch($new_ticket);
+				}
+
+				if (!$orig_match AND !$new_match) {
+					$this->logMessage("-- Agent Scope {$agent->id}: Nothing changed (both no-match)");
+				} else if ($orig_match AND $new_match) {
+					$this->logMessage("-- Agent Scope {$agent->id}:  Nothing changed (both match)");
+				} else if ($orig_match AND !$new_match) {
+					$this->logMessage("-- Agent Scope {$agent->id}: Removed from list");
+					$changed[$filter->id]['del'][] = $agent;
+				} else if (!$orig_match AND $new_match) {
+					$this->logMessage("-- Agent Scope {$agent->id}: Added to list");
+					$changed[$filter->id]['add'][] = $agent;
+				}
+
+				$scope_counts++;
+			}
+		}
+
+		$this->filter_changes = array();
+		foreach ($changed as $fid => $changes) {
+			if ($changes['orig_match'] || $changes['new_match']) {
+				$this->filter_changes[$fid] = $changes;
+			}
+		}
+
+		$total_time = microtime(true) - $time;
+
+		$this->logMessage('Found ' . count($this->filter_changes) . ' matches');
+		$this->logMessage("Full check done in iterations: " . $scope_counts . "  in time " . $total_time . " seconds");
+		$this->logMessage(\Orb\Util\Util::debugVar($this->filter_changes));
+
+		return $this->filter_changes;
+	}
+}

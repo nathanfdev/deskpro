@@ -61,6 +61,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('attach_row').slideDown().removeClass('is-hidden');;
 		});
 
+		this.el.delegate('.remove-attach-trigger', 'click', function() {
+
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getElById('attach_row'));
+				if (!rows.length) {
+					self.getElById('attach_row').slideUp().addClass('is-hidden');
+				}
+			});
+		});
+
 		//------------------------------
 		// Toggle buttons
 		//------------------------------
@@ -89,7 +102,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			viewUrl: this.el.data('snippet-viewer-url'),
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: function(info) {
-				self.getElById('replybox_txt').val(self.getElById('replybox_txt').val() + "\n\n" + info.snippet);
+				var val = self.getElById('replybox_txt').val();
+				if (val.length) {
+					val += " ";
+				}
+				val += info.snippet;
+				self.getElById('replybox_txt').val(val);
 			}
 		});
 
@@ -176,7 +194,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				});
 				if (follower_names.length) {
 					$('.no-followers', followDetailEl).hide();
-					$('.is-followers', followDetailEl).show().find('.names').text(follower_names.join(', '));
+					var f = $('.is-followers', followDetailEl).show();
+					f.find('.names').text(follower_names.join(', '));
+					f.find('.count').text(follower_names.length);
 				} else {
 					$('.no-followers', followDetailEl).show();
 					$('.is-followers', followDetailEl).text('').hide();

@@ -21,9 +21,20 @@ use Doctrine\ORM\EntityRepository;
 
 class ChatConversation extends EntityRepository
 {
+	public function getOpenChatsForAgent(PersonEntity $person)
+	{
+		$chats = $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE c.agent = ?1 AND c.status = 'open'
+		")->setParameter(1, $person)->execute();
+
+		return $chats;
+	}
+
 	/**
 	 * Gets an array of agent_id=>num that counts how many chats they have open.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getOpenChatsForAgents()
@@ -59,6 +70,29 @@ class ChatConversation extends EntityRepository
 		return $convos;
 	}
 
+	public function getOpenForAgentAndDepartment($agent, $department)
+	{
+		$params = array();
+
+		$qb = $this->createQueryBuilder('c');
+		$qb->orderBy('c.id', 'DESC');
+		$qb->where('c.status = :status');
+		$params['status'] = 'open';
+
+		if ($agent) {
+			$qb->andWhere('c.agent = :agent');
+			$params['agent'] = $agent;
+		} else {
+			$qb->andWhere('c.agent IS NULL');
+		}
+		if ($department) {
+			$qb->andWhere('c.department = :dep');
+			$params['dep'] = $department;
+		}
+
+		return $qb->getQuery()->execute($params);
+	}
+
 
 	public function getAgentList($agent)
 	{
@@ -67,7 +101,7 @@ class ChatConversation extends EntityRepository
 			FROM chat_conversation_to_person convo
 			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
 			LEFT JOIN people ON (people.id = convo2.person_id)
-			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']} 
+			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
 		");
 
 		return App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
@@ -117,6 +151,10 @@ class ChatConversation extends EntityRepository
 	 */
 	public function getRecentForPeople(array $participant_ids, $date_limit = null)
 	{
+		if (count($participant_ids) < 2) {
+			throw new \InvalidArgumentException('$participant_ids should be an array of at least two people');
+		}
+
 		if ($date_limit !== null AND !($date_limit instanceof \DateTime)) {
 			$date_limit = new \DateTime($date_limit);
 		}
@@ -171,6 +209,28 @@ class ChatConversation extends EntityRepository
 		}
 
 		return $conversation;
+	}
+
+	public function getPastChatsForVisitor($visitor)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE c.visitor = ?1 AND c.status = 'ended'
+			ORDER BY c.id ASC
+		")->setParameter(1, $visitor)->execute();
+	}
+
+	public function getPastChatsForPerson($person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
+			ORDER BY c.id ASC
+		")->setParameter(1, $person)
+		  ->setParameter(2, $person->getPrimaryEmailAddress())
+		  ->execute();
 	}
 
 	public function getLatestChatForSession($session, $active = true)

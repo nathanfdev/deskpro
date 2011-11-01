@@ -18,10 +18,12 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this.setOptions(options);
 
 		if (!this.options.triggerElement) {
-			this.options.triggerElement = $('.display-options-trigger:first', this.page.wrapper);
+			this.options.triggerElement = $('.display-options-trigger', this.page.wrapper);
 		}
 
-		$(this.options.triggerElement).click((function() {
+		$(this.options.triggerElement).click((function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
 			this.open();
 		}).bind(this));
 
@@ -57,22 +59,37 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	},
 
 	_initOverlay: function() {
+
 		if (this._hasInit) return;
 		this._hasInit = true;
 
-		var overlay_wrapper = $('.display-options:first', this.page.wrapper);
-		var options_list = $('ul.sortable-list', overlay_wrapper);
+		this.wrapper = $('.display-options', this.page.wrapper).first();
+		this.optionsList = $('ul.sortable-list', this.wrapper).sortable({
+			'axis': 'y'
+		});;
 
-		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: overlay_wrapper,
-			onContentSet: function(eventData) {
-				options_list.sortable({
-					'axis': 'y'
-				});
-			}
+		this.wrapper.detach().appendTo('body');
+		this.wrapper.css('z-index', '1000100');
+
+		this.wrapper.click(function(ev) {
+			ev.stopPropagation();
 		});
 
-		$('.save-trigger', overlay_wrapper).click((function() {
+		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
+		this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
+
+		this.backdropEl.click((function(ev) {
+			ev.stopPropagation();
+			this.close();
+		}).bind(this));
+
+		$('header .close-trigger', this.wrapper).click((function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			this.close();
+		}).bind(this));
+
+		$('.save-trigger', this.wrapper).click((function() {
 			this.saveDisplayOptions();
 		}).bind(this));
 	},
@@ -88,15 +105,13 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	},
 
 	saveDisplayOptions: function() {
-
-		$('.loading-off', this.overlay.elements.wrapper).hide();
-		$('.loading-on', this.overlay.elements.wrapper).show();
-
+		this.wrapper.addClass('loading');
 		this.saveAndRefresh();
 	},
 
 	saveAndRefresh: function() {
 
+		var self = this;
 		var wrap = this.getWrapperElement();
 
 		var data = [];
@@ -119,57 +134,20 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var url = this.options.refreshUrl;
 
 		if (this.options.isListView) {
-
-			var thisoverlay = this;
-
-			if (this.page.meta.overlay) {
-				this.page.meta.overlay.close();
-			}
-
-			var w = $(window).width() - 100;
-			var h = $(window).height() - 100;
-
-			var contentEl = $('<div>Loading...</div>');
-			contentEl.width(w);
-			contentEl.height(h);
-			contentEl.css('overflow', 'auto');
-
-			var overlay = new DeskPRO.UI.Overlay({
-				contentElement: contentEl,
-				destroyOnClose: true,
-				customClassname: 'no-padding',
-				maxWidth: w,
-				maxHeight: h
+			var page = this.page;
+			$.ajax({
+				timeout: 20000,
+				type: 'POST',
+				url: BASE_URL + 'agent/misc/ajax-save-prefs',
+				data: data,
+				context: this,
+				complete: function() {
+					this.close();
+				},
+				success: function() {
+					page.meta.pageReloader();
+				}
 			});
-			overlay.openOverlay();
-
-			var pageReloader = function(new_url) {
-				$.ajax({
-					timeout: 20000,
-					type: 'GET',
-					url: new_url,
-					dataType: 'html',
-					success: function(html) {
-
-						thisoverlay.destroy();
-
-						if (overlay.isDestroyed()) {
-							return;
-						}
-
-						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
-						page.setMetaData('routeUrl', new_url);
-						page.setMetaData('pageReloader', pageReloader);
-						page.setMetaData('overlay', overlay);
-
-						contentEl.html(page.html);
-						page.fireEvent('render', [contentEl]);
-						page.fireEvent('activate');
-					}
-				});
-			}
-
-			pageReloader(url);
 		} else {
 			$.ajax({
 				timeout: 20000,
@@ -177,6 +155,9 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				data: data,
 				context: this,
+				complete: function() {
+					this.close();
+				},
 				success: function() {
 					DeskPRO_Window.loadListPane(url);
 				}
@@ -186,26 +167,67 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 	open: function() {
 		this._initOverlay();
-		this.overlay.open();
+
+		this.updatePositions();
+
+		this.wrapper.addClass('open');
+		this.backdropEl.show();
+
+		this.wrapper.addClass('open');
+
+		this.fireEvent('opened', [this]);
+	},
+
+	isOpen: function() {
+		if (!this._hasInit || !this.wrapper.is('.open')) {
+			return false;
+		}
+
+		return true;
 	},
 
 	close: function() {
-		if (this.overlay) {
-			this.overlay.close();
-		}
+		if (!this._hasInit || !this.isOpen()) return;
+
+		this.wrapper.removeClass('open');
+		this.backdropEl.hide();
+		this.fireEvent('closed', [this]);
+	},
+
+	/**
+	 * Update the positions of the elements
+	 */
+	updatePositions: function() {
+
+		var elW = this.wrapper.width();
+		var elH = this.wrapper.height();
+
+		var pageW = $(window).width();
+		var pageH = $(window).height();
+
+		this.wrapper.css({
+			top: (pageH-elH) / 2,
+			left: (pageW-elW) / 2
+		});
 	},
 
 	getWrapperElement: function() {
-		if (this.overlay) {
-			return $(this.overlay.elements.wrapper);
+		if (this._hasInit) {
+			return this.wrapper;
 		} else {
 			return $('.display-options:first', this.page.wrapper);
 		}
 	},
 
 	destroy: function() {
-		if (this.overlay) {
-			this.overlay.destroy();
+		if (this._hasInit) {
+			this.wrapper.remove();
+			this.backdropEl.remove();
 		}
+
+		delete this.wrapper;
+		delete this.backdropEl;
+		delete this.options;
+		delete this.page;
 	}
 });

@@ -6,16 +6,9 @@
     padding:  5px 10px 5px 10px;
     color: #fff;
 
-    background: #606c88;
-    background: -moz-linear-gradient(top, #606c88 0%, #3f4c6b 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#606c88), color-stop(100%,#3f4c6b));
-    background: -webkit-linear-gradient(top, #606c88 0%,#3f4c6b 100%);
-    background: -o-linear-gradient(top, #606c88 0%,#3f4c6b 100%);
-    background: -ms-linear-gradient(top, #606c88 0%,#3f4c6b 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=0 );
-    background: linear-gradient(top, #606c88 0%,#3f4c6b 100%);
+    background: #187BA8;
 
-    border: 2px solid #293142;
+    border: 1px solid #075A7D;
     border-bottom: none;
     -webkit-border-top-left-radius: 4px;
     -webkit-border-top-right-radius: 4px;
@@ -25,10 +18,20 @@
     border-top-right-radius: 4px;
 
     color: #fff;
-    text-shadow: 1px 0px 0px #000000;
+    text-shadow: 1px 0 0 rgba(0,0,0, 0.7);
     filter: dropshadow(color=#000000, offx=1, offy=0);
 
+	-webkit-box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.2);
+	-moz-box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.2);
+	box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.2);
+
     cursor: pointer;
+}
+
+#dpchat_btn:hover {
+	-webkit-box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.5);
+	-moz-box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.5);
+	box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.5);
 }
 
 #dpchat_btn .start-chat { display: inline; }
@@ -46,9 +49,9 @@
 
     width: 325px;
 
-    background: #eee;
+    background: #fff;
 
-    border: 1px solid #6C7382;
+    border: 1px solid #B4B6B8;
     border-bottom: none;
     -webkit-border-top-left-radius: 4px;
     -webkit-border-top-right-radius: 4px;
@@ -56,6 +59,10 @@
     -moz-border-radius-topright: 4px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+
+	-webkit-box-shadow: 0px 0px 7px 5px rgba(255, 255, 255, 1);
+	-moz-box-shadow: 0px 0px 7px 5px rgba(255, 255, 255, 1);
+	box-shadow: 0px 0px 7px 5px rgba(255, 255, 255, 1);
 
     display: none;
 }
@@ -72,8 +79,18 @@
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background-color: #CED3DE;
     margin: 1px;
+
+	background: rgb(255,255,255); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 27%, rgba(242,242,242,1) 75%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(27%,rgba(255,255,255,1)), color-stop(75%,rgba(242,242,242,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 27%,rgba(242,242,242,1) 75%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 27%,rgba(242,242,242,1) 75%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 27%,rgba(242,242,242,1) 75%); /* IE10+ */
+	background: linear-gradient(top, rgba(255,255,255,1) 27%,rgba(242,242,242,1) 75%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
+
+	border-bottom:  1px solid #BDBFBF;
 
     position: relative;
 }
@@ -109,15 +126,15 @@
     display: none;
     position: absolute;
     font-size: 11px;
-    right: 4px;
-    top: 4px;
+    right: 2px;
+    top: 2px;
 
     line-height: 100%;
     cursor: pointer;
     color: #363940;
 
-    background-color: #B8C0D1;
-    border: 1px solid #777E8C;
+    background-color: #ECF0F4;
+    border: 1px solid #CDD0D4;
     padding: 1px;
 
     -webkit-border-radius: 3px;
@@ -130,18 +147,19 @@
 }
 
 #dpchat_popchat {
+	visibility: hidden;
     display: none;
     position: absolute;
     font-size: 11px;
-    left: 4px;
-    top: 4px;
+    left: 2px;
+    top: 2px;
 
     line-height: 100%;
     cursor: pointer;
     color: #363940;
 
-    background-color: #B8C0D1;
-    border: 1px solid #777E8C;
+    background-color: #ECF0F4;
+    border: 1px solid #CDD0D4;
     padding: 1px;
 
     -webkit-border-radius: 3px;
@@ -231,11 +249,40 @@ background-color: #eeeeee;
     -moz-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
     -ms-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
     -o-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-    box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; }
+    box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+}
+
+#dpchat_ended {
+    height: 60px;
+    position: relative;
+
+    border-top: 1px solid #898D96;
+	padding:  4px;
+}
 
 #dpchat_preform {
     font-size: 11px;
-    padding: 10px 3px 10px 6px;
+    padding: 6px 3px 10px 6px;
+}
+
+#dpchat_preform .dpchat-row {
+	margin-bottom: 5px;
+}
+
+#dpchat_preform .controls button {
+	position: relative;
+	background: -moz-linear-gradient(top, rgba(250,252,253,1) 0%, rgba(240,242,243,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(250,252,253,1)), color-stop(100%,rgba(240,242,243,1)));
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+	border: 1px solid #b6babf;
+	border-radius: 3px 3px 3px 3px;
+	color: #626A73;
+	padding: 2px;
+	cursor: pointer;
+	font-size: 10px;
+	font: bold 10px/10px Arial, Helvetica, sans-serif;;
+	position: relative;
+	white-space: nowrap;
 }
 
 #dpchat_messages {

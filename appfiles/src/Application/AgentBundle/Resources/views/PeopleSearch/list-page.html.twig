@@ -1,11 +1,11 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for person in people %}
-		<article class="row-item person person-{{person.id}}">
+		<article class="row-item person person-{{person.id}}" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)" data-route-openclass="open">
 			<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
-						<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
+						<a class="name click-through">
 							{{ person.display_name }}
 						</a>
 					</h3>

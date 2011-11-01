@@ -24,12 +24,12 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 	protected $agent_team_id;
 	protected $person_context;
 
-	public function __construct($agent_team_id)
+	public function __construct($agent_team)
 	{
-		$this->agent_team_id = $agent_team_id;
+		$this->agent_team_id = $agent_team;
 	}
 
-	
+
 	public function setPersonContext(Person $person)
 	{
 		$this->person_context = $person;
@@ -87,7 +87,7 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 				return array();
 			}
 		}
-		
+
 		if ($ticket['agent_team_id'] == $agent_team_id) {
 			return array();
 		}

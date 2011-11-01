@@ -1,13 +1,56 @@
+{% macro dep_row(dep, dep_counts, depth) %}
+	<li class="{% if dep.children|length %}has-children{% endif %} dp-cat-li">
+		<div class="item-wrap dp-cat-item">
+			{% if dep.children|length %}<span class="sub-toggle">expand</span>{% endif %}
 
-<ul class="nav-list">
-	<li id="userchat_navitem_0" class="with-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
-		<span class="list-counter">0</span>
-		Unassigned
+			<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'department_id':dep.id}) }}">
+				<span class="list-counter" id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
+				<span>{{ dep.title }}</span>
+			</span>
+		</div>
+		{% if dep.children|length %}
+			<ul class="sub-group">
+			{% for subdep in dep.children %}
+				{{ _self.dep_row(subdep, dep_counts, depth+1) }}
+			{% endfor %}
+			</ul>
+		{% endif %}
 	</li>
-	{% for id,name in agent_names %}
-		<li id="userchat_navitem_{{id}}" class="agent-chat-count with-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': id}) }}" style="display:none">
-			<span class="list-counter">0</span>
-			{{ name }}
+{% endmacro %}
+
+<section class="source-section">
+	<header>
+		<h1>New Chats</h1>
+	</header>
+	<ul class="source-list with-tree no-editor">
+		<li class="dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="title auto-load-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
+					<span class="list-counter" id="userchat_list_0_counter" data-count="{{ dep_counts['0_total']|default(0) }}">{{ dep_counts['0_total']|default(0) }}</span>
+					<span>All</span>
+				</span>
+			</div>
 		</li>
-	{% endfor %}
-</ul>
+		{% for dep in departments %}
+			{{ _self.dep_row(dep, dep_counts, 0) }}
+		{% endfor %}
+	</ul>
+</section>
+
+<section class="source-section">
+	<header>
+		<h1>Active Chats</h1>
+	</header>
+	<ul class="source-list with-tree no-editor">
+		{% for agent_id,agent_name in agent_names %}
+			<li class="dp-clat-li" {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
+				<div class="item-wrap dp-cat-item">
+					<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
+						<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">{{ counts[agent_id]|default(0) }}</span>
+						{{ agent_name }}
+					</span>
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
+</section>

@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.massActions);
 
-		this.enableHighlightOpenRows('ticket', 'ticket_id', 'article.ticket-');
+		this.enableHighlightOpenRows('ticket', 'ticket_id', '.row-item.ticket-');
 	},
 
 	_handleResize: function() {
@@ -349,48 +349,18 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
 
 		if (view_type == 'list') {
+			var oldlist = this.listview;
+			this.listview = new DeskPRO.Agent.TicketList.ListView(this);
 
-			var w = $(window).width() - 100;
-			var h = $(window).height() - 100;
-
-			var contentEl = $('<div>Loading...</div>');
-			contentEl.width(w);
-			contentEl.height(h);
-			contentEl.css('overflow', 'auto');
-
-			var  overlay = new DeskPRO.UI.Overlay({
-				contentElement: contentEl,
-				destroyOnClose: true,
-				customClassname: 'no-padding',
-				maxWidth: w,
-				maxHeight: h
-			});
-			overlay.openOverlay();
-
-			var pageReloader = function(new_url) {
-				$.ajax({
-					timeout: 20000,
-					type: 'GET',
-					url: new_url,
-					dataType: 'html',
-					success: function(html) {
-						if (overlay.isDestroyed()) {
-							return;
-						}
-
-						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
-						page.setMetaData('routeUrl', new_url);
-						page.setMetaData('pageReloader', pageReloader);
-						page.setMetaData('overlay', overlay);
-
-						contentEl.html(page.html);
-						page.fireEvent('render', [contentEl]);
-						page.fireEvent('activate');
+			if (oldlist && !oldlist.OBJ_DESTROYED) {
+				this.listview.addEvent('ajaxLoaded', function() {
+					if (!oldlist.OBJ_DESTROYED) {
+						oldlist.destroy();
 					}
 				});
 			}
 
-			pageReloader(new_url);
+			this.listview.open();
 			return;
 		}
 

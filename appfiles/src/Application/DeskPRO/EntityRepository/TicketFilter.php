@@ -26,6 +26,16 @@ class TicketFilter extends EntityRepository
 		return $this->getAllForAgents($online_agents);
 	}
 
+	public function getAll()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+		")->execute();
+
+		return $filters;
+	}
+
 	public function getAllForAgents($agents)
 	{
 		$agent_ids = array();
@@ -55,6 +65,18 @@ class TicketFilter extends EntityRepository
 				OR q.person IN ($agent_ids)
 				OR q.agent_team IN ($teams)
 		")->execute();
+
+		return $filters;
+	}
+
+	public function getPersonalFilters($agent)
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			WHERE q.person = ?1
+			ORDER BY q.title ASC
+		")->execute(array(1=> $agent));
 
 		return $filters;
 	}

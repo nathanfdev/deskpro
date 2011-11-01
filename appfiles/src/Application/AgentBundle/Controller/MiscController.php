@@ -7,7 +7,9 @@ use Application\DeskPRO\Entity;
 use Application\AgentBundle\FragmentRouter;
 
 use Orb\Util\Util;
+use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class MiscController extends AbstractController
 {
@@ -238,5 +240,189 @@ class MiscController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
+	}
+
+
+	############################################################################
+	# snippets-viewer
+	############################################################################
+
+	public function snippetsViewerAction($typename)
+	{
+		$text_snippets = App::getEntityRepository('DeskPRO:TextSnippet')->getSnippetsForAgent($typename, $this->person);
+		$text_snippet_cats = App::getEntityRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
+		return $this->render('AgentBundle:Common:text-snippets.html.twig', array(
+			'text_snippets'      => $text_snippets,
+			'text_snippet_cats'  => $text_snippet_cats,
+			'agent_teams'        => $agent_teams,
+			'typename'           => $typename,
+		));
+	}
+
+	public function newSnippetCatAction()
+	{
+		$cat = new \Application\DeskPRO\Entity\TextSnippetCategory();
+		$cat['title'] = $this->in->getString('title');
+		$cat['typename'] = $this->in->getString('typename');
+		$cat->person = $this->person;
+
+		if ($this->in->getString('perm_type') == 'global') {
+			$cat['is_global'] = true;
+		} elseif ($this->in->getString('perm_type') == 'team') {
+			$team_ids = $this->in->getArrayValue('teams');
+			$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
+
+			foreach ($teams as $t) {
+				$cat->agent_teams->add($t);
+			}
+		}
+
+		$this->em->transactional(function($em) use ($cat) {
+			$em->persist($cat);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'cat_row_html' => $this->renderView('AgentBundle:Common:text-snippets-catrow.html.twig', array(
+				'category' => $cat
+			)),
+			'cat_section_html' => $this->renderView('AgentBundle:Common:text-snippets-catsection.html.twig', array(
+				'category' => $cat,
+				'snippets' => array()
+			))
+		));
+	}
+
+	public function editSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+
+		return $this->render('AgentBundle:Common:text-snippets-editcat.html.twig', array(
+			'category' => $cat,
+		));
+	}
+
+	public function saveSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+		$cat['title'] = $this->in->getString('title');
+
+		$this->em->persist($cat);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'category_id' => $cat['id'],
+			'title' => $cat['title']
+		 ));
+	}
+
+	public function deleteSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+
+		$cat_id = $cat['id'];
+
+		$this->em->transactional(function($em) use ($cat) {
+			$em->remove($cat);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'category_id' => $cat_id,
+		 ));
+	}
+
+	public function saveSnippetAction()
+	{
+		if ($this->in->getUint('snippet_id')) {
+			$snippet = App::findEntity('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+			$category = $snippet->category;
+		} else {
+			$category = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+			$snippet = new \Application\DeskPRO\Entity\TextSnippet();
+			$snippet->category = $category;
+		}
+
+		$snippet['title'] = $this->in->getString('title');
+		$snippet['snippet'] = $this->in->getString('snippet');
+		$snippet->person = $this->person;
+
+		$this->em->transactional(function($em) use ($snippet) {
+			$em->persist($snippet);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'snippet_row_html' => $this->renderView('AgentBundle:Common:text-snippets-row.html.twig', array(
+				'snippet' => $snippet,
+			)),
+			'snippet_id' => $snippet['id'],
+			'category_id' => $category['id']
+		));
+	}
+
+	public function deleteSnippetAction()
+	{
+		$snippet = App::findEntity('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+
+		$snippet_id = $snippet['id'];
+		$category_id = $snippet->category['id'];
+
+		$this->em->transactional(function($em) use ($snippet) {
+			$em->remove($snippet);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'snippet_id' => $snippet_id,
+			'category_id' => $category_id
+		));
+	}
+
+	public function redirectExternalAction($url)
+	{
+		$urlinfo = parse_url($url);
+
+		return $this->render('AgentBundle:Misc:redirect-external.html.twig', array(
+			'url' => $url,
+			'urlinfo' => $urlinfo
+		));
+	}
+
+	public function redirectExternalInfoAction($url)
+	{
+		$urlinfo = parse_url($url);
+
+		$page = @file_get_contents($url);
+		$info = array();
+
+		$info['title'] = Strings::extractRegexMatch('#<title>(.*?)</title>#im', $page, 1);
+		$info['ip'] = gethostbyname($urlinfo['host']);
+		$info['hostname'] = gethostbyname($info['ip']);
+		$info['size'] = strlen($page);
+		$info['size_readable'] = Numbers::filesizeDisplay($info['size']);
+
+		$info['num_images'] = substr_count($page, '<img');
+		$info['num_scripts'] = substr_count($page, '<script');
+
+		return $this->render('AgentBundle:Misc:redirect-external-info.html.twig', array(
+			'url' => $url,
+			'urlinfo' => $urlinfo,
+			'info' => $info,
+		));
+	}
+
+	public function getPasswordConfirmCodeAction()
+	{
+		$password = $this->in->getString('password');
+		if (!$this->person->checkPassword($password)) {
+			return $this->createJsonResponse(array('invalid' => true));
+		}
+
+		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->password);
+		return $this->createJsonResponse(array('code' => $code));
 	}
 }

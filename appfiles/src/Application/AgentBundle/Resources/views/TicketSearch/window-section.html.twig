@@ -13,7 +13,7 @@
 		<ul id="tickets_outline_sys_filters" class="source-list">
 			{% for filter in sys_filters %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
@@ -27,7 +27,7 @@
 					{% endif %}
 					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
 				>
-					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>
@@ -39,7 +39,7 @@
 		<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
 			{% for filter in sys_filters_hold %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
@@ -58,17 +58,21 @@
 <section class="source-section custom-filters-section">
 	<header>
 		<h1>Filters</h1>
+		<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings">add filter</span>
 		<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor">edit display</span>
 	</header>
 	<article id="custom_filters_wrap">
 		<ul id="tickets_outline_custom_filters" class="source-list">
 			{% for filter in custom_filters %}
 				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
+					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
-					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3
+						class="title {% if loop.first %}auto-load-route{% endif %}"
+						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+					>
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>
@@ -96,7 +100,7 @@
 <section id="tickets_outline_flagged" class="deskpro-tab-item">
 	<ul class="source-list" id="tickets_outline_flags_list" style="margin-top: 4px;">
 		{% for color in flags %}
-			<li class="flag flag-{{color}} nav-flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color, 'view_name': 'flag', 'view_extra': color}) }}">
+			<li class="flag flag-{{color}} nav-flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=flagged&amp;terms[0][op]=is&amp;terms[0][flag]={{color}}">
 				<span class="title">
 					<span class="flag flag-{{color}}">{{ flagnamer.flag_name(color, person) }}</span>
 					<span id="ticket_flag_{{color}}_count" class="list-counter">0</span>
@@ -125,19 +129,19 @@
 				{{ phrase('agent.tickets.status_closed') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;view_name=validating">
+		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=validating">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_validating_count">{{ archive_counts['hidden.validating']|default(0) }}</span>
 				{{ phrase('agent.tickets.hidden_status_validating') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;view_name=spam">
+		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=spam">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_spam_count">{{ archive_counts['hidden.spam']|default(0) }}</span>
 				{{ phrase('agent.tickets.hidden_status_spam') }}
 			</span>
 		</li>
-		<li class="nav-archive-recycle-bin" data-route="listpane:{{ path('agent_recyclebin') }}">
+		<li class="nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=deleted&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=deleted">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_recycle_bin_count">{{ archive_counts['hidden.deleted']|default(0) }}</span>
 				{{ phrase('agent.recycle_bin') }}

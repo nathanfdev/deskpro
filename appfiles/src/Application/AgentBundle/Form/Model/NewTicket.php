@@ -34,7 +34,7 @@ class NewTicket
 	public $workflow_id = 0;
 	public $product_id = 0;
 
-	public $new_parts = array();
+	public $new_parts = '';
 	public $attach = array();
 
 	protected $_ticket;
@@ -80,6 +80,10 @@ class NewTicket
 			}
 		}
 
+		if (!$person->name && $this->person->name) {
+			$person->name = $this->person->name;
+		}
+
 		$em->persist($person);
 		$em->flush();
 
@@ -112,23 +116,6 @@ class NewTicket
 
 		$ticket->person = $person;
 
-		// CC'ed
-		$new_parts_to_people = array();
-		foreach ($this->new_parts as $email) {
-			$cc_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
-			if (!$cc_person) {
-				$cc_person = Person::newContactPerson(array('email' => $email));
-				$em->persist($cc_person);
-			}
-
-			$new_parts_to_people[] = $cc_person;
-		}
-
-		$em->flush();
-
-		foreach ($new_parts_to_people as $cc_person) {
-			$ticket->addParticipantPerson($cc_person);
-		}
 
 		#------------------------------
 		# Message
@@ -163,7 +150,41 @@ class NewTicket
 		}
 
 		$em->persist($ticket);
+		$em->flush();
 
+		#------------------------------
+		# Participants
+		#------------------------------
+
+		$user_parts_emails = $this->new_parts;
+		$user_parts_emails = explode(',', $user_parts_emails);
+
+		// CC'ed
+		$new_parts_to_people = array();
+		$email_validator = new \Orb\Validator\StringEmail();
+
+		foreach ($user_parts_emails as $email) {
+			$email = trim($email);
+			if (!$email || !$email_validator->isValid($email)) {
+				continue;
+			}
+
+			$cc_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+			if (!$cc_person) {
+				$cc_person = Person::newContactPerson(array('email' => $email));
+				$em->persist($cc_person);
+			}
+
+			$new_parts_to_people[] = $cc_person;
+		}
+
+		$em->flush();
+
+		foreach ($new_parts_to_people as $cc_person) {
+			$ticket->addParticipantPerson($cc_person);
+		}
+
+		$em->persist($ticket);
 		$em->flush();
 		$em->commit();
 

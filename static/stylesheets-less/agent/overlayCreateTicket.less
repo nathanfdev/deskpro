@@ -10,20 +10,17 @@
 
 .overlayCreateTicketWrapper{
 	background: #fafafa;
-	border-radius: 4px;
+	.border-radius(4px, 4px, 4px, 4px);
 	border: 1px solid #000000;
 	position: absolute;
 	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 .OverlayCreateTicketHeader{
 	background: -moz-linear-gradient(top, #3b3b3b, #0b0b0b);
 	background: -webkit-gradient(linear, center top, center bottom, from(#3b3b3b), to(#0b0b0b));
-	-pie-background: linear-gradient(#3b3b3b, #0b0b0b);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #515151 inset;
-	border-radius: 3px 3px 0 0;
+	.border-radius(3px, 3px, 0, 0);
  	padding: 0;
     position: absolute;
 	top: 0;
@@ -63,12 +60,10 @@
 .moveToTabBtn a{
 	background: -moz-linear-gradient(top, #5a90b8, #3c6094);
 	background: -webkit-gradient(linear, center top, center bottom, from(#5a90b8), to(#3c6094));
-	-pie-background: linear-gradient(#5a90b8, #3c6094);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #75b3da inset, 0 0 0 1px #4169a0 inset, 0 1px 0 #323232;
 	border: 1px solid #070a0d;
 	padding: 4px 5px 3px;
-	border-radius: 5px;
+	.border-radius(5px, 5px, 5px, 5px);
 	cursor: pointer;
 	position: relative;
 }
@@ -76,8 +71,6 @@
 .moveToTabBtn a:hover{
 	background: -moz-linear-gradient(top, #6099c4, #436ba3);
 	background: -webkit-gradient(linear, center top, center bottom, from(#6099c4), to(#436ba3));
-	-pie-background: linear-gradient(#6099c4, #436ba3);
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 .closeCreateTicker{
@@ -88,19 +81,15 @@
 .closeCreateTicker a{
 	background: -moz-linear-gradient(top, #b04242, #842b2b);
 	background: -webkit-gradient(linear, center top, center bottom, from(#b04242), to(#842b2b));
-	-pie-background: linear-gradient(#b04242, #842b2b);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #d05454 inset, 0 0 0 1px #922f2f inset, 0 1px 0 #323232;
 	border: 1px solid #070a0d;
 	padding: 4px 5px 3px;
-	border-radius: 5px;
+	.border-radius(5px, 5px, 5px, 5px);
 	position: relative;
 }
 .closeCreateTicker a:hover{
 	background: -moz-linear-gradient(top, #bd4646, #913030);
 	background: -webkit-gradient(linear, center top, center bottom, from(#bd4646), to(#913030));
-	-pie-background: linear-gradient(#bd4646, #913030);
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 .overlayCreateTicketContent{
@@ -112,13 +101,12 @@
 
 .rowNumber{
 	background: #d5d5d5;
-	border-radius: 20px 20px 20px 20px;
+	.border-radius(20px, 20px, 20px, 20px);
 	color: #FFFFFF;
 	left: 5px;
 	padding: 4px 7px 2px;
 	position: absolute;
 	top: 5px;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 .greenCircle{background: #6fa653;}
 .orangeCircle{background: #d9912b;}
@@ -146,13 +134,12 @@ span.createTicketLabel{
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
 	border: 1px solid #bdc2c7;
 	background: #fafafa;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 4px;
 	font-size: 12px;
 	color: #737373;
 	outline: none;
 	width: 300px;
-	behavior: url("../../static/vendor/PIE.htc");
 	float: left;
 	font-size: 11px;
 	position: relative;
@@ -229,8 +216,6 @@ span.createTicketLabel{
 .msgActNavTab{
 	background: -moz-linear-gradient(top, #e6e9eb, #d9dee2);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6e9eb), to(#d9dee2));
-	-pie-background: linear-gradient(#e6e9eb, #d9dee2);
-	behavior: url("../../static/vendor/PIE.htc");
 	border-bottom: 1px solid #c2c6cc;
 	height: 25px;
     width: 100%;
@@ -254,7 +239,7 @@ span.createTicketLabel{
 }
 
 .msgActNavTab li a{
-	background: url("@{asset-url}/images/agent/ico16.png") no-repeat;
+	background: url("../../images/agent/ico16.png") no-repeat;
 	color: #697b8c;
 	font-size: 11px;
 	font-weight: bold;
@@ -289,7 +274,7 @@ span.createTicketLabel{
 	background-color: #fafbfc;
 }
 .msgActNavTab li:hover a{
-	background: #f2f2f2 url("@{asset-url}/images/agent/ico16.png") no-repeat 37px -319px;
+	background: #f2f2f2 url("../../images/agent/ico16.png") no-repeat 37px -319px;
 
 }
 
@@ -321,12 +306,10 @@ span.createTicketLabel{
 .finishCreateTicket a{
 	background: -moz-linear-gradient(top, #e6eaee, #cfd7df);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6eaee), to(#cfd7df));
-	-pie-background: linear-gradient(#e6eaee, #cfd7df);
-	behavior: url("../../static/vendor/PIE.htc");
 	box-shadow: 0 1px 0 #FFF inset, 0 0 0 1px #dbe1e7 inset;
 	border: 1px solid #a3b1bf;
 	padding: 4px 15px 3px;
-	border-radius: 3px;
+	.border-radius(3px, 3px, 3px, 3px);
 	color: #697b8c;
 	text-shadow: 0 1px 0 #fff;
 	font-size: 14px;
@@ -336,8 +319,6 @@ span.createTicketLabel{
 .finishCreateTicket a:hover{
 	background: -moz-linear-gradient(top, #e6eaee, #dae2eb);
 	background: -webkit-gradient(linear, center top, center bottom, from(#e6eaee), to(#dae2eb));
-	-pie-background: linear-gradient(#e6eaee, #dae2eb);
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 
@@ -371,9 +352,7 @@ span.createTicketLabel{
 
 .page-new-content .section .step .num {
 	border: 2px solid #E4E4E4;
-	-webkit-border-radius: 20px;
-	-moz-border-radius: 20px;
-	border-radius: 20px;
+	.border-radius(20px, 20px, 20px, 20px);
 
 	color: #B9BABA;
 
@@ -396,7 +375,7 @@ span.createTicketLabel{
 
 .page-new-content .section .step .check {
 	display: block;
-	background: url("@{asset-url}/images/step-check.png") no-repeat 50% 50%;
+	background: url("../../images/agnet/icons/check.png") no-repeat 50% 50%;
 	width: 20px;
 	height: 15px;
 	text-indent: -100px;
@@ -420,6 +399,7 @@ span.createTicketLabel{
 .page-new-content .section .col {
     float: left;
     margin-right: 10px;
+    min-width: 120px;
 }
 
 .page-new-content .user-section .more {
@@ -443,6 +423,10 @@ span.createTicketLabel{
 	width: 400px;
 }
 
+.page-new-content .user-section .switch-user {
+	float: right;
+	margin: -4px 5px 0 0;
+}
 
 .page-new-content dl dt {
 	clear: left;
@@ -463,25 +447,21 @@ span.createTicketLabel{
 
 .page-new-content .message-section .type-wrap {
     margin: 3px 0 3px 0;
+    width: 80%;
 }
 
 .page-new-content .other-section nav {
-    height: 18px;
-    background-color: #E1EBF9;
-    border: 1px solid #CBD4DF;
+    height: 22px;
+    border: 1px solid #ACB6BF;
+    .border-radius(4px, 4px, 4px, 4px);
 
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    .gradient(#F0F1F3, #DADBDE);
+	position: relative;
+	overflow: hidden;
 }
 
 .page-new-content .other-section nav.on {
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-topright: 4px;
-    -moz-border-radius-bottomright: 0px;
-    -moz-border-radius-bottomleft: 0px;
-    -webkit-border-radius: 4px 4px 0px 0px;
-    border-radius: 4px 4px 0px 0px;
+    .border-radius(4px, 4px, 0px, 0px);
 }
 
 .page-new-content .other-section {
@@ -490,27 +470,46 @@ span.createTicketLabel{
 
 .page-new-content .other-section nav li {
     border-right: 1px solid #CBD4DF;
-    padding: 3px 17px 3px 8px;
+    padding: 0 17px 0 8px;
+    height: 22px;
     float: left;
-    line-height: 100%;
     cursor: pointer;
-    background: url("@{asset-url}/images/icons/bullet_arrow_down.png") no-repeat 100% 50%;
+    background: #EBEEF1 url("../../images/agent/icons/bullet_arrow_down.png") no-repeat 100% 50%;
     font-weight: bold;
+
+	overflow: hidden;
+	line-height: 22px;
+
+	display: block;
+	float: left;
+
+	font-size: 10px;
+	font-weight: bold;
+	color: #738699;
+	padding: 0px 17px 0 8px;
+
+	font-family: @heading-font;
+	text-shadow: 0 1px 0 #FFFFFF;
+
+	text-transform:uppercase;
+	cursor: pointer;
+
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 .page-new-content .other-section nav.on li.on {
-    background: #fff url("@{asset-url}/images/icons/bullet_arrow_up.png") no-repeat 100% 50%;
+    color: #404040;
+    background: #C7CFD5 url("../../images/agent/icons/bullet_arrow_up.png") no-repeat 100% 50%;
 }
 
 .page-new-content .other-section .tab-container .content-wrapper {
     border: 1px solid #CBD4DF;
     border-top: none;
     padding: 6px;
-    -moz-border-radius-topleft: 0px;
--moz-border-radius-topright: 0px;
--moz-border-radius-bottomright: 4px;
--moz-border-radius-bottomleft: 4px;
--webkit-border-radius: 0px 0px 4px 4px;
-border-radius: 0px 0px 4px 4px;
+	.border-radius(0px, 0px, 4px, 4px);
 }
 
 .page-new-content .foot {

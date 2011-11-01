@@ -17,16 +17,19 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
 
 class ReplyAction implements ActionInterface, PersonContextInterface
 {
 	protected $reply_text;
+	protected $attach_ids = array();
 	protected $person_context;
 
-	public function __construct($reply_text)
+	public function __construct($reply_text, array $attach_ids = array())
 	{
 		$this->reply_text = $reply_text;
+		$this->attach_ids = $attach_ids;
 	}
 
 
@@ -50,8 +53,21 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 		$message = new TicketMessage();
 		$message->person = $this->person_context;
 		$message['message'] = $this->reply_text;
-
 		$ticket->addMessage($message);
+
+		if ($this->attach_ids) {
+			foreach ($this->attach_ids as $blob_id) {
+				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+				if ($blob) {
+					$attach = new TicketAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person_context;
+
+					//$message->addAttachment($attach);
+				}
+			}
+		}
 	}
 
 
@@ -63,7 +79,7 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'reply', 'reply_text' => $this->reply_text)
+			array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids)
 		);
 	}
 
@@ -76,6 +92,17 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 	public function getReplyText()
 	{
 		return $this->reply_text;
+	}
+
+
+	/**
+	 * Get attach ids
+	 *
+	 * @return array
+	 */
+	public function getAttachIds()
+	{
+		return $this->attach_ids;
 	}
 
 

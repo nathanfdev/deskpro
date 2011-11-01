@@ -23,6 +23,87 @@ class Filters
 	}
 
 
+	public function getGroupedFiltersForPerson($person)
+	{
+		$all_filters = App::getApi('tickets.filters')->getFiltersForPerson($person);
+
+		$order = $person->getPref('agent.ui.ticket-filters-order');
+		if ($order) {
+			$filters_unordered = $all_filters;
+			$all_filters = array();
+
+			foreach ($order as $id) {
+				if (isset($filters_unordered[$id])) {
+					$all_filters[$id] = $filters_unordered[$id];
+					unset($filters_unordered[$id]);
+				}
+			}
+
+			if (count($filters_unordered)) {
+				foreach ($filters_unordered as $id => $q) {
+					$all_filters[$id] = $q;
+				}
+			}
+		}
+
+		// Order them into sys/other
+		$sys_filters = array();
+		$sys_filters_hold = array();
+		$custom_filters = array();
+
+		foreach ($all_filters as $id => $filter) {
+			if ($filter['sys_name']) {
+				if (strpos($filter['sys_name'], '_w_hold')) {
+					$sys_filters_hold[$filter['sys_name']] = $filter;
+				} else {
+				$sys_filters[$filter['sys_name']] = $filter;
+				}
+			} else {
+				$custom_filters[$id] = $filter;
+			}
+		}
+
+		// Force order of sys
+		$sys_filters_unordered = $sys_filters;
+		$sys_filters = array();
+		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+			if (isset($sys_filters_unordered[$id])) {
+				$sys_filters[$id] = $sys_filters_unordered[$id];
+				unset($sys_filters_unordered[$id]);
+			}
+		}
+
+		$sys_filters_unordered = $sys_filters_hold;
+		$sys_filters_hold = array();
+		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+			$id .= '_w_hold';
+			if (isset($sys_filters_unordered[$id])) {
+				$sys_filters_hold[$id] = $sys_filters_unordered[$id];
+				unset($sys_filters_unordered[$id]);
+			}
+		}
+
+		if (count($sys_filters_unordered)) {
+			foreach ($sys_filters_unordered as $id => $q) {
+				$sys_filters[$id] = $q;
+			}
+		}
+
+		if (!$person->getHasTeams()) {
+			unset($sys_filters['agent_team']);
+			unset($sys_filters_unordered['agent_team_w_hold']);
+			unset($sys_filters_hold['agent_team_w_hold']);
+		}
+
+		return array(
+			'all_filters' => $all_filters,
+			'sys_filters' => $sys_filters,
+			'sys_filters_hold' => $sys_filters_hold,
+			'custom_filters' => $custom_filters,
+		);
+	}
+
+
 	/**
 	 * Get a ticket filter from an ID
 	 * @param int $ticket_filter_id

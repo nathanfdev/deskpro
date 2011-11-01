@@ -89,6 +89,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_html = false;
 
 	/**
+	 * Data
+	 *
+	 * @var array
+	 * @ORM_Mapping\Column(name="metadata", type="array")
+	 */
+	protected $metadata = array();
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
@@ -101,9 +109,12 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAuthor($author)
 	{
-		$this->author = $author;
-		if ($author) {
-			$this->person_name = $author->getDisplayName();
+		// Could be a guest, in which case we dont care
+		if ($author && $author->id) {
+			$this->author = $author;
+			if ($author) {
+				$this->person_name = $author->getDisplayName();
+			}
 		}
 	}
 
@@ -139,5 +150,40 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->person_name) {
 			$this->person_name = $this->conversation['person_name'];
 		}
+	}
+
+	/**
+	 * Get a basic array of message information. These are generally used in templates or with
+	 * client messages to render the message.
+	 *
+	 * @return array
+	 */
+	public function getInfo()
+	{
+		$info = array();
+
+		$info['conversation_id'] = $this->conversation->id;
+		$info['message_id'] = $this->id;
+
+		if ($this->is_sys) {
+			$info['author_id'] = 0;
+			$info['author_name'] = '*';
+			$info['author_type'] = 'sys';
+		} elseif ($this->author) {
+			$info['author_id'] = $this->author->id;
+			$info['author_name'] = $this->author->display_name;
+			$info['author_type'] = $this->author->is_agent ? 'agent' : 'user';
+		} else {
+			$info['author_id'] = 0;
+			$info['author_name'] = $this->getAuthorName();
+			$info['author_type'] = 'user';
+		}
+
+		$info['content']       = $this->content;
+		$info['is_html']       = $this->is_html;
+		$info['metadata']      = $this->metadata;
+		$info['date_created']  = $this->date_created->getTimestamp();
+
+		return $info;
 	}
 }

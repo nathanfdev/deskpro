@@ -1,6 +1,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.SnippetViewer';
 pageMeta.title = 'Text Snippets';
+pageMeta.ticket_id = {{ ticket.id|default(0) }};
 </script>
 <div class="ticket-snippets-overlay snippets-overlay" {% if ticket %}data-ticket-id="{{ ticket.id }}"{% endif %}>
 	<nav>

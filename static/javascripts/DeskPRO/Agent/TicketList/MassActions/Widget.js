@@ -47,7 +47,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			/**
 			 * Disable the previewing feature and handle list view
 			 */
-			isListView: false
+			isListView: false,
+
+			/**
+			 * Reset the widget every time its closed
+			 */
+			resetOnClose: true
 		};
 
 		this.setOptions(options);
@@ -55,9 +60,19 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.viewHandler     = this.options.viewHandler;
 		this.selectionBar    = this.options.selectionBar || page.selectionBar;
 		this.fetchPreviewUrl = this.options.fetchPreviewUrl || page.meta.fetchResultsUrl;
-		this.listWrapper     = this.options.listWrapper || $('.list-listing', page.wrapper);
+		this.listWrapper     = this.options.listWrapper;
 
-		this.wrapper = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		if (!this.listWrapper) {
+			if (this.options.isListView) {
+				this.listWrapper = $('.table-result-list table', page.wrapper);
+			} else {
+				this.listWrapper = $('.list-listing', page.wrapper);
+			}
+		}
+
+		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+		this.wrapperEl.detach();
+		this.wrapper = this.wrapperEl.clone();
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());
@@ -78,6 +93,24 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		}
 	},
 
+
+	/**
+	 * Resets the wrapper back to the original, and then runs all of the init again.
+	 */
+	reset: function() {
+		var wasopen = this.isOpen();
+		this.close();
+
+		this.wrapper.remove();
+		this.wrapper = this.wrapperEl.clone();
+		this._hasInit = false;
+
+		if (wasopen) {
+			this.open();
+		}
+	},
+
+
 	/**
 	 * Get the main wrapper element around the mass actions UI controls.
 	 *
@@ -92,11 +125,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * Inits the overlay controls lazily on first open
 	 */
 	_initOverlay: function() {
+		var self = this;
 		if (this._hasInit) return;
 		this._hasInit = true;
 
 		this.wrapper.detach().appendTo('body');
 		this.wrapper.css('z-index', '1000100');
+
+		this.baseId = this.wrapper.data('base-id');
 
 		this.wrapper.click(function(ev) {
 			ev.stopPropagation();
@@ -133,7 +169,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		var tpl = DeskPRO_Window.util.getPlainTpl($('.radio-tpl', this.wrapper));
 
 		var groupedRadios = {};
-		$(':radio', this.wrapper).each(function() {
+		$(':radio.button-toggle', this.wrapper).each(function() {
 			var name = $(this).attr('name');
 			if (!groupedRadios[name]) {
 				groupedRadios[name] = [];
@@ -142,7 +178,6 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			groupedRadios[name].push(this);
 		});
 
-		var self = this;
 		Object.each(groupedRadios, function(els) {
 			var newEls = [];
 			els = $(els);
@@ -230,6 +265,126 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				this.close();
 			}
 		}).bind(this));
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/tickets/0/snippet-viewer',
+			triggerElement: this.getElById('text_snippets_btn'),
+			onSnippetClick: this._onSnippetClick.bind(this)
+		});
+
+		//------------------------------
+		// Upload handling
+		//------------------------------
+
+		this.wrapper.fileupload({
+			url: this.wrapper.data('upload-url'),
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.replyBox),
+			downloadTemplate: $('.template-download', this.replyBox)
+		});
+		this.wrapper.bind('fileuploaddone', function() {
+			self.getElById('attach_row').slideDown();
+		});
+		this.wrapper.bind('fileuploadstart', function() {
+			self.getElById('attach_row').slideDown();
+		});
+
+		this.wrapper.delegate('.remove-attach-trigger', 'click', function() {
+
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getElById('attach_row'));
+				if (!rows.length) {
+					self.getElById('attach_row').slideUp().addClass('is-hidden');
+				}
+			});
+		});
+
+		var noneRow = $('li.no-changes', this.wrapper);
+		var agentRow = $('li.assign-agent', this.wrapper);
+		var teamRow = $('li.assign-team', this.wrapper);
+		var followersRow = $('li.add-followers', this.wrapper);
+
+		if (this.assignOptionBox) {
+			this.assignOptionBox.destroy();
+		}
+
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getElById('agent_selector'),
+			trigger: this.getElById('assign_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
+				var agent_id = parseInt(selections.agents || -1);
+				var agent_team_id = parseInt(selections.teams || -1);
+
+				if (agent_id != -1) {
+					var input = $('<input type="hidden" name="actions[agent]" />').val(agent_id);
+					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
+					$('.label', agentRow).empty().text(label).append(input);
+					agentRow.show();
+				} else {
+					$('.label', agentRow).empty();
+					agentRow.hide();
+				}
+
+				if (agent_team_id != -1) {
+					var input = $('<input type="hidden" name="actions[agent_team]" />').val(agent_team_id);
+					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
+					$('.label', teamRow).empty().text(label).append(input);
+					teamRow.show();
+				} else {
+					$('.label', teamRow).empty();
+					teamRow.hide();
+				}
+
+				// Followers
+				var follower_names = [];
+				var follower_inputs = [];
+
+				var rowLabel = $('.label', followersRow).empty();
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
+					follower_names.push(label);
+
+					var i = $('<input type="hidden" name="actions[add_participants][]" value="'+part_id+'" />');
+					follower_inputs.push(i.get(0));
+				});
+				if (follower_names.length) {
+					$('.label', followersRow).empty().text(follower_names.join(', ')).append($(follower_inputs));
+					followersRow.show();
+				} else {
+					$('.label', followersRow).empty()
+					followersRow.hide();
+				}
+
+				if (agentRow.is(':visible') || teamRow.is(':visible') || followersRow.is(':visible')) {
+					noneRow.hide();
+				} else {
+					noneRow.show();
+				}
+
+				self.updatePreview();
+			}
+		});
+	},
+
+	getElById: function(id) {
+		return $('#' + this.baseId + '_' + id);
+	},
+
+	_onSnippetClick: function(info) {
+		var txt = this.getElById('replybox_txt');
+		var val = txt.val();
+		if (val.length) {
+			val += " ";
+		}
+		val += info.snippet;
+
+		txt.val(val);
 	},
 
 	updateCount: function(num) {
@@ -312,6 +467,13 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				rows.removeClass('loading');
 			},
 			success: function(html) {
+
+				if (this.options.isListView) {
+					this.close();
+					this.page.meta.pageReloader();
+					return;
+				}
+
 				$('.preview-edit', this.listWrapper).removeClass('preview-edit');
 				$('.preview-edit-hide', this.listWrapper).remove();
 				$('.row-item.changed', this.listWrapper).removeClass('changed');
@@ -336,6 +498,11 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * Updates the listing with a preview of the changes we're making
 	 */
 	updatePreview: function(specific_id) {
+
+		// No previews on list view
+		if (this.options.isListView) {
+			return;
+		}
 
 		if (this.runningAjax) {
 			this.runningAjax.abort();
@@ -362,18 +529,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.getActionFormValues(formData, false, formDataInfo);
 
 		// If we dont have any tickets or actions then theres nothing to do
-		if (!formDataInfo.checkedCount) {
+		if (!formDataInfo.checkedCount || !formDataInfo.actionsCount) {
 			return;
 		}
 
 		rows = $(rows);
 		rows.addClass('loading');
-
-		if (this.options.isListView) {
-			formData.push({
-				'view_type': 'list'
-			});
-		}
 
 		var runningAjax = $.ajax({
 			url: BASE_URL + 'agent/ticket-search/get-page',
@@ -471,26 +632,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		//------------------------------
 
 		var pos = $('#dp_content').offset();
+		var top = pos.top - 4;
 
-		if (this.options.isListView) {
-			var pageW = $(window).width();
-			var pageH = $(window).height();
-			var w = this.wrapper.outerWidth();
-
-			this.wrapper.css({
-				top: pos.top + 3,
-				left: (pageW / 2) - w,
-				right: 3,
-				bottom: 3
-			});
-		} else {
-			this.wrapper.css({
-				top: pos.top + 3,
-				left: pos.left + 3,
-				right: 3,
-				bottom: 3
-			});
-		}
+		this.wrapper.css({
+			top: pos.top - 4,
+			left: pos.left + 8,
+			right: 3,
+			bottom: 10
+		});
 
 		//------------------------------
 		// The backdrops surround each side of the list pane
@@ -636,6 +785,10 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.fireEvent('closed', [this]);
 
 		this.clearPreview();
+
+		if (this.options.resetOnClose) {
+			this.reset();
+		}
 	},
 
 

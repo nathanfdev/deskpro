@@ -17,7 +17,7 @@
 			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>
 		</header>
 		<div class="body-text">
-			{{message.message_html|raw}}
+			{{message.message_html|safe_link_urls_html }}
 			{% if ticket_message_attachments[message.id] %}
 				<ul class="attachment-list">
 					{% for attach_id in ticket_message_attachments[message.id] %}
@@ -33,6 +33,14 @@
 				</ul>
 			{%endif%}
 		</div>
+		{% if all_feedback[message.id] %}
+			{% set feedback = all_feedback[message.id] %}
+			<div class="feedback">
+				{{ feedback.person.display_name }} found this message
+				{% if feedback.rating > 0 %}<em class="helpful">helpful</em>{% else %}<em class="unhelpful">unhelpful</em>{% endif %}
+				{% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
+			</div>
+		{% endif %}
 	</div>
 	<textarea class="message-quote-{{message.id}}" style="display: none">{{ message.message_quote }}</textarea>
 </article>

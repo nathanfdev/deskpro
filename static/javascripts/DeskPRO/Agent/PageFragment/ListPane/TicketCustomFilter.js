@@ -3,8 +3,6 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults,
 
-
-
 	initPage: function(el) {
 
 		if (this.getMetaData('view_label')) {

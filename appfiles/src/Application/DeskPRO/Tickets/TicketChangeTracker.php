@@ -33,15 +33,106 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	protected $log_inspector;
 	protected $exec_inspector;
 	protected $list_updater;
+	protected $filter_detector;
+	protected $notify_list_builder;
+
+	protected $log;
+
+	protected $start_time;
 
 	public function __construct(Entity\Ticket $ticket)
 	{
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
 
+		$this->person_context = App::getCurrentPerson();
+
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
 		}
+	}
+
+	public function getPersonPerformer()
+	{
+		return $this->person_context;
+	}
+
+	public function getLog()
+	{
+		if ($this->log) return $this->log;
+		if (App::getConfig('debug.ticket_change_logger')) {
+			$logger = new \Orb\Log\Logger();
+			$writer = new \Orb\Log\Writer\Stream(DP_ROOT . '/sys/logs/ticket-change-tracker.log');
+			$logger->addWriter($writer);
+			$this->log = $logger;
+		}
+		return $this->log;
+	}
+
+	public function logMessage($message)
+	{
+		$this->getLog();
+		if ($this->log) {
+			$this->log->log($message, \Orb\Log\Logger::DEBUG);
+		}
+	}
+
+
+	/**
+	 * Checks if this ticket is new, or should be TREATED as new.
+	 * A ticket should be treated as new when it comes out of validation.
+	 *
+	 * @return bool
+	 */
+	public function isNewTicket()
+	{
+		$status_change  = $this->getChangedProperty('status');
+		$hstatus_change = $this->getChangedProperty('hidden_status');
+
+		if ($this->isExtraSet('ticket_created') || ($this->ticket->status_code == 'open' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating'))) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a new agent reply was added
+	 *
+	 * @return bool
+	 */
+	public function hasNewAgentReply()
+	{
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if ($message->person->is_agent) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Check if a new user reply was added
+	 *
+	 * @return bool
+	 */
+	public function hasNewUserReply()
+	{
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if (!$message->person->is_agent) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
@@ -117,18 +208,6 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	}
 
 
-	/**
-	 * Was the ticket new (just created?)
-	 *
-	 * @return bool
-	 */
-	public function isNewTicket()
-	{
-		return $this->is_new_ticket;
-	}
-
-
-
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
 		if (in_array($prop, array('messages'))) {
@@ -138,6 +217,38 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		}
 	}
 
+	/**
+	 * Service to fetch information about how this change affected various filters.
+	 *
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches
+	 */
+	public function getFilterDetector()
+	{
+		if ($this->filter_detector !== null) return $this->filter_detector;
+
+		$this->logMessage('[TicketChangeTracker] init filter_detector');
+
+		$this->filter_detector = new TicketChangeInspector\DetectFilterMatches($this);
+		return $this->filter_detector;
+	}
+
+
+	/**
+	 * Service to generate lists of who should be notified based off of preferences and
+	 * how filters were affected.
+	 *
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\NotifyListBuilder;
+	 */
+	public function getNotifyListBuilder()
+	{
+		if ($this->notify_list_builder !== null) return $this->notify_list_builder;
+		$this->notify_list_builder = new TicketChangeInspector\NotifyListBuilder($this, $this->getFilterDetector());
+
+		$this->logMessage('[TicketChangeTracker] init notify_list_builder');
+
+		return $this->notify_list_builder;
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\Log
@@ -145,7 +256,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	public function getLogInspector()
 	{
 		if ($this->log_inspector !== null) return $this->log_inspector;
-		$this->log_inspector = new TicketChangeInspector\Log($this);;
+
+		$this->logMessage('[TicketChangeTracker] init log_inspector');
+
+		$this->log_inspector = new TicketChangeInspector\Log($this);
 		return $this->log_inspector;
 	}
 
@@ -156,6 +270,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	public function getTriggerExecutorInspector()
 	{
 		if ($this->exec_inspector !== null) return $this->exec_inspector;
+
+		$this->logMessage('[TicketChangeTracker] init exec_inspector');
+
 		$this->exec_inspector = new TicketChangeInspector\TriggerExecutor($this);
 		return $this->exec_inspector;
 	}
@@ -168,7 +285,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	{
 		if ($this->list_updater !== null) return $this->list_updater;
 
-		$this->list_updater = new TicketChangeInspector\ListUpdater($this, 'check');
+		$this->logMessage('[TicketChangeTracker] init list_updater');
+
+		$this->list_updater = new TicketChangeInspector\ListUpdater($this, $this->getFilterDetector());
 		return $this->list_updater;
 	}
 
@@ -178,6 +297,8 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function preDone()
 	{
+		$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
+		$this->start_time = microtime(true);
 		$this->getLogInspector()->runPre();
 	}
 
@@ -188,11 +309,16 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		$this->logMessage('[TicketChangeTracker] done');
+
 		$this->getListUpdater()->run();
 		$this->getTriggerExecutorInspector()->run();
 		$this->getLogInspector()->run();
 
 		$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);
 		$person_activity->run();
+
+		$total_time = microtime(true) - $this->start_time;
+		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 	}
 }

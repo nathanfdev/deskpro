@@ -1,25 +1,21 @@
 <script>
-{% if filter.sys_name %}
-	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runnamedfilter', {'filter_name': filter.sys_name}) }}';
-{% else %}
-	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}';
-{% endif %}
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=$view_type';
-pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id, 'set_group_term': set_group_term, 'set_group_option': set_group_option })|raw }}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
-pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
-pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';
-pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
-pageMeta.viewTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '$ticket_id'}) }}';
-pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
-pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
-pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
-pageMeta.fetchResultsUrl = '{{ path('agent_ticketsearch_getpage') }}';
-pageMeta.viewType = 'simple-ext';
 {% if filter %}
-	pageMeta.filter_id = {{filter.id}};
+	{% if filter.sys_name %}
+		pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runnamedfilter', {'filter_name': filter.sys_name}) }}';
+	{% else %}
+		pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}';
+	{% endif %}
+
+	pageMeta.filter_id = {{filter_id}};
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&partial=1&page=$page';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&';
+	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
+{% else %}
+	pageMeta.cache_id = {{cache_id}};
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
+	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&page=$page';
+	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&';
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
@@ -41,27 +37,35 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
-	{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+	{% if ticket_ids|length %}
+		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 
-	{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
-	{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
-	{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
-	<section class="list-listing">
-		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
-	</section>
+		<section class="list-listing">
+			{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
+		</section>
 
-	<footer class="results-nav">
-		<div class="cursor">
-			Showing <span class="results-showing-count"></span> of {{ ticket_ids|length }} tickets
-		</div>
-		<div class="more">
-			<button class="show-more">Load More</button>
-		</div>
-		<div class="loading">
+		<footer class="results-nav">
+			<div class="cursor">
+				{{ phrase('agent.tickets.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': ticket_ids|length })|raw }}
+			</div>
+			<div class="more">
+				<button class="show-more">Load More</button>
+			</div>
+			<div class="loading">
 
-		</div>
-	</footer>
+			</div>
+		</footer>
+	{% else %}
+		<section class="list-listing">
+			<article class="row-item no-results">
+	    		<p style="padding: 15px;">There are no tickets to show.</p>
+    		</article>
+    	</section>
+	{% endif %}
 
 {# scroll containers #}
 </div></div></div></div>

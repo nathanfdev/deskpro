@@ -7,7 +7,7 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>
-				<a class="subject">
+				<a class="subject click-through">
 					{{ ticket.subject }}
 				</a>
 			</h3>
@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class="userinfo">
-		<a class="name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
+		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
 			<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
 		</a>
 		{% if ticket.person.organization %}
@@ -167,7 +167,6 @@
 		<br class="clear" />
 	</div>
 	{% endif %}
-	<div class="shadow-giver"></div>
 </article>
 
 {% endfor%}

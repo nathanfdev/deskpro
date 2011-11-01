@@ -41,6 +41,7 @@
 		<td>
 			<ul>
 				<li><a href="<?php echo $view['router']->generate('dev_phpinfo') ?>">PHP Info</a></li>
+				<li><a href="<?php echo $view['router']->generate('dev_cm') ?>">Insert Client Messages</a></li>
 			</ul>
 		</td>
 	</tr>

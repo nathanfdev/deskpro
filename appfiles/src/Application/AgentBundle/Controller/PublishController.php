@@ -52,12 +52,15 @@ class PublishController extends AbstractController
 
 		$kb_cats              = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
 		$kb_cats_counts       = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
+		$kb_cats_usergroups   = $this->publish_helper->getCategoryUsergroups(PublishHelper::ARTICLES);
 
 		$news_cats            = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
 		$news_cats_counts     = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
+		$news_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::NEWS);
 
 		$download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
 		$download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
+		$download_cats_usergroups = $this->publish_helper->getCategoryUsergroups(PublishHelper::DOWNLOADS);
 
 		$glossary_words     = $this->publish_helper->getGlossaryWordsIndex();
 		$glossary_count     = Arrays::countMulti($glossary_words);
@@ -68,18 +71,23 @@ class PublishController extends AbstractController
 		$counts['drafts']                = $this->publish_helper->getDraftsCount();
 		$counts['pending']               = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
+		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
 
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
+			'usergroups'            => $usergroups,
 			'counts'                => $counts,
 
 			'kb_cats'               => $kb_cats,
 			'kb_cats_counts'        => $kb_cats_counts,
+			'kb_cats_usergroups'    => $kb_cats_usergroups,
 
 			'news_cats'             => $news_cats,
 			'news_cats_counts'      => $news_cats_counts,
+			'news_cats_usergroups'  => $news_cats_usergroups,
 
 			'download_cats'         => $download_cats,
 			'download_cats_counts'  => $download_cats_counts,
+			'download_cats_usergroups' => $download_cats_usergroups,
 
 			'glossary_words'        => $glossary_words,
 			'glossary_count'        => $glossary_count,
@@ -690,6 +698,19 @@ class PublishController extends AbstractController
 	public function updateCategoryTitlesAction($type)
 	{
 		PublishCategoryEdit::updateTitles($type, $this->in->getCleanValueArray('titles', 'string', 'uint'));
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	public function updateCategoryAction($type, $category_id)
+	{
+		PublishCategoryEdit::update(
+			$type,
+			$category_id,
+			$this->in->getString('title'),
+			$this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard')
+		);
 		return $this->createJsonResponse(array(
 			'success' => true
 		));

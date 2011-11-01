@@ -1,0 +1,48 @@
+Orb.createNamespace('DeskPRO.Agent.PageFragment.SettingsPage');
+
+DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
+
+	Extends: DeskPRO.Agent.PageFragment.Basic,
+
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'settings_ticket_notifications';
+	},
+
+	initPage: function(el) {
+		var self = this;
+		this.el = el;
+
+		this.typeTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('.pageheader li', el)
+		});
+
+		var form = $('form', this.el);
+
+		form.submit(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var data = $(this).serializeArray();
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: data,
+				dataType: 'json',
+				success: function() {
+					self.settingsWindow.showSavePuff();
+				}
+			});
+		});
+
+		// "All" boxes need to check others
+		$('td.prop.all :checkbox', this.el).click(function() {
+			var row = $(this).closest('tr');
+			var checked = $(this).is(':checked');
+
+			if (checked) {
+				$(':checkbox', row).attr('checked', true);
+			}
+		});
+	}
+});

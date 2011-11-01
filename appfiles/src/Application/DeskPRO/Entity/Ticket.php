@@ -763,11 +763,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$now = new \DateTime();
 		if ($message->person['is_agent']) {
 			if (!($this->date_last_agent_reply || $this->date_last_agent_reply < $now)) {
-				$this->date_last_agent_reply = $now;
+				$this['date_last_agent_reply'] = $now;
 			}
 
 			if (!$this->date_first_agent_reply) {
-				$this->date_first_agent_reply = $now;
+				$this['date_first_agent_reply'] = $now;
 			}
 
 			if (!$message->is_agent_note) {
@@ -775,7 +775,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		} else {
 			if (!($this->date_last_user_reply || $this->date_last_user_reply < $now)) {
-				$this->date_last_user_reply = $now;
+				$this['date_last_user_reply'] = $now;
 			}
 
 			$this->setDateUserWaiting($now);
@@ -1436,7 +1436,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setHiddenStatus($hstatus)
 	{
-		$this->setStatus('hidden.' . $hstatus);
+		if (!$hstatus) {
+			if ($this->status == 'hidden') {
+				$this->setStatus('open');
+			}
+		} else {
+			$this->setStatus('hidden.' . $hstatus);
+		}
 	}
 
 	public function getStatusCode()

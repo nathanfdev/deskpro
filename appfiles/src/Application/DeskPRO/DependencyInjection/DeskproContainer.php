@@ -67,6 +67,7 @@ class DeskproContainer extends Container
 			throw new \InvalidArgumentException("Invalid factory `$id`");
 		}
 
+		$options = new \Orb\Util\CheckedOptionsArray($options);
 		$obj = $classname::create($this, $options);
 		return $obj;
 	}

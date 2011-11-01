@@ -281,7 +281,7 @@ class Util
 	public static function callUserConstructorArray($classname, array $args)
 	{
 		$args = array_values($args);
-		
+
 		switch (count($args)) {
 			// Most constructors wont take any more than a handful arguments
 			case 0:  $obj = new $classname();
@@ -652,7 +652,34 @@ class Util
 		} else {
 			$refl = new \ReflectionClass($classname);
 		}
-		
+
 		return $refl->getFileName();
+	}
+
+
+	/**
+	 * @static
+	 * @param $var
+	 * @return string
+	 */
+	public static function debugVar($var, $d = 0)
+	{
+		if (is_object($var)) {
+			if (method_exists($var, '__tostring')) {
+				return str_repeat("\t", $d) . "[" . get_class($var) . ":" . $var->__tostring() . "]";
+			} else {
+				return str_repeat("\t", $d) . "[" . get_class($var) . "]";
+			}
+		} else if (is_array($var)) {
+			$str = array();
+			$str[] = str_repeat("\t", $d) . "array(";
+			foreach ($var as $k => $v) {
+				$str[] = str_repeat("\t", $d+1) . "$k: " . self::debugVar($v, $d + 1);
+			}
+			$str[] = str_repeat("\t", $d) . ")";
+			return implode("\n", $str);
+		} else {
+			return str_repeat("\t", $d) . $var;
+		}
 	}
 }

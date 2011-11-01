@@ -51,6 +51,11 @@ class DownloadCategory extends AbstractCategoryRepository
 		return $this->_comment_helper;
 	}
 
+	public function getPermissionTableName()
+	{
+		return 'download_category2usergroup';
+	}
+
 	/**
 	 * Get an array of categories
 	 *

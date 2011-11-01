@@ -50,14 +50,8 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		// Custom fields
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
-
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		#------------------------------
 		# Messages
@@ -288,6 +282,8 @@ class TicketController extends AbstractController
 
 		$ticket_messages_block = '';
 
+		$all_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
+
 		if ($ticket_messages) {
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-batch.html.twig', array(
 				'ticket' => $ticket,
@@ -296,6 +292,7 @@ class TicketController extends AbstractController
 				'ticket_attachments' => $ticket_attachments,
 				'ticket_message_logs' => $ticket_message_logs,
 				'ticket_logs' => $ticket_logs,
+				'all_feedback' => $all_feedback,
 			));
 		}
 
@@ -384,6 +381,10 @@ class TicketController extends AbstractController
 		} else {
 			$ticket = null;
 			$person = null;
+		}
+
+		if (!$person && $this->in->getUint('person_id')) {
+			$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
 		}
 
 		$ticket_snippets = App::getEntityRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
@@ -605,26 +606,24 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$this->em->beginTransaction();
 
-		if (!empty($_POST['custom_fields'])) {
-			foreach ($ticket_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-					$ticket->setCustomData($info[0], $info[1], $info[2]);
-				}
+		try {
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $org);
 			}
 
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
 
-		// Custom fields
-		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
+		$custom_fields = $field_manager->getDisplayArrayForObject($org);
 
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
@@ -965,45 +964,54 @@ class TicketController extends AbstractController
 		});
 		$ticket->addPropertyChangedListener($event_listener);
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 
-		$macro_id = $this->in->getUint('macro_id');
-		if ($macro_id) {
-			$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
-			$all_macro_actions = $macro->getActionsArray($ticket);
-			$apply_macro_actions = array();
+		try {
+			$macro_id = $this->in->getUint('macro_id');
+			if ($macro_id) {
+				$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+				$all_macro_actions = $macro->getActionsArray($ticket);
+				$apply_macro_actions = array();
 
-			// Only ticket fields need to be applied this way,
-			// the other actions were performed on the actual ticket interface
-			// and sent in the request, and applied normally above
-			foreach ($all_macro_actions as $k => $action) {
-				if (strpos($k, 'ticket_field') === 0) {
-					$apply_macro_actions[$k] = $action;
+				// Only ticket fields need to be applied this way,
+				// the other actions were performed on the actual ticket interface
+				// and sent in the request, and applied normally above
+				foreach ($all_macro_actions as $k => $action) {
+					if (strpos($k, 'ticket_field') === 0) {
+						$apply_macro_actions[$k] = $action;
+					}
+				}
+
+				// We need to manually apply to the user since ticketedit doesnt care about that
+				$macro->performOnPerson($ticket['person']);
+
+				if ($apply_macro_actions) {
+					$ticket_edit->applyActions($apply_macro_actions);
 				}
 			}
 
-			// We need to manually apply to the user since ticketedit doesnt care about that
-			$macro->performOnPerson($ticket['person']);
+			$ticket_edit->save();
+			$this->em->flush();
 
-			if ($apply_macro_actions) {
-				$ticket_edit->applyActions($apply_macro_actions);
-			}
-		}
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-		if (!empty($_POST['custom_fields'])) {
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-
-			foreach ($ticket_field_defs as $field_def) {
-				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-					$ticket->setCustomData($info[0], $info[1], $info[2]);
+			if (!empty($_POST['custom_fields'])) {
+				$post_custom_fields = $this->request->request->get('custom_fields', array());
+				if (!empty($post_custom_fields)) {
+					$field_manager->saveFormToObject($post_custom_fields, $ticket);
 				}
+
+				$this->em->flush();
 			}
+
+			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+			$this->em->commit();
+
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
-
-		$ticket_edit->save();
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
 
 		$data = array('data' => array());
 		if (isset($result['new_reply'])) {
@@ -1011,15 +1019,6 @@ class TicketController extends AbstractController
 				'message' => $result['new_reply']
 			));
 		}
-
-		// Custom fields
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
-
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
@@ -1321,7 +1320,12 @@ class TicketController extends AbstractController
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
 			'ticket_options' => $ticket_options,
 		));
 	}
@@ -1392,15 +1396,34 @@ class TicketController extends AbstractController
 
 	public function newticketGetPersonRowAction($person_id)
 	{
+		if (!$person_id && $this->in->getUint('person_id')) {
+			$person_id = $this->in->getUint('person_id');
+		}
+
 		$person = false;
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
-		} elseif ($email = $this->in->getString('email_address')) {
-			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+		}
+		if (!$person && $this->in->getString('email')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+		}
+
+		$session = null;
+		if ($this->in->getUint('session_id')) {
+			$session = $this->em->find('DeskPRO:Session', $this->in->getUint('session_id'));
+		}
+		if ($session && $session->person) {
+			$person = $session;
 		}
 
 		if (!$person) {
 			$person = new Person();
+			if ($session) {
+				$person->name = $session->visitor->name;
+				if ($session->visitor->email) {
+					$person->setEmail($session->visitor->email);
+				}
+			}
 		}
 
 		return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', array(

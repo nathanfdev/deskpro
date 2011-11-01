@@ -154,6 +154,52 @@ class FieldManager
 
 
 	/**
+	 * Render field data to their 'text values.
+	 *
+	 * @param array $field_data
+	 * @return array
+	 */
+	public function getRenderedToText($field_data = array())
+	{
+		$custom_fields = array();
+		foreach ($this->getFields() as $f_def) {
+			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
+
+			$rendered = $value ? $f_def->getHandler()->renderText($value) : null;
+			if ($rendered) $has_value = true;
+
+			$custom_fields[$f_def['id']] = array(
+				'rendered'        => $rendered,
+				'elId'            => Util::requestUniqueIdString(),
+				'hasValue'        => ($value !== null),
+				'id'              => $f_def['id'],
+				'name'            => 'field_' . $f_def['id'],
+				'handler'         => $f_def->getHandler(),
+				'field_def'       => $f_def,
+				'title'           => $f_def['title'],
+				'value'           => $value,
+				'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
+			);
+		}
+
+		return $custom_fields;
+	}
+
+
+	/**
+	 * Render field data form an object to their text values.
+	 *
+	 * @param $object
+	 * @return array
+	 */
+	public function getRenderedToTextForObject($object)
+	{
+		$field_data = $this->getFieldDataForObject($object);
+		return $this->getRenderedToText($field_data);
+	}
+
+
+	/**
 	 * Create a field display array from an object
 	 *
 	 * @param $object

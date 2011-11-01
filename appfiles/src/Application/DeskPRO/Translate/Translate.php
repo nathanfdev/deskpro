@@ -31,7 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  *
  * <code>
  * $t = new Translate($language, $container);
- * $t->loadPhraseGroups('core', 'profile', 'tickets');
+ * $t->loadPhraseGroups(array('core', 'profile', 'tickets'));
  * echo $t['tickets.ask_a_question'];
  * echo $t->phrase('core.welcome_back_x', 'Christopher');
  * </code>
@@ -304,13 +304,21 @@ class Translate implements PersonContextInterface
 	 *
 	 * @param  $group
 	 */
-	public function loadPhraseGroups($group, $language)
+	public function loadPhraseGroups($groups, LanguageEntity $language = null)
 	{
-		$language_id = $language['id'];
+		if (!is_array($groups)) {
+			$groups = array($groups);
+		}
+
+		if (!$language) {
+			$language = $this->_language;
+		}
+
+		$language_id = $language->id;
+
 		if (!isset($this->_pending_groups[$language_id])) $this->_pending_groups[$language_id] = array();
 
-		for ($i = 0, $max = func_num_args(); $i < $max; $i++) {
-			$group = func_get_arg($i);
+		foreach ($groups as $group) {
 			if (!in_array($group, $this->_loaded_groups)) {
 				$this->_pending_groups[$language_id][] = $group;
 			}
@@ -456,7 +464,7 @@ class Translate implements PersonContextInterface
 			$language = $this->_loaded_languages[$language];
 		}
 
-		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $language);
+		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $language->getLocale());
 	}
 
 
@@ -611,6 +619,7 @@ class Translate implements PersonContextInterface
 		if ($this->_phrase_selector !== null) return $this->_phrase_selector;
 
 		$this->_phrase_selector = new \Symfony\Component\Translation\MessageSelector();
+		return $this->_phrase_selector;
 	}
 
 	/**

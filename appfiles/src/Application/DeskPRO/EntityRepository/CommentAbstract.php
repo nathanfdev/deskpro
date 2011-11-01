@@ -58,8 +58,8 @@ class CommentAbstract extends EntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM $table
-			WHERE status = ?
-		", array('validating'));
+			WHERE status = ? OR is_reviewed = ?
+		", array('validating', 0));
 	}
 
 	public function getValidatingComments()
@@ -68,8 +68,10 @@ class CommentAbstract extends EntityRepository
 			SELECT c
 			FROM " . $this->_entityName ." c
 			LEFT JOIN c.person p
-			WHERE c.status = ?1
+			WHERE c.status = ?1 OR c.is_reviewed = ?2
 			ORDER BY c.id DESC
-		")->setParameter(1, 'validating')->execute();
+		")->setParameter(1, 'validating')
+		  ->setParameter(2, false)
+		  ->execute();
 	}
 }

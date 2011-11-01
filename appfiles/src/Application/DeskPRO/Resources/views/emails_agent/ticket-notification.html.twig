@@ -1,0 +1,31 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	{{ layout.section_start(ticket.subject) }}
+		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
+	{{ layout.section_end() }}
+	{{ layout.section_start("Changes") }}
+		<table cellspacing="0" cellpadding="3" width="100%">
+			<tr>
+				<td>Field</td>
+				<td>Old Value</td>
+				<td>New Value</td>
+			</tr>
+			{% for change in ticket_changes %}
+				<tr>
+					<td width="130">{{ phrase(change.field) }}</td>
+					<td>{{ phrase(change.old) }}</td>
+					<td>{{ phrase(change.new) }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{{ layout.section_end() }}
+	{{ layout.section_start('Messages') }}
+		{% for message in messages %}
+			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
+		{% endfor %}
+	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{tac.access_code}})
+{% endblock %}

@@ -36,12 +36,11 @@ abstract class BasicCategoryPermission extends AbstractLoader
 	 */
 	protected $disallowed_cats = array();
 
-	abstract protected function getCategoryPermissionEntity();
 	abstract protected function getCategoryEntity();
 
 	protected function init()
 	{
-		$this->allowed_cats= App::getEntityRepository($this->getCategoryPermissionEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
+		$this->allowed_cats= App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
 
 		$all_ids = array_keys(App::getEntityRepository($this->getCategoryEntity())->getCategoryOptions());
 		$this->disallowed_cats = array_diff($all_ids, $this->allowed_cats);

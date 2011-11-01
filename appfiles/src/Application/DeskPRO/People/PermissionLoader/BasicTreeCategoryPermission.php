@@ -31,7 +31,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 
 	protected function init()
 	{
-		$this->specific_cats = App::getEntityRepository($this->getCategoryPermissionEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
+		$this->specific_cats = App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
 
 		$full = App::getEntityRepository($this->getCategoryEntity())->getFullHierarchy();
 		$this->_computeTree($full);

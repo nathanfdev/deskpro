@@ -36,7 +36,7 @@
 	left: 0;
 	display: none;
 
-	background: url("@{asset-url}/images/loading-big-circle.gif") no-repeat 50% 20px;
+	background: url("../../images/spinners/loading-big-circle.gif") no-repeat 50% 20px;
 }
 
 #dp_source_loading.on {
@@ -53,10 +53,7 @@ section.source-section {
 }
 
 section.source-section header {
-	background-image: -moz-linear-gradient(top, #d9dfe6, #b9c5d0);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#d9dfe6), to(#b9c5d0));
-	-pie-background: linear-gradient(#d9dfe6, #b9c5d0);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#d9dfe6, #b9c5d0);
 	position: relative;
 
 	height: 24px;
@@ -86,12 +83,31 @@ section.source-section header span.settings {
 	overflow: hidden;
 	text-indent: -100px;
 
-	background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat 7px -863px;
+	background-repeat: no-repeat;
+	background-position: 8px 6px;
+	background-image: url("../../images/agent/source-title-gear.png") /** sprite-ref: ui-v; sprite-margin-left: 8px; sprite-margin-top: 6px; sprite-margin-bottom: 8px; */;
 	border-left: 1px solid #ADB7C0;
 
 	cursor: pointer;
 }
 
+section.source-section header span.add {
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 29px;
+	bottom: 0;
+	width: 28px;
+
+	overflow: hidden;
+	text-indent: -100px;
+
+	background: url("../../images/agent/icons/add-small-gray.png") no-repeat 50% 50%;
+	border-left: 1px solid #ADB7C0;
+	.opacity(60);
+
+	cursor: pointer;
+}
 
 /*****************************************************************************
  * Lists
@@ -103,10 +119,7 @@ ul.source-list li {
 
 ul.source-list li.nav-selected > .title,
 ul.source-list li.nav-selected > .item-wrap > .title {
-	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
-	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#6baccc, #5182b3);
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-bottom: 1px solid #4d7399!important;
 	border-top: 1px solid #709ecc!important;
@@ -118,10 +131,7 @@ ul.source-list li.nav-selected > .item-wrap > .title {
 
 /* h3 titles are larger and have more pronounced borders */
 ul.source-list li h3.title {
-	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
-	-pie-background: linear-gradient(#edf0f2, #dde3e7);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#edf0f2, #dde3e7);
 	border-bottom: 1px solid #dde3e7;
 	border-top: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
@@ -140,7 +150,7 @@ ul.source-list li.filter-hidden {
 
 ul.source-list.ed-open li.filter-hidden {
 	display: block;
-	opacity: 0.4;
+	.opacity(40);
 }
 
 ul.source-list li.no-data {
@@ -157,12 +167,12 @@ ul.source-list li.no-data span {
 	position: relative;
 	top: 2px;
 	display: inline-block;
-	background: url("@{asset-url}/images/icons/source-gear.png") no-repeat 50% 50%;
+	background: url("../../images/agent/source-gear.png") no-repeat 50% 50%;
 	width: 11px;
 	height: 11px;
 	text-indent: -100px;
 	overflow: hidden;
-	opacity: 0.5;
+	.opacity(50);
 }
 
 ul.source-list li:last-of-type h3.title {
@@ -171,10 +181,7 @@ ul.source-list li:last-of-type h3.title {
 
 ul.source-list li:not(.nav-selected) > h3.title:hover,
 ul.source-list li:not(.nav-selected) > .item-wrap > h3.title:hover {
-	background-image: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
-	-pie-background: linear-gradient(#6baccc, #5182b3);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#6baccc, #5182b3);
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-bottom: 1px solid #4d7399;
 	border-top: 1px solid #709ecc;
@@ -197,10 +204,7 @@ ul.source-list li span.title {
 ul.source-list li:not(.nav-selected) > span.title:hover,
 ul.source-list li.on:not(.nav-selected) > span.title,
 ul.source-list li:not(.nav-selected) > .item-wrap > span.title:hover {
-	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
-	-pie-background: linear-gradient(#edf0f2, #dde3e7);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#edf0f2, #dde3e7);
 	border-bottom: 1px solid #C2C7CC;
 	border-top: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
@@ -215,13 +219,12 @@ ul.source-list li .list-counter {
 	line-height: 14px;
 	color: #fff;
 	text-shadow: 0 1px 0 #6c7680;
-	border-radius: 10px 10px 10px 10px;
+	.border-radius(10px, 10px, 10px, 10px);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.35), inset 0 1px 0 rgba(0,0,0,0.15);
 	float: right;
 	margin: 0 8px 0 0;
     padding: 0 5px;
 	background-color: #6c89a6;
-	behavior: url("../../static/vendor/PIE.htc");
 	position: relative;
 }
 
@@ -233,7 +236,7 @@ ul.source-list li.nav-selected > .item-wrap > .title .list-counter {
 }
 
 ul.source-list li .list-counter.loading {
-	background-image: url("@{asset-url}/images/loading-arrows-xsmall-white-darkbg.gif") !important;
+	background-image: url("../../images/spinners/loading-arrows-xsmall-white-darkbg.gif") !important;
 	background-position: 50% 50% !important;
 	background-repeat: no-repeat !important;
 	width: 13px !important;
@@ -242,7 +245,7 @@ ul.source-list li .list-counter.loading {
 }
 
 ul.source-list ul.sub-group li .list-counter.loading {
-	background-image: url("@{asset-url}/images/loading-arrows-xsmall-white-lightbg.gif") !important;
+	background-image: url("../../images/spinners/loading-arrows-xsmall-white-lightbg.gif") !important;
 }
 
 ul.source-list ul.sub-group {
@@ -307,7 +310,7 @@ ul.source-list li .elbow {
 	z-index: 1;
 
     display: block;
-    background: url("@{asset-url}/images/icons/tree-plus.gif") no-repeat 50% 50%;
+    background: url("../../images/agent/icons/tree-plus.gif") no-repeat 50% 50%;
     cursor: pointer;
     margin-right: 2px;
     margin-top: 3px;
@@ -317,17 +320,17 @@ ul.source-list li .elbow {
     text-indent: -100px;
     overflow: hidden;
 
-	opacity: 0.7;
+	.opacity(70);
 }
 
 .source-list .sub-expanded > .sub-toggle,
 .source-list .sub-expanded > div > .sub-toggle,
 .source-list .sub-toggle.open {
-    background-image: url("@{asset-url}/images/icons/tree-minus.gif");
+    background-image: url("../../images/agent/icons/tree-minus.gif");
 }
 
 .source-list .sub-toggle:hover {
-	opacity: 1;
+	.opacity(100);
 }
 
 .source-list li > ul.sub-group {
@@ -406,10 +409,7 @@ section.source-tabs {
 }
 
 section.source-tabs ul {
-	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
-	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#f7f7f7, #dfe5eb);
 	border-right: 1px;
 	border-right-style: solid;
 	border-right-color: #B4BABF;
@@ -447,10 +447,7 @@ section.source-tabs ul li span {
 }
 
 section.source-tabs ul li.on span {
-	background-image: -moz-linear-gradient(top, #f7f7f7, #dfe5eb);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#dfe5eb));
-	-pie-background: linear-gradient(#f7f7f7, #dfe5eb);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#f7f7f7, #dfe5eb);
 	height: 24px;
 	position: relative;
 	border-bottom: none !important;
@@ -461,7 +458,7 @@ section.source-tabs ul li.fill-out span {
 }
 
 section.source-tabs.many ul li span {
-	padding: 6px 7px;
+	padding: 0 7px;
 }
 
 /*****************************************************************************
@@ -484,13 +481,10 @@ section.source-switcher-tabs ul {
 }
 
 section.source-switcher-tabs ul li {
-	background-image: -moz-linear-gradient(top, #ccd2d5, #a8b2b6);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#ccd2d5), to(#a8b2b6));
-	-pie-background: linear-gradient(#ccd2d5, #a8b2b6);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#ccd2d5, #a8b2b6);
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0px 1px rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.35);
 	border: 1px solid #8b98a6;
-	border-radius: 5px;
+	.border-radius(5px, 5px, 5px, 5px);
 	font-size: 11px;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgba(255,255,255, 0.5);
@@ -508,10 +502,7 @@ section.source-switcher-tabs ul li {
 }
 
 section.source-switcher-tabs ul li.on {
-	background-image: -moz-linear-gradient(top, #a3adb2, #a8b2b6);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#a3adb2), to(#a8b2b6));
-	-pie-background: linear-gradient(#a3adb2, #a8b2b6);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#a3adb2, #a8b2b6);
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1) inset, 0 0 3px 0px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.35);
 	color: #3A3F45;
 	text-shadow: 0 1px 0 #CBDAED;
@@ -519,12 +510,12 @@ section.source-switcher-tabs ul li.on {
 }
 
 section.source-switcher-tabs ul li:first-child {
-	border-radius: 3px 0 0 3px;
+	.border-radius(3px, 0, 0, 3px);
     border-right: none;
 }
 
 section.source-switcher-tabs ul li:last-child {
-    border-radius: 0 3px 3px 0;
+    .border-radius(0, 3px, 3px, 0);
 }
 
 /*****************************************************************************
@@ -564,8 +555,7 @@ section.source-labels-list ul li {
 
 section.source-labels-list ul li span {
 	background: #FFF;
-	border-radius: 10px;
-	behavior: url("../../static/vendor/PIE.htc");
+	.border-radius(10px, 10px, 10px, 10px);
 	padding: 1px 5px 0px 5px;
 	font-size: 10px;
 	color: #607080;
@@ -583,13 +573,10 @@ section.source-labels-list ul li.nav-selected > span,
 section.source-labels-list ul li.nav-selected > .item-wrap > span {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3) !important;
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3)) !important;
-	-pie-background: linear-gradient(#6baccc, #5182b3) !important ;
-	behavior: url("@{asset-url}/static/vendor/PIE.htc") !important;
 	border-top: none !important;
 
 	color: #fff !important;
 	text-shadow: 0 1px 0 #42566B !important;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 /*****************************************************************************
@@ -610,8 +597,7 @@ section.source-labels-cloud ul li {
 
 section.source-labels-cloud ul li span {
 	background: #FFF;
-	border-radius: 10px;
-	behavior: url("../../static/vendor/PIE.htc");
+	.border-radius(10px, 10px, 10px, 10px);
 	padding: 1px 5px 0px 5px;
 	font-size: 10px;
 	color: #607080;
@@ -628,13 +614,10 @@ section.source-labels-cloud ul li:not(.nav-selected):hover span {
 section.source-labels-cloud ul li.nav-selected span {
 	background-image: -moz-linear-gradient(top, #6baccc, #5182b3) !important;
 	background-image: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3)) !important;
-	-pie-background: linear-gradient(#6baccc, #5182b3) !important ;
-	behavior: url("@{asset-url}/static/vendor/PIE.htc") !important;
 	border-top: none !important;
 
 	color: #fff !important;
 	text-shadow: 0 1px 0 #42566B !important;
-	behavior: url("../../static/vendor/PIE.htc");
 }
 
 /*****************************************************************************
@@ -669,29 +652,30 @@ section.source-labels-cloud ul li.nav-selected span {
 	padding-left: 10px;
 	width: 6px;
 	height: 9px;
+	background-repeat: no-repeat;
+	background-position: 0 2px;
 }
 
 #tickets_outline_flags_list span.flag-blue      {
-    background-repeat: no-repeat;
-    background-image: url(../../images/flag-blue.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-blue.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px;  */;
 }
 #tickets_outline_flags_list span.flag-green {
-    background-image: url(../../images/flag-green.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-green.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 #tickets_outline_flags_list span.flag-orange    {
-    background-image: url(../../images/flag-orange.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-orange.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 #tickets_outline_flags_list span.flag-pink      {
-    background-image: url(../../images/flag-pink.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-pink.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 #tickets_outline_flags_list span.flag-purple    {
-    background-image: url(../../images/flag-purple.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-purple.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 #tickets_outline_flags_list span.flag-red       {
-    background-image: url(../../images/flag-red.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-red.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 #tickets_outline_flags_list span.flag-yellow    {
-    background-image: url(../../images/flag-yellow.png) /** sprite-ref: ui-v; */;
+    background-image: url(../../images/agent/icons/flag-yellow.png) /** sprite-ref: ui-v; sprite-margin-top: 2px; sprite-margin-bottom: 5px; */;
 }
 
 
@@ -735,10 +719,7 @@ section.source-labels-cloud ul li.nav-selected span {
 }
 
 .filter-group-editor .filter-row {
-	background-image: -moz-linear-gradient(top, #edf0f2, #dde3e7);
-	background-image: -webkit-gradient(linear, center top, center bottom, from(#edf0f2), to(#dde3e7));
-	-pie-background: linear-gradient(#edf0f2, #dde3e7);
-	behavior: url("../../static/vendor/PIE.htc");
+	.gradient(#edf0f2, #dde3e7);
 	border-top: 1px solid transparent;
 	border-bottom: 1px solid #ced4d9;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
@@ -763,7 +744,7 @@ section.source-labels-cloud ul li.nav-selected span {
 
 .filter-group-editor .close {
 	position: absolute;
-	background: url("@{asset-url}/images/close-small.png") no-repeat 50% 50%;
+	background: url("../../images/agnet/close-small.png") no-repeat 50% 50%;
 	width: 13px;
 	height: 13px;
 	overflow: hidden;
@@ -800,18 +781,13 @@ section.source-labels-cloud ul li.nav-selected span {
 .cat-editor-tab {
 	position: absolute;
 	background: rgba(242,242,242,0.98);
-	border-radius: 3px 3px 0 3px;
+	.border-radius(3px, 3px, 0, 3px);
 	padding: 5px;
 	font-size: 11px;
 	border: 1px solid #BFC2C7;
 	border-right: 1px solid #BFC2C7;
 
-	-moz-border-radius-topleft: 4px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-bottomleft: 4px;
-	-webkit-border-radius: 4px 0px 0px 4px;
-	border-radius: 4px 0px 0px 4px;
+	.border-radius(4px, 0px, 0px, 4px);
 
 	margin-left: 2px;
 
@@ -833,7 +809,7 @@ section.source-labels-cloud ul li.nav-selected span {
 }
 .cat-editor {
 	background: rgba(242,242,242,0.98);
-	border-radius: 3px 3px 0 3px;
+	.border-radius(3px, 3px, 0, 3px);
 	border: 1px solid #aaaeb2;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	float: left;
@@ -841,7 +817,6 @@ section.source-labels-cloud ul li.nav-selected span {
 	font-weight: bold;
 	font-family: @body-font;
 	color: #6D7073;
-	behavior: url("js/lib/PIE.htc");
 	position: relative;
 	text-shadow: 0 1px 0 #fff;
 	z-index: 1;
@@ -868,15 +843,16 @@ section.source-labels-cloud ul li.nav-selected span {
 
 .cat-editor .close-trigger {
     display: block;
-    width: 15px;
-    height: 15px;
+    width: 11px;
+    height: 11px;
     text-indent: -100px;
     overflow: hidden;
-    background: url("@{asset-url}/images/agent/imgSprt_ico.png") no-repeat scroll 0px -1561px transparent;
+    background-repeat: no-repeat;
+    background-image: url("../../images/agent/icons/close-small-dark.png") /** sprite-ref: ui-v; sprite-margin-left: 8px; sprite-margin-top: 6px; sprite-margin-bottom: 8px; */;
     margin-top: 0;
     cursor: pointer;
 	position: absolute;
-	top: 2px;
+	top: 3px;
 	right: 3px;
 }
 
@@ -910,10 +886,10 @@ input.dp-cat-input:focus {
 #publish_outline_glossary li.all .add-new {
 	display: block;
 	position: absolute;
-	top: 1px;
+	top: 5px;
 	right: 5px;
 
-	background: url("@{asset-url}/images/icons/add.png") no-repeat 100% 50%;
+	background: url("../../images/agent/icons/add.png") no-repeat 100% 50%;
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -943,16 +919,16 @@ input.dp-cat-input:focus {
 	width: 16px;
 	height: 16px;
 	display: none;
-	background: url("@{asset-url}/images/icons/cog.png") no-repeat 50% 50%;
+	background: url("../../images/agent/icons/cog.png") no-repeat 50% 50%;
 	overflow: hidden;
 	text-indent: -100px;
-	opacity: 0.7;
+	.opacity(70);
 	margin-top: 3px;
 	margin-right: 3px;
 }
 
 #publish_outline ul.source-list li .delete-cat {
-	background-image: url("@{asset-url}/images/icons/trash.png");
+	background-image: url("../../images/agent/icons/trash.png");
 }
 
 #publish_outline ul.source-list li .delete-cat {
@@ -961,7 +937,7 @@ input.dp-cat-input:focus {
 
 #publish_outline ul.source-list li:hover .edit-cat,
 #publish_outline ul.source-list li:hover .delete-cat {
-	opacity: 1;
+	.opacity(100);
 }
 
 #publish_outline ul.source-list.edit-mode .list-counter {
@@ -996,26 +972,26 @@ input.dp-cat-input:focus {
 }
 
 .deskpro-tab-item li.all .add-new-cat {
-	background: url("@{asset-url}/images/icons/folder_add.png") no-repeat 50% 50%;
+	background: url("../../images/agent/icons/folder_add.png") no-repeat 50% 50%;
 	right: 24px;
 	top: 0px;
 }
 
 .deskpro-tab-item li.all .add-new-article {
-	background: url("@{asset-url}/images/icons/page_add.png") no-repeat 50% 50%;
+	background: url("../../images/agent/icons/page_add.png") no-repeat 50% 50%;
 	right: 43px;
 }
 
 .deskpro-tab-item li.all .edit-mode {
-	background-image: url("@{asset-url}/images/icons/cog.png");
+	background-image: url("../../images/agent/icons/cog.png");
 }
 
 .deskpro-tab-item .edit-mode li.all .edit-mode {
-	background-image: url("@{asset-url}/images/icons/cog_delete.png");
+	background-image: url("../../images/agent/icons/cog_delete.png");
 }
 
 .deskpro-tab-item li.all .add-new {
-	background-image: url("@{asset-url}/images/icons/add.png");
+	background-image: url("../../images/agent/icons/add.png");
 	right: 23px;
 	display: none;
 }

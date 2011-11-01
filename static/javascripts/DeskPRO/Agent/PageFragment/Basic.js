@@ -253,16 +253,49 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	 * @param id
 	 */
 	getEl: function(id) {
-		if (this.getMetaData('baseId')) {
-			id = this.getMetaData('baseId') + '_' + id;
+		if (this.meta && this.meta.baseId) {
+			id = this.meta.baseId + '_' + id;
 		}
 
-		var context = null;
-		if (this.wrapper) {
-			context = this.wrapper;
+		return $('#' + id);
+	},
+
+
+	/**
+	 * If this page is part of a tabstrip, return its tab id
+	 *
+	 * @return {String}
+	 */
+	getTabId: function() {
+		if (this.meta.tabId) {
+			return this.meta.tabId;
 		}
 
-		return $('#' + id, context);
+		return null;
+	},
+
+	/**
+	 * If this page is part of a tabstrip, return the tab object its
+	 * attached to.
+	 *
+	 * @return {Object}
+	 */
+	getTab: function() {
+		var tabId = this.getTabId();
+		if (!tabId) return null;
+
+		return DeskPRO_Window.getTabStrip().getTabById(tabId);
+	},
+
+
+	/**
+	 * Activates flashing on the tab to alert of a change or something that requires attention
+	 */
+	alertTab: function() {
+		var tab = this.getTab();
+		if (!tab) return;
+
+		DeskPRO_Window.getTabStrip().alertTab(tab);
 	},
 
 
@@ -272,6 +305,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	closeSelf: function() {
 		DeskPRO_Window.removePage(this);
 	},
+
 
 	destroy: function() {
 

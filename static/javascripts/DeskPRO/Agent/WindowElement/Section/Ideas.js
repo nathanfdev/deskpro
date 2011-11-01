@@ -33,5 +33,7 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 
 			}
 		});
+
+		this.fireEvent('sectionInit');
 	}
 });

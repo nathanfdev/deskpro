@@ -207,6 +207,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.clearAll();
 
 		if (department_id == this.departmentId && !refresh) {
+			this.updateSectionDisplay();
 			return;
 		}
 
@@ -215,6 +216,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		if (!window.DESKPRO_TICKET_DISPLAY || !window.DESKPRO_TICKET_DISPLAY[department_id]) {
 			// The department is empty of fields
 			// (Rare, because we'll at least have category and such usually)
+			this.updateSectionDisplay();
 			return;
 		}
 
@@ -457,6 +459,13 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	updateSectionDisplay: function() {
 		var sectionBodyTabContents = this.sectionBodyTabContents;
 		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
+
+		console.log($('.fields-edit-rows > *', this.sectionProperties).length);
+		if ($('.fields-edit-rows > *', this.sectionProperties).length) {
+			$('.properties-edit-trigger', this.wrapper).show();
+		} else {
+			$('.properties-edit-trigger', this.wrapper).hide();
+		}
 
 		$('li.field-tab', this.sectionBodyTabs).each(function() {
 			var id = $(this).data('field-tab-id');

@@ -11,8 +11,8 @@ namespace Orb\Util;
 
 class CheckedOptionsException extends \Exception
 {
-	protected $validator_errors;
-	protected $validator_error_info;
+	public $validator_errors;
+	public $validator_error_info;
 
 	public function __construct($message, array $errors, array $error_info, $code = 0, $previous = null)
 	{

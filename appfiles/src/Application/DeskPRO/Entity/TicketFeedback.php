@@ -73,7 +73,7 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 		$this->_is_new = true;
 	}
-	
+
 	/**
 	 * Is this is a new record? (ie not persisted, or persisted this request)
 	 * @return bool
@@ -103,6 +103,11 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($id);
 		$this['ticket'] = $ticket;
+	}
+
+	public function getMessageId()
+	{
+		return $this->ticket_message->id;
 	}
 
 	public function setRating($rating)

@@ -2,72 +2,33 @@
 <div id="dp_header">
 	<!-- BEGIN NOTIFICATION SECTION -->
 	<div id="DP-NotificationSection">
-		<div id="notificationWrap" class="left ">
-			<div class="notifications" style="display: none;">
-				<div class="notifMenuWrap">
-					<div class="wrapNotif" onclick="toggle_visibility('notificationDropdown');">
-						<div class="notifMail" style="display: none;"><span class="counter">0</span></div>
-						<div class="notifChat" style="display: none;"><span class="counter">0</span></div>
-					</div>
-				</div>
-			</div>
-			<!-- Header - Notification Dropdown on click -->
-			<div id="notificationDropdown" style="display:none;">
-			<div class="notifDropdown" onclick="toggle_visibility('notificationDropdown');">
-				<div class="notifHead">
-					<div class="notifMail" style="display: none;"><span class="counter">0</span></div>
-					<div class="notifChat" style="display: none;"><span class="counter">0</span></div>
-				</div>
-				<ul id="notification">
-					<li class="notifPaging">
-						<ul id="notifPages">
-							<li class="pText right"><a>next</a></li>
-							<li class="mark right">|</li>
-							<li class="pText right"><a>last</a></li>
-							<li class="mark right">|</li>
-							<li class="pText right"><a>first</a></li>
-							<li class="mark right">|</li>
-							<li class="pText right off"><a>prev</a></li>
-						</ul>
-					</li>
-					<li class="dismissAll">
-						<a>Dismiss all notifications</a>
-					</li>
-				</ul>
-			</div>
+		<div id="notificationWrap" class="left">
+			<div class="notifications" id="dp_notif_bed" style="display: none;">
+				<div class="notifMail notif-item notif-tickets" style="display: none;"><span class="counter">0</span></div>
+				<div class="notifChat notif-item notif-chat" style="display: none;"><span class="counter">0</span></div>
 			</div>
 		</div>
-	<!-- END NOTIFICATION SECTION -->
 	</div>
+	<div id="notificationDropdown" style="display:none;">
+		<div class="notifDropdown">
+			<div class="notifHead">
+				<div class="notifMail notif-item notif-tickets" style="display: none;"><span class="counter">0</span></div>
+				<div class="notifChat notif-item notif-chat" style="display: none;"><span class="counter">0</span></div>
+			</div>
+			<ul id="dp_notify_list">
+				<li class="dismissAll" id="dp_notify_list_dismiss">
+					<a>Dismiss all notifications</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- END NOTIFICATION SECTION -->
 	<!-- BEGIN SEARCH SECTION -->
 	<div id="dp_omnibox_wrap">
 		<div id="dp_omnibox">
 			<div class="searchBoxWrap">
-				<div class="searchType"><a onclick="toggle_visibility('searchDropdown');">all</a></div>
-				<div class="searchBy" onclick="toggle_visibility('searchDropdown');">
-					<span class="picker">Department</span>
-					<a>Departement 3<span class="close">x</span></a>
-				</div>
-				<input id="dpsearchbox" type="text" value="" name="search" autocomplete="off" onclick="toggle_visibility('searchDropdown');"/>
-				<!-- Header - Search Categories Dropdown on click-->
-				<div id="searchDropdown" style="display:none;">
-					<div class="searchCatDropdown" >
-						<ul>
-							<li><a href="#"><span class="createTicket">Tickets</span></a></li>
-							<li><a href="#">Buggy inline editor</a></li>
-							<li><a href="#">Report not displayed after switching account on...</a></li>
-							<li><a href="#">Report template doesn’t recognized</a></li>
-							<li><a href="#"><span class="people">People</span></a></li>
-							<li><a href="#">Farrokh Bulsara</a></li>
-							<li><a href="#">Rolf Magnus Joakim Larsson</a></li>
-							<li><a href="#">Sammy Hagar</a></li>
-							<li><a href="#"><span class="createIdeas">Ideas</span></a></li>
-							<li><a href="#">Auto reload contact list after adding new report</a></li>
-							<li><a href="#">Wider detail invoice view</a></li>
-							<li class="last"><a href="#">View all results</a></li>
-						</ul>
-					</div>
-				</div>
+
+				<input type="input" id="dp_omniinput" size="4" />
 			</div>
 		</div>
 	<!-- END SEARCH SECTION -->
@@ -106,7 +67,6 @@
 				<div class="userWrapper">
 					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
 				</div>
-				<span class="dropdownIcon" onclick="toggle_visibility('userSetting');"></span>
 			</div>
 		</div>
 		<!-- Header - User Control Dropdown -->
@@ -140,7 +100,7 @@
 				<a><span>Agent Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ path('admin') }}"><span>Admin Interface</span></a></li>
+				<li><a class="admin" href="{{ path('admin_login', {'dpsid-agent': app.getSession().getId() }) }}"><span>Admin Interface</span></a></li>
 				<li><a class="billing" href=""><span>Billing Interface</span></a></li>
 				<li><a class="report" href=""><span>Report Interface</span></a></li>
 				<li><a class="portal" href="{{ path('user') }}"><span>User Interface</span></a></li>

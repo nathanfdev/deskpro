@@ -7,8 +7,8 @@ var DpChat_Display = (function() {
 	var chatBoxBtn = null;
 	var messageWrapper = null;
 	var findingAgentEl = null;
-
-	var typingFuncTime = null;
+	var findingAgentLongEl = null;
+	var noAgentTimer = null;
 
 	var self = this;
 
@@ -46,32 +46,76 @@ var DpChat_Display = (function() {
 		// The chat box
 		//--------------------
 
+		options.name = options.email = 1;
+
 		var html = [];
 		html.push('<div id="dpchat_panel">');
 			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span><span id="dpchat_popchat">Open in new window</span></div>');
-			if (options.departmentSelect) {
-				html.push('<div id="dpchat_preform">');
-				html.push('<div class="dpchat-info dpchat-instruction alt-form">');
-					html.push('Choose a department: ' + options.departmentSelect + '<br />');
-					html.push('<button id="dpchat_preform_submit" class="dp-button xx-small">Start Chatting</button>');
-				html.push('</div>');
+			if (options.name || options.email || options.departmentSelect) {
+				html.push('<div id="dpchat_preform">')
+
+				if (options.name) {
+					html.push('<div class="dpchat-row dpchat-name">');
+						html.push('<label>Your name:</label><div class="dpchat-input"><input type="text" value="" name="name" /></div>');
+					html.push('</div>');
+				}
+				if (options.email) {
+					html.push('<div class="dpchat-row dpchat-email">');
+						html.push('<label>Your email address:</label><div class="dpchat-input"><input type="text" value="" name="email" /></div>');
+					html.push('</div>');
+				}
+				if (options.departmentSelect) {
+					html.push('<div class="dpchat-row dpchat-department">');
+						html.push('<label>Choose a department:</label><div class="dpchat-input">' + options.departmentSelect + '</div>');
+					html.push('</div>');
+				}
+
+				html.push('<div class="controls"><button id="dpchat_preform_submit">Start Chatting</button></div>');
 				html.push('</div>');
 			}
 			html.push('<div id="dpchat_messages" ' + (options.departmentSelect ? 'style="display:none"' : '') + '>');
 				html.push('<div class="dpchat-info dpchat-instruction">Type in your question to get started</div>');
-				html.push('<div class="dpchat-finding-agent">Please wait while we find an agent to take your chat.</div>');
+				html.push('<div class="dpchat-finding-agent" style="display: none">Please wait while we find an agent to take your chat.</div>');
+				html.push('<div class="dpchat-finding-agent-long" style="display: none">We are still trying to find an agent to take your chat but it is taking longer than we thought. Maybe you want to <a href="'+DpChat_Options.deskproUrl+'tickets/new">send us an email</a> instead?</div>');
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
+			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
+			html.push('<div id="dpchat_sound_tpl" style="display:none"><audio preload="preload"><source src="' + DpChat_Options.staticUrl + 'sounds/pop.mp3" /><source src="' + DpChat_Options.staticUrl + 'sounds/pop.ogg" /></audio></div>');
 		html.push('</div>');
 
 		var el = $(html.join(''));
+
+		if (options.formValues && options.formValues.length) {
+			var x = 0;
+			for (x = 0; x < options.formValues.length; x++) {
+				$('[name="' + options.formValues[x][0] + '"]', el).val(options.formValues[x][1]);
+			}
+		}
+
 		el.appendTo('body');
 		chatBox = el;
+
+		$('#dpchat_start_new').click(function() {
+			DpChat.endChatReboot();
+		});
 
 		DpChatConsole.log('DpChat_Display.initDisplay: chatBox %o', chatBox);
 
 		messageWrapper = $('#dpchat_messages');
 		findingAgentEl = $('.dpchat-finding-agent', messageWrapper);
+		findingAgentLongEl = $('.dpchat-finding-agent-long', messageWrapper);
+
+		$('a', findingAgentLongEl).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var href = $(this).attr('href');
+			chatBox.hide();
+			chatBoxBtn.hide();
+			DpChat.endChat(function() {
+				window.location = href;
+			});
+		});
 
 		var self = this;
 		$('#dpchat_preform_submit').click(function(ev) {
@@ -79,8 +123,8 @@ var DpChat_Display = (function() {
 			ev.stopPropagation();
 
 			var altData = getAltFormData();
-			altData.justStart = true;
-			DpChat.sendMessage('.', altData);
+			altData.startNew = true;
+			DpChat.sendMessage('', altData);
 			self.addMessageRow(false, false, 'justStart');
 		});
 
@@ -99,9 +143,13 @@ var DpChat_Display = (function() {
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');
-		messageTextarea.keypress(function(ev) {
+		messageTextarea.keyup(function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
-
+		});
+		messageTextarea.change(function(ev) {
+			DpChat.userTypingIndicator(messageTextarea.val());
+		});
+		messageTextarea.keypress(function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				doSend();
@@ -115,6 +163,21 @@ var DpChat_Display = (function() {
 		});
 	};
 
+	var playSound = function() {
+		var audio = $('#dpchat_sound_tpl > audio').clone();
+		audio.attr('preload', null);
+		audio.bind('ended', function() {
+			$(this).remove();
+		});
+
+		audio.appendTo('body');
+		audio.get(0).play();
+	};
+
+	this.getMessage = function() {
+		return $('#dpchat_input > textarea').val();
+	};
+
 	var doSend = function() {
 		var messageTextarea = $('#dpchat_input > textarea');
 
@@ -125,20 +188,30 @@ var DpChat_Display = (function() {
 			return;
 		}
 
-		if (typingFuncTime) {
-			window.clearTimeout(typingFuncTime);
-		}
-
 		DpChat.sendMessage(msg, getAltFormData());
 		self.addMessageRow('You', msg, 'user');
 	};
 
 	this.showAssignedStatus = function(isAssigned) {
+		findingAgentLongEl.hide();
 		if (!isAssigned) {
+			if (noAgentTimer) window.clearTimeout(noAgentTimer);
+			noAgentTimer = window.setTimeout(function() { DpChat_Display.showTicketLink(); }, 30000);
+
 			findingAgentEl.detach().appendTo(messageWrapper).show();
+			DpChatConsole.log('DpChat_Display.showAssignedStatus: not assigned');
 		} else {
+			if (noAgentTimer) window.clearTimeout(noAgentTimer);
+			noAgentTimer = null;
+
 			findingAgentEl.hide();
+			DpChatConsole.log('DpChat_Display.showAssignedStatus: assigned');
 		}
+	};
+
+	this.showTicketLink = function() {
+		findingAgentEl.hide();
+		findingAgentLongEl.detach().appendTo(messageWrapper).show();
 	};
 
 	this.showProactive = function() {
@@ -161,7 +234,7 @@ var DpChat_Display = (function() {
 	};
 
 	var getAltFormData = function() {
-		return $('.alt-form :input', chatBox).serializeArray();
+		return $('#dpchat_preform :input').serializeArray();
 	};
 
 	this.showChatPanel = function() {
@@ -210,7 +283,15 @@ var DpChat_Display = (function() {
 	 * @param message
 	 * @param type
 	 */
-	this.addMessageRow = function(name, message, type, is_html) {
+	this.addMessageRow = function(name, message, type, meta) {
+		if (!meta) {
+			meta = {};
+		}
+
+		var is_html = false;
+		if (meta.is_html) {
+			is_html = true;
+		}
 
 		$('#dpchat_preform').hide();
 		$('#dpchat_messages').show();
@@ -231,6 +312,12 @@ var DpChat_Display = (function() {
 			name = name + ': ';
 		}
 
+		if (meta.chat_assigned) {
+			return;
+		} else if (meta.chat_unassigned) {
+			return;
+		}
+
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
 			html.push('<div class="dpchat-author">' + name + '</div>');
@@ -239,7 +326,6 @@ var DpChat_Display = (function() {
 
 		var el = $(html.join(''));
 		if (is_html) {
-			console.log(message);
 			$('.dpchat-msg', el).html(message);
 		} else {
 			message = DpChat.util.escapeHtml(message);
@@ -251,8 +337,26 @@ var DpChat_Display = (function() {
 
 		messageWrapper.scrollTop(100000);
 
+		DpChat_Display.showChatPanel();
+
+		if (type == 'agent' && !meta.is_initial) {
+			playSound();
+		}
+
 		return el;
 	};
+
+	this.showEnd = function() {
+		$('#dpchat_input').hide();
+		$('#dpchat_endchat').hide();
+		$('#dpchat_ended').show();
+
+		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinisehdUrl()).click(function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
+			window.open(DpChat.getFinisehdUrl());
+		});
+	},
 
 	this.destroy = function() {
 		chatBox.remove();

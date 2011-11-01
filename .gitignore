@@ -10,6 +10,7 @@
 /appfiles/sys/cache/
 /appfiles/sys/logs/
 /static/build
+/static/stylesheets/agent
 
 # Per-site files
 /appfiles/config.php

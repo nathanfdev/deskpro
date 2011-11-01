@@ -40,7 +40,7 @@ class PersonController extends AbstractController
 		));
 	}
 
-	public function viewAction($person_id)
+	public function viewAction($person_id, $with_warn_for_email = false)
 	{
 		if ($person_id) {
 			$person = $this->getPersonOr404($person_id);
@@ -112,6 +112,11 @@ class PersonController extends AbstractController
 		}
 
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionForPerson($person);
+		if ($session) {
+			$visitor = $session->visitor;
+		} else {
+			$visitor = $this->em->getRepository('DeskPRO:Visitor')->getVisitorForPerson($person);
+		}
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -135,11 +140,16 @@ class PersonController extends AbstractController
 			}
 		}
 
+		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
+		$person_chats_count = count($person_chats);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
+			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
 			'person_usergroups_ids' => $person_usergroups_ids,
 			'person_org_usergroups_ids' => $person_org_usergroups_ids,
 			'session' => $session,
+			'visitor' => $visitor,
 			'timezone_options' => $timezone_options,
 			'usergroup_names' => $usergroup_names,
 			'contact_data' => $contact_data,
@@ -147,6 +157,8 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
+			'person_chats' => $person_chats,
+			'person_chats_count' => $person_chats_count,
 			'person_tickets_initial' => $person_tickets_initial,
 			'person_tickets_count' => $person_tickets_count,
 			'org_members_count' => $org_members_count,
@@ -162,8 +174,28 @@ class PersonController extends AbstractController
 	{
 		$session = App::findEntity('DeskPRO:Session', $session_id);
 
-		return $this->render('AgentBundle:Person:session-info.html.twig', array(
-			'session' => $session
+		if ($session->is_person) {
+			return $this->viewAction($session->person->id);
+		}
+
+		$visitor = $session->visitor;
+		$related_person = null;
+		if ($session->visitor->email) {
+			$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($session->visitor->email);
+
+			if ($related_person) {
+				return $this->viewAction($related_person->id, $session->visitor->email);
+			}
+		}
+
+		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($session->visitor);
+		$person_chats_count = count($person_chats);
+
+		return $this->render('AgentBundle:Person:view-session.html.twig', array(
+			'person_chats'       => $person_chats,
+			'person_chats_count' => $person_chats_count,
+			'session'            => $session,
+			'visitor'            => $visitor,
 		));
 	}
 
@@ -427,78 +459,83 @@ class PersonController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		// Editing emails
-		if ($this->person->hasPerm('users.add-emails')) {
-			$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
-			foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
-				if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
-					if (!$email) {
+		try {
+			// Editing emails
+			if ($this->person->hasPerm('users.add-emails')) {
+				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
+				foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
+					if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
+						if (!$email) {
+							$this->em->remove($person->emails[$email_id]);
+							$person->emails->remove($email_id);
+						} else {
+							$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
+							$this->em->persist($person->emails[$email_id]);
+						}
+					}
+				}
+
+				// Adding emails
+				$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
+					$email_rec = $person->addEmailAddressString($email);
+					$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
+					$this->em->persist($email_rec);
+				}
+			}
+
+			// Removing emails
+			if ($this->person->hasPerm('users.remove-emails')) {
+				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+					if (isset($person->emails[$email_id])) {
 						$this->em->remove($person->emails[$email_id]);
 						$person->emails->remove($email_id);
-					} else {
-						$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
-						$this->em->persist($person->emails[$email_id]);
 					}
 				}
 			}
 
-			// Adding emails
-			$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
-			foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
-				$email_rec = $person->addEmailAddressString($email);
-				$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
-				$this->em->persist($email_rec);
-			}
-		}
+			// Adding contact data
+			foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
+				foreach ($inputs as $input) {
+					try {
+						$contact_data = new PersonContactData();
+						$contact_data->contact_type = $type;
+						$contact_data->applyFormData($input);
 
-		// Removing emails
-		if ($this->person->hasPerm('users.remove-emails')) {
-			foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-				if (isset($person->emails[$email_id])) {
-					$this->em->remove($person->emails[$email_id]);
-					$person->emails->remove($email_id);
+						$contact_data->person = $person;
+
+						$this->em->persist($contact_data);
+						$person->contact_data->add($contact_data);
+					} catch (\Exception $e) {
+						throw $e;
+					}
 				}
 			}
-		}
 
-		// Adding contact data
-		foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
-			foreach ($inputs as $input) {
-				try {
-					$contact_data = new PersonContactData();
-					$contact_data->contact_type = $type;
-					$contact_data->applyFormData($input);
+			// Editing values
+			foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+				if (!isset($person->contact_data[$id])) {
+					continue;
+				}
 
-					$contact_data->person = $person;
+				$person->contact_data[$id]->applyFormData($input);
+				$this->em->persist($person->contact_data[$id]);
+			}
 
-					$this->em->persist($contact_data);
-					$person->contact_data->add($contact_data);
-				} catch (\Exception $e) {
-					throw $e;
+			// Removing values
+			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
+				if (isset($person->contact_data[$id])) {
+					$this->em->remove($person->contact_data[$id]);
+					$person->contact_data->remove($id);
 				}
 			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
 		}
-
-		// Editing values
-		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
-			if (!isset($person->contact_data[$id])) {
-				continue;
-			}
-
-			$person->contact_data[$id]->applyFormData($input);
-			$this->em->persist($person->contact_data[$id]);
-		}
-
-		// Removing values
-		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
-			if (isset($person->contact_data[$id])) {
-				$this->em->remove($person->contact_data[$id]);
-				$person->contact_data->remove($id);
-			}
-		}
-
-		$this->em->flush();
-		$this->em->commit();
 
 		$contact_data = array();
 		foreach ($person->contact_data as $cd) {

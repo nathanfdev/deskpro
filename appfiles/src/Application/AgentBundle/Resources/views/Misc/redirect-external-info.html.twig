@@ -1,0 +1,15 @@
+<dl>
+	{% if info.title %}
+		<dt>Page title:</dt>
+		<dd>{{ info.title }}</dd>
+	{% endif %}
+
+	<dt>Page:</dt>
+	<dd>{{ info.size_readable }} (made up of {{ info.num_images }} images and {{ info.num_scripts }} scripts)</dd>
+
+	<dt>Server IP:</dt>
+	<dd>{{ info.ip }}</dd>
+
+	<dt>Server Hostname:</dt>
+	<dd>{{ info.hostname }}</dd>
+</dl>

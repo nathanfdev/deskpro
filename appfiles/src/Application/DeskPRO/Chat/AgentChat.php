@@ -30,8 +30,8 @@ class AgentChat
 
 	public function __construct(Person $person, Session $session)
 	{
-		$this->person = $this->person;
-		$this->session = $this->session;
+		$this->person = $person;
+		$this->session = $session;
 	}
 
 	public function sendMessage($message, $conversation)

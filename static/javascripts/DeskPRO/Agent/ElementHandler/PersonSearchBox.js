@@ -22,6 +22,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 				// double touch forces an update
 				self.updateCaller.touch(self.getTerm(), true);
 			}
+		}).keypress(function(ev) {
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();//dont enter enter key
+				var term = $(this).val().trim();
+				self.el.trigger('personsearchenter', [term, self]);
+			}
 		});
 	},
 
@@ -61,6 +67,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsBox.click(function(ev) { ev.stopPropagation(); });
 
 		$(document).click(this.close.bind(this));
+		$(this.termInput).closest('.doc-layer').click(this.close.bind(this));
 
 		//------------------------------
 		// Clicking on an item fires an event that

@@ -172,6 +172,17 @@
 		function create_choice (value, label){
 			var el = "";
 
+			if (options.unique) {
+				var exist = $('input[value="' + value + '"]', tag_ul);
+				if (exist.length) {
+					var li = exist.closest('li');
+					li.animate({'opacity': 0.25}, 300, function() {
+						li.animate({'opacity': 1}, 300);
+					});
+					return;
+				}
+			}
+
 			if (!label) label = value;
 
 			el  = "<li class=\"tagit-choice\">\n<span>";

@@ -94,6 +94,31 @@ class AgentHelper implements PersonContextInterface
 	}
 
 
+	/**
+	 * Get an array of categories and their perms usergroups
+	 *
+	 * @param $type
+	 * @return array
+	 */
+	public function getCategoryUsergroups($type)
+	{
+		$entity_name = self::getCatEntityNameFor($type);
+		$repos = App::getEntityRepository($entity_name);
+		$table = $repos->getPermissionTableName();
+
+		if (!$table) {
+			return array();
+		}
+
+		$cats_to_ugs = App::getDb()->fetchAllGrouped("
+			SELECT category_id, usergroup_id
+			FROM $table
+		", array(), 'category_id', null, 'usergroup_id');
+
+		return $cats_to_ugs;
+	}
+
+
 	############################################################################
 	# Glossary
 	############################################################################

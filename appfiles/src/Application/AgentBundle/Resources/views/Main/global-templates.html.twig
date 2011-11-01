@@ -127,13 +127,13 @@
 <ul id="department_menu" data-menu-flag="copy-menu">
 	{% for dep in ticket_options.departments_hierarchy %}
 		{% if dep.children %}
-			<li data-department-id="{{dep.id}}" class="section-title">{{dep.title}}</li>
+			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}" class="section-title">{{dep.title}}</li>
 			{% for subdep in dep.children %}
-				<li data-department-id="{{subdep.id}}">{{subdep.title}}</li>
+				<li data-department-id="{{subdep.id}}" data-full-title="{{ dep.title }}">{{subdep.title}}</li>
 			{% endfor %}
 			{% set last_with_child = true %}
 		{% else %}
-			<li data-department-id="{{dep.id}}">{{dep.title}}</li>
+			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}">{{dep.title}}</li>
 			{% set last_with_child = false %}
 		{% endif %}
 	{% endfor %}
@@ -216,7 +216,7 @@
 
 {# Popover tempalte #}
 <script type="text/x-deskpro-plain" id="popover_tpl">
-	<div class="mass-actions-overlay-container open popover-wrapper">
+	<div class="mass-actions-overlay-container open popover-wrapper doc-layer">
 		<section class="mass-actions-overlay">
 			<header>
 				<span class="close close-trigger">close</span>
@@ -228,6 +228,16 @@
 			</article>
 		</section>
 	</div>
+</script>
+
+{# Popover tempalte #}
+<script type="text/x-deskpro-plain" id="fragment_overlay_tpl">
+    <div class="dp-overlay-container fragment-overlay overlay-loading doc-layer">
+		<section class="dp-overlay">
+			<header><span class="close close-trigger">close</span></header>
+			<article></article>
+		</section>
+    </div>
 </script>
 
 {# Usergroups #}
@@ -449,13 +459,11 @@
 <div id="alert_overlay" style="display:none;">
 	<div class="alert-overlay mass-actions-overlay">
 		<div class="overlay-title">
+			<span class="close-trigger">Dismiss</span>
 			<h4>Alert</h4>
 		</div>
 		<div class="overlay-content">
 			<p id="alert_overlay_msg"></p>
-		</div>
-		<div class="overlay-footer">
-			<button class="close-trigger clean-white">Dismiss</button>
 		</div>
 	</div>
 </div>
@@ -489,6 +497,23 @@
 		</div>
 	</div>
 </div>
+
+<section class="dp-overlay" id="password_confirm" data-element-handler="DeskPRO.Agent.ElementHandler.PasswordPrompt">
+	<header>
+		<span class="close close-trigger">close</span>
+		<h1>Enter your password</h1>
+	</header>
+	<article>
+		<div class="explain-wrap"></div>
+		<div class="error-wrap">You entered an incorrect password. Try again.</div>
+		<div class="input-wrap">
+			<input type="password" class="password-input" value="" />
+		</div>
+	</article>
+	<footer>
+		<button class="continue-trigger clean-white">Continue</button>
+	</footer>
+</section>
 
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}

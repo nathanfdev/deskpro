@@ -4,19 +4,12 @@ DeskPRO.Agent.PageFragment.ListPane.AgentChat = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initializeProperties: function() {
-		this.parent();
-		this.wrapper = null;
-		this.contentWrapper = null;
+		this.TYPENAME = 'agentchat_list';
 	},
 
 	initPage: function(el) {
+		this.el = el;
 
-		this.wrapper = $(el);
-		this.contentWrapper = $('div.content:first', this.wrapper);
-
-		if (this.getMetaData('noResults')) {
-			this.noMoreResults = true;
-			$('.no-more-results', this.contentWrapper).show();
-		}
+		this.enableHighlightOpenRows('agentchat', 'conversation_id', '.row-item.convo-');
 	}
 });

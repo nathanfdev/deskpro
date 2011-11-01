@@ -29,8 +29,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.innerLayout = null;
 
-		this.notifier = null;
-
 		this._alertOverlay = null;
 		this._confirmOverlay = null;
 
@@ -52,11 +50,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
 					count -= num;
 					if (count < 0) count = 0;
-				} else {
+				} else if (op == '+' || op == 'add') {
 					count += num;
+ 				} else {
+					count = num;
 				}
 
 				el.text(count);
+
+				return count;
 			},
 
 			/**
@@ -104,6 +106,41 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 			},
 
+			ajaxWithClientMessages: function(options) {
+
+				if (!options.data) {
+					options.data = [];
+				}
+
+				// Assume a k:v object, convert it to an array
+				if (!options.data.push) {
+					var newData = [];
+					Object.each(options.data, function(v, k) {
+						newData.push({ name: k, value: v});
+					});
+
+					options.data = newData;
+				}
+
+				options.data.push({
+					name: 'client_messages_since',
+					value: DeskPRO_Window.getLastClientMessageId()
+				});
+
+				var old_success = options.success || function() {};
+
+				options.success = function(data) {
+					if (data.client_messages) {
+						DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
+					}
+					old_success(data);
+				}
+
+				options.dataType = 'json';
+
+				$.ajax(options);
+			},
+
 			slugify: function(str) {
 				str = str.replace(/[^a-zA-Z0-9\-]/g, '-');
 				str = str.replace(/\-{2,}/g, '-');
@@ -111,6 +148,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				str = str.replace(/\-$/, '');
 
 				return str;
+			},
+
+			linkUrls: function(string) {
+				string = string||'';
+				return string
+					.replace(/(https?:\/\/[^\s]+)/gi, '<a target="_blank" href="' + BASE_URL + 'agent/redirect-out/$1">$1</a>');
 			}
 		};
 	},
@@ -236,7 +279,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
 				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash });
+				this.loadPage(url, { url_fragment: hash, noToggle: true });
 			}
 		}, this);
 
@@ -378,14 +421,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
-	/**
-	 * Get the notifier
-	 */
-	 getNotifier: function() {
-		return this.notifier;
-	},
-
-
 
 	/**
 	 * Get the AJAX poller
@@ -401,6 +436,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return this.tabWatcher;
 	},
 
+	/**
+	 * Get the tab strip
+	 */
+	getTabStrip: function() {
+		return this.pageTabStrip;
+	},
 
 	/**
 	 * Get a name for some type of basic thing (department, category etc).
@@ -536,13 +577,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._alertOverlay.openOverlay();
 	},
 
-	showConfirm: function(msg, callback_yes, callback_no) {
+	showConfirm: function(msg, callback_yes, callback_no, phrase_yes, phrase_no) {
 		this._initConfirmOverlay();
+
+		phrase_yes = phrase_yes || 'Okay';
+		phrase_no = phrase_no || 'Cancel';
 
 		this._confirmOverlay_callback_yes = callback_yes || function() { };
 		this._confirmOverlay_callback_no = callback_no || function() { };
 
 		$('#confirm_overlay_msg').html(msg);
+		$('#confirm_overlay_msg .okay-trigger').text(phrase_yes);
+		$('#confirm_overlay_msg .cancel-trigger').text(phrase_no);
+
 		this._confirmOverlay.openOverlay();
 	},
 
@@ -560,8 +607,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (this._alertOverlay) return;
 
 		this._alertOverlay = new DeskPRO.UI.Overlay({
+			zIndex: 'none', // the .window-alert sets the zindex
 			contentElement: $('#alert_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			customClassname: 'window-alert',
 			onContentSet: function(eventData) {
 				$('.close-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -584,7 +632,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._confirmOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#confirm_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			zIndex: 'top',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -610,7 +658,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._promptOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#prompt_overlay'),
-			zIndex: 10000000, /* this should be bigger than everything */
+			zIndex: 'top',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
@@ -715,7 +763,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.setListPage(page);
 	},
 
-	setListPage: function(page) {
+	setListPage: function(page, noswitch) {
 
 		// Route a list page fragment into the proper
 		// section
@@ -753,10 +801,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		handler.setListPageFragment(page)
+		handler.setListPageFragment(page, noswitch);
 		this.listPage = page;
 
-		this.updateWindowUrlFragment();
+		if (!noswitch) {
+			this.updateWindowUrlFragment();
+		}
 	},
 
 	getListPage: function() {
@@ -934,6 +984,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 
+	loadRouteOverlay: function(routeData) {
+
+		var positionAbove = null;
+		var trigger = routeData.routeTriggerEl;
+		if (trigger) {
+			var parent = trigger.parentsUntil('body').last();
+			if (parent.length && parent.parent().is('body')) {
+				positionAbove = parent;
+			}
+		}
+
+		var fragmentOverlay = new DeskPRO.Agent.PageHelper.FragmentOverlay({
+			routeData: routeData,
+			positionAbove: positionAbove
+		});
+	},
+
 
 	/**
 	 * Load a URL and treat it as a list pane.
@@ -942,19 +1009,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
-		if (!routeData.isBackgroundLoad) {
+		if (routeData && !routeData.isBackgroundLoad) {
 			if (this.loadingListPage) {
 				this.loadingListPage.abort();
 				this.loadingListPage = null;
 			}
 		}
 
-		$('#dp_list > section').removeClass('on');
-		$('#dp_list_loading').addClass('on');
+		if (routeData && !routeData.isBackgroundLoad) {
+			$('#dp_list > section').removeClass('on');
+			$('#dp_list_loading').addClass('on');
+		}
 
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
-			if (!routeData.isBackgroundLoad) {
+			if (!routeData) {
+				routeData = {};
+			}
+			if (routeData && !routeData.isBackgroundLoad) {
 				this.loadingListPage = null;
 			}
 
@@ -967,12 +1039,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				page.setMetaData('routeData', routeData);
 			}
 
-			this.setListPage(page);
+			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
 		}).bind(this));
 
-		if (!routeData.isBackgroundLoad) {
+		if (routeData && !routeData.isBackgroundLoad) {
 			this.loadingListPage = xhr;
 		}
 	},
@@ -988,12 +1060,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
+			if (existTab && routeData.noToggle) {
+				return;
+			}
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
 				this.pageTabStrip.removeTabById(existTab.id);
 				if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 					routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
 				}
-				return;
 			}
 		}
 
@@ -1429,18 +1503,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
 		this.messageChanneler.subscribeChannel('agent-notification');
+		this.messageChanneler.subscribeChannel('agent-notify');
+		this.messageChanneler.subscribeChannel('agent-notify.tickets');
 
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: 5000
-		});
-
-		var self = this;
-
-		this.notifier = new DeskPRO.Agent.Notifier.Notifier({
-			notifySummaryButton: $('#notify_button'),
-			notifyList: $('#notify_list')
+			interval: DP_POLLER_INTERVAL
 		});
 	},
 
@@ -1467,6 +1536,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
+		this.addPageRouteLoader('poppage', this.loadRouteOverlay.bind(this));
 
 		var self = this;
 	},
@@ -1474,13 +1544,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initWindowInterface: function() {
 		var self = this;
 
+		this.notifications = new DeskPRO.Agent.Notifications();
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
-
-		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
 
 		// Settings is a window
 		$('#user_settings_link').click(function() {
-			window.open(BASE_URL + 'agent/settings');
+			$('#settingswin').trigger('dp_open');
 		});
 
 		// Global AJAX handler for errors if no error handler is attached
@@ -1492,22 +1561,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			favicon: '#favicon'
 		});
 
-		if (this.options.faviconCount) {
-			this.getMessageBroker().addMessageListener('agent.ui.badge_updated', function(data) {
-
-				if (self.optionsfaviconCount == 'tickets') {
-					if (data.sectionId != 'tickets') return;
-					var count = data.count;
-				} else {
-					var count = 0;
-					Object.each(self.sections, function(section) {
-						count += section.getBadgeCount();
-					});
-				}
-
-				self.faviconBadge.updateBadge(count);
+		this.notifications.addEvent('modCount', function(data) {
+			var count = 0;
+			$('#notificationWrap .notif-item .counter').each(function() {
+				count += parseInt($(this).text().trim());
 			});
-		}
+
+			var doanim = false;
+			if (!$('html').is('.window-active')) {
+				doanim = true;
+			}
+
+			self.faviconBadge.updateBadge(count, true);
+		});
 
 		this.volume = 0.8;
 
@@ -1764,8 +1830,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 		statusEl.data('status', status);
 
+		$('#agent_status_away_overlay').remove();
+
 		if (status == 'available') {
-			$('#agent_status_away_overlay').remove();
 			statusEl.removeClass('away').removeClass('dnd');
 
 			$.ajax({
@@ -1795,6 +1862,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initSections: function() {
 
 		var self = this;
+		var count = -1;
+
+		var secttimeout = 2500;
+
 		$('#dp_nav [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
@@ -1811,6 +1882,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var handlerClass = Orb.getNamespacedObject(handlerClassName);
 			var handler = new handlerClass();
+
+			if (++count) {
+				handler.addEvent('sectionInit', function() {
+					window.setTimeout(function() { handler._loadAutoLoadRoutes(true); }, secttimeout);
+					secttimeout += (400 * count);
+				});
+			} else {
+				// First one, load it for real
+				handler.addEvent('sectionInit', function() {
+					handler._loadAutoLoadRoutes();
+				});
+			}
 
 			self.sections[el.attr('id')] = handler;
 
@@ -1959,6 +2042,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return popover;
 	},
 
+	/**
+	 * Attaches central handlers on a layer. These handlers are added to the document,
+	 * but if you have a new layer that prevents propagation up to the document,
+	 * then you'll need to init it as a new layer with its own handlers.
+	 *
+	 * @param context
+	 */
 	initInterfaceLayerEvents: function(context) {
 		var self = this;
 
@@ -1968,7 +2058,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($(this).is('.as-popover')) {
 					return;
 				}
+
+				ev.stopPropagation();
+
+				if ($(this).is('.row-item') && (!$(ev.target).is('.click-through') && $(ev.target).is('input, a, button, textarea'))) {
+					return;
+				}
+
 				ev.preventDefault();
+
 				self.runPageRouteFromElement($(this));
 			});
 		}, 120);
@@ -2018,6 +2116,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$(this).addClass('tipped-inited');
 			});
 		}, 80);
+
+		window.setTimeout(function() {
+			DeskPRO.ElementHandler_Exec(context);
+		}, 5);
+
+		window.setTimeout(function() {
+			$('.timeago', context).timeago();
+		}, 10);
 	},
 
 	initInterfaceServices: function(context) {
@@ -2052,6 +2158,44 @@ DeskPRO.Agent.Window = new Orb.Class({
 		window.setTimeout(function() {
 			$('.timeago', context).timeago();
 		}, 10);
+
+		$('input.dp-checkbox', context).each(function() {
+			var input = $(this);
+			if (!input.attr('id')) {
+				input.attr('id', Orb.getUniqueId('dp_chk'));
+			}
+
+			var id = input.attr('id');
+
+			input.hide().addClass('with-dp-checkbox');
+
+			var check = $('<span class="dp-checkbox" data-bound="#'+id+'" />');
+
+			check.attr('id', Orb.getUniqueId('dp_chk'));
+			if (input.is(':checked')) {
+				check.addClass('checked');
+			}
+
+			input.data('bound', '#' + check.attr('id'));
+
+			check.insertAfter(input)
+
+			input.change(function(ev) {
+				if ($(this).is(':checked')) {
+					check.addClass('checked');
+				} else {
+					check.removeClass('checked');
+				}
+			});
+			check.click(function(ev) {
+				ev.stopPropagation();
+				if (input.is(':checked')) {
+					$(this).addClass('checked');
+				} else {
+					$(this).removeClass('checked');
+				}
+			});
+		});
 	}
 });
 

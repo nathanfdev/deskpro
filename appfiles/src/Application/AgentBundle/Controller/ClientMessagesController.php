@@ -72,6 +72,21 @@ class ClientMessagesController extends AbstractController
 		return $this->createJsonResponse(array('subscribed_channels' => $names));
 	}
 
+	public function unsubscribeChannelsAction()
+	{
+		$channels = $this->in->getCleanValueArray('channels', 'string', 'discard');
+
+		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
+		$subs = $this->person->getClientChannelSubs()->unsubscribeChannels($channels);
+
+		$names = array();
+		foreach ($subs as $sub) {
+			$names[] = $sub['channel'];
+		}
+
+		return $this->createJsonResponse(array('unsubscribed_channels' => $names));
+	}
+
 	public function unsubscribeChannelAction()
 	{
 		$channels = $this->in->getCleanValueArray('channels', 'string', 'discard');

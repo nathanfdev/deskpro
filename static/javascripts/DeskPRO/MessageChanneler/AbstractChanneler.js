@@ -35,7 +35,7 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 		// Override
 	},
 
-	_doneSubscribeChannels: function(channels) {
+	_doneUnsubscribeChannels: function(channels) {
 		Array.each(channels, function(c) {
 			this.channels.erase(c);
 		}, this);

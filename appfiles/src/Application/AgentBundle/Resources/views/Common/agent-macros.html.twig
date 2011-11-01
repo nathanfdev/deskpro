@@ -17,3 +17,13 @@
 		{{ team.name }}
 	{% endif %}
 {% endmacro %}
+
+{% macro scroll_containers(addclass) %}
+	<div class="layout-content with-scrollbar {{ addclass }}">
+	<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+	<div class="scroll-viewport"><div class="scroll-content">
+{% endmacro %}
+
+{% macro scroll_containers_end() %}
+	</div></div></div></div>
+{% endmacro %}

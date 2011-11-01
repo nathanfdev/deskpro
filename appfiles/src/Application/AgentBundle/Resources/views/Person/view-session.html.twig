@@ -1,0 +1,120 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.PersonSession';
+{% if visitor.name %}
+	pageMeta.title = {{ visitor.name|json_encode|raw }};
+{% elseif visitor.email %}
+	pageMeta.title = {{ visitor.email|json_encode|raw }};
+{% else %}
+	pageMeta.title = 'Anonymous User';
+{% endif %}
+pageMeta.session_id = {{session.id}};
+pageMeta.visitor_id = {{visitor.id}};
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+{# Page Containers #}
+<div class="profile layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /Page Containers #}
+
+<header class="page-header">
+	<div class="titlewrap">
+		<h1>
+			{% if visitor.name or visitor.email %}
+				{% if visitor.name %}
+					{{ visitor.name }}
+				{% endif %}
+				{% if visitor.email %}
+					&lt;{{ visitor.email }}&gt;
+				{% endif %}
+			{% else %}
+				Anonymous User {{ visitor.id }}
+			{%endif %}
+		</h1>
+	</div>
+	<br class="clear" />
+</header>
+
+<div class="profile-box-container tabbed">
+	<header>
+		<nav>
+			<ul id="{{baseId}}_chats_tab_triggers">
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">Chats <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_session_tab">Detail</li>{% endif %}
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{% if person_chats_count %}
+		<article id="{{baseId}}_chats_tab">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody>
+					{% for chat in person_chats %}
+						<tr>
+							<td>
+								<div class="fade-container">
+									<div class="line">
+										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-title="@text">{{ chat.getSubjectLine() }}</a>
+									</div>
+									<div class="bound-fade"></div>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</article>
+		{% endif %}
+
+		<article id="{{baseId}}_session_tab">
+			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="label">Online Now</td>
+					<td class="value">
+						Since
+						<time>{{session.date_created|date('H:ia M j Y')}}</time>
+						(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Last Activity</td>
+					<td class="value">
+						<time>{{session.date_last|date('H:ia M j Y')}}</time>
+						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
+						on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+				</tr>
+				<tr>
+					<td class="label">Landing Page</td>
+					<td class="value">
+						User landed on page
+						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
+						{% if session.visitor.ref_page %}
+							and came from
+							<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td class="label">IP Address</td>
+					<td class="value">
+						{{ session.visitor.ip_address }}
+					</td>
+				</tr>
+				<tr>
+					<td class="label">User Agent</td>
+					<td class="value">
+						{{ session.visitor.user_agent }}
+					</td>
+				</tr>
+			</table>
+		</article>
+		{# /Tracking Tab #}
+	</section>
+</div>
+
+{# Page Containers #}
+</div></div>
+</div>
+{# /Page Containers #}

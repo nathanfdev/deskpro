@@ -63,6 +63,13 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate
 		$this->options = array_merge($options, $this->options);
 	}
 
+	public function setDefault($name, $value)
+	{
+		if (!$this->has($name)) {
+			$this->options[$name] = $value;
+		}
+	}
+
 	public function setAll(array $options)
 	{
 		$this->options = $options;
@@ -71,6 +78,26 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate
 	public function all()
 	{
 		return $this->options;
+	}
+
+	public function __get($name)
+	{
+		return $this->get($name);
+	}
+
+	public function __set($name, $value)
+	{
+		$this->set($name, $value);
+	}
+
+	public function __isset($name)
+	{
+		return $this->has($name);
+	}
+
+	public function	__unset($name)
+	{
+		return $this->remove($name);
 	}
 
 	public function offsetGet($k)

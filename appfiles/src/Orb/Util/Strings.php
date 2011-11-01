@@ -675,6 +675,10 @@ class Strings
 			$key = trim($vals[0]);
 			$val = trim($vals[1]);
 
+			if (Numbers::isInteger($val)) {
+				$val = (int)$val;
+			}
+
 			// We can just overwrite
 			if ($dupe_mode == self::EQUALSLINES_DUPE_OVERWRITE) {
 				$values[$key] = $val;
@@ -875,7 +879,7 @@ class Strings
 
 	/**
 	 * Turn links in text to HTML anchors
-	 * 
+	 *
 	 * @param string $text
 	 * @param bool $short True to shorten off the part after the, like google.com/...
 	 * @return string
@@ -987,7 +991,7 @@ class Strings
 	}
 
 
-	
+
 	/**
 	 * Test a "star" wildcard match. This is a simplified sort of regex
 	 * match where a star in the pattern is a non-greedy dot.

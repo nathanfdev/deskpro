@@ -82,6 +82,13 @@ class ActionsFactory
 				break;
 			case 'reply':
 				$options['reply_text'] = $value['reply_text'];
+				$options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
+				break;
+			case 'add_participants':
+				$options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : array();
+				break;
+			case 'remove_participants':
+				$options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : array();
 				break;
 		}
 

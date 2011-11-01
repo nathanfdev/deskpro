@@ -21,7 +21,6 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 * @param {Object} data Any data to send
 	 */
 	sendMessage: function (name, data) {
-
 		this.fireEvent(name, [data, name]);
 
 		var nameparts = name.split('.');

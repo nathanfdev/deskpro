@@ -47,10 +47,6 @@ class TemplatingExtension extends \Twig_Extension
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
 			'url_full' => new \Twig_Function_Method($this, 'urlFull'),
 			'url_display' => new \Twig_Function_Method($this, 'urlDisplay'),
-			'html_js_pack_raw' => new \Twig_Function_Method($this, 'htmlJsPackRaw', array('is_safe' => array('html'))),
-			'html_js_pack' => new \Twig_Function_Method($this, 'htmlJsPack', array('is_safe' => array('html'))),
-			'html_css_pack_raw' => new \Twig_Function_Method($this, 'htmlCssPackRaw', array('is_safe' => array('html'))),
-			'html_css_pack' => new \Twig_Function_Method($this, 'htmlCssPack', array('is_safe' => array('html'))),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
 			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
@@ -81,6 +77,8 @@ class TemplatingExtension extends \Twig_Extension
 	public function getFilters()
     {
         return array(
+			'safe_link_urls' => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
+			'safe_link_urls_html' => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat' => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
@@ -91,8 +89,35 @@ class TemplatingExtension extends \Twig_Extension
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
 			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
+			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
+			'explode' => new \Twig_Filter_Method($this, 'explodeString'),
+			'split' => new \Twig_Filter_Method($this, 'explodeString'),
+			'join' => new \Twig_Filter_Method($this, 'implodeArray'),
+			'implode' => new \Twig_Filter_Method($this, 'implodeArray'),
         );
     }
+
+	public function safeLinkUrlsHtml($text)
+	{
+		$text = preg_replace_callback('#(https?:\/\/[^\s<>]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		}, $text);
+
+		return $text;
+	}
+
+	public function safeLinkUrls($text)
+	{
+		$text = htmlspecialchars($text);
+
+		$text = preg_replace_callback('#(https?:\/\/[^\s]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		}, $text);
+
+		return $text;
+	}
 
 	public function getAssetic($name)
 	{
@@ -104,6 +129,31 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$assetic_manager = $this->container->getSystemService('assetic_manager');
 		return $assetic_manager->getRawUrls($name);
+	}
+
+	public function implodeArray(array $array, $sep = ', ')
+	{
+		return implode($array, $sep);
+	}
+
+	public function explodeString($string, $del = ',') {
+		$ret = array();
+		$string = (string)$string;
+
+		foreach (explode($del, $string) as $p) {
+			$ret[] = trim($p);
+		}
+
+		return $ret;
+	}
+
+	public function stripLinebreaks($str)
+	{
+		$str = str_replace(array("\r\n", "\n"), " ", $str);
+		$str = str_replace(array("<br />", "<br/>", "<br>"), " ", $str);
+		$str = str_replace(array("<p>", "</p>", "<p />", "<p/>"), " ", $str);
+
+		return $str;
 	}
 
 	public function htmlGetAssetic($name, $options = array())
@@ -466,104 +516,6 @@ class TemplatingExtension extends \Twig_Extension
 	public function assetFull($location)
 	{
 		return App::getSetting('core.deskpro_assets_full_url') . ltrim($location, '/');
-	}
-
-	public function htmlJsPackRaw($name)
-	{
-		$pack = App::getConfig($name, null, 'js-sources');
-		if (!$pack) {
-			$html = '<!-- UNKNOWN JS PACK: ' . $name . ' -->';
-			if (App::isDebug()) {
-				$html .= '<script>console.error("[JS] Tried loading invalid pack: %s", "'.$name.'");</script>';
-			}
-
-			return $html;
-		}
-
-		$html = array();
-		foreach ($pack['files'] as $file) {
-			$url = $this->container->get('templating.helper.assets')->getUrl($file);
-			$html[] = '<script src="' . $url . '"></script>';
-		}
-
-		return implode("\n", $html);
-	}
-
-	public function htmlJsPack($name, $force_raw = false)
-	{
-		$raw_packs = App::getConfig('debug.raw_js_packs', array());
-
-		if ($force_raw OR in_array($name, $raw_packs) OR ($name != 'agent.vendors' AND in_array('all', $raw_packs))) {
-			return $this->htmlJsPackRaw($name);
-		}
-
-		$pack = App::getConfig($name, null, 'js-sources');
-		if (!$pack) {
-			$html = '<!-- UNKNOWN JS PACK: ' . $name . ' -->';
-			if (App::isDebug()) {
-				$html .= '<script>console.error("[JS] Tried loading invalid pack: %s", "'.$name.'");</script>';
-			}
-
-			return $html;
-		}
-
-		$file =	$this->container->get('templating.helper.assets')->getUrl('build/' . $pack['out']);
-		$html = '<script src="'.$file.'"></script>';
-
-		return $html;
-	}
-
-	public function htmlCssPackRaw($name)
-	{
-		$pack = App::getConfig($name, null, 'css-sources');
-		if (!$pack) {
-			$html = '<!-- UNKNOWN CSS PACK: ' . $name . ' -->';
-			if (App::isDebug()) {
-				$html .= '<script>console.error("[CSS] Tried loading invalid pack: %s", "'.$name.'");</script>';
-			}
-
-			return $html;
-		}
-
-		$use_less = App::getConfig('debug.use_less_css', false) && isset($pack['less_files']);
-
-		$html = array();
-		foreach ($pack['files'] as $k => $file) {
-
-			if ($use_less && isset($pack['less_files'][$k])) {
-				$url = $this->container->get('templating.helper.assets')->getUrl($pack['less_files'][$k]);
-				$html[] = '<link rel="stylesheet/less" type="text/css" media="'.$pack['media'].'" href="'.$url.'" />';
-			} else {
-				$url = $this->container->get('templating.helper.assets')->getUrl($file);
-				$html[] = '<link rel="stylesheet" type="text/css" media="'.$pack['media'].'" href="'.$url.'" />';
-			}
-		}
-
-		return implode("\n", $html);
-	}
-
-	public function htmlCssPack($name, $force_raw = false)
-	{
-		$raw_packs = App::getConfig('debug.raw_css_packs', array());
-
-		if ($force_raw OR in_array($name, $raw_packs) OR ($name != 'agent.vendors' AND in_array('all', $raw_packs))) {
-			return $this->htmlCssPackRaw($name);
-		}
-
-		$pack = App::getConfig($name, null, 'css-sources');
-		if (!$pack) {
-			$html = '<!-- UNKNOWN CSS PACK: ' . $name . ' -->';
-			if (App::isDebug()) {
-				$html .= '<script>console.error("[CSS] Tried loading invalid pack: %s", "'.$name.'");</script>';
-			}
-
-			return $html;
-		}
-
-		$file =	$this->container->get('templating.helper.assets')->getUrl('build-css/' . $pack['out']);
-		$html = '<link rel="stylesheet" type="text/css" media="' . $pack['media'] . '" href="'.$file.'" />';
-
-		return $html;
 	}
 
 	public function rawUrlEncode($str)
