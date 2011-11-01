@@ -8,7 +8,7 @@
 	{{ dp_asset_html('agent_vendors_css') }}
 	{{ dp_asset_html('agent_deskpro_ui_css') }}
 	{{ dp_asset_html('agent_interface_css') }}
-    <link rel="stylesheet" href="{{ asset('stylesheets/admin/main.css') }}" type="text/css" media="screen" />
+	{{ dp_asset_html('admin_interface_css') }}
 
 	{{ dp_asset_html('agent_vendors') }}
 	{{ dp_asset_html('agent_common') }}
@@ -64,6 +64,8 @@
 	</script>
 	{% block html_head %}{% endblock %}
 	{% block page_js_exec %}{% endblock %}
+
+	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
 

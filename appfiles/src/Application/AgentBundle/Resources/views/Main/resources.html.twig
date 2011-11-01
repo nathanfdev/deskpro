@@ -28,6 +28,6 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 {% endif %}
 
-{% if not no_interface_date %}
+{% if not no_interface_data %}
 <script src="{{ path('agent_interface_data_js') }}"></script>
 {% endif %}

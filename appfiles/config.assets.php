@@ -442,6 +442,14 @@ $CONFIG['agent_css'] = array(
 	)
 );
 
+$CONFIG['admin_interface_css'] = array(
+	'out' => 'css/admin-interface.css',
+	'filters' => array('less'),
+	'files' => array(
+		'stylesheets-less/admin/main.less',
+	)
+);
+
 $CONFIG['agent_deskpro_ui_css'] = array(
 	'out' => 'css/deskpro-ui.css',
 	'filters' => array('css_path'),
