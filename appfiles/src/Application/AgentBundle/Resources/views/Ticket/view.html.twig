@@ -130,7 +130,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
 					>
 						{{ ticket.person.display_name }}{% if ticket.person.organization %},
-							{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}{{ ticket.person.organization }}
+							{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}
+							{{ ticket.person.organization }}
 						{% endif %}
 						<span class="email">&lt;{{ ticket.person_email_address }}&gt;</span>
 					</a>
