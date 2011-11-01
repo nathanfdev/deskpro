@@ -1,0 +1,6 @@
+<li data-person-id="{{ person.id }}">
+	<span class="btn-small-remove remove-row-trigger"></span>
+	<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
+		{{ person.display_name }} &lt;{{ person.primary_email_address }}&gt;
+	</a>
+</li>

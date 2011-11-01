@@ -42,9 +42,7 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id, true);
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
-
-		$counts = $this->_fetchTicketCounts($ticket);
+		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 
 		#------------------------------
 		# Custom fields
@@ -57,19 +55,19 @@ class TicketController extends AbstractController
 		# Messages
 		#------------------------------
 
-		if (($ticket_messages_blockcache = App::getEntityRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
+		if (($ticket_messages_blockcache = $this->em->getRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
 
 			$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments);
 
-			App::getEntityRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
+			$this->em->getRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
 		}
 
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
-		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
+		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
 
-		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+		$macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
 		$tpl = 'AgentBundle:Ticket:view.html.twig';
 
@@ -87,13 +85,13 @@ class TicketController extends AbstractController
 				'created_by_client' => $this->session->getEntity()->getId(),
 			));
 
-			App::getOrm()->persist($lock_cm);
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
+			$this->em->persist($lock_cm);
+			$this->em->persist($ticket);
+			$this->em->flush();
 		}
 
 		// Widgets
-		$widget_recs = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
+		$widget_recs = $this->em->getRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
 		$widgets = array();
 		if (count($widget_recs)) {
 			$widgets = \Application\DeskPRO\Widgets\Factory::createHandlersForWidgets(
@@ -132,7 +130,7 @@ class TicketController extends AbstractController
 		//	$show_related_content = true;
 		//})
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			LEFT JOIN p.person person
@@ -153,14 +151,14 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
 		$draft_text = '';
 		if ($draft_pref) {
 			$draft_text = $draft_pref->getValue();
 		}
 
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		return $this->render($tpl, array(
 			'agents' => $agents,
@@ -191,7 +189,6 @@ class TicketController extends AbstractController
 			'ticket_flagged' => $ticket_flagged,
 			'macros' => $macros,
 			'widgets' => $widgets,
-			'counts' => $counts,
 
 			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
@@ -202,13 +199,13 @@ class TicketController extends AbstractController
 		$message_count = 0;
 		$note_count = 0;
 
-		$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
+		$ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages(
 			$ticket,
 			array('since_id' => $since_message_id, 'with_notes' => true)
 		);
 
 		if (!$ticket_attachments) {
-			$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
+			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
 		}
 
 		// Group attachments into messages so we can place them into each message
@@ -221,7 +218,7 @@ class TicketController extends AbstractController
 			$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
 		}
 
-		$ticket_logs = App::getEntityRepository('DeskPRO:TicketLog')->getLogsForTicket(
+		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket(
 			$ticket,
 			array('since_id' => $since_log_id)
 		);
@@ -282,7 +279,7 @@ class TicketController extends AbstractController
 
 		$ticket_messages_block = '';
 
-		$all_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
+		$all_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
 
 		if ($ticket_messages) {
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-batch.html.twig', array(
@@ -307,44 +304,6 @@ class TicketController extends AbstractController
 		return $ticket_messages_blockcache;
 	}
 
-	protected function _fetchTicketCounts($ticket)
-	{
-		$counts = array();
-
-		$counts['attachments'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_attachments
-			WHERE ticket_id = ?
-		", array($ticket['id']));
-
-		$counts['logs'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_logs
-			WHERE ticket_id = ?
-		", array($ticket['id']));
-
-		$counts['messages'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_messages
-			WHERE ticket_id = ?
-		", array($ticket['id']));
-
-		$counts['notes'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_messages
-			WHERE ticket_id = ? AND is_agent_note = 1
-		", array($ticket['id']));
-
-		return $counts;
-	}
-
-	public function getUpdatedCountsAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		return $this->createJsonResponse($this->_fetchTicketCounts($ticket));
-	}
-
 	############################################################################
 	# view-tip
 	############################################################################
@@ -360,7 +319,7 @@ class TicketController extends AbstractController
 
 		$message = null;
 		try {
-			$message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+			$message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
 		} catch (\Exception $e) {};
 
 		return $this->render('AgentBundle:Ticket:ticket-tip.html.twig', array(
@@ -384,13 +343,13 @@ class TicketController extends AbstractController
 		}
 
 		if (!$person && $this->in->getUint('person_id')) {
-			$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 		}
 
-		$ticket_snippets = App::getEntityRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
-		$ticket_snippet_cats = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
+		$ticket_snippets = $this->em->getRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
 
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		return $this->render('AgentBundle:Ticket:ticket-snippets.html.twig', array(
 			'ticket' => $ticket,
@@ -436,7 +395,7 @@ class TicketController extends AbstractController
 
 	public function editSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 
 		return $this->render('AgentBundle:Ticket:ticket-snippets-editcat.html.twig', array(
 			'category' => $cat,
@@ -445,7 +404,7 @@ class TicketController extends AbstractController
 
 	public function saveSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
 
 		$this->em->persist($cat);
@@ -459,7 +418,7 @@ class TicketController extends AbstractController
 
 	public function deleteSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 
 		$cat_id = $cat['id'];
 
@@ -476,10 +435,10 @@ class TicketController extends AbstractController
 	public function saveSnippetAction()
 	{
 		if ($this->in->getUint('snippet_id')) {
-			$snippet = App::findEntity('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
+			$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
 			$category = $snippet->category;
 		} else {
-			$category = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+			$category = $this->em->find('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
 			$snippet = new \Application\DeskPRO\Entity\TicketSnippet();
 			$snippet->category = $category;
 		}
@@ -514,7 +473,7 @@ class TicketController extends AbstractController
 
 	public function deleteSnippetAction()
 	{
-		$snippet = App::findEntity('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
+		$snippet = $this->em->find('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
 
 		$snippet_id = $snippet['id'];
 		$category_id = $snippet->category['id'];
@@ -533,26 +492,6 @@ class TicketController extends AbstractController
 	############################################################################
 	# Ajax loaded tabs
 	############################################################################
-
-	public function ajaxTabTicketLogAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$ticket_logs = App::getOrm()->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-
-		return $this->render('AgentBundle:Ticket:tab-ticketlog.html.twig', array(
-			'ticket_logs' => $ticket_logs
-		));
-	}
-
-	public function ajaxTabAttachmentsAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		return $this->render('AgentBundle:Ticket:tab-attachments.html.twig', array(
-			'ticket' => $ticket
-		));
-	}
 
 	public function ajaxTabRelatedContentAction($ticket_id)
 	{
@@ -666,11 +605,122 @@ class TicketController extends AbstractController
 			$ticket['agent_team_id'] = $this->in->getUint('agent_team');
 		}
 
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-		$ticket_edit->save();
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($ticket);
+			$this->em->flush();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
+
+
+	############################################################################
+	# add-participant
+	############################################################################
+
+	public function addParticipantAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$person = null;
+		if ($this->in->getUint('person_id')) {
+			$person = $this->em->find('DeskPRO:Person', $this->in->getUint('perosn_id'));
+		} elseif ($email_address = $this->in->getString('email_address')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_address);
+
+			if (!$person) {
+				$person = new Person();
+				$person->setEmail($email_address);
+			}
+		}
+
+		if (!$person) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($person->id) {
+			if ($ticket->hasParticipantPerson($person)) {
+				return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person));
+			}
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+
+			if (!$person->id) {
+				$this->em->persist($person);
+				$this->em->flush();
+			}
+
+			$ticket->addParticipantPerson($person);
+			$this->em->persist($ticket);
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			$this->db->commit();
+		}
+
+		return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person));
+	}
+
+	############################################################################
+	# remove-participant
+	############################################################################
+
+	public function removeParticipantAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
+
+		if (!$person) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($person->id) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			$ticket->removeParticipantPerson($person);
+			$this->em->persist($ticket);
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			$this->db->commit();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function setAgentParticipantsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard'));
+
+		$this->db->beginTransaction();
+
+		try {
+			$ticket->setAgentParticipants($agents);
+			$this->em->persist($ticket);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('sucess' => true));
+	}
+
 
 	############################################################################
 	# ajax-save-labels
@@ -684,8 +734,8 @@ class TicketController extends AbstractController
 
 		$ticket->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
+		$this->em->persist($ticket);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -716,7 +766,7 @@ class TicketController extends AbstractController
 		if (!$message['is_agent_note']) {
 			foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 
-				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+				$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
 				$attach = new Entity\TicketAttachment();
 				$attach['blob'] = $blob;
@@ -726,7 +776,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
 			return $this->createJsonResponse(array(
 				'dupe_message' => true,
 				'message_id' => $dupe_message['id']
@@ -770,7 +820,7 @@ class TicketController extends AbstractController
 					continue;
 				}
 
-				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 				if ($person) {
 					$got_user_ids[] = $person->id;
 				} else {
@@ -810,7 +860,7 @@ class TicketController extends AbstractController
 					$tracker->recordExtra('enabled_cc', $new_user_ids);
 				}
 
-				$participants = App::getOrm()->createQuery("
+				$participants = $this->em->createQuery("
 					SELECT p
 					FROM DeskPRO:TicketParticipant p
 					LEFT JOIN p.person person
@@ -856,9 +906,9 @@ class TicketController extends AbstractController
 		}
 
 		// Delete any possible ticket draft
-		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
 		if ($draft_pref) {
-			App::getOrm()->remove($draft_pref);
+			$this->em->remove($draft_pref);
 		}
 
 		$this->em->persist($ticket);
@@ -867,7 +917,7 @@ class TicketController extends AbstractController
 
 		$client_messages = false;
 		if ($this->in->getUint('client_messages_since')) {
-			$client_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessageData(
+			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
 				$this->person,
 				$this->session,
 				$this->in->getUint('client_messages_since')
@@ -883,7 +933,7 @@ class TicketController extends AbstractController
 		);
 
 		// New reply box
-		$participants = APp::getOrm()->createQuery("
+		$participants = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			LEFT JOIN p.person person
@@ -904,8 +954,8 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		$replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', array(
 			'agents' => $agents,
@@ -969,7 +1019,7 @@ class TicketController extends AbstractController
 		try {
 			$macro_id = $this->in->getUint('macro_id');
 			if ($macro_id) {
-				$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+				$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 				$all_macro_actions = $macro->getActionsArray($ticket);
 				$apply_macro_actions = array();
 
@@ -1037,7 +1087,7 @@ class TicketController extends AbstractController
 	public function ajaxGetMacroAction($ticket_id)
 	{
 		$macro_id = $this->in->getUint('macro_id');
-		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
 		$ticket = null;
 		if ($ticket_id) {
@@ -1057,7 +1107,7 @@ class TicketController extends AbstractController
 
 	public function viewMessageDetailsAction($message_id)
 	{
-		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
 		$ticket = $message->ticket;
 
 		return $this->render('AgentBundle:Ticket:message-details.html.twig', array(
@@ -1068,7 +1118,7 @@ class TicketController extends AbstractController
 
 	public function viewUnformattedMessageAction($message_id)
 	{
-		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
 
 		return $this->render('AgentBundle:Ticket:message-details-unformatted.html.twig', array(
 			'message' => $message,
@@ -1078,7 +1128,7 @@ class TicketController extends AbstractController
 
 	public function viewEmailSourceAction($message_id)
 	{
-		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
 
 		return $this->render('AgentBundle:Ticket:message-details-email-source.html.twig', array(
 			'message' => $message,
@@ -1088,7 +1138,7 @@ class TicketController extends AbstractController
 
 	public function ajaxGetMessageQuoteAction($message_id)
 	{
-		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
 
 		$message_quote = wordwrap($message->getMessageText(), 75, "\n", true);
 		$message_quote = preg_replace('#^#m', "> ", $message_quote);
@@ -1111,7 +1161,7 @@ class TicketController extends AbstractController
 
 		$since = $this->in->getUint('since');
 
-		$messages = App::getOrm()->createQuery("
+		$messages = $this->em->createQuery("
 			SELECT m
 			FROM DeskPRO:TicketMessage m
 			WHERE m.ticket = ?1 AND m.id > ?2
@@ -1141,12 +1191,12 @@ class TicketController extends AbstractController
 		$set_agent_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
 		$ticket->setParticipantAgentIds($set_agent_ids);
 
-		App::getOrm()->transactional(function($em) use ($ticket) {
+		$this->em->transactional(function($em) use ($ticket) {
 			$em->persist($ticket);
 			$em->flush();
 		});
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			LEFT JOIN p.person person
@@ -1167,12 +1217,12 @@ class TicketController extends AbstractController
 		$set_user_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
 		$ticket->setParticipantUserIds($set_user_ids);
 
-		App::getOrm()->transactional(function($em) use ($ticket) {
+		$this->em->transactional(function($em) use ($ticket) {
 			$em->persist($ticket);
 			$em->flush();
 		});
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			LEFT JOIN p.person person
@@ -1190,7 +1240,7 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			LEFT JOIN p.person person
@@ -1219,10 +1269,10 @@ class TicketController extends AbstractController
 
 		$reason = $this->in->getString('reason');
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 		$ticket->deleteTicket($this->person, $reason);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse(array(
 			'success' => true
@@ -1320,8 +1370,8 @@ class TicketController extends AbstractController
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'agents' => $agents,
@@ -1351,7 +1401,7 @@ class TicketController extends AbstractController
 
 			if ($comment_id && $comment_type && $comment_action) {
 				$entity = $this->_getCommentEntityName($comment_type);
-				$comment = App::findEntity($entity, $comment_id);
+				$comment = $this->em->find($entity, $comment_id);
 
 				switch ($comment_action) {
 					case 'delete':

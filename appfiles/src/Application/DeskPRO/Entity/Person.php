@@ -29,6 +29,38 @@ use Application\DeskPRO\Entity;
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Person")
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="people")
+ *
+ * @property-read  int      $id
+ * @property       \Application\DeskPRO\Entity\Blob $blob
+ * @property       string   $gravatar_url
+ * @property       bool     $is_contact
+ * @property       bool     $is_user
+ * @property       bool     $is_agent
+ * @property       bool     $is_autoresponder
+ * @property       bool     $is_confirmed
+ * @property       bool     $is_agent_confirmed
+ * @property       int      $importance
+ * @property       string   $creation_system
+ * @property       string   $name
+ * @property       string   $first_name
+ * @property       string   $last_name
+ * @property       string   $summary
+ * @property-read  string   $secret_string
+ * @property       \Application\DeskPRO\Entity\Language $language
+ * @property       \Application\DeskPRO\Entity\Organization $organization
+ * @property       string   $organization_position
+ * @property       string   $timezone
+ * @property       string   $password
+ * @property-read  string   $salt
+ * @property       \Application\DeskPRO\Entity\PersonEmail $primary_email
+ * @property       \Application\DeskPRO\Entity\PersonEmail[] $emails
+ * @property       \Application\DeskPRO\Entity\LabelPerson[] $labels
+ * @property       \Application\DeskPRO\Entity\CustomDataPerson[] $custom_data
+ * @property       \Application\DeskPRO\Entity\PersonContactData[] $contact_data
+ * @property       \Application\DeskPRO\Entity\Usergroup[] $usergroups
+ * @property       \Application\DeskPRO\Entity\PersonPref[] $preferences
+ * @property-read  \DateTime $date_created
+ * @property-read  \DateTime $date_last_login
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {

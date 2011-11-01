@@ -104,7 +104,7 @@ strong.warning {
 :-moz-placeholder{color:#bfbfbf !important;}
 ::-webkit-input-placeholder{color:#bfbfbf !important;}
 
-.is-not-loading { display: inherit; }
+.is-not-loading { display: inline-block; }
 .is-loading { display: none; }
 .loading .is-not-loading { display: none; }
 .loading .is-loading { display: inherit; }
@@ -957,25 +957,38 @@ a.clean-white {
 	display: none;
 	position: absolute;
 	min-width: 230px;
-	border: 2px solid #0B374D;
+	border: 1px solid #ABAFB3;
 	background-color: #fff;
 	.border-radius(6px, 6px, 6px, 6px);
 
-	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
+	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.9);
 	z-index: 10000000;
 	max-height: 300px;
 	overflow: auto;
 }
 
+.optionbox input[type="radio"],
+.optionbox input[type="checkbox"] {
+	display: none;
+}
+
 .optionbox section {
-	.border-radius(5px, 5px, 5px, 5px);
+	.border-radius(7px, 7px, 7px, 7px);
 	margin-bottom: 15px;
+}
+
+.optionbox section header:first-child {
+
 }
 
 .optionbox section header {
 	.gradient(#edeeef, #dbdcdd);
 	border-bottom: 1px solid #ACB2B9;
 	padding: 2px 2px 2px 5px;
+
+	-webkit-box-shadow: inset 0px 0px 1px 1px #ffffff;
+	-moz-box-shadow: inset 0px 0px 1px 1px #ffffff;
+	box-shadow: inset 0px 0px 1px 1px #ffffff;
 }
 
 .optionbox section header h3 {
@@ -990,6 +1003,15 @@ a.clean-white {
 
 .optionbox section header .selected-count {
 	font-size: 10px;
+}
+
+.optionbox section ul {
+	padding: 3px;
+}
+
+.optionbox section ul li {
+	margin-bottom: 1px;
+	.rounded(4px);
 }
 
 .optionbox section input[type="checkbox"],
@@ -1038,7 +1060,7 @@ a.clean-white {
 }
 
 .optionbox section li.last-me {
-	border-bottom: 1px solid #CCD3DD;
+	margin-bottom: 9px;
 }
 
 .optionbox section li:hover {
@@ -1173,4 +1195,30 @@ a.clean-white {
 
 #password_confirm .explain-wrap {
 	padding: 8px;
+}
+
+
+
+.btn-small-add {
+	.iconbase(11px, 11px);
+	background-image: url(../../images/agent/icons/action-add.png) /** sprite-ref: ui-v; */;
+	cursor: pointer;
+}
+
+.btn-small-remove {
+	.iconbase(11px, 11px);
+	background-image: url(../../images/agent/icons/action-remove.png) /** sprite-ref: ui-v; */;
+	cursor: pointer;
+}
+
+.btn-edit-gear {
+	.iconbase(16px, 16px);
+	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v; */;
+	cursor: pointer;
+}
+
+.btn-edit-small {
+	.iconbase(10px, 10px);
+	background-image: url(../../images/agent/icons/edit-small.png) /** sprite-ref: ui-v; */;
+	cursor: pointer;
 }

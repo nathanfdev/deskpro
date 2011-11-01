@@ -24,7 +24,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 	getElement: function(type) {
 		if (!type || type == 'element') {
-			this.el;
+			return this.el;
 		} else if (type == 'backdrop') {
 			return this.backdrop;
 		}

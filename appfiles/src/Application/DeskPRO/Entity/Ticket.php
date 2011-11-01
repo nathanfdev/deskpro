@@ -25,6 +25,8 @@ use Orb\Util\Util;
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Ticket")
  * @ORM_Mapping\Table(name="tickets")
  * @ORM_Mapping\HasLifecycleCallbacks
+ *
+ * @property \Application\DeskPRO\Entity\Person $person
  */
 class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -405,6 +407,37 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $ret;
+	}
+
+
+	/**
+	 * Given an array of agents, sync the current parts with those in the array.
+	 * So remove ones that aren't in it, or add new ones
+	 *
+	 * @param array $parts
+	 * @return void
+	 */
+	public function setAgentParticipants(array $agents)
+	{
+		$current_agent_ids = array();
+		foreach ($this->participants as $p) {
+			if ($p->person->is_agent) {
+				$current_agent_ids[] = $p->person->id;
+			}
+		}
+
+		$got_agent_ids = array();
+		foreach ($agents as $p) {
+			$got_agent_ids[] = $p->id;
+		}
+		foreach ($got_agent_ids as $id) {
+			$this->addParticipantPerson($id);
+		}
+
+		$remove_agent_ids = array_diff($current_agent_ids, $got_agent_ids);
+		foreach ($remove_agent_ids as $id) {
+			$this->removeParticipantPerson($id);
+		}
 	}
 
 

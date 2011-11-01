@@ -7,11 +7,11 @@
 $CONFIG = array();
 
 $CONFIG['OPTIONS'] = array(
-	'java_path' => '/usr/bin/java',
-	'yui_compressor' => '/usr/local/bin/yuicompressor.jar',
-	'nodejs' => '/usr/local/bin/node',
-	'less' => '/usr/local/lib/node_modules/less/bin/lessc',
-	'smartsprites' => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+	'java_path'       => '/usr/bin/java',
+	'yui_compressor'  => '/usr/local/bin/yuicompressor.jar',
+	'nodejs'          => '/usr/local/bin/node',
+	'less'            => '/usr/local/lib/node_modules/less/bin/lessc',
+	'smartsprites'    => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
 );
 
 ###############################################################################
@@ -202,6 +202,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/TicketCcManage.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',

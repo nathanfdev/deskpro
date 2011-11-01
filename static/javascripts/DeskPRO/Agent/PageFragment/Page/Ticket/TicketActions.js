@@ -27,54 +27,79 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		//------------------------------
-		// Assign ...
+		// Assign agent ...
 		//------------------------------
 
-		var el = $('#set_agent_and_team_optionbox_radio').clone();
+		var el = this.getEl('top_agent_selector').clone();
 		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
 			element: el,
 			trigger: this.getEl('assign_to_btn'),
-			onClose: function() {
-				// Agent
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
 				var agent_id = parseInt(selections.agents || 0);
-				if (agent_id == exist_agent_id) {
-					self.getElById('do_agent_id').val('0');
-				} else {
-					self.getElById('do_agent_id').val('0');
-					self.getElById('agent_id').val(agent_id);
-
-					var label = $('.agent-label-' + agent_id, self.getElById('agent_selector')).text().trim();
-					$('.new-val-label', agentDetailEl).text(label);
-				}
-
-				// Agent Team
-				var agent_team_id = parseInt(selections.teams || 0);
-				if (agent_team_id == exist_agent_team_id) {
-					self.getElById('do_agent_team_id').val('0');
-				} else {
-					self.getElById('do_agent_team_id').val('1');
-					self.getElById('agent_team_id').val(agent_team_id);
-
-					var label = $('.agent-team-label-' + agent_team_id, self.getElById('agent_selector')).text().trim();
-					$('.new-val-label', teamDetailEl).text(label);
-				}
+				var agentProp = self.changeManager.getPropertyManager('agent_id');
+				self.changeManager.setInstantChange(agentProp, agent_id);
 			}
 		});
-		el.delegate('button', 'click', function() {
-			var btn = $(this);
 
-			if (btn.data('type') == 'team') {
-				var teamId = btn.data('team-id');
+		//------------------------------
+		// Assign agent team ...
+		//------------------------------
+
+		var el = this.getEl('top_agent_team_selector').clone();
+		this.assignAgentTeamOptionBox = new DeskPRO.UI.OptionBox({
+			element: el,
+			trigger: this.getEl('assign_to_team_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
+				var agent_team_id = parseInt(selections.teams || 0);
 				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
-				self.changeManager.setInstantChange(agentTeamProp, teamId);
-			} else {
-				var agentId = btn.data('agent-id');
-
-				var agentProp = self.changeManager.getPropertyManager('agent_id');
-				self.changeManager.setInstantChange(agentProp, agentId);
+				self.changeManager.setInstantChange(agentTeamProp, agent_team_id);
 			}
+		});
 
-			self.assignAgentOptionBox.close();
+		//------------------------------
+		// Assign followers ...
+		//------------------------------
+
+		var followersList = this.getEl('followers_list');
+		var el = this.getEl('top_agent_followers_selector').clone();
+		this.assignAgentFollowersOptionBox = new DeskPRO.UI.OptionBox({
+			element: el,
+			trigger: this.getEl('assign_followers_btn'),
+			onClose: function(ob) {
+				followersList.empty();
+
+				var selections = ob.getAllSelected();
+
+				var postData = [];
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
+
+					var li = $('<li />');
+					li.text(label);
+
+					followersList.append(li);
+
+					postData.push({
+						name: 'agent_part_ids[]',
+						value: part_id
+					});
+				});
+
+				if (!selections.followers.length) {
+					followersList.append('<li>No followers</li>');
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/'+self.page.meta.ticket_id+'/set-agent-parts.json',
+					type: 'POST',
+					dataType: 'json',
+					data: postData
+				});
+			}
 		});
 
 		//------------------------------

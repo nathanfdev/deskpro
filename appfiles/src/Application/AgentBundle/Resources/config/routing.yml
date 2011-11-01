@@ -692,11 +692,6 @@ agent_ticket_viewtip:
   defaults: { _controller: AgentBundle:Ticket:viewTip }
   requirements: { ticket_id: "\d+" }
 
-agent_ticket_ajaxgetupdatedcounts:
-  pattern: /tickets/{ticket_id}/ajax-get-updated-counts
-  defaults: { _controller: AgentBundle:Ticket:getUpdatedCounts }
-  requirements: { ticket_id: "\d+" }
-
 agent_ticket_ajaxsavecustomfields:
   pattern: /tickets/{ticket_id}/ajax-save-custom-fields
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveCustomFields }
@@ -722,15 +717,17 @@ agent_ticket_ajaxsaveflagged:
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveFlagged }
   requirements: { ticket_id: "\d+" }
 
-agent_ticket_ajaxtab_ticketlog:
-  pattern: /tickets/{ticket_id}/ajax-tab-ticket-log
-  defaults: { _controller: AgentBundle:Ticket:ajaxTabTicketLog }
-  requirements: { ticket_id: "\d+" }
+agent_ticket_addpart:
+  pattern: /tickets/{ticket_id}/add-part
+  defaults: { _controller: AgentBundle:Ticket:addParticipant }
 
-agent_ticket_ajaxtab_attachments:
-  pattern: /tickets/{ticket_id}/ajax-tab-attachments
-  defaults: { _controller: AgentBundle:Ticket:ajaxTabAttachments }
-  requirements: { ticket_id: "\d+" }
+agent_ticket_set_agent_parts:
+  pattern: /tickets/{ticket_id}/set-agent-parts.json
+  defaults: { _controller: AgentBundle:Ticket:setAgentParticipants }
+
+agent_ticket_delpart:
+  pattern: /tickets/{ticket_id}/remove-part.json
+  defaults: { _controller: AgentBundle:Ticket:removeParticipant }
 
 agent_ticket_ajaxtab_releated_content:
   pattern: /tickets/{ticket_id}/ajax-tab-related-content

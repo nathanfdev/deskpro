@@ -214,7 +214,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			trigger: this.getElById('assign_followers_btn'),
 			onClose: function(ob) {
 				var selections = ob.getAllSelected();
-				
+
 				// Followers
 				var follower_names = [];
 				var inputs = $('.inputs', noteFollowDetailEl).empty();
