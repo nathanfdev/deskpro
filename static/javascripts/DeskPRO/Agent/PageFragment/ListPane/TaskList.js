@@ -101,10 +101,11 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
             $('.add-comment', this.wrapper).click(function(){                
                 $(this).parents('article').find('article').find('li.new-note').toggle();
             });
-
+            
             $('.add-label', this.wrapper).click(function(){
-                $(this).parents('article').find('.task-label').toggle();
-            });
+                $(this).parents('article').find('.task-label').toggle();                
+                
+            }).bind(this);
 
             $('.add-due-date', this.wrapper).click(function(){ 
                 $(this).parents('article').find('.task-due-date').toggle();
@@ -145,6 +146,11 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
             });
         },
 
+        showLog: function()
+        {
+            console.log('click');
+        },
+
         setVisibility: function(url){
             
             $.ajax({
@@ -168,31 +174,39 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 	_initLabels: function() {
 
 		// Tags
-		this.labelsList = $(".task-tags ul", this.wrapper);
+                var me = this;
 
-		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'task',
-			list: this.labelsList,
-			onChange: this.saveLabels.bind(this)
-		});
-		this.ownObject(this.labelsInput);
+                $('.search-reuslts .row-item .task-tags ul').each(function(){
+                    me.labelsList = $(this);
+
+                    me.labelsInput = new DeskPRO.UI.LabelsInput({
+                            type: 'task',
+                            list: me.labelsList,
+                            onChange: me.saveLabels.bind(me)
+                    });
+                    me.ownObject(me.labelsInput);
+                });
+
+		
 	},
 
 	saveLabels: function() {
-		if (this._saveLabelsTimeout) {
-			window.clearTimeout(this._saveLabelsTimeout);
+            var me = this;
+		if (me._saveLabelsTimeout) {
+			window.clearTimeout(me._saveLabelsTimeout);
 		}
 
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		me._saveLabelsTimeout = me._doSaveLabels.delay(2000, me);
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
-                var url =   this.labelsList.parents('article').find('.task-tags').attr('title');
+		var me = this;
+                var data = $('.task-tags ul input', me.wrapper).serializeArray();
+                var url =   $('.task-tags ul', me.wrapper).parents('article').find('.task-tags').attr('title');
 		$.ajax({
 			url: url,//this.getMetaData('labelsSaveUrl'),
 			type: 'POST',
-			context: this,
+			context: me,
 			data: data,
 			dataType: 'json',
 			success: function(data) {
