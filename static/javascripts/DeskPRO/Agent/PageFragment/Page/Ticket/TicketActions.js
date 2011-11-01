@@ -26,50 +26,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			self.changeManager.setInstantChange(prop, value);
 		});
 
-		//------------------------------
-		// Assign agent ...
-		//------------------------------
-
-		var el = this.getEl('top_agent_selector').clone();
-		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
+		var followersList = this.getEl('followers_list');
+		var el = this.getEl('agent_assign_ob');
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
 			element: el,
-			trigger: this.getEl('assign_to_btn'),
+			trigger: this.getEl('assign_ob_trigger'),
 			onClose: function(ob) {
 				var selections = ob.getAllSelected();
 
 				var agent_id = parseInt(selections.agents || 0);
 				var agentProp = self.changeManager.getPropertyManager('agent_id');
 				self.changeManager.setInstantChange(agentProp, agent_id);
-			}
-		});
-
-		//------------------------------
-		// Assign agent team ...
-		//------------------------------
-
-		var el = this.getEl('top_agent_team_selector').clone();
-		this.assignAgentTeamOptionBox = new DeskPRO.UI.OptionBox({
-			element: el,
-			trigger: this.getEl('assign_to_team_btn'),
-			onClose: function(ob) {
-				var selections = ob.getAllSelected();
 
 				var agent_team_id = parseInt(selections.teams || 0);
 				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
 				self.changeManager.setInstantChange(agentTeamProp, agent_team_id);
-			}
-		});
 
-		//------------------------------
-		// Assign followers ...
-		//------------------------------
-
-		var followersList = this.getEl('followers_list');
-		var el = this.getEl('top_agent_followers_selector').clone();
-		this.assignAgentFollowersOptionBox = new DeskPRO.UI.OptionBox({
-			element: el,
-			trigger: this.getEl('assign_followers_btn'),
-			onClose: function(ob) {
 				followersList.empty();
 
 				var selections = ob.getAllSelected();
@@ -101,6 +73,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				});
 			}
 		});
+
+		var box1 = self.getEl('people_box_person');
+		var box2 = self.getEl('people_box_agent');
+		var syncSizes = function() {
+			var h1 = box1.height();
+			var h2 = box2.height();
+
+			if (h1 > h2) {
+				box2.css('min-height', h1);
+			} else {
+				box1.css('min-height', h2);
+			}
+		};
+
+		box1.resize(syncSizes);
+		box2.resize(syncSizes);
+		syncSizes();
 
 		//------------------------------
 		// Status

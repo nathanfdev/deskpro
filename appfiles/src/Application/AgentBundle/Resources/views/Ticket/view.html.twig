@@ -110,14 +110,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 </header>
 
-{# Box Summary #}
-<div class="profile-box-container people-box">
-	<header>
-		<h4>People</h4>
-	</header>
-	<section>
-		<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="col" valign="top" width="50%">
-			<header><h3>Users</h3></header>
+<table cellspacing="0" cellpadding="0" width="100%"><tr><td class="col" valign="top" width="50%"><tr><td width="50%" valign="top">
+	<div class="profile-box-container people-box first">
+		<header>
+			<h4>People</h4>
+		</header>
+		<section id="{{baseId}}_people_box_person">
 			<article>
 				<dl>
 					<dt>Owner</dt>
@@ -158,21 +156,30 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 			</article>
-		</td><td class="col" valign="top" width="50%">
-			<header><h3>Agents</h3></header>
+		</section>
+	</div>
+</td><td width="50%" valign="top">
+	<div class="profile-box-container people-box second">
+		<header>
+			<div class="controls">
+				<span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
+			</div>
+			<h4>Agents</h4>
+		</header>
+		<section id="{{baseId}}_people_box_agent">
 			<article>
 				<dl>
-					<dt>Assigned<span class="btn-edit-small" id="{{baseId}}_assign_to_btn"></span></dt>
+					<dt>Assigned</dt>
 					<dd>
 						<span class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default('Unassigned') }}</span>
 					</dd>
 
-					<dt>Team<span class="btn-edit-small" id="{{baseId}}_assign_to_team_btn"></span></dt>
+					<dt>Team</dt>
 					<dd>
 						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default('None') }}</span>
 					</dd>
 
-					<dt>Followers<span class="btn-edit-small" id="{{baseId}}_assign_followers_btn"></span></dt>
+					<dt>Followers</dt>
 					<dd>
 						<ul id="{{baseId}}_followers_list">
 							{% for agent in agent_parts %}
@@ -184,9 +191,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</dd>
 				</dl>
 			</article>
-		</td></tr></table>
-	</section>
-</div>
+		</section>
+	</div>
+</td></tr></table>
 
 <div class="profile-box-container">
 	<header>
@@ -325,94 +332,95 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<button class="clean-white cancel" id="macro_cancel_btn">Cancel</button>
 </div>
 
-<div class="optionbox" id="{{baseId}}_top_agent_selector">
-	<section data-section-name="agents">
-		<header>
-			<h3>Agents</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
-				<input type="radio" name="{{baseId}}_agentopt" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
-			</li>
-
-			<li>
-				<input type="radio" name="{{baseId}}_agentopt" value="0" />
-				<label><span class="agent-pic agent-label-0">Unassigned</span></label>
-			</li>
-
-			{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-					<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
-						<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
-						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-						<div class="bound-fade"></div>
-					</li>
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-</div>
-
-
-<div class="optionbox" id="{{baseId}}_top_agent_team_selector">
-	<section data-section-name="teams">
-		<header>
-			<h3>Teams</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			{% for team in app.user.getAgent().getTeams() %}
-				<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
-					<input type="radio" name="{{baseId}}_agent_team_opt" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
-					<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-					<div class="bound-fade"></div>
+<div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_assign_ob">
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Agents</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
 				</li>
-			{% endfor %}
 
-			<li class="{% if not ticket.agent_team %}on{% endif %}">
-				<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-				<label><span class="agent-team-label-0">No Team</span></label>
-			</li>
+				<li>
+					<input type="radio" name="{{bsaeId}}_agent" value="0" />
+					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+				</li>
 
-			{% for team in agent_teams %}
-				{% if team.id not in app.user.getAgent().getTeamIds() %}
-					<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
-						<input type="radio" name="{{baseId}}_agent_team_opt" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+				{% for agent in agents %}
+					{% if agent.id != app.user.id %}
+						<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
+							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="teams">
+			<header>
+				<h3>Teams</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				{% for team in app.user.getAgent().getTeams() %}
+					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}on{% endif %}">
+						<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
 						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
 						<div class="bound-fade"></div>
 					</li>
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
+				{% endfor %}
+
+				<li class="{% if not ticket.agent_team %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
+					<label><span class="agent-team-label-0">No Team</span></label>
+				</li>
+
+				{% for team in agent_teams %}
+					{% if team.id not in app.user.getAgent().getTeamIds() %}
+						<li {% if ticket.agent_team.id == team.id %}class="on"{% endif %}>
+							<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
+							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<div class="col">
+		<section data-section-name="followers">
+			<header>
+				<h3>Followers</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
+					<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				</li>
+
+				{% for agent in agents %}
+					{% if agent.id != app.user.id %}
+						<li {% if agent.id in participant_ids %}class="on"{% endif %}>
+							<input type="checkbox" name="{{bsaeId}}_part" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
 </div>
 
-<div class="optionbox" id="{{baseId}}_top_agent_followers_selector">
-	<section data-section-name="followers">
-		<header>
-			<h3>Followers</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
-				<input type="checkbox" name="{{baseId}}_partopt" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
-			</li>
-
-			{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-					<li {% if agent.id in participant_ids %}class="on"{% endif %}>
-						<input type="checkbox" name="{{baseId}}_partopt" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
-						<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-						<div class="bound-fade"></div>
-					</li>
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-</div>
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

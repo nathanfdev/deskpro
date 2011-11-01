@@ -2075,6 +2075,17 @@ padding: 30px;
 	padding-bottom: 0;
 }
 
+.page-ticket .people-box > section {
+	min-height: 150px;
+}
+
+.page-ticket .people-box {
+	margin-bottom: 0;
+}
+
+.page-ticket .people-box.first  { margin-right: 4px; }
+.page-ticket .people-box.second { margin-left : 4px; }
+
 .page-ticket .people-box .col:first-child {
 	border-right: 1px solid #D7DCDE;
 }
@@ -2118,7 +2129,7 @@ padding: 30px;
 }
 
 .page-ticket .people-box dl dt {
-	padding: 0 0 3px 6px;
+	padding: 3px 0 3px 6px;
 	font-size: 11px;
 	font-weight: bold;
 	font-family: @heading-font;
@@ -2126,7 +2137,12 @@ padding: 30px;
 }
 
 .page-ticket .people-box dl dd {
-	padding: 0 0 10px 8px;
+	padding: 0 0 10px 10px;
+	border-bottom: 1px solid #EAEEEE;
+}
+
+.page-ticket .people-box dl dd:last-of-type {
+	border-bottom: none;
 }
 
 .page-ticket .cc-row li {
@@ -4063,4 +4079,9 @@ ul.agent-parts-link li {
 
 .redirect-screen .url-info dd {
 	margin-bottom: 10px;
+}
+
+
+.page-kb-view {
+
 }
