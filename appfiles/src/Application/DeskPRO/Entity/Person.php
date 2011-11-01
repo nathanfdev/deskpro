@@ -1439,6 +1439,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				if ($size != 80) {
 					$url .= '&s=' . $size;
 				}
+
+				if ($this->is_agent) {
+					$url .= '&d=' . App::get('router')->generate('serve_default_picture', array('s' => $size, 'is_agent' => 1), true);
+				} else {
+					$url .= '&d=' . App::get('router')->generate('serve_default_picture', array('s' => $size), true);
+				}
 			}
 		}
 

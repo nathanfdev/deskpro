@@ -142,14 +142,14 @@ class BlobController extends AbstractController
 				break;
 
 			case 'default_picture':
-				return $this->_serveDefaultPicture($this->in->getUint('s'));
+				return $this->_serveDefaultPicture($this->in->getUint('s'), $this->in->getBool('is_agent'));
 				break;
 		}
 
 		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown name");
 	}
 
-	protected function _serveDefaultPicture($size = 80)
+	protected function _serveDefaultPicture($size = 80, $is_agent = false)
 	{
 		if (!$size) {
 			$size = 80;
@@ -163,7 +163,11 @@ class BlobController extends AbstractController
 		$response->setPublic();
 
 		$im = new \Imagick();
-		$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
+		if ($is_agent) {
+			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default-agent.jpeg');
+		} else {
+			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
+		}
 		$im->resizeImage($size, $size, \Imagick::FILTER_LANCZOS, true);
 
 		$file = $im->getImageBlob();
