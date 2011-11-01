@@ -160,6 +160,26 @@
 							</a>
 						</div>
 					</li>
+					<li class="hide-reply" style="display: none">
+						<label>Followers:</label>
+						<div id="{{replyBaseId}}_assign_followers">
+							<a id="{{replyBaseId}}_assign_followers_btn" class="with-menu-click-position">
+							<span id="{{replyBaseId}}_assign_followers_detail">
+								<span class="no-followers" {% if agent_parts|length %}style="display: none"{% endif %}>
+									No followers
+								</span>
+								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
+									<span class="count">{{ agent_parts|length }}</span> Followers
+									<div class="inputs" style="display: none">
+										{% for p in agent_parts %}
+											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
+										{% endfor %}
+									</div>
+								</span>
+							</span>
+							</a>
+						</div>
+					</li>
 					<li id="{{replyBaseId}}_attach_row" class="attach-row hide-note is-hidden" style="display: none">
 						<label><span>Attachments</span></label>
 						<div>
@@ -286,5 +306,29 @@
 	<br class="clear" />
 </div>
 
+<div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_followers_selector">
+	<section data-section-name="followers">
+		<header>
+			<h3>Followers</h3>
+			<input type="text" class="filter-box" placeholder="Filter..." />
+		</header>
+		<ul>
+			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
+				<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+			</li>
+
+			{% for agent in agents %}
+				{% if agent.id != app.user.id %}
+					<li {% if agent.id in participant_ids %}class="on"{% endif %}>
+						<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ agent.id }}" {% if agent.id in participant_ids %}checked="checked"{% endif %} />
+						<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endif %}
+			{% endfor %}
+		</ul>
+	</section>
+</div>
 
 </form>

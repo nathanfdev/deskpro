@@ -206,6 +206,38 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
+		//assign_btn
+		var noteFollowDetailEl = this.getElById('assign_followers_detail');
+
+		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getElById('agent_followers_selector'),
+			trigger: this.getElById('assign_followers_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+				
+				// Followers
+				var follower_names = [];
+				var inputs = $('.inputs', noteFollowDetailEl).empty();
+
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, self.getElById('agent_selector')).text().trim();
+					follower_names.push(label);
+
+					var i = $('<input type="hidden" name="agent_parts[]" value="'+part_id+'" />');
+					inputs.append(i);
+				});
+				if (follower_names.length) {
+					$('.no-followers', noteFollowDetailEl).hide();
+					var f = $('.is-followers', noteFollowDetailEl).show();
+					f.find('.names').text(follower_names.join(', '));
+					f.find('.count').text(follower_names.length);
+				} else {
+					$('.no-followers', noteFollowDetailEl).show();
+					$('.is-followers', noteFollowDetailEl).text('').hide();
+				}
+			}
+		});
+
 		//------------------------------
 		// Submit
 		//------------------------------
