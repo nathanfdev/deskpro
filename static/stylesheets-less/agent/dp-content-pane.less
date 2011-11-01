@@ -2767,11 +2767,12 @@ padding: 30px;
 	overflow: hidden;
 	line-height: 100px;
 	cursor: pointer;
-	background-image: url("../../images/agent/icons/expand.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/expand.png") /** sprite-ref: ui-v */;
+	margin-top: 4px;
 }
 
 .ticketreply > article > section li .expander.expanded {
-	background-image: url("../../agent/images/icons/collapse.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/collapse.png") /** sprite-ref: ui-v */;
 }
 
 .ticketreply > article > section li input[type="text"] {
@@ -2814,20 +2815,24 @@ padding: 30px;
 .ticketreply .token-field {
 	border: none;
 	padding:  0;
+	line-height: 100%;
 }
 
 .ticketreply .cc-row label {
-	margin-top: 4px;
+
+}
+
+.ticketreply .cc-row  > div {
+	margin-top: 1px;
 }
 
 .ticketreply .token {
-	margin:0;
-	margin-right: 6px;
+	margin: 1px 6px 0 0;
 }
 
 .ticketreply .token-field .token-input {
 	margin: 0;
-	padding: 2px 3px 2px 0px;
+	padding: 0px 3px 0px 0px;
 }
 
 
