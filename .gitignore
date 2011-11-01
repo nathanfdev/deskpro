@@ -11,6 +11,7 @@
 /appfiles/sys/logs/
 /static/build
 /static/stylesheets/agent
+/static/stylesheets/admin
 
 # Per-site files
 /appfiles/config.php
