@@ -32,7 +32,7 @@
 // Get around a bug in less, always have this rule or else compiler error
 .less-rule { color: #000; }
 
-.size(@height: 5px, @width: 5px) {
+.size(@width: 5px, @height: 5px) {
 	height: @height;
 	width: @width;
 }
@@ -48,7 +48,7 @@
 	.size(@size, @size);
 }
 
-.set-size(@height: 5px, @width: 5px) {
+.set-size(@width: 5px, @height: 5px) {
 	height: @height;
 	width: @width;
 	overflow: hidden;

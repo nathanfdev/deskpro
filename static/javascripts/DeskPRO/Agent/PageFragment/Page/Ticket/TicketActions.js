@@ -147,16 +147,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Department
 		//------------------------------
 
-		this.depMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.set-department', wrapper),
-			menuElement: $('#department_menu'),
-			onItemClicked: (function(info) {
-				var item = $(info.itemEl);
-				var prop = this.changeManager.getPropertyManager('department_id');
-
-				var status = parseInt(item.data('department-id'));
-				this.changeManager.setInstantChange(prop, status);
-			}).bind(this)
+		var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
+		this.departmentOptionBox = new DeskPRO.UI.OptionBox({
+			element: el,
+			trigger: $('.set-department', wrapper),
+			onClose: function(ob) {
+				var prop = self.changeManager.getPropertyManager('department_id');
+				var depId = parseInt(ob.getSelected('department'));
+				self.changeManager.setInstantChange(prop, depId);
+			}
 		});
 
 		//------------------------------

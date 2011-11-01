@@ -1006,12 +1006,46 @@ a.clean-white {
 }
 
 .optionbox section ul {
-	padding: 3px;
+	margin: 3px;
 }
 
 .optionbox section ul li {
 	margin-bottom: 1px;
 	.rounded(4px);
+}
+
+.optionbox section ul li.group-title {
+	padding: 4px 4px 3px 8px;
+	line-height: 100%;
+	font-size: 11px;
+	.gradient(#FFFFFF, #E6E6E6);
+	border-top: 1px solid #D7DCDE;
+	border-bottom: 1px solid #D7DCDE;
+	color: #738699;
+	.rounded(0);
+	font-weight: bold;
+	font-family: @heading-font;
+	margin: 0 -3px 1px -3px;
+}
+
+.optionbox section ul li.parent-option {
+
+}
+
+.optionbox section ul li.child {
+	font-size: 10px;
+	line-height: 13px;
+	padding-left: 7px;
+}
+
+.optionbox section ul li.child .elbow-end {
+	float: left;
+	margin-right: 4px;
+	margin-top: 0px;
+}
+
+.optionbox section ul li.child label {
+
 }
 
 .optionbox section input[type="checkbox"],
@@ -1221,4 +1255,12 @@ a.clean-white {
 	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/edit-small.png) /** sprite-ref: ui-v; */;
 	cursor: pointer;
+}
+
+
+.elbow-end {
+    display: block;
+    .set-size(5px, 6px);
+	border-left: 1px dotted #C6C6C6;
+	border-bottom: 1px dotted #C6C6C6;
 }

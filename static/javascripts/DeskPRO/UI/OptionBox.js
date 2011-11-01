@@ -201,12 +201,27 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			return;
 		}
 
+		var show = [];
+		var hide = [];
+
 		lis.each(function() {
 			var name = $('label', this).text().toLowerCase();
 			if (name.indexOf(filter) !== -1) {
-				$(this).show();
+				show.push(this);
 			} else {
-				$(this).hide();
+				hide.push(this);
+			}
+		});
+
+		$(hide).hide();
+		$(show).show().each(function() {
+			var itemId = $(this).data('item-id');
+			if (itemId) {
+				$('li.child-of-' + itemId, section).show();
+				var parentId = $(this).data('parent-id');
+				if (parentId) {
+					$('li.item-' + parentId, section).show();
+				}
 			}
 		});
 	},
