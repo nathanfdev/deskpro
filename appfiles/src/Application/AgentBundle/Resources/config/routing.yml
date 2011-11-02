@@ -935,6 +935,17 @@ agent_task_drafts_mass:
   pattern: /task/drafts/mass-actions/{action}
   defaults: { _controller: AgentBundle:Task:draftsMassActions }
 
+
+################################################################################
+# Deals
+################################################################################
+
+agent_dealearch_getsectiondata:
+  pattern: /deal/get-section-data.json
+  defaults: { _controller: AgentBundle:Deal:getSectionData }
+
+
+
 ################################################################################
 # Publish
 ################################################################################
