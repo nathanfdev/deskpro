@@ -1,121 +1,116 @@
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>My Task</h1>
+		<h1>Tasks</h1>
 	</header>
-        <ul class="source-list">
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.person.total|default(0) }}</span>
-                    Total
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'today'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.person.due_today|default(0) }}</span>
-                    Due Today
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'future'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.person.due_future|default(0) }}</span>
-                    Due In Future
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'overdue'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.person.overdue|default(0) }}</span>
-                    Over Due
-		</h3>
-            </li>
-        </ul>
+	<article>
+		<ul class="source-list">
+			<li class="sub-expanded">
+				<h3 class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}">
+					<span class="list-counter" id="my_tasks">{{ counts.person.total|default(0) }}</span>
+					My Tasks
+				</h3>
+				<ul class="sub-group">
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'overdue'}) }}">
+							<span class="list-counter" id="my_tasks_overdue">{{ counts.person.overdue }}</span>
+							Overdue
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'today'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.person.due_today }}</span>
+							Due Today
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'future'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.person.due_future }}</span>
+							Due In Future
+						</span>
+					</li>
+				</ul>
+			</li>
 
-        <header>
-            <h1>My Team Task</h1>
-	</header>
-        <ul class="source-list">
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.teams.total|default(0) }}</span>
-                    Total
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'today'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.teams.due_today|default(0) }}</span>
-                    Due Today
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'future'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.teams.due_future|default(0) }}</span>
-                    Due In Future
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'overdue'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.teams.overdue|default(0) }}</span>
-                    Over Due
-		</h3>
-            </li>
-        </ul>
+			<li class="sub-expanded">
+				<h3 class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}">
+					<span class="list-counter" id="my_tasks">{{ counts.teams.total|default(0) }}</span>
+					My Teams Tasks
+				</h3>
+				<ul class="sub-group">
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'overdue'}) }}">
+							<span class="list-counter" id="my_tasks_overdue">{{ counts.teams.overdue }}</span>
+							Overdue
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'today'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.teams.due_today }}</span>
+							Due Today
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'future'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.teams.due_future }}</span>
+							Due In Future
+						</span>
+					</li>
+				</ul>
+			</li>
 
-        <header>
-            <h1>Tasks I Delegated</h1>
-	</header>
-        <ul class="source-list">
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'total'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.delegated.total|default(0) }}</span>
-                    Total
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'today'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.delegated.due_today|default(0) }}</span>
-                    Due Today
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'future'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.delegated.due_future|default(0) }}</span>
-                    Due In Future
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'overdue'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.delegated.overdue|default(0) }}</span>
-                    Over Due
-		</h3>
-            </li>
-        </ul>
+			<li class="sub-expanded">
+				<h3 class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'total'}) }}">
+					<span class="list-counter" id="my_tasks">{{ counts.delegated.total|default(0) }}</span>
+					Takss I Delegated
+				</h3>
+				<ul class="sub-group">
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'overdue'}) }}">
+							<span class="list-counter" id="my_tasks_overdue">{{ counts.delegated.overdue }}</span>
+							Overdue
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'today'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.delegated.due_today }}</span>
+							Due Today
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'future'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.delegated.due_future }}</span>
+							Due In Future
+						</span>
+					</li>
+				</ul>
+			</li>
 
-        <header>
-            <h1>All Tasks</h1>
-	</header>
-        <ul class="source-list">
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'total'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.all.total|default(0) }}</span>
-                    Total
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'today'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.all.due_today|default(0) }}</span>
-                    Due Today
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'future'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.all.due_future|default(0) }}</span>
-                    Due In Future
-		</h3>
-            </li>
-            <li data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'overdue'}) }}">
-                <h3 class="title">
-                    <span class="list-counter" id="">{{ tasks.all.overdue|default(0) }}</span>
-                    Over Due
-		</h3>
-            </li>
-        </ul>
+			<li class="sub-expanded">
+				<h3 class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'total'}) }}">
+					<span class="list-counter" id="my_tasks">{{ counts.all.total|default(0) }}</span>
+					All Tasks
+				</h3>
+				<ul class="sub-group">
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'overdue'}) }}">
+							<span class="list-counter" id="my_tasks_overdue">{{ counts.all.overdue }}</span>
+							Overdue
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'today'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.all.due_today }}</span>
+							Due Today
+						</span>
+					</li>
+					<li>
+						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'future'}) }}">
+							<span class="list-counter" id="my_tasks_due_today">{{ counts.all.due_future }}</span>
+							Due In Future
+						</span>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</article>
 </section>

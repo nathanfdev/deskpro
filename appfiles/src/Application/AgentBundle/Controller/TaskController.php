@@ -35,7 +35,7 @@ class TaskController extends AbstractController {
 
     /**
      * Generate the category wise list gor task.
-     * @return html 
+     * @return html
      */
 
     public function getSectionDataAction() {
@@ -73,22 +73,23 @@ class TaskController extends AbstractController {
         );
 
         $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
-                    'tasks' => array(
-                        'all' => $all_tasks,
-                        'person' => $person_tasks,
-                        'teams' => $teams_tasks,
-                        'delegated' => $delegated_tasks,
-                        )));
+			'counts' => array(
+				'all' => $all_tasks,
+				'person' => $person_tasks,
+				'teams' => $teams_tasks,
+				'delegated' => $delegated_tasks,
+			)
+		));
 
         return $this->createJsonResponse(array(
             'section_html' => $section_html,
         ));
     }
 
-    
+
     /**
      * Render the new task form.
-     * @return html 
+     * @return html
      */
     public function newAction() {
         $form = $this->get('form.factory')->create(new NewTask(), new Task())->createView();
@@ -129,7 +130,7 @@ class TaskController extends AbstractController {
         $this->_loadModels();
         $person = $this->person;
         $task_type = false;
-        
+
         if ($search_type == 'own') {
             $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'team') {
@@ -148,10 +149,10 @@ class TaskController extends AbstractController {
             'tasks' => $tasks,
             'total_complete_task' => $this->_task_repository->countCompleteTasks(),
              'task_type' => $task_type
-        ));        
+        ));
     }
 
-    
+
     /**
      * Save labels for tasks.
      *
@@ -248,7 +249,7 @@ class TaskController extends AbstractController {
     {
         $this->_loadModels();
         $data = $this->in->getCleanValueArray('ids', 'array', 'string');
-        
+
         $action = ($action == 'complete') ? true : false;
         foreach ($data as $value) {
             $task = $this->getTaskOr404($value[0]);
@@ -256,7 +257,7 @@ class TaskController extends AbstractController {
             $this->_entityManager->persist($task);
         }
         $this->_entityManager->flush();
-        
+
         return $this->createJsonResponse(array(
 			'success' => true,
 			'total_complete_task' => $this->_task_repository->countCompleteTasks()
@@ -276,7 +277,7 @@ class TaskController extends AbstractController {
         }
 
         $days_ago = (time() - $due_date->format('m-d-y'))/86400;
-        
+
         return $this->render('AgentBundle:Task:task-due-date.html.twig', array(
             'new-due_date' => $days_ago,
             'over_due' => $over_due
@@ -339,7 +340,7 @@ class TaskController extends AbstractController {
 
         $this->_entityManager = $this->get('doctrine')->getEntityManager();
         $this->_currentUser = $user = App::getCurrentPerson();
-        $this->_task_repository = App::getEntityRepository('DeskPRO:Task');        
+        $this->_task_repository = App::getEntityRepository('DeskPRO:Task');
     }
 
 }
