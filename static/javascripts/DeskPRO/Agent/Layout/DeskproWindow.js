@@ -16,11 +16,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		// Handle window resizes
 		$(window).resize(function() {
-			if (self._resizeTimeout) {
-				window.clearTimeout(self._resizeTimeout);
-			}
-
-			self._resizeTimeout = self.doResize.delay(300, self);
+			self.doResize();
 		});
 	},
 

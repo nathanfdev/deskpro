@@ -573,7 +573,7 @@ insertAtCaret: function(myValue){
   // The numeric interval (in milliseconds) at which the resize event polling
   // loop executes. Defaults to 250.
 
-  jq_resize[ str_delay ] = 325;
+  jq_resize[ str_delay ] = 200;
 
   // Property: jQuery.resize.throttleWindow
   //
@@ -590,7 +590,7 @@ insertAtCaret: function(myValue){
   // event throttling, please note that this property must be changed before any
   // window object resize event callbacks are bound.
 
-  jq_resize[ str_throttle ] = false;
+  jq_resize[ str_throttle ] = true;
 
   // Event: resize event
   //

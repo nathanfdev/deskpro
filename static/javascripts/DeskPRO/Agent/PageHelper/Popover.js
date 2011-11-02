@@ -167,13 +167,18 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 
 		// Handle window resizes
-		$(window).resize(function() {
-			if (self._resizeTimeout) {
-				window.clearTimeout(self._resizeTimeout);
-			}
+		if (this.options.positionMode == 'side') {
+			DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
+		} else {
+			$(window).resize(function() {
+				self.updatePositions();
+			});
+		}
 
-			self._resizeTimeout = self.updatePositions.delay(350, self);
-		});
+		var c = $('.scroll-content', this.popoverOuter).first();
+		if (c.length) {
+			c.resize(this.updatePositions.bind(this));
+		}
 	},
 
 	_initFragment: function() {
@@ -195,9 +200,46 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	updatePositions: function() {
+
+		var changeVis = false;
+		if (!this.popoverOuter.is(':visible')) {
+			changeVis = true;
+			this.popoverOuter.css({
+				'visibility': 'hidden',
+				'display': 'block'
+			});
+		}
+
 		var pos = $(this.options.overFrom).offset();
 		var top = pos.top - 4;
 		var width = pos.left - 9;
+		var bottom = 10;
+		var height = '';
+
+		var scrollContent = $('.scroll-content', this.popoverOuter).first();
+		var contentH = false;
+		if (scrollContent.length) {
+			contentH = scrollContent.height();
+
+			var hasHeader = !!($('> section > header', this.popoverOuter).length);
+			var hasFooter = !!($('> section > footer', this.popoverOuter).length);
+
+			if (hasHeader) {
+				contentH += 36;
+			}
+			if (hasFooter) {
+				contentH += 45;
+			}
+
+			contentH += 31;
+		}
+
+		var maxH = $(window).height() - top - 10;
+
+		if (contentH && contentH < maxH) {
+			bottom = '';
+			height = contentH;
+		}
 
 		// Beside
 		if (this.options.positionMode == 'side') {
@@ -208,7 +250,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				'overflow': 'auto',
 				'top': top-3,
 				'left': 9,
-				'bottom': 10 // account for border+shadows
+				'bottom': bottom,
+				'height': height
 			});
 
 		// Over
@@ -220,7 +263,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				top: pos.top - 4,
 				left: pos.left + 8,
 				right: 3,
-				bottom: 10
+				'bottom': bottom,
+				'height': height
+			});
+		}
+
+		if (changeVis) {
+			this.popoverOuter.css({
+				'display': 'none',
+				'visibility': 'visible'
 			});
 		}
 	},
