@@ -342,19 +342,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedTicket", mappedBy="ticket")
-	 */
-	protected $task_associations;
-
 	public function __construct($tracker = true)
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();

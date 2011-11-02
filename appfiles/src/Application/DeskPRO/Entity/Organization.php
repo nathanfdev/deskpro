@@ -80,12 +80,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	protected $custom_data;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedOrganization", mappedBy="organization")
-	 */
-	protected $task_associations;
-
-	/**
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -135,7 +129,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->date_created        = new \DateTime();
 	}
 

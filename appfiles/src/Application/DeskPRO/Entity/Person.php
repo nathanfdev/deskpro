@@ -345,33 +345,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_picture_check = null;
 
 	/**
-	 * The tasks created by this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="creator", cascade={"persist", "remove", "merge"})
-	 */
-	protected $created_tasks;
-
-	/**
-	 * The tasks assigned to this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
-	 */
-	protected $assigned_tasks;
-
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskComment", mappedBy="person")
-	 */
-	protected $task_comments;
-
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedPerson", mappedBy="person")
-	 */
-	protected $task_associations;
-
-
-	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
 	 * @var string
 	 */
@@ -480,10 +453,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->created_tasks          = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->assigned_tasks         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_comments          = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
