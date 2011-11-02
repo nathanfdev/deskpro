@@ -31,9 +31,9 @@
                                         <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
                                         <td>{{stat.authorName}}</td>
                                         <td><span class="sparkline">1,4,4,7,5,9,10</span></td>
-                                        <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}"><img src="" alt="[View]"/></a></td>
-                                        <td><a href="{{ path('trend_edit', { 'stat_id': stat.id }) }}"><img src="" alt="[Edit]"/></a></td>
-                                        <td><a href="{{ path('trend_clone', { 'stat_id': stat.id }) }}"><img src="" alt="[Clone]"/></a></td>
+                                        <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
+                                        <td><a href="{{ path('trend_edit', { 'stat_id': stat.id }) }}"><img src="{{ asset('images/report/icons/edit-small.png') }}" alt="[Edit]"/></a></td>
+                                        <td><a href="{{ path('trend_clone', { 'stat_id': stat.id }) }}"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
                                 </tr>
                         {% endfor %}
                 </tbody>

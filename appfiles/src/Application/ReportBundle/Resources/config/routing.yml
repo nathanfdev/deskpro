@@ -33,7 +33,7 @@ trend_clone:
 ################################################################################
 live_index:
   pattern: /live-reports
-  defaults: { _controller: ReportBundle:Trend:index }
+  defaults: { _controller: ReportBundle:Live:index }
   
 live_view:
   pattern: /live-reports/{stat_id}

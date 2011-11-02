@@ -16,7 +16,9 @@ use Application\ReportBundle\Form\EditStatType;
 
 class TrendController extends AbstractController
 {
-	
+	/**
+	 * Show the list of trends. Starred trends first
+	 */
 	public function indexAction()
 	{
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
@@ -26,6 +28,9 @@ class TrendController extends AbstractController
 		));
 	}
 	
+	/**
+	 * Show an actual trend
+	 */
 	public function viewAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
@@ -40,6 +45,9 @@ class TrendController extends AbstractController
 		
 	}
 	
+	/**
+	 * Edit a trend
+	 */
 	public function editAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
@@ -64,16 +72,24 @@ class TrendController extends AbstractController
 		));
 	}
 	
+	/**
+	 * Clone an existing trend
+	 */
 	public function cloneAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
 		
 		// TODO: clone it
-		$cloned = $stat;
+		$cloned = clone $stat;
 		
 		return $this->redirectRoute('trend_edit', array('stat_id' => $cloned['id']));
 	}
 	
+	/**
+	 * Get a Stat Entity by id
+	 *
+	 * @throws NotFoundHttpException
+	 */
 	protected function getStat($stat_id)
 	{
 		$stat = App::getEntityRepository('DeskPRO:Stat')->find($stat_id);
