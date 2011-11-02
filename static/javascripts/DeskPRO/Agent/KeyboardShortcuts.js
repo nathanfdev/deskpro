@@ -10,13 +10,13 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		// Create-type
 		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
-		$(document).bind('keydown', 'k', this.showNewArticle.bind(this));
+		$(document).bind('keydown', 'a', this.showNewArticle.bind(this));
 		$(document).bind('keydown', 'n', this.showNewNews.bind(this));
 		$(document).bind('keydown', 'd', this.showNewDownload.bind(this));
 		$(document).bind('keydown', 'i', this.showNewIdea.bind(this));
 		$(document).bind('keydown', 'p', this.showNewPerson.bind(this));
 		$(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
-		$(document).bind('keydown', 'j', this.showNewTask.bind(this));
+		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
 
 
 		this.boundShortkuts = {};
