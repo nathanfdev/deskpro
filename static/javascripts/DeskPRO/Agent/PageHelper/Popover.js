@@ -197,6 +197,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		this.page.fireEvent('render', [this.popover]);
 		this.fireEvent('pageInit', [this, this.page]);
+
+		var foot = $('footer.pop-footer', this.popover);
+		if (foot.length) {
+			foot.detach().appendTo($('> section', this.popoverOuter));
+		}
+
+		this.updatePositions();
 	},
 
 	updatePositions: function() {
