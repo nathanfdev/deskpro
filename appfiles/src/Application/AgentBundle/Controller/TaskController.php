@@ -19,7 +19,6 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
@@ -27,21 +26,11 @@ use Application\AgentBundle\Form\Type\NewTask;
 /**
  * Handles viewing and editing tasks
  */
-class TaskController extends AbstractController {
-
-    private $_entityManager;
-    private $_currentUser;
-    private $_task_repository;
-
-    /**
-     * Generate the category wise list gor task.
-     * @return html
-     */
-
-    public function getSectionDataAction() {
-
-        $this->_loadModels();
-        $task_repository = $this->_task_repository;
+class TaskController extends AbstractController
+{
+    public function getSectionDataAction()
+	{
+        $task_repository = $this->em->getRepository('DeskPRO:Task');
         $person = $this->person;
 
         $all_tasks = array(
@@ -91,11 +80,14 @@ class TaskController extends AbstractController {
      * Render the new task form.
      * @return html
      */
-    public function newAction() {
-        $form = $this->get('form.factory')->create(new NewTask(), new Task())->createView();
+    public function newAction()
+	{
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         return $this->render('AgentBundle:Task:newtask.html.twig', array(
-            'form' => $form
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
         ));
     }
 
@@ -103,10 +95,49 @@ class TaskController extends AbstractController {
      * Create action for the new task. Which pass the data and the from to the _process method to save it in DB.
      * @return json formated data
      */
-    public function createAction() {
-        $task = new Task();
-        $form = $this->get('form.factory')->create(new NewTask(), $task);
-        return $this->_process($form, $task);
+    public function createAction()
+	{
+        $all_task_data = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
+
+		$tasks = array();
+
+		foreach ($all_task_data as $task_data) {
+			$task = new Task();
+			$task->title = $task_data['title'];
+			$task->person = $this->person;
+
+			if (!empty($task_data['assigned_agent'])) {
+				list ($type, $id) = explode(':', $task_data['assigned_agent']);
+				if ($type == 'agent') {
+					$task->setAsignedAgentId($id);
+				} else {
+					$task->setAsignedAgentTeamId($id);
+				}
+			}
+
+			$task->setVisibility($task_data['visibility']);
+			if (!empty($task_data['due_date'])) {
+				$task->setDueDate($task_data['due_date']);
+			}
+
+			$tasks[] = $task;
+		}
+
+		$this->db->beginTransaction();
+		try {
+			foreach ($tasks as $t) {
+				$this->em->persist($t);
+			}
+
+			$this->em->flush();
+			$this->db->commit();
+
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
     }
 
     /**
@@ -114,7 +145,8 @@ class TaskController extends AbstractController {
      * @param intiger $task_id
      * @return <type>
      */
-    public function viewAction($task_id = null) {
+    public function viewAction($task_id = null)
+	{
         return $this->render('AgentBundle:Task:view.html.twig');
     }
 
@@ -127,27 +159,26 @@ class TaskController extends AbstractController {
      */
     public function taskListAction($search_type = null, $search_categoty = null)
     {
-        $this->_loadModels();
         $person = $this->person;
         $task_type = false;
 
         if ($search_type == 'own') {
-            $tasks = $this->_task_repository->filterPendingTasksForPerson($person, $search_categoty);
+            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'team') {
-            $tasks = $this->_task_repository->filterPendingTaksForPersonTeams($person, $search_categoty);
+            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingTaksForPersonTeams($person, $search_categoty);
         } else if ($search_type == 'delegate') {
-            $tasks = $this->_task_repository->filterPendingDelegatedTasksForPerson($person, $search_categoty);
+            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingDelegatedTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'all') {
-            $tasks = $this->_task_repository->filterAllPendingTasks($search_categoty);
+            $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($search_categoty);
         } else if($search_type == 'complete'){
-            $tasks = $this->_task_repository->allCompleteTasks();
+            $tasks = $this->em->getRepository('DeskPRO:Task')->allCompleteTasks();
             $task_type = true;
         }
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
             'tasks' => $tasks,
-            'total_complete_task' => $this->_task_repository->countCompleteTasks(),
+            'total_complete_task' => $this->em->getRepository('DeskPRO:Task')->countCompleteTasks(),
              'task_type' => $task_type
         ));
     }
@@ -161,13 +192,12 @@ class TaskController extends AbstractController {
      */
     public function ajaxSaveLabelsAction($task_id)
     {
-        $this->_loadModels();
         $task = $this->getTaskOr404($task_id);
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
         $task->getLabelManager()->setLabelsArray($labels);
 
-        $this->_entityManager->persist($task);
-        $this->_entityManager->flush();
+        $this->em->persist($task);
+        $this->em->flush();
 
         return $this->createJsonResponse(array('success' => 1));
     }
@@ -182,8 +212,6 @@ class TaskController extends AbstractController {
      */
     public function ajaxSaveCommentAction($task_id = null)
     {
-        $this->_loadModels();
-
         if ($task_id) {
                 $task = $this->getTaskOr404($task_id);
         } else {
@@ -197,8 +225,8 @@ class TaskController extends AbstractController {
         $comment['task'] = $task;
         $comment['content'] = $comment_txt;
 
-        $this->_entityManager->persist($task);
-        $this->_entityManager->flush();
+        $this->em->persist($task);
+        $this->em->flush();
 
         return $this->createJsonResponse(array(
                 'success' => true,
@@ -215,13 +243,13 @@ class TaskController extends AbstractController {
      */
     public function ajaxSaveDueDateAction($task_id = null)
     {
-        $this->_loadModels();
+
         $task = $this->getTaskOr404($task_id);
 
         $date_due = $this->in->getString('date_due');
         $task->setDueDate($date_due);
-        $this->_entityManager->persist($task);
-        $this->_entityManager->flush();
+        $this->em->persist($task);
+        $this->em->flush();
         return $this->createJsonResponse(array('success' => 1));
     }
 
@@ -234,12 +262,12 @@ class TaskController extends AbstractController {
      */
     public function setVisibilityAction($task_id, $visibility)
     {
-        $this->_loadModels();
+
         $task = $this->getTaskOr404($task_id);
         $task->setVisibility($visibility);
 
-        $this->_entityManager->persist($task);
-        $this->_entityManager->flush();
+        $this->em->persist($task);
+        $this->em->flush();
 
         return $this->createJsonResponse(array('success' => 1));
     }
@@ -247,20 +275,20 @@ class TaskController extends AbstractController {
 
     public function draftsMassActionsAction($action)
     {
-        $this->_loadModels();
+
         $data = $this->in->getCleanValueArray('ids', 'array', 'string');
 
         $action = ($action == 'complete') ? true : false;
         foreach ($data as $value) {
             $task = $this->getTaskOr404($value[0]);
             $task->setIsCompleted($action);
-            $this->_entityManager->persist($task);
+            $this->em->persist($task);
         }
-        $this->_entityManager->flush();
+        $this->em->flush();
 
         return $this->createJsonResponse(array(
 			'success' => true,
-			'total_complete_task' => $this->_task_repository->countCompleteTasks()
+			'total_complete_task' => $this->em->getRepository('DeskPRO:Task')->countCompleteTasks()
 		));
     }
 
@@ -290,57 +318,11 @@ class TaskController extends AbstractController {
 	protected function getTaskOr404($task_id)
 	{
 		try {
-			$task = $this->_entityManager->find('DeskPRO:Task', $task_id);
+			$task = $this->em->find('DeskPRO:Task', $task_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no task with ID $task_id");
 		}
 
 		return $task;
 	}
-
-    /**
-     * Process data for add or update the task.
-     * @param NewTask $form
-     * @param Task $task
-     * @return json data for success true or false
-     */
-    private function _process($form, Task $task) {
-
-        $this->_loadModels();
-        $request = $this->get('request');
-
-        $form->bindRequest($request);
-        try {
-
-            if ($request->getMethod() == 'POST') {
-
-                if ($form->isValid()) {
-                    $task->setPerson($this->_currentUser);
-                    $this->_entityManager->persist($task);
-                    $this->_entityManager->flush();
-
-                    return $this->createJsonResponse(array(
-                        'success' => true,
-                        'task_id' => $task->getId()
-                    ));
-                } else {
-                    return $this->createJsonResponse(array(
-                        'success' => false
-                    ));
-                }
-            }
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            return $this->createJsonResponse(array(
-                'success' => false
-            ));
-        }
-    }
-
-    private function _loadModels() {
-
-        $this->_entityManager = $this->get('doctrine')->getEntityManager();
-        $this->_currentUser = $user = App::getCurrentPerson();
-        $this->_task_repository = App::getEntityRepository('DeskPRO:Task');
-    }
-
 }

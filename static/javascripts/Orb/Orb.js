@@ -259,6 +259,16 @@ Orb.arrayChunk = function(array, size) {
 
 
 /**
+ * Cancel an event. Stops bubbling and prevents default.
+ * @param ev
+ */
+Orb.cancelEvent = function(ev) {
+	ev.stopPropagation();
+	ev.preventDefault();
+};
+
+
+/**
  * Simple way to load Javascript and CSS files on-demand.
  *
  * Usage:

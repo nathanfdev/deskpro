@@ -9,59 +9,121 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		var self = this;
 		this.wrapper = el;
-                this.getEl('save').click(this.doSavePost.bind(this));
-                this._initTaskProtertiesSection();
-                this. _initComponent();
-	},
-        doSavePost: function() {
-           
-            //var formData = $(this).parents('.new-task').find('input, select').serialize();
-            var formData = $('form#newTaskForm').serializeArray();
-            $.ajax({
-                type: 'POST',
-                data: formData,
-                url: $('form#newTaskForm').attr('action'),
-                datataType: 'json',
-                success: function(data){
-                    if (data.success) {
-                        //DeskPRO_Window.runPageRoute('task:' + BASE_URL + 'agent/tasks/'+ data.task_id);
-                        DeskPRO_Window.newTaskLoader.toggle();
-                    } else{
-                        alert('There was an error with the form');
-                    }
-                }
-            });
-            return false;
-        },
-        submit:function() {
-            return false;
-        },
 
-        _initTaskProtertiesSection: function()
-        {
-            var self = this;
-            this.getEl('gear_spn').click(function(ev){
-                
-                $('input, select').val('');
-                $('.taskpropertiec-section').toggle();
+		var assignOptionBox = new DeskPRO.UI.OptionBox({
+			element: this.getEl('assign_ob'),
+			onClose: function(ob) {
 
-                return false;
-                
-            }).bind(this);
+				var agentId = parseInt(ob.getSelected('agents') || 0);
+				var agentTeamId = parseInt(ob.getSelected('teams') || 0);
 
-            this.getEl('add_another_task').click(function(){
-                $('.new-task').clone().appendTo('form#newTaskForm');
+				var obel = self.getEl('assign_ob');
 
-            }).bind(this);
-        }
-        ,
-        _initComponent: function()
-        {
-            $('.calender').datepicker();
-        },
+				if (agentId && agentId != DESKPRO_PERSON_ID) {
+					var val = 'agent:' + agentId;
+					var text = $('.agent-label-' + agentId).text().trim();
+				} else if (agentTeamId) {
+					var val = 'agent_team:' + agentTeamId;
+					var text = $('.agent-team-label-' + agentTeamId).text().trim();
+				} else {
+					var val = '';
+					var text = 'Me';
+				}
 
-	destroyPage: function() {
-            this.fireEvent('destroy', [this]);
+				$('input.input-agent', openForEl).val(val);
+				$('.opt-trigger.assigned_agent label', openForEl).text(text);
+			}
+		});
+
+		var statusMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('menu_vis'),
+			onItemClicked: function(info) {
+				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
+				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
+			}
+		});
+
+
+		var form = this.getEl('form');
+		form.submit(Orb.cancelEvent);
+
+		var rowContainer = this.getEl('tasks');
+
+		var openForEl = null;
+		rowContainer.delegate('.remove-row-trigger', 'click', function(ev) {
+			var row = $(this).closest('.task-row');
+			row.slideUp('fast', function() {
+				row.remove();
+			});
+		});
+		rowContainer.delegate('.opt-trigger.assigned_agent', 'click', function(ev) {
+			openForEl = $(this).closest('.task-row');
+			assignOptionBox.open(ev);
+		});
+		rowContainer.delegate('.opt-trigger.visibility', 'click', function(ev) {
+			openForEl = $(this).closest('.task-row');
+			statusMenu.open(ev);
+		});
+		rowContainer.delegate('.opt-trigger.date_due', 'click', function(ev) {
+			var label = $('label', this);
+			var row = $(this).closest('.task-row');
+			var field = $('input.input-date-due', row);
+			var date = $('input.input-date-due', row).val();
+			if (!date) {
+				date = new Date();
+			}
+
+			field.datepicker('dialog', date, function(date, inst) {
+				$('input.input-date-due', row).val(date);
+				label.text(date);
+			}, {
+				dateFormat: 'yy-mm-dd',
+				showButtonPanel: true,
+				beforeShow: function(input) {
+					setTimeout(function() {
+						var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+
+						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
+						btn.appendTo( buttonPane );
+
+						$(input).datepicker("widget").css('z-index', 9999999);
+					},1);
+				}
+			}, ev);
+		});
+
+		var tpl = DeskPRO_Window.util.getPlainTpl(this.getEl('task_row_tpl'));
+
+		var addTaskRow = function() {
+			var row = $(tpl);
+			rowContainer.append(row);
+		};
+
+		this.getEl('add_btn').click(addTaskRow);
+
+		addTaskRow();
+
+		var footer = $('footer.pop-footer', el);
+		$('.submit-trigger', el).click(function() {
+			var postData = form.serializeArray();
+
+			footer.addClass('loading');
+
+			$.ajax({
+				url: form.attr('action'),
+				type: 'POST',
+				dataType: 'json',
+				data: postData,
+				complete: function() {
+					footer.removeClass('loading');
+				},
+				success: function(data) {
+					self.closeSelf();
+				}
+			});
+		});
 	}
 });
