@@ -22,9 +22,11 @@ class TrendController extends AbstractController
 	public function indexAction()
 	{
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
+		$dashboards = App::getEntityRepository('DeskPRO:StatDashboard')->getDashboards();
 		
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
-			'stats' => $stats
+			'stats' 	=> $stats,
+			'dashboards'	=> $dashboards
 		));
 	}
 	

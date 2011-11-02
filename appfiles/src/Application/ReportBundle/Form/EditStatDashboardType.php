@@ -14,16 +14,15 @@ namespace Application\ReportBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditStatType extends AbstractType
+class EditStatDashboardType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text');
-		$builder->add('disabled', 'checkbox', array('required' => false));
 	}
 
 	public function getName()
 	{
-		return 'stat';
+		return 'stat_dashboard';
 	}
 }

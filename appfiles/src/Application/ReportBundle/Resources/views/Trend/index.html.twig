@@ -7,7 +7,14 @@
     });
 </script>
 
-<h3>Trends</h3>
+<ul class="tabs">
+	<li><a href="{{ path('trend_index') }}">Trends</a></li>
+	
+	{% for dashboard in dashboards %}
+		<li class="{{ (loop.index0 == 0) ? 'margin-left' : '' }}"><a href="{{ path('trend_dashboard', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
+	{% endfor %}
+	<li><a href="{{ path('trend_dashboard_new') }}" class="new">New</a></li>
+</ul>
 
 <div class="table-list-wrap">
 	
@@ -20,9 +27,9 @@
                                 <th width="150">Trend</th>
 				<th width="60">Amount</th>
 				<th width="60">Variation</th>
-                                <th width="25"></th>
-                                <th width="25"></th>
-                                <th width="25"></th>
+                                <th width="16" class="icon"></th>
+                                <th width="16" class="icon"></th>
+                                <th width="16" class="icon"></th>
                         </tr>
                 </thead>
                 <tbody>
@@ -34,9 +41,9 @@
                                         <td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
 					<td class="center">{{ stat.amount }}</td>
 					<td class="center {{ (stat.variation > 0) ? 'down' : 'up' }}">{{ stat.variation }}</td>
-                                        <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}" title="View Trend"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
-                                        <td><a href="{{ path('trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit-small.png') }}" alt="[Edit]"/></a></td>
-                                        <td><a href="{{ path('trend_clone', { 'stat_id': stat.id }) }}" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
+                                        <td class="icon"><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}" title="View Trend"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
+                                        <td class="icon"><a href="{{ path('trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
+                                        <td class="icon"><a href="{{ path('trend_clone', { 'stat_id': stat.id }) }}" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
                                 </tr>
                         {% endfor %}
                 </tbody>

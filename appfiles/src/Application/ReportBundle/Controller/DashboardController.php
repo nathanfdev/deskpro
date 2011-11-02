@@ -21,4 +21,33 @@ class DashboardController extends AbstractController
 		return $this->render('ReportBundle:Dashboard:index.html.twig');
 	}
 	
+	public function viewAction($dashboard_id)
+	{
+		$dashboard = $this->getDashboard($dashboard_id);
+		
+		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
+			'dashboard' => $dashboard	
+		));
+	}
+	
+	public function newAction()
+	{
+		return $this->render('ReportBundle:Dashboard:new.html.twig');	
+	}
+	
+	/**
+	 * Get the Dashboard Entity
+	 *
+	 * @throws NotFoundHttpException
+	 */
+	public function getDashboard($dashboard_id)
+	{
+		$dashboard = App::getEntityRepository('DeskPRO:StatDashboard')->find($dashboard_id);
+		if (!$dashboard) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat_dashboard");
+		}
+		
+		return $dashboard;
+	}
+	
 }

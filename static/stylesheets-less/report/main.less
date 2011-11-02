@@ -4,16 +4,17 @@
 
 #dp_page_wrap {
 	max-width: 100%;
-	padding: 12px 10px 0 10px;
+	padding: 25px 10px 0 10px;
 }
 
 .reports-nav {
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 .reports-nav a.clean-white {
 	font-size: 20px;
 	display: inline;
+	padding: 7px; 
 }
 
 .stat-list td {
@@ -21,8 +22,23 @@
 	border-bottom: 1px solid #eee; 
 }
 
+.stat-list th {
+	text-align: left;
+	padding: 5px 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.stat-list a {
+	color: #000;
+}
+
 .stat-list .starred {
 	background: url(../../images/report/icons/star.png) no-repeat center center;
+}
+
+.stat-list .icon {
+	padding: 10px 2px;
+	text-align: center;
 }
 
 .stat-list .down {
@@ -35,4 +51,33 @@
 
 .stat-list .center {
 	text-align: center
+}
+
+ul.tabs {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px; 
+}
+
+ul.tabs li {
+	display: inline-block;
+	margin: 0;
+	border: 1px solid #ccc;
+	border-bottom: none;
+}
+
+ul.tabs li.current {
+}
+
+ul.tabs a {
+	padding: 10px;
+	display: inline-block;
+}
+
+ul.tabs li a.new {
+	background: url(../../images/report/icons/add.png) no-repeat 7px center;
+	padding-left: 27px; 
+}
+
+ul.tabs li.margin-left {
+	margin-left: 20px;
 }
