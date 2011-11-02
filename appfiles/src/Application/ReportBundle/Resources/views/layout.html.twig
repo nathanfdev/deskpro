@@ -143,6 +143,18 @@
 <!-- /BEGIN HEADER BAR -->
 
 <div id="dp_page_wrap">
+	
+	{% if app.session.hasFlash('saved') %}
+		<div class="alert-message success">
+			"{{ app.session.getFlash('saved') }}" was saved successfully
+		</div>
+	{% endif %}
+	{% if app.session.hasFlash('deleted') %}
+		<div class="alert-message success">
+			"{{ app.session.getFlash('deleted') }}" was deleted successfully
+		</div>
+	{% endif %}
+
 	<div id="dp_admin_page">
 		{% block content %}
 			<div class="dp-page-box">
