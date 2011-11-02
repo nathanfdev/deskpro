@@ -105,6 +105,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 	
+	/**
+	 * Get the author name. Use the associated Person if one exists, otherwise
+	 * its 'deskpro'
+	 */
 	public function getAuthorName()
 	{
 		if (!is_null($this->author)) {
@@ -113,5 +117,38 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		else {
 			return 'deskpro';
 		}
+	}
+	
+	/**
+	 * Get the Stat amount
+	 *
+	 * TODO: currently random placeholder
+	 */
+	public function getAmount()
+	{
+		return rand(0, 100);
+	}
+	
+	/**
+	 * Get the Stat variation
+	 *
+	 * TODO: currently random placeholder
+	 */
+	public function getVariation()
+	{
+		return rand(-5, 5);
+	}
+	
+	/**
+	 * Generate the trend points for the stat
+	 *
+	 * TODO: currently just generate some random placeholer data
+	 */
+	public function getTrendPoints()
+	{
+		$trendPoints = range(0, 10);
+		shuffle($trendPoints);
+		
+		return $trendPoints;
 	}
 }
