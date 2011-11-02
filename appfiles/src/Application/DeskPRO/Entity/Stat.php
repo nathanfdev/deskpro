@@ -104,5 +104,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$this->disabled     = false;
 		$this->date_created = new \DateTime();
 	}
-
+	
+	public function getAuthorName()
+	{
+		if (!is_null($this->author)) {
+			return $this->author->getDisplayName();
+		}
+		else {
+			return 'deskpro';
+		}
+	}
 }

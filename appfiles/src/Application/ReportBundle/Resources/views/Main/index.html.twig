@@ -1,6 +1,12 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block content %}
 
+<script type="text/javascript">
+    $(function() {
+        $('.sparkline').sparkline('html', {width: '100px', height: '25px'}); 
+    });
+</script>
+
 <h3>Reports</h3>
 
 <div class="dp-page-box">
@@ -8,22 +14,23 @@
 <div class="page-content">
         <div class="table-list-wrap">
                 <h2>Stats</h2>
-                <table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+                
+                <table class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
                         <thead>
                                 <tr>
-                                        <th width="50"></th>
+                                        <th width="25"></th>
                                         <th>Title</th>
-                                        <th>Author</th>
-                                        <th>Trend</th>
+                                        <th width="80">Author</th>
+                                        <th width="100">Trend</th>
                                 </tr>
                         </thead>
                         <tbody>
                                 {% for stat in stats %}
                                         <tr>
-                                                <td>{{stat.starred}}</td>
+                                                <td class="{{stat.starred ? 'starred' : ''}}"></td>
                                                 <td>{{stat.title}}</td>
-                                                <td>{{stat.author}}</td>
-                                                <td></td>
+                                                <td>{{stat.authorName}}</td>
+                                                <td><span class="sparkline">1,4,4,7,5,9,10</span></td>
                                         </tr>
                                 {% endfor %}
                         </tbody>

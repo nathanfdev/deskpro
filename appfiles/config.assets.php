@@ -356,7 +356,15 @@ $CONFIG['admin_admin_handlers'] = array(
 	)
 );
 
-
+/**
+ * Report specific
+ */
+$CONFIG['report_graphs'] = array(
+	'out' 	=> 'js/report_graphs.js',
+	'files'	=> array(
+		'vendor/jquery/sparkline/jquery.sparkline.min.js',
+	),
+);
 
 $CONFIG['user'] = array(
 	'out' => 'js/user-all.js',
@@ -544,5 +552,14 @@ $CONFIG['user_interface_print_css'] = array(
 	'media' => 'print',
 	'files' => array(
 		'stylesheets/user/main-print.css',
+	)
+);
+
+$CONFIG['report_interface_css'] = array(
+	'out' => 'css/report-interface.css',
+	'filters' => array('css_path'),
+	'media' => 'screen',
+	'files' => array(
+		'stylesheets-less/report/main.less',
 	)
 );
