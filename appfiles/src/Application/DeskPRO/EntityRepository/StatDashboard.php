@@ -31,5 +31,4 @@ class StatDashboard extends EntityRepository
 
 		return $dashboards;
 	}
-	
 }

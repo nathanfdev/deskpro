@@ -12,6 +12,8 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\StatDashboard;
+use Application\ReportBundle\Form\EditStatDashboardType;
 
 class DashboardController extends AbstractController
 {
@@ -32,7 +34,12 @@ class DashboardController extends AbstractController
 	
 	public function newAction()
 	{
-		return $this->render('ReportBundle:Dashboard:new.html.twig');	
+		$dashboard = new StatDashboard();
+		$form = $this->get('form.factory')->create(new EditStatDashboardType(), $dashboard);
+		
+		return $this->render('ReportBundle:Dashboard:new.html.twig', array(
+			'form' => $form->createView(),
+		));	
 	}
 	
 	/**
