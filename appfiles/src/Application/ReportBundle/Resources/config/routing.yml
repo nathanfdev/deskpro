@@ -1,6 +1,6 @@
 report:
   pattern: /
-  defaults: { _controller: ReportBundle:Default:index }
+  defaults: { _controller: ReportBundle:Main:index }
   
 ################################################################################
 # Authentication

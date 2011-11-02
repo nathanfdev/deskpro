@@ -11,12 +11,12 @@
 
 namespace Application\ReportBundle\Controller;
 
-class DefaultController extends AbstractController
+class MainController extends AbstractController
 {
 	
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:Default:index.html.twig');
+		return $this->render('ReportBundle:Main:index.html.twig');
 	}
 	
 }
