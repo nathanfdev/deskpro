@@ -11,12 +11,18 @@
 
 namespace Application\ReportBundle\Controller;
 
+use Application\DeskPRO\App;
+
 class MainController extends AbstractController
 {
 	
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:Main:index.html.twig');
+		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
+		
+		return $this->render('ReportBundle:Main:index.html.twig', array(
+			'stats' => $stats
+		));
 	}
 	
 }

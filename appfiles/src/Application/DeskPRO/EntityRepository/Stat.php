@@ -17,4 +17,21 @@ use Application\DeskPRO\App;
 class Stat extends EntityRepository
 {
 	
+	/**
+	 * Get enabled stats
+	 *
+	 * @return array
+	 */
+	public function getEnabledStats()
+	{
+		$stats = $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:Stat s
+			WHERE s.disabled = :disabled
+			ORDER BY s.starred DESC, s.title
+		")->setParameter('disabled', false)->execute();
+
+		return $stats;
+	}
+	
 }

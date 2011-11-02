@@ -3,4 +3,35 @@
 
 <h3>Reports</h3>
 
+<div class="dp-page-box">
+
+<div class="page-content">
+        <div class="table-list-wrap">
+                <h2>Stats</h2>
+                <table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+                        <thead>
+                                <tr>
+                                        <th width="50"></th>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Trend</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                                {% for stat in stats %}
+                                        <tr>
+                                                <td>{{stat.starred}}</td>
+                                                <td>{{stat.title}}</td>
+                                                <td>{{stat.author}}</td>
+                                                <td></td>
+                                        </tr>
+                                {% endfor %}
+                        </tbody>
+                </table>
+        </div>
+
+</div>
+
+</div>
+
 {% endblock %}
