@@ -1,6 +1,44 @@
 report:
   pattern: /
-  defaults: { _controller: ReportBundle:Main:index }
+  defaults: { _controller: ReportBundle:Trend:index }
+  
+################################################################################
+# Trend Reports
+################################################################################
+trend_index:
+  pattern: /trends
+  defaults: { _controller: ReportBundle:Trend:index }
+  
+trend_view:
+  pattern: /trends/{stat_id}
+  defaults: { _controller: ReportBundle:Trend:view }
+  requirements: { stat_id: "\d+" }
+  
+trend_new:
+  pattern: /trends/new
+  defaults: { _controller: ReportBundle:Trend:new }
+
+trend_edit:
+  pattern: /trends/{stat_id}/edit
+  defaults: { _controller: ReportBundle:Trend:edit }
+  requirements: { stat_id: "\d+" }
+
+trend_clone:
+  pattern: /trends/{stat_id}/clone
+  defaults: { _controller: ReportBundle:Trend:clone }
+  requirements: { stat_id: "\d+" }
+
+################################################################################
+# Live Reports
+################################################################################
+live_index:
+  pattern: /live-reports
+  defaults: { _controller: ReportBundle:Trend:index }
+  
+live_view:
+  pattern: /live-reports/{stat_id}
+  defaults: { _controller: ReportBundle:Live:view }
+  requirements: { stat_id: "\d+" }
   
 ################################################################################
 # Authentication
