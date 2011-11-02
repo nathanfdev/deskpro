@@ -139,6 +139,16 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
+<div id="dp_admin_page">
+	{% block content %}
+		<div class="dp-page-box">
+			<div class="page-content">
+				{% block page %}{% endblock %}
+			</div>
+		</div>
+	{% endblock %}
+</div>
+
 </div>
 </body>
 </html>
