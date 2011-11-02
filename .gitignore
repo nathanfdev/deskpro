@@ -5,6 +5,7 @@
 /.settings/
 /.buildpath
 /.project
+*.komodoproject
 
 # cache and log files
 /appfiles/sys/cache/

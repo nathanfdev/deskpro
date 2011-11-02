@@ -32,6 +32,9 @@ class Boot
 		} elseif (preg_match('#^/admin/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'admin');
+		} elseif (preg_match('#^/report/#', $path)) {
+			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';
+			define('DP_INTERFACE', 'report');
 		} elseif (preg_match('#^/api/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'api');

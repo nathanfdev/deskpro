@@ -12,6 +12,10 @@ admin:
   prefix: /admin
   resource: "%DP_ROOT%/src/Application/AdminBundle/Resources/config/routing.yml"
 
+report:
+  prefix: /report
+  resource: "%DP_ROOT%/src/Application/ReportBundle/Resources/config/routing.yml"
+  
 api:
   prefix: /api
   resource: "%DP_ROOT%/src/Application/ApiBundle/Resources/config/routing.yml"

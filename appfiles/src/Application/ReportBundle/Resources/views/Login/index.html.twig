@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Log In</title>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+	<style type="text/css">
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
+		fieldset,img { border:0; }
+		address,caption,cite,code,dfn,em,strong,th,var { font-style:normal;	font-weight:normal; }
+		ol,ul { list-style:none; }
+		caption,th { text-align:left; }
+		h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal; }
+		q:before,q:after { content:''; }
+		abbr,acronym { border:0; }
+
+		html,body {
+			background-color: #383B40;
+		}
+
+		body {
+			font-size: 75%;
+			line-height: 135%;
+			margin: 0;
+			padding: 160px 0 25px 0;
+			text-align: center;
+			font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
+		}
+
+		#login_wrapper {
+			margin: 0 auto 0 auto;
+			text-align: left;
+			width: 500px;
+
+			border: 1px solid #909397;
+			-webkit-box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+			-moz-box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+			box-shadow: 1px 1px 12px 1px rgba(50, 50, 50, 0.8);
+
+			border-radius: 6px;
+		}
+
+		#login_box {
+		}
+
+		#login_box header {
+			background-color: #2A517A;
+			padding:  7px 0 7px 10px;
+
+			border-radius: 5px 5px 0 0;
+		}
+
+		#login_box header h1 {
+			font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 15px;
+			color: #fff;
+		}
+
+		#login_box article {
+			background-color: #fff;
+			padding:  10px;
+		}
+
+		#login_box td {
+			padding-bottom: 8px;
+		}
+
+		#login_box a {
+			color: #000;
+			text-decoration: underline;
+		}
+
+		#login_box footer {
+			text-align: center;
+			background-color: #DFE5EB;
+			border-top: 1px solid #CFD2D6;
+			padding:  4px 0 4px 0;
+
+			border-radius: 0 0 5px 5px;
+		}
+
+		#preload_iframe {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 1px;
+			height: 1px;
+			border: none;
+		}
+
+		p.error {
+			margin-bottom: 8px;
+		}
+
+		.exist-session {
+			text-align: center;
+
+		}
+
+		.exist-session h4 {
+			padding-top: 82px;
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			font-size: 12px;
+			font-weight: bold;
+			background-repeat: no-repeat;
+			background-position: 50% 0;
+		}
+
+		.exist-session input[type="password"] {
+			width: 150px;
+			margin: 8px auto 0 auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+
+<form action="{{ path('report_login_authenticate_local') }}" method="post">
+<div id="login_wrapper">
+	<div id="login_box">
+		<header>
+			{% if agent_session %}
+				<h1>Enter your password</h1>
+			{% else %}
+				<h1>Log In</h1>
+			{% endif %}
+		</header>
+		<article>
+			<input type="hidden" name="agent_login" value="1" />
+			{% if return %}
+				<input type="hidden" name="return" value="{{return}}" />
+			{% endif %}
+			{% if app.session.hasFlash('login_failed') %}
+				<p class="error">Invalid login. Please try again.</p>
+			{% endif %}
+
+			{% if agent_session %}
+				<div class="exist-session">
+					<h4 style="background-image: url({{ agent_session.person.getPictureUrl(75) }});">{{ agent_session.person.display_name }}</h4>
+
+					<input type="hidden" name="email" id="email" value="{{ agent_session.person.primary_email_address }}" />
+					<input type="password" value="" name="password" id="password" size="40" placeholder="Re-enter your password" tabindex="2" />
+				</div>
+			{% else %}
+				<table cellspacing="0" cellpadding="0" border="0" width="100%">
+					<tr>
+						<td>Email:</td>
+						<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
+					</tr>
+					<tr>
+						<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
+						<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
+					</tr>
+				</table>
+			{% endif %}
+		</article>
+		<footer>
+			{% if agent_session %}
+				<button id="login_btn" tabindex="3">Continue</button>
+			{% else %}
+				<button id="login_btn" tabindex="3">Log In</button>
+			{% endif %}
+		</footer>
+	</div>
+</div>
+</form>
+
+<script type="text/javascript">
+document.getElementById('email').focus();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+report:
+  pattern: /
+  defaults: { _controller: ReportBundle:Default:index }
+  
+################################################################################
+# Authentication
+################################################################################
+
+report_login:
+  pattern: /login
+  defaults: { _controller: ReportBundle:Login:index }
+
+report_logout:
+  pattern: /logout/{auth}
+  defaults: { _controller: ReportBundle:Login:logout }
+  
+report_login_authenticate_local:
+  pattern: /login/authenticate-password
+  defaults: { _controller: ReportBundle:Login:authenticateLocal, usersource_id: 0 }
