@@ -34,10 +34,10 @@ class TaskController extends AbstractController
         $person = $this->person;
 
         $all_tasks = array(
-            'total' => $task_repository->countPendingTasks(),
-            'overdue' => $task_repository->countOverdueTasks($person['timezone']),
-            'due_today' => $task_repository->countDueTodayTasks($person['timezone']),
-            'due_future' => $task_repository->countDueFutureTasks($person['timezone']),
+            'total' => $task_repository->countPendingTasks($person),
+            'overdue' => $task_repository->countOverdueTasks($person),
+            'due_today' => $task_repository->countDueTodayTasks($person),
+            'due_future' => $task_repository->countDueFutureTasks($person),
         );
 
         $person_tasks = array(
@@ -141,16 +141,6 @@ class TaskController extends AbstractController
     }
 
     /**
-     * render the task
-     * @param intiger $task_id
-     * @return <type>
-     */
-    public function viewAction($task_id = null)
-	{
-        return $this->render('AgentBundle:Task:view.html.twig');
-    }
-
-    /**
      * render the task list
      *
      * @param string $search_type
@@ -163,23 +153,158 @@ class TaskController extends AbstractController
         $task_type = false;
 
         if ($search_type == 'own') {
-            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingTasksForPerson($person, $search_categoty);
+            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'team') {
-            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingTaksForPersonTeams($person, $search_categoty);
+            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTaksForPersonTeams($person, $search_categoty);
         } else if ($search_type == 'delegate') {
-            $tasks = $this->em->getRepository('DeskPRO:Task')->filterPendingDelegatedTasksForPerson($person, $search_categoty);
+            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'all') {
-            $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($search_categoty);
-        } else if($search_type == 'complete'){
-            $tasks = $this->em->getRepository('DeskPRO:Task')->allCompleteTasks();
-            $task_type = true;
+            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($search_categoty);
         }
+
+		$tasks = array();
+		$completed_tasks = array();
+
+		foreach ($all_tasks as $t) {
+			if ($t->is_completed) {
+				$completed_tasks[$t->id] = $t;
+			} else {
+				$tasks[$t->id] = $t;
+			}
+		}
+
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
+
+		$tasks_grouped = null;
+		$group_by = $this->in->getString('group_by');
+		if ($group_by == 'assigned') {
+			$tasks_grouped = array();
+			foreach ($tasks as $t) {
+				if ($t->assigned_agent) {
+					$key = 'agent:' . $t->assigned_agent->id;
+					$title = $t->assigned_agent->getDisplayName();
+				} elseif ($t->assigned_agent_team) {
+					$key = 'agent_team:' . $t->assigned_agent_team->id;
+					$title = $t->assigned_agent_team->getName();
+				} else {
+					$key = 'agent:' . $t->person->id;
+					$title = $t->person->getDisplayName();
+				}
+
+				if (!isset($tasks_grouped[$key])) {
+					$tasks_grouped[$key] = array('title' => $title, 'tasks' => array());
+				}
+
+				$tasks_grouped[$key]['tasks'][] = $t;
+			}
+
+			uasort($tasks_grouped, function($a, $b) {
+				return strcmp($a['title'], $b['title']);
+			});
+
+			$key = 'agent:' . $this->person->id;
+			if (isset($tasks_grouped[$key])) {
+				$tmp = $tasks_grouped[$key];
+				$tmp['title'] = 'Me';
+				unset($tasks_grouped[$key]);
+				Arrays::unshiftAssoc($tasks_grouped, $key, $tmp);
+			}
+		} else if ($group_by == 'creator') {
+			$tasks_grouped = array();
+			foreach ($tasks as $t) {
+				$key = 'agent:' . $t->person->id;
+				$title = $t->person->getDisplayName();
+
+				if (!isset($tasks_grouped[$key])) {
+					$tasks_grouped[$key] = array('title' => $title, 'tasks' => array());
+				}
+
+				$tasks_grouped[$key]['tasks'][] = $t;
+			}
+
+			uasort($tasks_grouped, function($a, $b) {
+				return strcmp($a['title'], $b['title']);
+			});
+
+			if (isset($tasks_grouped[$this->person->id])) {
+				$tmp = $tasks_grouped[$this->person->id];
+				$tmp['title'] = 'Me';
+				unset($tasks_grouped[$this->person->id]);
+				Arrays::unshiftAssoc($tasks_grouped, $this->person->id, $tmp);
+			}
+		} else {
+			$group_by = 'date';
+
+			$now = new \DateTime();
+			$today = clone $now;
+			$today->setTime(23, 59, 59);
+
+			$yesterday = clone $today;
+			$yesterday->modify('-1 day');
+
+			$week = clone $now;
+			$week->modify("-" . $now->format('w') . ' days');
+			$week->modify('+7 days');
+
+			$month = clone $now;
+			$month->setDate($now->format('Y'), $now->format('n'), 1);
+			$month->modify('+1 month');
+			$month->modify('-1 day');
+
+			$tasks_grouped = array(
+				'overdue' => array(
+					'title' => 'Overdue',
+					'tasks' => array()
+				),
+				'today' => array(
+					'title' => 'Today',
+					'tasks' => array()
+				),
+				'week' => array(
+					'title' => 'This Week',
+					'tasks' => array()
+				),
+				'month' => array(
+					'title' => 'This Month',
+					'tasks' => array()
+				),
+				'future' => array(
+					'title' => 'Future',
+					'tasks' => array()
+				)
+			);
+
+			foreach ($tasks as $t) {
+				if (!$t->date_due) {
+					$key = 'today';
+				} else if ($t->date_due < $yesterday) {
+					$key = 'overdue';
+				} else if ($t->date_due < $today) {
+					$key = 'today';
+				} else if ($t->date_due < $week) {
+					$key = 'week';
+				} else if ($t->date_due < $month) {
+					$key = 'month';
+				} else {
+					$key = 'future';
+				}
+
+				$tasks_grouped[$key]['tasks'][] = $t;
+			}
+		}
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
             'tasks' => $tasks,
-            'total_complete_task' => $this->em->getRepository('DeskPRO:Task')->countCompleteTasks(),
-             'task_type' => $task_type
+            'completed_tasks' => $completed_tasks,
+			'tasks_grouped' => $tasks_grouped,
+        	'task_type' => $task_type,
+			'search_type' => $search_type,
+			'search_category' => $search_categoty,
+			'group_by' => $group_by,
         ));
     }
 
@@ -210,13 +335,9 @@ class TaskController extends AbstractController
      * @param intiger $task_id
      * @return comment list in li format
      */
-    public function ajaxSaveCommentAction($task_id = null)
+    public function ajaxSaveCommentAction($task_id)
     {
-        if ($task_id) {
-                $task = $this->getTaskOr404($task_id);
-        } else {
-                $task = new Task();
-        }
+        $task = $this->getTaskOr404($task_id);
 
         $comment_txt = $this->in->getString('comment');
 
@@ -225,7 +346,7 @@ class TaskController extends AbstractController
         $comment['task'] = $task;
         $comment['content'] = $comment_txt;
 
-        $this->em->persist($task);
+        $this->em->persist($comment);
         $this->em->flush();
 
         return $this->createJsonResponse(array(
@@ -235,82 +356,52 @@ class TaskController extends AbstractController
         ));
     }
 
-    /**
-     * Update the due date for tasks.
-     *
-     * @param intiger $task_id
-     * @return json
-     */
-    public function ajaxSaveDueDateAction($task_id = null)
-    {
+	public function ajaxSaveAction($task_id)
+	{
+		$task = $this->getTaskOr404($task_id);
 
-        $task = $this->getTaskOr404($task_id);
+		switch ($this->in->getString('action')) {
+			case 'date_due':
+				$task->setDueDate($this->in->getString('value'));
+				break;
 
-        $date_due = $this->in->getString('date_due');
-        $task->setDueDate($date_due);
-        $this->em->persist($task);
-        $this->em->flush();
-        return $this->createJsonResponse(array('success' => 1));
-    }
+			case 'visibility':
+				$task->setVisibility($this->in->getString('value'));
+				break;
 
-    /**
-     * Update the task visbility from public to private or vice versa
-     *
-     * @param intiger $task_id
-     * @param intiger 0/2 $visibility
-     * @return json
-     */
-    public function setVisibilityAction($task_id, $visibility)
-    {
+			case 'completed':
+				$task->setCompleted($this->in->getBool('value'));
+				break;
 
-        $task = $this->getTaskOr404($task_id);
-        $task->setVisibility($visibility);
+			case 'assigned':
+				$val = $this->in->getString('value');
 
-        $this->em->persist($task);
-        $this->em->flush();
+				$task->agent = null;
+				$task->agent_team = null;
 
-        return $this->createJsonResponse(array('success' => 1));
-    }
+				if ($val) {
+					list ($type, $id) = explode(':', $val);
+					if ($type == 'agent') {
+						$task->setAsignedAgentId($id);
+					} else {
+						$task->setAsignedAgentTeamId($id);
+					}
+				}
+				break;
+		}
 
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($task);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
 
-    public function draftsMassActionsAction($action)
-    {
-
-        $data = $this->in->getCleanValueArray('ids', 'array', 'string');
-
-        $action = ($action == 'complete') ? true : false;
-        foreach ($data as $value) {
-            $task = $this->getTaskOr404($value[0]);
-            $task->setIsCompleted($action);
-            $this->em->persist($task);
-        }
-        $this->em->flush();
-
-        return $this->createJsonResponse(array(
-			'success' => true,
-			'total_complete_task' => $this->em->getRepository('DeskPRO:Task')->countCompleteTasks()
-		));
-    }
-
-
-    public function checkDueDateAction($due_date = null)
-    {
-        $person = $this->person;
-        $time_zone = new \DateTimeZone($person['timezone']);
-        $today = new \DateTime('today', $time_zone);
-        $over_due = 0;
-        if($due_date < $today)
-        {
-            $over_due = 1;
-        }
-
-        $days_ago = (time() - $due_date->format('m-d-y'))/86400;
-
-        return $this->render('AgentBundle:Task:task-due-date.html.twig', array(
-            'new-due_date' => $days_ago,
-            'over_due' => $over_due
-        ));
-    }
+		return $this->createJsonResponse(array('success' => true));
+	}
 
     /**
 	 * @return Application\DeskPRO\Entity\Task

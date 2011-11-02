@@ -1,0 +1,40 @@
+<article class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}" data-due-date="{{ task.date_due|date('Y-m-d') }}" data-task-id="{{ task.id }}">
+	<div class="task-title">
+		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
+		<h5>{{ task.title }}</h5>
+	</div>
+	<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
+		<ul>
+			<li class="noval opt-trigger visibility"><label>{% if task.visibility == 0 %}Private{% else %}Public{% endif %}</label><span class="drop-icon"></span></li>
+			<li class="noval opt-trigger assigned_agent">
+				<label>
+					{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
+					{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
+					{% else %}Me{% endif %}
+				</label><span class="drop-icon"></span></li>
+			<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('Y-m-d') }}{% endif %}</label><span class="drop-icon"></span></li>
+		</ul>
+	</div>
+	<div class="task-comments notes-wrap" {% if not task.comments|length or task.is_completed %}style="display: none"{% endif %}>
+		<ul class="task-comment-list">
+			{% for comment in task.comments %}
+				{% include 'AgentBundle:Task:comment-li.html.twig' with {'comment': comment} %}
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="new-comment" {% if task.is_completed %}style="display: none"{% endif %}>
+		<div class="comment-btn">
+			<span>Add new comment</span>
+		</div>
+		<div class="comment-input" style="display: none">
+			<textarea placeholder="Enter your comment..."></textarea>
+			<div class="is-not-loading">
+				<button class="clean-white small save-comment-trigger">Add Comment</button>
+				or <span class="cancel-comment-trigger">cancel</span>
+			</div>
+			<div class="is-loading">
+				Adding comment
+			</div>
+		</div>
+	</div>
+</article>

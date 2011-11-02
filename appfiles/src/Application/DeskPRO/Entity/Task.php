@@ -11,6 +11,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Application\DeskPRO\App;
 
 /**
  * Task entity definition
@@ -217,6 +218,18 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function setCompleted($yes_no)
+	{
+		if ($yes_no) {
+			$this->setModelField('is_completed', true);
+			$this->setModelField('date_completed', new \DateTime());
+		} else {
+			$this->setModelField('is_completed', false);
+			$this->setModelField('date_completed', null);
+		}
+	}
+
+
 
 	/**
 	 * Sets the task's person id.
@@ -280,7 +293,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 			throw new \InvalidArgumentException('No agent for id ' . $id);
 		}
 
-		if (! $agent->isAgent) {
+		if (! $agent->is_agent) {
 			throw new \InvalidArgumentException(
 				'The person with id ' . $id . ' is not an agent'
 			);

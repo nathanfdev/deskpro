@@ -873,10 +873,6 @@ agent_twitter_getsectiondata:
 # Tasks
 ################################################################################
 
-#agent_tasks_count_pending:
-#  pattern: /tasks/pending/count
-#  defaults: { _controller: AgentBundle:Task:countPending }
-
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }
@@ -899,15 +895,15 @@ agent_task_view:
   requirements: { task_id: "\d+" }
 
 agent_tasksearch_getsectiondata:
-  pattern: /task/get-section-data.json
+  pattern: /tasks/get-section-data.json
   defaults: { _controller: AgentBundle:Task:getSectionData }
 
 agent_task_list:
-  pattern: /task/list/{search_type}/{search_categoty}
+  pattern: /tasks/list/{search_type}/{search_categoty}
   defaults: { _controller: AgentBundle:Task:taskList, search_type: null, search_categoty: null}
 
 agent_task_ajax_labels_save:
-  pattern: /task/{task_id}/ajax-save-labels
+  pattern: /tasks/{task_id}/ajax-save-labels
   defaults: { _controller: AgentBundle:Task:ajaxSaveLabels }
   requirements: { task_id: "\d+" }
 
@@ -917,23 +913,23 @@ agent_task_set_visibility:
   requirements: { task_id: "\d+", visibility: "\d+"  }
 
 agent_task_ajaxsave_comment:
-  pattern: /task/{task_id}/ajax-save-comment
+  pattern: /tasks/{task_id}/ajax-save-comment
   defaults: { _controller: AgentBundle:Task:ajaxSaveComment }
-  requirements: { person_id: "\d+" }
+  requirements: { task_id: "\d+", person_id: "\d+" }
 
 agent_task_ajaxsave_duedate:
-  pattern: /task/{task_id}/ajax-save-due-date
+  pattern: /tasks/{task_id}/ajax-save-due-date
   defaults: { _controller: AgentBundle:Task:ajaxSaveDueDate }
-  requirements: { person_id: "\d+" }
+  requirements: { task_id: "\d+", person_id: "\d+" }
 
 agent_task_ajaxsave_delegate:
-  pattern: /task/{task_id}/ajax-save-delegate
+  pattern: /tasks/{task_id}/ajax-save-delegate
   defaults: { _controller: AgentBundle:Task:ajaxSaveDelegate }
-  requirements: { person_id: "\d+" }
+  requirements: { task_id: "\d+", person_id: "\d+" }
 
-agent_task_drafts_mass:
-  pattern: /task/drafts/mass-actions/{action}
-  defaults: { _controller: AgentBundle:Task:draftsMassActions }
+agent_task_ajaxsave:
+  pattern: /tasks/{task_id}/ajax-save
+  defaults: { _controller: AgentBundle:Task:ajaxSave }
 
 
 ################################################################################

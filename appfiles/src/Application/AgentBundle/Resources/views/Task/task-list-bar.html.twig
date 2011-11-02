@@ -1,43 +1,8 @@
 <header class="list-control-bar">
 	<ul>
 		<li>Sort by </li>
-		<li class="order-by-menu-trigger"><a class="button">
-			<span class="label">
-				Assigne
-			</span>
-		</a></li>
-                <li class="order-by-menu-trigger"><a class="button">
-			<span class="label">
-				Date
-			</span>
-		</a></li>
-                <li class="order-by-menu-trigger"><a class="button">
-			<span class="label">
-				Creator
-			</span>
-		</a></li>
-		<!--<li class="display-options display-options-trigger"><a>Display options</a></li>
-		<li class="detail-view detail-view-trigger"><a class="setupIcon">Detail</a></li>-->
-	</ul>
-
-	<ul class="order-by-menu" style="display: none">
-		<li data-field="people.name">Alphabetical</li>
-		<li data-field="people.date">Date Registered</li>
-	</ul>
-</header>
-
-
-<header class="list-selection-bar">
-	<input type="checkbox" class="selection-control" {% if task_type == true %} checked="checked" {% endif %} /> <span class="selected-count"> {% if task_type == true %}{{total_complete_task}}{% else%} 0 {% endif%}</span> selected
-	<a class="perform-action perform-actions-trigger {% if task_type == false %} disabled {% endif %} ">
-            <span>Perform Action</span>
-	</a>
-	<ul class="actions-menu" style="display: none">
-            {% if task_type == true %}
-            <li data-action="uncomplete">Uncomplete Selected Task</li>
-            {% else %}
-            <li data-action="complete">Complete Selected Task</li>
-            {% endif %}
-            <li data-action="delete">Delete Selected</li>
+		<li><a class="button {% if group_by == 'date' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'date'}) }}">Date</a></li>
+		<li><a class="button {% if group_by == 'assigned' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'assigned'}) }}">Assigned</a></li>
+		<li><a class="button {% if group_by == 'creator' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'creator'}) }}">Creator</a></li>
 	</ul>
 </header>
