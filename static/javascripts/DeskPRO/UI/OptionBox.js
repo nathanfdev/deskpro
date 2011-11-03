@@ -56,17 +56,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			self.close();
 		});
 
-		var allSame = false;
-		var name = false;
-		$(':checkbox, :radio', this.el).each(function() {
-			if (!name) {
-				name = $(this).attr('name');
-			}
-			if ($(this).attr('name') != name) {
-				allSame = true;
-				return false;
-			}
-		});
+		var allSame = this.el.is('.single-option-type');
 
 		//------------------------------
 		// Events on checkboxes and filter

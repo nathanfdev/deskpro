@@ -103,6 +103,12 @@ class TaskController extends AbstractController
 		$tasks = array();
 
 		foreach ($all_task_data as $task_data) {
+
+			$task_data['title'] = trim($task_data['title']);
+			if (empty($task_data['title'])) {
+				continue;
+			}
+
 			$task = new Task();
 			$task->title = $task_data['title'];
 			$task->person = $this->person;
