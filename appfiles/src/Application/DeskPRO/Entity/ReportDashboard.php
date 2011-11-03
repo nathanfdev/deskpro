@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
 /**
- * Statistic
+ * Dashboard of Statistics
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ReportDashboard")
  * @ORM_Mapping\Table(name="report_dashboard")

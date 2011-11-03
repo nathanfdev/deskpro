@@ -14,20 +14,22 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class ReportDashboard extends EntityRepository
+class ReportDashboardStat extends EntityRepository
 {
 	
 	/**
-	 * Get dashboards
+	 * Get dashboards stats
 	 *
 	 * @return array
 	 */
-	public function getDashboards()
+	public function getDashboardStats($dashboard_id)
 	{
 		$dashboards = $this->getEntityManager()->createQuery("
-			SELECT rd
-			FROM DeskPRO:ReportDashboard rd
-		")->execute();
+			SELECT rds
+			FROM DeskPRO:ReportDashboardStat rds
+			WHERE rds.report_dashboard = :dashboard_id
+			ORDER BY rds.slot_number
+		")->setParameter('dashboard_id', $dashboard_id)->execute();
 
 		return $dashboards;
 	}

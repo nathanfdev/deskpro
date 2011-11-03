@@ -25,10 +25,12 @@ class DashboardController extends AbstractController
 	
 	public function viewAction($dashboard_id)
 	{
-		$dashboard = $this->getDashboard($dashboard_id);
+		$dashboard       = $this->getDashboard($dashboard_id);
+		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
 		
 		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
-			'dashboard' => $dashboard	
+			'dashboard' 		=> $dashboard,
+			'dashboard_stats'	=> $dashboard_stats
 		));
 	}
 		

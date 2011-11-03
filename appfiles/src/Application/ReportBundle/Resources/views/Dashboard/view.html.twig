@@ -1,4 +1,44 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block page %}
 
+        <div class="report-dashboard-options">
+		<form id="report-dashboard-options-form">
+			<h2>Grid Options</h2>
+			<p>
+				<label># Columns</label>
+				<input type="text" name="num-columns" id="options-num-columns" value="4" />
+				<input type="submit" value="Build" />
+			</p>
+		</form>
+	</div>
+        
+        <div id="report-dashboard-grid">
+                <div id="grid-lines">
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        
+                        <ul id="report-dashboard-grid">
+                                {% for dashboard_stat in dashboard_stats %}
+                                        <li class="slot">
+                                                <span class="inner">
+                                                        <span class="grid-slot-toolbar ui-corner-all">
+                                                                {{ dashboard_stat.stat.title }}
+                                                                <a href="#" class="close">
+                                                                        <img src="images/close.png" alt="[x]" />
+                                                                </a>
+                                                        </span>
+                                                        <span class="grid-slot-content"></span>
+                                                </span>
+                                        </li>
+                                {% endfor %}
+                                <li class="slot new-placeholder">
+                                       <a href="#">Add Chart</a> 
+                                </li>
+                        </ul>
+                        <div style="clear: both"></div>
+                </div>
+        </div>
+        
 {% endblock %}
