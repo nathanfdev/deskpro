@@ -33,11 +33,6 @@ trend_dashboard_view:
   defaults: { _controller: ReportBundle:Dashboard:view }
   requirements: { dashboard_id: "\d+" }
   
-trend_dashboard_build:
-  pattern: /trends/dashboards/{dashboard_id}/build
-  defaults: { _controller: ReportBundle:Dashboard:build }
-  requirements: { dashboard_id: "\d+" }
-  
 trend_dashboard_edit:
   pattern: /trends/dashboards/{dashboard_id}/edit
   defaults: { _controller: ReportBundle:Dashboard:edit }

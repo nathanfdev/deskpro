@@ -29,30 +29,18 @@ class DashboardController extends AbstractController
 	 */
 	public function viewAction($dashboard_id)
 	{
-		$dashboard = $this->getDashboard($dashboard_id);
-		
-		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
-			'dashboard'	=> $dashboard
-		));
-	}
-	
-	/**
-	 * Build the dashboard
-	 */
-	public function buildAction($dashboard_id)
-	{
 		$dashboard       = $this->getDashboard($dashboard_id);
 		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
 		
 		$all_stats	 = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
 		
-		return $this->render('ReportBundle:Dashboard:build.html.twig', array(
+		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
 			'dashboard' 		=> $dashboard,
 			'dashboard_stats'	=> $dashboard_stats,
 			'all_stats'		=> $all_stats
 		));
 	}
-		
+	
 	/**
 	 * Create/Edit a dashboard
 	 */
@@ -105,7 +93,7 @@ class DashboardController extends AbstractController
 		App::getOrm()->persist($dashboardStat);
 		App::getOrm()->flush();
 		
-		return $this->redirectRoute('trend_dashboard_build', array(
+		return $this->redirectRoute('trend_dashboard_view', array(
 			'dashboard_id'	=> $dashboard->id
 		));
 	}
@@ -121,7 +109,7 @@ class DashboardController extends AbstractController
 		App::getOrm()->remove($dashboardStat);
 		App::getOrm()->flush();
 		
-		return $this->redirectRoute('trend_dashboard_build', array(
+		return $this->redirectRoute('trend_dashboard_view', array(
 			'dashboard_id'	=> $dashboard->id	
 		));
 	}

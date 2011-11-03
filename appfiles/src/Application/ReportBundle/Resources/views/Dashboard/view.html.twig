@@ -1,7 +1,144 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block page %}
 
-<a href="{{ path('trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit Dashboard</a>
-<a href="{{ path('trend_dashboard_build', { 'dashboard_id': dashboard.id }) }}">Build Dashboard</a>
+        <a href="{{ path('trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit</a>
+        
+        <div class="report-dashboard-options">
+		<form id="report-dashboard-options-form">
+			<h2>Grid Options</h2>
+			<p>
+				<label># Columns</label>
+				<input type="text" name="num-columns" id="options-num-columns" value="4" />
+				<input type="submit" value="Update" />
+			</p>
+		</form>
+	</div>
+        
+        <div id="report-dashboard-grid">
+                <div id="grid-lines">
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        <div class="slot"></div>
+                        
+                        <ul id="report-dashboard-grid">
+                                {% for dashboard_stat in dashboard_stats %}
+                                        <li class="slot">
+                                                <span class="inner">
+                                                        <span class="grid-slot-toolbar ui-corner-all">
+                                                                {{ dashboard_stat.stat.title }}
+                                                                <a href="{{ path('trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
+                                                                        <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
+                                                                </a>
+                                                        </span>
+                                                        <span class="grid-slot-content"></span>
+                                                </span>
+                                        </li>
+                                {% endfor %}
+                                <li class="slot new-placeholder">
+                                        <span class="inner">
+                                                <a href="#" id="open_overlay_btn">Add Chart</a>
+                                        </span>
+                                </li>
+                        </ul>
+                        <div style="clear: both"></div>
+                </div>
+        </div>
+        
+        <div id="overlay_wrapper" style="width: 600px; height: 400px; display: none;">
+                <div class="overlay-title">
+                        <span class="close-overlay"></span>
+                        <h4>Add Dashboard Chart</h4>
+                </div>
+                <div class="overlay-content">
+                        <table class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
+                                <thead>
+                                        <tr>
+                                                <th width="16"></th>
+                                                <th>Title</th>
+                                                <th width="200">Author</th>
+                                                <th width="16" class="icon"></th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        {% for stat in all_stats %}
+                                                <tr>
+                                                        <td class="{{stat.starred ? 'starred' : ''}}"></td>
+                                                        <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
+                                                        <td>{{stat.authorName}}</td>
+                                                        <td class="icon"><a href="{{ path('trend_dashboard_add_stat', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+                                                </tr>
+                                        {% endfor %}
+                                </tbody>
+                        </table>
+                </div>
+                <div class="overlay-footer">
+                        
+                </div>
+        </div>
+        
+        <script type="text/javascript">
+                $(document).ready(function() {
+                        var defaultNumColumns = 4;
+                        
+                        var overlay = new DeskPRO.UI.Overlay({
+                                triggerElement: $('#open_overlay_btn'),
+                                contentElement: $('#overlay_wrapper')
+                        });
+			
+			$("#report-dashboard-grid").sortable({
+				handle: '.grid-slot-toolbar'
+			});
+                        
+			$("#report-dashboard-grid").disableSelection();
+                        
+			$("#report-dashboard-grid li").resizable({
+				helper: "ui-resizable-helper",
+				placeholder: "ui-state-highlight",
+				resize: function(event, ui) {
+					ui.size.height = ui.originalSize.height;
+				}
+
+			});
+                        
+                        $("#grid-options-form").submit(function() {
+				
+				calculateColumnWidth();
+				setupResizableGrid();
+				loadCharts();
+				
+				return false;
+			});
+			
+			$(window).resize(function() {
+				setupResizableGrid();
+			});
+			
+			$("#options-num-columns").val(defaultNumColumns);
+			calculateColumnWidth();
+			setupResizableGrid();			
+                });
+                
+                function calculateColumnWidth() {
+			
+			var gridSize    = $("#report-dashboard-grid").width();
+			var numColumns  = $("#options-num-columns").val();
+			var columnWidth = gridSize / numColumns;
+			
+			$(".gridable").css('width', columnWidth + 'px');
+		}
+		
+		function setupResizableGrid() {
+			
+			var gridSize   = $("#report-dashboard-grid").width();
+			var numColumns = $("#options-num-columns").val();
+			
+			var snapSizeX  = gridSize / numColumns;
+			
+			$("#report-dashboard-grid li").resizable("option", "grid", [snapSizeX, 50]);
+			$("#report-dashboard-grid li").resizable("option", "minWidth", snapSizeX);
+		}
+                
+        </script>
         
 {% endblock %}
