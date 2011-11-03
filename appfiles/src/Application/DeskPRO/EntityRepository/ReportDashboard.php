@@ -14,7 +14,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\App;
 
-class StatDashboard extends EntityRepository
+class ReportDashboard extends EntityRepository
 {
 	
 	/**
@@ -26,7 +26,7 @@ class StatDashboard extends EntityRepository
 	{
 		$dashboards = $this->getEntityManager()->createQuery("
 			SELECT ds
-			FROM DeskPRO:StatDashboard ds
+			FROM DeskPRO:ReportDashboard ds
 		")->execute();
 
 		return $dashboards;

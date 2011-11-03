@@ -12,8 +12,8 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\StatDashboard;
-use Application\ReportBundle\Form\EditStatDashboardType;
+use Application\DeskPRO\Entity\ReportDashboard;
+use Application\ReportBundle\Form\EditReportDashboardType;
 
 class DashboardController extends AbstractController
 {
@@ -35,12 +35,12 @@ class DashboardController extends AbstractController
 	public function editAction($dashboard_id)
 	{
 		if (!$dashboard_id) {
-			$dashboard = new StatDashboard();
+			$dashboard = new ReportDashboard();
 		} else {
 			$dashboard = $this->getDashboard($dashboard_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditStatDashboardType(), $dashboard);
+		$form = $this->get('form.factory')->create(new EditReportDashboardType(), $dashboard);
 
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
@@ -69,7 +69,7 @@ class DashboardController extends AbstractController
 	 */
 	public function getDashboard($dashboard_id)
 	{
-		$dashboard = App::getEntityRepository('DeskPRO:StatDashboard')->find($dashboard_id);
+		$dashboard = App::getEntityRepository('DeskPRO:ReportDashboard')->find($dashboard_id);
 		if (!$dashboard) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat_dashboard");
 		}

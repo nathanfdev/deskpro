@@ -16,10 +16,10 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 /**
  * Statistic
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\StatDashboard")
- * @ORM_Mapping\Table(name="stat_dashboard")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ReportDashboard")
+ * @ORM_Mapping\Table(name="report_dashboard")
  */
-class StatDashboard extends \Application\DeskPRO\Domain\DomainObject
+class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 {
 	
 	/**

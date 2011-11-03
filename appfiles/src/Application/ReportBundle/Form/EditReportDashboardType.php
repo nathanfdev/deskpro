@@ -14,7 +14,7 @@ namespace Application\ReportBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditStatDashboardType extends AbstractType
+class EditReportDashboardType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
@@ -23,6 +23,6 @@ class EditStatDashboardType extends AbstractType
 
 	public function getName()
 	{
-		return 'stat_dashboard';
+		return 'report_dashboard';
 	}
 }
