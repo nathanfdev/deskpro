@@ -59,7 +59,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * @ORM_Mapping\Id
      * @ORM_Mapping\generatedValue(strategy="IDENTITY")
      * @ORM_Mapping\Column(name="id", type="integer")
-     * 
+     *
      */
     protected $id = null;
 
@@ -125,7 +125,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Deal will be linked to relevant to many people.
-     * 
+     *
      * @ORM_Mapping\OneToMany(targetEntity="Person", mappedBy="deal_peoples", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $peoples;
@@ -136,12 +136,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * @ORM_Mapping\OneToMany(targetEntity="Organization", mappedBy="deal_organizations", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $organizations;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedDeal", mappedBy="person")
-     */
-    protected $task_associations;
 
     /**
      * The task's visibility. On of: self::PRIVATE_VISIBILITY
@@ -172,6 +166,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
         $this->date_created = new \DateTime();
     }
-    
+
 
 }

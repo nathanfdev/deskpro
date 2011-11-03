@@ -4187,11 +4187,27 @@ article.task.completed {
 	opacity: 0.5;
 }
 
+article.task.completed:hover {
+	opacity: 1;
+}
+
 article.task .task-title {
-	border-bottom: 1px dotted #999999;
-	background-color: #fff;
-	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+	border-bottom: 1px solid #ACB6BF;
+	.gradient(#ffffff, #DDDEE1);
+	.border-radius(6px, 6px, 0, 0);
 	padding: 3px 0 3px 3px;
+	position: relative;
+}
+
+article.task.completed .task-title .expand-collapse-icon {
+	display: block;
+}
+
+article.task .task-title .expand-collapse-icon {
+    display: none;
+    position: absolute;
+	top: 5px;
+	right: 4px;
 }
 
 article.task .task-title input[type="checkbox"] {
@@ -4244,7 +4260,7 @@ article.task .new-comment textarea {
 
 article.task .new-comment {
 	border-top: 1px dotted #999999;
-	background-color: #eee;
+	background-color: #FEFEFE;
 	padding: 0px 0 0px 3px;
 	font-size: 9px;
 	line-height: 13px;
@@ -4281,4 +4297,9 @@ article.task .new-comment .comment-input span {
 .page-task-list .task-group header h4 {
 	padding-left: 5px;
 	font-size: 12px;
+}
+
+.page-task-list article.task .task-info .assoc {
+	float: right;
+	padding: 0 4px 1px 0;
 }

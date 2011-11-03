@@ -1,9 +1,17 @@
 <article class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}" data-due-date="{{ task.date_due|date('Y-m-d') }}" data-task-id="{{ task.id }}">
 	<div class="task-title">
+		<span class="expand-collapse-icon"></span>
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
 		<h5>{{ task.title }}</h5>
 	</div>
 	<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
+		{% if task.task_associations|length %}
+			{% for assoc in task.task_associations %}
+				<span class="assoc">
+					{% if assoc.ticket %}<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
+				</span>
+			{% endfor %}
+		{% endif %}
 		<ul>
 			<li class="noval opt-trigger visibility"><label>{% if task.visibility == 0 %}Private{% else %}Public{% endif %}</label><span class="drop-icon"></span></li>
 			<li class="noval opt-trigger assigned_agent">

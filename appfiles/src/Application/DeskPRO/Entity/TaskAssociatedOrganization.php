@@ -20,13 +20,13 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  */
 class TaskAssociatedOrganization extends TaskAssociation
 {
-	
+
 	/**
 	 * @var Application\DeskPRO\Entity\Organization
 	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", inversedBy="task_associations")
 	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
-	
+
 }
 

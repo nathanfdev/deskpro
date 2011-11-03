@@ -31,10 +31,10 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 				if (agentId && agentId != DESKPRO_PERSON_ID) {
 					var val = 'agent:' + agentId;
-					var text = $('.agent-label-' + agentId).text().trim();
+					var text = $('.agent-label-' + agentId).first().text().trim();
 				} else if (agentTeamId) {
 					var val = 'agent_team:' + agentTeamId;
-					var text = $('.agent-team-label-' + agentTeamId).text().trim();
+					var text = $('.agent-team-label-' + agentTeamId).first().text().trim();
 				} else {
 					var val = '';
 					var text = 'Me';
@@ -92,6 +92,8 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				beforeShow: function(input) {
 					setTimeout(function() {
 						var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+
+						$('button', buttonPane).remove();
 
 						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
 						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });

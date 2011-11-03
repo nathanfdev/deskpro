@@ -16,16 +16,16 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 /**
  * Task-Deal association class.
  *
- * @ORM_Mapping\Entity
+ * xORM_Mapping\Entity
  */
 class TaskAssociatedDeal extends TaskAssociation
 {
-  
+
   /**
    * @var Application\DeskPRO\Entity\Deal
    * @ORM_Mapping\ManyToOne(targetEntity="Deal", inversedBy="task_associations")
    * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $deal;
-  
+
 }

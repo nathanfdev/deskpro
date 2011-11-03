@@ -22,14 +22,13 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\DiscriminatorMap({
  * 	"person" = "TaskAssociatedPerson",
  * 	"ticket" = "TaskAssociatedTicket",
- *  "organization" = "TaskAssociatedOrganization",
- *      "deal" = "TaskAssociatedDeal"
+ *  "organization" = "TaskAssociatedOrganization"
  * })
  * @ORM_Mapping\Table(name="task_associations")
  */
 abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 {
-	
+
 	/**
 	 * The unique ID.
 	 *
@@ -37,15 +36,15 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Id
 	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
 	 * @ORM_Mapping\Column(name="id", type="integer", nullable=false)
-	 * 
+	 *
 	 */
 	protected $id;
-	
+
 	/**
 	 * @var Application\DeskPRO\Entity\Task
 	 * @ORM_Mapping\ManyToOne(targetEntity="Task", inversedBy="task_associations")
 	 * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $task;
-	
+
 }

@@ -80,6 +80,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
 				sendUpdate(row, 'completed', 1);
 			} else {
+				row.removeClass('expanded');
 				$('.task-info', row).slideDown();
 				$('.task-comments', row).slideDown();
 				$('.new-comment', row).slideDown();
@@ -124,6 +125,21 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				}
 			}, ev);
 		});
+		el.delegate('.expand-collapse-icon', 'click', function(ev) {
+			var row = $(this).closest('article.task');
+			if (row.is('.expanded')) {
+				row.removeClass('expanded');
+				$('.task-info', row).slideUp();
+				$('.task-comments', row).slideUp();
+				$('.new-comment', row).slideUp();
+
+			} else {
+				row.addClass('expanded');
+				$('.task-info', row).slideDown();
+				$('.task-comments', row).slideDown();
+				$('.new-comment', row).slideDown();
+			}
+		});
 
 		el.delegate('.comment-btn', 'click', function(ev) {
 			var input = $(this).parent().find('.comment-input');
@@ -132,8 +148,9 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			});
 		});
 		el.delegate('.cancel-comment-trigger', 'click', function(ev) {
-			var btn = $(this).parent().parent().find('.comment-btn');
-			$(this).parent().slideUp('fast', function() {
+			var row = $(this).closest('article.task');
+			var btn = $('.comment-btn', row);
+			$('.comment-input', row).slideUp('fast', function() {
 				btn.slideDown('fast');
 			});
 		});
@@ -170,11 +187,10 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 					row.removeClass('loading');
 				},
 				success: function(data) {
-					console.log(data);
 					closefn();
 					var list = $('ul.task-comment-list', row);
 					$(data.comment_li_html).appendTo(list);
-					list.show();
+					$('.task-comments', row).show();
 				}
 			});
 		});
