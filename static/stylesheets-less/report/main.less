@@ -89,7 +89,7 @@ ul.tabs li.margin-left {
 }
 
 #report-dashboard-grid li {
-	margin: 0 10px 10px 0;
+	margin: 0 0 10px 0;
 	float: left; width: 25%;
 	font-size: 4em;
 	text-align: center;
@@ -124,14 +124,18 @@ ul.tabs li.margin-left {
 	right: 2px;
 	cursor: pointer;
 }
-		
+
+.ui-resizable-helper {
+	border: 1px dotted #757575;
+}
+
 #report-dashboard-grid .content {
 	display: block;
 	font-size: 12px;
 	text-align: left;
 }
 
-#report-dashboard-grid .new-placeholder {
+#report-dashboard-grid .new-placeholder .inner {
 	border: 2px dashed #ccc;
 }
 
@@ -150,3 +154,4 @@ ul.tabs li.margin-left {
 	border-right: 1px solid #ccc;
 	height: 100%;
 }
+

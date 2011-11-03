@@ -33,4 +33,34 @@ class ReportDashboardStat extends EntityRepository
 
 		return $dashboards;
 	}
+	
+	/**
+	 * Calculate the next dashboard slot number
+	 */
+	public function getNextDashboardStatSlot($dashboard_id)
+	{
+		return $this->getLastDashboardStatSlot($dashboard_id) + 1;
+	}
+	
+	/**
+	 * Get the last dashboard slot number
+	 */
+	public function getLastDashboardStatSlot($dashboard_id)
+	{
+		try {
+			$last_slot = $this->getEntityManager()->createQuery("
+				SELECT rds.slot_number
+				FROM DeskPRO:ReportDashboardStat rds
+				WHERE rds.report_dashboard = :dashboard_id
+				ORDER BY rds.slot_number DESC
+			")->setParameter('dashboard_id', $dashboard_id)
+			->setMaxResults(1)
+			->getSingleScalarResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $exception) {
+			$last_slot = 0;
+		}
+		
+		return $last_slot;
+	}
 }

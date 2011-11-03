@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  */
 class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 {
+	const CHART_TYPE_LINE = 'line';
 	
 	/**
 	 * @var int
@@ -34,7 +35,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The Dashboard
 	 *
 	 * @var \Application\DeskPRO\Entity\ReportDashboard
-	 * @ORM_MAPPING\OneToOne(targetEntity="ReportDashboard")
+	 * @ORM_MAPPING\ManyToOne(targetEntity="ReportDashboard")
 	 * @ORM_Mapping\JoinColumn(name="report_dashboard_id", referencedColumnName="id")
 	 */
 	protected $report_dashboard;
@@ -43,7 +44,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The Stat
 	 *
 	 * @var \Application\DeskPRO\Entity\Stat
-	 * @ORM_MAPPING\OneToOne(targetEntity="Stat")
+	 * @ORM_MAPPING\ManyToOne(targetEntity="Stat")
 	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
@@ -82,6 +83,8 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
+		$this->grid_slots   = 1;
+		$this->chart_type   = 'line';
 		$this->date_created = new \DateTime();
 	}
 	

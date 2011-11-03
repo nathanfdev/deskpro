@@ -13,6 +13,7 @@ namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboard;
+use Application\DeskPRO\Entity\ReportDashboardStat;
 use Application\ReportBundle\Form\EditReportDashboardType;
 
 class DashboardController extends AbstractController
@@ -23,17 +24,38 @@ class DashboardController extends AbstractController
 		return $this->render('ReportBundle:Dashboard:index.html.twig');
 	}
 	
+	/**
+	 * View the dashboard
+	 */
 	public function viewAction($dashboard_id)
+	{
+		$dashboard = $this->getDashboard($dashboard_id);
+		
+		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
+			'dashboard'	=> $dashboard
+		));
+	}
+	
+	/**
+	 * Build the dashboard
+	 */
+	public function buildAction($dashboard_id)
 	{
 		$dashboard       = $this->getDashboard($dashboard_id);
 		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
 		
-		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
+		$all_stats	 = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
+		
+		return $this->render('ReportBundle:Dashboard:build.html.twig', array(
 			'dashboard' 		=> $dashboard,
-			'dashboard_stats'	=> $dashboard_stats
+			'dashboard_stats'	=> $dashboard_stats,
+			'all_stats'		=> $all_stats
 		));
 	}
 		
+	/**
+	 * Create/Edit a dashboard
+	 */
 	public function editAction($dashboard_id)
 	{
 		if (!$dashboard_id) {
@@ -65,11 +87,51 @@ class DashboardController extends AbstractController
 	}
 	
 	/**
+	 * Add a stat to the dashboard
+	 */
+	public function addStatAction($dashboard_id, $stat_id)
+	{
+		$dashboard = $this->getDashboard($dashboard_id);
+		$stat      = $this->getStat($stat_id);
+		
+		$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+				       ->getNextDashboardStatSlot($dashboard_id);
+		
+		$dashboardStat = new ReportDashboardStat();
+		$dashboardStat->setReportDashboard($dashboard);
+		$dashboardStat->setStat($stat);
+		$dashboardStat->setSlotNumber($next_slot_number);
+		
+		App::getOrm()->persist($dashboardStat);
+		App::getOrm()->flush();
+		
+		return $this->redirectRoute('trend_dashboard_build', array(
+			'dashboard_id'	=> $dashboard->id
+		));
+	}
+	
+	/**
+	 * Remove a stat from the dashboard
+	 */
+	public function removeStatAction($dashboard_id, $dashboard_stat_id)
+	{
+		$dashboard     = $this->getDashboard($dashboard_id);
+		$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
+		
+		App::getOrm()->remove($dashboardStat);
+		App::getOrm()->flush();
+		
+		return $this->redirectRoute('trend_dashboard_build', array(
+			'dashboard_id'	=> $dashboard->id	
+		));
+	}
+	
+	/**
 	 * Get the Dashboard Entity
 	 *
 	 * @throws NotFoundHttpException
 	 */
-	public function getDashboard($dashboard_id)
+	protected function getDashboard($dashboard_id)
 	{
 		$dashboard = App::getEntityRepository('DeskPRO:ReportDashboard')->find($dashboard_id);
 		if (!$dashboard) {
@@ -77,6 +139,36 @@ class DashboardController extends AbstractController
 		}
 		
 		return $dashboard;
+	}
+	
+	/**
+	 * Get the Stat Entity
+	 *
+	 * @throws NotFoundHttpException
+	 */
+	protected function getStat($stat_id)
+	{
+		$stat = App::getEntityRepository('DeskPRO:ReportDashboard')->find($stat_id);
+		if (!$stat) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat");
+		}
+		
+		return $stat;
+	}
+	
+	/**
+	 * Get the Dashboard Stat Entity
+	 *
+	 * @throws NotFoundHttpException
+	 */
+	protected function getDashboardStat($dashboard_stat_id)
+	{
+		$dashboardStat = App::getEntityRepository('DeskPRO:ReportDashboardStat')->find($dashboard_stat_id);
+		if (!$dashboardStat) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_dashboard_stat");
+		}
+		
+		return $dashboardStat;
 	}
 	
 }
