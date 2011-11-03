@@ -31,15 +31,35 @@ class DashboardController extends AbstractController
 			'dashboard' => $dashboard	
 		));
 	}
-	
-	public function newAction()
-	{
-		$dashboard = new StatDashboard();
-		$form = $this->get('form.factory')->create(new EditStatDashboardType(), $dashboard);
 		
-		return $this->render('ReportBundle:Dashboard:new.html.twig', array(
-			'form' => $form->createView(),
-		));	
+	public function editAction($dashboard_id)
+	{
+		if (!$dashboard_id) {
+			$dashboard = new StatDashboard();
+		} else {
+			$dashboard = $this->getDashboard($dashboard_id);
+		}
+
+		$form = $this->get('form.factory')->create(new EditStatDashboardType(), $dashboard);
+
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				App::getOrm()->persist($dashboard);
+				App::getOrm()->flush();
+
+				$this->session->setFlash('saved', $dashboard->title);
+				return $this->redirectRoute('trend_dashboard_view', array(
+					'dashboard_id'	=> $dashboard->id
+				));
+			}
+		}
+
+		return $this->render('ReportBundle:Dashboard:edit.html.twig', array(
+			'dashboard' => $dashboard,
+			'form'      => $form->createView(),
+		));
 	}
 	
 	/**

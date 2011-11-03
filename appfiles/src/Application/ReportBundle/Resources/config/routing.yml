@@ -28,14 +28,15 @@ trend_clone:
   defaults: { _controller: ReportBundle:Trend:clone }
   requirements: { stat_id: "\d+" }
 
-trend_dashboard:
+trend_dashboard_view:
   pattern: /trends/dashboards/{dashboard_id}
   defaults: { _controller: ReportBundle:Dashboard:view }
   requirements: { dashboard_id: "\d+" }
   
-trend_dashboard_new:
-  pattern: /trends/dashboards/new
-  defaults: { _controller: ReportBundle:Dashboard:new }
+trend_dashboard_edit:
+  pattern: /trends/dashboards/{dashboard_id}/edit
+  defaults: { _controller: ReportBundle:Dashboard:edit }
+  requirements: { dashboard_id: "\d+" }
   
 ################################################################################
 # Live Reports
