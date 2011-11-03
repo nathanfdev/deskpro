@@ -147,7 +147,8 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 					footer.removeClass('loading');
 				},
 				success: function(data) {
-				self.meta.popover.close();
+					self.meta.popover.close();
+					DeskPRO_Window.sections.tasks_section.refresh();
 				}
 			});
 		});

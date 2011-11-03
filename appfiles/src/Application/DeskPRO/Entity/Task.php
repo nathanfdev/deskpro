@@ -154,6 +154,34 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function isOverdue()
+	{
+		if (!$this->date_due) {
+			return false;
+		}
+
+		$now = new \DateTime();
+		$today = clone $now;
+		$today->setTime(23, 59, 59);
+
+		$yesterday = clone $today;
+		$yesterday->modify('-1 day');
+
+		return ($this->date_due < $yesterday);
+	}
+
+	public function isDueToday()
+	{
+		if (!$this->date_due) {
+			return true;
+		}
+
+		$now = new \DateTime();
+		$today = clone $now;
+		$today->setTime(23, 59, 59);
+
+		return ($tthis->date_due < $today);
+	}
 
 	/**
 	 * Sets the task visibility.

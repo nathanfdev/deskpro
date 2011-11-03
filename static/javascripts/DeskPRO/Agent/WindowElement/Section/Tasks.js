@@ -9,7 +9,10 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 		this.urlFragmentName = 'tasks';
 
 		this.setSectionElement($('<section id="task_outline"></section>'));
+		this.refresh();
+	},
 
+	refresh: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/tasks/get-section-data.json',
 			context: this,

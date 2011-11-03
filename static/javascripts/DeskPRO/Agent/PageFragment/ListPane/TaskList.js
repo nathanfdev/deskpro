@@ -13,6 +13,36 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
 		var openForEl = null;
 
+		var updateCount = function(op, row) {
+
+			var els = [];
+
+			var checksub = function(prefix) {
+				if (row.data('in-sublist-overdue')) { els.push(document.getElementById(prefix + '_overdue')); }
+				if (row.data('in-sublist-today')) { els.push(document.getElementById(prefix + '_today')); }
+				if (row.data('in-sublist-future')) { els.push(document.getElementById(prefix + '_future')); }
+			};
+
+			if (row.data('in-my')) {
+				els.push(document.getElementById('tasks_counter_own_total'));
+				checksub('tasks_counter_own');
+			}
+			if (row.data('in-my-teams')) {
+				els.push(document.getElementById('tasks_counter_team_total'));
+				checksub('tasks_counter_team');
+			}
+			if (row.data('in-my-teams')) {
+				els.push(document.getElementById('tasks_counter_delegated_total'));
+				checksub('tasks_counter_delegated');
+			}
+			els.push(document.getElementById('tasks_counter_all_total'));
+			checksub('tasks_counter_all');
+
+			Array.each(els, function(el) {
+				DeskPRO_Window.util.modCountEl($(el), op);
+			});
+		};
+
 		var sendUpdate = function(rowEl, prop, val) {
 			var taskId = rowEl.data('task-id');
 			var url = BASE_URL + 'agent/tasks/'+taskId+'/ajax-save';
@@ -79,6 +109,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				row.addClass('completed');
 
 				sendUpdate(row, 'completed', 1);
+
+				updateCount('-', row);
 			} else {
 				row.removeClass('expanded');
 				$('.task-info', row).slideDown();
@@ -87,6 +119,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				row.removeClass('completed');
 
 				sendUpdate(row, 'completed', 0);
+
+				updateCount('+', row);
 			}
 		});
 		el.delegate('.opt-trigger.assigned_agent', 'click', function(ev) {
@@ -198,5 +232,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		el.delegate('.task-group header', 'click', function() {
 			$(this).parent().toggleClass('collapsed');
 		});
+
+
 	}
 });

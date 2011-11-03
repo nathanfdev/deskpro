@@ -1,4 +1,16 @@
-<article class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}" data-due-date="{{ task.date_due|date('Y-m-d') }}" data-task-id="{{ task.id }}">
+<article
+	class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}"
+	data-due-date="{{ task.date_due|date('Y-m-d') }}"
+	data-task-id="{{ task.id }}"
+	{% if task.isOverdue() %}data-in-sublist-overdue="1"
+	{% elseif task.isDueToday() %}data-in-sublist-today="1"
+	{% else %}data-in-sublist-future="1"
+	{% endif %}
+
+	{% if task.assigned_agent.id == app.user.id or (not task.assigned_agent.id and task.person.id == app.user.id)  %}data-in-my="1"{% endif %}
+	{% if task.assigned_agent.id and app.user.getHelper('Agent').isTeamMember(task.assigned_agent.id) %}data-in-my-teams="1"{% endif %}
+	{% if task.person.id == app.user.id and task.assigned_agent_team or (task.assigned_agent and task.assigned_agent != app.user.id) %}data-in-delegated="1"{% endif %}
+>
 	<div class="task-title">
 		<span class="expand-collapse-icon"></span>
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
