@@ -89,7 +89,7 @@ ul.tabs li.margin-left {
 }
 
 #report-dashboard-grid li {
-	margin: 0 0 10px 0;
+	margin: 0 10px 10px 0;
 	float: left; width: 25%;
 	font-size: 4em;
 	text-align: center;
@@ -104,6 +104,31 @@ ul.tabs li.margin-left {
 	padding: 2px;
 	display: block;
 	height: 100%;
+	font-size: 12px; 
+}
+
+#report-dashboard-grid li .grid-slot-toolbar {
+	font-size: 12px;
+	display: block;
+	border: 1px solid #ccc;
+	padding: 4px;
+	text-align: left;
+	position: relative;
+	cursor: move;
+}
+
+#report-dashboard-grid li .grid-slot-toolbar .close {
+	display: block;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	cursor: pointer;
+}
+		
+#report-dashboard-grid .content {
+	display: block;
+	font-size: 12px;
+	text-align: left;
 }
 
 #report-dashboard-grid .new-placeholder {
