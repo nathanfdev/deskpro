@@ -1,7 +1,9 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block content %}
-
-<h3>Administration</h3>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagetitle %}
+	<h1>Administration</h1>
+{% endblock %}
+{% block page %}
 
 <p>Click an icon above to navigate to a section and configure your helpdeks.</p>
 
