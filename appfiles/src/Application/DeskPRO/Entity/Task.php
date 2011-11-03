@@ -130,7 +130,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociation", mappedBy="task")
+	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociation", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $task_associations;
 

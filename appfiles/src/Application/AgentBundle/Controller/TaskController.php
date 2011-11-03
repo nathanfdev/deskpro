@@ -115,9 +115,19 @@ class TaskController extends AbstractController
 				}
 			}
 
+			if (!empty($task_data['ticket_id'])) {
+				$ticket = $this->em->find('DeskPRO:Ticket', $task_data['ticket_id']);
+
+				$assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+				$assoc->ticket = $ticket;
+				$assoc->task   = $task;
+
+				$task->task_associations->add($assoc);
+			}
+
 			$task->setVisibility($task_data['visibility']);
-			if (!empty($task_data['due_date'])) {
-				$task->setDueDate($task_data['due_date']);
+			if (!empty($task_data['date_due'])) {
+				$task->setDueDate($task_data['date_due']);
 			}
 
 			$tasks[] = $task;

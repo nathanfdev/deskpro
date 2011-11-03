@@ -2,6 +2,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTask';
 pageMeta.title = 'New Task';
+pageMeta.noMoveToTab = false;
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -22,6 +23,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="0" />
+			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
 		</div>
 		<div class="task-info">
 			<ul>
@@ -29,6 +31,10 @@ pageMeta.baseId = '{{ baseId }}';
 				<li class="noval opt-trigger assigned_agent"><label>Me</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger date_due"><label>No due date</label><span class="drop-icon"></span></li>
 			</ul>
+			<span class="linked-ticket" style="display:none">
+				Ticket: <label></label>
+				<span class="btn-small-delete remove-link-trigger"></span>
+			</span>
 		</div>
 	</div>
 </script>

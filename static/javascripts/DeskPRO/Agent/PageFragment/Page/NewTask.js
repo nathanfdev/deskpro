@@ -9,8 +9,16 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 	},
 
 	initPage: function(el) {
+
 		var self = this;
 		this.wrapper = el;
+
+		var nolink = false;
+		this.addEvent('popover-open', function() {
+			nolink = false;
+			rowContainer.empty();
+			addTaskRow();
+		});
 
 		var assignOptionBox = new DeskPRO.UI.OptionBox({
 			element: this.getEl('assign_ob'),
@@ -99,6 +107,22 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 		var addTaskRow = function() {
 			var row = $(tpl);
+
+			if (!nolink) {
+				var activeTab = DeskPRO_Window.getTabWatcher().getActiveTabIfType('ticket');
+				if (activeTab) {
+					var linkEl = $('.linked-ticket', row);
+					$('label', linkEl).text(activeTab.page.meta.title);
+					$('input.input-ticket-id', row).val(activeTab.page.meta.ticket_id);
+					linkEl.show();
+					$('.remove-link-trigger', row).click(function() {
+						nolink = true;
+						linkEl.hide();
+						$('input.input-ticket-id', row).val(0);
+					});
+				}
+			}
+
 			rowContainer.append(row);
 		};
 
@@ -121,9 +145,14 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 					footer.removeClass('loading');
 				},
 				success: function(data) {
-					self.closeSelf();
+				self.meta.popover.close();
 				}
 			});
+		});
+
+		this.addEvent('popover-closed', function() {
+			rowContainer.empty();
+			addTaskRow();
 		});
 	}
 });

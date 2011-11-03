@@ -194,6 +194,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 
 		this.page.meta.isPopover = true;
+		this.page.meta.popover = this;
 
 		this.page.fireEvent('render', [this.popover]);
 		this.fireEvent('pageInit', [this, this.page]);
@@ -314,6 +315,9 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}, this);
 
 		this.popoverOuter.show();
+		if (this.page) {
+			this.page.fireEvent('popover-open', [this]);
+		}
 	},
 
 	toggle: function() {
@@ -336,6 +340,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.options.destroyOnClose) {
 			this.destroy();
+		} else {
+			this.page.fireEvent('popover-closed');
 		}
 	},
 
