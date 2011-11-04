@@ -9,9 +9,12 @@
 	pageMeta.filter_id = {{filter_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type';
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type';
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
