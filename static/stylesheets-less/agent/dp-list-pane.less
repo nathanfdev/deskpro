@@ -882,15 +882,15 @@ section.mass-actions-overlay > header {
 
 section.mass-actions-overlay > header .close,
 .mass-actions-overlay .close-trigger {
-	background-image: url("../../images/agent/closeOvelay.png") /** sprite-ref: ui-v */;
-	width: 35px;
-	height: 35px;
+	background-image: url("../../images/agent/close.png") /** sprite-ref: ui-v */;
+	width: 18px;
+	height: 18px;
 	overflow: hidden;
 	text-indent: -100px;
 
 	position: absolute;
-	right: -18px;
-	top: -18px;
+	right: 2px;
+	top: 2px;
 	cursor: pointer;
 }
 
@@ -1072,13 +1072,11 @@ section.dp-overlay {
 	left:   0px;
 	right:  16px;
 
-	background-color: #FAFAFA;
-	border: 2px solid #0B374D;
+	background-color: #fff;
+	border: 1px solid #8A8D91;
 	.border-radius(6px, 6px, 6px, 6px);
 
-	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
-	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
-	box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
+	.box-shadow(2px 1px 6px 0 rgba(100, 100, 100, 0.9));
 }
 
 section.dp-overlay > header {
@@ -1119,16 +1117,20 @@ section.dp-overlay > header nav ul li:hover {
 }
 
 section.dp-overlay > header .close {
-	background-image: url("../../images/agent/closeOvelay.png") /** sprite-ref: ui-v */;
-	width: 35px;
-	height: 35px;
+	background-image: url("../../images/agent/close.png") /** sprite-ref: ui-v */;
+	width: 18px;
+	height: 18px;
 	overflow: hidden;
 	text-indent: -100px;
 
 	position: absolute;
-	right: -18px;
-	top: -18px;
+	right: 2px;
+	top: 2px;
 	cursor: pointer;
+}
+
+section.dp-overlay > header .close:hover {
+	background-image: url("../../images/agent/close-over.png") /** sprite-ref: ui-v */;
 }
 
 section.dp-overlay > header .move-to-tab {
@@ -1158,7 +1160,7 @@ section.dp-overlay > footer {
 	border-top: 1px solid #A1AAB3;
 
 	.gradient(rgba(228,231,233,1), rgba(186,191,196,1));
-	.border-radius(0px, 0px, 9px, 9px);
+	.border-radius(0px, 0px, 5px, 5px);
 
 	text-align: center;
 }
