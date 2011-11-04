@@ -16,6 +16,10 @@ class Upgrade20111102111118 extends UpgradeAbstract
 			App::getDb()->exec("ALTER TABLE stat ADD FOREIGN KEY (author_id) REFERENCES people(id);");
 			App::getDb()->exec("ALTER TABLE stat ADD FOREIGN KEY (parent_stat_id) REFERENCES stat(id);");
 			App::getDb()->exec("CREATE TABLE report_dashboard (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB;");
+			App::getDb()->exec("CREATE TABLE report_dashboard_stat (id INT AUTO_INCREMENT NOT NULL, report_dashboard_id INT DEFAULT NULL, stat_id INT DEFAULT NULL, chart_type VARCHAR(20) NOT NULL, grid_slots SMALLINT NOT NULL, slot_number SMALLINT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_67443C5EB7BADDB2 (report_dashboard_id), INDEX IDX_67443C5E9502F0B (stat_id), PRIMARY KEY(id)) ENGINE = InnoDB;");
+			App::getDb()->exec("ALTER TABLE report_dashboard_stat ADD FOREIGN KEY (report_dashboard_id) REFERENCES report_dashboard(id);");			
+			App::getDb()->exec("ALTER TABLE report_dashboard_stat ADD FOREIGN KEY (stat_id) REFERENCES stat(id);");
+
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");
 			return Upgrader::STEP_FAILED;
