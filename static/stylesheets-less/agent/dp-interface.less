@@ -55,6 +55,10 @@ a:hover {
 	text-decoration: none;
 }
 
+.no-cssgradients .bound-fade {
+	display: none !important;
+}
+
 // Anything that should be the absolute top of the z-index stack
 // should use this
 .window-alert {
@@ -962,9 +966,13 @@ a.clean-white {
 	.border-radius(6px, 6px, 6px, 6px);
 
 	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.9);
-	z-index: 10000000;
+	z-index: 100000000001;
 	max-height: 300px;
 	overflow: auto;
+}
+
+.backdrop.optionbox-backdrop {
+	z-index: 100000000000;
 }
 
 .optionbox input[type="radio"],

@@ -250,6 +250,15 @@ span.gear{
 .deskproTabList li:hover, .deskproTabList li.over {
 	.gradient-h(rgba(234,236,238,0), rgba(219,221,223,1));
 }
+// for ie
+.no-cssgradients .deskproTabList li:hover,
+.no-cssgradients .deskproTabList li.over {
+	.gradient(#E6E9EE, #D3D8E1);
+}
+
+.no-cssgradients .deskproTabList li {
+	padding-right: 3px;
+}
 
 .deskproTabList li:hover .bound-fade, .deskproTabList li.over .bound-fade {
     .gradient-h(rgba(234,236,238,0), rgba(219,221,223,1), 50px);
