@@ -98,9 +98,10 @@
 	position: relative;
 }
 .list-control-bar ul li span.sep {
+    background-repeat: no-repeat;
 	background-image: url("../../images/agent/divGrdt.jpg") /** sprite-ref: ui-v */;
-	height: 30px;
-	padding: 10px 2px;
+	height: 25px;
+	padding: 12px 2px;
 	width: 2px;
 }
 
@@ -1124,8 +1125,8 @@ section.dp-overlay > header .close {
 	text-indent: -100px;
 
 	position: absolute;
-	right: 2px;
-	top: 2px;
+	right: 0px;
+	top: 0px;
 	cursor: pointer;
 }
 
@@ -1269,9 +1270,14 @@ section.dp-overlay > article.no-footer {
 	display: none;
 }
 
-.dp-overlay-container.ticketlist header .display-options-trigger {
+.dp-overlay-container.ticketlist header .controls {
 	float: right;
-	margin: 7px 15px 0 0;
+	margin-right: 20px;
+	margin-top: 8px;
+}
+
+.dp-overlay-container.ticketlist header button {
+	margin: 0 5px 0 0;
 }
 
 

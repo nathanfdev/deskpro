@@ -100,6 +100,16 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.massActions);
 
+		if (this.meta.viewType == 'list') {
+			$('.list-grouping-bar', this.wrapper).delegate('a[data-route]', 'click', function(ev) {
+				ev.stopPropagation();
+				ev.preventDefault();
+
+				var route = $(this).data('route');
+				self.loadNewListviewUrl(route.replace('listpane:', '') + '&view_type=list');
+			});
+		}
+
 		this.enableHighlightOpenRows('ticket', 'ticket_id', '.row-item.ticket-');
 	},
 
@@ -338,7 +348,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				var url = self.meta.refreshUrl;
 				url = Orb.appendQueryData(url, 'group_by', prop);
 
-				DeskPRO_Window.loadListPane(url);
+				if (self.meta.viewType == 'list') {
+					self.loadNewListviewUrl(url +'&view_type=list');
+				} else {
+					DeskPRO_Window.loadListPane(url);
+				}
 			}
 		});
 		this.ownObject(this.groupingMenu);
@@ -367,5 +381,21 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		DeskPRO_Window.loadListPane(new_url, null, function() {
 			DeskPRO_Window.removePage(self);
 		});
+	},
+
+	loadNewListviewUrl: function(new_url) {
+		var oldlist = this.listview;
+		this.listview = new DeskPRO.Agent.TicketList.ListView(this, { load_url: new_url });
+
+		if (oldlist && !oldlist.OBJ_DESTROYED) {
+			oldlist.showInnerLoading();
+			this.listview.addEvent('ajaxLoaded', function() {
+				if (!oldlist.OBJ_DESTROYED) {
+					oldlist.destroy();
+				}
+			});
+		}
+
+		this.listview.open();
 	}
 });

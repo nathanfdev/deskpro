@@ -9,14 +9,13 @@
 
 	pageMeta.filter_id = {{filter_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&partial=1&page=$page';
-	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&';
-	pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type';
 {% else %}
 	pageMeta.cache_id = {{cache_id}};
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&page=$page';
-	pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?view_type=1&partial=1&cache_id={{cache_id}}&';
+	pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}';
+	pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_type=$view_type';
 {% endif %}
 
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
@@ -41,12 +40,42 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <section class="dp-overlay">
 	<header>
-		<button class="display-options-trigger clean-white small">Display Options</button>
+		<div class="controls">
+			<button class="order-by-menu-trigger clean-white small arrow">Ordeded by <span class="label">{{ order_by_summary }}</span><em></em></button>
+			<button class="group-by-menu-trigger clean-white small arrow">Grouped by <span class="label">{{ grouping_summary|default('None') }}</span><em></em></button>
+			<button class="display-options-trigger clean-white small">Display Options</button>
+		</div>
+
+		<ul style="display: none" class="order-by-menu">
+			<li data-order-by="urgency">Urgency</li>
+			<li data-order-by="date_created">Date Opened</li>
+			<li data-order-by="priority">Priority</li>
+		</ul>
+		<ul style="display: none" class="group-by-menu">
+			<li data-group-by="">None</li>
+			<li class="sep">-</li>
+			<li data-group-by="department">Department</li>
+			<li data-group-by="category">Category</li>
+			<li data-group-by="priority">Priority</li>
+			<li data-group-by="product">Product</li>
+			<li data-group-by="workflow">Workflow</li>
+			<li data-group-by="organization">Organization</li>
+			<li data-group-by="language">Language</li>
+			<li data-group-by="urgency">Urgency</li>
+			<li data-group-by="agent">Agent</li>
+			<li data-group-by="agent_team">Agent Team</li>
+			<li data-group-by="time_waiting">Time Waiting</li>
+			<li data-group-by="total_user_waiting">Total Time Waiting</li>
+			<li data-group-by="date_created">Date Created</li>
+		</ul>
+
 		<span class="close close-trigger">close</span>
 		<h1>Tickets</h1>
 	</header>
 	<article>
 		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+
+		{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 
 		<div class="table-result-list">
 			<table cellspacing="0" width="100%">

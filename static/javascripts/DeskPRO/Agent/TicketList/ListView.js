@@ -25,6 +25,9 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 		this._isIniting = true;
 
 		var new_url = this.page.meta.viewTypeUrl.replace('$view_type', 'list');
+		if (this.options.load_url) {
+			new_url = this.options.load_url.replace('$view_type', 'list');
+		}
 
 		$.ajax({
 			url: new_url,
@@ -50,6 +53,7 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 				}).bind(this));
 
 				var page = DeskPRO_Window.createPageFragment(html);
+				page.listview = this;
 				page.setMetaData('routeUrl', new_url);
 				page.setMetaData('pageReloader', this.reload.bind(this));
 				page.setMetaData('overlay', this);
