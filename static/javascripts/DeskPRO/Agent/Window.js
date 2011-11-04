@@ -1082,6 +1082,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 					routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
 				}
+				return;
 			}
 		}
 
