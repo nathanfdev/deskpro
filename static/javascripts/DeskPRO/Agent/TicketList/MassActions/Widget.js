@@ -198,7 +198,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 					$(this).addClass('radio-on');
 				}
 
-				self.updatePreview();
+				self.updatePreview(null, true);
 			};
 
 			els.each(function() {
@@ -497,7 +497,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	/**
 	 * Updates the listing with a preview of the changes we're making
 	 */
-	updatePreview: function(specific_id) {
+	updatePreview: function(specific_id, force) {
 
 		// No previews on list view
 		if (this.options.isListView) {
@@ -529,7 +529,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.getActionFormValues(formData, false, formDataInfo);
 
 		// If we dont have any tickets or actions then theres nothing to do
-		if (!formDataInfo.checkedCount || !formDataInfo.actionsCount) {
+		if (!force && (!formDataInfo.checkedCount || !formDataInfo.actionsCount)) {
 			return;
 		}
 
