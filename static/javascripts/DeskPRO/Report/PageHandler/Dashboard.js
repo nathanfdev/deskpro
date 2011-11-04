@@ -111,7 +111,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			type: 'GET',
 			success: function(data) {
 				Array.each(data.widgets, function(v) {
-					console.log( v.stat)
 					var widget = new DeskPRO.Report.Dashboard.Widget(self, v.id, v.stat);
 					self.addWidget(widget);
 				});
