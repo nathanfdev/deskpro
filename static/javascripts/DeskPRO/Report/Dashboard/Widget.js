@@ -52,7 +52,6 @@ DeskPRO.Report.Dashboard.Widget = new Class({
 			self.dashboard.removeWidget(self);
 			return false;
 		});
-		
 	},
 	
         setEditable: function(editable) {
@@ -73,7 +72,6 @@ DeskPRO.Report.Dashboard.Widget = new Class({
 		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'move');
 		
                 this.is_edit_state = true;
-                
         },
         
         updateToViewable: function() {
@@ -82,7 +80,6 @@ DeskPRO.Report.Dashboard.Widget = new Class({
 		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'auto');
 		
                 this.is_edit_state = false;
-                
         },
         
         setChart: function(chart) {

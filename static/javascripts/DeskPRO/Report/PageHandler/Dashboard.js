@@ -173,11 +173,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			return;
 		}
 		
-		
 		if (this.widgets[pos]) {
 			this.widgets.splice(pos, 1);
 		}
-			
 	},
 	
 	getWidgetIndexByElementId: function(element_id) {
@@ -220,6 +218,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
 		$("#dashboard-new-placeholder-link").click(function() {
 			self.openOverlay('dashboard_widget_select');
+			
+			$('.stat-list .add-chart').click(function() {
+				var href = $(this).attr('href');
+				$.ajax({
+					url: href,
+					dataType: 'json',
+					type: 'GET',
+					success: function(data) {
+						console.log(data);
+						var widget = new DeskPRO.Report.Dashboard.Widget(self, data.widget.id, data.widget.stat);
+						self.addWidget(widget);
+					}
+				});
+				
+				return false;
+			});
+			
 			return false;
 		});
 		
@@ -244,7 +259,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		this.setupResizableGrid();
 		
                 this.is_edit_state = true;
-                
         },
         
 	// Update UI state to viewable
@@ -266,7 +280,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		});
 		
                 this.is_edit_state = false;
-                
         },
 	
 	// Set the number of columns and update UI to reflect this

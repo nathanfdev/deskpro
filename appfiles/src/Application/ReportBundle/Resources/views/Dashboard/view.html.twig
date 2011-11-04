@@ -65,7 +65,7 @@ function _page_exec() {
                                                 <td class="{{stat.starred ? 'starred' : ''}}"></td>
                                                 <td>{{stat.title}}</td>
                                                 <td>{{stat.authorName}}</td>
-                                                <td class="icon"><a href="" title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+                                                <td class="icon"><a href="{{ path('report_dashboard_ajaxcreatewidget', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
                                         </tr>
                                 {% endfor %}
                         </tbody>
