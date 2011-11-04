@@ -972,7 +972,6 @@ a.clean-white {
 
 	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.9);
 	z-index: 100000000001;
-	max-height: 300px;
 	overflow: auto;
 }
 
@@ -1018,8 +1017,14 @@ a.clean-white {
 	font-size: 10px;
 }
 
+.optionbox section {
+
+}
+
 .optionbox section ul {
 	margin: 3px;
+		max-height: 320px;
+	overflow: auto;
 }
 
 .optionbox section ul li {
@@ -1119,6 +1124,49 @@ a.clean-white {
 	color: #fff;
 	text-shadow: 1px 0px 0px rgba(0,0,0, 0.5);
 	filter: ~"dropshadow(color=#000, offx=1, offy=0)";
+}
+
+.optionbox > footer {
+	height: 23px;
+	border-top: 1px solid #A1AAB3;
+	.gradient(rgba(228,231,233,1), rgba(186,191,196,1));
+	.border-radius(0px, 0px, 5px, 5px);
+
+	text-align: center;
+}
+
+.optionbox > footer button {
+	.gradient(#598eb6, #3c6094);
+	border: 1px solid #3f5973;
+	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
+	.border-radius(4px, 4px, 4px, 4px);
+	color: #fafafa;
+	text-shadow: 0 1px 0 #000;
+	line-height: 18px;
+	font-size: 11px;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 0px 8px 1px 8px;
+    text-align: center;
+	cursor:pointer;
+	position: relative;
+	line-height: 100%;
+	margin-top: 3px;
+}
+
+.optionbox .close {
+
+	background-image: url("../../images/agent/close.png") /** sprite-ref: ui-v */;
+	width: 18px;
+	height: 18px;
+	overflow: hidden;
+	text-indent: -100px;
+
+	position: absolute;
+	right: 0;
+	top: 0;
+	cursor: pointer;
 }
 
 .load-puff {

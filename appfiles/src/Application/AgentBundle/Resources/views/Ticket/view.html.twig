@@ -332,7 +332,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<button class="clean-white cancel" id="macro_cancel_btn">Cancel</button>
 </div>
 
-<div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_assign_ob">
+<div class="optionbox reply-agent-team-ob with-footer" id="{{baseId}}_agent_assign_ob">
+	<span class="close close-trigger"></span>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
@@ -419,6 +420,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</section>
 	</div>
 	<br class="clear" />
+	<footer>
+		<button class="save-trigger">Apply</button>
+	</footer>
 </div>
 
 <div class="confirm-macro-overlay" id="{{baseId}}_confirm_macro_overlay" style="width: 400px; height: 400px; display: none;">
