@@ -134,7 +134,7 @@ body {
 	padding: 1px 2px 0 1px;
 	display: inline-block;
 	height: 35px;
-	width: 30px;
+	width: 35px;
 }
 #dp_admin_nav_sections li a span {
 	font-size: 10px;
@@ -152,64 +152,87 @@ body {
 	height: 40px;
 }
 #dp_admin_nav_sections li a span, #dp_admin_nav_sections li.dpNavActive a span {
-	background: url(../../images/agent/navIcon.png) no-repeat;
+	background-repeat: no-repeat;
  	color: #FFFFFF;
     font-weight: normal;
     height: 7px;
     margin: 0;
     padding: 28px 0 0;
 }
-
-#dp_admin_nav_sections li a span.ticketNavIcon{
-	background-position: 0 0;
+#dp_admin_nav_sections li a span.setup{
+	background-repeat: no-repeat;
+	background-position: 6px 6px;
+    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
-#dp_admin_nav_sections li:hover a span.ticketNavIcon {
-	background-position: 0 -757px;
-}
-#dp_admin_nav_sections li a span.chatNavIcon{
-	background-position: 0 -58px;
-}
-#dp_admin_nav_sections li:hover a span.chatNavIcon {
-	background-position: 0 -814px;
-}
-#dp_admin_nav_sections li a span.twitterNavIcon{
-	background-position: 0 -115px;
-}
-#dp_admin_nav_sections li:hover a span.twitterNavIcon {
-	background-position: 0 -871px;
-}
-#dp_admin_nav_sections li a span.peopleNavIcon{
-	background-position: 0 -177px;
-}
-#dp_admin_nav_sections li:hover a span.peopleNavIcon {
-	background-position: 0 -933px;
-}
-#dp_admin_nav_sections li a span.ideasNavIcon{
-	background-position: 0 -237px;
-}
-#dp_admin_nav_sections li:hover a span.ideasNavIcon {
-	background-position: 0 -993px;
-}
-#dp_admin_nav_sections li a span.publishNavIcon{
-	background-position:0 -298px;
-}
-#dp_admin_nav_sections li:hover a span.publishNavIcon {
-	background-position:0 -1054px;
+#dp_admin_nav_sections li:hover a span.setup {
+    background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
 
-#dp_admin_nav_sections li a span.tasksNavIcon{
-	background-position: -1px -467px;
+#dp_admin_nav_sections li a span.server {
+	background-repeat: no-repeat;
+	background-position: 6px 6px;
+    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
-#dp_admin_nav_sections li:hover a span.tasksNavIcon {
-	background-position:-1px -1165px;
+#dp_admin_nav_sections li:hover a span.server {
+	background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
 
-#dp_admin_nav_sections li a span.dealsNavIcon{
-	background-position: -2px -526px;
+#dp_admin_nav_sections li a span.agents {
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/app-nav/app-people.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
-#dp_admin_nav_sections li:hover a span.dealsNavIcon {
-	background-position:-2px -1224px;
+#dp_admin_nav_sections li:hover a span.agents {
+    background-image: url(../../images/agent/app-nav/app-people-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
+
+#dp_admin_nav_sections li a span.users {
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/app-nav/app-people.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.users {
+    background-image: url(../../images/agent/app-nav/app-people-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
+
+#dp_admin_nav_sections li a span.integrate {
+	background-repeat: no-repeat;
+	background-position: 11px 6px;
+    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.integrate {
+    background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+}
+
+
+#dp_admin_nav_sections li a span.tickets {
+	background-repeat: no-repeat;
+	background-position: 6px 6px;
+    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.tickets {
+    background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+}
+
+#dp_admin_nav_sections li a span.chat {
+	background-repeat: no-repeat;
+	background-position: 3px 2px;
+    background-image: url(../../images/agent/app-nav/app-chat.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.chat {
+    background-image: url(../../images/agent/app-nav/app-chat-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
+
+#dp_admin_nav_sections li a span.publish {
+	background-repeat: no-repeat;
+	background-position: 6px 0;
+    background-image: url(../../images/agent/app-nav/app-publish.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.publish {
+    background-image: url(../../images/agent/app-nav/app-publish-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+
+
 
 #dp_page_wrap {
 	padding-top: 12px;
