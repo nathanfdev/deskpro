@@ -5,57 +5,62 @@ report:
 ################################################################################
 # Trend Reports
 ################################################################################
-trend_index:
+report_trend_index:
   pattern: /trends
   defaults: { _controller: ReportBundle:Trend:index }
   
-trend_view:
+report_trend_view:
   pattern: /trends/{stat_id}
   defaults: { _controller: ReportBundle:Trend:view }
   requirements: { stat_id: "\d+" }
   
-trend_new:
+report_trend_new:
   pattern: /trends/new
   defaults: { _controller: ReportBundle:Trend:new }
 
-trend_edit:
+report_trend_edit:
   pattern: /trends/{stat_id}/edit
   defaults: { _controller: ReportBundle:Trend:edit }
   requirements: { stat_id: "\d+" }
 
-trend_clone:
+report_trend_clone:
   pattern: /trends/{stat_id}/clone
   defaults: { _controller: ReportBundle:Trend:clone }
   requirements: { stat_id: "\d+" }
 
-trend_dashboard_view:
+report_trend_dashboard_view:
   pattern: /trends/dashboards/{dashboard_id}
   defaults: { _controller: ReportBundle:Dashboard:view }
   requirements: { dashboard_id: "\d+" }
   
-trend_dashboard_edit:
+report_trend_dashboard_edit:
   pattern: /trends/dashboards/{dashboard_id}/edit
   defaults: { _controller: ReportBundle:Dashboard:edit }
   requirements: { dashboard_id: "\d+" }
   
-trend_dashboard_add_stat:
+report_trend_dashboard_add_stat:
   pattern: /trends/dashboards/{dashboard_id}/add-stat/{stat_id}
   defaults: { _controller: ReportBundle:Dashboard:addStat }
   requirements: { dashboard_id: "\d+", stat_id: "\d+"  }
 
-trend_dashboard_remove_stat:
+report_trend_dashboard_remove_stat:
   pattern: /trends/dashboards/{dashboard_id}/remove-stat/{dashboard_stat_id}
   defaults: { _controller: ReportBundle:Dashboard:removeStat }
   requirements: { dashboard_id: "\d+", dashboard_stat_id: "\d+"  }
 
+report_dashboard_ajaxfetchwidgets:
+  pattern: /trends/dashboards/{dashboard_id}/ajax-fetch-widget
+  defaults: { _controller: ReportBundle:Dashboard:ajaxFetchWidget }
+  requirements: { dashboard_id: "\d+" }
+  
 ################################################################################
 # Live Reports
 ################################################################################
-live_index:
+report_live_index:
   pattern: /live-reports
   defaults: { _controller: ReportBundle:Live:index }
   
-live_view:
+report_live_view:
   pattern: /live-reports/{stat_id}
   defaults: { _controller: ReportBundle:Live:view }
   requirements: { stat_id: "\d+" }

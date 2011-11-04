@@ -62,7 +62,7 @@ class DashboardController extends AbstractController
 				App::getOrm()->flush();
 
 				$this->session->setFlash('saved', $dashboard->title);
-				return $this->redirectRoute('trend_dashboard_view', array(
+				return $this->redirectRoute('report_trend_dashboard_view', array(
 					'dashboard_id'	=> $dashboard->id
 				));
 			}
@@ -93,7 +93,7 @@ class DashboardController extends AbstractController
 		App::getOrm()->persist($dashboardStat);
 		App::getOrm()->flush();
 		
-		return $this->redirectRoute('trend_dashboard_view', array(
+		return $this->redirectRoute('report_trend_dashboard_view', array(
 			'dashboard_id'	=> $dashboard->id
 		));
 	}
@@ -109,7 +109,7 @@ class DashboardController extends AbstractController
 		App::getOrm()->remove($dashboardStat);
 		App::getOrm()->flush();
 		
-		return $this->redirectRoute('trend_dashboard_view', array(
+		return $this->redirectRoute('report_trend_dashboard_view', array(
 			'dashboard_id'	=> $dashboard->id	
 		));
 	}

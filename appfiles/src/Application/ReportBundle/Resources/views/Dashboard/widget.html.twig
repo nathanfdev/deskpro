@@ -3,7 +3,7 @@
                 <span class="inner">
                         <span class="grid-slot-toolbar ui-corner-all">
                                 {{ dashboard_stat.stat.title }}
-                                <a href="{{ path('trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
+                                <a href="{{ path('report_trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
                                         <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
                                 </a>
                         </span>

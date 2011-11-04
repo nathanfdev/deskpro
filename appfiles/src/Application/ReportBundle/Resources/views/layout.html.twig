@@ -30,7 +30,7 @@
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.Window();
 			window.DeskPRO_Window.initPage();
-
+			
 			if (window._page_exec) {
 				window._page_exec_stack.push(_page_exec);
 			}
@@ -147,8 +147,8 @@
 	
 	{% block reportnav %}
 		<nav class="reports-nav">
-			<a class="clean-white" href="{{ path('trend_index') }}">Trends</a>
-			<a class="clean-white" href="{{ path('live_index') }}">Live Reports</a>
+			<a class="clean-white" href="{{ path('report_trend_index') }}">Trends</a>
+			<a class="clean-white" href="{{ path('report_live_index') }}">Live Reports</a>
 		</nav>
 	{% endblock %}
 	

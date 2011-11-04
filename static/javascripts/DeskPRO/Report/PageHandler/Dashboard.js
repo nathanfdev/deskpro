@@ -29,12 +29,21 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Refernce to the dashboard
 	$dashboard: null,
 	
+	// Reference to dashboard grid
+	$dashboardGrid: null,
+	
 	initialize: function(dashboard_id) {
 		var self = this;
 		
 		this.dashboard_id = dashboard_id
 		
-		this.$dashboard = $("#report-dashboard");
+	},
+
+	initPage: function() {
+		var self = this;
+		
+		this.$dashboard 	= $("#report-dashboard");
+		this.$dashboardGrid 	= $("#report-dashboard-grid");
 		
 		$("#report-dashboard-options-form").submit(function() {
 			
@@ -46,16 +55,29 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		});
 		
 		$(window).resize(function() {
-			self.setupResizableGrid();
+			//self.setupResizableGrid();
 		});
 		
 		this.calculateColumnWidth();
-		this.setupResizableGrid();		
-		
+		this.fetchWidgets();
 	},
-
-	initPage: function() {
+	
+	// Fetch the widgets
+	fetchWidgets: function() {
 		var self = this;
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_dashboard_ajaxfetchwidgets', {dashboard_id: this.dashboard_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				self.updateToEditable();
+			}
+		});
+	},
+	
+	// Create a widget and fetch it
+	createAndFetchWidget: function() {
+		
 	},
 	
 	// Add a widget to the dashboard.
@@ -102,19 +124,21 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Update UI state to editable
 	updateToEditable: function() {
                 
-		this.$dashboard.sortable({
+		this.$dashboardGrid.sortable({
 			handle: '.grid-slot-toolbar'
 		});
-		this.$dashboard.disableSelection();
+		this.$dashboardGrid.disableSelection();
 		
-		this.$dashboard.find("li").resizable({
+		this.$dashboardGrid.find("li").resizable({
 			helper: "ui-resizable-helper",
 			placeholder: "ui-state-highlight",
 			resize: function(event, ui) {
 				ui.size.height = ui.originalSize.height;
 			}
 		});
-			
+		
+		this.setupResizableGrid();
+		
                 this.is_edit_state = true;
                 
         },

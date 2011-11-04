@@ -64,7 +64,7 @@ class TrendController extends AbstractController
 				App::getOrm()->flush();
 
 				$this->session->setFlash('saved', $stat->title);
-				return $this->redirectRoute('trend_index');
+				return $this->redirectRoute('report_trend_index');
 			}
 		}
 		

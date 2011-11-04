@@ -6,6 +6,7 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
+        window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
 	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }});
         
         var widget = null;
@@ -18,7 +19,7 @@ function _page_exec() {
 {% endblock %}
 {% block page %}
 
-        <a href="{{ path('trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit</a>
+        <a href="{{ path('report_trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit</a>
         
         <div class="report-dashboard-options">
 		<form id="report-dashboard-options-form">
@@ -45,7 +46,7 @@ function _page_exec() {
                                                 <span class="inner">
                                                         <span class="grid-slot-toolbar ui-corner-all">
                                                                 {{ dashboard_stat.stat.title }}
-                                                                <a href="{{ path('trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
+                                                                <a href="{{ path('report_trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
                                                                         <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
                                                                 </a>
                                                         </span>
@@ -83,9 +84,9 @@ function _page_exec() {
                                         {% for stat in all_stats %}
                                                 <tr>
                                                         <td class="{{stat.starred ? 'starred' : ''}}"></td>
-                                                        <td><a href="{{ path('trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
+                                                        <td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
                                                         <td>{{stat.authorName}}</td>
-                                                        <td class="icon"><a href="{{ path('trend_dashboard_add_stat', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+                                                        <td class="icon"><a href="{{ path('report_trend_dashboard_add_stat', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
                                                 </tr>
                                         {% endfor %}
                                 </tbody>
