@@ -6,7 +6,7 @@ Orb.createNamespace('DeskPRO.Report.PageHandler');
  * A dashboard has a number of widgets
  */ 
 DeskPRO.Report.PageHandler.Dashboard = new Class({
-	Extends: DeskPRO.Admin.PageHandler.Basic,
+	Extends: DeskPRO.Report.PageHandler.Basic,
 	
 	// Id of dashboard
 	dashboard_id: null,
@@ -60,10 +60,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		this.calculateColumnWidth();
 		this.fetchWidgets();
+		
+		self.updateToEditable();
 	},
 	
 	// Fetch the widgets
 	fetchWidgets: function() {
+		return;
 		var self = this;
 		$.ajax({
 			url: DeskPRO_Window.getUrl('report_dashboard_ajaxfetchwidgets', {dashboard_id: this.dashboard_id}),

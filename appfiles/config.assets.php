@@ -369,6 +369,7 @@ $CONFIG['report_graphs'] = array(
 $CONFIG['report_report_ui'] = array(
 	'out' => 'js/report-ui.js',
 	'files' => array(
+		'javascripts/DeskPRO/Report/Window.js',
 		'javascripts/DeskPRO/Report/PageHandler/Basic.js',
 	)
 );
