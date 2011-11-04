@@ -45,6 +45,7 @@ DeskPRO.Report.Dashboard.Widget = new Class({
 		
 		$("#" + this.element_id + " .edit").click(function() {
 			self.dashboard.openOverlay('dashboard_widget_edit');
+			
 			return false;
 		});
 		

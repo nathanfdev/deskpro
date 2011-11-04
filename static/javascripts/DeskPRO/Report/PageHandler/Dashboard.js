@@ -215,28 +215,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		$("#report-dashboard-options").css('display', 'block');
 		
 		// Create the 'Add Widget' placeholder
-		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
-		$("#dashboard-new-placeholder-link").click(function() {
-			self.openOverlay('dashboard_widget_select');
-			
-			$('.stat-list .add-chart').click(function() {
-				var href = $(this).attr('href');
-				$.ajax({
-					url: href,
-					dataType: 'json',
-					type: 'GET',
-					success: function(data) {
-						console.log(data);
-						var widget = new DeskPRO.Report.Dashboard.Widget(self, data.widget.id, data.widget.stat);
-						self.addWidget(widget);
-					}
-				});
-				
-				return false;
-			});
-			
-			return false;
-		});
+		this.createAddChartPlaceholder();
 		
 		this.$dashboardGrid.sortable({
 			handle: '.grid-slot-toolbar'
@@ -269,8 +248,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		$("#report-dashboard-set-editable").css('display', 'block');
 		$("#report-dashboard-options").css('display', 'none');
 		
-		// Remove the 'Add Widget' placeholder
-		$('#dashboard-new-placeholder').remove();
+		this.removeAddChartPlaceholder();
 		
 		this.$dashboardGrid.sortable('destroy');
 		this.$dashboardGrid.find("li").resizable('destroy');
@@ -281,6 +259,44 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
                 this.is_edit_state = false;
         },
+	
+	createAddChartPlaceholder: function() {
+		var self = this;
+		
+		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
+		$("#dashboard-new-placeholder-link").click(function() {
+			self.openOverlay('dashboard_widget_select');
+			
+			$('.stat-list .add-chart').click(function() {
+				var href = $(this).attr('href');
+				$.ajax({
+					url: href,
+					dataType: 'json',
+					type: 'GET',
+					success: function(data) {
+						self.removeAddChartPlaceholder();
+						
+						var widget = new DeskPRO.Report.Dashboard.Widget(self, data.widget.id, data.widget.stat);
+						self.addWidget(widget);
+						
+						self.createAddChartPlaceholder();
+					}
+				});
+				
+				return false;
+			});
+			
+			return false;
+		});
+		
+	},
+	
+	removeAddChartPlaceholder: function() {
+		
+		// Remove the 'Add Widget' placeholder
+		$('#dashboard-new-placeholder').remove();
+		
+	},
 	
 	// Set the number of columns and update UI to reflect this
 	setNumberColumns: function(num_columns) {
@@ -304,7 +320,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	setupResizableGrid: function() {
 		
 		var snapSizeX  = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
-		snapSizeX += this.getWidgetSpacerWidth() * 
+		
 		this.$dashboard.find("li").resizable("option", "grid", [snapSizeX, 50]);
 		this.$dashboard.find("li").resizable("option", "minWidth", snapSizeX);
 	},
