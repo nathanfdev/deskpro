@@ -695,32 +695,6 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-
-	############################################################################
-	# ajax-mass-actions
-	############################################################################
-
-	public function ajaxMassActionsAction()
-	{
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-
-		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
-
-		App::getOrm()->beginTransaction();
-
-		foreach ($tickets as $ticket) {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$result = $ticket_edit->applyActions($actions);
-			$ticket_edit->save();
-		}
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		return $this->createJsonResponse(array('success' => true));
-	}
-
 	############################################################################
 	# ajax-release-locks
 	############################################################################
@@ -860,7 +834,6 @@ class TicketSearchController extends AbstractController
 	public function ajaxSaveActionsAction()
 	{
 		$ticket_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
-		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
 		// Accept changes to apply for previewing
 		// - We just apply the changes but dont save them, they'll be
@@ -869,7 +842,7 @@ class TicketSearchController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		if ($actions && $tickets) {
+		if ($actions && $ticket_ids) {
 			$factory = new ActionsFactory();
 			$collection = new ActionsCollection();
 
@@ -878,13 +851,14 @@ class TicketSearchController extends AbstractController
 				$collection->add($action);
 			}
 
-			foreach ($tickets as $t) {
-				$collection->apply($t, $this->person);
-				$this->em->persist($t);
+			foreach ($ticket_ids as $ticket_id) {
+				$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+				$collection->apply($ticket, $this->person);
+				$this->em->persist($ticket);
+				$this->em->flush();
 			}
 		}
 
-		$this->em->flush();
 		$this->em->commit();
 
 		return $this->createJsonResponse(array('success' => true));

@@ -526,10 +526,6 @@ agent_ticketsearch_runoverview:
   pattern: /ticket-search/overview-run
   defaults: { _controller: AgentBundle:TicketSearch:overviewRun }
 
-agent_ticketsearch_ajaxmassactions:
-  pattern: /ticket-search/ajax-mass-actions
-  defaults: { _controller: AgentBundle:TicketSearch:ajaxMassActions }
-
 agent_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
   defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
