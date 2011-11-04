@@ -47,10 +47,21 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			var is_sub = false;
 			selectoptions.each(function(index, el) {
 				el = $(el);
+				var label = el.text().trim();
 
-				var is_child = (el.text().trim().indexOf('--') !== -1);
 				var has_child = false;
-				if (!is_child) {
+				var is_child = (label.indexOf('--') !== -1);
+				var child_depth = 0;
+				if (is_child) {
+					child_depth = 1;
+					if (label.indexOf('----') !== -1) child_depth = 2;
+					if (label.indexOf('------') !== -1) child_depth = 3;
+					if (label.indexOf('--------') !== -1) child_depth = 4;
+					if (label.indexOf('----------') !== -1) child_depth = 5;
+					if (label.indexOf('------------') !== -1) child_depth = 6;
+					if (label.indexOf('--------------') !== -1) child_depth = 7;
+					label = label.replace(/^\-\-/, '').trim();
+				} else {
 					has_child = (el.next().text().trim().indexOf('--') !== -1);
 				}
 
@@ -60,24 +71,26 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 				if (has_child) {
 					is_sub = true;
 					options.values.push({
-						label: el.text(),
+						label: label,
 						value: el.val(),
 						hasChild: has_child,
-						hasParent: is_child
+						hasParent: is_child,
+						childDepth: child_depth
 					});
 				} else {
 					if (!is_child) is_sub = false;
 					options.values.push({
-						label: el.text(),
+						label: label,
 						value: el.val(),
 						hasChild: has_child,
-						hasParent: is_child
+						hasParent: is_child,
+						childDepth: child_depth
 					});
 				}
 			});
 
 			var text = selected_text;
-			if (!text.length) text = 'Choose...';
+			if (!text.length) text = options.noValText || 'Choose...';
 			var spanEl = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(selectEl);
 			spanEl.click(self.open.bind(self));
 			selectEl.hide();
@@ -94,7 +107,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			selectEl.change(function() {
 				var opt = $('option:selected', this);
 				var text = opt.text().trim();
-				if (!text.length) text = 'Choose...';
+				if (!text.length) text = options.noValText || 'Choose...';
 				else {
 					var prefix = $(this).data('prefix');
 					if (prefix) text = prefix + text;
@@ -110,6 +123,12 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			} else {
 				var li = $('<li><input type="checkbox" /><label></label></li>');
 			}
+
+			if (opt.childDepth) {
+				li.addClass('depth-' + opt.childDepth);
+				li.prepend('<span class="elbow-end"></span>');
+			}
+
 			$('label', li).text(opt.label);
 			$(':checkbox, :radio', li).first().val(opt.value);
 

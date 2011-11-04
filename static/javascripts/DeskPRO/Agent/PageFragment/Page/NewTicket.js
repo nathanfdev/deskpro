@@ -250,6 +250,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.openSnippetsViewer();
 		});
 
+		var depOb = new DeskPRO.UI.OptionBoxBuilder({
+			values: this.getEl('dep'),
+			noValText: 'Choose a department',
+			title: 'Department'
+		});
+		var statusMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('status'),
+			title: 'Status'
+		});
+
 		this.loadSnippetsViewer();
 	},
 

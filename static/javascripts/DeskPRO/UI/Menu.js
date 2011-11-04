@@ -69,6 +69,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 	},
 
 	_setupMenuElement: function() {
+		var self = this;
 		var origMenuElement = $(this.options.menuElement);
 
 		if (origMenuElement.data('menu-flag') && origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
@@ -122,13 +123,13 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 			if (!this.options.triggerElement) {
 				var text = selected_text;
-				if (!text.length) text = 'Choose...';
+				if (!text.length) text = self.options.noValText || 'Choose...';
 				var spanEl = this.options.triggerElement = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(origMenuElement);
 
 				this.addEvent('itemClicked', function(ev) {
 					var itemEl = $(ev.itemEl);
 					var text = itemEl.text().trim();
-					if (!text.length) text = 'Choose...';
+					if (!text.length) text = self.options.noValText || 'Choose...';
 					else {
 						var prefix = $(ev.itemEl).data('prefix');
 						if (prefix) text = prefix + text;
@@ -152,7 +153,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 				origMenuElement.change(function() {
 					var opt = $('option:selected', this);
 					var text = opt.text().trim();
-					if (!text.length) text = 'Choose...';
+					if (!text.length) text = self.options.noValText || 'Choose...';
 					else {
 						var prefix = $(this).data('prefix');
 						if (prefix) text = prefix + text;

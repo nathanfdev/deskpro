@@ -114,7 +114,6 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicOrganizationResults.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationCustomFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleList.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
