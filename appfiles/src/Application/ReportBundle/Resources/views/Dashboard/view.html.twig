@@ -8,58 +8,27 @@
 function _page_exec() {
         window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
 	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }});
-        
-        var widget = null;
-        {% for dashboard_stat in dashboard_stats %}
-                widget = new DeskPRO.Report.Dashboard.Widget({{ dashboard_stat.id }});
-                window.DeskPRO_Page.addWidget(widget);     
-        {% endfor %}
 }
 </script>
 {% endblock %}
 {% block page %}
 
-        <a href="{{ path('report_trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit</a>
+        <span class="dashboard-state">
+                <a id="report-dashboard-set-editable" href="#" class="clean-white">Edit</a>
+                <a id="report-dashboard-set-viewable" href="#" style="display: none" class="clean-white">Close Edit</a>
+        </span>
         
-        <div class="report-dashboard-options">
-		<form id="report-dashboard-options-form">
-			<h2>Grid Options</h2>
-			<p>
-				<label># Columns</label>
-				<input type="text" name="num-columns" id="options-num-columns" value="4" />
-				<input type="submit" value="Update" />
-			</p>
-		</form>
+        <div id="report-dashboard-options">
+                <h2>Grid Options</h2>
+                <div>
+                        <label>Number Columns</label>
+                        <div id="report-dashboard-options-num-columns-slider"></div>
+                </div>
 	</div>
         
         <div id="report-dashboard">
                 <div id="grid-lines">
-                        <div class="slot"></div>
-                        <div class="slot"></div>
-                        <div class="slot"></div>
-                        <div class="slot"></div>
-                        
                         <ul id="report-dashboard-grid">
-                                
-                                {% for dashboard_stat in dashboard_stats %}
-                                        <li class="slot">
-                                                <span class="inner">
-                                                        <span class="grid-slot-toolbar ui-corner-all">
-                                                                {{ dashboard_stat.stat.title }}
-                                                                <a href="{{ path('report_trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
-                                                                        <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
-                                                                </a>
-                                                        </span>
-                                                        <span class="grid-slot-content"></span>
-                                                </span>
-                                        </li>
-                                {% endfor %}
-                                <li class="slot new-placeholder">
-                                        <span class="inner">
-                                                <a href="#" id="open_overlay_btn">Add Chart</a>
-                                        </span>
-                                </li>
-                                
                         </ul>
                         <div style="clear: both"></div>
                 </div>
@@ -86,7 +55,7 @@ function _page_exec() {
                                                         <td class="{{stat.starred ? 'starred' : ''}}"></td>
                                                         <td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
                                                         <td>{{stat.authorName}}</td>
-                                                        <td class="icon"><a href="{{ path('report_trend_dashboard_add_stat', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+                                                        <td class="icon"><a href="" title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
                                                 </tr>
                                         {% endfor %}
                                 </tbody>

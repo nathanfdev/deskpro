@@ -8,7 +8,13 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         // Id of the widget
         widget_id: null,
         
-	// WIdget title
+	// HTML element ID
+	element_id: null,
+	
+	// Stat Id
+	stat_id: null,
+	
+	// Title
 	title: '',
 	
         // Number of slot this widget takes up in the dashboard grid
@@ -24,10 +30,10 @@ DeskPRO.Report.Dashboard.Widget = new Class({
                 
                 this.widget_id = widget_id;
 		
-		options = options || {};
-		this.title = options.title || ''
-                
-                $('#dashboard_widget').template('dashboard_widget');
+		this.element_id = Orb.getUniqueId();
+		
+		this.stat_id = options.stat_id || '';
+		this.title   = options.title || '';
 	},
         
         setEditable: function(editable) {
@@ -40,17 +46,22 @@ DeskPRO.Report.Dashboard.Widget = new Class({
                         // Switch widget to view state
                         this.updateToViewable();
                 }
-                
         },
         
         updateToEditable: function() {
                 
+		$("#report-dashboard-grid li .grid-slot-toolbar .icons").css('display', 'block');
+		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'move');
+		
                 this.is_edit_state = true;
                 
         },
         
         updateToViewable: function() {
                 
+		$("#report-dashboard-grid li .grid-slot-toolbar .icons").css('display', 'none');
+		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'auto');
+		
                 this.is_edit_state = false;
                 
         },

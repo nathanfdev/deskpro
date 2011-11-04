@@ -38,28 +38,44 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		this.$dashboard 	= $("#report-dashboard");
 		this.$dashboardGrid 	= $("#report-dashboard-grid");
 		
+		$('#dashboard_widget').template('dashboard_widget');
+		$('#dashboard_widget_create').template('dashboard_widget_create');
 	},
 
 	initPage: function() {
 		var self = this;
 		
-		$("#report-dashboard-options-form").submit(function() {
-			
-			self.calculateColumnWidth();
-			self.setupResizableGrid();
-			self.loadCharts();
-			
+		$("#report-dashboard-options-num-columns-slider").slider({
+			range: "max",
+			min: 1,
+			max: 8,
+			value: 4,
+			slide: function(event, ui) {
+				self.number_columns = ui.value;
+				
+				self.calculateColumnWidth();
+				self.setupResizableGrid();
+				self.loadCharts();
+			}
+		});
+		
+		$('#report-dashboard-set-editable').click(function() {
+			self.setEditable(true);
+			return false;
+		});
+		
+		$('#report-dashboard-set-viewable').click(function() {
+			self.setEditable(false);
 			return false;
 		});
 		
 		$(window).resize(function() {
-			//self.setupResizableGrid();
+			self.calculateColumnWidth();
+			self.setupResizableGrid();
 		});
 		
-		this.calculateColumnWidth();
-		this.fetchWidgets();
 		
-		self.updateToEditable();
+		this.fetchWidgets();
 	},
 	
 	// Fetch the widgets
@@ -71,9 +87,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			type: 'GET',
 			success: function(data) {
 				Array.each(data.widgets, function(v) {
-					var widget = new DeskPRO.Report.Dashboard.Widget(v.id, v);
+					console.log( v.stat)
+					var widget = new DeskPRO.Report.Dashboard.Widget(v.id, v.stat);
 					self.addWidget(widget);
 				});
+				self.calculateColumnWidth();
 			}
 		});
 	},
@@ -86,7 +104,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
-				var widget = new DeskPRO.Report.Dashboard.Widget(data.widget.id, data.widget);
+				var widget = new DeskPRO.Report.Dashboard.Widget(data.id, data.stat);
 				self.addWidget(widget);
 			}
 		});
@@ -100,18 +118,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		pos = pos || -1;
 		
+		var insert_widget = {
+			widget: widget,
+			num_slots: 1
+		};
+		
 		// No position specified, add it to the end
 		if (pos === -1) {
-			this.widgets.push(widget);
+			this.widgets.push(insert_widget);
 		}
 		else {
 			// Need to insert at postion
-			this.widgets.splice(pos, 0, widget)
+			this.widgets.splice(pos, 0, insert_widget)
 		}
 		
 		// Add widget to UI
-		this.$dashboardGrid.append('');
-		
+		this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
+		$('.widget').css('margin-right', this.column_spacing[1] + 'px');
 	},
 	
 	// Remove a widget from the dashboard.
@@ -124,7 +147,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			
 	},
 	
-	setEditable: function() {
+	setEditable: function(editable) {
 		
 		if (editable) {
 			// Switch dashbaord to edit state
@@ -139,6 +162,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Update UI state to editable
 	updateToEditable: function() {
                 
+		// Hide the edit link, show the view link
+		$("#report-dashboard-set-editable").css('display', 'none');
+		$("#report-dashboard-set-viewable").css('display', 'block');
+		$("#report-dashboard-options").css('display', 'block');
+		
+		// Create the 'Add Widget' placeholder
+		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
+		
 		this.$dashboardGrid.sortable({
 			handle: '.grid-slot-toolbar'
 		});
@@ -152,6 +183,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			}
 		});
 		
+		Array.each(this.widgets, function(v) {
+			v.widget.setEditable(true);
+		});
+		
 		this.setupResizableGrid();
 		
                 this.is_edit_state = true;
@@ -161,6 +196,21 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Update UI state to viewable
         updateToViewable: function() {
                 
+		// Hide the view link, show the edit link
+		$("#report-dashboard-set-viewable").css('display', 'none');
+		$("#report-dashboard-set-editable").css('display', 'block');
+		$("#report-dashboard-options").css('display', 'none');
+		
+		// Remove the 'Add Widget' placeholder
+		$('#dashbard-new-placeholder').remove();
+		
+		this.$dashboardGrid.sortable('destroy');
+		this.$dashboardGrid.find("li").resizable('destroy');
+		
+		Array.each(this.widgets, function(v) {
+			v.widget.setEditable(false);
+		});
+		
                 this.is_edit_state = false;
                 
         },
@@ -174,16 +224,20 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	
 	// Calculate the width of a columns	
 	calculateColumnWidth: function() {
+		var self = this;
+		this.column_width = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
 		
-		// TODO: need to consider column spacing
-		this.column_width = this.getDashboardWidth() / this.number_columns;
+		Array.each(this.widgets, function(v) {
+			$("#" + v.widget.element_id).css('width', (v.num_slots * self.column_width) + 'px');
+		});
 		
+		$("#dashbard-new-placeholder").css('width', self.column_width + 'px');
 	},
 	
 	setupResizableGrid: function() {
 		
-		var snapSizeX  = this.getDashboardWidth() / this.number_columns;
-			
+		var snapSizeX  = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
+		snapSizeX += this.getWidgetSpacerWidth() * 
 		this.$dashboard.find("li").resizable("option", "grid", [snapSizeX, 50]);
 		this.$dashboard.find("li").resizable("option", "minWidth", snapSizeX);
 	},
@@ -195,6 +249,19 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	getDashboardWidth: function() {
 		
 		return this.$dashboard.width();
+		
+	},
+	
+	getWidgetSpacerWidth: function() {
+		
+		return (this.column_spacing[1] + this.column_spacing[3]);
+		
+	},
+	
+	getTotalSpacerWidth: function() {
+		
+		return this.getWidgetSpacerWidth() * this.number_columns;
+		
 	}
 	
 });

@@ -132,9 +132,14 @@ class DashboardController extends AbstractController
 	
 	protected function getWidgetDetails($dashboard_stat)
 	{
+		$stat = $dashboard_stat->getStat();
+		
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
-			'title'		=> $dashboard_stat->getStat()->getTitle(),
+			'stat'		=> array(
+				'id'	=> $stat->getId(),
+				'title' => $stat->getTitle(),
+			),
 		);
 	}
 	
