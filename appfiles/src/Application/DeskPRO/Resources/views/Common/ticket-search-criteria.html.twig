@@ -271,7 +271,7 @@
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.departments %}
+	{% if term_options.departments_hierarchy %}
 		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
@@ -288,8 +288,14 @@
 			</div>
 			<div class="options">
 				<select name="department">
-					{% for id,label in term_options.departments %}
-						<option value="{{id}}">{{label}}</option>
+					{% for dep in term_options.departments_hierarchy %}
+						<option value="{{dep.id}}">{{dep.title}}</option>
+						{% if dep.children %}
+							<option value="{{dep.id}}">{{dep.title}}</option>
+							{% for subdep in dep.children %}
+								<option value="{{subdep.id}}">-- {{subdep.title}}</option>
+							{% endfor %}
+						{% endif %}
 					{% endfor %}
 				</select>
 			</div>

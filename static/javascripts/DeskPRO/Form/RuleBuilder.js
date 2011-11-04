@@ -264,10 +264,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 		if (numChilds == 1) {
 			var choiceSel = $('select:not(.no-auto):not([multiple])', choice);
 			if (choiceSel.length) {
-				var choiceMenu = new DeskPRO.UI.Menu({
-					menuElement: choiceSel
+				var optionBox = new DeskPRO.UI.OptionBoxBuilder({
+					values: choiceSel
 				});
-				rowDestroy.push(choiceMenu);
+				rowDestroy.push(optionBox);
 			}
 
 			var inputEl = $('input[type="text"]:not(.no-auto), textarea:not(.no-auto)', choice);
@@ -308,7 +308,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 				inputEl.change(function() {
 					var text = inputEl.val().trim();
 					if (!text) text = '(click to set value)';
-					
+
 					spanEl.text(text);
 				});
 			}

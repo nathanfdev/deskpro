@@ -147,9 +147,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
 
-		this.ticketParticipants = new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
-		this.ownObject(this.ticketParticipants);
-
 		if (this.meta.isLocked) {
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
 			this.ownObject(this.ticketLocked);

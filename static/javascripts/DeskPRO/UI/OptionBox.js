@@ -4,7 +4,6 @@ Orb.createNamespace('DeskPRO.UI');
  * Optionbox
  */
 DeskPRO.UI.OptionBox = new Orb.Class({
-	DisableParentCall: true,
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
@@ -40,8 +39,8 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		// Basic elements
 		//------------------------------
 
-		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
-		this.backdrop.css('z-index', 10000000-1);
+		this.backdrop = $('<div class="backdrop optionbox-backdrop" />').hide().appendTo('body');
+		this.backdrop.css('z-index');
 
 		if (!this.el.parent().is('body')) {
 			this.el.detach().appendTo('body');
@@ -132,7 +131,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		var section = this._findSection(check);
 		this.updateCountEls(section);
 
-		this.fireEvent('checked', [this]);
+		this.fireEvent('checked', [check, this]);
 	},
 
 	updateCountEls: function(section) {

@@ -14,53 +14,6 @@
 	{% endfor %}
 </ul>
 
-<div class="optionbox" id="set_agent_and_team_optionbox_radio">
-	<section data-section-name="me">
-		<ul>
-			<li>
-				<label>Me</label>
-				<button class="clean-white small" data-type="agent" data-agent-id="{{ app.user.id }}">Assign</button>
-			</li>
-			{% if app.user.teams %}
-				{% for team in app.user.teams %}
-					<li>
-						<label>My team {{ team.name }}</label>
-						<button class="clean-white small" data-type="team" data-team-id="{{ team.id }}">Assign</button>
-					</li>
-				{% endfor %}
-			{% endif %}
-		</ul>
-	</section>
-	<section data-section-name="teams">
-		<header>
-			<h3>Teams</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			{% for team in agent_teams %}
-				<li>
-					<label>{{ team.name }}</label>
-					<button class="clean-white small" data-type="team" data-team-id="{{ team.id }}">Assign</button>
-				</li>
-			{% endfor %}
-		</ul>
-	</section>
-	<section data-section-name="agents">
-		<header>
-			<h3>Everyone</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			{% for agent in agents %}
-				<li>
-					<label>{{ agent.display_name }}</label>
-					<button class="clean-white small" data-type="agent" data-agent-id="{{ agent.id }}">Assign</button>
-				</li>
-			{% endfor %}
-		</ul>
-	</section>
-</div>
-
 <div class="optionbox" id="agent_optionbox_check">
 	<section data-section-name="followers">
 		<header>
@@ -123,30 +76,6 @@
 		</ul>
 	</section>
 </div>
-
-{# Teams #}
-<ul id="agent_teams_menu">
-	{% if app.user.teams %}
-		<li class="section-title">Your Teams</li>
-		{% for team in app.user.teams %}
-			<li data-team-id="{{ team.id }}">{{ team.name }}</li>
-		{% endfor %}
-		<li class="section-title">All Teams</li>
-	{% endif %}
-
-	{% for team in agent_teams %}
-		<li data-team-id="{{ team.id }}">{{ team.name }}</li>
-	{% endfor %}
-</ul>
-
-{# My Teams #}
-{% if app.user.teams %}
-	<ul id="agent_my_teams_menu">
-		{% for team in app.user.teams %}
-			<li data-team-id="{{ team.id }}">{{ team.name }}</li>
-		{% endfor %}
-	</ul>
-{% endif %}
 
 {# Department #}
 <ul id="department_menu" data-menu-flag="copy-menu">

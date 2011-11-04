@@ -1,0 +1,140 @@
+Orb.createNamespace('DeskPRO.UI');
+
+/**
+ * Optionbox but this helps build the markup required for it.
+ */
+DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
+	Extends: DeskPRO.UI.OptionBox,
+
+	initialize: function(options) {
+		var self = this;
+
+		var tpl = [];
+		tpl.push('<div class="optionbox">');
+		tpl.push('	<section data-section-name="default">');
+		tpl.push('		<header>');
+		tpl.push('			<h3>&nbsp;</h3>');
+		tpl.push('			<input type="text" class="filter-box" placeholder="Filter..." />');
+		tpl.push('		</header>');
+		tpl.push('		<ul>');
+		tpl.push('		</ul>');
+		tpl.push('	</section>');
+		tpl.push('</div>');
+
+		tpl = tpl.join('');
+
+		var obEl = $(tpl);
+
+		if (options.title) {
+			$('header h3', obEl).text(options.title);
+		}
+
+		if (options.addClass) {
+			obEl.addClass(options.addClass);
+		}
+
+		var randid = Orb.uuid();
+
+		var bindEl = null;
+		if (options.values.is && options.values.is('select')) {
+			options.selectType = 'radio';
+
+			var selectEl = options.values;
+			options.values = [];
+
+			var selected_text = '';
+			var selectoptions = $('option', selectEl);
+			var is_sub = false;
+			selectoptions.each(function(index, el) {
+				el = $(el);
+
+				var is_child = (el.text().trim().indexOf('--') !== -1);
+				var has_child = false;
+				if (!is_child) {
+					has_child = (el.next().text().trim().indexOf('--') !== -1);
+				}
+
+				if (!selected_text || el.is(':selected')) {
+					selected_text = el.text();
+				}
+				if (has_child) {
+					is_sub = true;
+					options.values.push({
+						label: el.text(),
+						value: el.val(),
+						hasChild: has_child,
+						hasParent: is_child
+					});
+				} else {
+					if (!is_child) is_sub = false;
+					options.values.push({
+						label: el.text(),
+						value: el.val(),
+						hasChild: has_child,
+						hasParent: is_child
+					});
+				}
+			});
+
+			var text = selected_text;
+			if (!text.length) text = 'Choose...';
+			var spanEl = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(selectEl);
+			spanEl.click(self.open.bind(self));
+			selectEl.hide();
+
+			this.addEvent('checked', function(el) {
+				var value = el.val();
+
+				if (value != selectEl.val()) {
+					selectEl.val(value);
+					selectEl.change();
+				}
+			});
+
+			selectEl.change(function() {
+				var opt = $('option:selected', this);
+				var text = opt.text().trim();
+				if (!text.length) text = 'Choose...';
+				else {
+					var prefix = $(this).data('prefix');
+					if (prefix) text = prefix + text;
+				}
+
+				spanEl.text(text);
+			});
+		}
+
+		Array.each(options.values, function(opt) {
+			if (options.selectType == 'radio') {
+				var li = $('<li><input type="radio" /><label></label></li>');
+			} else {
+				var li = $('<li><input type="checkbox" /><label></label></li>');
+			}
+			$('label', li).text(opt.label);
+			$(':checkbox, :radio', li).first().val(opt.value);
+
+			if (opt.value == options.selected_value) {
+				$(':checkbox, :radio', li).first().prop('checked', true);
+			}
+
+			if (opt.extraData) {
+				Object.each(opt.extraData, function(v,k) {
+					li.data(k, v);
+				});
+			}
+
+			if (opt.hasChild) {
+				li.addClass('group-title');
+			}
+			if (opt.hasParent) {
+				li.addClass('child');
+			}
+
+			$('ul', obEl).append(li);
+		})
+
+		options.element = obEl;
+
+		this.parent(options);
+	}
+});
