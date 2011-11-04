@@ -37,6 +37,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		}
 
 		$url = $this->generateUrl('admin', array(), true);
+		if ($this->in->getString('return')) {
+			$url = $this->in->getString('return');
+		}
+		
 		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
 	}
 }
