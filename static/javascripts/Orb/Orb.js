@@ -1,11 +1,13 @@
 var Orb = {};
 
-if (window.console === undefined) {
+if (!window.console) {
 	window.console = {};
-	['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
-		window.console[v] = function() { };
-	});
 }
+['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
+	if (!window.console[v]) {
+		window.console[v] = function() { };
+	}
+});
 
 /**
  * Create a namespace.
