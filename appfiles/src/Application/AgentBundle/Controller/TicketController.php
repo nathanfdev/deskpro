@@ -1086,20 +1086,20 @@ class TicketController extends AbstractController
 
 	public function ajaxGetMacroAction($ticket_id)
 	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
 		$macro_id = $this->in->getUint('macro_id');
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-
-		$ticket = null;
-		if ($ticket_id) {
-			$ticket = $this->getTicketOr404($ticket_id);
-		}
 
 		$actions_collection = $macro->getActionsCollection($ticket);
 		$actions = $actions_collection->getApplyActions($ticket, $this->person);
 
-		return $this->createJsonResponse($actions);
+		return $this->createJsonResponse(array(
+			'macro_id' => $macro->id,
+			'actions_apply' => $actions,
+			'actions_display' => $macro->actions
+		));
 	}
-
 
 	############################################################################
 	# view-message-details

@@ -59,6 +59,13 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 	},
 
+	/**
+	 * Get the main wrapper for the overlay
+	 */
+	getElement: function() {
+		return this.elements.wrapperOuter;
+	},
+
 
 	/**
 	 * Alias for isOverlayOpen.

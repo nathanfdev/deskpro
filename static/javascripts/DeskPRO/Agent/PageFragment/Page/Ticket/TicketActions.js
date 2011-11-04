@@ -173,7 +173,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			triggerElement: this.getEl('macros_menu_trigger'),
 			menuElement: this.getEl('macros_menu'),
 			onItemClicked: (function(info) {
-				this.activateMacro($(info.itemEl).data('macro-id'));
+				this.confirmMacro($(info.itemEl).data('macro-id'));
 			}).bind(this)
 		});
 
@@ -186,48 +186,62 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}).bind(this));
 	},
 
-	activateMacro: function(macroId) {
-		this.currentMacroId = macroId;
+	_initMacroOverlay: function() {
+		var self = this;
+		if (this.macroOverlay) {
+			return;
+		}
+
+		var overlayEl = this.getEl('confirm_macro_overlay');
+
+		this.getEl('apply_macro_btn').click(function() {
+			self.saveMacro();
+		});
+
+		this.macroOverlay = new DeskPRO.UI.Overlay({
+			contentElement: overlayEl
+		});
+	},
+
+	confirmMacro: function(macroId) {
+		this.macroActions = null;
 
 		$.ajax({
-			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', this.currentMacroId),
+			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', macroId),
 			type: 'GET',
 			context: this,
 			dataType: 'json',
 			success: function(data) {
-				this.previewMacroActions(data);
+				this._initMacroOverlay();
 
-				this.macroOpacityHighlight = $('section.ticket-header, div.messages-wrap').css('opacity', '0.4');
+				var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
+				$('.actions-list', this.macroOverlay.getElement()).empty().append(add);
+				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
+				Array.each(data.actions_display, function(info, x) {
+					var basename = 'actions[initial_' + x + ']';
+					editor.addNewRow($('.search-terms', add), basename, {
+						type: info.type,
+						op: info.op,
+						options: info.options
+					});
+				});
+
+				this.macroActions = data.actions_apply;
+
+				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
+				$('.remove', add).remove();
+
+				this.macroOverlay.open();
 			}
 		});
 	},
 
 	saveMacro: function() {
-
-		if (this.changeManager.hasChangedProperty('reply')) {
-			this.page.replyBox.saveReply();
+		if (!this.macroActions || !this.macroActions.length) {
+			return;
 		}
 
-		this.changeManager.saveChanges();
-		if (this.macroOpacityHighlight) {
-			this.macroOpacityHighlight.css('opacity', 1);
-			this.macroOpacityHighlight = null;
-		}
-		this.toggleMacroApplyBtn('off');
-	},
-
-	revertMacro: function() {
-		this.changeManager.revertChanges();
-		if (this.macroOpacityHighlight) {
-			this.macroOpacityHighlight.css('opacity', 1);
-			this.macroOpacityHighlight = null;
-		}
-		this.toggleMacroApplyBtn('off');
-	},
-
-	previewMacroActions: function(actions) {
-
-		Array.each(actions, function(action_info) {
+		Array.each(this.macroActions, function(action_info) {
 			var type = action_info.action;
 			var action;
 
@@ -259,24 +273,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}, this);
 
 		this.changeManager.applyChanges();
-		this.toggleMacroApplyBtn('on');
-	},
-
-	toggleMacroApplyBtn: function(force) {
-
-		if (!force) {
-			if (this.macroControls.is(':visible')) {
-				force = 'off';
-			} else {
-				force = 'on';
-			}
+		if (this.changeManager.hasChangedProperty('reply')) {
+			this.page.replyBox.saveReply();
 		}
 
-		if (force == 'on') {
-			this.page.wrapper.addClass('macro-open');
-		} else {
-			this.page.wrapper.removeClass('macro-open');
-		}
+		var self = this;
+		this.changeManager.saveChanges(null, function() {;
+				this.macroOverlay
+		});
+
+		this.macroActions = null;
 	},
 
 	/**

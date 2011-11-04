@@ -421,6 +421,19 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 </div>
 
+<div class="confirm-macro-overlay" id="{{baseId}}_confirm_macro_overlay" style="width: 400px; height: 400px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Confirm: Apply Macro</h4>
+	</div>
+	<div class="overlay-content">
+		This macro is defined to perform the following actions:
+		<div class="actions-list"></div>
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white" id="{{baseId}}_apply_macro_btn">Apply Macro</button>
+	</div>
+</div>
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

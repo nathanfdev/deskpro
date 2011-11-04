@@ -506,6 +506,17 @@
 	</footer>
 </section>
 
+<script type="text/x-deskpro-plain" id="ticketactions_actionsform_tpl">
+	<div class="dp-form-row">
+		<div class="dp-form-input">
+			<div class="search-form actions-list">
+				<div class="search-terms"></div>
+			</div>
+			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
+		</div>
+	</div>
+</script>
+
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
 
