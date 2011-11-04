@@ -40,26 +40,7 @@ function _page_exec() {
                         <h4>Add Dashboard Chart</h4>
                 </div>
                 <div class="overlay-content">
-                        <table class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
-                                <thead>
-                                        <tr>
-                                                <th width="16"></th>
-                                                <th>Title</th>
-                                                <th width="200">Author</th>
-                                                <th width="16" class="icon"></th>
-                                        </tr>
-                                </thead>
-                                <tbody>
-                                        {% for stat in all_stats %}
-                                                <tr>
-                                                        <td class="{{stat.starred ? 'starred' : ''}}"></td>
-                                                        <td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
-                                                        <td>{{stat.authorName}}</td>
-                                                        <td class="icon"><a href="" title="Add Chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
-                                                </tr>
-                                        {% endfor %}
-                                </tbody>
-                        </table>
+                        
                 </div>
                 <div class="overlay-footer">
                         
@@ -68,15 +49,31 @@ function _page_exec() {
         
         {% include 'ReportBundle:Dashboard:widget.html.twig' %}
         
-        <script type="text/javascript">
-                $(document).ready(function() {
-                        var defaultNumColumns = 4;
-                        
-                        var overlay = new DeskPRO.UI.Overlay({
-                                triggerElement: $('#open_overlay_btn'),
-                                contentElement: $('#overlay_wrapper')
-                        });
-                });
+        <script id="dashboard_widget_select" type="text/x-jquery-tmpl">
+                <table class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
+                        <thead>
+                                <tr>
+                                        <th width="16"></th>
+                                        <th>Title</th>
+                                        <th width="200">Author</th>
+                                        <th width="16" class="icon"></th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                                {% for stat in all_stats %}
+                                        <tr>
+                                                <td class="{{stat.starred ? 'starred' : ''}}"></td>
+                                                <td>{{stat.title}}</td>
+                                                <td>{{stat.authorName}}</td>
+                                                <td class="icon"><a href="" title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+                                        </tr>
+                                {% endfor %}
+                        </tbody>
+                </table>
+        </script>
+        
+        <script id="dashboard_widget_edit" type="text/x-jquery-tmpl">
+                Edit widget
         </script>
         
 {% endblock %}

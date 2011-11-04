@@ -32,6 +32,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Reference to dashboard grid
 	$dashboardGrid: null,
 	
+	// UI Overlay
+	overlay: null,
+	
 	initialize: function(dashboard_id) {		
 		this.dashboard_id = dashboard_id;
 		
@@ -40,10 +43,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		$('#dashboard_widget').template('dashboard_widget');
 		$('#dashboard_widget_create').template('dashboard_widget_create');
+		$('#dashboard_widget_select').template('dashboard_widget_select');
+		$('#dashboard_widget_edit').template('dashboard_widget_edit');
 	},
 
 	initPage: function() {
 		var self = this;
+		
+		this.overlay = new DeskPRO.UI.Overlay({
+                        contentElement: $('#overlay_wrapper')
+                });
 		
 		$("#report-dashboard-options-num-columns-slider").slider({
 			range: "max",
@@ -74,8 +83,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			self.setupResizableGrid();
 		});
 		
-		
 		this.fetchWidgets();
+	},
+	
+	// Open the overlay loading in a template
+	openOverlay: function(template_id) {
+		
+		$('.overlay-content').html($.tmpl(template_id));
+		this.overlay.open();
+		
+	},
+	
+	// Clean the overlay and close it
+	closeOverlay: function() {
+		
+		$('.overlay-content').html('');
+		this.overlay.close();
+		
 	},
 	
 	// Fetch the widgets
@@ -88,7 +112,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			success: function(data) {
 				Array.each(data.widgets, function(v) {
 					console.log( v.stat)
-					var widget = new DeskPRO.Report.Dashboard.Widget(v.id, v.stat);
+					var widget = new DeskPRO.Report.Dashboard.Widget(self, v.id, v.stat);
 					self.addWidget(widget);
 				});
 				self.calculateColumnWidth();
@@ -104,7 +128,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
-				var widget = new DeskPRO.Report.Dashboard.Widget(data.id, data.stat);
+				var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
 				self.addWidget(widget);
 			}
 		});
@@ -134,17 +158,41 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		// Add widget to UI
 		this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
+		widget.addUIHandlers();
+		
 		$('.widget').css('margin-right', this.column_spacing[1] + 'px');
 	},
 	
 	// Remove a widget from the dashboard.
-	removeWidget: function(pos) {
+	removeWidget: function(widget) {
 		
 		// TODO: update widget state at server
 		
-		if (this.widgets[pos])
+		var pos = this.getWidgetIndexByElementId(widget.element_id);
+		if (pos === -1) {
+			return;
+		}
+		
+		
+		if (this.widgets[pos]) {
 			this.widgets.splice(pos, 1);
+		}
 			
+	},
+	
+	getWidgetIndexByElementId: function(element_id) {
+		var index = 0;
+		var pos   = -1;
+		
+		Array.each(this.widgets, function(v) {
+			if (element_id === v.element_id) {
+				pos = index;
+			}
+			
+			index++;
+		});
+		
+		return pos;
 	},
 	
 	setEditable: function(editable) {
@@ -161,7 +209,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	
 	// Update UI state to editable
 	updateToEditable: function() {
-                
+                var self = this;
+		
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
 		$("#report-dashboard-set-viewable").css('display', 'block');
@@ -169,6 +218,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		// Create the 'Add Widget' placeholder
 		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
+		$("#dashboard-new-placeholder-link").click(function() {
+			self.openOverlay('dashboard_widget_select');
+			return false;
+		});
 		
 		this.$dashboardGrid.sortable({
 			handle: '.grid-slot-toolbar'
@@ -187,6 +240,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			v.widget.setEditable(true);
 		});
 		
+		this.calculateColumnWidth();
 		this.setupResizableGrid();
 		
                 this.is_edit_state = true;
@@ -202,7 +256,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		$("#report-dashboard-options").css('display', 'none');
 		
 		// Remove the 'Add Widget' placeholder
-		$('#dashbard-new-placeholder').remove();
+		$('#dashboard-new-placeholder').remove();
 		
 		this.$dashboardGrid.sortable('destroy');
 		this.$dashboardGrid.find("li").resizable('destroy');
@@ -231,7 +285,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			$("#" + v.widget.element_id).css('width', (v.num_slots * self.column_width) + 'px');
 		});
 		
-		$("#dashbard-new-placeholder").css('width', self.column_width + 'px');
+		$("#dashboard-new-placeholder").css('width', self.column_width + 'px');
 	},
 	
 	setupResizableGrid: function() {

@@ -5,6 +5,9 @@ Orb.createNamespace('DeskPRO.Report.Dashboard');
  */
 DeskPRO.Report.Dashboard.Widget = new Class({
         
+	// Reference back to dashboard
+	dashboard: null,
+	
         // Id of the widget
         widget_id: null,
         
@@ -26,8 +29,9 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         // The chart associated with the widget
         chart: null,
         
-	initialize: function(widget_id, options) {
+	initialize: function(dashboard, widget_id, options) {
                 
+		this.dashboard = dashboard;
                 this.widget_id = widget_id;
 		
 		this.element_id = Orb.getUniqueId();
@@ -36,6 +40,21 @@ DeskPRO.Report.Dashboard.Widget = new Class({
 		this.title   = options.title || '';
 	},
         
+	addUIHandlers: function() {
+		var self = this;
+		
+		$("#" + this.element_id + " .edit").click(function() {
+			self.dashboard.openOverlay('dashboard_widget_edit');
+			return false;
+		});
+		
+		$("#" + this.element_id + " .close").click(function() {
+			self.dashboard.removeWidget(self);
+			return false;
+		});
+		
+	},
+	
         setEditable: function(editable) {
                 
                 if (editable) {
@@ -50,7 +69,7 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         
         updateToEditable: function() {
                 
-		$("#report-dashboard-grid li .grid-slot-toolbar .icons").css('display', 'block');
+		$("#report-dashboard-grid li .grid-slot-toolbar .icons a").css('display', 'block');
 		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'move');
 		
                 this.is_edit_state = true;
@@ -59,7 +78,7 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         
         updateToViewable: function() {
                 
-		$("#report-dashboard-grid li .grid-slot-toolbar .icons").css('display', 'none');
+		$("#report-dashboard-grid li .grid-slot-toolbar .icons a").css('display', 'none');
 		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'auto');
 		
                 this.is_edit_state = false;
