@@ -1,4 +1,14 @@
 {% extends 'ReportBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/PageHandler/Dashboard.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard();
+}
+</script>
+{% endblock %}
 {% block page %}
 
         <a href="{{ path('trend_dashboard_edit', { 'dashboard_id': dashboard.id }) }}">Edit</a>
