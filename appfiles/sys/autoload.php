@@ -41,6 +41,7 @@ $loader->registerClassNames(array(
 	'DeskPRO\\Kernel\\Boot'              => DP_ROOT.'/sys/Kernel/Boot.php',
 	'DeskPRO\\Kernel\\AbstractKernel'    => DP_ROOT.'/sys/Kernel/AbstractKernel.php',
 	'DeskPRO\\Kernel\\AgentKernel'       => DP_ROOT.'/sys/Kernel/AgentKernel.php',
+	'DeskPRO\\Kernel\\ReportKernel'      => DP_ROOT.'/sys/Kernel/ReportKernel.php',
 	'DeskPRO\\Kernel\\UserKernel'        => DP_ROOT.'/sys/Kernel/UserKernel.php',
 	'DeskPRO\\Kernel\\CliKernel'         => DP_ROOT.'/sys/Kernel/CliKernel.php',
 	'DeskPRO\\Kernel\\SysKernel'         => DP_ROOT.'/sys/Kernel/SysKernel.php',

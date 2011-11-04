@@ -13,10 +13,14 @@
 	{{ dp_asset_html('agent_vendors') }}
 	{{ dp_asset_html('agent_common') }}
 	{{ dp_asset_html('agent_deskpro_ui') }}
-    {{ dp_asset_html('admin_admin_ui') }}
-    {{ dp_asset_html('admin_admin_handlers') }}
+        {{ dp_asset_html('admin_admin_ui') }}
+        {{ dp_asset_html('admin_admin_handlers') }}
+	{{ dp_asset_html('report_report_ui') }}
+	
+	{{ dp_asset_html('report_graphs') }}
+	{{ dp_asset_html('report_interface_css') }}
 
-    <script type="text/javascript" charset="utf-8">
+        <script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
 		var BASE_URL = '{{ path('user') }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
@@ -24,9 +28,9 @@
 
 		window._page_exec_stack = [];
 		function _win_exec() {
-			window.DeskPRO_Window = new DeskPRO.Admin.Window();
+			window.DeskPRO_Window = new DeskPRO.Report.Window();
 			window.DeskPRO_Window.initPage();
-
+			
 			if (window._page_exec) {
 				window._page_exec_stack.push(_page_exec);
 			}
@@ -73,7 +77,7 @@
 <div id="dp_header">
 
 	<div id="dp_header_logo">
-		<h1>Admin</h1>
+		<h1>Reports</h1>
 	</div>
 	<!-- BEGIN SEARCH SECTION -->
 	<div id="dp_omnibox_wrap">
@@ -106,7 +110,7 @@
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 					<li class="setting" id="user_settings_link"><a>Settings</a></li>
 					<li class="help"><a>Help</a></li>
-					<li class="logout"><a href="{{ path('admin_logout', {'auth': security_token('user_logout')}) }}">Log out</a></li>
+					<li class="logout"><a href="{{ path('report_logout', {'auth': security_token('user_logout')}) }}">Log out</a></li>
 				</ul>
 			</div>
 		</div>
@@ -117,19 +121,19 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a>Admin Interface<span class="dropdownIcon"></span></a>
+				<a>Report Interface<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a><span>Admin Interface</span></a>
+				<a><span>Report Interface</span></a>
 			</div>
 			<ul>
+				<li><a class="admin" href="{{ path('admin') }}"><span class="check">Admin Interface</span></a></li>
 				<li><a class="admin" href="{{ path('agent') }}"><span class="check">Agent Interface</span></a></li>
 				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
-				<li><a class="report" href="{{ path('report') }}"><span class="check">Report Interface</span></a></li>
 				<li><a class="portal" href="{{ path('user') }}"><span class="check">User Interface</span></a></li>
 			</ul>
 		</div>
@@ -139,87 +143,36 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
-<!-- BEGIN NAV BAR -->
-<div id="dp_admin_nav">
-	<div id="dp_admin_nav_sections" class="deskproPane">
-		<ul>
-			<li data-menu="#setup_menu">
-				<a><span class="setup">Setup</span></a>
-			</li>
-			<li data-menu="#server_menu">
-				<a><span class="server">Server</span></a>
-			</li>
-			<li>
-				<a href="{{ path('admin_agents') }}"><span class="agents">Agents</span></a>
-			</li>
-			<li data-menu="#users_menu">
-				<a><span class="users">Users</span></a>
-			</li>
-			<li data-menu="#integrate_menu">
-				<a><span class="integrate">Integrate</span></a>
-			</li>
-			<li data-menu="#tickets_menu">
-				<a><span class="tickets">Tickets</span></a>
-			</li>
-			<li data-menu="#chat_menu">
-				<a><span class="chat">Chat</span></a>
-			</li>
-			<li data-menu="#publish_menu">
-				<a><span class="publish">Publish</span></a>
-			</li>
-		</ul>
-	</div>
-</div>
-<!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
-
-{% set prepage %}{% block prepage %}{% endblock %}{% endset %}
-{% if prepage|trim|length %}
-	<div id="dp_admin_prepage" class="admin-help-header">
-		<div class="open-btn">
-			<span>&darr;</span>
-		</div>
-		<div class="bound-fade"></div>
-		<div class="content">{{ prepage|raw }}</div>
-	</div>
-{% endif %}
-
-{% set pagetitle %}{% block pagetitle %}{% endblock %}{% endset %}
-{% if pagetitle|trim|length %}
-	<div id="dp_admin_pagetitle">{{ pagetitle|raw }}</div>
-{% endif %}
-
-{% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
-{% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
-{% if sidebar|trim|length %}
-	<div id="dp_admin_page_sidebar">{{ sidebar|raw }}</div>
-{% endif %}
-{% if sidebar_right|trim|length %}
-	<div id="dp_admin_page_sidebar_right">{{ sidebar_right|raw }}</div>
-{% endif %}
-
-{% if app.session.hasFlash('saved') %}
-	<div class="alert-message success">
-		"{{ app.session.getFlash('saved') }}" was saved successfully
-	</div>
-{% endif %}
-{% if app.session.hasFlash('deleted') %}
-	<div class="alert-message success">
-		"{{ app.session.getFlash('deleted') }}" was deleted successfully
-	</div>
-{% endif %}
-
-<div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %}">
-	{% block content %}
-		<div class="dp-page-box">
-			<div class="page-content">
-				{% block page %}{% endblock %}
-			</div>
-		</div>
+	
+	{% block reportnav %}
+		<nav class="reports-nav">
+			<a class="clean-white" href="{{ path('report_trend_index') }}">Trends</a>
+			<a class="clean-white" href="{{ path('report_live_index') }}">Live Reports</a>
+		</nav>
 	{% endblock %}
+	
+	{% if app.session.hasFlash('saved') %}
+		<div class="alert-message success">
+			"{{ app.session.getFlash('saved') }}" was saved successfully
+		</div>
+	{% endif %}
+	{% if app.session.hasFlash('deleted') %}
+		<div class="alert-message success">
+			"{{ app.session.getFlash('deleted') }}" was deleted successfully
+		</div>
+	{% endif %}
+	
+	<div id="dp_admin_page">
+		{% block content %}
+			<div class="dp-page-box">
+				<div class="page-content">
+					{% block page %}{% endblock %}
+				</div>
+			</div>
+		{% endblock %}
+	</div>
 </div>
-
-{% include 'AdminBundle:Main:layout-menus.html.twig' %}
 
 </div>
 </body>

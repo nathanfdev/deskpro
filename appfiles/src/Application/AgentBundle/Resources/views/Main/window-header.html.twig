@@ -102,7 +102,7 @@
 			<ul>
 				<li><a class="admin" href="{{ path('admin_login', {'dpsid-agent': app.getSession().getId() }) }}"><span>Admin Interface</span></a></li>
 				<li><a class="billing" href=""><span>Billing Interface</span></a></li>
-				<li><a class="report" href=""><span>Report Interface</span></a></li>
+				<li><a class="report" href="{{ path('report') }}"><span>Report Interface</span></a></li>
 				<li><a class="portal" href="{{ path('user') }}"><span>User Interface</span></a></li>
 			</ul>
 		</div>

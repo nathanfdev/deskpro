@@ -1,0 +1,82 @@
+report:
+  pattern: /
+  defaults: { _controller: ReportBundle:Trend:index }
+  
+################################################################################
+# Trend Reports
+################################################################################
+report_trend_index:
+  pattern: /trends
+  defaults: { _controller: ReportBundle:Trend:index }
+  
+report_trend_view:
+  pattern: /trends/{stat_id}
+  defaults: { _controller: ReportBundle:Trend:view }
+  requirements: { stat_id: "\d+" }
+  
+report_trend_new:
+  pattern: /trends/new
+  defaults: { _controller: ReportBundle:Trend:new }
+
+report_trend_edit:
+  pattern: /trends/{stat_id}/edit
+  defaults: { _controller: ReportBundle:Trend:edit }
+  requirements: { stat_id: "\d+" }
+
+report_trend_clone:
+  pattern: /trends/{stat_id}/clone
+  defaults: { _controller: ReportBundle:Trend:clone }
+  requirements: { stat_id: "\d+" }
+
+report_trend_dashboard_view:
+  pattern: /trends/dashboards/{dashboard_id}
+  defaults: { _controller: ReportBundle:Dashboard:view }
+  requirements: { dashboard_id: "\d+" }
+  
+report_trend_dashboard_edit:
+  pattern: /trends/dashboards/{dashboard_id}/edit
+  defaults: { _controller: ReportBundle:Dashboard:edit }
+  requirements: { dashboard_id: "\d+" }
+  
+report_trend_dashboard_remove_stat:
+  pattern: /trends/dashboards/{dashboard_id}/remove-stat/{dashboard_stat_id}
+  defaults: { _controller: ReportBundle:Dashboard:removeStat }
+  requirements: { dashboard_id: "\d+", dashboard_stat_id: "\d+"  }
+
+report_dashboard_ajaxfetchwidgets:
+  pattern: /trends/dashboards/{dashboard_id}/ajax-fetch-widget
+  defaults: { _controller: ReportBundle:Dashboard:ajaxFetchWidgets }
+  requirements: { dashboard_id: "\d+" }
+  
+report_dashboard_ajaxcreatewidget:
+  pattern: /trends/dashboards/{dashboard_id}/ajax-create-widget/{stat_id}
+  defaults: { _controller: ReportBundle:Dashboard:ajaxCreateWidgets }
+  requirements: { dashboard_id: "\d+", stat_id: "\d+" }  
+
+################################################################################
+# Live Reports
+################################################################################
+report_live_index:
+  pattern: /live-reports
+  defaults: { _controller: ReportBundle:Live:index }
+  
+report_live_view:
+  pattern: /live-reports/{stat_id}
+  defaults: { _controller: ReportBundle:Live:view }
+  requirements: { stat_id: "\d+" }
+  
+################################################################################
+# Authentication
+################################################################################
+
+report_login:
+  pattern: /login
+  defaults: { _controller: ReportBundle:Login:index }
+
+report_logout:
+  pattern: /logout/{auth}
+  defaults: { _controller: ReportBundle:Login:logout }
+  
+report_login_authenticate_local:
+  pattern: /login/authenticate-password
+  defaults: { _controller: ReportBundle:Login:authenticateLocal, usersource_id: 0 }
