@@ -115,6 +115,25 @@ class DashboardController extends AbstractController
 	}
 	
 	/**
+	 * Get the Dashboard Widgets
+	 */
+	public function ajaxFetchWidgetsAction($dashboard_id)
+	{
+		$dashboard       = $this->getDashboard($dashboard_id);
+		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
+		
+		$widgets = array();
+		foreach ($dashboard_stats as $dashboard_stat) {
+			$widgets[] = array(
+				'id' 		=> $dashboard_stat->getId(),
+				'title'		=> $dashboard_stat->getStat()->getTitle(),
+			);
+		}
+		
+		return $this->createJsonResponse(array('widgets' => $widgets));
+	}
+	
+	/**
 	 * Get the Dashboard Entity
 	 *
 	 * @throws NotFoundHttpException

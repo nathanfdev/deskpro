@@ -32,18 +32,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// Reference to dashboard grid
 	$dashboardGrid: null,
 	
-	initialize: function(dashboard_id) {
-		var self = this;
+	initialize: function(dashboard_id) {		
+		this.dashboard_id = dashboard_id;
 		
-		this.dashboard_id = dashboard_id
+		this.$dashboard 	= $("#report-dashboard");
+		this.$dashboardGrid 	= $("#report-dashboard-grid");
 		
 	},
 
 	initPage: function() {
 		var self = this;
-		
-		this.$dashboard 	= $("#report-dashboard");
-		this.$dashboardGrid 	= $("#report-dashboard-grid");
 		
 		$("#report-dashboard-options-form").submit(function() {
 			
@@ -66,14 +64,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	
 	// Fetch the widgets
 	fetchWidgets: function() {
-		return;
 		var self = this;
 		$.ajax({
 			url: DeskPRO_Window.getUrl('report_dashboard_ajaxfetchwidgets', {dashboard_id: this.dashboard_id}),
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
-				self.updateToEditable();
+				Array.each(data.widgets, function(v) {
+					var widget = new DeskPRO.Report.Dashboard.Widget(v.id, v);
+					self.addWidget(widget);
+				});
 			}
 		});
 	},
@@ -99,6 +99,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			// Need to insert at postion
 			this.widgets.splice(pos, 0, widget)
 		}
+		
+		// Add widget to UI
+		this.$dashboardGrid.append('');
 		
 	},
 	

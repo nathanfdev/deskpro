@@ -8,6 +8,9 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         // Id of the widget
         widget_id: null,
         
+	// WIdget title
+	title: '',
+	
         // Number of slot this widget takes up in the dashboard grid
         num_slots: 1,
         
@@ -17,9 +20,12 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         // The chart associated with the widget
         chart: null,
         
-	initialize: function(widget_id) {
+	initialize: function(widget_id, options) {
                 
                 this.widget_id = widget_id;
+		
+		options = options || {};
+		this.title = options.title || ''
                 
                 $('#dashboard_widget').template('dashboard_widget');
 	},

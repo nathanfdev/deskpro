@@ -50,7 +50,7 @@ report_trend_dashboard_remove_stat:
 
 report_dashboard_ajaxfetchwidgets:
   pattern: /trends/dashboards/{dashboard_id}/ajax-fetch-widget
-  defaults: { _controller: ReportBundle:Dashboard:ajaxFetchWidget }
+  defaults: { _controller: ReportBundle:Dashboard:ajaxFetchWidgets }
   requirements: { dashboard_id: "\d+" }
   
 ################################################################################
