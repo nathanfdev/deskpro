@@ -75,30 +75,6 @@ class DashboardController extends AbstractController
 	}
 	
 	/**
-	 * Add a stat to the dashboard
-	 */
-	public function addStatAction($dashboard_id, $stat_id)
-	{
-		$dashboard = $this->getDashboard($dashboard_id);
-		$stat      = $this->getStat($stat_id);
-		
-		$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
-				       ->getNextDashboardStatSlot($dashboard_id);
-		
-		$dashboardStat = new ReportDashboardStat();
-		$dashboardStat->setReportDashboard($dashboard);
-		$dashboardStat->setStat($stat);
-		$dashboardStat->setSlotNumber($next_slot_number);
-		
-		App::getOrm()->persist($dashboardStat);
-		App::getOrm()->flush();
-		
-		return $this->redirectRoute('report_trend_dashboard_view', array(
-			'dashboard_id'	=> $dashboard->id
-		));
-	}
-	
-	/**
 	 * Remove a stat from the dashboard
 	 */
 	public function removeStatAction($dashboard_id, $dashboard_stat_id)
@@ -115,6 +91,30 @@ class DashboardController extends AbstractController
 	}
 	
 	/**
+	 * Create and fetch dashboard widget
+	 */
+	public function ajaxCreateWidgetsAction($dashboard_id, $stat_id)
+	{
+		$dashboard       = $this->getDashboard($dashboard_id);
+		$stat      	 = $this->getStat($stat_id);
+		
+		$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+				       ->getNextDashboardStatSlot($dashboard_id);
+		
+		$dashboard_stat = new ReportDashboardStat();
+		$dashboard_stat->setReportDashboard($dashboard);
+		$dashboard_stat->setStat($stat);
+		$dashboard_stat->setSlotNumber($next_slot_number);
+		
+		App::getOrm()->persist($dashboard_stat);
+		App::getOrm()->flush();
+		
+		$widget = $this->getWidgetDetails($dashboard_stat);
+		
+		return $this->createJsonResponse(array('widget' => $widget));
+	}
+	
+	/**
 	 * Get the Dashboard Widgets
 	 */
 	public function ajaxFetchWidgetsAction($dashboard_id)
@@ -124,13 +124,18 @@ class DashboardController extends AbstractController
 		
 		$widgets = array();
 		foreach ($dashboard_stats as $dashboard_stat) {
-			$widgets[] = array(
-				'id' 		=> $dashboard_stat->getId(),
-				'title'		=> $dashboard_stat->getStat()->getTitle(),
-			);
+			$widgets[] = $this->getWidgetDetails($dashboard_stat);
 		}
 		
 		return $this->createJsonResponse(array('widgets' => $widgets));
+	}
+	
+	protected function getWidgetDetails($dashboard_stat)
+	{
+		return array(
+			'id' 		=> $dashboard_stat->getId(),
+			'title'		=> $dashboard_stat->getStat()->getTitle(),
+		);
 	}
 	
 	/**

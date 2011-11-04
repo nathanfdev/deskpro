@@ -80,7 +80,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	
 	// Create a widget and fetch it
 	createAndFetchWidget: function() {
-		
+		var self = this;
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_dashboard_ajaxcreatewidget', {dashboard_id: this.dashboard_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				var widget = new DeskPRO.Report.Dashboard.Widget(data.widget.id, data.widget);
+				self.addWidget(widget);
+			}
+		});
 	},
 	
 	// Add a widget to the dashboard.
