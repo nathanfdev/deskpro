@@ -6,11 +6,13 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard();
+	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }});
         
-        window.DeskPRO_Page.addWidget(new DeskPRO.Report.Dashboard.Widget());
-        window.DeskPRO_Page.addWidget(new DeskPRO.Report.Dashboard.Widget());
-        window.DeskPRO_Page.addWidget(new DeskPRO.Report.Dashboard.Widget());
+        var widget = null;
+        {% for dashboard_stat in dashboard_stats %}
+                widget = new DeskPRO.Report.Dashboard.Widget({{ dashboard_stat.id }});
+                window.DeskPRO_Page.addWidget(widget);     
+        {% endfor %}
 }
 </script>
 {% endblock %}
@@ -29,7 +31,7 @@ function _page_exec() {
 		</form>
 	</div>
         
-        <div id="report-dashboard-grid">
+        <div id="report-dashboard">
                 <div id="grid-lines">
                         <div class="slot"></div>
                         <div class="slot"></div>
@@ -37,6 +39,7 @@ function _page_exec() {
                         <div class="slot"></div>
                         
                         <ul id="report-dashboard-grid">
+                                
                                 {% for dashboard_stat in dashboard_stats %}
                                         <li class="slot">
                                                 <span class="inner">
@@ -55,6 +58,7 @@ function _page_exec() {
                                                 <a href="#" id="open_overlay_btn">Add Chart</a>
                                         </span>
                                 </li>
+                                
                         </ul>
                         <div style="clear: both"></div>
                 </div>
@@ -92,6 +96,8 @@ function _page_exec() {
                 </div>
         </div>
         
+        {% include 'ReportBundle:Dashboard:widget.html.twig' %}
+        
         <script type="text/javascript">
                 $(document).ready(function() {
                         var defaultNumColumns = 4;
@@ -100,60 +106,7 @@ function _page_exec() {
                                 triggerElement: $('#open_overlay_btn'),
                                 contentElement: $('#overlay_wrapper')
                         });
-			
-			$("#report-dashboard-grid").sortable({
-				handle: '.grid-slot-toolbar'
-			});
-                        
-			$("#report-dashboard-grid").disableSelection();
-                        
-			$("#report-dashboard-grid li").resizable({
-				helper: "ui-resizable-helper",
-				placeholder: "ui-state-highlight",
-				resize: function(event, ui) {
-					ui.size.height = ui.originalSize.height;
-				}
-
-			});
-                        
-                        $("#grid-options-form").submit(function() {
-				
-				calculateColumnWidth();
-				setupResizableGrid();
-				loadCharts();
-				
-				return false;
-			});
-			
-			$(window).resize(function() {
-				setupResizableGrid();
-			});
-			
-			$("#options-num-columns").val(defaultNumColumns);
-			calculateColumnWidth();
-			setupResizableGrid();			
                 });
-                
-                function calculateColumnWidth() {
-			
-			var gridSize    = $("#report-dashboard-grid").width();
-			var numColumns  = $("#options-num-columns").val();
-			var columnWidth = gridSize / numColumns;
-			
-			$(".gridable").css('width', columnWidth + 'px');
-		}
-		
-		function setupResizableGrid() {
-			
-			var gridSize   = $("#report-dashboard-grid").width();
-			var numColumns = $("#options-num-columns").val();
-			
-			var snapSizeX  = gridSize / numColumns;
-			
-			$("#report-dashboard-grid li").resizable("option", "grid", [snapSizeX, 50]);
-			$("#report-dashboard-grid li").resizable("option", "minWidth", snapSizeX);
-		}
-                
         </script>
         
 {% endblock %}

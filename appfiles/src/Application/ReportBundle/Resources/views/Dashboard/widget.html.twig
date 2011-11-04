@@ -1,0 +1,21 @@
+<script id="dashboard_widget" type="text/x-jquery-tmpl">
+        <li class="slot">
+                <span class="inner">
+                        <span class="grid-slot-toolbar ui-corner-all">
+                                {{ dashboard_stat.stat.title }}
+                                <a href="{{ path('trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
+                                        <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
+                                </a>
+                        </span>
+                        <span class="grid-slot-content"></span>
+                </span>
+        </li>
+</script>
+
+<script id="dashboard_widget_create" type="text/x-jquery-tmpl">
+        <li class="slot new-placeholder">
+                <span class="inner">
+                        <a href="#" id="open_overlay_btn">Add Chart</a>
+                </span>
+        </li>
+</script>

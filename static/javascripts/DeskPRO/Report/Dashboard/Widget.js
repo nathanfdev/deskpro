@@ -5,6 +5,9 @@ Orb.createNamespace('DeskPRO.Report.Dashboard');
  */
 DeskPRO.Report.Dashboard.Widget = new Class({
         
+        // Id of the widget
+        widget_id: null,
+        
         // Number of slot this widget takes up in the dashboard grid
         num_slots: 1,
         
@@ -14,7 +17,11 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         // The chart associated with the widget
         chart: null,
         
-	initialize: function() {
+	initialize: function(widget_id) {
+                
+                this.widget_id = widget_id;
+                
+                $('#dashboard_widget').template('dashboard_widget');
 	},
         
         setEditable: function(editable) {
@@ -36,7 +43,6 @@ DeskPRO.Report.Dashboard.Widget = new Class({
                 
         },
         
-        
         updateToViewable: function() {
                 
                 this.is_edit_state = false;
@@ -47,6 +53,12 @@ DeskPRO.Report.Dashboard.Widget = new Class({
                 
                 this.chart = chart;
                 
-        }
+        },
+        
+        removeChart: function() {
+                
+                this.chart = null;
+                
+        },
         
 });
