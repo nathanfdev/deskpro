@@ -15,9 +15,9 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 
 use Application\DeskPRO\CustomFields\FieldManager;
-use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\CustomDefPerson;
 
-class TicketFieldAction implements ActionInterface
+class PeopleFieldAction implements ActionInterface
 {
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
@@ -25,7 +25,7 @@ class TicketFieldAction implements ActionInterface
 	protected $field_manager;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefTicket
+	 * @var \Application\DeskPRO\Entity\CustomDefPerson
 	 */
 	protected $field_def;
 
@@ -34,7 +34,7 @@ class TicketFieldAction implements ActionInterface
 	 */
 	protected $set_value;
 
-	public function __construct(FieldManager $field_manager, CustomDefTicket $field_def, $set_value)
+	public function __construct(FieldManager $field_manager, CustomDefPerson $field_def, $set_value)
 	{
 		$this->field_manager = $field_manager;
 		$this->field_def     = $field_def;
@@ -67,7 +67,8 @@ class TicketFieldAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$this->field_manager->saveFormToObject($this->set_value, $ticket);
+		$person = $ticket->getPerson();
+		$this->field_manager->saveFormToObject($this->set_value, $person);
 	}
 
 
@@ -79,7 +80,7 @@ class TicketFieldAction implements ActionInterface
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'ticket_field', 'ticket_field_id' => $this->field_def->id, 'value' => $this->set_value)
+			array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value)
 		);
 	}
 

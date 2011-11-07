@@ -56,37 +56,37 @@ class ActionsFactory
 		$options = array();
 		switch ($name) {
 			case 'agent':
-				$options['agent'] = $value;
+				$options['agent'] = $value['agent'];
 				break;
 			case 'agent_team':
-				$options['agent_team'] = $value;
+				$options['agent_team'] = $value['agent_team'];
 				break;
 			case 'category':
-				$options['category'] = $value;
+				$options['category'] = $value['category'];
 				break;
 			case 'department':
-				$options['department'] = $value;
+				$options['department'] = $value['department'];
 				break;
 			case 'product':
-				$options['product'] = $value;
+				$options['product'] = $value['product'];
 				break;
 			case 'flag':
-				$options['flag'] = $value;
+				$options['flag'] = $value['flag'];
 				break;
 			case 'priority':
-				$options['priority'] = $value;
+				$options['priority'] = $value['priority'];
 				break;
 			case 'urgency':
-				$options['num'] = $value;
+				$options['num'] = $value['num'];
 				break;
 			case 'urgency_set':
-				$options['num'] = $value;
+				$options['num'] = $value['num'];
 				break;
 			case 'workflow':
-				$options['workflow'] = $value;
+				$options['workflow'] = $value['workflow'];
 				break;
 			case 'status':
-				$options['status'] = $value;
+				$options['status'] = $value['status'];
 				break;
 			case 'add_labels':
 				$options['add_labels'] = array();
@@ -108,6 +108,14 @@ class ActionsFactory
 				break;
 			case 'ticket_field':
 				$field_manager = App::getSystemService('ticket_fields_manager');
+				$field = $field_manager->getFieldFromId($name_id);
+
+				$options['field_manager'] = $field_manager;
+				$options['field_def'] = $field;
+				$options['set_value'] = $value;
+				break;
+			case 'people_field':
+				$field_manager = App::getSystemService('person_fields_manager');
 				$field = $field_manager->getFieldFromId($name_id);
 
 				$options['field_manager'] = $field_manager;

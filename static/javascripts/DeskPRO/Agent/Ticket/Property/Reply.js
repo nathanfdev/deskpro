@@ -30,10 +30,10 @@ DeskPRO.Agent.Ticket.Property.Reply = new Class({
 	},
 
 	setIncomingValue: function(value) {
-		
+
 	},
 
-	_getInterfaceElement: function() {
+	getInterfaceElement: function() {
 		return this.ticketPage.getEl('replybox_txt');
 	}
 });

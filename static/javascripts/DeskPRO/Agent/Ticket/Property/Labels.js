@@ -24,7 +24,7 @@ DeskPRO.Agent.Ticket.Property.Labels = new Class({
 		this._values = values;
 		if (this.mode == 'add') {
 			Array.each(values, function(val) {
-				this.ticketPage.labelsTagit.add(val, '<span class="new">'+val+'</span>');
+				this.ticketPage.labelsInput.tagit.add(val, '<span class="new">'+val+'</span>');
 			}, this);
 		} else {
 			Array.each(values, function(val) {
@@ -67,7 +67,7 @@ DeskPRO.Agent.Ticket.Property.Labels = new Class({
 		this._values = null;
 	},
 
-	_getInterfaceElement: function() {
-		return $('ul.tagit.ticket:first', this.ticketPage.contentWrapper);
+	getInterfaceElement: function() {
+		return $('ul.tagit', this.ticketPage.contentWrapper);
 	}
 });

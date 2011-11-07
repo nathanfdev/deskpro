@@ -79,8 +79,8 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		fieldEl.val(value);
 	},
 
-	_getInterfaceElement: function() {
-		return $('.prop-val.'+this.optionName+':first', this.ticketPage.contentWrapper);
+	getInterfaceElement: function() {
+		return $('.prop-val.'+this.optionName, this.ticketPage.contentWrapper).first();
 	},
 
 	_formEl: null,

@@ -129,15 +129,6 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	<div class="type" title="Set User Organization" data-rule-type="person_organization_id">
-		<div class="options">
-			<select name="person_organization_id">
-				{% for id,title in term_options.people_organizations %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
 			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">

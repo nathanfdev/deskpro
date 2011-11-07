@@ -15,7 +15,7 @@ DeskPRO.Agent.Ticket.Property.NewParticipant = new Class({
 		$('div.ticket-participants ul', this.ticketPage).add('<li>' + value + '</li>');
 	},
 
-	_getInterfaceElement: function() {
-
+	getInterfaceElement: function() {
+		return $([]);
 	}
 });
