@@ -235,7 +235,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
 				$('.remove', add).remove();
 
-				this.macroOverlay.open();
+				this.macroOverlay.close();
 			}
 		});
 	},

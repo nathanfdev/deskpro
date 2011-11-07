@@ -143,7 +143,6 @@ $CONFIG['agent_pages_lists'] = array(
 $CONFIG['agent_pages'] = array(
 	'out' => 'js/agent-pages.js',
 	'files' => array(
-		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
 		'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
 		'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
 		'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',

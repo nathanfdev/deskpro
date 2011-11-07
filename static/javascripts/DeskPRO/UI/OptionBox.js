@@ -250,7 +250,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		var pageY = $(event.target).offset().left;
 
 		var w = this.el.width() + 5;
-		var h = this.el.height() + 5;
+		var h = this.el.height();
 
 		this.el.show();
 		this.backdrop.show();
@@ -269,7 +269,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 		this.el.addClass('open');
 
-		var cols = $('.col ul', this.el);
+		var cols = $('.col > section > ul', this.el);
 		if (cols.length) {
 			var max = 0;
 			var w = 0;
@@ -290,6 +290,14 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 			this.el.width(w);
 		}
+
+		$(':checkbox, :radio', this.el).each(function() {
+			if ($(this).is(':checked')) {
+				$(this).closest('li').addClass('on');
+			} else {
+				$(this).closest('li').removeClass('on');
+			}
+		});
 
 		this.fireEvent('open', [this]);
 	},

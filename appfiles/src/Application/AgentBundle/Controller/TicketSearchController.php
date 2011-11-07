@@ -262,7 +262,7 @@ class TicketSearchController extends AbstractController
 
 			$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
 			if ($term) {
-				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				$searcher->addTerm($term['type'], $term['op'], $term);
 			}
 		}
 
@@ -528,10 +528,10 @@ class TicketSearchController extends AbstractController
 
 			foreach ($terms as $term) {
 				if (strpos($term['type'], 'person_') === 0) {
-					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$user_searcher->addTerm($term['type'], $term['op'], $term);
 					$has_user_terms = true;
 				} else {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$searcher->addTerm($term['type'], $term['op'], $term);
 				}
 			}
 
@@ -794,43 +794,6 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	public function ajaxPreviewActionsAction()
-	{
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-
-		// Use a dummy TicketMacro so we can get an actions array easily
-		$macro = new Entity\TicketMacro();
-
-		$action_rules = RuleBuilder::newActionsBuilder();
-		$got_actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'string'));
-
-		if ($this->in->getString('message')) {
-			$got_actions[] = array('type' => 'reply', array('options' => array('new_reply' => $this->in->getString('message'))));
-		}
-
-		$macro['actions'] = $got_actions;
-
-		$action_collections = $macro->getActionsCollectionsForTickets($tickets);
-
-		$actions = array();
-		foreach ($action_collections as $ticket_id => $collection) {
-			$actions[$ticket_id] = $collection->getApplyActions($tickets[$ticket_id], $this->person);
-		}
-
-		$data = array();
-		$data['raw_actions'] = array();
-		$data['ticket_actions'] = $actions;
-
-		$raw_actions = $macro->getActionsCollection();
-
-		if ($raw_actions->hasActionType('new_reply')) {
-			$data['raw_actions']['new_reply'] = $raw_actions->getActionType('new_reply');
-		}
-
-		return $this->createJsonResponse($data);
-	}
-
 	public function ajaxSaveActionsAction()
 	{
 		$ticket_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
@@ -860,59 +823,6 @@ class TicketSearchController extends AbstractController
 		}
 
 		$this->em->commit();
-
-		return $this->createJsonResponse(array('success' => true));
-	}
-
-	public function ajaxSaveMacroAction()
-	{
-		$macro_id = $this->in->getUint('macro_id');
-		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
-
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-
-		App::getOrm()->beginTransaction();
-
-		$reply = $this->in->getString('message');
-
-		foreach ($tickets as $ticket) {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$actions = $macro->getActionsArray($ticket);
-			if ($reply) {
-				$actions['new_reply'] = $reply;
-			}
-			$result = $ticket_edit->applyActions($actions);
-			$ticket_edit->save();
-
-			// We need to manually apply to the user since ticketedit doesnt care about that
-			$macro->performOnPerson($ticket['person']);
-			App::getOrm()->persist($ticket['person']);
-		}
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		return $this->createJsonResponse(array('success' => true));
-	}
-
-	public function ajaxMassReplyAction()
-	{
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-
-		App::getOrm()->beginTransaction();
-
-		$reply = $this->in->getString('message');
-
-		foreach ($tickets as $ticket) {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$actions = array('new_reply' => $reply);
-			$result = $ticket_edit->applyActions($actions);
-			$ticket_edit->save();
-		}
-
-		App::getOrm()->commit();
 
 		return $this->createJsonResponse(array('success' => true));
 	}

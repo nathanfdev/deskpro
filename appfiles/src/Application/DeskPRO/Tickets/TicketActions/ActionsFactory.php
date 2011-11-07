@@ -53,6 +53,10 @@ class ActionsFactory
 			$name_id = $m[2];
 		}
 
+		if (!is_array($value)) {
+			$value = array($name => $value);
+		}
+
 		$options = array();
 		switch ($name) {
 			case 'agent':
