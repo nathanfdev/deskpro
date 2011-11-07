@@ -12,4 +12,11 @@ interface ChartInterface
 	 */
 	public function getFormattedData();
 	
+	/**
+	 * Get the chart identifier
+	 *
+	 * @return string The chart identifier
+	 */
+	public function getChartIdentifier();
+	
 }
