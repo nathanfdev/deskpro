@@ -10,8 +10,8 @@ class LineChart extends BaseLineChart
 	{
 		parent::__construct($stat);
 		
-		$this->chart_vendor 	= 'AmChart';
-		$this->chart_type 	= 'Line';	
+		$this->view_chart_vendor 	= 'AmChart';
+		$this->view_chart_class 	= 'Line';	
 	}
 	
 	public function getFormattedData()

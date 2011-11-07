@@ -49,13 +49,13 @@ abstract class AbstractChart implements ChartInterface
 		$this->stat = $stat;
 	}
 	
-	public function getChartVendor()
+	public function getViewChartVendor()
 	{
-		return $this->chart_vendor;
+		return $this->view_chart_vendor;
 	}
 	
-	public function getChartClass()
+	public function getViewChartClass()
 	{
-		return $this->chart_type;
+		return $this->view_chart_class;
 	}
 }

@@ -10,8 +10,8 @@ class ColumnChart extends BaseColumnChart
 	{
 		parent::__construct($stat);
 		
-		$this->chart_vendor 	= 'AmChart';
-		$this->chart_type 	= 'Column';
+		$this->view_chart_vendor 	= 'AmChart';
+		$this->view_chart_class 	= 'Column';
 	}
 	
 	public function getFormattedData()
