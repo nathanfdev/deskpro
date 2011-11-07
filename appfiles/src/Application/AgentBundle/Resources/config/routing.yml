@@ -1048,6 +1048,11 @@ agent_kb_article:
   requirements: { article_id: "\d+" }
   options: { fragment_name: 'a' }
 
+agent_kb_ajaxsavecustomfields:
+  pattern: /kb/article/{article_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Kb:ajaxSaveCustomFields }
+  requirements: { article_id: "\d+" }
+
 agent_kb_article_info:
   pattern: /kb/article/{article_id}/info
   defaults: { _controller: AgentBundle:Kb:articleInfo }

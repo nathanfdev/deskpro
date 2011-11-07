@@ -58,6 +58,17 @@ class KbController extends AbstractController
 
 		$tpl = 'AgentBundle:Kb:view.html.twig';
 
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		$field_manager = $this->container->getSystemService('article_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($article);
+
+		#------------------------------
+		# Article props
+		#------------------------------
+
 		$article_comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
 
 		$article_revisions = $article->getRevisions();
@@ -79,6 +90,7 @@ class KbController extends AbstractController
 
 		return $this->render($tpl, array(
 			'article'              => $article,
+			'custom_fields'        => $custom_fields,
 			'sticky_search_words'  => $sticky_search_words,
 			'rated_searches'       => $rated_searches,
 			'content'              => $content,
@@ -244,6 +256,34 @@ class KbController extends AbstractController
 		}
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxSaveCustomFieldsAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		$this->em->beginTransaction();
+
+		try {
+			$field_manager = $this->container->getSystemService('article_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $article);
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		$custom_fields = $field_manager->getDisplayArrayForObject($article);
+
+		return $this->render('AgentBundle:Kb:view-customfields-rendered-rows.html.twig', array(
+			'article' => $article,
+			'custom_fields' => $custom_fields,
+		));
 	}
 
 	public function ajaxSaveCommentAction($article_id)

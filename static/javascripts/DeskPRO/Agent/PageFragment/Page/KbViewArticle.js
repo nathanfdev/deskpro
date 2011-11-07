@@ -71,6 +71,43 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
+
+		var fieldsRendered = this.getEl('custom_fields_rendered');
+		var fieldsForm = this.getEl('custom_fields_editable');
+
+		var buttonsWrap = this.getEl('properties_controls');
+		var propToggle = function(what) {
+			if (what == 'display') {
+				$('.showing-editing-fields', buttonsWrap).hide();
+				$('.showing-rendered-fields', buttonsWrap).show();
+				fieldsForm.hide();
+				fieldsRendered.show();
+			} else {
+				$('.showing-rendered-fields', buttonsWrap).hide();
+				$('.showing-editing-fields', buttonsWrap).show();
+				fieldsRendered.hide();
+				fieldsForm.show();
+			}
+		};
+
+		$('.edit-fields-trigger', buttonsWrap).click(function() {
+			propToggle('edit');
+		});
+
+		$('.save-fields-trigger', buttonsWrap).click(function() {
+			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRendered.empty().html(rendered);
+					propToggle('display');
+				}
+			});
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

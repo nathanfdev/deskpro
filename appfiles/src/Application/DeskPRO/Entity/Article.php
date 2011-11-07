@@ -68,6 +68,11 @@ class Article extends ContentAbstract
 	protected $end_action = null;
 
 	/**
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $custom_data;
+
+	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -79,6 +84,7 @@ class Article extends ContentAbstract
 		$this->products    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->categories  = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getLink()
@@ -93,6 +99,12 @@ class Article extends ContentAbstract
 		$url = App::getRouter()->generate('user_articles_article', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	public function addCustomData(CustomDataArticle $data)
+	{
+		$this->custom_data->add($data);
+		$data['article'] = $this;
 	}
 
 	public function addToCategory(ArticleCategory $cat)

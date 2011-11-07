@@ -39,91 +39,81 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </header>
 
-<section id="{{baseId}}_tabs_content_wrap" class="mid-page">
-	<dl class="table-list">
-		<dt class="type-labels">Labels</dt>
-		<dd>
-			<ul>
-				<div class="tags-wrap kb-tags">
-					<ul>
-						{% for label in article.labels %}
-							<li><span>{{label.label}}</span></li>
-						{% endfor %}
-					</ul>
-				</div>
-			</ul>
-		</dd>
-
-		<dt class="">Categories</dt>
-		<dd>
-			<ul id="{{baseId}}_categories" class="add-remove-list">
-				{% for cat in article.categories %}
-					<li>
-						<span class="remove">remove</span>
-						{{ cat.full_title }}
-						<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
+<div class="profile-box-container">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section class="description-area">
+		<dl class="info-list">
+			<dt class="type-labels">Labels:</dt>
+			<dd class="kb-tags tags-wrap">
+				<ul>
+					{% for label in article.labels %}
+						<li><span>{{label.label}}</span></li>
+					{% endfor %}
+				</ul>
+			</dd>
+			<dt class="">Categories</dt>
+			<dd>
+				<ul id="{{baseId}}_categories" class="add-remove-list">
+					{% for cat in article.categories %}
+						<li>
+							<span class="remove">remove</span>
+							{{ cat.full_title }}
+							<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
+						</li>
+					{% endfor %}
+					<li class="add">
+						<span class="add">add</span>
+						Add Category
 					</li>
-				{% endfor %}
-				<li class="add">
-					<span class="add">add</span>
-					Add Category
-				</li>
-			</ul>
-		</dd>
+				</ul>
+			</dd>
 
-		<dt class="">Products</dt>
-		<dd>
-			<ul id="{{baseId}}_products" class="add-remove-list">
-				{% for prod in article.products %}
-					<li>
-						<span class="remove">remove</span>
-						{{ prod.full_title }}
-						<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+			<dt class="">Products</dt>
+			<dd>
+				<ul id="{{baseId}}_products" class="add-remove-list">
+					{% for prod in article.products %}
+						<li>
+							<span class="remove">remove</span>
+							{{ prod.full_title }}
+							<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+						</li>
+					{% endfor %}
+					<li class="add">
+						<span class="add">add</span>
+						Add Product
 					</li>
-				{% endfor %}
-				<li class="add">
-					<span class="add">add</span>
-					Add Product
-				</li>
-			</ul>
-		</dd>
+				</ul>
+			</dd>
 
-		<dt>Rating</dt>
-		<dd>
-			{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
-			<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
-		</dd>
-	</dl>
+			<dt>Rating</dt>
+			<dd>
+				{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
+				<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
+			</dd>
 
-	<br class="clear" />
-
-	<div class="controls" id="{{baseId}}_action_buttons">
-		<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
-		<button class="clean-white permalink">Copy Permalink</button>
-		<button class="clean-white view-user-interface">View in user interface</button>
-		<br class="clear" />
-	</div>
-
-	<footer class="time-info">
-		<ul>
 			{% if article.date_created == article.date_published %}
-				<li>
-					Created and published <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
-				</li>
+				<dt>Created and published:</dt>
+				<dd>
+					<time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
+				</dd>
 			{% else %}
-				<li>
-					Created <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
-				</li>
+				<dt>Created:</dt>
+				<dd>
+					<time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
+				</dd>
 
 				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
 				{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
-					<li>
+					<dt>Published:</dt>
+					<dd>
 						Published <time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>
-					</li>
+					</dd>
 				{% endif %}
 			{% endif %}
 
-			<li id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
+			<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
 				<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
 					Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
 					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
@@ -141,8 +131,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<li data-action="delete">Delete</li>
 					<li data-action="archive">Archive</li>
 				</ul>
-			</li>
-			<li id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+			</dd>
+
+			<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
 				<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
 					Automatically publish
 					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
@@ -153,10 +144,36 @@ pageMeta.baseId = '{{ baseId }}';
 				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
 					Set an automatic publish date
 				</span>
-			</li>
+			</dd>
+		</dl>
+
+		{% if custom_fields|length %}
+			<dl class="info-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Kb:view-customfields-rendered-rows.html.twig' %}
+			</dl>
+			<dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Kb:view-customfields-edit-rows.html.twig' %}
+			</dl>
+		{% endif %}
+
+		<div class="controls" id="{{baseId}}_properties_controls">
+			<div class="showing-editing-fields" style="display: none">
+				<button class="clean-white save-fields-trigger"><span>Save</span></button>
+			</div>
+			<div class="showing-rendered-fields">
+				<button class="clean-white edit-fields-trigger"><span>Edit Properties</span></button>
+				<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
+				<button class="clean-white permalink">Copy Permalink</button>
+				<button class="clean-white view-user-interface">View in user interface</button>
+			</div>
+		</div>
+
+		<ul id="{{baseId}}_more_menu" style="display: none;">
+			<li data-op="delete">Delete</li>
+			<li data-op="print">Print</li>
 		</ul>
-	</footer>
-</section>
+	</section>
+</div>
 
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
