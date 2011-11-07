@@ -76,6 +76,22 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $disabled;
 	
 	/**
+	 * The Entity Repository to run the query from
+	 *
+	 * @var string
+	 * @ORM_MAPPING\Column(name="entity_repository", type="string", length="500")
+	 */
+	protected $entity_repository;
+	
+	/**
+	 * The query method on the Entity Repository
+	 *
+	 * @var string
+	 * @ORM_MAPPING\Column(name="query_method", type="string", length="100")
+	 */
+	protected $query_method;
+	
+	/**
 	 * The frequency to run the stat
 	 *
 	 * @var string

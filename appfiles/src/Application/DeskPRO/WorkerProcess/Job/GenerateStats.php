@@ -34,7 +34,7 @@ class GenerateStats extends AbstractJob
 		
 		$this->processStats($stats);
 		
-		$msg = "Generate Stats ($count_stats)";
+		$msg = "Tickets Open: ($tickets_open)\nGenerate Stats ($count_stats)";
 		$this->logStatus($msg);
 	}
 	
@@ -46,7 +46,7 @@ class GenerateStats extends AbstractJob
 	protected function processStats($stats)
 	{
 		foreach ($stats as $stat) {
-			$this->processStats($stat);
+			$this->processStat($stat);
 		}
 	}
 	
@@ -57,7 +57,17 @@ class GenerateStats extends AbstractJob
 	 */
 	protected function processStat($stat)
 	{
+		$queryMethod = $stat->getQueryMethod();
 		
+		$value = App::getEntityRepository($stat->getEntityRepository())
+		             ->$queryMethod($time);
+			     
+			
+		$stat->setValue($value);
+		$stat->setLastRun(new \DateTime());
+		
+		App::getOrm()->persist($stat);
+		App::getOrm()->flush();
 	}
 	
 }

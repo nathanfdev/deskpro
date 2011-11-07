@@ -335,4 +335,31 @@ class Ticket extends EntityRepository
 			ORDER BY id DESC
 		", array($validating_email));
 	}
+	
+	/**
+	 * Get the number of tickets open NOW
+	 *
+	 * @param array $criterias	Query criteria
+	 * @param array $groupings	Query grouping
+	 */
+	public function getTicketsOpen($criterias = array(), $groupings = array())
+	{
+		$query = "SELECT COUNT(*)
+			  FROM tickets
+			  WHERE status = 'open'";
+		
+		// Add additional criteria
+		foreach ($criteria as $criteria) {
+			
+		}
+		
+		// Add any grouping
+		foreach ($groupings as $grouping) {
+			
+		}
+		
+		$count_open = App::getDb()->fetchColumn($query);
+		
+		return $count_open;
+	}
 }
