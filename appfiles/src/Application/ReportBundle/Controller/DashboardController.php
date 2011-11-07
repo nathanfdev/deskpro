@@ -130,6 +130,12 @@ class DashboardController extends AbstractController
 		return $this->createJsonResponse(array('widgets' => $widgets));
 	}
 	
+	/**
+	 * Get the widget deatails ready for JSON response
+	 *
+	 * @param Application\DeskPRO\Entity\DashboardStat $dashboard_stat
+	 * @return array Details ready for JSON response
+	 */
 	protected function getWidgetDetails($dashboard_stat)
 	{
 		$stat = $dashboard_stat->getStat();

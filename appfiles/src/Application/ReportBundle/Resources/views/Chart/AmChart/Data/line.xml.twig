@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chart>
-  <!--<message><![CDATA[You can broadcast any message to chart from data XML file]]></message> -->
+	<!--<message><![CDATA[You can broadcast any message to chart from data XML file]]></message> -->
 	<series>
-		<value xid="0">1949</value>
-		<value xid="1">1950</value>
-		<value xid="2">1951</value>
-		<value xid="3">1952</value>
-		<value xid="4">1953</value>
-		<value xid="5">1954</value>
-		<value xid="6">1955</value>
-		<value xid="7">1956</value>
-		<value xid="8">1957</value>
-		<value xid="9">1958</value>
-		<value xid="10">1959</value>
+	{% for series in data.series %}
+		<value xid="{{ loop.index0 }}">{{ series }}</value>
+	{% endfor %}
 	</series>
 	<graphs>
-		<graph gid="1">
-			<value xid="0">2.54</value>
-			<value xid="1">2.51</value>
-			<value xid="2">2.53</value>
-			<value xid="3">2.53</value>
-			<value xid="4">2.68</value>
-			<value xid="5">2.78</value>
-			<value xid="6">2.77</value>
-			<value xid="7">2.79</value>
-			<value xid="8">3.09</value>
-			<value xid="9">3.01</value>
-			<value xid="10">2.90</value>
-		</graph>
+		{% for graphs in data.graphs %}
+			<graph gid="{{ loop.index }}">
+				{% for point in graphs %}
+					<value xid="{{ loop.index0 }}">{{ point }}</value>
+				{% endfor %}
+			</graph>
+		{% endfor %}
 	</graphs>
 </chart>
