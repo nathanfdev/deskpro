@@ -14,6 +14,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\Entity\Stat;
+use Application\DeskPRO\Entity\StatValue;
 
 /**
  * Generate stats for the reporting system
@@ -61,12 +62,18 @@ class GenerateStats extends AbstractJob
 		
 		$value = App::getEntityRepository($stat->getEntityRepository())
 		             ->$queryMethod($time);
-			     
-			
-		$stat->setValue($value);
-		$stat->setLastRun(new \DateTime());
 		
+		// Store the stat value
+		$statValue = new StatValue();
+		$statValue->setStat($stat);
+		$statValue->setValue($value);
+		App::getOrm()->presist($statValue);
+		
+		// Update the last run
+		$stat->setLastRun(new \DateTime());
 		App::getOrm()->persist($stat);
+		
+		// Flush - need to batch this
 		App::getOrm()->flush();
 	}
 	
