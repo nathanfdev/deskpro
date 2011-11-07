@@ -1,7 +1,6 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/PageHandler/Dashboard.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/Dashboard/Widget.js') }}"></script>
+{{ dp_asset_html('report_dashboard') }}
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
