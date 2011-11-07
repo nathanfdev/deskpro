@@ -56,7 +56,7 @@ report_dashboard_ajaxcreatewidget:
 report_chart_get:
   pattern: /chart/{dashboard_stat_id}
   defaults: { _controller: ReportBundle:Chart:getChart }
-  requirements: { dashvoard_stat_id: "\d+" }
+  requirements: { dashboard_stat_id: "\d+" }
   
 ################################################################################
 # Live Reports
