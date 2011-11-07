@@ -35,7 +35,7 @@ class GenerateStats extends AbstractJob
 		
 		$this->processStats($stats);
 		
-		$msg = "Tickets Open: ($tickets_open)\nGenerate Stats ($count_stats)";
+		$msg = "Generate Stats ($count_stats)";
 		$this->logStatus($msg);
 	}
 	
@@ -67,7 +67,7 @@ class GenerateStats extends AbstractJob
 		$statValue = new StatValue();
 		$statValue->setStat($stat);
 		$statValue->setValue($value);
-		App::getOrm()->presist($statValue);
+		App::getOrm()->persist($statValue);
 		
 		// Update the last run
 		$stat->setLastRun(new \DateTime());
