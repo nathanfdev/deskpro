@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\ReportBundle\Chart;
+namespace Application\ReportBundle\Chart\Base;
 
 class LineChart extends AbstractChart
 {
