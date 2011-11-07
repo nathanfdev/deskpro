@@ -35,6 +35,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 	// UI Overlay
 	overlay: null,
 	
+	// The supported vendor namespaces
+	supported_vendors: ['AmChart'],
+	
+	// The supported chart Classes
+	supported_charts: ['Column', 'Line'],
+	
 	initialize: function(dashboard_id) {		
 		this.dashboard_id = dashboard_id;
 		
@@ -111,8 +117,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			type: 'GET',
 			success: function(data) {
 				Array.each(data.widgets, function(v) {
-					var widget = new DeskPRO.Report.Dashboard.Widget(self, v.id, v.stat);
-					self.addWidget(widget);
+					self.createWidgetFromJSON(v);
 				});
 				self.calculateColumnWidth();
 			}
@@ -127,10 +132,40 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 			dataType: 'json',
 			type: 'GET',
 			success: function(data) {
-				var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
-				self.addWidget(widget);
+				self.createWidgetFromJSON(data);
 			}
 		});
+	},
+	
+	// Create a widget from a JSON response
+	createWidgetFromJSON: function(data) {
+		
+		var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
+		this.addWidget(widget);
+		
+		widget.setChart(this.createChart(
+					data.chart_vendor,
+					data.chart_class,
+					"chart_" + widget.element_id,
+					data.id)
+				);
+	},
+	
+	createChart: function(vendor, chart_type, chart_element_id, dashboad_stat_id) {
+		 
+		if (this.supported_vendors.indexOf(vendor) == -1) {
+			throw "Unsupported Vendor type [" + vendor + "]";
+		}
+		
+		if (this.supported_charts.indexOf(chart_type) == -1) {
+			throw "Unsupported Chart Class [" + chart_type + "]";
+		}
+		
+		var chartClass = eval("DeskPRO.Report.Chart." + vendor + "." + chart_type);
+		
+		var chart  = new chartClass(chart_element_id, dashboad_stat_id);
+		
+		return chart;	
 	},
 	
 	// Add a widget to the dashboard.

@@ -134,8 +134,13 @@ class DashboardController extends AbstractController
 	{
 		$stat = $dashboard_stat->getStat();
 		
+		$view_class = $dashboard_stat->getViewClass();
+		$chart = new $view_class($dashboard_stat->getStat());
+		
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
+			'chart_vendor'	=> $chart->getChartVendor(),
+			'chart_class'   => $chart->getChartClass(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),
 				'title' => $stat->getTitle(),

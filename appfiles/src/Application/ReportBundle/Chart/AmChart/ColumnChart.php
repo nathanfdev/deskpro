@@ -2,16 +2,16 @@
 
 namespace Application\ReportBundle\Chart\AmChart;
 
-use Application\ReportBundle\Chart\Base\LineChart as BaseLineChart;
+use Application\ReportBundle\Chart\Base\ColumnChart as BaseColumnChart;
 
-class LineChart extends BaseLineChart
+class ColumnChart extends BaseColumnChart
 {
 	public function __construct($stat)
 	{
 		parent::__construct($stat);
 		
 		$this->chart_vendor 	= 'AmChart';
-		$this->chart_type 	= 'Line';	
+		$this->chart_type 	= 'Column';
 	}
 	
 	public function getFormattedData()

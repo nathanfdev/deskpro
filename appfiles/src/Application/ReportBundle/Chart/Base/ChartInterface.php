@@ -10,13 +10,12 @@ interface ChartInterface
 	 *
 	 * @return array The formatted data
 	 */
-	public function getFormattedData();
+	//public function getFormattedData();
 	
 	/**
-	 * Get the chart identifier
+	 * Get the various settings for the chart, ready for the view
 	 *
-	 * @return string The chart identifier
+	 * @return array The chart settings
 	 */
-	public function getChartIdentifier();
-	
+	//public function getSettings();
 }

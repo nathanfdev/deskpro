@@ -12,32 +12,34 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\ReportBundle\Chart;
+use Application\ReportBundle\Chart\AmChart\LineChart;
 
 class ChartController extends AbstractController
 {
 	public function getChartDataAction($dashboard_stat_id)
 	{
-		$dashboardStat = $this->getDashboard($dashboard_stat_id);
+		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 		
-		$chart = new AmChart\LineChart($dashboardStat->getStat());
+		$view_class = $dashboard_stat->getViewClass();
+		$chart = new $view_class($dashboard_stat->getStat());
 		
-		$data = 'AmChart/Data' . $chart->getIdentifier() . '.xml.twig';
+		$data_template = 'AmChart/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 		
-		return $this->render("ReportBundle:Chart:$template", array(
+		return $this->render("ReportBundle:Chart:$data_template", array(
 			'data' => $chart->getFormattedData(),
 		));
 	}
 	
 	public function getChartSettingsAction($dashboard_stat_id)
 	{
-		$dashboardStat = $this->getDashboard($dashboard_stat_id);
+		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 		
-		$chart = new AmChart\LineChart($dashboardStat->getStat());
+		$view_class = $dashboard_stat->getViewClass();
+		$chart = new $view_class($dashboard_stat->getStat());
 		
-		$data = 'AmChart/Settings' . $chart->getIdentifier() . '.xml.twig';
+		$settings_template = 'AmChart/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 		
-		return $this->render("ReportBundle:Chart:$template", array(
+		return $this->render("ReportBundle:Chart:$settings_template", array(
 			'settings' => $chart->getSettings(),
 		));
 	}

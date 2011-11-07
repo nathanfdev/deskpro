@@ -84,7 +84,7 @@ DeskPRO.Report.Dashboard.Widget = new Class({
         },
         
         setChart: function(chart) {
-                
+		
                 this.chart = chart;
                 
         },

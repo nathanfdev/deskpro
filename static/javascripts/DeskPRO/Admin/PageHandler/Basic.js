@@ -16,10 +16,10 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 		} else {
 			this.contextEl = $(document.body);
 		}
-
+		
 		options = options || {};
 		this.options = options;
-
+		
 		var parent_win = this.getOpenerDeskPRO();
 		if (parent_win) {
 			this.messageBroker = parent_win.getMessageBroker();

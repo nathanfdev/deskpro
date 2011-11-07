@@ -9,6 +9,10 @@ abstract class AbstractChart implements ChartInterface
 	 */
 	const CHART_IDENTIFIER = '';
 	
+	protected $chart_type = '';
+	
+	protected $chart_vendor = '';
+	
 	/**
 	 * The Stat entity this chart represents
 	 *
@@ -20,7 +24,7 @@ abstract class AbstractChart implements ChartInterface
 	 *
 	 * @param Application\DeskPRO\Entity\Stat $stat The Stat this chart represents
 	 */
-	public function __construct(Application\DeskPRO\Entity\Stat $stat)
+	public function __construct($stat)
 	{
 		$this->stat = $stat;
 	}
@@ -45,13 +49,13 @@ abstract class AbstractChart implements ChartInterface
 		$this->stat = $stat;
 	}
 	
-	/**
-	 * Get the chart identifier
-	 *
-	 * @return string The chart identifier
-	 */
-	public function getChartIdentifier()
+	public function getChartVendor()
 	{
-		return self::CHART_IDENTIFIER;
+		return $this->chart_vendor;
+	}
+	
+	public function getChartClass()
+	{
+		return $this->chart_type;
 	}
 }
