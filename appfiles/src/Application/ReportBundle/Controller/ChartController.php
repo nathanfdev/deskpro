@@ -16,16 +16,29 @@ use Application\ReportBundle\Chart;
 
 class ChartController extends AbstractController
 {
-	public function getChartAction($dashboard_stat_id)
+	public function getChartDataAction($dashboard_stat_id)
 	{
 		$dashboardStat = $this->getDashboard($dashboard_stat_id);
 		
 		$chart = new AmChart\LineChart($dashboardStat->getStat());
 		
-		$template = 'AmChart/' . $chart->getIdentifier() . '.html.twig';
+		$data = 'AmChart/Data' . $chart->getIdentifier() . '.xml.twig';
 		
 		return $this->render("ReportBundle:Chart:$template", array(
-			'data'	=> $chart->getFormattedData(),
+			'data' => $chart->getFormattedData(),
+		));
+	}
+	
+	public function getChartSettingsAction($dashboard_stat_id)
+	{
+		$dashboardStat = $this->getDashboard($dashboard_stat_id);
+		
+		$chart = new AmChart\LineChart($dashboardStat->getStat());
+		
+		$data = 'AmChart/Settings' . $chart->getIdentifier() . '.xml.twig';
+		
+		return $this->render("ReportBundle:Chart:$template", array(
+			'settings' => $chart->getSettings(),
 		));
 	}
 	

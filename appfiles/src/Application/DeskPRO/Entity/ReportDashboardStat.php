@@ -20,9 +20,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Table(name="report_dashboard_stat")
  */
 class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
-{
-	const CHART_TYPE_LINE = 'line';
-	
+{	
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id
@@ -50,12 +48,12 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $stat;
 	
 	/**
-	 * The type of chart (bar/line/etc)
+	 * The class responsible for the view
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="chart_type", type="string", length="20")
+	 * @ORM_MAPPING\Column(name="view_class", type="string", length="500")
 	 */
-	protected $chart_type;
+	protected $view_class;
 	
 	/**
 	 * Number of slots the stat takes up in the dashboard
@@ -84,8 +82,16 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->grid_slots   = 1;
-		$this->chart_type   = 'line';
 		$this->date_created = new \DateTime();
+	}
+	
+	public function createView()
+	{
+		$viewClass = $this->getViewClass();
+		
+		$view = new $viewClass();
+		
+		return $view;
 	}
 	
 }

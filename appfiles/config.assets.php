@@ -368,6 +368,25 @@ $CONFIG['report_graphs'] = array(
 	),
 );
 
+/**
+ * Report Dashboard specific, maily files for AM Chart vendor
+ */
+$CONFIG['report_dashboard'] = array(
+	'out'	=> 'js/reports_dashboard',
+	'files' => array(
+		'vendor/jquery/sparkline/jquery.sparkline.min.js',
+		// swf object (version 2.2) is used to detect if flash is installed and include swf in the page
+		'vendor/amcharts/flash/swfobject.js',
+		// following scripts required for JavaScript version. The order is important!
+		'vendor/amcharts/javascript/amcharts.js',
+		'vendor/amcharts/javascript/amfallback.js',
+		'vendor/amcharts/javascript/raphael.js',
+		// App related files
+		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
+		'javascripts/DeskPRO/Report/PageHandler/Widget.js',
+	),
+);
+
 $CONFIG['report_report_ui'] = array(
 	'out' => 'js/report-ui.js',
 	'files' => array(
