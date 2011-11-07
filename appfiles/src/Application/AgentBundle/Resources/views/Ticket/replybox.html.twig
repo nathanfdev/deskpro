@@ -218,6 +218,10 @@
 </ul>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
+	<header>
+		<h4>Assignments and Followers</h4>
+		<span class="close close-trigger"></span>
+	</header>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
@@ -304,9 +308,16 @@
 		</section>
 	</div>
 	<br class="clear" />
+	<footer>
+		<button class="save-trigger">Apply</button>
+	</footer>
 </div>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_followers_selector">
+	<header>
+		<h4>Followers</h4>
+		<span class="close close-trigger"></span>
+	</header>
 	<section data-section-name="followers">
 		<header>
 			<h3>Followers</h3>
@@ -329,6 +340,9 @@
 			{% endfor %}
 		</ul>
 	</section>
+	<footer>
+		<button class="save-trigger">Apply</button>
+	</footer>
 </div>
 
 </form>

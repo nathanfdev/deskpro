@@ -55,6 +55,11 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			self.close();
 		});
 
+		$('.close-trigger', this.el).click(function(ev) {
+			ev.stopPropagation();
+			self.close();
+		});
+
 		var allSame = this.el.is('.single-option-type');
 
 		//------------------------------
@@ -80,6 +85,8 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 				$(this).data('input-type', 'checkbox');
 			}
 		});
+
+		$('section col', this.el).last().addClass('last');
 
 		var amClicking = false;
 		this.el.delegate('li', 'click', function(ev) {
@@ -267,10 +274,11 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			var max = 0;
 			var w = 0;
 			cols.each(function() {
-				w += $(this).outerWidth();
+				w += $(this).width();
 				if ($(this).height() >= 320) {
 					w += $.getScrollbarWidth(); // it has a scrollbar
 				}
+				max += $(this).outerHeight();
 			});
 			cols.each(function() {
 				if ($(this).height() < max) {
@@ -278,7 +286,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 				}
 			});
 
-			w += (2 * cols.length) + cols.length;  // border/margin on the cols
+			w += (2 * cols.length);  // border/margin on the cols
 
 			this.el.width(w);
 		}
