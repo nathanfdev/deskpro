@@ -803,6 +803,9 @@ class TicketSearchController extends AbstractController
 		//   properly displayed in the listing.
 		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
+		$actions_builder = RuleBuilder::newTermsBuilder();
+		$actions_set = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'string'));
+
 		$this->em->beginTransaction();
 
 		if ($actions && $ticket_ids) {
@@ -811,6 +814,11 @@ class TicketSearchController extends AbstractController
 
 			foreach ($actions as $name => $opt) {
 				$action = $factory->createFromForm($name, $opt);
+				$collection->add($action);
+			}
+
+			foreach ($actions_set as $info) {
+				$action = $factory->createFromForm($info['type'], $info['options']);
 				$collection->add($action);
 			}
 
