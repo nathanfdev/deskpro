@@ -42,8 +42,12 @@ DeskPRO.Report.Chart.AmChart.Base = new Class({
                 if (this.support_mode == 'javascript' && !this.isJavaScriptSupported()) {
                         throw "Chart Error: Cannot use 'javascript' as a support_mode. Unsupported option";        
                 }
-                
-                var vars = 
+		
+	},
+        
+	renderChart: function() {
+		
+		var vars = 
                 {
 			path: "../../amcharts/flash/",
 			
@@ -68,9 +72,9 @@ DeskPRO.Report.Chart.AmChart.Base = new Class({
                 {	// TODO, incorrect paths
 			swfobject.embedSWF("../../amcharts/flash/amline.swf", this.elementId, "600", "400", "8.0.0", "../../amcharts/flash/expressInstall.swf", vars, params);
                 }
-                
+		
 	},
-        
+	
         // Checks if JavaScript is available
         isJavaScriptSupported: function() {
                 

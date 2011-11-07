@@ -88,6 +88,12 @@ DeskPRO.Report.Dashboard.Widget = new Class({
                 this.chart = chart;
                 
         },
+	
+	getChart: function() {
+	
+		return this.chart;
+	
+	},
         
         removeChart: function() {
                 

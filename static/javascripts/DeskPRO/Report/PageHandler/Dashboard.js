@@ -120,6 +120,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 					self.createWidgetFromJSON(v);
 				});
 				self.calculateColumnWidth();
+				
+				self.renderCharts();
 			}
 		});
 	},
@@ -166,6 +168,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		var chart  = new chartClass(chart_element_id, dashboad_stat_id);
 		
 		return chart;	
+	},
+	
+	renderCharts: function() {
+		
+		Array.each(this.widgets, function(v) {
+			v.widget.getChart().renderChart();	
+		});
+		
 	},
 	
 	// Add a widget to the dashboard.
