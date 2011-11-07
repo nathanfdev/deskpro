@@ -73,7 +73,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		// Do to gc/cleanup in php we have to write the session manually before
 		// objects are destructed.
 		// TODO this shouldnt be hard-coded like this?
-		if (App::getKernelType() == 'user' OR App::getKernelType() == 'agent') {
+		if (App::getKernelType() == 'user' OR App::getKernelType() == 'agent' OR App::getKernelType() == 'report') {
 			if ($s = $request->getSession()) {
 				$s->save();
 				session_write_close();
