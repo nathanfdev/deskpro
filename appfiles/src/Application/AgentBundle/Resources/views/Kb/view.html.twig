@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
@@ -270,6 +271,31 @@ pageMeta.baseId = '{{ baseId }}';
 		<li data-option-value="hidden.draft">{{ phrase('agent.kb.hidden_status_draft') }}</li>
 	{% endif %}
 </ul>
+
+{% macro category_row(cat, depth) %}
+	<li
+		class="{% if not depth %}top{% else %}child{% endif %} {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
+		{% if cat.parent_id %}data-parent-id="{{ cat.parent_id }}"{% endif %}
+		data-item-id="{{ cat.id }}"
+		data-full-title="{{ cat.title }}"
+	>
+		{% if depth %}<span class="elbow-end"></span>{% endif %}
+		<input type="radio" name="category_id" value="{{ cat.id }}" />
+		<label>{{ cat.title }}</label>
+	</li>
+	{% if cat.children|length %}
+		{% for subcat in cat.children %}
+			{{ _self.category_row(subcat, depth+1) }}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+{{ optionbox.start('Add Category', {'id': baseId ~ '_cat_ob'}) }}
+	{{ optionbox.section_start('', 'category') }}
+		{% for cat in article_categories %}
+			{{ _self.category_row(cat, 0) }}
+		{% endfor %}
+	{{ optionbox.section_end() }}
+{{ optionbox.end('Add Category') }}
 
 {# scroll containers #}
 </div></div></div></div>

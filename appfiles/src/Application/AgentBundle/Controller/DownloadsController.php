@@ -39,7 +39,6 @@ class DownloadsController extends AbstractController
 	public function viewAction($download_id)
 	{
 		$download = App::findEntity('DeskPRO:Download', $download_id);
-		$download_cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
 		$download_comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
 
 		$related_finder = new RelatedContentFinder($this->person, $download);
@@ -51,10 +50,12 @@ class DownloadsController extends AbstractController
 
 		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('download', $download['id'], 'counted');
 
+		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'              => $download,
 			'download_comments'     => $download_comments,
-			'download_cats'         => $download_cats,
+			'download_categories'   => $download_categories,
 			'related_content'       => $related_content,
 			'state'                 => $state,
 			'sticky_search_words'   => $sticky_search_words,

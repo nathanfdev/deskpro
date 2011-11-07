@@ -16,7 +16,6 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ArticleValidatingEdit;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
@@ -76,6 +75,8 @@ class KbController extends AbstractController
 
 		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
 
+		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
 		return $this->render($tpl, array(
 			'article'              => $article,
 			'sticky_search_words'  => $sticky_search_words,
@@ -85,6 +86,7 @@ class KbController extends AbstractController
 			'article_revisions'    => $article_revisions,
 			'related_content'      => $related_content,
 			'state'                => $state,
+			'article_categories'   => $article_categories,
 		));
 	}
 

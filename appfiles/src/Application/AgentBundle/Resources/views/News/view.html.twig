@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewsView';
 pageMeta.title = {{news.title|json_encode|raw}};
@@ -33,7 +34,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status the-status article-status"><span>{{ news.status }}</span></div>
-		<div class="category"><span>Category: {{ news.category.full_title }}</span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>Category: <span id="{{baseId}}_cat_label">{{ news.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
@@ -192,6 +193,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<li data-option-value="hidden.draft">{{ phrase('agent.kb.hidden_status_draft') }}</li>
 	{% endif %}
 </ul>
+
+{{ optionbox.category_ob(news_categories, 'News Categories', 'Apply', {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

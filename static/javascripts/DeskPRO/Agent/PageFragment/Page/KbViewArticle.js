@@ -225,20 +225,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		this.ownObject(this.deleteHelper);
 
-		this.catMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('li.add', this.getEl('categories')),
-			menuElement: $('#article_category_menu'),
-			onItemClicked: function(info) {
-				var catId = $(info.itemEl).data('category-id');
-				var parentId = $(info.itemEl).data('parent-id');
-
-				var parts = [];
-				parts.push($('#article_category_menu .cat-' + catId).text().trim());
-
-				if (parentId) {
-					parts.push($('#article_category_menu .cat-' + parentId).text().trim());
-				}
-				var title = parts.reverse().join(' > ');
+		this.catOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: $('li.add', this.getEl('categories')),
+			element: this.getEl('cat_ob'),
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('category');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
 
 				var li = $('<li />');
 				li.append('<span class="remove">remove</span>');
@@ -260,7 +253,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				self.sendUpdateCats();
 			}
 		});
-		this.ownObject(this.catMenu);
 
 		this.getEl('categories').delegate('.remove', 'click', function(ev) {
 			var li = $(this).parent();
@@ -275,20 +267,16 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			self.sendUpdateCats();
 		});
 
-		this.prodMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('li.add', this.getEl('products')),
-			menuElement: $('#products_menu'),
-			onItemClicked: function(info) {
-				var catId = $(info.itemEl).data('product-id');
-				var parentId = $(info.itemEl).data('parent-id');
-
-				var parts = [];
-				parts.push($('#products_menu .prod-' + catId).text().trim());
-
-				if (parentId) {
-					parts.push($('#products_menu .prod-' + parentId).text().trim());
-				}
-				var title = parts.reverse().join(' > ');
+		this.prodOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: $('li.add', this.getEl('products')),
+			element: $(DeskPRO_Window.util.getPlainTpl($('#products_ob_tpl'))),
+			onInit: function(ob) {
+				$('.save-trigger-label', ob.getElement()).text('Add Product');
+			},
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('product');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
 
 				var li = $('<li />');
 				li.append('<span class="remove">remove</span>');
@@ -304,7 +292,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				self.sendUpdateProds();
 			}
 		});
-		this.ownObject(this.prodMenu);
 
 		this.getEl('products').delegate('.remove', 'click', function(ev) {
 			var li = $(this).parent();

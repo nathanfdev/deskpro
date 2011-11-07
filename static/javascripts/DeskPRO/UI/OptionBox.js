@@ -167,6 +167,20 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		return parseInt($('.selected-count .num', section).text() || 0);
 	},
 
+	getSelectedElements: function(section) {
+		if (typeof section == 'string') {
+			section = $('section.' + section, this.el);
+		}
+
+		var els = [];
+		$('input:checked', section).each(function() {
+			els.push($(this).closest('li').get(0));
+		});
+
+		els = $(els);
+		return els;
+	},
+
 	getSelected: function(section) {
 		if (typeof section == 'string') {
 			section = $('section.' + section, this.el);

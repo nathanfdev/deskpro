@@ -130,44 +130,25 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			}
 		});
 
-        // Change category menu
-        var catMenu = new DeskPRO.UI.Menu({
-			menuElement: $('#download_category_menu'),
-			triggerElement: this.getEl('category'),
-			onItemClicked: function(info) {
-				var catId = $(info.itemEl).data('category-id');
-				var parentId = $(info.itemEl).data('parent-id');
+		// Change category menu
+		var catOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: this.getEl('cat_trigger'),
+			element: this.getEl('cat_ob'),
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('category');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
 
-				var catTitle = $('#download_category_menu .cat-' + catId).text().trim();
-
-				var parentTitle = '';
-				if (parentId) {
-					parentTitle = $('#download_category_menu .cat-' + parentId).text().trim();
-				}
-
-				if (parentId) {
-					$('.parent', self.getEl('category')).text(parentTitle);
-					$('.sub', self.getEl('category')).text(catTitle).show();
-				} else {
-					$('.parent', self.getEl('category')).text(catTitle);
-					$('.sub', self.getEl('category')).text('').hide();
-				}
+				self.getEl('cat_label').text(title);
 
 				$.ajax({
 					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 					type: 'POST',
-					data: {
-						'action': 'category',
-						'category_id': catId
-					},
-					dataType: 'json',
-					success: function() {
-
-					}
+					data: { action: 'category', category_id: catId },
+					dataType: 'json'
 				});
 			}
-        });
-		this.ownObject(catMenu);
+		});
 
 		// Status
 		var trigger = $('.the-status:first', this.wrapper);
