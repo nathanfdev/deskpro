@@ -33,7 +33,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 * The Stat
 	 *
 	 * @var \Application\DeskPRO\Entity\Stat
-	 * @ORM_MAPPING\OneToOne(targetEntity="Stat", fetch="EAGER")
+	 * @ORM_MAPPING\ManyToOne(targetEntity="Stat", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
@@ -56,6 +56,6 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->stat_unix = new time();
+		$this->stat_unix = time();
 	}
 }
