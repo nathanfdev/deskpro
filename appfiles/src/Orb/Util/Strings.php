@@ -1051,6 +1051,22 @@ class Strings
 	}
 
 
+	/**
+	 * Just like explode() except it runs each item through trim as well.
+	 *
+	 * @param $string
+	 * @param $delim
+	 * @return array
+	 */
+	public static function explodeTrim($delim, $string, $limit = null)
+	{
+		$array = explode($delim, $string, $limit);
+		array_walk($array, 'trim');
+
+		return $array;
+	}
+
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable

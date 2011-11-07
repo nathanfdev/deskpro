@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Tickets\TicketActions\Mapper;
 use Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface;
@@ -45,6 +46,13 @@ class ActionsFactory
 	 */
 	public function createFromForm($name, $value)
 	{
+		$name_id = null;
+		$m = null;
+		if (preg_match('#^(.*?)\[(.*?)\]$#', $name, $m)) {
+			$name = $m[1];
+			$name_id = $m[2];
+		}
+
 		$options = array();
 		switch ($name) {
 			case 'agent':
@@ -80,6 +88,14 @@ class ActionsFactory
 			case 'status':
 				$options['status'] = $value;
 				break;
+			case 'add_labels':
+				$options['add_labels'] = array();
+				if (!empty($value['labels'])) $options['add_labels'] = Strings::explodeTrim(',', $value['labels']);
+				break;
+			case 'remove_labels':
+				$options['remove_labels'] = array();
+				if (!empty($value['labels'])) $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
+				break;
 			case 'reply':
 				$options['reply_text'] = $value['reply_text'];
 				$options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
@@ -90,6 +106,14 @@ class ActionsFactory
 			case 'remove_participants':
 				$options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : array();
 				break;
+			case 'ticket_field':
+				$field_manager = App::getSystemService('ticket_fields_manager');
+				$field = $field_manager->getFieldFromId($name_id);
+
+				$options['field_manager'] = $field_manager;
+				$options['field_def'] = $field;
+				$options['set_value'] = $value;
+				break;
 		}
 
 		return $this->create($name, $options);
@@ -97,7 +121,7 @@ class ActionsFactory
 
 	public function createFromInfo(array $action_info)
 	{
-		return $this->create($action_info['type'], $action_info['options']);
+		return $this->createFromForm($action_info['type'], $action_info['options']);
 	}
 
 	public function create($name, array $options)

@@ -12,27 +12,51 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 
-/**
- * Sets flag
- */
-class FlagAction implements ActionInterface, PersonContextInterface
+use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\Entity\CustomDefTicket;
+
+class TicketFieldAction implements ActionInterface
 {
-	protected $flag;
-	protected $person_context;
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $field_manager;
 
-	public function __construct($flag)
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefTicket
+	 */
+	protected $field_def;
+
+	/**
+	 * @var mixed
+	 */
+	protected $set_value;
+
+	public function __construct(FieldManager $field_manager, CustomDefTicket $field_def, $set_value)
 	{
-		$this->flag = $flag;
+		$this->field_manager = $field_manager;
+		$this->field_def     = $field_def;
+		$this->set_value     = $set_value;
 	}
 
 
-	public function setPersonContext(Person $person)
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDefTicket
+	 */
+	public function getFieldDef()
 	{
-		$this->person_context = $person;
+		return $this->field_def;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getFieldValue()
+	{
+		return $this->set_value;
 	}
 
 
@@ -43,14 +67,7 @@ class FlagAction implements ActionInterface, PersonContextInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$flag = $this->flag;
 
-		// Invalid context
-		if (!$this->person_context OR !$this->person_context['is_agent']) {
-			return;
-		}
-
-		$ticket->setFlagForPerson($this->person_context, $flag);
 	}
 
 
@@ -62,21 +79,9 @@ class FlagAction implements ActionInterface, PersonContextInterface
 	public function getApplyActions(Ticket $ticket)
 	{
 		return array(
-			array('action' => 'flag', 'color' => $this->flag)
+			array('action' => 'ticket_field', 'ticket_field_id' => $this->field_def->id, 'value' => $this->set_value)
 		);
 	}
-
-
-	/**
-	 * Get the flag color
-	 *
-	 * @return int
-	 */
-	public function getFlag()
-	{
-		return $this->flag;
-	}
-
 
 	/**
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action

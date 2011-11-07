@@ -34,11 +34,11 @@ class AddLabelsAction implements ActionInterface
 	{
 		array_walk($add_labels, 'trim');
 		$add_labels = Arrays::removeEmptyString($add_labels);
-		
+
 		$this->add_labels = $add_labels;
 	}
 
-	
+
 	/**
 	 * Apply the property to the ticket
 	 *
@@ -61,19 +61,26 @@ class AddLabelsAction implements ActionInterface
 	 */
 	public function getApplyActions(Ticket $ticket)
 	{
-		if ($ticket->getLabelManager()->hasLabel($this->add_labels)) {
+		$added_labels = array();
+		foreach ($this->add_labels as $l) {
+			if (!$ticket->getLabelManager()->hasLabel($l)) {
+				$added_labels[] = $l;
+			}
+		}
+
+		if (!$added_labels) {
 			return array();
 		}
 
 		return array(
-			array('action' => 'add_labels', 'label' => $this->add_labels)
+			array('action' => 'add_labels', 'label' => $added_labels)
 		);
 	}
 
 
 	/**
 	 * Get labels
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getLabels()
