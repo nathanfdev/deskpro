@@ -3,15 +3,12 @@ Orb.createNamespace('DeskPRO.Report.Chart.AmChart');
 /**
  * Represents a Bar Chart
  */
-DeskPRO.Report.Chart.AmChart.Bar = new Class({
-        Extends: DeskPRO.Report.Chart.Basic,
+DeskPRO.Report.Chart.AmChart.Base = new Class({
+        Extends: DeskPRO.Report.Chart.Base.Basic,
 
         // Instance of AM chart
         chart: null,
         
-	// HTML element ID to write chart to
-	elementId: '',
-	
         chart_settings: '',
         
         chart_data: '',
@@ -32,9 +29,10 @@ DeskPRO.Report.Chart.AmChart.Bar = new Class({
 	// Chart height
 	height: 400,
         
-	initialize: function(elementId, options) {
-                
-		this.elementId = elementId;
+	initialize: function(element_id, dashboard_stat_id, options) {
+		
+		this.element_id 	= element_id;
+		this.dashboard_stat_id 	= dashboard_stat_id;
 		
                 options = options || {};
                 this.support_mode 	= options.support_mode || 'fallback';
@@ -49,19 +47,22 @@ DeskPRO.Report.Chart.AmChart.Bar = new Class({
                 {
 			path: "../../amcharts/flash/",
 			
-			settings_file: "../sampleData/column_settings.xml",
-			data_file: "../sampleData/column_data.xml"
+			settings_file: DeskPRO_Window.getUrl('report_chart_get_settings', {dashboard_stat_id: this.dashboard_stat_id}),
+			data_file: DeskPRO_Window.getUrl('report_chart_get_data', {dashboard_stat_id: this.dashboard_stat_id})
                 };
             
                 if ((this.support_mode == 'fallback' || this.support_mode == 'javascript') &&
                      this.isJavaScriptSupported())
                 {
+			console.log(this.element_id);
+			
 			this.chart = new AmCharts.AmFallback();
-			this.chart.settingsFile = flashVars.settings_file;
-			this.chart.dataFile = flashVars.data_file;
+			this.chart.settingsFile = vars.settings_file;
+			this.chart.dataFile = vars.data_file;
 			this.chart.pathToImages = "../../amcharts/javascript/images/";
 			this.chart.type = this.chart_type;
-			this.chart.write(this.elementId);
+			this.chart.write(this.element_id);
+			
                 }
                 else
                 {	// TODO, incorrect paths

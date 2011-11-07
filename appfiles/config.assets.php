@@ -381,9 +381,15 @@ $CONFIG['report_dashboard'] = array(
 		'vendor/amcharts/javascript/amcharts.js',
 		'vendor/amcharts/javascript/amfallback.js',
 		'vendor/amcharts/javascript/raphael.js',
+		// Base Charts
+		'javascripts/DeskPRO/Report/Chart/Base/Basic.js',
+		// AM Chart Charts
+		'javascripts/DeskPRO/Report/Chart/AmChart/Base.js',
+		'javascripts/DeskPRO/Report/Chart/AmChart/Column.js',
+		'javascripts/DeskPRO/Report/Chart/AmChart/Line.js',
 		// App related files
 		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
-		'javascripts/DeskPRO/Report/PageHandler/Widget.js',
+		'javascripts/DeskPRO/Report/Dashboard/Widget.js',
 	),
 );
 
