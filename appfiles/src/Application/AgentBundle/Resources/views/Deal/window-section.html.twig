@@ -3,104 +3,20 @@
 		<h1>Open Deals</h1>
 	</header>
         <ul class="source-list">
-            <li>
+             <li class="sub-expanded">
                 <h3 class="title">
-                    <span class="list-counter" id="">0</span>
-                    My Deal Tasks
-
-                </h3>
-            </li>
-            <li>
-                <ul class="sub-group indented-list">
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Over Due
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Due Today
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Due In Future
-                        </h3>
-                    </li>
-
-                </ul>
-            </li>
-
-             <li>
-                <h3 class="title">
-                    <span class="list-counter" id="">0</span>
+                    <span class="list-counter" id="">{{my_total_opendeals|default(0)}}</span>
                     My Deals
-
                 </h3>
-            </li>
-            <li>
-                <ul class="sub-group indented-list">
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Enterprise Sale
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            PR Deal
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Marketeing Job
-                        </h3>
-                    </li>
-
-                </ul>
+                 {% include 'AgentBundle:Deal:deal-nav-list.html.twig' with{'opendeals': myopendeals} %}
             </li>
 
-
-            <li>
+            <li class="sub-expanded">
                 <h3 class="title">
                     <span class="list-counter" id="">0</span>
                     Others Deals
-
                 </h3>
-            </li>
-            <li>
-                <ul class="sub-group indented-list">
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Enterprise Sale
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Upgrade Sale
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Marketeing Job
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            License Transfer
-                        </h3>
-                    </li>
-
-                </ul>
+                 {% include 'AgentBundle:Deal:deal-nav-list.html.twig' with{'opendeals': otheropendeals} %}
             </li>
         </ul>    
 </section>
@@ -111,53 +27,48 @@
 	</header>
 
         <ul class="source-list">
-            <li>
+            <li class="sub-expanded">
                 <h3 class="title">
                     <span class="list-counter" id="">0</span>
                     My Deals
-
-                </h3>            
-            </li>
-            <li>
-                <ul class="sub-group indented-list">
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Won
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Lost
-                        </h3>
-                    </li>
+                </h3>
+                <ul class="sub-group">
+                     <li>
+                        <span class="title" data-route="listpane:">
+                                <span class="list-counter" id="mydeal_won">0</span>
+                                Won
+                        </span>
+                     </li>
+                     <li>
+                        <span class="title" data-route="listpane:">
+                                <span class="list-counter" id="mydeal_lost">0</span>
+                                Lost
+                        </span>
+                     </li>
                 </ul>
             </li>
 
-            <li>
+            <li class="sub-expanded">
                 <h3 class="title">
                     <span class="list-counter" id="">0</span>
                     Others Deals
-
                 </h3>
-            </li>
-            <li>
-                <ul class="sub-group indented-list">
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Won
-                        </h3>
-                    </li>
-                    <li data-route="">
-                        <h3 class="title">
-                            <span class="list-counter" id="">0</span>
-                            Lost
-                        </h3>
-                    </li>
+                <ul class="sub-group">
+                     <li>
+                        <span class="title" data-route="listpane:">
+                                <span class="list-counter" id="mydeal_won">0</span>
+                                Won
+                        </span>
+                     </li>
+                     <li>
+                        <span class="title" data-route="listpane:">
+                                <span class="list-counter" id="mydeal_lost">0</span>
+                                Lost
+                        </span>
+                     </li>
                 </ul>
             </li>
+
         </ul>
 </section>
 

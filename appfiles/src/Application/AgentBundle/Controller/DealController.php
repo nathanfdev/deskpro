@@ -43,13 +43,20 @@ class DealController extends AbstractController
 
     public function getSectionDataAction()
     {
-
-        $this->_loadModels();
-        $deal_repository = $this->_deal_repository;
-        $person = $this->person;
-
         
-        $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig');
+        $deal_repository = $this->em->getRepository('DeskPRO:Deal');
+        $person = $this->person;
+        $my_open_deals = $deal_repository->findOenDealsForPerson($person);
+        $my_total_opendeals = count($my_open_deals);
+
+        $other_open_deals = $deal_repository->findOenDealsForOther($person);
+        $other_total_opendeals = count($other_open_deals);
+        $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
+            'myopendeals' => $my_open_deals,
+            'my_total_opendeals' => $my_total_opendeals,
+            'otheropendeals' => $other_open_deals,
+            'other_total_opendeals' => $other_total_opendeals
+        ));
 
         return $this->createJsonResponse(array(
             'section_html' => $section_html,

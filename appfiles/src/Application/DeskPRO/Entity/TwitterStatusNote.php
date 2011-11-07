@@ -48,6 +48,13 @@ class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $person;
 
+        /**
+	 * @var \Application\DeskPRO\Entity\Deal
+	 * @ORM_Mapping\ManyToOne(targetEntity="Deal", inversedBy="twitter_status_notes")
+	 * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id")
+	 */
+	protected $deal;
+
 	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="text", type="string", length=4000)

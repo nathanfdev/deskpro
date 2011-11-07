@@ -38,7 +38,7 @@ class DealType extends \Application\DeskPRO\Domain\DomainObject
      * The Deal Type's name
      *
      * @var string
-     * @ORM_Mapping\Column(name="name", type="text")
+     * @ORM_Mapping\Column(name="name", type="string")
      */
     protected $name = '';
 
@@ -53,5 +53,18 @@ class DealType extends \Application\DeskPRO\Domain\DomainObject
      * )
      */
     protected $deal_stage;
+
+    /**
+     * @ORM_Mapping\OneToMany(targetEntity="CustomDataDeal", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    protected $custom_data;
+
+    /**
+     * Creates a new deal type
+     */
+    public function __construct()
+    {
+        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
 }

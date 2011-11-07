@@ -124,12 +124,20 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
+//        /**
+//	 * The deals created by this user.
+//	 * @var \Application\DeskPRO\Entity\Deal
+//	 * @ORM_Mapping\ManyToOne(targetEntity="Deal", cascade={"persist", "remove", "merge"})
+//	 */
+//	protected $deal;
+
 	public function __construct()
 	{
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->date_created        = new \DateTime();
+                //$this->deal      = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 

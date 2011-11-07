@@ -50,7 +50,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * Public visibility constant.
      * @var int
      */
-    const PUBLIC_VISIBILITY = 2;
+    const PUBLIC_VISIBILITY = 1;
 
     /**
      * The unique ID
@@ -72,6 +72,14 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $deal_type;
 
     /**
+     * Deal type
+     *
+     * @ORM_Mapping\ManyToOne(targetEntity="DealStage")
+     * @ORM_Mapping\JoinColumn(name="deal_stage_id", referencedColumnName="id", onDelete="set null")
+     */
+    protected $deal_stage;
+
+    /**
      * The deal status. On of: self::DEAL_OPEN,
      * self::DEAL_WON or self::DEAL_LOST.
      *
@@ -81,8 +89,10 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $status = 0;
 
     /**
+     * 
+     *
      * @var Application\DeskPRO\Entity\Person
-     * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="deals")
+     * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="deal")
      * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
      */
     protected $person;
@@ -124,16 +134,31 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $labels;
 
     /**
-     * Deal will be linked to relevant to many people.
+     * @ORM_Mapping\OneToMany(targetEntity="DealMapper", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    protected $deal_mapper;
+
+    /**
+     * Deal Linked to Relevent peoples.
      *
-     * @ORM_Mapping\OneToMany(targetEntity="Person", mappedBy="deal_peoples", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id")
+     * @ORM_Mapping\JoinTable(name="deal_peoples",
+     *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
+     *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}
+     * )
      */
     protected $peoples;
 
     /**
-     * Deal will be linked to relevant to many organization.
+     * Deal Linked to Relevent organization.
      *
-     * @ORM_Mapping\OneToMany(targetEntity="Organization", mappedBy="deal_organizations", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @ORM_Mapping\ManyToMany(targetEntity="Organization", fetch="EAGER", indexBy="id")
+     * @ORM_Mapping\JoinTable(name="deal_organizations",
+     *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
+     *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")}
+     * )
      */
     protected $organizations;
 
@@ -150,7 +175,13 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * @var \DateTime
      * @ORM_Mapping\Column(name="date_created",type="datetime")
      */
-    protected $date_created;
+    protected $date_created;    
+
+//    /**
+//     * @var \Doctrine\Common\Collections\ArrayCollection
+//     * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusNote", mappedBy="deal")
+//     */
+//    protected $twitter_status_notes;
 
     /**
      * Creates a new deal
@@ -161,11 +192,100 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->peoples = new \Doctrine\Common\Collections\ArrayCollection();
         $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();        
+        //$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->deal_mapper   = new \Doctrine\Common\Collections\ArrayCollection();
 
 
         $this->date_created = new \DateTime();
     }
+
+    /**
+	 * Set custom field data for a particular field.
+	 *
+	 * @param int $field_id
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function setCustomData($field_id, $value_type, $value)
+	{
+		$custom_data = $this->getCustomDataForField($field_id);
+		$is_new = false;
+
+		if (!$custom_data) {
+			if ($value === null) return null;
+
+			$is_new = true;
+
+			$field = App::getEntityRepository('DeskPRO:CustomDefDeal')->find($field_id);
+			if (!$field) {
+				throw new \Exception("Invalid field_id `$field_id`");
+			}
+			$custom_data = new CustomDataPerson();
+			$custom_data['field'] = $field;
+		}
+
+		if ($value === null) {
+			$this['custom_data']->removeElement($custom_data);
+			return null;
+		}
+
+		$custom_data[$value_type] = $value;
+
+		if ($is_new) {
+			$this->addCustomData($custom_data);
+		}
+
+		return $custom_data;
+	}
+
+	/**
+	 * Add a custom data item to this deal
+	 *
+	 * @param CustomDataDeal $data
+	 */
+	public function addCustomData(CustomDataDeal $data)
+	{
+		$this->custom_data->add($data);
+		$data['deal'] = $this;
+	}
+
+
+
+	/**
+	 * Render a custom field
+	 *
+	 * !depreciated
+	 */
+	public function renderCustomField($field_id, $context = 'html')
+	{
+		$f_def = App::getEntityRepository('DeskPRO:CustomDefDeal')->find($field_id);
+
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+
+		$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+		$rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
+
+		return $rendered;
+	}
+
+
+	/**
+	 * Check if this ticket has a custom field.
+	 *
+	 * @param $field_id
+	 * @return bool
+	 */
+	public function hasCustomField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data->field['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 
 }
