@@ -70,7 +70,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 				
 				self.calculateColumnWidth();
 				self.setupResizableGrid();
-				self.loadCharts();
+			},
+			stop: function(event, ui) {
+				self.renderCharts();
 			}
 		});
 		
@@ -367,10 +369,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Class({
 		
 		this.$dashboard.find("li").resizable("option", "grid", [snapSizeX, 50]);
 		this.$dashboard.find("li").resizable("option", "minWidth", snapSizeX);
-	},
-	
-	loadCharts: function() {
-		
 	},
 	
 	getDashboardWidth: function() {
