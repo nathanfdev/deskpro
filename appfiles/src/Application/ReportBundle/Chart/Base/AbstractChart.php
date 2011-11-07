@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\ReportBundle\Chart;
+namespace Application\ReportBundle\Chart\Base;
 
 abstract class AbstractChart implements ChartInterface
 {
@@ -23,10 +23,20 @@ abstract class AbstractChart implements ChartInterface
 	/**
 	 * Get the chart Stat
 	 *
-	 * @return Application\DeskPRO\EntityStat The associated Stat
+	 * @return Application\DeskPRO\Entity\Stat The associated Stat
 	 */
 	public function getStat()
 	{
 		return $this->stat;
+	}
+	
+	/**
+	 * Set the chart Stat
+	 *
+	 * @param Application\DeskPRO\Entity\Stat $stat The Stat
+	 */
+	public function setStat(Application\DeskPRO\Entity\Stat $stat)
+	{
+		$this->stat = $stat;
 	}
 }
