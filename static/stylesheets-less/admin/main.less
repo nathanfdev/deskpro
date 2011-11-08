@@ -1149,3 +1149,80 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 	font-size: 11px;
 	padding: 1px;
 }
+
+#dp_page_wrap {
+	z-index: 2;
+	position: relative;
+}
+
+#dp_page_nav {
+    z-index: 1;
+	width: 180px;
+	position: absolute;
+	min-height: 300px;
+	top: 124px;
+
+	border: 1px solid #CACFD6;
+	box-shadow: 0px 0px 8px 1px rgba(255, 255, 255, 0.9);
+
+	.border-radius(6px, 0, 0, 6px);
+	.box-shadow(0 1px 3px rgba(0,0,0,.25));
+
+	margin-bottom: 10px;
+	background-color: #fff;
+}
+
+#dp_page_nav .inner-shadow {
+	z-index: 1;
+	position: absolute;
+	top: 0; right:0; bottom: 0;
+	width: 13px;
+
+	background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(176,178,183,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(176,178,183,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(176,178,183,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(176,178,183,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(176,178,183,1) 100%); /* IE10+ */
+	background: linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(176,178,183,1) 100%); /* W3C */
+}
+
+#dp_page_nav section {
+	margin-bottom: 10px;
+}
+
+#dp_page_nav section > header {
+	background-color: #DFE5EB;
+}
+
+#dp_page_nav section.top > header {
+	.border-radius(5px, 0, 0, 0);
+}
+
+#dp_page_nav section > header .onoff {
+	float: right;
+	margin-right: 8px;
+}
+
+#dp_page_nav section > header input {
+	display: none;
+}
+
+#dp_page_nav section > header h4 {
+	font-size: 12px;
+	padding: 4px 3px 3px 8px;
+	line-height: 100%;
+}
+
+#dp_page_nav section > article > ul > li {
+	padding-left: 8px;
+	cursor: pointer;
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+
+#dp_page_nav section > article > ul > li:hover,
+#dp_page_nav section > article > ul > li.on {
+	background-color: #E9EFF7;
+	border-top: 1px solid #CAD0D8;
+	border-bottom: 1px solid #CAD0D8;
+}

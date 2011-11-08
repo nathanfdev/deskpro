@@ -76,7 +76,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 			self.openHeaderMenu($(this));
 		});
 
-		$('input[type="checkbox"].onoff-slider').checkbox({
+		$(':checkbox.onoff-slider').checkbox({
 			empty: ASSETS_BASE_URL + '/vendor/jquery/jquery-checkbox/empty.png'
 		});
 
@@ -109,12 +109,37 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 		});
 
+		if (document.getElementById('dp_page_nav')) {
+			this.updatePageNavPos();
+			$(window).scroll(this.updatePageNavPos.bind(this));
+			$(window).resize(this.updatePageNavPos.bind(this));
+		}
+
 		this.initFeatures();
 
 		DeskPRO.ElementHandler_Exec();
 
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
+		}
+	},
+
+	updatePageNavPos: function() {
+		var page = $('#dp_admin_page');
+		var nav  = $('#dp_page_nav');
+
+		var top = 124;
+		top += $(window).scrollTop();
+
+		var left = page.offset().left;
+
+		nav.css({
+			top: top,
+			left: left - nav.outerWidth() + 5
+		});
+
+		if (nav.height() > page.height()) {
+			$('.dp-page-box', page).last().css('min-height', nav.height() + 100);
 		}
 	},
 
