@@ -90,7 +90,6 @@ body {
 	position: relative;
 	padding: 0;
 	float: left;
-
 }
 
 #dp_admin_nav_sections li{
@@ -105,13 +104,28 @@ body {
 	text-align: center;
 }
 
+#dp_admin_nav_sections .sep {
+    float: left;
+    display: block;
+	width: 1px;
+	height: 60px;
+	.gradient(#263343, #37485E);
+	border-right: 1px solid #242526;
+	overflow: hidden;
+}
+
+#dp_admin_nav_sections .server-menu {
+	float: right;
+	margin-top: 14px;
+	margin-right: 2px;
+}
+
 #dp_admin_nav_sections li.open {
 	background-color: #131C26;
 }
 
 #dp_admin_nav_sections li:first-child{
-	margin-top:-1px;
-	box-shadow: 0 1px 0 #3C3F44 inset;
+
 }
 #dp_admin_nav_sections li.dpNavActive {
 	background: url(../../images/agent/pointerNav.png) no-repeat 44px 18px #1f2225;
@@ -161,11 +175,11 @@ body {
 }
 #dp_admin_nav_sections li a span.setup{
 	background-repeat: no-repeat;
-	background-position: 6px 6px;
-    background-image: url(../../images/agent/app-nav/app-tickets.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+	background-position: 6px 0px;
+    background-image: url(../../images/admin/app-nav/settings.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_admin_nav_sections li:hover a span.setup {
-    background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+    background-image: url(../../images/admin/app-nav/settings-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 
 #dp_admin_nav_sections li a span.server {
@@ -179,11 +193,11 @@ body {
 
 #dp_admin_nav_sections li a span.agents {
 	background-repeat: no-repeat;
-	background-position: 3px 2px;
-    background-image: url(../../images/agent/app-nav/app-people.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+	background-position: 6px 2px;
+    background-image: url(../../images/admin/app-nav/agents.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 #dp_admin_nav_sections li:hover a span.agents {
-    background-image: url(../../images/agent/app-nav/app-people-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 3px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+    background-image: url(../../images/admin/app-nav/agents-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
 }
 
 #dp_admin_nav_sections li a span.users {
@@ -214,6 +228,25 @@ body {
     background-image: url(../../images/agent/app-nav/app-tickets-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
 }
 
+#dp_admin_nav_sections li a span.deals {
+	background-repeat: no-repeat;
+	background-position: 6px 0px;
+    background-image: url(../../images/agent/app-nav/app-deals.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.deals {
+    background-image: url(../../images/agent/app-nav/app-deals-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 6px; sprite-margin-bottom: 38px; */;
+}
+
+#dp_admin_nav_sections li a span.twitter {
+	background-repeat: no-repeat;
+	background-position: 2px 0px;
+    background-image: url(../../images/agent/app-nav/app-twitter.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 2px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.twitter {
+    background-image: url(../../images/agent/app-nav/app-twitter-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 2px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+
+
 #dp_admin_nav_sections li a span.chat {
 	background-repeat: no-repeat;
 	background-position: 3px 2px;
@@ -232,7 +265,15 @@ body {
     background-image: url(../../images/agent/app-nav/app-publish-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 
+#dp_admin_nav_sections li a span.server {
+    background-repeat: no-repeat;
+	background-position: 6px 2px;
+	background-image: url(../../images/admin/app-nav/server.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 6px; sprite-margin-top: 2px; sprite-margin-bottom: 38px; */;
+}
 
+#dp_admin_nav_sections li:hover a span.server {
+	background-image: url(../../images/admin/app-nav/server-on.png);
+}
 
 #dp_page_wrap {
 	padding-top: 12px;

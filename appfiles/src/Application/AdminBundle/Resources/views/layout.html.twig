@@ -46,14 +46,6 @@
 					window[i].initPage();
 				}
 			}
-
-			$('.admin-footer .licensed-to').click(function() {
-				$('#license_info').fadeIn();
-			});
-
-			$('#license_info .close').click(function() {
-				$('#license_info').fadeOut();
-			});
 		}
 
 		{% block html_headjs_load %}{% endblock %}
@@ -139,6 +131,13 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
+{#
+
+<li data-menu="#server_menu">
+				<a><span class="server">Server</span></a>
+			</li>
+
+#}
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
 	<div id="dp_admin_nav_sections" class="deskproPane">
@@ -146,27 +145,34 @@
 			<li data-menu="#setup_menu">
 				<a><span class="setup">Setup</span></a>
 			</li>
-			<li data-menu="#server_menu">
-				<a><span class="server">Server</span></a>
-			</li>
 			<li>
 				<a href="{{ path('admin_agents') }}"><span class="agents">Agents</span></a>
 			</li>
 			<li data-menu="#users_menu">
 				<a><span class="users">Users</span></a>
 			</li>
-			<li data-menu="#integrate_menu">
-				<a><span class="integrate">Integrate</span></a>
-			</li>
-			<li data-menu="#tickets_menu">
-				<a><span class="tickets">Tickets</span></a>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#publish_menu">
+				<a><span class="publish">Portal</span></a>
 			</li>
 			<li data-menu="#chat_menu">
 				<a><span class="chat">Chat</span></a>
 			</li>
-			<li data-menu="#publish_menu">
-				<a><span class="publish">Publish</span></a>
+			<li>
+				<a><span class="twitter">Twitter</span></a>
 			</li>
+			<li>
+				<a><span class="deals">Deals</span></a>
+			</li>
+			<li data-menu="#tickets_menu">
+				<a><span class="tickets">Tickets</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#server_menu"><a><span class="server">Server</span></a></li>
 		</ul>
 	</div>
 </div>
