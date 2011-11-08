@@ -13,7 +13,7 @@
 
             <li class="sub-expanded">
                 <h3 class="title">
-                    <span class="list-counter" id="">0</span>
+                    <span class="list-counter" id="">{{other_total_opendeals|default(0)}}</span>
                     Others Deals
                 </h3>
                  {% include 'AgentBundle:Deal:deal-nav-list.html.twig' with{'opendeals': otheropendeals} %}
@@ -29,19 +29,19 @@
         <ul class="source-list">
             <li class="sub-expanded">
                 <h3 class="title">
-                    <span class="list-counter" id="">0</span>
+                    <span class="list-counter" id="">{{my_close_total_deals|default(0)}}</span>
                     My Deals
                 </h3>
                 <ul class="sub-group">
                      <li>
                         <span class="title" data-route="listpane:">
-                                <span class="list-counter" id="mydeal_won">0</span>
+                                <span class="list-counter" id="mydeal_won">{{my_won_deals|default(0)}}</span>
                                 Won
                         </span>
                      </li>
                      <li>
                         <span class="title" data-route="listpane:">
-                                <span class="list-counter" id="mydeal_lost">0</span>
+                                <span class="list-counter" id="mydeal_lost">{{my_lost_deals|default(0)}}</span>
                                 Lost
                         </span>
                      </li>
@@ -50,19 +50,19 @@
 
             <li class="sub-expanded">
                 <h3 class="title">
-                    <span class="list-counter" id="">0</span>
+                    <span class="list-counter" id="">{{other_close_total_deals|default(0)}}</span>
                     Others Deals
                 </h3>
                 <ul class="sub-group">
                      <li>
                         <span class="title" data-route="listpane:">
-                                <span class="list-counter" id="mydeal_won">0</span>
+                                <span class="list-counter" id="mydeal_won">{{other_won_deals|default(0)}}</span>
                                 Won
                         </span>
                      </li>
                      <li>
                         <span class="title" data-route="listpane:">
-                                <span class="list-counter" id="mydeal_lost">0</span>
+                                <span class="list-counter" id="mydeal_lost">{{other_lost_deals|default(0)}}</span>
                                 Lost
                         </span>
                      </li>

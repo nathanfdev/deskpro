@@ -27,7 +27,7 @@ class Deal extends EntityRepository
      * @return Array
      */
 
-    public function findOenDealsForPerson(Entity\Person $person)
+    public function findDealsForPerson(Entity\Person $person, $status = 0)
     {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(d) types, dt.name')
@@ -37,7 +37,7 @@ class Deal extends EntityRepository
                     ->where('p.id = :person_id')
                     ->andWhere('d.status = :status')
                     ->groupBy('d.deal_type')
-                    ->setParameters(array('person_id' => $person['id'], 'status' => Entity\Deal::DEAL_OPEN))
+                    ->setParameters(array('person_id' => $person['id'], 'status' => $status))
                     ;
             $query = $qb->getQuery(); //print $query->getSQL();
             return $query->getScalarResult();
@@ -51,17 +51,17 @@ class Deal extends EntityRepository
      * @return Array
      */
 
-    public function findOenDealsForOther(Entity\Person $person)
+    public function findDealsForOther($status = 0)
     {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(d) types, dt.name')
                     ->from('DeskPRO:Deal', 'd')
-                    ->innerJoin('d.person', 'p')
+                    ->leftJoin('d.person', 'p')
                     ->innerJoin('d.deal_type', 'dt')
-                    ->where('p.id != :person_id')
+                    ->where('p.id IS NULL')
                     ->andWhere('d.status = :status')
                     ->groupBy('d.deal_type')
-                    ->setParameters(array('person_id' => $person['id'], 'status' => Entity\Deal::DEAL_OPEN))
+                    ->setParameters(array( 'status' => $status))
                     ;
             $query = $qb->getQuery(); //print $query->getSQL();
             return $query->getScalarResult();

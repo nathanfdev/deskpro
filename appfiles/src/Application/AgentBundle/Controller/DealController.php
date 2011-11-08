@@ -46,29 +46,43 @@ class DealController extends AbstractController
         
         $deal_repository = $this->em->getRepository('DeskPRO:Deal');
         $person = $this->person;
-        $my_open_deals = $deal_repository->findOenDealsForPerson($person);
+
+        $my_open_deals = $deal_repository->findDealsForPerson($person);
         $my_total_opendeals = count($my_open_deals);
 
-        $other_open_deals = $deal_repository->findOenDealsForOther($person);
+        $my_won_deals = $deal_repository->findDealsForPerson($person, 1);
+        $my_total_wondeals = count($my_won_deals);
+
+        $my_lost_deals = $deal_repository->findDealsForPerson($person, 2);
+        $my_total_lostdeals = count($my_lost_deals);
+
+        $other_open_deals = $deal_repository->findDealsForOther();
         $other_total_opendeals = count($other_open_deals);
+
+        $other_won_deals = $deal_repository->findDealsForOther(1);
+        $other_total_wondeals = count($other_won_deals);
+
+        $other_lost_deals = $deal_repository->findDealsForOther(2);
+        $other_total_lostdeals = count($other_lost_deals);
+
+        
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
             'myopendeals' => $my_open_deals,
             'my_total_opendeals' => $my_total_opendeals,
             'otheropendeals' => $other_open_deals,
-            'other_total_opendeals' => $other_total_opendeals
+            'other_total_opendeals' => $other_total_opendeals,
+            'my_won_deals' => $my_total_wondeals,
+            'my_lost_deals' => $my_total_lostdeals,
+            'my_close_total_deals' => $my_total_wondeals + $my_total_lostdeals,
+            'other_won_deals' => $other_total_wondeals,
+            'other_lost_deals' => $other_total_lostdeals,
+            'other_close_total_deals' => $other_total_wondeals + $other_total_lostdeals,
+
         ));
 
         return $this->createJsonResponse(array(
             'section_html' => $section_html,
         ));
-    }
-
-    private function _loadModels() {
-
-        $this->_entityManager = $this->get('doctrine')->getEntityManager();
-        $this->_currentUser = $user = App::getCurrentPerson();
-        $this->_deal_repository = App::getEntityRepository('DeskPRO:Deal');
-    }
-
+    }    
 
 }
