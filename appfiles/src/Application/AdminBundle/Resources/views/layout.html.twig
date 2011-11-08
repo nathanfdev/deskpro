@@ -22,29 +22,17 @@
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
-		window._page_exec_stack = [];
+		window.DeskPRO_Window = new DeskPRO.Admin.Window();
+
 		function _win_exec() {
-			window.DeskPRO_Window = new DeskPRO.Admin.Window();
 			window.DeskPRO_Window.initPage();
 
-			if (window._page_exec) {
-				window._page_exec_stack.push(_page_exec);
-			}
-
-			for (var i = 0; i < window._page_exec_stack.length; i++) {
-				window._page_exec_stack[i]();
+			if (_page_exec) {
+				_page_exec();
 			}
 
 			if (window.DeskPRO_Page) {
 				DeskPRO_Page.initPage();
-			}
-
-			// Init all others too
-			var re = /^DeskPRO_Page_/;
-			for (i in window) {
-				if (re.test(i)) {
-					window[i].initPage();
-				}
 			}
 		}
 

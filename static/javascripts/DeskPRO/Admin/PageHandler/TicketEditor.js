@@ -1,19 +1,20 @@
 Orb.createNamespace('DeskPRO.Admin.PageHandler');
 
-DeskPRO.Admin.PageHandler.TicketEditor = new Class({
+DeskPRO.Admin.PageHandler.TicketEditor = new Orb.Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
-	editors: {},
-	editorSave: null,
-	redrawData: null,
-
 	initPage: function() {
+
+		this.editors = {};
+		this.editorSave = null;
+		this.redrawData = null;
+
 		var self = this;
 		var depMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#ticket_editor_head em'),
 			menuElement: $('#department_switcher_editor'),
 			onItemClicked: function(info) {
-				window.location = $('a:first', info.itemEl).attr('href'); 
+				window.location = $('a:first', info.itemEl).attr('href');
 			}
 		});
 

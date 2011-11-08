@@ -335,10 +335,13 @@ $CONFIG['agent_misc'] = array(
 $CONFIG['admin_admin_ui'] = array(
 	'out' => 'js/admin-ui.js',
 	'files' => array(
+		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/Admin/Window.js',
+		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
 		'javascripts/DeskPRO/Admin/TableReorder.js',
+		'javascripts/DeskPRO/Form/RuleBuilder.js',
 	)
 );
 
