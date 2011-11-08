@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
 pageMeta.title = {{idea.title|json_encode|raw}};
@@ -14,7 +15,7 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page idea-page with-scrollbar">
+<div class="layout-content full-page page-idea-view with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
@@ -30,202 +31,175 @@ pageMeta.baseId = '{{ baseId }}';
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
-<section class="ticket-header" id="{{baseId}}_idea_header">
-	<div class="ticket-id">
-		<span>#{{ idea.id }}</span>
+<header class="page-header">
+	<h4 class="id-number">#{{ idea.id }}</h4>
+	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ idea.title }}</h1>
+	<br class="clear" />
+	<div class="meta-line">
+		<div class="status the-status idea-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
+			{% if idea.status == 'new' %}
+				New
+			{% elseif idea.status == 'active' %}
+				Active: {{ idea.status_category.title }}
+			{% elseif idea.status == 'closed' %}
+				Closed: {{ idea.status_category.title }}
+			{% else %}
+				Hidden
+			{% endif %}
+		</span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>Category: <span id="{{baseId}}_cat_label">{{ idea.category.full_title }}</span></span></div>
 	</div>
+	<br class="clear" />
+</header>
 
-	{% if idea.status_code != "hidden.validating" %}
-		<div class="the-status" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>
-			<div class="ticket-status idea-status prop-status-icon tipped" title="{{ idea.status }}">
-				<span class="ticket-{{idea.status}}"></span>
-			</div>
-		</div>
-	{% endif %}
-
-	<div class="the-department">
-		<div class="ticket-department prop-department-id" id="{{baseId}}_category">
-			<div class="parent">
-				{% if idea.category.parent %}
-					{{ idea.category.parent.title }}
-				{% else %}
-					{{ idea.category.title }}
-				{% endif %}
-			</div>
-			<div class="sub">
-				{% if idea.category.parent %}
-					{{ idea.category.title }}
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="ticket-subject editable hover-edit no-cat" data-editable-for=".inline-editable .title">
-		{{ idea.title }}
-	</div>
-	<br style="clear:both;height: 1px;overflow: hidden;" />
-
-	<div class="assignments">
-		<div class="agent">
-			<div class="desc">
-				By {% for author in idea.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
-			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
-		</div>
-	</div>
-
-	<nav class="actions" id="{{baseId}}_action_buttons">
-		<ul>
-			<li class="delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
-			<li class="spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Spam</button></li>
-			<li class="merge"><button class="clean-gray xx-small">Merge</button></li>
-			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
-			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
-		</ul>
-	</nav>
-
-	<div class="times">
-		Created <time class="timeago" datetime="{{idea.date_created|date('c')}}"></time> at <time>{{idea.date_created|date('H:ia M j Y')}}</time>.<br/>
-	</div>
-</section>
-
-<div class="full-container-tabbed main-tabs">
-	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
-		<div class="full-container-tabbed-contents">
-			<div class="table-content">
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Labels</span>
-					</div>
-					<div class="col-table-content">
-						<div class="tags-wrap idea-tags">
-							<span class="tag-icon"></span>
-							<ul>
-								{% for label in idea.labels %}
-									<li><span>{{label.label}}</span></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Votes</span>
-					</div>
-					<div class="col-table-content">
-						<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes</span>
-						<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-{# Main Tabs #}
-<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
-	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs">
-		<span class="idea-editor-edit kb-editor-edit"><a>edit</a></span>
-		<ul>
-			<li class="tab-trigger" data-tab-for=".tab-content.content-tab"><a>Description</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.revisions"><a>Revisions</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.related-content"><a>Related Content</a></li>
-			<li class="tab-trigger" data-tab-for=".tab-content.search-tab"><a>Search</a></li>
-		</ul>
-	</div>
-	{# /Tab Triggers #}
-
-	{# Tab Contents #}
-	<div class="full-container-tabbed-contents-wrap">
-		{# Tab: Content #}
-		<div class="full-container-tabbed-contents tab-content content-tab" style="display: block">
-			<div id="{{baseId}}_content_ed">
-			{% include 'AgentBundle:Ideas:view-content-tab.html.twig' %}
-			</div>
-		</div>
-		{# /Tab: Content #}
-
-		{# Tab: Comments #}
-		<div class="full-container-tabbed-contents tab-content comments-tab">
-			<div class="idea-comments">
-				<div class="full-tab-content">
-					<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-						{% for comment in idea_comments %}
-							{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
-						{% endfor %}
-					</div>
-				</div>
-
-				<div class="message admin-message new-note">
-					<div class="message-avatar left">
-						<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-					</div>
-					<div class="message-body">
-						<div class="message-meta">
-							<span class="arrow-left"></span>
-							<h4>{{ app.user.display_name }}</h4>
-						</div>
-						<div class="message-text">
-							<p>
-								<textarea style="width:98%; height: 80px;"></textarea><Br />
-								<label>
-									<input type="checkbox" name="agent_comment" value="1" id="{{baseId}}_agent_comment_ck" /> Add as an agent-only comment
-								</label>
-								<div style="text-align:center; margin-top: 9px;">
-									<div class="loading-off">
-										<button class="dp-button x-small">Add Comment</button>
-									</div>
-									<div class="loading-on" style="display:none">
-										Saving ...
-									</div>
-								</div>
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		{# /Tab: Comments #}
-
-		{# Tab: Revisions #}
-		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content revisions">
-			{% include 'AgentBundle:Ideas:view-revisions-tab.html.twig' %}
-		</div>
-		{# /Tab: Revisions #}
-
-		{# Tab: Related #}
-		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content related-content">
-			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
-		</div>
-		{# /Tab: Related #}
-
-		{# Tab: Search #}
-		<div id="{{baseId}}_searchtab" class="full-container-tabbed-contents tab-content search-tab">
-			<div class="tags-wrap sticky-search-words">
-				<span class="tag-icon with-label">Search Words</span>
+<div class="profile-box-container">
+	<header>
+		<h4>Properties</h4>
+	</header>
+	<section class="description-area">
+		<dl class="info-list">
+			<dt class="type-labels">Labels:</dt>
+			<dd class="idea-tags tags-wrap">
 				<ul>
-					{% for word in sticky_search_words %}
-						<li><span>{{word}}</span></li>
+					{% for label in idea.labels %}
+						<li><span>{{label.label}}</span></li>
 					{% endfor %}
 				</ul>
-				<div class="explain">
-					When a user searches for any of these words, this page will always be listed in their top results.
+			</dd>
+
+			<dt>Votes:</dt>
+			<dd>
+				<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes</span>
+				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
+			</dd>
+
+			<dt>Submitted:</dt>
+			<dd>
+				By {% for author in idea.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
+				on {{ idea.date_created|date('M d Y') }}
+			</dd>
+		</dl>
+
+		{% if custom_fields|length %}
+			<dl class="info-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Ideas:view-customfields-rendered-rows.html.twig' %}
+			</dl>
+			<dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Ideas:view-customfields-edit-rows.html.twig' %}
+			</dl>
+		{% endif %}
+
+		<div class="controls" id="{{baseId}}_properties_controls">
+			<div class="showing-editing-fields" style="display: none">
+				<button class="clean-white save-fields-trigger"><span>Save</span></button>
+			</div>
+			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
+				<button class="clean-white edit-fields-trigger"><span>Edit Properties</span></button>
+				<button class="clean-white delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
+				<button class="clean-white spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}>Spam</button>
+				<button class="clean-white merge">Merge</button>
+				<button class="clean-white permalink">Copy Permalink</button>
+				<button class="clean-white view-user-interface">View in user interface</button>
+			</div>
+		</div>
+	</section>
+</div>
+
+<nav class="page-tabs" id="{{baseId}}_bodytabs">
+	<ul>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab"><a>Description</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>Comments (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_revs"><a>Revisions</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_"><a>Related Content</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab"><a>Search</a></li>
+	</ul>
+</nav>
+
+{# Tab Contents #}
+<div id="{{baseId}}_tab_contents" class="tabbed-page-contents">
+	{# Tab: Content #}
+	<div id="{{baseId}}_content_tab" class="deskpro-tab-item on" style="display: block">
+		<div id="{{baseId}}_content_ed">
+		{% include 'AgentBundle:Ideas:view-content-tab.html.twig' %}
+		</div>
+	</div>
+	{# /Tab: Content #}
+
+	{# Tab: Comments #}
+	<div id="{{baseId}}_comments_tab" class="deskpro-tab-item">
+		<div class="idea-comments">
+			<div class="full-tab-content">
+				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+					{% for comment in idea_comments %}
+						{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
+					{% endfor %}
 				</div>
 			</div>
 
-			<br />
-
-			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea><Br />
+							<label>
+								<input type="checkbox" name="agent_comment" value="1" id="{{baseId}}_agent_comment_ck" /> Add as an agent-only comment
+							</label>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
-		{# /Tab: Search #}
 	</div>
-	{# /Tab Contents $}
-</div>
-{# /Main Tabs #}
+	{# /Tab: Comments #}
 
-{% include 'AgentBundle:Common:menu-idea-status.html.twig' with {'active_status_cats': active_status_cats, 'closed_status_cats': closed_status_cats} %}
+	{# Tab: Revisions #}
+	<div id="{{baseId}}_revs" class="deskpro-tab-item">
+		{% include 'AgentBundle:Ideas:view-revisions-tab.html.twig' %}
+	</div>
+	{# /Tab: Revisions #}
+
+	{# Tab: Related #}
+	<div id="{{baseId}}_related_content" class="deskpro-tab-item">
+		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+	</div>
+	{# /Tab: Related #}
+
+	{# Tab: Search #}
+	<div id="{{baseId}}_searchtab" class="deskpro-tab-item">
+		<div class="tags-wrap sticky-search-words">
+			<span class="tag-icon with-label">Search Words</span>
+			<ul>
+				{% for word in sticky_search_words %}
+					<li><span>{{word}}</span></li>
+				{% endfor %}
+			</ul>
+			<div class="explain">
+				When a user searches for any of these words, this page will always be listed in their top results.
+			</div>
+		</div>
+
+		<br />
+
+		{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+	</div>
+	{# /Tab: Search #}
+</div>
+{# /Tab Contents #}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
@@ -234,11 +208,71 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-</div>
+<ul class="menu status status-menu {{add_classname}}" data-option-name="status" style="display:none">
+	<li
+		class="status-new"
+		data-status-type="new"
+		data-option-value="new"
+	>New</li>
+	<li
+		class="section-title status-active"
+		data-status-type="active"
+		data-option-value="active"
+	>Active</li>
+	{% for cat in active_status_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="active"
+			data-option-value="active.{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+	<li
+		class="section-title status-closed"
+		data-status-type="closed"
+		data-option-value="closed"
+	>Closed</li>
+	{% for cat in closed_status_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="closed"
+			data-option-value="closed.{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+</ul>
 
+{{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
+	{{ optionbox.section_start('', 'status') }}
+		<li class="top parent-option item-new" data-item-id="new" data-full-title="New">
+			<input type="radio" name="status" value="new" />
+			<label>New</label>
+		</li>
+		<li class="top parent-option item-active" data-item-id="active" data-full-title="Active">
+			<input type="radio" name="status" value="active" />
+			<label>Active</label>
+		</li>
+		{% for cat in active_status_cats %}
+			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="Active: {{ cat.title }}">
+				<span class="elbow-end"></span>
+				<input type="radio" name="category_id" value="active.{{cat.id}}" />
+				<label>{{ cat.title }}</label>
+			</li>
+		{% endfor %}
+		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="Closed">
+			<input type="radio" name="status" value="closed" />
+			<label>Closed</label>
+		</li>
+		{% for cat in closed_status_cats %}
+			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="Closed: {{ cat.title }}">
+				<span class="elbow-end"></span>
+				<input type="radio" name="category_id" value="closed.{{cat.id}}" />
+				<label>{{ cat.title }}</label>
+			</li>
+		{% endfor %}
+	{{ optionbox.section_end() }}
+{{ optionbox.end('Set Status') }}
 
-</div></div> {# scrollbar divs #}
+{{ optionbox.category_ob(idea_categories, 'Idea Category', 'Apply', {'id': baseId ~ '_cat_ob'}) }}
 
-</div> {# main layout div #}
-
-{% include 'AgentBundle:MediaBrowser:overlay.html.twig' %}
+{# scroll containers #}
+</div></div></div></div>
+{# /scroll containers #}

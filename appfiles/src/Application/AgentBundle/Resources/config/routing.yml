@@ -1292,6 +1292,11 @@ agent_ideas_view:
   defaults: { _controller: AgentBundle:Ideas:view }
   options: { fragment_name: 'i' }
 
+agent_ideas_ajaxsavecustomfields:
+  pattern: /ideas/view/{idea_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveCustomFields }
+  requirements: { idea_id: "\d+" }
+
 agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted
   defaults: { _controller: AgentBundle:Ideas:whoVoted }

@@ -34,7 +34,17 @@ pageMeta.baseId = '{{ baseId }}';
 	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ article.title }}</h1>
 	<br class="clear" />
 	<div class="meta-line">
-		<div class="status the-status article-status"><span>{{ article.status }}</span></div>
+		<div class="status the-status article-status"><span>
+			{% if idea.status == 'new' %}
+				New
+			{% elseif idea.status == 'active' %}
+				Active: {{ idea.status_category.title }}
+			{% elseif idea.status == 'closed' %}
+				Closed: {{ idea.status_category.title }}
+			{% else %}
+				Hidden
+			{% endif %}
+		</span></div>
 	</div>
 	<br class="clear" />
 </header>

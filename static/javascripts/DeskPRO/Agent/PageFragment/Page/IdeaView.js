@@ -82,6 +82,42 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 
 
+		var fieldsRendered = this.getEl('custom_fields_rendered');
+		var fieldsForm = this.getEl('custom_fields_editable');
+
+		var buttonsWrap = this.getEl('properties_controls');
+		var propToggle = function(what) {
+			if (what == 'display') {
+				$('.showing-editing-fields', buttonsWrap).hide();
+				$('.showing-rendered-fields', buttonsWrap).show();
+				fieldsForm.hide();
+				fieldsRendered.show();
+			} else {
+				$('.showing-rendered-fields', buttonsWrap).hide();
+				$('.showing-editing-fields', buttonsWrap).show();
+				fieldsRendered.hide();
+				fieldsForm.show();
+			}
+		};
+
+		$('.edit-fields-trigger', buttonsWrap).click(function() {
+			propToggle('edit');
+		});
+
+		$('.save-fields-trigger', buttonsWrap).click(function() {
+			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+			$.ajax({
+				url: BASE_URL + 'agent/ideas/view/' + self.meta.idea_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRendered.empty().html(rendered);
+					propToggle('display');
+				}
+			});
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -106,7 +142,6 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs'),
 			onTabSwitch: (function(info) {
 				if ($(info.tabContent).is('.idea-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
@@ -173,26 +208,25 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var self = this;
 
 		// Status
-		var trigger = $('.the-status:first', this.wrapper);
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: trigger,
-			menuElement: $('.status-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				var status = $(info.itemEl).data('option-value');
+		var statusOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: this.getEl('status_trigger'),
+			element: this.getEl('status_ob'),
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('status');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
 
-				$('.idea-status', trigger).attr('title', status);
-				$('.idea-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+				self.getEl('status_label').text(title);
 
 				$.ajax({
 					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
 					type: 'POST',
-					data: {action: 'status', status: status},
+					data: {action: 'status', status: catId},
 					context: self,
 					dataType: 'json'
 				});
 			}
 		});
-		this.ownObject(this.statusMenu);
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 			ajaxSaveUrl: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
@@ -202,43 +236,24 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		this.ownObject(this.deleteHelper);
 
 		// Change category menu
-        var catMenu = new DeskPRO.UI.Menu({
-			menuElement: $('#idea_category_menu'),
-			triggerElement: this.getEl('category'),
-			onItemClicked: function(info) {
-				var catId = $(info.itemEl).data('category-id');
-				var parentId = $(info.itemEl).data('parent-id');
+		var catOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: this.getEl('cat_trigger'),
+			element: this.getEl('cat_ob'),
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('category');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
 
-				var catTitle = $('#idea_category_menu .cat-' + catId).text().trim();
-
-				var parentTitle = '';
-				if (parentId) {
-					parentTitle = $('#idea_category_menu .cat-' + parentId).text().trim();
-				}
-
-				if (parentId) {
-					$('.parent', self.getEl('category')).text(parentTitle);
-					$('.sub', self.getEl('category')).text(catTitle).show();
-				} else {
-					$('.parent', self.getEl('category')).text(catTitle);
-					$('.sub', self.getEl('category')).text('').hide();
-				}
+				self.getEl('cat_label').text(title);
 
 				$.ajax({
 					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
 					type: 'POST',
-					data: {
-						'action': 'category',
-						'category_id': catId
-					},
-					dataType: 'json',
-					success: function() {
-
-					}
+					data: { action: 'category', category_id: catId },
+					dataType: 'json'
 				});
 			}
-        });
-		this.ownObject(catMenu);
+		});
 	},
 
 	_initActions: function() {
