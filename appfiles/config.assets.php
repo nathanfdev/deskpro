@@ -359,6 +359,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/ChoiceBuilder.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/PortalNav.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/PortalToggle.js',
 	)
 );
 

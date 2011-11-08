@@ -35,4 +35,9 @@ class PortalController extends AbstractController
 
 		return $this->redirectRoute('admin_portal');
 	}
+
+	public function settingsAction()
+	{
+		return $this->render('AdminBundle:Portal:settings.html.twig');
+	}
 }

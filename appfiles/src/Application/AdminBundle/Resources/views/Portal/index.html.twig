@@ -1,11 +1,11 @@
 {% set this_page = 'portal_editor' %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% block pagetitle %}
+	<div class="onoff" data-element-handler="DeskPRO.Admin.ElementHandler.PortalToggle">
+		<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
+	</div>
+	<h1>Portal</h1>
+{% endblock %}
 {% block page %}
-	Testing 123d
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-	<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
 {% endblock %}

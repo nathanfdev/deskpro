@@ -1192,6 +1192,10 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 	margin-bottom: 10px;
 }
 
+#portal_nav.disabled section {
+	opacity: 0.5 !important;
+}
+
 #dp_page_nav section > header {
 	background-color: #DFE5EB;
 }
@@ -1541,4 +1545,83 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
     height: 11px;
     overflow: hidden;
     cursor: pointer;
+}
+
+
+
+
+.setting_section_head {
+	margin: -10px -10px 0 -10px;
+	padding: 0 0 10px 3px;
+}
+
+.setting_section_head a {
+	font-size: 9px;
+	color: #C7CBD1;
+	text-decoration: none;
+	float: right;
+}
+.setting_section_head a:hover {
+	color: #777A80;
+}
+
+.setting_section_head h1 {
+	font-size: 25px;
+	font-weight: normal;
+}
+
+.setting_field_row:first-of-type {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.setting_field_row {
+	border-top:  1px solid #ccc;
+	padding: 18px 0 0 0;
+	margin: 8px 0 0 0;
+}
+
+.setting_field_row h4 {
+	float: left;
+	font-size: 15px;
+	padding-top: 4px;
+}
+
+.setting_field_row .setting_fields {
+	margin-left: 150px;
+}
+
+.field_row {
+	margin-bottom: 16px;
+}
+
+.field_row label {
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.setting_fields input[type="text"] {
+	background-color: #FCFCFC;
+	border:  1px solid #DCE1E8;
+	padding: 1px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+footer.setting_field_row {
+	padding: 8px !important;
+	background-color: #DFE5EB;
+	border-radius: 5px;
+	text-align: center;
+}
+
+
+#dp_admin_pagetitle .onoff {
+	float: left;
+	margin-right: 5px;
+	position: relative;
+	top: -2px;
+	margin-left: -10px;
 }
