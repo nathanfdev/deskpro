@@ -400,10 +400,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
         /**
 	 * The deals created by this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 * @var \Application\DeskPRO\Entity\Deal
+	 * @ORM_Mapping\ManyToOne(targetEntity="Deal",  cascade={"persist", "remove", "merge"})
 	 */
-	protected $deals;
+	protected $deal;
+
+//        /**
+//         * Inverse Side
+//         *
+//         * @ManyToMany(targetEntity="Deal", mappedBy="peoples")
+//         */
+//	protected $deals;
 
 	/**
 	 * The deals assigned to this user.
@@ -467,8 +474,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
+//                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
+                //$this->deal      = new \Doctrine\Common\Collections\ArrayCollection();
+//		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);

@@ -15,10 +15,11 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 /**
  * Deal entity definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Currency")
- * @ORM_Mapping\Table(name="currency")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DealStage")
+ * @ORM_Mapping\Table(name="deals_mapper")
  */
-class Currency extends \Application\DeskPRO\Domain\DomainObject
+
+class DealMapper extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID
@@ -31,19 +32,23 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $id = null;
 
-    /**
-     * The Deal Type's name
-     *
-     * @var string
-     * @ORM_Mapping\Column(name="name", type="string")
+    /**     
+     * @var \Application\DeskPRO\Entity\Deal
+     * @ORM_Mapping\ManyToOne(targetEntity="Deal",  cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinColumn(name="dealid", referencedColumnName="id", onDelete="cascade")
      */
-    protected $name = '';
+    protected $deal;
 
     /**
-     * Currency symbol.
-     *
      * @var string
-     * @ORM_Mapping\Column(name="symbol", type="string")
+     * @ORM_Mapping\Column(name="type", type="string")
      */
-    protected $symbol = '$';
+    protected $linktype;
+
+    /**
+     * @var int
+     * @ORM_Mapping\Column(name="typeid", type="integer")
+     */
+    protected $typeid;
+
 }
