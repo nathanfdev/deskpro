@@ -146,10 +146,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var followDetailEl = this.getElById('assign_detail_followers');
 
 		//assign_btn
-		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
 			element: this.getElById('agent_selector'),
 			trigger: this.getElById('assign_btn'),
-			onClose: function(ob) {
+			onSave: function(ob) {
 				var selections = ob.getAllSelected();
 
 				var exist_agent_id      = parseInt(self.getElById('exist_agent_id').val());
@@ -209,10 +209,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//assign_btn
 		var noteFollowDetailEl = this.getElById('assign_followers_detail');
 
-		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
 			element: this.getElById('agent_followers_selector'),
 			trigger: this.getElById('assign_followers_btn'),
-			onClose: function(ob) {
+			onSave: function(ob) {
 				var selections = ob.getAllSelected();
 
 				// Followers

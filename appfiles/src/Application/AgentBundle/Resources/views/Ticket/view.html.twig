@@ -333,7 +333,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 <div class="optionbox reply-agent-team-ob with-footer" id="{{baseId}}_agent_assign_ob">
-	<span class="close close-trigger"></span>
+	<header>
+		<h4>Assignments and Followers</h4>
+		<span class="close close-trigger"></span>
+	</header>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
@@ -427,7 +430,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 <div class="confirm-macro-overlay" id="{{baseId}}_confirm_macro_overlay" style="width: 400px; height: 400px; display: none;">
 	<div class="overlay-title">
-		<span class="close-overlay"></span>
 		<h4>Confirm: Apply Macro</h4>
 	</div>
 	<div class="overlay-content">

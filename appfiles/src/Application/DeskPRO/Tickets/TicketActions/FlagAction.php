@@ -29,7 +29,7 @@ class FlagAction implements ActionInterface, PersonContextInterface
 		$this->flag = $flag;
 	}
 
-	
+
 	public function setPersonContext(Person $person)
 	{
 		$this->person_context = $person;
@@ -55,8 +55,21 @@ class FlagAction implements ActionInterface, PersonContextInterface
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array(
+			array('action' => 'flag', 'color' => $this->flag)
+		);
+	}
+
+
+	/**
 	 * Get the flag color
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getFlag()

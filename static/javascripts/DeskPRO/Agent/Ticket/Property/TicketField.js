@@ -21,7 +21,7 @@ DeskPRO.Agent.Ticket.Property.TicketField = new Class({
 		this.getInterfaceElement().html(value);
 	},
 
-	_getInterfaceElement: function() {
+	getInterfaceElement: function() {
 		return $('.show-fields .custom-field-' + this.options.fieldId + ' .field-input', this.ticketPage.contentWrapper);
 	},
 

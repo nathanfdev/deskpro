@@ -27,8 +27,6 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 		$('.page-header .set-status', this.ticketPage.wrapper).hide();
 		$('.page-header .set-status.' + status_classname, this.ticketPage.wrapper).show();
 
-		console.log(status_classname);
-
 		$('input.status:first', this.ticketPage.valueForm).val(value);
 		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);
 	},
@@ -46,6 +44,10 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 		});
 
 		return data;
+	},
+
+	getInterfaceElement: function() {
+		return $('.status.set-status', this.ticketPage.contentWrapper);
 	},
 
 	getName: function() {

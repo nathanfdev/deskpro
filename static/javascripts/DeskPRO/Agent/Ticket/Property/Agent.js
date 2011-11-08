@@ -41,7 +41,7 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 		}
 	},
 
-	_getInterfaceElement: function() {
+	getInterfaceElement: function() {
 		return $('.prop-agent-id:first', this.ticketPage.wrapper);
 	},
 

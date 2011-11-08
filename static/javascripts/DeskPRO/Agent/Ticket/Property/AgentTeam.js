@@ -34,7 +34,7 @@ DeskPRO.Agent.Ticket.Property.AgentTeam = new Class({
 		}
 	},
 
-	_getInterfaceElement: function() {
+	getInterfaceElement: function() {
 		return $('.prop-agent-team-id:first', this.ticketPage.wrapper);
 	},
 

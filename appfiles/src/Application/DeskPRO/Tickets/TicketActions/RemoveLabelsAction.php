@@ -34,11 +34,11 @@ class RemoveLabelsAction implements ActionInterface
 	{
 		array_walk($remove_labels, 'trim');
 		$remove_labels = Arrays::removeEmptyString($remove_labels);
-		
+
 		$this->remove_labels = $remove_labels;
 	}
 
-	
+
 	/**
 	 * Apply the property to the ticket
 	 *
@@ -61,19 +61,26 @@ class RemoveLabelsAction implements ActionInterface
 	 */
 	public function getApplyActions(Ticket $ticket)
 	{
-		if (!$ticket->getLabelManager()->hasLabel($this->add_labels)) {
+		$removed_labels = array();
+		foreach ($this->remove_labels as $l) {
+			if (!$ticket->getLabelManager()->hasLabel($l)) {
+				$removed_labels[] = $l;
+			}
+		}
+
+		if (!$removed_labels) {
 			return array();
 		}
 
 		return array(
-			array('action' => 'remove_labels', 'label' => $this->add_labels)
+			array('action' => 'remove_labels', 'label' => $removed_labels)
 		);
 	}
 
 
 	/**
 	 * Get labels
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getLabels()

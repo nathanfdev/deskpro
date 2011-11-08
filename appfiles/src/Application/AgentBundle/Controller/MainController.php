@@ -65,6 +65,15 @@ class MainController extends AbstractController
 		// Auto-load chats in tabs if assigned to an agent
 		$open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
 
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$ticket_options['custom_ticket_fields'] = $custom_fields;
+
+		// People stuff
+		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),

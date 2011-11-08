@@ -188,7 +188,7 @@ class UserChatManager
 				$cm->fromArray(array(
 					'channel' => 'chat.new',
 					'data' => $newchat_cm_data,
-					'created_by_client' => $this->session->getId(),
+					'created_by_client' => $this->getCurrentClientId(),
 				));
 
 				$this->em->persist($cm);
@@ -316,7 +316,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => 'chat.depchange',
 				'data' => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
-				'created_by_client' => $this->session->getId(),
+				'created_by_client' => $this->getCurrentClientId(),
 			));
 
 			$this->em->persist($cm);
@@ -368,7 +368,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => 'chat.reassigned',
 				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
-				'created_by_client' => $this->session->getId(),
+				'created_by_client' => $this->getCurrentClientId(),
 			));
 
 			$this->em->persist($cm);
@@ -462,7 +462,7 @@ class UserChatManager
 				$cm->fromArray(array(
 					'channel' => 'chat.unassigned',
 					'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
-					'created_by_client' => $this->session->getId(),
+					'created_by_client' => $this->getCurrentClientId(),
 				));
 				$this->em->persist($cm);
 			}
@@ -570,7 +570,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => 'chat.ended',
 				'data' => $convo->getInfo(),
-				'created_by_client' => $this->session->getId(),
+				'created_by_client' => $this->getCurrentClientId(),
 			));
 
 			$this->em->persist($cm);
@@ -613,7 +613,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => 'chat.ended',
 				'data' => $convo->getInfo(),
-				'created_by_client' => $this->session->getId(),
+				'created_by_client' => $this->getCurrentClientId(),
 			));
 
 			$this->em->persist($cm);
@@ -693,7 +693,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => $data,
-				'created_by_client' => $this->session->getId()
+				'created_by_client' => $this->getCurrentClientId()
 			));
 
 			$this->em->persist($cm);
@@ -753,7 +753,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => $msg->getInfo(),
-				'created_by_client' => $this->session->getId()
+				'created_by_client' => $this->getCurrentClientId()
 			));
 			$this->em->persist($cm);
 
@@ -765,6 +765,15 @@ class UserChatManager
 		}
 
 		return $msg;
+	}
+
+	protected function getCurrentClientId()
+	{
+		if ($this->session) {
+			return $this->session->getId();
+		}
+
+		return '';
 	}
 
 
@@ -782,7 +791,7 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => $convo->getChannelId('usertyping'),
 				'data' => array('preview' => $preview_string),
-				'created_by_client' => $this->session->getId()
+				'created_by_client' => $this->getCurrentClientId()
 			));
 			$this->em->persist($cm);
 

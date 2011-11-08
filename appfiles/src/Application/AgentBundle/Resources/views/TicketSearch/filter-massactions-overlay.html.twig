@@ -150,6 +150,10 @@
 	</section>
 
     <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
+    	<header>
+			<h4>Assignments and Followers</h4>
+			<span class="close close-trigger"></span>
+		</header>
     	<div class="col">
     		<section data-section-name="agents">
     			<header>
@@ -158,24 +162,24 @@
     			</header>
     			<ul>
     				<li class="on">
-    					<input type="radio" name="{{baseId}}_agent" value="-1" checked="checked" />
+    					<input type="radio" name="{{baseId}}_agent" class="agent agent-none" value="-1" checked="checked" />
     					<label>Do not change agent</label>
     				</li>
 
     				<li class="me last-me">
-    					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" />
+    					<input type="radio" name="{{baseId}}_agent" class="agent agent-{{app.user.id}}" value="{{ app.user.id }}" />
     					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
     				</li>
 
     				<li>
-    					<input type="radio" name="{{baseId}}_agent" value="0" />
+    					<input type="radio" class="agent agent-0" name="{{baseId}}_agent" value="0" />
     					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
     				</li>
 
     				{% for agent in agents %}
     					{% if agent.id != app.user.id %}
     						<li>
-    							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" />
+    							<input type="radio" class="agent agent-{{agent.id}}" name="{{baseId}}_agent" value="{{ agent.id }}" />
     							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
     							<div class="bound-fade"></div>
     						</li>
@@ -245,5 +249,8 @@
     		</section>
     	</div>
     	<br class="clear" />
+    	<footer>
+			<button class="save-trigger">Apply</button>
+		</footer>
     </div>
 </div>

@@ -28,10 +28,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		var followersList = this.getEl('followers_list');
 		var el = this.getEl('agent_assign_ob');
-		this.assignOptionBox = new DeskPRO.UI.OptionBox({
+		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
 			element: el,
 			trigger: this.getEl('assign_ob_trigger'),
-			onClose: function(ob) {
+			onSave: function(ob) {
 				var selections = ob.getAllSelected();
 
 				var agent_id = parseInt(selections.agents || 0);
@@ -201,6 +201,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.macroOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlayEl
 		});
+
+		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
+		$('.actions-list', this.macroOverlay.getElement()).empty().append(add);
 	},
 
 	confirmMacro: function(macroId) {
@@ -214,8 +217,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			success: function(data) {
 				this._initMacroOverlay();
 
-				var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
-				$('.actions-list', this.macroOverlay.getElement()).empty().append(add);
+				var add = $('.actions-list', this.macroOverlay.getElement());
+				$('.search-terms', add).empty();
+
 				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
 				Array.each(data.actions_display, function(info, x) {
 					var basename = 'actions[initial_' + x + ']';
@@ -231,7 +235,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
 				$('.remove', add).remove();
 
-				this.macroOverlay.open();
+				this.macroOverlay.close();
 			}
 		});
 	},
@@ -240,6 +244,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		if (!this.macroActions || !this.macroActions.length) {
 			return;
 		}
+
+		console.log('Applying macro actions: %o', this.macroActions);
 
 		Array.each(this.macroActions, function(action_info) {
 			var type = action_info.action;
@@ -268,7 +274,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 				this.changeManager.addChange(prop, action);
 			} else {
-				console.warn('Unknown property `%s`. Actions: %o', type, actions);
+				console.warn('Unknown property `%s`. Actions: %o', type, action);
 			}
 		}, this);
 

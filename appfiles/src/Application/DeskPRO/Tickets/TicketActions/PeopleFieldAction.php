@@ -14,23 +14,51 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 
-/**
- * Sets status
- */
-class StatusAction implements ActionInterface
-{
-	protected $status;
+use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\Entity\CustomDefPerson;
 
-	public function __construct($status)
+class PeopleFieldAction implements ActionInterface
+{
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $field_manager;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefPerson
+	 */
+	protected $field_def;
+
+	/**
+	 * @var mixed
+	 */
+	protected $set_value;
+
+	public function __construct(FieldManager $field_manager, CustomDefPerson $field_def, $set_value)
 	{
-		if (!in_array($status, array(
-			'open', 'pending', 'resolved', 'closed',
-			'hidden.spam', 'hidden.validating', 'hidden.deleted'
-		))) {
-			throw new \InvalidArgumentException("Invalid status `$status`");
-		}
-		$this->status = $status;
+		$this->field_manager = $field_manager;
+		$this->field_def     = $field_def;
+		$this->set_value     = $set_value;
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\CustomDefTicket
+	 */
+	public function getFieldDef()
+	{
+		return $this->field_def;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getFieldValue()
+	{
+		return $this->set_value;
+	}
+
 
 	/**
 	 * Apply the property to the ticket
@@ -39,18 +67,8 @@ class StatusAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if (strpos($this->status, '.') !== false) {
-			list ($status, $hidden_status) = explode('.', $this->status, 2);
-		} else {
-			$status = $this->status;
-			$hidden_status = null;
-		}
-
-		if ($hidden_status) {
-			$ticket->setHiddenStatus($hidden_status);
-		} else {
-			$ticket->setStatus($status);
-		}
+		$person = $ticket->getPerson();
+		$this->field_manager->saveFormToObject($this->set_value, $person);
 	}
 
 
@@ -61,26 +79,10 @@ class StatusAction implements ActionInterface
 	 */
 	public function getApplyActions(Ticket $ticket)
 	{
-		if ($ticket->getStatusCode() == $this->status) {
-			return array();
-		}
-
 		return array(
-			array('action' => 'status', 'status' => $this->status)
+			array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value)
 		);
 	}
-
-
-	/**
-	 * Get the full status (stauts.hidden_status)
-	 *
-	 * @return string
-	 */
-	public function getFullStatus()
-	{
-		return $this->status;
-	}
-
 
 	/**
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
