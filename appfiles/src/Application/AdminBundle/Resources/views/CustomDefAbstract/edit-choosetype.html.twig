@@ -1,5 +1,5 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% extends 'AdminBundle::layout.html.twig' %}
+{% extends layout_tpl ? layout_tpl : 'AdminBundle::layout.html.twig' %}
 {% block content %}
 <div
 	class="dp-page-box"

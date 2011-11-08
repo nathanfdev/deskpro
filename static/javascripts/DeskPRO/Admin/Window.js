@@ -109,12 +109,6 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 		});
 
-		if (document.getElementById('dp_page_nav')) {
-			this.updatePageNavPos();
-			$(window).scroll(this.updatePageNavPos.bind(this));
-			$(window).resize(this.updatePageNavPos.bind(this));
-		}
-
 		this.initFeatures();
 
 		DeskPRO.ElementHandler_Exec();
@@ -122,13 +116,19 @@ DeskPRO.Admin.Window = new Orb.Class({
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}
+
+		if (document.getElementById('dp_page_nav')) {
+			this.updatePageNavPos();
+			$(window).scroll(this.updatePageNavPos.bind(this));
+			$(window).resize(this.updatePageNavPos.bind(this));
+		}
 	},
 
 	updatePageNavPos: function() {
 		var page = $('#dp_admin_page');
 		var nav  = $('#dp_page_nav');
 
-		var top = 124;
+		var top = page.offset().top + 15;
 		top += $(window).scrollTop();
 
 		var left = page.offset().left;
@@ -141,6 +141,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 		if (nav.height() > page.height()) {
 			$('.dp-page-box', page).last().css('min-height', nav.height() + 100);
 		}
+
+		nav.css('visibility', 'visible');
 	},
 
 	openHeaderMenu: function(triggerEl) {

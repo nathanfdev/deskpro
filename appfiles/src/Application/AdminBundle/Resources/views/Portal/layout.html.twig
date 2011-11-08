@@ -27,8 +27,8 @@
 		</header>
 		<article>
 			<ul>
-				<li><a>Settings</a></li>
-				<li><a>Custom Fields</a></li>
+				<li class="{% if this_page == 'kb_settings' %}on{% endif %}"><a>Settings</a></li>
+				<li class="{% if this_page == 'kb_fields' %}on{% endif %}"><a href="{{ path('admin_customdefarticles') }}">Custom Fields</a></li>
 			</ul>
 		</article>
 	</section>
@@ -42,10 +42,10 @@
 		</header>
 		<article>
 			<ul>
-				<li><a>Settings</a></li>
+				<li class="{% if this_page == 'idea_settings' %}on{% endif %}"><a>Settings</a></li>
 				<li><a>Statuses</a></li>
 				<li><a>Categories</a></li>
-				<li><a>Custom Fields</a></li>
+				<li class="{% if this_page == 'idea_fields' %}on{% endif %}"><a href="{{ path('admin_customdefideas') }}">Custom Fields</a></li>
 			</ul>
 		</article>
 	</section>
