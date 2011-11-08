@@ -159,28 +159,8 @@ ALTER TABLE `deal_peoples`
   ADD CONSTRAINT `deal_peoples_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `deal_peoples_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE;
 
-
-CREATE TABLE IF NOT EXISTS `task_associations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `task_id` int(11) DEFAULT NULL,
-  `person_id` int(11) DEFAULT NULL,
-  `ticket_id` int(11) DEFAULT NULL,
-  `organization_id` int(11) DEFAULT NULL,
-  `deal_id` int(11) DEFAULT NULL,
-  `discr` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_41B0E09C8DB60186` (`task_id`),
-  KEY `IDX_41B0E09C217BBB47` (`person_id`),
-  KEY `IDX_41B0E09C700047D2` (`ticket_id`),
-  KEY `IDX_41B0E09C32C8A3DE` (`organization_id`),
-  KEY `IDX_41B0E09CF60E2305` (`deal_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 ALTER TABLE `task_associations`
-  ADD CONSTRAINT `task_associations_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `task_associations_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `task_associations_ibfk_3` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `task_associations_ibfk_4` FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE,
+  ADD COLUMN `deal_id` int(11) DEFAULT NULL,
   ADD CONSTRAINT `task_associations_ibfk_5` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;
 ");
 		} catch (\Exception $e) {
