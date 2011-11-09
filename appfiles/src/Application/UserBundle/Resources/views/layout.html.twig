@@ -9,6 +9,9 @@
 
 	{% include 'UserBundle:Common:resources.html.twig' %}
 
+    {{ dp_asset_html('user_portaladmin') }}
+    {{ dp_asset_html('user_portaladmin_css') }}
+
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 

@@ -415,6 +415,22 @@ $CONFIG['user'] = array(
 	)
 );
 
+$CONFIG['user_portaladmin'] = array(
+	'out' => 'js/user-portaladmin.js',
+	'files' => array(
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'javascripts/DeskPRO/UserPortalAdmin/PortalAdmin.js',
+	)
+);
+
+$CONFIG['user_portaladmin_css'] = array(
+	'out' => 'css/user-portaladmin.css',
+	'filters' => array('less'),
+	'files' => array(
+		'stylesheets-less/admin/portal-admin.less',
+	)
+);
+
 $CONFIG['user_common'] = array(
 	'out' => 'js/user-common.js',
 	'files' => array(
