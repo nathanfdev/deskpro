@@ -113,8 +113,6 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 	// Show the spinner loader
 	showLoader: function() {
 
-		console.log(this.$widget.find('.content-loader'));
-
 		this.$widget.find('.content-loader').css('display', 'block');
 
 		this.show_loader = true;
