@@ -1,20 +1,5 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
-{% endblock %}
-
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-window._page_exec_stack.push(function() {
-	window.DeskPRO_Page_TwitterAccountsList = new DeskPRO.Admin.PageHandler.GeneralList('#twitter_accounts');
-});
-</script>
-{% endblock %}
-
-{% block page_id 'twitter_accounts' %}
-
-{% block content %}
+{% block page %}
 
 <div style="text-align: right">
 	<a class="dp-button green" href="{{ path('admin_twitter_accounts_new') }}" target="_twitter">Create New Account</a>
