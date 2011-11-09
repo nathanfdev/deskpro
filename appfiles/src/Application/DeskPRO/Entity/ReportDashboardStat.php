@@ -95,4 +95,9 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		return $view;
 	}
 	
+	public function getChartType()
+	{
+		
+	}
+	
 }

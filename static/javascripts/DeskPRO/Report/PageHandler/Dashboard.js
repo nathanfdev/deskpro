@@ -63,6 +63,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#overlay_wrapper')
 		});
+		$('#overlay_wrapper .close-overlay').click(function() {
+			self.overlay.close();
+		});
 
 		// Setup the grid option slider
 		$("#report-dashboard-options-num-columns-slider").slider({
@@ -102,11 +105,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.calculateColumnWidth();
 		this.fetchWidgets();
 	},
-
+	
 	// Open the overlay loading in a template
-	openOverlay: function(template_id) {
+	openOverlay: function(overlay_content) {
 
-		$('.overlay-content').html($.tmpl(template_id));
+		$('.overlay-content').html(overlay_content);
 		this.overlay.open();
 
 	},
@@ -331,6 +334,25 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.is_edit_state = false;
 	},
 
+	// Add UI handlers for the add chart overlay
+	addAddChartUIHandlers: function() {
+		
+		$('#dashboard_widget_select a.add-chart').click(function() {
+			var href = $(this).attr('href');
+			$.ajax({
+				url: href,
+				type: 'GET',
+				dataType: 'json',
+				success: function(data) {
+					$('.overlay-content').html(data.html);
+				}
+			});
+			
+			return false;
+		});
+		
+	},
+	
 	// Save the state of the dashboard
 	saveDashboardState: function() {
 		var self = this;
@@ -369,8 +391,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Set handler to process click events, we want to display an overlay
 		$("#dashboard-new-placeholder-link").click(function() {
-			self.openOverlay('dashboard_widget_select');
-
+			self.openOverlay($.tmpl('dashboard_widget_select'));
+			self.addAddChartUIHandlers();
+			
 			return false;
 		});
 	},

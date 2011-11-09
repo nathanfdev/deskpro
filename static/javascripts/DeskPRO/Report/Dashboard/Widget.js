@@ -28,7 +28,6 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		// Show loader
 		this.show_loader = false;
 
-
 		this.stat_id = options.stat_id || '';
 		this.title   = options.title || '';
 	},
@@ -41,9 +40,16 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		this.$widget = $('#' + this.element_id);
 
 		this.$widget.find('.edit').click(function() {
-			// Show the edit overlay
-			self.dashboard.openOverlay('dashboard_widget_edit');
-
+			$.ajax({
+				url: DeskPRO_Window.getUrl('report_dashboard_ajaxeditwidget', {dashboard_id: self.dashboard.dashboard_id, dashboard_stat_id: self.widget_id}),
+				type: 'GET',
+				dataType: 'json',
+				success: function(data) {
+					// Show the edit overlay
+					self.dashboard.openOverlay(data.html);
+				}
+			});
+			
 			return false;
 		});
 		

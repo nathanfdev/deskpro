@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardStat;
 use Application\ReportBundle\Form\EditReportDashboardType;
+use Application\ReportBundle\Form\EditReportDashboardStatType;
 
 class DashboardController extends AbstractController
 {
@@ -135,25 +136,77 @@ class DashboardController extends AbstractController
 	 */
 	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
 	{
-		$dashboard       = $this->getDashboard($dashboard_id);
-		$stat      	 = $this->getStat($stat_id);
+		$dashboard     = $this->getDashboard($dashboard_id);
+		$stat      	   = $this->getStat($stat_id);
+		$dashboardStat = $this->getDashboard($dashboard_id);
+		
+		$dashboardStat = new ReportDashboardStat();
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 
-		$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
 				       ->getNextDashboardStatSlot($dashboard_id);
 
-		$dashboard_stat = new ReportDashboardStat();
-		$dashboard_stat->setReportDashboard($dashboard);
-		$dashboard_stat->setStat($stat);
-		$dashboard_stat->setSlotNumber($next_slot_number);
-
-		App::getOrm()->persist($dashboard_stat);
-		App::getOrm()->flush();
-
-		$widget = $this->getWidgetDetails($dashboard_stat);
-
-		return $this->createJsonResponse(array('widget' => $widget));
+				$dashboard_stat = new ReportDashboardStat();
+				$dashboard_stat->setReportDashboard($dashboard);
+				$dashboard_stat->setStat($stat);
+				$dashboard_stat->setSlotNumber($next_slot_number);
+		
+				App::getOrm()->persist($dashboard_stat);
+				App::getOrm()->flush();
+		
+				$widget = $this->getWidgetDetails($dashboard_stat);
+		
+				return $this->createJsonResponse(array('widget' => $widget));
+			}
+		}
+		
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard' => $dashboard,
+			'stat'		=> $stat,
+			'form'      => $form->createView(),
+		));
+		
+		return $this->createJsonResponse(array('html' => $html));
 	}
+	
+	/**
+	 * Edit dashboard widget
+	 */
+	public function ajaxEditWidgetAction($dashboard_id, $dashboard_stat_id)
+	{
+		$dashboard          = $this->getDashboard($dashboard_id);
+		$dashboard_stat     = $this->getDashboardStat($dashboard_stat_id);
 
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboard_stat);
+
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+				       ->getNextDashboardStatSlot($dashboard_id);
+
+				App::getOrm()->persist($dashboard_stat);
+				App::getOrm()->flush();
+		
+				$widget = $this->getWidgetDetails($dashboard_stat);
+		
+				return $this->createJsonResponse(array('widget' => $widget));
+			}
+		}
+		
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard' => $dashboard,
+			'form'      => $form->createView(),
+		));
+		
+		return $this->createJsonResponse(array('html' => $html));
+	}
+	
 	/**
 	 * Get the Dashboard Widgets
 	 */
@@ -218,7 +271,7 @@ class DashboardController extends AbstractController
 	 */
 	protected function getStat($stat_id)
 	{
-		$stat = App::getEntityRepository('DeskPRO:ReportDashboard')->find($stat_id);
+		$stat = App::getEntityRepository('DeskPRO:Stat')->find($stat_id);
 		if (!$stat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat");
 		}
