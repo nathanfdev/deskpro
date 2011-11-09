@@ -1,7 +1,7 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block page %}
 
-<form action="{{ path('report_trend_dashboard_stat_edit', {'dashboard_id': dashboard.id|default(0)}) }}" method="post">
+<form action="{{ path('report_trend_dashboard_edit', {'dashboard_id': dashboard.id|default(0)}) }}" method="post">
 	<input type="hidden" name="process" value="1" />
 
 	<div class="dp-form">
