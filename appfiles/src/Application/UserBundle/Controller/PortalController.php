@@ -22,8 +22,10 @@ class PortalController extends AbstractController
 {
     public function portalAction()
     {
-        return $this->render('UserBundle:Portal:portal.html.twig', array(
+		$show_portal_controls = $this->in->getBool('admin_portal_controls');
 
+        return $this->render('UserBundle:Portal:portal.html.twig', array(
+			'admin_portal_controls' => $show_portal_controls
 		));
     }
 
