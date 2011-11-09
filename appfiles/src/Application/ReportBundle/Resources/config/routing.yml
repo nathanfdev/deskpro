@@ -50,8 +50,13 @@ report_dashboard_ajaxfetchwidgets:
   
 report_dashboard_ajaxcreatewidget:
   pattern: /trends/dashboards/{dashboard_id}/ajax-create-widget/{stat_id}
-  defaults: { _controller: ReportBundle:Dashboard:ajaxCreateWidgets }
-  requirements: { dashboard_id: "\d+", stat_id: "\d+" }  
+  defaults: { _controller: ReportBundle:Dashboard:ajaxCreateWidget }
+  requirements: { dashboard_id: "\d+", stat_id: "\d+" }
+  
+report_dashboard_ajaxdeletewidget:
+  pattern: /trends/dashboards/{dashboard_id}/ajax-delete-widget/{dashboard_stat_id}
+  defaults: { _controller: ReportBundle:Dashboard:ajaxDeleteWidget }
+  requirements: { dashboard_id: "\d+", dashboard_stat_id: "\d+" }  
 
 report_dashboard_ajaxsavedashboardstate:
   pattern: /trends/dashboards/{dashboard_id}/save-dashboard-state

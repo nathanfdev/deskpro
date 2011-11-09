@@ -110,25 +110,30 @@ class DashboardController extends AbstractController
 	}
 
 	/**
-	 * Remove a stat from the dashboard
+	 * Remove a widget from the dashboard
 	 */
-	public function removeStatAction($dashboard_id, $dashboard_stat_id)
+	public function ajaxDeleteWidgetAction($dashboard_id, $dashboard_stat_id)
 	{
-		$dashboard     = $this->getDashboard($dashboard_id);
-		$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
-
-		App::getOrm()->remove($dashboardStat);
-		App::getOrm()->flush();
-
-		return $this->redirectRoute('report_trend_dashboard_view', array(
-			'dashboard_id'	=> $dashboard->id
-		));
+		$success = true;
+		
+		try {
+			$dashboard     = $this->getDashboard($dashboard_id);
+			$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
+	
+			App::getOrm()->remove($dashboardStat);
+			App::getOrm()->flush();
+		}
+		catch (\Exception $e) {
+			$success = false;
+		}
+		
+		return $this->createJsonResponse(array('success' => $success));
 	}
 
 	/**
 	 * Create and fetch dashboard widget
 	 */
-	public function ajaxCreateWidgetsAction($dashboard_id, $stat_id)
+	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
 	{
 		$dashboard       = $this->getDashboard($dashboard_id);
 		$stat      	 = $this->getStat($stat_id);

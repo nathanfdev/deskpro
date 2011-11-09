@@ -155,7 +155,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Create a widget from a JSON response
 	createWidgetFromJSON: function(data) {
 
-		var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
+		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data.stat);
 		this.addWidget(widget, data.grid_slots);
 
 		widget.setContent(this.createChart(
@@ -225,6 +225,26 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Setup the spacing
 		this.applySpacingToElements($('.widget'));
 	},
+	
+	// Removes a widget from the dashboard
+	deleteWidget: function(element_id) {
+		var self         = this;
+		var widget_index = this.getWidgetIndexById(element_id);
+		var widget       = this.widgets[widget_index];
+		
+		// Destroy the widget
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_dashboard_ajaxdeletewidget', {dashboard_id: this.dashboard_id, dashboard_stat_id: widget.widget.widget_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				self.$dashboard.find('li#' + element_id).remove();
+				self.widgets.splice(widget_index, 1);
+			}
+		});
+		
+	},
+
 
 	// Set dashboard state, can be editable or viewable
 	setEditable: function(editable) {

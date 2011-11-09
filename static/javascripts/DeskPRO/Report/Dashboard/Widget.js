@@ -46,10 +46,9 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 			return false;
 		});
-
-		this.$widget.find('.close').click(function() {
-			// Destroy the widget
-
+		
+		this.$widget.find('.delete').click(function() {
+			self.dashboard.deleteWidget(self.element_id);
 			return false;
 		});
 
