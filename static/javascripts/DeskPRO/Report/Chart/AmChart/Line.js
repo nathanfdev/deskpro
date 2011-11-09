@@ -4,8 +4,9 @@ Orb.createNamespace('DeskPRO.Report.Chart.AmChart');
  * Represents a Line Chart
  */
 DeskPRO.Report.Chart.AmChart.Line = new Orb.Class({
-        Extends: DeskPRO.Report.Chart.AmChart.Base,
+	Extends: DeskPRO.Report.Chart.AmChart.Base,
 
-	chart_type: 'line',
-
+	initialize: function() {
+		this.chart_type = 'line';
+	}
 });

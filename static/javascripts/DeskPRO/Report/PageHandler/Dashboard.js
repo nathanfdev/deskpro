@@ -8,44 +8,41 @@ Orb.createNamespace('DeskPRO.Report.PageHandler');
 DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	Extends: DeskPRO.Report.PageHandler.Basic,
 
-	// Id of dashboard
-	dashboard_id: null,
-
-	// List of the dashboard widgets
-	widgets: [],
-
-	// State of the dashboard, can be in view or edit state
-	is_edit_state: false,
-
-	// Number of columns in the dashboard grid
-	number_columns: 4,
-
-	// The width of 1 columns
-	columns_width: null,
-
-	// Spacing between widgets in the columns [top, right, bottom, left]
-	column_spacing: [0, 10, 10, 0],
-
-	// Refernce to the dashboard
-	$dashboard: null,
-
-	// Reference to dashboard grid
-	$dashboardGrid: null,
-
-	// UI Overlay
-	overlay: null,
-
-	// The supported vendor namespaces
-	supported_vendors: ['AmChart'],
-
-	// The supported chart Classes
-	supported_charts: ['Column', 'Line'],
-
 	initialize: function(dashboard_id) {
 		this.dashboard_id = dashboard_id;
 
-		this.$dashboard 	= $("#report-dashboard");
-		this.$dashboardGrid 	= $("#report-dashboard-grid");
+		// Id of dashboard
+		this.dashboard_id = null;
+
+		// List of the dashboard widgets
+		this.widgets = [];
+
+		// State of the dashboard, can be in view or edit state
+		this.is_edit_state = false;
+
+		// Number of columns in the dashboard grid
+		this.number_columns = 4;
+
+		// The width of 1 columns
+		this.columns_width = null;
+
+		// Spacing between widgets in the columns [top, right, bottom, left]
+		this.column_spacing = [0, 10, 10, 0];
+
+		// UI Overlay
+		this.overlay = null;
+
+		// The supported vendor namespaces
+		this.supported_vendors = ['AmChart'];
+
+		// The supported chart Classes
+		supported_charts = ['Column', 'Line'];
+
+		// Refernce to the dashboard
+		this.$dashboard = $("#report-dashboard");
+
+		// Reference to dashboard grid
+		this.$dashboardGrid = $("#report-dashboard-grid");
 
 		$('#dashboard_widget').template('dashboard_widget');
 		$('#dashboard_widget_create').template('dashboard_widget_create');

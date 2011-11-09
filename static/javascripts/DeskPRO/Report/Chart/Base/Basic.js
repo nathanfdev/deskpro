@@ -5,6 +5,8 @@ Orb.createNamespace('DeskPRO.Report.Chart.Base');
  */
 DeskPRO.Report.Chart.Base.Basic = new Orb.Class({
 
-        // HTML element ID to write chart to
-	element_id: '',
+	// HTML element ID to write chart to
+	initialize: function() {
+		this.element_id = '';
+	}
 });
