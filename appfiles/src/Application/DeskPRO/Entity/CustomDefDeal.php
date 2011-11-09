@@ -27,7 +27,7 @@ class CustomDefDeal extends CustomDefAbstract
 	/**
 	 * @var CustomDefDeal
 	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefDeal", inversedBy="children", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="deal_type_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

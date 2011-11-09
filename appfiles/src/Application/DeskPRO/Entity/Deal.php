@@ -64,6 +64,13 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
+     
+     * @var strint
+     * @ORM_Mapping\Column(name="title", type="string")
+     */
+    protected $title;
+
+    /**
      * Deal type
      *
      * @ORM_Mapping\ManyToOne(targetEntity="DealType")
@@ -143,7 +150,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id")
-     * @ORM_Mapping\JoinTable(name="deal_peoples",
+     * @ORM_Mapping\JoinTable(name="deal_people",
      *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
      *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}
      * )

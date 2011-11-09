@@ -48,22 +48,22 @@ class DealController extends AbstractController
         $person = $this->person;
 
         $my_open_deals = $deal_repository->findDealsForPerson($person);
-        $my_total_opendeals = count($my_open_deals);
+        $my_total_opendeals = $deal_repository->countDealsForPerson($person);
 
         $my_won_deals = $deal_repository->findDealsForPerson($person, 1);
-        $my_total_wondeals = count($my_won_deals);
+        $my_total_wondeals = $deal_repository->countDealsForPerson($person, 1);
 
         $my_lost_deals = $deal_repository->findDealsForPerson($person, 2);
-        $my_total_lostdeals = count($my_lost_deals);
+        $my_total_lostdeals = $deal_repository->countDealsForPerson($person, 2);
 
         $other_open_deals = $deal_repository->findDealsForOther();
-        $other_total_opendeals = count($other_open_deals);
+        $other_total_opendeals = $deal_repository->countDealsForOther();
 
         $other_won_deals = $deal_repository->findDealsForOther(1);
-        $other_total_wondeals = count($other_won_deals);
+        $other_total_wondeals = $deal_repository->countDealsForOther(1);
 
         $other_lost_deals = $deal_repository->findDealsForOther(2);
-        $other_total_lostdeals = count($other_lost_deals);
+        $other_total_lostdeals = $deal_repository->countDealsForOther(2);
 
         
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
@@ -83,6 +83,14 @@ class DealController extends AbstractController
         return $this->createJsonResponse(array(
             'section_html' => $section_html,
         ));
-    }    
+    }
+    
+
+    public function dealListAction($owner_type = null, $deal_status = null, $deal_type_id = null)
+    {
+        
+        $tpl = 'AgentBundle:Deal:deal-list.html.twig';
+        return $this->render($tpl);
+    }
 
 }

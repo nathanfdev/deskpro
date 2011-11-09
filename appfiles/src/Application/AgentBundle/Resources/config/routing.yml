@@ -924,6 +924,11 @@ agent_dealearch_getsectiondata:
   pattern: /deal/get-section-data.json
   defaults: { _controller: AgentBundle:Deal:getSectionData }
 
+agent_deal_list:
+  pattern: /deals/list/{owner_type}/{deal_status}/{deal_type_id}
+  defaults: { _controller: AgentBundle:Deal:dealList, owner_type: null, deal_status: null, deal_type_id: null}
+  requirements: { deal_type_id: "\d+" }
+
 
 
 ################################################################################

@@ -46,18 +46,25 @@ class DealType extends \Application\DeskPRO\Domain\DomainObject
      * Usergroups the user belongs to
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="DealStage", fetch="EAGER", indexBy="id")
-     * @ORM_Mapping\JoinTable(name="deal_type_stage",
+     * @ORM_Mapping\ManyToMany(targetEntity="CustomDefDeal", fetch="EAGER", indexBy="id")
+     * @ORM_Mapping\JoinTable(name="deals_type_def",
      *     joinColumns={@ORM_Mapping\JoinColumn(name="deal_type_id", referencedColumnName="id", onDelete="cascade")},
-     *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="deal_stage_id", referencedColumnName="id", onDelete="cascade")}
+     *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="deal_def_id", referencedColumnName="id", onDelete="cascade")}
      * )
      */
-    protected $deal_stage;
+    protected $deal_def;
 
     /**
      * @ORM_Mapping\OneToMany(targetEntity="CustomDataDeal", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $custom_data;
+
+    /**
+     * @var \Application\DeskPRO\Entity\DealTypeStage
+     * @ORM_Mapping\OneToMany(targetEntity="DealTypeStage", mappedBy="deal_type" , cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * 
+     */
+    protected $deal_type_stage;
 
     /**
      * Creates a new deal type

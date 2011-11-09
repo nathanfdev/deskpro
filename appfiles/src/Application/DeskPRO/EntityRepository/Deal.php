@@ -30,7 +30,7 @@ class Deal extends EntityRepository
     public function findDealsForPerson(Entity\Person $person, $status = 0)
     {
             $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('COUNT(d) types, dt.name')
+            $qb->select('COUNT(d) types, dt.name, dt.id')
                     ->from('DeskPRO:Deal', 'd')
                     ->innerJoin('d.person', 'p')
                     ->innerJoin('d.deal_type', 'dt')
@@ -54,7 +54,7 @@ class Deal extends EntityRepository
     public function findDealsForOther($status = 0)
     {
             $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('COUNT(d) types, dt.name')
+            $qb->select('COUNT(d) types, dt.name, dt.id')
                     ->from('DeskPRO:Deal', 'd')
                     ->leftJoin('d.person', 'p')
                     ->innerJoin('d.deal_type', 'dt')
@@ -65,6 +65,53 @@ class Deal extends EntityRepository
                     ;
             $query = $qb->getQuery(); //print $query->getSQL();
             return $query->getScalarResult();
+
+    }
+
+    /**
+     * Find pending tasks assigned to the person.
+     *
+     * @param Person $person The person
+     * @return Array
+     */
+
+    public function countDealsForPerson(Entity\Person $person, $status = 0)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('COUNT(d)')
+                    ->from('DeskPRO:Deal', 'd')
+                    ->innerJoin('d.person', 'p')
+                    ->innerJoin('d.deal_type', 'dt')
+                    ->where('p.id = :person_id')
+                    ->andWhere('d.status = :status')
+                    //->groupBy('d.deal_type')
+                    ->setParameters(array('person_id' => $person['id'], 'status' => $status))
+                    ;
+            $query = $qb->getQuery(); //print $query->getSQL();exit;
+            return $query->getSingleScalarResult();
+    
+    }
+
+    /**
+     * Find pending tasks assigned to the person.
+     *
+     * @param Person $person The person
+     * @return Array
+     */
+
+    public function countDealsForOther($status = 0)
+    {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('COUNT(d)')
+                    ->from('DeskPRO:Deal', 'd')
+                    ->leftJoin('d.person', 'p')
+                    ->innerJoin('d.deal_type', 'dt')
+                    ->where('p.id IS NULL')
+                    ->andWhere('d.status = :status')                    
+                    ->setParameters(array( 'status' => $status))
+                    ;
+            $query = $qb->getQuery(); //print $query->getSQL();
+            return $query->getSingleScalarResult();
 
     }
 }
