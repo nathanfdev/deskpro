@@ -6,6 +6,14 @@
 	</div>
 	<h1>Portal</h1>
 {% endblock %}
-{% block page %}
+{% block content %}
+    <div
+		class="dp-page-box"
+		id="admin_portal_editor"
+		data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
+		data-portal-url="{{ path('user') }}"
+	>
 
+		<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
+    </div>
 {% endblock %}

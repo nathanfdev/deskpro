@@ -1,6 +1,11 @@
 var PortalAdmin = {
     init: function() {
 
+		var h = $('body').outerHeight();
+		this.tellAdmin('loaded', {
+			height: h
+		});
+
 		//----------------------------------------
 		// Content blocks
 		//----------------------------------------
@@ -97,7 +102,51 @@ var PortalAdmin = {
 				//$(this).height($(this).height());
 			}
 		});
-    }
+    },
+
+	changeAppVisibility: function(app, is_enabled) {
+		switch (app) {
+			case 'kb':
+				var e = $('.dp-content-block.dp-kb-page, .dp-sidebar-block.dp-kb-block').hide();
+				if (is_enabled) e.show(); else e.hide();
+				break;
+			case 'downloads':
+				var e = $('.dp-content-block.dp-downloads-page, .dp-sidebar-block.dp-downloads-block').hide();
+				if (is_enabled) e.show(); else e.hide();
+				break;
+			case 'news':
+				var e = $('.dp-content-block.dp-news-page, .dp-sidebar-block.dp-news-block').hide();
+				if (is_enabled) e.show(); else e.hide();
+				break;
+			case 'ideas':
+				var e = $('.dp-content-block.dp-ideas-page, .dp-sidebar-block.dp-ideas-block').hide();
+				if (is_enabled) e.show(); else e.hide();
+				break;
+		}
+	},
+
+	acceptMessage: function(id, data) {
+		switch (id) {
+			case 'app_enabled':
+				this.changeAppVisibility(data.name, true);
+				break;
+			case 'app_disabled':
+				this.changeAppVisibility(data.name, false);
+				break;
+		}
+	},
+
+	tellAdmin: function(id, data) {
+		if (window.parent && window.parent.PortalEditor) {
+			window.parent.PortalEditor.acceptMessage(id, data);
+		}
+	},
+
+	callAdmin: function(id, data) {
+		if (window.parent && window.parent.PortalEditor) {
+			return window.parent.PortalEditor[id](data);
+		}
+	}
 };
 
 $(document).ready(function() {
