@@ -1053,6 +1053,11 @@ agent_kb_article:
   requirements: { article_id: "\d+" }
   options: { fragment_name: 'a' }
 
+agent_kb_ajaxsavecustomfields:
+  pattern: /kb/article/{article_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Kb:ajaxSaveCustomFields }
+  requirements: { article_id: "\d+" }
+
 agent_kb_article_info:
   pattern: /kb/article/{article_id}/info
   defaults: { _controller: AgentBundle:Kb:articleInfo }
@@ -1291,6 +1296,11 @@ agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
   options: { fragment_name: 'i' }
+
+agent_ideas_ajaxsavecustomfields:
+  pattern: /ideas/view/{idea_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveCustomFields }
+  requirements: { idea_id: "\d+" }
 
 agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted

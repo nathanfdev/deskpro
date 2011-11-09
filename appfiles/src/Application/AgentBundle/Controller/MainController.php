@@ -44,15 +44,6 @@ class MainController extends AbstractController
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
 
-		// Publish-info
-		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
-		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getFlatHierarchy();
-		$news_categories     = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
-
-		$idea_categories         = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
-		$idea_active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$idea_closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
-
 		// Countr code
 		$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
 
@@ -89,14 +80,6 @@ class MainController extends AbstractController
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
 			'phone_country_info' => $phone_country_info,
-
-			'download_categories'  => $download_categories,
-			'article_categories'   => $article_categories,
-			'news_categories'      => $news_categories,
-
-			'idea_categories'      => $idea_categories,
-			'idea_active_status_cats' => $idea_active_status_cats,
-			'idea_closed_status_cats' => $idea_closed_status_cats,
 			'open_chats' => $open_chats,
 		));
     }

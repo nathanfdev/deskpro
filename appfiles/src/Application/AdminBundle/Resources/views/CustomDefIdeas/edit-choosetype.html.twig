@@ -1,0 +1,9 @@
+{% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
+{% set this_page = 'idea_fields' %}
+{% extends 'AdminBundle:CustomDefAbstract:edit-choosetype.html.twig' %}
+{% block pagetitle %}
+	<h1>New Idea Field: Choose Type</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_customdefideas') }}">Back to list</a>
+	</nav>
+{% endblock %}

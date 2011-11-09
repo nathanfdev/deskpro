@@ -87,10 +87,18 @@ class IdeasController extends AbstractController
 	{
 		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
 
-		$idea_comments = $idea->comments;
+		#------------------------------
+		# Custom fields
+		#------------------------------
 
-		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+		$field_manager = $this->container->getSystemService('idea_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($idea);
+
+		#------------------------------
+		# Article props
+		#------------------------------
+
+		$idea_comments = $idea->comments;
 
 		$idea_revisions = $idea->getRevisions();
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($idea);
@@ -105,11 +113,17 @@ class IdeasController extends AbstractController
 		$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
 		$my_vote = $content_rating->getRating();
 
+		$idea_categories     = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$active_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
 			'idea'           => $idea,
 			'idea_comments'  => $idea_comments,
 			'idea_revisions' => $idea_revisions,
 			'state'          => $state,
+
+			'custom_fields'  => $custom_fields,
 
 			'my_vote' => $my_vote,
 
@@ -117,6 +131,7 @@ class IdeasController extends AbstractController
 			'related_content'     => $related_content,
 			'sticky_search_words' => $sticky_search_words,
 
+			'idea_categories'    => $idea_categories,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
 		));
@@ -191,6 +206,34 @@ class IdeasController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'idea_id' => $idea['id'],
+		));
+	}
+
+	public function ajaxSaveCustomFieldsAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$this->em->beginTransaction();
+
+		try {
+			$field_manager = $this->container->getSystemService('idea_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $idea);
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		$custom_fields = $field_manager->getDisplayArrayForObject($idea);
+
+		return $this->render('AgentBundle:Ideas:view-customfields-rendered-rows.html.twig', array(
+			'idea' => $idea,
+			'custom_fields' => $custom_fields,
 		));
 	}
 

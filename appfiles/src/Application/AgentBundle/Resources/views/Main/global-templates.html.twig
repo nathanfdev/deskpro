@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 {#
 	This file contains global JS templates and menus and other such
 	resources used throughout.
@@ -146,6 +147,37 @@
 	{% endfor %}
 </ul>
 
+<script type="text/x-deskpro-plain" id="products_ob_tpl">
+	{{ optionbox.start('Products') }}
+		{{ optionbox.section_start('', 'product') }}
+			{% for cat in ticket_options.products_hierarchy %}
+				<li
+					class="top {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
+					data-item-id="{{ cat.id }}"
+					data-full-title="{{ cat.title }}"
+				>
+					<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
+					<label>{{ cat.title }}</label>
+				</li>
+				{% if cat.children %}
+					{% for subcat in cat.children %}
+						<li
+							class="child item-{{ cat.id }} child-of-{{ dep.id }}"
+							data-item-id="{{ cat.id }}"
+							data-parent-id="{{ cat.id }}"
+							data-full-title="{{ cat.title }} &gt; {{ cat.title }}"
+						>
+							<span class="elbow-end"></span>
+							<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
+							<label>{{cat.title}}</label>
+						</li>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		{{ optionbox.section_end() }}
+	{{ optionbox.end('Apply') }}
+</script>
+
 {# Usergroups #}
 {% if titles.usergroups %}
 <ul id="usergroups_menu" data-menu-flag="copy-menu" data-menu-type="usergroups">
@@ -255,28 +287,6 @@
 			data-country-code="{{ info.country_code }}"
 			data-calling-code="{{ info.calling_code }}"
 		><span class="icon-flag icon-flag-{{info.country_code|lower}}">{{ info.calling_code }} {{ info.country_name }}</span></li>
-	{% endfor %}
-</ul>
-
-{##############################################################}
-{# Articles related #}
-{##############################################################}
-
-<ul id="article_category_menu" data-menu-flag="copy-menu">
-	{% for cat in article_categories %}
-		{% if last_with_child %}
-			<li>-</li>
-		{% endif %}
-		{% if cat.children %}
-			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
-			{% for subcat in cat.children %}
-				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
 	{% endfor %}
 </ul>
 
@@ -510,7 +520,9 @@
 	<div class="dp-form-row">
 		<div class="dp-form-input">
 			<div class="search-form actions-list">
-				<div class="search-terms"></div>
+				<div class="search-terms">
+					<div class="term add-term-row" style="display:none"><span class="add-term">+</span> Add a new action</div>
+				</div>
 			</div>
 			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
 		</div>

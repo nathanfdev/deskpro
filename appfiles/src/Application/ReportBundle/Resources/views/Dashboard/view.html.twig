@@ -1,12 +1,15 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/PageHandler/Dashboard.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/Dashboard/Widget.js') }}"></script>
+{{ dp_asset_html('report_dashboard') }}
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
         window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
+        
+        window.DESKPRO_URL_REGISTRY['report_chart_get_data']  = '{{ path('report_chart_get_data', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
+        window.DESKPRO_URL_REGISTRY['report_chart_get_settings']  = '{{ path('report_chart_get_settings', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
+        
 	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }});
 }
 </script>

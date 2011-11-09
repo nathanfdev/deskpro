@@ -43,7 +43,6 @@ class NewsController extends AbstractController
 	{
 		$news = App::findEntity('DeskPRO:News', $news_id);
 		$news_comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($news);
-		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
 
 		$related_finder = new RelatedContentFinder($this->person, $news);
 		$related_content = $related_finder->getRelatedEntities();
@@ -53,10 +52,12 @@ class NewsController extends AbstractController
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
 		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
 
+		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
 		return $this->render('AgentBundle:News:view.html.twig', array(
 			'news'                 => $news,
 			'news_comments'        => $news_comments,
-			'news_cats'            => $news_cats,
+			'news_categories'      => $news_categories,
 			'related_content'      => $related_content,
 			'state'                => $state,
 			'sticky_search_words'  => $sticky_search_words,

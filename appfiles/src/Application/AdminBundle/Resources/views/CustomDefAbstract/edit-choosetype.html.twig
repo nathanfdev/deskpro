@@ -1,9 +1,6 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% extends 'AdminBundle::layout.html.twig' %}
-{% block content %}
-<div
-	class="dp-page-box"
->
+{% extends layout_tpl ? layout_tpl : 'AdminBundle::layout.html.twig' %}
+{% block page %}
 
 <form action="{{ path(route_basename~'edit', {'field_id': 0}) }}" class="form">
 {{ design.block_sections() }}

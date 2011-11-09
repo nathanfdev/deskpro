@@ -22,38 +22,18 @@
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
-		window._page_exec_stack = [];
+		window.DeskPRO_Window = new DeskPRO.Admin.Window();
+
 		function _win_exec() {
-			window.DeskPRO_Window = new DeskPRO.Admin.Window();
 			window.DeskPRO_Window.initPage();
 
 			if (window._page_exec) {
-				window._page_exec_stack.push(_page_exec);
-			}
-
-			for (var i = 0; i < window._page_exec_stack.length; i++) {
-				window._page_exec_stack[i]();
+				_page_exec();
 			}
 
 			if (window.DeskPRO_Page) {
 				DeskPRO_Page.initPage();
 			}
-
-			// Init all others too
-			var re = /^DeskPRO_Page_/;
-			for (i in window) {
-				if (re.test(i)) {
-					window[i].initPage();
-				}
-			}
-
-			$('.admin-footer .licensed-to').click(function() {
-				$('#license_info').fadeIn();
-			});
-
-			$('#license_info .close').click(function() {
-				$('#license_info').fadeOut();
-			});
 		}
 
 		{% block html_headjs_load %}{% endblock %}
@@ -139,6 +119,13 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
+{#
+
+<li data-menu="#server_menu">
+				<a><span class="server">Server</span></a>
+			</li>
+
+#}
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
 	<div id="dp_admin_nav_sections" class="deskproPane">
@@ -146,27 +133,34 @@
 			<li data-menu="#setup_menu">
 				<a><span class="setup">Setup</span></a>
 			</li>
-			<li data-menu="#server_menu">
-				<a><span class="server">Server</span></a>
-			</li>
 			<li>
 				<a href="{{ path('admin_agents') }}"><span class="agents">Agents</span></a>
 			</li>
 			<li data-menu="#users_menu">
 				<a><span class="users">Users</span></a>
 			</li>
-			<li data-menu="#integrate_menu">
-				<a><span class="integrate">Integrate</span></a>
-			</li>
-			<li data-menu="#tickets_menu">
-				<a><span class="tickets">Tickets</span></a>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li>
+				<a href="{{ path('admin_portal') }}"><span class="publish">Portal</span></a>
 			</li>
 			<li data-menu="#chat_menu">
 				<a><span class="chat">Chat</span></a>
 			</li>
-			<li data-menu="#publish_menu">
-				<a><span class="publish">Publish</span></a>
+			<li>
+				<a><span class="twitter">Twitter</span></a>
 			</li>
+			<li>
+				<a><span class="deals">Deals</span></a>
+			</li>
+			<li data-menu="#tickets_menu">
+				<a><span class="tickets">Tickets</span></a>
+			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
+			<li data-menu="#server_menu"><a><span class="server">Server</span></a></li>
 		</ul>
 	</div>
 </div>
@@ -222,5 +216,14 @@
 {% include 'AdminBundle:Main:layout-menus.html.twig' %}
 
 </div>
+
+{% set page_nav %}{% block page_nav %}{% endblock %}{% endset %}
+{% if page_nav|trim|length %}
+	<div id="dp_page_nav">
+		<div class="inner-shadow"></div>
+		{{ page_nav|raw }}
+	</div>
+{% endif %}
+
 </body>
 </html>

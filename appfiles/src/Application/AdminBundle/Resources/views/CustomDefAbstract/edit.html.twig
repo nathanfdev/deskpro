@@ -1,4 +1,4 @@
-{% extends 'AdminBundle::layout.html.twig' %}
+{% extends layout_tpl ? layout_tpl : 'AdminBundle::layout.html.twig' %}
 {% block page %}
 
 <form action="{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}" method="post">

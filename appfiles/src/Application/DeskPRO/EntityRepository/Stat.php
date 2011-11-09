@@ -34,4 +34,25 @@ class Stat extends EntityRepository
 		return $stats;
 	}
 	
+	/**
+	 * Get the stats requiring updating
+	 *
+	 * @return array
+	 */
+	public function getStatsRequiringUpdate($time = null)
+	{
+		// Check a time is set, otherwise its now
+		if (true === is_null($time)) {
+			$time = time();
+		}
+		
+		$stats = $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:Stat s
+			WHERE s.disabled = :disabled
+			ORDER BY s.starred DESC, s.title
+		")->setParameter('disabled', false)->execute();
+
+		return $stats;
+	}
 }
