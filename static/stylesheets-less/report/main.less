@@ -106,14 +106,13 @@ ul.tabs li.margin-left {
 }
 
 #report-dashboard-grid li {
-	margin: 0 0 16px 0;
+	margin: 0;
 	float: left;
 	width: 25%;
 	font-size: 4em;
 	text-align: center;
 	color: #000;
 	background: #fff;
-	height: 250px;
 }
 
 #report-dashboard-grid li .inner {
@@ -121,8 +120,9 @@ ul.tabs li.margin-left {
 	border-radius: 5px;
 	padding: 2px;
 	display: block;
-	height: 100%;
+	height: 250px;
 	font-size: 12px;
+	position: relative;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar {
@@ -132,7 +132,8 @@ ul.tabs li.margin-left {
 	padding: 4px;
 	text-align: left;
 	position: relative;
-	min-height: 22px;
+	min-height: 20px;
+	line-height: 20px;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar .icons {
@@ -150,6 +151,7 @@ ul.tabs li.margin-left {
 
 .ui-resizable-helper {
 	border: 1px dotted #757575;
+	padding-right: -10px;
 }
 
 #report-dashboard-grid .content {
@@ -193,8 +195,19 @@ ul.tabs li.margin-left {
 
 }
 
-.grid-slot-content .chart {
+.grid-slot-content .content {
 	display: block;
 	width: 100%;
 	height: 230px;
+}
+
+.grid-slot-content .content-loader {
+	background: url(../../images/spinners/loading-big-circle.gif) no-repeat center center;
+	display: none;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -16px 0 0 -16px;
 }

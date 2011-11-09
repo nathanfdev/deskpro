@@ -9,10 +9,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	Extends: DeskPRO.Report.PageHandler.Basic,
 
 	initialize: function(dashboard_id) {
-		this.dashboard_id = dashboard_id;
 
-		// Id of dashboard
-		this.dashboard_id = null;
+		// Id of the dashboard
+		this.dashboard_id = dashboard_id;
 
 		// List of the dashboard widgets
 		this.widgets = [];
@@ -24,10 +23,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.number_columns = 4;
 
 		// The width of 1 columns
-		this.columns_width = null;
+		this.column_width = null;
 
 		// Spacing between widgets in the columns [top, right, bottom, left]
-		this.column_spacing = [0, 10, 10, 0];
+		this.column_spacing = [0, 5, 10, 5];
+
+		// Time for animation of widget resize to take place
+		this.animation_duration = 100;
 
 		// UI Overlay
 		this.overlay = null;
@@ -36,27 +38,31 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.supported_vendors = ['AmChart'];
 
 		// The supported chart Classes
-		supported_charts = ['Column', 'Line'];
+		this.supported_charts = ['Column', 'Line'];
 
 		// Refernce to the dashboard
 		this.$dashboard = $("#report-dashboard");
 
 		// Reference to dashboard grid
 		this.$dashboardGrid = $("#report-dashboard-grid");
+	},
 
+	// Init the page
+	initPage: function() {
+		var self = this;
+
+		// Setup some templates
 		$('#dashboard_widget').template('dashboard_widget');
 		$('#dashboard_widget_create').template('dashboard_widget_create');
 		$('#dashboard_widget_select').template('dashboard_widget_select');
 		$('#dashboard_widget_edit').template('dashboard_widget_edit');
-	},
 
-	initPage: function() {
-		var self = this;
-
+		// Create the dashboard overlay
 		this.overlay = new DeskPRO.UI.Overlay({
-                        contentElement: $('#overlay_wrapper')
-                });
+			contentElement: $('#overlay_wrapper')
+		});
 
+		// Setup the grid option slider
 		$("#report-dashboard-options-num-columns-slider").slider({
 			range: "max",
 			min: 1,
@@ -66,10 +72,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.number_columns = ui.value;
 
 				self.calculateColumnWidth();
-				self.setupResizableGrid();
+				self.resizeAllWidgets();
 			},
 			stop: function(event, ui) {
-				self.renderCharts();
+				// Need to re render the widgets
+				self.renderWidgets();
 			}
 		});
 
@@ -83,11 +90,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			return false;
 		});
 
-		$(window).resize(function() {
-			self.calculateColumnWidth();
-			self.setupResizableGrid();
-		});
+		// TODO: need to ensure dashboard update correctly if window size changes
+		//$(window).resize(function() {
+		//	self.calculateColumnWidth();
+		//	self.resizeAllWidgets();
+		//});
 
+		// Calculate initial dashboard column width, grab the widgets
+		this.calculateColumnWidth();
 		this.fetchWidgets();
 	},
 
@@ -118,9 +128,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				Array.each(data.widgets, function(v) {
 					self.createWidgetFromJSON(v);
 				});
-				self.calculateColumnWidth();
 
-				self.renderCharts();
+				self.calculateColumnWidth();
+				self.resizeAllWidgets();
+
+				self.renderWidgets();
 			}
 		});
 	},
@@ -144,14 +156,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
 		this.addWidget(widget);
 
-		widget.setChart(this.createChart(
-					data.chart_vendor,
-					data.chart_class,
-					"chart_" + widget.element_id,
-					data.id)
-				);
+		widget.setContent(this.createChart(
+			data.chart_vendor,
+			data.chart_class,
+			"chart_" + widget.element_id,
+			data.id)
+		);
 	},
 
+	// Create a chart, can be any number of vendors of chart types
 	createChart: function(vendor, chart_type, chart_element_id, dashboad_stat_id) {
 
 		if (this.supported_vendors.indexOf(vendor) == -1) {
@@ -164,15 +177,17 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var chartClass = eval("DeskPRO.Report.Chart." + vendor + "." + chart_type);
 
-		var chart  = new chartClass(chart_element_id, dashboad_stat_id);
-
-		return chart;
+		return new chartClass(chart_element_id, dashboad_stat_id);
 	},
 
-	renderCharts: function() {
+	// Render the widget content. Need to do this when widget sizes change as
+	// widget content may need to redraw itself
+	renderWidgets: function() {
+
+		return;
 
 		Array.each(this.widgets, function(v) {
-			v.widget.getChart().renderChart();
+			v.widget.getContent().render();
 		});
 
 	},
@@ -193,6 +208,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// No position specified, add it to the end
 		if (pos === -1) {
 			this.widgets.push(insert_widget);
+			pos = this.widgets.length - 1;
 		}
 		else {
 			// Need to insert at postion
@@ -203,39 +219,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
 		widget.addUIHandlers();
 
-		$('.widget').css('margin-right', this.column_spacing[1] + 'px');
+		// Setup the spacing
+		this.applySpacingToElements($('.widget'));
 	},
 
-	// Remove a widget from the dashboard.
-	removeWidget: function(widget) {
-
-		// TODO: update widget state at server
-
-		var pos = this.getWidgetIndexByElementId(widget.element_id);
-		if (pos === -1) {
-			return;
-		}
-
-		if (this.widgets[pos]) {
-			this.widgets.splice(pos, 1);
-		}
-	},
-
-	getWidgetIndexByElementId: function(element_id) {
-		var index = 0;
-		var pos   = -1;
-
-		Array.each(this.widgets, function(v) {
-			if (element_id === v.element_id) {
-				pos = index;
-			}
-
-			index++;
-		});
-
-		return pos;
-	},
-
+	// Set dashboard state, can be editable or viewable
 	setEditable: function(editable) {
 
 		if (editable) {
@@ -250,7 +238,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Update UI state to editable
 	updateToEditable: function() {
-                var self = this;
+		var self = this;
 
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
@@ -260,80 +248,87 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Create the 'Add Widget' placeholder
 		this.createAddChartPlaceholder();
 
+		// Make the dashboard widgets sortable
 		this.$dashboardGrid.sortable({
-			handle: '.grid-slot-toolbar'
+			handle: '.grid-slot-toolbar',
+			items:  "li:not(#dashboard-new-placeholderd)"
 		});
 		this.$dashboardGrid.disableSelection();
 
-		this.$dashboardGrid.find("li").resizable({
+		// Make the dashboard widgets resizable
+		this.$dashboardGrid.find("li.chart-widget").resizable({
 			helper: "ui-resizable-helper",
-			placeholder: "ui-state-highlight",
+			handles: 'e',
+			distance: 40,
 			resize: function(event, ui) {
+				// Prevent height resize
 				ui.size.height = ui.originalSize.height;
+			},
+			stop: function(event, ui) {
+				// TODO: remove this when window resize event handler is working
+				self.calculateColumnWidth();
+
+				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
+				var widget_index = self.getWidgetIndexById(ui.element.attr('id'));
+
+				// Adjust the resized widget to the closest column
+				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
 			}
 		});
 
+		// Set each widget as editable
 		Array.each(this.widgets, function(v) {
 			v.widget.setEditable(true);
 		});
 
 		this.calculateColumnWidth();
-		this.setupResizableGrid();
 
-                this.is_edit_state = true;
-        },
+		this.is_edit_state = true;
+	},
 
 	// Update UI state to viewable
-        updateToViewable: function() {
+	updateToViewable: function() {
 
 		// Hide the view link, show the edit link
 		$("#report-dashboard-set-viewable").css('display', 'none');
 		$("#report-dashboard-set-editable").css('display', 'block');
 		$("#report-dashboard-options").css('display', 'none');
 
+		// Remove the add placeholder
 		this.removeAddChartPlaceholder();
 
+		// Remove the sortable and resizable functionality
 		this.$dashboardGrid.sortable('destroy');
 		this.$dashboardGrid.find("li").resizable('destroy');
 
+		// Set each widget back to viewable
 		Array.each(this.widgets, function(v) {
 			v.widget.setEditable(false);
 		});
 
-                this.is_edit_state = false;
-        },
+		this.is_edit_state = false;
+	},
 
+	// Create the placeholder for the add chart widget
 	createAddChartPlaceholder: function() {
 		var self = this;
 
 		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
+
+		this.applySpacingToElements($('#dashboard-new-placeholder'));
+
+		// Ensure widget is the correct size
+		this.resizePlacerHolderWidget();
+
+		// Set handler to process click events, we want to display an overlay
 		$("#dashboard-new-placeholder-link").click(function() {
 			self.openOverlay('dashboard_widget_select');
 
-			$('.stat-list .add-chart').click(function() {
-				var href = $(this).attr('href');
-				$.ajax({
-					url: href,
-					dataType: 'json',
-					type: 'GET',
-					success: function(data) {
-						self.removeAddChartPlaceholder();
-
-						var widget = new DeskPRO.Report.Dashboard.Widget(self, data.widget.id, data.widget.stat);
-						self.addWidget(widget);
-
-						self.createAddChartPlaceholder();
-					}
-				});
-
-				return false;
-			});
-
 			return false;
 		});
-
 	},
 
+	// Remove the placeholder
 	removeAddChartPlaceholder: function() {
 
 		// Remove the 'Add Widget' placeholder
@@ -341,49 +336,149 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	},
 
-	// Set the number of columns and update UI to reflect this
-	setNumberColumns: function(num_columns) {
-
-		this.number_columns = num_columns;
-
-	},
-
-	// Calculate the width of a columns
-	calculateColumnWidth: function() {
-		var self = this;
-		this.column_width = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
+	// Get a widget object by it element id
+	getWidgetIndexById: function(element_id) {
+		var index      = 0;
+		var foundIndex = 0;
 
 		Array.each(this.widgets, function(v) {
-			$("#" + v.widget.element_id).css('width', (v.num_slots * self.column_width) + 'px');
+			if (v.widget.element_id === element_id) {
+				foundIndex = index;
+			}
+			index++;
 		});
 
-		$("#dashboard-new-placeholder").css('width', self.column_width + 'px');
+		return foundIndex;
 	},
 
+	// Resize all the widgets
+	resizeAllWidgets: function() {
+		var self  = this;
+		var index = 0;
+
+		Array.each(this.widgets, function(v) {
+			self.resizeWidgetToColumn(index, v.num_slots, false);
+			index++;
+		});
+
+		// Resize the placeholder is we are in edit state
+		if (this.is_edit_state === true) {
+			this.resizePlacerHolderWidget()
+		}
+
+	},
+
+	// Resize a widget to fit into number_columns
+	resizeWidgetToColumn: function(widget_index, number_columns, animate) {
+
+		// We need to shrink widgets that maybe to big if the column count
+		// in the dashboard has been reduced
+		if (number_columns > this.number_columns) {
+			// Widget cannot be bigger than the number of columns available
+			number_columns = this.number_columns;
+		}
+
+		// Update the column size for this widget
+		this.widgets[widget_index].num_slots = number_columns;
+
+		var new_width = this.calculateWidthOfWidgetByColumnCount(number_columns);
+
+		// Do the resize, we may want to animate
+		if (animate) {
+			$('#' + this.widgets[widget_index].widget.element_id).animate({
+				width: new_width + 'px'
+			}, this.animation_duration);
+		} else {
+			$('#' + this.widgets[widget_index].widget.element_id).css('width', new_width + 'px');
+		}
+
+	},
+
+	// Resize the placeholder widget
+	resizePlacerHolderWidget: function() {
+
+		// Always takes up 1 column in width
+		var new_width = this.calculateWidthOfWidgetByColumnCount(1);
+		$('#dashboard-new-placeholder').css('width', new_width + 'px');
+
+	},
+
+	// Apply the spacing to an element group
+	applySpacingToElements: function($elements) {
+
+		$elements.css('margin-top', this.column_spacing[0] + 'px');
+		$elements.css('margin-right', this.column_spacing[1] + 'px');
+		$elements.css('margin-bottom', this.column_spacing[2] + 'px');
+		$elements.css('margin-left', this.column_spacing[3] + 'px');
+
+	},
+
+	// Setup the jQuery resizable grid
 	setupResizableGrid: function() {
 
-		var snapSizeX  = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
+		this.$dashboard.find("li").resizable("option", "grid", [5, 50]);
+		this.$dashboard.find("li").resizable("option", "minWidth", this.column_width);
+		this.$dashboard.find("li").resizable("option", "maxWidth", this.getDashboardWidth());
 
-		this.$dashboard.find("li").resizable("option", "grid", [snapSizeX, 50]);
-		this.$dashboard.find("li").resizable("option", "minWidth", snapSizeX);
 	},
 
+	// Calculate the closets column size from a width
+	calculateClosestColumnSize: function(width) {
+
+		// Calculate to a half column - will snap up or down depending
+		// which side of the half column the user resizes to
+		var half_column = this.column_width / 2;
+
+		var column_size = 1;
+		for (var i = 0; i <= this.number_columns; i++) {
+			if (width < (this.column_width * i) + half_column) {
+				column_size = i;
+				break;
+			}
+		}
+
+		return column_size;
+	},
+
+	// Calculate the width of 1 column
+	calculateColumnWidth: function() {
+
+		this.column_width = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
+
+		this.setupResizableGrid();
+
+	},
+
+	// Calculate the width of a widget by the number of columns it takes up
+	calculateWidthOfWidgetByColumnCount: function(size) {
+
+		return (this.column_width * size) + (this.getWidgetSpacerWidth() * (size - 1));
+
+	},
+
+	// Get the board width. The last widget in a row shouldn't have any right
+	// spacing, but as it does for now, we need to reduce this dashboard size
+	// by this amount
 	getDashboardWidth: function() {
 
-		return this.$dashboard.width();
+		// Last widget doesn't need to have spacing on the right
+		return this.$dashboard.width() - this.getWidgetSpacerWidth();
 
 	},
 
+	// Get the spacer size for width
 	getWidgetSpacerWidth: function() {
 
 		return (this.column_spacing[1] + this.column_spacing[3]);
 
 	},
 
+	// Get the total spacer size for entire row in dashboard
 	getTotalSpacerWidth: function() {
 
-		return this.getWidgetSpacerWidth() * this.number_columns;
+		// Last column does not have a spacer on it
+		return this.getWidgetSpacerWidth() * (this.number_columns - 1);
 
-	}
+	},
 
 });

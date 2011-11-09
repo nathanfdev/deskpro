@@ -13,39 +13,50 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		// Id of the widget
 		this.widget_id = widget_id;
 
+		// HTML element ID
 		this.element_id = null;
-
-		// Number of slot this widget takes up in the dashboard grid
-		this.num_slots = 1;
 
 		// State of the widget, can be in view or edit state
 		this.is_edit_state = false;
 
-		// The chart associated with the widget
-		this.chart = null;
+		// The content associated with the widget
+		this.content = null;
 
 		// HTML element ID
 		this.element_id = Orb.getUniqueId();
+
+		// Show loader
+		this.show_loader = false;
+
 
 		this.stat_id = options.stat_id || '';
 		this.title   = options.title || '';
 	},
 
+	// Setup the UI handlers for edit, close, etc
 	addUIHandlers: function() {
 		var self = this;
 
-		$("#" + this.element_id + " .edit").click(function() {
+		// Save a reference to the widget
+		this.$widget = $('#' + this.element_id);
+
+		this.$widget.find('.edit').click(function() {
+			// Show the edit overlay
 			self.dashboard.openOverlay('dashboard_widget_edit');
 
 			return false;
 		});
 
-		$("#" + this.element_id + " .close").click(function() {
-			self.dashboard.removeWidget(self);
+		this.$widget.find('.close').click(function() {
+			// Destroy the widget
+
 			return false;
 		});
+
+		this.showLoader();
 	},
 
+	// Update widget state, editable or viewable
 	setEditable: function(editable) {
 
 		if (editable) {
@@ -58,38 +69,66 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		}
 	},
 
+	// Update widget state to editable
 	updateToEditable: function() {
 
-		$("#report-dashboard-grid li .grid-slot-toolbar .icons a").css('display', 'block');
-		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'move');
+		this.$widget.find('.grid-slot-toolbar .icons a').css('display', 'block');
+		this.$widget.find('.grid-slot-toolbar').css('cursor', 'move');
 
 		this.is_edit_state = true;
 	},
 
+	// Update widget state to viewable
 	updateToViewable: function() {
 
-		$("#report-dashboard-grid li .grid-slot-toolbar .icons a").css('display', 'none');
-		$("#report-dashboard-grid li .grid-slot-toolbar").css('cursor', 'auto');
+		this.$widget.find('.grid-slot-toolbar .icons a').css('display', 'none');
+		this.$widget.find('.grid-slot-toolbar').css('cursor', 'auto');
 
 		this.is_edit_state = false;
 	},
 
-	setChart: function(chart) {
+	// Set the widget content. The content should know how to render itself
+	setContent: function(content) {
 
-		this.chart = chart;
-
-	},
-
-	getChart: function() {
-
-		return this.chart;
+		this.content = content;
 
 	},
 
-	removeChart: function() {
+	// Get the widget content
+	getContent: function() {
 
-		this.chart = null;
+		return this.content;
 
 	},
+
+	// Remove the widget content
+	removeContent: function() {
+
+		this.$widget.find('.grid-slot-content').html('');
+
+		this.content = null;
+
+	},
+
+	// Show the spinner loader
+	showLoader: function() {
+
+		console.log(this.$widget.find('.content-loader'));
+
+		this.$widget.find('.content-loader').css('display', 'block');
+
+		this.show_loader = true;
+
+	},
+
+	// Hide the spinner loader
+	hideLoader: function() {
+
+		this.$widget.find('.content-loader').css('display', 'none');
+
+		this.show_loader = false;
+
+	}
+
 
 });
