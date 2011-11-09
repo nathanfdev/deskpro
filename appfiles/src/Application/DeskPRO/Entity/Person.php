@@ -398,22 +398,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_person_logger = null;
 
-        /**
-	 * The deals created by this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="person", cascade={"persist", "remove", "merge"})
-	 */
-	protected $deals;
-
-	/**
-	 * The deals assigned to this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
-	 */
-	protected $assigned_deals;
-
-
-
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
@@ -467,8 +451,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
+//                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
+                //$this->deal      = new \Doctrine\Common\Collections\ArrayCollection();
+//		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);

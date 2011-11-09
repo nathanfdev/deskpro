@@ -35,7 +35,15 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      * The Deal Type's name
      *
      * @var string
-     * @ORM_Mapping\Column(name="name", type="text")
+     * @ORM_Mapping\Column(name="name", type="string")
      */
     protected $name = '';
+
+    /**
+     * Currency symbol.
+     *
+     * @var string
+     * @ORM_Mapping\Column(name="symbol", type="string")
+     */
+    protected $symbol = '$';
 }

@@ -1,0 +1,80 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block page_nav %}
+<div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
+	<section class="top">
+		<header>
+			<h4>Portal</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if this_page == 'portal_editor' %}on{% endif %}"><a href="{{ path('admin_portal') }}">Portal Editor</a></li>
+				<li class="{% if this_page == 'website_widgets' %}on{% endif %}"><a>Website Widgets</a></li>
+				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>Labels</a></li>
+				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">Global Settings</a></li>
+			</ul>
+		</article>
+	</section>
+
+	<section>
+		<header>
+			<div class="onoff">
+				<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
+			</div>
+			<h4>Knowledgebase</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if this_page == 'kb_settings' %}on{% endif %}"><a>Settings</a></li>
+				<li class="{% if this_page == 'kb_fields' %}on{% endif %}"><a href="{{ path('admin_customdefarticles') }}">Custom Fields</a></li>
+			</ul>
+		</article>
+	</section>
+
+	<section>
+		<header>
+			<div class="onoff">
+				<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
+			</div>
+			<h4>Ideas</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if this_page == 'idea_settings' %}on{% endif %}"><a href="{{ path('admin_portal_ideas_settings' ) }}">Settings</a></li>
+				<li><a>Statuses</a></li>
+				<li><a>Categories</a></li>
+				<li class="{% if this_page == 'idea_fields' %}on{% endif %}"><a href="{{ path('admin_customdefideas') }}">Custom Fields</a></li>
+			</ul>
+		</article>
+	</section>
+
+	<section>
+		<header>
+			<div class="onoff">
+				<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
+			</div>
+			<h4>Files</h4>
+		</header>
+		<article>
+			<ul>
+				<li><a>Settings</a></li>
+				<li><a>Custom Fields</a></li>
+			</ul>
+		</article>
+	</section>
+
+	<section>
+		<header>
+			<div class="onoff">
+				<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
+			</div>
+			<h4>Troubleshooters</h4>
+		</header>
+		<article>
+			<ul>
+				<li><a>Settings</a></li>
+				<li><a>Custom Fields</a></li>
+			</ul>
+		</article>
+	</section>
+</div>
+{% endblock %}

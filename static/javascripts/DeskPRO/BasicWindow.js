@@ -30,7 +30,7 @@ DeskPRO.BasicWindow = new Orb.Class({
 		this.options = this.getDefaultOptions();
 		this.registry = {};
 
-		this.messageBroker = this.messageBroker = new DeskPRO.MessageBroker();
+		this.messageBroker = new DeskPRO.MessageBroker();
 
 		if (options) {
 			this.setOptions(options);

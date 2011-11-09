@@ -31,3 +31,4 @@ ul.tabs li.margin-left{margin-left:20px;}
 #grid-lines div.widget{border-right:1px solid #ccc;height:100%;}
 #report-dashboard-options{margin-bottom:20px;display:none;}
 #report-dashboard-options-num-columns-slider{width:200px;display:inline-block;margin-left:10px;}
+.grid-slot-content .chart{display:block;width:100%;height:230px;}

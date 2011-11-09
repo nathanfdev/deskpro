@@ -1,4 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Settings</h1>
+{% endblock %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/SettingsAdvanced.js') }}"></script>
 <style type="text/css">
@@ -38,13 +41,13 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
-{% block content %}
+{% block page %}
 
 <div class="table-list-wrap">
 	<div class="setting-filter-form">
 		Filter: <input type="text" id="settings_filter" value="" />
 	</div>
-	<h2>Settings</h2>
+	<br class="clear" />
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>

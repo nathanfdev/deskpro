@@ -1,0 +1,15 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
+    pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DealList';
+    //pageMeta.search_type = '{#{ search_type }#}';
+    //pageMeta.search_category = '{#{ search_category }#}';
+
+    {% set baseId = el_uid() %}
+    pageMeta.baseId = '{{ baseId }}';
+</script>
+{{ agentui.scroll_containers('page-deal-list') }}
+
+{#% include 'AgentBundle:Task:task-list-bar.html.twig' %#}
+It's working
+
+{{ agentui.scroll_containers_end() }}

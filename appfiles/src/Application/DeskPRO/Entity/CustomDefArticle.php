@@ -25,7 +25,7 @@ use Orb\Util\Arrays;
 class CustomDefArticle extends CustomDefAbstract
 {
 	/**
-	 * @var CustomDefPeople
+	 * @var CustomDefArticle
 	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefArticle", inversedBy="children", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */

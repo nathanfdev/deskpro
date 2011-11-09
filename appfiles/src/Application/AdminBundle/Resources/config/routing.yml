@@ -34,6 +34,14 @@ admin_portal:
   pattern: /portal
   defaults: { _controller: AdminBundle:Portal:index }
 
+admin_portal_settings:
+  pattern: /portal/settings
+  defaults: { _controller: AdminBundle:Portal:settings }
+
+admin_portal_ideas_settings:
+  pattern: /portal/ideas/settings
+  defaults: { _controller: AdminBundle:Portal:ideaSettings }
+
 admin_portal_uploadfavicon:
   pattern: /portal/upload-favicon
   defaults: { _controller: AdminBundle:Portal:uploadFavicon }
@@ -756,3 +764,68 @@ admin_tickets_filters_edit:
 admin_tickets_filters_new:
   pattern: /tickets/filters/new
   defaults: { _controller: AdminBundle:TicketFilters:newChooseType }
+
+
+################################################################################
+# Article Fields
+################################################################################
+
+admin_customdefarticles:
+  pattern: /article-fields
+  defaults: { _controller: AdminBundle:CustomDefArticles:index }
+
+admin_customdefarticles_new_choosetype:
+  pattern: /article-fields/new-choose-type
+  defaults: { _controller: AdminBundle:CustomDefArticles:newChooseType, field_id: 0 }
+
+admin_customdefarticles_edit:
+  pattern: /article-fields/{field_id}/edit
+  defaults: { _controller: AdminBundle:CustomDefArticles:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdefarticles_setenabled:
+  pattern: /article-fields/{field_id}/set-enabled/{is_enabled}
+  defaults: { _controller: AdminBundle:CustomDefArticles:setEnabled }
+  requirements: { field_id: "\d+" }
+
+admin_customdefarticles_test:
+  pattern: /article-fields/{field_id}/test
+  defaults: { _controller: AdminBundle:CustomDefArticles:test }
+  requirements: { field_id: "\d+" }
+
+admin_customdefarticles_setenabled:
+  pattern: /article-fields/{field_id}/set-enabled
+  defaults: { _controller: AdminBundle:CustomDefArticles:setEnabled }
+  requirements: { field_id: "\d+" }
+
+################################################################################
+# Idea Fields
+################################################################################
+
+admin_customdefideas:
+  pattern: /idea-fields
+  defaults: { _controller: AdminBundle:CustomDefIdeas:index }
+
+admin_customdefideas_new_choosetype:
+  pattern: /idea-fields/new-choose-type
+  defaults: { _controller: AdminBundle:CustomDefIdeas:newChooseType, field_id: 0 }
+
+admin_customdefideas_edit:
+  pattern: /idea-fields/{field_id}/edit
+  defaults: { _controller: AdminBundle:CustomDefIdeas:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdefideas_setenabled:
+  pattern: /idea-fields/{field_id}/set-enabled/{is_enabled}
+  defaults: { _controller: AdminBundle:CustomDefIdeas:setEnabled }
+  requirements: { field_id: "\d+" }
+
+admin_customdefideas_test:
+  pattern: /idea-fields/{field_id}/test
+  defaults: { _controller: AdminBundle:CustomDefIdeas:test }
+  requirements: { field_id: "\d+" }
+
+admin_customdefideas_setenabled:
+  pattern: /idea-fields/{field_id}/set-enabled
+  defaults: { _controller: AdminBundle:CustomDefIdeas:setEnabled }
+  requirements: { field_id: "\d+" }

@@ -73,6 +73,11 @@ class Idea extends ContentAbstract
 	protected $labels;
 
 	/**
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $custom_data;
+
+	/**
 	 * Popularity (see recalculatePopularity).
 	 *
 	 * @var string
@@ -88,7 +93,8 @@ class Idea extends ContentAbstract
 
 		$this->_is_new = true;
 
-		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->comments    = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function setValidating($validating)
@@ -106,6 +112,12 @@ class Idea extends ContentAbstract
 		$this->comments->add($comment);
 
 		return $comment;
+	}
+
+	public function addCustomData(CustomDataIdea $data)
+	{
+		$this->custom_data->add($data);
+		$data['idea'] = $this;
 	}
 
 	public function addRating($rating)

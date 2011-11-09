@@ -33,10 +33,24 @@ class DealStage extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * The Deal Type's name
+     * The Deal Stage name
      *
      * @var string
-     * @ORM_Mapping\Column(name="name", type="text")
+     * @ORM_Mapping\Column(name="name", type="string")
      */
     protected $name = '';
+
+    /**
+     * @var \Application\DeskPRO\Entity\DealTypeStage
+     * @ORM_Mapping\OneToMany(targetEntity="DealTypeStage", mappedBy="deal_stage", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     *
+     */
+    protected $deal_type_stage;
+
+//    /**
+//     * @var int
+//     * @ORM_Mapping\Column(name="display_order", type="integer")
+//     */
+//    protected $display_order = 0;
+
 }

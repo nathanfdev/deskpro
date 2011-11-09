@@ -921,13 +921,13 @@ ul.dp-news-list > li > h3 {
 	line-height: 100%;
 }
 
-#dp_sidebar .dp-cal-date {
+.dp-sidebar-block .dp-cal-date {
 	float: left;
 	margin-left: 0;
 	margin-right: 8px;
 }
 
-#dp_sidebar .dp-content-list li {
+.dp-sidebar-block .dp-content-list li {
 	position: relative;
 }
 
@@ -975,12 +975,12 @@ ul.dp-downloads-list > li > h3 {
 	margin-top: 10px;
 }
 
-#dp_sidebar .dp-downloads-block li {
+.dp-sidebar-block.dp-downloads-block li {
 	line-height: 100%;
 	margin-bottom: 0px;
 }
 
-#dp_sidebar .dp-downloads-block span {
+.dp-sidebar-block.dp-downloads-block span {
 	line-height: 19px;
 	padding-top: 1px;
 	padding-bottom: 1px;
@@ -1038,7 +1038,7 @@ ul.dp-ideas-list .dp-faded-container {
 	margin-right: 10px;
 }
 
-#dp_sidebar .dp-idea-vote {
+.dp-sidebar-block .dp-idea-vote {
 	margin-right: 7px;
 }
 
@@ -1106,18 +1106,18 @@ ul.dp-ideas-list .meta {
 	margin-right: 15px;
 }
 
-#dp_sidebar .dp-ideas-block li {
+.dp-sidebar-block .dp-ideas-block li {
 	clear: left;
 	margin-bottom: 12px;
 }
 
-#dp_sidebar .dp-news-block .dp-more {
+.dp-sidebar-block .dp-news-block .dp-more {
 	margin-top: 3px;
 }
-#dp_sidebar .dp-ideas-block .dp-more {
+.dp-sidebar-block .dp-ideas-block .dp-more {
 	margin-top: 6px;
 }
-#dp_sidebar .dp-ideas-block .dp-more {
+.dp-sidebar-block .dp-ideas-block .dp-more {
 	marign-top: 6px;
 }
 
@@ -1139,48 +1139,48 @@ ul.dp-ideas-list .meta {
 	margin-top: 15px;
 }
 
-#dp_sidebar .dp-sidebar-block {
+.dp-sidebar-block {
 	margin-left: 12px;
 	margin-bottom: 20px;
 }
 
 
-#dp_sidebar .dp-online-block {
+.dp-sidebar-block.dp-online-block {
 	margin-left: 12px;
 	margin-bottom: 20px;
 	padding-right: 10px;
 }
 
-#dp_sidebar .dp-online-block .dp-compact li {
+.dp-sidebar-block.dp-online-block .dp-compact li {
 	float: left;
 	margin-right: 6px;
 	margin-bottom: 6px;
 	width: 24px;
 	height: 24px;
 }
-#dp_sidebar .dp-online-block .dp-compact li span {
+.dp-sidebar-block.dp-online-block .dp-compact li span {
 	display: block;
 	width: 24px;
 	height: 24px;
 	float: left;
 }
 
-#dp_sidebar .dp-online-block > ul {
+.dp-sidebar-block.dp-online-block > ul {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
 
-#dp_sidebar .dp-online-block  ul  div.item {
+.dp-sidebar-block.dp-online-block  ul  div.item {
 	line-height: 32px;
 }
 
-#dp_sidebar .dp-online-block  .dp-summary  {
+.dp-sidebar-block.dp-online-block  .dp-summary  {
 	font-size: 10px;
 	line-height: 110%;
 	padding-bottom: 10px;
 }
-#dp_sidebar .dp-online-block  ul   span {
+.dp-sidebar-block.dp-online-block  ul   span {
 	background-repeat: no-repeat;
 	background-position: 0 50%;
 	padding-left: 30px;
@@ -1190,17 +1190,17 @@ ul.dp-ideas-list .meta {
 
 
 
-#dp_sidebar .dp-box {
+.dp-sidebar-block .dp-box {
 	margin-bottom: 6px;
 	padding-bottom: 1px;
 }
 
 
-#dp_sidebar .dp-content-list {
+.dp-sidebar-block .dp-content-list {
 	font-size: 11px;
 }
 
-#dp_sidebar .dp-news-block .dp-content-list li {
+.dp-sidebar-block.dp-news-block .dp-content-list li {
 	clear: left;
 	line-height: 27px;
 	height: 27px;
@@ -1209,7 +1209,7 @@ ul.dp-ideas-list .meta {
 	overflow: hidden;
 }
 
-#dp_sidebar .dp-news-block .dp-content-list li .title {
+.dp-sidebar-block.dp-news-block .dp-content-list li .title {
 	display: block;
 	margin-left: 32px;
 }
@@ -1263,7 +1263,7 @@ ul.dp-ideas-list .meta {
 	line-height: 150%;
 }
 
-#dp_sidebar .dp-box-header h3 {
+.dp-sidebar-block .dp-box-header h3 {
 	margin: 0;
 	padding: 0;
 	font-size: 12pt;
@@ -1273,14 +1273,14 @@ ul.dp-ideas-list .meta {
 	border-bottom: 1px solid #D9DBDB;
 }
 
-#dp_sidebar .dp-box-header h3 a {
+.dp-sidebar-block .dp-box-header h3 a {
 	color: #404040;
 }
 
-#dp_sidebar .dp-ideas-block li {
+.dp-sidebar-block.dp-ideas-block li {
 	position: relative;
 }
-#dp_sidebar .dp-ideas-block li a {
+.dp-sidebar-block.dp-ideas-block li a {
 	position: relative;
 	font-size: 11px;
 	top: 2px;
@@ -1760,7 +1760,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	white-space: nowrap;
 }
 
-#dp_sidebar .dp-bound-faded {
+.dp-sidebar-block .dp-bound-faded {
 	position: absolute;
 	top: 0;
 	right: 0;

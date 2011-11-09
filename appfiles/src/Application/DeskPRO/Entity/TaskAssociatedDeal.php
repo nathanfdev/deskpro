@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 /**
  * Task-Deal association class.
  *
- * xORM_Mapping\Entity
+ * @ORM_Mapping\Entity
  */
 class TaskAssociatedDeal extends TaskAssociation
 {

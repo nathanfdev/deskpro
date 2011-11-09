@@ -1,0 +1,9 @@
+{% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
+{% set this_page = 'idea_fields' %}
+{% extends 'AdminBundle:CustomDefAbstract:index.html.twig' %}
+{% block pagetitle %}
+	<h1>Idea Fields</h1>
+	<nav>
+		<a class="clean-white" href="{{ path(route_basename~'new_choosetype') }}">Create Field</a>
+	</nav>
+{% endblock %}

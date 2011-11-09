@@ -136,7 +136,8 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+                'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+                'javascripts/DeskPRO/Agent/PageFragment/ListPane/DealList.js',
 	)
 );
 
@@ -335,10 +336,13 @@ $CONFIG['agent_misc'] = array(
 $CONFIG['admin_admin_ui'] = array(
 	'out' => 'js/admin-ui.js',
 	'files' => array(
+		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/Admin/Window.js',
+		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
 		'javascripts/DeskPRO/Admin/TableReorder.js',
+		'javascripts/DeskPRO/Form/RuleBuilder.js',
 	)
 );
 
@@ -354,6 +358,8 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/ChoiceBuilder.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/PortalNav.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/PortalToggle.js',
 	)
 );
 
@@ -406,6 +412,22 @@ $CONFIG['user'] = array(
 	'references' => array(
 		'user_vendors',
 		'user_common',
+	)
+);
+
+$CONFIG['user_portaladmin'] = array(
+	'out' => 'js/user-portaladmin.js',
+	'files' => array(
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'javascripts/DeskPRO/UserPortalAdmin/PortalAdmin.js',
+	)
+);
+
+$CONFIG['user_portaladmin_css'] = array(
+	'out' => 'css/user-portaladmin.css',
+	'filters' => array('less'),
+	'files' => array(
+		'stylesheets-less/admin/portal-admin.less',
 	)
 );
 
