@@ -6,10 +6,13 @@
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
 	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
+	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxsavedashboardstate']  = '{{ path('report_dashboard_ajaxsavedashboardstate', {'dashboard_id': dashboard.id }) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get_data']  = '{{ path('report_chart_get_data', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get_settings']  = '{{ path('report_chart_get_settings', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
 
-	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }});
+	var options = {};
+	options.number_columns = {{ dashboard.number_columns }};
+	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Dashboard({{ dashboard.id }}, options);
 }
 </script>
 {% endblock %}

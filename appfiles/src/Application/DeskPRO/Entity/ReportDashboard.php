@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  */
 class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 {
-	
+
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id
@@ -29,7 +29,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * The dashboard title
 	 *
@@ -37,6 +37,31 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	/**
+	 * The dashboard author
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @ORM_MAPPING\OneToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="author_id", referencedColumnName="id")
+	 */
+	protected $author;
+
+	/**
+	 * The number of columns in the dashboard
+	 *
+	 * @var int
+	 * @ORM_MAPPING\Column(name="number_columns", type="integer")
+	 */
+	protected $number_columns;
+
+	/**
+	 * Is the dashboard disabled
+	 *
+	 * @var bool
+	 * @ORM_MAPPING\Column(name="disabled", type="boolean")
+	 */
+	protected $disabled;
 
 	/**
 	 * The dashboard creation date
@@ -50,5 +75,19 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 	}
-	
+
+	/**
+	 * Get the author name. Use the associated Person if one exists, otherwise
+	 * its 'deskpro'
+	 */
+	public function getAuthorName()
+	{
+		if (!is_null($this->author)) {
+			return $this->author->getDisplayName();
+		}
+		else {
+			return 'deskpro';
+		}
+	}
+
 }

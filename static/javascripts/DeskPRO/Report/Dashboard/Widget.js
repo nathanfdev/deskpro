@@ -128,5 +128,4 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 	}
 
-
 });

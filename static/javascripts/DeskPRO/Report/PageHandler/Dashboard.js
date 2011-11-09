@@ -8,7 +8,9 @@ Orb.createNamespace('DeskPRO.Report.PageHandler');
 DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	Extends: DeskPRO.Report.PageHandler.Basic,
 
-	initialize: function(dashboard_id) {
+	initialize: function(dashboard_id, options) {
+
+		options = options || {};
 
 		// Id of the dashboard
 		this.dashboard_id = dashboard_id;
@@ -20,7 +22,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.is_edit_state = false;
 
 		// Number of columns in the dashboard grid
-		this.number_columns = 4;
+		this.number_columns = options.number_columns || 4;
 
 		// The width of 1 columns
 		this.column_width = null;
@@ -67,7 +69,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			range: "max",
 			min: 1,
 			max: 8,
-			value: 4,
+			value: this.number_columns,
 			slide: function(event, ui) {
 				self.number_columns = ui.value;
 
@@ -154,7 +156,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	createWidgetFromJSON: function(data) {
 
 		var widget = new DeskPRO.Report.Dashboard.Widget(self, data.id, data.stat);
-		this.addWidget(widget);
+		this.addWidget(widget, data.grid_slots);
 
 		widget.setContent(this.createChart(
 			data.chart_vendor,
@@ -194,15 +196,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Add a widget to the dashboard.
 	// pos start index at 0
-	addWidget: function(widget, pos) {
+	addWidget: function(widget, num_slots, pos) {
 
 		// TODO: update widget state at server
 
 		pos = pos || -1;
+		num_slots = num_slots || 1;
 
 		var insert_widget = {
 			widget: widget,
-			num_slots: 1
+			num_slots: num_slots
 		};
 
 		// No position specified, add it to the end
@@ -289,6 +292,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Update UI state to viewable
 	updateToViewable: function() {
 
+		// Save the new state of the dashboard
+		this.saveDashboardState();
+
 		// Hide the view link, show the edit link
 		$("#report-dashboard-set-viewable").css('display', 'none');
 		$("#report-dashboard-set-editable").css('display', 'block');
@@ -307,6 +313,31 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		this.is_edit_state = false;
+	},
+
+	// Save the state of the dashboard
+	saveDashboardState: function() {
+		var self = this;
+
+		dashboardState = { widgets: [], number_columns: this.number_columns };
+
+		// Get the state of each of the dashboard widgets
+		this.$dashboardGrid.find("li.chart-widget").each(function(i, el) {
+			var widget_index = self.getWidgetIndexById($(this).attr('id'));
+			var v = self.widgets[widget_index];
+
+			dashboardState.widgets.push({id: v.widget.widget_id, number_columns: v.num_slots, slot_number: i})
+		});
+
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_dashboard_ajaxsavedashboardstate', {dashboard_id: this.dashboard_id}),
+			data: 'dashboard_state=' + JSON.stringify(dashboardState),
+			dataType: 'json',
+			type: 'POST',
+			success: function(data) {
+				// Check stats return
+			}
+		});
 	},
 
 	// Create the placeholder for the add chart widget
@@ -462,7 +493,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	getDashboardWidth: function() {
 
 		// Last widget doesn't need to have spacing on the right
-		return this.$dashboard.width() - this.getWidgetSpacerWidth();
+		return this.$dashboard.width() - this.getWidgetSpacerWidth() - 50;
 
 	},
 

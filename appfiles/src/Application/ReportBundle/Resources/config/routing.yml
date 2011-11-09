@@ -53,6 +53,11 @@ report_dashboard_ajaxcreatewidget:
   defaults: { _controller: ReportBundle:Dashboard:ajaxCreateWidgets }
   requirements: { dashboard_id: "\d+", stat_id: "\d+" }  
 
+report_dashboard_ajaxsavedashboardstate:
+  pattern: /trends/dashboards/{dashboard_id}/save-dashboard-state
+  defaults: { _controller: ReportBundle:Dashboard:saveDashboardState }
+  requirements: { dashboard_id: "\d+" }
+  
 report_chart_get_data:
   pattern: /chart/{dashboard_stat_id}/data.{_format}
   defaults: { _controller: ReportBundle:Chart:getChartData }
