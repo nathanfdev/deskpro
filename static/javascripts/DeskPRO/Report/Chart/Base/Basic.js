@@ -3,8 +3,8 @@ Orb.createNamespace('DeskPRO.Report.Chart.Base');
 /**
  * Represents a Chart
  */
-DeskPRO.Report.Chart.Base.Basic = new Class({
-        
+DeskPRO.Report.Chart.Base.Basic = new Orb.Class({
+
         // HTML element ID to write chart to
 	element_id: '',
 });
