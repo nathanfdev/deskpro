@@ -82,6 +82,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->grid_slots   = 1;
+		$this->view_class   = "Application\ReportBundle\Chart\AmChart\LineChart";
 		$this->date_created = new \DateTime();
 	}
 	
@@ -92,6 +93,11 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		$view = new $viewClass();
 		
 		return $view;
+	}
+	
+	public function getChartType()
+	{
+		
 	}
 	
 }

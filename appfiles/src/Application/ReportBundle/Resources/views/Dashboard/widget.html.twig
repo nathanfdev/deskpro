@@ -1,28 +1,30 @@
 <script id="dashboard_widget" type="text/x-jquery-tmpl">
-        <li class="widget" id="${widget.element_id}">
-                <span class="inner">
-                        <span class="grid-slot-toolbar ui-corner-all">
-                                ${widget.title}
-                                <span class="icons">
-                                        <a href="{{ path('report_trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="edit">
-                                                <img src="{{ asset('images/report/icons/edit.png') }}" alt="[E]" />
-                                        </a>
-                                        <a href="{{ path('report_trend_dashboard_remove_stat', { 'dashboard_id': dashboard.id, 'dashboard_stat_id': dashboard_stat.id }) }}" class="close">
-                                                <img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
-                                        </a>
-                                </span>
-                        </span>
-                        <span class="grid-slot-content">
-                                <span id="chart_${widget.element_id}" class="chart"></span>
-                        </span>
-                </span>
-        </li>
+	<li class="widget chart-widget" id="${widget.element_id}">
+		<span class="inner">
+			<span class="grid-slot-toolbar ui-corner-all">
+				${widget.title}
+				<span class="icons">
+					<a href="#" class="edit">
+						<img src="{{ asset('images/report/icons/edit.png') }}" alt="[E]" />
+					</a>
+					<a href="#" class="delete">
+						<img src="{{ asset('images/report/icons/close.png') }}" alt="[x]" />
+					</a>
+				</span>
+			</span>
+			<span class="grid-slot-content">
+				<span id="widget_content_${widget.element_id}" class="content">
+				</span>
+				<span class="content-loader"></span>
+			</span>
+		</span>
+	</li>
 </script>
 
 <script id="dashboard_widget_create" type="text/x-jquery-tmpl">
-        <li class="widget" id="dashboard-new-placeholder">
-                <span class="inner">
-                        <a href="#" id="dashboard-new-placeholder-link">Add Chart</a>
-                </span>
-        </li>
+	<li class="widget" id="dashboard-new-placeholder">
+		<span class="inner">
+			<a href="#" id="dashboard-new-placeholder-link">Add Chart</a>
+		</span>
+	</li>
 </script>

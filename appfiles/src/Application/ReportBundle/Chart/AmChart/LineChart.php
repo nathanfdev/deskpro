@@ -10,13 +10,28 @@ class LineChart extends BaseLineChart
 	{
 		parent::__construct($stat);
 		
-		$this->chart_vendor 	= 'AmChart';
-		$this->chart_type 	= 'Line';	
+		$this->view_chart_vendor 	= 'AmChart';
+		$this->view_chart_class 	= 'Line';	
+	}
+	
+	public function getData()
+	{
+		$points = range(0, 10);
+		shuffle($points);
+		
+		$this->series = range(1, 10);
+		$this->graphs = array(
+			$points	
+		);
 	}
 	
 	public function getFormattedData()
 	{
-		$formattedData = array();
+		$this->getData();
+		
+		$formattedData = array();	
+		$formattedData['series'] = $this->series;
+		$formattedData['graphs'] = $this->graphs;
 		
 		return $formattedData;
 	}
