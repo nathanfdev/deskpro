@@ -161,7 +161,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		widget.setContent(this.createChart(
 			data.chart_vendor,
 			data.chart_class,
-			"chart_" + widget.element_id,
+			"widget_content_" + widget.element_id,
 			data.id)
 		);
 	},
@@ -186,10 +186,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		return;
-
 		Array.each(this.widgets, function(v) {
 			v.widget.getContent().render();
+			v.widget.hideLoader();
 		});
 
 	},
@@ -197,8 +196,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Add a widget to the dashboard.
 	// pos start index at 0
 	addWidget: function(widget, num_slots, pos) {
-
-		// TODO: update widget state at server
 
 		pos = pos || -1;
 		num_slots = num_slots || 1;
@@ -244,7 +241,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 		
 	},
-
 
 	// Set dashboard state, can be editable or viewable
 	setEditable: function(editable) {
