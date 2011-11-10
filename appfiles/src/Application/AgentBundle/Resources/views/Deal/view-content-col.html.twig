@@ -1,0 +1,166 @@
+{#People BOX#}
+<div class="profile-box-container people-box first">
+
+    <header>
+        <h4>People</h4>
+    </header>
+    <section id="{{baseId}}_people_box_person">
+    <article>
+        <div class="meta-line">
+            <dl class="table-list">
+                <dt class="type-labels">Agent</dt>
+                <dd>
+                    <select>
+                        <option value="chris padfield">Chris Padfield</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+        
+        <div class="meta-line">
+            <dl class="table-list">
+                <dt class="type-labels">Users</dt>
+                <dd>
+                    <ul class="controls">
+                        <li>
+                            <span>James Brigs james@deskpro.com </span>
+                            <span class="btn-small-remove remove-row-trigger"></span>
+                        </li>
+                        <li>
+                            <span>James Brigs james@deskpro.com </span>
+                            <span class="btn-small-remove remove-row-trigger"></span>
+                        </li>
+                        <li>
+                            <span>James Brigs james@deskpro.com </span>
+                            <span class="btn-small-remove remove-row-trigger"></span>
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="meta-line">
+            <dl class="table-list">
+                <dt class="type-labels">Organizations</dt>
+                <dd>
+                    <ul class="controls">
+                        <li>
+                            <span>  Deskpro Ltd </span>
+                            <span class="btn-small-remove remove-row-trigger"></span>
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+    </article>
+    </secion>
+
+</div>
+{#End People BOX#}
+
+{#Property Tab#}
+<div class="profile-box-container tabbed">
+    <header>
+            <nav>
+                <ul>
+                    <li data-tab-for="#{{baseId}}_property_tab">Properties</li>
+                    <li data-tab-for="#{{baseId}}_tasks_tab" class="on">Tasks <span class="count" id="{{baseId}}_tasks_count">{{ tasks|length }}</span></li>
+                    <li data-tab-for="#{{baseId}}_files_tab" class="on">Files <span class="count" id="{{baseId}}_files_count">{{ tasks|length }}</span></li>
+                </ul>
+            </nav>
+    </header>
+
+    <section>
+
+            {# Property Tab #}
+            <article id="{{baseId}}_property_tab" class="on">
+                <div class="meta-line">
+                    <dl class="table-list">
+                        <dt class="type-labels">Labels</dt>
+                        <dd>
+                            <span>Label1, Label2, Label3</span>
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="meta-line">
+                    <dl class="table-list">
+                        <dt class="type-labels">Created</dt>
+                        <dd>
+                            <span>by Jhon, 23 days ago</span>
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="meta-line">
+                    <dl class="table-list">
+                        <dt class="type-labels">Custom Field A</dt>
+                        <dd>
+                            <span>Value X</span>
+                        </dd>
+                    </dl>
+                </div>
+
+            </article>
+            {# /Property Tab #}
+
+            {# Task Tab #}
+            <article id="{{baseId}}_tasks_tab">
+                Tasks
+            </article>
+            {# /Task Tab #}
+
+            {# File Tab #}
+            <article id="{{baseId}}_files_tab">
+                Files
+            </article>
+            {# /File Tab #}
+
+
+    </section>
+</div>
+
+{#/Property Tab#}
+
+
+
+{# Notes Tabs #}
+<div class="profile-box-container tabbed">
+    <header>
+        <nav>
+            <ul>
+                <li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>                    
+            </ul>
+        </nav>
+    </header>
+    <section>
+
+    {# Notes Tab #}
+		<article id="{{baseId}}_notes_tab" class="on">
+			<div class="notes-wrap">
+				<ul>
+					<li class="new-note"
+						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+						data-form-list-selector="ul"
+						data-form-result-html-key="note_li_html"
+						data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
+						data-form-count-el="#{{baseId}}_notes_count"
+					>
+						<header>
+							<div class="controls">
+								<div class="is-loading">Saving</div>
+								<div class="saved" style="display: none">Saved</div>
+								<div class="save" style="display: none">Save</div>
+							</div>
+							<h3>New Note</h3>
+						</header>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter note ..." data-not-blank="1"></textarea></div>
+					</li>
+				</ul>
+			</div>
+		</article>
+		{# /Notes Tab #}
+    </section>
+
+</div>
+{# /Notes Tab #}
