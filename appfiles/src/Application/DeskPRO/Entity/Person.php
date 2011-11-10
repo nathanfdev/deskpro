@@ -398,29 +398,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_person_logger = null;
 
-        /**
-	 * The deals created by this user.
-	 * @var \Application\DeskPRO\Entity\Deal
-	 * @ORM_Mapping\ManyToOne(targetEntity="Deal",  cascade={"persist", "remove", "merge"})
-	 */
-	protected $deal;
-
-//        /**
-//         * Inverse Side
-//         *
-//         * @ManyToMany(targetEntity="Deal", mappedBy="peoples")
-//         */
-//	protected $deals;
-
-	/**
-	 * The deals assigned to this user.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Deal", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
-	 */
-	protected $assigned_deals;
-
-
-
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.

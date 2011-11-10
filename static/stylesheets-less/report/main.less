@@ -1,3 +1,5 @@
+@import "../agent/lib.less";
+
 #dp_header {
 	max-width: 100%;
 }
@@ -14,12 +16,12 @@
 .reports-nav a.clean-white {
 	font-size: 20px;
 	display: inline;
-	padding: 7px; 
+	padding: 7px;
 }
 
 .stat-list td {
 	padding: 10px;
-	border-bottom: 1px solid #eee; 
+	border-bottom: 1px solid #eee;
 }
 
 .stat-list th {
@@ -55,7 +57,7 @@
 
 ul.tabs {
 	border-bottom: 1px solid #ccc;
-	margin-bottom: 10px; 
+	margin-bottom: 10px;
 }
 
 ul.tabs li {
@@ -63,23 +65,24 @@ ul.tabs li {
 	margin: 0;
 	border: 1px solid #ccc;
 	border-bottom: none;
+	.border-radius(5px, 5px, 0, 0);
 }
 
 ul.tabs li.current {
 }
 
 ul.tabs a {
-	padding: 10px;
+	padding: 7px;
 	display: inline-block;
 }
 
 ul.tabs li a.new {
 	background: url(../../images/report/icons/add.png) no-repeat 7px center;
-	padding-left: 27px; 
+	padding-left: 27px;
 }
 
 ul.tabs li.margin-left {
-	margin-left: 20px;
+	margin-left: 30px;
 }
 
 .dashboard-state {
@@ -99,18 +102,17 @@ ul.tabs li.margin-left {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	clear: both; 
+	clear: both;
 }
 
 #report-dashboard-grid li {
-	margin: 0 0 16px 0;
+	margin: 0;
 	float: left;
 	width: 25%;
 	font-size: 4em;
 	text-align: center;
 	color: #000;
 	background: #fff;
-	height: 250px;
 }
 
 #report-dashboard-grid li .inner {
@@ -118,8 +120,9 @@ ul.tabs li.margin-left {
 	border-radius: 5px;
 	padding: 2px;
 	display: block;
-	height: 100%;
-	font-size: 12px; 
+	height: 250px;
+	font-size: 12px;
+	position: relative;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar {
@@ -129,7 +132,8 @@ ul.tabs li.margin-left {
 	padding: 4px;
 	text-align: left;
 	position: relative;
-	min-height: 22px;
+	min-height: 20px;
+	line-height: 20px;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar .icons {
@@ -147,6 +151,7 @@ ul.tabs li.margin-left {
 
 .ui-resizable-helper {
 	border: 1px dotted #757575;
+	padding-right: -10px;
 }
 
 #report-dashboard-grid .content {
@@ -167,7 +172,7 @@ ul.tabs li.margin-left {
 }
 
 #report-dashboard-grid .widget {
-	width: 25%;	
+	width: 25%;
 }
 
 #grid-lines div.widget {
@@ -190,8 +195,19 @@ ul.tabs li.margin-left {
 
 }
 
-.grid-slot-content .chart {
+.grid-slot-content .content {
 	display: block;
 	width: 100%;
 	height: 230px;
+}
+
+.grid-slot-content .content-loader {
+	background: url(../../images/spinners/loading-big-circle.gif) no-repeat center center;
+	display: none;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -16px 0 0 -16px;
 }

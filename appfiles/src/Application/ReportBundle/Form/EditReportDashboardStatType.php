@@ -18,7 +18,9 @@ class EditReportDashboardStatType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('chart_type', 'text');
+		$builder->add('chart_type', 'choice', array(
+			'choices'   => array('line_chart' => 'Line Chart', 'column_chart' => 'Column Chart'),
+		));
 	}
 
 	public function getName()

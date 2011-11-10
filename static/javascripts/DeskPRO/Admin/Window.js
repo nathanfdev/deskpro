@@ -118,7 +118,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 		}
 
 		if (document.getElementById('dp_page_nav')) {
-			this.updatePageNavPos();
+			window.setTimeout(this.updatePageNavPos.bind(this), 30);
 			$(window).scroll(this.updatePageNavPos.bind(this));
 			$(window).resize(this.updatePageNavPos.bind(this));
 		}

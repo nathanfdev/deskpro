@@ -23,37 +23,37 @@ class TrendController extends AbstractController
 	{
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
 		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
-		
+
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
 			'stats' 	=> $stats,
 			'dashboards'	=> $dashboards
 		));
 	}
-	
+
 	/**
 	 * Show an actual trend
 	 */
 	public function viewAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
-		
+
 		return $this->render('ReportBundle:Trend:view.html.twig', array(
-			'stat' => $stat	
+			'stat' => $stat
 		));
 	}
-	
+
 	public function newAction()
 	{
-		
+
 	}
-	
+
 	/**
 	 * Edit a trend
 	 */
 	public function editAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
-		
+
 		$form = $this->get('form.factory')->create(new EditStatType($stat->id ? false : true), $stat);
 
 		if ($this->in->getBool('process')) {
@@ -67,26 +67,31 @@ class TrendController extends AbstractController
 				return $this->redirectRoute('report_trend_index');
 			}
 		}
-		
+
 		return $this->render('ReportBundle:Trend:edit.html.twig', array(
 			'stat' => $stat,
 			'form' => $form->createView(),
 		));
 	}
-	
+
 	/**
 	 * Clone an existing trend
 	 */
 	public function cloneAction($stat_id)
 	{
 		$stat = $this->getStat($stat_id);
-		
-		// TODO: clone it
+
 		$cloned = clone $stat;
-		
-		return $this->redirectRoute('trend_edit', array('stat_id' => $cloned['id']));
+		$cloned->setId(null);
+		$cloned->setTitle("[Cloned] " . $cloned->getTitle());
+		$cloned->setAuthor($this->person);
+
+		App::getOrm()->persist($cloned);
+		App::getOrm()->flush();
+
+		return $this->redirectRoute('report_trend_edit', array('stat_id' => $cloned['id']));
 	}
-	
+
 	/**
 	 * Get a Stat Entity by id
 	 *
@@ -98,8 +103,8 @@ class TrendController extends AbstractController
 		if (!$stat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat");
 		}
-		
+
 		return $stat;
 	}
-	
+
 }

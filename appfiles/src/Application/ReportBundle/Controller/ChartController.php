@@ -19,31 +19,31 @@ class ChartController extends AbstractController
 	public function getChartDataAction($dashboard_stat_id)
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
-		
+
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
-		
-		$data_template = 'AmChart/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
-		
+
+		$data_template = $chart->getViewChartVendor() . '/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
+
 		return $this->render("ReportBundle:Chart:$data_template", array(
 			'data' => $chart->getFormattedData(),
 		));
 	}
-	
+
 	public function getChartSettingsAction($dashboard_stat_id)
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
-		
+
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
-		
-		$settings_template = 'AmChart/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
-		
+
+		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
+
 		return $this->render("ReportBundle:Chart:$settings_template", array(
 			'settings' => $chart->getSettings(),
 		));
 	}
-	
+
 	/**
 	 * Get the Dashboard Stat Entity
 	 *
@@ -55,7 +55,7 @@ class ChartController extends AbstractController
 		if (!$dashboardStat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_dashboard_stat");
 		}
-		
+
 		return $dashboardStat;
 	}
 }

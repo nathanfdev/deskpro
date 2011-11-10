@@ -1,0 +1,46 @@
+{% set this_page = 'portal_settings' %}
+{% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Portal Settings</h1>
+{% endblock %}
+{% block page %}
+<div class="setting_field_row">
+	<h4>Commenting</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Allow users to submit comments</label>
+			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Require users to log in or register before they can comment</label>
+			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Require users to validate their email addresses before a comment is visible</label>
+			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Require all comments to be manually validated by agents</label>
+			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Show a CAPTCHA on comment forms</label>
+		</div>
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				Allow users to rate content</label>
+			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+			Show ratings publicly</label>
+		</div>
+	</div>
+</div>
+
+<div class="setting_field_row">
+	<h4>Integrations</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show Facebook Like button</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show Google +1 button</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show AddThis widget</label>
+		</div>
+	</div>
+</div>
+
+<footer class="setting_field_row" style="text-align: center">
+	<button class="clean-white">Save Settings</button>
+</footer>
+
+{% endblock %}

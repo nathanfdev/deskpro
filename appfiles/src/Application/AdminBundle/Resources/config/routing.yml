@@ -34,6 +34,14 @@ admin_portal:
   pattern: /portal
   defaults: { _controller: AdminBundle:Portal:index }
 
+admin_portal_settings:
+  pattern: /portal/settings
+  defaults: { _controller: AdminBundle:Portal:settings }
+
+admin_portal_ideas_settings:
+  pattern: /portal/ideas/settings
+  defaults: { _controller: AdminBundle:Portal:ideaSettings }
+
 admin_portal_uploadfavicon:
   pattern: /portal/upload-favicon
   defaults: { _controller: AdminBundle:Portal:uploadFavicon }
