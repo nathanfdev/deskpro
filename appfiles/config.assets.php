@@ -401,6 +401,7 @@ $CONFIG['report_dashboard'] = array(
 		// App related files
 		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
 		'javascripts/DeskPRO/Report/Dashboard/Widget.js',
+		'javascripts/DeskPRO/Report/PageHandler/Trend.js',
 	),
 );
 
