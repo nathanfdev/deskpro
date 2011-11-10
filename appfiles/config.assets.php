@@ -394,6 +394,12 @@ $CONFIG['report_dashboard'] = array(
 		'javascripts/DeskPRO/Report/Chart/AmChart/Base.js',
 		'javascripts/DeskPRO/Report/Chart/AmChart/Column.js',
 		'javascripts/DeskPRO/Report/Chart/AmChart/Line.js',
+		'javascripts/DeskPRO/Report/Chart/AmChart/Pie.js',
+		// DeskPRO Charts
+		'javascripts/DeskPRO/Report/Chart/DeskPRO/Base.js',
+		'javascripts/DeskPRO/Report/Chart/DeskPRO/SimpleVariation.js',
+		'javascripts/DeskPRO/Report/Chart/DeskPRO/SimpleDrillDown.js',
+		'javascripts/DeskPRO/Report/Chart/DeskPRO/DetailedDrillDown.js',
 		// App related files
 		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
 		'javascripts/DeskPRO/Report/Dashboard/Widget.js',
