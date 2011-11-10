@@ -88,8 +88,45 @@ class DealController extends AbstractController
 
     public function dealListAction($owner_type = null, $deal_status = null, $deal_type_id = null)
     {
-        
+        $deal_repository = $this->em->getRepository('DeskPRO:Deal');
+        $person = $this->person;
+
+        if($owner_type == 'my')
+        {
+            if($deal_status == 'open'){
+                $deals = $deal_repository->filterDealsForPerson($person, 0, $deal_type_id);
+            }
+            else if($deal_status == 'close'){
+                $deals = $deal_repository->filterDealsForPerson($person, -1, $deal_type_id);
+            }else if($deal_status == 'won'){
+                $deals = $deal_repository->filterDealsForPerson($person, 1, $deal_type_id);
+            }else if($deal_status == 'lost'){
+                $deals = $deal_repository->filterDealsForPerson($person, 2, $deal_type_id);
+            }
+
+        }else if($owner_type == 'other'){
+
+            if($deal_status == 'open'){
+                $deals = $deal_repository->filterDealsForOther(0, $deal_type_id);
+            }
+            else if($deal_status == 'close'){
+                $deals = $deal_repository->filterDealsForOther(-1, $deal_type_id);
+            }else if($deal_status == 'won'){
+                $deals = $deal_repository->filterDealsForOther(1, $deal_type_id);
+            }else if($deal_status == 'lost'){
+                $deals = $deal_repository->filterDealsForOther(2, $deal_type_id);
+            }
+        }
+
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
+        return $this->render($tpl, array(
+            'deals' => $deals
+        ));
+    }
+
+    public function viewAction($deal_id = null)
+    {
+        $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl);
     }
 

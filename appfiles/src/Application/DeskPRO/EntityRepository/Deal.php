@@ -114,4 +114,74 @@ class Deal extends EntityRepository
             return $query->getSingleScalarResult();
 
     }
+
+    /**
+     * Find pending tasks assigned to the person.
+     *
+     * @param Person $person The person
+     * @return Array
+     */
+
+    public function filterDealsForPerson(Entity\Person $person, $status = 0, $deal_type_id = null) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('d')
+                ->from('DeskPRO:Deal', 'd')
+                ->innerJoin('d.person', 'p')
+                ->innerJoin('d.deal_type', 'dt')
+                ->where('p.id = :person_id');
+        $qb->setParameter('person_id', $person['id']);
+
+        if ($status >= 0) {
+            $qb->andWhere('d.status = :status');
+            $qb->setParameter('status', $status);
+        }
+        else
+        {
+            $qb->andWhere('d.status > :status');
+            $qb->setParameter('status', 0);
+        }
+
+        if ($deal_type_id) {
+            $qb->andWhere('dt.id = :deal_type_id');
+            $qb->setParameter('deal_type_id', $deal_type_id);
+        }
+
+        $query = $qb->getQuery(); //print $query->getSQL();
+        return $query->getResult();
+    }
+
+    /**
+     * Find pending tasks assigned to the person.
+     *
+     * @param Person $person The person
+     * @return Array
+     */
+
+    public function filterDealsForOther($status = 0, $deal_type_id = null) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('d')
+                ->from('DeskPRO:Deal', 'd')
+                ->leftJoin('d.person', 'p')
+                ->innerJoin('d.deal_type', 'dt')
+                ->where('p.id IS NULL');
+
+        if ($status >= 0) {
+            $qb->andWhere('d.status = :status');
+            $qb->setParameter('status', $status);
+        }
+        else
+        {
+            $qb->andWhere('d.status > :status');
+            $qb->setParameter('status', 0);
+        }
+
+        if ($deal_type_id) {
+            $qb->andWhere('dt.id = :deal_type_id');
+            $qb->setParameter('deal_type_id', $deal_type_id);
+        }
+
+        $query = $qb->getQuery(); //print $query->getSQL();
+        return $query->getResult();
+    }
+
 }

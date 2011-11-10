@@ -9,7 +9,20 @@
 </script>
 {{ agentui.scroll_containers('page-deal-list') }}
 
-{#% include 'AgentBundle:Task:task-list-bar.html.twig' %#}
-It's working
+{% include 'AgentBundle:Deal:deal-list-bar.html.twig' %}
 
+<section class="list-listing">
+  <article class="row-item item-list">
+    <div class="extra-fields">
+        <ul >
+            <li><span class="prop-val email_address">Pending Review: 8</span></li>
+            <li><span class="prop-val email_address">Closing: 5</span></li>            
+        </ul>
+        <br class="clear">
+    </div>
+  </article>
+ {% for deal in deals%}
+    {% include 'AgentBundle:Deal:deal-list-row.html.twig' %}    
+ {% endfor %}
+</section>
 {{ agentui.scroll_containers_end() }}
