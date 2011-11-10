@@ -2,9 +2,10 @@
 
 namespace Application\ReportBundle\Stat\DeskPRO;
 
-use Application\ReportBundle\Stat\Base\AbstractStat;
-
-class TicketsAwaitingAgent extends AbstractStat
+/**
+ * Get the number of tickets awaiting agent
+ */
+class TicketsAwaitingAgent extends AbstractTicket
 {
 	public function buildConceptQueries()
 	{
