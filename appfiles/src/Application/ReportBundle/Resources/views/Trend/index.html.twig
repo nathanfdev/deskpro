@@ -25,6 +25,9 @@
 				<th>Title</th>
 				<th width="200">Author</th>
 				<th width="150">Trend</th>
+				<th width="60"></th>
+				<th width="60"></th>
+				<th width="60"></th>
 				<th width="60">Amount</th>
 				<th width="60">Variation</th>
 				<th width="16" class="icon"></th>
@@ -39,6 +42,9 @@
 					<td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
 					<td>{{stat.authorName}}</td>
 					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
+					<td class="center"></td>
+					<td class="center"></td>
+					<td class="center"></td>
 					<td class="center">{{ stat.amount }}</td>
 					<td class="center {{ (stat.variation > 0) ? 'down' : 'up' }}">{{ stat.variation }}</td>
 					<td class="icon"><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}" title="View Trend"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
