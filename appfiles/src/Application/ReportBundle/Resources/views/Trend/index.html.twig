@@ -1,4 +1,14 @@
 {% extends 'ReportBundle::layout.html.twig' %}
+{% block html_head %}
+{{ dp_asset_html('report_dashboard') }}
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Report.PageHandler.Trend();
+}
+</script>
+{% endblock %}
 {% block page %}
 
 <script type="text/javascript">
@@ -49,11 +59,24 @@
 					<td class="center {{ (stat.variation > 0) ? 'down' : 'up' }}">{{ stat.variation }}</td>
 					<td class="icon"><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}" title="View Trend"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
 					<td class="icon"><a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
-					<td class="icon"><a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
+					<td class="icon"><a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+</div>
+
+<div id="overlay_wrapper" style="width: 800px; height: 400px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Clone Trend</h4>
+	</div>
+	<div class="overlay-content">
+
+	</div>
+	<div class="overlay-footer">
+
+	</div>
 </div>
 
 {% endblock %}
