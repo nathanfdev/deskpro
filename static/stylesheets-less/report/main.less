@@ -225,7 +225,7 @@ ul.tabs li.margin-left {
 	margin: 0 auto;
 	border-bottom: 1px solid #ccc;
 	text-align: center;
-	padding: 50px 20px 30px 20px;
+	padding: 50px 20px 15px 20px;
 }
 
 .variation-change-chart .main table {
@@ -257,6 +257,7 @@ ul.tabs li.margin-left {
 
 .variation-change-chart .actual span {
 	text-align: center;
+	display: block;
 }
 
 .variation-change-chart .value {
@@ -271,9 +272,15 @@ ul.tabs li.margin-left {
 	color: #666;
 }
 
+.variation-change-chart .variation .amount {
+	font-size: 18px;	
+}
+
 .variation-change-chart .direction {
 	background-repeat: no-repeat;
 	background-position: bottom center;
+	height: 85px;
+	padding-bottom: 20px;
 }
 
 .variation-change-chart .direction-up-red {
@@ -311,13 +318,13 @@ ul.tabs li.margin-left {
 
 .simple-drill-down table th {
 	border-bottom: 1px solid #ccc;
-	padding: 2px;
+	padding: 2px 5px;
 	text-align: left;
 	font-weight: normal;
 }
 
 .simple-drill-down table td {
-	padding: 2px;
+	padding: 2px 5px;
 	text-align: left;
 }
 
@@ -338,8 +345,8 @@ ul.tabs li.margin-left {
 }
 
 .simple-drill-down table td.bar span {
-	background: #25AA00;
-	border: 1px solid #145E00;
+	background: #0043ED;
+	border: 1px solid #003BD3;
 	display: block;
 	height: 16px;
 }
@@ -357,13 +364,13 @@ ul.tabs li.margin-left {
 
 .detailed-drill-down table th {
 	border-bottom: 1px solid #ccc;
-	padding: 2px;
+	padding: 2px 5px;
 	text-align: left;
 	font-weight: normal;
 }
 
 .detailed-drill-down table td {
-	padding: 2px;
+	padding: 2px 5px;
 	text-align: left;
 }
 
@@ -372,27 +379,34 @@ ul.tabs li.margin-left {
 }
 
 .detailed-drill-down table .prev-value {
-	width: 70px;
+	width: 55px;
 	text-align: center;
 }
 
 .detailed-drill-down table td.prev-value {
-	text-align: right;
+	text-align: center;
 }
 
 .detailed-drill-down table .diff {
-	width: 10%;
-	text-align: right
+	width: 55px;
+	text-align: center;
+}
+
+.detailed-drill-down table .diff-red {
+	background: #BF0000;
+	color: #fff;
 }
 
 .detailed-drill-down table .change {
 	width: 10%;
-	text-align: right;
+	text-align: center;
+	padding-right: 16px; 
 }
 
-.detailed-drill-down table td.bar span {
-	background: #25AA00;
-	border: 1px solid #145E00;
-	display: block;
-	height: 16px;
+.detailed-drill-down table .direction-down-green {
+	background: url(../../images/report/icons/arrow_down_green.png) no-repeat center right;
+}
+
+.detailed-drill-down table .direction-up-green {
+	background: url(../../images/report/icons/arrow_up_green.png) no-repeat center right;
 }

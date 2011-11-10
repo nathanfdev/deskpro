@@ -17,7 +17,7 @@ class AmColumnChart extends BaseColumnChart
 	
 	public function getData()
 	{
-		$number_points = 11;
+		$number_points = 7;
 		
 		$points = array();
 		$points[0] = range(0, $number_points);
@@ -27,7 +27,7 @@ class AmColumnChart extends BaseColumnChart
 		
 		$startUnix = time() - (86400 * $number_points);
 		for ($unix = $startUnix; $unix < time(); $unix+=86400) {
-			$this->series[] = date("d-m-Y", $unix);
+			$this->series[] = date("d", $unix);
 		}
 		$this->graphs = array(
 			$points[0],
