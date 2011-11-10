@@ -29,7 +29,9 @@
 <div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
 {% if admin_portal_controls %}
-	<div id="dp_custom_header" style="display: none"></div>
+	<div id="dp_custom_header_wrap" class="dp-portal-block" style="display: none">
+		<div id="dp_custom_header"></div>
+	</div>
 	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header">
 		<em>Click here to set custom header HTML</em>
 	</div>

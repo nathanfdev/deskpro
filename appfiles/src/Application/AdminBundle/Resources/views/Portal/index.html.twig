@@ -1,5 +1,10 @@
 {% set this_page = 'portal_editor' %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% block html_head %}
+	<script src="{{ asset('vendor/codemirror/codemirror.js') }}" type="text/javascript"></script>
+	<link rel="stylesheet" href="{{ asset('vendor/codemirror/codemirror.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('vendor/codemirror/default.css') }}" type="text/css" />
+{% endblock %}
 {% block pagetitle %}
 	<div class="onoff" data-element-handler="DeskPRO.Admin.ElementHandler.PortalToggle">
 		<input type="checkbox" id="portal_enabled" value="1" checked="checked" class="onoff-slider" />
@@ -15,5 +20,20 @@
 	>
 
 		<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
+
+		<script type="text/x-deskpro-tmpl" id="admin_portal_block_html_edit_tpl">
+			<section class="dp-html-editor">
+				<div class="overlay-title">
+					<span class="close-overlay close-trigger"></span>
+					<h4>Edit</h4>
+				</div>
+				<div class="overlay-content">
+					<textarea></textarea>
+				</div>
+				<div class="overlay-footer">
+					<button class="save-trigger clean-white">Save</button>
+				</div>
+			</section>
+		</script>
     </div>
 {% endblock %}

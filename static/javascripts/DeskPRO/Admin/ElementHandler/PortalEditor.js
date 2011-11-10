@@ -39,7 +39,36 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'loaded':
 				this.iframeLoaded(data.height);
 				break;
+			case 'open_header_editor':
+				var self = this;
+				this.showHtmlEditor(function(html) {
+					self.tellPortal('header_updated', {html: html});
+				});
+				break;
 		}
+	},
+
+	showHtmlEditor: function(callback) {
+		var el = $(DeskPRO_Window.util.getPlainTpl($('#admin_portal_block_html_edit_tpl')));
+
+		var overlay = new DeskPRO.UI.Overlay({
+			contentElement: el,
+			destroyOnClose: true,
+			onBeforeOverlayOpened: function() {
+				if (el.is('.has-init')) return;
+				el.addClass('has-init');
+
+				var cm = CodeMirror.fromTextArea($('textarea', el).get(0), {
+					mode: "text/html"
+				});
+
+				$('.save-trigger', el).click(function() {
+					callback(cm.getValue());
+					overlay.close();
+				});
+			}
+		});
+		overlay.open();
 	},
 
 	iframeLoaded: function(height) {

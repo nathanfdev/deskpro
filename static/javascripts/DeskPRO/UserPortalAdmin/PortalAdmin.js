@@ -1,9 +1,24 @@
 var PortalAdmin = {
     init: function() {
 
+		var self = this;
 		var h = $('body').outerHeight();
 		this.tellAdmin('loaded', {
 			height: h
+		});
+
+		//----------------------------------------
+		// Header/footer editing
+		//----------------------------------------
+
+		this.injectControlsInto($('#dp_custom_header_wrap'));
+
+		$('#dp_custom_header, #dp_custom_header_placeholder').click(function() {
+			self.tellAdmin('open_header_editor');
+		});
+
+		$('#dp_custom_header, #dp_custom_header_placeholder').click(function() {
+			self.tellAdmin('open_footer_editor');
 		});
 
 		//----------------------------------------
@@ -104,6 +119,12 @@ var PortalAdmin = {
 		});
     },
 
+	injectControlsInto: function(wrapperEl) {
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
+		wrapperEl.prepend(controls);
+		wrapperEl.append('<div class="dp-drag-overlay" />');
+	},
+
 	changeAppVisibility: function(app, is_enabled) {
 		switch (app) {
 			case 'kb':
@@ -132,6 +153,11 @@ var PortalAdmin = {
 				break;
 			case 'app_disabled':
 				this.changeAppVisibility(data.name, false);
+				break;
+			case 'header_updated':
+				$('#dp_custom_header_placeholder').hide();
+				$('#dp_custom_header').empty().html(data.html);
+				$('#dp_custom_header_wrap').show();
 				break;
 		}
 	},
