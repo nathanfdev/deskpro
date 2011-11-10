@@ -929,6 +929,12 @@ agent_deal_list:
   defaults: { _controller: AgentBundle:Deal:dealList, owner_type: null, deal_status: null, deal_type_id: null}
   requirements: { deal_type_id: "\d+" }
 
+agent_deal_view:
+  pattern: /deal/{deal_id}
+  defaults: { _controller: AgentBundle:Deal:view }
+  requirements: { deal_id: "\d+" }
+  options: { fragment_name: 'd' }
+
 
 
 ################################################################################

@@ -1,0 +1,65 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Deal';
+pageMeta.title = "{{ deal.title}}";
+pageMeta.deal_id = {{deal.id}};
+pageMeta.pageIdentity = 'deal1:{{deal.id}}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+{# Page Containers #}
+<div class="profile layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /Page Containers #}
+<header class="page-header">
+    <nav class="actions" id="{{baseId}}_action_buttons">
+        <span>{{deal.probability}}% of {{deal.deal_currency.symbol}}{{deal.deal_value}} </span>
+    </nav>
+    <div class="titlewrap">        
+            <h4 class="id-number">#{{deal.id}}</h4>
+            <h1>{{deal.title}}</h1>
+        </h1>
+    </div>
+    
+    <div class="clear"></div>
+
+    <div class="meta-line">
+        <dl class="table-list">
+            <dt class="type-labels">Type</dt>
+            <dd>
+                <select>
+                    <option value="license sale">License sale</option>
+                </select>
+            </dd>
+        </dl>
+    </div>
+    
+    <div class="titlewrap">
+        <dl class="table-list">
+            <dt class="type-labels">Stage</dt>
+            <dd>
+                <select>
+                    <option value="pre-bid">Pre-Bid</option>
+                </select>
+            </dd>
+        </dl>
+    </div>
+    <div class="clear"></div>
+</header>
+
+        <table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
+                <section class="content-col">
+                    {% include 'AgentBundle:Deal:view-content-col.html.twig' %}
+                </section>
+                </td>
+            </tr>
+        </table>
+
+
+{# Page Containers #}
+</div>
+
+</div>
+</div>
+{# /Page Containers #}

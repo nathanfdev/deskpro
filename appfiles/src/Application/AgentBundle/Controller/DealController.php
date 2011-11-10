@@ -126,8 +126,31 @@ class DealController extends AbstractController
 
     public function viewAction($deal_id = null)
     {
+        if($deal_id)
+        {
+            $deal = $this->getDealOr404($deal_id);
+        } else{
+            $deal = new Deal();
+        }
+
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
-        return $this->render($tpl);
+        return $this->render($tpl, array(
+            'deal' => $deal
+        ));
     }
+
+    /**
+	 * @return Application\DeskPRO\Entity\Deal
+	 */
+	protected function getDealOr404($deal_id)
+	{
+		try {
+			$deal = $this->em->find('DeskPRO:Deal', $deal_id);
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no deal with ID $deal_id");
+		}
+
+		return $deal;
+	}
 
 }
