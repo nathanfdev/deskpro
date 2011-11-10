@@ -33,6 +33,9 @@ class Priority implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_pri['id'] ?: null,
+			'id_after'  => $this->new_pri['id'] ?: null,
+
 			'old_priority_id' => $this->old_pri['id'],
 			'old_priority_title' => $this->old_pri['title'],
 			'old_priority_pri' => $this->old_pri['priority'],

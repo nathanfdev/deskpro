@@ -54,16 +54,16 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                               KEY `IDX_EF39849B38248176` (`currency_id`)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
                             ");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_10` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_2` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_3` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_4` FOREIGN KEY (`assigned_agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_6` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_7` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_8` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_9` FOREIGN KEY (`assigned_agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_10` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_2` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_3` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_4` FOREIGN KEY (`assigned_agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_6` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_7` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_8` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deals` ADD CONSTRAINT `deals_ibfk_9` FOREIGN KEY (`assigned_agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `custom_data_deal` (
@@ -76,10 +76,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                           KEY `IDX_128B7D52443707B0` (`field_id`),
                           KEY `field_id_idx` (`field_id`,`deal_id`)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-            App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_4` FOREIGN KEY (`field_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_4` FOREIGN KEY (`field_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_data_deal` ADD CONSTRAINT `custom_data_deal_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
 
 
 
@@ -102,10 +102,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
                             ");
 
-            App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_2` FOREIGN KEY (`plugin_id`) REFERENCES `plugins` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_4` FOREIGN KEY (`plugin_id`) REFERENCES `plugins` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_2` FOREIGN KEY (`plugin_id`) REFERENCES `plugins` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `custom_def_deal` ADD CONSTRAINT `custom_def_deal_ibfk_4` FOREIGN KEY (`plugin_id`) REFERENCES `plugins` (`id`) ON DELETE SET NULL;");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deals_type_def` (
@@ -117,10 +117,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 
-            App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_4` FOREIGN KEY (`deal_def_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_2` FOREIGN KEY (`deal_def_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_3` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_4` FOREIGN KEY (`deal_def_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_2` FOREIGN KEY (`deal_def_id`) REFERENCES `custom_def_deal` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_type_def` ADD CONSTRAINT `deals_type_def_ibfk_3` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE;");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deals_mapper` (
@@ -132,8 +132,8 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                                       KEY `IDX_8B45BCF64FC2C35F` (`dealid`)
                                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
-            App::getDb()->exec("ALTER TABLE `deals_mapper` ADD CONSTRAINT `deals_mapper_ibfk_2` FOREIGN KEY (`dealid`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deals_mapper` ADD CONSTRAINT `deals_mapper_ibfk_1` FOREIGN KEY (`dealid`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_mapper` ADD CONSTRAINT `deals_mapper_ibfk_2` FOREIGN KEY (`dealid`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deals_mapper` ADD CONSTRAINT `deals_mapper_ibfk_1` FOREIGN KEY (`dealid`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
 
 
 
@@ -149,12 +149,12 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                                   KEY `IDX_9745F280ED3E8EA5` (`blob_id`)
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_6` FOREIGN KEY (`blob_id`) REFERENCES `blobs` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_3` FOREIGN KEY (`blob_id`) REFERENCES `blobs` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_4` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_5` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_6` FOREIGN KEY (`blob_id`) REFERENCES `blobs` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_3` FOREIGN KEY (`blob_id`) REFERENCES `blobs` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_4` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_attachments` ADD CONSTRAINT `deal_attachments_ibfk_5` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deal_notes` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -167,10 +167,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                               KEY `IDX_47C465903414710B` (`agent_id`)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
                             ");
-            App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_4` FOREIGN KEY (`agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
-            App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
-            App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_4` FOREIGN KEY (`agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
+            //App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `people` (`id`) ON DELETE SET NULL;");
+            //App::getDb()->exec("ALTER TABLE `deal_notes` ADD CONSTRAINT `deal_notes_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE;");
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deal_organizations` (
                                   `deal_id` int(11) NOT NULL,
@@ -181,10 +181,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                                 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
                                 ");
 
-            App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_2` FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_4` FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_2` FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_organizations` ADD CONSTRAINT `deal_organizations_ibfk_4` FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `labels_deals` (
@@ -194,8 +194,8 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                               KEY `IDX_8A36085EF60E2305` (`deal_id`)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-            App::getDb()->exec("ALTER TABLE `labels_deals` ADD CONSTRAINT `labels_deals_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `labels_deals` ADD CONSTRAINT `labels_deals_ibfk_2` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `labels_deals` ADD CONSTRAINT `labels_deals_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `labels_deals` ADD CONSTRAINT `labels_deals_ibfk_2` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deal_people` (
@@ -206,10 +206,10 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                               KEY `IDX_3C51E9AA217BBB47` (`person_id`)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-            App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_4` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_4` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_1` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_people` ADD CONSTRAINT `deal_people_ibfk_3` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
 
 
             App::getDb()->exec("CREATE TABLE IF NOT EXISTS `deal_type_stage` (
@@ -222,13 +222,13 @@ class Upgrade20111108034843 extends UpgradeAbstract {
                               KEY `IDX_2D6EB57BC11FC009` (`deal_stage_id`)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-            App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_4` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_2` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE CASCADE");
-            App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_3` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE");
-
-            App::getDb()->exec("ALTER TABLE `task_associations` ADD COLUMN `deal_id` int(11) DEFAULT NULL ");
-            App::getDb()->exec("ALTER TABLE `task_associations`   ADD CONSTRAINT `task_associations_ibfk_5` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_4` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_1` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_2` FOREIGN KEY (`deal_stage_id`) REFERENCES `deals_stage` (`id`) ON DELETE CASCADE");
+            //App::getDb()->exec("ALTER TABLE `deal_type_stage` ADD CONSTRAINT `deal_type_stage_ibfk_3` FOREIGN KEY (`deal_type_id`) REFERENCES `deals_type` (`id`) ON DELETE CASCADE");
+//
+            //App::getDb()->exec("ALTER TABLE `task_associations` ADD COLUMN `deal_id` int(11) DEFAULT NULL ");
+            //App::getDb()->exec("ALTER TABLE `task_associations`   ADD CONSTRAINT `task_associations_ibfk_5` FOREIGN KEY (`deal_id`) REFERENCES `deals` (`id`) ON DELETE CASCADE");
 
 
             App::getDb()->exec("INSERT INTO `currency` (`id`, `name`, `symbol`) VALUES

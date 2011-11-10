@@ -33,6 +33,9 @@ class Department implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_dep['id'] ?: null,
+			'id_after'  => $this->new_dep['id'] ?: null,
+
 			'old_department_id' => $this->old_dep['id'],
 			'old_department_title' => $this->old_dep['title'],
 			'new_department_id' => $this->new_dep['id'],

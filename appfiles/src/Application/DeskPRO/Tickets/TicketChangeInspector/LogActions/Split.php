@@ -33,6 +33,9 @@ class Split implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_ticket['id'] ?: null,
+			'id_after'  => $this->new_ticket['id'] ?: null,
+
 			'from_ticket_id' => $this->ticket['id']
 		);
 	}

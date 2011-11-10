@@ -31,6 +31,7 @@ class Message implements LogActionInterface
 	public function getLogDetails()
 	{
 		$details = array();
+		$details['id_after'] = $this->message['id'];
 		$details['message_id'] = $this->message['id'];
 		$details['creation_system'] = $this->message['creation_system'];
 

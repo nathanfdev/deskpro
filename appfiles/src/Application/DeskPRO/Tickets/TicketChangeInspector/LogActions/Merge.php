@@ -33,6 +33,9 @@ class Merge implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_ticket['id'] ?: null,
+			'id_after'  => $this->new_ticket['id'] ?: null,
+
 			'other_ticket_id' => $this->old_ticket['id']
 		);
 	}
