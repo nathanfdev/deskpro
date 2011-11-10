@@ -3,21 +3,18 @@
 namespace Application\ReportBundle\Stat\DeskPRO;
 
 /**
- * Get the rate of tickets opened/closed
+ * Get the number of tickets an agent participated in
  */
-class RateOfTicketsProcessed extends AbstractTicket
+class CountTicketsAgentParticipate extends AbstractTicket
 {
 	public function buildConceptQueries()
 	{
 		// Number of tickets opened
 		$this->trendQueries[] = "";
-			
-		// NUmber of tickets closed
-		$this->trendQueries[] = "";
 	}
 	
 	public function processResults()
 	{
-		return $this->results[0] / $this->results[1];
+		return $this->results[0];
 	}
 }
