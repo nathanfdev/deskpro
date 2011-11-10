@@ -181,9 +181,7 @@ html{overflow-y:scroll;font-size:100%;-webkit-text-size-adjust:100%;-ms-text-siz
 	background-image:-o-linear-gradient(top, @button_bg_start, @button_bg_end);
 	background-image:linear-gradient(top, @button_bg_start, @button_bg_end);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='@button_bg_start', endColorstr='@button_bg_end', GradientType=0);
-	border-width: 1px;
-	border-color:@button_bg_end;
-	border-color:rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	border: 1px solid @button_bg_end;
 
 	cursor:pointer;
 	display:inline-block;

@@ -18,6 +18,7 @@
 	{% block head %}{% endblock %}
 
 	{% if admin_portal_controls %}
+		<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 		{{ dp_asset_html('agent_vendors') }}
 		{{ dp_asset_html('agent_common') }}
 		{{ dp_asset_html('user_portaladmin') }}
@@ -26,6 +27,13 @@
 </head>
 <body>
 <div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
+
+{% if admin_portal_controls %}
+	<div id="dp_custom_header" style="display: none"></div>
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header">
+		<em>Click here to set custom header HTML</em>
+	</div>
+{% endif %}
 
 <div id="dp_header">
 	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
@@ -153,6 +161,13 @@
 		Powered by <a href="http://www.deskpro.com/">DeskPRO</a> customer service platform
 	</div>
 </div>
+
+{% if admin_portal_controls %}
+	<div id="dp_custom_footer" style="display: none"></div>
+	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer">
+		<em>Click here to set custom footer HTML</em>
+	</div>
+{% endif %}
 
 {% if not app.getSetting('user.disable_chat_element') %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
