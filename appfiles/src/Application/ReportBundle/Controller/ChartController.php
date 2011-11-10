@@ -16,6 +16,21 @@ use Application\ReportBundle\Chart\AmChart\LineChart;
 
 class ChartController extends AbstractController
 {
+	public function getChartAction($dashboard_stat_id)
+	{
+		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
+
+		$view_class = $dashboard_stat->getViewClass();
+		$chart = new $view_class($dashboard_stat->getStat());
+
+		$chart_template = $chart->getViewChartVendor() . '/' . $chart::CHART_IDENTIFIER . '.html.twig';
+
+		return $this->render("ReportBundle:Chart:$chart_template", array(
+			'dashboard_stat' => $dashboard_stat,
+			'chart'          => $chart,
+		));
+	}
+	
 	public function getChartDataAction($dashboard_stat_id)
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);

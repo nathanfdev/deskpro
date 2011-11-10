@@ -1,0 +1,32 @@
+<script type="text/javascript">
+	$(function() {
+	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100%', height: '20px'});
+	});
+</script>
+
+<div class="detailed-drill-down" id="dashboard-chart-{{ dashboard_stat.id }}">
+	<table>
+		<thead>
+			<tr>
+				<th class="name">Name</th>
+				<th class="trend">Trend</th>
+				<th class="prev-value">Nov 8</th>
+				<th class="prev-value">Nov 9</th>
+				<th class="prev-value">Nov 10</th>
+				<th class="diff">Diff %</th>
+				<th class="change">Change %</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="name">Darren</td>
+				<td class="trend"><span class="sparkline">1, 4, 5, 6, 7, 4</span></td>
+				<td class="prev-value">10</td>
+				<td class="prev-value">16</td>
+				<td class="prev-value">15</td>
+				<td class="diff">-60%</td>
+				<td class="change direction-up-red">+1.3</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

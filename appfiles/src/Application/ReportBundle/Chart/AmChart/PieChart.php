@@ -2,16 +2,19 @@
 
 namespace Application\ReportBundle\Chart\AmChart;
 
-use Application\ReportBundle\Chart\Base\LineChart as BaseLineChart;
+use Application\ReportBundle\Chart\Base\PieChart as BasePieChart;
 
-class LineChart extends BaseLineChart
+/**
+ * Pie Chart representation
+ */
+class PieChart extends BasePieChart
 {
 	public function __construct($stat)
 	{
 		parent::__construct($stat);
 		
 		$this->view_chart_vendor 	= 'AmChart';
-		$this->view_chart_class 	= 'Line';	
+		$this->view_chart_class 	= 'Pie';	
 	}
 	
 	public function getData()
@@ -35,8 +38,6 @@ class LineChart extends BaseLineChart
 		$this->getData();
 		
 		$formattedData = array();	
-		$formattedData['series'] = $this->series;
-		$formattedData['graphs'] = $this->graphs;
 		
 		return $formattedData;
 	}

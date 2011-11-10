@@ -237,7 +237,7 @@ class DashboardController extends AbstractController
 		$chart = new $view_class($dashboard_stat->getStat());
 
 		return array(
-			'id' 		    => $dashboard_stat->getId(),
+			'id' 		=> $dashboard_stat->getId(),
 			'chart_vendor'	=> $chart->getViewChartVendor(),
 			'chart_class'   => $chart->getViewChartClass(),
 			'grid_slots'	=> $dashboard_stat->getGridSlots(),

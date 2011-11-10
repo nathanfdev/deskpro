@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chart>
-	<!--<message><![CDATA[You can broadcast any message to chart from data XML file]]></message> -->
 	<series>
 	{% for series in data.series %}
 		<value xid="{{ loop.index0 }}">{{ series }}</value>
