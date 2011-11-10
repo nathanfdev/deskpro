@@ -23,28 +23,40 @@ pageMeta.baseId = '{{ baseId }}';
     </div>
     
     <div class="clear"></div>
-
-    <div class="meta-line">
-        <dl class="table-list">
-            <dt class="type-labels">Type</dt>
-            <dd>
-                <select>
-                    <option value="license sale">License sale</option>
-                </select>
-            </dd>
-        </dl>
-    </div>
     
     <div class="titlewrap">
-        <dl class="table-list">
-            <dt class="type-labels">Stage</dt>
-            <dd>
-                <select>
-                    <option value="pre-bid">Pre-Bid</option>
-                </select>
-            </dd>
-        </dl>
+        <div class="isLeft">
+            <dl class="table-list">
+                <dt class="type-labels">Type</dt>
+                <dd>
+                    <select>
+                        <option value="license sale">License sale</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="isLeft">
+            <dl class="table-list">
+                <dt class="type-labels">Stage</dt>
+                <dd>
+                    <select>
+                        <option value="pre-bid">Pre-Bid</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+        
     </div>
+    
+    <div class="isRight">
+        <div class="meta-line">
+            <div class="{% if deal.status == 0%} status {% else %} category {% endif %} open isLeft"><span>Open</span></div>
+            <div class="{% if deal.status == 1%} status {% else %} category {% endif %} won isLeft"><span>Won</span></div>
+            <div class="{% if deal.status == 2%} status {% else %} category {% endif %} lost isLeft"><span>Lost</span></div>
+        </div>
+    </div>
+    
     <div class="clear"></div>
 </header>
 
