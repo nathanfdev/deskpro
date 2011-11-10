@@ -63,6 +63,30 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 	/**
+	 * CSS dir under static with CSS files
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="css_dir", type="string", length=255)
+	 */
+	protected $css_dir = '';
+
+	/**
+	 * Last time the CSS variable was updated.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="css_updated",type="datetime")
+	 */
+	protected $css_updated;
+
+	/**
+	 * Options for the style
+	 *
+	 * @var array
+	 * @ORM_Mapping\Column(name="options", type="array")
+	 */
+	protected $options = array();
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
@@ -71,6 +95,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->created_at = new \DateTime();
+		$this->css_updated = new \DateTime();
 	}
 
 	public function setParentId($parent_id)

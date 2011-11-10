@@ -169,7 +169,6 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketFields.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
@@ -193,8 +192,8 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
-                'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-                'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
 	)
 );
 
@@ -421,14 +420,13 @@ $CONFIG['user'] = array(
 $CONFIG['user_portaladmin'] = array(
 	'out' => 'js/user-portaladmin.js',
 	'files' => array(
-		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'javascripts/DeskPRO/UserPortalAdmin/PortalAdmin.js',
 	)
 );
 
 $CONFIG['user_portaladmin_css'] = array(
 	'out' => 'css/user-portaladmin.css',
-	'filters' => array('less'),
+	'filters' => array('less', 'css'),
 	'files' => array(
 		'stylesheets-less/admin/portal-admin.less',
 	)
@@ -479,14 +477,21 @@ $CONFIG['user_vendors'] = array(
 	'out' => 'js/user-vendors.js',
 	'files' => array(
 		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
-		'vendor/jquery/jquery-ui/jquery-ui.min.js',
-		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/jquery.sizes.min.js',
+		'vendor/jquery/jquery.ajax-retry.js',
 
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
@@ -583,34 +588,6 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/markitup/markitup/skins/simple/style.css',
 		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
 		'vendor/jquery/token-field/token-field.css',
-	)
-);
-
-
-
-$CONFIG['user_css'] = array(
-	'out' => 'css/user-all.css',
-	'post_filters' => array('css'),
-	'references' => array(
-		'user_interface_css',
-	)
-);
-
-$CONFIG['user_interface_css'] = array(
-	'out' => 'css/user-interface.css',
-	'filters' => array('css_path'),
-	'media' => 'screen',
-	'files' => array(
-		'stylesheets/user/main.css',
-	)
-);
-
-$CONFIG['user_interface_print_css'] = array(
-	'out' => 'css/user-interface-print.css',
-	'filters' => array('css_path'),
-	'media' => 'print',
-	'files' => array(
-		'stylesheets/user/main-print.css',
 	)
 );
 

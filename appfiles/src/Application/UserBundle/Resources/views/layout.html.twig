@@ -9,11 +9,6 @@
 
 	{% include 'UserBundle:Common:resources.html.twig' %}
 
-	{% if admin_portal_controls %}
-		{{ dp_asset_html('user_portaladmin') }}
-		{{ dp_asset_html('user_portaladmin_css') }}
-	{% endif %}
-
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 
@@ -21,8 +16,16 @@
 	{{ portal_js(['sidebar', 'pagetop']) }}
 
 	{% block head %}{% endblock %}
+
+	{% if admin_portal_controls %}
+		{{ dp_asset_html('agent_vendors') }}
+		{{ dp_asset_html('agent_common') }}
+		{{ dp_asset_html('user_portaladmin') }}
+		{{ dp_asset_html('user_portaladmin_css') }}
+	{% endif %}
 </head>
-<body class="{% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
+<body>
+<div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
 <div id="dp_header">
 	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
@@ -154,5 +157,7 @@
 {% if not app.getSetting('user.disable_chat_element') %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
 {% endif %}
+
+</div>
 </body>
 </html>

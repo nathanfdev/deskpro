@@ -15,7 +15,7 @@ var PortalAdmin = {
 		this.contentBlocks = $('.dp-content-block', this.contentCol);
 
 		this.contentBlocks.each(function() {
-			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li><li class="dp-drag-handle"><span>move</span></li></div>');
+			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
 			$(this).prepend(controls);
 			$(this).append('<div class="dp-drag-overlay" />');
 
@@ -37,11 +37,11 @@ var PortalAdmin = {
 
 		this.contentCol.sortable({
 			items: '> .dp-content-block',
-			handle: '.dp-drag-handle, .dp-drag-overlay',
+			handle: '.dp-drag-overlay',
 			opacity: 0.7,
 			zIndex: 1000,
 			cursor: 'move',
-			appendTo: 'body',
+			appendTo: '#deskpro',
 			forcePlaceholderSize: true,
 			refreshPositions: true,
 			helper: function(event, el) {
@@ -64,7 +64,7 @@ var PortalAdmin = {
 		this.sideBlocks = $('.dp-sidebar-block', this.sideCol);
 
 		this.sideBlocks.each(function() {
-			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li><li class="dp-drag-handle"><span>move</span></li></div>');
+			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
 			$(this).prepend(controls);
 			$(this).append('<div class="dp-drag-overlay" />');
 
@@ -86,11 +86,11 @@ var PortalAdmin = {
 
 		this.sideCol.sortable({
 			items: '> .dp-sidebar-block',
-			handle: '.dp-drag-handle, .dp-drag-overlay',
+			handle: '.dp-drag-overlay',
 			opacity: 0.7,
 			zIndex: 1000,
 			cursor: 'move',
-			appendTo: 'body',
+			appendTo: '#deskpro',
 			forcePlaceholderSize: true,
 			refreshPositions: true,
 			helper: function(event, el) {

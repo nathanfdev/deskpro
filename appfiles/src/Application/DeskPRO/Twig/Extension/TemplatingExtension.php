@@ -94,8 +94,16 @@ class TemplatingExtension extends \Twig_Extension
 			'split' => new \Twig_Filter_Method($this, 'explodeString'),
 			'join' => new \Twig_Filter_Method($this, 'implodeArray'),
 			'implode' => new \Twig_Filter_Method($this, 'implodeArray'),
+			'crc32' => new \Twig_Filter_Method($this, 'crc32'),
         );
     }
+
+	public function crc32($string)
+	{
+		$string = (string)$string;
+
+		return sprintf("%u", crc32($string));
+	}
 
 	public function safeLinkUrlsHtml($text)
 	{

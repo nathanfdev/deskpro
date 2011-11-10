@@ -110,4 +110,9 @@ class SysKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		$loader->load(DP_ROOT.'/sys/config/sys/config_'.$this->getEnvironment().'.yml');
 	}
+
+	protected function getContainerBaseClass()
+	{
+		return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
+	}
 }

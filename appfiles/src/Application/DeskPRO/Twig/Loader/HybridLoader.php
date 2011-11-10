@@ -31,8 +31,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		// Already done
 		if ($this->style !== null) return;
 
-		$style_id = App::getSetting('core.default_style_id');
-		$this->style = App::getEntityRepository('DeskPRO:Style')->find($style_id);
+		$this->style = App::getSystemService('style');
 
 		if (!App::getConfig('debug.templates.disable_db_templates')) {
 			$this->style_template_info = App::getDb()->fetchAllKeyed("
