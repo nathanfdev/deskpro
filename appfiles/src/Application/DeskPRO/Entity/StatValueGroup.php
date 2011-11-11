@@ -42,7 +42,7 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	 * The Grouping Id
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="grouping_id", type="integer")
+	 * @ORM_MAPPING\Column(name="grouping_id", type="integer", nullable=true)
 	 */
 	protected $grouping_id;
 

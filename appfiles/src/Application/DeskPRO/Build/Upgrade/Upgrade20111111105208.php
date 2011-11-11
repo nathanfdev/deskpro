@@ -22,7 +22,7 @@ class Upgrade20111111105208 extends UpgradeAbstract
 			App::getDb()->exec("CREATE TABLE stat_value (id INT AUTO_INCREMENT NOT NULL, stat_id INT DEFAULT NULL, value NUMERIC(10, 0) NOT NULL, stat_unix INT NOT NULL, INDEX IDX_715085229502F0B (stat_id), PRIMARY KEY(id)) ENGINE = InnoDB;");
 			App::getDb()->exec("ALTER TABLE stat_value ADD FOREIGN KEY (stat_id) REFERENCES stat(id);");
 
-			App::getDb()->exec("CREATE TABLE stat_value_group (id INT AUTO_INCREMENT NOT NULL, stat_value_id INT DEFAULT NULL, grouping_id INT NOT NULL, value NUMERIC(10, 0) NOT NULL, stat_unix INT NOT NULL, INDEX IDX_4AA43E4370176A35 (stat_value_id), PRIMARY KEY(id)) ENGINE = InnoDB;");
+			App::getDb()->exec("CREATE TABLE stat_value_group (id INT AUTO_INCREMENT NOT NULL, stat_value_id INT DEFAULT NULL, grouping_id INT DEFAULT NULL, value NUMERIC(10, 0) NOT NULL, stat_unix INT NOT NULL, INDEX IDX_4AA43E4370176A35 (stat_value_id), PRIMARY KEY(id)) ENGINE = InnoDB;");
 			App::getDb()->exec("ALTER TABLE stat_value_group ADD FOREIGN KEY (stat_value_id) REFERENCES stat_value(id);");
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");

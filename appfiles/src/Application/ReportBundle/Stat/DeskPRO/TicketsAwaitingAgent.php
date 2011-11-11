@@ -24,8 +24,17 @@ class TicketsAwaitingAgent extends AbstractTicket
 		return $result[0]['ticket_count'];
 	}
 
-	public function processGroupedResults($result)
+	public function processGroupedResults($results)
 	{
-		return $result;
+		$processedResults = array();
+
+		foreach ($results as $result) {
+			$processedResults[] = array(
+				'value'       => $result['ticket_count'],
+				'grouping_id' => $result['agent_id'],
+			);
+		}
+
+		return $processedResults;
 	}
 }
