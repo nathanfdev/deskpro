@@ -5,23 +5,23 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get total tickets messages
+ * Get the number of tickets an agent participated in
  */
-class TotalTicketMessages extends AbstractTicket
+class TicketsAgentParticipate extends AbstractTicket
 {
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets.id) AS ticket_count');
-		$query->addFrom('tickets');
-		$query->addJoin('INNER JOIN tickets_messages ON tickets_messages.ticket_id = tickets.id');
+		$query->addSelect('COUNT(tickets_messages.id) AS message_count');
+		$query->addFrom('tickets_messages');
+		$query->addJoin('INNER JOIN tickets ON tickets.id = tickets_messages.ticket_id');
 
 		$this->addQuery($query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return $result[0]['ticket_count'];
+		return $result[0]['message_count'];
 	}
 
 	public function processGroupedResults($results)
@@ -30,7 +30,7 @@ class TotalTicketMessages extends AbstractTicket
 
 		foreach ($results as $result) {
 			$processedResults[] = array(
-				'value'       => $result['ticket_count'],
+				'value'       => $result['message_count'],
 				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
