@@ -37,7 +37,7 @@
 						{# todo these will be phrases, so this big condition wont be needed #}
 						{% if not ticket.status or ticket.status == 'awaiting_agent' %}
 							Open
-						{% elseif ticket.status == 'pending' %}
+						{% elseif ticket.status == 'awaiting_user' %}
 							Pending
 						{% elseif ticket.status == 'resolved' %}
 							Resolved

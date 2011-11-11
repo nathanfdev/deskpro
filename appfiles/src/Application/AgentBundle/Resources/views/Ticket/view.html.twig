@@ -96,7 +96,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status set-status open" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}><span>Awaiting Agent</span></div>
-		<div class="status set-status pending" {% if ticket.status_code != 'pending' %}style="display: none"{% endif %}><span>Awaiting User</span></div>
+		<div class="status set-status pending" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span>Awaiting User</span></div>
 		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>Closed</span></div>
 		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>Resolved</span></div>
 		<div class="status set-status hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span>Spam</span></div>

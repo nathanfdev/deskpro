@@ -2,7 +2,7 @@
 CREATE TRIGGER ticket_search_insert AFTER INSERT ON tickets
 FOR EACH ROW
 BEGIN
-	IF NEW.status = 'awaiting_agent' OR NEW.status = 'pending' THEN
+	IF NEW.status = 'awaiting_agent' OR NEW.status = 'awaiting_user' THEN
 		INSERT INTO tickets_search_active
 		SET
 			id                       = NEW.id,
@@ -85,10 +85,10 @@ FOR EACH ROW
 BEGIN
 	DECLARE allmsg LONGTEXT;
 
-	IF NEW.status != 'awaiting_agent' AND NEW.status != 'pending' THEN
+	IF NEW.status != 'awaiting_agent' AND NEW.status != 'awaiting_user' THEN
 		DELETE FROM tickets_search_active WHERE id = NEW.id;
 		DELETE FROM tickets_search_message_active WHERE ticket_id = NEW.id;
-	ELSEIF OLD.status != 'awaiting_agent' AND OLD.status != 'pending' THEN
+	ELSEIF OLD.status != 'awaiting_agent' AND OLD.status != 'awaiting_user' THEN
 		INSERT INTO tickets_search_active
 		SET
 			id                       = NEW.id,

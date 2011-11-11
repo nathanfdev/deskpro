@@ -113,8 +113,8 @@
 	<ul class="source-list" id="tickets_outline_filters_list" style="margin-top: 4px;">
 		<li class="with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending&amp;view_name=pending">
 			<span class="title">
-				<span class="list-counter" id="ticket_archive_pending_count">{{ archive_counts['pending']|default(0) }}</span>
-				{{ phrase('agent.tickets.status_pending') }}
+				<span class="list-counter" id="ticket_archive_pending_count">{{ archive_counts['awaiting_user']|default(0) }}</span>
+				{{ phrase('agent.tickets.status_awaiting_user') }}
 			</span>
 		</li>
 		<li class="with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">

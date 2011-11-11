@@ -31,7 +31,7 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode(App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
 			'awaiting_agent' => App::getTranslator()->phrase('core_tickets.status_awaiting_agent'),
-			'pending' => App::getTranslator()->phrase('core_tickets.status_pending'),
+			'awaiting_user' => App::getTranslator()->phrase('core_tickets.status_awaiting_user'),
 			'hidden' => App::getTranslator()->phrase('core_tickets.status_hidden'),
 			'resolved' => App::getTranslator()->phrase('core_tickets.status_resolved'),
 			'closed' => App::getTranslator()->phrase('core_tickets.status_closed'),

@@ -208,7 +208,7 @@ class TicketGateway extends AbstractGateway
 		}
 
 		if ($person['is_agent']) {
-			$ticket['status'] = Entity\Ticket::STATUS_PENDING;
+			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
 		} else {
 			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
 		}

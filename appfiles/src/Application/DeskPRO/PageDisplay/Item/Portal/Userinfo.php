@@ -25,7 +25,7 @@ class Userinfo extends Template
 	{
 		$ticket_count = 0;
 		if (!$this->person_context->isGuest()) {
-			$ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person_context, array('awaiting_agent', 'pending'));
+			$ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person_context, array('awaiting_agent', 'awaiting_user'));
 		}
 
 		return array(

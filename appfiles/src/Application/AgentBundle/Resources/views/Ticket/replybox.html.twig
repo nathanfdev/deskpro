@@ -24,7 +24,7 @@
 <input type="hidden" id="{{replyBaseId}}_agent_team_id" name="options[agent_team_id]" value="0" />
 
 {% if ticket.status_code == 'awaiting_agent' %}
-	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="pending" />
+	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="awaiting_user" />
 	<input type="hidden" id="{{replyBaseId}}_ticket_do_status" name="options[do_status]" value="1" />
 {% else %}
 	<input type="hidden" id="{{replyBaseId}}_ticket_status" name="options[status]" value="" />
@@ -101,7 +101,7 @@
 						<label>{{ phrase('agent.status') }}:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'awaiting_agent' %}changed{% endif %}">
 							<a class="status-trigger prop-change with-menu-click-position">
-								Change status from {{ phrase('agent.tickets.status_' ~ ticket.status) }} to <span class="new-val-label">{{ phrase('agent.tickets.status_pending') }}</span>
+								Change status from {{ phrase('agent.tickets.status_' ~ ticket.status) }} to <span class="new-val-label">{{ phrase('agent.tickets.status_awaiting_user') }}</span>
 							</a>
 							<a class="status-trigger prop-no-change with-menu-click-position">
 								Keep status set to {{ phrase('agent.tickets.status_' ~ ticket.status) }}
@@ -210,9 +210,15 @@
 
 
 <ul style="display: none" id="{{replyBaseId}}_status_menu">
+<<<<<<< HEAD
 	<li data-status="no-change">{{ phrase('agent.tickets.keep_current_status') }}: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
 	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_open') }}</li>{% endif %}
 	{% if ticket.status != 'pending' %}<li data-status="pending">{{ phrase('agent.tickets.status_pending') }}</li>{% endif %}
+=======
+	<li data-status="no-change">Keep current status: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
+	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>{% endif %}
+	{% if ticket.status != 'awaiting_user' %}<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>{% endif %}
+>>>>>>> Renaming of ticket status 'pending' to 'awaiting_user'. Some additional renames of status 'open' to 'awaiting_agent'
 	{% if ticket.status != 'resolved' %}<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>{% endif %}
 	{% if ticket.status != 'closed' %}<li data-status="closed">{{ phrase('agent.tickets.status_closed') }}</li>{% endif %}
 </ul>
