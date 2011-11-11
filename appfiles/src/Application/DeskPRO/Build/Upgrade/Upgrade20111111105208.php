@@ -12,8 +12,8 @@ class Upgrade20111111105208 extends UpgradeAbstract
 		$this->output->writeln('My upgrade step');
 
 		try {
-			App::getDb()->exec("DROP TABLE IF EXISTS `StatValue`");
-			App::getDb()->exec("DROP TABLE IF EXISTS `Stat`");
+			App::getDb()->exec("DROP TABLE IF EXISTS `stat_value`");
+			App::getDb()->exec("DROP TABLE IF EXISTS `stat`");
 
 			App::getDb()->exec("CREATE TABLE stat (id INT AUTO_INCREMENT NOT NULL, author_id INT DEFAULT NULL, parent_stat_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, grouping_ref VARCHAR(255) NOT NULL, stat_concept_class VARCHAR(500) NOT NULL, starred TINYINT(1) NOT NULL, disabled TINYINT(1) NOT NULL, run_frequency VARCHAR(10) NOT NULL, last_run DATETIME DEFAULT NULL, date_created DATETIME NOT NULL, INDEX IDX_20B8FF21F675F31B (author_id), INDEX IDX_20B8FF217B185B4D (parent_stat_id), PRIMARY KEY(id)) ENGINE = InnoDB;");
 			App::getDb()->exec("ALTER TABLE stat ADD FOREIGN KEY (author_id) REFERENCES people(id);");
