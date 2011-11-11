@@ -22,6 +22,8 @@ abstract class AbstractStat implements StatInterface
 	public function __construct()
 	{
 		$this->db = App::getDb();
+
+		$this->results = array('ungrouped' => array(), 'grouped' => array());
 	}
 
 	/**
@@ -29,15 +31,20 @@ abstract class AbstractStat implements StatInterface
 	 */
 	public function getStats()
 	{
-		$results = array('ungrouped', 'grouped');
+		$this->buildConceptQueries();
 
-		$results['ungrouped'] = $this->executeQueries();
+		$this->executeQueries();
 
 		if ($this->hasGrouping()) {
-			$results['grouped'] = $this->executeQueries(true);
+			$this->executeQueries(true);
 		}
 
-		return $results;
+		return $this->results;
+	}
+
+	protected function addQuery(Query $query)
+	{
+		$this->trendQueries[] = $query;
 	}
 
 	/**
@@ -45,14 +52,39 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected function executeQueries($with_grouping = false)
 	{
-		$this->buildConceptQueries();
-
 		foreach ($this->trendQueries as $query) {
 			// Need to build the actual queries here and apply grouping if its needed
-			$this->results[] = $this->db->fetchAll($query);
+			$executeQuery = $query;
+
+			if ($with_grouping) {
+				$executeQuery = $this->applyGroupByToQuery($executeQuery);
+
+				$this->results['grouped'] = $this->processGroupedResults($this->db->fetchAll($executeQuery->getSql()));
+			}
+			else {
+				$this->results['ungrouped'] = $this->processUngroupedResults($this->db->fetchAll($executeQuery->getSql()));
+			}
 		}
 
-		return $this->processResults();
+	}
+
+	protected function applyGroupByToQuery(QueryBuilder $query)
+	{
+		// We need to return the select group by field
+		foreach ($this->grouping as $groupField) {
+			if (false === $query->isFieldSelected($groupField)) {
+				$query->addSelect($groupField);
+			}
+
+			$query->addGroupBy($groupField);
+		}
+
+		return $query;
+	}
+
+	protected function getGroupingFields()
+	{
+		return join(", ", $this->grouping);
 	}
 
 	/**

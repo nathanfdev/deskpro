@@ -77,14 +77,14 @@ class GenerateStats extends AbstractJob
 		$this->orm->persist($stat_value);
 
 		// Store the grouped values
-		foreach ($values['grouped'] as $grouped) {
-			$value = $grouped['value'];
-
-			$stat_value_group = new StatValueGroup();
-			$stat_value_group->setStatValue($stat_value);
-			$stat_value_group->setValue($value);
-			$this->orm->persist($stat_value_group);
-		}
+		//foreach ($values['grouped'] as $grouped) {
+		//	$value = $grouped['value'];
+		//
+		//	$stat_value_group = new StatValueGroup();
+		//	$stat_value_group->setStatValue($stat_value);
+		//	$stat_value_group->setValue($value);
+		//	$this->orm->persist($stat_value_group);
+		//}
 
 		// Update the last run
 		$stat->setLastRun(new \DateTime());
