@@ -15,30 +15,37 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\Entity\Stat;
 use Application\DeskPRO\Entity\StatValue;
+use Application\DeskPRO\Entity\StatValueGroup;
 
 /**
  * Generate stats for the reporting system
  */
 class GenerateStats extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600; // 1 hour
+	const DEFAULT_INTERVAL = 86400; // Daily
+
+	protected $time;
+
+	protected $orm;
 
 	public function run()
 	{
-		$time = time();
-		
+		$this->time = time();
+
+		$this->orm  = App::getOrm();
+
 		// Get the stats
 		$stats 		= App::getEntityRepository('DeskPRO:Stat')
-				     ->getStatsRequiringUpdate($time);
-						
+				     ->getStatsRequiringUpdate($this->time);
+
 		$count_stats 	= count($stats);
-		
+
 		$this->processStats($stats);
-		
+
 		$msg = "Generate Stats ($count_stats)";
 		$this->logStatus($msg);
 	}
-	
+
 	/**
 	 * Process a list of stats
 	 *
@@ -50,7 +57,7 @@ class GenerateStats extends AbstractJob
 			$this->processStat($stat);
 		}
 	}
-	
+
 	/**
 	 * Process an individual stat
 	 *
@@ -58,23 +65,33 @@ class GenerateStats extends AbstractJob
 	 */
 	protected function processStat($stat)
 	{
-		$queryMethod = $stat->getQueryMethod();
-		
-		$value = App::getEntityRepository($stat->getEntityRepository())
-		             ->$queryMethod($time);
-		
+		$stat_concept_class = $stat->getStatConceptClass();
+
+		$stat_concept = new $stat_concept_class();
+		$stat_concept->addGrouping($stat->getGroupingRef());
+		$values = $stat_concept->getStats($this->time);
+
 		// Store the stat value
-		$statValue = new StatValue();
-		$statValue->setStat($stat);
-		$statValue->setValue($value);
-		App::getOrm()->persist($statValue);
-		
+		$stat_value = new StatValue();
+		$stat_value->setStat($stat);
+		$stat_value->setValue($values['ungrouped']);
+		$this->orm->persist($stat_value);
+
+		// Store the grouped values
+		foreach ($values['grouped'] as $grouped) {
+			$stat_value_group = new StatValueGroup();
+			$stat_value_group->setStatValue($stat_value);
+			$stat_value_group->setValue($grouped['value']);
+			$stat_value_group->setGroupingId($grouped['grouping_id']);
+			$this->orm->persist($stat_value_group);
+		}
+
 		// Update the last run
 		$stat->setLastRun(new \DateTime());
-		App::getOrm()->persist($stat);
-		
+		$this->orm->persist($stat);
+
 		// Flush - need to batch this
-		App::getOrm()->flush();
+		$this->orm->flush();
 	}
-	
+
 }

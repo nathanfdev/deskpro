@@ -1,6 +1,3 @@
-{% extends 'ReportBundle::layout.html.twig' %}
-{% block page %}
-
 <form action="{{ path('report_trend_edit', {'stat_id': stat.id|default(0)}) }}" method="post">
 	<input type="hidden" name="process" value="1" />
 	
@@ -28,5 +25,3 @@
 
 	<button class="btn primary save-trigger">Save</button>
 </form>
-
-{% endblock %}
