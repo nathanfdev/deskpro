@@ -4,6 +4,11 @@
 	<script src="{{ asset('vendor/codemirror/codemirror.js') }}" type="text/javascript"></script>
 	<link rel="stylesheet" href="{{ asset('vendor/codemirror/codemirror.css') }}" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('vendor/codemirror/default.css') }}" type="text/css" />
+
+	<script src="{{ asset('vendor/colorpicker/js/colorpicker.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('vendor/colorpicker/js/eye.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('vendor/colorpicker/js/utils.js') }}" type="text/javascript"></script>
+	<link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
 {% endblock %}
 {% block pagetitle %}
 	<div class="onoff" data-element-handler="DeskPRO.Admin.ElementHandler.PortalToggle">
@@ -12,13 +17,219 @@
 	<h1>Portal</h1>
 {% endblock %}
 {% block content %}
+	<section id="portal_colors" style="display: none">
+		<article>
+			<div class="style-section">
+				<h4>General</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="bg_color" data-color="#ffffff">
+					<div style="background-color: #ffffff"></div>
+				</div>
+				<label>Background Color</label>
+				<div class="desc">The page background color</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="body_bg_color" data-color="#ECF0F4">
+					<div style="background-color: #ECF0F4"></div>
+				</div>
+				<label>Body Background Color</label>
+				<div class="desc">The background color of the main DeskPRO page</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="text_color" data-color="#444444">
+					<div style="background-color: #444444"></div>
+				</div>
+				<label>Text Color</label>
+				<div class="desc">The main text color</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="meta_text_color" data-color="#808080">
+					<div style="background-color: #808080"></div>
+				</div>
+				<label>Sub-Text Color</label>
+				<div class="desc">The text color used to show alternative info or meta-data like dates</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="link_color" data-color="#0069D6">
+					<div style="background-color: #0069D6"></div>
+				</div>
+				<label>Link Color</label>
+				<div class="desc">Main link color</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="link_color_hover" data-color="#00438a">
+					<div style="background-color: #0069D6"></div>
+				</div>
+				<label>Mouse-over Link Color</label>
+				<div class="desc">The color links turn to when hovering the mouse over them</div>
+			</div>
+
+			<div class="style-section">
+				<h4>Header</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="header_name_color" data-color="#000000">
+					<div style="background-color: #000000"></div>
+				</div>
+				<label>Site Name</label>
+				<div class="desc">The color of the site name text at the top of the page</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="header_name_color" data-color="#000000">
+					<div style="background-color: #000000"></div>
+				</div>
+				<label>Tagline</label>
+				<div class="desc">The color of the tagline text at the top of the page</div>
+			</div>
+
+			<div class="style-section">
+				<h4>Main Content</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_bg_color" data-color="#ffffff">
+					<div style="background-color: #ffffff"></div>
+				</div>
+				<label>Content Box Background</label>
+				<div class="desc">The background of the main content boxes</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_border_color" data-color="#B4B6B8">
+					<div style="background-color: #B4B6B8"></div>
+				</div>
+				<label>Content Box Border Color</label>
+				<div class="desc">The color of the border around content boxes</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_block_shadow_color" data-color="#787878">
+					<div style="background-color: #787878"></div>
+				</div>
+				<label>Content Box Shadow</label>
+				<div class="desc">The shadow color that appears around content boxes</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_alt_bg_color" data-color="#F4F4F4">
+					<div style="background-color: #F4F4F4"></div>
+				</div>
+				<label>Content Section Background</label>
+				<div class="desc">Background color of misc sections within pages, like the area labels or the ratings buttons sit on</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="comment_backdrop" data-color="#DADEE2">
+					<div style="background-color: #DADEE2"></div>
+				</div>
+				<label>Comment Panel Background</label>
+				<div class="desc">The background color of the comments panel</div>
+			</div>
+
+			<div class="style-section">
+				<h4>Sidebar</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="sidebar_block_title_color" data-color="#404040">
+					<div style="background-color: #404040"></div>
+				</div>
+				<label>Sidebar Section Headings Text Color</label>
+				<div class="desc">Text color of the titles to each section</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="sidebar_block_border_color" data-color="#D9DBDB">
+					<div style="background-color: #D9DBDB"></div>
+				</div>
+				<label>Sidebar Section Headings Border Color</label>
+				<div class="desc">Color of the thin border below headings</div>
+			</div>
+
+			<div class="style-section">
+				<h4>Buttons</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="button_color" data-color="#000000">
+					<div style="background-color: #000000"></div>
+				</div>
+				<label>Button Text Color</label>
+				<div class="desc">Text color in buttons</div>
+			</div>
+			<div class="style-row color dual">
+				<div class="color-swatch color-swatch-icon" data-color-id="button_bg_start" data-color="#FFFFFF">
+					<div style="background-color: #FFFFFF"></div>
+				</div>
+				<div class="color-swatch color-swatch-icon" data-color-id="button_bg_end" data-color="#E6E6E6">
+					<div style="background-color: #E6E6E6"></div>
+				</div>
+				<label>Button Gradent</label>
+				<div class="desc">The color gradient on buttons</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_pill_btn_bg" data-color="#E0E4E8">
+					<div style="background-color: #E0E4E8"></div>
+				</div>
+				<label>"View All" Button Background</label>
+				<div class="desc">The round buttons on article listings to view all listings</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_pill_btn_border" data-color="#CED2D6">
+					<div style="background-color: #CED2D6"></div>
+				</div>
+				<label>"View All" Button Border Color</label>
+				<div class="desc">The border color on "view all" buttons</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="content_pill_btn_text_color" data-color="#616467">
+					<div style="background-color: #616467"></div>
+				</div>
+				<label>"View All" Button Text Color</label>
+				<div class="desc">The text color in "view all" buttons</div>
+			</div>
+
+			<div class="style-section">
+				<h4>Miscellaneous</h4>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="cal_date_bg" data-color="#F8F8F8">
+					<div style="background-color: #F8F8F8"></div>
+				</div>
+				<label>Calendar Icon Background</label>
+				<div class="desc">Background color of the light bit</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="cal_date_month_bg" data-color="#253F66">
+					<div style="background-color: #253F66"></div>
+				</div>
+				<label>Calendar Icon Month Background</label>
+				<div class="desc">Background color of the month bit</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="cal_date_month_text" data-color="#ffffff">
+					<div style="background-color: #ffffff"></div>
+				</div>
+				<label>Calendar Icon Month Text</label>
+				<div class="desc">Text color of the month bit</div>
+			</div>
+			<div class="style-row color">
+				<div class="color-swatch color-swatch-icon" data-color-id="cal_date_text" data-color="#ffffff">
+					<div style="background-color: #ffffff"></div>
+				</div>
+				<label>Calendar Icon Text</label>
+				<div class="desc">Text color of the day bit</div>
+			</div>
+		</article>
+		<footer>
+			<button class="clean-white apply-trigger">Apply</button>
+		</footer>
+	</section>
+	<nav class="page-top-hugnav">
+		<ul>
+			<li id="portal_colors_trigger"><span class="color-wheel-icon tipped" title="Change color scheme"></span></li>
+		</ul>
+		<br class="clear" />
+	</nav>
     <div
 		class="dp-page-box"
 		id="admin_portal_editor"
 		data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
 		data-portal-url="{{ path('user', {'admin_portal_controls': 1}) }}"
 	>
-
 		<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
 
 		<script type="text/x-deskpro-tmpl" id="admin_portal_block_html_edit_tpl">
@@ -29,25 +240,6 @@
 				</div>
 				<div class="overlay-content">
 					<textarea></textarea>
-				</div>
-				<div class="overlay-footer">
-					<button class="save-trigger clean-white">Save</button>
-				</div>
-			</section>
-		</script>
-		<script type="text/x-deskpro-tmpl" id="admin_portal_edit_logo">
-			<section class="dp-portal-simpleheader-editor">
-				<div class="overlay-title">
-					<span class="close-overlay close-trigger"></span>
-					<h4>Edit Simple Header</h4>
-				</div>
-				<div class="overlay-content">
-					<div class="text">
-
-					</div>
-					<div class="image">
-
-					</div>
 				</div>
 				<div class="overlay-footer">
 					<button class="save-trigger clean-white">Save</button>

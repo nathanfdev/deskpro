@@ -1,5 +1,19 @@
 Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
+/**
+ * The portal editor is made of up the admin page, and then a specially
+ * loaded page in the user interface loaded through an iframe.
+ *
+ * We call the admin page the PortalEditor, and the user page the PortalClient.
+ *
+ * Messages, like click events that need an editor, are handled byt he PortalClient
+ * and are pssed up to this PortalEditor which takes care of opening editors and saving
+ * data. Then in some cases, data is passed back down to the PortalClient to update
+ * the live display.
+ *
+ * Generally: PortalEditor handles saving/changing of data, PortalClient handles displaying data
+ * and interaction with the UI.
+ */
 DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
@@ -9,7 +23,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		// This is so userland can send us messages
 		window.PortalEditor = this;
 
-		$('#portal_iframe').attr('src', this.el.data('portal-url'));
+		//$('#portal_iframe').attr('src', this.el.data('portal-url'));
 
 		$(':checkbox.section-toggle').change(function() {
 			var type = $(this).attr('name');
@@ -20,16 +34,38 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				self.tellPortal('app_disabled', {name: type});
 			}
 		});
+
+		this._initColorPicker();
 	},
 
+	/**
+	 * Send a message to the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	tellPortal: function(id, data) {
 		this.iframeWindow.PortalAdmin.acceptMessage(id, data);
 	},
 
+
+	/**
+	 * Call a method on the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	callPortal: function(id, data) {
 		return this.iframeWindow.PortalAdmin[id](data);
 	},
 
+
+	/**
+	 * Accepts a message passed from the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	acceptMessage: function(id, data) {
 
 		data = data || {};
@@ -93,6 +129,12 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		}
 	},
 
+
+	/**
+	 * Shows a generic HTML editor
+	 *
+	 * @param callback
+	 */
 	showHtmlEditor: function(callback) {
 		var el = $(DeskPRO_Window.util.getPlainTpl($('#admin_portal_block_html_edit_tpl')));
 
@@ -116,6 +158,13 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		overlay.open();
 	},
 
+
+	/**
+	 * Whent the portal client is loaded, it sends a message to us and we invoke
+	 * this method to set up the messages channel.
+	 *
+	 * @param height
+	 */
 	iframeLoaded: function(height) {
 		var iframe = $('#portal_iframe').get(0);
 
@@ -137,7 +186,75 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		this.iframeQuery('body').css('overflow', 'hidden');
 	},
 
+
+	/**
+	 * Execute a jQuery query from in the context of the portal client
+	 *
+	 * @param query
+	 */
 	iframeQuery: function(query) {
 		return this.iframeWindow.jQuery(query);
+	},
+
+
+	_initColorPicker: function() {
+		var panel    = $('#portal_colors');
+		var trigger  = $('#portal_colors_trigger');
+		var backdrop = $('<div class="backdrop" style="z-index: 999" />').hide().appendTo('body');
+
+		panel.detach().appendTo('body');
+
+		trigger.click(function() {
+			if (panel.is(':visible')) {
+				closeColorPanel();
+			} else {
+				openColorPanel();
+			}
+		});
+
+		backdrop.click(function() {
+			closeColorPanel();
+		});
+
+		var openColorPanel = function() {
+			var triggerPos = trigger.offset();
+
+			var top  = triggerPos.top  + trigger.height();
+			var left = (triggerPos.left + trigger.width() + 8) - panel.width();
+
+			panel.css({
+				top: top ,
+				left: left
+			});
+
+			panel.slideDown();
+			backdrop.show();
+		};
+
+		var closeColorPanel = function() {
+			panel.slideUp();
+			backdrop.hide();
+		};
+
+		var colorSwatches = $('.color-swatch', panel);
+		colorSwatches.each(function() {
+			var swatchEl = $(this);
+			swatchEl.click(function() {
+				swatchEl.ColorPickerShow();
+			});
+
+			swatchEl.ColorPicker({
+				onSubmit: function(hsb, hex, rgb, el) {
+					swatchEl.data('color', hex);
+					$(el).ColorPickerHide();
+				},
+				onBeforeShow: function () {
+					$(this).ColorPickerSetColor(swatchEl.data('color'));
+				},
+				onChange: function (hsb, hex, rgb) {
+					$('div', swatchEl).css('backgroundColor', '#' + hex);
+				}
+			});
+		});
 	}
 });
