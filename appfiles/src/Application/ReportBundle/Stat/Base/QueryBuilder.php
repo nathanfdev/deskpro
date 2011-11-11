@@ -36,6 +36,11 @@ class QueryBuilder
 		$this->from = $table;
 	}
 
+	public function addJoin($join)
+	{
+		$this->joins[] = $join;
+	}
+
 	public function addWhere($where)
 	{
 		$this->wheres[] = $where;
@@ -111,6 +116,9 @@ class QueryBuilder
 		// Get the where part
 		$where  = $this->getSqlWhere();
 
+		// Get the join part
+		$join   = $this->getSqlJoin();
+
 		// Get the group by part
 		$groupBy = $this->getSqlGroupBy();
 
@@ -120,14 +128,17 @@ class QueryBuilder
 		// Get the limit part
 		$limit    = $this->getSqlLimit();
 
-		$query = $select . ' ' .
-			 $from . ' ' .
-			 $where . ' ' .
-			 $groupBy . ' ' .
-			 $orderBy . ' ' .
-			 $limit;
+		$queryParts = array(
+			$select,
+			$from,
+			$where,
+			$join,
+			$groupBy,
+			$orderBy,
+			$limit
+		);
 
-		return $query;
+		return trim(join(' ', $queryParts));
 	}
 
 	/**
@@ -161,6 +172,11 @@ class QueryBuilder
 		}
 
 		return $whereSql;
+	}
+
+	protected function getSqlJoin()
+	{
+		return join(" ", $this->joins);
 	}
 
 	protected function getSqlGroupBy()

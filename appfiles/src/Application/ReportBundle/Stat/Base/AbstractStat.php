@@ -59,9 +59,13 @@ abstract class AbstractStat implements StatInterface
 			if ($with_grouping) {
 				$executeQuery = $this->applyGroupByToQuery($executeQuery);
 
+				var_dump($executeQuery->getSql());
+
 				$this->results['grouped'] = $this->processGroupedResults($this->db->fetchAll($executeQuery->getSql()));
 			}
 			else {
+				var_dump($executeQuery->getSql());
+
 				$this->results['ungrouped'] = $this->processUngroupedResults($this->db->fetchAll($executeQuery->getSql()));
 			}
 		}
@@ -73,7 +77,7 @@ abstract class AbstractStat implements StatInterface
 		// We need to return the select group by field
 		foreach ($this->grouping as $groupField) {
 			if (false === $query->isFieldSelected($groupField)) {
-				$query->addSelect($groupField);
+				$query->addSelect($groupField . ' AS ' . str_replace('.', '_', $groupField));
 			}
 
 			$query->addGroupBy($groupField);

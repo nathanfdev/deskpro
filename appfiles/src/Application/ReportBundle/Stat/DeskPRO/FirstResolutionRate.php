@@ -2,6 +2,8 @@
 
 namespace Application\ReportBundle\Stat\DeskPRO;
 
+use Application\ReportBundle\Stat\Base\QueryBuilder;
+
 /**
  * Get first resolution rate
  */
@@ -12,7 +14,7 @@ class FirstResolutionRate extends AbstractTicket
 		// Number of tickets opened
 		$this->trendQueries[] = "";
 	}
-	
+
 	public function processResults()
 	{
 		return $this->results[0];

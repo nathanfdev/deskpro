@@ -12,9 +12,9 @@ class TicketsAwaitingAgent extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(id) AS ticket_count');
+		$query->addSelect('COUNT(tickets.id) AS ticket_count');
 		$query->addFrom('tickets');
-		$query->addWhere("status = 'awaiting_agent'");
+		$query->addWhere("tickets.status = 'awaiting_agent'");
 
 		$this->addQuery($query);
 	}
@@ -31,7 +31,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 		foreach ($results as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
-				'grouping_id' => $result['agent_id'],
+				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 
