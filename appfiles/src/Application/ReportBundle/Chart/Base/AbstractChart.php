@@ -8,18 +8,18 @@ abstract class AbstractChart implements ChartInterface
 	 * Unique identifier of chart type
 	 */
 	const CHART_IDENTIFIER = '';
-	
+
 	protected $chart_type = '';
-	
+
 	protected $chart_vendor = '';
-	
+
 	/**
 	 * The Stat entity this chart represents
 	 *
 	 * @var Application\DeskPRO\Entity\Stat
 	 */
 	protected $stat;
-	
+
 	/**
 	 *
 	 * @param Application\DeskPRO\Entity\Stat $stat The Stat this chart represents
@@ -28,7 +28,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		$this->stat = $stat;
 	}
-	
+
 	/**
 	 * Get the chart Stat
 	 *
@@ -38,7 +38,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return $this->stat;
 	}
-	
+
 	/**
 	 * Set the chart Stat
 	 *
@@ -48,7 +48,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		$this->stat = $stat;
 	}
-	
+
 	/**
 	 * Get the view chart vendor
 	 *
@@ -58,7 +58,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return $this->view_chart_vendor;
 	}
-	
+
 	/**
 	 * Get the view chart class
 	 *
@@ -67,5 +67,21 @@ abstract class AbstractChart implements ChartInterface
 	public function getViewChartClass()
 	{
 		return $this->view_chart_class;
+	}
+
+	/**
+	 * Get the labels for the chart
+	 *
+	 * @return array List of labels
+	 */
+	public function getLabels()
+	{
+		$labels = array();
+
+		foreach ($this->stat->getReferenceLookup() as $lookup) {
+			$labels[] = $lookup;
+		}
+		
+		return $labels;
 	}
 }

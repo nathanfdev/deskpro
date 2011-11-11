@@ -9,16 +9,4 @@ class LineChart extends AbstractChart
 	protected $graphs = array();
 
 	const CHART_IDENTIFIER = 'line';
-
-	public function getLabels()
-	{
-		$labels = array();
-
-		foreach ($this->stat->getReferenceLookup() as $lookup) {
-			$labels[] = $lookup;
-		}
-		
-		return $labels;
-	}
-
 }
