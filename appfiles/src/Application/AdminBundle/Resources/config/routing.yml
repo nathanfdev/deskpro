@@ -42,6 +42,10 @@ admin_portal_get_editor:
   pattern: /portal/get-editor/{type}
   defaults: { _controller: AdminBundle:Portal:getEditor }
 
+admin_portal_save_editor:
+  pattern: /portal/save-editor/{type}
+  defaults: { _controller: AdminBundle:Portal:saveEditor }
+
 admin_portal_settings:
   pattern: /portal/settings
   defaults: { _controller: AdminBundle:Portal:settings }

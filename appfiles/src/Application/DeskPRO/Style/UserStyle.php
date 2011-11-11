@@ -65,6 +65,7 @@ class UserStyle
 	{
 		$vars = array_merge($this->getVars(), $vars);
 
+
 		$css = str_replace('@HEX_TO_RGB(', '__DP_HEX_TO_RGB(', $this->raw);
 
 		$css = preg_replace_callback('#@([A-Za-z0-9_\-]+)(\[(.*?)\])?#', function($m) use ($vars) {

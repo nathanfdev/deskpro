@@ -132,6 +132,15 @@ var PortalAdmin = {
 			case 'app_disabled':
 				this.changeAppVisibility(data.name, false);
 				break;
+			case 'reload_css':
+				var link = $('#dp_stylesheet');
+				var newlink = link.clone();
+				newlink.attr('href', newlink.attr('href') + '&' + (new Date()).getTime());
+
+				link.remove();
+				$('head').append(newlink);
+
+				break;
 			case 'header_updated':
 				$('#dp_custom_header_placeholder').hide();
 				$('#dp_custom_header').empty().html(data.html);

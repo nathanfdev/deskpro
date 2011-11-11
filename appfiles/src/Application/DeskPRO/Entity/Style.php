@@ -145,4 +145,23 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateNamesInStyle($this);
 	}
+
+	public function setCssVar($name, $value)
+	{
+		if (!isset($this->options['css_vars'])) {
+			$this->options['css_vars'] = array();
+		}
+
+		$this->options['css_vars'][$name] = $value;
+		$this->css_updated = new \DateTime();
+	}
+
+	public function getCssVars()
+	{
+		if (!isset($this->options['css_vars'])) {
+			return array();
+		}
+
+		return $this->options['css_vars'];
+	}
 }

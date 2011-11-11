@@ -6,6 +6,10 @@ use Application\DeskPRO\App;
 
 class PortalController extends AbstractController
 {
+	############################################################################
+	# Portal
+	############################################################################
+
     public function indexAction()
 	{
 		return $this->render('AdminBundle:Portal:index.html.twig');
@@ -51,6 +55,34 @@ class PortalController extends AbstractController
 	{
 		return $this->render('AdminBundle:Portal:portal-editor-logo.html.twig');
 	}
+
+	public function saveEditorAction($type)
+	{
+		switch ($type) {
+			case 'css_var':
+
+				$css_vars = $this->in->getCleanValueArray('vars', 'string', 'string');
+				$style = $this->container->getSystemService('style');
+
+				foreach ($css_vars as $k => $v) {
+					$style->setCssVar($k, $v);
+				}
+
+				$this->em->transactional(function($em) use ($style) {
+					$em->persist($style);
+					$em->flush();
+				});
+
+				break;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+
+	############################################################################
+	# Portal Sections
+	############################################################################
 
 	public function settingsAction()
 	{

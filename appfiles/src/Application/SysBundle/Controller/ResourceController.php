@@ -22,7 +22,8 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 		if (!$info || $info['css_updated'] < $style->css_updated->getTimestamp()) {
 			$file = file_get_contents(DP_ROOT . '/../static/' . $style->css_dir . '/' . $filename);
 			$userstyle = new \Application\DeskPRO\Style\UserStyle($file);
-			$file = $userstyle->compileCss();
+
+			$file = $userstyle->compileCss($style->getCssVars());
 
 			// Fix url to static
 			$file = str_replace('url(../../', 'url(../../../../static/', $file);

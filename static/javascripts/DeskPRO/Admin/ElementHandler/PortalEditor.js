@@ -23,7 +23,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		// This is so userland can send us messages
 		window.PortalEditor = this;
 
-		//$('#portal_iframe').attr('src', this.el.data('portal-url'));
+		$('#portal_iframe').attr('src', this.el.data('portal-url'));
 
 		$(':checkbox.section-toggle').change(function() {
 			var type = $(this).attr('name');
@@ -198,6 +198,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 
 
 	_initColorPicker: function() {
+		var self     = this;
 		var panel    = $('#portal_colors');
 		var trigger  = $('#portal_colors_trigger');
 		var backdrop = $('<div class="backdrop" style="z-index: 999" />').hide().appendTo('body');
@@ -253,6 +254,29 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				},
 				onChange: function (hsb, hex, rgb) {
 					$('div', swatchEl).css('backgroundColor', '#' + hex);
+					swatchEl.data('color', '#' + hex);
+				}
+			});
+		});
+
+		$('button.apply-trigger', panel).click(function() {
+			closeColorPanel();
+
+			var formData = [];
+
+			colorSwatches.each(function() {
+				formData.push({
+					name: 'vars[' + $(this).data('color-id') + ']',
+					value: $(this).data('color')
+				});
+			});
+
+			$.ajax({
+				url: BASE_URL + 'admin/portal/save-editor/css_var',
+				type: 'POST',
+				data: formData,
+				success: function() {
+					self.tellPortal('reload_css');
 				}
 			});
 		});
