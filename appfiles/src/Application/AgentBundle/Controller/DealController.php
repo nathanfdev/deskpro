@@ -20,7 +20,7 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\DealNote;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
 
@@ -132,14 +132,70 @@ class DealController extends AbstractController
         } else{
             $deal = new Deal();
         }
+        
+        $notes = App::getEntityRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
 
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
-            'deal' => $deal
+            'deal' => $deal,
+            'notes' => $notes
         ));
     }
 
-    /**
+    // TODO error checking
+	public function ajaxSaveNoteAction($deal_id)
+	{
+		if($deal_id)
+                {
+                    $deal = $this->getDealOr404($deal_id);
+                } else{
+                    $deal = new Deal();
+                }
+
+		$note_txt = $this->in->getString('note');
+
+		$em = $this->em;
+		
+		$note = new DealNote();
+		$note['agent'] = $this->person;
+		$note['deal'] = $deal;
+		$note['note'] = $note_txt;
+		$em->persist($note);
+
+		$em->flush();
+		//$em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'deal_id' => $deal['id'],
+			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
+		));
+	}
+
+        ############################################################################
+	# ajax-save-labels
+	############################################################################
+
+	public function ajaxSaveLabelsAction($deal_id)
+	{
+		if($deal_id)
+                {
+                    $deal = $this->getDealOr404($deal_id);
+                } else{
+                    $deal = new Deal();
+                }
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$deal->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($deal);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
+        /**
 	 * @return Application\DeskPRO\Entity\Deal
 	 */
 	protected function getDealOr404($deal_id)

@@ -11,6 +11,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Application\DeskPRO\Entity\LabelDeal;
 
 /**
  * Deal entity definition
@@ -191,6 +192,12 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 //    protected $twitter_status_notes;
 
     /**
+     * Label manager for adding/removing labels
+     * @var \Application\DeskPRO\Labels\LabelManager
+     */
+    protected $_label_manager = null;
+
+    /**
      * Creates a new deal
      */
     public function __construct()
@@ -292,6 +299,25 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+        /**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\LabelDeal $label
+	 */
+	public function addLabel(LabelDeal $label)
+	{
+		$label['deal'] = $this;
+		$this->labels->add($label);
+	}
+
+        public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelDeal');
+		}
+
+		return $this->_label_manager;
 	}
 
 

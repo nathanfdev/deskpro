@@ -13,9 +13,26 @@
     <hr class="clear-top">
     <div style="margin-left: 22px;">
         <ul class="controls">
-            <li>User: Chris Parfield and Jhon Brigs</li>
+            <li>User: 
+            {% for person in deal.peoples%}
+                <a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
+                    {{ person.display_name }}
+                </a>
+                {% if loop.index >= 1 and loop.index != loop.last%}
+                    and
+                {%endif%}
+                    
+             {% endfor%}
+            </li>
             <li>|</li>
-            <li>Organization: BBC</li>
+            <li>Organization: 
+            {% for organization in deal.organizations%} 
+                <a class="with-route" data-route="person:{{ path('agent_org_view', {'organization_id': organization.id}) }}">{{organization.name}}</a>
+                {% if loop.index >= 1 and loop.index != loop.last%}
+                    and
+                {%endif%}
+            {% endfor%}
+            </li>
         </ul>
     </div>
     <div class="clear"></div>

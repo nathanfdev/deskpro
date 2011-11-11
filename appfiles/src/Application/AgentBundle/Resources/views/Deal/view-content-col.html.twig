@@ -9,10 +9,8 @@
         <div class="meta-line">
             <dl class="table-list">
                 <dt class="type-labels">Agent</dt>
-                <dd>
-                    <select>
-                        <option value="chris padfield">Chris Padfield</option>
-                    </select>
+                <dd class="controls">
+                    <span>{{deal.assigned_agent.display_name}}</span><span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
                 </dd>
             </dl>
         </div>
@@ -22,18 +20,14 @@
                 <dt class="type-labels">Users</dt>
                 <dd>
                     <ul class="controls">
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
+
+                        {% for person in deal.peoples%}
+                            <li>
+                                <span>{{ person.display_name }} ~<~{{person.primary_email.email}}~>~ </span>
+                                <span class="btn-small-remove remove-row-trigger"></span>
+                            </li>
+                        {% endfor%}
+                        
                     </ul>
                 </dd>
             </dl>
@@ -44,10 +38,13 @@
                 <dt class="type-labels">Organizations</dt>
                 <dd>
                     <ul class="controls">
-                        <li>
-                            <span>  Deskpro Ltd </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
+                        {% for organization in deal.organizations%} 
+                            <li>
+                                <span> {{organization.name}} </span>
+                                <span class="btn-small-remove remove-row-trigger"></span>
+                            </li>
+                        {% endfor%}
+                        
                     </ul>
                 </dd>
             </dl>
@@ -74,20 +71,24 @@
 
             {# Property Tab #}
             <article id="{{baseId}}_property_tab" class="on">
-                <div class="meta-line">
-                    <dl class="table-list">
-                        <dt class="type-labels">Labels</dt>
-                        <dd>
-                            <span>Label1, Label2, Label3</span>
-                        </dd>
-                    </dl>
-                </div>
+                <dl class="table-list">
+                    <dt class="type-labels">Labels</dt>
+                    <dd class="deal-tags tags-wrap">
+                        <ul data-label-route="listpane:{{ path('agent_peoplesearch') }}?terms[0][rule_type]=deal_label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
+                                {% for label in deal.labels %}
+                                        <li><span>{{label.label}}</span></li>
+                                {% endfor %}
+                        </ul>
+                    </dd>
+		</dl>
 
                 <div class="meta-line">
                     <dl class="table-list">
                         <dt class="type-labels">Created</dt>
                         <dd>
-                            <span>by Jhon, 23 days ago</span>
+                            <span>by {{deal.person.first_name}},
+                            <time class="timeago" title="{{deal.date_created|date('c')}}">{{deal.date_created|date('M j, Y')}}</time>
+                            </span>
                         </dd>
                     </dl>
                 </div>
@@ -139,11 +140,16 @@
 		<article id="{{baseId}}_notes_tab" class="on">
 			<div class="notes-wrap">
 				<ul>
-					<li class="new-note"
+
+                                    {% for note in notes|reverse %}
+						{% include 'AgentBundle:Deal:note-li.html.twig' with {'note': note} %}
+				    {% endfor %}
+
+                                    <li class="new-note"
 						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 						data-form-list-selector="ul"
 						data-form-result-html-key="note_li_html"
-						data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
+						data-form-save-url="{{ path('agent_deal_ajaxsave_note', {'deal_id': deal.id}) }}"
 						data-form-count-el="#{{baseId}}_notes_count"
 					>
 						<header>

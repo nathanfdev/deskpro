@@ -935,6 +935,15 @@ agent_deal_view:
   requirements: { deal_id: "\d+" }
   options: { fragment_name: 'd' }
 
+agent_deal_ajaxsave_note:
+  pattern: /deal/{deal_id}/ajax-save-note
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveNote }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_ajax_labels_save:
+  pattern: /deal/{deal_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveLabels }
+  requirements: { deal_id: "\d+" }
 
 
 ################################################################################

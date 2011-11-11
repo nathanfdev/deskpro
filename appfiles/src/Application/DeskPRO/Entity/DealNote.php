@@ -37,7 +37,7 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\ManyToOne(targetEntity="Deal")
 	 * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $person;
+	protected $deal;
 
 	/**
 	 * The agent that added the note
