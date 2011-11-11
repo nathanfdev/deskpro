@@ -56,14 +56,14 @@ class DealController extends AbstractController
         $my_lost_deals = $deal_repository->findDealsForPerson($person, 2);
         $my_total_lostdeals = $deal_repository->countDealsForPerson($person, 2);
 
-        $other_open_deals = $deal_repository->findDealsForOther();
-        $other_total_opendeals = $deal_repository->countDealsForOther();
+        $other_open_deals = $deal_repository->findDealsForOther($person);
+        $other_total_opendeals = $deal_repository->countDealsForOther($person);
 
-        $other_won_deals = $deal_repository->findDealsForOther(1);
-        $other_total_wondeals = $deal_repository->countDealsForOther(1);
+        $other_won_deals = $deal_repository->findDealsForOther($person, 1);
+        $other_total_wondeals = $deal_repository->countDealsForOther($person, 1);
 
-        $other_lost_deals = $deal_repository->findDealsForOther(2);
-        $other_total_lostdeals = $deal_repository->countDealsForOther(2);
+        $other_lost_deals = $deal_repository->findDealsForOther($person, 2);
+        $other_total_lostdeals = $deal_repository->countDealsForOther($person, 2);
 
         
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
@@ -107,14 +107,14 @@ class DealController extends AbstractController
         }else if($owner_type == 'other'){
 
             if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForOther(0, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id);
             }
             else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForOther(-1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id);
             }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForOther(1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id);
             }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForOther(2, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id);
             }
         }
 
