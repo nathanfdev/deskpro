@@ -14,6 +14,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		this.wrapper = el;
                 this._initLabels();
                 this._initDisplayOptions();
+                this._initAgentSection();
 	},
 
         _initDisplayOptions: function() {
@@ -31,6 +32,34 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		});
 		this.ownObject(this.displayOptionsOverlay);
             
+        },
+
+        _initAgentSection: function(){
+
+            //------------------------------
+		// Assign ...
+		//------------------------------
+
+		var obEl = this.getEl('agent_selector');
+		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
+			element: obEl,
+			trigger: this.getEl('assign_btn'),
+			onClose: function(ob) {
+				var selections = ob.getAllSelected();
+
+				// Agent
+				var agent_id = parseInt(selections.agents || 0);
+				self.getEl('agent_id').val(agent_id);
+				var label = $('.agent-label-' + agent_id, obEl).text().trim();
+				self.getEl('agent_label').text(label);
+
+				// Agent Team
+				var agent_team_id = parseInt(selections.teams || 0);
+				self.getEl('agent_team_id').val(agent_team_id);
+				var label = $('.agent-team-label-' + agent_team_id, obEl).text().trim();
+				self.getEl('agent_team_label').text(label);
+			}
+		});
         },
 
 	_initLabels: function() {

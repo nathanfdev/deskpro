@@ -1,5 +1,5 @@
 {#People BOX#}
-<div class="profile-box-container people-box first">
+<div class="profile-box-container people-box first" >
 
     <header>
         <h4>People</h4>
@@ -12,6 +12,13 @@
                 <dd class="controls">
                     <span>{{deal.assigned_agent.display_name}}</span><span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
                 </dd>
+                <dd class="assignments">
+                    <ul id="{{baseId}}_assign_btn">
+                            <li class="no-changes"><em>Set assignments</em></li>
+                            <li style="display:none" class="assign-agent"><em>Assign agent</em>: <span class="label"></span></li>
+
+                    </ul>
+                </dd>    
             </dl>
         </div>
         
@@ -23,7 +30,7 @@
 
                         {% for person in deal.peoples%}
                             <li>
-                                <span>{{ person.display_name }} ~<~{{person.primary_email.email}}~>~ </span>
+                                <span>{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
                                 <span class="btn-small-remove remove-row-trigger"></span>
                             </li>
                         {% endfor%}
@@ -53,6 +60,54 @@
     </secion>
 
 </div>
+
+<div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
+    	<header>
+			<h4>Assignments</h4>
+			<span class="close close-trigger"></span>
+		</header>
+    	<div class="col">
+    		<section data-section-name="agents">
+    			<header>
+    				<h3>Agents</h3>
+    				<input type="text" class="filter-box" placeholder="Filter..." />
+    			</header>
+    			<ul>
+    				<li class="on">
+    					<input type="radio" name="{{baseId}}_agent" class="agent agent-none" value="-1" checked="checked" />
+    					<label>Do not change agent</label>
+    				</li>
+
+    				<li class="me last-me">
+    					<input type="radio" name="{{baseId}}_agent" class="agent agent-{{app.user.id}}" value="{{ app.user.id }}" />
+    					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+    				</li>
+
+    				<li>
+    					<input type="radio" class="agent agent-0" name="{{baseId}}_agent" value="0" />
+    					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+    				</li>
+
+    				{% for agent in agents %}
+    					{% if agent.id != deal.person.id %}
+    						<li>
+    							<input type="radio" class="agent agent-{{agent.id}}" name="{{baseId}}_agent" value="{{ agent.id }}" />
+    							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+    							<div class="bound-fade"></div>
+    						</li>
+    					{% endif %}
+    				{% endfor %}
+    			</ul>
+    		</section>
+    	</div>
+    	
+    	<br class="clear" />
+    	<footer>
+           <button class="save-trigger">Apply</button>
+        </footer>
+    </div>
+
+
 {#End People BOX#}
 
 {#Property Tab#}

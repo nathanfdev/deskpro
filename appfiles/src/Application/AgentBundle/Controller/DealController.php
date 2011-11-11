@@ -134,11 +134,13 @@ class DealController extends AbstractController
         }
         
         $notes = App::getEntityRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
-
+        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+        
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
             'deal' => $deal,
-            'notes' => $notes
+            'notes' => $notes,
+            'agents' => $agents
         ));
     }
 
