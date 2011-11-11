@@ -171,6 +171,28 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return $trendPoints;
 	}
 
+	/**
+	 * Get a number of values
+	 *
+	 * @param int $limit The number of values to get
+	 */
+	public function getLatestStatValues($limit)
+	{
+		$statValues = App::getEntityRepository('DeskPRO:StatValue')->getStatValuesForStat($this->id, $limit);
+
+		return $statValues;
+	}
+
+	/**
+	 * Get a value for a date
+	 *
+	 * @param int $unix Unix timestamp to get value for
+	 */
+	public function getValueForDate($unix)
+	{
+
+	}
+
 	public function setRunFrequency($frequency)
 	{
 		if (false === in_array($frequency, $this->availableRunFrequencies)) {

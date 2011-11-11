@@ -39,6 +39,14 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	protected $stat_value;
 
 	/**
+	 * The Grouping Id
+	 *
+	 * @var int
+	 * @ORM_MAPPING\Column(name="grouping_id", type="integer")
+	 */
+	protected $grouping_id;
+
+	/**
 	 * The stat value
 	 *
 	 * @var int

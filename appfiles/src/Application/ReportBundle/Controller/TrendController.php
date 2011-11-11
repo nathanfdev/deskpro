@@ -13,6 +13,7 @@ namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\ReportBundle\Form\EditStatType;
+use Application\ReportBundle\Stat\Base\AbstractStat;
 
 class TrendController extends AbstractController
 {
@@ -24,9 +25,13 @@ class TrendController extends AbstractController
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
 		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
 
+		// The dates for pr
+		$dates = AbstractStat::getDatesPast(time(), 3);
+
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
-			'stats' 	=> $stats,
-			'dashboards'	=> $dashboards
+			'stats' 	    => $stats,
+			'dashboards'	=> $dashboards,
+			'dates'         => $dates,
 		));
 	}
 

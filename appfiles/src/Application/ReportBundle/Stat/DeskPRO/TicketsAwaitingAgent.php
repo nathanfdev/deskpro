@@ -14,7 +14,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 			FROM tickets
 			WHERE status = 'awaiting_agent'";
 	}
-	
+
 	public function processResults()
 	{
 		return $this->results[0];
