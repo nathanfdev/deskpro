@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Application\DeskPRO\App;
 
 /**
  * Statistic
@@ -27,6 +28,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	protected static $availableRunFrequencies = array(
 		self::FREQUENCY_DAILY, self::FREQUENCY_MONTHLY, self::FREQUENCY_YEARLY
+	);
+
+	/**
+	 * Lookup references for the grouping
+	 */
+	protected static $groupingReferences = array(
+		'tickets.agent_id' => array('table' => 'people', 'display_column' => 'first_name'),
 	);
 
 	/**
@@ -193,6 +201,11 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	}
 
+	public function getGroupingReferenceIds()
+	{
+		return App::getEntityRepository('DeskPRO:StatValueGroup')->getReferenceIdsByStat($this->getId());
+	}
+
 	public function setRunFrequency($frequency)
 	{
 		if (false === in_array($frequency, $this->availableRunFrequencies)) {
@@ -200,5 +213,33 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->run_frequency = $frequency;
+	}
+
+	public function getGroupingInformation()
+	{
+		return self::$groupingReferences[$this->getGroupingRef()];
+	}
+
+	public function getReferenceLookup() {
+
+		$groupingInformation = $this->getGroupingInformation();
+
+		$table 		= $groupingInformation['table'];
+		$displayColumn 	= $groupingInformation['display_column'];
+
+		$refefencesIds  = $this->getGroupingReferenceIds();
+
+		$references = App::getDb()->fetchAll("
+			SELECT id, $displayColumn
+			FROM $table
+			WHERE id IN (" . join(', ', $refefencesIds) . ")
+		");
+
+		$lookup = array();
+		foreach ($references as $reference) {
+			$lookup[$reference['id']] = $reference[$displayColumn];
+		}
+
+		return $lookup;
 	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-  
+
   <digits_after_decimal>2</digits_after_decimal>
 
   <plot_area>
@@ -11,7 +11,7 @@
       <bottom>25</bottom>
     </margins>
   </plot_area>
-  
+
   <legend>
     <enabled>true</enabled>
     <values>
@@ -21,22 +21,17 @@
       <text><![CDATA[: {value}]]></text>
      </values>
   </legend>
-  
+
   <graphs>
-    <graph gid="1">
-      <axis>left</axis>
-      <title>Darren</title>
-      <balloon_text>
-        <![CDATA[{value}]]>
-      </balloon_text>
-    </graph>
-    <graph gid="2">
-      <axis>left</axis>
-      <title>John</title>
-      <balloon_text>
-        <![CDATA[{value}]]>
-      </balloon_text>
-    </graph>
+	{% for label in chart.labels %}
+		<graph gid="{{ loop.index }}">
+		  <axis>left</axis>
+		  <title>{{ label }}</title>
+		  <balloon_text>
+			<![CDATA[{value}]]>
+		  </balloon_text>
+		</graph>
+	{% endfor %}
   </graphs>
-  
+
 </settings>

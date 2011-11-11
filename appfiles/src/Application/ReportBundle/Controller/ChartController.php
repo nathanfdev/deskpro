@@ -30,7 +30,7 @@ class ChartController extends AbstractController
 			'chart'          => $chart,
 		));
 	}
-	
+
 	public function getChartDataAction($dashboard_stat_id)
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
@@ -55,7 +55,7 @@ class ChartController extends AbstractController
 		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
 		return $this->render("ReportBundle:Chart:$settings_template", array(
-			'settings' => $chart->getSettings(),
+			'chart' => $chart
 		));
 	}
 
