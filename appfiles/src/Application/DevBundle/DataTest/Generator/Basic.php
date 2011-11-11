@@ -235,9 +235,9 @@ class Basic extends AbstractGenerator
 
 			if ($ticket['status'] == 'closed') {
 				$ticket['closed_at'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
-			} elseif ($ticket['status'] == 'open' AND $ticket['sub_status'] == 'awaiting_tech') {
+			} elseif ($ticket['status'] == 'awaiting_agent' AND $ticket['sub_status'] == 'awaiting_tech') {
 				$ticket['awaiting_tech_at'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
-			} elseif ($ticket['status'] == 'open' AND $ticket['sub_status'] == 'pending') {
+			} elseif ($ticket['status'] == 'awaiting_agent' AND $ticket['sub_status'] == 'pending') {
 				$ticket['pending_at'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
 			}
 

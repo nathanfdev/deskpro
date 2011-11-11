@@ -12,7 +12,7 @@ class Upgrade20111111125524 extends UpgradeAbstract
 		$this->output->writeln('My upgrade step');
 
 		try {
-			App::getDb()->exec("UPDATE tickets SET status = 'awaiting_agent' WHERE status = 'open'");
+			App::getDb()->exec("UPDATE tickets SET status = 'awaiting_agent' WHERE status = 'awaiting_agent'");
 			App::getDb()->exec("UPDATE tickets SET status = 'awaiting_user' WHERE status = 'pending'");
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");

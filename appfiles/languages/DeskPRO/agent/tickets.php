@@ -1,11 +1,11 @@
 <?php return array(
 
 	// Statuses shown to techs
-	'agent.tickets.status_open'        => 'Awaiting Agent',
-	'agent.tickets.status_pending'     => 'Awaiting User',
-	'agent.tickets.status_hidden'      => 'Hidden',
-	'agent.tickets.status_resolved'    => 'Resolved',
-	'agent.tickets.status_closed'      => 'Closed',
+	'agent.tickets.status_awaiting_agent' => 'Awaiting Agent',
+	'agent.tickets.status_pending'        => 'Awaiting User',
+	'agent.tickets.status_hidden'         => 'Hidden',
+	'agent.tickets.status_resolved'       => 'Resolved',
+	'agent.tickets.status_closed'         => 'Closed',
 
 	'agent.tickets.status_hidden_spam'        => 'Spam',
 	'agent.tickets.status_hidden_deleted'     => 'Deleted',

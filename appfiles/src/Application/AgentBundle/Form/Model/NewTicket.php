@@ -26,7 +26,7 @@ class NewTicket
 	public $notify_template = '';
 	public $message;
 	public $department_id;
-	public $status = 'open';
+	public $status = 'awaiting_agent';
 	public $agent_id;
 	public $agent_team_id;
 	public $category_id = 0;

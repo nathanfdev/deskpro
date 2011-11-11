@@ -111,7 +111,7 @@ class EmailValidator
 			if ($this->ticket_ids) {
 				foreach ($this->ticket_ids as $ticket_id) {
 					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-					$ticket->status = 'open';
+					$ticket->status = 'awaiting_agent';
 
 					$ticket->person_email_validating = null;
 					$ticket->person_email = $email;

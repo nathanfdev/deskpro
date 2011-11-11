@@ -48,10 +48,10 @@ abstract class TicketInitializer extends AbstractInitializer
 	public function runForTickets($archive = false)
 	{
 		if ($archive) {
-			$where = "tickets.status IN ('open','pending')";
+			$where = "tickets.status IN ('awaiting_agent','pending')";
 			$name = "ticket (open)";
 		} else {
-			$where = "tickets.status NOT IN ('open','pending')";
+			$where = "tickets.status NOT IN ('awaiting_agent','pending')";
 			$name = "ticket (archived)";
 		}
 
@@ -90,10 +90,10 @@ abstract class TicketInitializer extends AbstractInitializer
 	public function runForTicketMessages($archive = false)
 	{
 		if ($archive) {
-			$where = "tickets.status IN ('open','pending')";
+			$where = "tickets.status IN ('awaiting_agent','pending')";
 			$name = "ticket_messages (open)";
 		} else {
-			$where = "tickets.status NOT IN ('open','pending')";
+			$where = "tickets.status NOT IN ('awaiting_agent','pending')";
 			$name = "ticket_messages (archived)";
 		}
 

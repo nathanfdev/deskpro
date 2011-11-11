@@ -35,7 +35,7 @@
 					<td width="130">Status</td>
 					<td>
 						{# todo these will be phrases, so this big condition wont be needed #}
-						{% if not ticket.status or ticket.status == 'open' %}
+						{% if not ticket.status or ticket.status == 'awaiting_agent' %}
 							Open
 						{% elseif ticket.status == 'pending' %}
 							Pending

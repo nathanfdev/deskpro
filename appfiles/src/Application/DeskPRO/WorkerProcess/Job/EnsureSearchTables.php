@@ -30,7 +30,7 @@ class EnsureSearchTables extends AbstractJob
 		}
 
 		// Check to see if the search table is legitamtely empty (ie no tickets need attn)
-		$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets WHERE status IN ('open', 'pending') LIMIT 1");
+		$has_one = App::getDb()->fetchColumn("SELECT id FROM tickets WHERE status IN ('awaiting_agent', 'pending') LIMIT 1");
 		if (!$has_one) {
 			return;
 		}

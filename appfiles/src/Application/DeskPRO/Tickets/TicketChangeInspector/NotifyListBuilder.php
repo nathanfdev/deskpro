@@ -95,7 +95,7 @@ class NotifyListBuilder
 		$notify_agent_reply = false;
 		$notify_user_reply  = false;
 
-		if ($this->tracker->isExtraSet('ticket_created') || ($ticket->status_code == 'open' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating'))) {
+		if ($this->tracker->isExtraSet('ticket_created') || ($ticket->status_code == 'awaiting_agent' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating'))) {
 			$this->tracker->logMessage("[NotifyListBuilder] notify_new");
 			$notify_new = true;
 		}

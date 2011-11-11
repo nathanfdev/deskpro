@@ -143,7 +143,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			} else {
 				$ticket['person_email'] = $email;
 			}
-			$ticket['status'] = 'open';
+			$ticket['status'] = 'awaiting_agent';
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
 				$ticket[$prop] = $this->ticket->$prop;
@@ -211,7 +211,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			if ($email_validating) {
 				$ticket['status'] = 'hidden.validating';
 			} else {
-				$ticket['status'] = 'open';
+				$ticket['status'] = 'awaiting_agent';
 			}
 
 			App::getOrm()->persist($ticket);

@@ -24,7 +24,7 @@ class StatusAction implements ActionInterface
 	public function __construct($status)
 	{
 		if (!in_array($status, array(
-			'open', 'pending', 'resolved', 'closed',
+			'awaiting_agent', 'pending', 'resolved', 'closed',
 			'hidden.spam', 'hidden.validating', 'hidden.deleted'
 		))) {
 			throw new \InvalidArgumentException("Invalid status `$status`");
