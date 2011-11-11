@@ -53,7 +53,7 @@ function _page_exec() {
 					<td>{{stat.authorName}}</td>
 					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
 					{% for unix in dates %}
-						<th width="60">{{ stat.getValueForDate(unix) }}</th>
+						<td width="60">{{ stat.getValueForDate(unix) }}</td>
 					{% endfor %}
 					<td class="center">{{ stat.amount }}</td>
 					<td class="center {{ (stat.variation > 0) ? 'down' : 'up' }}">{{ stat.variation }}</td>

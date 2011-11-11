@@ -12,7 +12,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 		$this->trendQueries[] =
 		       "SELECT *
 			FROM tickets
-			WHERE status = 'awaiting_agent'";
+			WHERE status = 'open'";
 	}
 
 	public function processResults()

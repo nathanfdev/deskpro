@@ -10,6 +10,11 @@ abstract class AbstractStat implements StatInterface
 
 	protected $trendQueries = array();
 
+	/**
+	 * The fields the query should group by
+	 */
+	protected $grouping = array();
+
 	protected $results = array();
 
 	protected $db;
@@ -19,13 +24,18 @@ abstract class AbstractStat implements StatInterface
 		$this->db = App::getDb();
 	}
 
+	/**
+	 * Get the actual stats. Runs grouped and ungrouped queries
+	 */
 	public function getStats()
 	{
 		$results = array('ungrouped', 'grouped');
 
 		$results['ungrouped'] = $this->executeQueries();
 
-		$results['grouped'] = $this->executeQueries(true);
+		if ($this->hasGrouping()) {
+			$results['grouped'] = $this->executeQueries(true);
+		}
 
 		return $results;
 	}
@@ -35,26 +45,64 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected function executeQueries($with_grouping = false)
 	{
+		$this->buildConceptQueries();
+
 		foreach ($this->trendQueries as $query) {
-			$results[] = $this->db->fetchAll($query);
+			// Need to build the actual queries here and apply grouping if its needed
+			$this->results[] = $this->db->fetchAll($query);
 		}
 
 		return $this->processResults();
 	}
 
+	/**
+	 * Adds a field to be grouped by
+	 */
+	public function addGrouping($field)
+	{
+		// Add field to grouping
+		if (false === in_array($field, $this->grouping)) {
+			$this->grouping[] = $field;
+		}
+	}
+
+	/**
+	 * Is there any grouping set
+	 */
+	public function hasGrouping()
+	{
+		return (count($this->grouping)) ? true : false;
+	}
+
+	/**
+	 * Get the available groupings
+	 */
 	public function getAvailableGrouping()
 	{
 		return $this->available_grouping;
 	}
 
-	public function removeGrouping($field)
+	/**
+	 * Remove a field from the available groupings
+	 */
+	public function removeAvailableGrouping($field)
 	{
 		// Remove field from grouping
+		if (in_array($field, $this->available_grouping)) {
+			$key = array_search($field, $this->available_grouping);
+			unset($this->available_grouping[$key]);
+		}
 	}
 
-	public function addGroup($field)
+	/**
+	 * Adds a field to the available grouping
+	 */
+	public function addAvailableGroup($field)
 	{
 		// Add field to grouping
+		if (false === in_array($field, $this->available_grouping)) {
+			$this->available_grouping[] = $field;
+		}
 	}
 
 	/**
