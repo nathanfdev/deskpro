@@ -14,7 +14,9 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 
 		$cache = App::getCache('portal');
 		$info = false;
+		$nocache = false;
 		if (!App::getConfig('debug.no_css_cache')) {
+			$nocache = true;
 			$info = $cache->load($cache_name);
 		}
 		if (!$info || $info['css_updated'] < $style->css_updated->getTimestamp()) {
@@ -37,7 +39,9 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 			$info['css_updated'] = $style->css_updated->getTimestamp();
 			$info['file'] = $file;
 
-			$cache->save($info, $cache_name);
+			if (!$nocache) {
+				$cache->save($info, $cache_name);
+			}
 		}
 
 		$file = $info['file'];
@@ -45,10 +49,12 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 		$response = App::getResponse();
 		$response->headers->set('Content-Type', 'text/css; filename=' . $filename);
 		$response->headers->set('Content-Length', strlen($file));
-		$response->setTtl(31556926);
-		$response->setExpires(new \DateTime('+1 year'));
-		$response->getLastModified(new \DateTime('-1 day'));
-		$response->setMaxAge(31556926);
+		if ($nocache) {
+			$response->setTtl(31556926);
+			$response->setExpires(new \DateTime('+1 year'));
+			$response->getLastModified(new \DateTime('-1 day'));
+			$response->setMaxAge(31556926);
+		}
 		$response->setContent($file);
 
 		return $response;

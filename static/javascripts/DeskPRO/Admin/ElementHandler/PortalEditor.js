@@ -39,11 +39,56 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'loaded':
 				this.iframeLoaded(data.height);
 				break;
-			case 'open_header_editor':
-				var self = this;
+			case 'open_placeholder_editor':
+				var controller = data.controller;
+
 				this.showHtmlEditor(function(html) {
-					self.tellPortal('header_updated', {html: html});
+					controller.setContent(html);
 				});
+				break;
+			case 'open_logo_editor':
+				var controller = data.controller;
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					destroyOnClose: true,
+					contentAjax: {
+						url: BASE_URL + 'admin/portal/get-editor/logo'
+					},
+					onContentSet: function(ev) {
+						var wrapper = ev.overlay.getElement();
+
+						wrapper.fileupload({
+							url: BASE_URL + 'admin/misc/accept-upload',
+							dropZone: wrapper,
+							autoUpload: true,
+							uploadTemplate: $('.template-upload', wrapper),
+							downloadTemplate: $('.template-download', wrapper)
+						}).bind('fileuploadstart', function() {
+							$('p.explain', wrapper).hide();
+						}).bind('fileuploadadd', function() {
+							$('.files', wrapper).empty();
+						});
+
+						$('.save-logo-trigger', wrapper).click(function() {
+							var blobId = $('input.new_blob_id', wrapper).val();
+							if (!blobId) {
+								alert('You need to upload a file');
+								return;
+							}
+
+							var url = $('input.new_logo_url', wrapper).val();
+
+							controller.setLogo(url);
+							ev.overlay.close();
+						});
+
+						$('.save-text-trigger').click(function() {
+							controller.setLogoText($('input[name="title"]').val(), $('input[name="tagline"]').val());
+							ev.overlay.close();
+						});
+					}
+				});
+				overlay.open();
 				break;
 		}
 	},

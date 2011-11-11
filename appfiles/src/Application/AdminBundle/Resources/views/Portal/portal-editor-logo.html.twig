@@ -1,0 +1,38 @@
+<section class="dp-portal-simpleheader-editor">
+	<div class="overlay-title">
+		<span class="close-overlay close-trigger"></span>
+		<h4>Edit Logo</h4>
+	</div>
+	<div class="overlay-content">
+		<div class="image">
+
+			<h3>Upload a new logo</h3>
+			<input type="file" name="file-upload" />
+			<div class="files"></div>
+
+			<script class="template-upload" type="text/x-jquery-tmpl">
+				<p>Upliading ${name}...</p>
+			</script>
+			<script class="template-download" type="text/x-jquery-tmpl">
+				<div>
+					<input type="hidden" name="new_blob_id" class="new_blob_id" value="${blob_id}" />
+					<input type="hidden" name="new_logo_url" class="new_logo_url" value="${download_url}" />
+					<img src="${download_url}?s=120" class="pic-new" />
+				</div>
+			</script>
+
+			<div class="save-btn-wrap">
+				<button class="clean-white save-logo-trigger">Save logo</button>
+			</div>
+		</div>
+		<div class="text">
+			<h3>... or just enter a title and a tagline</h3>
+			<div class="input-title"><input type="text" name="title" value="" placeholder="Title" /></div>
+			<div class="input-tagline"><input type="text" name="tagline" value="" placeholder="Tagline" /></div>
+
+			<div class="save-btn-wrap">
+				<button class="clean-white save-text-trigger">Save title and tagline</button>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,3 +1,7 @@
+$(document).ready(function() {
+    PortalAdmin.init();
+});
+
 var PortalAdmin = {
     init: function() {
 
@@ -8,28 +12,44 @@ var PortalAdmin = {
 		});
 
 		//----------------------------------------
-		// Header/footer editing
+		// Logo
 		//----------------------------------------
 
-		this.injectControlsInto($('#dp_custom_header_wrap'));
+		var header = $('#dp_header');
+		var headerCtrl = new PortalAdmin_SimpleHeader(header);
+		header.data('portal-ctrl', headerCtrl);
 
-		$('#dp_custom_header, #dp_custom_header_placeholder').click(function() {
-			self.tellAdmin('open_header_editor');
-		});
+		//----------------------------------------
+		// Placeholder editing
+		//----------------------------------------
 
-		$('#dp_custom_header, #dp_custom_header_placeholder').click(function() {
-			self.tellAdmin('open_footer_editor');
+		$('.dp-portal-placeholder').each(function() {
+			var pp = new PortalAdmin_Placeholder(this);
+			$(this).data('portal-place-ctrl', pp);
 		});
 
 		//----------------------------------------
-		// Content blocks
+		// Content sections
 		//----------------------------------------
 
 		this.contentCol = $('#dp_content');
+		this.sideCol = $('#dp_sidebar');
 
-		this.contentBlocks = $('.dp-content-block', this.contentCol);
+		this.initBlocks(this.contentCol, '.dp-content-block');
+		this.initBlocks(this.sideCol, '.dp-sidebar-block');
+    },
 
-		this.contentBlocks.each(function() {
+
+	/**
+	 * Init sortable/editable blocks within a container
+	 *
+	 * @param wrapper
+	 * @param blockSelector
+	 */
+	initBlocks: function(wrapper, blockSelector) {
+		var contentBlocks = $(blockSelector, wrapper);
+
+		contentBlocks.each(function() {
 			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
 			$(this).prepend(controls);
 			$(this).append('<div class="dp-drag-overlay" />');
@@ -38,20 +58,20 @@ var PortalAdmin = {
 				$(this).addClass('dp-height-collapse');
 				$(this).append('<div class="dp-height-collapse-expand"></div><em class="dp-expand-block">Show entire block</em><em class="dp-collapse-block">Collapse block</em>');
 			}
-        });
+		});
 
-		this.contentCol.delegate('.dp-toggle-block', 'click', function() {
+		wrapper.delegate('.dp-toggle-block', 'click', function() {
 			var block = $(this).closest('.dp-content-block');
 			block.toggleClass('disabled');
 		});
 
-		this.contentCol.delegate('.dp-expand-block, .dp-collapse-block', 'click', function() {
-				var block = $(this).closest('.dp-content-block');
-				block.toggleClass('expanded');
-			});
+		wrapper.delegate('.dp-expand-block, .dp-collapse-block', 'click', function() {
+			var block = $(this).closest('.dp-content-block');
+			block.toggleClass('expanded');
+		});
 
-		this.contentCol.sortable({
-			items: '> .dp-content-block',
+		wrapper.sortable({
+			items: '> ' + blockSelector,
 			handle: '.dp-drag-overlay',
 			opacity: 0.7,
 			zIndex: 1000,
@@ -68,63 +88,14 @@ var PortalAdmin = {
 				$(this).height($(this).height());
 			}
 		});
-
-
-		//----------------------------------------
-		// Nav blocks
-		//----------------------------------------
-
-		this.sideCol = $('#dp_sidebar');
-
-		this.sideBlocks = $('.dp-sidebar-block', this.sideCol);
-
-		this.sideBlocks.each(function() {
-			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
-			$(this).prepend(controls);
-			$(this).append('<div class="dp-drag-overlay" />');
-
-			if ($(this).height() > 250) {
-				$(this).addClass('dp-height-collapse');
-				$(this).append('<div class="dp-height-collapse-expand"></div><em class="dp-expand-block">Show entire block</em><em class="dp-collapse-block">Collapse block</em>');
-			}
-		});
-
-		this.sideCol.delegate('.dp-toggle-block', 'click', function() {
-			var block = $(this).closest('.dp-sidebar-block');
-			block.toggleClass('disabled');
-		});
-
-		this.sideCol.delegate('.dp-expand-block, .dp-collapse-block', 'click', function() {
-			var block = $(this).closest('.dp-sidebar-block');
-			block.toggleClass('expanded');
-		});
-
-		this.sideCol.sortable({
-			items: '> .dp-sidebar-block',
-			handle: '.dp-drag-overlay',
-			opacity: 0.7,
-			zIndex: 1000,
-			cursor: 'move',
-			appendTo: '#deskpro',
-			forcePlaceholderSize: true,
-			refreshPositions: true,
-			helper: function(event, el) {
-				var helper = el.clone();
-				$('.dp-block-controls', helper).remove();
-				return helper;
-			},
-			create: function() {
-				//$(this).height($(this).height());
-			}
-		});
-    },
-
-	injectControlsInto: function(wrapperEl) {
-		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
-		wrapperEl.prepend(controls);
-		wrapperEl.append('<div class="dp-drag-overlay" />');
 	},
 
+	/**
+	 * Change visibility of specific app elements (ie if theyre disabled in the admin page)
+	 *
+	 * @param app
+	 * @param is_enabled
+	 */
 	changeAppVisibility: function(app, is_enabled) {
 		switch (app) {
 			case 'kb':
@@ -146,6 +117,13 @@ var PortalAdmin = {
 		}
 	},
 
+
+	/**
+	 * Accept a message from the parent admin page
+	 *
+	 * @param id
+	 * @param data
+	 */
 	acceptMessage: function(id, data) {
 		switch (id) {
 			case 'app_enabled':
@@ -162,12 +140,26 @@ var PortalAdmin = {
 		}
 	},
 
+
+	/**
+	 * Send a message to the parent admin page
+	 *
+	 * @param id
+	 * @param data
+	 */
 	tellAdmin: function(id, data) {
 		if (window.parent && window.parent.PortalEditor) {
 			window.parent.PortalEditor.acceptMessage(id, data);
 		}
 	},
 
+
+	/**
+	 * Call a method on the parent admin page
+	 *
+	 * @param id
+	 * @param data
+	 */
 	callAdmin: function(id, data) {
 		if (window.parent && window.parent.PortalEditor) {
 			return window.parent.PortalEditor[id](data);
@@ -175,6 +167,97 @@ var PortalAdmin = {
 	}
 };
 
-$(document).ready(function() {
-    PortalAdmin.init();
+var PortalAdmin_SimpleHeader = new Orb.Class({
+	initialize: function(header) {
+		var  self = this;
+
+		this.header = $(header);
+
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
+		this.header.prepend(controls);
+		this.header.append('<div class="dp-drag-overlay" />');
+
+		this.header.delegate('.dp-toggle-block', 'click', function() {
+			self.header.toggleClass('disabled');
+		});
+		this.header.delegate('.dp-edit', 'click', function() {
+			PortalAdmin.tellAdmin('open_logo_editor', { controller: self });
+		});
+
+		$('.dp-drag-overlay', this.header).delegate('#dp_header_portal_off', 'click', function() {
+			self.header.toggleClass('disabled');
+		});
+	},
+
+	/**
+	 * Set the logo image url
+	 *
+	 * @param url
+	 */
+	setLogo: function(url) {
+		$('#dp_header img.logo').attr('src', url);
+		$('#dp_header').addClass('dp-with-logo');
+	},
+
+	/**
+	 * Sets the logo text
+	 *
+	 * @param title
+	 * @param tagline
+	 */
+	setLogoText: function(title, tagline) {
+		$('#dp_header').removeClass('dp-with-logo');
+		$('#dp_header h1').text(title || '');
+		$('#dp_header h2').text(tagline || '');
+	}
+});
+
+var PortalAdmin_Placeholder = new Orb.Class({
+	initialize: function(place) {
+		var self = this;
+		this.place = $(place);
+		this.name = this.place.data('portal-block');
+		this.id = this.place.attr('id');
+
+		this.mode = this.place.data('mode') || 'placeholder';
+
+		this.el = $(this.place.data('portal-for'));
+		this.wrap = this.el.parent();
+
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-remove-block"><span>reset</span></li><li class="dp-edit-html"><span>edit</span></li></div>');
+		this.wrap.prepend(controls);
+		this.wrap.append('<div class="dp-drag-overlay" style="cursor: default;" />');
+
+		this.place.click(function() {
+			PortalAdmin.tellAdmin('open_placeholder_editor', { controller: self });
+		});
+
+		$('.dp-edit-html', controls).click(function() {
+			PortalAdmin.tellAdmin('open_placeholder_editor', { controller: self });
+		});
+
+		$('.dp-remove-block', controls).click(function() {
+			if (confirm('Are you sure you want to delete the custom HTML you already have set?')) {
+				self.reset();
+			}
+		});
+	},
+
+	reset: function() {
+		this.el.empty();
+		this.wrap.hide();
+		this.place.show();
+
+		PortalAdmin.tellAdmin('reset_placeholder', { controller: self });
+	},
+
+	setContent: function(content) {
+		console.log("[Block %s] Set content", this.name);
+		this.el.empty().html(content);
+
+		if (this.mode == 'placeholder') {
+			this.place.hide();
+			this.wrap.show();
+		}
+	}
 });

@@ -36,6 +36,22 @@ class PortalController extends AbstractController
 		return $this->redirectRoute('admin_portal');
 	}
 
+	public function getEditorAction($type)
+	{
+		switch ($type) {
+			case 'logo':
+				return $this->getLogoEditorAction();
+				break;
+		}
+
+		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+	}
+
+	public function getLogoEditorAction()
+	{
+		return $this->render('AdminBundle:Portal:portal-editor-logo.html.twig');
+	}
+
 	public function settingsAction()
 	{
 		return $this->render('AdminBundle:Portal:settings.html.twig');

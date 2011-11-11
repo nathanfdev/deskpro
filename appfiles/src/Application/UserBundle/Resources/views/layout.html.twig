@@ -26,20 +26,33 @@
 	{% endif %}
 </head>
 <body>
-<div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
 {% if admin_portal_controls %}
-	<div id="dp_custom_header_wrap" class="dp-portal-block" style="display: none">
-		<div id="dp_custom_header"></div>
+	<div id="dp_custom_head_wrap" class="dp-portal-block" style="display: none">
+		<div id="dp_custom_head" class="dp-portal-block-content"></div>
 	</div>
-	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header">
+	<div id="dp_custom_head_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="head_include" data-portal-for="#dp_custom_head" data-mode="head">
+		<em>Click here to edit custom &lt;head&gt; HTML</em>
+	</div>
+	<div id="dp_custom_header_wrap" class="dp-portal-block" style="display: none">
+		<div id="dp_custom_header" class="dp-portal-block-content"></div>
+	</div>
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="header" data-portal-for="#dp_custom_header">
 		<em>Click here to set custom header HTML</em>
 	</div>
 {% endif %}
 
+<div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
+
 <div id="dp_header">
+	<img class="logo" />
 	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
 	<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+	{% if admin_portal_controls %}
+	<div id="dp_header_portal_off">
+		Click here to re-enable the simple header
+	</div>
+	{% endif %}
 </div>
 
 <div id="dp_search_assist" style="display: none;">
@@ -164,17 +177,20 @@
 	</div>
 </div>
 
+</div>
+
 {% if admin_portal_controls %}
-	<div id="dp_custom_footer" style="display: none"></div>
-	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer">
+	<div id="dp_custom_footer_wrap" class="dp-portal-block" style="display: none">
+		<div id="dp_custom_footer" class="dp-portal-block-content"></div>
+	</div>
+	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer" data-portal-block="footer" data-portal-for="#dp_custom_footer">
 		<em>Click here to set custom footer HTML</em>
 	</div>
 {% endif %}
 
-{% if not app.getSetting('user.disable_chat_element') %}
+{% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
 {% endif %}
 
-</div>
 </body>
 </html>

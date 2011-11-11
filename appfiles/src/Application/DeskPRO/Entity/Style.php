@@ -63,6 +63,17 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 	/**
+	 * The blob containing the logo for this style.
+	 * Later we'll allow multiple resources to be attached to styles, but for now the logo is
+	 * here.
+	 *
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="logo_blob_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $logo_blob_id = null;
+
+	/**
 	 * CSS dir under static with CSS files
 	 *
 	 * @var string
