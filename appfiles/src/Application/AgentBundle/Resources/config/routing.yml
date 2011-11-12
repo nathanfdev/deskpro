@@ -945,6 +945,16 @@ agent_deal_ajax_labels_save:
   defaults: { _controller: AgentBundle:Deal:ajaxSaveLabels }
   requirements: { deal_id: "\d+" }
 
+agent_deal_ajaxsavecustomfields:
+  pattern: /deals/{deal_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveCustomFields }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_set_agent_parts:
+  pattern: /deals/{deal_id}/{agent_id}/set-agent-parts.json
+  defaults: { _controller: AgentBundle:Deal:setAgentParticipants }
+
+
 
 ################################################################################
 # Publish

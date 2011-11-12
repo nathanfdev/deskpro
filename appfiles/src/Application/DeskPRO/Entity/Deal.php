@@ -12,6 +12,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 use Application\DeskPRO\Entity\LabelDeal;
+use Application\DeskPRO\App;
 
 /**
  * Deal entity definition
@@ -107,7 +108,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var Application\DeskPRO\Entity\Person
-     * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="assigned_deals")
+     * @ORM_Mapping\ManyToOne(targetEntity="Person")
      * @ORM_Mapping\JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true, onDelete="set null")
      */
     protected $assigned_agent;
@@ -318,6 +319,52 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getAsignedAgentId()
+	{
+		if (! $this->assigned_agent) {
+			return 0;
+		}
+
+		return $this->assigned_agent['id'];
+	}
+
+
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setAsignedAgentId($id)
+	{
+		if(!$id || $id == null){
+                    $this->assigned_agent = null;
+                    return;
+                }
+
+
+                $agent = App::getEntityRepository('DeskPRO:Person')->find($id);
+
+		if (! $agent) {
+			throw new \InvalidArgumentException('No agent for id ' . $id);
+		}
+
+		if (! $agent->is_agent) {
+			throw new \InvalidArgumentException(
+				'The person with id ' . $id . ' is not an agent'
+			);
+		}
+
+		$this->assigned_agent = $agent;
 	}
 
 

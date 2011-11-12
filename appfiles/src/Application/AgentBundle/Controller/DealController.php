@@ -197,6 +197,62 @@ class DealController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
+
+        public function ajaxSaveCustomFieldsAction($deal_id)
+	{
+		$deal = $this->getDealOr404($deal_id);
+
+		$this->em->beginTransaction();
+
+		try {
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $org);
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		$custom_fields = $field_manager->getDisplayArrayForObject($org);
+
+
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		return $this->render('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
+		));
+	}
+
+        
+        public function setAgentParticipantsAction($deal_id, $agent_id)
+	{
+		$deal = $this->getDealOr404($deal_id);		
+                $agent_id = ($agent_id == 0) ? null : $agent_id;
+                
+		$this->db->beginTransaction();
+
+		try {
+			$deal->setAsignedAgentId($agent_id);
+			$this->em->persist($deal);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('sucess' => true));
+	}
+
+
+
         /**
 	 * @return Application\DeskPRO\Entity\Deal
 	 */
