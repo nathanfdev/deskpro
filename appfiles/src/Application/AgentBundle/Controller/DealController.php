@@ -303,10 +303,18 @@ class DealController extends AbstractController
                     $data['deal_stage'] = $tpl;
                     
                     break;
+
+                case 'change-dealstage':
+
+                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));
+                    $this->em->persist($deal);
+                    $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    break;
+                    
             }
 
-//            $this->em->flush();
-//            $this->em->commit();
+            $this->em->flush();
+            $this->em->commit();
 
             return $this->createJsonResponse($data);
     }

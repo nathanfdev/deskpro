@@ -107,8 +107,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		});
 
                 $('.select-deal-type').change(function(){
-                //$('.type-labels').delegate('.select-deal-type', 'click', function() {alert(pageMeta.deal_id);
-                    //var row = $(this).closest('.select-deal');
+                
                     var dealId = pageMeta.deal_id;
                     if (!dealId) {
 				return;
@@ -129,7 +128,26 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 }) ;
 
 
+                $('.select-deal-stage').live('change', function(){
 
+                    var dealId = pageMeta.deal_id;
+                    if (!dealId) {
+				return;
+			}
+
+                    $.ajax({
+				url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+				data: { action: 'change-dealstage', deal_stage_id: $(this).val() },
+				type: 'POST',
+				context: this,
+				error: function() {
+					//row.show();
+				},
+				success: function(data) {
+                                    //$('.set-deal-stage').html(data.deal_stage);
+				}
+			});
+                }) ;
 
     },
 
