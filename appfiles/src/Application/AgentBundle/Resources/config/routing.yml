@@ -959,6 +959,11 @@ agent_deal_ajaxsave:
   defaults: { _controller: AgentBundle:Deal:ajaxSave }
   requirements: { deal_id: "\d+" }
 
+agent_deal_new:
+  pattern: /deals/new
+  defaults: { _controller: AgentBundle:Deal:new }
+  options: { fragment_name: 'nt' }
+
 
 ################################################################################
 # Publish

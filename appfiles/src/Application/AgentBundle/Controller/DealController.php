@@ -37,7 +37,24 @@ class DealController extends AbstractController
     private $_task_repository;
 
 
-   /**
+    public function newAction()
+    {
+
+        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
+
+
+        return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
+           'deal_type' => $deal_type,
+           'deal_stage' => $deal_stage
+
+        ));
+    }
+
+
+
+
+    /**
      * Generate the category wise list gor task.
      * @return html
      */
