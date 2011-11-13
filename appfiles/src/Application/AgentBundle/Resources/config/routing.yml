@@ -954,6 +954,10 @@ agent_deal_set_agent_parts:
   pattern: /deals/{deal_id}/{agent_id}/set-agent-parts.json
   defaults: { _controller: AgentBundle:Deal:setAgentParticipants }
 
+agent_deal_ajaxsave:
+  pattern: /deals/{deal_id}/ajax-save
+  defaults: { _controller: AgentBundle:Deal:ajaxSave }
+  requirements: { deal_id: "\d+" }
 
 
 ################################################################################

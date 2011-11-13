@@ -32,7 +32,7 @@ class Deal extends EntityRepository
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(d) types, dt.name, dt.id')
                     ->from('DeskPRO:Deal', 'd')
-                    ->innerJoin('d.person', 'p')
+                    ->innerJoin('d.assigned_agent', 'p')
                     ->innerJoin('d.deal_type', 'dt')
                     ->where('p.id = :person_id')
                     ->andWhere('d.status = :status')
@@ -56,7 +56,7 @@ class Deal extends EntityRepository
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(d) types, dt.name, dt.id')
                     ->from('DeskPRO:Deal', 'd')
-                    ->leftJoin('d.person', 'p')
+                    ->leftJoin('d.assigned_agent', 'p')
                     ->innerJoin('d.deal_type', 'dt')
                     ->where('p.id IS NULL OR p.id != :person_id')
                     ->andWhere('d.status = :status')
@@ -80,7 +80,7 @@ class Deal extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('COUNT(d)')
                     ->from('DeskPRO:Deal', 'd')
-                    ->innerJoin('d.person', 'p')
+                    ->innerJoin('d.assigned_agent', 'p')
                     ->innerJoin('d.deal_type', 'dt')
                     ->where('p.id = :person_id')
                     ->andWhere('d.status = :status')
@@ -104,7 +104,7 @@ class Deal extends EntityRepository
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('COUNT(d)')
                     ->from('DeskPRO:Deal', 'd')
-                    ->leftJoin('d.person', 'p')
+                    ->leftJoin('d.assigned_agent', 'p')
                     ->innerJoin('d.deal_type', 'dt')
                     ->where('p.id IS NULL OR p.id != :person_id')
                     ->andWhere('d.status = :status')                    
@@ -126,7 +126,7 @@ class Deal extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('d')
                 ->from('DeskPRO:Deal', 'd')
-                ->innerJoin('d.person', 'p')
+                ->innerJoin('d.assigned_agent', 'p')
                 ->innerJoin('d.deal_type', 'dt')
                 ->where('p.id = :person_id');
         $qb->setParameter('person_id', $person['id']);
@@ -161,7 +161,7 @@ class Deal extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('d')
                 ->from('DeskPRO:Deal', 'd')
-                ->leftJoin('d.person', 'p')
+                ->leftJoin('d.assigned_agent', 'p')
                 ->innerJoin('d.deal_type', 'dt')
                 ->where('p.id IS NULL OR p.id != :person_id')
                 ->setParameter('person_id', $person['id']);

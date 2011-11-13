@@ -31,11 +31,17 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels">Type</dt>
+                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">Type</dt>
                 <dd>
-                    <select>
-                        <option value="license sale">License sale</option>
-                    </select>
+                    {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'actions[dealtype]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Deal Type',
+                                'options': deal_types,
+                                'selected': deal.deal_type.id,
+                                'add_classname': 'select-deal-type'
+                    } %}
                 </dd>
             </dl>
         </div>
@@ -43,10 +49,16 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="isLeft">
             <dl class="table-list">
                 <dt class="type-labels">Stage</dt>
-                <dd>
-                    <select>
-                        <option value="pre-bid">Pre-Bid</option>
-                    </select>
+                <dd class="set-deal-stage">
+                    {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'actions[dealtype]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Deal Type',
+                                'options': deal_stage,
+                                'selected': deal.deal_stage.id,
+                                'add_classname': 'select-deal-type'
+                    } %}
                 </dd>
             </dl>
         </div>

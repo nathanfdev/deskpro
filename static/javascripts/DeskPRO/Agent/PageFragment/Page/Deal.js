@@ -57,6 +57,77 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             }
         });
 
+        this.getEl('members_list').delegate('.remove', 'click', function() { 
+			var row = $(this).closest('.member-row');
+			var personId = row.data('person-id');
+			if (!personId) {
+				return;
+			}
+
+			row.fadeOut('fast');
+
+			$.ajax({
+				url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+				data: { action: 'remove-person', person_id: personId },
+				type: 'POST',
+				context: this,
+				error: function() {
+					row.show();
+				},
+				success: function() {
+					row.remove();
+					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+				}
+			});
+		});
+
+
+                this.getEl('organizations_list').delegate('.remove', 'click', function() {
+			var row = $(this).closest('.organization-row');
+			var organizationId = row.data('organization-id');
+			if (!organizationId) {
+				return;
+			}
+
+			row.fadeOut('fast');
+
+			$.ajax({
+				url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+				data: { action: 'remove-organization', organization_id: organizationId },
+				type: 'POST',
+				context: this,
+				error: function() {
+					row.show();
+				},
+				success: function() {
+					row.remove();
+					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+				}
+			});
+		});
+
+                $('.select-deal-type').change(function(){
+                //$('.type-labels').delegate('.select-deal-type', 'click', function() {alert(pageMeta.deal_id);
+                    //var row = $(this).closest('.select-deal');
+                    var dealId = pageMeta.deal_id;
+                    if (!dealId) {
+				return;
+			}
+
+                    $.ajax({
+				url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+				data: { action: 'change-dealtype', deal_type_id: $(this).val() },
+				type: 'POST',
+				context: this,
+				error: function() {
+					//row.show();
+				},
+				success: function(data) {					
+                                    $('.set-deal-stage').html(data.deal_stage);
+				}
+			});
+                }) ;
+
 
 
 

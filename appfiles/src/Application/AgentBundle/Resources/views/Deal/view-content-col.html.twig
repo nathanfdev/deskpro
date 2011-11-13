@@ -26,12 +26,13 @@
             <dl class="table-list">
                 <dt class="type-labels">Users</dt>
                 <dd>
-                    <ul class="controls">
+                    <ul class="controls" id="{{baseId}}_members_list">
 
                         {% for person in deal.peoples%}
-                            <li>
-                                <span>{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
-                                <span class="btn-small-remove remove-row-trigger"></span>
+                        <li class="member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
+                                <span data-person-id="{{ person.id }}">{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
+                                <span class="remove btn-small-remove remove-row-trigger">x</span>
+                                
                             </li>
                         {% endfor%}
                         
@@ -44,11 +45,11 @@
             <dl class="table-list">
                 <dt class="type-labels">Organizations</dt>
                 <dd>
-                    <ul class="controls">
+                    <ul class="controls" id="{{baseId}}_organizations_list">
                         {% for organization in deal.organizations%} 
-                            <li>
+                            <li class="organization-row organization-{{ organization.id }}" data-organization-id="{{ organization.id }}">
                                 <span> {{organization.name}} </span>
-                                <span class="btn-small-remove remove-row-trigger"></span>
+                                <span class="remove btn-small-remove remove-row-trigger"></span>
                             </li>
                         {% endfor%}
                         

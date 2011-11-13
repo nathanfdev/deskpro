@@ -205,7 +205,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
         $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->peoples = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->people = new \Doctrine\Common\Collections\ArrayCollection();
         $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();        
         //$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
@@ -335,8 +335,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		return $this->assigned_agent['id'];
 	}
 
-
-
 	/**
 	 * Sets the task's assigned agent's id.
 	 *
@@ -366,6 +364,85 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->assigned_agent = $agent;
 	}
+
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getDealTypeId()
+	{
+		if (! $this->deal_type) {
+			return 0;
+		}
+
+		return $this->deal_type['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setDealTypeId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_type = null;
+                    return;
+                }
+
+                $deal_type = App::getEntityRepository('DeskPRO:DealType')->find($id);
+		$this->deal_type = $deal_type;
+	}
+
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getDealStageId()
+	{
+		if (! $this->deal_stage) {
+			return 0;
+		}
+
+		return $this->deal_stage['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setDealStageId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_stage = null;
+                    return;
+                }
+
+                $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->find($id);
+		$this->deal_stage = $deal_stage;
+	}
+
+
+
+
+        public function deletePeople(\Application\DeskPRO\Entity\Person $person)
+        {
+            $this->peoples->removeElement($person);
+        }
+
+        public function deleteOrganization(\Application\DeskPRO\Entity\Organization $organization)
+        {
+            $this->organizations->removeElement($organization);
+        }
 
 
 }

@@ -19,5 +19,17 @@ use Application\DeskPRO\Entity;
 
 class DealStage extends EntityRepository
 {
- 
+    public function getDealStagesByDealType($deal_type_id)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('dts, ds')
+                ->from('DeskPRO:DealStage', 'ds')
+                ->innerJoin('ds.deal_type_stage', 'dts')
+                ->innerJoin('dts.deal_type', 'dt')
+                ->where('dt.id = :deal_type_id');
+        $qb->setParameter('deal_type_id', $deal_type_id);
+
+        $query = $qb->getQuery(); //print $query->getSQL(); exit;
+        return $query->getResult();
+    }
 }

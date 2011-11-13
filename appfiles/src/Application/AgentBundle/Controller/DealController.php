@@ -21,6 +21,7 @@ use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\DealNote;
+use Application\DeskPRO\Entity\DealStage;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
 
@@ -135,12 +136,16 @@ class DealController extends AbstractController
         
         $notes = App::getEntityRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
         
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
             'deal' => $deal,
             'notes' => $notes,
-            'agents' => $agents
+            'agents' => $agents,
+            'deal_types' => $deal_type,
+            'deal_stage' => $deal_stage
         ));
     }
 
@@ -251,6 +256,60 @@ class DealController extends AbstractController
 		return $this->createJsonResponse(array('sucess' => true));
 	}
 
+        public function ajaxSaveAction($deal_id) {
+
+            $deal = $this->getDealOr404($deal_id);
+            $this->em->beginTransaction();
+            $data = array(
+                'success' => true
+            );
+            switch ($this->in->getString('action')) {
+                case 'remove-person':
+                    $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+                    if ($person) {
+                        $deal->deletePeople($person);
+                        $this->em->persist($deal);
+                        $data['remove_person_id'] = $person['id'];
+                    }
+                    break;
+                case 'remove-organization':
+                    $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
+                    if ($organization) {
+                        $deal->deleteOrganization($organization);
+                        $this->em->persist($deal);
+                        $data['remove_organization_id'] = $organization['id'];
+                    }
+                    break;
+                case 'change-dealtype':
+                    
+                    $deal_type = App::findEntity('DeskPRO:DealType', $this->in->getUint('deal_type_id'));
+                    $deal->setDealTypeId($this->in->getUint('deal_type_id'));
+                    $deal->setDealStageId(null);
+                    $this->em->persist($deal);
+                    $data['change_deal_type_id'] = $deal_type['id'];
+                    $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
+
+                     
+                    $tpl = $this->renderView('AgentBundle:Deal:select-deal-options.html.twig', array(
+                        'name'=> 'actions[dealtype]',
+                        'with_blank'=> true,
+                        'with_blank2'=> true,
+                        'blank_title'=> 'Set Deal Type',
+                        'options'=> $deal_stage,
+                        'selected'=> '',
+                        'add_classname'=> 'select-deal-stage'
+                    ));
+
+                    $data['deal_stage'] = $tpl;
+                    
+                    break;
+            }
+
+//            $this->em->flush();
+//            $this->em->commit();
+
+            return $this->createJsonResponse($data);
+    }
 
 
         /**
