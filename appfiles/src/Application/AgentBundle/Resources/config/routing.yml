@@ -964,6 +964,10 @@ agent_deal_new:
   defaults: { _controller: AgentBundle:Deal:new }
   options: { fragment_name: 'nt' }
 
+agent_deal_new_save:
+  pattern: /deals/new/save
+  defaults: { _controller: AgentBundle:Deal:newSave }
+
 
 ################################################################################
 # Publish

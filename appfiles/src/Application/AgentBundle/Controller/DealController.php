@@ -42,13 +42,21 @@ class DealController extends AbstractController
 
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
+        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
-           'deal_stage' => $deal_stage
+           'deal_stage' => $deal_stage,
+           'agents' => $agents
 
         ));
+    }
+
+
+    public function newSaveAction()
+    {
+
     }
 
 
@@ -300,9 +308,11 @@ class DealController extends AbstractController
                 case 'change-dealtype':
                     
                     $deal_type = App::findEntity('DeskPRO:DealType', $this->in->getUint('deal_type_id'));
-                    $deal->setDealTypeId($this->in->getUint('deal_type_id'));
-                    $deal->setDealStageId(null);
-                    $this->em->persist($deal);
+                    if($deal_id){
+                        $deal->setDealTypeId($this->in->getUint('deal_type_id'));
+                        $deal->setDealStageId(null);
+                        $this->em->persist($deal);
+                    }
                     $data['change_deal_type_id'] = $deal_type['id'];
                     $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
 
