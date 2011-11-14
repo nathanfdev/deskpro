@@ -128,13 +128,15 @@ class StatValueGroup extends EntityRepository
 		$qb = $this->getEntityManager()->createQueryBuilder()
 			->select('svg')
 			->from('DeskPRO:StatValueGroup', 'svg')
-			->innerJoin('svg.stat_value', 'v');
+			->innerJoin('svg.stat_value', 'sv')
+			->where('sv.id = :stat_value_id')
+			->setParameter('stat_value_id', $stat_value_id);
 
 		if (true === is_null($grouping_id)) {
-			$qb->where('svg.grouping_id IS NULL');
+			$qb->andWhere('svg.grouping_id IS NULL');
 		}
 		else {
-			$qb->where('svg.grouping_id = :grouping_id')
+			$qb->andWhere('svg.grouping_id = :grouping_id')
 			   ->setParameter('grouping_id', $grouping_id);
 		}
 

@@ -47,7 +47,7 @@ class StatValue extends EntityRepository
 	{
 		$day_start = mktime(0, 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
 		$day_end   = mktime(23, 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
-		
+
 		try {
 			$stat_value =
 				$this->getForStatBuilder($stat_id)
@@ -128,6 +128,8 @@ class StatValue extends EntityRepository
 		return $this->getEntityManager()->createQueryBuilder()
 			->select('sv')
 			->from('DeskPRO:StatValue', 'sv')
-			->innerJoin('sv.stat', 's');
+			->innerJoin('sv.stat', 's')
+			->where('s.id = :stat_id')
+			->setParameter('stat_id', $stat_id);
 	}
 }
