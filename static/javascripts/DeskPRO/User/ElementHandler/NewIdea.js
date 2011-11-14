@@ -14,7 +14,7 @@ DeskPRO.User.ElementHandler.NewIdea = new Orb.Class({
 
 			var wrapper = this;
 
-			parentSel.change(function() {
+			parentSel.on('change', function() {
 				var val = $(this).val();
 				var sub = $('.sub-options-' + val, wrapper);
 

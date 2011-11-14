@@ -40,11 +40,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		// Attach click to wrapper because
 		// this same code is used on popout on ticket,
 		// and clicks dont bubble to document click
-		$(this.wrapper).click(function (ev) {
+		$(this.wrapper).on('click', function (ev) {
 			editable.handleDocumentClick(ev);
 		});
 
-		this.getEl('delete_btn').click(function() {
+		this.getEl('delete_btn').on('click', function() {
 			var url = $(this).data('delete-url');
 			DeskPRO_Window.showConfirm(
 				$('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanantly deleted</strong>.'),
@@ -123,11 +123,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			self.getEl('newmember_row').show();
 		};
 
-		this.getEl('newmember_cancel_btn').click(function() {
+		this.getEl('newmember_cancel_btn').on('click', function() {
 			close_newmember_row();
 		});
 
-		this.getEl('newmember_btn').click(function() {
+		this.getEl('newmember_btn').on('click', function() {
 			var personId = self.getEl('newmember_person_id').val();
 			var pos = self.getEl('newmember_position').val();
 
@@ -207,13 +207,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 			if (!input.is('.has-init')) {
 				input.addClass('has-init');
-				input.click(function(ev){ev.stopPropagation();});
-				input.keypress(function() {
+				input.on('click', function(ev){ev.stopPropagation();});
+				input.on('keypress', function() {
 					if (ev.keyCode == 13) {
 						done();
 					}
 				});
-				$(document).click(done);
+				$(document).on('click', done);
 			}
 		});
 
@@ -257,10 +257,10 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			}
 		};
 
-		$('.prop-edit-trigger', box).click(function() {
+		$('.prop-edit-trigger', box).on('click', function() {
 			propToggle('form');
 		});
-		$('.save', box).click(function() {
+		$('.save', box).on('click', function() {
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$('.is-loading', box).show();
@@ -278,7 +278,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				}
 			});
 		});
-		$('.cancel', box).click(function() {
+		$('.cancel', box).on('click', function() {
 			propToggle('display');
 		});
 	},
@@ -343,14 +343,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					contentElement: overlayEl
 				});
 
-				newInput.keyup(updateNew).change(updateNew);
+				newInput.on('keyup', updateNew).on('change', updateNew);
 
 				var replaceEditor = function(newDisplayHtml) {
 					self.getEl('email_assoc_box').empty().html(newDisplayHtml);
 					self._initEmailDomainAssoc(true);
 				};
 
-				$('.controls .save', newContain).click(function() {
+				$('.controls .save', newContain).on('click', function() {
 					$.ajax({
 						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/assign-domain',
 						type: 'POST',
@@ -366,7 +366,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				var cancelDelBtn = $('.cancel-delete-button', overlayEl);
 				var delSection = $('.delete-controls', overlayEl);
 
-				delBtn.click(function() {
+				delBtn.on('click', function() {
 					var sect = $(this).closest('tr');
 					var delBtn = $('.delete-button', sect);
 					var cancelDelBtn = $('.cancel-delete-button', sect);
@@ -377,7 +377,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					cancelDelBtn.show();
 					delSection.slideDown('fast');
 				});
-				cancelDelBtn.click(function() {
+				cancelDelBtn.on('click', function() {
 					var sect = $(this).closest('tr');
 					var delBtn = $('.delete-button', sect);
 					var cancelDelBtn = $('.cancel-delete-button', sect);
@@ -388,7 +388,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					delSection.slideUp('fast');
 				});
 
-				$('.remove-email, .remove-email-users', overlayEl).click(function() {
+				$('.remove-email, .remove-email-users', overlayEl).on('click', function() {
 					var domain = $(this).closest('tr').data('org-domain');
 					var removeusers = $(this).is('.remove-email-users') ? 1 : 0;
 
@@ -403,7 +403,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					});
 				});
 
-				$('.move-users', overlayEl).click(function() {
+				$('.move-users', overlayEl).on('click', function() {
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
@@ -417,7 +417,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					});
 				});
 
-				$('.move-all-users', overlayEl).click(function() {
+				$('.move-all-users', overlayEl).on('click', function() {
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
@@ -435,7 +435,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			self.emailDomainOverlay.open();
 		};
 
-		trigger.click(open);
+		trigger.on('click', open);
 		if(opennow) open();
 	},
 
@@ -460,11 +460,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			}
 		}).bind(this);
 
-		$('.show-edit-custom-fields', this.wrapper).click(function() {
+		$('.show-edit-custom-fields', this.wrapper).on('click', function() {
 			toggle();
 		});
 
-		$('.save-custom-fields', this.wrapper).click((function() {
+		$('.save-custom-fields', this.wrapper).on('click', (function() {
 			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
 
 			$.ajax({

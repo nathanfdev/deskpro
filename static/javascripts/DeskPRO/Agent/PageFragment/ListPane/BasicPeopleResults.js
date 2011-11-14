@@ -52,12 +52,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 			onContentSet: function(eventData) {
 				var editor = new DeskPRO.Form.RuleBuilder($('.search-builder-tpl', overlay_wrapper));
 				editor.addEvent('newRow', function(new_row) {
-					$('.remove', new_row).click(function() {
+					$('.remove', new_row).on('click', function() {
 						new_row.remove();
 					});
 				});
 
-				$('.add-term', overlay_wrapper).data('add-count', 0).click(function() {
+				$('.add-term', overlay_wrapper).data('add-count', 0).on('click', function() {
 					var count = parseInt($(this).data('add-count'));
 					var basename = 'terms['+count+']';
 
@@ -81,7 +81,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 
 		this.ownObject(this.termsOverlay);
 
-		$('.save-trigger', overlay_wrapper).click((function() {
+		$('.save-trigger', overlay_wrapper).on('click', (function() {
 			this.submitSearchTerms();
 		}).bind(this));
 	},
@@ -114,7 +114,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 		if (this.meta.viewTypeUrl) {
 			var switcher = $('nav.mode-buttons:first', this.contentWrapper);
 			var self = this;
-			$('li:not(.on)', switcher).click(function(ev) {
+			$('li:not(.on)', switcher).on('click', function(ev) {
 				ev.preventDefault();
 				var view_type = $(this).data('view-type');
 				self.switchViewType(view_type);
@@ -135,11 +135,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 		});
 		this.ownObject(this.displayOptionsOverlay);
 
-		$('.close-trigger', overlay_wrapper).click((function() {
+		$('.close-trigger', overlay_wrapper).on('click', (function() {
 			this.displayOptionsOverlay.closeOverlay();
 		}).bind(this));
 
-		$('.save-trigger', overlay_wrapper).click((function() {
+		$('.save-trigger', overlay_wrapper).on('click', (function() {
 			this.saveDisplayOptions();
 		}).bind(this));
 
@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
 		});
 
-		$('.detail-view-trigger', this.wrapper).click((function() {
+		$('.detail-view-trigger', this.wrapper).on('click', (function() {
 			this.switchViewType('list');
 		}).bind(this));
 	},

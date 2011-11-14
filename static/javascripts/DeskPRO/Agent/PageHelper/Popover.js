@@ -131,13 +131,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		DeskPRO_Window.initInterfaceLayerEvents(this.popoverOuter);
 
 		// ...prevent bubbling so it doesnt activate anything below
-		this.popoverOuter.click(function(ev) {
+		this.popoverOuter.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
 		this.updatePositions();
 
-		$('.close', this.popoverOuter).first().click((function(ev) {
+		$('.close', this.popoverOuter).first().on('click', (function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -153,7 +153,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}).bind(this));
 
 		if (this.options.tabRoute) {
-			$('.move-to-tab:first', this.popoverOuter).click((function(ev) {
+			$('.move-to-tab:first', this.popoverOuter).on('click', (function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 
@@ -170,14 +170,14 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.options.positionMode == 'side') {
 			DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
 		} else {
-			$(window).resize(function() {
+			$(window).on('resize', function() {
 				self.updatePositions();
 			});
 		}
 
 		var c = $('.scroll-content', this.popoverOuter).first();
 		if (c.length) {
-			c.resize(this.updatePositions.bind(this));
+			c.on('resize', this.updatePositions.bind(this));
 		}
 	},
 

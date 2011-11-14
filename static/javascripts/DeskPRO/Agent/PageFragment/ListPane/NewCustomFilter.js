@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter = new Orb.Class({
 		var criteriaTerms = $('.search-builder-tpl', this.topSection);
 
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
-		$('.add-term', criteriaList).data('add-count', 0).click(function() {
+		$('.add-term', criteriaList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -51,7 +51,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter = new Orb.Class({
 		}
 
 		var form = $('form.ticket-search-form', this.topSection);
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 
 			var url = form.attr('action');

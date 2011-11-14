@@ -15,11 +15,11 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		this.form = $('form', this.wrapper).submit(function(ev) {
+		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 		});
 
-		$('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
+		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		this._initNameSection();
 		this._initOtherSection();

@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 
 		var form = this.getEl('form');
-		form.submit(Orb.cancelEvent);
+		form.on('submit', Orb.cancelEvent);
 
 		var rowContainer = this.getEl('tasks');
 
@@ -117,7 +117,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 					$('label', linkEl).text(activeTab.page.meta.title);
 					$('input.input-ticket-id', row).val(activeTab.page.meta.ticket_id);
 					linkEl.show();
-					$('.remove-link-trigger', row).click(function() {
+					$('.remove-link-trigger', row).on('click', function() {
 						nolink = true;
 						linkEl.hide();
 						$('input.input-ticket-id', row).val(0);
@@ -128,12 +128,12 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			rowContainer.append(row);
 		};
 
-		this.getEl('add_btn').click(addTaskRow);
+		this.getEl('add_btn').on('click', addTaskRow);
 
 		addTaskRow();
 
 		var footer = $('footer.pop-footer', el);
-		$('.submit-trigger', el).click(function() {
+		$('.submit-trigger', el).on('click', function() {
 			var postData = form.serializeArray();
 
 			footer.addClass('loading');

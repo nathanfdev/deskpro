@@ -138,7 +138,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 
-		$('.edit-fields-trigger', this.sectionProperties).click((function() {
+		$('.edit-fields-trigger', this.sectionProperties).on('click', (function() {
 			this.enableEditMode('default');
 		}).bind(this));
 	},
@@ -184,11 +184,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		// Reset editable areas
 		var container = $(this.sectionPropertiesEditTpl);
-		$('.close-trigger', container).click((function(ev) {
+		$('.close-trigger', container).on('click', (function(ev) {
 			ev.preventDefault();
 			this.closeEditMode('default');
 		}).bind(this));
-		$('.save-trigger', container).click((function(ev) {
+		$('.save-trigger', container).on('click', (function(ev) {
 			ev.preventDefault();
 			this.saveEditMode('default');
 		}).bind(this));
@@ -310,7 +310,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 						itemEls.itemHolder.remove();
 
-						$('.edit-fields-trigger', displayWrap).click((function() {
+						$('.edit-fields-trigger', displayWrap).on('click', (function() {
 							this.enableEditMode('default');
 						}).bind(this));
 					}, this);

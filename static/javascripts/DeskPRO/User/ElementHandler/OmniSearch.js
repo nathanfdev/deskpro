@@ -13,9 +13,9 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 
 		this.resultsEl   = $('div.results', this.assistEl);
 
-		this.searchboxEl.focus(this.activateAssist.bind(this));
+		this.searchboxEl.on('focus', this.activateAssist.bind(this));
 
-		this.backdrop.click(function(ev) {
+		this.backdrop.on('click', function(ev) {
 			ev.stopPropagation();
 			self.deactivateAssist();
 		});
@@ -31,7 +31,7 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			callback: this.updateResults.bind(this)
 		});
 
-		this.searchboxEl.keypress(function() {
+		this.searchboxEl.on('keypress', function() {
 			if (!$(this).val().trim().length) {
 				self.close();
 			} else {
@@ -39,13 +39,13 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			}
 		});
 
-		this.searchboxEl.focus(function() {
+		this.searchboxEl.on('focus', function() {
 			self.activateAssist();
 		});
 
 		this.lastTerms = null;
 
-		$('.foot a', this.assistEl).click(function(ev) {
+		$('.foot a', this.assistEl).on('click', function(ev) {
 			var el = $(this);
 			if (el.is('.no-omni-trigger')) {
 				return;

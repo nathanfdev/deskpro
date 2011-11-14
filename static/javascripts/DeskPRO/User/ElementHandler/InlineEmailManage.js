@@ -6,13 +6,13 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 
 	init: function() {
 		var self = this;
-		this.emailField = $('.dp-email-field', this.el).click(function() {
+		this.emailField = $('.dp-email-field', this.el).on('click', function() {
 			$(this).blur();
 		});
 		this.newEmailField = $('.dp_inline_email_new', this.el);
 		this.emailList = $('.dp-email-manage-list', this.el);
 		this.controlsEl = $('.dp-email-manage-controls', this.el);
-		$('input[name="dp_inline_email_choice"]', this.controlsEl).click(function() {
+		$('input[name="dp_inline_email_choice"]', this.controlsEl).on('click', function() {
 			var val = $(this).val();
 			if (val == 'NEW') {
 				self.setNewMode();
@@ -23,13 +23,13 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 
 		this.emailError = $('.error-message', this.el);
 
-		this.newEmailField.keypress(function(ev) {
+		this.newEmailField.on('keypress', function(ev) {
 			if (ev.keyCode == 13) {
 				ev.preventDefault();
 				ev.stopPropagation();
 			}
 		});
-		this.newEmailField.keyup(function(ev) {
+		this.newEmailField.on('keyup', function(ev) {
 			if (self.mode == 'new') {
 				self.emailField.val(self.newEmailField.val());
 			}
@@ -41,13 +41,13 @@ DeskPRO.User.ElementHandler.InlineEmailManage = new Orb.Class({
 			this.setNewMode();
 		}
 
-		var changeEmail = $('.change-email', this.el).click(function(ev) {
+		var changeEmail = $('.change-email', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			self.controlsEl.slideDown('fast');
 			changeEmail.hide();
 			changeEmailClose.show();
 		});
-		var changeEmailClose =  $('.change-email-close', this.el).click(function(ev) {
+		var changeEmailClose =  $('.change-email-close', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			self.controlsEl.slideUp('fast');
 			changeEmail.show();

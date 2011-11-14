@@ -20,7 +20,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
-		
+
 		// Initial values
 		this.options = {
 			/**
@@ -47,7 +47,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		this.lastActiveTab = null;
 		this.triggerEls = null;
-		
+
 		if (options) this.setOptions(options);
 
 		this.triggerEls = this.options.triggerElements;
@@ -57,7 +57,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		}
 
 		var self = this;
-		this.triggerEls.click(function(ev) {
+		this.triggerEls.on('click', function(ev) {
 			ev.cancel = false;
 			ev.tabEl = $(this);
 
@@ -80,12 +80,12 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 	addTriggerElement: function(el) {
 		var self = this;
-		
+
 		this.triggerEls.add(el);
-		el.click(function(ev) {
+		el.on('click', function(ev) {
 			ev.cancel = false;
 			ev.tabEl = $(this);
-			
+
 			self.fireEvent('tabClick', [ev]);
 
 			if (!ev.cancel) {

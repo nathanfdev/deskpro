@@ -36,7 +36,7 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Orb.Class({
 		var type = listWrap.data('load-name');
 
 		var self = this;
-		$('.list-load-more', listWrap).click(function() {
+		$('.list-load-more', listWrap).on('click', function() {
 			self.loadMore(type);
 		});
 	},

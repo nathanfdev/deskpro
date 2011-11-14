@@ -198,13 +198,13 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var audio = $('audio', alertEl).get(0);
 		var self = this;
 
-		$('.dismiss-trigger', alertEl).click(function() {
+		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio) {
 				audio.pause();
 			}
 			alertEl.remove();
 		});
-		$('.accept-trigger', alertEl).click(function(ev) {
+		$('.accept-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {
@@ -244,14 +244,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var audio = $('audio', alertEl).get(0);
 		var self = this;
 
-		$('.dismiss-trigger', alertEl).click(function() {
+		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio) {
 				audio.pause();
 			}
 			alertEl.remove();
 			self.dismissedChats[data.conversation_id] = true;
 		});
-		$('.accept-trigger', alertEl).click(function(ev) {
+		$('.accept-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {

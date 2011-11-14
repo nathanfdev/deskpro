@@ -38,7 +38,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		this.ownObject(autoResMenu);
 
-		this.getEl('timezone').change(function(){
+		this.getEl('timezone').on('change', function(){
 			var val = $(this).val();
 			$('.timezone-info', this.wrapper).empty();
 			$.ajax({
@@ -56,7 +56,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
-		this.getEl('is_autoresponder').change(function(){
+		this.getEl('is_autoresponder').on('change', function(){
 			var val = $(this).val();
 			$.ajax({
 				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
@@ -86,11 +86,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		// Attach click to wrapper because
 		// this same code is used on popout on ticket,
 		// and clicks dont bubble to document click
-		$(this.wrapper).click(function (ev) {
+		$(this.wrapper).on('click', function (ev) {
 			editable.handleDocumentClick(ev);
 		});
 
-		$('.create-ticket', this.getEl('action_buttons')).click(function() {
+		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
 				page.setUser(self.meta.person_id);
 			});
@@ -185,7 +185,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this._initOrgEdit();
 
-		this.getEl('tickets_viewall').click(function(ev){
+		this.getEl('tickets_viewall').on('click', function(ev){
 			var row = $(this).closest('tr').remove();
 			self.getEl('tickets_rest').slideDown();
 		});
@@ -219,10 +219,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			}
 		};
 
-		$('.prop-edit-trigger', box).click(function() {
+		$('.prop-edit-trigger', box).on('click', function() {
 			propToggle('form');
 		});
-		$('.save', box).click(function() {
+		$('.save', box).on('click', function() {
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$('.is-loading', box).show();
@@ -240,13 +240,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 		});
-		$('.cancel', box).click(function() {
+		$('.cancel', box).on('click', function() {
 			propToggle('display');
 		});
 
 		var tabWarn = $('.full-tab-warn', this.el);
 		if (tabWarn.length) {
-			$('.dismiss-trigger', tabWarn).click(function() {
+			$('.dismiss-trigger', tabWarn).on('click', function() {
 				tabWarn.fadeOut('fast', function() {
 					tabWarn.remove();
 				});
@@ -284,7 +284,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	_initOrgEdit: function() {
 		var self = this;
-		$('.org-edit-trigger, .cancel', this.getEl('org_display_header')).click(function(ev) {
+		$('.org-edit-trigger, .cancel', this.getEl('org_display_header')).on('click', function(ev) {
 			ev.preventDefault();
 			self.toggleOrgEdit();
 			refreshBox();
@@ -315,7 +315,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			}
 		});
 
-		$('.pos-input', orgEdit).keyup(function() {
+		$('.pos-input', orgEdit).on('keyup', function() {
 			if (self.getEl('org_searchbox').is('.is-new') || ($('.org-id', orgEdit).val() && $('.org-id', orgEdit).val() != '0')) {
 				self.orgEnableBtn('save');
 			}
@@ -375,8 +375,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		};
 
-		this.getEl('org_edit_save').click(saveFn);
-		this.getEl('org_edit_remove_org').click(function() {
+		this.getEl('org_edit_save').on('click', saveFn);
+		this.getEl('org_edit_remove_org').on('click', function() {
 			$('.org-id', self.getEl('org_edit_wrap')).val('0');
 			$('.org-name', self.getEl('org_edit_wrap')).val('');
 			$('.pos-input', orgEdit).hide();

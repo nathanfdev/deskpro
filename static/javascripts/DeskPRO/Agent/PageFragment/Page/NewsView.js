@@ -31,7 +31,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		}
 
 		var btn = $('.news-editor-edit', this.wrapper);
-		btn.click(this.showEditor.bind(this));
+		btn.on('click', this.showEditor.bind(this));
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'news',
@@ -192,11 +192,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		var self = this;
 		var actions = this.getEl('action_buttons');
 
-		$('.delete', actions).click(function() {
+		$('.delete', actions).on('click', function() {
 
 		});
 
-		$('.permalink', actions).click(function() {
+		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this post on the website is:<br />');
@@ -209,7 +209,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			DeskPRO_Window.showAlert(msg);
 		});
 
-		$('.view-user-interface', actions).click(function() {
+		$('.view-user-interface', actions).on('click', function() {
 			window.open(self.meta.permalink);
 		});
 	},
@@ -276,7 +276,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
-		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+		$('button', this.newCommentWrapper).on('click', this.saveNewComment.bind(this));
 	},
 
 	saveNewComment: function() {
@@ -316,7 +316,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -332,7 +332,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -364,7 +364,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		var self = this;
 
 		var edWrap = $('.news-editor-wrap', this.getEl('content_ed')).show();
-		$('.revert-default', edWrap).click(function() {
+		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
 
@@ -430,7 +430,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 	//#################################################################
 
 	_initCompareRevs: function() {
-		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+		$('.compare-trigger', this.wrapper).on('click', this.showCompareRev.bind(this));
 	},
 
 	showCompareRev: function() {

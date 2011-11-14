@@ -5,7 +5,7 @@ DeskPRO.User.ElementHandler.SubscriptionManager = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		$('a.sub-delete', this.el).click(function(ev){
+		$('a.sub-delete', this.el).on('click', function(ev){
 			ev.preventDefault();
 
 			var a = $(this);

@@ -11,7 +11,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 		var newrow = $('li.newrow', this.el);
 		var rowtpl = DeskPRO_Window.util.getPlainTpl($('.addrow-tpl', this.el));
 
-		newrow.click(function() {
+		newrow.on('click', function() {
 			var row = $(rowtpl);
 			row.insertBefore(newrow);
 		});

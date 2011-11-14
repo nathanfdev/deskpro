@@ -16,7 +16,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		this.wrapper = $(this.options.wrapper);
 	},
 
-	
+
 	/**
 	 * Lazy-init object when its first opened.
 	 */
@@ -28,15 +28,15 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		// Usually theres a doc click waiting to close this,
 		// so dont propogate clicks on this element
-		this.wrapper.click(function(ev) {
+		this.wrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
-		$('.close-trigger', this.wrapper).click((function(ev) {
+		$('.close-trigger', this.wrapper).on('click', (function(ev) {
 			this.close();
 		}).bind(this));
 
-		$('.new-close-trigger', this.wrapper).click((function(ev) {
+		$('.new-close-trigger', this.wrapper).on('click', (function(ev) {
 			this.closeNewDlg();
 		}).bind(this));
 
@@ -49,15 +49,15 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		this.newDlg = $('.new-dlg:first', this.wrapper);
 		this.newParent = $('select:first', this.newDlg);
 		this.newTitle = $('input:first', this.newDlg);
-		$('.add-save-trigger', this.newDlg).click((function() {
+		$('.add-save-trigger', this.newDlg).on('click', (function() {
 			this.addNewToList();
 		}).bind(this));
 
-		$('.add-trigger:first', this.wrapper).click((function() {
+		$('.add-trigger:first', this.wrapper).on('click', (function() {
 			this.openNewDlg();
 		}).bind(this));
 
-		$('.save-all-trigger', this.wrapper).click((function() {
+		$('.save-all-trigger', this.wrapper).on('click', (function() {
 			this.fireEvent('save', [this]);
 
 			this.close();
@@ -111,7 +111,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 			var depth = parseInt(el.data('depth'));
 			var catId = el.data('cat-id');
 			var title = el.text().trim();
-			
+
 			if (depth) {
 				title = Orb.strRepeat('--', depth) + ' ' + title;
 			}
@@ -169,7 +169,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		if (parent_li && parent_li.length) {
 			depth = parseInt($('> .title', parent_li).data('depth')) + 1;
-			
+
 			ul = $('> ul', parent_li);
 
 			if (!ul.length) {
@@ -194,10 +194,10 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		this.closeNewDlg();
 	},
 
-	
+
 	/**
 	 * Enable the editable title
-	 * 
+	 *
 	 * @param titleEl
 	 */
 	enableEditTitle: function(titleEl) {
@@ -210,13 +210,13 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		titleEl.append(btn);
 
 		var self = this;
-		input.keypress(function(ev) {
+		input.on('keypress', function(ev) {
 			if (ev.keyCode == 13) {
 				ev.preventDefault();
 				self._applyEditTitle(titleEl, input);
 			}
 		});
-		btn.click(function() {
+		btn.on('click', function() {
 			self._applyEditTitle(titleEl, input);
 		});
 	},
@@ -264,7 +264,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 	/**
 	 * Encode the data as a jQuery form data object
-	 * 
+	 *
 	 * @param name
 	 */
 	encodeForm: function(name) {
@@ -289,7 +289,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 			count++;
 		});
-		
+
 		return data;
 	},
 

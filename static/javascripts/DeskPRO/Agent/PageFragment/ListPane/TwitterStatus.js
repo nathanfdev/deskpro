@@ -44,11 +44,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	_initOrderBySelectField: function() {
 		$('.display-options select[name=sortbydate]', this.header)
-			.change($.proxy(this.reload, this));
+			.on('change', $.proxy(this.reload, this));
 	},
 
 	_initIncludeFields: function() {
-		$('.display-options input:checkbox', this.header).change($.proxy(this.reload, this));
+		$('.display-options input:checkbox', this.header).on('change', $.proxy(this.reload, this));
 
 		$('.display-options label', this.header).each($.proxy(function(idx, el) {
 			var label = $(el),
@@ -61,11 +61,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initUserPageLinks: function() {
-		$('.photo', this.content).click(function() {
+		$('.photo', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 
-		$('.user', this.content).click(function() {
+		$('.user', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	},
@@ -113,7 +113,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initFollow: function() {
 		var buttons = $('.follow a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			this.doFollow($(e.target).parents('.status').attr('data-user-id'));
 		}, this));
 	},
@@ -140,7 +140,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initUnfollow: function() {
 		var buttons = $('.unfollow a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			this.doUnfollow($(e.target).parents('.status').attr('data-user-id'));
 		}, this));
 	},
@@ -167,7 +167,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initAddNote: function() {
 		var buttons = $('.controls .note a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			if ($('.form-note', $(e.target).parents('.status')).length) {
 				return false;
 			}
@@ -194,10 +194,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 				return true;
 			}, this);
-			$(document).keydown(closeOnEscape);
+			$(document).on('keydown', closeOnEscape);
 
 			// submit on ENTER
-			area.keypress($.proxy(function(e) {
+			area.on('keypress', $.proxy(function(e) {
 				if (e.which != 13) {
 					return true;
 				}
@@ -241,7 +241,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initAssign: function() {
 		var buttons = $('.controls .assign a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			e.preventDefault();
 			return false;
 		}, this));
@@ -250,7 +250,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initRetweet: function() {
 		var buttons = $('.controls .retweet a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			this.doRetweet($(e.target).parents('.status').attr('data-status-id'));
 
 			e.preventDefault();
@@ -280,7 +280,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initReply: function() {
 		var buttons = $('.controls .reply a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			if ($('.form-reply', $(e.target).parents('.status')).length) {
 				return false;
 			}
@@ -307,10 +307,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 				return true;
 			}, this);
-			$(document).keydown(closeOnEscape);
+			$(document).on('keydown', closeOnEscape);
 
 			// submit on ENTER
-			reply.keypress($.proxy(function(e) {
+			reply.on('keypress', $.proxy(function(e) {
 				if (e.which != 13) {
 					return true;
 				}
@@ -359,7 +359,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initArchive: function() {
 		var buttons = $('.controls .archive a', this.content);
 
-		buttons.click($.proxy(function(e) {
+		buttons.on('click', $.proxy(function(e) {
 			// $.data('status-id') results in math(status-id - 4) so use .attr()
 			this.doArchive($(e.target).parents('.status').attr('data-status-id'));
 

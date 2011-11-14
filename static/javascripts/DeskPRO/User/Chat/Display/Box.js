@@ -36,7 +36,7 @@ var DpChat_Display = (function() {
 		el.appendTo('body');
 		chatBoxBtn = el;
 
-		chatBoxBtn.click(function() {
+		chatBoxBtn.on('click', function() {
 			chatBox.addClass('dpchat-panel-open');
 		});
 
@@ -95,7 +95,7 @@ var DpChat_Display = (function() {
 		el.appendTo('body');
 		chatBox = el;
 
-		$('#dpchat_start_new').click(function() {
+		$('#dpchat_start_new').on('click', function() {
 			DpChat.endChatReboot();
 		});
 
@@ -105,7 +105,7 @@ var DpChat_Display = (function() {
 		findingAgentEl = $('.dpchat-finding-agent', messageWrapper);
 		findingAgentLongEl = $('.dpchat-finding-agent-long', messageWrapper);
 
-		$('a', findingAgentLongEl).click(function(ev) {
+		$('a', findingAgentLongEl).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -118,7 +118,7 @@ var DpChat_Display = (function() {
 		});
 
 		var self = this;
-		$('#dpchat_preform_submit').click(function(ev) {
+		$('#dpchat_preform_submit').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -128,35 +128,35 @@ var DpChat_Display = (function() {
 			self.addMessageRow(false, false, 'justStart');
 		});
 
-		$('#dpchat_closepanel').click(function() {
+		$('#dpchat_closepanel').on('click', function() {
 			chatBox.removeClass('dpchat-panel-open');
 		});
 
-		$('#dpchat_endchat').click(function() {
+		$('#dpchat_endchat').on('click', function() {
 			if (confirm('Are you sure you want to end this chat?')) {
 				DpChat.endChat();
 			}
 		});
 
-		$('#dpchat_popchat').click(function() {
+		$('#dpchat_popchat').on('click', function() {
 			DpChat.popChat();
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');
-		messageTextarea.keyup(function(ev) {
+		messageTextarea.on('keyup', function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
 		});
-		messageTextarea.change(function(ev) {
+		messageTextarea.on('change', function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
 		});
-		messageTextarea.keypress(function(ev) {
+		messageTextarea.on('keypress', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				doSend();
 			}
 		});
 
-		$('#dpchat_send').click(function(ev) {
+		$('#dpchat_send').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			doSend();
@@ -221,11 +221,11 @@ var DpChat_Display = (function() {
 		html.push('</div>');
 
 		var el = $(html.join('')).appendTo('body');
-		el.click(function() {
+		el.on('click', function() {
 			el.remove();
 			DpChat.popChat();
 		});
-		$('#dpchat_proactive_close').click(function(ev) {
+		$('#dpchat_proactive_close').on('click', function(ev) {
 			ev.stopPropagation();
 			el.remove();
 
@@ -258,7 +258,7 @@ var DpChat_Display = (function() {
 		html.push('</div>');
 
 		overlay = $(html.join(''));
-		$('.close-trigger', overlay).click(function() {
+		$('.close-trigger', overlay).on('click', function() {
 			overlay.remove();
 		});
 
@@ -351,7 +351,7 @@ var DpChat_Display = (function() {
 		$('#dpchat_endchat').hide();
 		$('#dpchat_ended').show();
 
-		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinisehdUrl()).click(function(ev) {
+		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinisehdUrl()).on('click', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			window.open(DpChat.getFinisehdUrl());

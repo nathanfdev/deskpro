@@ -98,7 +98,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		this.newCategoryBtn = $('.new-category', this.wrapper);
 
-		this.newCategoryBtn.click(function(ev) {
+		this.newCategoryBtn.on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -108,7 +108,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		this.newCatOverlay = $('.new-snippet-category', this.wrapper);
 		this.newCatOverlay.detach().appendTo('body');
 
-		$('.close', this.newCatOverlay).click(function(ev) {
+		$('.close', this.newCatOverlay).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -116,7 +116,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.newCatBackdrop.hide();
 		});
 
-		$('.perm-type-opt', this.newCatOverlay).click(function() {
+		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
 			console.log('click');
 			if ($(this).val() == 'team') {
 				$('.perm-teams', self.newCatOverlay).slideDown();
@@ -125,12 +125,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			}
 		});
 
-		$('.new-cat-trigger', this.newCatOverlay).click(function() {
+		$('.new-cat-trigger', this.newCatOverlay).on('click', function() {
 			self.saveNewCat();
 		});
 
 		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});
-		this.newCatBackdrop.click(function() {
+		this.newCatBackdrop.on('click', function() {
 			self.newCatOverlay.slideUp();
 			self.newCatBackdrop.hide();
 		});
@@ -221,15 +221,15 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					});
 				}
 
-				backdrop.click(hideOverlay);
-				$('.close', this.newCatOverlay).click(function(ev) {
+				backdrop.on('click', hideOverlay);
+				$('.close', this.newCatOverlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 
 					hideOverlay();
 				});
 
-				$('.save-trigger', overlay).click(function(ev) {
+				$('.save-trigger', overlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 
@@ -248,7 +248,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					});
 				});
 
-				$('.delete-trigger', overlay).click(function(ev) {
+				$('.delete-trigger', overlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 

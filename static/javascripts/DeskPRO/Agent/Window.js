@@ -614,7 +614,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			contentElement: $('#alert_overlay'),
 			customClassname: 'window-alert',
 			onContentSet: function(eventData) {
-				$('.close-trigger', eventData.wrapperEl).click((function() {
+				$('.close-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
 				}).bind(this));
 			}
@@ -637,12 +637,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			contentElement: $('#confirm_overlay'),
 			zIndex: '99999999999999999999',
 			onContentSet: function(eventData) {
-				$('.cancel-trigger', eventData.wrapperEl).click((function() {
+				$('.cancel-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
 					self._confirmOverlay_callback_no();
 					self._confirmOverlay_callback_no = function() {};
 				}).bind(this));
-				$('.okay-trigger', eventData.wrapperEl).click((function() {
+				$('.okay-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
 					self._confirmOverlay_callback_yes();
 					self._confirmOverlay_callback_yes = function() {};
@@ -663,13 +663,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			contentElement: $('#prompt_overlay'),
 			zIndex: 'top',
 			onContentSet: function(eventData) {
-				$('.cancel-trigger', eventData.wrapperEl).click((function() {
+				$('.cancel-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
 					self._promptOverlay_callback_no($('#prompt_overlay_input').val(), $('#prompt_overlay'));
 					self._promptOverlay_callback_no = function() {};
 					$('#prompt_overlay_input').val('');
 				}).bind(this));
-				$('.okay-trigger', eventData.wrapperEl).click((function() {
+				$('.okay-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
 					self._promptOverlay_callback_yes($('#prompt_overlay_input').val(), $('#prompt_overlay'));
 					self._promptOverlay_callback_yes = function() {};
@@ -1563,7 +1563,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 
 		// Settings is a window
-		$('#user_settings_link').click(function() {
+		$('#user_settings_link').on('click', function() {
 			$('#settingswin').trigger('dp_open');
 		});
 
@@ -1625,7 +1625,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#sound_icon_in').data('last-value', $('#volume_controls .slider').slider('value'));
 
-		$('#sound_icon_in').click(function(ev) {
+		$('#sound_icon_in').on('click', function(ev) {
 			ev.stopPropagation();
 			if ($(this).is('.off')) {
 				var last = $(this).data('last-value');
@@ -1649,7 +1649,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// fire anything else by accident on bubbling
 		// Also the document click is unreliable since there may be other
 		// elements that also stop bubbling.
-		$('#volume_controls_back').click(function(ev) {
+		$('#volume_controls_back').on('click', function(ev) {
 			ev.stopPropagation();
 			closeSoundMenu();
 		});
@@ -1664,7 +1664,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#volume_controls').fadeIn();
 		};
 
-		$('#sound_icon').click(function(ev) {
+		$('#sound_icon').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1714,32 +1714,32 @@ DeskPRO.Agent.Window = new Orb.Class({
 			tabRoute: 'page:' + BASE_URL + 'agent/deals/new'
 		});
 
-		$('#create_ticket_btn').click(function() {
+		$('#create_ticket_btn').on('click', function() {
 			DeskPRO_Window.newTicketLoader.toggle();
 		});
-		$('#create_person_btn').click(function() {
+		$('#create_person_btn').on('click', function() {
 			DeskPRO_Window.newPersonLoader.toggle();
 		});
-		$('#create_organization_btn').click(function() {
+		$('#create_organization_btn').on('click', function() {
 			DeskPRO_Window.newOrganizationLoader.toggle();
 		});
-		$('#create_article_btn').click(function() {
+		$('#create_article_btn').on('click', function() {
 			DeskPRO_Window.newArticleLoader.toggle();
 		});
-		$('#create_news_btn').click(function() {
+		$('#create_news_btn').on('click', function() {
 			DeskPRO_Window.newNewsLoader.toggle();
 		});
-		$('#create_download_btn').click(function() {
+		$('#create_download_btn').on('click', function() {
 			DeskPRO_Window.newDownloadLoader.toggle();
 		});
-		$('#create_idea_btn').click(function() {
+		$('#create_idea_btn').on('click', function() {
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
-                $('#create_task_btn').click(function() {
+                $('#create_task_btn').on('click', function() {
                         $('form#newTaskForm input, form#newTaskForm select').val('');
                         DeskPRO_Window.newTaskLoader.toggle();
                 });
-                $('#create_deal_btn').click(function() {
+                $('#create_deal_btn').on('click', function() {
                         DeskPRO_Window.newDealLoader.toggle();
                 });
 
@@ -1747,7 +1747,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
 
 		// Create toggle
-		$('#createContentTrigger').click(function(ev) {
+		$('#createContentTrigger').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1769,13 +1769,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				list.hide();
 				backdrop.remove();
 			};
-			backdrop.click(close);
-			list.click(close);
+			backdrop.on('click', close);
+			list.on('click', close);
 		});
 
 
 		// Interface toggle
-		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').click(function(ev) {
+		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1797,15 +1797,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				list.hide();
 				backdrop.remove();
 			};
-			backdrop.click(close);
-			list.click(close);
-			$('ul', list).click(function(ev) {
+			backdrop.on('click', close);
+			list.on('click', close);
+			$('ul', list).on('click', function(ev) {
 				ev.stopPropagation();
 			});
 		});
 
 		// Status
-		$('#agent_status_trigger').click(function(ev) {
+		$('#agent_status_trigger').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1827,18 +1827,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 				list.hide();
 				backdrop.remove();
 			};
-			backdrop.click(close);
-			list.click(close);
-			$('#agent_status_away_overlay').click(close);
+			backdrop.on('click', close);
+			list.on('click', close);
+			$('#agent_status_away_overlay').on('click', close);
 		});
 
-		$('#agent_status_menu .status_go_available').click(function() {
+		$('#agent_status_menu .status_go_available').on('click', function() {
 			self.toggleAgentStatus('available');
 		});
-		$('#agent_status_menu .status_go_away').click(function() {
+		$('#agent_status_menu .status_go_away').on('click', function() {
 			self.toggleAgentStatus('away');
 		});
-		$('#agent_status_menu .status_go_dnd').click(function() {
+		$('#agent_status_menu .status_go_dnd').on('click', function() {
 			self.toggleAgentStatus('dnd');
 		});
 
@@ -1921,7 +1921,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.sections[el.attr('id')] = handler;
 
 			if (!el.is('.no-click-switch')) {
-				el.click(function() { self.switchToSection(el.attr('id')) });
+				el.on('click', function() { self.switchToSection(el.attr('id')) });
 			}
 		});
 	},
@@ -2112,7 +2112,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.attr('data-tipped', tipUrl);
 				el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
 
-				el.click(function(ev) {
+				el.on('click', function(ev) {
 					Tipped.toggle(this);
 				});
 
@@ -2203,14 +2203,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			check.insertAfter(input)
 
-			input.change(function(ev) {
+			input.on('change', function(ev) {
 				if ($(this).is(':checked')) {
 					check.addClass('checked');
 				} else {
 					check.removeClass('checked');
 				}
 			});
-			check.click(function(ev) {
+			check.on('click', function(ev) {
 				ev.stopPropagation();
 				if (input.is(':checked')) {
 					$(this).addClass('checked');
@@ -2251,7 +2251,7 @@ function toggle_visibility(elId, parentId) {
 		back.css('z-index', 10000);
 		back.appendTo('body');
 
-		back.click(function() {
+		back.on('click', function() {
 			el.hide();
 			back.remove();
 		});

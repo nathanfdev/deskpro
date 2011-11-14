@@ -80,12 +80,12 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		this.departmentId = 0;
 
 		var self = this;
-		this.depSelect.change(function() {
+		this.depSelect.on('change', function() {
 			self.handleDepChange();
 		});
 		this.depSelect.data('original-name', this.depSelect.attr('name'));
 
-		$('select.sub_department_id', this.el).change(function(){
+		$('select.sub_department_id', this.el).on('change', function(){
 			self.setDepartment($(this).val());
 		});
 
@@ -95,7 +95,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 			var wrapper = this;
 
-			parentSel.change(function() {
+			parentSel.on('change', function() {
 				var val = $(this).val();
 				var sub = $('.sub-options-' + val, wrapper);
 
@@ -115,7 +115,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			});
 		});
 
-		$('form', this.el).submit(function(ev) {
+		$('form', this.el).on('submit', function(ev) {
 
 			$('.sub-options:hidden', this.el).remove();
 
@@ -227,7 +227,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initPreticketStatus: function() {
-		$('input, select', this.ticketForm).change((function() {
+		$('input, select', this.ticketForm).on('change', (function() {
 			this.updatePreticketStatus();
 		}).bind(this));
 	},

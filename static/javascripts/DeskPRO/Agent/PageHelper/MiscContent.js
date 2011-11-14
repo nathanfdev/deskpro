@@ -24,7 +24,7 @@ DeskPRO.Agent.PageHelper.MiscContent = new Orb.Class({
 	//#################################################################
 
 	_initCompareRevs: function() {
-		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+		$('.compare-trigger', this.wrapper).on('click', this.showCompareRev.bind(this));
 
 		var all_checks = $('input.rev-compare-check', this.wrapper);
 		var counter = 0;

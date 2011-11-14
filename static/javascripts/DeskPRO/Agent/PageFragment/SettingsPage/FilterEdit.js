@@ -18,11 +18,11 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 
 		var editor = new DeskPRO.Form.RuleBuilder(critTpl);
 		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
-		$('.add-term', critList).data('add-count', 0).click(function() {
+		$('.add-term', critList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 			});
 		}
 
-		this.getEl('save_btn').click(function(ev) {
+		this.getEl('save_btn').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

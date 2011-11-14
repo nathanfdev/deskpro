@@ -93,7 +93,7 @@ DeskPRO.User.Window = new Orb.Class({
 			$(this).data('form-validator-inst', v);
 		});
 
-		$('a.in-overlay').click(function(ev) {
+		$('a.in-overlay').on('click', function(ev) {
 			ev.preventDefault();
 
 			var el = $(this);

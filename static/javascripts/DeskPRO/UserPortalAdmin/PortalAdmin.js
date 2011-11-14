@@ -237,15 +237,15 @@ var PortalAdmin_Placeholder = new Orb.Class({
 		this.wrap.prepend(controls);
 		this.wrap.append('<div class="dp-drag-overlay" style="cursor: default;" />');
 
-		this.place.click(function() {
+		this.place.on('click', function() {
 			PortalAdmin.tellAdmin('open_placeholder_editor', { controller: self });
 		});
 
-		$('.dp-edit-html', controls).click(function() {
+		$('.dp-edit-html', controls).on('click', function() {
 			PortalAdmin.tellAdmin('open_placeholder_editor', { controller: self });
 		});
 
-		$('.dp-remove-block', controls).click(function() {
+		$('.dp-remove-block', controls).on('click', function() {
 			if (confirm('Are you sure you want to delete the custom HTML you already have set?')) {
 				self.reset();
 			}

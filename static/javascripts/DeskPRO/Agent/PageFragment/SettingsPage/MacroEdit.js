@@ -18,11 +18,11 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 
 		var editor = new DeskPRO.Form.RuleBuilder(actTpl);
 		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
-		$('.add-term', actList).data('add-count', 0).click(function() {
+		$('.add-term', actList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'actions['+count+']';
 
@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 			});
 		}
 
-		this.getEl('save_btn').click(function(ev) {
+		this.getEl('save_btn').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

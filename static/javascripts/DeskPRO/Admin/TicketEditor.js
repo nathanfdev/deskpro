@@ -110,7 +110,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 		this.initDisplayItemRuleEditor(data);
 
 		var self = this;
-		$('.remove', item).click(function() { self.removeDisplayItem(item); });
+		$('.remove', item).on('click', function() { self.removeDisplayItem(item); });
 
 		return item;
 	},
@@ -122,7 +122,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 		var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
@@ -130,7 +130,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 		var self = this;
 
-		$('.search-form.ruletype-all .add-term', this.context).data('add-count', 0).click(function() {
+		$('.search-form.ruletype-all .add-term', this.context).data('add-count', 0).on('click', function() {
 			var count = parseInt(itemEl.data('editor-all-add-count'));
 			var basename = 'terms_all['+count+']';
 			itemEl.data('editor-all-add-count', count+1);
@@ -140,13 +140,13 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 		var editor2 = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor2.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
 		var to_el2 = $('.search-form.ruletype-any .rule-list', itemEl);
 
-		$('.search-form.ruletype-any .add-term', this.context).data('add-count', 0).click(function() {
+		$('.search-form.ruletype-any .add-term', this.context).data('add-count', 0).on('click', function() {
 			var count = parseInt(itemEl.data('editor-any-add-count'));
 			var basename = 'terms_any['+count+']';
 			itemEl.data('editor-all-any-count', count+1);
@@ -162,7 +162,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 		if ($('.display_item_list > li', this.context).length == 1) {
 			$('.no_elements_message', this.context).show();
 		}
-		
+
 		var className = itemEl.data('id-class');
 		var els = $('.agent-sections-wrap li.' + className, this.context);
 		if (!els.length) {

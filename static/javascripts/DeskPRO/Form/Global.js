@@ -16,7 +16,7 @@ DeskPRO.Form.Global = new Class({
 
 		var tpl_html = $('.deskpro-repeatable-field-tpl', field).val();
 
-		$('.deskpro-repeatable-field-addbtn', field).click(function() {
+		$('.deskpro-repeatable-field-addbtn', field).on('click', function() {
 			var html = tpl_html.replace(/new_ID/, 'new_' + Orb.uuid());
 			$('.deskpro-repeatable-field-wrap', field).append(html);
 		});

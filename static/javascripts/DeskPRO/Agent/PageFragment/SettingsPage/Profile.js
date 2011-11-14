@@ -56,7 +56,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 		var passCode = null;
 
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

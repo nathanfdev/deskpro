@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Orb.Class({
 
 	_initBasic: function() {
 		var self = this;
-		$('> .summary > .toggle', this.wrapper).click(function() {
+		$('> .summary > .toggle', this.wrapper).on('click', function() {
 			$('> .summary', self.wrapper).hide();
 			$('> .criteria', self.wrapper).slideDown();
 		});
@@ -32,11 +32,11 @@ DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Orb.Class({
 
 		var editor = new DeskPRO.Form.RuleBuilder($('.search-tpl', this.wrapper));
 		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
-		$('.search-form .add-term').data('add-count', 0).click(function() {
+		$('.search-form .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -46,7 +46,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Orb.Class({
 		});
 
 		var self = this;
-		$('button.run-filter-trigger', this.wrapper).click(function() {
+		$('button.run-filter-trigger', this.wrapper).on('click', function() {
 			self.submitForm();
 		});
 

@@ -1,15 +1,15 @@
 Orb.createNamespace('DeskPRO.Admin.PageHandler');
 
 DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
-	
+
 	Extends: DeskPRO.Admin.PageHandler.Basic,
-	
+
 	createLi: null,
-	
+
 	initPage: function() {
 		this.createLi = $('li.create:first');
-		$('button.save-trigger', this.createLi).click(this.saveLabel.bind(this));
-		
+		$('button.save-trigger', this.createLi).on('click', this.saveLabel.bind(this));
+
 		// Delete button for each label
 		var self = this;
 		$('ul.item-list').delegate('li.delete-trigger', 'click', function(ev) {
@@ -20,21 +20,21 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 			self.renameLabel($(this).parent().parent().parent());
 		});
 
-		$('#rename_label_overlay button.save-trigger').click(this.doRenameLabel.bind(this));
+		$('#rename_label_overlay button.save-trigger').on('click', this.doRenameLabel.bind(this));
 
 		this.renameOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#rename_label_overlay')
 		});
 	},
-	
+
 	saveLabel: function() {
 		var label = $('input[name="label"]', this.createLi).val().trim();
 		if (!label.length) {
 			return;
 		}
-		
+
 		$('button.save-trigger', this.createLi).html('...');
-		
+
 		$.ajax({
 			url: this.getMetaData('newLabelUrl'),
 			type: 'POST',
@@ -66,26 +66,26 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 
 		window.location = url;
 	},
-	
+
 	_handleSaveLabelSuccess: function(data) {
-		
+
 		$('button.save-trigger', this.createLi).html('Create New Label');
-		
+
 		if (data.errorMessage) {
 			alert(data.errorMessage);
 			return;
 		}
-		
+
 		$(data.html).hide().insertAfter(this.createLi).slideDown();
 		$('input[name="label"]', this.createLi).val('');
 	},
-	
+
 	deleteLabel: function(li) {
 		if (confirm('Are you sure you want to delete this label?')) {
 			this._deleteLabel(li);
 		}
 	},
-	
+
 	_deleteLabel: function(li) {
 		var label = li.data('label');
 		$.ajax({
@@ -98,7 +98,7 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 
 			}
 		});
-		
+
 		li.slideUp(function() {
 			li.remove();
 		});

@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			zIndex: 'none'
 		});
 
-		$('.save-trigger', contactEditor).click(function(ev) {
+		$('.save-trigger', contactEditor).on('click', function(ev) {
 
 			var formData = $(':input, select, textarea', contactEditor).serializeArray();
 

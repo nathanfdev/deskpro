@@ -52,7 +52,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		if (this.options.escapeClose) {
-			$(document).keydown((function (ev) {
+			$(document).on('keydown', (function (ev) {
 				if (ev.which == 27) {
 					this.closeOverlay();
 				}
@@ -243,7 +243,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			this.elements.modal.appendTo('body');
 
 			if (this.options.modalClickClose) {
-				this.elements.modal.click((function() {
+				this.elements.modal.on('click', (function() {
 					this.closeOverlay();
 				}).bind(this));
 			}
@@ -369,7 +369,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			$('.overlay-title:first', this.elements.wrapper).prepend('<a class="close close-trigger close-overlay">Close</a>');
 		}
 
-		$('.overlay-close-trigger, .close-trigger', this.elements.outerWrapper).click((function (ev) {
+		$('.overlay-close-trigger, .close-trigger', this.elements.outerWrapper).on('click', (function (ev) {
 			ev.preventDefault();
 			this.closeOverlay();
 		}).bind(this));
@@ -407,9 +407,9 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}).bind(this);
 
 		if (el.is('.dbl-click-trigger')) {
-			el.dblclick(fn);
+			el.on('dblclick', fn);
 		} else {
-			el.click(fn);
+			el.on('click', fn);
 		}
 	},
 

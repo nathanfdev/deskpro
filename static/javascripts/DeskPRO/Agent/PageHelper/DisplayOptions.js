@@ -21,7 +21,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			this.options.triggerElement = $('.display-options-trigger', this.page.wrapper);
 		}
 
-		$(this.options.triggerElement).click((function(ev) {
+		$(this.options.triggerElement).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.open();
@@ -71,25 +71,25 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this.wrapper.detach().appendTo('body');
 		this.wrapper.css('z-index', '1000100');
 
-		this.wrapper.click(function(ev) {
+		this.wrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
 		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
 		this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
 
-		this.backdropEl.click((function(ev) {
+		this.backdropEl.on('click', (function(ev) {
 			ev.stopPropagation();
 			this.close();
 		}).bind(this));
 
-		$('header .close-trigger', this.wrapper).click((function(ev) {
+		$('header .close-trigger', this.wrapper).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();
 		}).bind(this));
 
-		$('.save-trigger', this.wrapper).click((function() {
+		$('.save-trigger', this.wrapper).on('click', (function() {
 			this.saveDisplayOptions();
 		}).bind(this));
 	},

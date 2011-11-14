@@ -12,7 +12,7 @@ Orb.createNamespace('DeskPRO.Form');
  *    <script type="text/javascript" charset="utf-8">
  *        $(document).ready(function() {
  *            var editor = new DeskPRO.Form.RuleBuilder($('#rules-tpl'));
- *            $('#add_rule_btn').data('add-count', 0).click(function() {
+ *            $('#add_rule_btn').data('add-count', 0).on('click', function() {
  *                var count = parseInt($(this).data('add-count'));
  *                var basename = 'newrule['+count+']';
  *
@@ -140,11 +140,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var select = $('input.type:first', new_row);
 
 		var self = this;
-		var typeTrigger = $('.type .current-value', new_row).click(function(ev) {
+		var typeTrigger = $('.type .current-value', new_row).on('click', function(ev) {
 			self.menu.openMenu(ev);
 		});
 
-		$('.remove', new_row).click(function() {
+		$('.remove', new_row).on('click', function() {
 			self.removeRow(new_row);
 		});
 
@@ -199,7 +199,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 		}
 
 		// Handle when its type is changed
-		select.change((function() {
+		select.on('change', (function() {
 			this.handleSelectChange(new_row);
 		}).bind(this));
 
@@ -275,7 +275,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 				var spanEl = $('<span class="menu-trigger">(click to set value)</span>');
 				spanEl.appendTo(choice);
-				spanEl.click(function() {
+				spanEl.on('click', function() {
 					var enterCloseFn = function(ev) {
 						if (ev.keyCode == 13 && !ev.metaKey) {
 							inputEl.blur();
@@ -290,7 +290,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 					var backdrop = $('<div class="backdrop"></div>');
 					backdrop.appendTo('body');
-					backdrop.click(closeFn);
+					backdrop.on('click', closeFn);
 
 					var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
 					inputEl.detach().css('display', 'block').appendTo(wrapper);
@@ -299,13 +299,13 @@ DeskPRO.Form.RuleBuilder = new Class({
 						top: spanEl.offset().top
 					});
 					wrapper.appendTo('body').show();
-					inputEl.keypress(enterCloseFn).focus();
+					inputEl.on('keypress', enterCloseFn).focus();
 
-					$('.close-trigger', wrapper).click(closeFn);
+					$('.close-trigger', wrapper).on('click', closeFn);
 				});
 
 				inputEl.css('display', 'none');
-				inputEl.change(function() {
+				inputEl.on('change', function() {
 					var text = inputEl.val().trim();
 					if (!text) text = '(click to set value)';
 

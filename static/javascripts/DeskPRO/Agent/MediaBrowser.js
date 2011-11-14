@@ -71,21 +71,21 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			});
 
 			// Title
-			$('input.file-title').change(function() {
+			$('input.file-title').on('change', function() {
 				self.saveFileChanges(el)
 			});
 
-			$('.remove-trigger', el).click(function() {
+			$('.remove-trigger', el).on('click', function() {
 				$(el).remove();
 			});
 
-			$('.link-trigger', el).click(function() {
+			$('.link-trigger', el).on('click', function() {
 				self.fireEvent('addLinkCode', [$(this).data('code'), el]);
 			});
-			$('.image-trigger', el).click(function() {
+			$('.image-trigger', el).on('click', function() {
 				self.fireEvent('addImageCode', [$(this).data('code'), el]);
 			});
-			$('.image-edit-trigger', el).click(function() {
+			$('.image-edit-trigger', el).on('click', function() {
 				self.openImageEditor(el);
 			});
 		});
@@ -95,7 +95,7 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 
 	saveFileChanges: function(rowEl) {
 		rowEl = $(rowEl);
-		
+
 		var data = $(':input', rowEl).serializeArray();
 		var blob_id = rowEl.data('blob-id');
 
@@ -106,7 +106,7 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				
+
 			}
 		});
 	},
@@ -173,7 +173,7 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 					destroyOnClose: true
 				});
 
-				$('button.save-trigger', content).click(function() {
+				$('button.save-trigger', content).on('click', function() {
 					var data = $(':input', content).serializeArray();
 					$.ajax({
 						url: BASE_URL + 'agent/media-browser/save-image-editor/' + blob_id,

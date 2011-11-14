@@ -77,13 +77,13 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 		this.controlEl = $(this.options.controlEl);
 		this.controlEl.detach().hide().appendTo('body');
 
-		this.controlEl.click(this.close.bind(this));
+		this.controlEl.on('click', this.close.bind(this));
 
 		this.controlRealEl = $('.filter-group-editor', this.controlEl);
 
 		// Dont bubble clicks in the el to the underlaying control el,
 		// that would close the overlay
-		this.controlRealEl.click(function(ev) {
+		this.controlRealEl.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
@@ -110,12 +110,12 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 		}).bind(this));
 
 		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
-		this.backdrop.click(this.close.bind(this));
+		this.backdrop.on('click', this.close.bind(this));
 
 		this.backdrop2 = $('<div class="backdrop" />').hide().appendTo('body');
-		this.backdrop2.click(this.close.bind(this));
+		this.backdrop2.on('click', this.close.bind(this));
 
-		$('.close', this.controlRealEl).first().click((function(ev) {
+		$('.close', this.controlRealEl).first().on('click', (function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			this.close();
@@ -131,7 +131,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 	 * @param el
 	 */
 	enableTriggerElement: function(el) {
-		$(el).click((function(ev) {
+		$(el).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

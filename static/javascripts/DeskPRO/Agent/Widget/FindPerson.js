@@ -36,8 +36,8 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 		this.wrapper = this.overlay.getWrapper();
 
 		this.headerNav   = $('header > nav', this.wrapper);
-		this.simpleBtn   = $('.simple', this.headerNav).click(this.switchSimple.bind(this));
-		this.advancedBtn = $('.advanced', this.headerNav).click(this.switchAdvanced.bind(this));
+		this.simpleBtn   = $('.simple', this.headerNav).on('click', this.switchSimple.bind(this));
+		this.advancedBtn = $('.advanced', this.headerNav).on('click', this.switchAdvanced.bind(this));
 
 		this.results = $('section.deskpro-results-list', this.wrapper);
 		this.loading = $('section.results-loading', this.wrapper);
@@ -48,11 +48,11 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 		this.advancedForm = $('form.advanced:first', this.searchArea);
 
 		var self = this;
-		this.simpleForm.submit(function(ev) {
+		this.simpleForm.on('submit', function(ev) {
 			ev.preventDefault();
 			self.submitSearch($(this));
 		});
-		this.advancedForm.submit(function(ev) {
+		this.advancedForm.on('submit', function(ev) {
 			ev.preventDefault();
 			self.submitSearch($(this));
 		});
@@ -66,7 +66,7 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 		var criteriaTerms = $('.search-builder-tpl', this.wrapper);
 
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
-		$('.add-term', criteriaList).data('add-count', 0).click(function() {
+		$('.add-term', criteriaList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -160,7 +160,7 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 
 	_initNewResults: function() {
 		var self = this;
-		$('.choose-trigger', this.results).click(function(ev) {
+		$('.choose-trigger', this.results).on('click', function(ev) {
 
 			ev.preventDefault();
 

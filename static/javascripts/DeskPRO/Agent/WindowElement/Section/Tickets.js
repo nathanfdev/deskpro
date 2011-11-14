@@ -55,7 +55,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this._initFilters();
 		this._initFlagged();
 
-		$('#user_settings_filters_link').click(function() {
+		$('#user_settings_filters_link').on('click', function() {
 			var overlay = new DeskPRO.UI.Overlay({
 				contentMethod: 'iframe',
 				iframeUrl: BASE_URL + 'agent/settings/ticket-filters'
@@ -66,7 +66,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.activeNavClass = null;
 
-		$('.hold-ticket-count', this.sectionEl).click(function() {
+		$('.hold-ticket-count', this.sectionEl).on('click', function() {
 			self.toggleHoldDisplay();
 		});
 
@@ -153,7 +153,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
-		$('.launch-customfilters-settings', this.contentEl).click(function() {
+		$('.launch-customfilters-settings', this.contentEl).on('click', function() {
 			$('#settingswin').trigger('dp_open', 'filters');
 		});
 
@@ -265,7 +265,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
-		$('#tickets_outline_inbox_list .sub-toggle').click(function(ev) {
+		$('#tickets_outline_inbox_list .sub-toggle').on('click', function(ev) {
 			ev.stopPropagation();
 			var li = $(this).parent();
 			var sub = $('ul.sub-group', li);
@@ -622,7 +622,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		// Renaming flags
 		//------------------------------
 
-		$('#tickets_outline_flagged li').dblclick(function(ev) {
+		$('#tickets_outline_flagged li').on('dblclick', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -658,7 +658,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			var backdrop = $('<div class="backdrop"></div>');
 			backdrop.appendTo('body');
-			backdrop.click(closeFn);
+			backdrop.on('click', closeFn);
 
 			var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
 			inputEl.appendTo(wrapper);
@@ -667,9 +667,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				top: li.offset().top
 			});
 			wrapper.appendTo('body').show();
-			inputEl.keypress(enterCloseFn).focus();
+			inputEl.on('keypress', enterCloseFn).focus();
 
-			$('.close-trigger', wrapper).click(closeFn);
+			$('.close-trigger', wrapper).on('click', closeFn);
 		});
 	},
 

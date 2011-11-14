@@ -35,7 +35,7 @@ var DpChat_Display = (function() {
 		el.appendTo('body');
 		chatBoxBtn = el;
 
-		chatBoxBtn.click(function() {
+		chatBoxBtn.on('click', function() {
 			chatBox.addClass('dpchat-panel-open');
 		});
 
@@ -64,18 +64,18 @@ var DpChat_Display = (function() {
 
 		messageWrapper = $('#dpchat_messages');
 
-		$('#dpchat_closepanel').click(function() {
+		$('#dpchat_closepanel').on('click', function() {
 			chatBox.removeClass('dpchat-panel-open');
 		});
 
-		$('#dpchat_endchat').click(function() {
+		$('#dpchat_endchat').on('click', function() {
 			if (confirm('Are you sure you want to end this chat?')) {
 				DpChat.endChat();
 			}
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');
-		messageTextarea.keypress(function(ev) {
+		messageTextarea.on('keypress', function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
 
 			if (ev.keyCode == 13 && !ev.metaKey) {
@@ -123,7 +123,7 @@ var DpChat_Display = (function() {
 		html.push('</div>');
 
 		overlay = $(html.join(''));
-		$('.close-trigger', overlay).click(function() {
+		$('.close-trigger', overlay).on('click', function() {
 			overlay.remove();
 		});
 

@@ -6,12 +6,12 @@ DeskPRO.Admin.PageHandler.SettingsAdvanced = new Class({
 	initPage: function() {
 		this.filterBox = $('#settings_filter');
 		this.filterUpdateTimeout = null;
-		this.filterBox.keypress(this.handleFilterChange, this);
+		this.filterBox.on('keypress', this.handleFilterChange, this);
 
 		this.settingsRows = $('#settings_rows');
 
 		var self = this;
-		$('input.dp-set-value', this.settingsRows).change(function() {
+		$('input.dp-set-value', this.settingsRows).on('change', function() {
 			self.updateSettingFromInput($(this));
 		});
 	},

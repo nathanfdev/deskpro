@@ -8,16 +8,16 @@ DeskPRO.Admin.WindowElement.MainMenu.AdminSearchBoxResults = new Class({
 
 	init: function () {
 		var self = this;
-		$('#window_search_box').focus(function(ev) {
+		$('#window_search_box').on('focus', function(ev) {
 			if (self.shouldShowMenu() && !$('#window_search_form .search-drop:first').is(':visible')) {
 				self.options.mainMenuOpener.openMenu($('#window_search_form'), ev);
 			}
-		}).click(function(ev) {
+		}).on('click', function(ev) {
 			// stop propgation because the focus above will open
 			// the menu, dont want to bubble click into the container
 			// to re-close it again
 			ev.stopPropagation();
-		}).keypress(this.queryChanged.bind(this));
+		}).on('keypress', this.queryChanged.bind(this));
 
 		this.searchEls = $('a[data-search-keywords]', '#admin_header_menus');
 	},

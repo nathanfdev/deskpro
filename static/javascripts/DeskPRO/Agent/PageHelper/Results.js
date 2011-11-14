@@ -80,7 +80,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 			this.showNoMore();
 		}
 
-		this.moreButton.click(this.loadNextPage.bind(this));
+		this.moreButton.on('click', this.loadNextPage.bind(this));
 	},
 
 

@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		this.form = $('form', this.wrapper).submit(function(ev) {
+		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 		});
 
@@ -25,7 +25,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initMessageSection();
 		this._initOtherSection();
 
-		$('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
+		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 	},
 
 	closeSelf: function() {
@@ -93,7 +93,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var userfields = this.getEl('user_choice');
 		var rechooseBtn = this.getEl('switch_user');
 
-		rechooseBtn.click(function() {
+		rechooseBtn.on('click', function() {
 			showUserChoice();
 		});
 
@@ -204,7 +204,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		var self = this;
-		this.getEl('dep').change(function() {
+		this.getEl('dep').on('change', function() {
 			if (parseInt($(this).val())) {
 				self.getEl('dep_section').addClass('done');
 			} else {
@@ -227,7 +227,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
-		this.getEl('subject').change(fn).blur(fn).keypress(fn);
+		this.getEl('subject').on('change', fn).on('blur', fn).on('keypress', fn);
 	},
 
 	//#########################################################################
@@ -244,8 +244,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
-		this.getEl('message').change(fn).blur(fn).keypress(fn);
-		this.getEl('text_snippets_btn').click(function(ev) {
+		this.getEl('message').on('change', fn).on('blur', fn).on('keypress', fn);
+		this.getEl('text_snippets_btn').on('click', function(ev) {
 			ev.preventDefault();
 			self.openSnippetsViewer();
 		});
@@ -326,12 +326,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		// Add CC's
 		var self = this;
-		$('.add-cc-trigger', this.wrapper).click(function() {
+		$('.add-cc-trigger', this.wrapper).on('click', function() {
 			var txt = self.getEl('add_cc_txt');
 			var val = txt.val();
 			var el = $('<li>' + val + '<input type="hidden" name="newticket[new_parts][]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
 
-			$('.remove-trigger', el).click(function(ev) {
+			$('.remove-trigger', el).on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				el.remove();

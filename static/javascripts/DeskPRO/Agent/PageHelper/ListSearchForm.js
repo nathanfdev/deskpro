@@ -22,11 +22,11 @@ DeskPRO.Agent.PageHelper.ListSearchForm = new Orb.Class({
 
 	_initSearchOptions: function() {
 		var editBtn = $('.summary .edit', this.topSection);
-		editBtn.click(this.showSearchForm.bind(this));
+		editBtn.on('click', this.showSearchForm.bind(this));
 
 		var form = this.form;
 		var self = this;
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 
 			var url = form.attr('action');
@@ -41,7 +41,7 @@ DeskPRO.Agent.PageHelper.ListSearchForm = new Orb.Class({
 		var criteriaTerms = $('.search-builder-tpl', this.topSection);
 
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
-		$('.add-term', criteriaList).data('add-count', 0).click(function() {
+		$('.add-term', criteriaList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 

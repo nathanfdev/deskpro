@@ -180,12 +180,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				}
 			});
 
-			$('#publish_outline_'+type+'cat_editmode').click(function() {
+			$('#publish_outline_'+type+'cat_editmode').on('click', function() {
 				var ul = $(this).parent().parent();
 				ul.toggleClass('edit-mode');
 			});
 
-			$('#publish_outline_'+type+'cat_edittiles').click(function() {
+			$('#publish_outline_'+type+'cat_edittiles').on('click', function() {
 				if (ed.isTitleEditing()) {
 					ed.endEditTitles();
 				} else {
@@ -193,13 +193,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				}
 			});
 
-			$('#publish_outline_'+type+'cat_addcat').click(function() {
+			$('#publish_outline_'+type+'cat_addcat').on('click', function() {
 				var ul = $(this).parent().parent();
 				ul.toggleClass('edit-mode');
 				ed.addNew();
 			});
 
-			$('#publish_outline_'+type+'_add').click(function() {
+			$('#publish_outline_'+type+'_add').on('click', function() {
 				var name = $(this).data('newloader-name');
 				if (!name || !DeskPRO_Window[name]) {
 					return;
@@ -292,8 +292,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		this.glossaryWrapper = $('#publish_outline_glossary');
 
 		var self = this;
-		$('.glossary-new-trigger', this.glossaryWrapper).click(this.showGlossaryAddDlg.bind(this));
-		$('.glossary-word-trigger', this.glossaryWrapper).click(function(ev) {
+		$('.glossary-new-trigger', this.glossaryWrapper).on('click', this.showGlossaryAddDlg.bind(this));
+		$('.glossary-word-trigger', this.glossaryWrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.showGlossaryEditDlg($(this).data('word-id'));
 		});
@@ -340,7 +340,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			customClassname: 'normal-size'
 		});
 
-		$('.save-trigger', el).click(this.saveNewWord.bind(this));
+		$('.save-trigger', el).on('click', this.saveNewWord.bind(this));
 
 		return this.addDlg;
 	},
@@ -354,8 +354,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			customClassname: 'normal-size'
 		});
 
-		$('.save-trigger', el).click(this.saveEditWord.bind(this));
-		$('.delete-trigger', el).click(this.deleteEditWord.bind(this));
+		$('.save-trigger', el).on('click', this.saveEditWord.bind(this));
+		$('.delete-trigger', el).on('click', this.deleteEditWord.bind(this));
 
 		return this.editDlg;
 	},

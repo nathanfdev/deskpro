@@ -18,8 +18,8 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 this._initUserSection();
                 this._initOrgEdit();
 
-                $('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
-                $('.select-deal-type').change(function(){
+                $('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
+                $('.select-deal-type').on('change', function(){
 
                     var dealId = 0;
                     $.ajax({
@@ -58,7 +58,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 			}
 		});
 	},
-        
+
         _initDepartmentSection: function() {
 
             var self = this;
@@ -69,14 +69,14 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
             onSave: function(ob) {
                 var selections = ob.getAllSelected();
                 var agent_id = parseInt(selections.agents || 0);
-                
+
                 var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
 
                 var value = selections.agents;
                 if (value == 0) {
                     label = 'Unassigned';
                 }
-                
+
                 self.getEl('agent_id').val(agent_id);
 		self.getEl('agent_label').text(label);
 
@@ -94,7 +94,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		var userfields = this.getEl('user_choice');
 		var rechooseBtn = this.getEl('switch_user');
 
-		rechooseBtn.click(function() {
+		rechooseBtn.on('click', function() {
 			showUserChoice();
 		});
 
@@ -166,16 +166,16 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	_initOrgEdit: function() {
 		var self = this;
-		
+
 		var orgEdit    = this.getEl('org_edit_wrap');
 
 		//orgEnableBtn
 		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
 			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
-			
+
 		}).bind('orgsearchboxcreate', function(ev, term, name) {
-			
-			
+
+
 		}).bind('orgsearchreverted', function(ev, term, name) {
 
 		});

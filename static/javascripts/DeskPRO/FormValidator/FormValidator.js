@@ -8,7 +8,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 		this.el = $(el);
 
 		if (this.el.is('form')) {
-			this.el.submit(function(ev) {
+			this.el.on('submit', function(ev) {
 				self.validateAll();
 				if (self.hasErrors()) {
 					ev.preventDefault();

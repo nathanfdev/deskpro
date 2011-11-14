@@ -7,7 +7,7 @@ DeskPRO.Admin.ElementHandler.LabelsPage = new Orb.Class({
 		var self = this;
 
 		var newForm = $('#new_label_form');
-		newForm.submit(function(ev) {
+		newForm.on('submit', function(ev) {
 			ev.preventDefault();
 
 			var url = newForm.attr('action');

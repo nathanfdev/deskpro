@@ -46,7 +46,7 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 			}
 		});
 
-		$('.heading-tabs li a', this.el).click(function(ev) {
+		$('.heading-tabs li a', this.el).on('click', function(ev) {
 			ev.preventDefault();
 		});
 
@@ -124,7 +124,7 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 		tabEl.addClass('loaded');
 
 		this.injectLoadingEl(content);
-		
+
 		$.ajax({
 			url: BASE_URL + 'kb/popular?_partial',
 			dataType: 'html',
@@ -145,14 +145,14 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 
 		this.filterForm = $('#kb_find_form, #kb_find_form_btm');
 		if (!this.filterForm.length) return;
-		
-		this.filterForm.submit(function(ev) {
+
+		this.filterForm.on('submit', function(ev) {
 			ev.preventDefault();
 			self.submitFilterForm($(this));
 		});
 
 		var content = $('.tab-contents:first .find.tab-content:first', this.el);
-		$('.page-link', content).click(function(ev) {
+		$('.page-link', content).on('click', function(ev) {
 			ev.preventDefault();
 			self.clickFilterPagenav($(this));
 		});
@@ -163,7 +163,7 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 		this.injectLoadingEl(content);
 
 		var formData = form.serializeArray();
-		
+
 		var formUrl = form.attr('action');
 		formUrl = Orb.appendQueryData(formUrl, '_partial');
 

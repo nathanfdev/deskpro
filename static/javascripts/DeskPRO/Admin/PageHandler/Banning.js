@@ -6,7 +6,7 @@ DeskPRO.Admin.PageHandler.Banning = new Class({
 
 	initPage: function() {
 		var self = this;
-		
+
 		this.newIpOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: $('#new_ip_ban_btn'),
 			contentElement: $('#ip_ban_overlay'),
@@ -14,7 +14,7 @@ DeskPRO.Admin.PageHandler.Banning = new Class({
 				$('#ip_ban_overlay input[name="ip"]').val('');
 			}
 		});
-		$('#ip_ban_overlay button.save-trigger').click(this.doNewIp.bind(this));
+		$('#ip_ban_overlay button.save-trigger').on('click', this.doNewIp.bind(this));
 
 		this.newEmailOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: $('#new_email_ban_btn'),
@@ -23,7 +23,7 @@ DeskPRO.Admin.PageHandler.Banning = new Class({
 				$('#email_ban_overlay input[name="email"]').val('');
 			}
 		});
-		$('#email_ban_overlay button.save-trigger').click(this.doNewEmail.bind(this));
+		$('#email_ban_overlay button.save-trigger').on('click', this.doNewEmail.bind(this));
 
 		$('#ip_rows').delegate('a.delete-trigger', 'click', function(ev) {
 			ev.preventDefault();

@@ -11,7 +11,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
-		this.getElById('replybox_replytab_btn').click(function() {
+		this.getElById('replybox_replytab_btn').on('click', function() {
 			$(this).addClass('on');
 			self.getElById('replybox_notetab_btn').removeClass('on');
 			$('.hide-note:not(.is-hidden)', self.el).show();
@@ -19,7 +19,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('is_note').val('0');
 		});
 
-		this.getElById('replybox_notetab_btn').click(function() {
+		this.getElById('replybox_notetab_btn').on('click', function() {
 			$(this).addClass('on');
 			self.getElById('replybox_replytab_btn').removeClass('on');
 			$('.hide-note', self.el).hide();
@@ -31,7 +31,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Expanding cc row
 		//------------------------------
 
-		$('.expander').click(function() {
+		$('.expander').on('click', function() {
 			var target = $($(this).data('target'));
 			if (target.is(':visible')) {
 				$(this).removeClass('expanded').addClass('is-hidden');
@@ -242,12 +242,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Submit
 		//------------------------------
 
-		this.el.submit(function(ev) {
+		this.el.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 		});
 
-		this.getElById('send_btn').click(function(ev) {
+		this.getElById('send_btn').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

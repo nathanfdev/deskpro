@@ -23,17 +23,17 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 		this.statusSaved  = $('header .saved', this.el);
 		this.statusSaving = $('header .is-loading', this.el);
 
-		this.statusSave.click(function(ev) {
+		this.statusSave.on('click', function(ev) {
 			ev.preventDefault();
 			self.save();
 		});
 
-		this.textarea.change(this.touch.bind(this));
-		this.textarea.keypress(this.touch.bind(this));
+		this.textarea.on('change', this.touch.bind(this));
+		this.textarea.on('keypress', this.touch.bind(this));
 
                 // Added by Abdullah Kiser inorder to catch the touch event.
-                this.inout.change(this.touch.bind(this));
-		this.inout.keypress(this.touch.bind(this));
+                this.inout.on('change', this.touch.bind(this));
+		this.inout.on('keypress', this.touch.bind(this));
 
 
 		this.countEl = null;

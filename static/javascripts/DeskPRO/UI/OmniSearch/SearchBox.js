@@ -37,12 +37,12 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		this.inputEl      = $(this.options.inputEl);
 		this.contextBtnEl = $(this.options.contextBtnEl);
 
-		$('.clear-trigger:first', this.wrapperEl).click((function(ev) {
+		$('.clear-trigger:first', this.wrapperEl).on('click', (function(ev) {
 			ev.preventDefault();
 			this.clear();
 		}).bind(this));
 
-		$('.builder-trigger:first', this.wrapperEl).click((function(ev) {
+		$('.builder-trigger:first', this.wrapperEl).on('click', (function(ev) {
 			ev.preventDefault();
 			this.showBuilder();
 		}).bind(this));
@@ -50,13 +50,13 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		this.contexts = {};
 		this.activeContextId = null;
 
-		this.wrapperEl.click(function(ev) {
+		this.wrapperEl.on('click', function(ev) {
 			if (ev.target == this) {
 				self.inputEl.focus();
 			}
 		});
 
-		this.inputEl.keypress(function(ev) {
+		this.inputEl.on('keypress', function(ev) {
 			if (ev.which == 58 /* colon : key */ || ev.which == 61 /* equals = */) {
 				ev.preventDefault();
 				var val = $(this).val().trim();
@@ -76,17 +76,17 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 			$(this).attr('size', $(this).val().length+2);
 		});
 
-		this.inputEl.focus(function() {
+		this.inputEl.on('focus', function() {
 			self.wrapperEl.addClass('focus');
-		}).blur(function() {
+		}).on('blur', function() {
 			self.wrapperEl.removeClass('focus');
 		});
 
-		$(this.wrapperEl).click(function() {
+		$(this.wrapperEl).on('click', function() {
 			self.inputEl.focus();
 		});
 
-		$('.remove-all-terms-trigger:first', this.wrapperEl).click(function(ev) {
+		$('.remove-all-terms-trigger:first', this.wrapperEl).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -234,7 +234,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		var removeTrigger = $('.remove-term-trigger:first', el);
 		if (removeTrigger.length) {
-			removeTrigger.click((function() {
+			removeTrigger.on('click', (function() {
 				this.removeSearchTerm(el);
 			}).bind(this));
 		}

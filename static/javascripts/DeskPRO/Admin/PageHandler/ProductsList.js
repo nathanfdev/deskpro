@@ -27,7 +27,7 @@ DeskPRO.Admin.PageHandler.ProductsList = new Class({
 			update: function() { self.sendOrderUpdate() }
 		});
 
-		$('.delete-trigger').click(function() {
+		$('.delete-trigger').on('click', function() {
 			var id = $(this).data('product-id');
 			$.ajax({
 				url: BASE_URL + 'admin/products/' + id + '/delete',

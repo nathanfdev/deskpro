@@ -104,11 +104,11 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 			context: this,
 			success: function(data) {
 				var editEl = $(DeskPRO_Window.util.getPlainTpl('#comment_edit_tpl'));
-				$('.save-trigger', editEl).click(function(ev) {
+				$('.save-trigger', editEl).on('click', function(ev) {
 					ev.preventDefault();
 					self._saveEditComment(commentEl, editEl, typename, commentId);
 				});
-				$('.cancel-trigger', editEl).click(function(ev) {
+				$('.cancel-trigger', editEl).on('click', function(ev) {
 					ev.preventDefault();
 					self._closeEditComment(commentEl, editEl);
 				});

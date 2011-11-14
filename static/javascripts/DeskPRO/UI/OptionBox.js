@@ -17,7 +17,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		this.el = this.options.element;
 
 		if (this.options.trigger) {
-			$(this.options.trigger).click(this.open.bind(this));
+			$(this.options.trigger).on('click', this.open.bind(this));
 		}
 	},
 
@@ -46,16 +46,16 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			this.el.detach().appendTo('body');
 		}
 
-		this.el.click(function(ev) {
+		this.el.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
-		this.backdrop.click(function(ev) {
+		this.backdrop.on('click', function(ev) {
 			ev.stopPropagation();
 			self.close();
 		});
 
-		$('.close-trigger', this.el).click(function(ev) {
+		$('.close-trigger', this.el).on('click', function(ev) {
 			ev.stopPropagation();
 			self.close();
 		});
@@ -66,7 +66,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		// Events on checkboxes and filter
 		//------------------------------
 
-		$(':checkbox, :radio', this.el).change(function() {
+		$(':checkbox, :radio', this.el).on('change', function() {
 			self.clickCheckbox($(this));
 		});
 
@@ -99,7 +99,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			amClicking = false;
 		});
 
-		$(':radio, :checkbox', this.el).change(function() {
+		$(':radio, :checkbox', this.el).on('change', function() {
 			if ($(this).is(':radio')) {
 				if (allSame) {
 					self.el.find('li.on').removeClass('on');
@@ -115,7 +115,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			}
 		});
 
-		$('header .all-check', this.el).click(function() {
+		$('header .all-check', this.el).on('click', function() {
 			var section = self._findSection($(this));
 			if ($(this).is(':checked')) {
 				$('ul :checkbox', section).attr('checked', true);
@@ -125,9 +125,9 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			self.updateCountEls(section);
 		});
 
-		$('header input.filter-box', this.el).keyup(function() {
+		$('header input.filter-box', this.el).on('keyup', function() {
 			self.updateFilter($(this));
-		}).change(function() {
+		}).on('change', function() {
 			self.updateFilter($(this));
 		});
 

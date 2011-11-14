@@ -15,17 +15,17 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 
 	initPage: function() {
 		var self = this;
-		$('.save-trigger').click(function() {
+		$('.save-trigger').on('click', function() {
 			$('form:first').submit();
 		});
-		$('.cancel-trigger').click(function() {
+		$('.cancel-trigger').on('click', function() {
 			self.closeThisPopout();
 		});
 
 		// Criteria builder
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
 
-		$('.criteria-form .add-term').data('add-count', 0).click(function() {
+		$('.criteria-form .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -55,7 +55,7 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			}
 		});
 
-		$('.actions-form .add-term').data('add-count', 0).click(function() {
+		$('.actions-form .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'actions['+count+']';
 

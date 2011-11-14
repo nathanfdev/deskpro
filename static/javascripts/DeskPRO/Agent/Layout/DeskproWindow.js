@@ -15,7 +15,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		this.CENTER_START = 55;
 
 		// Handle window resizes
-		$(window).resize(function() {
+		$(window).on('resize', function() {
 			self.doResize();
 		});
 	},

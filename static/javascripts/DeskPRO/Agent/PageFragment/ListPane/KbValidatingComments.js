@@ -7,17 +7,17 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 		this.wrapper = el;
 
 		var self = this;
-		$('button.view-trigger', this.wrapper).click(function(ev) {
+		$('button.view-trigger', this.wrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.viewComment($(this).parent().parent().parent().parent());
 		});
 
-		$('button.ignore-trigger', this.wrapper).click(function(ev) {
+		$('button.ignore-trigger', this.wrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.ignoreComment($(this).parent().parent().parent().parent());
 		});
 
-		$('button.delete-trigger', this.wrapper).click(function(ev) {
+		$('button.delete-trigger', this.wrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.deleteComment($(this).parent().parent().parent().parent());
 		});

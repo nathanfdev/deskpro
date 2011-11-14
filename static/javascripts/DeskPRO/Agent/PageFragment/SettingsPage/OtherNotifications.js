@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.OtherNotifications = new Orb.Class({
 
 		var form = $('form', this.el);
 
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

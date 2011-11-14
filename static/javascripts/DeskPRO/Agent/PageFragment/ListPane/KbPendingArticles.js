@@ -60,10 +60,10 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 			zIndex: 'top'
 		});
 
-		$('.add-new-trigger', this.el).click(function() {
+		$('.add-new-trigger', this.el).on('click', function() {
 			newFormOverlay.open();
 		});
-		$('.save-new-trigger', this.getEl('add_new_overlay')).click(function() {
+		$('.save-new-trigger', this.getEl('add_new_overlay')).on('click', function() {
 			self.saveNewPendingArticle();
 			newFormOverlay.close();
 		});

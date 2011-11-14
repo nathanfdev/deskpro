@@ -43,16 +43,16 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 
 		this.currentValue = $('.status-value', this.rowEl);
 		this.currentValue.text('(click to set)');
-		this.currentValue.click(this.show.bind(this));
+		this.currentValue.on('click', this.show.bind(this));
 
 		this.dateWrap = $('.date-wrap', this.rowEl);
 
 		this.backdrop = $('<div class="backdrop" style="display: none"></div>');
 		this.backdrop.appendTo('body');
-		this.backdrop.click(this.hide.bind(this));
+		this.backdrop.on('click', this.hide.bind(this));
 
 		this.wrapper = $('<div class="field-overlay" style="display:none"><div class="close-trigger"></div></div>');
-		$('.close-trigger', this.wrapper).click(this.hide.bind(this));
+		$('.close-trigger', this.wrapper).on('click', this.hide.bind(this));
 
 		this.dateWrap.detach().appendTo(this.wrapper).css('display', 'block');
 		this.wrapper.appendTo('body');
@@ -102,7 +102,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 		// human times "1 day ago" etc
 		//------------------------------
 
-		this.date1Display.change(function() {
+		this.date1Display.on('change', function() {
 			var date = getDate($(this));
 			if (!date) {
 				$(this).val('');
@@ -111,7 +111,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 			self.date1Widget.datepicker('setDate', date);
 		});
 
-		this.date2Display.change(function() {
+		this.date2Display.on('change', function() {
 			var date = getDate($(this));
 			if (!date) {
 				$(this).val('');
@@ -124,7 +124,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 		// Switcher between relative input
 		//------------------------------
 
-		$('.switcher', this.date1).click((function() {
+		$('.switcher', this.date1).on('click', (function() {
 			var date = $('.date', this.date1);
 			var rel  = $('.relative', this.date1);
 
@@ -137,7 +137,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 			}
 		}).bind(this));
 
-		$('.switcher', this.date2).click((function() {
+		$('.switcher', this.date2).on('click', (function() {
 			var date = $('.date', this.date2);
 			var rel  = $('.relative', this.date2);
 

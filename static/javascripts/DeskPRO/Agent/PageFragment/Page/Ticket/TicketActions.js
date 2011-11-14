@@ -87,8 +87,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			}
 		};
 
-		box1.resize(syncSizes);
-		box2.resize(syncSizes);
+		box1.on('resize', syncSizes);
+		box2.on('resize', syncSizes);
 		syncSizes();
 
 		//------------------------------
@@ -107,27 +107,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			}).bind(this)
 		});
 
-		$('.set-resolved button', actionsButtons).click((function() {
+		$('.set-resolved button', actionsButtons).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('status');
 			this.changeManager.setInstantChange(prop, 'resolved');
 		}).bind(this));
 
-		$('.set-closed button', actionsButtons).click((function() {
+		$('.set-closed button', actionsButtons).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('status');
 			this.changeManager.setInstantChange(prop, 'closed');
 		}).bind(this));
 
-		$('.set-opem button', actionsButtons).click((function() {
+		$('.set-opem button', actionsButtons).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('status');
 			this.changeManager.setInstantChange(prop, 'open');
 		}).bind(this));
 
-		$('.set-open button', actionsButtons).click((function() {
+		$('.set-open button', actionsButtons).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('status');
 			this.changeManager.setInstantChange(prop, 'open');
 		}).bind(this));
 
-		$('.marks-spam button', actionsButtons).click((function() {
+		$('.marks-spam button', actionsButtons).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('status');
 			this.changeManager.setInstantChange(prop, 'hidden.spam');
 		}).bind(this));
@@ -151,11 +151,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Hold/unhold
 		//------------------------------
 
-		$('.set-hold.hold', wrapper).click((function() {
+		$('.set-hold.hold', wrapper).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('is_hold');
 			this.changeManager.setInstantChange(prop, 1);
 		}).bind(this));
-		$('.set-hold.unhold', wrapper).click((function() {
+		$('.set-hold.unhold', wrapper).on('click', (function() {
 			var prop = this.changeManager.getPropertyManager('is_hold');
 			this.changeManager.setInstantChange(prop, 0);
 		}).bind(this));
@@ -177,11 +177,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			}).bind(this)
 		});
 
-		this.macroCancelBtn.click((function() {
+		this.macroCancelBtn.on('click', (function() {
 			this.revertMacro();
 		}).bind(this));
 
-		this.macroApplyBtn.click((function() {
+		this.macroApplyBtn.on('click', (function() {
 			this.saveMacro();
 		}).bind(this));
 	},
@@ -194,7 +194,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		var overlayEl = this.getEl('confirm_macro_overlay');
 
-		this.getEl('apply_macro_btn').click(function() {
+		this.getEl('apply_macro_btn').on('click', function() {
 			self.saveMacro();
 		});
 

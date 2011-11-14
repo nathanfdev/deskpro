@@ -48,7 +48,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.onlineCountEl = $('#chat_online_count');
 		this.agentTeamList = $('#agent_team_list');
 
-		$('.show-offline-opt', this.panelEl).click(function() {
+		$('.show-offline-opt', this.panelEl).on('click', function() {
 			if ($(this).is(':checked')) {
 				$('#agent_chat_panel').addClass('show-offline');
 			} else {
@@ -56,20 +56,20 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			}
 		});
 
-		this.panelEl.click(function(ev) {
+		this.panelEl.on('click', function(ev) {
 			// dont bubble to doc which will close the panel again
 			ev.stopPropagation();
 		});
 
-		$('.show-section', this.panelEl).click(function() {
+		$('.show-section', this.panelEl).on('click', function() {
 			DeskPRO_Window.switchToSection('agent_chat_section');
 		});
 
-		$('#agent_chat_section').click((function(ev) {
+		$('#agent_chat_section').on('click', (function(ev) {
 			ev.stopPropagation();
 			this.panelEl.toggleClass('open');
 		}).bind(this));
-		$('body, #agent_chat_panel .close-trigger').click((function() {
+		$('body, #agent_chat_panel .close-trigger').on('click', (function() {
 			this.close();
 		}).bind(this));
 
@@ -87,7 +87,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		// stop propagation for clicks on the chat wrapper
 		// so it dorsnt bubble up and close the open chat window
-		this.chatsWrapper.click(function(ev) {
+		this.chatsWrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
@@ -123,7 +123,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			}
 		});
 
-		$('#agent_chat_panel .view-history-trigger').click(function(ev) {
+		$('#agent_chat_panel .view-history-trigger').on('click', function(ev) {
 			DeskPRO_Window.switchToSection('agent_chat_section');
 			self.close();
 		});

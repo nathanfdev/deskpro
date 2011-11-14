@@ -92,7 +92,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			var text = selected_text;
 			if (!text.length) text = options.noValText || 'Choose...';
 			var spanEl = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(selectEl);
-			spanEl.click(self.open.bind(self));
+			spanEl.on('click', self.open.bind(self));
 			selectEl.hide();
 
 			this.addEvent('checked', function(el) {
@@ -104,7 +104,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 				}
 			});
 
-			selectEl.change(function() {
+			selectEl.on('change', function() {
 				var opt = $('option:selected', this);
 				var text = opt.text().trim();
 				if (!text.length) text = options.noValText || 'Choose...';

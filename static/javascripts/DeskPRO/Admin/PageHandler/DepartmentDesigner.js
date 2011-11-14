@@ -78,16 +78,16 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 	initDisplayItem: function(itemEl, itemId) {
 		var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
 		var to_el = $('.search-form.ruletype-all .rule-list', itemEl);
 
 		var self = this;
-		$('.remove', itemEl).click(function() { self.removeDisplayItem(itemEl); });
+		$('.remove', itemEl).on('click', function() { self.removeDisplayItem(itemEl); });
 
-		$('.search-form.ruletype-all .add-term').data('add-count', 0).click(function() {
+		$('.search-form.ruletype-all .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt(itemEl.data('editor-all-add-count'));
 			var basename = 'terms_all['+itemId+']['+count+']';
 			itemEl.data('editor-all-add-count', count+1);
@@ -97,13 +97,13 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 
 		var editor2 = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor2.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
+			$('.remove', new_row).on('click', function() {
 				new_row.remove();
 			});
 		});
 		var to_el2 = $('.search-form.ruletype-any .rule-list', itemEl);
 
-		$('.search-form.ruletype-any .add-term').data('add-count', 0).click(function() {
+		$('.search-form.ruletype-any .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt(itemEl.data('editor-any-add-count'));
 			var basename = 'terms_any['+itemId+']['+count+']';
 			itemEl.data('editor-all-any-count', count+1);
