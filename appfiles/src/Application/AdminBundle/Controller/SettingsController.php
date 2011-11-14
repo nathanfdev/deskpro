@@ -86,26 +86,31 @@ class SettingsController extends AbstractController
 
 	public function labelsAction($label_type)
 	{
-		$this->rememberLastPage();
+		/** @var $ldm \Application\DeskPRO\Labels\LabelDefManager */
+		$ldm = $this->container->getSystemService('label_def_manager');
 
-		$all_labels = App::getOrm()->createQuery("
-			SELECT label
-			FROM DeskPRO:LabelDef label
-			WHERE label.label_type = ?1
-			ORDER BY label.label ASC
-		")->execute(array(1=>$label_type));
+		$def_counts = $ldm->countDefs();
 
-		// Get a count for each
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts($label_type, false);
+		$type = null;
+		if ($label_type != 'all') {
+			$type = array($label_type);
+		}
+
+		$order_by = 'alpha';
+		if ($this->in->getString('order_by') == 'count') {
+			$order_by = 'count';
+		}
+		$labels = $ldm->getLabelsAndCounts($type, $order_by);
 
 		return $this->render('AdminBundle:Settings:labels.html.twig', array(
-			'all_labels' => $all_labels,
-			'label_counts' => $label_counts,
-			'label_type' => $label_type
+			'label_type'  => $label_type,
+			'order_by'    => $order_by,
+			'def_counts'  => $def_counts,
+			'labels'      => $labels
 		));
 	}
 
-	public function labelsAjaxNewAction($label_type)
+	public function labelsAjaxNewAction()
 	{
 		$label_str = strtolower($this->in->getString('label'));
 
@@ -114,36 +119,42 @@ class SettingsController extends AbstractController
 			return $this->createJsonResponse(array('errorMessage' => 'Please only enter letters, numbers and dashes'));
 		}
 
-		// Already exists
-		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $label_str));
-		if ($label) {
-			return $this->createJsonResponse(array('errorMessage' => 'That label already exists'));
+		/** @var $ldm \Application\DeskPRO\Labels\LabelDefManager */
+		$ldm = $this->container->getSystemService('label_def_manager');
+
+		$types = $this->in->getCleanValueArray('types', 'str_simple', 'discard');
+		$display_type = null;
+		if ($this->in->getString('display_type') != 'all') {
+			$display_type = $this->in->getString('display_type');
 		}
 
-		$label = new Entity\LabelDef();
-		$label['label_type'] = $label_type;
-		$label['label'] = $label_str;
+		$ldm->createLabelDef($label_str, $types);
 
-		App::getOrm()->persist($label);
-		App::getOrm()->flush();
+		$label_count = $ldm->countLabelUsages($label_str, $display_type);
+		$def_counts  = $ldm->countDefs();
 
-		$html = $this->renderView('AdminBundle:Settings:labels-row.html.twig', array('label' => $label));
+		$html = $this->renderView('AdminBundle:Settings:labels-row.html.twig', array('label' => $label_str, 'count' => $label_count));
 
-		return $this->createJsonResponse(array('html' => $html));
+		return $this->createJsonResponse(array(
+			'row_html' => $html,
+			'def_counts' => $def_counts
+		));
 	}
 
 	public function labelsAjaxDeleteAction($label_type)
 	{
 		$label_str = strtolower($this->in->getString('label'));
-		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $label_str));
-		if (!$label) {
-			return $this->createJsonResponse(array('errorMessage' => 'No such label exists'));
-		}
 
-		App::getOrm()->remove($label);
-		App::getOrm()->flush();
+		/** @var $ldm \Application\DeskPRO\Labels\LabelDefManager */
+		$ldm = $this->container->getSystemService('label_def_manager');
+		$ldm->deleteLabelDef($label_str);
 
-		return $this->createJsonResponse(array('success' => 1));
+		$def_counts  = $ldm->countDefs();
+
+		return $this->createJsonResponse(array(
+			'success' => 1,
+			'def_counts' => $def_counts
+		));
 	}
 
 	public function renameLabelAction($label_type)
@@ -151,31 +162,25 @@ class SettingsController extends AbstractController
 		$old_label_str = strtolower($this->in->getString('old_label'));
 		$new_label_str = strtolower($this->in->getString('new_label'));
 
-		$old_label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $old_label_str));
-
-		App::getOrm()->beginTransaction();
-
-		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $new_label_str));
-		if (!$label) {
-			$label = new Entity\LabelDef();
-			$label['label_type'] = $label_type;
-			$label['label'] = $new_label_str;
-
-			App::getOrm()->persist($label);
-			App::getOrm()->flush();
+		$type = null;
+		if ($label_type != 'all') {
+			$type = $label_type;
 		}
 
-		$t = $label->getLabelTable();
-		App::getDb()->executeUpdate("UPDATE IGNORE $t SET label = ? WHERE label = ?", array($old_label_str, $new_label_str));
-		App::getDb()->executeUpdate("DELETE FROM $t WHERE label = ?", array($old_label_str));
+		/** @var $ldm \Application\DeskPRO\Labels\LabelDefManager */
+		$ldm = $this->container->getSystemService('label_def_manager');
+		$ldm->renameLabelDef($old_label_str, $new_label_str, $type);
 
-		App::getOrm()->remove($old_label);
-		App::getOrm()->flush();
+		$label_count = $ldm->countLabelUsages($new_label_str, $type);
+		$html = $this->renderView('AdminBundle:Settings:labels-row.html.twig', array('label' => $new_label_str, 'count' => $label_count));
 
-		App::getOrm()->commit();
+		$def_counts  = $ldm->countDefs();
 
-		// Redirect back to type
-		return $this->redirectRoute('admin_labels', array('label_type' => $label_type));
+		return $this->createJsonResponse(array(
+			'success' => 1,
+			'row_html' => $html,
+			'def_counts' => $def_counts
+		));
 	}
 
 	############################################################################

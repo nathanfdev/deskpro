@@ -122,6 +122,17 @@ DeskPRO.Admin.Window = new Orb.Class({
 			$(window).scroll(this.updatePageNavPos.bind(this));
 			$(window).resize(this.updatePageNavPos.bind(this));
 		}
+
+		$('#portal_nav').delegate('li', 'click', function(ev) {
+			if ($(ev.target).is('a')) {
+				return;
+			}
+			var a = $('a', this).first();
+			if (!a.attr('href')) {
+				return;
+			}
+			window.location = a.attr('href');
+		});
 	},
 
 	updatePageNavPos: function() {

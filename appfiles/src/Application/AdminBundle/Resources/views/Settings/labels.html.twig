@@ -1,44 +1,104 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/SettingsLabels.js') }}"></script>
+{% block pagetitle %}
+	<h1>Labels</h1>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.SettingsLabels();
-	DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew', {'label_type': label_type}) }}');
-	DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel', {'label_type': label_type}) }}');
-}
-</script>
+{% block page_nav %}
+<div>
+	<section class="top">
+		<header>
+			<h4>Label Types</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if label_type == 'all' %}on{% endif %}">
+					<span class="count" id="labels_count_all">{{ def_counts.TOTAL|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'all'}) }}">All</a>
+				</li>
+				<li class="{% if label_type == 'articles' %}on{% endif %}">
+					<span class="count" id="labels_count_articles">{{ def_counts.articles|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'articles'}) }}">Articles</a>
+				</li>
+				<li class="{% if label_type == 'deals' %}on{% endif %}">
+					<span class="count" id="labels_count_deals">{{ def_counts.deals|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'deals'}) }}">Deals</a>
+				</li>
+				<li class="{% if label_type == 'downloads' %}on{% endif %}">
+					<span class="count" id="labels_count_downloads">{{ def_counts.downloads|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'downloads'}) }}">Downloads</a>
+				</li>
+				<li class="{% if label_type == 'ideas' %}on{% endif %}">
+					<span class="count" id="labels_count_ideas">{{ def_counts.ideas|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'ideas'}) }}">Ideas</a>
+				</li>
+				<li class="{% if label_type == 'news' %}on{% endif %}">
+					<span class="count" id="labels_count_news">{{ def_counts.news|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'news'}) }}">News</a>
+				</li>
+				<li class="{% if label_type == 'organizations' %}on{% endif %}">
+					<span class="count" id="labels_count_organizations">{{ def_counts.organizations|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organizations</a>
+				</li>
+				<li class="{% if label_type == 'people' %}on{% endif %}">
+					<span class="count" id="labels_count_people">{{ def_counts.people|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'people'}) }}">People</a>
+				</li>
+				<li class="{% if label_type == 'tasks' %}on{% endif %}">
+					<span class="count" id="labels_count_tasks">{{ def_counts.tasks|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'tasks'}) }}">Tasks</a>
+				</li>
+				<li class="{% if label_type == 'tickets' %}on{% endif %}">
+					<span class="count" id="labels_count_tickets">{{ def_counts.tickets|default(0) }}</span>
+					<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Tickets</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+</div>
 {% endblock %}
-{% block sub_section 'labels' %}
-{% block content %}
+{% block page %}
+<div
+	data-element-handler="DeskPRO.Admin.ElementHandler.LabelsPage"
+	data-delete-url="{{ path('admin_labels_del', {'label_type': label_type}) }}"
+	data-rename-url="{{ path('admin_labels_rename', {'label_type': label_type}) }}"
+>
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Tickets</a>
-	&middot;
-	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'people'}) }}">People</a>
-	&middot;
-	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organizations</a>
+<nav class="page-top-hugnav">
+	<ul>
+		<li>
+			Sort:
+			<a href="{{ path('admin_labels', {'label_type': label_type}) }}" style="{% if not order_by or order_by == 'alpha' %}font-weight: bold{% endif %}">Alphabetical</a>
+			/
+			<a href="{{ path('admin_labels', {'label_type': label_type, 'order_by': 'count'}) }}" style="{% if order_by == 'count' %}font-weight: bold{% endif %}">Usage Count</a>
+		</li>
+	</ul>
+	<br class="clear" />
+</nav>
+
+<div class="new-label">
+	<form action="{{ path('admin_labels_new') }}" method="POST" id="new_label_form">
+		<input type="hidden" name="display_type" value="{{ label_type }}" />
+		<input type="text" placeholder="new label" value="" name="label" /> <button class="clean-white small">Add Label</button><br />
+		<div class="types">
+			Types:
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'articles' %}checked="checked"{% endif %} value="articles" /> Articles</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'deals' %}checked="checked"{% endif %} value="deals" /> Deals</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'downloads' %}checked="checked"{% endif %} value="downloads" /> Downloads</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'ideas' %}checked="checked"{% endif %} value="ideas" /> Ideas</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'news' %}checked="checked"{% endif %} value="news" /> News</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'organizations' %}checked="checked"{% endif %} value="organizations" /> Organizations</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'people' %}checked="checked"{% endif %} value="people" /> People</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'tasks' %}checked="checked"{% endif %} value="tasks" /> Tasks</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'tickets' %}checked="checked"{% endif %} value="tickets" /> Tickets</label>
+		</div>
+	</form>
 </div>
 
-<ul class="item-list">
-	<li class="create">
-		<input type="text" name="label" value="" style="width: 200px;" /> <button class="dp-button small save-trigger">Create New Label</button>
-	</li>
-	{% for label in all_labels %}
+<ul class="labels-list" id="labels_list">
+	{% for label,count in labels %}
 		{% include 'AdminBundle:Settings:labels-row.html.twig' %}
 	{% endfor %}
 </ul>
+<br class="clear" />
 
-<div id="rename_label_overlay" class="rename-label overlay" style="display:none">
-	<input type="hidden" class="rename-url" value="{{ path('admin_labels_rename', {'label_type': label_type}) }}?old_label={old_label}&amp;new_label={new_label}" />
-	Rename <strong class="old-label">label</strong> to:<br />
-	<input type="text" class="new-label" value="" style="width: 99%" />
-	
-	<div style="text-align:center; margin-top: 15px;">
-		<button class="dp-button x-small green save-trigger">Rename</button>
-	</div>
 </div>
-
 {% endblock %}

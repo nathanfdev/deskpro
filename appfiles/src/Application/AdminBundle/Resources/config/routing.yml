@@ -96,17 +96,17 @@ admin_labels:
   requirements: { label_type: "[a-z]+" }
 
 admin_labels_rename:
-  pattern: /settings/labels/{label_type}/rename
+  pattern: /settings/labels/{label_type}/rename.json
   defaults: { _controller: AdminBundle:Settings:renameLabel}
   requirements: { label_type: "[a-z]+" }
 
-admin_labels_ajaxnew:
-  pattern: /settings/labels/ajax-new/{label_type}
+admin_labels_new:
+  pattern: /settings/labels/new.json
   defaults: { _controller: AdminBundle:Settings:labelsAjaxNew }
   requirements: { label_type: "[a-z]+" }
 
-admin_labels_ajaxdel:
-  pattern: /settings/labels/ajax-delete/{label_type}
+admin_labels_del:
+  pattern: /settings/labels/{label_type}/delete.json
   defaults: { _controller: AdminBundle:Settings:labelsAjaxDelete }
   requirements: { label_type: "[a-z]+" }
 

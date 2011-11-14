@@ -1,10 +1,12 @@
-<li data-label="{{label.label}}">
-	<div style="float:right">
-		<ul class="controls">
-			<li class="edit rename-trigger"><a href="">rename</a></li>
-			<li class="delete delete-trigger"><a href="">delete</a></li>
-		</ul>
+<li class="label-row" data-label="{{label}}">
+	<div>
+		<div class="dp-block-controls" style="width: 53px">
+			<ul>
+				<li class="dp-rename rename-trigger"><span></span></li>
+				<li class="dp-remove delete-trigger"><span></span></li>
+			</ul>
+		</div>
+		<span class="count">{{ count }}</span>
+		<label>{{label}}</label>
 	</div>
-	<span style="background-color: #FFF67A; padding: 4px; font-size: 10px;">{{ label_counts[label.label]|default('0') }}</span>
-	{{label.label}}
 </li>
