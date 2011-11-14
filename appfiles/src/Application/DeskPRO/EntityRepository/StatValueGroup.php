@@ -52,7 +52,37 @@ class StatValueGroup extends EntityRepository
 	}
 
 	/**
-	 * Get that StatValueGroup for a day
+	 * Get the StatValueGroups for a period. We work backwards from $end_date
+	 * for $limit number
+	 *
+	 * @param int $stat_value_id The StatValue id
+	 * @param \DateTime $end_date The end date
+	 * @param int $limit The number of results to retrieve (optional)
+	 * @return array
+	 */
+	public function getForStatValueRangeDate($stat_value_id, \DateTime $end_date, $limit)
+	{
+		$db = $this->getEntityManager()->createQueryBuilder()
+			    ->select('svg')
+			    ->from('DeskPRO:StatValueGroup', 'svg')
+			    ->innerJoin('svg.stat_value', 'sv')
+			    ->where('sv.id = :stat_value_id')
+			    ->andWhere("svg.stat_unix < :stat_unix")
+			    ->setParameter('stat_value_id', $stat_value_id)
+			    ->setParameter('stat_unix', $end_date->format('U'));
+
+
+		if (false === is_null($limit)) {
+			$db->setMaxResults($limit);
+		}
+
+		return $db->orderBy('svg.stat_unix DESC')
+			  ->getQuery()
+			  ->getArrayResult();
+	}
+
+	/**
+	 * Get the StatValueGroup for a day
 	 *
 	 * @param int $stat_value_id The StatValue id
 	 * @param int $grouping_id The grouping id
@@ -79,7 +109,7 @@ class StatValueGroup extends EntityRepository
 	}
 
 	/**
-	 * Get that StatValueGroup for a month
+	 * Get the StatValueGroup for a month
 	 *
 	 * @param int $stat_value_id The StatValue id
 	 * @param int $grouping_id The grouping id
@@ -106,7 +136,7 @@ class StatValueGroup extends EntityRepository
 	}
 
 	/**
-	 * Get that StatValueGroup for a year
+	 * Get the StatValueGroup for a year
 	 *
 	 * @param int $stat_value_id The StatValue id
 	 * @param int $grouping_id The grouping id

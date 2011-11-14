@@ -37,6 +37,30 @@ class StatValue extends EntityRepository
 	}
 
 	/**
+	 * Get the StatValues for a period. We work backwards from $end_date
+	 * for $limit number
+	 *
+	 * @param int $stat_id The Stat id
+	 * @param \DateTime $end_date The end date
+	 * @param int $limit The number of results to retrieve (optional)
+	 * @return array
+	 */
+	public function getForStatRangeDate($stat_id, \DateTime $end_date, $limit = null)
+	{
+		$qb = $this->getForStatBuilder($stat_id)
+			    ->andWhere("sv.stat_unix < :stat_unix")
+			    ->setParameter('stat_unix', $end_date->format('U'));
+
+		if (false === is_null($limit)) {
+			$db->setMaxResults($limit);
+		}
+
+		return $db->orderBy('sv.stat_unix DESC')
+			  ->getQuery()
+			  ->getArrayResult();
+	}
+
+	/**
 	 * Get that StatValue for a day
 	 *
 	 * @param int $stat_id The Stat id
