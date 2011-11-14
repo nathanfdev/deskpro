@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Table(name="report_dashboard_stat")
  */
 class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
-{	
+{
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id
@@ -28,7 +28,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * The Dashboard
 	 *
@@ -37,7 +37,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\JoinColumn(name="report_dashboard_id", referencedColumnName="id")
 	 */
 	protected $report_dashboard;
-	
+
 	/**
 	 * The Stat
 	 *
@@ -46,7 +46,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
-	
+
 	/**
 	 * The class responsible for the view
 	 *
@@ -54,7 +54,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="view_class", type="string", length="500")
 	 */
 	protected $view_class;
-	
+
 	/**
 	 * Number of slots the stat takes up in the dashboard
 	 *
@@ -62,7 +62,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="grid_slots", type="smallint")
 	 */
 	protected $grid_slots;
-	
+
 	/**
 	 * The order of the stat in the dashboard
 	 *
@@ -70,7 +70,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="slot_number", type="smallint")
 	 */
 	protected $slot_number;
-	
+
 	/**
 	 * The dashboard creation date
 	 *
@@ -85,19 +85,18 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		$this->view_class   = "Application\ReportBundle\Chart\AmChart\LineChart";
 		$this->date_created = new \DateTime();
 	}
-	
+
 	public function createView()
 	{
 		$viewClass = $this->getViewClass();
-		
+
 		$view = new $viewClass();
-		
+
 		return $view;
 	}
-	
+
 	public function getChartType()
 	{
-		
+
 	}
-	
 }

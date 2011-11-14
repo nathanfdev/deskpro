@@ -12,40 +12,49 @@ class PieChart extends BasePieChart
 	public function __construct($stat)
 	{
 		parent::__construct($stat);
-		
+
 		$this->view_chart_vendor 	= 'AmChart';
-		$this->view_chart_class 	= 'Pie';	
+		$this->view_chart_class 	= 'Pie';
 	}
-	
+
 	public function getData()
 	{
 		$number_points = 20;
-		
+
 		$points = range(0, $number_points);
 		shuffle($points);
-		
+
 		$startUnix = time() - (86400 * $number_points);
 		for ($unix = $startUnix; $unix < time(); $unix+=86400) {
 			$this->series[] = date("d-m-Y", $unix);
 		}
 		$this->graphs = array(
-			$points	
+			$points
 		);
 	}
-	
+
 	public function getFormattedData()
 	{
 		$this->getData();
-		
-		$formattedData = array();	
-		
+
+		$formattedData = array();
+
 		return $formattedData;
 	}
-	
+
 	public function getSettings()
 	{
 		$settings = array();
-		
+
 		return $settings;
 	}
+
+	/**
+	 * Get the Human Friendly label for the chart
+	 */
+	public static function getChartLabel()
+	{
+		return 'Pie Chart';
+	}
+
 }

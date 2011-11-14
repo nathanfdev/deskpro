@@ -153,7 +153,7 @@ abstract class AbstractChart implements ChartInterface
 			return $this->data;
 		}
 
-		$this->data = array();
+		$this->data = $this->stat->getData($this->data_end_date, $this->getDataPointCount(), true);
 
 		// Set the cache flag
 		$this->cached_data = true;
