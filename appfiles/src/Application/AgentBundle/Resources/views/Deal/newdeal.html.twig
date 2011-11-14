@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-position-bound="#{{baseId}}_userselect"
 			>
 				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
-				<input type="hidden" name="newdeal[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
+				<input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -75,9 +75,9 @@ pageMeta.baseId = '{{ baseId }}';
 		<br class="clear" />
 
             </div>
-            <div class="col">
-                    
-                    <div class="org-edit" style="display: block" id="{{baseId}}_org_edit_wrap">
+            <div class="col">                    
+
+                <div class="org-edit" style="display: block" id="{{baseId}}_org_edit_wrap">
 			<div
 				class="org-input"
 				id="{{baseId}}_org_searchbox"
@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
 			>
 				Organization:
 				<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
-				<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />
+				<input type="hidden" class="org-id" name="newdeal[organization][id]" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
 						<a>
@@ -109,9 +109,9 @@ pageMeta.baseId = '{{ baseId }}';
 					</section>
 				</div>
 			</div>
-			<div class="pos-input" {% if not person.organization %}style="display: none"{% endif %}>
+			<div class="pos-input" {% if not deal.person.organization %}style="display: none"{% endif %}>
 				<label>Position:</label>
-				<input type="text" class="org-pos-set" placeholder="Set a position..." value="{{ person.organization_position }}" />
+				<input type="text" class="org-pos-set" placeholder="Set a position..." value="{{ deal.person.organization_position }}" />
 			</div>
 		</div>
 

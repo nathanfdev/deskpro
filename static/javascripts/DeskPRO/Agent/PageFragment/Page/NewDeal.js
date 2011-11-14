@@ -16,6 +16,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		this.parent(el);
                 this._initDepartmentSection();
                 this._initUserSection();
+                this._initOrgEdit();
 
                 $('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
                 $('.select-deal-type').change(function(){
@@ -157,6 +158,27 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		rechooseBtn.show();
 		searchbox.hide();
 		userfields.show();
+	},
+
+        	//#########################################################################
+	//# Org Edit
+	//#########################################################################
+
+	_initOrgEdit: function() {
+		var self = this;
+		
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		//orgEnableBtn
+		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
+			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
+			
+		}).bind('orgsearchboxcreate', function(ev, term, name) {
+			
+			
+		}).bind('orgsearchreverted', function(ev, term, name) {
+
+		});
 	}
 
 
