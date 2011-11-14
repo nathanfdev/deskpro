@@ -15,6 +15,28 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 	init: function() {
 		this.util = {
+			modCountEl: function(el, op, num) {
+
+				el = $(el);
+
+				if (!num) num = 1;
+
+				var count = parseInt(el.text().trim());
+
+				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
+					count -= num;
+					if (count < 0) count = 0;
+				} else if (op == '+' || op == 'add') {
+					count += num;
+				} else {
+					count = num;
+				}
+
+				el.text(count);
+
+				return count;
+			},
+
 			showSavePuff: function(overEl) {
 				var el = $('<div class="load-puff" style="display: none; opacity: 0" />');
 				el.appendTo('body');

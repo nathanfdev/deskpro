@@ -1,0 +1,46 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.EmailBanningPage' %}
+{% extends 'AdminBundle:Banning:layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EmailBanningPage.js') }}"></script>
+{% endblock %}
+{% block pagetitle %}
+	<h1>Banned Email Addresses</h1>
+	<nav>
+		<button class="clean-white" id="new_email_ban_btn">New Email Ban</button>
+	</nav>
+{% endblock %}
+{% block page %}
+
+<nav class="page-top-hugnav">
+	<ul>
+		<li>
+			<input type="text" class="filter-input" id="filter_list" value="" placeholder="Filter list ..." />
+		</li>
+	</ul>
+	<br class="clear" />
+</nav>
+
+<ul id="email_rows" class="banned-list">
+	{% for email in banned_emails %}
+		{% include 'AdminBundle:Banning:email-row.html.twig' %}
+	{% endfor %}
+</ul>
+<br class="clear" />
+
+<div id="email_ban_overlay" style="width: 550px; height: 150px; display: none;">
+	<div class="overlay-title">
+		<span class="close-trigger close-overlay"></span>
+		<h4>Ban Email Address</h4>
+	</div>
+	<div class="overlay-content">
+		<input type="hidden" class="save-url" value="{{ path('admin_banning_newemail') }}?email={email}" />
+		Email address pattern: <input type="text" name="email" value="" style="width: 200px;" />
+		<br />
+		<small>Examples: baduser@example.com, *@spammy-domain.com, *@spammy-domain.*</small>
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white save-trigger">Save Ban</button>
+	</div>
+</div>
+
+{% endblock %}

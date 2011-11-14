@@ -1,0 +1,46 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.IpBanningPage' %}
+{% extends 'AdminBundle:Banning:layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/IpBanningPage.js') }}"></script>
+{% endblock %}
+{% block pagetitle %}
+	<h1>Banned IP Addresses</h1>
+	<nav>
+		<button class="clean-white" id="new_ip_ban_btn">New IP Ban</button>
+	</nav>
+{% endblock %}
+{% block page %}
+
+<nav class="page-top-hugnav">
+	<ul>
+		<li>
+			<input type="text" class="filter-input" id="filter_list" value="" placeholder="Filter list ..." />
+		</li>
+	</ul>
+	<br class="clear" />
+</nav>
+
+<ul id="ip_rows" class="banned-list">
+	{% for ip in banned_ips %}
+		{% include 'AdminBundle:Banning:ip-row.html.twig' %}
+	{% endfor %}
+</ul>
+<br class="clear" />
+
+<div id="ip_ban_overlay" style="width: 400px; height: 150px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Ban IP Address</h4>
+	</div>
+	<div class="overlay-content">
+		<input type="hidden" class="save-url" value="{{ path('admin_banning_newip') }}?ip={ip}" />
+		IP address pattern: <input type="text" name="ip" value="" style="width: 200px;" />
+		<br />
+		<small>Examples: 192.168.1.1 or 192.168.*</small>
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white save-trigger">Save Ban</button>
+	</div>
+</div>
+
+{% endblock %}

@@ -114,9 +114,13 @@ admin_labels_del:
 # Banning
 ###############################################################################
 
-admin_banning:
-  pattern: /banning
-  defaults: { _controller: AdminBundle:Banning:list }
+admin_banning_emails:
+  pattern: /banning/emails
+  defaults: { _controller: AdminBundle:Banning:listEmails }
+
+admin_banning_ips:
+  pattern: /banning/ips
+  defaults: { _controller: AdminBundle:Banning:listIps }
 
 admin_banning_newip:
   pattern: /banning/ips/new

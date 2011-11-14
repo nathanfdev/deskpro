@@ -1159,7 +1159,7 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
     z-index: 1;
 	width: 180px;
 	position: absolute;
-	min-height: 300px;
+	min-height: 100px;
 	top: 124px;
 
 	border: 1px solid #CACFD6;
@@ -1725,6 +1725,16 @@ nav.page-top-hugnav ul li span {
 	top: -2px;
 }
 
+nav.page-top-hugnav input.filter-input {
+	border: none;
+	.box-shadow(none);
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	font-size: 11px;
+	height: 12px;
+}
+
 section#portal_colors {
 	position: absolute;
 	width: 400px;
@@ -1928,4 +1938,32 @@ ul.labels-list li > div:hover .dp-block-controls {
 
 .new-label .types {
 	font-size: 10px;
+}
+
+
+#email_ban_overlay {
+	width: 400px;
+	height: 400px;
+}
+
+
+
+ul.banned-list > li {
+	display: block;
+	width: 45%;
+	float: left;
+	background-color: #ECF3FA;
+	border: 1px solid #DFE5EB;
+	padding: 6px;
+	margin: 5px;
+	position: relative;
+}
+
+ul.banned-list > li .dp-block-controls {
+	top: 3px;
+}
+
+ul.banned-list > li:hover .dp-block-controls {
+	.transition(0.1s);
+	.opacity(100);
 }
