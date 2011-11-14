@@ -113,7 +113,9 @@
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
-				success: function() {
+				success: function(data) {
+					// Just do a redict for now
+					self.location = data.redirect;
 				}
 			});
 		});

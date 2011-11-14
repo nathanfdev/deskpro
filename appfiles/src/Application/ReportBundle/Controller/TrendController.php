@@ -73,7 +73,8 @@ class TrendController extends AbstractController
 				App::getOrm()->flush();
 
 				$this->session->setFlash('saved', $stat->title);
-				return $this->createJsonResponse(array('success' => true));
+				$redirect_url = $this->generateUrl('report_trend_index');
+				return $this->createJsonResponse(array('success' => true, 'redirect' => $redirect_url));
 			}
 		}
 

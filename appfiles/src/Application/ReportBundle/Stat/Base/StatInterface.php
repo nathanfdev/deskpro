@@ -5,6 +5,11 @@ namespace Application\ReportBundle\Stat\Base;
 interface StatInterface
 {
 	/**
+	 * Initialize the Stat
+	 */
+	public function init();
+
+	/**
 	 * Build the Trend Concept Query. This is the base query that needs
 	 * to be defined in each of the parent Trend Type classes
 	 */
