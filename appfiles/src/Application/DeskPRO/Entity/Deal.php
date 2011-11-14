@@ -11,6 +11,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Application\DeskPRO\Entity\LabelDeal;
+use Application\DeskPRO\App;
 
 /**
  * Deal entity definition
@@ -106,7 +108,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var Application\DeskPRO\Entity\Person
-     * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="assigned_deals")
+     * @ORM_Mapping\ManyToOne(targetEntity="Person")
      * @ORM_Mapping\JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true, onDelete="set null")
      */
     protected $assigned_agent;
@@ -191,13 +193,19 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 //    protected $twitter_status_notes;
 
     /**
+     * Label manager for adding/removing labels
+     * @var \Application\DeskPRO\Labels\LabelManager
+     */
+    protected $_label_manager = null;
+
+    /**
      * Creates a new deal
      */
     public function __construct()
     {
         $this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
         $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->peoples = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->people = new \Doctrine\Common\Collections\ArrayCollection();
         $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();        
         //$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
@@ -293,6 +301,148 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 
 		return false;
 	}
+
+        /**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\LabelDeal $label
+	 */
+	public function addLabel(LabelDeal $label)
+	{
+		$label['deal'] = $this;
+		$this->labels->add($label);
+	}
+
+        public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelDeal');
+		}
+
+		return $this->_label_manager;
+	}
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getAsignedAgentId()
+	{
+		if (! $this->assigned_agent) {
+			return 0;
+		}
+
+		return $this->assigned_agent['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setAsignedAgentId($id)
+	{
+		if(!$id || $id == null){
+                    $this->assigned_agent = null;
+                    return;
+                }
+
+
+                $agent = App::getEntityRepository('DeskPRO:Person')->find($id);
+
+		if (! $agent) {
+			throw new \InvalidArgumentException('No agent for id ' . $id);
+		}
+
+		if (! $agent->is_agent) {
+			throw new \InvalidArgumentException(
+				'The person with id ' . $id . ' is not an agent'
+			);
+		}
+
+		$this->assigned_agent = $agent;
+	}
+
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getDealTypeId()
+	{
+		if (! $this->deal_type) {
+			return 0;
+		}
+
+		return $this->deal_type['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setDealTypeId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_type = null;
+                    return;
+                }
+
+                $deal_type = App::getEntityRepository('DeskPRO:DealType')->find($id);
+		$this->deal_type = $deal_type;
+	}
+
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
+	public function getDealStageId()
+	{
+		if (! $this->deal_stage) {
+			return 0;
+		}
+
+		return $this->deal_stage['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setDealStageId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_stage = null;
+                    return;
+                }
+
+                $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->find($id);
+		$this->deal_stage = $deal_stage;
+	}
+
+
+
+
+        public function deletePeople(\Application\DeskPRO\Entity\Person $person)
+        {
+            $this->peoples->removeElement($person);
+        }
+
+        public function deleteOrganization(\Application\DeskPRO\Entity\Organization $organization)
+        {
+            $this->organizations->removeElement($organization);
+        }
 
 
 }

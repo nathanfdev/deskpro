@@ -20,7 +20,8 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\DealNote;
+use Application\DeskPRO\Entity\DealStage;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
 
@@ -36,7 +37,32 @@ class DealController extends AbstractController
     private $_task_repository;
 
 
-   /**
+    public function newAction()
+    {
+
+        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
+        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+
+
+        return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
+           'deal_type' => $deal_type,
+           'deal_stage' => $deal_stage,
+           'agents' => $agents
+
+        ));
+    }
+
+
+    public function newSaveAction()
+    {
+
+    }
+
+
+
+
+    /**
      * Generate the category wise list gor task.
      * @return html
      */
@@ -56,14 +82,14 @@ class DealController extends AbstractController
         $my_lost_deals = $deal_repository->findDealsForPerson($person, 2);
         $my_total_lostdeals = $deal_repository->countDealsForPerson($person, 2);
 
-        $other_open_deals = $deal_repository->findDealsForOther();
-        $other_total_opendeals = $deal_repository->countDealsForOther();
+        $other_open_deals = $deal_repository->findDealsForOther($person);
+        $other_total_opendeals = $deal_repository->countDealsForOther($person);
 
-        $other_won_deals = $deal_repository->findDealsForOther(1);
-        $other_total_wondeals = $deal_repository->countDealsForOther(1);
+        $other_won_deals = $deal_repository->findDealsForOther($person, 1);
+        $other_total_wondeals = $deal_repository->countDealsForOther($person, 1);
 
-        $other_lost_deals = $deal_repository->findDealsForOther(2);
-        $other_total_lostdeals = $deal_repository->countDealsForOther(2);
+        $other_lost_deals = $deal_repository->findDealsForOther($person, 2);
+        $other_total_lostdeals = $deal_repository->countDealsForOther($person, 2);
 
         
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
@@ -107,14 +133,14 @@ class DealController extends AbstractController
         }else if($owner_type == 'other'){
 
             if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForOther(0, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id);
             }
             else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForOther(-1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id);
             }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForOther(1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id);
             }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForOther(2, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id);
             }
         }
 
@@ -132,14 +158,196 @@ class DealController extends AbstractController
         } else{
             $deal = new Deal();
         }
-
+        
+        $notes = App::getEntityRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
+        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
+        
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
-            'deal' => $deal
+            'deal' => $deal,
+            'notes' => $notes,
+            'agents' => $agents,
+            'deal_types' => $deal_type,
+            'deal_stage' => $deal_stage
         ));
     }
 
-    /**
+    // TODO error checking
+	public function ajaxSaveNoteAction($deal_id)
+	{
+		if($deal_id)
+                {
+                    $deal = $this->getDealOr404($deal_id);
+                } else{
+                    $deal = new Deal();
+                }
+
+		$note_txt = $this->in->getString('note');
+
+		$em = $this->em;
+		
+		$note = new DealNote();
+		$note['agent'] = $this->person;
+		$note['deal'] = $deal;
+		$note['note'] = $note_txt;
+		$em->persist($note);
+
+		$em->flush();
+		//$em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'deal_id' => $deal['id'],
+			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
+		));
+	}
+
+        ############################################################################
+	# ajax-save-labels
+	############################################################################
+
+	public function ajaxSaveLabelsAction($deal_id)
+	{
+		if($deal_id)
+                {
+                    $deal = $this->getDealOr404($deal_id);
+                } else{
+                    $deal = new Deal();
+                }
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$deal->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($deal);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
+
+        public function ajaxSaveCustomFieldsAction($deal_id)
+	{
+		$deal = $this->getDealOr404($deal_id);
+
+		$this->em->beginTransaction();
+
+		try {
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $org);
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		$custom_fields = $field_manager->getDisplayArrayForObject($org);
+
+
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		return $this->render('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
+		));
+	}
+
+        
+        public function setAgentParticipantsAction($deal_id, $agent_id)
+	{
+		$deal = $this->getDealOr404($deal_id);		
+                $agent_id = ($agent_id == 0) ? null : $agent_id;
+                
+		$this->db->beginTransaction();
+
+		try {
+			$deal->setAsignedAgentId($agent_id);
+			$this->em->persist($deal);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('sucess' => true));
+	}
+
+        public function ajaxSaveAction($deal_id) {
+
+            $deal = $this->getDealOr404($deal_id);
+            $this->em->beginTransaction();
+            $data = array(
+                'success' => true
+            );
+            switch ($this->in->getString('action')) {
+                case 'remove-person':
+                    $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+                    if ($person) {
+                        $deal->deletePeople($person);
+                        $this->em->persist($deal);
+                        $data['remove_person_id'] = $person['id'];
+                    }
+                    break;
+                case 'remove-organization':
+                    $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
+                    if ($organization) {
+                        $deal->deleteOrganization($organization);
+                        $this->em->persist($deal);
+                        $data['remove_organization_id'] = $organization['id'];
+                    }
+                    break;
+                case 'change-dealtype':
+                    
+                    $deal_type = App::findEntity('DeskPRO:DealType', $this->in->getUint('deal_type_id'));
+                    if($deal_id){
+                        $deal->setDealTypeId($this->in->getUint('deal_type_id'));
+                        $deal->setDealStageId(null);
+                        $this->em->persist($deal);
+                    }
+                    $data['change_deal_type_id'] = $deal_type['id'];
+                    $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
+
+                     
+                    $tpl = $this->renderView('AgentBundle:Deal:select-deal-options.html.twig', array(
+                        'name'=> 'actions[dealtype]',
+                        'with_blank'=> true,
+                        'with_blank2'=> true,
+                        'blank_title'=> 'Set Deal Type',
+                        'options'=> $deal_stage,
+                        'selected'=> '',
+                        'add_classname'=> 'select-deal-stage'
+                    ));
+
+                    $data['deal_stage'] = $tpl;
+                    
+                    break;
+
+                case 'change-dealstage':
+
+                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));
+                    $this->em->persist($deal);
+                    $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    break;
+                    
+            }
+
+            $this->em->flush();
+            $this->em->commit();
+
+            return $this->createJsonResponse($data);
+    }
+
+
+        /**
 	 * @return Application\DeskPRO\Entity\Deal
 	 */
 	protected function getDealOr404($deal_id)

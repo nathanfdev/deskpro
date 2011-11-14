@@ -1,5 +1,5 @@
 {#People BOX#}
-<div class="profile-box-container people-box first">
+<div class="profile-box-container people-box first" >
 
     <header>
         <h4>People</h4>
@@ -9,11 +9,16 @@
         <div class="meta-line">
             <dl class="table-list">
                 <dt class="type-labels">Agent</dt>
-                <dd>
-                    <select>
-                        <option value="chris padfield">Chris Padfield</option>
-                    </select>
+                <dd class="controls">
+                    <span class="agent-link prop-agent-id">{{deal.assigned_agent.display_name|default('Unassigned')}}</span><span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
                 </dd>
+                <dd class="assignments">
+                    <ul id="{{baseId}}_assign_btn">
+                            <li class="no-changes"><em>Set assignments</em></li>
+                            <li style="display:none" class="assign-agent"><em>Assign agent</em>: <span class="label"></span></li>
+
+                    </ul>
+                </dd>    
             </dl>
         </div>
         
@@ -21,19 +26,16 @@
             <dl class="table-list">
                 <dt class="type-labels">Users</dt>
                 <dd>
-                    <ul class="controls">
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
-                        <li>
-                            <span>James Brigs james@deskpro.com </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
+                    <ul class="controls" id="{{baseId}}_members_list">
+
+                        {% for person in deal.peoples%}
+                        <li class="member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
+                                <span data-person-id="{{ person.id }}">{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
+                                <span class="remove btn-small-remove remove-row-trigger">x</span>
+                                
+                            </li>
+                        {% endfor%}
+                        
                     </ul>
                 </dd>
             </dl>
@@ -43,11 +45,14 @@
             <dl class="table-list">
                 <dt class="type-labels">Organizations</dt>
                 <dd>
-                    <ul class="controls">
-                        <li>
-                            <span>  Deskpro Ltd </span>
-                            <span class="btn-small-remove remove-row-trigger"></span>
-                        </li>
+                    <ul class="controls" id="{{baseId}}_organizations_list">
+                        {% for organization in deal.organizations%} 
+                            <li class="organization-row organization-{{ organization.id }}" data-organization-id="{{ organization.id }}">
+                                <span> {{organization.name}} </span>
+                                <span class="remove btn-small-remove remove-row-trigger"></span>
+                            </li>
+                        {% endfor%}
+                        
                     </ul>
                 </dd>
             </dl>
@@ -56,6 +61,49 @@
     </secion>
 
 </div>
+
+<div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_assign_ob">
+    	<header>
+			<h4>Assignments</h4>
+			<span class="close close-trigger"></span>
+		</header>
+    	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Agents</h3>
+				<input type="text" class="filter-box" placeholder="Filter..." />
+			</header>
+			<ul>
+				<li class="me last-me {% if deal.assigned_agent.id == deal.person.id or not deal.assigned_agent %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent" value="{{ deal.person.id }}" {% if deal.assigned_agent.id == deal.person.id or not deal.assigned_agent.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ deal.person.id }}" style="background-image: url({{ deal.person.getPictureUrl(16) }})">Me</span></label>
+				</li>
+
+				<li>
+					<input type="radio" name="{{bsaeId}}_agent" value="0" />
+					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+				</li>
+
+				{% for agent in agents %}
+					{% if agent.id != deal.person.id %}
+						<li {% if deal.assigned_agent.id == agent.id %}class="on"{% endif %}>
+							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if deal.assigned_agent.id == agent.id %}checked="checked"{% endif %} />
+							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+							<div class="bound-fade"></div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+    	
+    	<br class="clear" />
+    	<footer>
+           <button class="save-trigger">Apply</button>
+        </footer>
+    </div>
+
+
 {#End People BOX#}
 
 {#Property Tab#}
@@ -74,20 +122,24 @@
 
             {# Property Tab #}
             <article id="{{baseId}}_property_tab" class="on">
-                <div class="meta-line">
-                    <dl class="table-list">
-                        <dt class="type-labels">Labels</dt>
-                        <dd>
-                            <span>Label1, Label2, Label3</span>
-                        </dd>
-                    </dl>
-                </div>
+                <dl class="table-list">
+                    <dt class="type-labels">Labels</dt>
+                    <dd class="deal-tags tags-wrap">
+                        <ul data-label-route="listpane:{{ path('agent_peoplesearch') }}?terms[0][rule_type]=deal_label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
+                                {% for label in deal.labels %}
+                                        <li><span>{{label.label}}</span></li>
+                                {% endfor %}
+                        </ul>
+                    </dd>
+		</dl>
 
                 <div class="meta-line">
                     <dl class="table-list">
                         <dt class="type-labels">Created</dt>
                         <dd>
-                            <span>by Jhon, 23 days ago</span>
+                            <span>by {{deal.person.first_name}},
+                            <time class="timeago" title="{{deal.date_created|date('c')}}">{{deal.date_created|date('M j, Y')}}</time>
+                            </span>
                         </dd>
                     </dl>
                 </div>
@@ -139,11 +191,16 @@
 		<article id="{{baseId}}_notes_tab" class="on">
 			<div class="notes-wrap">
 				<ul>
-					<li class="new-note"
+
+                                    {% for note in notes|reverse %}
+						{% include 'AgentBundle:Deal:note-li.html.twig' with {'note': note} %}
+				    {% endfor %}
+
+                                    <li class="new-note"
 						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 						data-form-list-selector="ul"
 						data-form-result-html-key="note_li_html"
-						data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
+						data-form-save-url="{{ path('agent_deal_ajaxsave_note', {'deal_id': deal.id}) }}"
 						data-form-count-el="#{{baseId}}_notes_count"
 					>
 						<header>

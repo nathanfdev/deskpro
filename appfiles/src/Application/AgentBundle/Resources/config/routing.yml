@@ -935,6 +935,38 @@ agent_deal_view:
   requirements: { deal_id: "\d+" }
   options: { fragment_name: 'd' }
 
+agent_deal_ajaxsave_note:
+  pattern: /deal/{deal_id}/ajax-save-note
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveNote }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_ajax_labels_save:
+  pattern: /deal/{deal_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveLabels }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_ajaxsavecustomfields:
+  pattern: /deals/{deal_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveCustomFields }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_set_agent_parts:
+  pattern: /deals/{deal_id}/{agent_id}/set-agent-parts.json
+  defaults: { _controller: AgentBundle:Deal:setAgentParticipants }
+
+agent_deal_ajaxsave:
+  pattern: /deals/{deal_id}/ajax-save
+  defaults: { _controller: AgentBundle:Deal:ajaxSave }
+  requirements: { deal_id: "\d+" }
+
+agent_deal_new:
+  pattern: /deals/new
+  defaults: { _controller: AgentBundle:Deal:new }
+  options: { fragment_name: 'nt' }
+
+agent_deal_new_save:
+  pattern: /deals/new/save
+  defaults: { _controller: AgentBundle:Deal:newSave }
 
 
 ################################################################################

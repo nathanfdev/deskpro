@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Deal';
 pageMeta.title = "{{ deal.title}}";
 pageMeta.deal_id = {{deal.id}};
 pageMeta.pageIdentity = 'deal1:{{deal.id}}';
+pageMeta.labelsSaveUrl = '{{ path('agent_deal_ajax_labels_save', {'deal_id': deal.id}) }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -12,6 +13,9 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
+<form class="value-form" style="display:none">
+	<input type="hidden" name="agent_id" class="agent_id" value="{{deal.assigned_agent.id|default(0)}}" />
+</form>
 <header class="page-header">
     <nav class="actions" id="{{baseId}}_action_buttons">
         <span>{{deal.probability}}% of {{deal.deal_currency.symbol}}{{deal.deal_value}} </span>
@@ -27,11 +31,17 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels">Type</dt>
+                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">Type</dt>
                 <dd>
-                    <select>
-                        <option value="license sale">License sale</option>
-                    </select>
+                    {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'actions[dealtype]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Deal Type',
+                                'options': deal_types,
+                                'selected': deal.deal_type.id,
+                                'add_classname': 'select-deal-type'
+                    } %}
                 </dd>
             </dl>
         </div>
@@ -39,10 +49,16 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="isLeft">
             <dl class="table-list">
                 <dt class="type-labels">Stage</dt>
-                <dd>
-                    <select>
-                        <option value="pre-bid">Pre-Bid</option>
-                    </select>
+                <dd class="set-deal-stage">
+                    {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'actions[dealtype]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Deal Type',
+                                'options': deal_stage,
+                                'selected': deal.deal_stage.id,
+                                'add_classname': 'select-deal-type'
+                    } %}
                 </dd>
             </dl>
         </div>
