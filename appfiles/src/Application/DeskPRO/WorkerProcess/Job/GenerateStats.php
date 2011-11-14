@@ -31,7 +31,7 @@ class GenerateStats extends AbstractJob
 	public function run()
 	{
 		$this->date_time = new \DateTime();
-		$this->date_time = \DateTime::createFromFormat('U', time()+self::DEFAULT_INTERVAL);
+		$this->date_time = \DateTime::createFromFormat('U',  time()+self::DEFAULT_INTERVAL);
 
 		$this->orm  = App::getOrm();
 
@@ -85,18 +85,33 @@ class GenerateStats extends AbstractJob
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats($this->time);
 
-		// Store the stat value
-		$stat_value = new StatValue();
-		$stat_value->setStat($stat);
+		// Check if existing StatValue is set for period
+		$stat_value = $stat->getStatValueForDate(new \DateTime());
+		if (!$stat_value) {
+			// Create a new one
+			$stat_value = new StatValue();
+			$stat_value->setStat($stat);
+		}
 		$stat_value->setValue($values['ungrouped']);
+		$stat_value->setStatUnix(time());
 		$this->orm->persist($stat_value);
 
 		// Store the grouped values
 		foreach ($values['grouped'] as $grouped) {
-			$stat_value_group = new StatValueGroup();
-			$stat_value_group->setStatValue($stat_value);
+			// Check if existing StatValueGroup is set for period and reference
+			$stat_value_group = $stat_value->getStatValueGroupForDate(
+				new \DateTime(),
+				$grouped['grouping_id'],
+				$stat->getRunFrequency()
+			);
+
+			if (!$stat_value_group) {
+				$stat_value_group = new StatValueGroup();
+				$stat_value_group->setStatValue($stat_value);
+			}
 			$stat_value_group->setValue($grouped['value']);
 			$stat_value_group->setGroupingId($grouped['grouping_id']);
+			$stat_value_group->setStatUnix(time());
 			$this->orm->persist($stat_value_group);
 		}
 
@@ -107,5 +122,4 @@ class GenerateStats extends AbstractJob
 		// Flush - need to batch this
 		$this->orm->flush();
 	}
-
 }

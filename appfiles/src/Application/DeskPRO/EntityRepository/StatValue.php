@@ -45,10 +45,20 @@ class StatValue extends EntityRepository
 	 */
 	public function getForStatByDay($stat_id, \DateTime $date)
 	{
-		$stat_value = $this->getForStatQuery($stat_id)
-			->andWhere("FROM_UNIXTIME(sv.stat_unix, '%Y-%m-%d') = ?", $date->format('Y-m-d'))
-			->getQuery()
-			->getSingleResult();
+		$day_start = mktime(0, 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
+		$day_end   = mktime(23, 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
+		
+		try {
+			$stat_value =
+				$this->getForStatBuilder($stat_id)
+				     ->andWhere("sv.stat_unix BETWEEN :day_start AND :day_end")
+				     ->setParameter('day_start', $day_start)
+				     ->setParameter('day_end', $day_end)
+				     ->getQuery()
+				     ->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value;
 	}
@@ -62,10 +72,20 @@ class StatValue extends EntityRepository
 	 */
 	public function getForStatByMonth($stat_id, \DateTime $date)
 	{
-		$stat_value = $this->getForStatQuery($stat_id)
-			->andWhere("FROM_UNIXTIME(sv.stat_unix, '%Y-%m') = ?", $date->format('Y-m'))
-			->getQuery()
-			->getSingleResult();
+		$month_start = Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
+		$month_end   = Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
+
+		try {
+			$stat_value =
+				$this->getForStatBuilder($stat_id)
+				     ->andWhere("sv.stat_unix BETWEEN :month_start AND :month_end")
+				     ->setParameter('month_start', $month_start)
+				     ->setParameter('month_end', $month_end)
+				     ->getQuery()
+				     ->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value;
 	}
@@ -79,10 +99,20 @@ class StatValue extends EntityRepository
 	 */
 	public function getForStatByYear($stat_id, \DateTime $date)
 	{
-		$stat_value = $this->getForStatQuery($stat_id)
-			->andWhere("FROM_UNIXTIME(sv.stat_unix, '%Y') = ?", $date->format('Y'))
-			->getQuery()
-			->getSingleResult();
+		$year_start = mktime(0, 0, 0, 1, 1, $date->format('Y'));
+		$year_end   = mktime(23, 59, 59, 12, 31, $date->format('Y'));
+
+		try {
+			$stat_value =
+				$this->getForStatBuilder($stat_id)
+				     ->andWhere("sv.stat_unix BETWEEN :year_start AND :year_end")
+				     ->setParameter('year_start', $year_start)
+				     ->setParameter('year_end', $year_end)
+				     ->getQuery()
+				     ->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value;
 	}
@@ -93,11 +123,11 @@ class StatValue extends EntityRepository
 	 * @param int $stat_id The Stat Id
 	 * @return QueryBuilder The QueryBuilder Object
 	 */
-	protected function getForStatQuery($stat_id)
+	protected function getForStatBuilder($stat_id)
 	{
 		return $this->getEntityManager()->createQueryBuilder()
 			->select('sv')
 			->from('DeskPRO:StatValue', 'sv')
-			->where('sv.stat_id = ?', $stat_id);
+			->innerJoin('sv.stat', 's');
 	}
 }

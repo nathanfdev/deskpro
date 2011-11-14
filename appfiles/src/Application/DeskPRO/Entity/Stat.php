@@ -192,6 +192,35 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Get a StatValue by date
+	 *
+	 * @param \DateTime $date The DateTime to check
+	 * @return StatValue The found StatValue entity or null
+	 */
+	public function getStatValueForDate(\DateTime $date)
+	{
+		$stat_value = null;
+
+		$repo = App::getEntityRepository('DeskPRO:StatValue');
+
+		switch ($this->run_frequency) {
+			case 'daily':
+				$stat_value = $repo->getForStatByDay($this->id, $date);
+				break;
+			case 'monthly':
+				$stat_value = $repo->getForStatByMonth($this->id, $date);
+				break;
+			case 'yearly':
+				$stat_value = $repo->getForStatByYear($this->id, $date);
+				break;
+			default:
+				throw new \Exception("Unable to retrieve StatValue for run_frequency " . $this->run_frequency);
+		}
+
+		return $stat_value;
+	}
+
+	/**
 	 * Get a value for a date
 	 *
 	 * @param int $unix Unix timestamp to get value for

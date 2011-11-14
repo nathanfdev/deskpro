@@ -45,10 +45,19 @@ class StatValueGroup extends EntityRepository
 	 */
 	public function getForStatValueByDay($stat_value_id, $grouping_id, \DateTime $date)
 	{
-		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
-			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y-%m-%d') = ?", $date->format('Y-m-d'))
-			->getQuery()
-			->getSingleResult();
+		$day_start = mktime(0, 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
+		$day_end   = mktime(23, 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
+
+		try {
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+				->andWhere("svg.stat_unix BETWEEN :day_start AND :day_end")
+				->setParameter('day_start', $day_start)
+				->setParameter('day_end', $day_end)
+				->getQuery()
+				->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value_group;
 	}
@@ -63,10 +72,19 @@ class StatValueGroup extends EntityRepository
 	 */
 	public function getForStatValueByMonth($stat_value_id, $grouping_id, \DateTime $date)
 	{
-		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
-			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y-%m') = ?", $date->format('Y-m'))
-			->getQuery()
-			->getSingleResult();
+		$month_start = Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
+		$month_end   = Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
+
+		try {
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+				->andWhere("svg.stat_unix BETWEEN :month_start AND :month_end")
+				->setParameter('month_start', $month_start)
+				->setParameter('month_end', $month_end)
+				->getQuery()
+				->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value_group;
 	}
@@ -81,10 +99,19 @@ class StatValueGroup extends EntityRepository
 	 */
 	public function getForStatValueByYear($stat_value_id, $grouping_id, \DateTime $date)
 	{
-		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
-			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y') = ?", $date->format('Y'))
-			->getQuery()
-			->getSingleResult();
+		$year_start = mktime(0, 0, 0, 1, 1, $date->format('Y'));
+		$year_end   = mktime(23, 59, 59, 12, 31, $date->format('Y'));
+
+		try {
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+				->andWhere("svg.stat_unix BETWEEN :year_start AND :year_end")
+				->setParameter('year_start', $year_start)
+				->setParameter('year_end', $year_end)
+				->getQuery()
+				->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
 
 		return $stat_value_group;
 	}
@@ -96,12 +123,21 @@ class StatValueGroup extends EntityRepository
 	 * @param int $grouping_id The grouping id
 	 * @return QueryBuilder The QueryBuilder Object
 	 */
-	protected function getForStatValueQuery($stat_value_id, $grouping_id)
+	protected function getForStatValueBuilder($stat_value_id, $grouping_id)
 	{
-		return $this->getEntityManager()->createQueryBuilder()
+		$qb = $this->getEntityManager()->createQueryBuilder()
 			->select('svg')
 			->from('DeskPRO:StatValueGroup', 'svg')
-			->where('svg.stat_value_id = ?', $stat_value_id)
-			->andWhere('svg.grouping_id = ?', $grouping_id);
+			->innerJoin('svg.stat_value', 'v');
+
+		if (true === is_null($grouping_id)) {
+			$qb->where('svg.grouping_id IS NULL');
+		}
+		else {
+			$qb->where('svg.grouping_id = :grouping_id')
+			   ->setParameter('grouping_id', $grouping_id);
+		}
+
+		return $qb;
 	}
 }

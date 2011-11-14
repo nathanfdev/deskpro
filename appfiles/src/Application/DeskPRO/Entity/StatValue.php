@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Application\DeskPRO\App;
 
 /**
  * Stat Value - A row represent a unit of data for a Stat
@@ -28,7 +29,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * The Stat
 	 *
@@ -37,7 +38,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
-	
+
 	/**
 	 * The stat value
 	 *
@@ -45,7 +46,7 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="value", type="decimal")
 	 */
 	protected $value;
-	
+
 	/**
 	 * The unix time for the period this stat represents
 	 *
@@ -57,5 +58,34 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->stat_unix = time();
+	}
+
+	/**
+	 * Get a StatValueGroup by date
+	 *
+	 * @param \DateTime $date The DateTime to check
+	 * @return StatValueGroup The found StatValueGroup entity or null
+	 */
+	public function getStatValueGroupForDate(\DateTime $date, $grouping_id, $run_frequency)
+	{
+		$stat_value_group = null;
+
+		$repo = App::getEntityRepository('DeskPRO:StatValueGroup');
+
+		switch ($run_frequency) {
+			case 'daily':
+				$stat_value_group = $repo->getForStatValueByDay($this->id, $grouping_id, $date);
+				break;
+			case 'monthly':
+				$stat_value_group = $repo->getForStatValuepByMonth($this->id, $grouping_id, $date);
+				break;
+			case 'yearly':
+				$stat_value_group = $repo->getForStatValueByYear($this->id, $grouping_id, $date);
+				break;
+			default:
+				throw new \Exception("Unable to retrieve StatValueGroup for run_frequency " . $run_frequency);
+		}
+
+		return $stat_value_group;
 	}
 }
