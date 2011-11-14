@@ -204,6 +204,30 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Get the number of data points based on the run frequency
+	 */
+	public function getDefaultDataPointCount()
+	{
+		$data_points = 7;
+		switch ($this->run_frequency) {
+			case 'daily':
+				// Get a week
+				$data_points = 7;
+				break;
+			case 'monthly':
+				// Get 12 months
+				$data_points = 12;
+				break;
+			case 'yearly':
+				// Get 10 years
+				$data_points = 10;
+				break;
+		}
+
+		return $data_points;
+	}
+
+	/**
 	 * Get a number of values
 	 *
 	 * @param int $limit The number of values to get
@@ -254,9 +278,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	}
 
-	public function getGroupingReferenceIds()
+	/**
+	 * Get the reference Id's for a stat. Optionaly limit to a date and count
+	 *
+	 * @param \DateTime $end_date The end date to limit to (optional)
+	 * @param int $limit The number of reference Id's to retrieve (optional)
+	 * @return array()
+	 */
+	public function getGroupingReferenceIds(\DateTime $end_date = null, $limit = null)
 	{
-		return App::getEntityRepository('DeskPRO:StatValueGroup')->getReferenceIdsByStat($this->getId());
+		return App::getEntityRepository('DeskPRO:StatValueGroup')
+			->getReferenceIdsByStat($this->getId(), $end_date, $limit);
 	}
 
 	public function setRunFrequency($run_frequency)
@@ -282,14 +314,28 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return self::$groupingReferences[$this->getGroupingRef()];
 	}
 
-	public function getReferenceLookup() {
+	/**
+	 * Get the Reference loopup for the Stat. Basically a Stat is mapped to
+	 * a type of Grouping Data. We store the PK's for the linked grouping
+	 * entity so we need a way to get the linked grouping entities back.
+	 * This method will do this
+	 *
+	 * @param \DateTime $end_date The end date, we work backwards from this
+	 * @param int $data_point_count The number of data points to retrieve
+	 */
+	public function getReferenceLookup(\DateTime $end_date, $data_point_count = null)
+	{
+		// If a data point count is not set, use the Stat default
+		if (true === is_null($data_point_count)) {
+			$data_point_count = $this->getDefaultDataPointCount();
+		}
 
 		$groupingInformation = $this->getGroupingInformation();
 
 		$table 		= $groupingInformation['table'];
 		$displayColumn 	= $groupingInformation['display_column'];
 
-		$refefencesIds  = $this->getGroupingReferenceIds();
+		$refefencesIds  = $this->getGroupingReferenceIds($end_date, $data_point_count);
 
 		$references = App::getDb()->fetchAll("
 			SELECT id, $displayColumn
@@ -303,6 +349,55 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $lookup;
+	}
+
+	/**
+	 * Get the data for the Stat
+	 *
+	 * @param \DateTime $end_date The end date, we work backwards from this
+	 * @param int $data_point_count The number of data points to retrieve
+	 */
+	public function getData(\DateTime $end_date, $data_point_count, $with_grouped = false)
+	{
+		// Get the StatValue's
+		$data = $this->getUngroupedData($end_date, $data_point_count);
+
+		if ($with_grouped) {
+			$data['ungrouped'] = $data;
+			$data['grouped']   = $this->getGroupedData($end_date, $data_point_count);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Get the data (StatValue) for the Stat
+	 *
+	 * @param \DateTime $end_date The end date, we work backwards from this
+	 * @param int $data_point_count The number of data points to retrieve
+	 */
+	public function getUngroupedData(\DateTime $end_date, $data_point_count)
+	{
+		$data = array();
+
+		// Get the StatValue's
+
+		return $data;
+	}
+
+	/**
+	 * Get the grouped data (StatValueGroup) for the Stat
+	 *
+	 * @param \DateTime $end_date The end date, we work backwards from this
+	 * @param int $data_point_count The number of data points to retrieve
+	 */
+	public function getGroupedData(\DateTime $end_date, $data_point_count)
+	{
+		$data = array();
+
+		// Get the StatValueGroup's
+
+		return $data;
 	}
 
 	/**

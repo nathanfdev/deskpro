@@ -16,14 +16,30 @@ use Application\DeskPRO\App;
 
 class StatValueGroup extends EntityRepository
 {
-	public function getReferenceIdsByStat($stat_id)
+	/**
+	 * Get the reference Id's for a stat. Optionaly limit to a date and count
+	 *
+	 * @param int $stat_id The Stat Id
+	 * @param \DateTime $end_date The end date to limit to (optional)
+	 * @param int $limit The number of reference Id's to retrieve (optional)
+	 * @return array()
+	 */
+	public function getReferenceIdsByStat($stat_id, \DateTime $end_date = null, $limit = null)
 	{
-		$references = App::getDb()->fetchAllCol("
-			SELECT grouping_id
+		$query = "SELECT grouping_id
 			FROM stat_value_group svg
 			INNER JOIN stat_value sv ON sv.id = svg.stat_value_id
-			WHERE sv.stat_id = $stat_id
-		");
+			WHERE sv.stat_id = $stat_id";
+
+		if (false === is_null($end_date)) {
+			$query .= " AND svg.stat_unix < " . $end_date->format('U');
+		}
+
+		if (false === is_null($limit)) {
+			$query .= " LIMIT $limit";
+		}
+
+		$references = App::getDb()->fetchAllCol($query);
 
 		$referenceIds = array();
 		foreach ($references as $reference) {

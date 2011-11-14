@@ -22,7 +22,8 @@ class ChartController extends AbstractController
 
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
-
+		$chart->setDataEndDate(\DateTime());
+		
 		$chart_template = $chart->getViewChartVendor() . '/' . $chart::CHART_IDENTIFIER . '.html.twig';
 
 		return $this->render("ReportBundle:Chart:$chart_template", array(
@@ -37,6 +38,7 @@ class ChartController extends AbstractController
 
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
+		$chart->setDataEndDate(\DateTime());
 
 		$data_template = $chart->getViewChartVendor() . '/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
@@ -51,6 +53,7 @@ class ChartController extends AbstractController
 
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
+		$chart->setDataEndDate(\DateTime());
 
 		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
