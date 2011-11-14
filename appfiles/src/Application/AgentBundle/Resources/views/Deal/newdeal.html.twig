@@ -36,8 +36,8 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="content">
                     <div class="col">
                             
-                            <div id="{{baseId}}_choose_user">
-                                <div
+		<div id="{{baseId}}_choose_user">
+			<div
 				id="{{baseId}}_user_searchbox"
 				data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
 				data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
@@ -45,10 +45,9 @@ pageMeta.baseId = '{{ baseId }}';
 				data-touch-focus="1"
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
-                                >
-                                Person:
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this deal for" />
-				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
+			>
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+				<input type="hidden" name="newdeal[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -70,6 +69,10 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 		</div>
+		<div id="{{baseId}}_user_choice">
+
+		</div>
+		<br class="clear" />
 
             </div>
             <div class="col">
