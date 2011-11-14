@@ -35,4 +35,73 @@ class StatValueGroup extends EntityRepository
 		return $referenceIds;
 	}
 
+	/**
+	 * Get that StatValueGroup for a day
+	 *
+	 * @param int $stat_value_id The StatValue id
+	 * @param int $grouping_id The grouping id
+	 * @param \DateTime $date The date
+	 * @return StatValueGroup
+	 */
+	public function getForStatValueByDay($stat_value_id, $grouping_id, \DateTime $date)
+	{
+		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
+			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y-%m-%d') = ?", $date->format('Y-m-d'))
+			->getQuery()
+			->getSingleResult();
+
+		return $stat_value_group;
+	}
+
+	/**
+	 * Get that StatValueGroup for a month
+	 *
+	 * @param int $stat_value_id The StatValue id
+	 * @param int $grouping_id The grouping id
+	 * @param \DateTime $date The date
+	 * @return StatValueGroup
+	 */
+	public function getForStatValueByMonth($stat_value_id, $grouping_id, \DateTime $date)
+	{
+		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
+			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y-%m') = ?", $date->format('Y-m'))
+			->getQuery()
+			->getSingleResult();
+
+		return $stat_value_group;
+	}
+
+	/**
+	 * Get that StatValueGroup for a year
+	 *
+	 * @param int $stat_value_id The StatValue id
+	 * @param int $grouping_id The grouping id
+	 * @param \DateTime $date The date
+	 * @return StatValueGroup
+	 */
+	public function getForStatValueByYear($stat_value_id, $grouping_id, \DateTime $date)
+	{
+		$stat_value_group = $this->getForStatValueQuery($stat_value_id, $grouping_id)
+			->andWhere("FROM_UNIXTIME(svg.stat_unix, '%Y') = ?", $date->format('Y'))
+			->getQuery()
+			->getSingleResult();
+
+		return $stat_value_group;
+	}
+
+	/**
+	 * Get a basic StatValueGroup query
+	 *
+	 * @param int $stat_value_id The StatValue Id
+	 * @param int $grouping_id The grouping id
+	 * @return QueryBuilder The QueryBuilder Object
+	 */
+	protected function getForStatValueQuery($stat_value_id, $grouping_id)
+	{
+		return $this->getEntityManager()->createQueryBuilder()
+			->select('svg')
+			->from('DeskPRO:StatValueGroup', 'svg')
+			->where('svg.stat_value_id = ?', $stat_value_id)
+			->andWhere('svg.grouping_id = ?', $grouping_id);
+	}
 }
