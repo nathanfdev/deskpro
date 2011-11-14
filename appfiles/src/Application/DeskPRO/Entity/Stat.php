@@ -26,8 +26,16 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	const FREQUENCY_MONTHLY = "monthly";
 	const FREQUENCY_YEARLY  = "yearly";
 
+	const VARIATION_GOOD    = 'good';
+	const VARIATION_BAD     = 'bad';
+	const VARIATION_NEUTRAL = 'neutral';
+
 	protected static $availableRunFrequencies = array(
 		self::FREQUENCY_DAILY, self::FREQUENCY_MONTHLY, self::FREQUENCY_YEARLY
+	);
+
+	protected static $availableVariations = array(
+		self::VARIATION_BAD, self::VARIATION_NEUTRAL, self::VARIATION_GOOD
 	);
 
 	/**
@@ -72,6 +80,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $parent_stat;
 
 	/**
+	 * The stat filter criteria
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="criteria", type="array")
+	 */
+	protected $criteria;
+
+	/**
 	 * The grouping type
 	 *
 	 * @var string
@@ -86,6 +102,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="stat_concept_class", type="string", length="500")
 	 */
 	protected $stat_concept_class;
+
+	/**
+	 * The stat variation.
+	 *
+	 * @var string
+	 * @ORM_MAPPING\Column(name="variation", type="string", length="7")
+	 */
+	protected $variation;
 
 	/**
 	 * Is the stat starred
@@ -238,10 +262,19 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	public function setRunFrequency($run_frequency)
 	{
 		if (false === self::isValidRunFrequency($run_frequency)) {
-			throw new \Exception("Unable to set run frequency to type $run_frequency. Supported types are " . join(", ", $this->availableRunFrequencies));
+			throw new \Exception("Unable to set run frequency to type $run_frequency. Supported types are " . join(", ", self::$availableRunFrequencies));
 		}
 
 		$this->run_frequency = $run_frequency;
+	}
+
+	public function setVariation($variaition)
+	{
+		if (false === self::isValidVariation($variaition)) {
+			throw new \Exception("Unable to set variaition to type $variaition. Supported types are " . join(", ", self::$availableVariations));
+		}
+
+		$this->variation = $variaition;
 	}
 
 	public function getGroupingInformation()
@@ -291,5 +324,52 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	public static function getAvailableRunFrequencies()
 	{
 		return self::$availableRunFrequencies;
+	}
+
+	/**
+	 * Checks if a variaition is valid
+	 *
+	 * @param string $variation The variaition to check
+	 * @return bool
+	 */
+	public static function isValidVariation($variation)
+	{
+		return (in_array($variation, self::$availableVariations)) ? true : false;
+	}
+
+	/**
+	 * Get the available variations
+	 *
+	 * @return array
+	 */
+	public static function getAvailableVariations()
+	{
+		return self::$availableVariations;
+	}
+
+	/**
+	 * Get the available grouping references
+	 *
+	 * @return array
+	 */
+	public static function getGroupingReferences()
+	{
+		return self::$groupingReferences;
+	}
+
+	/**
+	 * Get the available grouping references in display format
+	 *
+	 * @return array
+	 */
+	public static function getGroupingReferencesDisplay()
+	{
+		$results = array();
+
+		foreach (self::$groupingReferences as $k=>$grouping) {
+			$results[$k] = ucwords($grouping['table']);
+		}
+
+		return $results;
 	}
 }
