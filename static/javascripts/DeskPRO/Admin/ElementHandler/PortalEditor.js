@@ -1,5 +1,19 @@
 Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
+/**
+ * The portal editor is made of up the admin page, and then a specially
+ * loaded page in the user interface loaded through an iframe.
+ *
+ * We call the admin page the PortalEditor, and the user page the PortalClient.
+ *
+ * Messages, like click events that need an editor, are handled byt he PortalClient
+ * and are pssed up to this PortalEditor which takes care of opening editors and saving
+ * data. Then in some cases, data is passed back down to the PortalClient to update
+ * the live display.
+ *
+ * Generally: PortalEditor handles saving/changing of data, PortalClient handles displaying data
+ * and interaction with the UI.
+ */
 DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
@@ -20,16 +34,38 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				self.tellPortal('app_disabled', {name: type});
 			}
 		});
+
+		this._initColorPicker();
 	},
 
+	/**
+	 * Send a message to the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	tellPortal: function(id, data) {
 		this.iframeWindow.PortalAdmin.acceptMessage(id, data);
 	},
 
+
+	/**
+	 * Call a method on the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	callPortal: function(id, data) {
 		return this.iframeWindow.PortalAdmin[id](data);
 	},
 
+
+	/**
+	 * Accepts a message passed from the portal client
+	 *
+	 * @param id
+	 * @param data
+	 */
 	acceptMessage: function(id, data) {
 
 		data = data || {};
@@ -39,9 +75,96 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'loaded':
 				this.iframeLoaded(data.height);
 				break;
+			case 'open_placeholder_editor':
+				var controller = data.controller;
+
+				this.showHtmlEditor(function(html) {
+					controller.setContent(html);
+				});
+				break;
+			case 'open_logo_editor':
+				var controller = data.controller;
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					destroyOnClose: true,
+					contentAjax: {
+						url: BASE_URL + 'admin/portal/get-editor/logo'
+					},
+					onContentSet: function(ev) {
+						var wrapper = ev.overlay.getElement();
+
+						wrapper.fileupload({
+							url: BASE_URL + 'admin/misc/accept-upload',
+							dropZone: wrapper,
+							autoUpload: true,
+							uploadTemplate: $('.template-upload', wrapper),
+							downloadTemplate: $('.template-download', wrapper)
+						}).bind('fileuploadstart', function() {
+							$('p.explain', wrapper).hide();
+						}).bind('fileuploadadd', function() {
+							$('.files', wrapper).empty();
+						});
+
+						$('.save-logo-trigger', wrapper).click(function() {
+							var blobId = $('input.new_blob_id', wrapper).val();
+							if (!blobId) {
+								alert('You need to upload a file');
+								return;
+							}
+
+							var url = $('input.new_logo_url', wrapper).val();
+
+							controller.setLogo(url);
+							ev.overlay.close();
+						});
+
+						$('.save-text-trigger').click(function() {
+							controller.setLogoText($('input[name="title"]').val(), $('input[name="tagline"]').val());
+							ev.overlay.close();
+						});
+					}
+				});
+				overlay.open();
+				break;
 		}
 	},
 
+
+	/**
+	 * Shows a generic HTML editor
+	 *
+	 * @param callback
+	 */
+	showHtmlEditor: function(callback) {
+		var el = $(DeskPRO_Window.util.getPlainTpl($('#admin_portal_block_html_edit_tpl')));
+
+		var overlay = new DeskPRO.UI.Overlay({
+			contentElement: el,
+			destroyOnClose: true,
+			onBeforeOverlayOpened: function() {
+				if (el.is('.has-init')) return;
+				el.addClass('has-init');
+
+				var cm = CodeMirror.fromTextArea($('textarea', el).get(0), {
+					mode: "text/html"
+				});
+
+				$('.save-trigger', el).click(function() {
+					callback(cm.getValue());
+					overlay.close();
+				});
+			}
+		});
+		overlay.open();
+	},
+
+
+	/**
+	 * Whent the portal client is loaded, it sends a message to us and we invoke
+	 * this method to set up the messages channel.
+	 *
+	 * @param height
+	 */
 	iframeLoaded: function(height) {
 		var iframe = $('#portal_iframe').get(0);
 
@@ -63,7 +186,99 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		this.iframeQuery('body').css('overflow', 'hidden');
 	},
 
+
+	/**
+	 * Execute a jQuery query from in the context of the portal client
+	 *
+	 * @param query
+	 */
 	iframeQuery: function(query) {
 		return this.iframeWindow.jQuery(query);
+	},
+
+
+	_initColorPicker: function() {
+		var self     = this;
+		var panel    = $('#portal_colors');
+		var trigger  = $('#portal_colors_trigger');
+		var backdrop = $('<div class="backdrop" style="z-index: 999" />').hide().appendTo('body');
+
+		panel.detach().appendTo('body');
+
+		trigger.click(function() {
+			if (panel.is(':visible')) {
+				closeColorPanel();
+			} else {
+				openColorPanel();
+			}
+		});
+
+		backdrop.click(function() {
+			closeColorPanel();
+		});
+
+		var openColorPanel = function() {
+			var triggerPos = trigger.offset();
+
+			var top  = triggerPos.top  + trigger.height();
+			var left = (triggerPos.left + trigger.width() + 8) - panel.width();
+
+			panel.css({
+				top: top ,
+				left: left
+			});
+
+			panel.slideDown();
+			backdrop.show();
+		};
+
+		var closeColorPanel = function() {
+			panel.slideUp();
+			backdrop.hide();
+		};
+
+		var colorSwatches = $('.color-swatch', panel);
+		colorSwatches.each(function() {
+			var swatchEl = $(this);
+			swatchEl.click(function() {
+				swatchEl.ColorPickerShow();
+			});
+
+			swatchEl.ColorPicker({
+				onSubmit: function(hsb, hex, rgb, el) {
+					swatchEl.data('color', hex);
+					$(el).ColorPickerHide();
+				},
+				onBeforeShow: function () {
+					$(this).ColorPickerSetColor(swatchEl.data('color'));
+				},
+				onChange: function (hsb, hex, rgb) {
+					$('div', swatchEl).css('backgroundColor', '#' + hex);
+					swatchEl.data('color', '#' + hex);
+				}
+			});
+		});
+
+		$('button.apply-trigger', panel).click(function() {
+			closeColorPanel();
+
+			var formData = [];
+
+			colorSwatches.each(function() {
+				formData.push({
+					name: 'vars[' + $(this).data('color-id') + ']',
+					value: $(this).data('color')
+				});
+			});
+
+			$.ajax({
+				url: BASE_URL + 'admin/portal/save-editor/css_var',
+				type: 'POST',
+				data: formData,
+				success: function() {
+					self.tellPortal('reload_css');
+				}
+			});
+		});
 	}
 });

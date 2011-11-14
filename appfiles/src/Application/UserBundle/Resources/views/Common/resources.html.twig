@@ -1,14 +1,12 @@
 {% if app.isDebug() %}
 	{{ dp_asset_html('user_vendors') }}
 	{{ dp_asset_html('user_common') }}
-	{{ dp_asset_html('user_interface_css') }}
-	{{ dp_asset_html('user_interface_print_css', {'media':'print'}) }}
 {% else %}
 	{{ dp_asset_html('user') }}
-	{{ dp_asset_html('user_interface_css') }}
-	{{ dp_asset_html('user_css') }}
-	{{ dp_asset_html('user_interface_print_css', {'media':'print'}) }}
 {% endif %}
+
+<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ path('user') }}_sys/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+<link rel="stylesheet" type="text/css" href="{{ path('user') }}_sys/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
 
 <script type="text/javascript">
 	var BASE_URL = '{{ path('user') }}';

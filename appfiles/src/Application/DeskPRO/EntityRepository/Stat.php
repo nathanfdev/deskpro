@@ -16,7 +16,7 @@ use Application\DeskPRO\App;
 
 class Stat extends EntityRepository
 {
-	
+
 	/**
 	 * Get enabled stats
 	 *
@@ -33,7 +33,7 @@ class Stat extends EntityRepository
 
 		return $stats;
 	}
-	
+
 	/**
 	 * Get the stats requiring updating
 	 *
@@ -45,7 +45,7 @@ class Stat extends EntityRepository
 		if (true === is_null($time)) {
 			$time = time();
 		}
-		
+
 		$stats = $this->getEntityManager()->createQuery("
 			SELECT s
 			FROM DeskPRO:Stat s

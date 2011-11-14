@@ -33,6 +33,9 @@ class Product implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_product['id'] ?: null,
+			'id_after'  => $this->new_product['id'] ?: null,
+
 			'old_product_id' => $this->old_product['id'],
 			'old_product_title' => $this->old_product['title'],
 			'new_product_id' => $this->new_product['id'],

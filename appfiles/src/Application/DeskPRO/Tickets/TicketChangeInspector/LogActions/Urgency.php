@@ -35,6 +35,9 @@ class Urgency implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_urgency ?: null,
+			'id_after'  => $this->new_urgency ?: null,
+
 			'old_urgency' => $this->old_urgency,
 			'new_urgency' => $this->new_urgency,
 			'reset_next_reply' => $this->reset_next_reply

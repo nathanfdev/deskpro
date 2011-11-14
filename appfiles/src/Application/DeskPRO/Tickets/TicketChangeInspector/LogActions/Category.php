@@ -33,6 +33,9 @@ class Category implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => $this->old_cat['id'] ?: null,
+			'id_after'  => $this->new_cat['id'] ?: null,
+
 			'old_category_id' => $this->old_cat['id'],
 			'old_category_title' => $this->old_cat['title'],
 			'new_category_id' => $this->new_cat['id'],

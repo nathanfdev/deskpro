@@ -79,7 +79,4 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
 });
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
 
-if (is_file(DP_ROOT.'/vendor/swiftmailer/lib/classes/Swift.php')) {
-	require_once DP_ROOT.'/vendor/swiftmailer/lib/classes/Swift.php';
-	Swift::registerAutoload(DP_ROOT.'/vendor/swiftmailer/lib/swift_init.php');
-}
+require_once DP_ROOT.'/vendor/swiftmailer/lib/swift_required.php';

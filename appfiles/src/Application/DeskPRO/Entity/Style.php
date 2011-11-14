@@ -63,6 +63,41 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 	/**
+	 * The blob containing the logo for this style.
+	 * Later we'll allow multiple resources to be attached to styles, but for now the logo is
+	 * here.
+	 *
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="logo_blob_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $logo_blob_id = null;
+
+	/**
+	 * CSS dir under static with CSS files
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="css_dir", type="string", length=255)
+	 */
+	protected $css_dir = '';
+
+	/**
+	 * Last time the CSS variable was updated.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="css_updated",type="datetime")
+	 */
+	protected $css_updated;
+
+	/**
+	 * Options for the style
+	 *
+	 * @var array
+	 * @ORM_Mapping\Column(name="options", type="array")
+	 */
+	protected $options = array();
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
@@ -71,6 +106,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->created_at = new \DateTime();
+		$this->css_updated = new \DateTime();
 	}
 
 	public function setParentId($parent_id)
@@ -108,5 +144,24 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	public function getCustomTemplateNames()
 	{
 		return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateNamesInStyle($this);
+	}
+
+	public function setCssVar($name, $value)
+	{
+		if (!isset($this->options['css_vars'])) {
+			$this->options['css_vars'] = array();
+		}
+
+		$this->options['css_vars'][$name] = $value;
+		$this->css_updated = new \DateTime();
+	}
+
+	public function getCssVars()
+	{
+		if (!isset($this->options['css_vars'])) {
+			return array();
+		}
+
+		return $this->options['css_vars'];
 	}
 }

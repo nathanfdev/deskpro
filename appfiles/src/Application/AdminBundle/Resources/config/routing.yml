@@ -26,6 +26,10 @@ admin_email_properties:
   pattern: /email-settings
   defaults: { _controller: AdminBundle:EmailProperties:list }
 
+admin_accept_upload:
+  pattern: /misc/accept-upload
+  defaults: { _controller: AdminBundle:Main:acceptTempUpload }
+
 ################################################################################
 # Portal
 ################################################################################
@@ -33,6 +37,14 @@ admin_email_properties:
 admin_portal:
   pattern: /portal
   defaults: { _controller: AdminBundle:Portal:index }
+
+admin_portal_get_editor:
+  pattern: /portal/get-editor/{type}
+  defaults: { _controller: AdminBundle:Portal:getEditor }
+
+admin_portal_save_editor:
+  pattern: /portal/save-editor/{type}
+  defaults: { _controller: AdminBundle:Portal:saveEditor }
 
 admin_portal_settings:
   pattern: /portal/settings

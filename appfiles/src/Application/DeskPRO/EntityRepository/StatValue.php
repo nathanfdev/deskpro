@@ -16,5 +16,16 @@ use Application\DeskPRO\App;
 
 class StatValue extends EntityRepository
 {
-	
+	public function getStatValuesForStat($stat_id, $limit)
+	{
+		$stats = $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:StatValue s
+			WHERE s.stat_id = :stat_id
+		")->setParameter('stat_id', $stat_id)
+		->setMaxResults($limit)->execute();
+
+		return $stats;
+	}
+
 }

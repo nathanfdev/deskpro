@@ -1855,4 +1855,37 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		return $alt_ticket;
 	}
+
+
+	public static function getStatusInt($status_code)
+	{
+		$status = $status_code;
+		$hstatus = null;
+		if (strpos($status, '.')) {
+			list($status, $hstatus) = explode('.', $status, 2);
+		}
+
+		switch ($status) {
+			case self::STATUS_OPEN:
+				return 100;
+			case self::STATUS_PENDING:
+				return 110;
+			case self::STATUS_RESOLVED:
+				return 200;
+			case self::STATUS_CLOSED:
+				return 210;
+			case self::STATUS_HIDDEN:
+				switch ($hstatus) {
+					case self::HIDDEN_STATUS_VALIDATING:
+						return 300;
+					case self::HIDDEN_STATUS_DELETED:
+						return 310;
+					case self::HIDDEN_STATUS_SPAM:
+						return 320;
+				}
+				break;
+		}
+
+		return 0;
+	}
 }

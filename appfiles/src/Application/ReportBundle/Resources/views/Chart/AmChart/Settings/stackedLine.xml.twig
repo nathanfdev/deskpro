@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+
+	<digits_after_decimal>2</digits_after_decimal>
+
+	<plot_area>
+	  <margins>
+	    <left>40</left>
+	    <top>20</top>
+	    <right>30</right>
+	    <bottom>25</bottom>
+	  </margins>
+	</plot_area>
+
+	<axes>
+	  <y_left>
+	    <type>stacked</type>
+	    <color></color>
+	    <alpha></alpha>
+	    <width></width>
+	    <tick_length></tick_length>
+	    <logarithmic></logarithmic>
+	  </y_left>
+	</axes>
+
+	<legend>
+	  <enabled>true</enabled>
+	  <values>
+	    <enabled>false</enabled>
+	    <height>20</height>
+	    <align>left</align>
+	    <text><![CDATA[: {value}]]></text>
+	   </values>
+	</legend>
+
+	<graphs>
+	      	{% for label in chart.labels %}
+			<graph gid="{{ loop.index }}">
+				<axis>left</axis>
+				<title>{{ label }}</title>
+				<fill_alpha>50</fill_alpha>
+				<balloon_text>
+				      <![CDATA[{value}]]>
+				</balloon_text>
+			</graph>
+		{% endfor %}
+	</graphs>
+
+</settings>

@@ -10,7 +10,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	initialize: function(options) {
 
 		// Init vars
-		this.objectId = null,
+		this.objectId = null;
 
 		this.options = {
 			triggerElement: null,
@@ -27,6 +27,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			maxWidth: 900,
 			destroyOnClose: false,
 			customClassname: '',
+			classname: '',
 			isModal: true,
 			zIndex: 1000000,
 			escapeClose: true,
@@ -63,7 +64,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 * Get the main wrapper for the overlay
 	 */
 	getElement: function() {
-		return this.elements.wrapperOuter;
+		return this.getWrapper();
 	},
 
 
@@ -248,7 +249,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			}
 		}
 
-		this.elements.wrapperOuter = $('<div class="deskpro-overlay-outer '+this.options.customClassname+'" style="display:none" />');
+		this.elements.wrapperOuter = $('<div class="deskpro-overlay-outer '+this.options.customClassname+' ' + this.options.classname + '" style="display:none" />');
 		this.elements.wrapperOuter.appendTo('body');
 
 		this.elements.wrapper = $('<div class="deskpro-overlay '+this.options.customClassname+'">');

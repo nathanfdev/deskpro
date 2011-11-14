@@ -37,10 +37,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.overlay = null;
 
 		// The supported vendor namespaces
-		this.supported_vendors = ['AmChart'];
+		this.supported_vendors = ['AmChart', 'DeskPRO'];
 
 		// The supported chart Classes
-		this.supported_charts = ['Column', 'Line'];
+		this.supported_charts = ['Column', 'Line', 'Pie', 'SimpleVariation', 'SimpleDrillDown', 'DetailedDrillDown'];
 
 		// Refernce to the dashboard
 		this.$dashboard = $("#report-dashboard");
@@ -179,7 +179,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (this.supported_charts.indexOf(chart_type) == -1) {
 			throw "Unsupported Chart Class [" + chart_type + "]";
 		}
-
+		
 		var chartClass = eval("DeskPRO.Report.Chart." + vendor + "." + chart_type);
 
 		return new chartClass(chart_element_id, dashboad_stat_id);

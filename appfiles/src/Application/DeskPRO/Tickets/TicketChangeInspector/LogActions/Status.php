@@ -12,7 +12,7 @@
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket;
 
 class Status implements LogActionInterface
 {
@@ -33,6 +33,9 @@ class Status implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
+			'id_before' => Ticket::getStatusInt($this->old_status) ?: null,
+			'id_after'  => Ticket::getStatusInt($this->new_status) ?: null,
+
 			'old_status' => $this->old_status,
 			'new_status' => $this->new_status,
 		);

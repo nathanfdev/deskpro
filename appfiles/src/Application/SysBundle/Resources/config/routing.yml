@@ -21,3 +21,8 @@ sys_install_createtables:
 sys_install_createdata:
   pattern:  /install/create-data
   defaults: { _controller: SysBundle:Install:createData }
+
+sys_user_css:
+  pattern:  /res/user/{filename}
+  defaults: { _controller: SysBundle:Resource:userCss }
+  requirements: { filename: "[a-zA-Z0-9_\-]+\.css" }

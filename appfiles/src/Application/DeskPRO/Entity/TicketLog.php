@@ -24,7 +24,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -47,6 +47,22 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="action_type", type="string", length=40)
 	 */
 	protected $action_type;
+
+	/**
+	 * The ID of the previous entity changed, or any other numeric value.
+	 * @var int
+	 * @ORM_Mapping\Column(name="id_before", type="integer", nullable=true)
+	 *
+	 */
+	protected $id_before = null;
+
+	/**
+	 * The ID of the new entity, or any other numeric value.
+	 * @var int
+	 * @ORM_Mapping\Column(name="id_after", type="integer", nullable=true)
+	 *
+	 */
+	protected $id_after = null;
 
 	/**
 	 * @var string
@@ -85,5 +101,19 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($id);
 		$this['ticket'] = $ticket;
+	}
+
+	public function setDetails(array $details)
+	{
+		if (isset($details['id_before'])) {
+			$this['id_before'] = $details['id_before'];
+			unset($details['id_before']);
+		}
+		if (isset($details['id_after'])) {
+			$this['id_after'] = $details['id_after'];
+			unset($details['id_after']);
+		}
+
+		$this->setModelField('details', $details);
 	}
 }

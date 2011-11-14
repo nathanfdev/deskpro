@@ -65,9 +65,13 @@ class Mailer extends \Swift_Mailer
 	/**
 	 * @return \Orb\Mail\Message
 	 */
-	public function createMessage()
+	public function createMessage($service = 'message')
 	{
-		$message = \Orb\Mail\Message::newInstance();
-		return $message;
+		if ($service == 'message') {
+			$message = \Orb\Mail\Message::newInstance();
+			return $message;
+		}
+
+		return parent::createMessage($service);
 	}
 }
