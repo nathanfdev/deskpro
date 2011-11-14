@@ -24,35 +24,49 @@ class GenerateStats extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 86400; // Daily
 
-	protected $time;
+	protected $date_time;
 
 	protected $orm;
 
 	public function run()
 	{
-		$this->time = time();
+		$this->date_time = new \DateTime();
+		$this->date_time = \DateTime::createFromFormat('U', time()+self::DEFAULT_INTERVAL);
 
 		$this->orm  = App::getOrm();
 
-		// Get the stats
-		$stats 		= App::getEntityRepository('DeskPRO:Stat')
-				     ->getStatsRequiringUpdate($this->time);
+		// Get the available fun frequencies
+		$run_frequencies = Stat::getAvailableRunFrequencies();
 
-		$count_stats 	= count($stats);
+		foreach ($run_frequencies as $run_frequency) {
+			// Generate the run frequency method to execute
+			$method = 'get' . ucwords($run_frequency) . 'StatIdsRequiringUpdate';
 
-		$this->processStats($stats);
+			$stat_ids 	= App::getEntityRepository('DeskPRO:Stat')
+						->$method($this->date_time);
 
-		$msg = "Generate Stats ($count_stats)";
-		$this->logStatus($msg);
+			$count_stats 	= count($stat_ids);
+
+			$msg = '[' . ucwords($run_frequency) . "] Processing {$count_stats} stats";
+			$this->logStatus($msg);
+
+			if (count($stat_ids)) {
+				$this->processStatIds($stat_ids);
+			}
+		}
 	}
 
 	/**
 	 * Process a list of stats
 	 *
-	 * @param array $stats  List of stats to process
+	 * @param array $stat_ids  List of stat ids to process
 	 */
-	protected function processStats($stats)
+	protected function processStatIds($stat_ids)
 	{
+		// Get the all the stats
+		$stats = App::getEntityRepository('DeskPRO:Stat')
+				->getByIds($stat_ids);
+
 		foreach ($stats as $stat) {
 			$this->processStat($stat);
 		}

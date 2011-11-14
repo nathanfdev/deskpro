@@ -206,13 +206,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return App::getEntityRepository('DeskPRO:StatValueGroup')->getReferenceIdsByStat($this->getId());
 	}
 
-	public function setRunFrequency($frequency)
+	public function setRunFrequency($run_frequency)
 	{
-		if (false === in_array($frequency, $this->availableRunFrequencies)) {
-			throw new \Exception("Unable to set run frequency to type $frequency. Supported types are " . join(", ", $this->availableRunFrequencies));
+		if (false === self::isValidRunFrequency($run_frequency)) {
+			throw new \Exception("Unable to set run frequency to type $run_frequency. Supported types are " . join(", ", $this->availableRunFrequencies));
 		}
 
-		$this->run_frequency = $frequency;
+		$this->run_frequency = $run_frequency;
 	}
 
 	public function getGroupingInformation()
@@ -241,5 +241,26 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $lookup;
+	}
+
+	/**
+	 * Checks if a run requency is valid
+	 *
+	 * @param string $run_frequency The run frequency to check
+	 * @return bool
+	 */
+	public static function isValidRunFrequency($run_frequency)
+	{
+		return (in_array($run_frequency, self::$availableRunFrequencies)) ? true : false;
+	}
+
+	/**
+	 * Get the available run frequencies
+	 *
+	 * @return array
+	 */
+	public static function getAvailableRunFrequencies()
+	{
+		return self::$availableRunFrequencies;
 	}
 }

@@ -97,7 +97,7 @@ class StatValue extends EntityRepository
 	{
 		return $this->getEntityManager()->createQueryBuilder()
 			->select('sv')
-			->from('DeskPRO:StatValue')
+			->from('DeskPRO:StatValue', 'sv')
 			->where('sv.stat_id = ?', $stat_id);
 	}
 }
