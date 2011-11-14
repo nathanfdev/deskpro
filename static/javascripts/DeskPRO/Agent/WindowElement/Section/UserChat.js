@@ -19,7 +19,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this._initMessageHandlers();
 
-		this.getSectionElement().delegate('.sub-toggle', 'click', function(ev) {
+		this.getSectionElement().on('click', '.sub-toggle', function(ev) {
 			var row = $(this).closest('li');
 			var sub = $('> ul.sub-group', row);
 			if (sub.length) {

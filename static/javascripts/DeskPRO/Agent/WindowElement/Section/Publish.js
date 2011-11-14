@@ -208,12 +208,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				DeskPRO_Window[name].toggle();
 			});
 
-			$('#publish_outline_'+type+'cat_list').delegate('.edit-cat', 'click', function(ev) {
+			$('#publish_outline_'+type+'cat_list').on('click', '.edit-cat', function(ev) {
 				var li = $(this).parent().parent();
 				ed.showEditor(li);
 			});
 
-			$('#publish_outline_'+type+'cat_list').delegate('.delete-cat', 'click', function(ev) {
+			$('#publish_outline_'+type+'cat_list').on('click', '.delete-cat', function(ev) {
 
 				var i = 0;
 				var li = $(this);

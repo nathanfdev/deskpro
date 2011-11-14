@@ -133,7 +133,7 @@ var DpChatMake = function() {
 			}
 
 			if (window.DpChat_Options.interceptLeavingDomains) {
-				$(document).delegate('a', 'click', function(ev) {
+				$(document).on('click', 'a', function(ev) {
 					if ($(this).is('dp-no-touch')) {
 						return;
 					}

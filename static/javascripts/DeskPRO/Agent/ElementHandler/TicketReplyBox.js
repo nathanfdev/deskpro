@@ -63,7 +63,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			self.getElById('attach_row').slideDown().removeClass('is-hidden');;
 		});
 
-		this.el.delegate('.remove-attach-trigger', 'click', function() {
+		this.el.on('click', '.remove-attach-trigger', function() {
 
 			var row = $(this).closest('li');
 			row.fadeOut('fast', function() {
@@ -80,7 +80,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Toggle buttons
 		//------------------------------
 
-		$('.option-buttons', this.el).delegate('li.toggle', 'click', function() {
+		$('.option-buttons', this.el).on('click', 'li.toggle', function() {
 			var check = $(':checkbox', this);
 			if (!check.length) {
 				return;

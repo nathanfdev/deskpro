@@ -64,14 +64,14 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 
 		var menuEl = $('<ul id="dp_tabstrip_menu" />').hide().appendTo('body');
-		menuEl.delegate('li', 'mouseover', function() {
+		menuEl.on('mouseover', 'li', function() {
 			$('li.over', tabStrip).removeClass('over');
 			$('#' + $(this).data('tab-el-id')).addClass('over');
 		});
 		menuEl.on('mouseout', function() {
 			$('li.over', tabStrip).removeClass('over');
 		});
-		menuEl.delegate('.close', 'click', function(ev) {
+		menuEl.on('click', '.close', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

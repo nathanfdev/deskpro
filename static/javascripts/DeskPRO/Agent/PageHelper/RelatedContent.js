@@ -34,7 +34,7 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 
 		this.listEl = $(this.options.listEl);
 
-		this.listEl.delegate('.remove', 'click', function(ev) {
+		this.listEl.on('click', '.remove', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

@@ -203,7 +203,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			downloadTemplate: $('.template-download', self.getEl('attachtab'))
 		});
 
-		list.delegate('.delete', 'click', function() {
+		list.on('click', '.delete', function() {
 			var blob_id = $(this).data('blob-id');
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
@@ -291,7 +291,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		this.getEl('categories').delegate('.remove', 'click', function(ev) {
+		this.getEl('categories').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
 
@@ -330,7 +330,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		this.getEl('products').delegate('.remove', 'click', function(ev) {
+		this.getEl('products').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
 			self.sendUpdateProds();

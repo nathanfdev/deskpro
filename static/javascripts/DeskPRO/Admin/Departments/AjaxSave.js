@@ -5,7 +5,7 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
-		this.el.delegate('.set-tickets-state, .set-chat-state', 'change', function(ev) {
+		this.el.on('change', '.set-tickets-state, .set-chat-state', function(ev) {
 			var tr = $(this).closest('tr');
 			self.saveFeatureState(tr.data('department-id'));
 		});

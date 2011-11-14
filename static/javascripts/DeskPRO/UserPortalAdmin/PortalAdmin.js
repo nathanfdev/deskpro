@@ -60,12 +60,12 @@ var PortalAdmin = {
 			}
 		});
 
-		wrapper.delegate('.dp-toggle-block', 'click', function() {
+		wrapper.on('click', '.dp-toggle-block', function() {
 			var block = $(this).closest('.dp-content-block');
 			block.toggleClass('disabled');
 		});
 
-		wrapper.delegate('.dp-expand-block, .dp-collapse-block', 'click', function() {
+		wrapper.on('click', '.dp-expand-block, .dp-collapse-block', function() {
 			var block = $(this).closest('.dp-content-block');
 			block.toggleClass('expanded');
 		});
@@ -186,14 +186,14 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 		this.header.prepend(controls);
 		this.header.append('<div class="dp-drag-overlay" />');
 
-		this.header.delegate('.dp-toggle-block', 'click', function() {
+		this.header.on('click', '.dp-toggle-block', function() {
 			self.header.toggleClass('disabled');
 		});
-		this.header.delegate('.dp-edit', 'click', function() {
+		this.header.on('click', '.dp-edit', function() {
 			PortalAdmin.tellAdmin('open_logo_editor', { controller: self });
 		});
 
-		$('.dp-drag-overlay', this.header).delegate('#dp_header_portal_off', 'click', function() {
+		$('.dp-drag-overlay', this.header).on('click', '#dp_header_portal_off', function() {
 			self.header.toggleClass('disabled');
 		});
 	},

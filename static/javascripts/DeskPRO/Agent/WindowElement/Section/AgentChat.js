@@ -99,9 +99,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			self.newChatWindow([agent_id]);
 		};
 
-		this.onlineListEl.delegate('li', 'click', openChatFn);
-		this.offlineListEl.delegate('li', 'click', openChatFn);
-		this.agentTeamList.delegate('li', 'click', function(ev) {
+		this.onlineListEl.on('click', 'li', openChatFn);
+		this.offlineListEl.on('click', 'li', openChatFn);
+		this.agentTeamList.on('click', 'li', function(ev) {
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
 			console.log(agentIds);

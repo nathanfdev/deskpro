@@ -89,7 +89,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		$('section col', this.el).last().addClass('last');
 
 		var amClicking = false;
-		this.el.delegate('li', 'click', function(ev) {
+		this.el.on('click', 'li', function(ev) {
 			if (amClicking) return;
 			amClicking = true;
 			var radio = $(':radio, :checkbox', this);

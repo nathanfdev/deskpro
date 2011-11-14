@@ -56,7 +56,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		var lis = $(this.options.itemSelector, this.list);
 		this._initLisCollection(lis);
 
-		list.delegate('.sub-toggle', 'click', function() {
+		list.on('click', '.sub-toggle', function() {
 			$(this).parent().parent().toggleClass('sub-expanded');
 		});
 	},

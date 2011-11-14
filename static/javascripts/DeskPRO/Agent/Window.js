@@ -2077,7 +2077,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		window.setTimeout(function() {
 			// Accept clicks on routes
-			$(context).delegate('[data-route]', 'click', function(ev) {
+			$(context).on('click', '[data-route]', function(ev) {
 				if ($(this).is('.as-popover')) {
 					return;
 				}
@@ -2097,7 +2097,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Accept clicks on popovers
 		// Keeps track of which tabs have them open so they can be reused
 		window.setTimeout(function() {
-			$(context).delegate('.as-popover', 'click', function(ev) {
+			$(context).on('click', '.as-popover', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				self._initInterfacePopover($(this)).toggle();
@@ -2105,7 +2105,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, 60);
 
 		window.setTimeout(function() {
-			$(context).delegate('.person-tip', 'mouseover', function() {
+			$(context).on('mouseover', '.person-tip', function() {
 				var el = $(this);
 				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
 				el.addClass('tipped');
@@ -2126,7 +2126,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, 70);
 
 		window.setTimeout(function() {
-			$(context).delegate('.tipped', 'mouseover', function() {
+			$(context).on('mouseover', '.tipped', function() {
 				if ($(this).is('.tipped-inited')) {
 					return;
 				}

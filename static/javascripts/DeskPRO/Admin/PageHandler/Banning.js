@@ -25,11 +25,11 @@ DeskPRO.Admin.PageHandler.Banning = new Class({
 		});
 		$('#email_ban_overlay button.save-trigger').on('click', this.doNewEmail.bind(this));
 
-		$('#ip_rows').delegate('a.delete-trigger', 'click', function(ev) {
+		$('#ip_rows').on('click', 'a.delete-trigger', function(ev) {
 			ev.preventDefault();
 			self.doDeleteIp($(this).parent().parent());
 		});
-		$('#email_rows').delegate('a.delete-trigger', 'click', function(ev) {
+		$('#email_rows').on('click', 'a.delete-trigger', function(ev) {
 			ev.preventDefault();
 			self.doDeleteEmail($(this).parent().parent());
 		});

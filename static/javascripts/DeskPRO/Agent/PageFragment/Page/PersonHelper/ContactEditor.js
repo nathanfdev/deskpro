@@ -123,7 +123,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			}
 		};
 
-		contactEditor.delegate('.remove', 'click', function(ev) {
+		contactEditor.on('click', '.remove', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 			var row = $(this).closest('li');
 
@@ -150,7 +150,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			}
 		});
 
-		contactEditor.delegate('.add-trigger', 'click', function(ev) {
+		contactEditor.on('click', '.add-trigger', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 
 			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl));

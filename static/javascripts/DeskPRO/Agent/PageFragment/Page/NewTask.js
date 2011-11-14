@@ -60,21 +60,21 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 		var rowContainer = this.getEl('tasks');
 
 		var openForEl = null;
-		rowContainer.delegate('.remove-row-trigger', 'click', function(ev) {
+		rowContainer.on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('.task-row');
 			row.slideUp('fast', function() {
 				row.remove();
 			});
 		});
-		rowContainer.delegate('.opt-trigger.assigned_agent', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			assignOptionBox.open(ev);
 		});
-		rowContainer.delegate('.opt-trigger.visibility', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			statusMenu.open(ev);
 		});
-		rowContainer.delegate('.opt-trigger.date_due', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);

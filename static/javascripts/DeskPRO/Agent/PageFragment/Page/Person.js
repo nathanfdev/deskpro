@@ -96,7 +96,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
-		$('.contact-list-wrapper', this.wrapper).first().delegate('.set-primary', 'click', function() {
+		$('.contact-list-wrapper', this.wrapper).first().on('click', '.set-primary', function() {
 			var email_id = $(this).data('email-id');
 			$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
 			$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');

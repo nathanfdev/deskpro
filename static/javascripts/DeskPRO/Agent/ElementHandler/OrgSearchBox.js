@@ -66,7 +66,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		// the page controller can listen to
 		//------------------------------
 
-		this.resultsList.delegate('li', 'click', function(ev) {
+		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var orgId = $(this).data('org-id');
 			var name  = $('.org-name', this).text().trim();

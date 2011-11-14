@@ -16,7 +16,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			row.insertBefore(newrow);
 		});
 
-		this.el.delegate('.remove-row-trigger', 'click', function(ev) {
+		this.el.on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('li');
 			var personId = row.data('person-id');
 
@@ -41,7 +41,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			});
 		});
 
-		this.el.delegate('.cc-saverow-trigger', 'click', function(ev) {
+		this.el.on('click', '.cc-saverow-trigger', function(ev) {
 			var row = $(this).closest('li');
 			var email = $('input', row).val().trim();
 

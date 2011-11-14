@@ -74,7 +74,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		// the page controller can listen to
 		//------------------------------
 
-		this.resultsList.delegate('li', 'click', function(ev) {
+		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var personId = $(this).data('person-id');
 			var name  = $('.user-name', this).text().trim();

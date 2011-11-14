@@ -117,7 +117,7 @@ DeskPRO.User.Window = new Orb.Class({
 
 		$('.timeago').timeago();
 
-		$(document).delegate('.dp-bound-faded', 'click', function() {
+		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
 			var link = $('a[href]', parent).first();
 			window.location = link.attr('href');

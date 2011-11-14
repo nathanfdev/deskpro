@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 			self.settingsWindow.reloadTab('macros');
 		});
 
-		this.el.delegate('.delete-macro', 'click', function() {
+		this.el.on('click', '.delete-macro', function() {
 			var row = $(this).closest('tr');
 			var url = $(this).data('delete-url');
 

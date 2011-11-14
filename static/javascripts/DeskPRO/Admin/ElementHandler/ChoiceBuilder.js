@@ -78,8 +78,8 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 			}
 		});
 		addNewBtn.on('click', handleAddClick);
-		list.delegate('.remove', 'click', handleRemoveClick);
-		list.delegate('.label', 'dblclick', handleRename);
+		list.on('click', '.remove', handleRemoveClick);
+		list.on('dblclick', '.label', handleRename);
 
 		$(list).sortable({
 			axis: 'y',

@@ -71,7 +71,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 		$('#menus_container').remove();
 
 		this.menuTriggerEls = $('#dp_admin_nav li[data-menu]');
-		$('#dp_admin_nav').delegate('li[data-menu]', 'click', function(ev) {
+		$('#dp_admin_nav').on('click', 'li[data-menu]', function(ev) {
 			ev.preventDefault();
 			self.openHeaderMenu($(this));
 		});
@@ -123,7 +123,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 			$(window).on('resize', this.updatePageNavPos.bind(this));
 		}
 
-		$('#portal_nav').delegate('li', 'click', function(ev) {
+		$('#portal_nav').on('click', 'li', function(ev) {
 			if ($(ev.target).is('a')) {
 				return;
 			}

@@ -18,13 +18,13 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 
 		this.commentsWrapper = $(this.options.commentsWrapper);
 
-		this.commentsWrapper.delegate('.comment-edit-btn', 'click', function(ev) {
+		this.commentsWrapper.on('click', '.comment-edit-btn', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			self.getCommentMenu().open(ev);
 		});
 
-		this.commentsWrapper.delegate('.comment-validate-btn', 'click', function(ev) {
+		this.commentsWrapper.on('click', '.comment-validate-btn', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			self.getCommentValidationMenu().open(ev);

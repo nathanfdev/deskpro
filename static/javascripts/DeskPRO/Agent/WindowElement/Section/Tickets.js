@@ -16,7 +16,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		// Simulate instant switching when clicking nav items
 		var self = this;
-		this.getSectionElement().delegate('[data-route]', 'click', function(ev) {
+		this.getSectionElement().on('click', '[data-route]', function(ev) {
 			self.highlightNavItem($(this));
 		});
 
@@ -91,7 +91,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			listElement: '#tickets_outline_custom_filters',
 			triggerElement: $('.launch-customfilters-editor', this.contentEl),
 			onInit: function(ed) {
-				ed.controlRealEl.delegate(':checkbox', 'click', function() {
+				ed.controlRealEl.on('click', ':checkbox', function() {
 					var row = $(this).closest('.filter-row');
 					var filter_id = parseInt(row.data('filter-id'));
 

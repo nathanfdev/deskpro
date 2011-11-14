@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 		this.ownObject(this.overlay);
 
-		this.wrapper.delegate('.snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.snippet-trigger', function(ev) {
 
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -60,12 +60,12 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.closeSelf();
 		});
 
-		this.wrapper.delegate('.fadeaway', 'click', function(ev) {
+		this.wrapper.on('click', '.fadeaway', function(ev) {
 			var contentShow = $(this).closest('.content.show');
 			contentShow.toggleClass('expanded');
 		});
 
-		this.wrapper.delegate('.add-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.add-snippet-trigger', function(ev) {
 			var row = $(this).closest('li');
 			$('.display', row).slideUp('fast', function() {
 				$('.input', row).slideDown('fast');
@@ -135,7 +135,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.newCatBackdrop.hide();
 		});
 
-		this.wrapper.delegate('.save-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.save-snippet-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -143,7 +143,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.saveSnippet($(row));
 		});
 
-		this.wrapper.delegate('.cancel-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.cancel-snippet-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -153,7 +153,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.snippet .edit-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.snippet .edit-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -164,7 +164,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.delete-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.delete-snippet-trigger', function(ev) {
 			var snippet_id = $(this).data('snippet-id');
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/snippet-viewer/delete-snippet',
@@ -181,7 +181,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.edit-cat-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.edit-cat-trigger', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

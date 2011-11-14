@@ -46,7 +46,7 @@ DeskPRO.Admin.ElementHandler.LabelsPage = new Orb.Class({
 		});
 
 		var deleteUrl = this.el.data('delete-url');
-		$('#labels_list').delegate('.delete-trigger', 'click', function() {
+		$('#labels_list').on('click', '.delete-trigger', function() {
 			if (!confirm('Are you sure you want to delete this label?')) {
 				return;
 			}
@@ -69,7 +69,7 @@ DeskPRO.Admin.ElementHandler.LabelsPage = new Orb.Class({
 		});
 
 		var renameUrl = this.el.data('rename-url');
-		$('#labels_list').delegate('.rename-trigger', 'click', function() {
+		$('#labels_list').on('click', '.rename-trigger', function() {
 			var newLabel = prompt('Enter a new label to rename to');
 			if (newLabel) {
 				newLabel = newLabel.trim();

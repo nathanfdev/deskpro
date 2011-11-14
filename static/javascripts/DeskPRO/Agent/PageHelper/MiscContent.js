@@ -29,7 +29,7 @@ DeskPRO.Agent.PageHelper.MiscContent = new Orb.Class({
 		var all_checks = $('input.rev-compare-check', this.wrapper);
 		var counter = 0;
 
-		$('.revision-compare-table', this.wrapper).delegate('input.rev-compare-check', 'click', function() {
+		$('.revision-compare-table', this.wrapper).on('click', 'input.rev-compare-check', function() {
 			if ($(this).is(':checked')) {
 				var checked = all_checks.filter(':checked');
 				if (checked.length > 2) {

@@ -68,7 +68,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			$('.files', wrapper).empty();
 		});
 
-		wrapper.delegate('.save-trigger', 'click', this._doSave.bind(this));
+		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
 	},
 
 	_doSave: function() {

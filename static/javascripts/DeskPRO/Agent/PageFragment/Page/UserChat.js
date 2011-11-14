@@ -509,7 +509,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		})
 
-		this.getEl('agentpart_selector').delegate('.invite-trigger', 'click', function(ev) {
+		this.getEl('agentpart_selector').on('click', '.invite-trigger', function(ev) {
 			ev.preventDefault();
 			self.partOptionBox.close();
 

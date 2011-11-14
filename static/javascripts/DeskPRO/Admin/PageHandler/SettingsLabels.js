@@ -12,10 +12,10 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 
 		// Delete button for each label
 		var self = this;
-		$('ul.item-list').delegate('li.delete-trigger', 'click', function(ev) {
+		$('ul.item-list').on('click', 'li.delete-trigger', function(ev) {
 			ev.preventDefault();
 			self.deleteLabel($(this).parent().parent().parent());
-		}).delegate('li.rename-trigger', 'click', function(ev) {
+		}).on('click', 'li.rename-trigger', function(ev) {
 			ev.preventDefault();
 			self.renameLabel($(this).parent().parent().parent());
 		});

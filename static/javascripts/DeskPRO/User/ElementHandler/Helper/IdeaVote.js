@@ -4,7 +4,7 @@ DeskPRO.User.ElementHandler.Helper.IdeaVote = new Orb.Class({
 
 	initialize: function() {
 		var self = this;
-		$('body').delegate('.dp-idea-vote', 'click', function() {
+		$('body').on('click', '.dp-idea-vote', function() {
 			self.voteOnElement($(this));
 		});
 	},

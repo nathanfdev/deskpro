@@ -64,7 +64,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		}).bind(this));
 
 		var self = this;
-		this.wrapper.delegate('.title', 'dblclick', function() {
+		this.wrapper.on('dblclick', '.title', function() {
 			self.enableEditTitle($(this));
 		});
 	},

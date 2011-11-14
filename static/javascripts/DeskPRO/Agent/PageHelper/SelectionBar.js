@@ -41,7 +41,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			}
 		});
 
-		this.page.wrapper.delegate('input.item-select', 'click', function() {
+		this.page.wrapper.on('click', 'input.item-select', function() {
 			var el = $(this);
 			self.handleCheckChange(el, el.is(':checked'));
 		});

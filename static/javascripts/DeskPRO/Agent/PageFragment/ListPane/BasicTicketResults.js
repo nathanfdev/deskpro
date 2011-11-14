@@ -101,7 +101,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.ownObject(this.massActions);
 
 		if (this.meta.viewType == 'list') {
-			$('.list-grouping-bar', this.wrapper).delegate('a[data-route]', 'click', function(ev) {
+			$('.list-grouping-bar', this.wrapper).on('click', 'a[data-route]', function(ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 
@@ -255,7 +255,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.flagMenu);
 
-		$('table.list:first', this.contentWrapper).delegate('span.ticket-flag', 'click', function(ev) {
+		$('table.list:first', this.contentWrapper).on('click', 'span.ticket-flag', function(ev) {
 			self.flagMenu.openMenu(ev);
 		});
 	},

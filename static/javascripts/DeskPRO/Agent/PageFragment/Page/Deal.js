@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             }
         });
 
-        this.getEl('members_list').delegate('.remove', 'click', function() {
+        this.getEl('members_list').on('click', '.remove', function() {
 			var row = $(this).closest('.member-row');
 			var personId = row.data('person-id');
 			if (!personId) {
@@ -80,7 +80,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		});
 
 
-                this.getEl('organizations_list').delegate('.remove', 'click', function() {
+                this.getEl('organizations_list').on('click', '.remove', function() {
 			var row = $(this).closest('.organization-row');
 			var organizationId = row.data('organization-id');
 			if (!organizationId) {

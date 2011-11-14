@@ -290,7 +290,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			self.getElById('attach_row').slideDown();
 		});
 
-		this.wrapper.delegate('.remove-attach-trigger', 'click', function() {
+		this.wrapper.on('click', '.remove-attach-trigger', function() {
 
 			var row = $(this).closest('li');
 			row.fadeOut('fast', function() {

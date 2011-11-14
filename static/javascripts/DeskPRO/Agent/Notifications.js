@@ -122,7 +122,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.stopPropagation();
 		});
 
-		this.menu.delegate('.dismiss', 'click', function(ev) {
+		this.menu.on('click', '.dismiss', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -140,7 +140,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.close();
 		});
 
-		this.menu.delegate('[data-route]', 'click', function(ev) {
+		this.menu.on('click', '[data-route]', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

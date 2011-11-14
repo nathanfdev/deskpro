@@ -70,7 +70,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this._initLabels();
 		this._initCustomFieldsEditor();
 
-		this.getEl('members_list').delegate('.remove', 'click', function() {
+		this.getEl('members_list').on('click', '.remove', function() {
 			var row = $(this).closest('.member-row');
 			var personId = row.data('person-id');
 			if (!personId) {
@@ -177,7 +177,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			});
 		}, this);
 
-		this.getEl('members_list').delegate('.position-edit-trigger', 'click', function(ev) {
+		this.getEl('members_list').on('click', '.position-edit-trigger', function(ev) {
 			ev.stopPropagation();
 
 			var row = $(this).closest('.member-row');
