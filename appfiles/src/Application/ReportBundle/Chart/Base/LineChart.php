@@ -2,7 +2,7 @@
 
 namespace Application\ReportBundle\Chart\Base;
 
-class LineChart extends AbstractChart
+abstract class LineChart extends AbstractChart
 {
 	protected $series = array();
 
