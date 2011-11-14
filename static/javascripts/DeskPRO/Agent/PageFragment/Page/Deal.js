@@ -16,9 +16,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initDisplayOptions();
         this._initAgentSection();
         this._initCustomFieldsEditor();
-
-
-        var followersList = this.getEl('followers_list');
+        
         var el = this.getEl('agent_assign_ob');
         this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
             element: el,

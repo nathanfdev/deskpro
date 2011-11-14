@@ -18,27 +18,27 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 $('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
 
 
-                var assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('assign_ob'),
-			onClose: function(ob) {
-
-				var agentId = parseInt(ob.getSelected('agents') || 0);
-				//var agentTeamId = parseInt(ob.getSelected('teams') || 0);
-
-				var obel = self.getEl('assign_ob');
-
-				if (agentId && agentId != DESKPRO_PERSON_ID) {
-					var val = 'agent:' + agentId;
-					var text = $('.agent-label-' + agentId).first().text().trim();
-				} else {
-					var val = '';
-					var text = 'Me';
-				}
-
-				$('input.input-agent', openForEl).val(val);
-				
-			}
-		});
+//                var assignOptionBox = new DeskPRO.UI.OptionBox({
+//			element: this.getEl('assign_ob'),
+//			onClose: function(ob) {
+//
+//				var agentId = parseInt(ob.getSelected('agents') || 0);alert(agentId);
+//				//var agentTeamId = parseInt(ob.getSelected('teams') || 0);
+//
+//				var obel = self.getEl('assign_ob');
+//
+//				if (agentId && agentId != DESKPRO_PERSON_ID) {
+//					var val = 'agent:' + agentId;
+//					var text = $('.agent-label-' + agentId).first().text().trim();
+//				} else {
+//					var val = '';
+//					var text = 'Me';
+//				}
+//
+//				$('input.input-agent', openForEl).val(val);
+//
+//			}
+//		});
 
 
 
@@ -84,25 +84,30 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 	},
         _initDepartmentSection: function() {
 
-		//------------------------------
-		// Assign ...
-		//------------------------------
+            var self = this;
+            var el = this.getEl('agent_assign_ob');
+            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+            element: el,
+            trigger: this.getEl('assign_btn'),
+            onSave: function(ob) {
+                var selections = ob.getAllSelected();
+                var agent_id = parseInt(selections.agents || 0);
+                
+                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
 
-		var obEl = this.getEl('assign_ob');
-		this.assignAgentOptionBox = new DeskPRO.UI.OptionBox({
-			element: obEl,
-			trigger: this.getEl('assign_btn'),
-			onClose: function(ob) {
-				var selections = ob.getAllSelected();
+                var value = selections.agents;
+                if (value == 0) {
+                    label = 'Unassigned';
+                }
+                
+                self.getEl('agent_id').val(agent_id);
+		self.getEl('agent_label').text(label);
 
-				// Agent
-				var agent_id = parseInt(selections.agents || 0);
-				self.getEl('agent_id').val(agent_id);
-				var label = $('.agent-label-' + agent_id, obEl).text().trim();
-				self.getEl('agent_label').text(label);
 
-			}
-		});
+                $('.reply-agent-team-ob').slideUp();
+
+            }
+        });
 	}
 
 
