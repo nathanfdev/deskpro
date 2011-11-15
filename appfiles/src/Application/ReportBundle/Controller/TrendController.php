@@ -14,6 +14,7 @@ namespace Application\ReportBundle\Controller;
 use Application\DeskPRO\App;
 use Application\ReportBundle\Form\EditStatType;
 use Application\ReportBundle\Stat\Base\AbstractStat;
+use Application\DeskPRO\UI\RuleBuilder;
 
 class TrendController extends AbstractController
 {
@@ -65,17 +66,28 @@ class TrendController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
 				App::getOrm()->persist($stat);
 				App::getOrm()->flush();
 
 				$this->session->setFlash('saved', $stat->title);
-				return $this->redirectRoute('report_trend_index');
+				$redirect_url = $this->generateUrl('report_trend_index');
+				return $this->createJsonResponse(array('success' => true, 'redirect' => $redirect_url));
 			}
 		}
+
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$term_options['custom_ticket_fields'] = $custom_fields;
 
 		return $this->render('ReportBundle:Trend:edit.html.twig', array(
 			'stat' => $stat,
 			'form' => $form->createView(),
+			'term_options' => $term_options,
 		));
 	}
 
@@ -86,15 +98,15 @@ class TrendController extends AbstractController
 	{
 		$stat = $this->getStat($stat_id);
 
-		$cloned = clone $stat;
-		$cloned->setId(null);
-		$cloned->setTitle("[Cloned] " . $cloned->getTitle());
-		$cloned->setAuthor($this->person);
+		//$cloned = clone $stat;
+		//$cloned->setId(null);
+		//$cloned->setTitle("[Cloned] " . $cloned->getTitle());
+		//$cloned->setAuthor($this->person);
+		//
+		//App::getOrm()->persist($cloned);
+		//App::getOrm()->flush();
 
-		App::getOrm()->persist($cloned);
-		App::getOrm()->flush();
-
-		return $this->redirectRoute('report_trend_edit', array('stat_id' => $cloned['id']));
+		return $this->redirectRoute('report_trend_edit', array('stat_id' => $stat['id']));
 	}
 
 	/**

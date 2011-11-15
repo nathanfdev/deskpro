@@ -21,6 +21,21 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  */
 class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 {
+	/**
+	 * The available chart classes
+	 */
+	protected static $availableChartClasses = array(
+		// Am Charts
+		'Application\ReportBundle\Chart\AmChart\LineChart',
+		'Application\ReportBundle\Chart\AmChart\StackedLineChart',
+		'Application\ReportBundle\Chart\AmChart\ColumnChart',
+		'Application\ReportBundle\Chart\AmChart\StackedColumnChart',
+		'Application\ReportBundle\Chart\AmChart\PieChart',
+		// Desk PRO charts
+		'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart',
+		'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart',
+		'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart',
+	);
 
 	/**
 	 * @var int
@@ -90,6 +105,32 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 		else {
 			return 'deskpro';
 		}
+	}
+
+	/**
+	 * Get a list of available chart classes
+	 *
+	 * @return array
+	 */
+	public static function getChartClasses()
+	{
+		return self::$availableChartClasses;
+	}
+
+	/**
+	 * Get a list of available charts. Human friendly format
+	 *
+	 * @return array
+	 */
+	public static function getChartList()
+	{
+		$chart_list = array();
+
+		foreach (self::$availableChartClasses as $chart_class) {
+			$chart_list[] = $chart_class::getChartLabel();
+		}
+
+		return $chart_list;
 	}
 
 }

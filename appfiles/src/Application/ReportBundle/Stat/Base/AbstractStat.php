@@ -8,7 +8,7 @@ abstract class AbstractStat implements StatInterface
 {
 	protected $available_grouping = array();
 
-	protected $trendQueries = array();
+	protected $trend_queries = array();
 
 	/**
 	 * The fields the query should group by
@@ -24,6 +24,8 @@ abstract class AbstractStat implements StatInterface
 		$this->db = App::getDb();
 
 		$this->results = array('ungrouped' => array(), 'grouped' => array());
+
+		$this->init();
 	}
 
 	/**
@@ -44,7 +46,7 @@ abstract class AbstractStat implements StatInterface
 
 	protected function addQuery(Query $query)
 	{
-		$this->trendQueries[] = $query;
+		$this->trend_queries[] = $query;
 	}
 
 	/**
@@ -52,7 +54,7 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected function executeQueries($with_grouping = false)
 	{
-		foreach ($this->trendQueries as $query) {
+		foreach ($this->trend_queries as $query) {
 			// Need to build the actual queries here and apply grouping if its needed
 			$executeQuery = $query;
 
@@ -117,23 +119,37 @@ abstract class AbstractStat implements StatInterface
 	/**
 	 * Remove a field from the available groupings
 	 */
-	public function removeAvailableGrouping($field)
+	public function removeAvailableGrouping($field_value)
 	{
 		// Remove field from grouping
-		if (in_array($field, $this->available_grouping)) {
-			$key = array_search($field, $this->available_grouping);
-			unset($this->available_grouping[$key]);
+		if (isset($this->available_grouping[$field_value])) {
+			unset($this->available_grouping[$field_value]);
 		}
 	}
 
 	/**
 	 * Adds a field to the available grouping
 	 */
-	public function addAvailableGroup($field)
+	public function addAvailableGroup($field_value, $field_name)
 	{
 		// Add field to grouping
-		if (false === in_array($field, $this->available_grouping)) {
-			$this->available_grouping[] = $field;
+		if (false === isset($this->available_grouping[$field_value])) {
+			$this->available_grouping[$field_value] = $field_name;
+		}
+	}
+
+	/**
+	 * Adds multiple available groups
+	 *
+	 * @param array $groups List of groups to add
+	 * 	<code>
+	 *      	array('field_id' => 'Field Name');
+	 * 	</code>
+	 */
+	public function addAvailableGroups($groups)
+	{
+		foreach ($groups as $field_value=>$field_name) {
+			$this->addAvailableGroup($field_value, $field_name);
 		}
 	}
 

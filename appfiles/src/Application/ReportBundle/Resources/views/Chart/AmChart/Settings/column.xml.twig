@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings> 
+<settings>
   <type>column</type>
   <font>Tahoma</font>
   <column>
@@ -7,10 +7,10 @@
     <width>85</width>
     <spacing>0</spacing>
     <grow_time>0</grow_time>
-    <sequenced_grow>true</sequenced_grow> 
+    <sequenced_grow>true</sequenced_grow>
   </column>
-  
-  <plot_area>                           
+
+  <plot_area>
     <margins>
       <left>40</left>
       <top>40</top>
@@ -18,41 +18,25 @@
       <bottom>40</bottom>
     </margins>
   </plot_area>
-  
+
   <legend>
-    <enabled>false</enabled>
+    <enabled>true</enabled>
   </legend>
-  
+
   <values>
     <category>
       <frequency>1</frequency>
       <start_from>0</start_from>
     </category>
   </values>
-  
-  <labels>
-    <label lid="0">
-      <x>10</x>
-      <y>400</y>
-      <rotate>true</rotate>
-      <align>center</align>       
-    </label>
-    <label lid="1">
-      <x>0</x> 
-      <y>380</y>
-      <width></width> 
-      <text_size>11</text_size>  
-    </label>
-  </labels>
-  
-  <graphs>
-    <graph gid="1">
-      <type>column</type>        
-      <color>B92F2F</color> 
-    </graph>
 
-    <graph gid="2">
-      <type>column</type>                                                      
-    </graph>
+  <graphs>
+    {% for label in chart.labels %}
+      <graph gid="{{ loop.index }}">
+        <type>column</type>
+        <title>{{ label|default('[no group]') }}</title>
+      </graph>
+    {% endfor %}
   </graphs>
+
 </settings>

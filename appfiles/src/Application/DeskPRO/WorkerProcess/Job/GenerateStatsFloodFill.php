@@ -18,9 +18,10 @@ use Application\DeskPRO\Entity\StatValue;
 use Application\DeskPRO\Entity\StatValueGroup;
 
 /**
- * Generate stats for the reporting system
+ * Generate stats for the reporting system. This is for debugging purposes only
+ * and should be removed or integrated into GenerateStat Job
  */
-class GenerateStats extends AbstractJob
+class GenerateStatsFloodFill extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 86400; // Daily
 
@@ -28,10 +29,16 @@ class GenerateStats extends AbstractJob
 
 	protected $orm;
 
+	/**
+	 * Number of data points to flood fill for
+	 *
+	 * @var int
+	 */
+	protected $flood_fill_count = 10;
+
 	public function run()
 	{
-		$this->date_time = new \DateTime();
-		$this->date_time = \DateTime::createFromFormat('U',  time()+self::DEFAULT_INTERVAL);
+		$end_date = new \DateTime();
 
 		$this->orm  = App::getOrm();
 
@@ -39,21 +46,50 @@ class GenerateStats extends AbstractJob
 		$run_frequencies = Stat::getAvailableRunFrequencies();
 
 		foreach ($run_frequencies as $run_frequency) {
-			// Generate the run frequency method to execute
-			$method = 'get' . ucwords($run_frequency) . 'StatIdsRequiringUpdate';
+			for ($i = 0; $i < $this->flood_fill_count; $i++) {
 
-			$stat_ids 	= App::getEntityRepository('DeskPRO:Stat')
-						->$method($this->date_time);
+				$this->date_time = $this->getDate($run_frequency, $end_date, $i);
 
-			$count_stats 	= count($stat_ids);
+				// Generate the run frequency method to execute
+				$method = 'get' . ucwords($run_frequency) . 'StatIdsRequiringUpdate';
 
-			$msg = '[' . ucwords($run_frequency) . "] Processing {$count_stats} stats";
-			$this->logStatus($msg);
+				$stat_ids 	= App::getEntityRepository('DeskPRO:Stat')
+							->$method(\DateTime::createFromFormat('U',  time()+self::DEFAULT_INTERVAL));
 
-			if (count($stat_ids)) {
-				$this->processStatIds($stat_ids);
+				$count_stats 	= count($stat_ids);
+
+				$msg = '[' . ucwords($run_frequency) . "] Processing {$count_stats} stats";
+				$this->logStatus($msg);
+
+				if (count($stat_ids)) {
+					$this->processStatIds($stat_ids);
+				}
 			}
 		}
+	}
+
+	/**
+	 * Get a previous date based on the $run_frequency using the $end_date as
+	 * the reference point. If $run_frequency is 'daily' and $points is 5
+	 * we get the day 5 days previous to $end_date
+	 */
+	protected function getDate($run_frequency, $end_date, $points)
+	{
+		$unix = $end_date->format('U');
+
+		switch ($run_frequency) {
+			case 'daily':
+				$new_unix = date('U', strtotime("-$points days", $unix));
+				break;
+			case 'monthly':
+				$new_unix = date('U', strtotime("-$points months", $unix));
+				break;
+			case 'yearly':
+				$new_unix = date('U', strtotime("-$points years", $unix));
+				break;
+		}
+
+		return \DateTime::createFromFormat('U', $new_unix);
 	}
 
 	/**
@@ -83,24 +119,24 @@ class GenerateStats extends AbstractJob
 
 		$stat_concept = new $stat_concept_class();
 		$stat_concept->addGrouping($stat->getGroupingRef());
-		$values = $stat_concept->getStats($this->time);
+		$values = $stat_concept->getStats($this->date_time);
 
 		// Check if existing StatValue is set for period
-		$stat_value = $stat->getStatValueForDate(new \DateTime());
+		$stat_value = $stat->getStatValueForDate($this->date_time);
 		if (!$stat_value) {
 			// Create a new one
 			$stat_value = new StatValue();
 			$stat_value->setStat($stat);
 		}
 		$stat_value->setValue($values['ungrouped']);
-		$stat_value->setStatUnix(time());
+		$stat_value->setStatUnix($this->date_time->format('U'));
 		$this->orm->persist($stat_value);
 
 		// Store the grouped values
 		foreach ($values['grouped'] as $grouped) {
 			// Check if existing StatValueGroup is set for period and reference
 			$stat_value_group = $stat_value->getStatValueGroupForDate(
-				new \DateTime(),
+				$this->date_time,
 				$grouped['grouping_id'],
 				$stat->getRunFrequency()
 			);
@@ -111,7 +147,7 @@ class GenerateStats extends AbstractJob
 			}
 			$stat_value_group->setValue($grouped['value']);
 			$stat_value_group->setGroupingId($grouped['grouping_id']);
-			$stat_value_group->setStatUnix(time());
+			$stat_value_group->setStatUnix($this->date_time->format('U'));
 			$this->orm->persist($stat_value_group);
 		}
 
