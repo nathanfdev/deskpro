@@ -32,4 +32,14 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return $this->view_chart_class;
 	}
+	
+	/**
+	 * Text string to display when no data is available
+	 *
+	 * @return string
+	 */
+	public function getNoDataLabel()
+	{
+		return "No data for available for period";
+	}
 }

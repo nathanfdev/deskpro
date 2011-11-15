@@ -29,7 +29,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 		$query = new QueryBuilder();
 		$query->addSelect('COUNT(tickets.id) AS ticket_count');
 		$query->addFrom('tickets');
-		$query->addWhere("tickets.status = 'awaiting_agent'");
+		$query->addWhere("tickets.status = 'open'");
 
 		$this->addQuery($query);
 	}

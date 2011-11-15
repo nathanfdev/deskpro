@@ -37,6 +37,10 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getFirstDataPoint($row, $value = true)
 	{
+		if (0 === count($row)) {
+			return null;
+		}
+		
 		$point = array_slice($row, 0, 1);
 
 		if ($value) {
@@ -54,6 +58,10 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getLastDataPoint($row, $value = true)
 	{
+		if (0 === count($row)) {
+			return null;
+		}
+		
 		$point = array_slice($row, -1, 1);
 
 		if ($value) {
@@ -74,7 +82,12 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	{
 		$first_value = $this->getFirstDataPoint($row);
 		$last_value  = $this->getLastDataPoint($row);
-
+		
+		// No values, cannot calculate variations
+		if (true === is_null($first_value) || true === is_null($last_value)) {
+			return '-';
+		}
+		
 		$variation = 0;
 		if ($first_value != 0) {
 			$variation = ($last_value - $first_value) / $first_value;
@@ -115,6 +128,10 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getEndSeries($limit)
 	{
+		if (0 === count($this->rows)) {
+			return array();
+		}
+		
 		// Get the series from the first row of data
 		$row = array_slice($this->rows, 0, 1);
 		$values = array_slice($row[0]['data'], ($limit * -1), $limit);

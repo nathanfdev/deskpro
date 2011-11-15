@@ -76,9 +76,10 @@ class ChartFactory
 
 				// We can only compare one set of data, if there
 				// are others they are simply discarded
-				$data_set = array_shift($data);
-
-				$chart->addDataPoints($data_set['values']);
+				if (count($data)) {
+					$data_set = array_shift($data);
+					$chart->addDataPoints($data_set['values']);
+				}
 
 				break;
 

@@ -5,25 +5,29 @@
 </script>
 
 <div class="variation-change-chart" id="dashboard-chart-{{ dashboard_stat.id }}">
-	<div class="main">
-		<table>
-			<tr>
-				<td class="prev">
-					<span class="value">{{ chart.getFirstDataPoint() }}</span>
-					<span class="label">{{ chart.getFirstDataPoint(false) }}</span>
-				</td>
-				<td class="variation direction direction-up-red">
-					<span class="amount">{{ chart.calculateVariation(true) }}%</span>
-				</td>
-				<td class="actual">
-					<span class="value">{{ chart.getLastDataPoint() }}</span>
-					<span class="label">{{ chart.getLastDataPoint(false) }}</span>
-				</td>
-			</tr>
-		</table>
-	</div>
-
-	<div class="footer">
-	      <span class="sparkline">{{ chart.dataPoints|join(',') }}</span>
-	</div>
+	{% if chart.isChartRenderable %}
+		<div class="main">
+			<table>
+				<tr>
+					<td class="prev">
+						<span class="value">{{ chart.getFirstDataPoint() }}</span>
+						<span class="label">{{ chart.getFirstDataPoint(false) }}</span>
+					</td>
+					<td class="variation direction direction-up-red">
+						<span class="amount">{{ chart.calculateVariation(true) }}%</span>
+					</td>
+					<td class="actual">
+						<span class="value">{{ chart.getLastDataPoint() }}</span>
+						<span class="label">{{ chart.getLastDataPoint(false) }}</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	
+		<div class="footer">
+		      <span class="sparkline">{{ chart.dataPoints|join(',') }}</span>
+		</div>
+	{% else %}
+		<div class="chart-not-renderable">{{ chart.getNoDataLabel }}</div>
+	{% endif %}
 </div>

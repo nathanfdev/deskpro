@@ -93,4 +93,16 @@ abstract class SeriesChart extends AbstractChart
 	{
 		return $this->series;
 	}
+	
+	/**
+	 * Is the chart ready to be rendered, ie do it have all the data it needs
+	 *
+	 * @var bool
+	 */
+	public function isChartRenderable()
+	{
+		$renderable = true;
+		
+		return $renderable;
+	}
 }
