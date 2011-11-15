@@ -71,7 +71,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$("#report-dashboard-options-num-columns-slider").slider({
 			range: "max",
 			min: 1,
-			max: 8,
+			max: 4,
 			value: this.number_columns,
 			slide: function(event, ui) {
 				self.number_columns = ui.value;
@@ -96,11 +96,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			return false;
 		});
 
-		// TODO: need to ensure dashboard update correctly if window size changes
-		//$(window).on('resize', function() {
-		//	self.calculateColumnWidth();
-		//	self.resizeAllWidgets();
-		//});
+		// Need to ensure dashboard update correctly if window size changes
+		this.$dashboardGrid.on('resize', function() {
+			self.calculateColumnWidth();
+			self.resizeAllWidgets();
+		});
 
 		// Calculate initial dashboard column width, grab the widgets
 		this.calculateColumnWidth();
