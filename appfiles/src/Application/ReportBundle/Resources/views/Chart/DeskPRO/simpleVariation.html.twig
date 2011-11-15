@@ -3,27 +3,27 @@
 	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100%', height: '25px'});
 	});
 </script>
-   
+
 <div class="variation-change-chart" id="dashboard-chart-{{ dashboard_stat.id }}">
 	<div class="main">
 		<table>
 			<tr>
 				<td class="prev">
-					<span class="value">10</span>
-					<span class="label">November 9</span>
+					<span class="value">{{ chart.getFirstDataPoint() }}</span>
+					<span class="label">{{ chart.getFirstDataPoint(false) }}</span>
 				</td>
 				<td class="variation direction direction-up-red">
-					<span class="amount">40%</span>
+					<span class="amount">{{ chart.calculateVariation(true) }}%</span>
 				</td>
 				<td class="actual">
-					<span class="value">15</span>
-					<span class="label">November 10</span>
+					<span class="value">{{ chart.getLastDataPoint() }}</span>
+					<span class="label">{{ chart.getLastDataPoint(false) }}</span>
 				</td>
 			</tr>
 		</table>
 	</div>
-	
+
 	<div class="footer">
-	      <span class="sparkline">1, 4, 5, 6, 7, 4, 4, 5, 6</span>
+	      <span class="sparkline">{{ chart.dataPoints|join(',') }}</span>
 	</div>
 </div>

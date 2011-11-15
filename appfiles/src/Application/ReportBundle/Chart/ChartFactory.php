@@ -68,6 +68,20 @@ class ChartFactory
 
 				break;
 
+			/**
+			 * DeskPRO - Simple Variaiton Chart
+			 */
+			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
+				$chart = new $chart_class;
+
+				// We can only compare one set of data, if there
+				// are others they are simply discarded
+				$data_set = array_shift($data);
+
+				$chart->addDataPoints($data_set['values']);
+
+				break;
+
 			default:
 				throw new \Exception("Unsupported chart class: $chart_class");
 		}
