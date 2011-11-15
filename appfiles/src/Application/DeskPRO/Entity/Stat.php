@@ -228,18 +228,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Get a number of values
-	 *
-	 * @param int $limit The number of values to get
-	 */
-	public function getLatestStatValues($limit)
-	{
-		$statValues = App::getEntityRepository('DeskPRO:StatValue')->getStatValuesForStat($this->id, $limit);
-
-		return $statValues;
-	}
-
-	/**
 	 * Get a StatValue by date
 	 *
 	 * @param \DateTime $date The DateTime to check
@@ -398,6 +386,19 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		// Get the StatValueGroup's
 
 		return $data;
+	}
+
+	/**
+	 * Get the latest stat values
+	 *
+	 * @param int $data_point_count The number of values to get
+	 */
+	public function getLatestStatValues($data_point_count)
+	{
+		$end_date = new \DateTime();
+		$stat_values = $this->getData($end_date, $data_point_count);
+
+		return $stat_values;
 	}
 
 	/**
