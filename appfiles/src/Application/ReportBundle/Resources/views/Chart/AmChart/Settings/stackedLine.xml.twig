@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-
+	<redraw>1</redraw>
 	<digits_after_decimal>2</digits_after_decimal>
 
 	<plot_area>
-	  <margins>
-	    <left>40</left>
-	    <top>20</top>
-	    <right>30</right>
-	    <bottom>25</bottom>
-	  </margins>
+		<margins>
+			<left>40</left>
+			<top>20</top>
+			<right>30</right>
+			<bottom>40</bottom>
+		</margins>
 	</plot_area>
 
 	<axes>
-	  <y_left>
-	    <type>stacked</type>
-	    <color></color>
-	    <alpha></alpha>
-	    <width></width>
-	    <tick_length></tick_length>
-	    <logarithmic></logarithmic>
-	  </y_left>
+		<y_left>
+			<type>stacked</type>
+		</y_left>
 	</axes>
 
 	<legend>
-	  <enabled>true</enabled>
-	  <values>
-	    <enabled>false</enabled>
-	    <height>20</height>
-	    <align>left</align>
-	    <text><![CDATA[: {value}]]></text>
-	   </values>
+		<enabled>0</enabled>
 	</legend>
 
+	<indicator>
+		<x_balloon_enabled>0</x_balloon_enabled>
+	</indicator>
+
+	<balloon>
+		<only_one>1</only_one>
+		<text_color>000000</text_color>
+	</balloon>
+
 	<graphs>
-	      	{% for label in chart.labels %}
+		{% for label in chart.labels %}
 			<graph gid="{{ loop.index }}">
 				<axis>left</axis>
-				<title>{{ label|default('[no group]') }}</title>
-
+				<title>{{ label|default('no group') }}</title>
 				<balloon_text>
-				      <![CDATA[{value}]]>
+					<![CDATA[{{ label|default('no group') }}: {value}]]>
 				</balloon_text>
 			</graph>
 		{% endfor %}

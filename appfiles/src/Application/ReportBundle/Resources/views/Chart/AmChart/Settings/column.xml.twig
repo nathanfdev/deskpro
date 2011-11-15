@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-  <type>column</type>
-  <font>Tahoma</font>
-  <column>
-    <type></type>
-    <width>85</width>
-    <spacing>0</spacing>
-    <grow_time>0</grow_time>
-    <sequenced_grow>true</sequenced_grow>
-  </column>
+	<type>column</type>
+	<font>Tahoma</font>
+	<redraw>1</redraw>
 
-  <plot_area>
-    <margins>
-      <left>40</left>
-      <top>40</top>
-      <right>40</right>
-      <bottom>40</bottom>
-    </margins>
-  </plot_area>
+	<column>
+		<type></type>
+		<width>85</width>
+		<spacing>0</spacing>
+		<grow_time>0</grow_time>
+		<sequenced_grow>1</sequenced_grow>
+	</column>
 
-  <legend>
-    <enabled>true</enabled>
-  </legend>
+	<plot_area>
+		<margins>
+			<left>40</left>
+			<top>40</top>
+			<right>40</right>
+			<bottom>40</bottom>
+		</margins>
+	</plot_area>
 
-  <values>
-    <category>
-      <frequency>1</frequency>
-      <start_from>0</start_from>
-    </category>
-  </values>
+	<legend>
+		<enabled>0</enabled>
+	</legend>
 
-  <graphs>
-    {% for label in chart.labels %}
-      <graph gid="{{ loop.index }}">
-        <type>column</type>
-        <title>{{ label|default('[no group]') }}</title>
-      </graph>
-    {% endfor %}
-  </graphs>
+	<values>
+		<category>
+			<frequency>1</frequency>
+			<start_from>0</start_from>
+		</category>
+	</values>
+
+	<balloon>
+		<text_color>000000</text_color>
+	</balloon>
+
+	<graphs>
+		{% for label in chart.labels %}
+			<graph gid="{{ loop.index }}">
+				<type>column</type>
+				<title>{{ label|default('no group') }}</title>
+				<balloon_text>
+					<![CDATA[{{ label|default('no group') }}: {value}]]>
+				</balloon_text>
+			</graph>
+		{% endfor %}
+	</graphs>
 
 </settings>
