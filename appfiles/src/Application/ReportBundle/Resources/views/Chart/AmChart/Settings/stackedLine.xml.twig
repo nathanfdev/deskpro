@@ -37,7 +37,7 @@
 	      	{% for label in chart.labels %}
 			<graph gid="{{ loop.index }}">
 				<axis>left</axis>
-				<title>{{ label }}</title>
+				<title>{{ label|default('[no group]') }}</title>
 
 				<balloon_text>
 				      <![CDATA[{value}]]>

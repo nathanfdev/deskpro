@@ -2,28 +2,12 @@
 
 namespace Application\ReportBundle\Chart\DeskPRO;
 
-use Application\ReportBundle\Chart\Base\AbstractChart as BaseAbstractChart;
-
 /**
  * Display a simple drill down change chart
  */
-class SimpleDrillDownChart extends BaseAbstractChart
+class SimpleDrillDownChart extends AbstractDrillDownChart
 {
 	const CHART_IDENTIFIER = 'simpleDrillDown';
-
-	/**
-	 * The rows in the list
-	 *
-	 * @var bool
-	 */
-	protected $rows = array();
-
-	/**
-	 * The maximum value of data we have
-	 *
-	 * @var number
-	 */
-	protected $max_value = 0;
 
 	public function __construct()
 	{
@@ -37,62 +21,5 @@ class SimpleDrillDownChart extends BaseAbstractChart
 	public static function getChartLabel()
 	{
 		return 'Simple Drilldown Chart';
-	}
-
-	/**
-	 * Adds a row to the list
-	 *
-	 * @param string $label The label
-	 * @param array $data The data points
-	 */
-	public function addRow($label, $data)
-	{
-		$sum_data = array_sum($data);
-
-		$this->rows[] = array(
-			'label' => $label,
-			'data'  => $data,
-			'sum_data' => $sum_data
-		);
-
-		if ($sum_data > $this->max_value) {
-			$this->max_value = $sum_data;
-		}
-	}
-
-	/**
-	 * Get the rows
-	 *
-	 * @return array The rows
-	 */
-	public function getRows()
-	{
-		return $this->rows;
-	}
-
-	/**
-	 * Get the max data value
-	 *
-	 * @return number The max value
-	 */
-	public function getMaxValue()
-	{
-		return $this->max_value;
-	}
-
-	/**
-	 * Calculate the row value as a percentage
-	 *
-	 * @param number $row_value The row value
-	 * @return int The percentage
-	 */
-	public function calculateRowValuePercentage($row_value)
-	{
-		if ($this->max_value != 0) {
-			return round(($row_value / $this->max_value) * 100);
-		}
-		else {
-			return 0;
-		}
 	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pie>
   {% for slice in chart.slices %}
-    <slice title="{{ slice.label }}">{{ slice.value }}</slice>
+    <slice title="{{ slice.label|default('[no group]') }}">{{ slice.value }}</slice>
   {% endfor %}
 </pie>

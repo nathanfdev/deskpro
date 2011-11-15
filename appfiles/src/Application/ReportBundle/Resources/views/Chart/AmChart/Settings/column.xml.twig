@@ -34,9 +34,9 @@
     {% for label in chart.labels %}
       <graph gid="{{ loop.index }}">
         <type>column</type>
-        <title>{{ label }}</title>
+        <title>{{ label|default('[no group]') }}</title>
       </graph>
     {% endfor %}
   </graphs>
-  
+
 </settings>
