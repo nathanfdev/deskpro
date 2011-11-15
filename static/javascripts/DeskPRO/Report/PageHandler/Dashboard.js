@@ -283,11 +283,18 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			helper: "ui-resizable-helper",
 			handles: 'e',
 			distance: 40,
+			start: function(event, ui) {
+				var html = '<div class="resize-overlay resize-left"></div>';
+				$(this).find('.ui-resizable-helper').append(html);
+			},
 			resize: function(event, ui) {
 				// Prevent height resize
 				ui.size.height = ui.originalSize.height;
 			},
 			stop: function(event, ui) {
+				// Remove the resize overlay
+				$(this).find('.resize-overlay').remove();
+				
 				// TODO: remove this when window resize event handler is working
 				self.calculateColumnWidth();
 
