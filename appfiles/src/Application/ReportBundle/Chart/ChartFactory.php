@@ -82,6 +82,25 @@ class ChartFactory
 
 				break;
 
+			/**
+			 * DeskPRO - Simple Drilldown Chart
+			 * DeskPRO - Detailed Drilldown Chart
+			 */
+			case 'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart':
+			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
+				$chart = new $chart_class;
+
+				foreach ($data as $data_set) {
+					$chart->addRow($data_set['label'], $data_set['values']);
+
+					$count++;
+					if ($count === self::LIMIT) {
+						break;
+					}
+				}
+
+				break;
+
 			default:
 				throw new \Exception("Unsupported chart class: $chart_class");
 		}
