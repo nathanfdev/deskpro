@@ -321,7 +321,7 @@ class DealController extends AbstractController
                         'name'=> 'actions[dealtype]',
                         'with_blank'=> true,
                         'with_blank2'=> true,
-                        'blank_title'=> 'Set Deal Type',
+                        'blank_title'=> 'Set Deal stage',
                         'options'=> $deal_stage,
                         'selected'=> '',
                         'add_classname'=> 'select-deal-stage'
@@ -344,7 +344,79 @@ class DealController extends AbstractController
             $this->em->commit();
 
             return $this->createJsonResponse($data);
-    }
+        }
+
+        public function newticketGetPersonRowAction($person_id)
+	{
+		if (!$person_id && $this->in->getUint('person_id')) {
+			$person_id = $this->in->getUint('person_id');
+		}
+
+		$person = false;
+		if ($person_id) {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		}
+		if (!$person && $this->in->getString('email')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+		}
+
+		$session = null;
+		if ($this->in->getUint('session_id')) {
+			$session = $this->em->find('DeskPRO:Session', $this->in->getUint('session_id'));
+		}
+		if ($session && $session->person) {
+			$person = $session;
+		}
+
+		if (!$person) {
+			$person = new Person();
+			if ($session) {
+				$person->name = $session->visitor->name;
+				if ($session->visitor->email) {
+					$person->setEmail($session->visitor->email);
+				}
+			}
+		}
+
+		return $this->render('AgentBundle:Deal:newdeal-person-row.html.twig', array(
+			'person' => $person
+		));
+	}
+
+        public function newticketGetOrganizationRowAction($org_id)
+	{
+            if (!$org_id && $this->in->getUint('org_id')) {
+			$org_id = $this->in->getUint('org_id');
+		}
+
+		$organization = false;
+		if ($org_id) {
+			$organization = $this->em->find('DeskPRO:Organization', $org_id);
+		}
+		if (!$organization && $this->in->getString('name')) {
+			$organization = $this->em->getRepository('DeskPRO:Organization')->findOneByName($this->in->getString('name'));
+		}
+
+		$session = null;
+		if ($this->in->getUint('session_id')) {
+			$session = $this->em->find('DeskPRO:Session', $this->in->getUint('session_id'));
+		}
+		if ($session && $session->organization) {
+			$organization = $session;
+		}
+
+		if (!$organization) {
+			$organization = new Organization();
+			if ($session) {
+				$organization->name = $session->visitor->organization->name;
+				
+			}
+		}
+
+		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
+			'organization' => $organization
+		));
+        }
 
 
         /**

@@ -34,8 +34,8 @@ pageMeta.baseId = '{{ baseId }}';
                     <span class="check">Done</span>
             </div>
             <div class="content">
-                    <div class="col">
-                            
+               <div class="col">
+                <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
 		<div id="{{baseId}}_choose_user">
 			<div
 				id="{{baseId}}_user_searchbox"
@@ -76,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 
             </div>
             <div class="col">                    
-
+                <button class="clean-white small switch-org" id="{{baseId}}_switch_org" style="display: none">Change Organization</button>
                 <div class="org-edit" style="display: block" id="{{baseId}}_org_edit_wrap">
 			<div
 				class="org-input"
@@ -115,7 +115,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 		</div>
 
+                <div id="{{baseId}}_org_choice">
 
+		</div>
 
 
             </div>
@@ -147,9 +149,9 @@ pageMeta.baseId = '{{ baseId }}';
                                 'name': 'actions[dealtype]',
                                 'with_blank': true,
                                 'with_blank2': true,
-                                'blank_title': 'Set Deal Type',
+                                'blank_title': 'Set Deal Stage',
                                 'options': deal_stage,                                
-                                'add_classname': 'select-deal-type'
+                                'add_classname': 'select-stage-type'
                             } %}
                             </dd>
                     </div>

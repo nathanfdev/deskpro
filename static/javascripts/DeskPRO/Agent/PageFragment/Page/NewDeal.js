@@ -95,15 +95,14 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		var rechooseBtn = this.getEl('switch_user');
 
 		rechooseBtn.click(function() {
-			showUserChoice();
+			showUserChoice(); return false;
 		});
 
 		var showUserChoice = function() {
 			userfields.empty();
 			userfields.hide();
 			searchbox.show();
-			rechooseBtn.hide();
-			self.loadSnippetsViewer();
+			rechooseBtn.hide();			
 		};
 
 		var placeUserRow = function(html) {
@@ -113,13 +112,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+				url: BASE_URL + 'agent/deals/new/get-person-row/' + personId,
 				dataType: 'html',
 				context: this,
 				success: function(html) {
 					$('input.person-id', searchbox).val(personId);
-					placeUserRow(html);
-					self.loadSnippetsViewer();
+					placeUserRow(html);					
 				}
 			});
 			sb.close();
@@ -128,7 +126,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+				url: BASE_URL + 'agent/deals/new/get-person-row/0',
 				data: { 'email': term },
 				dataType: 'html',
 				context: this,
@@ -166,6 +164,24 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	_initOrgEdit: function() {
 		var self = this;
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var rechooseBtn = this.getEl('switch_org');
+
+		rechooseBtn.click(function() {
+			showOrganizationChoice(); return false;
+		});
+
+		var showOrganizationChoice = function() {
+			orgfields.empty();
+			orgfields.hide();
+			searchbox.show();
+			rechooseBtn.hide();
+		};
+
+                var placeOrganizationRow = function(html) {
+			self.placeOrganizationRow(html);
+		};
 		
 		var orgEdit    = this.getEl('org_edit_wrap');
 
@@ -174,11 +190,35 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
 			
 		}).bind('orgsearchboxcreate', function(ev, term, name) {
-			
+
+                        $.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/deals/new/get-organization-row/0',
+				data: { 'name': term },
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					placeOrganizationRow(html);
+					$('input.name', userfields).val(term);					
+				}
+			});
 			
 		}).bind('orgsearchreverted', function(ev, term, name) {
 
 		});
+	},
+
+        placeOrganizationRow: function(html) {
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var rechooseBtn = this.getEl('switch_org');
+
+		orgfields.empty();
+		orgfields.html(html);
+
+		rechooseBtn.show();
+		searchbox.hide();
+		orgfields.show();
 	}
 
 

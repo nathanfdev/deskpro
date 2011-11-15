@@ -192,14 +192,9 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
-<<<<<<< HEAD
                 'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
                 'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
-                'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',
-=======
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
->>>>>>> 6cfd8131f3b11b6578c6de0151834eb2f568396b
+                'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js'
 	)
 );
 
