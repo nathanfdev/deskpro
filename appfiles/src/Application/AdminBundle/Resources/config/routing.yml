@@ -409,29 +409,13 @@ admin_tickettriggers_edit:
   defaults: { _controller: AdminBundle:TicketTriggers:edit }
   requirements: { trigger_id: "\d+" }
 
-################################################################################
-# Ticket Urgency
-################################################################################
-
-admin_ticketurgency:
-  pattern: /tickets/urgency
-  defaults: { _controller: AdminBundle:TicketUrgency:list }
-
 admin_ticketurgency_saveoptions:
   pattern: /tickets/urgency/save-options
-  defaults: { _controller: AdminBundle:TicketUrgency:saveOptions }
-
-################################################################################
-# Ticket AutoClose
-################################################################################
-
-admin_ticketautoclose:
-  pattern: /tickets/auto-close
-  defaults: { _controller: AdminBundle:TicketAutoClose:list }
+  defaults: { _controller: AdminBundle:TicketTriggers:saveUrgencyOptions }
 
 admin_ticketautoclose_saveoptions:
   pattern: /tickets/auto-close/save-options
-  defaults: { _controller: AdminBundle:TicketAutoClose:saveOptions }
+  defaults: { _controller: AdminBundle:TicketTriggers:saveAutoCloseOptions }
 
 ################################################################################
 # Organization Fields

@@ -38,4 +38,9 @@ class EditTicketTriggerType extends AbstractType
 			$builder->add('event_trigger_option', 'hidden');
 		}
 	}
+
+	public function getName()
+	{
+		return 'trigger';
+	}
 }

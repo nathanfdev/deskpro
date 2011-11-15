@@ -1,26 +1,10 @@
-Orb.createNamespace('DeskPRO.Admin.PageHandler');
+Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
-DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
-	Extends: DeskPRO.Admin.PageHandler.Basic,
+DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
+	Extends: DeskPRO.ElementHandler,
 
-	TYPE: 'TicketTriggersEdit',
-	trigger_id: 0,
-	actionsEditor: null,
-	criteriaEditor: null,
-
-	initialize: function(trigger_id) {
-		this.parent();
-		this.trigger_id = trigger_id;
-	},
-
-	initPage: function() {
+	init: function() {
 		var self = this;
-		$('.save-trigger').on('click', function() {
-			$('form:first').submit();
-		});
-		$('.cancel-trigger').on('click', function() {
-			self.closeThisPopout();
-		});
 
 		// Criteria builder
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
@@ -64,31 +48,8 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			self.actionsEditor.addNewRow($('.actions-form .search-terms'), basename);
 		});
 
-		if (this.init_options_callback) {
-			this.init_options_callback();
+		if (TicketTriggerEditPage_initTerms) {
+			TicketTriggerEditPage_initTerms(this);
 		}
-	},
-
-	getTemplateContent: function(messenger_id) {
-		var row = $('#' + messenger_id);
-		var changed_tpl = $('.custom_template', row);
-		return changed_tpl.val();
-	},
-
-	setTemplateContent: function(messenger_id, code) {
-		var row = $('#' + messenger_id);
-		var changed_tpl = $('.custom_template', row);
-		changed_tpl.val(code);
-	},
-
-	updateParentListRow: function(row_html) {
-		var parent_win = this.getOpenerDeskPRO();
-		if (!parent_win) return;
-
-		var data = {};
-		data['item_selector'] = 'li.trigger-' + this.trigger_id;
-		data['row_html'] = row_html;
-
-		parent_win.getMessageBroker().sendMessage('list.change', data);
 	}
 });
