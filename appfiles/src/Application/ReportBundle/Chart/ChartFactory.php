@@ -19,8 +19,12 @@ class ChartFactory
 		switch ($chart_class) {
 			/**
 			 * AmChart - Line Chart
+			 * AmChart - Column Chart
+			 * AmChart - Stacked Column Chart
 			 */
 			case 'Application\ReportBundle\Chart\AmChart\LineChart':
+			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
+			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
 				$chart = new $chart_class;
 
 				$series_set = false;
@@ -40,7 +44,7 @@ class ChartFactory
 						break;
 					}
 				}
-				
+
 				break;
 
 			/**
