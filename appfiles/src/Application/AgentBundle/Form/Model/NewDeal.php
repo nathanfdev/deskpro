@@ -30,14 +30,37 @@ class NewDeal
     public $deal_stage;
 
     /**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
+     * @var \Doctrine\ORM\EntityManager
+     */
     protected $_em;
     protected $_person_context;
+    protected $_deal;
 
     public function __construct(Person $person_context)
     {
             $this->person = new NewTicketPerson();
             $this->_person_context = $person_context;
+    }
+
+    public function save()
+    {
+
+        $em = App::getOrm();
+		$em->beginTransaction();
+
+		#------------------------------
+		# The user owner
+		#------------------------------
+
+		if ($this->person->id) {
+			$person = $em->find('DeskPRO:Person', $this->person->id);
+		} else {
+			$person = $em->getRepository('DeskPRO:Person')->findOneByEmail($this->person->email_address);
+		}
+
+		if (!$person) {
+			$person = new Person();
+			$person->addEmailAddressString($this->person->email_address);
+		}
     }
 }

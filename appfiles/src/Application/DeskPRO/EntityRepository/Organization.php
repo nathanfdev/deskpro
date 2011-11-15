@@ -22,11 +22,14 @@ class Organization extends \Doctrine\ORM\EntityRepository
 
 	public function findOneByName($name)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM DeskPRO:Organization o
-			WHERE o.name = ?1
-		")->setParamter(1, $name)->getOneOrNullResult();
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('o')
+            ->from('DeskPRO:Organization', 'o')
+            ->where('o.name = :name')
+            ->setParameter('name', $name);
+
+            $query = $qb->getQuery(); 
+            return $query->getOneOrNullResult();
 	}
 
 	/**

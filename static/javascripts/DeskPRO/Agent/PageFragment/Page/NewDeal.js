@@ -199,7 +199,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 				context: this,
 				success: function(html) {
 					placeOrganizationRow(html);
-					$('input.name', userfields).val(term);					
+					$('input.name', orgfields).val(term);
 				}
 			});
 			

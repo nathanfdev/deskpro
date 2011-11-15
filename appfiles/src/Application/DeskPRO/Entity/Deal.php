@@ -186,11 +186,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;    
 
-//    /**
-//     * @var \Doctrine\Common\Collections\ArrayCollection
-//     * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusNote", mappedBy="deal")
-//     */
-//    protected $twitter_status_notes;
 
     /**
      * Label manager for adding/removing labels

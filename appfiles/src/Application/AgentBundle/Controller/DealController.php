@@ -57,6 +57,16 @@ class DealController extends AbstractController
     public function newSaveAction()
     {
 
+        $newdeal = new \Application\AgentBundle\Form\Model\NewDeal($this->$person);
+        
+        $formtpe = new \Application\AgentBundle\Form\Type\NewDeal();
+        $form = $this->get('form.factory')->create($formType, $newticket);
+
+        if ($this->get('request')->getMethod() == 'POST') {
+                $form->bindRequest($this->get('request'));
+                $form->isValid();
+                $newdeal->save();
+        }
     }
 
 
