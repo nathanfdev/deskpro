@@ -52,10 +52,10 @@ class StatValue extends EntityRepository
 			    ->setParameter('stat_unix', $end_date->format('U'));
 
 		if (false === is_null($limit)) {
-			$db->setMaxResults($limit);
+			$qb->setMaxResults($limit);
 		}
 
-		return $db->orderBy('sv.stat_unix DESC')
+		return $qb->orderBy('sv.stat_unix', 'DESC')
 			  ->getQuery()
 			  ->getArrayResult();
 	}

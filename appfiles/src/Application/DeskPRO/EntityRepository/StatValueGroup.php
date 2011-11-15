@@ -62,7 +62,7 @@ class StatValueGroup extends EntityRepository
 	 */
 	public function getForStatValueRangeDate($stat_value_id, \DateTime $end_date, $limit)
 	{
-		$db = $this->getEntityManager()->createQueryBuilder()
+		$qb = $this->getEntityManager()->createQueryBuilder()
 			    ->select('svg')
 			    ->from('DeskPRO:StatValueGroup', 'svg')
 			    ->innerJoin('svg.stat_value', 'sv')
@@ -73,10 +73,10 @@ class StatValueGroup extends EntityRepository
 
 
 		if (false === is_null($limit)) {
-			$db->setMaxResults($limit);
+			$qb->setMaxResults($limit);
 		}
 
-		return $db->orderBy('svg.stat_unix DESC')
+		return $qb->orderBy('svg.stat_unix', 'DESC')
 			  ->getQuery()
 			  ->getArrayResult();
 	}

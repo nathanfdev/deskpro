@@ -9,6 +9,11 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 class TicketsAgentParticipate extends AbstractTicket
 {
+	public function init()
+	{
+
+	}
+	
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();

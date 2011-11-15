@@ -16,6 +16,9 @@ abstract class AmLineChart extends BaseLineChart
 
 	public function getData()
 	{
+		$data = $this->stat->getData(new \DateTime(), 10);
+		var_dump($data);
+		
 		$number_points = 7;
 
 		$points = array();

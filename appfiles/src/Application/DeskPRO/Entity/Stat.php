@@ -241,13 +241,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		switch ($this->run_frequency) {
 			case 'daily':
-				$stat_value = $repo->getForStatByDay($this->id, $date);
+				$stat_value = $repo->getForStatByDay($this->getId(), $date);
 				break;
 			case 'monthly':
-				$stat_value = $repo->getForStatByMonth($this->id, $date);
+				$stat_value = $repo->getForStatByMonth($this->getId(), $date);
 				break;
 			case 'yearly':
-				$stat_value = $repo->getForStatByYear($this->id, $date);
+				$stat_value = $repo->getForStatByYear($this->getId(), $date);
 				break;
 			default:
 				throw new \Exception("Unable to retrieve StatValue for run_frequency " . $this->run_frequency);
@@ -276,7 +276,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	public function getGroupingReferenceIds(\DateTime $end_date = null, $limit = null)
 	{
 		return App::getEntityRepository('DeskPRO:StatValueGroup')
-			->getReferenceIdsByStat($this->getId(), $end_date, $limit);
+			->getReferenceIdsByStat($this->id, $end_date, $limit);
 	}
 
 	public function setRunFrequency($run_frequency)
@@ -369,6 +369,8 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$data = array();
 
 		// Get the StatValue's
+		$data = App::getEntityRepository('DeskPRO:StatValue')
+			   ->getForStatRangeDate($this->getId(), $end_date, $data_point_count);
 
 		return $data;
 	}
