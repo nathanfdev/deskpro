@@ -19,10 +19,12 @@ class ChartFactory
 		switch ($chart_class) {
 			/**
 			 * AmChart - Line Chart
+			 * AmChart - Stacked Line Chart
 			 * AmChart - Column Chart
 			 * AmChart - Stacked Column Chart
 			 */
 			case 'Application\ReportBundle\Chart\AmChart\LineChart':
+			case 'Application\ReportBundle\Chart\AmChart\StackedLineChart':
 			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
 			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
 				$chart = new $chart_class;
