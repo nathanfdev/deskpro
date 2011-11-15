@@ -80,8 +80,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.resizeAllWidgets();
 			},
 			stop: function(event, ui) {
-				// Need to re render the widgets
-				self.renderWidgets();
+				// Need to re render the widgets - Flash charts will do
+				// this for us, JS ones dont seem to support it
+				//self.renderWidgets();
 			}
 		});
 
