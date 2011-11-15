@@ -266,19 +266,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	}
 
-	/**
-	 * Get the reference Id's for a stat. Optionaly limit to a date and count
-	 *
-	 * @param \DateTime $end_date The end date to limit to (optional)
-	 * @param int $limit The number of reference Id's to retrieve (optional)
-	 * @return array()
-	 */
-	public function getGroupingReferenceIds(\DateTime $end_date = null, $limit = null)
-	{
-		return App::getEntityRepository('DeskPRO:StatValueGroup')
-			->getReferenceIdsByStat($this->id, $end_date, $limit);
-	}
-
 	public function setRunFrequency($run_frequency)
 	{
 		if (false === self::isValidRunFrequency($run_frequency)) {
@@ -303,37 +290,45 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Get the Reference loopup for the Stat. Basically a Stat is mapped to
+	 * Get the reference Id's for a StatValue
+	 *
+	 * @param array $stat_value_ids List of StatValue Ids to get reference for
+	 * @return array()
+	 */
+	public function getGroupingReferenceIds($stat_value_ids)
+	{
+		return App::getEntityRepository('DeskPRO:StatValueGroup')
+			->getReferenceIdsByStatValues($stat_value_ids);
+	}
+
+	/**
+	 * Get the Reference loopup for the StatValue. Basically a Stat is mapped to
 	 * a type of Grouping Data. We store the PK's for the linked grouping
 	 * entity so we need a way to get the linked grouping entities back.
 	 * This method will do this
 	 *
-	 * @param \DateTime $end_date The end date, we work backwards from this
-	 * @param int $data_point_count The number of data points to retrieve
+	 * @param array $stat_value_ids List of StatValue Ids to get reference for
 	 */
-	public function getReferenceLookup(\DateTime $end_date, $data_point_count = null)
+	public function getReferenceLookup($stat_value_ids)
 	{
-		// If a data point count is not set, use the Stat default
-		if (true === is_null($data_point_count)) {
-			$data_point_count = $this->getDefaultDataPointCount();
-		}
-
 		$groupingInformation = $this->getGroupingInformation();
 
 		$table 		= $groupingInformation['table'];
 		$displayColumn 	= $groupingInformation['display_column'];
 
-		$refefencesIds  = $this->getGroupingReferenceIds($end_date, $data_point_count);
-
-		$references = App::getDb()->fetchAll("
-			SELECT id, $displayColumn
-			FROM $table
-			WHERE id IN (" . join(', ', $refefencesIds) . ")
-		");
+		$refefencesIds  = $this->getGroupingReferenceIds($stat_value_ids);
 
 		$lookup = array();
-		foreach ($references as $reference) {
-			$lookup[$reference['id']] = $reference[$displayColumn];
+		if (count($refefencesIds)) {
+			$references = App::getDb()->fetchAll("
+				SELECT id, $displayColumn
+				FROM $table
+				WHERE id IN (" . join(', ', $refefencesIds) . ")
+			");
+
+			foreach ($references as $reference) {
+				$lookup[$reference['id']] = $reference[$displayColumn];
+			}
 		}
 
 		return $lookup;
@@ -347,30 +342,33 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getData(\DateTime $end_date, $data_point_count, $with_grouped = false)
 	{
-		// Get the StatValue's
-		$data = $this->getUngroupedData($end_date, $data_point_count);
+		$data = array();
+		// Get the data points we care about
+		$data_points = $this->generateDataPoints($end_date, $data_point_count);
 
-		if ($with_grouped) {
-			$data['ungrouped'] = $data;
-			$data['grouped']   = $this->getGroupedData($end_date, $data_point_count);
+		$stat_value_ids = array();
+
+		// Get the StatValue's
+		$stat_values = App::getEntityRepository('DeskPRO:StatValue')
+				  ->getForStatRangeDate($this->getId(), $end_date, $data_point_count);
+
+		// Transform the raw data - Set the default data points. We need
+		// to do this incase there is missing data in the DB, ie we havent
+		// generated stats as far as 5 years ago
+		$values = array_fill_keys($data_points, null);
+		foreach ($stat_values as $stat_value) {
+			$values[date('Y-m-d', $stat_value['stat_unix'])] = $stat_value['value'];
+			$stat_value_ids[] = $stat_value['id'];
 		}
 
-		return $data;
-	}
+		$data['ungrouped'] = array(
+			'label'  => '',
+			'values' => $values
+		);
 
-	/**
-	 * Get the data (StatValue) for the Stat
-	 *
-	 * @param \DateTime $end_date The end date, we work backwards from this
-	 * @param int $data_point_count The number of data points to retrieve
-	 */
-	public function getUngroupedData(\DateTime $end_date, $data_point_count)
-	{
-		$data = array();
-
-		// Get the StatValue's
-		$data = App::getEntityRepository('DeskPRO:StatValue')
-			   ->getForStatRangeDate($this->getId(), $end_date, $data_point_count);
+		if ($with_grouped) {
+			$data['grouped']   = $this->getGroupedData($data_points, $stat_value_ids);
+		}
 
 		return $data;
 	}
@@ -378,16 +376,80 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the grouped data (StatValueGroup) for the Stat
 	 *
-	 * @param \DateTime $end_date The end date, we work backwards from this
-	 * @param int $data_point_count The number of data points to retrieve
+	 * @param array $data_points List of data points
+	 * @param array $stat_value_ids List of StatValue Ids to get data for
 	 */
-	public function getGroupedData(\DateTime $end_date, $data_point_count)
+	protected function getGroupedData($data_points, $stat_value_ids)
 	{
+		// Get the lookup data for the labels
+		$lookup = $this->getReferenceLookup($stat_value_ids);
+
 		$data = array();
 
-		// Get the StatValueGroup's
+		foreach ($stat_value_ids as $stat_value_id) {
+
+			// Get the StatValueGroups
+			$raw = App::getEntityRepository('DeskPRO:StatValueGroup')
+				   ->getForStatValue($stat_value_id);
+
+			// Transform the raw data
+			foreach ($raw as $raw_row) {
+				if (false === isset($data[$raw_row['grouping_id']])) {
+					$label = '';
+					// Get the label, check the grouping_id is set, could
+					// be a NULL reference
+					if (isset($lookup[$raw_row['grouping_id']])) {
+						$label = $lookup[$raw_row['grouping_id']];
+					}
+
+					// Set the default data points. We need
+					// to do this incase there is missing data in the DB, ie we havent
+					// generated stats as far as 5 years ago
+					$values = array_fill_keys($data_points, null);
+
+					$data[$raw_row['grouping_id']] = array(
+						'label'  => $label,
+						'values' => $values,
+					);
+				}
+
+				$data[$raw_row['grouping_id']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
+			}
+		}
 
 		return $data;
+	}
+
+	/**
+	 * Calculate the values for the data points
+	 *
+	 * @param \Datetime $end_date The end date
+	 * @param int $data_point_count The number of data points to get
+	 * @return array
+	 */
+	protected function generateDataPoints(\DateTime $end_date, $data_point_count)
+	{
+		$data_points = array();
+
+		$unix = $end_date->format('U');
+
+		for ($i = ($data_point_count - 1); $i >= 0; $i--) {
+			switch ($this->getRunFrequency()) {
+				case 'daily':
+					$data_point = date('Y-m-d', strtotime("-$i days", $unix));
+					break;
+				case 'monthly':
+					$data_point = date('Y-m-d', strtotime("-$i months", $unix));
+					break;
+				case 'yearly':
+					$data_point = date('Y-m-d', strtotime("-$i years", $unix));
+					break;
+			}
+
+			$data_points[] = $data_point;
+		}
+
+		return $data_points;
 	}
 
 	/**

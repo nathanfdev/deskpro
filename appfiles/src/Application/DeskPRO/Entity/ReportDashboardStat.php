@@ -99,4 +99,9 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	{
 
 	}
+
+	public function getDisplayGrouping()
+	{
+		return true;
+	}
 }

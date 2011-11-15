@@ -95,7 +95,7 @@ abstract class AbstractStat implements StatInterface
 	public function addGrouping($field)
 	{
 		// Add field to grouping
-		if (false === in_array($field, $this->grouping[$field])) {
+		if (false === in_array($field, $this->grouping)) {
 			$this->grouping[] = $field;
 		}
 	}

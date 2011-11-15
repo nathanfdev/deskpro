@@ -11,13 +11,10 @@ class SimpleVariationChart extends BaseAbstractChart
 {
 	const CHART_IDENTIFIER = 'simpleVariation';
 
-	public function __construct($stat)
+	public function __construct()
 	{
-		parent::__construct($stat);
-
 		$this->view_chart_vendor 	= 'DeskPRO';
 		$this->view_chart_class 	= 'SimpleVariation';
-
 	}
 
 	/**

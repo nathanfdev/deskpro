@@ -9,10 +9,8 @@ use Application\ReportBundle\Chart\Base\PieChart as BasePieChart;
  */
 class PieChart extends BasePieChart
 {
-	public function __construct($stat)
+	public function __construct()
 	{
-		parent::__construct($stat);
-
 		$this->view_chart_vendor 	= 'AmChart';
 		$this->view_chart_class 	= 'Pie';
 	}

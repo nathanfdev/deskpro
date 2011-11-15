@@ -17,34 +17,27 @@ use Application\DeskPRO\App;
 class StatValueGroup extends EntityRepository
 {
 	/**
-	 * Get the reference Id's for a stat. Optionaly limit to a date and count
+	 * Get the reference Id's for a StatValue
 	 *
-	 * @param int $stat_id The Stat Id
-	 * @param \DateTime $end_date The end date to limit to (optional)
-	 * @param int $limit The number of reference Id's to retrieve (optional)
+	 * @param array $stat_value_ids List of StatValue Ids
 	 * @return array()
 	 */
-	public function getReferenceIdsByStat($stat_id, \DateTime $end_date = null, $limit = null)
+	public function getReferenceIdsByStatValues($stat_value_ids)
 	{
-		$query = "SELECT grouping_id
+		if (0 === count($stat_value_ids)) {
+			return array();
+		}
+
+		$query = "SELECT DISTINCT grouping_id
 			FROM stat_value_group svg
-			INNER JOIN stat_value sv ON sv.id = svg.stat_value_id
-			WHERE sv.stat_id = $stat_id";
-
-		if (false === is_null($end_date)) {
-			$query .= " AND svg.stat_unix < " . $end_date->format('U');
-		}
-
-		if (false === is_null($limit)) {
-			$query .= " LIMIT $limit";
-		}
+			WHERE svg.stat_value_id IN (" . join(',', $stat_value_ids) . ")";
 
 		$references = App::getDb()->fetchAllCol($query);
 
 		$referenceIds = array();
 		foreach ($references as $reference) {
-			if (false === is_null($reference['grouping_id'])) {
-				$referenceIds[] = $reference['grouping_id'];
+			if (false === is_null($reference)) {
+				$referenceIds[] = $reference;
 			}
 		}
 
@@ -52,29 +45,20 @@ class StatValueGroup extends EntityRepository
 	}
 
 	/**
-	 * Get the StatValueGroups for a period. We work backwards from $end_date
-	 * for $limit number
+	 * Get the StatValueGroups for a StatValue
 	 *
 	 * @param int $stat_value_id The StatValue id
-	 * @param \DateTime $end_date The end date
-	 * @param int $limit The number of results to retrieve (optional)
+	 *
 	 * @return array
 	 */
-	public function getForStatValueRangeDate($stat_value_id, \DateTime $end_date, $limit)
+	public function getForStatValue($stat_value_id)
 	{
 		$qb = $this->getEntityManager()->createQueryBuilder()
 			    ->select('svg')
 			    ->from('DeskPRO:StatValueGroup', 'svg')
 			    ->innerJoin('svg.stat_value', 'sv')
 			    ->where('sv.id = :stat_value_id')
-			    ->andWhere("svg.stat_unix < :stat_unix")
-			    ->setParameter('stat_value_id', $stat_value_id)
-			    ->setParameter('stat_unix', $end_date->format('U'));
-
-
-		if (false === is_null($limit)) {
-			$qb->setMaxResults($limit);
-		}
+			    ->setParameter('stat_value_id', $stat_value_id);
 
 		return $qb->orderBy('svg.stat_unix', 'DESC')
 			  ->getQuery()
