@@ -18,7 +18,7 @@
 			<tbody>
 				{% for row in chart.rows %}
 					<tr>
-						<td class="name">{{ row.label|default('[no group]') }}</td>
+						<td class="name">{{ row.label|default('no group') }}</td>
 						<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
 						<td class="value">{{ row.sum_data }}</td>
 						<td class="bar">

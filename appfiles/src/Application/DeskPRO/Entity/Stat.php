@@ -40,9 +40,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Lookup references for the grouping
+	 *
+	 * label: The display label for the grouping column
+	 * table: The table the grouped label should come from
+	 * display_column: The column to use in the table
 	 */
 	protected static $groupingReferences = array(
-		'tickets.agent_id' => array('table' => 'people', 'display_column' => 'first_name'),
+		'tickets.agent_id' => array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
 	);
 
 	/**
@@ -224,7 +228,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isEditable()
 	{
-		return true;
 		if (true === is_null($this->author)) {
 			return false;
 		}
@@ -468,6 +471,18 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Get the grouping name. Useful for displaying
+	 *
+	 * @return string The name the stat is grouped by
+	 */
+	public function getGroupingName()
+	{
+		$groupingInformation = $this->getGroupingInformation();
+
+		return $groupingInformation['label'];
+	}
+
+	/**
 	 * Get the data for the Stat
 	 *
 	 * @param \DateTime $end_date The end date, we work backwards from this
@@ -536,6 +551,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					// be a NULL reference
 					if (isset($lookup[$raw_row['grouping_id']])) {
 						$label = $lookup[$raw_row['grouping_id']];
+					}
+					else {
+						// Get the grouping name
+						$label = 'No ' . $this->getGroupingName();
 					}
 
 					// Set the default data points. We need
