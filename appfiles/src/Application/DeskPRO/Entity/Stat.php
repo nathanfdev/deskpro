@@ -512,7 +512,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_data['ungrouped'] = array(
-			'label'  => '',
+			'label'  => 'All',
 			'values' => $values
 		);
 
