@@ -16,7 +16,7 @@ DeskPRO.Report.Chart.DeskPRO.SimpleVariation = new Orb.Class({
 		this.sparkline_data = [];
 
 		$('#' + this.element_id).on('resize', function() {
-			$('#' + self.element_id + ' .sparkline').sparkline(self.sparkline_data, { width: '100%', height: '25px'});
+			$('#' + self.element_id + ' .sparkline').sparkline(self.sparkline_data, { width: '100%', height: '30px'});
 		});
 	},
 
@@ -24,6 +24,6 @@ DeskPRO.Report.Chart.DeskPRO.SimpleVariation = new Orb.Class({
 		// Store the sparkline data
 		this.sparkline_data = ($('#' + this.element_id + ' .sparkline').html()).split(",");
 
-		$('#' + this.element_id + ' .sparkline').sparkline(this.sparkline_data, { width: '100%', height: '25px'});
+		$('#' + this.element_id + ' .sparkline').sparkline(this.sparkline_data, { width: '100%', height: '30px'});
 	},
 });
