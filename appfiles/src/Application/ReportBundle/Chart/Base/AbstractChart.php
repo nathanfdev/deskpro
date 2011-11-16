@@ -14,6 +14,15 @@ abstract class AbstractChart implements ChartInterface
 	protected $chart_vendor = '';
 
 	/**
+	 * Color codes used to render chart lines, bars, etc
+	 */
+	protected static $color_codes = array(
+		'FF6600', 'FCD202', 'B0DE09', '0D8ECF', '2A0CD0', 'CD0D74',
+		'CC0000', '00CC00', '0000CC', 'DDDDDD', '999999', '333333',
+		'990000'
+	);
+
+	/**
 	 * Get the view chart vendor
 	 *
 	 * @return string The view chart vendor
@@ -59,5 +68,15 @@ abstract class AbstractChart implements ChartInterface
 		}
 
 		return ($as_percentage) ? number_format($difference * 100, 2) : number_format($difference, 2);
+	}
+
+	/**
+	 * Get the color codes used for the charts
+	 *
+	 * @return array
+	 */
+	public function getColorCodes()
+	{
+		return self::$color_codes;
 	}
 }
