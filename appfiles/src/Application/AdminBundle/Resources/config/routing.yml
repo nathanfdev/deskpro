@@ -231,6 +231,11 @@ admin_langs_editlang:
   defaults: { _controller: AdminBundle:Languages:editLanguage }
   requirements: { language_id: "\d+" }
 
+admin_langs_dellang:
+  pattern: /languages/{language_id}/delete
+  defaults: { _controller: AdminBundle:Languages:deleteLanguage }
+  requirements: { language_id: "\d+" }
+
 admin_langs_newlang:
   pattern: /languages/new-lang
   defaults: { _controller: AdminBundle:Languages:newLanguage }

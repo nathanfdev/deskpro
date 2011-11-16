@@ -77,6 +77,27 @@ class LanguagesController extends AbstractController
 		return $this->render('AdminBundle:Languages:lang-edit.html.twig', $vars);
 	}
 
+	public function deleteLanguageAction($language_id)
+	{
+		$language = $this->getLanguageOr404($language_id);
+
+		if ($language->id == 1) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->beginTransaction();
+		try {
+			$this->em->remove($language);
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_langs');
+	}
+
 	public function editPhrasesAction($language_id, $group)
 	{
 		$vars = $this->getLangInfo($language_id);
