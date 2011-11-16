@@ -55,26 +55,26 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 
 		var form = this.getEl('form');
-		form.submit(Orb.cancelEvent);
+		form.on('submit', Orb.cancelEvent);
 
 		var rowContainer = this.getEl('tasks');
 
 		var openForEl = null;
-		rowContainer.delegate('.remove-row-trigger', 'click', function(ev) {
+		rowContainer.on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('.task-row');
 			row.slideUp('fast', function() {
 				row.remove();
 			});
 		});
-		rowContainer.delegate('.opt-trigger.assigned_agent', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			assignOptionBox.open(ev);
 		});
-		rowContainer.delegate('.opt-trigger.visibility', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('.task-row');
 			statusMenu.open(ev);
 		});
-		rowContainer.delegate('.opt-trigger.date_due', 'click', function(ev) {
+		rowContainer.on('click', '.opt-trigger.date_due', function(ev) {
 			var label = $('label', this);
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
@@ -117,7 +117,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 					$('label', linkEl).text(activeTab.page.meta.title);
 					$('input.input-ticket-id', row).val(activeTab.page.meta.ticket_id);
 					linkEl.show();
-					$('.remove-link-trigger', row).click(function() {
+					$('.remove-link-trigger', row).on('click', function() {
 						nolink = true;
 						linkEl.hide();
 						$('input.input-ticket-id', row).val(0);
@@ -128,12 +128,12 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			rowContainer.append(row);
 		};
 
-		this.getEl('add_btn').click(addTaskRow);
+		this.getEl('add_btn').on('click', addTaskRow);
 
 		addTaskRow();
 
 		var footer = $('footer.pop-footer', el);
-		$('.submit-trigger', el).click(function() {
+		$('.submit-trigger', el).on('click', function() {
 			var postData = form.serializeArray();
 
 			footer.addClass('loading');

@@ -7,7 +7,7 @@ DeskPRO.Admin.WindowElement.BasicMainMenu = new Class({
 		this.parent(buttonEl, options);
 
 		var self = this;
-		$('ol.icon-menu > li', this.menuEl).click(function(ev) {
+		$('ol.icon-menu > li', this.menuEl).on('click', function(ev) {
 			var a = $('a:first', this);
 			if (a && a.attr('href')) {
 				ev.stopPropagation();

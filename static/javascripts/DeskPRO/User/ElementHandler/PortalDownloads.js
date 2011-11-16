@@ -43,7 +43,7 @@ DeskPRO.User.ElementHandler.PortalDownloads = new Orb.Class({
 			}
 		});
 
-		$('.heading-tabs li a', this.el).click(function(ev) {
+		$('.heading-tabs li a', this.el).on('click', function(ev) {
 			ev.preventDefault();
 		});
 
@@ -126,13 +126,13 @@ DeskPRO.User.ElementHandler.PortalDownloads = new Orb.Class({
 		var self = this;
 
 		this.filterForm = $('#dl_nav_form');
-		this.filterForm.submit(function(ev) {
+		this.filterForm.on('submit', function(ev) {
 			ev.preventDefault();
 			self.submitFilterForm();
 		});
 
 		var content = $('.tab-contents:first .browse.tab-content:first', this.el);
-		$('.cat-list li a', content).click(function(ev) {
+		$('.cat-list li a', content).on('click', function(ev) {
 			ev.preventDefault();
 			self.clickCatNav($(this));
 		});
@@ -143,7 +143,7 @@ DeskPRO.User.ElementHandler.PortalDownloads = new Orb.Class({
 		this.injectLoadingEl(content);
 
 		var formData = this.filterForm.serializeArray();
-		
+
 		var formUrl = this.filterForm.attr('action');
 		formUrl = Orb.appendQueryData(formUrl, '_partial');
 

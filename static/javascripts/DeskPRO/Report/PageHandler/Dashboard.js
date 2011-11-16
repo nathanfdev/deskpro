@@ -63,7 +63,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#overlay_wrapper')
 		});
-		$('#overlay_wrapper .close-overlay').click(function() {
+		$('#overlay_wrapper .close-overlay').on('click', function() {
 			self.overlay.close();
 		});
 
@@ -71,7 +71,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$("#report-dashboard-options-num-columns-slider").slider({
 			range: "max",
 			min: 1,
-			max: 8,
+			max: 4,
 			value: this.number_columns,
 			slide: function(event, ui) {
 				self.number_columns = ui.value;
@@ -80,32 +80,33 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.resizeAllWidgets();
 			},
 			stop: function(event, ui) {
-				// Need to re render the widgets
-				self.renderWidgets();
+				// Need to re render the widgets - Flash charts will do
+				// this for us, JS ones dont seem to support it
+				//self.renderWidgets();
 			}
 		});
 
-		$('#report-dashboard-set-editable').click(function() {
+		$('#report-dashboard-set-editable').on('click', function() {
 			self.setEditable(true);
 			return false;
 		});
 
-		$('#report-dashboard-set-viewable').click(function() {
+		$('#report-dashboard-set-viewable').on('click', function() {
 			self.setEditable(false);
 			return false;
 		});
 
-		// TODO: need to ensure dashboard update correctly if window size changes
-		//$(window).resize(function() {
-		//	self.calculateColumnWidth();
-		//	self.resizeAllWidgets();
-		//});
+		// Need to ensure dashboard update correctly if window size changes
+		this.$dashboardGrid.on('resize', function() {
+			self.calculateColumnWidth();
+			self.resizeAllWidgets();
+		});
 
 		// Calculate initial dashboard column width, grab the widgets
 		this.calculateColumnWidth();
 		this.fetchWidgets();
 	},
-	
+
 	// Open the overlay loading in a template
 	openOverlay: function(overlay_content) {
 
@@ -179,7 +180,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (this.supported_charts.indexOf(chart_type) == -1) {
 			throw "Unsupported Chart Class [" + chart_type + "]";
 		}
-		
+
 		var chartClass = eval("DeskPRO.Report.Chart." + vendor + "." + chart_type);
 
 		return new chartClass(chart_element_id, dashboad_stat_id);
@@ -225,13 +226,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Setup the spacing
 		this.applySpacingToElements($('.widget'));
 	},
-	
+
 	// Removes a widget from the dashboard
 	deleteWidget: function(element_id) {
 		var self         = this;
 		var widget_index = this.getWidgetIndexById(element_id);
 		var widget       = this.widgets[widget_index];
-		
+
 		// Destroy the widget
 		$.ajax({
 			url: DeskPRO_Window.getUrl('report_dashboard_ajaxdeletewidget', {dashboard_id: this.dashboard_id, dashboard_stat_id: widget.widget.widget_id}),
@@ -242,7 +243,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.widgets.splice(widget_index, 1);
 			}
 		});
-		
+
 	},
 
 	// Set dashboard state, can be editable or viewable
@@ -336,8 +337,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Add UI handlers for the add chart overlay
 	addAddChartUIHandlers: function() {
-		
-		$('#dashboard_widget_select a.add-chart').click(function() {
+
+		$('#dashboard_widget_select a.add-chart').on('click', function() {
 			var href = $(this).attr('href');
 			$.ajax({
 				url: href,
@@ -347,12 +348,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					$('.overlay-content').html(data.html);
 				}
 			});
-			
+
 			return false;
 		});
-		
+
 	},
-	
+
 	// Save the state of the dashboard
 	saveDashboardState: function() {
 		var self = this;
@@ -390,10 +391,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.resizePlacerHolderWidget();
 
 		// Set handler to process click events, we want to display an overlay
-		$("#dashboard-new-placeholder-link").click(function() {
+		$("#dashboard-new-placeholder-link").on('click', function() {
 			self.openOverlay($.tmpl('dashboard_widget_select'));
 			self.addAddChartUIHandlers();
-			
+
 			return false;
 		});
 	},

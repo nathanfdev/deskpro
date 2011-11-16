@@ -9,6 +9,21 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 class TicketsAwaitingAgent extends AbstractTicket
 {
+	public function init()
+	{
+		$this->addAvailableGroups(array(
+			'department'	=> 'Department',
+			'category'	=> 'Category',
+			'priority'	=> 'Proprity',
+			'workflow'	=> 'Workflow',
+			'language'	=> 'Language',
+			'agent'		=> 'Agent',
+			'agent_team'	=> 'Agent Team',
+			'user_id'	=> 'User',
+			'rating'	=> 'Rating',
+		));
+	}
+
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();

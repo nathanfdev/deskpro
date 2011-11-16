@@ -749,6 +749,47 @@ table.structure-list span.priority {
 	margin-right: 3px;
 }
 
+.resource-item-list.section-items header {
+	border: none;
+	padding: 6px 6px 0px 6px;
+}
+
+.resource-item-list.section-items {
+	padding: 0;
+	margin: 0;
+}
+
+.resource-item-list.section-items article > ul {
+	margin: 0;
+	padding: 0;
+}
+
+.resource-item-list.section-items article > ul > li {
+	border-top: 1px solid #D9DBDB;
+	padding: 4px;
+}
+
+.resource-item-list.section-items input.single-num {
+	width: 20px;
+	height: 13px;
+	font-size: 11px;
+	line-height: 13px;
+	line-height: 100%;
+	padding: 0;
+	border: 1px solid #AFB2B2;
+	text-align: center;
+	border-top: 1px solid #DDE0E1;
+	border-left: 1px solid #DDE0E1;
+	border-right: 1px solid #DDE0E1;
+	background-color: #fff;
+	.drop-shadow(0, 0, 0, 0);
+}
+
+.resource-item-list.section-items input.single-num:focus {
+	.drop-shadow(0, 0, 0, 0);
+	border: 1px solid #000;
+}
+
 
 
 
@@ -1159,7 +1200,7 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
     z-index: 1;
 	width: 180px;
 	position: absolute;
-	min-height: 300px;
+	min-height: 100px;
 	top: 124px;
 
 	border: 1px solid #CACFD6;
@@ -1231,6 +1272,20 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 	background-color: #E9EFF7;
 	border-top: 1px solid #CAD0D8;
 	border-bottom: 1px solid #CAD0D8;
+}
+
+#dp_page_nav section > article > ul > li .count {
+	float: right;
+	display: block;
+	line-height: 100%;
+	background-color: #C6CAD0;
+	padding: 1px 4px 1px 4px;
+
+	.rounded(15px);
+
+	font-size: 9px;
+	margin-top: 4px;
+	margin-right: 16px;
 }
 
 
@@ -1711,6 +1766,16 @@ nav.page-top-hugnav ul li span {
 	top: -2px;
 }
 
+nav.page-top-hugnav input.filter-input {
+	border: none;
+	.box-shadow(none);
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	font-size: 11px;
+	height: 12px;
+}
+
 section#portal_colors {
 	position: absolute;
 	width: 400px;
@@ -1800,3 +1865,166 @@ section#portal_colors .style-row.color.dual .desc {
  		box-shadow: none;
  	}
 }
+
+
+
+ul.labels-list > li {
+	display: block;
+	float: left;
+
+	line-height: 100%;
+	width: 150px;
+}
+
+ul.labels-list > li > div {
+    position: relative;
+	display: inline-block;
+	background-color: #E9EFF7;
+	border: 1px solid #B4B6B8;
+	padding: 3px 5px 2px 5px;
+	margin-bottom: 6px;
+	min-width: 54px;
+}
+
+ul.labels-list > li > div:hover {
+	background-color: #fff;
+	border: 1px solid #B4B6B8;
+	.drop-shadow(1px, 1px, 2px, 0.5);
+}
+
+ul.labels-list > li .count {
+	float: right;
+	display: block;
+	line-height: 100%;
+	background-color: #C6CAD0;
+	padding: 1px 4px 1px 4px;
+
+	.rounded(15px);
+
+	font-size: 9px;
+	margin-left: 5px;
+}
+
+ul.labels-list > li label {
+	position: relative;
+	top: -1px;
+}
+
+ul.labels-list .dp-block-controls {
+	top: -4px;
+	right: -55px;
+	.drop-shadow(1px, 0px, 2px, 0.5);
+	display: none;
+}
+
+.dp-block-controls {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    background-color: #DBDFE4;
+    border: 1px solid #B4B6B8;
+    .drop-shadow(1px, 1px, 2px, 0.5);
+
+    .opacity(0);
+    .transition(0.1s);
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    line-height: 100%;
+    white-space: nowrap;
+    width: auto;
+}
+
+ul.labels-list li > div:hover .dp-block-controls {
+    display: block;
+	.transition(0.1s);
+    .opacity(100);
+}
+
+.dp-block-controls ul {
+	margin:0;
+	padding:0;
+}
+
+.dp-block-controls ul li {
+    display: block;
+    float: left;
+    cursor: pointer;
+    line-height: 100%;
+    margin: 0;
+}
+
+.dp-block-controls ul li:hover {
+    background-color: #fff;
+}
+
+.dp-block-controls ul li span {
+    .iconbase(16px, 10px);
+    background-position: 50% 50%;
+    padding: 5px;
+}
+
+.dp-block-controls ul li.dp-edit span     {   background-image: url(../../images/admin/icons/portal-edit.png); }
+.dp-block-controls ul li.dp-rename span   {   background-image: url(../../images/admin/icons/textfield_rename.png); }
+.dp-block-controls ul li.dp-remove span   {   background-image: url(../../images/admin/icons/portal-remove.png); }
+
+
+.new-label {
+	background-color: #E9EFF7;
+	padding: 10px;
+	border: 1px solid #B4B6B8;
+	.rounded(4px);
+	margin-bottom: 8px;
+}
+
+.new-label .types {
+	font-size: 10px;
+}
+
+
+#email_ban_overlay {
+	width: 400px;
+	height: 400px;
+}
+
+
+
+ul.banned-list > li {
+	display: block;
+	width: 45%;
+	float: left;
+	background-color: #ECF3FA;
+	border: 1px solid #DFE5EB;
+	padding: 6px;
+	margin: 5px;
+	position: relative;
+}
+
+ul.banned-list > li .dp-block-controls {
+	top: 3px;
+}
+
+ul.banned-list > li:hover .dp-block-controls {
+	.transition(0.1s);
+	.opacity(100);
+}
+
+
+ul.item-list > li {
+	display: block;
+	background-color: #ECF3FA;
+	border: 1px solid #DFE5EB;
+	padding: 6px;
+	margin: 5px;
+	position: relative;
+}
+
+ul.item-list > li .dp-block-controls {
+	top: 3px;
+}
+
+ul.item-list > li:hover .dp-block-controls {
+	.transition(0.1s);
+	.opacity(100);
+}
+

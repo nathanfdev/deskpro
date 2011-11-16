@@ -6,7 +6,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	initialize: function() {
 		var self = this;
 
-		$('#dp_notif_bed').click(function(ev) {
+		$('#dp_notif_bed').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -113,16 +113,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		this.menu = $('#notificationDropdown').detach().appendTo('body');
 		this.backdrop = $('<div class="backdrop" />').hide().appendTo('body');
-		this.backdrop.click(function() {
+		this.backdrop.on('click', function() {
 			self.close();
 		});
 
-		this.menu.click(function(ev) {
+		this.menu.on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 		});
 
-		this.menu.delegate('.dismiss', 'click', function(ev) {
+		this.menu.on('click', '.dismiss', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -130,7 +130,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow(row);
 		});
 
-		$('#dp_notify_list_dismiss').click(function(ev) {
+		$('#dp_notify_list_dismiss').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -140,7 +140,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.close();
 		});
 
-		this.menu.delegate('[data-route]', 'click', function(ev) {
+		this.menu.on('click', '[data-route]', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

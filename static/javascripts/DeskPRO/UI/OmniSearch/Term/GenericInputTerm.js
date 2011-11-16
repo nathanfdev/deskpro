@@ -18,7 +18,7 @@ DeskPRO.UI.OmniSearch.Term.GenericInputTerm = new Orb.Class({
 
 		el.addClass('edit');
 
-		el.click(function() {
+		el.on('click', function() {
 			el.addClass('edit');
 			input.focus();
 		});
@@ -35,7 +35,7 @@ DeskPRO.UI.OmniSearch.Term.GenericInputTerm = new Orb.Class({
 			searchBox.fireEvent('termInputDone', [el]);
 		};
 
-		input.blur(endEdit).keypress(function(ev) {
+		input.on('blur', endEdit).on('keypress', function(ev) {
 			if (ev.which == 13 || ev.which == 9) {
 				endEdit();
 			}

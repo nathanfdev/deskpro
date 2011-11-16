@@ -25,7 +25,7 @@ DeskPRO.Admin.PageHandler.TemplateEditorPopup = new Class({
 		}
 
 		this.save_btn = $('button.save-trigger');
-		this.save_btn.click(this.sendTemplate.bind(this));
+		this.save_btn.on('click', this.sendTemplate.bind(this));
 	},
 
 	setTemplateCode: function(code) {

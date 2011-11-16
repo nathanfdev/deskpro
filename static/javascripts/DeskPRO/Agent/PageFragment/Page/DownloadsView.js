@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		}
 
 		var btn = $('.download-editor-edit', this.wrap);
-		btn.click(this.showEditor.bind(this));
+		btn.on('click', this.showEditor.bind(this));
 
         $('time.timeago', this.wrapper).timeago();
 
@@ -187,11 +187,11 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		var self = this;
 		var actions = this.getEl('action_buttons');
 
-		$('.delete', actions).click(function() {
+		$('.delete', actions).on('click', function() {
 
 		});
 
-		$('.permalink', actions).click(function() {
+		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this download on the website is:<br />');
@@ -204,7 +204,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			DeskPRO_Window.showAlert(msg);
 		});
 
-		$('.view-user-interface', actions).click(function() {
+		$('.view-user-interface', actions).on('click', function() {
 			window.open(self.meta.permalink);
 		});
 	},
@@ -271,7 +271,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
-		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+		$('button', this.newCommentWrapper).on('click', this.saveNewComment.bind(this));
 	},
 
 	saveNewComment: function() {
@@ -308,7 +308,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -324,7 +324,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -356,7 +356,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		var self = this;
 
 		var edWrap = $('.download-editor-wrap', this.getEl('content_ed')).show();
-		$('.revert-default', edWrap).click(function() {
+		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
 

@@ -12,26 +12,26 @@ DeskPRO.User.ElementHandler.LoginBox = new Orb.Class({
 		this.loginSection = $('.dp-login-section', this.el);
 		this.resetSection = $('.dp-reset-section', this.el);
 
-		this.loginLink.click((function(ev) {
+		this.loginLink.on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.open();
 		}).bind(this));
 
-		this.loginBoxTitle.click((function(ev) {
+		this.loginBoxTitle.on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();
 		}).bind(this));
 
-		this.loginBox.click(function(ev) {
+		this.loginBox.on('click', function(ev) {
 			// dont bubble click to document which'll close this
 			ev.stopPropagation();
 		});
 
 		this._initResetSection();
 
-		$(document).click(this.close.bind(this));
+		$(document).on('click', this.close.bind(this));
 	},
 
 	updatePositions: function() {
@@ -79,16 +79,16 @@ DeskPRO.User.ElementHandler.LoginBox = new Orb.Class({
 	//#########################################################################
 
 	_initResetSection: function() {
-		$('.forgot', this.el).click((function(ev) {
+		$('.forgot', this.el).on('click', (function(ev) {
 			ev.preventDefault();
 			this.showReset();
 		}).bind(this));
 
-		$('.back', this.resetSection).click((function(ev) {
+		$('.back', this.resetSection).on('click', (function(ev) {
 			this.hideReset();
 		}).bind(this));
 
-		$('.dp-do-send', this.resetSection).click((function(ev) {
+		$('.dp-do-send', this.resetSection).on('click', (function(ev) {
 			ev.preventDefault();
 			this.sendReset();
 		}).bind(this));

@@ -15,6 +15,28 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 	init: function() {
 		this.util = {
+			modCountEl: function(el, op, num) {
+
+				el = $(el);
+
+				if (!num) num = 1;
+
+				var count = parseInt(el.text().trim());
+
+				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
+					count -= num;
+					if (count < 0) count = 0;
+				} else if (op == '+' || op == 'add') {
+					count += num;
+				} else {
+					count = num;
+				}
+
+				el.text(count);
+
+				return count;
+			},
+
 			showSavePuff: function(overEl) {
 				var el = $('<div class="load-puff" style="display: none; opacity: 0" />');
 				el.appendTo('body');
@@ -71,7 +93,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 		$('#menus_container').remove();
 
 		this.menuTriggerEls = $('#dp_admin_nav li[data-menu]');
-		$('#dp_admin_nav').delegate('li[data-menu]', 'click', function(ev) {
+		$('#dp_admin_nav').on('click', 'li[data-menu]', function(ev) {
 			ev.preventDefault();
 			self.openHeaderMenu($(this));
 		});
@@ -86,7 +108,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 		});
 
 		// Interface toggle
-		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').click(function(ev) {
+		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -103,7 +125,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 			list.show();
 
 			var backdrop = $('<div class="backdrop" />').appendTo('body');
-			backdrop.click(function() {
+			backdrop.on('click', function() {
 				list.hide();
 				backdrop.remove();
 			});
@@ -120,8 +142,19 @@ DeskPRO.Admin.Window = new Orb.Class({
 		if (document.getElementById('dp_page_nav')) {
 			window.setTimeout(this.updatePageNavPos.bind(this), 30);
 			$(window).scroll(this.updatePageNavPos.bind(this));
-			$(window).resize(this.updatePageNavPos.bind(this));
+			$(window).on('resize', this.updatePageNavPos.bind(this));
 		}
+
+		$('#portal_nav').on('click', 'li', function(ev) {
+			if ($(ev.target).is('a')) {
+				return;
+			}
+			var a = $('a', this).first();
+			if (!a.attr('href')) {
+				return;
+			}
+			window.location = a.attr('href');
+		});
 	},
 
 	updatePageNavPos: function() {
@@ -148,7 +181,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 	openHeaderMenu: function(triggerEl) {
 		if (!this.headerMenuBackdrop) {
 			this.headerMenuBackdrop = $('<div class="backdrop" />').appendTo('body').hide();
-			this.headerMenuBackdrop.click(this.closeHeaderMenu.bind(this));
+			this.headerMenuBackdrop.on('click', this.closeHeaderMenu.bind(this));
 		}
 
 		this.menuTriggerEls.removeClass('open');

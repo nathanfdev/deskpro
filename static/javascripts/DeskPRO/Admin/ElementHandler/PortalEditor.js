@@ -25,7 +25,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 
 		$('#portal_iframe').attr('src', this.el.data('portal-url'));
 
-		$(':checkbox.section-toggle').change(function() {
+		$(':checkbox.section-toggle').on('change', function() {
 			var type = $(this).attr('name');
 
 			if ($(this).is(':checked')) {
@@ -105,7 +105,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 							$('.files', wrapper).empty();
 						});
 
-						$('.save-logo-trigger', wrapper).click(function() {
+						$('.save-logo-trigger', wrapper).on('click', function() {
 							var blobId = $('input.new_blob_id', wrapper).val();
 							if (!blobId) {
 								alert('You need to upload a file');
@@ -118,7 +118,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 							ev.overlay.close();
 						});
 
-						$('.save-text-trigger').click(function() {
+						$('.save-text-trigger').on('click', function() {
 							controller.setLogoText($('input[name="title"]').val(), $('input[name="tagline"]').val());
 							ev.overlay.close();
 						});
@@ -149,7 +149,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					mode: "text/html"
 				});
 
-				$('.save-trigger', el).click(function() {
+				$('.save-trigger', el).on('click', function() {
 					callback(cm.getValue());
 					overlay.close();
 				});
@@ -205,7 +205,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 
 		panel.detach().appendTo('body');
 
-		trigger.click(function() {
+		trigger.on('click', function() {
 			if (panel.is(':visible')) {
 				closeColorPanel();
 			} else {
@@ -213,7 +213,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			}
 		});
 
-		backdrop.click(function() {
+		backdrop.on('click', function() {
 			closeColorPanel();
 		});
 
@@ -240,7 +240,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		var colorSwatches = $('.color-swatch', panel);
 		colorSwatches.each(function() {
 			var swatchEl = $(this);
-			swatchEl.click(function() {
+			swatchEl.on('click', function() {
 				swatchEl.ColorPickerShow();
 			});
 
@@ -259,7 +259,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			});
 		});
 
-		$('button.apply-trigger', panel).click(function() {
+		$('button.apply-trigger', panel).on('click', function() {
 			closeColorPanel();
 
 			var formData = [];

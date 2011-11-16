@@ -15,7 +15,7 @@ var DpChat_Display = (function() {
 		$('#chat_message_tpl').template('chat_message_tpl');
 		$('#chat_sys_message_tpl').template('chat_sys_message_tpl');
 
-		$('#dpchat_endchat').click(function() {
+		$('#dpchat_endchat').on('click', function() {
 			if (confirm('Are you sure you want to end this chat?')) {
 				DpChat.endChat();
 			}
@@ -36,7 +36,7 @@ var DpChat_Display = (function() {
 		el.appendTo('body');
 
 		var messageTextarea = $('#dpchat_input textarea:first');
-		messageTextarea.keypress(function(ev) {
+		messageTextarea.on('keypress', function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
 
 			if (ev.keyCode == 13 && !ev.metaKey) {
@@ -66,7 +66,7 @@ var DpChat_Display = (function() {
 		html.push('<div id="dpchat_iframe_wrap">');
 			html.push('<iframe src="'+url+'" marginheight="0" marginwidth="0" frameborder="0"></iframe>');
 		html.push('</div>');
-		
+
 		overlay = $(html.join(''));
 		overlay.appendTo('body');
 	};
@@ -114,7 +114,7 @@ var DpChat_Display = (function() {
 	};
 
 	this.destroy = function() {
-		
+
 	};
 
 	this.showChatPanel = function() {};

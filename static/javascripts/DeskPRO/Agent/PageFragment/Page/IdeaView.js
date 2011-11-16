@@ -32,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		}
 
 		var btn = $('.idea-editor-edit', this.wrapper);
-		btn.click(this.showEditor.bind(this));
+		btn.on('click', this.showEditor.bind(this));
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'ideas',
@@ -77,7 +77,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 		this.ownObject(this.whoVotedOverlay);
 
-		this.getEl('my_vote').click(function() {
+		this.getEl('my_vote').on('click', function() {
 			self.toggleMyVote();
 		});
 
@@ -100,11 +100,11 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			}
 		};
 
-		$('.edit-fields-trigger', buttonsWrap).click(function() {
+		$('.edit-fields-trigger', buttonsWrap).on('click', function() {
 			propToggle('edit');
 		});
 
-		$('.save-fields-trigger', buttonsWrap).click(function() {
+		$('.save-fields-trigger', buttonsWrap).on('click', function() {
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
@@ -260,11 +260,11 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var self = this;
 		var actions = this.getEl('action_buttons');
 
-		$('.delete', actions).click(function() {
+		$('.delete', actions).on('click', function() {
 
 		});
 
-		$('.permalink', actions).click(function() {
+		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this idea on the website is:<br />');
@@ -277,11 +277,11 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			DeskPRO_Window.showAlert(msg);
 		});
 
-		$('.view-user-interface', actions).click(function() {
+		$('.view-user-interface', actions).on('click', function() {
 			window.open(self.meta.permalink);
 		});
 
-		$('.merge', actions).click((function(ev) {
+		$('.merge', actions).on('click', (function(ev) {
 			var mergeOverlay = new DeskPRO.Agent.Widget.MergeIdea({
 				ideaId: this.getMetaData('idea_id'),
 				destroyOnClose: true,
@@ -366,7 +366,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
-		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+		$('button', this.newCommentWrapper).on('click', this.saveNewComment.bind(this));
 	},
 
 	saveNewComment: function() {
@@ -413,7 +413,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -429,7 +429,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -461,7 +461,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var self = this;
 
 		var edWrap = $('.idea-editor-wrap', this.getEl('content_ed')).show();
-		$('.revert-default', edWrap).click(function() {
+		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
 
@@ -527,7 +527,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	//#################################################################
 
 	_initCompareRevs: function() {
-		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+		$('.compare-trigger', this.wrapper).on('click', this.showCompareRev.bind(this));
 	},
 
 	showCompareRev: function() {

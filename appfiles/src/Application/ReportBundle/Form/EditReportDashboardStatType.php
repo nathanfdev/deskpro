@@ -13,13 +13,16 @@ namespace Application\ReportBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
+use Application\DeskPRO\Entity\ReportDashboard;
 
 class EditReportDashboardStatType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
+		$chart_types = ReportDashboard::getChartList();
+
 		$builder->add('chart_type', 'choice', array(
-			'choices'   => array('line_chart' => 'Line Chart', 'column_chart' => 'Column Chart'),
+			'choices'   => $chart_types,
 		));
 	}
 

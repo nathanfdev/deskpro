@@ -35,24 +35,102 @@ class Stat extends EntityRepository
 	}
 
 	/**
-	 * Get the stats requiring updating
+	 * Get the daily stat ids requiring update
 	 *
+	 * @param \DateTime $date The DateTime to check against [defaults to today]
 	 * @return array
 	 */
-	public function getStatsRequiringUpdate($time = null)
+	public function getDailyStatIdsRequiringUpdate(\DateTime $date = null)
 	{
-		// Check a time is set, otherwise its now
-		if (true === is_null($time)) {
-			$time = time();
+		if (is_null($date)) {
+			// Get today
+			$date = new \DateTime();
 		}
 
-		$stats = $this->getEntityManager()->createQuery("
-			SELECT s
-			FROM DeskPRO:Stat s
-			WHERE s.disabled = :disabled
-			ORDER BY s.starred DESC, s.title
-		")->setParameter('disabled', false)->execute();
+		$db    = App::getDb();
+		$query = $this->getAllIdsRequiringUpdateQuery('daily');
+		$query .= " AND DATE_FORMAT(s.last_run, '%Y-%m-%d') < '" . $date->format('Y-m-d') . "'";
 
-		return $stats;
+		return $db->fetchAllCol($query);
+	}
+
+	/**
+	 * Get the monthly stat ids requiring update
+	 *
+	 * @param \DateTime $date The DateTime to check against [defaults to today]
+	 * @return array
+	 */
+	public function getMonthlyStatIdsRequiringUpdate(\DateTime $date = null)
+	{
+		if (is_null($date)) {
+			// Get today
+			$date = new \DateTime();
+		}
+
+		$db    = App::getDb();
+		$query = $this->getAllIdsRequiringUpdateQuery('monthly');
+		$query .= " AND DATE_FORMAT(s.last_run, '%Y-%m') < '" . $date->format('Y-m') . "'";
+
+		return $db->fetchAllCol($query);
+	}
+
+	/**
+	 * Get the yearly stat ids requiring update
+	 *
+	 * @param \DateTime $date The DateTime to check against [defaults to today]
+	 * @return array
+	 */
+	public function getYearlyStatIdsRequiringUpdate(\DateTime $date = null)
+	{
+		if (is_null($date)) {
+			// Get today
+			$date = new \DateTime();
+		}
+
+		$db    = App::getDb();
+		$query = $this->getAllIdsRequiringUpdateQuery('yearly');
+		$query .= " AND DATE_FORMAT(s.last_run, '%Y') < '" . $date->format('Y') . "'";
+
+		return $db->fetchAllCol($query);
+	}
+
+	/**
+	 * Get Stats by id
+	 *
+	 * @param array $stat_ids The Stat ids
+	 * @return ArrayCollection
+	 */
+	public function getByIds($stat_ids)
+	{
+		if (0 === count($stat_ids)) {
+			return array();
+		}
+
+		$qb = $this->getEntityManager()->createQueryBuilder();
+
+		return $qb->select('s')
+			  ->from('DeskPRO:Stat', 's')
+			  ->add('where', $qb->expr()->in('s.id', ':stat_ids'))
+			  ->setParameter('stat_ids', $stat_ids)
+			  ->getQuery()
+			  ->getResult();
+	}
+
+	/**
+	 * Get the stats ids requiring updating query
+	 *
+	 * @param string $run_frequency The run frequency to check against
+	 * @return string
+	 */
+	protected function getAllIdsRequiringUpdateQuery($run_frequency)
+	{
+		if (false === \Application\DeskPRO\Entity\Stat::isValidRunFrequency($run_frequency)) {
+			throw new \Exception("Invalid run_frequency $run_frequency.");
+		}
+
+		return "SELECT id
+			FROM stat s
+			WHERE s.disabled = 0
+			AND s.run_frequency = '$run_frequency'";
 	}
 }

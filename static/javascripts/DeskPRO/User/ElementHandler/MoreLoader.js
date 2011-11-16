@@ -15,7 +15,7 @@ DeskPRO.User.ElementHandler.MoreLoader = new Orb.Class({
 		this.currentPage = 1;
 
 		var self = this;
-		this.moreBtn.click(function(ev) {
+		this.moreBtn.on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			self.loadNextPage();

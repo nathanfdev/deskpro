@@ -6,7 +6,7 @@ DeskPRO.User.ElementHandler.CommentFormLogin = new Orb.Class({
 	init: function() {
 		var self = this;
 		var a = $('a', this.el).first();
-		a.click(function(ev) {
+		a.on('click', function(ev) {
 			ev.preventDefault();
 			self.openWindow($(this).attr('href'));
 		});

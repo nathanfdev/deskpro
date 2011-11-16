@@ -2,8 +2,7 @@
 
 namespace Application\ReportBundle\Chart\Base;
 
-class ColumnChart extends AbstractChart
+abstract class ColumnChart extends SeriesChart
 {
 	const CHART_IDENTIFIER = 'column';
-
 }

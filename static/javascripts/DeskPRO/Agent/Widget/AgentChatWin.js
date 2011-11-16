@@ -120,7 +120,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		newContainer.addClass('new-message');
 
-		$('textarea', newContainer).keypress((function(ev) {
+		$('textarea', newContainer).on('keypress', (function(ev) {
 			// Enter, but not when meta key (alt, ctrl etc) are pressed
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();//dont enter enter key
@@ -129,7 +129,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		}).bind(this));
 
 		var nav = $('> nav', newContainer);
-		nav.click(function(ev) {
+		nav.on('click', function(ev) {
 			ev.stopPropagation();
 			if (newContainer.is('.open')) {
 				newContainer.removeClass('open');
@@ -138,12 +138,12 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			}
 		});
 
-		$('.close-trigger', nav).click(function(ev) {
+		$('.close-trigger', nav).on('click', function(ev) {
 			ev.stopPropagation();
 			self.destroy();
 		});
 
-		$('.minimize', nav).click(function(ev) {
+		$('.minimize', nav).on('click', function(ev) {
 			ev.stopPropagation();
 			self.destroy();
 		});

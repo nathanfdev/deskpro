@@ -39,7 +39,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {});
 		this.ownObject(this.selectionBar);
 
-		$('.detail-view-trigger', this.wrapper).click((function() {
+		$('.detail-view-trigger', this.wrapper).on('click', (function() {
 			this.switchViewType('list');
 		}).bind(this));
 

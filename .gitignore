@@ -13,6 +13,7 @@
 /static/build
 /static/stylesheets/agent
 /static/stylesheets/admin
+/static/stylesheets/report
 
 # Per-site files
 /appfiles/config.php

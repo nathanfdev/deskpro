@@ -32,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 		});
 		this.ownObject(this.overlay);
 
-		this.wrapper.delegate('.snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.snippet-trigger', function(ev) {
 
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -59,12 +59,12 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			self.closeSelf();
 		});
 
-		this.wrapper.delegate('.fadeaway', 'click', function(ev) {
+		this.wrapper.on('click', '.fadeaway', function(ev) {
 			var contentShow = $(this).closest('.content.show');
 			contentShow.toggleClass('expanded');
 		});
 
-		this.wrapper.delegate('.add-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.add-snippet-trigger', function(ev) {
 			var row = $(this).closest('li');
 			$('.display', row).slideUp('fast', function() {
 				$('.input', row).slideDown('fast');
@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 
 		this.newCategoryBtn = $('.new-category', this.wrapper);
 
-		this.newCategoryBtn.click(function(ev) {
+		this.newCategoryBtn.on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -107,7 +107,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 		this.newCatOverlay = $('.new-snippet-category', this.wrapper);
 		this.newCatOverlay.detach().appendTo('body');
 
-		$('.close', this.newCatOverlay).click(function(ev) {
+		$('.close', this.newCatOverlay).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -115,7 +115,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			self.newCatBackdrop.hide();
 		});
 
-		$('.perm-type-opt', this.newCatOverlay).click(function() {
+		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
 			console.log('click');
 			if ($(this).val() == 'team') {
 				$('.perm-teams', self.newCatOverlay).slideDown();
@@ -124,17 +124,17 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			}
 		});
 
-		$('.new-cat-trigger', this.newCatOverlay).click(function() {
+		$('.new-cat-trigger', this.newCatOverlay).on('click', function() {
 			self.saveNewCat();
 		});
 
 		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});
-		this.newCatBackdrop.click(function() {
+		this.newCatBackdrop.on('click', function() {
 			self.newCatOverlay.slideUp();
 			self.newCatBackdrop.hide();
 		});
 
-		this.wrapper.delegate('.save-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.save-snippet-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -142,7 +142,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			self.saveSnippet($(row));
 		});
 
-		this.wrapper.delegate('.cancel-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.cancel-snippet-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -152,7 +152,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.snippet .edit-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.snippet .edit-trigger', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -163,7 +163,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.delete-snippet-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.delete-snippet-trigger', function(ev) {
 			var snippet_id = $(this).data('snippet-id');
 			$.ajax({
 				url: BASE_URL + 'agent/misc/snippet-viewer/delete-snippet',
@@ -180,7 +180,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.edit-cat-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.edit-cat-trigger', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 
@@ -220,15 +220,15 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 					});
 				}
 
-				backdrop.click(hideOverlay);
-				$('.close', this.newCatOverlay).click(function(ev) {
+				backdrop.on('click', hideOverlay);
+				$('.close', this.newCatOverlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 
 					hideOverlay();
 				});
 
-				$('.save-trigger', overlay).click(function(ev) {
+				$('.save-trigger', overlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 
@@ -247,7 +247,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 					});
 				});
 
-				$('.delete-trigger', overlay).click(function(ev) {
+				$('.delete-trigger', overlay).on('click', function(ev) {
 					ev.preventDefault();
 					ev.stopPropagation();
 

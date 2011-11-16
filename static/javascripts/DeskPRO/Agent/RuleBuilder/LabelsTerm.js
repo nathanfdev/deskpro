@@ -16,16 +16,16 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 
 		this.currentValue = $('.status-value', this.rowEl);
 		this.currentValue.text('(click to set)');
-		this.currentValue.click(this.show.bind(this));
+		this.currentValue.on('click', this.show.bind(this));
 
 		this.values = $('.label-values', this.rowEl);
 
 		this.backdrop = $('<div class="backdrop" style="display: none"></div>');
 		this.backdrop.appendTo('body');
-		this.backdrop.click(this.hide.bind(this));
+		this.backdrop.on('click', this.hide.bind(this));
 
 		this.wrapper = $('<div class="field-overlay labels-chooser" style="display:none"><div class="close-trigger"></div></div>');
-		$('.close-trigger', this.wrapper).click(this.hide.bind(this));
+		$('.close-trigger', this.wrapper).on('click', this.hide.bind(this));
 
 		this.inner.detach().appendTo(this.wrapper).css('display', 'block');
 		this.wrapper.appendTo('body');

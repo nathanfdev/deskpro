@@ -105,7 +105,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->actions as $info) {
 			if ($info['type'] == $name) {
 				unset($info['type']);
-				return $info;
+				return $info['options'];
 			}
 		}
 
@@ -124,7 +124,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->terms as $info) {
 			if ($info['type'] == $name) {
 				unset($info['type']);
-				return $info;
+				return array_merge(array('op' => $info['op'], $info['options']));
 			}
 		}
 

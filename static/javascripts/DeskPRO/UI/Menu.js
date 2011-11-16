@@ -150,7 +150,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			});
 
 			if (spanEl) {
-				origMenuElement.change(function() {
+				origMenuElement.on('change', function() {
 					var opt = $('option:selected', this);
 					var text = opt.text().trim();
 					if (!text.length) text = self.options.noValText || 'Choose...';
@@ -537,7 +537,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		// shim is enough to do whats needed
 		if (!this.parentMenu) {
 			this.elements.shim = $('<div />').hide().appendTo('body');
-			this.elements.shim.click((function (ev) {
+			this.elements.shim.on('click', (function (ev) {
 				// When we close a menu by clicking off,
 				// lets stop proagation so the click doesn't
 				// inadvertantly activate something else.
@@ -590,7 +590,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 				el = $(subMenuEl.parent());
 
 				// Not using live because specific mouseover events are a bit snappier
-				el.mouseover(this._menuItemMouseover.bind(this));
+				el.on('mouseover', this._menuItemMouseover.bind(this));
 
 				subMenuEl.hide();
 
@@ -668,7 +668,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 	setupTriggerElement: function(el) {
 		el = $(el);
 
-		el.click((function (ev) {
+		el.on('click', (function (ev) {
 			ev.preventDefault();
 			this.openMenu(ev);
 		}).bind(this));

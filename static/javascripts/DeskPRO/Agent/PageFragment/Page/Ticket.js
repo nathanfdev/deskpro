@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	initPage: function(el) {
 
 		this.valueForm = $('form.value-form:first', this.wrapper);
-		this.valueForm.submit(function(ev) {
+		this.valueForm.on('submit', function(ev) {
 			// Never actually submit the form (would load a new page)
 			ev.preventDefault();
 		});
@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initLabels();
 
 		if (this.meta.isDeleted) {
-			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
+			$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
 		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
@@ -67,7 +67,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$('textarea[name="message"]', this.ticketReply).focus();
 		}).bind(this));
 
-		$('.ticket-urgency', this.wrapper).mouseover(function() {
+		$('.ticket-urgency', this.wrapper).on('mouseover', function() {
 			Tipped.show(this);
 		});
 
@@ -116,11 +116,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		};
 
-		$('.tickets-msg-controls input', this.wrapper).click(function() {
+		$('.tickets-msg-controls input', this.wrapper).on('click', function() {
 			updateMessageTypes();
 		});
 
-		this.getEl('merge_trigger').click(function() {
+		this.getEl('merge_trigger').on('click', function() {
 			var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
 				ticketId: self.getMetaData('ticket_id'),
 				destroyOnClose: true,
@@ -297,7 +297,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		$('.log-row', messageEl).each(function() {
 			var expandBtn = $('.expand', this);
 			var el = $(this);
-			expandBtn.click(function() {
+			expandBtn.on('click', function() {
 				var sel = '.expand-set';
 				if ($(this).data('set')) {
 					sel = $(this).data('set');
@@ -350,7 +350,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	//#################################################################
 
 	_initCustomFieldsEditor: function() {
-		$('.ticket-custom-fields-edit-btn', this.wrapper).click((function() {
+		$('.ticket-custom-fields-edit-btn', this.wrapper).on('click', (function() {
 			this.showCustomFieldEditor();
 		}).bind(this));
 
@@ -358,12 +358,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
 		this.custom_fields_edit.detach().appendTo(this.custom_fields_display.parent().parent().parent().parent());
 
-		$('.close-trigger', this.custom_fields_edit).click((function() {
+		$('.close-trigger', this.custom_fields_edit).on('click', (function() {
 			this.closeCustomFieldEditor();
 		}).bind(this));
 
 		var self = this;
-		$('.save-trigger', this.custom_fields_edit).click((function() {
+		$('.save-trigger', this.custom_fields_edit).on('click', (function() {
 			var fieldEls = $(':input', self.custom_fields_edit);
 			this._saveCustomFields(fieldEls);
 		}).bind(this));
@@ -526,7 +526,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.ownObject(this.deleteOverlay);
 
-		$('.save-trigger', this.deleteOverlayEl).click((function() {
+		$('.save-trigger', this.deleteOverlayEl).on('click', (function() {
 			this.doTicketDelete();
 		}).bind(this));
 	},

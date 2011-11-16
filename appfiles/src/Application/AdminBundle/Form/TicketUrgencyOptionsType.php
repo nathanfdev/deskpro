@@ -38,4 +38,9 @@ class TicketUrgencyOptionsType extends AbstractType
 		}
 		$builder->add($user_options_builder);
 	}
+
+	public function getName()
+	{
+		return 'ticket_urgency';
+	}
 }

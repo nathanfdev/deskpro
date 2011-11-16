@@ -10,7 +10,7 @@ DeskPRO.User.ElementHandler.Notifications = new Orb.Class({
 		this.notif = $('#user_notifs');
 
 		var self = this;
-		$('.dismiss', this.el).click(function(ev) {
+		$('.dismiss', this.el).on('click', function(ev) {
 			var li = $(this).parent();
 
 			if ($('li', self.el).length > 1) {
@@ -20,18 +20,18 @@ DeskPRO.User.ElementHandler.Notifications = new Orb.Class({
 			}
 		});
 
-		$('.dismiss-all', this.el).click(function(ev) {
+		$('.dismiss-all', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			$('#user_notifs').slideUp();
 		});
 
-		$('.view-all', this.el).click(function(ev){
+		$('.view-all', this.el).on('click', function(ev){
 			ev.preventDefault();
 			ev.stopPropagation();
 			self.popOpen();
 		});
 
-		$('.close-trigger', this.el).click((function(ev){
+		$('.close-trigger', this.el).on('click', (function(ev){
 			ev.preventDefault();
 			ev.stopPropagation();
 			self.popClose();

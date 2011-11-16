@@ -12,7 +12,7 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 		this.content = $('.portal_ideas:first', this.el);
 
 		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
-		$('.idea-btn', this.el).click(function(ev) {
+		$('.idea-btn', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			voteHelper.openMenu($(this));
@@ -21,17 +21,17 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 
 	initFilterForm: function() {
 		var self = this;
-		$('select.category_id', this.el).change(function(ev) {
+		$('select.category_id', this.el).on('change', function(ev) {
 			self.updateView($(this).val());
 		});
 
 		if (this.useAjax) {
-			$('#idea_find_form_btm').submit(function(ev) {
+			$('#idea_find_form_btm').on('submit', function(ev) {
 				ev.preventDefault();
 				self.submitForm($(this));
 			});
 
-			$('a.page-link', this.el).click(function(ev) {
+			$('a.page-link', this.el).on('click', function(ev) {
 				ev.preventDefault();
 				self.updateView($(this).attr('href'));
 			});

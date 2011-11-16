@@ -6,7 +6,7 @@ DeskPRO.Admin.ElementHandler.CustomFieldList = new Orb.Class({
 	init: function() {
 		var self = this;
 
-		$(':checkbox[data-field-id]', this.el).change(function() {
+		$(':checkbox[data-field-id]', this.el).on('change', function() {
 			var val = $(this).is(':checked') ? 1 : 0;
 			var url = self.el.data('set-field-url').replace(/_FIELD_ID_/g, $(this).data('field-id'));
 

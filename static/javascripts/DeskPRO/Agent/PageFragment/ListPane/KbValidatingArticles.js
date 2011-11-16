@@ -7,12 +7,12 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 		this.wrapper = el;
 
 		var self = this;
-		$('a.view-link.edit', this.wrapper).click(function(ev) {
+		$('a.view-link.edit', this.wrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.loadPreviewEdit($(this).attr('href'));
 		});
 
-		$('a.view-link.article', this.wrapper).click(function(ev) {
+		$('a.view-link.article', this.wrapper).on('click', function(ev) {
 			ev.preventDefault();
 			self.loadPreviewArticle($(this).attr('href'));
 		});
@@ -36,12 +36,12 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 			onContentSet: function(ev) {
 				var contentEl = ev.contentEl;
 				var overlay = ev.overlay;
-				$('button.approve-trigger', contentEl).click(function(ev) {
+				$('button.approve-trigger', contentEl).on('click', function(ev) {
 					ev.preventDefault();
 					self.approveEdit($('input.article_id', contentEl).val());
 					overlay.closeOverlay();
 				});
-				$('button.disapprove-trigger', contentEl).click(function(ev) {
+				$('button.disapprove-trigger', contentEl).on('click', function(ev) {
 					ev.preventDefault();
 					self.disapproveEdit($('input.article_id', contentEl).val());
 					overlay.closeOverlay();
@@ -115,12 +115,12 @@ DeskPRO.Agent.PageFragment.ListPane.KbValidatingArticles = new Orb.Class({
 			onContentSet: function(ev) {
 				var contentEl = ev.contentEl;
 				var overlay = ev.overlay;
-				$('button.approve-trigger', contentEl).click(function(ev) {
+				$('button.approve-trigger', contentEl).on('click', function(ev) {
 					ev.preventDefault();
 					self.approveEdit($('input.article_id', contentEl).val());
 					overlay.closeOverlay();
 				});
-				$('button.disapprove-trigger', contentEl).click(function(ev) {
+				$('button.disapprove-trigger', contentEl).on('click', function(ev) {
 					ev.preventDefault();
 					self.disapproveEdit($('input.article_id', contentEl).val());
 					overlay.closeOverlay();

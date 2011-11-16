@@ -7,7 +7,7 @@ DeskPRO.Admin.ElementHandler.PortalNav = new Orb.Class({
 		var self = this;
 
 		var toggles = $('header :checkbox', this.el);
-		toggles.change(function() {
+		toggles.on('change', function() {
 			var checked = $(this).is(':checked');
 			var section = $(this).closest('section');
 

@@ -107,6 +107,12 @@
 		};
 		function setEvents(){
 			oThumb.obj.bind('mousedown', start);
+			oThumb.obj[0].ontouchstart = function(oEvent){
+				oEvent.preventDefault();
+				oThumb.obj.unbind('mousedown');
+				start(oEvent.touches[0]);
+				return false;
+			};
 			oTrack.obj.bind('mouseup', drag);
 			if(options.scroll && this.addEventListener){
 				oWrapper[0].addEventListener('DOMMouseScroll', wheel, false);
@@ -133,28 +139,21 @@
 		};
 		function wheel(oEvent){
 			if(!(oContent.ratio >= 1)){
-
-				var origScroll = parseInt(oContent.obj.css(sDirection));
-
-				oEvent = $.event.fix(oEvent || window.event);
+				var oEvent = oEvent || window.event;
 				var iDelta = oEvent.wheelDelta ? oEvent.wheelDelta/120 : -oEvent.detail/3;
 				iScroll -= iDelta * options.wheel;
 				iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
 				oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 				oContent.obj.css(sDirection, -iScroll);
+
+				oEvent = $.event.fix(oEvent);
 				oEvent.preventDefault();
-				//oScrollbar.obj.addClass('is-scrolling');
 
 				// For inner scrollable areas. Dont want scroll
 				// to bubble to containing scrollable area too
 				if (!oScrollbar.obj.is('.disable') /*&& origScroll > 0 && origScroll < oViewport[options.axis]*/) {
 					oEvent.stopPropagation();
 				}
-
-				if (wheelStopTimeout) {
-					window.clearTimeout(wheelStopTimeout);
-				}
-				//wheelStopTimeout = (function() { oScrollbar.obj.removeClass('is-scrolling'); }).delay(500);
 			};
 		};
 

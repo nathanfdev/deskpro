@@ -51,7 +51,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 			return el;
 		};
 
-		this.contentListEl.delegate('.related-link', 'click', function(ev) {
+		this.contentListEl.on('click', '.related-link', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 
@@ -70,7 +70,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 			tab.page.relatedContent.addLinkByElement(el);
 		});
 
-		this.contentListEl.delegate('.related-unlink', 'click', function(ev) {
+		this.contentListEl.on('click', '.related-unlink', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

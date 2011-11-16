@@ -6,7 +6,7 @@ DeskPRO.Form.EmailValidator = new Orb.Class({
 	init: function() {
 		var self = this;
 
-		this.el.change(function() {
+		this.el.on('change', function() {
 			self.validate('change');
 		});
 	},

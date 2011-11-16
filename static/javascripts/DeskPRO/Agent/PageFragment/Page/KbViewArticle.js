@@ -25,7 +25,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this._initAutoPublishOptions();
 
 		var btn = $('.kb-editor-edit', this.wrap);
-		btn.click(this.showEditor.bind(this));
+		btn.on('click', this.showEditor.bind(this));
 
 		if (this.meta.isValidating) {
 			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
@@ -90,11 +90,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		};
 
-		$('.edit-fields-trigger', buttonsWrap).click(function() {
+		$('.edit-fields-trigger', buttonsWrap).on('click', function() {
 			propToggle('edit');
 		});
 
-		$('.save-fields-trigger', buttonsWrap).click(function() {
+		$('.save-fields-trigger', buttonsWrap).on('click', function() {
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
@@ -128,12 +128,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	_initBasic: function() {
 		var self = this;
-		$('.edit-trigger', this.wrapper).click(function() {
+		$('.edit-trigger', this.wrapper).on('click', function() {
 			DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id);
 			DeskPRO_Window.removePage(self);
 		});
 
-		$('.validate-trigger', this.wrapper).click(function() {
+		$('.validate-trigger', this.wrapper).on('click', function() {
 			DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id + '?do_validate=1');
 			DeskPRO_Window.removePage(self);
 		});
@@ -175,7 +175,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.bodyTabs);
 
 		var actions = this.getEl('action_buttons');
-		$('.permalink', actions).click(function() {
+		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this download on the website is:<br />');
@@ -188,7 +188,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			DeskPRO_Window.showAlert(msg);
 		});
 
-		$('.view-user-interface', actions).click(function() {
+		$('.view-user-interface', actions).on('click', function() {
 			window.open(self.meta.permalink);
 		});
 
@@ -203,7 +203,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			downloadTemplate: $('.template-download', self.getEl('attachtab'))
 		});
 
-		list.delegate('.delete', 'click', function() {
+		list.on('click', '.delete', function() {
 			var blob_id = $(this).data('blob-id');
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
@@ -291,7 +291,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		this.getEl('categories').delegate('.remove', 'click', function(ev) {
+		this.getEl('categories').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
 
@@ -330,7 +330,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		this.getEl('products').delegate('.remove', 'click', function(ev) {
+		this.getEl('products').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
 			self.sendUpdateProds();
@@ -430,13 +430,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var optWrap = this.getEl('auto_unpub');
 
-		$('.auto-unpublish-set', optWrap).click(function() {
+		$('.auto-unpublish-set', optWrap).on('click', function() {
 			self.updateAutoUnPubOptions();
 			$('.auto-unpublish', optWrap).show();
 			$(this).hide();
 		});
 
-		$('.remove-auto-unpublish', optWrap).click(function() {
+		$('.remove-auto-unpublish', optWrap).on('click', function() {
 			self.removeAutoUnPubOptions();
 			$('.auto-unpublish-set', optWrap).show();
 			$('.auto-unpublish', optWrap).hide();
@@ -473,7 +473,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		endDate.click(function() {
+		endDate.on('click', function() {
 			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
 		});
 	},
@@ -530,13 +530,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var optWrap = this.getEl('auto_pub');
 
-		$('.auto-publish-set', optWrap).click(function() {
+		$('.auto-publish-set', optWrap).on('click', function() {
 			self.updateAutoPubOptions();
 			$('.auto-publish', optWrap).show();
 			$(this).hide();
 		});
 
-		$('.remove-auto-publish', optWrap).click(function() {
+		$('.remove-auto-publish', optWrap).on('click', function() {
 			self.removeAutoPubOptions();
 			$('.auto-publish-set', optWrap).show();
 			$('.auto-publish', optWrap).hide();
@@ -557,7 +557,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
-		pubDate.click(function() {
+		pubDate.on('click', function() {
 			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
 		});
 	},
@@ -606,7 +606,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -642,7 +642,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var wrap = this.wrapper;
 
-		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = [];
@@ -687,7 +687,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		$('.article-content-wrap', this.getEl('content_ed')).hide();
 		var edWrap = $('.article-editor-wrap', this.getEl('content_ed')).show();
 
-		$('.revert-default', edWrap).click(function() {
+		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
 
@@ -760,7 +760,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.commentsController);
 
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
-		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+		$('button', this.newCommentWrapper).on('click', this.saveNewComment.bind(this));
 	},
 
 	saveNewComment: function() {

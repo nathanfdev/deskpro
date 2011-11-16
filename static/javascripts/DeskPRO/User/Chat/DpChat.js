@@ -133,7 +133,7 @@ var DpChatMake = function() {
 			}
 
 			if (window.DpChat_Options.interceptLeavingDomains) {
-				$(document).delegate('a', 'click', function(ev) {
+				$(document).on('click', 'a', function(ev) {
 					if ($(this).is('dp-no-touch')) {
 						return;
 					}
@@ -628,13 +628,13 @@ var DpChatMake = function() {
 			}
 
 			// Attach click event to any chat triggers to open new chat window
-			$('.dp-chat-trigger').click(function(ev) {
+			$('.dp-chat-trigger').on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 
 				DpChat.showChatPanel();
 			});
-			$('.dp-chat-window-trigger').click(function(ev) {
+			$('.dp-chat-window-trigger').on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 

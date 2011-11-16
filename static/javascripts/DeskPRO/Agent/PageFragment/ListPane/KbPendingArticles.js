@@ -60,15 +60,15 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 			zIndex: 'top'
 		});
 
-		$('.add-new-trigger', this.el).click(function() {
+		$('.add-new-trigger', this.el).on('click', function() {
 			newFormOverlay.open();
 		});
-		$('.save-new-trigger', this.getEl('add_new_overlay')).click(function() {
+		$('.save-new-trigger', this.getEl('add_new_overlay')).on('click', function() {
 			self.saveNewPendingArticle();
 			newFormOverlay.close();
 		});
 
-		$('section.pending-articles-list', this.wrapper).delegate('.pending-delete', 'click', function(ev) {
+		$('section.pending-articles-list', this.wrapper).on('click', '.pending-delete', function(ev) {
 			ev.stopPropagation();
 			var row = $(this);
 			var x = 0;
@@ -95,7 +95,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 			});
 		});
 
-		$('section.pending-articles-list', this.wrapper).delegate('.pending-create', 'click', function(ev) {
+		$('section.pending-articles-list', this.wrapper).on('click', '.pending-create', function(ev) {
 			ev.stopPropagation();
 			var row = $(this);
 			var x = 0;

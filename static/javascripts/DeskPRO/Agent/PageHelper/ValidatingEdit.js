@@ -15,10 +15,10 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 		};
 		this.setOptions(options);
 
-		$('button.approve-trigger', this.page.wrapper).click(this.approveEdit.bind(this));
-		$('button.disapprove-trigger', this.page.wrapper).click(this.showDisapproveForm.bind(this));
-		$('button.disapprove2-trigger', this.page.wrapper).click(this.disapproveEdit.bind(this));
-		$('button.skip-trigger', this.page.wrapper).click(this.skipValidateEdit.bind(this));
+		$('button.approve-trigger', this.page.wrapper).on('click', this.approveEdit.bind(this));
+		$('button.disapprove-trigger', this.page.wrapper).on('click', this.showDisapproveForm.bind(this));
+		$('button.disapprove2-trigger', this.page.wrapper).on('click', this.disapproveEdit.bind(this));
+		$('button.skip-trigger', this.page.wrapper).on('click', this.skipValidateEdit.bind(this));
 	},
 
 	//#################################################################

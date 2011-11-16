@@ -16,7 +16,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initDisplayOptions();
         this._initAgentSection();
         this._initCustomFieldsEditor();
-        
+
         var el = this.getEl('agent_assign_ob');
         this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
             element: el,
@@ -24,7 +24,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             onSave: function(ob) {
                 var selections = ob.getAllSelected();
                 var agent_id = parseInt(selections.agents || 0);
-                                
+
                 var postData = [];
                 postData.push({
                     name: 'agent_part_ids[]',
@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             }
         });
 
-        this.getEl('members_list').delegate('.remove', 'click', function() { 
+        this.getEl('members_list').on('click', '.remove', function() {
 			var row = $(this).closest('.member-row');
 			var personId = row.data('person-id');
 			if (!personId) {
@@ -80,7 +80,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		});
 
 
-                this.getEl('organizations_list').delegate('.remove', 'click', function() {
+                this.getEl('organizations_list').on('click', '.remove', function() {
 			var row = $(this).closest('.organization-row');
 			var organizationId = row.data('organization-id');
 			if (!organizationId) {
@@ -104,8 +104,8 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			});
 		});
 
-                $('.select-deal-type').change(function(){
-                
+                $('.select-deal-type').on('change', function(){
+
                     var dealId = pageMeta.deal_id;
                     if (!dealId) {
 				return;
@@ -119,7 +119,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				error: function() {
 					//row.show();
 				},
-				success: function(data) {					
+				success: function(data) {
                                     $('.set-deal-stage').html(data.deal_stage);
 				}
 			});
@@ -163,14 +163,14 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             }
         });
         this.ownObject(this.displayOptionsOverlay);
-            
+
     },
 
     _initCustomFieldsEditor: function() {
 
 
         var self = this;
-    //		$('.save-trigger', this.custom_fields_edit).click((function() {
+    //		$('.save-trigger', this.custom_fields_edit).on('click', (function() {
     //			var fieldEls = $(':input', self.custom_fields_edit);
     //			this._saveCustomFields(fieldEls);
     //		}).bind(this));
@@ -193,7 +193,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 self.getEl('agent_id').val(agent_id);
                 var label = $('.agent-label-' + agent_id, obEl).text().trim();
                 self.getEl('agent_label').text(label);
-				
+
             }
         });
     },

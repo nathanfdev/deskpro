@@ -101,7 +101,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.ownObject(this.massActions);
 
 		if (this.meta.viewType == 'list') {
-			$('.list-grouping-bar', this.wrapper).delegate('a[data-route]', 'click', function(ev) {
+			$('.list-grouping-bar', this.wrapper).on('click', 'a[data-route]', function(ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 
@@ -155,10 +155,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 	_initSearchOptions: function() {
 		var editBtn = $('.summary .edit', this.topSection);
-		editBtn.click(this.showSearchForm.bind(this));
+		editBtn.on('click', this.showSearchForm.bind(this));
 
 		var form = $('form.ticket-search-form', this.topSection);
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 
 			var url = form.attr('action');
@@ -175,7 +175,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
 		this.ownObject(editor);
 
-		$('.add-term', criteriaList).data('add-count', 0).click(function() {
+		$('.add-term', criteriaList).data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 
@@ -218,7 +218,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	_initGroupingOptions: function() {
 
 		var self = this;
-		$('div.search-top ul.grouping-info > li[data-group-id]', this.contentWrapper).click(function() {
+		$('div.search-top ul.grouping-info > li[data-group-id]', this.contentWrapper).on('click', function() {
 			self.switchToSubgroup($(this).data('group-id'), $(this));
 		});
 	},
@@ -255,7 +255,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		});
 		this.ownObject(this.flagMenu);
 
-		$('table.list:first', this.contentWrapper).delegate('span.ticket-flag', 'click', function(ev) {
+		$('table.list:first', this.contentWrapper).on('click', 'span.ticket-flag', function(ev) {
 			self.flagMenu.openMenu(ev);
 		});
 	},
@@ -296,7 +296,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		var self = this;
 
-		$('.detail-view-trigger', this.contentWrapper).click(function() {
+		$('.detail-view-trigger', this.contentWrapper).on('click', function() {
 			self.switchViewType('list');
 		});
 

@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 		this.setOptions(options);
 		this.page = page;
 
-		this.page.getEl('change_user_picture').click(this.open.bind(this));
+		this.page.getEl('change_user_picture').on('click', this.open.bind(this));
 
 		this.page.addEvent('destroy', this.destroy, this);
 	},
@@ -68,7 +68,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			$('.files', wrapper).empty();
 		});
 
-		wrapper.delegate('.save-trigger', 'click', this._doSave.bind(this));
+		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
 	},
 
 	_doSave: function() {

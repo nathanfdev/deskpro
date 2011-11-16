@@ -7,7 +7,7 @@ DeskPRO.ElementHandler.ListRadio = new Orb.Class({
 		var self = this;
 
 		this.list = $('ul, ol', this.el).first();
-		this.list.delegate('li', 'click', function() {
+		this.list.on('click', 'li', function() {
 			$('li', self.list).removeClass('on');
 			$(this).addClass('on');
 

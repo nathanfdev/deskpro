@@ -42,7 +42,7 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Orb.Class({
 		//editor_save_btn
 		this.editorSaver = new DeskPRO.Admin.EditorSave();
 
-		$('#editor_save_btn').click(this.doSave.bind(this));
+		$('#editor_save_btn').on('click', this.doSave.bind(this));
 
 		if (this.redrawData) {
 			this.redrawState(this.redrawData);

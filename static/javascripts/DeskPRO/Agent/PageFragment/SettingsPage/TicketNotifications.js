@@ -19,7 +19,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 
 		var form = $('form', this.el);
 
-		form.submit(function(ev) {
+		form.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -36,7 +36,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 		});
 
 		// "All" boxes need to check others
-		$('td.prop.all :checkbox', this.el).click(function() {
+		$('td.prop.all :checkbox', this.el).on('click', function() {
 			var row = $(this).closest('tr');
 			var checked = $(this).is(':checked');
 

@@ -16,7 +16,7 @@ DeskPRO.UI.OptionBoxRevertable = new Orb.Class({
 
 		this.hasApplied = false;
 
-		$('.save-trigger', this.el).click(function(ev) {
+		$('.save-trigger', this.el).on('click', function(ev) {
 			self.hasApplied = true;
 
 			self.fireEvent('save', [self]);

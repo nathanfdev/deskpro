@@ -53,11 +53,11 @@ DeskPRO.Form.InlineEdit = new Class({
 		var self = this;
 		$(sel, this.options['baseElement']).each(function() { self.initEditable(this); });
 
-		this.options.baseElement.click(function(ev) {
+		this.options.baseElement.on('click', function(ev) {
 			self.handleDocumentClick(ev);
 		})
 
-		$(document).keydown(function(ev) {
+		$(document).on('keydown', function(ev) {
 			// Escape key
 			if (ev.keyCode == 27) {
 				self.closeEditables();
@@ -83,15 +83,15 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		if (j_el.is('.parent-trigger')) {
 			var parent = j_el.parent();
-			parent.dblclick(function() {
+			parent.on('dblclick', function() {
 				self.startEditable(j_el);
 			});
 		} else {
-			j_el.dblclick(function() { self.startEditable(this); });
+			j_el.on('dblclick', function() { self.startEditable(this); });
 		}
 
 		if (this.options.triggers) {
-			$(this.options.triggers, j_el.parent()).click(function(ev) {
+			$(this.options.triggers, j_el.parent()).on('click', function(ev) {
 				ev.stopPropagation();
 				self.startEditable(j_el);
 			});
@@ -152,8 +152,8 @@ DeskPRO.Form.InlineEdit = new Class({
 
 			$('input, textarea, select', form_elements)
 				.addClass('unchanged')
-				.change(function() { $(this).removeClass('unchanged'); })
-				.keypress(function() { $(this).removeClass('unchanged'); })
+				.on('change', function() { $(this).removeClass('unchanged'); })
+				.on('keypress', function() { $(this).removeClass('unchanged'); })
 				.filter(':visible').first().focus();
 		});
 

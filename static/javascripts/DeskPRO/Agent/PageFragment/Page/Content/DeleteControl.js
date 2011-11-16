@@ -26,7 +26,7 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 
 		this.otherDeleteBtns = $('.delete-type:not(.' + this.options.type + ')', this.page.getEl('action_buttons'));
 
-		this.undeleteBtn.click(function(ev) {
+		this.undeleteBtn.on('click', function(ev) {
 			ev.customEvents = new Orb.Util.EventObj({
 				onItemClicked: function() {
 					self.handleUndelete();
@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 			self.options.statusMenu.open(ev);
 		});
 
-		this.deleteBtn.click(function() {
+		this.deleteBtn.on('click', function() {
 			self.handleDeleted();
 			$.ajax({
 				url: self.options.ajaxSaveUrl,

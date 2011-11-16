@@ -7,7 +7,7 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 	Extends: DeskPRO.Report.PageHandler.Basic,
 
 	initialize: function() {
-		
+
 		// UI Overlay
 		this.overlay = null;
 	},
@@ -15,16 +15,16 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 	// Init the page
 	initPage: function() {
 		var self = this;
-		
+
 		// Create the trend overlay
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#overlay_wrapper')
 		});
-		$('#overlay_wrapper .close-overlay').click(function() {
+		$('#overlay_wrapper .close-overlay').on('click', function() {
 			self.overlay.close();
 		});
-		
-		$('.clone-trend').click(function() {
+
+		$('.clone-trend').on('click', function() {
 			var href = $(this).attr('href');
 			$.ajax({
 				url: href,
@@ -33,11 +33,11 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 					self.openOverlay(data);
 				}
 			});
-			
+
 			return false;
 		});
 	},
-	
+
 	// Open the overlay loading in a template
 	openOverlay: function(overlay_content) {
 

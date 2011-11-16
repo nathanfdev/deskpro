@@ -15,14 +15,14 @@ DeskPRO.Admin.PageHandler.TicketFilterEdit = new Class({
 
 	initPage: function() {
 		var self = this;
-		$('.save-trigger').click(function() {
+		$('.save-trigger').on('click', function() {
 			$('form:first').submit();
 		});
 
 		// Criteria builder
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
 
-		$('.criteria-form .add-term').data('add-count', 0).click(function() {
+		$('.criteria-form .add-term').data('add-count', 0).on('click', function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
 

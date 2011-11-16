@@ -28,7 +28,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 
 		this.hasStartedSearch = false;
 
-		this.moreLink.click((function(ev) {
+		this.moreLink.on('click', (function(ev) {
 			this.moreLink.hide();
 			$('li', this.resultsEl).show();
 		}).bind(this));
@@ -38,18 +38,18 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 		this.sugTitleTimer = null;
 		this.sugMessageTimer = null;
 
-		this.titleTxt.keypress((function() {
+		this.titleTxt.on('keypress', (function() {
 			if (!this.hasStartedSearch) return;
 			if (this.sugTitleTimer) return;
 			this.sugTitleTimer = this.updateSuggestions.delay(400, this);
 		}).bind(this));
 
-		this.titleTxt.blur((function() {
+		this.titleTxt.on('blur', (function() {
 			this.hasStartedSearch = true;
 			this.updateSuggestions();
 		}).bind(this));
 
-		this.messageTxt.keypress((function() {
+		this.messageTxt.on('keypress', (function() {
 			if (!this.hasStartedSearch) return;
 			if (this.sugMessageTimer) return;
 			this.sugMessageTimer = this.updateSuggestions.delay(1200, this);
@@ -144,7 +144,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 					}
 
 					var self = this;
-					$('li a[href]', this.suggestionsBox).click(function(ev) {
+					$('li a[href]', this.suggestionsBox).on('click', function(ev) {
 						ev.preventDefault();
 						self.openSuggestedContent($(this));
 					});
@@ -173,14 +173,14 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 			openNear: $('.dp-related-search', this.el),
 			onInit: (function(overlayEl, controls, overlay) {
 				// As soon as they click we subimt the request to record it
-				$('.dp-set-answered', controls).click(function(ev) {
+				$('.dp-set-answered', controls).on('click', function(ev) {
 					ev.preventDefault();
 					self.fireEvent('resolved', [contentType, contentId, true]);
 				});
 
 				// But we still send them through the redirect, so they
 				// can visit the article quickly without waiting for the save to return
-				$('.dp-answererd', controls).click(function(ev) {
+				$('.dp-answererd', controls).on('click', function(ev) {
 					ev.preventDefault();
 					var type = $(this).data('type');
 
@@ -191,7 +191,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 					}
 				});
 
-				$('.dp-not-answered', controls).click(function(ev) {
+				$('.dp-not-answered', controls).on('click', function(ev) {
 					ev.preventDefault();
 					self.fireEvent('notResolved', [contentType, contentId, true]);
 

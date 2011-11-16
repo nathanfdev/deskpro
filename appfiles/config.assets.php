@@ -194,7 +194,8 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
                 'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
                 'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
-                'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js'
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',
+
 	)
 );
 
@@ -363,6 +364,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/ElementHandler/PortalNav.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/PortalToggle.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/PortalEditor.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/LabelsPage.js',
 	)
 );
 

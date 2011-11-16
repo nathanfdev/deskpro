@@ -19,14 +19,32 @@ use Application\DeskPRO\Entity;
  */
 class BanningController extends AbstractController
 {
-	public function listAction()
+	protected function getCounts()
 	{
-		$banned_ips    = App::getEntityRepository('DeskPRO:BanIp')->getList();
+		$counts = array();
+		$counts['emails'] = $this->db->fetchColumn("SELECT COUNT(*) FROM ban_emails");
+		$counts['ips'] = $this->db->fetchColumn("SELECT COUNT(*) FROM ban_ips");
+
+		return $counts;
+	}
+
+	public function listEmailsAction()
+	{
 		$banned_emails = App::getEntityRepository('DeskPRO:BanEmail')->getList();
 
-		return $this->render('AdminBundle:Banning:list.html.twig', array(
-			'banned_ips'    => $banned_ips,
+		return $this->render('AdminBundle:Banning:list-emails.html.twig', array(
+			'counts' => $this->getCounts(),
 			'banned_emails' => $banned_emails
+		));
+	}
+
+	public function listIpsAction()
+	{
+		$banned_ips    = App::getEntityRepository('DeskPRO:BanIp')->getList();
+
+		return $this->render('AdminBundle:Banning:list-ips.html.twig', array(
+			'counts' => $this->getCounts(),
+			'banned_ips'    => $banned_ips,
 		));
 	}
 

@@ -9,43 +9,17 @@ use Application\ReportBundle\Chart\Base\PieChart as BasePieChart;
  */
 class PieChart extends BasePieChart
 {
-	public function __construct($stat)
+	public function __construct()
 	{
-		parent::__construct($stat);
-		
 		$this->view_chart_vendor 	= 'AmChart';
-		$this->view_chart_class 	= 'Pie';	
+		$this->view_chart_class 	= 'Pie';
 	}
-	
-	public function getData()
+
+	/**
+	 * Get the Human Friendly label for the chart
+	 */
+	public static function getChartLabel()
 	{
-		$number_points = 20;
-		
-		$points = range(0, $number_points);
-		shuffle($points);
-		
-		$startUnix = time() - (86400 * $number_points);
-		for ($unix = $startUnix; $unix < time(); $unix+=86400) {
-			$this->series[] = date("d-m-Y", $unix);
-		}
-		$this->graphs = array(
-			$points	
-		);
-	}
-	
-	public function getFormattedData()
-	{
-		$this->getData();
-		
-		$formattedData = array();	
-		
-		return $formattedData;
-	}
-	
-	public function getSettings()
-	{
-		$settings = array();
-		
-		return $settings;
+		return 'Pie Chart';
 	}
 }

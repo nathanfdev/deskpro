@@ -1,8 +1,8 @@
-<tr>
-	<td>
-		<a class="delete-trigger" href="{{ path('admin_banning_delemail', {'email': email}) }}" style="float:right;" title="Remove this ban">
-			<img src="{{ asset('images/icons/cross.png') }}" />
-		</a>
-		{{email}}
-	</td>
-</tr>
+<li class="item-row" data-email="{{email}}">
+	<div class="dp-block-controls">
+		<ul>
+			<li class="dp-remove delete-trigger" data-delete-url="{{ path('admin_banning_delemail', {'email': email}) }}"><span></span></li>
+		</ul>
+	</div>
+	<lable>{{email}}</lable>
+</li>

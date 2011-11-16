@@ -39,13 +39,13 @@ Orb.createNamespace('DeskPRO.Form');
  * Example:
  * <code>
  *    var formval = new DeskPRO.Form.FormValidator();
- *    
+ *
  *    var username_field = new new DeskPRO.Form.FormField($('#username'));
  *    formval.addValidator(username_field, new DeskPRO.Form.Validator.Length({
  *    	minLength: 3,
  *    	maxLength: 15
  *    }), ['change']);
- *    
+ *
  *    formval.addValidator(username_field, new DeskPRO.Form.Validator.Ajax({
  *    	ajax: { url: 'check_username.php' }
  *    }), ['submit']);
@@ -53,12 +53,12 @@ Orb.createNamespace('DeskPRO.Form');
  */
 DeskPRO.Form.FormValidator = new Class({
 	Implements: Options,
-	
+
 	validators: null,
 	field_errors: null,
-	
+
 	running_ajax: null,
-	
+
 	/**
 	 * Hash of options
 	 * @var {Object}
@@ -69,14 +69,14 @@ DeskPRO.Form.FormValidator = new Class({
 		errorClassHide: 'error_off',
 		errorCallback: null
 	},
-	
+
 	errorListHandler: null,
-	
-	
+
+
 	initialize: function (options) {
 		options = options ||{};
 		this.setOptions(options);
-		
+
 		if (!this.options['errorCallback']) {
 			this.errorListHandler = new DeskPRO.ErrorListHandler({
 				errorContainerSelector: this.options['errorContainerSelector'],
@@ -84,26 +84,26 @@ DeskPRO.Form.FormValidator = new Class({
 				errorClassHide: this.options['errorClassHide']
 			});
 		}
-		
+
 		this.validators = new Hash();
 		this.field_errors = new Hash();
 		this.runing_ajax = new Hash();
 	},
-	
-	
+
+
 	/**
 	 * Add a form validator to one or more elements.
 	 *
 	 * @option {Boolean} enableInstant Enable/disable the instant validator (overrides default)
-	 * 
+	 *
 	 * @param {jQuery} element One element jQuery collection
 	 * @param {Object} validator A form validator
-	 * @param {Object} options 
+	 * @param {Object} options
 	 */
 	addValidator: function(field, validator, triggers) {
-		
+
 		if (!triggers) triggers = ['submit'];
-		
+
 		if (!this.validators.has(field.getId())) {
 			this.validators.set(field.getId(), {
 				field: field,
@@ -112,85 +112,85 @@ DeskPRO.Form.FormValidator = new Class({
 				currentErrors: []
 			});
 		}
-		
+
 		this.validators.get(field.getId()).validators.push([validator, triggers]);
-		
+
 		var has_change_validator = triggers.contains('change');
-		
+
 		// Whenever an input field is changed, store the last changed time
 		// so dont re-run validators we dont have to
 		var self = this;
-		this.getFormInputElements().change(function() {
+		this.getFormInputElements().on('change', function() {
 			$(this).attr('data-changed-at', (new Date()).getTime());
 			if (has_change_validator) {
 				self.runValidators(field, 'change');
 			}
 		});
 	},
-	
-	
+
+
 	/**
 	 * Run validators on a field for a given trigger (submit, change)
 	 */
 	runValidators: function(field, trigger) {
-		
+
 		var info = this.validators.get(field.getId());
-		
+
 		// Reset error status
 		this.runCallback(field, null);
 		info.currentErrors = [];
-		
+
 		var els = field.getFormInputElements();
-		
+
 		var last_changed = 0;
 		els.each(function() {
 			if ($(this).attr('data-changed-at') && $(this).attr('data-changed-at') > last_changed) {
 				last_chagned = $(this).attr('data-changed-at');
 			}
 		});
-		
+
 		// If its not the submit trigger, then we dont
 		// want to run any validator unless the user has changed
 		// the field at least once.
 		if (trigger != 'submit' && last_changed == 0) {
 			return [];
 		}
-		
+
 		//------------------------------
 		// Run the validators that need to run
 		//------------------------------
-		
+
 		var errors = [];
-		
+
 		var ajax_validator = null;
-		
+
 		for (var i = 0; i < info.validators.length; i++) {
-			
+
 			// The validator has already run on this data,
 			// dont need to run it again
 			if (info.validator_status.has(i) && info.validator_status.get(i) > last_changed) {
 				continue;
 			}
-			
+
 			var validator = info.validators[i];
-		
+
 			// If its an ajax validator, we'll run it in a sec
 			if (validator.isAjaxValidator) {
 				ajax_validator = validator;
 				continue;
 			}
-			
+
 			if (!validator.isValid(field)) {
 				errors.combine(validator.getErrors());
 			}
-			
+
 			info.validator_status.set(i, (new Date()).getTime());
 		}
-		
+
 		info.currentErrors = errors;
-		
+
 		this.runCallback(field, errors);
-		
+
 		// run the ajax validator now
 		if (ajax_validator) {
 			this.running_ajax.set(field.getId(), ajax_validator);
@@ -200,10 +200,10 @@ DeskPRO.Form.FormValidator = new Class({
 				if (!errors.length) {
 					return;
 				}
-				
+
 				info.currentErrors.combine(errors);
 				self.runCallback(field, errors);
-				
+
 				self.running_ajax.erase(field.getId());
 				if (!self.running_ajax.getLength()) {
 					self.allAjaxComplete();
@@ -211,16 +211,16 @@ DeskPRO.Form.FormValidator = new Class({
 			});
 		}
 	},
-	
-	
+
+
 	allAjaxComplete: function() {
 		// TODO
 		// Handle onsubmit handlers, when all ajax is
 		// complete we need to see if we can submit the form
-		// now	
+		// now
 	},
-	
-	
+
+
 	/**
 	 * Run the error handler callback
 	 */
@@ -230,7 +230,7 @@ DeskPRO.Form.FormValidator = new Class({
 			this.options['errorCallback'](field, errors);
 			return;
 		}
-		
+
 		this.errorListHandler.showErrors(field, errors);
 	}
 });

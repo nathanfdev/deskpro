@@ -43,7 +43,7 @@ DeskPRO.Agent.PageHelper.AutoSave = new Orb.Class({
 		this.field = $(this.options.field);
 
 		if (this.field.is('select, :checkbox, :radio')) {
-			this.field.change(this.save.bind(this));
+			this.field.on('change', this.save.bind(this));
 		} else {
 			this.intervalCaller = new DeskPRO.IntervalCaller({
 				resetTimeForce: 2500,
@@ -57,7 +57,7 @@ DeskPRO.Agent.PageHelper.AutoSave = new Orb.Class({
 					self.intervalCaller.touch();
 				}
 			}
-			this.field.change(touchFn).keypress(touchFn);
+			this.field.on('change', touchFn).on('keypress', touchFn);
 		}
 	},
 

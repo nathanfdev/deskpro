@@ -1,92 +1,96 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggerEditPage' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketTriggersEdit.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggerEditPage.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketTriggersEdit({{trigger.id|default(0)}});
+function TicketTriggerEditPage_initTerms(handler) {
+	var count = 0;
+	{% for action in trigger.terms %}
+		var basename = 'terms['+count+']';
+		handler.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
+		count++;
+	{% endfor %}
 
-	{% if row_html %}
-		DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
-	{% endif %}
-
-	window.DeskPRO_Page.init_options_callback = function() {
-		var count = 0;
-		{% for action in trigger.terms %}
-			var basename = 'terms['+count+']';
-			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
-			count++;
-		{% endfor %}
-
-		var count = 0;
-		{% for action in trigger.actions %}
-			var basename = 'actions['+count+']';
-			window.DeskPRO_Page.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
-			count++;
-		{% endfor %}
-	};
+	var count = 0;
+	{% for action in trigger.actions %}
+		var basename = 'actions['+count+']';
+		handler.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
+		count++;
+	{% endfor %}
 }
 </script>
 {% endblock %}
-{% block header %}
+{% block pagetitle %}
 	{% if trigger.trigger_type == 'trigger' %}
 		<h1>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</h1>
 	{% else %}
 		<h1>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</h1>
 	{% endif %}
 {% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Event</label>
-		{% if trigger.event_trigger == 'new_ticket' %}New Ticket
-		{% elseif trigger.event_trigger == 'new_reply' %}New Reply
-		{% elseif trigger.event_trigger == 'property_change' %}Ticket Edited
-		{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for {{trigger.event_trigger_option}}
-		{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for {{trigger.event_trigger_option}}
-		{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for {{trigger.event_trigger_option}}
-		{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds {{trigger.event_trigger_option}}
-		{% else %}{{trigger.event_trigger}}
-		{% endif %}
-	</div>
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
-	</div>
-	{% if form.event_trigger_option %}
-		<div class="row">
-			<label>Minutes until trigger is executed</label>
-			{{ form_widget(form.event_trigger_option) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Event</label>
 		</div>
-	{% endif %}
-	<div class="row">
-		<label>Criteria</label>
-		<div class="criteria-form search-form">
-			<div class="search-terms"></div>
-			<div class="term"><span class="add-term">+</span> Add a new action</div>
+		<div class="dp-form-input">
+			{% if trigger.event_trigger == 'new_ticket' %}New Ticket
+			{% elseif trigger.event_trigger == 'new_reply' %}New Reply
+			{% elseif trigger.event_trigger == 'property_change' %}Ticket Edited
+			{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for: {{ form_widget(form.event_trigger_option) }}
+			{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for: {{ form_widget(form.event_trigger_option) }}
+			{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for: {{ form_widget(form.event_trigger_option) }}
+			{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds: {{ form_widget(form.event_trigger_option) }}
+			{% else %}{{trigger.event_trigger}}
+			{% endif %}
 		</div>
 	</div>
-	<div class="row">
-		<label>Actions</label>
-		<div class="actions-form search-form">
-			<div class="search-terms"></div>
-			<div class="term"><span class="add-term">+</span> Add a new action</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Criteria</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="criteria-form search-form">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new action</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Actions</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="actions-form search-form">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new action</div>
+			</div>
 		</div>
 	</div>
 </div>
+
+<button class="clean-white save-trigger">Save</button>
 
 {{ form_rest(form) }}
 </form>
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options, 'with_change_terms': true } %}
 {% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-tpl', 'term_options': term_options, 'trigger': trigger } %}
-
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
 {% endblock %}

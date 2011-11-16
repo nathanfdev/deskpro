@@ -2,36 +2,40 @@
 <settings>
 
 	<digits_after_decimal>2</digits_after_decimal>
+	<redraw>1</redraw>
 
 	<plot_area>
-	  <margins>
-	    <left>40</left>
-	    <top>20</top>
-	    <right>30</right>
-	    <bottom>25</bottom>
-	  </margins>
+		<margins>
+			<left>50</left>
+			<top>30</top>
+			<right>30</right>
+			<bottom>30</bottom>
+		</margins>
 	</plot_area>
 
 	<legend>
-	  <enabled>true</enabled>
-	  <values>
-	    <enabled>false</enabled>
-	    <height>20</height>
-	    <align>left</align>
-	    <text><![CDATA[: {value}]]></text>
-	   </values>
+	  <enabled>0</enabled>
 	</legend>
 
+	<indicator>
+		<x_balloon_enabled>false</x_balloon_enabled>
+	</indicator>
+
+	<balloon>
+		<only_one>1</only_one>
+		<text_color>000000</text_color>
+	</balloon>
+
 	<graphs>
-	      {% for label in chart.labels %}
-		      <graph gid="{{ loop.index }}">
-			      <axis>left</axis>
-			      <title>{{ label }}</title>
-			      <balloon_text>
-				    <![CDATA[{value}]]>
-			      </balloon_text>
-		      </graph>
-	      {% endfor %}
+		{% for label in chart.labels %}
+			<graph gid="{{ loop.index }}">
+				<axis>left</axis>
+				<title>{{ label|default('no group') }}</title>
+				<balloon_text>
+					<![CDATA[{{ label|default('no group') }}: {value}]]>
+				</balloon_text>
+			</graph>
+		{% endfor %}
 	</graphs>
 
 </settings>

@@ -21,7 +21,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 		if (this.options.triggerElement) {
 			var self = this;
-			$(this.options.triggerElement).click(function(ev) {
+			$(this.options.triggerElement).on('click', function(ev) {
 				ev.preventDefault();
 				self.open(ev);
 			});
@@ -34,11 +34,11 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		var agentListItems = $('li', this.options.agentList);
 
 		this.backdrop = $('<div class="backdrop"></div>').appendTo('body');
-		this.backdrop.click(this.close.bind(this));
-		
+		this.backdrop.on('click', this.close.bind(this));
+
 		this.wrapper = $('<div class="field-overlay agent-selector" style="display:none;"><div class="close-trigger"></div></div>');
-		$('.close-trigger', this.wrapper).click(this.close.bind(this));
-		
+		$('.close-trigger', this.wrapper).on('click', this.close.bind(this));
+
 		var listWrapper = $(
 			'<div class="with-scrollbar">' +
 			'<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>' +
@@ -49,7 +49,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		if (agentListItems.length >= 10) {
 			this.filter = $('<div class="filter"><div class="input-wrap"><input type="text" value="" placeholder="Find an agent" /></div></div>').appendTo(this.wrapper);
 
-			$('input', this.filter).keyup(this.updateFilter.bind(this));
+			$('input', this.filter).on('keyup', this.updateFilter.bind(this));
 		} else {
 			this.filter = null;
 		}
@@ -115,7 +115,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 			newLi.appendTo(agentList);
 
-			newLi.click(function(ev) {
+			newLi.on('click', function(ev) {
 				ev.stopPropagation();
 				if (!$(ev.target).is('input')) {
 					choice.click();
@@ -128,7 +128,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.agentList = agentList;
 
 		var self = this;
-		$('input[type="checkbox"], input[type="radio"]', agentList).click(function(ev) {
+		$('input[type="checkbox"], input[type="radio"]', agentList).on('click', function(ev) {
 			var agentId = $(this).val();
 			var checked = $(this).is(':checked');
 

@@ -15,11 +15,11 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
-		this.form = $('form', this.wrapper).submit(function(ev) {
+		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 		});
 
-		$('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
+		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		this._initCategorySection();
 		this._initTitleSection();
@@ -70,7 +70,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 	_initCategorySection: function() {
 		var self = this;
 
-		this.getEl('cat').change(function() {
+		this.getEl('cat').on('change', function() {
 			if (parseInt($(this).val())) {
 				self.getEl('cat_section').addClass('done');
 			} else {
@@ -94,7 +94,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			}
 		};
 
-		this.getEl('title').change(fn).keypress(fn).change(function() {
+		this.getEl('title').on('change', fn).on('keypress', fn).on('change', function() {
 			var val = $(this).val().trim().toLowerCase();
 			val = val.replace(/[^a-z0-9\-_]/g, '-');
 			val = val.replace(/-{2,}/g, '-');
@@ -224,7 +224,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		});
 		this.ownObject(this.labelsInput);
 
-		this.getEl('slug').focus(function() {
+		this.getEl('slug').on('focus', function() {
 			this.addClass('had-focus');
 		});
 	}

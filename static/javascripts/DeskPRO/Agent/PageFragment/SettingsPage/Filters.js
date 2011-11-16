@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 			self.settingsWindow.reloadTab('filters');
 		});
 
-		this.el.delegate('.delete-filter', 'click', function() {
+		this.el.on('click', '.delete-filter', function() {
 			var row = $(this).closest('tr');
 			var url = $(this).data('delete-url');
 

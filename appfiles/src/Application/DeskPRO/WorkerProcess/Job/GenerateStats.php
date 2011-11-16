@@ -24,35 +24,49 @@ class GenerateStats extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 86400; // Daily
 
-	protected $time;
+	protected $date_time;
 
 	protected $orm;
 
 	public function run()
 	{
-		$this->time = time();
+		$this->date_time = new \DateTime();
+		$this->date_time = \DateTime::createFromFormat('U',  time()+self::DEFAULT_INTERVAL);
 
 		$this->orm  = App::getOrm();
 
-		// Get the stats
-		$stats 		= App::getEntityRepository('DeskPRO:Stat')
-				     ->getStatsRequiringUpdate($this->time);
+		// Get the available fun frequencies
+		$run_frequencies = Stat::getAvailableRunFrequencies();
 
-		$count_stats 	= count($stats);
+		foreach ($run_frequencies as $run_frequency) {
+			// Generate the run frequency method to execute
+			$method = 'get' . ucwords($run_frequency) . 'StatIdsRequiringUpdate';
 
-		$this->processStats($stats);
+			$stat_ids 	= App::getEntityRepository('DeskPRO:Stat')
+						->$method($this->date_time);
 
-		$msg = "Generate Stats ($count_stats)";
-		$this->logStatus($msg);
+			$count_stats 	= count($stat_ids);
+
+			$msg = '[' . ucwords($run_frequency) . "] Processing {$count_stats} stats";
+			$this->logStatus($msg);
+
+			if (count($stat_ids)) {
+				$this->processStatIds($stat_ids);
+			}
+		}
 	}
 
 	/**
 	 * Process a list of stats
 	 *
-	 * @param array $stats  List of stats to process
+	 * @param array $stat_ids  List of stat ids to process
 	 */
-	protected function processStats($stats)
+	protected function processStatIds($stat_ids)
 	{
+		// Get the all the stats
+		$stats = App::getEntityRepository('DeskPRO:Stat')
+				->getByIds($stat_ids);
+
 		foreach ($stats as $stat) {
 			$this->processStat($stat);
 		}
@@ -71,18 +85,33 @@ class GenerateStats extends AbstractJob
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats($this->time);
 
-		// Store the stat value
-		$stat_value = new StatValue();
-		$stat_value->setStat($stat);
+		// Check if existing StatValue is set for period
+		$stat_value = $stat->getStatValueForDate(new \DateTime());
+		if (!$stat_value) {
+			// Create a new one
+			$stat_value = new StatValue();
+			$stat_value->setStat($stat);
+		}
 		$stat_value->setValue($values['ungrouped']);
+		$stat_value->setStatUnix(time());
 		$this->orm->persist($stat_value);
 
 		// Store the grouped values
 		foreach ($values['grouped'] as $grouped) {
-			$stat_value_group = new StatValueGroup();
-			$stat_value_group->setStatValue($stat_value);
+			// Check if existing StatValueGroup is set for period and reference
+			$stat_value_group = $stat_value->getStatValueGroupForDate(
+				new \DateTime(),
+				$grouped['grouping_id'],
+				$stat->getRunFrequency()
+			);
+
+			if (!$stat_value_group) {
+				$stat_value_group = new StatValueGroup();
+				$stat_value_group->setStatValue($stat_value);
+			}
 			$stat_value_group->setValue($grouped['value']);
 			$stat_value_group->setGroupingId($grouped['grouping_id']);
+			$stat_value_group->setStatUnix(time());
 			$this->orm->persist($stat_value_group);
 		}
 
@@ -93,5 +122,4 @@ class GenerateStats extends AbstractJob
 		// Flush - need to batch this
 		$this->orm->flush();
 	}
-
 }

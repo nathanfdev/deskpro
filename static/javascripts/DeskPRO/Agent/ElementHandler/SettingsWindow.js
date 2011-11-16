@@ -22,7 +22,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			left: ($(window).width() - 700) / 2
 		});
 
-		$('.close-trigger', this.el).first().click(function(ev) {
+		$('.close-trigger', this.el).first().on('click', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			self.el.trigger('dp_close');

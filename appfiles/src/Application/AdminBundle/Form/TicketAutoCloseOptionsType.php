@@ -28,4 +28,9 @@ class TicketAutoCloseOptionsType extends AbstractType
 		$builder->add('resolve_user_reply', 'text');
 		$builder->add('close_user_reply', 'text');
 	}
+
+	public function getName()
+	{
+		return 'ticket_autoclose';
+	}
 }

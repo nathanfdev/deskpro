@@ -35,11 +35,11 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 		this.overlayEl = $(this.options.template).hide().appendTo('body');
 		this.controlsWrap = $('.dp-controls', this.overlayEl).hide();
 		this.backdropEl = $('<div class="dp-backdrop dp-faded" />').appendTo('body');
-		this.backdropEl.click(function(el) {
+		this.backdropEl.on('click', function(el) {
 			self.close();
 		});
 
-		$('.dp-close-btn', this.overlayEl).click(function(ev) {
+		$('.dp-close-btn', this.overlayEl).on('click', function(ev) {
 			ev.preventDefault();
 			self.close();
 		});
@@ -55,7 +55,7 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 				this.controlsWrap.show();
 				$('.dp-content-holder', this.overlayEl).empty().html(html);
 
-				$('.dp-section-toggle', this.controlsWrap).click(function(ev) {
+				$('.dp-section-toggle', this.controlsWrap).on('click', function(ev) {
 					ev.preventDefault();
 					var toggleSel = $(this).data('toggle-section');
 					$('.dp-control-section', self.controlsWrap).fadeOut('fast', function() {
@@ -65,7 +65,7 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 					});
 				});
 
-				$('.dp-toggle-sel', this.overlayEl).click(function(ev) {
+				$('.dp-toggle-sel', this.overlayEl).on('click', function(ev) {
 					ev.preventDefault();
 					var el = $($(this).data('toggle-sel'), self.overlayEl);
 
@@ -85,7 +85,7 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 				});
 
 				if (self.options.pageUrl) {
-					$('.dp-open-full', this.overlayEl).click(function(ev) {
+					$('.dp-open-full', this.overlayEl).on('click', function(ev) {
 						ev.preventDefault();
 						window.open(self.options.pageUrl);
 						self.close();

@@ -44,10 +44,10 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 
 		if (this.options.listenOn) {
 			var wrap = $(this.options.listenOn);
-			$(':input, textarea, select', wrap).change(function() {
+			$(':input, textarea, select', wrap).on('change', function() {
 				self.triggerChange();
 			});
-			$('input[type=text], textarea', wrap).keypress(function() {
+			$('input[type=text], textarea', wrap).on('keypress', function() {
 				self.triggerChange();
 			});
 

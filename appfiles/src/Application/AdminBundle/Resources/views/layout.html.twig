@@ -47,7 +47,7 @@
 
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 </head>
-<body class="{% if is_demo %}is-demo{% endif %}">
+<body class="{% if is_demo %}is-demo{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
@@ -119,13 +119,6 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
-{#
-
-<li data-menu="#server_menu">
-				<a><span class="server">Server</span></a>
-			</li>
-
-#}
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
 	<div id="dp_admin_nav_sections" class="deskproPane">

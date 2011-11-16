@@ -12,6 +12,7 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\ReportBundle\Chart\ChartFactory;
 use Application\ReportBundle\Chart\AmChart\LineChart;
 
 class ChartController extends AbstractController
@@ -20,8 +21,20 @@ class ChartController extends AbstractController
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
-		$view_class = $dashboard_stat->getViewClass();
-		$chart = new $view_class($dashboard_stat->getStat());
+		$end_date = new \DateTime();
+		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+
+		// Get the Stat Data
+		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());
+
+		if ($dashboard_stat->getDisplayGrouping()) {
+			$chart_data = $data['grouped'];
+		}
+		else {
+			$chart_data = array($data['ungrouped']);
+		}
+
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
 
 		$chart_template = $chart->getViewChartVendor() . '/' . $chart::CHART_IDENTIFIER . '.html.twig';
 
@@ -35,13 +48,25 @@ class ChartController extends AbstractController
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
-		$view_class = $dashboard_stat->getViewClass();
-		$chart = new $view_class($dashboard_stat->getStat());
+		$end_date = new \DateTime();
+		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+
+		// Get the Stat Data
+		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());
+
+		if ($dashboard_stat->getDisplayGrouping()) {
+			$chart_data = $data['grouped'];
+		}
+		else {
+			$chart_data = array($data['ungrouped']);
+		}
+
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
 
 		$data_template = $chart->getViewChartVendor() . '/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
 		return $this->render("ReportBundle:Chart:$data_template", array(
-			'data' => $chart->getFormattedData(),
+			'chart' => $chart,
 		));
 	}
 
@@ -49,8 +74,20 @@ class ChartController extends AbstractController
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
-		$view_class = $dashboard_stat->getViewClass();
-		$chart = new $view_class($dashboard_stat->getStat());
+		$end_date = new \DateTime();
+		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+
+		// Get the Stat Data
+		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());
+
+		if ($dashboard_stat->getDisplayGrouping()) {
+			$chart_data = $data['grouped'];
+		}
+		else {
+			$chart_data = array($data['ungrouped']);
+		}
+
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
 
 		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 

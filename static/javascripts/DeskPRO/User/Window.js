@@ -93,7 +93,7 @@ DeskPRO.User.Window = new Orb.Class({
 			$(this).data('form-validator-inst', v);
 		});
 
-		$('a.in-overlay').click(function(ev) {
+		$('a.in-overlay').on('click', function(ev) {
 			ev.preventDefault();
 
 			var el = $(this);
@@ -117,7 +117,7 @@ DeskPRO.User.Window = new Orb.Class({
 
 		$('.timeago').timeago();
 
-		$(document).delegate('.dp-bound-faded', 'click', function() {
+		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
 			var link = $('a[href]', parent).first();
 			window.location = link.attr('href');

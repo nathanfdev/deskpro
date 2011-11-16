@@ -10,32 +10,23 @@
 			<tr>
 				<th class="name">Name</th>
 				<th class="trend">Trend</th>
-				<th class="prev-value">Nov 8</th>
-				<th class="prev-value">Nov 9</th>
-				<th class="prev-value">Nov 10</th>
+				{% for series in chart.getEndSeries(3) %}
+					<th class="prev-value">{{ series }}</th>
+				{% endfor %}
 				<th class="diff">Diff %</th>
-				<th class="change">Change %</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td class="name">Darren</td>
-				<td class="trend"><span class="sparkline">1, 4, 5, 6, 10, 16, 15</span></td>
-				<td class="prev-value">10</td>
-				<td class="prev-value">16</td>
-				<td class="prev-value">15</td>
-				<td class="diff">15%</td>
-				<td class="change direction-up-green">+1.3</td>
-			</tr>
-			<tr>
-				<td class="name">Join</td>
-				<td class="trend"><span class="sparkline">1, 5, 13, 5, 5, 10, 18</span></td>
-				<td class="prev-value">5</td>
-				<td class="prev-value">10</td>
-				<td class="prev-value">18</td>
-				<td class="diff diff-red">-10%</td>
-				<td class="change direction-down-green">+1.6</td>
-			</tr>
+			{% for row in chart.rows %}
+				<tr>
+					<td class="name">{{ row.label|default('[no group]') }}</td>
+					<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
+					{% for prev_value in chart.getEndData(row, 3) %}
+						<td class="prev-value">{{ prev_value|default('-') }}</td>
+					{% endfor %}
+					<td class="diff direction-up-green">{{ chart.calculateVariation(row.data, true) }}%</td>
+				</tr>
+			{% endfor %}
 		</tbody>
 	</table>
 </div>

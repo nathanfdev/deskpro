@@ -98,7 +98,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			}
 		});
 
-		el.delegate('input.item-select', 'click', function(ev) {
+		el.on('click', 'input.item-select', function(ev) {
 			var row = $(this).closest('article.task');
 			var value = $(this).is(':checked');
 
@@ -123,15 +123,15 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				updateCount('+', row);
 			}
 		});
-		el.delegate('.opt-trigger.assigned_agent', 'click', function(ev) {
+		el.on('click', '.opt-trigger.assigned_agent', function(ev) {
 			openForEl = $(this).closest('article.task');
 			assignOptionBox.open(ev);
 		});
-		el.delegate('.opt-trigger.visibility', 'click', function(ev) {
+		el.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('article.task');
 			statusMenu.open(ev);
 		});
-		el.delegate('.opt-trigger.date_due', 'click', function(ev) {
+		el.on('click', '.opt-trigger.date_due', function(ev) {
 			openForEl = $(this).closest('article.task');
 
 			var label = $('label', this);
@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				}
 			}, ev);
 		});
-		el.delegate('.expand-collapse-icon', 'click', function(ev) {
+		el.on('click', '.expand-collapse-icon', function(ev) {
 			var row = $(this).closest('article.task');
 			if (row.is('.expanded')) {
 				row.removeClass('expanded');
@@ -175,13 +175,13 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			}
 		});
 
-		el.delegate('.comment-btn', 'click', function(ev) {
+		el.on('click', '.comment-btn', function(ev) {
 			var input = $(this).parent().find('.comment-input');
 			$(this).slideUp('fast', function() {
 				input.slideDown('fast');
 			});
 		});
-		el.delegate('.cancel-comment-trigger', 'click', function(ev) {
+		el.on('click', '.cancel-comment-trigger', function(ev) {
 			var row = $(this).closest('article.task');
 			var btn = $('.comment-btn', row);
 			$('.comment-input', row).slideUp('fast', function() {
@@ -189,7 +189,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			});
 		});
 
-		el.delegate('.save-comment-trigger', 'click', function(ev) {
+		el.on('click', '.save-comment-trigger', function(ev) {
 			var row = $(this).closest('article.task');
 			var commentTxt = $('textarea', row);
 
@@ -229,7 +229,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			});
 		});
 
-		el.delegate('.task-group header', 'click', function() {
+		el.on('click', '.task-group header', function() {
 			$(this).parent().toggleClass('collapsed');
 		});
 

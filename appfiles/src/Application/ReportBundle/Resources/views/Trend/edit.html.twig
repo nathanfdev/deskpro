@@ -1,6 +1,6 @@
-<form action="{{ path('report_trend_edit', {'stat_id': stat.id|default(0)}) }}" method="post">
+<form id="clone_trend_form" action="{{ path('report_trend_edit', {'stat_id': stat.id|default(0)}) }}" method="post">
 	<input type="hidden" name="process" value="1" />
-	
+
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -13,15 +13,111 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
+				<label>Group By</label>
+				<span>Select the column to group the results by.</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.grouping_ref) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>Criteria</label></div>
+			<div class="dp-form-input">
+				<div class="search-form" id="_criteria_list">
+					<div class="search-terms"></div>
+					<div class="term"><span class="add-term">+</span> Add a new term</div>
+				</div>
+				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Variation</label>
+				<span>Is a positive number good, bad or neutral?</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.variation) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Frequency</label>
+				<span>How often does this Trend need to run?</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.run_frequency) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
 				<label>Disable the report?</label>
 			</div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.disabled) }} Disable</label>
 			</div>
 		</div>
+
 	</div>
 
 	{{ form_rest(form) }}
 
-	<button class="btn primary save-trigger">Save</button>
+	<button class="btn primary save-trigger" id="clone_trend_save">Save</button>
 </form>
+
+<script type="text/javascript">
+	$(function() {
+		var self     = this;
+		var critTpl  = ('#_criteria_tpl');
+		var critList = $('#_criteria_list');
+
+		var editor = new DeskPRO.Form.RuleBuilder(critTpl);
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		$('.add-term', critList).data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'terms['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			editor.addNewRow($('.search-terms', critList), basename);
+		});
+
+		var count = 0;
+		var actions = {{stat.criteria|json_encode|raw}};
+		if (actions) {
+			Array.each(actions, function(info, x) {
+				var basename = 'terms[initial_' + x + ']';
+				editor.addNewRow($('.search-form .search-terms'), basename, {
+					type: info.type,
+					options: info.options
+				});
+			});
+		}
+
+		$('#clone_trend_save').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var form = $('#clone_trend_form');
+			var postData = form.serializeArray();
+
+			$.ajax({
+				url: form.attr('action'),
+				type: 'POST',
+				data: postData,
+				dataType: 'json',
+				success: function(data) {
+					// Just do a redict for now
+					self.location = data.redirect;
+				}
+			});
+		});
+	});
+</script>

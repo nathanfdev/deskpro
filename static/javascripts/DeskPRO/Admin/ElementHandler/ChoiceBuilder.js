@@ -56,7 +56,7 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 				});
 			});
 
-			input.blur(function() {
+			input.on('blur', function() {
 				label.text(input.val());
 				if (row.is('.new')) {
 					rowValue.val('new:' + input.val().trim());
@@ -71,15 +71,15 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 			});
 		}
 
-		newInput.keypress(function(ev) {
+		newInput.on('keypress', function(ev) {
 			if (ev.keyCode == 13) {
 				ev.preventDefault();//dont enter enter key
 				handleAdd();
 			}
 		});
-		addNewBtn.click(handleAddClick);
-		list.delegate('.remove', 'click', handleRemoveClick);
-		list.delegate('.label', 'dblclick', handleRename);
+		addNewBtn.on('click', handleAddClick);
+		list.on('click', '.remove', handleRemoveClick);
+		list.on('dblclick', '.label', handleRename);
 
 		$(list).sortable({
 			axis: 'y',

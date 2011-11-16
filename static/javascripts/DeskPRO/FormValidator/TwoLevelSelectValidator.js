@@ -9,10 +9,10 @@ DeskPRO.Form.TwoLevelSelectValidator = new Orb.Class({
 		this.parentSel = $('select.parent-option', this.el);
 		this.childSel = $('.dp-sub-options > select', this.el);
 
-		this.parentSel.change(function() {
+		this.parentSel.on('change', function() {
 			self.validate('change');
 		});
-		this.childSel.change(function() {
+		this.childSel.on('change', function() {
 			self.validate('change');
 		});
 	},

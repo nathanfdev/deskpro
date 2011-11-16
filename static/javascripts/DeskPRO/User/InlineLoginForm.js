@@ -30,7 +30,7 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 		this.loginSection = $('.dp-login-section', this.el);
 		this.resetSection = $('.dp-reset-section', this.el);
 
-		$('.dp-inline-login-open', wrapper).click((function(ev) {
+		$('.dp-inline-login-open', wrapper).on('click', (function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -41,14 +41,14 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 			}
 		}).bind(this));
 
-		this.loginBtn.click((function(ev) {
+		this.loginBtn.on('click', (function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
 			this.processLogin();
 		}).bind(this));
 
-		$(this.options.passwordSel, wrapper).keypress(function(ev) {
+		$(this.options.passwordSel, wrapper).on('keypress', function(ev) {
 			if (ev.keyCode == 13) {
 				ev.preventDefault();
 
@@ -57,7 +57,7 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 				}
 			}
 		});
-		$(this.options.emailSel, wrapper).keypress(function(ev) {
+		$(this.options.emailSel, wrapper).on('keypress', function(ev) {
 			if (ev.keyCode == 13) {
 				ev.preventDefault();
 
@@ -140,16 +140,16 @@ DeskPRO.User.InlineLoginForm = new Orb.Class({
 	//#########################################################################
 
 	_initResetSection: function() {
-		$('.forgot', this.el).click((function(ev) {
+		$('.forgot', this.el).on('click', (function(ev) {
 			ev.preventDefault();
 			this.showReset();
 		}).bind(this));
 
-		$('.back', this.resetSection).click((function(ev) {
+		$('.back', this.resetSection).on('click', (function(ev) {
 			this.hideReset();
 		}).bind(this));
 
-		$('.dp-do-send', this.resetSection).click((function(ev) {
+		$('.dp-do-send', this.resetSection).on('click', (function(ev) {
 			ev.preventDefault();
 			this.sendReset();
 		}).bind(this));

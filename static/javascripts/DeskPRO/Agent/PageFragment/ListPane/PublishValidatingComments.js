@@ -79,27 +79,27 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			return info;
 		};
 
-		this.wrapper.delegate('.validate-approve', 'click', function(ev) {
+		this.wrapper.on('click', '.validate-approve', function(ev) {
 			ev.stopPropagation();
 
 			var info = findRowInfo(this);
 			self.approveComment(info.contentType, info.commentId, info.row);
 		});
-		this.wrapper.delegate('.validate-delete', 'click', function(ev) {
+		this.wrapper.on('click', '.validate-delete', function(ev) {
 			ev.stopPropagation();
 
 			var info = findRowInfo(this);
 			self.deleteComment(info.contentType, info.commentId, info.row);
 		});
 
-		this.wrapper.delegate('.validate-edit', 'click', function(ev) {
+		this.wrapper.on('click', '.validate-edit', function(ev) {
 			ev.stopPropagation();
 
 			var info = findRowInfo(this);
 			self.editComment(info.contentType, info.commentId, info.row, info);
 		});
 
-		this.wrapper.delegate('.comment-editsave-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.comment-editsave-trigger', function(ev) {
 			var info = findRowInfo(this);
 
 			$.ajax({
@@ -119,7 +119,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			});
 		});
 
-		this.wrapper.delegate('.comment-editcancel-trigger', 'click', function(ev) {
+		this.wrapper.on('click', '.comment-editcancel-trigger', function(ev) {
 			var info = findRowInfo(this);
 			var editEl = info.editRow;
 
@@ -127,7 +127,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			editEl.hide();
 		});
 
-		this.wrapper.delegate('.validate-create-ticket', 'click', function(ev) {
+		this.wrapper.on('click', '.validate-create-ticket', function(ev) {
 			var info = findRowInfo(this);
 			$.ajax({
 				url: BASE_URL + 'agent/publish/comments/new-ticket-info/' + info.contentType + '/' + info.commentId + '.json',

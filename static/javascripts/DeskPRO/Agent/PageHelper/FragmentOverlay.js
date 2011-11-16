@@ -51,7 +51,7 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 			this.wrapper.removeClass('overlay-loading');
 			$('section.dp-overlay', this.wrapper).empty().html(data);
 
-			$('header .close-trigger', this.wrapper).click((function(ev) {
+			$('header .close-trigger', this.wrapper).on('click', (function(ev) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				this.close();
@@ -71,18 +71,18 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 		this.wrapper = $(DeskPRO_Window.util.getPlainTpl($('#fragment_overlay_tpl')));
 		this.wrapper.hide().appendTo('body');
 
-		this.wrapper.click(function(ev) {
+		this.wrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
 		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop dp-fragment-overlay-backdrop" />');
 		this.backdropEl.hide().appendTo('body');
-		this.backdropEl.click((function(ev) {
+		this.backdropEl.on('click', (function(ev) {
 			ev.stopPropagation();
 			this.close();
 		}).bind(this));
 
-		$('header .close-trigger', this.wrapper).click((function(ev) {
+		$('header .close-trigger', this.wrapper).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();

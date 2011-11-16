@@ -28,12 +28,12 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		if (!this.options.button) {
 			this.options.button = $('.perform-actions-trigger:first', this.selectionBar);
 		}
-		this.button = $(this.options.button);		
+		this.button = $(this.options.button);
                 this.button.addClass('disabled');
-                
-		this.button.click(this.buttonClicked.bind(this));
 
-		this.controlCheck = $('.selection-control', this.page.wrapper).click(function() {
+		this.button.on('click', this.buttonClicked.bind(this));
+
+		this.controlCheck = $('.selection-control', this.page.wrapper).on('click', function() {
 			if ($(this).is(':checked')) {
 				self.checkAll();
 			} else {
@@ -41,7 +41,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			}
 		});
 
-		this.page.wrapper.delegate('input.item-select', 'click', function() {
+		this.page.wrapper.on('click', 'input.item-select', function() {
 			var el = $(this);
 			self.handleCheckChange(el, el.is(':checked'));
 		});

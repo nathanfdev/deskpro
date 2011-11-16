@@ -8,7 +8,7 @@ DeskPRO.User.ElementHandler.IdeaView = new Orb.Class({
 		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
 
 		this.btnEl = $('#submit_vote_trigger');
-		this.btnEl.click(function(ev) {
+		this.btnEl.on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			voteHelper.openMenu($(this));

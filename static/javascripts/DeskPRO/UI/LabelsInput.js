@@ -89,7 +89,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		var route = $(this.options.list).data('label-route');
 		if (route) {
-			$(this.options.list).click(function(ev) {
+			$(this.options.list).on('click', function(ev) {
 				if ($(ev.target).is('.close')) {
 					return;
 				}

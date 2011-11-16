@@ -1,58 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings> 
-  <type>column</type>
-  <font>Tahoma</font>
-  <column>
-    <type>stacked</type>
-    <width>85</width>
-    <spacing>0</spacing>
-    <grow_time>0</grow_time>
-    <sequenced_grow>true</sequenced_grow> 
-  </column>
-  
-  <plot_area>                           
-    <margins>
-      <left>40</left>
-      <top>40</top>
-      <right>40</right>
-      <bottom>40</bottom>
-    </margins>
-  </plot_area>
-  
-  <legend>
-    <enabled>false</enabled>
-  </legend>
-  
-  <values>
-    <category>
-      <frequency>1</frequency>
-      <start_from>0</start_from>
-    </category>
-  </values>
-  
-  <labels>
-    <label lid="0">
-      <x>10</x>
-      <y>400</y>
-      <rotate>true</rotate>
-      <align>center</align>       
-    </label>
-    <label lid="1">
-      <x>0</x> 
-      <y>380</y>
-      <width></width> 
-      <text_size>11</text_size>  
-    </label>
-  </labels>
-  
-  <graphs>
-    <graph gid="1">
-      <type>column</type>        
-      <color>B92F2F</color> 
-    </graph>
+<settings>
+	<type>column</type>
+	<font>Tahoma</font>
+	<redraw>1</redraw>
 
-    <graph gid="2">
-      <type>column</type>                                                      
-    </graph>
-  </graphs>
+	<column>
+		<type>stacked</type>
+		<width>85</width>
+		<spacing>0</spacing>
+		<grow_time>0</grow_time>
+		<sequenced_grow>1</sequenced_grow>
+	</column>
+
+	<plot_area>
+		<margins>
+			<left>50</left>
+			<top>30</top>
+			<right>30</right>
+			<bottom>30</bottom>
+		</margins>
+	</plot_area>
+
+	<legend>
+		<enabled>0</enabled>
+	</legend>
+
+	<values>
+		<category>
+			<frequency>1</frequency>
+			<start_from>0</start_from>
+		</category>
+	</values>
+
+	<balloon>
+		<text_color>000000</text_color>
+	</balloon>
+
+	<graphs>
+		{% for label in chart.labels %}
+			<graph gid="{{ loop.index }}">
+				<type>column</type>
+				<title>{{ label|default('no group') }}</title>
+				<balloon_text>
+					<![CDATA[{{ label|default('no group') }}: {value}]]>
+				</balloon_text>
+			</graph>
+		{% endfor %}
+	</graphs>
+
 </settings>

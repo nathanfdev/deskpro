@@ -20,6 +20,11 @@ use Orb\Util\Util;
 use Application\AdminBundle\Form\EditTicketTriggerType;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\AdminBundle\Urgency\UrgencyOptions;
+use Application\AdminBundle\Form\TicketUrgencyOptionsType;
+use Application\AdminBundle\AutoClose\AutoCloseOptions;
+use Application\AdminBundle\Form\TicketAutoCloseOptionsType;
+
 class TicketTriggersController extends AbstractController
 {
 	############################################################################
@@ -31,17 +36,23 @@ class TicketTriggersController extends AbstractController
 		$this->rememberLastPage();
 
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getEventTriggers(false, false);
-
 		$all_escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers(false, false);
 
-		$urgency_page = $this->forward('AdminBundle:TicketUrgency:list')->getContent();
+		$urgency_options = UrgencyOptions::newFromSystemTriggers();
+		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
+
+		$autoclose_options = AutoCloseOptions::newFromSystemTriggers();
+		$autoclose_form = $this->get('form.factory')->create(new TicketAutoCloseOptionsType(), $autoclose_options);
+
 		$autoclose_page = $this->forward('AdminBundle:TicketAutoClose:list')->getContent();
 
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
 			'all_triggers' => $all_triggers,
 			'all_escalations' => $all_escalations,
-			'urgency_page' => $urgency_page,
-			'autoclose_page' => $autoclose_page,
+			'urgency_options' => $urgency_options,
+			'urgency_options_form' => $urgency_form->createView(),
+			'autoclose_options' => $autoclose_options,
+			'autoclose_options_form' => $autoclose_form->createView(),
 		));
 	}
 
@@ -150,7 +161,7 @@ class TicketTriggersController extends AbstractController
 						unset($action['options']['custom_template']);
 					}
 				}
-				
+
 				$trigger['actions'] = $actions;
 
 				App::getOrm()->persist($trigger);
@@ -169,5 +180,51 @@ class TicketTriggersController extends AbstractController
 			'row_html'  => $row_html,
 			'term_options' => $term_options,
 		));
+	}
+
+	############################################################################
+	# save-urgency-options
+	############################################################################
+
+	/**
+	 * Called via ajax to save urgency options
+	 */
+	public function saveUrgencyOptionsAction()
+	{
+		$urgency_options = UrgencyOptions::newFromSystemTriggers();
+		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$urgency_form->bindRequest($this->get('request'));
+
+			if ($urgency_form->isValid()) {
+				$urgency_options->save();
+			}
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# save-autoclose-options
+	############################################################################
+
+	/**
+	 * Called via ajax to save autoclose options
+	 */
+	public function saveAutoCloseOptionsAction()
+	{
+		$autoclose_options = AutoCloseOptions::newFromSystemTriggers();
+		$autoclose_form = $this->get('form.factory')->create(new TicketAutoCloseOptionsType(), $autoclose_options);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$autoclose_form->bindRequest($this->get('request'));
+
+			if ($autoclose_form->isValid()) {
+				$autoclose_options->save();
+			}
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

@@ -2,11 +2,7 @@
 
 namespace Application\ReportBundle\Chart\Base;
 
-class LineChart extends AbstractChart
+abstract class LineChart extends SeriesChart
 {
-	protected $series = array();
-
-	protected $graphs = array();
-
 	const CHART_IDENTIFIER = 'line';
 }

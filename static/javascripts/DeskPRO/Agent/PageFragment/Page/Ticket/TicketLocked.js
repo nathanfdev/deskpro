@@ -16,7 +16,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked = new Orb.Class({
 		this.lockedOverlay = this.page.getEl('locked_overlay');
 		this.dismissBtn = $('button.dismiss', this.lockedBar);
 
-		this.dismissBtn.click(this.dismiss.bind(this));
+		this.dismissBtn.on('click', this.dismiss.bind(this));
 	},
 
 	/**
@@ -41,6 +41,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked = new Orb.Class({
 	},
 
 	destroy: function() {
-		
+
 	}
 });

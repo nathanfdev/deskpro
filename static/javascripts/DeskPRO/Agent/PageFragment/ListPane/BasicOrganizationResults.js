@@ -57,11 +57,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicOrganizationResults = new Orb.Class({
 		});
 		this.ownObject(this.displayOptionsOverlay);
 
-		$('.close-trigger', overlay_wrapper).click((function() {
+		$('.close-trigger', overlay_wrapper).on('click', (function() {
 			this.displayOptionsOverlay.closeOverlay();
 		}).bind(this));
 
-		$('.save-trigger', overlay_wrapper).click((function() {
+		$('.save-trigger', overlay_wrapper).on('click', (function() {
 			this.saveDisplayOptions();
 		}).bind(this));
 

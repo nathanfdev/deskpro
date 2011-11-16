@@ -28,7 +28,7 @@ DeskPRO.Agent.PageHelper.ListColResize = new Orb.Class({
 			var el = $(this);
 			el.prepend(resizer);
 
-			resizer.mousedown(function(ev) {
+			resizer.on('mousedown', function(ev) {
 				ev.stopPropagation();
 			});
 

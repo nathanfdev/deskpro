@@ -39,7 +39,7 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		// Save a reference to the widget
 		this.$widget = $('#' + this.element_id);
 
-		this.$widget.find('.edit').click(function() {
+		this.$widget.find('.edit').on('click', function() {
 			$.ajax({
 				url: DeskPRO_Window.getUrl('report_dashboard_ajaxeditwidget', {dashboard_id: self.dashboard.dashboard_id, dashboard_stat_id: self.widget_id}),
 				type: 'GET',
@@ -49,11 +49,11 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 					self.dashboard.openOverlay(data.html);
 				}
 			});
-			
+
 			return false;
 		});
-		
-		this.$widget.find('.delete').click(function() {
+
+		this.$widget.find('.delete').on('click', function() {
 			self.dashboard.deleteWidget(self.element_id);
 			return false;
 		});
@@ -117,9 +117,9 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 	// Show the spinner loader
 	showLoader: function() {
-		
+
 		this.$widget.find('.content-loader').css('display', 'block');
-		
+
 		this.show_loader = true;
 
 	},

@@ -85,7 +85,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		}
 
 		if (trigger) {
-			trigger.click((function(ev) {
+			trigger.on('click', (function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				this.open();
@@ -134,7 +134,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		this.baseId = this.wrapper.data('base-id');
 
-		this.wrapper.click(function(ev) {
+		this.wrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
@@ -151,12 +151,12 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		this.backdropEls.css('z-index', '1000010').hide().appendTo('body');
 
-		this.backdropEls.click((function(ev) {
+		this.backdropEls.on('click', (function(ev) {
 			ev.stopPropagation();
 			this.close();
 		}).bind(this));
 
-		$('header .close-trigger', this.wrapper).first().click((function(ev) {
+		$('header .close-trigger', this.wrapper).first().on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();
@@ -216,7 +216,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 				newEl.data('bound-id', $(this).attr('id'));
 
-				newEl.click(clickFn);
+				newEl.on('click', clickFn);
 
 				wrapper.hide();
 				newEl.insertAfter(wrapper);
@@ -231,7 +231,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		// Attach change listeners
 		//------------------------------
 
-		$('input, select, textarea', this.wrapper).change((function() {
+		$('input, select, textarea', this.wrapper).on('change', (function() {
 			this.updatePreview();
 		}).bind(this));
 
@@ -251,14 +251,14 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			this.clearPreview();
 		}, this);
 
-		$('.apply-macro-trigger', this.wrapper).click((function(ev) {
+		$('.apply-macro-trigger', this.wrapper).on('click', (function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
 			this.loadMacro($('select.macro', this.wrapper).val());
 		}).bind(this));
 
-		$('.apply-actions', this.wrapper).click((function(ev) {
+		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
 
 			if (this.options.isListView) {
@@ -290,7 +290,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			self.getElById('attach_row').slideDown();
 		});
 
-		this.wrapper.delegate('.remove-attach-trigger', 'click', function() {
+		this.wrapper.on('click', '.remove-attach-trigger', function() {
 
 			var row = $(this).closest('li');
 			row.fadeOut('fast', function() {
@@ -340,7 +340,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
 
 		var actList = $('.other-properties-wrapper', this.wrapper);
-		$('.add-term-row', add).show().click(function() {
+		$('.add-term-row', add).show().on('click', function() {
 			var x = Orb.getUniqueId();
 			var basename = 'actions_set['+x+']';
 			self.actionsEditor.addNewRow($('.search-terms', actList), basename);

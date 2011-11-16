@@ -16,13 +16,13 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsList = $('.results-list', this.resultsBox);
 
 		// Always show results when the box is in focus
-		this.termInput.focus(function() {
+		this.termInput.on('focus', function() {
 			self.open();
 			if (self.el.data('touch-focus')) {
 				// double touch forces an update
 				self.updateCaller.touch(self.getTerm(), true);
 			}
-		}).keypress(function(ev) {
+		}).on('keypress', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();//dont enter enter key
 				var term = $(this).val().trim();
@@ -60,21 +60,21 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		//------------------------------
 
 		// Touch the timer so we will search in a few seconds
-		this.termInput.keyup(function() { updateCaller.touch(self.getTerm()); }).change(function() { updateCaller.touch(self.getTerm()); });
+		this.termInput.on('keyup', function() { updateCaller.touch(self.getTerm()); }).on('change', function() { updateCaller.touch(self.getTerm()); });
 
 		// Stop bubbling so it doesnt reach the document and close itself
-		this.termInput.click(function(ev) { ev.stopPropagation(); });
-		this.resultsBox.click(function(ev) { ev.stopPropagation(); });
+		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
+		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
 
-		$(document).click(this.close.bind(this));
-		$(this.termInput).closest('.doc-layer').click(this.close.bind(this));
+		$(document).on('click', this.close.bind(this));
+		$(this.termInput).closest('.doc-layer').on('click', this.close.bind(this));
 
 		//------------------------------
 		// Clicking on an item fires an event that
 		// the page controller can listen to
 		//------------------------------
 
-		this.resultsList.delegate('li', 'click', function(ev) {
+		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var personId = $(this).data('person-id');
 			var name  = $('.user-name', this).text().trim();
@@ -83,7 +83,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			self.el.trigger('personsearchboxclick', [personId, name, email, self]);
 		});
 
-		$('.create-user', this.resultsBox).click(function(ev) {
+		$('.create-user', this.resultsBox).on('click', function(ev) {
 			ev.preventDefault();
 			var term = self.getTerm();
 			self.el.trigger('personsearchboxclicknew', [term, self]);

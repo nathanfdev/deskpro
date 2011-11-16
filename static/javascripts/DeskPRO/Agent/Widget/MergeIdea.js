@@ -46,7 +46,7 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 		this.wrapper = this.overlay.getWrapper();
 		var self = this;
 
-		$('.merge-trigger', this.wrapper).click(function() {
+		$('.merge-trigger', this.wrapper).on('click', function() {
 			$(this).text('...').attr('disabled', true);
 			$('.merge-trigger', this.wrapper).attr('disabled', true );
 

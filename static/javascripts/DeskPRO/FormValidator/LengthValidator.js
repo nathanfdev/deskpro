@@ -24,7 +24,7 @@ DeskPRO.Form.LengthValidator = new Orb.Class({
 			this.excludeBlank = this.excludeBlank ? true : false;
 		}
 
-		this.el.change(function() {
+		this.el.on('change', function() {
 			self.validate();
 		});
 	},

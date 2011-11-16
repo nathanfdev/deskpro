@@ -10,10 +10,10 @@ DeskPRO.Admin.PageHandler.FieldEdit = new Class({
 
 	initPage: function() {
 		var self = this;
-		$('.save-trigger').click(function() {
+		$('.save-trigger').on('click', function() {
 			$('form:first').submit();
 		});
-		$('.cancel-trigger').click(function() {
+		$('.cancel-trigger').on('click', function() {
 			self.closeThisPopout();
 		});
 	},

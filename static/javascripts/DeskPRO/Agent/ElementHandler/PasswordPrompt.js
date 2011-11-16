@@ -24,18 +24,18 @@ DeskPRO.Agent.ElementHandler.PasswordPrompt = new Orb.Class({
 		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
 		this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
 
-		this.backdropEl.click((function(ev) {
+		this.backdropEl.on('click', (function(ev) {
 			ev.stopPropagation();
 			this.close();
 		}).bind(this));
 
-		$('header .close-trigger', this.el).click((function(ev) {
+		$('header .close-trigger', this.el).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();
 		}).bind(this));
 
-		$('button.continue-trigger').click(function() {
+		$('button.continue-trigger').on('click', function() {
 			var password = self.passwordField.val();
 			if (password === "") {
 				return;

@@ -25,24 +25,24 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				self.addMessageRow(self.meta.youName, msg, 'agent');
 			}
 
-			messageTextarea.keypress(function(ev) {
+			messageTextarea.on('keypress', function(ev) {
 				if (ev.keyCode == 13 && !ev.metaKey) {
 					ev.preventDefault();
 					sendMsg();
 				}
 			});
 
-			this.getEl('send_btn').click(function() {
+			this.getEl('send_btn').on('click', function() {
 				sendMsg();
 			});
 
-			this.getEl('send_file').click(function(ev) {
+			this.getEl('send_file').on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				self.showUploadOverlay();
 			});
 
-			this.getEl('end_btn').click(function() {
+			this.getEl('end_btn').on('click', function() {
 				self.endChat();
 			});
 
@@ -100,17 +100,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			contentElement: this.getEl('closetab_prompt'),
 			addClassname: 'normal-size',
 			onContentSet: function(eventData) {
-				$('.unassign-trigger').click(function() {
+				$('.unassign-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'unassign';
 					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
 				});
-				$('.end-trigger').click(function() {
+				$('.end-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'end';
 					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
 				});
-				$('.cancel-trigger').click(function() {
+				$('.cancel-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 				});
 			}
@@ -128,7 +128,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this._confirmCloseOverlay.open();
 		}, this);
 
-		this.getEl('create_ticket_btn').click(function() {
+		this.getEl('create_ticket_btn').on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
 				page.setUser(self.meta.person_id, self.meta.session_id);
 			});
@@ -509,7 +509,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		})
 
-		this.getEl('agentpart_selector').delegate('.invite-trigger', 'click', function(ev) {
+		this.getEl('agentpart_selector').on('click', '.invite-trigger', function(ev) {
 			ev.preventDefault();
 			self.partOptionBox.close();
 
@@ -555,7 +555,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			self.uploadOverlay.open();
         });
 
-		$('button.send-trigger', overlayWrapper).click(function() {
+		$('button.send-trigger', overlayWrapper).on('click', function() {
 			var blobId = $('input.send_blob_id', overlayWrapper).val();
 			console.log(blobId);
 

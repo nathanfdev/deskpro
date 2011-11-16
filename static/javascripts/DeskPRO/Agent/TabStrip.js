@@ -16,7 +16,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		var self = this;
 
 		// Mouseup because firefox doesnt respond to click for middle clicks
-		this.tabStrip.mouseup(this._tabStripClick.bind(this));
+		this.tabStrip.on('mouseup', this._tabStripClick.bind(this));
 
 		this.tabManager.addEvents({
 			addTab: this._onTabAdd.bind(this),
@@ -36,7 +36,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			self.recalcScrollControls(offset);
 		};
 
-		$('#tabNavSelectorLeft').click(function(ev) {
+		$('#tabNavSelectorLeft').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			scroll_el.animate({scrollLeft: '-=' + w}, 200, function() {
@@ -44,7 +44,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			});
 			updatePosClasses(-200);
 		});
-		$('#tabNavSelectorRight').click(function(ev) {
+		$('#tabNavSelectorRight').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			scroll_el.animate({scrollLeft: '+=' + w}, 200, function() {
@@ -64,14 +64,14 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 
 		var menuEl = $('<ul id="dp_tabstrip_menu" />').hide().appendTo('body');
-		menuEl.delegate('li', 'mouseover', function() {
+		menuEl.on('mouseover', 'li', function() {
 			$('li.over', tabStrip).removeClass('over');
 			$('#' + $(this).data('tab-el-id')).addClass('over');
 		});
-		menuEl.mouseout(function() {
+		menuEl.on('mouseout', function() {
 			$('li.over', tabStrip).removeClass('over');
 		});
-		menuEl.delegate('.close', 'click', function(ev) {
+		menuEl.on('click', '.close', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 

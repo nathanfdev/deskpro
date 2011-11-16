@@ -15,7 +15,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 
 		if (this.options.triggerElement) {
 			var self = this;
-			$(this.options.triggerElement).click(function(ev) {
+			$(this.options.triggerElement).on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 

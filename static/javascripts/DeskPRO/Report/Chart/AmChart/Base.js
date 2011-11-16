@@ -12,16 +12,10 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 
 		// The type of charts to support
 		// 3 options:
-		//      fallback: Tries JavaScript, otherwise falls back to flash
+		//      fallback: Tries Flash, otherwise falls back to javascript
 		//      javascript: JavaScript only (if not supported charts will fail)
 		//      flash: Flash only
 		this.support_mode = this.options.support_mode || 'fallback';
-
-		// Chart width (px)
-		this.width  = this.options.width || 600;
-
-		// Chart height (px)
-		this.height = this.options.height || 400;
 
 		// Instance of AM chart
 		this.chart = null;
@@ -40,6 +34,10 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 
 	render: function() {
 
+		var params = {
+			bgcolor:"#FFFFFF"
+		};
+
 		var vars = {
 			path: "/static/vendor/amcharts/flash/",
 
@@ -47,9 +45,12 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 			data_file: DeskPRO_Window.getUrl('report_chart_get_data', {dashboard_stat_id: this.dashboard_stat_id})
 		};
 
-		if ((this.support_mode == 'fallback' || this.support_mode == 'javascript') &&
-			this.isJavaScriptSupported())
+		if ((this.support_mode == 'fallback' || this.support_mode == 'flash') &&
+			swfobject.hasFlashPlayerVersion("8"))
 		{
+			swfobject.embedSWF("/static/vendor/amcharts/flash/am" + this.chart_type + ".swf", this.element_id, "100%", "100%", "8.0.0", "/static/vendor/amcharts/flash/expressInstall.swf", vars, params);
+		}
+		else if (this.isJavaScriptSupported()) {
 			this.chart = new AmCharts.AmFallback();
 			this.chart.settingsFile = vars.settings_file;
 			this.chart.dataFile = vars.data_file;
@@ -57,9 +58,7 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 			this.chart.type = this.chart_type;
 			this.chart.write(this.element_id);
 		}
-		else {
-			swfobject.embedSWF("/static/vendor/amcharts/flash/amline.swf", this.elementId, "600", "400", "8.0.0", "/static/vendor/amcharts/flash/expressInstall.swf", vars, params);
-		}
+
 	},
 
 	// Checks if JavaScript is available

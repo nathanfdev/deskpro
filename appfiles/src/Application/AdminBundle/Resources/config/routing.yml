@@ -96,17 +96,17 @@ admin_labels:
   requirements: { label_type: "[a-z]+" }
 
 admin_labels_rename:
-  pattern: /settings/labels/{label_type}/rename
+  pattern: /settings/labels/{label_type}/rename.json
   defaults: { _controller: AdminBundle:Settings:renameLabel}
   requirements: { label_type: "[a-z]+" }
 
-admin_labels_ajaxnew:
-  pattern: /settings/labels/ajax-new/{label_type}
+admin_labels_new:
+  pattern: /settings/labels/new.json
   defaults: { _controller: AdminBundle:Settings:labelsAjaxNew }
   requirements: { label_type: "[a-z]+" }
 
-admin_labels_ajaxdel:
-  pattern: /settings/labels/ajax-delete/{label_type}
+admin_labels_del:
+  pattern: /settings/labels/{label_type}/delete.json
   defaults: { _controller: AdminBundle:Settings:labelsAjaxDelete }
   requirements: { label_type: "[a-z]+" }
 
@@ -114,9 +114,13 @@ admin_labels_ajaxdel:
 # Banning
 ###############################################################################
 
-admin_banning:
-  pattern: /banning
-  defaults: { _controller: AdminBundle:Banning:list }
+admin_banning_emails:
+  pattern: /banning/emails
+  defaults: { _controller: AdminBundle:Banning:listEmails }
+
+admin_banning_ips:
+  pattern: /banning/ips
+  defaults: { _controller: AdminBundle:Banning:listIps }
 
 admin_banning_newip:
   pattern: /banning/ips/new
@@ -405,29 +409,13 @@ admin_tickettriggers_edit:
   defaults: { _controller: AdminBundle:TicketTriggers:edit }
   requirements: { trigger_id: "\d+" }
 
-################################################################################
-# Ticket Urgency
-################################################################################
-
-admin_ticketurgency:
-  pattern: /tickets/urgency
-  defaults: { _controller: AdminBundle:TicketUrgency:list }
-
 admin_ticketurgency_saveoptions:
   pattern: /tickets/urgency/save-options
-  defaults: { _controller: AdminBundle:TicketUrgency:saveOptions }
-
-################################################################################
-# Ticket AutoClose
-################################################################################
-
-admin_ticketautoclose:
-  pattern: /tickets/auto-close
-  defaults: { _controller: AdminBundle:TicketAutoClose:list }
+  defaults: { _controller: AdminBundle:TicketTriggers:saveUrgencyOptions }
 
 admin_ticketautoclose_saveoptions:
   pattern: /tickets/auto-close/save-options
-  defaults: { _controller: AdminBundle:TicketAutoClose:saveOptions }
+  defaults: { _controller: AdminBundle:TicketTriggers:saveAutoCloseOptions }
 
 ################################################################################
 # Organization Fields

@@ -11,7 +11,7 @@ DeskPRO.Agent.PageFragment.Page.Test = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
-		$(el).click(function() {
+		$(el).on('click', function() {
 			window.setTimeout(function() { self.alertTab(); }, 3000);
 		});
 	}

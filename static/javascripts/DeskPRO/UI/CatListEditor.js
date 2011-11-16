@@ -56,7 +56,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		var lis = $(this.options.itemSelector, this.list);
 		this._initLisCollection(lis);
 
-		list.delegate('.sub-toggle', 'click', function() {
+		list.on('click', '.sub-toggle', function() {
 			$(this).parent().parent().toggleClass('sub-expanded');
 		});
 	},
@@ -297,7 +297,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			self.fireEvent('newAdded', [li, input, self]);
 			self._disableEditable($('.dp-cat-item', li));
 		};
-		input.blur(fnDone).keypress(function(ev) {
+		input.on('blur', fnDone).on('keypress', function(ev) {
 			if (ev.which == 13) {
 				fnDone();
 			}
@@ -409,16 +409,16 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		this.edit       = $('#' + this.options.editorBaseId + 'cat_editor').detach().appendTo('body');
 		this.editTabBk  = $('#' + this.options.editorBaseId + 'cat_editor_shadowbreak').detach().appendTo('body');
 
-		$('.close-trigger', this.edit).click(this.closeOpenEditor.bind(this));
+		$('.close-trigger', this.edit).on('click', this.closeOpenEditor.bind(this));
 
-		this.edit.click(function(ev) {
+		this.edit.on('click', function(ev) {
 			ev.stopPropagation();
 		});
-		this.editTab.click(function(ev) {
+		this.editTab.on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
-		this.editBack.click(this.closeOpenEditor.bind(this));
+		this.editBack.on('click', this.closeOpenEditor.bind(this));
 	},
 
 	destroy: function() {

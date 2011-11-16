@@ -10,13 +10,91 @@ use Application\ReportBundle\Chart\Base\AbstractChart as BaseAbstractChart;
 class SimpleVariationChart extends BaseAbstractChart
 {
 	const CHART_IDENTIFIER = 'simpleVariation';
-	
-	public function __construct($stat)
+
+	public function __construct()
 	{
-		parent::__construct($stat);
-		
 		$this->view_chart_vendor 	= 'DeskPRO';
 		$this->view_chart_class 	= 'SimpleVariation';
-		
+	}
+
+	/**
+	 * Get the Human Friendly label for the chart
+	 */
+	public static function getChartLabel()
+	{
+		return 'Variation Chart';
+	}
+
+	/***
+	 * Set the data points
+	 *
+	 * @param array $data_points The data points
+	 */
+	public function addDataPoints($data_points)
+	{
+		$this->data_points = $data_points;
+	}
+
+	/**
+	 * Get the data points
+	 *
+	 * @return array The data points
+	 */
+	public function getDataPoints()
+	{
+		return $this->data_points;
+	}
+
+	/**
+	 * Get the first data point
+	 *
+	 * @param bool $value True to return the vaule, false to return the label
+	 */
+	public function getFirstDataPoint($value = true)
+	{
+		$point = array_slice($this->data_points, 0, 1);
+
+		if ($value) {
+			return $point[key($point)];
+		}
+		else {
+			return date("F j", strtotime(key($point)));
+		}
+	}
+
+	/**
+	 * Get the last data point
+	 *
+	 * @param bool $value True to return the vaule, false to return the label
+	 */
+	public function getLastDataPoint($value = true)
+	{
+		$point = array_slice($this->data_points, -1, 1);
+
+		if ($value) {
+			return $point[key($point)];
+		}
+		else {
+			return date("F j", strtotime(key($point)));
+		}
+	}
+
+	/**
+	 * Calculate the Variance
+	 *
+	 * @param bool $as_percentage Get the variance as a percentage
+	 * @return number The variance
+	 */
+	public function calculateVariation($as_percentage = false)
+	{
+		$first_value = $this->getFirstDataPoint();
+		$last_value  = $this->getLastDataPoint();
+
+		$variation = 0;
+		if ($first_value != 0) {
+			$variation = ($last_value - $first_value) / $first_value;
+		}
+
+		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
 	}
 }
