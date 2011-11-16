@@ -11,6 +11,8 @@ class ChartFactory
 	/**
 	 * Construct a chart based on its class and some data
 	 *
+	 * TODO: Should pass in series here, rather than trying to work it out
+	 *
 	 * @param string $chart_class The class of the chart to construct
 	 * @param array $data The raw data to give to the chart
 	 * @param Stat The Stat entity
@@ -39,7 +41,18 @@ class ChartFactory
 					if (false === $series_set) {
 						// Set the series
 						foreach ($data_set['values'] as $time=>$value) {
-							$chart->addSeries($time);
+							switch ($stat->getRunFrequency()) {
+								case 'daily':
+									$formatted_series = date("j", strtotime($time));
+									break;
+								case 'monthly':
+									$formatted_series = date("M", strtotime($time));
+									break;
+								case 'yearly':
+									$formatted_series = date("Y", strtotime($time));
+									break;
+							}
+							$chart->addSeries($formatted_series);
 						}
 						$series_set = true;
 					}
