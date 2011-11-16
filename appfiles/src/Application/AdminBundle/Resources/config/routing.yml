@@ -232,7 +232,7 @@ admin_langs_editlang:
   requirements: { language_id: "\d+" }
 
 admin_langs_dellang:
-  pattern: /languages/{language_id}/delete
+  pattern: /languages/{language_id}/delete/{security_token}
   defaults: { _controller: AdminBundle:Languages:deleteLanguage }
   requirements: { language_id: "\d+" }
 
