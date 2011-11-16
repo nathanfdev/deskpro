@@ -72,6 +72,14 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $slot_number;
 
 	/**
+	 * Indicates if the ungrouped or grouped data should be displayed
+	 *
+	 * @var bool
+	 * @ORM_MAPPING\Column(name="display_grouping", type="boolean")
+	 */
+	protected $display_grouping;
+
+	/**
 	 * The dashboard creation date
 	 *
 	 * @var \DateTime
@@ -98,11 +106,6 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getChartType()
 	{
 
-	}
-
-	public function getDisplayGrouping()
-	{
-		return true;
 	}
 
 	/**
