@@ -25,7 +25,7 @@
 		</div>
 
 		<div class="footer">
-		      <span class="sparkline">{{ chart.dataPoints|join(',') }}</span>
+		      <div class="sparkline">{{ chart.dataPoints|join(',') }}</div>
 		</div>
 	{% else %}
 		<div class="chart-not-renderable">{{ chart.getNoDataLabel }}</div>

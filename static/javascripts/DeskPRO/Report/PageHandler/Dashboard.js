@@ -294,7 +294,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			stop: function(event, ui) {
 				// Remove the resize overlay
 				$(this).find('.resize-overlay').remove();
-				
+
 				// TODO: remove this when window resize event handler is working
 				self.calculateColumnWidth();
 
@@ -540,7 +540,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	getDashboardWidth: function() {
 
 		// Last widget doesn't need to have spacing on the right
-		return this.$dashboard.width() - this.getWidgetSpacerWidth() - 50;
+		return this.$dashboard.width() - this.getWidgetSpacerWidth();
 
 	},
 
