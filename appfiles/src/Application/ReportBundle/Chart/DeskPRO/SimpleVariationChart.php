@@ -64,18 +64,7 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public function getFirstDataPoint($value = true)
 	{
-		if (0 === count($this->data_points)) {
-			return null;
-		}
-
-		$point = array_slice($this->data_points, 0, 1);
-
-		if ($value) {
-			return $point[key($point)];
-		}
-		else {
-			return date("F j", strtotime(key($point)));
-		}
+		return $this->getDataPoint(0, $value);
 	}
 
 	/**
@@ -85,11 +74,30 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public function getLastDataPoint($value = true)
 	{
+		return $this->getDataPoint(0, $value, true);
+	}
+
+	/**
+	 * Get a data point by index
+	 *
+	 * @param int $index The index to return (starts at 0). Is $reverse is true
+	 *                   index counts from end of array (ie, index 2 would
+	 *                   get the 2nd from last element)
+	 * @param bool $value True to return the vaule, false to return the label
+	 * @param bool $reverse True to search from the end of the array
+	 */
+	public function getDataPoint($index, $value = true, $reverse = false)
+	{
 		if (0 === count($this->data_points)) {
 			return null;
 		}
 
-		$point = array_slice($this->data_points, -1, 1);
+		if (true === $reverse) {
+			$point = array_slice($this->data_points, (($index+1) * -1), 1);
+		}
+		else {
+			$point = array_slice($this->data_points, $index, 1);
+		}
 
 		if ($value) {
 			return $point[key($point)];
@@ -107,17 +115,17 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public function calculateVariation($as_percentage = false)
 	{
-		$first_value = $this->getFirstDataPoint();
-		$last_value  = $this->getLastDataPoint();
+		$previous_value = $this->getDataPoint(1, true, true);
+		$current_value  = $this->getLastDataPoint();
 
 		// No values, cannot calculate variations
-		if (true === is_null($first_value) || true === is_null($last_value)) {
+		if (true === is_null($previous_value) || true === is_null($current_value)) {
 			return null;
 		}
 
 		$variation = 0;
-		if ($first_value != 0) {
-			$variation = ($last_value - $first_value) / $first_value;
+		if ($previous_value != 0) {
+			$variation = ($current_value - $previous_value) / $previous_value;
 		}
 
 		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
