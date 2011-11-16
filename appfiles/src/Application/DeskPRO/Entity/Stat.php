@@ -346,11 +346,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		// Get the data points we care about
 		$data_points = $this->generateDataPoints($end_date, $data_point_count);
 
+		$start_date  = new \DateTime($data_points[0] . '00:00:00');
+
 		$stat_value_ids = array();
 
 		// Get the StatValue's
 		$stat_values = App::getEntityRepository('DeskPRO:StatValue')
-				  ->getForStatRangeDate($this->getId(), $end_date, $data_point_count);
+				  ->getForStatRangeDate($this->getId(), $start_date, $end_date);
 
 		// Transform the raw data - Set the default data points. We need
 		// to do this incase there is missing data in the DB, ie we havent

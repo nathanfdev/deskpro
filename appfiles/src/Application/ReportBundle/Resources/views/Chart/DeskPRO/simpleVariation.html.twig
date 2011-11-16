@@ -10,20 +10,20 @@
 			<table>
 				<tr>
 					<td class="prev">
-						<span class="value">{{ chart.getFirstDataPoint() }}</span>
-						<span class="label">{{ chart.getFirstDataPoint(false) }}</span>
+						<span class="value">{{ chart.getFirstDataPoint()|default('-') }}</span>
+						<span class="label">{{ chart.getFirstDataPoint(false)|default('-') }}</span>
 					</td>
 					<td class="variation direction direction-up-red">
-						<span class="amount">{{ chart.calculateVariation(true) }}%</span>
+						<span class="amount">{{ chart.calculateVariation(true)|default('-') }}%</span>
 					</td>
 					<td class="actual">
-						<span class="value">{{ chart.getLastDataPoint() }}</span>
-						<span class="label">{{ chart.getLastDataPoint(false) }}</span>
+						<span class="value">{{ chart.getLastDataPoint()|default('-') }}</span>
+						<span class="label">{{ chart.getLastDataPoint(false)|default('-') }}</span>
 					</td>
 				</tr>
 			</table>
 		</div>
-	
+
 		<div class="footer">
 		      <span class="sparkline">{{ chart.dataPoints|join(',') }}</span>
 		</div>

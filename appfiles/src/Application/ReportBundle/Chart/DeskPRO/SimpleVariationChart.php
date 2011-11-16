@@ -15,9 +15,9 @@ class SimpleVariationChart extends BaseAbstractChart
 	 * The data points
 	 *
 	 * @var array
-	 */ 
+	 */
 	protected $data_points = array();
-	
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -67,7 +67,7 @@ class SimpleVariationChart extends BaseAbstractChart
 		if (0 === count($this->data_points)) {
 			return null;
 		}
-		
+
 		$point = array_slice($this->data_points, 0, 1);
 
 		if ($value) {
@@ -88,7 +88,7 @@ class SimpleVariationChart extends BaseAbstractChart
 		if (0 === count($this->data_points)) {
 			return null;
 		}
-		
+
 		$point = array_slice($this->data_points, -1, 1);
 
 		if ($value) {
@@ -109,12 +109,12 @@ class SimpleVariationChart extends BaseAbstractChart
 	{
 		$first_value = $this->getFirstDataPoint();
 		$last_value  = $this->getLastDataPoint();
-		
+
 		// No values, cannot calculate variations
 		if (true === is_null($first_value) || true === is_null($last_value)) {
-			return '-';
+			return null;
 		}
-		
+
 		$variation = 0;
 		if ($first_value != 0) {
 			$variation = ($last_value - $first_value) / $first_value;
@@ -122,7 +122,7 @@ class SimpleVariationChart extends BaseAbstractChart
 
 		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
 	}
-	
+
 	/**
 	 * Is the chart ready to be rendered, ie do it have all the data it needs
 	 *
@@ -131,12 +131,12 @@ class SimpleVariationChart extends BaseAbstractChart
 	public function isChartRenderable()
 	{
 		$renderable = false;
-		
+
 		// We need at least 2 data points
 		if (count($this->data_points) >= 2) {
 			$renderable = true;
 		}
-		
+
 		return $renderable;
 	}
 }
