@@ -28,6 +28,7 @@ class NewDeal
     public $attach = array();
     public $deal_type;
     public $deal_stage;
+    public $organizations;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -38,7 +39,8 @@ class NewDeal
 
     public function __construct(Person $person_context)
     {
-            $this->person = new NewTicketPerson();
+            $this->person = new NewDealPerson();
+            $this->organizations = new NewDealOrganization();
             $this->_person_context = $person_context;
     }
 
@@ -46,13 +48,14 @@ class NewDeal
     {
 
         $em = App::getOrm();
-		$em->beginTransaction();
+		//$em->beginTransaction();
 
 		#------------------------------
 		# The user owner
 		#------------------------------
-
+ 
 		if ($this->person->id) {
+                    
 			$person = $em->find('DeskPRO:Person', $this->person->id);
 		} else {
 			$person = $em->getRepository('DeskPRO:Person')->findOneByEmail($this->person->email_address);
@@ -62,5 +65,53 @@ class NewDeal
 			$person = new Person();
 			$person->addEmailAddressString($this->person->email_address);
 		}
+
+                if (!$person->name && $this->person->name) {
+			$person->name = $this->person->name;
+		}
+
+		$em->persist($person);
+                $em->flush();
+
+                if($this->organizations->id)
+                {
+                    $org = $em->find('DeskPRO:Organization',$this->organizations->id);
+                }else if($this->organizations->name){
+                
+                    $org = $em->getRepository('DeskPRO:Organization')->findOneByName($this->organizations->name);
+                }
+                if (!$org) {
+                        $org = new Organization();
+                        $org['name'] = $this->organizations->name;
+                }
+
+                $em->persist($org);
+                $em->flush();
+                
+                
+                #------------------------------
+		# Deal
+		#------------------------------
+
+                $deal = new Deal();
+
+                $deal->setDealTypeId($this->deal_type);
+                $deal->setDealStageId($this->deal_stage);
+                $deal->setPersonId($this->_person_context->id);
+                $deal->setAsignedAgentId($this->agent_id);
+                $deal['title'] = $this->title;
+                $deal->addOrganizations($org);
+                $deal->addPeoples($person);
+
+                $em->persist($deal);
+                $em->flush();
+                //$em->commit();
+
+                $this->_deal = $deal;
+    }
+
+    public function getDeal()
+    {
+        return $this->_deal;
     }
 }

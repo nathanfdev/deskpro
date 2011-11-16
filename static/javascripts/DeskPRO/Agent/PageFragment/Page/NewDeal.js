@@ -14,6 +14,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
+
+                this.form = $('form', this.wrapper).submit(function(ev) {
+			ev.preventDefault();
+		});
+
+
                 this._initDepartmentSection();
                 this._initUserSection();
                 this._initOrgEdit();
@@ -37,6 +43,15 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 }) ;
 
         },
+
+	closeSelf: function() {
+		var ev = {cancel: false};
+		this.fireEvent('closeSelf', ev);
+
+		if (!ev.cancel) {
+			this.parent();
+		}
+	},
 
         submit: function() {
 		var formData = this.form.serializeArray();
@@ -169,7 +184,9 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		var rechooseBtn = this.getEl('switch_org');
 
 		rechooseBtn.click(function() {
-			showOrganizationChoice(); return false;
+			showOrganizationChoice();
+                        $('.org-id').val(0);
+                        return false;
 		});
 
 		var showOrganizationChoice = function() {
@@ -193,13 +210,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
                         $.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/deals/new/get-organization-row/0',
-				data: { 'name': term },
+				url: BASE_URL + 'agent/deals/new/get-organization-row/0',				
 				dataType: 'html',
 				context: this,
 				success: function(html) {
 					placeOrganizationRow(html);
-					$('input.name', orgfields).val(term);
+					$('input.organization_name', orgfields).val(term);
 				}
 			});
 			

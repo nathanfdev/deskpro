@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
 			>
 				Organization:
 				<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
-				<input type="hidden" class="org-id" name="newdeal[organization][id]" value="{{ person.organization.id|default(0) }}" />
+				<input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
 						<a>
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
                     <div class="col">
                             <h4>Type</h4>
                             {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
-                                'name': 'actions[dealtype]',
+                                'name': 'newdeal[deal_type]',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Type',
@@ -146,7 +146,7 @@ pageMeta.baseId = '{{ baseId }}';
                             <h4>Stage</h4>
                             <dd class="set-deal-stage">
                             {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
-                                'name': 'actions[dealtype]',
+                                'name': 'newdeal[deal_stage]',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Stage',
@@ -157,7 +157,7 @@ pageMeta.baseId = '{{ baseId }}';
                     </div>
                     <div class="col">
                             <h4>Assignment</h4>
-                            <input type="hidden" name="newdeal[agent_id]" value="0" id="{{baseId}}_agent_id" />
+                            <input type="hidden" name="newdeal[agent_id]" value="{{person.id}}" id="{{baseId}}_agent_id" />
                             
                             <span id="{{baseId}}_assign_btn" class="agent-prop-links">
                                     <span id="{{baseId}}_agent_label">Me</span> 
@@ -176,9 +176,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_assign_ob">
     	<header>
-			<h4>Assignments</h4>
-			<span class="close close-trigger"></span>
-		</header>
+            <h4>Assignments</h4>
+            <span class="close close-trigger"></span>
+        </header>
     	<div class="col">
 		<section data-section-name="agents">
 			<header>

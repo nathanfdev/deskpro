@@ -51,13 +51,13 @@ pageMeta.baseId = '{{ baseId }}';
                 <dt class="type-labels">Stage</dt>
                 <dd class="set-deal-stage">
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
-                                'name': 'actions[dealtype]',
+                                'name': 'actions[dealstage]',
                                 'with_blank': true,
                                 'with_blank2': true,
-                                'blank_title': 'Set Deal Type',
+                                'blank_title': 'Set Deal Stage',
                                 'options': deal_stage,
                                 'selected': deal.deal_stage.id,
-                                'add_classname': 'select-deal-type'
+                                'add_classname': 'select-deal-stage'
                     } %}
                 </dd>
             </dl>

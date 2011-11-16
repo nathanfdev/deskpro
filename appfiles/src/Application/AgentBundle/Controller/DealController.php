@@ -48,29 +48,33 @@ class DealController extends AbstractController
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
            'deal_stage' => $deal_stage,
-           'agents' => $agents
+           'agents' => $agents,
+           'person' => $this->person
 
         ));
     }
 
 
-    public function newSaveAction()
-    {
+    public function newSaveAction() {
+        $success = false;
+        $newdeal = new \Application\AgentBundle\Form\Model\NewDeal($this->person);
 
-        $newdeal = new \Application\AgentBundle\Form\Model\NewDeal($this->$person);
-        
-        $formtpe = new \Application\AgentBundle\Form\Type\NewDeal();
-        $form = $this->get('form.factory')->create($formType, $newticket);
+        $formtype = new \Application\AgentBundle\Form\Type\NewDeal();
+        $form = $this->get('form.factory')->create($formtype, $newdeal);
 
         if ($this->get('request')->getMethod() == 'POST') {
-                $form->bindRequest($this->get('request'));
-                $form->isValid();
-                $newdeal->save();
+            $form->bindRequest($this->get('request'));
+            $form->isValid();
+            $newdeal->save();
+
+            $deal = $newdeal->getDeal();
+            $success = true;
         }
+        return $this->createJsonResponse(array(
+            'success' => $success,
+            'deal_id' => $deal['id']
+        ));
     }
-
-
-
 
     /**
      * Generate the category wise list gor task.
@@ -331,7 +335,7 @@ class DealController extends AbstractController
                         'name'=> 'actions[dealtype]',
                         'with_blank'=> true,
                         'with_blank2'=> true,
-                        'blank_title'=> 'Set Deal stage',
+                        'blank_title'=> 'Set Deal Stage',
                         'options'=> $deal_stage,
                         'selected'=> '',
                         'add_classname'=> 'select-deal-stage'
@@ -356,7 +360,7 @@ class DealController extends AbstractController
             return $this->createJsonResponse($data);
         }
 
-        public function newticketGetPersonRowAction($person_id)
+        public function newdealGetPersonRowAction($person_id)
 	{
 		if (!$person_id && $this->in->getUint('person_id')) {
 			$person_id = $this->in->getUint('person_id');
@@ -393,34 +397,11 @@ class DealController extends AbstractController
 		));
 	}
 
-        public function newticketGetOrganizationRowAction($org_id)
+        public function newdealGetOrganizationRowAction($org_id)
 	{
-            if (!$org_id && $this->in->getUint('org_id')) {
-			$org_id = $this->in->getUint('org_id');
-		}
-
 		$organization = false;
 		if ($org_id) {
 			$organization = $this->em->find('DeskPRO:Organization', $org_id);
-		}
-		if (!$organization && $this->in->getString('name')) {
-			$organization = $this->em->getRepository('DeskPRO:Organization')->findOneByName($this->in->getString('name'));
-		}
-
-		$session = null;
-		if ($this->in->getUint('session_id')) {
-			$session = $this->em->find('DeskPRO:Session', $this->in->getUint('session_id'));
-		}
-		if ($session && $session->organization) {
-			$organization = $session;
-		}
-
-		if (!$organization) {
-			$organization = new Organization();
-			if ($session) {
-				$organization->name = $session->visitor->organization->name;
-				
-			}
 		}
 
 		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
