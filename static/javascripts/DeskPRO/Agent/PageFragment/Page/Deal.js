@@ -16,6 +16,8 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initDisplayOptions();
         this._initAgentSection();
         this._initCustomFieldsEditor();
+        this._initAssignPersonSection();
+        this._initAssignOrganizationSection();
 
         var el = this.getEl('agent_assign_ob');
         this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
@@ -75,6 +77,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				success: function() {
 					row.remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                                        DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
 		});
@@ -100,6 +103,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				success: function() {
 					row.remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                                        DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
 		});
@@ -121,6 +125,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				},
 				success: function(data) {
                                     $('.set-deal-stage').html(data.deal_stage);
+                                    DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
                 }) ;
@@ -232,5 +237,52 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 
             }
         });
-    }
+    },
+    
+    _initAssignPersonSection: function() {
+
+            var self = this;
+            var el = this.getEl('person_assign_ob');
+            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+            element: el,
+            trigger: this.getEl('person_assign_btn'),
+            onSave: function(ob) {
+                var selections = ob.getAllSelected();
+                var agent_id = parseInt(selections.agents || 0);
+
+//                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
+//
+//                var value = selections.agents;
+//                if (value == 0) {
+//                    label = 'Unassigned';
+//                }
+//
+//                self.getEl('agent_id').val(agent_id);
+//		self.getEl('agent_label').text(label);
+
+
+                $('.reply-agent-team-ob').slideUp();
+
+            }
+        });
+
+	},
+
+    _initAssignOrganizationSection: function() {
+
+            var self = this;
+            var el = this.getEl('org_assign_ob');
+            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+            element: el,
+            trigger: this.getEl('org_assign_btn'),
+            onSave: function(ob) {
+                var selections = ob.getAllSelected();
+                var agent_id = parseInt(selections.agents || 0);
+
+                $('.reply-agent-team-ob').slideUp();
+
+            }
+        });
+
+	}
 });

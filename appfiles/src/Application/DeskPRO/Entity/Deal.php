@@ -151,7 +151,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * Deal Linked to Relevent peoples.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id")
+     * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id", cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinTable(name="deal_people",
      *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
      *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}
@@ -163,7 +163,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * Deal Linked to Relevent organization.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="Organization", fetch="EAGER", indexBy="id")
+     * @ORM_Mapping\ManyToMany(targetEntity="Organization", fetch="EAGER", indexBy="id", cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinTable(name="deal_organizations",
      *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
      *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")}
@@ -186,11 +186,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;    
 
-//    /**
-//     * @var \Doctrine\Common\Collections\ArrayCollection
-//     * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusNote", mappedBy="deal")
-//     */
-//    protected $twitter_status_notes;
 
     /**
      * Label manager for adding/removing labels
@@ -326,6 +321,43 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return int
 	 */
+	public function getPersonId()
+	{
+		if (! $this->person) {
+			return 0;
+		}
+
+		return $this->person['id'];
+	}
+
+	/**
+	 * Sets the task's assigned agent's id.
+	 *
+	 * @param int id The agent's id.
+	 * @throws \InvalidArgumentException Thrown when there's no preson with that
+	 *                                   id or the person is not an agent.
+	 */
+        public function setPersonId($id)
+	{
+		if(!$id || $id == null){
+                    $this->person = null;
+                    return;
+                }
+
+
+                $person = App::getEntityRepository('DeskPRO:Person')->find($id);
+
+		if (! $person) {
+			throw new \InvalidArgumentException('No agent for id ' . $id);
+		}
+		$this->person = $person;
+	}
+
+        /**
+	 * Returns the task's assigned agent's id.
+	 *
+	 * @return int
+	 */
 	public function getAsignedAgentId()
 	{
 		if (! $this->assigned_agent) {
@@ -431,9 +463,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		$this->deal_stage = $deal_stage;
 	}
 
-
-
-
         public function deletePeople(\Application\DeskPRO\Entity\Person $person)
         {
             $this->peoples->removeElement($person);
@@ -444,5 +473,44 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
             $this->organizations->removeElement($organization);
         }
 
+        /**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\People $people
+	 */
+	public function addPeoples(\Application\DeskPRO\Entity\Person $people)
+	{
+		$this->peoples[] = $people;
+	}
+
+
+        /**
+         * Get peoples         
+         *
+         * @return \Doctrine\Common\Collections\ArrayCollection
+         */
+        public function getPeoples()
+        {
+            return $this->peoples;
+        }
+
+        /**
+	 * Add a peoples
+         * 
+	 * @param \Application\DeskPRO\Entity\Organizations $organizations
+	 */
+	public function addOrganizations(\Application\DeskPRO\Entity\Organization $organizations)
+	{
+		$this->organizations[] = $organizations;
+	}
+
+        /**
+         * Get organizations
+         *
+         * @return \Doctrine\Common\Collections\ArrayCollection
+         */
+        public function getOrganizations()
+        {
+            return $this->organizations;
+        }
 
 }

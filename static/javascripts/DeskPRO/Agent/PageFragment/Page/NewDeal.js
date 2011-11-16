@@ -14,6 +14,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
+
+                this.form = $('form', this.wrapper).submit(function(ev) {
+			ev.preventDefault();
+		});
+
+
                 this._initDepartmentSection();
                 this._initUserSection();
                 this._initOrgEdit();
@@ -38,6 +44,15 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
         },
 
+	closeSelf: function() {
+		var ev = {cancel: false};
+		this.fireEvent('closeSelf', ev);
+
+		if (!ev.cancel) {
+			this.parent();
+		}
+	},
+
         submit: function() {
 		var formData = this.form.serializeArray();
 
@@ -51,6 +66,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 				if (data.success) {
 
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/deal/' + data.deal_id);
+                                        DeskPRO_Window.sections.deals_section.refresh();
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
@@ -94,16 +110,15 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		var userfields = this.getEl('user_choice');
 		var rechooseBtn = this.getEl('switch_user');
 
-		rechooseBtn.on('click', function() {
-			showUserChoice();
+		rechooseBtn.click(function() {
+			showUserChoice(); return false;
 		});
 
 		var showUserChoice = function() {
 			userfields.empty();
 			userfields.hide();
 			searchbox.show();
-			rechooseBtn.hide();
-			self.loadSnippetsViewer();
+			rechooseBtn.hide();			
 		};
 
 		var placeUserRow = function(html) {
@@ -113,13 +128,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+				url: BASE_URL + 'agent/deals/new/get-person-row/' + personId,
 				dataType: 'html',
 				context: this,
 				success: function(html) {
 					$('input.person-id', searchbox).val(personId);
-					placeUserRow(html);
-					self.loadSnippetsViewer();
+					placeUserRow(html);					
 				}
 			});
 			sb.close();
@@ -128,7 +142,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
+				url: BASE_URL + 'agent/deals/new/get-person-row/0',
 				data: { 'email': term },
 				dataType: 'html',
 				context: this,
@@ -166,7 +180,27 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	_initOrgEdit: function() {
 		var self = this;
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var rechooseBtn = this.getEl('switch_org');
 
+		rechooseBtn.click(function() {
+			showOrganizationChoice();
+                        $('.org-id').val(0);
+                        return false;
+		});
+
+		var showOrganizationChoice = function() {
+			orgfields.empty();
+			orgfields.hide();
+			searchbox.show();
+			rechooseBtn.hide();
+		};
+
+                var placeOrganizationRow = function(html) {
+			self.placeOrganizationRow(html);
+		};
+                
 		var orgEdit    = this.getEl('org_edit_wrap');
 
 		//orgEnableBtn
@@ -175,10 +209,32 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
 		}).bind('orgsearchboxcreate', function(ev, term, name) {
 
-
+                        $.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/deals/new/get-organization-row/0',				
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					placeOrganizationRow(html);
+					$('input.organization_name', orgfields).val(term);
+				}
+			});
 		}).bind('orgsearchreverted', function(ev, term, name) {
 
 		});
+	},
+
+        placeOrganizationRow: function(html) {
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var rechooseBtn = this.getEl('switch_org');
+
+		orgfields.empty();
+		orgfields.html(html);
+
+		rechooseBtn.show();
+		searchbox.hide();
+		orgfields.show();
 	}
 
 

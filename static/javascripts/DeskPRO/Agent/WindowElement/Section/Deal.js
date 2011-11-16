@@ -9,16 +9,19 @@ DeskPRO.Agent.WindowElement.Section.Deal = new Orb.Class({
 			this.urlFragmentName = 'deals';
 
             this.setSectionElement($('<section id="deal_outline"></section>'));
+            this.refresh();
+            
+        },
 
-            $.ajax({
+	refresh: function() {
+		$.ajax({
                 url: BASE_URL + 'agent/deal/get-section-data.json',
                 context: this,
                 success: function(data) {
                     this._initSection(data);
                 }
             });
-        },
-
+	},
 	_initSection: function(data) {
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
