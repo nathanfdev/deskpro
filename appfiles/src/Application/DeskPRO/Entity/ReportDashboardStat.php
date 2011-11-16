@@ -104,4 +104,40 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return true;
 	}
+
+	/**
+	 * Get the Title. Constructed from the stat title and its various attributes.
+	 *
+	 * @return string The title.
+	 */
+	public function getTitle()
+	{
+		$stat_title = $this->getStat()->getTitle();
+		$grouping_name = $this->getStat()->getGroupingName();
+
+		$title = $stat_title;
+
+		// Add the grouping if we need it
+		if ($this->getDisplayGrouping()) {
+			$title .= ' by ' . $grouping_name;
+		}
+
+		$data_points = $this->getStat()->getDefaultDataPointCount();
+
+		// Add the update period
+		$title .= ' - Last ' . $data_points . ' ';
+		switch (strtolower($this->getStat()->getPeriod())) {
+			case 'daily':
+				$title .= ' ' . (($data_points > 1) ? 'Days' : 'Day');
+				break;
+			case 'monthly':
+				$title .= ' ' . (($data_points > 1) ? 'Months' : 'Month');
+				break;
+			case 'yearly':
+				$title .= ' ' . (($data_points > 1) ? 'Years' : 'Year');
+				break;
+		}
+
+		return $title;
+	}
 }

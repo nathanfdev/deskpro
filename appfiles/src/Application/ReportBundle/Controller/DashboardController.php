@@ -116,18 +116,18 @@ class DashboardController extends AbstractController
 	public function ajaxDeleteWidgetAction($dashboard_id, $dashboard_stat_id)
 	{
 		$success = true;
-		
+
 		try {
 			$dashboard     = $this->getDashboard($dashboard_id);
 			$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
-	
+
 			App::getOrm()->remove($dashboardStat);
 			App::getOrm()->flush();
 		}
 		catch (\Exception $e) {
 			$success = false;
 		}
-		
+
 		return $this->createJsonResponse(array('success' => $success));
 	}
 
@@ -139,7 +139,7 @@ class DashboardController extends AbstractController
 		$dashboard     = $this->getDashboard($dashboard_id);
 		$stat      	   = $this->getStat($stat_id);
 		$dashboardStat = $this->getDashboard($dashboard_id);
-		
+
 		$dashboardStat = new ReportDashboardStat();
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 
@@ -154,25 +154,25 @@ class DashboardController extends AbstractController
 				$dashboard_stat->setReportDashboard($dashboard);
 				$dashboard_stat->setStat($stat);
 				$dashboard_stat->setSlotNumber($next_slot_number);
-		
+
 				App::getOrm()->persist($dashboard_stat);
 				App::getOrm()->flush();
-		
+
 				$widget = $this->getWidgetDetails($dashboard_stat);
-		
+
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
-		
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'stat'		=> $stat,
 			'form'      => $form->createView(),
 		));
-		
+
 		return $this->createJsonResponse(array('html' => $html));
 	}
-	
+
 	/**
 	 * Edit dashboard widget
 	 */
@@ -192,21 +192,21 @@ class DashboardController extends AbstractController
 
 				App::getOrm()->persist($dashboard_stat);
 				App::getOrm()->flush();
-		
+
 				$widget = $this->getWidgetDetails($dashboard_stat);
-		
+
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
-		
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'form'      => $form->createView(),
 		));
-		
+
 		return $this->createJsonResponse(array('html' => $html));
 	}
-	
+
 	/**
 	 * Get the Dashboard Widgets
 	 */
@@ -244,7 +244,7 @@ class DashboardController extends AbstractController
 			'slot_number'   => $dashboard_stat->getSlotNumber(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),
-				'title' => $stat->getTitle(),
+				'title' => $dashboard_stat->getTitle(),
 			),
 		);
 	}
