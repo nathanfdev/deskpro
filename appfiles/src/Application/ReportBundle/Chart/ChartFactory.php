@@ -6,7 +6,7 @@ use Application\DeskPRO\Entity\Stat;
 
 class ChartFactory
 {
-	const LIMIT = 4;
+	const LIMIT = 6;
 
 	/**
 	 * Construct a chart based on its class and some data
@@ -104,7 +104,7 @@ class ChartFactory
 				}
 
 				break;
-			
+
 			/**
 			 * DeskPRO - Detailed Drilldown Chart
 			 */

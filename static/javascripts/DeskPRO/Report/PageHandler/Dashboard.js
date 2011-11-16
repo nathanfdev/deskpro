@@ -27,6 +27,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// The width of 1 columns
 		this.column_width = null;
 
+		// The absolute minimum a column can be resized to (px)
+		this.min_column_width = 250;
+
 		// Spacing between widgets in the columns [top, right, bottom, left]
 		this.column_spacing = [0, 5, 10, 5];
 
@@ -52,6 +55,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Init the page
 	initPage: function() {
 		var self = this;
+
+		this.setMinPageWidth();
 
 		// Setup some templates
 		$('#dashboard_widget').template('dashboard_widget');
@@ -522,9 +527,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	calculateColumnWidth: function() {
 
 		this.column_width = (this.getDashboardWidth() - this.getTotalSpacerWidth()) / this.number_columns;
+		if (this.column_width < this.min_column_width) {
+			this.column_width = this.min_column_width;
+		}
 
 		this.setupResizableGrid();
-
 	},
 
 	// Calculate the width of a widget by the number of columns it takes up
@@ -558,5 +565,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		return this.getWidgetSpacerWidth() * (this.number_columns - 1);
 
 	},
+
+	// Set the minimum page widht
+	setMinPageWidth: function() {
+
+		$('body').css('min-width', '1240px');
+
+	}
 
 });

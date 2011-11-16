@@ -1,11 +1,5 @@
 {% import "ReportBundle:Common:macros.html.twig" as stat_macros %}
 
-<script type="text/javascript">
-	$(function() {
-	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100%', height: '25px'});
-	});
-</script>
-
 <div class="variation-change-chart" id="dashboard-chart-{{ dashboard_stat.id }}">
 	{% if chart.isChartRenderable %}
 		<div class="main">

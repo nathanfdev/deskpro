@@ -35,7 +35,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	);
 
 	protected static $availableVariations = array(
-		self::VARIATION_BAD, self::VARIATION_NEUTRAL, self::VARIATION_GOOD
+		 self::VARIATION_GOOD, self::VARIATION_NEUTRAL,self::VARIATION_BAD
 	);
 
 	/**

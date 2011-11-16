@@ -10,17 +10,17 @@ DeskPRO.Report.Chart.DeskPRO.Base = new Orb.Class({
 
 		this.parent(element_id, dashboard_stat_id, options);
 	},
-	
-	
+
 	render: function() {
 		var self = this;
-		
+
 		// Load the chart
 		$.ajax({
 			url: DeskPRO_Window.getUrl('report_chart_get', {dashboard_stat_id: this.dashboard_stat_id}),
 			type: 'GET',
 			success: function(data) {
 				$('#' + self.element_id).html(data);
+				self.onRenderComplete();
 			}
 		});
 	},
