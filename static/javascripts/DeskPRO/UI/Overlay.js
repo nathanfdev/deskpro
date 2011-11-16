@@ -129,6 +129,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.elements.modal.fadeIn(200);
 
+		var topOffset = $(document).scrollTop();
+
 		if (this.options.contentMethod == 'iframe') {
 
 			var w = $(window).width() - 250;
@@ -142,7 +144,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var x = ($(window).width() - this.elements.wrapperOuter.outerWidth()) / 2;
 			var y = ($(window).height() - this.elements.wrapperOuter.outerHeight()) / 2;
 
-			this.elements.wrapperOuter.css({'left': x, 'top': y});
+			this.elements.wrapperOuter.css({'left': x, 'top': y+topOffset});
 
 		} else {
 			var w = this.elements.wrapperOuter.outerWidth();
@@ -154,7 +156,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var topForCenter = (pageH / 2) - (h / 2);
 
 			this.elements.wrapperOuter.css({
-				'top': topForCenter,
+				'top': topForCenter+topOffset,
 				'left': leftForCenter
 			});
 		}
