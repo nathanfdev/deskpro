@@ -11,5 +11,9 @@ DeskPRO.Report.Chart.Base.Basic = new Orb.Class({
 		this.element_id        = element_id;
 		this.dashboard_stat_id = dashboard_stat_id;
 		this.options           = options || {};
-	}
+	},
+
+	onRenderComplete: function() {
+	},
+
 });
