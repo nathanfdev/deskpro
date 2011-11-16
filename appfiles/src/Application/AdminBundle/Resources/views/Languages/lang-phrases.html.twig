@@ -1,0 +1,28 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% extends 'AdminBundle:Languages:lang-layout.html.twig' %}
+{% block pagetitle %}
+	<h1>{{ language.title }}: {{ phrase('admin.lang.phrasegroup_' ~ group|replace({'.': '_'})) }}</h1>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_langs_editphrases_save', {'language_id': language.id|default(0)}) }}" method="post">
+
+{{ design.structure_table() }}
+	<tbody>
+	{% for phrase_id,phrase in master_phrases %}
+		<tr class="{% if custom_phrases[phrase_id] %}custom{% endif %}" data-phrase-id="{{ phrase_id }}">
+			<td width="215">{{ phrase_id }}</td>
+			<td>
+				<input class="phrase-preview" type="text" style="width: 98%;" value="{% if custom_phrases[phrase_id] %}{{ custom_phrases[phrase_id] }}{% elseif lang_phrases[phrase_id] %}{{ lang_phrases[phrase_id] }}{% else %}{{ master_phrases[phrase_id] }}{% endif %}" />
+				<textarea style="display: none" class="master-phrase">{{ master_phrases[phrase_id] }}</textarea>
+				<textarea style="display: none" class="lang-phrase">{{ lang_phrases[phrase_id] }}</textarea>
+				<textarea style="display: none" class="custom-phrase">{{ custom_phrases[phrase_id] }}</textarea>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+{{ design.structure_table_end() }}
+
+</form>
+
+{% endblock %}

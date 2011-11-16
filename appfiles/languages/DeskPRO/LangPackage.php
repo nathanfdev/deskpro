@@ -66,7 +66,7 @@ class LangPackage
 	 */
 	public static function getTitle()
 	{
-		return ucwords(str_replace('\\', ' ', Util::getClassNamespace(get_called_class())));
+		return 'English (US)';
 	}
 
 

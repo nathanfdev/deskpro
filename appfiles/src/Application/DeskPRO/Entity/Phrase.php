@@ -32,7 +32,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * The language this phrase belongs to
 	 *
@@ -65,6 +65,23 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="phrase", type="text")
 	 */
 	protected $phrase;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="original_hash", type="string", length=40)
+	 */
+	protected $original_hash;
+
+	/**
+	 * Is this phrase marked as outdated?
+	 *
+	 * This happens when we detect the original hash stored is different from what
+	 * is on the filesystem.
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_outdated", type="boolean")
+	 */
+	protected $is_outdated = false;
 
 	/**
 	 * @var \DateTime

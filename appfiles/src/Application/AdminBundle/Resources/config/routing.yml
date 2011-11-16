@@ -219,41 +219,35 @@ admin_styles_editorpopup:
   defaults: { _controller: AdminBundle:Styles:editorPopup }
 
 ################################################################################
-# locales
-################################################################################
-
-admin_locales:
-  pattern: /locales
-  defaults: { _controller: AdminBundle:Locales:list }
-
-admin_locales_edit:
-  pattern: /locales/{locale_id}/edit
-  defaults: { _controller: AdminBundle:Locales:edit }
-  requirements: { locale_id: "\d+" }
-
-################################################################################
 # Languages
 ################################################################################
 
 admin_langs:
-  pattern: /locales/languages
-  defaults: { _controller: AdminBundle:Languages:listLanguages }
+  pattern: /languages
+  defaults: { _controller: AdminBundle:Languages:index }
 
 admin_langs_editlang:
-  pattern: /locales/languages/{language_id}/edit
+  pattern: /languages/{language_id}/edit
   defaults: { _controller: AdminBundle:Languages:editLanguage }
   requirements: { language_id: "\d+" }
 
-admin_langs_phrases:
-  pattern: /locales/languages/{language_id}/phrases
-  defaults: { _controller: AdminBundle:Languages:listPhrases}
-  requirements: { language_id: "\d+", phrase_group: null }
+admin_langs_newlang:
+  pattern: /languages/new-lang
+  defaults: { _controller: AdminBundle:Languages:newLanguage }
 
-admin_langs_editphrasegroup:
-  pattern: /locales/languages/{language_id}/edit-phrasegroup
-  defaults: { _controller: AdminBundle:Languages:editPhraseGroup }
+admin_langs_newlang_save:
+  pattern: /languages/new-lang/save
+  defaults: { _controller: AdminBundle:Languages:newLanguageSave }
+
+admin_langs_editphrases:
+  pattern: /languages/{language_id}/phrases/{group}
+  defaults: { _controller: AdminBundle:Languages:editPhrases }
+  requirements: { language_id: "\d+", group: "[a-zA-Z0-9\.\-_]+" }
+
+admin_langs_editphrases_save:
+  pattern: /languages/{language_id}/phrases-save
+  defaults: { _controller: AdminBundle:Languages:savePhrases }
   requirements: { language_id: "\d+" }
-
 
 ################################################################################
 # Usersources

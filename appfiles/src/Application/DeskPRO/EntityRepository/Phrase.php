@@ -52,4 +52,16 @@ class Phrase extends EntityRepository
 
 		return $names;
 	}
+
+
+	public function getPhrasesInGroup($language, $group)
+	{
+		$phrases = App::getDb()->fetchAllKeyValue("
+			SELECT name, phrase
+			FROM phrases
+			WHERE language_id = ? AND groupname = ?
+		", array($language->id, $group));
+
+		return $phrases;
+	}
 }

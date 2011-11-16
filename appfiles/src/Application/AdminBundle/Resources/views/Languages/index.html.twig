@@ -1,54 +1,25 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block content %}
-
-<div class="block" id="block-tables">
-	<div class="content">
-		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{{ path('admin_langs_newlang') }}" class="button">
-				<img src="{{ asset('images/icons/tick.png') }}" alt="New Style" /> Create New Language
-			</a>
-		</div>
-		<h2 class="title">Language</h2>
-		<div class="inner">
-			<form action="#" class="form">
-				<table class="table">
-					<tr>
-						<th class="first" width="10">&nbsp;</th>
-						<th>Language</th>
-						<th width="50">Locale</th>
-						<th width="150">&nbsp;</th>
-					</tr>
-					{% for lang in all_langs %}
-					<tr class="even">
-						<td><input type="radio" name="default_lang_id" value="{{lang.id}}" /></td>
-						<td>
-							{% if lang.depth %}
-								{% for i in 0..lang.depth %}--{% endfor %}
-							{% endif %}
-							{{lang.title}}
-						</td>
-						<td>
-							{{lang.locale}}
-						</td>
-						<td class="last">
-							<a href="{{ path('admin_langs_phrases', {'lang_id': lang.id}) }}">Phrases</a> &middot;
-							<a href="{{ path('admin_langs_editlang', {'lang_id': lang.id}) }}">Properties</a>
-						</td>
-					</tr>
-					{% endfor %}
-				</table>
-				<div class="actions-bar wat-cf">
-					<div class="actions">
-						<button class="button" type="submit">
-							Change Default Language
-						</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
+{% block pagetitle %}
+	<h1>Languages</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_langs_newlang') }}">Create New Language</a>
+	</nav>
 {% endblock %}
-{% block sidebar %}
+{% block page %}
+<h1>Languages</h1>
+<ul class="item-list">
+	{% for lang in languages %}
+		<li>
+			<div class="dp-block-controls">
+				<ul>
+					<li class="dp-edit">
+						<a href="{{ path('admin_langs_editlang', {'language_id': lang.id}) }}" class="popout-trigger"><span></span></a>
+					</li>
+				</ul>
+			</div>
+			<label>{{ lang.title }}</label>
+		</li>
+	{% endfor %}
+</ul>
 {% endblock %}

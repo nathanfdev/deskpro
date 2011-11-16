@@ -91,7 +91,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 
 		$file = parent::findFile($class_name);
 
-		if ($file === null) {
+		if (!$file) {
 			$m = null;
 			$ns_parts = explode('\\', $class_name, 2);
 			if (count($ns_parts) == 2) {
