@@ -1,10 +1,37 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/LangEditSettings.js') }}"></script>
+{% endblock %}
 {% block pagetitle %}
 	<h1>Languages</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_langs_newlang') }}">Create New Language</a>
 	</nav>
+{% endblock %}
+{% block sidebar_right %}
+<div
+	class="dp-page-box"
+	data-element-handler="DeskPRO.Admin.ElementHandler.LangEditSettings"
+	data-set-default-lang-url="{{ path('admin_settings_set', {'setting_name':'core.default_language_id', 'security_token': security_token('set_setting')}) }}"
+>
+	<div class="resource-item-list">
+		<header>
+			<div class="controls">
+				<button class="clean-white small save-trigger" style="display: none" id="save_lang_settings">Save Changes</button>
+			</div>
+			<h4>Default Language</h4>
+		</header>
+		<article>
+			The default language used for users and submitted content (such as tickets):<br />
+			<select id="default_lang_setting">
+				{% for lang in languages %}
+					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>{{lang.title}}</option>
+				{% endfor %}
+			</select>
+		</article>
+	</div>
+</div>
 {% endblock %}
 {% block page %}
 <h1>Languages</h1>

@@ -59,6 +59,10 @@ class LanguagePhrases
 		$file = str_replace('.', DIRECTORY_SEPARATOR, $group) . '.php';
 		$filepath = $this->lang_root . DIRECTORY_SEPARATOR . $file;
 
+		if (!file_exists($filepath)) {
+			return array();
+		}
+
 		return include($filepath);
 	}
 
