@@ -270,7 +270,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
-		$("#report-dashboard-set-viewable").css('display', 'block');
 		$("#report-dashboard-options").css('display', 'block');
 
 		// Create the 'Add Widget' placeholder
@@ -328,7 +327,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.saveDashboardState();
 
 		// Hide the view link, show the edit link
-		$("#report-dashboard-set-viewable").css('display', 'none');
 		$("#report-dashboard-set-editable").css('display', 'block');
 		$("#report-dashboard-options").css('display', 'none');
 
@@ -370,6 +368,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	saveDashboardState: function() {
 		var self = this;
 
+		var form = $('#dashboard_edit_form');
+		var postData = form.serializeArray();
+
 		dashboardState = { widgets: [], number_columns: this.number_columns };
 
 		// Get the state of each of the dashboard widgets
@@ -380,13 +381,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			dashboardState.widgets.push({id: v.widget.widget_id, number_columns: v.num_slots, slot_number: i})
 		});
 
+		postData.push({name: 'dashboard_state', value: JSON.stringify(dashboardState)});
+
 		$.ajax({
-			url: DeskPRO_Window.getUrl('report_dashboard_ajaxsavedashboardstate', {dashboard_id: this.dashboard_id}),
-			data: 'dashboard_state=' + JSON.stringify(dashboardState),
+			url: form.attr('action'),
+			data: postData,
 			dataType: 'json',
 			type: 'POST',
 			success: function(data) {
 				// Check stats return
+				$('.dashboard-title').html($('#report_dashboard_title').val());
 			}
 		});
 	},

@@ -26,7 +26,7 @@ function _page_exec() {
 	{% for dashboard in dashboards %}
 		<li class="{{ (loop.index0 == 0) ? 'margin-left' : '' }}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
 	{% endfor %}
-	<li class="new"><a href="{{ path('report_trend_dashboard_edit', { 'dashboard_id': 0 }) }}" class="new">New Dashboard</a></li>
+	<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">New Dashboard</a></li>
 </ul>
 
 <div class="table-list-wrap">

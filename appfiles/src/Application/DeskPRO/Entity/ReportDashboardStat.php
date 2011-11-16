@@ -33,8 +33,8 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The Dashboard
 	 *
 	 * @var \Application\DeskPRO\Entity\ReportDashboard
-	 * @ORM_MAPPING\ManyToOne(targetEntity="ReportDashboard")
-	 * @ORM_Mapping\JoinColumn(name="report_dashboard_id", referencedColumnName="id")
+	 * @ORM_MAPPING\ManyToOne(targetEntity="ReportDashboard", inversedBy="report_dashboard_stat")
+	 * @ORM_Mapping\JoinColumn(name="report_dashboard_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $report_dashboard;
 
