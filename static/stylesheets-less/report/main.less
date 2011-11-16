@@ -22,6 +22,7 @@
 .stat-list td {
 	padding: 10px;
 	border-bottom: 1px solid #eee;
+	vertical-align: middle;
 }
 
 .stat-list th {
@@ -34,21 +35,33 @@
 	color: #000;
 }
 
+.stat-list .center {
+	text-align: center;
+}
+
 .stat-list .starred {
 	background: url(../../images/report/icons/star.png) no-repeat center center;
 }
 
-.stat-list .icon {
-	padding: 10px 2px;
+.stat-list .prev-value {
 	text-align: center;
 }
 
+.stat-list .icon {
+	padding: 10px 15px 10px 15px;
+	text-align: center;
+}
+
+.stat-list td.icon {
+	background: #eee;
+}
+
 .stat-list .down {
-	background: url(../../images/report/icons/arrow_down_green.png) no-repeat center right;
+	background: url(../../images/report/icons/arrow_down_green.png) no-repeat right center;
 }
 
 .stat-list .up {
-	background: url(../../images/report/icons/arrow_up_green.png) no-repeat center right;
+	background: url(../../images/report/icons/arrow_up_green.png) no-repeat right center;
 }
 
 .stat-list .center {

@@ -26,13 +26,17 @@ class TrendController extends AbstractController
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
 		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
 
-		// The dates for pr
-		$dates = AbstractStat::getDatesPast(time(), 3);
+		foreach ($stats as $stat) {
+			$end_date = new \DateTime();
+			$points   = $stat->getDefaultDataPointCount();
+
+			// Get the Stat Data
+			$stat->getData($end_date, $points);
+		}
 
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
-			'stats' 	    => $stats,
-			'dashboards'	=> $dashboards,
-			'dates'         => $dates,
+			'stats' 	=> $stats,
+			'dashboards'	=> $dashboards
 		));
 	}
 

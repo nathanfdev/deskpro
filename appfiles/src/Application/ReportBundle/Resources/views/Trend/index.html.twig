@@ -31,16 +31,17 @@ function _page_exec() {
 	<table class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th width="25"></th>
+				<th width="20"></th>
 				<th>Title</th>
+				<th width="100">Updates</th>
 				<th width="200">Author</th>
-				<th width="150">Trend</th>
-				{% for unix in dates %}
-					<th width="60"></th>
-				{% endfor %}
-				<th width="60">Amount</th>
-				<th width="60">Variation</th>
-				<th width="16" class="icon"></th>
+				<th width="200">Trend</th>
+				<th width="60" class="center">Prev</th>
+				<th width="60" class="center">Prev</th>
+				<th width="60" class="center">Current</th>
+				<th width="80" class="center">Amount</th>
+				<th width="90" class="center">Difference %</th>
+				<th width="10"></th>
 				<th width="16" class="icon"></th>
 				<th width="16" class="icon"></th>
 			</tr>
@@ -50,16 +51,24 @@ function _page_exec() {
 				<tr>
 					<td class="{{stat.starred ? 'starred' : ''}}"></td>
 					<td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
+					<td class="period">{{ stat.period }}</td>
 					<td>{{stat.authorName}}</td>
 					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
-					{% for unix in dates %}
-						<td width="60">{{ stat.getValueForDate(unix) }}</td>
+					{% for prev_value in stat.getEndData(3) %}
+						<td class="prev-value">{{ prev_value|default('-') }}</td>
 					{% endfor %}
 					<td class="center">{{ stat.amount }}</td>
-					<td class="center {{ (stat.variation > 0) ? 'down' : 'up' }}">{{ stat.variation }}</td>
-					<td class="icon"><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}" title="View Trend"><img src="{{ asset('images/report/icons/view.png') }}" alt="[View]"/></a></td>
-					<td class="icon"><a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
-					<td class="icon"><a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a></td>
+					<td class="center difference {{ (stat.difference > 0) ? 'down' : 'up' }}">{{ stat.difference(true) }}%</td>
+					<td></td>
+					<td class="icon">
+						{% if stat.isEditable %}
+							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
+						{% endif %}
+					<td class="icon">
+						{% if stat.isClonable %}
+							<a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="Clone Trend"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a>
+						{% endif %}
+					</td>
 				</tr>
 			{% endfor %}
 		</tbody>

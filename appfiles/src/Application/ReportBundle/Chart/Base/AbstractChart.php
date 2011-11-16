@@ -58,6 +58,6 @@ abstract class AbstractChart implements ChartInterface
 			$difference = ($current_value - $previous_value) / $previous_value;
 		}
 
-		return ($as_percentage) ? number_format($difference * 100, 2) : $difference;
+		return ($as_percentage) ? number_format($difference * 100, 2) : number_format($difference, 2);
 	}
 }

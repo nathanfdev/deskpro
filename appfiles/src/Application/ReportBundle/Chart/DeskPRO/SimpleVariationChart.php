@@ -111,7 +111,7 @@ class SimpleVariationChart extends BaseAbstractChart
 	 * Calculate the Variance
 	 *
 	 * @param bool $as_percentage Get the variance as a percentage
-	 * @return number The variance
+	 * @return number The difference
 	 */
 	public function getDifference($as_percentage = false)
 	{

@@ -156,8 +156,6 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getEndData($row, $limit)
 	{
-		$values = array();
-
 		return array_slice($row['data'], ($limit * -1), $limit);
 	}
 }
