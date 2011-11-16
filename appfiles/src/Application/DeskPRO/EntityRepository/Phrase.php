@@ -56,6 +56,12 @@ class Phrase extends EntityRepository
 
 	public function getPhrasesInGroup($language, $group)
 	{
+		$parts = explode('.', $group);
+		if (count($parts) == 2) {
+			if ($parts[0] == $parts[1]) {
+				$group = $parts[0];
+			}
+		}
 		$phrases = App::getDb()->fetchAllKeyValue("
 			SELECT name, phrase
 			FROM phrases

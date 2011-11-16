@@ -101,6 +101,50 @@ class LanguagesController extends AbstractController
 		return $this->render('AdminBundle:Languages:lang-phrases.html.twig', $vars);
 	}
 
+	public function savePhrasesAction($language_id)
+	{
+		$language = $this->getLanguageOr404($language_id);
+
+		$phrases = $this->in->getCleanValueArray('phrases', 'string', 'string');
+
+		$phrase_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
+
+		$this->em->beginTransaction();
+		try {
+			foreach ($phrases as $phrase_id => $phrase_text) {
+				$phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($language, $phrase_id);
+				if (!$phrase) {
+					$phrase = new \Application\DeskPRO\Entity\Phrase();
+					$phrase->language = $language;
+					$phrase->name = $phrase_id;
+				}
+
+				$master_phrase = $phrase_reader->getMasterPhrase($phrase_id);
+
+				if ($phrase_text == $master_phrase || !$phrase_text) {
+					if ($phrase->id) {
+						$this->em->remove($phrase);
+					}
+					continue;
+				}
+
+				$phrase->phrase = $phrase_text;
+				$phrase->original_hash = $phrase_reader->generatePhraseHash($master_phrase);
+				$phrase->is_outdated = false;
+
+				$this->em->persist($phrase);
+			}
+
+			$this->em->flush();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
 	############################################################################
 
 	protected function getLangInfo($language_id)

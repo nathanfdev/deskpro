@@ -61,4 +61,26 @@ class LanguagePhrases
 
 		return include($filepath);
 	}
+
+	public function getMasterPhrase($phrase_id)
+	{
+		$path = DP_ROOT.'/languages/DeskPRO';
+		$group_parts = explode('.', $phrase_id);
+		array_pop($group_parts); // need the group name, not phrase
+
+		if (count($group_parts) == 2) {
+			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[1] . '.php';
+		} else {
+			$file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
+		}
+
+		$file_phrases = include($file);
+		return $file_phrases[$phrase_id];
+	}
+
+	public function generatePhraseHash($phrase)
+	{
+		$phrase = preg_replace('#\s#', '', $phrase);
+		return sha1($phrase);
+	}
 }
