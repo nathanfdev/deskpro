@@ -14,7 +14,7 @@
 						<span class="label">{{ chart.getDataPoint(1, false, true)|default('-') }}</span>
 					</td>
 					<td class="variation direction direction-up-red">
-						<span class="amount">{{ chart.calculateVariation(true)|default('-') }}%</span>
+						<span class="amount">{{ chart.getDifference(true)|default('-') }}%</span>
 					</td>
 					<td class="actual">
 						<span class="value">{{ chart.getLastDataPoint()|default('-') }}</span>

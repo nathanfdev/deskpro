@@ -25,7 +25,7 @@
 						{% for prev_value in chart.getEndData(row, 3) %}
 							<td class="prev-value">{{ prev_value|default('-') }}</td>
 						{% endfor %}
-						<td class="diff direction-up-green">{{ chart.calculateVariation(row.data, true) }}%</td>
+						<td class="diff direction-up-green">{{ chart.getDifference(row.data, true) }}%</td>
 					</tr>
 				{% endfor %}
 			</tbody>

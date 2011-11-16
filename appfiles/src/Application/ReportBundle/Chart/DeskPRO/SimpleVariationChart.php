@@ -113,7 +113,7 @@ class SimpleVariationChart extends BaseAbstractChart
 	 * @param bool $as_percentage Get the variance as a percentage
 	 * @return number The variance
 	 */
-	public function calculateVariation($as_percentage = false)
+	public function getDifference($as_percentage = false)
 	{
 		$previous_value = $this->getDataPoint(1, true, true);
 		$current_value  = $this->getLastDataPoint();
@@ -123,12 +123,7 @@ class SimpleVariationChart extends BaseAbstractChart
 			return null;
 		}
 
-		$variation = 0;
-		if ($previous_value != 0) {
-			$variation = ($current_value - $previous_value) / $previous_value;
-		}
-
-		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
+		return $this->calculateDifference($previous_value, $current_value, $as_percentage);
 	}
 
 	/**
