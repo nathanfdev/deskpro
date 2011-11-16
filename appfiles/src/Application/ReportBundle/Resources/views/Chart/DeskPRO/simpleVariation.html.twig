@@ -1,3 +1,5 @@
+{% import "ReportBundle:Common:macros.html.twig" as stat_macros %}
+
 <script type="text/javascript">
 	$(function() {
 	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100%', height: '25px'});
@@ -13,7 +15,7 @@
 						<span class="value">{{ chart.getDataPoint(1, true, true)|default('-') }}</span>
 						<span class="label">{{ chart.getDataPoint(1, false, true)|default('-') }}</span>
 					</td>
-					<td class="variation direction direction-up-red">
+					<td class="variation direction {{ stat_macros.difference_class(chart.difference, chart.differenceDirection) }}">
 						<span class="amount">{{ chart.getDifference(true)|default('-') }}%</span>
 					</td>
 					<td class="actual">

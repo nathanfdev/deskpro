@@ -18,6 +18,13 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	protected $data_points = array();
 
+	/**
+	 * Is a postive difference value good, bad or neutral
+	 *
+	 * @var string
+	 */
+	protected $difference_direction = 'neutral';
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -141,5 +148,25 @@ class SimpleVariationChart extends BaseAbstractChart
 		}
 
 		return $renderable;
+	}
+
+	/**
+	 * Set the difference directions
+	 *
+	 * @param string $difference_direction
+	 */
+	public function setDifferenceDirection($difference_direction)
+	{
+		$this->difference_direction = $difference_direction;
+	}
+
+	/**
+	 * Get the difference directions
+	 *
+	 * @return string
+	 */
+	public function getDifferenceDirection()
+	{
+		return $this->difference_direction;
 	}
 }

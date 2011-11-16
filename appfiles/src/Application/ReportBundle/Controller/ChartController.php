@@ -34,7 +34,7 @@ class ChartController extends AbstractController
 			$chart_data = array($data['ungrouped']);
 		}
 
-		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data, $dashboard_stat->getStat());
 
 		$chart_template = $chart->getViewChartVendor() . '/' . $chart::CHART_IDENTIFIER . '.html.twig';
 
@@ -61,7 +61,7 @@ class ChartController extends AbstractController
 			$chart_data = array($data['ungrouped']);
 		}
 
-		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data, $dashboard_stat->getStat());
 
 		$data_template = $chart->getViewChartVendor() . '/Data/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
@@ -87,7 +87,7 @@ class ChartController extends AbstractController
 			$chart_data = array($data['ungrouped']);
 		}
 
-		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data);
+		$chart = ChartFactory::getChart($dashboard_stat->getViewClass(), $chart_data, $dashboard_stat->getStat());
 
 		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 

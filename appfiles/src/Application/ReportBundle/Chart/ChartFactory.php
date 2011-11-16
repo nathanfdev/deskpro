@@ -2,6 +2,8 @@
 
 namespace Application\ReportBundle\Chart;
 
+use Application\DeskPRO\Entity\Stat;
+
 class ChartFactory
 {
 	const LIMIT = 4;
@@ -11,8 +13,9 @@ class ChartFactory
 	 *
 	 * @param string $chart_class The class of the chart to construct
 	 * @param array $data The raw data to give to the chart
+	 * @param Stat The Stat entity
 	 */
-	public static function getChart($chart_class, $data)
+	public static function getChart($chart_class, $data, Stat $stat)
 	{
 		$count = 0;
 
@@ -74,6 +77,8 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
 				$chart = new $chart_class;
 
+				$chart->setDifferenceDirection($stat->getVariation());
+
 				// We can only compare one set of data, if there
 				// are others they are simply discarded
 				if (count($data)) {
@@ -85,11 +90,28 @@ class ChartFactory
 
 			/**
 			 * DeskPRO - Simple Drilldown Chart
-			 * DeskPRO - Detailed Drilldown Chart
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart':
+				$chart = new $chart_class;
+
+				foreach ($data as $data_set) {
+					$chart->addRow($data_set['label'], $data_set['values']);
+
+					$count++;
+					if ($count === self::LIMIT) {
+						break;
+					}
+				}
+
+				break;
+			
+			/**
+			 * DeskPRO - Detailed Drilldown Chart
+			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
 				$chart = new $chart_class;
+
+				$chart->setDifferenceDirection($stat->getVariation());
 
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);

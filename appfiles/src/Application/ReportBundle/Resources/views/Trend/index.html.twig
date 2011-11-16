@@ -1,4 +1,7 @@
 {% extends 'ReportBundle::layout.html.twig' %}
+
+{% import "ReportBundle:Common:macros.html.twig" as stat_macros %}
+
 {% block html_head %}
 {{ dp_asset_html('report_dashboard') }}
 {% endblock %}
@@ -58,7 +61,7 @@ function _page_exec() {
 						<td class="prev-value">{{ prev_value|default('-') }}</td>
 					{% endfor %}
 					<td class="center">{{ stat.amount }}</td>
-					<td class="center difference {{ (stat.difference > 0) ? 'down' : 'up' }}">{{ stat.difference(true) }}%</td>
+					<td class="center difference {{ stat_macros.difference_class(stat.difference, stat.variation) }}">{{ stat.difference(true) }}%</td>
 					<td></td>
 					<td class="icon">
 						{% if stat.isEditable %}

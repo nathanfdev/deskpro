@@ -16,6 +16,13 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	protected $series = array();
 
+	/**
+	 * Is a postive difference value good, bad or neutral
+	 *
+	 * @var string
+	 */
+	protected $difference_direction = 'neutral';
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -157,5 +164,25 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	public function getEndData($row, $limit)
 	{
 		return array_slice($row['data'], ($limit * -1), $limit);
+	}
+
+	/**
+	 * Set the difference directions
+	 *
+	 * @param string $difference_direction
+	 */
+	public function setDifferenceDirection($difference_direction)
+	{
+		$this->difference_direction = $difference_direction;
+	}
+
+	/**
+	 * Get the difference directions
+	 *
+	 * @return string
+	 */
+	public function getDifferenceDirection()
+	{
+		return $this->difference_direction;
 	}
 }
