@@ -361,6 +361,10 @@ a.delete-link:hover {
 	color: #000;
 }
 
+#dp_admin_pagetitle h1 > select {
+	font-size: 14px !important;
+}
+
 #dp_admin_prepage {
 	position: relative;
 	top: -5px;
@@ -1274,6 +1278,10 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 	border-bottom: 1px solid transparent;
 }
 
+#dp_page_nav section > article > ul > li.draggable {
+	cursor: move;
+}
+
 #dp_page_nav section > article > ul > li:hover,
 #dp_page_nav section > article > ul > li.on {
 	background-color: #E9EFF7;
@@ -2055,4 +2063,70 @@ tr.phrase-row{
 tr.phrase-row.custom td {
     .transition(0.5s);
 	background-color: #FDFDD8;
+}
+
+
+.no-items-notice {
+	background-color: #FFFBC3;
+	padding: 10px;
+	border: 1px solid #DFDBAA;
+	margin: 10px;
+}
+
+#admin_ticket_editor_items {
+	min-height: 400px;
+}
+
+
+.admin-ticket-editor-dragging {
+    display: block;
+	background-color: #D0D2D6;
+	border: 1px solid #9EA1A4;
+	padding: 8px;
+	.opacity(75);
+	.rounded(8px);
+	width: 280px;
+}
+
+.admin-ticket-editor-dragging label {
+	font-size: 12px;
+	font-family: @heading-font;
+}
+
+#admin_ticket_editor.is-dragging .form-item {
+	background-color: #F7F3DD;
+	border: 1px solid #E4E0CD;
+}
+
+.form-item.dp-form-row {
+    margin: 15px 15px 15px 15px;
+    padding: 5px;
+    border: 1px solid transparent;
+    .rounded(6px);
+    position: relative;
+}
+
+.form-item > article {
+
+}
+
+.form-item.dp-form-row:hover {
+	background-color: #EEF4FC;
+    border: 1px solid #DFE5EB;
+    .transition(0.1s);
+}
+
+.form-item.dp-form-row .dp-block-controls {
+	top: 5px;
+	right: 6px;
+}
+
+.is-dragging .form-item.dp-form-row:hover .dp-block-controls {
+	display: none !important;
+}
+
+.form-item.dp-form-row:hover .dp-block-controls {
+	 display: block;
+	.transition(0.1s);
+	.opacity(100);
 }

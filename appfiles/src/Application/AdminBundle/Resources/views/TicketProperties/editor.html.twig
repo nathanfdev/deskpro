@@ -1,169 +1,219 @@
+{% set this_page = 'ticket_editor' %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'editor' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketEditor.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/TicketEditor.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/TicketEditorAgent.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/EditorSave.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/EditorRedraw.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/admin/ticket-editor.css') }}" />
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketEditor.js') }}"></script>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketEditor($(document), {
-		saveUrl: '{{ path('admin_tickets_editor_dep_save', {'department_id': department.id}) }}'
-	});
-
-	{% if current_state %}
-		DeskPRO_Page.redrawData = {{current_state|json_encode|raw}};
-	{% endif %}
-}
-</script>
+{% block page_nav %}
+<div>
+	<section class="top">
+		<header>
+			<h4>Ticket Elements</h4>
+		</header>
+		<article id="ticket_elements">
+			<ul>
+				<li class="draggable" data-item-id="ticket_category"><label>Category</label></li>
+				<li class="draggable" data-item-id="ticket_product"><label>Product</label></li>
+				<li class="draggable" data-item-id="ticket_priority"><label>Priority</label></li>
+				{% for field in custom_ticket_fields %}
+					<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]">
+						<label>{{field.title}}</label>
+					</li>
+				{% endfor %}
+				<li class="draggable" data-item-id="captcha"><label>CAPTCHA</label></li>
+			</ul>
+		</article>
+	</section>
+</div>
 {% endblock %}
-{% block page %}
-
-<div id="custom_field_rendered" style="display:none">
-	{% for field in custom_ticket_fields %}
-	<div class="ticket_field_{{field.field_def.id}}">
-		{{ form_widget(field.formView) }}
-	</div>
-	{% endfor %}
-	{% for field in custom_people_fields %}
-	<div class="people_field_{{field.field_def.id}}">
-		{{ form_widget(field.formView) }}
-	</div>
-	{% endfor %}
-</div>
-
-<div id="ticket_editor_head">
-	<h1>Editor for <em>{{department.title}}</em></h1>
-</div>
-
-<table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 15px;"><tr><td width="50%" valign="top" style="padding-right: 7px;" class="dep-editor" id="user_dep_editor">
-
-	<div class="head">
-		<h1>User Ticket Form</h1>
-	</div>
-	<div class="field-list-wrap">
-		<ul class="field-list">
-			<li class="title">Core Fields</li>
-			<li class="original field-item system-field category" data-item-type="ticket_category" >Category</li>
-			<li class="original field-item system-field product" data-item-type="ticket_product" >Product</li>
-			<li class="original field-item system-field priority" data-item-type="ticket_priority" >Priority</li>
-			<li class="title">Ticket Fields</li>
-			{% for field in custom_ticket_fields %}
-			<li class="original ticket_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
-				{{field.title}}
-			</li>
+{% block pagetitle %}
+	<h1>
+		Ticket Form	Editor:
+		<select id="department_switcher">
+			<option
+				value="0"
+				data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': 0}) }}"
+			>Default</option>
+			<option>--------------</option>
+			{% for id,title in department_names %}
+				<option
+					value="{{id}}"
+					{% if department_id == id %}checked="checked"{% endif %}
+					data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': id}) }}"
+				>{{title}}</option>
 			{% endfor %}
-			<li class="title">Person Fields</li>
-			{% for field in custom_people_fields %}
-			<li class="original people_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="people_field">
-				{{field.title}}
-			</li>
-			{% endfor %}
-		</ul>
-		<br class="clear"/>
-	</div>
+		</select>
+	</h1>
+{% endblock %}
+{% block content %}
+<div
+	class="dp-page-box"
+	id="admin_ticket_editor"
+	data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
+>
 
-	<div class="editor-option-top" style="margin-top: 10px;">
-		<input type="text" id="user_dep_name" value="{{ phrase('obj_departments.' ~ department.id ~ '_title_user')|default(department.title) }}" />
-	</div>
+<ul id="admin_ticket_editor_items" class="dp-form">
+	<li class="no-items-notice">
+		Drag and drop fields from the left onto this area to start designing your form.
+	</li>
+</ul>
 
-	<div id="user_dep_editor_default">
-	<ul class="item-list display_item_list">
-		<li class="no_elements_message">
-			You have not enabled any fields. To add a field, drag one from above.
-		</li>
-	</ul>
-	</div>
-
-	<div class="editor-option-bottom">
-		<label>
-			<input type="checkbox" id="enable_captcha" value="1" {% if user_section.options.enable_captcha %}checked="checked"{% endif %} /> Enable CAPTCHA
-		</label>
-	</div>
-
-</td><td width="50%" valign="top" style="padding-left: 7px;" class="dep-editor" id="agent_dep_editor">
-
-	<div class="head">
-		<h1>Agent Ticket View</h1>
-	</div>
-	<div class="field-list-wrap">
-		<ul class="field-list">
-			<li class="title">Core Fields</li>
-			<li class="original field-item system-field category" data-item-type="ticket_category" >Category</li>
-			<li class="original field-item system-field product" data-item-type="ticket_product" >Product</li>
-			<li class="original field-item system-field priority" data-item-type="ticket_priority" >Priority</li>
-			<li class="original field-item system-field workflow" data-item-type="ticket_workflow" >Workflow</li>
-			<li class="title">Ticket Fields</li>
-			{% for field in custom_ticket_fields %}
-			<li class="original ticket_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
-				{{field.title}}
-			</li>
-			{% endfor %}
-		</ul>
-		<br class="clear"/>
-	</div>
-	<div class="agent-sections-wrap" id="agent_dep_editor_default">
-		<div class="agent-section properties-box">
-			<div class="head">
-				<h4>Properties Box</h4>
-			</div>
-			<ul class="item-list display_item_list">
-				<li class="no_elements_message">
-					You have not enabled any fields. To add a field, drag one from above.
-				</li>
+{############################
+ # Main row template
+ ############################}
+<script type="text/x-deskpro-plain" id="editor_row_tpl">
+	<li class="form-item dp-form-row">
+		<div class="dp-block-controls">
+			<ul>
+				<li class="dp-edit edit-field-trigger"><span></span></li>
+				<li class="dp-remove remove-field-trigger"><span></span></li>
 			</ul>
 		</div>
+		<div class="dp-form-label">
+			<label class="field-title"></label>
+		</div>
+		<article class="dp-form-input"></article>
+	</li>
+</script>
+
+{############################
+ # Category field value
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_category">
+	<div class="ticket-category">
+		<select class="ticket-category-input">
+			<option>Choose a category...</option>
+		</select>
 	</div>
+</script>
 
-	<div class="agent-section-tab" id="agent_dep_editor_toptabs">
-		<div class="agent-section-tab-title">
-			<button class="dp-button x-small add-group-btn">Add Tab</button>
-			<h4>Top Tabs</h4>
+{############################
+ # Product field value
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_product">
+	<div class="ticket-product">
+		<select class="ticket-product-input">
+			<option>Choose a category...</option>
+		</select>
+	</div>
+</script>
+
+{############################
+ # Priority field value
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_priority">
+	<div class="ticket-priority">
+		<select class="ticket-priority-input">
+			<option>Choose a priority...</option>
+		</select>
+	</div>
+</script>
+
+{############################
+ # Custom fields
+ ############################}
+
+{% for field in custom_ticket_fields %}
+	<script type="text/x-deskpro-plain" id="rendered_field_ticket_field_{{field.id}}">
+		<div class="ticket-field">
+			{{ render_custom_field_form(field) }}
 		</div>
-		<div class="agent-sections-wrap">
+	</script>
+{% endfor %}
+
+{############################
+ # Captcah field rnedered
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_captcha">
+	<div class="captcha">
+		<img src="{{ asset('images/admin/captcha-example.png') }}"
+	</div>
+</script>
+
+
+{############################
+ # Criteria options
+ ############################}
+<div id="criteria_tpl" class="search-builder-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="op"></div>
+			<div class="options"></div>
+			<div class="remove">-</div>
 		</div>
 	</div>
-
-	<div class="agent-section-tab" id="agent_dep_editor_middletabs">
-		<div class="agent-section-tab-title">
-			<button class="dp-button x-small add-group-btn">Add Tab</button>
-			<h4>Middle Tabs</h4>
+	{% if term_options.products %}
+		<div class="type" title="Product" data-rule-type="product">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="product">
+					{% for id,label in term_options.products %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-		<div class="agent-sections-wrap">
+	{% endif %}
+	{% if term_options.ticket_categories_full %}
+		<div class="type" title="Category" data-rule-type="category">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="category">
+					{% for id,label in term_options.ticket_categories_full %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-	</div>
-
-	<div class="agent-section-tab" id="agent_dep_editor_bodytabs">
-		<div class="agent-section-tab-title">
-			<button class="dp-button x-small add-group-btn">Add Tab</button>
-			<h4>Main Tabs</h4>
+	{% endif %}
+	{% if term_options.priorities %}
+		<div class="type" title="Priority" data-rule-type="priority">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					<option value="lt">is less than</option>
+					<option value="gt">is greater than</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="priority">
+					{% for id,label in term_options.priorities %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-		<div class="agent-sections-wrap">
+	{% endif %}
+	{% if term_options.ticket_workflows %}
+		<div class="type" title="Workflow" data-rule-type="workflow">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="workflow">
+					{% for id,label in term_options.ticket_workflows %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-	</div>
-
-</td></tr></table>
-
-<div style="margin-top: 15px; text-align: center">
-	<button class="dp-button" id="editor_save_btn">Save</button>
+	{% endif %}
 </div>
 
-{# Menus #}
-<ul id="department_switcher_editor" class="menu department_id" style="display:none">
-	{% for dep in departments %}
-		<li><a href="{{ path('admin_tickets_editor_dep', {'department_id': dep.id}) }}">{{dep.title}}</a></li>
-	{% endfor %}
-</ul>
-<ul id="field_menu" class="menu" style="display:none">
-	{% for field in custom_ticket_fields %}
-		<li data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">{{field.title}}</li>
-	{% endfor %}
-</ul>
 
-{% include 'AdminBundle:TicketProperties:editor-templates.html.twig' %}
+</div>
 {% endblock %}

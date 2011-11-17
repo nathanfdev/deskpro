@@ -66,15 +66,12 @@ class TicketPropertiesController extends AbstractController
 	public function editorAction($department_id)
 	{
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+		$department_names = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames();
 
-		if (!$department_id) {
-			$department_id = \Orb\Util\Arrays::getFirstItem($departments);
-			$department_id = $department_id['id'];
-
-			return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id));
+		$department = null;
+		if ($department_id) {
+			$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 		}
-
-		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_ticket_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
@@ -89,22 +86,23 @@ class TicketPropertiesController extends AbstractController
 		$user_section = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSection($department, 'user', 'default');
 
 		// Existing options
-		$current_state = array(
-			'user_default'      => $user_section['data'],
-			'agent_default'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'default'),
-			'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
-			'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
-			'agent_bodytabs'    => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'bodytabs'),
-		);
+		//$current_state = array(
+		//	'user_default'      => $user_section['data'],
+		//	'agent_default'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'default'),
+		//	'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
+		//	'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
+		//	'agent_bodytabs'    => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'bodytabs'),
+		//);
 
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
+			'department_names' => $department_names,
 			'department' => $department,
 			'custom_ticket_fields' => $custom_ticket_fields,
 			'custom_people_fields' => $custom_people_fields,
 			'term_options' => $term_options,
 			'ticket_options' => $ticket_options,
-			'current_state' => $current_state,
+			//'current_state' => $current_state,
 			'user_section' => $user_section
 		));
 	}
