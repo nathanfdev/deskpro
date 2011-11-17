@@ -1,6 +1,6 @@
 {% extends 'UserBundle:News:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">News</a></li>
+	<li><a href="{{ path('user_news') }}">{{ phrase('user.news.section_name') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -16,7 +16,7 @@
 	{% if is_partial_request() %}
 		{% if num_results > news_entries|length %}
 			<div class="dp-footer">
-				<a href="{{ path('user_news') }}" class="btn">View all {{ num_results }} entries</a>
+				<a href="{{ path('user_news') }}" class="btn">{{ phrase('user.news.view_all_x_news', {'count': num_results}) }}</a>
 			</div>
 		{% endif %}
 	{% else %}
@@ -26,7 +26,7 @@
 					<ul>
 						{% if pageinfo.prev %}
 							<li>
-								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">&larr; Prev</a>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
 							</li>
 						{% endif %}
 						{% for p in pageinfo.pages %}
@@ -36,7 +36,7 @@
 						{% endfor %}
 						{% if pageinfo.next %}
 							<li>
-								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">Next &rarr;</a>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
 							</li>
 						{% endif %}
 					</ul>

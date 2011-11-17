@@ -1,6 +1,6 @@
 <div style="background-color: #eee; padding: 3px;">
 	<ul>
-		<li><a href="{{ path('user_ideas_newidea') }}">Submit new idea</a></li>
+		<li><a href="{{ path('user_ideas_newidea') }}">{{ phrase('user.ideas.submit_new_idea') }}</a></li>
 	</ul>
 	<ul>
 		<li style="margin-bottom: 15px;">
@@ -9,7 +9,7 @@
 			{% else %}
 				<a href="{{ path('user_ideas_status', {'status': status}) }}">
 			{% endif %}
-			All Ideas
+				{{ phrase('user.ideas.all_ideas') }}
 			</a>
 		</li>
 	{% for cat in categories %}

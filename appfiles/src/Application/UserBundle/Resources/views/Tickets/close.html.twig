@@ -7,7 +7,7 @@
 <div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h4>Close Ticket: {{ ticket.subject }}</h4>
+			<h4>{{ phrase('user.tickets.close_ticket_title') }}: {{ ticket.subject }}</h4>
 		</div>
 
 		<div class="dp-box-content-wrapper">
@@ -16,12 +16,10 @@
 				<input type="hidden" name="process" value="1" />
 				<div class="dp-box-section">
 					<p>
-						<strong>Are you sure you want to close your ticket?</strong> Once your ticket is closed,
-						our agents will no longer respond and you will not be able to reply. If you need more help
-						you will need to open a new ticket.
+						{{ phrase('user.tickets.close_ticket_explain') }}
 					</p>
 
-					<center><button class="btn primary">Close my ticket</button></center>
+					<center><button class="btn primary">{{ phrase('user.tickets.close_my_ticket_btn') }}</button></center>
 				</div>
 
 				{% if not exist_feedback %}
@@ -29,25 +27,25 @@
 						<div class="dp-form">
 							<div class="dp-form-row">
 								<div class="dp-form-label">
-									<label>Optionally take a moment to tell us how we did</label>
+									<label>{{ phrase('user.ticket.leave_feedback_title') }}</label>
 								</div>
 								<div class="dp-form-input">
-									<label><input type="radio" name="rating" value="1" {% if exist_feedback.rating == 1 %}checked="checked"{% endif %} /> Helpful</label>
+									<label><input type="radio" name="rating" value="1" {% if exist_feedback.rating == 1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_helpful') }}</label>
 									&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="rating" value="0" {% if exist_feedback.rating == -1 %}checked="checked"{% endif %} /> Not Helpful</label>
+									<label><input type="radio" name="rating" value="0" {% if exist_feedback.rating == -1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_unhelpful') }}</label>
 								</div>
 							</div>
 
 							<div class="dp-form-row">
 								<div class="dp-form-label">
-									<label>Do you have any feedback?</label>
+									<label>{{ phrase('user.ticket.leave_feedback_text_title') }}</label>
 								</div>
 								<div class="dp-form-input">
 									<textarea name="message" style="width: 95%; height: 60px;">{{ exist_feedback.message }}</textarea>
 								</div>
 							</div>
 
-							<center><input class="btn primary" type="submit" name="with_feedback" value="Close my tiket and submit my feedback" /></center>
+							<center><input class="btn primary" type="submit" name="with_feedback" value="{{ phrase('user.tickets.close_my_ticket_send_feedback_btn') }}" /></center>
 						</div>
 					</div>
 				{% endif %}

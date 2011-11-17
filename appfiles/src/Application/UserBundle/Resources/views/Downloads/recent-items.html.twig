@@ -13,8 +13,8 @@
 	</li>
 {% else %}
 	{% if page == 1 %}
-		<li>There are no downloads yet.</li>
+		<li>{{ phrase('user.downloads.no_downloads') }}</li>
 	{% else %}
-		<li>There are no more results.</li>
+		<li>{{ phrase('user.no_more_results') }}</li>
 	{% endif %}
 {% endfor %}

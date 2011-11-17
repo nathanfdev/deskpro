@@ -1,5 +1,5 @@
 <div class="dp-box-comments">
-	<h4>{{ comments|length }} Comments</h4>
+	<h4>{{ phrase('user.comments_count', {'count': comments|length}) }}</h4>
 	<div class="dp-box-comments-content">
 		{% if comments_widget %}
 			{{comments_widget|raw}}
@@ -33,7 +33,7 @@
                                     <div class="dp-form">
                                     	<div class="dp-form-row">
 											<div class="dp-form-label">
-												<label>Display name *</label>
+												<label>{{ phrase('user.label_display_name') }} *</label>
 											</div>
 											<div class="dp-form-input">
 												<input
@@ -48,13 +48,13 @@
 										</div>
                                     </div>
                                     <div style="padding-top: 0">
-                                    	<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+                                    	<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
                                     </div>
 								{% else %}
 									<div class="tab dp-form">
 										<div class="dp-form-row source-extra" style="display: none">
 											<div class="dp-form-label">
-												<label>Logged in as</label>
+												<label>{{ phrase('user.label_logged_in_as') }}</label>
 											</div>
 											<div class="dp-form-input">
 												<span class="source-extra-name"></span>
@@ -62,7 +62,7 @@
 										</div>
 										<div class="dp-form-row">
 											<div class="dp-form-label">
-												<label>Display name *</label>
+												<label>{{ phrase('user.label_display_name') }} *</label>
 											</div>
 											<div class="dp-form-input">
 												<input
@@ -77,7 +77,7 @@
 										</div>
 										<div class="dp-form-row email-address-row">
 											<div class="dp-form-label">
-												<label>Email address *</label>
+												<label>{{ phrase('user.label_email_address') }} *</label>
 											</div>
 											<div class="dp-form-input">
 												<input type="text" name="new_comment[email]" />
@@ -85,7 +85,7 @@
 										</div>
 									</div>
 									<div style="padding-top: 0">
-										<button class="btn primary" style="margin-top: 10px;">Post Comment</button>
+										<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
 									</div>
 								{% endif %}
 							</div>

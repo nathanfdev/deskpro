@@ -40,7 +40,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+            'phrase'   => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'))),
             'phrase_object'   => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),

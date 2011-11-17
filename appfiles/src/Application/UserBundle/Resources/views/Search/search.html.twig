@@ -1,7 +1,7 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	{% if query %}
-		<li><a href="{{ path('user_search', {'q': query }) }}">Search: {{ query }}</a></li>
+		<li><a href="{{ path('user_search', {'q': query }) }}">{{ query }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -13,7 +13,7 @@
 				<div class="dp-search-list">
 					<ul>
 						{% if not results and not sticky_results %}
-							<li><h4>No results, try using different terms.</h4></li>
+							<li><h4>{{ phrase('user.search.no_results_help') }}</h4></li>
 						{% else %}
 							{% if sticky_results %}
 								{% for res in sticky_results %}
@@ -33,7 +33,7 @@
 					<ul>
 						{% if pageinfo.prev %}
 							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">&larr; Prev</a>
+								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
 							</li>
 						{% endif %}
 						{% for p in pageinfo.pages %}
@@ -43,7 +43,7 @@
 						{% endfor %}
 						{% if pageinfo.next %}
 							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">Next &rarr;</a>
+								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.page_next') }}</a>
 							</li>
 						{% endif %}
 					</ul>

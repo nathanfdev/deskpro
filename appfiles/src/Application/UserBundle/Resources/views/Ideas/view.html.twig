@@ -22,7 +22,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ idea.person.getPictureUrl(40) }}" />
-					Created by {{ idea.person.display_name }} on {{ idea.date_created|date('M d Y') }}
+					{{ phrase('user.user.created_by_x_on_y', {'name': idea.person.display_name, 'date': idea.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

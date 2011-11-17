@@ -1,20 +1,20 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_login') }}">Log In</a></li>
+	<li><a href="{{ path('user_login') }}">{{ phrase('user.login_link') }}</a></li>
 {% endblock %}
 {% block content %}
 <div class="dp-login-page">
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				<h1>Log In</h1>
+				<h1>{{ phrase('user.login_link') }}</h1>
 			</div>
 
 			<div class="dp-box-content-wrapper">
 				<div class="dp-box-content">
 					{% if invalid_login %}
 						<div class="alert-message error">
-							Invalid login. Please try again or <a href="{{ path('user_login_resetpass') }}">click here</a> if you have forgotten your password.
+							{{ phrase('user.login_error') }}
 						</div>
 					{% endif %}
 					<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
@@ -23,20 +23,20 @@
 						{% endif %}
 						<div class="dp-form">
 							<div class="dp-form-row">
-								<div class="dp-form-label">Email</div>
+								<div class="dp-form-label">{{ phrase('user.label_login_email') }}</div>
 								<div class="dp-form-input">
 									<input type="text" value="" name="email" id="email" size="40" tabindex="1" />
 								</div>
 							</div>
 							<div class="dp-form-row">
-								<div class="dp-form-label">Password <em class="note"><a href="{{ path('user_login_resetpass') }}">lost?</a></em></div>
+								<div class="dp-form-label">{{ phrase('user.label_login_password') }} <em class="note"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_password_link') }}</a></em></div>
 								<div class="dp-form-input">
 									<input type="password" value="" name="password" id="password" size="40" tabindex="2" />
 								</div>
 							</div>
 						</div>
 						<div class="footer">
-							<input class="btn primary" type="submit" value="Log In" />
+							<input class="btn primary" type="submit" value="{{ phrase('user.log_in_btn') }}" />
 						</div>
 					</form>
 				</div>

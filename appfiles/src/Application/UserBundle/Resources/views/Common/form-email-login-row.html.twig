@@ -2,18 +2,18 @@
 	{% if app.user.is_guest %}
 		{% if login_error %}
 		<div class="alert-message error dp-inline-login-err">
-			The email address or password you entered is invalid. Please try again or <a href="{{ path('user_login_resetpass') }}">click here</a> if you have lost your password.
+			{{ phrase('user.login_error') }}
 		</div>
 		{% endif %}
 
 		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-inline-login-open">log in</a>.</em>
+				<label>{{ phrase('user.label_your_email') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
 			</div>
 			<div class="dp-form-input">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
 				<div class="dp-error-explain">
-					Enter a valid email address
+					{{ phrase('user.form_fix_email') }}
 				</div>
 			</div>
 		</div>
@@ -21,40 +21,38 @@
 		<div class="dp-form-row dp-inline-login-pass" style="display: none">
 			<div class="dp-login-section">
 				<div class="dp-form-label">
-					<label>Password</label>
-					<a class="forgot" href="{{ path('user_login_resetpass') }}">Lost?</a>
+					<label>{{ phrase('user.label_login_password') }}</label>
+					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_password_link') }}</a>
 				</div>
 				<div class="dp-form-input">
 					<input type="password" id="dp_inline_login_pass" />
 					<div class="dp-loading">
-						Logging in...
+						{{ phrase('user.loading') }}
 					</div>
 					<div class="dp-btn-row">
-						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">Log In</button>
-						<button class="btn dp-inline-login-open">Cancel</button>
+						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.log_in_btn') }}</button>
+						<button class="btn dp-inline-login-open">{{ phrase('user.cancel') }}</button>
 					</div>
 				</div>
 			</div>
 
 			<div class="dp-reset-section" style="display: none">
 				<div class="dp-reset-desc">
-					Forgot your password? Fill in your email address above, and then
-					click the button below.
+					{{ phrase('user.lost_password_explain') }}
 					<br />
 					<div class="dp-btn-row">
 						<div class="not-loading">
-							<button class="btn small dp-do-send">Send Reset Instructions</button>
-							<a class="back">or go back to the login form</a>
+							<button class="btn small dp-do-send">{{ phrase('user.lost_password_send_btn') }}</button>
+							<a class="back">{{ phrase('user.lost_password_cancel_btn') }}</a>
 						</div>
 						<div class="is-loading">
-							Please Wait
+							{{ phrase('user.loading_wait') }}
 						</div>
 					</div>
 				</div>
 				<div class="dp-reset-sent" style="display: none">
-					If we have an account with this email address, then we have sent you
-					instructions on how to reset your password.<br />
-					<a class="btn small back">Go back to the login form</a>
+					{{ phrase('user.lost_password_sent_explain') }}<br />
+					<a class="btn small back">{{ phrase('user.lost_password_back_btn') }}</a>
 				</div>
 			</div>
 		</div>
@@ -69,10 +67,10 @@
 		>
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Your Email Address</label>
+					<label>{{ phrase('user.label_your_email') }}</label>
 					{% if mode == 'advanced' %}
-					<em class="change-email"><a href="{{ path('user_profile') }}">Change email address</a></em>
-					<em class="change-email-close" style="display: none"><a>Done changing email</a></em>
+					<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.change_email') }}</a></em>
+					<em class="change-email-close" style="display: none"><a>{{ phrase('user.done_changing_email') }}</a></em>
 					{% endif %}
 				</div>
 				<div class="dp-form-input">
@@ -82,7 +80,7 @@
 			</div>
 			{% if mode == 'advanced' %}
 				<div class="dp-email-manage-controls" style="display: none">
-					<strong>Choose the email you want to use:</strong><br />
+					<strong>{{ phrase('user.choose_email') }}:</strong><br />
 					<ul>
 						{% for email in app.user.emails %}
 							<li>
@@ -92,7 +90,8 @@
 						<li>
 							<label>
 								<input type="radio" name="dp_inline_email_choice" value="NEW" />
-								New email:</label>
+								{{ phrase('user.choose_email_new') }}:
+							</label>
 							<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
 						</li>
 					</ul>

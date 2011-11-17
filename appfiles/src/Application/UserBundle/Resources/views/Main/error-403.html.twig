@@ -8,7 +8,7 @@
 				{% if error_title %}
 					<h1>{{ error_title }}</h1>
 				{% else %}
-					<h1>You are not allowed to do that</h1>
+					<h1>{{ phrase('user.error_not_allowed_title') }}</h1>
 				{% endif %}
 			</div>
 
@@ -17,12 +17,12 @@
 					{% if error_message %}
 						{{ error_message }}
 					{% else %}
-						Sorry, the action you are trying to perform is not allowed.
+						{{ phrase('user.error_not_allowed') }}
 					{% endif %}
 
 					{% if app.user.is_guest %}
 						<p>
-							You are currently logged out. <a href="{{ path('user_login') }}">Log in</a> and try again.
+							{{ phrase('user.error_not_allowed_help', {'login_url': path('user_login')}) }}
 						</p>
 					{% endif %}
 				</div>

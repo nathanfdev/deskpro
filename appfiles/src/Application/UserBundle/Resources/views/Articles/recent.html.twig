@@ -1,7 +1,7 @@
 {% extends 'UserBundle:Articles:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
-	<li><a href="{{ path('user_articles_recent') }}">Recent Articles</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.articles.section_name') }}</a></li>
+	<li><a href="{{ path('user_articles_recent') }}">{{ phrase('user.articles.recent_section_name') }}</a></li>
 {% endblock %}
 {% block kb_recent %}
 	<div class="with-handler"
@@ -16,7 +16,7 @@
 		{% if show_more %}
 		<div class="content-more">
 			<div class="is-not-loading">
-				<a class="button" href="{{ path('user_articles_recent', {'page': page+1}) }}">More</a>
+				<a class="button" href="{{ path('user_articles_recent', {'page': page+1}) }}">{{ phrase('user.more_results_btn') }}</a>
 			</div>
 			<div class="is-loading">
 				<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
