@@ -369,8 +369,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				success: function(data) {
 					$('.overlay-content').html(data.html);
 					
-					var form = $('#dashboard_widget_edit_form');
-					self.saveEditWidget(form);			
+					var form = $('#dashboard_widget_new_form');
+					self.saveNewWidget(form);			
 				}
 			});
 
@@ -410,8 +410,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 	},
 	
-	// Save the edit widget form
-	saveEditWidget: function(form) {
+	// Save the new widget form
+	saveNewWidget: function(form) {
 		var self = this;
 		
 		form.submit(function() {
@@ -423,6 +423,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				dataType: 'json',
 				type: 'POST',
 				success: function(data) {
+					
 					// Close the overlay
 					self.closeOverlay();
 					
@@ -436,6 +437,44 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.resizeAllWidgets();
 					
 					self.applyResizeToWidgets('#' + widget.element_id);
+				}
+			});
+			
+			return false;
+		});
+		
+	},
+	
+	// Save the edit widget form
+	saveEditWidget: function(form) {
+		var self = this;
+		
+		form.submit(function() {
+			var postData = form.serializeArray();
+			
+			$.ajax({
+				url: form.attr('action'),
+				data: postData,
+				dataType: 'json',
+				type: 'POST',
+				success: function(data) {
+					
+					// Close the overlay
+					self.closeOverlay();
+					
+					// Update the new widget
+					var widget_index = self.getWidgetIndexById();
+					var widget = self.widgets[widget_index];
+					
+					widget.widget.updateData(data.widget.stat);
+					
+					// Update the chart
+					widget.widget.setContent(self.createChart(
+						data.widget.chart_vendor,
+						data.widget.chart_class,
+						"widget_content_" + widget.widget.element_id,
+						data.widget.id)
+					);
 				}
 			});
 			
@@ -501,7 +540,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (this.is_edit_state === true) {
 			this.resizePlacerHolderWidget()
 		}
-
 	},
 
 	// Resize a widget to fit into number_columns
@@ -527,7 +565,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		} else {
 			$('#' + this.widgets[widget_index].widget.element_id).css('width', new_width + 'px');
 		}
-
 	},
 
 	// Resize the placeholder widget

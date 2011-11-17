@@ -49,7 +49,7 @@ report_trend_dashboard_stat_new:
   
 report_trend_dashboard_stat_edit:
   pattern: /trends/dashboards/{dashboard_id}/edit-stat/{dashboard_stat_id}
-  defaults: { _controller: ReportBundle:Dashboard:ajaxCreateWidget }
+  defaults: { _controller: ReportBundle:Dashboard:dashboardStatEdit }
   requirements: { dashboard_id: "\d+", dashboard_stat_id: "\d+" }
   
 report_trend_dashboard_remove_stat:

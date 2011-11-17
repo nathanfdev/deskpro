@@ -1,4 +1,4 @@
-<form action=" {{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id } ) }}" method="post" id="dashboard_widget_edit_form">
+<form action="{{ form_route }}" method="post" id="{{ form_id }}">
 	<input type="hidden" name="process" value="1" />
 
 	<div class="dp-form">

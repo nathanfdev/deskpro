@@ -165,4 +165,18 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $title;
 	}
+	
+	/**
+	 * Sets the chart type
+	 *
+	 * @param string $chart_type
+	 */
+	public function setChartType($chart_type)
+	{
+		$chart_list = ReportDashboard::getChartClasses();
+		
+		$chart_class = $chart_list[$chart_type];
+
+		$this->setViewClass($chart_class);
+	}
 }

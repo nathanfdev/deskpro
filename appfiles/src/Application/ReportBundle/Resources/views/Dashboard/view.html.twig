@@ -6,7 +6,7 @@
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
 	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
-	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxeditwidget']  = '{{ path('report_dashboard_ajaxeditwidget', {'dashboard_id': dashboard.id, 'dashboard_stat_id': '000' })|replace({'000': '{dashboard_stat_id}'}) }}';
+	window.DESKPRO_URL_REGISTRY['report_trend_dashboard_stat_edit']  = '{{ path('report_trend_dashboard_stat_edit', {'dashboard_id': dashboard.id, 'dashboard_stat_id': '000' })|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxdeletewidget']  = '{{ path('report_dashboard_ajaxdeletewidget', {'dashboard_id': dashboard.id, 'dashboard_stat_id': '000' })|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get']  = '{{ path('report_chart_get', {'dashboard_stat_id': '000'})|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get_data']  = '{{ path('report_chart_get_data', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
@@ -98,7 +98,7 @@ function _page_exec() {
                                                 <td>{{ stat.getGroupingName }} </td>
                                                 <td class="period">{{ stat.period }}</td>
 						<td>{{stat.authorName}}</td>
-						<td class="icon"><a href="{{ path('report_dashboard_ajaxcreatewidget', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
+						<td class="icon"><a href="{{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
 					</tr>
 				{% endfor %}
 			</tbody>

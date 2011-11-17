@@ -22,7 +22,7 @@ class ChartController extends AbstractController
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
 		$end_date = new \DateTime();
-		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+		$points   = $dashboard_stat->getNumberDataPoints();
 
 		// Get the Stat Data
 		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());
@@ -49,7 +49,7 @@ class ChartController extends AbstractController
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
 		$end_date = new \DateTime();
-		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+		$points   = $dashboard_stat->getNumberDataPoints();
 
 		// Get the Stat Data
 		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());
@@ -75,7 +75,7 @@ class ChartController extends AbstractController
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
 		$end_date = new \DateTime();
-		$points   = $dashboard_stat->getStat()->getDefaultDataPointCount();
+		$points   = $dashboard_stat->getNumberDataPoints();
 
 		// Get the Stat Data
 		$data = $dashboard_stat->getStat()->getData($end_date, $points, $dashboard_stat->getDisplayGrouping());

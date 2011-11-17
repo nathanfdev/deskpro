@@ -183,7 +183,7 @@ class DashboardController extends AbstractController
 				       ->getNextDashboardStatSlot($dashboard_id);
 				       
 				$dashboardStat->setSlotNumber($next_slot_number);
-
+				
 				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 
@@ -193,10 +193,17 @@ class DashboardController extends AbstractController
 			}
 		}
 
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_new', array(
+			'dashboard_id' => $dashboard->getId(),
+			'stat_id' => $stat->getId(),
+		));
+		
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
-			'dashboard' => $dashboard,
-			'stat'      => $stat,
-			'form'      => $form->createView(),
+			'dashboard'  => $dashboard,
+			'stat'       => $stat,
+			'form'       => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_new_form',
 		));
 
 		return $this->createJsonResponse(array('html' => $html));
@@ -204,45 +211,40 @@ class DashboardController extends AbstractController
 
 
 	/**
-	 * Create and fetch dashboard widget
+	 * Edit a dashboard stat
 	 */
-	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
+	public function dashboardStatEditAction($dashboard_id, $dashboard_stat_id)
 	{
-		$dashboard     = $this->getDashboard($dashboard_id);
-		$stat          = $this->getStat($stat_id);
-
-		$dashboardStat = new ReportDashboardStat();
-		$dashboardStat->setStat($stat);
-		$dashboardStat->setTitle($stat->getTitle());
-		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
-
+		$dashboardStat     = $this->getDashboardStat($dashboard_stat_id);
+		$dashboard = $dashboardStat->getReportDashboard();
+		$stat      = $dashboardStat->getStat();
+		
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 		
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
-				       ->getNextDashboardStatSlot($dashboard_id);
-
-				$dashboard_stat = new ReportDashboardStat();
-				$dashboard_stat->setReportDashboard($dashboard);
-				$dashboard_stat->setStat($stat);
-				$dashboard_stat->setSlotNumber($next_slot_number);
-
-				App::getOrm()->persist($dashboard_stat);
+				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 
-				$widget = $this->getWidgetDetails($dashboard_stat);
+				$widget = $this->getWidgetDetails($dashboardStat);
 
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
-
+		
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_edit', array(
+			'dashboard_id' => $dashboard->getId(),
+			'dashboard_stat_id' => $dashboardStat->getId(),
+		));
+		
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'stat'      => $stat,
 			'form'      => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_edit_form',
 		));
 
 		return $this->createJsonResponse(array('html' => $html));
