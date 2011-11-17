@@ -153,4 +153,19 @@ class ChartFactory
 
 		return $chart;
 	}
+	
+	/**
+	 * Transform a chart class to its full screen view class
+	 */
+	public static function transformChartToFullScreen($chart_class)
+	{
+		switch ($chart_class) {
+			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
+				$chart_class = 'Application\ReportBundle\Chart\AmChart\LineChart';
+				break;
+		}
+		
+		
+		return $chart_class;
+	}
 }

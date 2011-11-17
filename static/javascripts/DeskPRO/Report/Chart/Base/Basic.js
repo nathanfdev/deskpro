@@ -13,8 +13,9 @@ DeskPRO.Report.Chart.Base.Basic = new Orb.Class({
 		this.vendor	       = vendor;
 		this.vendor_type       = vendor_type;
 		this.options           = options || {};
+		this.chart_type_index  = -1;
 	},
-
+	
 	onRenderComplete: function() {
 	},
 

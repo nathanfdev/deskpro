@@ -545,6 +545,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					data.chart.chart_class,
 					'fullscreen_overlay_wrapper_content',
 					data.chart.dashboard_stat_id);
+				new_chart.chart_type_index = data.chart.chart_type;
 				new_chart.render();
 		
 			}
