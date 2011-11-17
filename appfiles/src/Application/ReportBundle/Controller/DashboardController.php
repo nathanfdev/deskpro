@@ -158,6 +158,50 @@ class DashboardController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => $success));
 	}
+	
+	/**
+	 * Add a new stat to the dashboard
+	 */
+	public function dashboardStatNewAction($dashboard_id, $stat_id)
+	{
+		$dashboard     = $this->getDashboard($dashboard_id);
+		$stat          = $this->getStat($stat_id);
+
+		$dashboardStat = new ReportDashboardStat();
+		$dashboardStat->setReportDashboard($dashboard);
+		$dashboardStat->setStat($stat);
+		$dashboardStat->setTitle($stat->getTitle());
+		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
+
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+				       ->getNextDashboardStatSlot($dashboard_id);
+				       
+				$dashboardStat->setSlotNumber($next_slot_number);
+
+				App::getOrm()->persist($dashboardStat);
+				App::getOrm()->flush();
+
+				$widget = $this->getWidgetDetails($dashboardStat);
+
+				return $this->createJsonResponse(array('widget' => $widget));
+			}
+		}
+
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard' => $dashboard,
+			'stat'      => $stat,
+			'form'      => $form->createView(),
+		));
+
+		return $this->createJsonResponse(array('html' => $html));
+	}
+
 
 	/**
 	 * Create and fetch dashboard widget
@@ -165,12 +209,15 @@ class DashboardController extends AbstractController
 	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
 	{
 		$dashboard     = $this->getDashboard($dashboard_id);
-		$stat      	   = $this->getStat($stat_id);
-		$dashboardStat = $this->getDashboard($dashboard_id);
+		$stat          = $this->getStat($stat_id);
 
 		$dashboardStat = new ReportDashboardStat();
-		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		$dashboardStat->setStat($stat);
+		$dashboardStat->setTitle($stat->getTitle());
+		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
 
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
@@ -194,7 +241,7 @@ class DashboardController extends AbstractController
 
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
-			'stat'		=> $stat,
+			'stat'      => $stat,
 			'form'      => $form->createView(),
 		));
 
@@ -264,6 +311,9 @@ class DashboardController extends AbstractController
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
 
+		$title = $dashboard_stat->getTitle();
+		$title = strlen($title) ? $title : $dashboard_stat->getDefaultTitle();
+		
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
 			'chart_vendor'	=> $chart->getViewChartVendor(),
@@ -272,7 +322,7 @@ class DashboardController extends AbstractController
 			'slot_number'   => $dashboard_stat->getSlotNumber(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),
-				'title' => $dashboard_stat->getTitle(),
+				'title' => $title,
 			),
 		);
 	}

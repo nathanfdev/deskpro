@@ -1,13 +1,42 @@
-<form action="#" method="post">
+<form action=" {{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id } ) }}" method="post" id="dashboard_widget_edit_form">
 	<input type="hidden" name="process" value="1" />
 
 	<div class="dp-form">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Title</label>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.title, { 'placeholder': 'test' }) }}
+			</div>
+		</div>
+		
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Chart Type</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.chart_type) }}
+			</div>
+		</div>
+		
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Display Grouping Data?</label>
+				<span>Set this to display the data grouped by {{ stat.getGroupingName }}</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.display_grouping) }}
+			</div>
+		</div>
+		
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Data Range</label>
+				<span>How many days worth of data do you want to display?</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.number_data_points) }}
 			</div>
 		</div>
 	</div>

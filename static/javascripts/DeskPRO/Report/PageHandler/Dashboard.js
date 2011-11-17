@@ -148,19 +148,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 	},
 
-	// Create a widget and fetch it
-	createAndFetchWidget: function() {
-		var self = this;
-		$.ajax({
-			url: DeskPRO_Window.getUrl('report_dashboard_ajaxcreatewidget', {dashboard_id: this.dashboard_id}),
-			dataType: 'json',
-			type: 'GET',
-			success: function(data) {
-				self.createWidgetFromJSON(data);
-			}
-		});
-	},
-
 	// Create a widget from a JSON response
 	createWidgetFromJSON: function(data) {
 
@@ -173,6 +160,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			"widget_content_" + widget.element_id,
 			data.id)
 		);
+		
+		return widget;
 	},
 
 	// Create a chart, can be any number of vendors of chart types
@@ -224,8 +213,16 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.widgets.splice(pos, 0, insert_widget)
 		}
 
-		// Add widget to UI
-		this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
+		// Add widget to UI - Need to insert before the add chart placeholder
+		// if its showing
+		if (this.is_edit_state) {
+			this.removeAddChartPlaceholder();
+			this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));;
+			this.createAddChartPlaceholder();
+		}
+		else {
+			this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
+		}
 		widget.addUIHandlers();
 
 		// Setup the spacing
@@ -283,32 +280,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.$dashboardGrid.disableSelection();
 
 		// Make the dashboard widgets resizable
-		this.$dashboardGrid.find("li.chart-widget").resizable({
-			helper: "ui-resizable-helper",
-			handles: 'e',
-			distance: 40,
-			start: function(event, ui) {
-				var html = '<div class="resize-overlay resize-left"></div>';
-				$(this).find('.ui-resizable-helper').append(html);
-			},
-			resize: function(event, ui) {
-				// Prevent height resize
-				ui.size.height = ui.originalSize.height;
-			},
-			stop: function(event, ui) {
-				// Remove the resize overlay
-				$(this).find('.resize-overlay').remove();
-
-				// TODO: remove this when window resize event handler is working
-				self.calculateColumnWidth();
-
-				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
-				var widget_index = self.getWidgetIndexById(ui.element.attr('id'));
-
-				// Adjust the resized widget to the closest column
-				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
-			}
-		});
+		this.applyResizeToWidgets();
 
 		// Set each widget as editable
 		Array.each(this.widgets, function(v) {
@@ -344,10 +316,50 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		this.is_edit_state = false;
 	},
+	
+	// Apply the resizable plugin to widgets
+	applyResizeToWidgets: function(selector) {
+	
+		var self = this;
+		
+		// Apply to all by default, otherwise we can specify, useful
+		// for when a widget is added
+		selector = selector || "li.chart-widget";
+		
+		// Make the dashboard widgets resizable
+		this.$dashboardGrid.find(selector).resizable({
+			helper: "ui-resizable-helper",
+			handles: 'e',
+			distance: 40,
+			start: function(event, ui) {
+				var html = '<div class="resize-overlay resize-left"></div>';
+				$(this).find('.ui-resizable-helper').append(html);
+			},
+			resize: function(event, ui) {
+				// Prevent height resize
+				ui.size.height = ui.originalSize.height;
+			},
+			stop: function(event, ui) {
+				// Remove the resize overlay
+				$(this).find('.resize-overlay').remove();
 
+				// TODO: remove this when window resize event handler is working
+				self.calculateColumnWidth();
+
+				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
+				var widget_index = self.getWidgetIndexById(ui.element.attr('id'));
+
+				// Adjust the resized widget to the closest column
+				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
+			}
+		});
+		
+	},
+	
 	// Add UI handlers for the add chart overlay
 	addAddChartUIHandlers: function() {
-
+		var self = this;
+		
 		$('#dashboard_widget_select a.add-chart').on('click', function() {
 			var href = $(this).attr('href');
 			$.ajax({
@@ -356,6 +368,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					$('.overlay-content').html(data.html);
+					
+					var form = $('#dashboard_widget_edit_form');
+					self.saveEditWidget(form);			
 				}
 			});
 
@@ -394,7 +409,41 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			}
 		});
 	},
-
+	
+	// Save the edit widget form
+	saveEditWidget: function(form) {
+		var self = this;
+		
+		form.submit(function() {
+			var postData = form.serializeArray();
+			
+			$.ajax({
+				url: form.attr('action'),
+				data: postData,
+				dataType: 'json',
+				type: 'POST',
+				success: function(data) {
+					// Close the overlay
+					self.closeOverlay();
+					
+					// Insert the new widget
+					var widget = self.createWidgetFromJSON(data.widget);
+					widget.setEditable(true);
+					widget.getContent().render();
+					widget.hideLoader();
+					
+					self.calculateColumnWidth();
+					self.resizeAllWidgets();
+					
+					self.applyResizeToWidgets('#' + widget.element_id);
+				}
+			});
+			
+			return false;
+		});
+		
+	},
+	
 	// Create the placeholder for the add chart widget
 	createAddChartPlaceholder: function() {
 		var self = this;
@@ -414,7 +463,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			return false;
 		});
 	},
-
+		
 	// Remove the placeholder
 	removeAddChartPlaceholder: function() {
 

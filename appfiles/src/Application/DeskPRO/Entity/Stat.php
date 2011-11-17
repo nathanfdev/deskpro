@@ -350,7 +350,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Get the number of data points based on the run frequency
+	 * Get the number of data points based on the run frequency, eg, For
+	 * daily reports show a week, for montly reports show a year
+	 *
+	 * @return int The number of data points to display
 	 */
 	public function getDefaultDataPointCount()
 	{

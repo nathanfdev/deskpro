@@ -30,6 +30,12 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * @var string
+	 * @ORM_MAPPING\Column(name="title", type="string", length="255")
+	 */
+	protected $title;
+	
+	/**
 	 * The Dashboard
 	 *
 	 * @var \Application\DeskPRO\Entity\ReportDashboard
@@ -72,6 +78,12 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $slot_number;
 
 	/**
+	 * @var int
+	 * @ORM_MAPPING\Column(name="number_data_points", type="integer")
+	 */
+	protected $number_data_points;
+	
+	/**
 	 * Indicates if the ungrouped or grouped data should be displayed
 	 *
 	 * @var bool
@@ -107,13 +119,23 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	{
 
 	}
-
+		
+	/**
+	 * Get the number of data points
+	 *
+	 * @return int The number of data points to display
+	 */
+	public function getDefaultNumberDataPoints()
+	{
+		return $this->getStat()->getDefaultDataPointCount();		
+	}
+	
 	/**
 	 * Get the Title. Constructed from the stat title and its various attributes.
 	 *
 	 * @return string The title.
 	 */
-	public function getTitle()
+	public function getDefaultTitle()
 	{
 		$stat_title = $this->getStat()->getTitle();
 		$grouping_name = $this->getStat()->getGroupingName();

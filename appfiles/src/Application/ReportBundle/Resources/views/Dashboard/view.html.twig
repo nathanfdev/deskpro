@@ -63,7 +63,7 @@ function _page_exec() {
 		<div style="clear: both"></div>
 	</div>
 
-	<div id="overlay_wrapper" style="width: 600px; height: 400px; display: none;">
+	<div id="overlay_wrapper" style="width: 800px; height: 400px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4>Add Dashboard Chart</h4>
@@ -84,7 +84,9 @@ function _page_exec() {
 				<tr>
 					<th width="16"></th>
 					<th>Title</th>
-					<th width="200">Author</th>
+                                        <th width="100">Group By</th>
+                                        <th width="100">Updates</th>
+					<th width="100">Author</th>
 					<th width="16" class="icon"></th>
 				</tr>
 			</thead>
@@ -93,6 +95,8 @@ function _page_exec() {
 					<tr>
 						<td class="{{stat.starred ? 'starred' : ''}}"></td>
 						<td>{{stat.title}}</td>
+                                                <td>{{ stat.getGroupingName }} </td>
+                                                <td class="period">{{ stat.period }}</td>
 						<td>{{stat.authorName}}</td>
 						<td class="icon"><a href="{{ path('report_dashboard_ajaxcreatewidget', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
 					</tr>
