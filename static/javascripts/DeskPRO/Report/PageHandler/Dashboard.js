@@ -66,11 +66,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$('#dashboard_widget').template('dashboard_widget');
 		$('#dashboard_widget_create').template('dashboard_widget_create');
 		$('#dashboard_widget_select').template('dashboard_widget_select');
-		$('#dashboard_widget_edit').template('dashboard_widget_edit');
 
 		// Create the dashboard overlay
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#overlay_wrapper')
+		});
+		$('#overlay_wrapper .close-overlay').on('click', function() {
+			self.overlay.close();
 		});
 		
 		// Create an overlay for fullscreen
@@ -78,9 +80,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			contentElement: $('#fullscreen_overlay_wrapper'),
 			fullScreen: true
 		});
-		
-		$('#overlay_wrapper .close-overlay').on('click', function() {
-			self.overlay.close();
+		$('#fullscreen_overlay_wrapper .close-overlay').on('click', function() {
+			self.fullscreen_overlay.close();
 		});
 
 		// Setup the grid option slider
@@ -126,7 +127,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Open the overlay loading in a template
 	openOverlay: function(overlay_content) {
 
-		$('.overlay-content').html(overlay_content);
+		$('#overlay_wrapper .overlay-content').html(overlay_content);
 		this.overlay.open();
 
 	},
@@ -134,7 +135,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Clean the overlay and close it
 	closeOverlay: function() {
 
-		$('.overlay-content').html('');
+		$('#overlay_wrapper .overlay-content').html('');
 		this.overlay.close();
 
 	},
@@ -188,7 +189,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var chartClass = eval("DeskPRO.Report.Chart." + vendor + "." + chart_type);
 
-		return new chartClass(chart_element_id, dashboad_stat_id);
+		return new chartClass(chart_element_id, dashboad_stat_id, vendor, chart_type);
 	},
 
 	// Render the widget content. Need to do this when widget sizes change as
@@ -378,7 +379,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				type: 'GET',
 				dataType: 'json',
 				success: function(data) {
-					$('.overlay-content').html(data.html);
+					$('#overlay_wrapper .overlay-content').html(data.html);
 					
 					var form = $('#dashboard_widget_new_form');
 					self.saveNewWidget(form);			
@@ -524,6 +525,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	},
 
+	// Show a chart fullscreen
+	showChartFullscreen: function(widget) {
+		
+		$('#fullscreen_overlay_wrapper .overlay-content').html('');
+		
+		var chart = widget.getContent();
+		
+		var new_chart = this.createChart(chart.vendor,
+				 chart.vendor_type,
+				 'fullscreen_overlay_wrapper_content',
+				 chart.dashboard_stat_id)	
+		new_chart.render();
+		
+		this.fullscreen_overlay.open();
+		
+	},
+	
 	// Get a widget object by it element id
 	getWidgetIndexByElementId: function(element_id) {
 		var index      = 0;

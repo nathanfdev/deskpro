@@ -6,9 +6,9 @@ Orb.createNamespace('DeskPRO.Report.Chart.DeskPRO');
 DeskPRO.Report.Chart.DeskPRO.Base = new Orb.Class({
 	Extends: DeskPRO.Report.Chart.Base.Basic,
 
-	initialize: function(element_id, dashboard_stat_id, options) {
+	initialize: function(element_id, dashboard_stat_id, vendor, vendor_type, options) {
 
-		this.parent(element_id, dashboard_stat_id, options);
+		this.parent(element_id, dashboard_stat_id, vendor, vendor_type, options);
 	},
 
 	render: function() {

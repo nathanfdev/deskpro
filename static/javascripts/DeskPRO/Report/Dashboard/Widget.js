@@ -68,6 +68,11 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 			self.dashboard.deleteWidget(self.element_id);
 			return false;
 		});
+		
+		this.$widget.find('.toolbar-title').on('click', function() {
+			self.dashboard.showChartFullscreen(self);
+			return false;
+		});
 
 		this.showLoader();
 	},

@@ -6,10 +6,10 @@ Orb.createNamespace('DeskPRO.Report.Chart.DeskPRO');
 DeskPRO.Report.Chart.DeskPRO.SimpleVariation = new Orb.Class({
 	Extends: DeskPRO.Report.Chart.DeskPRO.Base,
 
-	initialize: function(element_id, dashboard_stat_id, options) {
+	initialize: function(element_id, dashboard_stat_id, vendor, vendor_type, options) {
 		var self = this;
 
-		this.parent(element_id, dashboard_stat_id, options);
+		this.parent(element_id, dashboard_stat_id, vendor, vendor_type, options);
 
 		this.chart_type = 'simple-variation';
 
