@@ -9,11 +9,6 @@ report_trend_index:
   pattern: /trends
   defaults: { _controller: ReportBundle:Trend:index }
   
-report_trend_view:
-  pattern: /trends/{stat_id}
-  defaults: { _controller: ReportBundle:Trend:view }
-  requirements: { stat_id: "\d+" }
-  
 report_trend_new:
   pattern: /trends/new
   defaults: { _controller: ReportBundle:Trend:new }

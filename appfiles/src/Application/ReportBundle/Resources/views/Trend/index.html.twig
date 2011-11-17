@@ -53,7 +53,7 @@ function _page_exec() {
 			{% for stat in stats %}
 				<tr>
 					<td class="{{stat.starred ? 'starred' : ''}}"></td>
-					<td><a href="{{ path('report_trend_view', { 'stat_id': stat.id }) }}">{{stat.title}}</a></td>
+					<td>{{stat.title}}</td>
 					<td class="period">{{ stat.period }}</td>
 					<td>{{stat.authorName}}</td>
 					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
