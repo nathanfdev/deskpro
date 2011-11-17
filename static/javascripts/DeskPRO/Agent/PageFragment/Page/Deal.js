@@ -75,6 +75,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				success: function() {
 					row.remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                                        DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
 		});
@@ -100,6 +101,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				success: function() {
 					row.remove();
 					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                                        DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
 		});
@@ -121,6 +123,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				},
 				success: function(data) {
                                     $('.set-deal-stage').html(data.deal_stage);
+                                    DeskPRO_Window.sections.deals_section.refresh();
 				}
 			});
                 }) ;

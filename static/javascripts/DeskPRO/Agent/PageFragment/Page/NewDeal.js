@@ -66,6 +66,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 				if (data.success) {
 
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/deal/' + data.deal_id);
+                                        DeskPRO_Window.sections.deals_section.refresh();
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
