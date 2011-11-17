@@ -350,7 +350,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Get the number of data points based on the run frequency
+	 * Get the number of data points based on the run frequency, eg, For
+	 * daily reports show a week, for montly reports show a year
+	 *
+	 * @return int The number of data points to display
 	 */
 	public function getDefaultDataPointCount()
 	{
@@ -686,5 +689,28 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $results;
+	}
+	
+	public function getFormatter()
+	{
+		$concept_class = $this->getStatConceptClass();
+			
+		return $concept_class::getFormatter();
+	}
+	
+	/**
+	 * Format the data using the set formatter
+	 *
+	 * @param mixed $data The data to format
+	 * @param array $options Various formatting options
+	 * @return mixed The formatted data
+	 */
+	public function formatData($data, array $options = array())
+	{
+		if (false === is_null($this->getFormatter())) {
+			$data = $this->getFormatter()->formatData($data, $options);
+		}
+		
+		return $data;
 	}
 }

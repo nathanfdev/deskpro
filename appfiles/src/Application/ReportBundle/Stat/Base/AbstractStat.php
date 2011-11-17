@@ -171,4 +171,14 @@ abstract class AbstractStat implements StatInterface
 
 		return $dates;
 	}
+	
+	/**
+	 * Get the data formatter. Override in your child classes
+	 * 
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
+	{
+		return null;
+	}
 }

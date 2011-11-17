@@ -5,9 +5,9 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets awaiting agent
+ * Get the total ticket resolve time
  */
-class TicketsAwaitingAgent extends AbstractTicket
+class TotalTicketResolveTime extends AbstractTicket
 {
 	public function init()
 	{
@@ -36,7 +36,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 
 	public function processUngroupedResults($result)
 	{
-		return $result[0]['ticket_count'];
+		return rand(0, 130000);
 	}
 
 	public function processGroupedResults($results)
@@ -45,7 +45,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 
 		foreach ($results as $result) {
 			$processedResults[] = array(
-				'value'       => $result['ticket_count'],
+				'value'       => rand(0, 130000),
 				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
@@ -53,8 +53,15 @@ class TicketsAwaitingAgent extends AbstractTicket
 		return $processedResults;
 	}
 	
-	public static function formatData($data)
+	/**
+	 * Get the data formatter
+	 * 
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
 	{
-		return $data;
+		$class = new \Application\ReportBundle\Stat\Formatter\TimeFormatter();
+		
+		return $class;
 	}
 }

@@ -22,4 +22,9 @@ interface StatInterface
 	 * peform additional processing, etc
 	 */
 	public function processGroupedResults($result);
+	
+	/**
+	 * Get the data formatter
+	 */
+	public static function getFormatter();
 }

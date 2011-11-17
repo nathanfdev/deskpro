@@ -158,44 +158,93 @@ class DashboardController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => $success));
 	}
-
+	
 	/**
-	 * Create and fetch dashboard widget
+	 * Add a new stat to the dashboard
 	 */
-	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
+	public function dashboardStatNewAction($dashboard_id, $stat_id)
 	{
 		$dashboard     = $this->getDashboard($dashboard_id);
-		$stat      	   = $this->getStat($stat_id);
-		$dashboardStat = $this->getDashboard($dashboard_id);
+		$stat          = $this->getStat($stat_id);
 
 		$dashboardStat = new ReportDashboardStat();
-		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		$dashboardStat->setReportDashboard($dashboard);
+		$dashboardStat->setStat($stat);
+		$dashboardStat->setTitle($stat->getTitle());
+		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
 
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
 				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
 				       ->getNextDashboardStatSlot($dashboard_id);
-
-				$dashboard_stat = new ReportDashboardStat();
-				$dashboard_stat->setReportDashboard($dashboard);
-				$dashboard_stat->setStat($stat);
-				$dashboard_stat->setSlotNumber($next_slot_number);
-
-				App::getOrm()->persist($dashboard_stat);
+				       
+				$dashboardStat->setSlotNumber($next_slot_number);
+				
+				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 
-				$widget = $this->getWidgetDetails($dashboard_stat);
+				$widget = $this->getWidgetDetails($dashboardStat);
 
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
 
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_new', array(
+			'dashboard_id' => $dashboard->getId(),
+			'stat_id' => $stat->getId(),
+		));
+		
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard'  => $dashboard,
+			'stat'       => $stat,
+			'form'       => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_new_form',
+		));
+
+		return $this->createJsonResponse(array('html' => $html));
+	}
+
+
+	/**
+	 * Edit a dashboard stat
+	 */
+	public function dashboardStatEditAction($dashboard_id, $dashboard_stat_id)
+	{
+		$dashboardStat     = $this->getDashboardStat($dashboard_stat_id);
+		$dashboard = $dashboardStat->getReportDashboard();
+		$stat      = $dashboardStat->getStat();
+		
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				App::getOrm()->persist($dashboardStat);
+				App::getOrm()->flush();
+
+				$widget = $this->getWidgetDetails($dashboardStat);
+
+				return $this->createJsonResponse(array('widget' => $widget));
+			}
+		}
+		
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_edit', array(
+			'dashboard_id' => $dashboard->getId(),
+			'dashboard_stat_id' => $dashboardStat->getId(),
+		));
+		
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
-			'stat'		=> $stat,
+			'stat'      => $stat,
 			'form'      => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_edit_form',
 		));
 
 		return $this->createJsonResponse(array('html' => $html));
@@ -264,6 +313,9 @@ class DashboardController extends AbstractController
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
 
+		$title = $dashboard_stat->getDisplayTitle();
+		$title = strlen($title) ? $title : $dashboard_stat->getDefaultTitle();
+		
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
 			'chart_vendor'	=> $chart->getViewChartVendor(),
@@ -272,7 +324,7 @@ class DashboardController extends AbstractController
 			'slot_number'   => $dashboard_stat->getSlotNumber(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),
-				'title' => $dashboard_stat->getTitle(),
+				'title' => $title,
 			),
 		);
 	}

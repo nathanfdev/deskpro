@@ -20,9 +20,20 @@ class EditReportDashboardStatType extends AbstractType
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$chart_types = ReportDashboard::getChartList();
-
+		$data_points = array_combine(range(1, 60), range(1, 60));
+		
+		$builder->add('title');
 		$builder->add('chart_type', 'choice', array(
 			'choices'   => $chart_types,
+		));
+		$builder->add('display_grouping', 'choice', array(
+			'required' => false,
+			'choices'  => array(0 => 'No', 1 => 'Yes'),
+			'multiple'  => false,
+			'expanded'  => true,
+		));
+		$builder->add('number_data_points', 'choice', array(
+			'choices'   => $data_points,
 		));
 	}
 

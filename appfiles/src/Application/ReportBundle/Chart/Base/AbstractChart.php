@@ -12,14 +12,23 @@ abstract class AbstractChart implements ChartInterface
 	protected $chart_type = '';
 
 	protected $chart_vendor = '';
-
+	
+	protected $formatter = null;
+	
+	/**
+	 * The display units
+	 *
+	 * @var string
+	 */
+	protected $display_units = null;
+	
 	/**
 	 * Color codes used to render chart lines, bars, etc
 	 */
 	protected static $color_codes = array(
-		'FF6600', 'FCD202', 'B0DE09', '0D8ECF', '2A0CD0', 'CD0D74',
-		'CC0000', '00CC00', '0000CC', 'DDDDDD', '999999', '333333',
-		'990000'
+		'#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74',
+		'#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333',
+		'#990000'
 	);
 
 	/**
@@ -78,5 +87,57 @@ abstract class AbstractChart implements ChartInterface
 	public function getColorCodes()
 	{
 		return self::$color_codes;
+	}
+	
+	/**
+	 * Sets a formatter than will process the raw data if required
+	 */
+	public function setFormatter($formatter)
+	{
+		$this->formatter = $formatter;
+	}
+	
+	/**
+	 * Gets the data formatter
+	 */
+	public function getFormatter()
+	{
+		return $this->formatter;
+	}
+	
+	/**
+	 * Format the data using the set formatter
+	 *
+	 * @param mixed $data The data to format
+	 * @param array $options Various formatting options
+	 * @return mixed The formatted data
+	 */
+	public function formatData($data, array $options = array())
+	{
+		if (false === is_null($this->formatter)) {
+			$data = $this->formatter->formatData($data, $options);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * Sets the display unit
+	 *
+	 * @param string $units The display units
+	 */
+	public function setDisplayUnits($units)
+	{
+		$this->display_units = $units;
+	}
+	
+	/**
+	 * Get the display units
+	 *
+	 * @return string The units
+	 */
+	public function getDisplayUnits()
+	{
+		return $this->display_units;
 	}
 }

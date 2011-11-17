@@ -37,7 +37,7 @@
 				<axis>left</axis>
 				<title>{{ label|default('no group') }}</title>
 				<balloon_text>
-					<![CDATA[{{ label|default('no group') }}: {value}]]>
+					<![CDATA[{{ label|default('no group') }}: {value}{{ chart.getDisplayUnits }}]]>
 				</balloon_text>
 			</graph>
 		{% endfor %}
