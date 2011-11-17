@@ -17,9 +17,9 @@ abstract class AbstractChart implements ChartInterface
 	 * Color codes used to render chart lines, bars, etc
 	 */
 	protected static $color_codes = array(
-		'FF6600', 'FCD202', 'B0DE09', '0D8ECF', '2A0CD0', 'CD0D74',
-		'CC0000', '00CC00', '0000CC', 'DDDDDD', '999999', '333333',
-		'990000'
+		'#FF6600', '#FCD202', '#B0DE09', '#0D8ECF', '#2A0CD0', '#CD0D74',
+		'#CC0000', '#00CC00', '#0000CC', '#DDDDDD', '#999999', '#333333',
+		'#990000'
 	);
 
 	/**
