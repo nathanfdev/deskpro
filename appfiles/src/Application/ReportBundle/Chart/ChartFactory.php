@@ -6,7 +6,7 @@ use Application\DeskPRO\Entity\Stat;
 
 class ChartFactory
 {
-	const LIMIT = 6;
+	const LIMIT = 10;
 
 	/**
 	 * Construct a chart based on its class and some data
@@ -164,7 +164,6 @@ class ChartFactory
 				$chart_class = 'Application\ReportBundle\Chart\AmChart\LineChart';
 				break;
 		}
-		
 		
 		return $chart_class;
 	}

@@ -26,9 +26,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// The width of 1 columns
 		this.column_width = null;
+		
+		// The height of 1 column
+		this.row_height = 250;
 
 		// The absolute minimum a column can be resized to (px)
 		this.min_column_width = 250;
+		
+		// The absolute minimum a column can be resized to (px)
+		this.min_row_height = 250;
 
 		// Spacing between widgets in the columns [top, right, bottom, left]
 		this.column_spacing = [0, 5, 10, 5];
@@ -53,7 +59,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Reference to dashboard grid
 		this.$dashboardGrid = $("#report-dashboard-grid");
-		
 	},
 
 	// Init the page
@@ -341,7 +346,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Make the dashboard widgets resizable
 		this.$dashboardGrid.find(selector).resizable({
 			helper: "ui-resizable-helper",
-			handles: 'e',
+			//handles: 'e',
 			distance: 40,
 			start: function(event, ui) {
 				var html = '<div class="resize-overlay resize-left"></div>';
@@ -349,7 +354,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			},
 			resize: function(event, ui) {
 				// Prevent height resize
-				ui.size.height = ui.originalSize.height;
+				//ui.size.height = ui.originalSize.height;
 			},
 			stop: function(event, ui) {
 				// Remove the resize overlay
@@ -359,10 +364,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.calculateColumnWidth();
 
 				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
+				var closest_row_resize  = self.calculateClosestRowSize(ui.size.height);
 				var widget_index = self.getWidgetIndexByElementId(ui.element.attr('id'));
 
 				// Adjust the resized widget to the closest column
 				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
+				self.resizeWidgetToRow(widget_index, closest_row_resize, true);
 			}
 		});
 		
@@ -625,6 +632,24 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			$('#' + this.widgets[widget_index].widget.element_id).css('width', new_width + 'px');
 		}
 	},
+	
+	// Resize a widget to fit into number_rows
+	resizeWidgetToRow: function(widget_index, number_rows, animate) {
+
+		// Update the row size for this widget
+		//this.widgets[widget_index].num_slots = number_rows;
+
+		var new_height = this.calculateHeightOfWidgetByRowCount(number_rows);
+
+		// Do the resize, we may want to animate
+		if (animate) {
+			$('#' + this.widgets[widget_index].widget.element_id).animate({
+				height: new_height + 'px'
+			}, this.animation_duration);
+		} else {
+			$('#' + this.widgets[widget_index].widget.element_id).css('height', new_height + 'px');
+		}
+	},
 
 	// Resize the placeholder widget
 	resizePlacerHolderWidget: function() {
@@ -648,7 +673,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Setup the jQuery resizable grid
 	setupResizableGrid: function() {
 
-		this.$dashboard.find("li").resizable("option", "grid", [5, 50]);
+		this.$dashboard.find("li").resizable("option", "grid", [5, 5]);
 		this.$dashboard.find("li").resizable("option", "minWidth", this.column_width);
 		this.$dashboard.find("li").resizable("option", "maxWidth", this.getDashboardWidth());
 
@@ -671,6 +696,24 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		return column_size;
 	},
+	
+	// Calculate the closets row size from a height
+	calculateClosestRowSize: function(height) {
+
+		// Calculate to a half row - will snap up or down depending
+		// which side of the half row the user resizes to
+		var half_row = this.row_height / 2;
+
+		var row_size = 1;
+		for (var i = 0; i <= 10; i++) {
+			if (height < (this.row_height * i) + half_row) {
+				row_size = i;
+				break;
+			}
+		}
+
+		return 2;
+	},
 
 	// Calculate the width of 1 column
 	calculateColumnWidth: function() {
@@ -689,6 +732,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		return (this.column_width * size) + (this.getWidgetSpacerWidth() * (size - 1));
 
 	},
+	
+	// Calculate the height of a widget by the number of rows it takes up
+	calculateHeightOfWidgetByRowCount: function(size) {
+
+		return (this.row_height * size) + (this.getWidgetSpacerHeight() * (size - 1));
+
+	},
 
 	// Get the board width. The last widget in a row shouldn't have any right
 	// spacing, but as it does for now, we need to reduce this dashboard size
@@ -704,6 +754,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	getWidgetSpacerWidth: function() {
 
 		return (this.column_spacing[1] + this.column_spacing[3]);
+
+	},
+	
+	// Get the spacer size for height
+	getWidgetSpacerHeight: function() {
+
+		return (this.column_spacing[0] + this.column_spacing[2]);
 
 	},
 
