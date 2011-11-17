@@ -375,6 +375,33 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $data_points;
 	}
+	
+	/**
+	 * Get the number of data points based on the run frequency, eg, For
+	 * daily reports show a week, for montly reports show a year
+	 *
+	 * @return int The number of data points to display
+	 */
+	public function getMaxDataPointCount()
+	{
+		$data_points = 7;
+		switch ($this->run_frequency) {
+			case 'daily':
+				// Get a year
+				$data_points = 60;
+				break;
+			case 'monthly':
+				// Get 5 years
+				$data_points = 60;
+				break;
+			case 'yearly':
+				// Get 10 years
+				$data_points = 10;
+				break;
+		}
+
+		return $data_points;
+	}
 
 	/**
 	 * Get a StatValue by date

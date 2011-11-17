@@ -38,11 +38,21 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 			bgcolor:"#FFFFFF"
 		};
 
+		var setting_url = DeskPRO_Window.getUrl('report_chart_get_settings', {dashboard_stat_id: this.dashboard_stat_id});
+		if (this.chart_type_index >= 0) {
+			setting_url += '?chart_type=' + this.chart_type_index + '&all=true';
+		}
+		
+		var data_url = DeskPRO_Window.getUrl('report_chart_get_data', {dashboard_stat_id: this.dashboard_stat_id});
+		if (this.chart_type_index >= 0) {
+			data_url += '?chart_type=' + this.chart_type_index + '&all=true';
+		}
+		
 		var vars = {
 			path: "/static/vendor/amcharts/flash/",
 
-			settings_file: DeskPRO_Window.getUrl('report_chart_get_settings', {dashboard_stat_id: this.dashboard_stat_id}),
-			data_file: DeskPRO_Window.getUrl('report_chart_get_data', {dashboard_stat_id: this.dashboard_stat_id})
+			settings_file: setting_url,
+			data_file: data_url
 		};
 
 		if ((this.support_mode == 'fallback' || this.support_mode == 'flash') &&
