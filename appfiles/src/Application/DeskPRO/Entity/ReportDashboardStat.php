@@ -114,12 +114,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $view;
 	}
-
-	public function getChartType()
-	{
-
-	}
-		
+	
 	/**
 	 * Get the number of data points
 	 *
@@ -138,16 +133,31 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getDefaultTitle()
 	{
 		$stat_title = $this->getStat()->getTitle();
+		
+		return $stat_title;
+	}
+	
+	/**
+	 * Get the Title. Constructed from the stat title and its various attributes.
+	 *
+	 * @return string The title.
+	 */
+	public function getDisplayTitle()
+	{
+		$title = $this->getTitle();
+		
+		if (strlen($title) === 0) {
+			$title = $this->getDefaultTitle();
+		}
+		
 		$grouping_name = $this->getStat()->getGroupingName();
-
-		$title = $stat_title;
-
+		
 		// Add the grouping if we need it
 		if ($this->getDisplayGrouping()) {
 			$title .= ' by ' . $grouping_name;
 		}
 
-		$data_points = $this->getStat()->getDefaultDataPointCount();
+		$data_points = $this->getNumberDataPoints();
 
 		// Add the update period
 		$title .= ' - Last ' . $data_points . ' ';
@@ -178,5 +188,25 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		$chart_class = $chart_list[$chart_type];
 
 		$this->setViewClass($chart_class);
+	}
+	
+	/**
+	 * Get the chart type from the view_class
+	 *
+	 * @return string
+	 */
+	public function getChartType()
+	{
+		$chart_list = ReportDashboard::getChartClasses();
+		
+		$index = 0;
+		foreach ($chart_list as $chart) {
+			if ($chart === $this->getViewClass()) {
+				break;
+			}
+			$index++;
+		}
+		
+		return $index;
 	}
 }

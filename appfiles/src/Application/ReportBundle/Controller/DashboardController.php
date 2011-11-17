@@ -313,7 +313,7 @@ class DashboardController extends AbstractController
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
 
-		$title = $dashboard_stat->getTitle();
+		$title = $dashboard_stat->getDisplayTitle();
 		$title = strlen($title) ? $title : $dashboard_stat->getDefaultTitle();
 		
 		return array(

@@ -232,7 +232,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Removes a widget from the dashboard
 	deleteWidget: function(element_id) {
 		var self         = this;
-		var widget_index = this.getWidgetIndexById(element_id);
+		var widget_index = this.getWidgetIndexByElementId(element_id);
 		var widget       = this.widgets[widget_index];
 
 		// Destroy the widget
@@ -347,7 +347,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				self.calculateColumnWidth();
 
 				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
-				var widget_index = self.getWidgetIndexById(ui.element.attr('id'));
+				var widget_index = self.getWidgetIndexByElementId(ui.element.attr('id'));
 
 				// Adjust the resized widget to the closest column
 				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
@@ -390,7 +390,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Get the state of each of the dashboard widgets
 		this.$dashboardGrid.find("li.chart-widget").each(function(i, el) {
-			var widget_index = self.getWidgetIndexById($(this).attr('id'));
+			var widget_index = self.getWidgetIndexByElementId($(this).attr('id'));
 			var v = self.widgets[widget_index];
 
 			dashboardState.widgets.push({id: v.widget.widget_id, number_columns: v.num_slots, slot_number: i})
@@ -463,7 +463,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.closeOverlay();
 					
 					// Update the new widget
-					var widget_index = self.getWidgetIndexById();
+					var widget_index = self.getWidgetIndexById(data.widget.id);
 					var widget = self.widgets[widget_index];
 					
 					widget.widget.updateData(data.widget.stat);
@@ -475,6 +475,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 						"widget_content_" + widget.widget.element_id,
 						data.widget.id)
 					);
+					
+					widget.widget.getContent().render();
 				}
 			});
 			
@@ -512,7 +514,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	},
 
 	// Get a widget object by it element id
-	getWidgetIndexById: function(element_id) {
+	getWidgetIndexByElementId: function(element_id) {
 		var index      = 0;
 		var foundIndex = 0;
 
@@ -525,7 +527,22 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		return foundIndex;
 	},
+	
+	// Get a widget object by its
+	getWidgetIndexById: function(id) {
+		var index      = 0;
+		var foundIndex = 0;
 
+		Array.each(this.widgets, function(v) {
+			if (v.widget.widget_id === id) {
+				foundIndex = index;
+			}
+			index++;
+		});
+
+		return foundIndex;
+	},
+	
 	// Resize all the widgets
 	resizeAllWidgets: function() {
 		var self  = this;
