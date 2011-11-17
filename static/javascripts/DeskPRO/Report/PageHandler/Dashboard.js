@@ -38,6 +38,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// UI Overlay
 		this.overlay = null;
+		
+		// Fullscreen over lay
+		this.fullscreen_overlay = null;
 
 		// The supported vendor namespaces
 		this.supported_vendors = ['AmChart', 'DeskPRO'];
@@ -50,6 +53,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Reference to dashboard grid
 		this.$dashboardGrid = $("#report-dashboard-grid");
+		
 	},
 
 	// Init the page
@@ -68,6 +72,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#overlay_wrapper')
 		});
+		
+		// Create an overlay for fullscreen
+		this.fullscreen_overlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#fullscreen_overlay_wrapper'),
+			fullScreen: true
+		});
+		
 		$('#overlay_wrapper .close-overlay').on('click', function() {
 			self.overlay.close();
 		});
