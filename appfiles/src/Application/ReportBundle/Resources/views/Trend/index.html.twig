@@ -58,7 +58,7 @@ function _page_exec() {
 					<td>{{ stat.authorName }}</td>
 					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
 					{% for prev_value in stat.getEndData(2) %}
-						<td class="prev-value">{{ prev_value|default('-') }}</td>
+						<td class="prev-value">{{ stat.formatData(prev_value)|default('-') }}</td>
 					{% endfor %}
 					<td class="center difference {{ stat_macros.difference_class(stat.difference, stat.variation) }}">{{ stat.difference(true) }}%</td>
 					<td></td>

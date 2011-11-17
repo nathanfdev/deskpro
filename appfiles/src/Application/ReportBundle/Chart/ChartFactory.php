@@ -33,7 +33,9 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
 			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					$chart->addGraph($data_set['label'], $data_set['values']);
@@ -71,6 +73,8 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\PieChart':
 				$chart = new $chart_class;
 
+				$chart->setFormatter($stat->getFormatter());
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					$value_sum = array_sum($data_set['values']);
@@ -89,7 +93,9 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				$chart->setDifferenceDirection($stat->getVariation());
 
 				// We can only compare one set of data, if there
@@ -106,7 +112,9 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);
 
@@ -123,12 +131,14 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				$chart->setDifferenceDirection($stat->getVariation());
-
+				
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);
-
+					
 					$count++;
 					if ($count === self::LIMIT) {
 						break;

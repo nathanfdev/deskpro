@@ -97,6 +97,12 @@ report_chart_get_settings:
     dashboard_stat_id: "\d+"
     _format: xml
   
+report_chart_get_fullscreen_details:
+  pattern: /chart/{dashboard_stat_id}/full-screen
+  defaults: { _controller: ReportBundle:Chart:getChartFullscreenDetails }
+  requirements: 
+    dashboard_stat_id: "\d+"
+    
 ################################################################################
 # Live Reports
 ################################################################################

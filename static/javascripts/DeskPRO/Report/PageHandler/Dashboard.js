@@ -528,15 +528,27 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Show a chart fullscreen
 	showChartFullscreen: function(widget) {
 		
+		var self = this;
+		
 		$('#fullscreen_overlay_wrapper .overlay-content').html('');
 		
 		var chart = widget.getContent();
 		
-		var new_chart = this.createChart(chart.vendor,
-				 chart.vendor_type,
-				 'fullscreen_overlay_wrapper_content',
-				 chart.dashboard_stat_id)	
-		new_chart.render();
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_chart_get_fullscreen_details', {dashboard_stat_id: chart.dashboard_stat_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				
+				// Build and render the new chart
+				var new_chart = self.createChart(data.chart.chart_vendor,
+					data.chart.chart_class,
+					'fullscreen_overlay_wrapper_content',
+					data.chart.dashboard_stat_id);
+				new_chart.render();
+		
+			}
+		});
 		
 		this.fullscreen_overlay.open();
 		

@@ -97,6 +97,23 @@ class ChartController extends AbstractController
 	}
 
 	/**
+	 * Get the Fullscreen details for a chart, some charts when going fullscreen
+	 * are transformed to use other charts
+	 */
+	public function getChartFullscreenDetailsAction($dashboard_stat_id)
+	{
+		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
+		
+		$details = array(
+			'dashboard_stat_id' => $dashboard_stat->getId(),
+			'chart_vendor'	    => 'AmChart',
+			'chart_class'       => 'Line'
+		);
+
+		return $this->createJsonResponse(array('chart' => $details));
+	}
+	
+	/**
 	 * Get the Dashboard Stat Entity
 	 *
 	 * @throws NotFoundHttpException

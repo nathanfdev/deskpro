@@ -690,4 +690,27 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $results;
 	}
+	
+	public function getFormatter()
+	{
+		$concept_class = $this->getStatConceptClass();
+			
+		return $concept_class::getFormatter();
+	}
+	
+	/**
+	 * Format the data using the set formatter
+	 *
+	 * @param mixed $data The data to format
+	 * @param array $options Various formatting options
+	 * @return mixed The formatted data
+	 */
+	public function formatData($data, array $options = array())
+	{
+		if (false === is_null($this->getFormatter())) {
+			$data = $this->getFormatter()->formatData($data, $options);
+		}
+		
+		return $data;
+	}
 }
