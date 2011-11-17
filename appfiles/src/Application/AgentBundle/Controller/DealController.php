@@ -177,6 +177,21 @@ class DealController extends AbstractController
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
+        $people = $agents = App::getEntityRepository('DeskPRO:Person')->findAll();
+        $organizations = App::getEntityRepository('DeskPRO:Organization')->findAll();
+
+        $participant_person_ids = array();
+        $participant_org_ids = array();
+
+        foreach($deal->getPeoples() as $person)
+        {
+            $participant_person_ids[] = $person->id;
+        }
+
+        foreach($deal->getOrganizations() as $organization)
+        {
+            $participant_org_ids[] = $organization->id;
+        }
         
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
@@ -184,7 +199,13 @@ class DealController extends AbstractController
             'notes' => $notes,
             'agents' => $agents,
             'deal_types' => $deal_type,
-            'deal_stage' => $deal_stage
+            'deal_stage' => $deal_stage,
+            'participant_person_ids' => $participant_person_ids,
+            'participant_org_ids' => $participant_org_ids,
+            'people' => $people,
+            'organizations' => $organizations,
+            'person' => $this->person
+
         ));
     }
 
