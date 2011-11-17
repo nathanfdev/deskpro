@@ -35,9 +35,50 @@
                                 
                         </li>
                         {% endfor%}
-                        <li class="newrow" id="{{baseId}}_person_assign_btn"><span class="btn-small-add"></span>Add User</li>
+                        <li class="newpersonrow" id="{{baseId}}_person_assign_btn"><span class="btn-small-add"></span>Add User</li>
                         
                     </ul>
+                </dd>
+                <dd>                       
+                        <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
+                        <div id="{{baseId}}_choose_user" style="display: none" class="choose-user" >
+                                <div
+                                        id="{{baseId}}_user_searchbox"
+                                        data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                                        data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                                        data-highlight-term="1"
+                                        data-touch-focus="1"
+                                        data-search-param="term"
+                                        data-position-bound="#{{baseId}}_userselect"
+                                >
+                                    Person:
+                                        <input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+                                        <input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
+
+                                        <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                                <li>
+                                                        <a>
+                                                        <span class="user-name"></span>
+                                                        <address>&lt;<span class="user-email"></span>&gt;</address>
+                                                        <div class="bound-fade"></div>
+                                                </a></li>
+                                        </script>
+                                        <div class="person-search-box" style="display: none">
+                                                <section>
+                                                        <ul class="results-list">
+
+                                                        </ul>
+                                                        <footer>
+                                                                <span class="create-user">Create a new person</span>
+                                                        </footer>
+                                                </section>
+                                        </div>
+                                </div>
+                        </div>
+                        <div id="{{baseId}}_user_choice">
+
+                        </div>
+                        <br class="clear" />
                 </dd>
             </dl>
         </div>

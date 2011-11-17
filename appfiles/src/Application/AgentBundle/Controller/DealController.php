@@ -177,9 +177,7 @@ class DealController extends AbstractController
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
-        $people = $agents = App::getEntityRepository('DeskPRO:Person')->findAll();
-        $organizations = App::getEntityRepository('DeskPRO:Organization')->findAll();
-
+        
         $participant_person_ids = array();
         $participant_org_ids = array();
 
@@ -201,9 +199,7 @@ class DealController extends AbstractController
             'deal_types' => $deal_type,
             'deal_stage' => $deal_stage,
             'participant_person_ids' => $participant_person_ids,
-            'participant_org_ids' => $participant_org_ids,
-            'people' => $people,
-            'organizations' => $organizations,
+            'participant_org_ids' => $participant_org_ids,            
             'person' => $this->person
 
         ));
@@ -427,6 +423,19 @@ class DealController extends AbstractController
 
 		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
 			'organization' => $organization
+		));
+        }
+
+        public function newdealSetPersonRowAction($person_id)
+	{
+                if ($person_id) {
+                    $person = $this->em->find('DeskPRO:Person', $person_id);
+		} else{
+                    $person = new Person();
+                }
+
+              return $this->render('AgentBundle:Deal:person-li.html.twig', array(
+			'person' => $person
 		));
         }
 

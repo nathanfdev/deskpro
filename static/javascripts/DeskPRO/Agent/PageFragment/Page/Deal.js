@@ -14,10 +14,10 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this.wrapper = el;
         this._initLabels();
         this._initDisplayOptions();
-        this._initAgentSection();
-        this._initCustomFieldsEditor();
+        this._initAgentSection();        
         this._initAssignPersonSection();
         this._initAssignOrganizationSection();
+        this._initUserSection();
 
         var el = this.getEl('agent_assign_ob');
         this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
@@ -170,16 +170,6 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this.ownObject(this.displayOptionsOverlay);
 
     },
-
-    _initCustomFieldsEditor: function() {
-
-
-        var self = this;
-    //		$('.save-trigger', this.custom_fields_edit).on('click', (function() {
-    //			var fieldEls = $(':input', self.custom_fields_edit);
-    //			this._saveCustomFields(fieldEls);
-    //		}).bind(this));
-    },
     _initAgentSection: function(){
 
         //------------------------------
@@ -241,48 +231,123 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
     
     _initAssignPersonSection: function() {
 
-            var self = this;
-            var el = this.getEl('person_assign_ob');
-            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-            element: el,
-            trigger: this.getEl('person_assign_btn'),
-            onSave: function(ob) {
-                var selections = ob.getAllSelected();
-                var agent_id = parseInt(selections.agents || 0);
+        var newrow = $('li.newpersonrow', this.el);
+		
 
-//                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
+		newrow.on('click', function() {
+			$('.choose-user').toggle();
+		});
+
+//            var self = this;
+//            var el = this.getEl('person_assign_ob');
+//            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+//            element: el,
+//            trigger: this.getEl('person_assign_btn'),
+//            onSave: function(ob) {
+//                var selections = ob.getAllSelected();
+//                var agent_id = parseInt(selections.agents || 0);
 //
-//                var value = selections.agents;
-//                if (value == 0) {
-//                    label = 'Unassigned';
-//                }
+////                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
+////
+////                var value = selections.agents;
+////                if (value == 0) {
+////                    label = 'Unassigned';
+////                }
+////
+////                self.getEl('agent_id').val(agent_id);
+////		self.getEl('agent_label').text(label);
 //
-//                self.getEl('agent_id').val(agent_id);
-//		self.getEl('agent_label').text(label);
-
-
-                $('.reply-agent-team-ob').slideUp();
-
-            }
-        });
+//
+//                $('.reply-agent-team-ob').slideUp();
+//
+//            }
+//        });
 
 	},
 
-    _initAssignOrganizationSection: function() {
+        _initAssignOrganizationSection: function() {
 
-            var self = this;
-            var el = this.getEl('org_assign_ob');
-            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-            element: el,
-            trigger: this.getEl('org_assign_btn'),
-            onSave: function(ob) {
-                var selections = ob.getAllSelected();
-                var agent_id = parseInt(selections.agents || 0);
+                var self = this;
+                var el = this.getEl('org_assign_ob');
+                this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+                element: el,
+                trigger: this.getEl('org_assign_btn'),
+                onSave: function(ob) {
+                    var selections = ob.getAllSelected();
+                    var agent_id = parseInt(selections.agents || 0);
 
-                $('.reply-agent-team-ob').slideUp();
+                    $('.reply-agent-team-ob').slideUp();
 
-            }
-        });
+                }
+            });
 
+            },
+             _initUserSection: function() {
+		var self = this;
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+		var rechooseBtn = this.getEl('switch_user');
+
+		rechooseBtn.click(function() {
+			showUserChoice(); return false;
+		});
+
+		var showUserChoice = function() {
+			userfields.empty();
+			userfields.hide();
+			searchbox.show();
+			rechooseBtn.hide();
+		};
+
+		var placeUserRow = function(html) {
+			self.placeUserRow(html);
+		};
+
+		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/deals/new/set-person-row/' + personId,
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					$('input.person-id', searchbox).val(personId);
+					placeUserRow(html);
+				}
+			});
+			sb.close();
+			sb.reset();
+		});
+		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/deals/new/get-person-row/0',
+				data: { 'email': term },
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					placeUserRow(html);
+
+					if (term.indexOf('@') !== -1) {
+						$('input.email', userfields).val(term);
+					} else {
+						$('input.name', userfields).val(term);
+					}
+				}
+			});
+			sb.close();
+			sb.reset();
+		});
+	},
+
+        placeUserRow: function(html) {
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+                var newrow = $('li.newpersonrow', this.el);
+                var row = $(html);
+		row.insertBefore(newrow);
+               
+		userfields.empty();
+		searchbox.hide();
+		userfields.show();
 	}
 });

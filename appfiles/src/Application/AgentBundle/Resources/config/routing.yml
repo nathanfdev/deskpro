@@ -976,6 +976,10 @@ agent_deal_new_getorganizationrow:
   pattern: /deals/new/get-organization-row/{org_id}
   defaults: { _controller: AgentBundle:Deal:newdealGetOrganizationRow }
 
+agent_deal_new_setpersonrow:
+  pattern: /deals/new/set-person-row/{person_id}
+  defaults: { _controller: AgentBundle:Deal:newdealSetPersonRow }
+
 
 ################################################################################
 # Publish
