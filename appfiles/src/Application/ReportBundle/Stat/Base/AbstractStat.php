@@ -6,8 +6,18 @@ use Application\DeskPRO\App;
 
 abstract class AbstractStat implements StatInterface
 {
+	/**
+	 * List of available grouping the stat has
+	 *
+	 * @var array
+	 */
 	protected $available_grouping = array();
 
+	/**
+	 * The queries to execute
+	 *
+	 * @var array
+	 */
 	protected $trend_queries = array();
 
 	/**
@@ -15,12 +25,30 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected $grouping = array();
 
+	/**
+	 * The raw results from the $trend_queries
+	 *
+	 * @var array
+	 */
 	protected $results = array();
 
+	/**
+	 * The last stat date. Useful if you need to see what has happened
+	 * sine the last time the stat collected data
+	 *
+	 * @var \DaeTime
+	 */
+	protected $last_stat_date = null;
+
+	/**
+	 * DB instance
+	 */
 	protected $db;
 
-	public function __construct()
+	public function __construct(\DateTime $last_stat_date)
 	{
+		$this->last_stat_date = $last_stat_date;
+
 		$this->db = App::getDb();
 
 		$this->results = array('ungrouped' => array(), 'grouped' => array());
@@ -78,7 +106,7 @@ abstract class AbstractStat implements StatInterface
 
 			$alias = $query->getTableAlias($table);
 			$aliasedGroupField = $alias . '.' . $field;
-			
+
 			if (false === $query->isFieldSelected($aliasedGroupField)) {
 				$query->addSelect($aliasedGroupField . ' AS ' . str_replace('.', '_', $groupField));
 			}

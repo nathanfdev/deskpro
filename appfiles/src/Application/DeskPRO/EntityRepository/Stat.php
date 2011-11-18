@@ -130,7 +130,7 @@ class Stat extends EntityRepository
 
 		return "SELECT id
 			FROM stat s
-			WHERE s.disabled = 0
+			WHERE s.generate_stats = 1
 			AND s.run_frequency = '$run_frequency'";
 	}
 }

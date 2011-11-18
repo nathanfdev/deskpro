@@ -116,10 +116,10 @@ class GenerateStatsFloodFill extends AbstractJob
 	protected function processStat($stat)
 	{
 		$stat_concept_class = $stat->getStatConceptClass();
-
-		$stat_concept = new $stat_concept_class();
+		
+		$stat_concept = new $stat_concept_class($this->date_time);
 		$stat_concept->addGrouping($stat->getGroupingRef());
-		$values = $stat_concept->getStats($this->date_time);
+		$values = $stat_concept->getStats();
 
 		// Check if existing StatValue is set for period
 		$stat_value = $stat->getStatValueForDate($this->date_time);
