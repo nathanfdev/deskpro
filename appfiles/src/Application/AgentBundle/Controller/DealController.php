@@ -428,15 +428,44 @@ class DealController extends AbstractController
 
         public function newdealSetPersonRowAction($person_id)
 	{
+                $deal_repository = $this->em->getRepository('DeskPRO:Deal');
+                $deal = $this->getDealOr404($this->in->getString('deal_id'));
+
+                $email = $this->in->getString('email');
+                $name = $this->in->getString('name');
+                
                 if ($person_id) {
                     $person = $this->em->find('DeskPRO:Person', $person_id);
-		} else{
-                    $person = new Person();
+                    
+		} else if($email){
+                    $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
                 }
 
-              return $this->render('AgentBundle:Deal:person-li.html.twig', array(
+                if (!$person) {
+			$person = new Person();
+			$person->addEmailAddressString($email);
+		}
+
+                if (!$person->name && $name) {
+			$person->name = $name;
+		}
+
+                $this->em->persist($person);
+                $this->em->flush();
+
+              // Checked if the person already added to the deal.
+              if($deal_repository->findPersonInDeal($person, $this->in->getString('deal_id')) <= 0)
+              {
+                  $deal->addPeoples($person);
+                  $this->em->persist($deal);
+                  $this->em->flush();
+
+                  return $this->render('AgentBundle:Deal:person-li.html.twig', array(
 			'person' => $person
-		));
+                  ));
+              }
+
+              return $this->createJsonResponse(array('success' => false));
         }
 
 

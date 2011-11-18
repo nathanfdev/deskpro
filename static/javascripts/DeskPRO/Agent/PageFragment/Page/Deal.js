@@ -58,99 +58,111 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         });
 
         this.getEl('members_list').on('click', '.remove', function() {
-			var row = $(this).closest('.member-row');
-			var personId = row.data('person-id');
-			if (!personId) {
-				return;
-			}
+            var row = $(this).closest('.member-row');
+            var personId = row.data('person-id');
+            if (!personId) {
+                return;
+            }
 
-			row.fadeOut('fast');
+            row.fadeOut('fast');
 
-			$.ajax({
-				url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
-				data: { action: 'remove-person', person_id: personId },
-				type: 'POST',
-				context: this,
-				error: function() {
-					row.show();
-				},
-				success: function() {
-					row.remove();
-					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
-                                        DeskPRO_Window.sections.deals_section.refresh();
-				}
-			});
-		});
-
-
-                this.getEl('organizations_list').on('click', '.remove', function() {
-			var row = $(this).closest('.organization-row');
-			var organizationId = row.data('organization-id');
-			if (!organizationId) {
-				return;
-			}
-
-			row.fadeOut('fast');
-
-			$.ajax({
-				url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
-				data: { action: 'remove-organization', organization_id: organizationId },
-				type: 'POST',
-				context: this,
-				error: function() {
-					row.show();
-				},
-				success: function() {
-					row.remove();
-					DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
-                                        DeskPRO_Window.sections.deals_section.refresh();
-				}
-			});
-		});
-
-                $('.select-deal-type').on('change', function(){
-
-                    var dealId = pageMeta.deal_id;
-                    if (!dealId) {
-				return;
-			}
-
-                    $.ajax({
-				url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
-				data: { action: 'change-dealtype', deal_type_id: $(this).val() },
-				type: 'POST',
-				context: this,
-				error: function() {
-					//row.show();
-				},
-				success: function(data) {
-                                    $('.set-deal-stage').html(data.deal_stage);
-                                    DeskPRO_Window.sections.deals_section.refresh();
-				}
-			});
-                }) ;
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                data: {
+                    action: 'remove-person',
+                    person_id: personId
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                    row.show();
+                },
+                success: function() {
+                    row.remove();
+                    DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                    DeskPRO_Window.sections.deals_section.refresh();
+                }
+            });
+        });
 
 
-                $('.select-deal-stage').live('change', function(){
+        this.getEl('organizations_list').on('click', '.remove', function() {
+            var row = $(this).closest('.organization-row');
+            var organizationId = row.data('organization-id');
+            if (!organizationId) {
+                return;
+            }
 
-                    var dealId = pageMeta.deal_id;
-                    if (!dealId) {
-				return;
-			}
+            row.fadeOut('fast');
 
-                    $.ajax({
-				url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
-				data: { action: 'change-dealstage', deal_stage_id: $(this).val() },
-				type: 'POST',
-				context: this,
-				error: function() {
-					//row.show();
-				},
-				success: function(data) {
-                                    //$('.set-deal-stage').html(data.deal_stage);
-				}
-			});
-                }) ;
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                data: {
+                    action: 'remove-organization',
+                    organization_id: organizationId
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                    row.show();
+                },
+                success: function() {
+                    row.remove();
+                    DeskPRO_Window.util.modCountEl(self.getEl('members_count'), '-');
+                    DeskPRO_Window.sections.deals_section.refresh();
+                }
+            });
+        });
+
+        $('.select-deal-type').on('change', function(){
+
+            var dealId = pageMeta.deal_id;
+            if (!dealId) {
+                return;
+            }
+
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                data: {
+                    action: 'change-dealtype',
+                    deal_type_id: $(this).val()
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                //row.show();
+                },
+                success: function(data) {
+                    $('.set-deal-stage').html(data.deal_stage);
+                    DeskPRO_Window.sections.deals_section.refresh();
+                }
+            });
+        }) ;
+
+
+        $('.select-deal-stage').live('change', function(){
+
+            var dealId = pageMeta.deal_id;
+            if (!dealId) {
+                return;
+            }
+
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                data: {
+                    action: 'change-dealstage',
+                    deal_stage_id: $(this).val()
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                //row.show();
+                },
+                success: function(data) {
+                //$('.set-deal-stage').html(data.deal_stage);
+                }
+            });
+        }) ;
 
     },
 
@@ -234,120 +246,120 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         var newrow = $('li.newpersonrow', this.el);
 		
 
-		newrow.on('click', function() {
-			$('.choose-user').toggle();
-		});
+        newrow.on('click', function() {
+            $('.choose-user').toggle();
+            $('.add-new-user-container').remove();
+        });
+    },
 
-//            var self = this;
-//            var el = this.getEl('person_assign_ob');
-//            this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-//            element: el,
-//            trigger: this.getEl('person_assign_btn'),
-//            onSave: function(ob) {
-//                var selections = ob.getAllSelected();
-//                var agent_id = parseInt(selections.agents || 0);
-//
-////                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
-////
-////                var value = selections.agents;
-////                if (value == 0) {
-////                    label = 'Unassigned';
-////                }
-////
-////                self.getEl('agent_id').val(agent_id);
-////		self.getEl('agent_label').text(label);
-//
-//
-//                $('.reply-agent-team-ob').slideUp();
-//
-//            }
-//        });
+    _initAssignOrganizationSection: function() {
 
-	},
+        var self = this;
+        var el = this.getEl('org_assign_ob');
+        this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+            element: el,
+            trigger: this.getEl('org_assign_btn'),
+            onSave: function(ob) {
+                var selections = ob.getAllSelected();
+                var agent_id = parseInt(selections.agents || 0);
 
-        _initAssignOrganizationSection: function() {
+                $('.reply-agent-team-ob').slideUp();
 
-                var self = this;
-                var el = this.getEl('org_assign_ob');
-                this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-                element: el,
-                trigger: this.getEl('org_assign_btn'),
-                onSave: function(ob) {
-                    var selections = ob.getAllSelected();
-                    var agent_id = parseInt(selections.agents || 0);
+            }
+        });
 
-                    $('.reply-agent-team-ob').slideUp();
+    },
+    _initUserSection: function() {
+        var self = this;
+        var searchbox = this.getEl('user_searchbox');
+        var userfields = this.getEl('user_choice');
+        var rechooseBtn = this.getEl('switch_user');
+        
+        var placeUserRow = function(html) {
+            self.placeUserRow(html);
+        };
 
+        searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+            $.ajax({
+                type: 'GET',
+                url: BASE_URL + 'agent/deals/new/set-person-row/' + personId,
+                dataType: 'html',
+                data: {
+                    'deal_id': pageMeta.deal_id
+                    },
+                context: this,
+                success: function(html) {
+                    if(html.success)
+                        {
+                            placeUserRow('');
+                            //return false;
+                        }
+                        $('input.person-id', searchbox).val(personId);
+                        placeUserRow(html);
                 }
             });
+            sb.close();
+            sb.reset();
+        });
+        searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
+            $.ajax({
+                type: 'GET',
+                url: BASE_URL + 'agent/deals/new/get-person-row/0',
+                data: {
+                    'email': term
+                },
+                dataType: 'html',
+                context: this,
+                success: function(html) {
+                    placeUserRow(html);
 
-            },
-             _initUserSection: function() {
-		var self = this;
-		var searchbox = this.getEl('user_searchbox');
-		var userfields = this.getEl('user_choice');
-		var rechooseBtn = this.getEl('switch_user');
+                    if (term.indexOf('@') !== -1) {
+                        $('input.email', userfields).val(term);
+                    } else {
+                        $('input.name', userfields).val(term);
+                    }
+                }
+            });
+            sb.close();
+            sb.reset();
+            
+            $('.save-trigger').live('click', function(){
+                $.ajax({
+                    type: 'GET',
+                    url: BASE_URL + 'agent/deals/new/set-person-row/0',
+                    data: {
+                        'email': $('input.email').val(),
+                        'name' : $('input.name').val(),
+                        'deal_id': pageMeta.deal_id
+                    },
+                    dataType: 'html',
+                    context: this,
+                    success: function(html) {
+                        $('.add-new-user-container').remove();
+                        placeUserRow(html);
+                    }
+                });
 
-		rechooseBtn.click(function() {
-			showUserChoice(); return false;
-		});
+                return false;
+            });
+            $('.cancel-trigger').live('click', function(){
+                $('.add-new-user-container').remove();
+            });
 
-		var showUserChoice = function() {
-			userfields.empty();
-			userfields.hide();
-			searchbox.show();
-			rechooseBtn.hide();
-		};
+        });
+    },
 
-		var placeUserRow = function(html) {
-			self.placeUserRow(html);
-		};
+    placeUserRow: function(html) {
+        var searchbox = this.getEl('user_searchbox');
+        var userfields = this.getEl('user_choice');
+        var newrow = $('li.newpersonrow', this.el);
+        var chooseuser = $('.choose-user');
+        var row = $(html);
 
-		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
-			$.ajax({
-				type: 'GET',
-				url: BASE_URL + 'agent/deals/new/set-person-row/' + personId,
-				dataType: 'html',
-				context: this,
-				success: function(html) {
-					$('input.person-id', searchbox).val(personId);
-					placeUserRow(html);
-				}
-			});
-			sb.close();
-			sb.reset();
-		});
-		searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
-			$.ajax({
-				type: 'GET',
-				url: BASE_URL + 'agent/deals/new/get-person-row/0',
-				data: { 'email': term },
-				dataType: 'html',
-				context: this,
-				success: function(html) {
-					placeUserRow(html);
 
-					if (term.indexOf('@') !== -1) {
-						$('input.email', userfields).val(term);
-					} else {
-						$('input.name', userfields).val(term);
-					}
-				}
-			});
-			sb.close();
-			sb.reset();
-		});
-	},
-
-        placeUserRow: function(html) {
-		var searchbox = this.getEl('user_searchbox');
-		var userfields = this.getEl('user_choice');
-                var newrow = $('li.newpersonrow', this.el);
-                var row = $(html);
-		row.insertBefore(newrow);
-               
-		userfields.empty();
-		searchbox.hide();
-		userfields.show();
-	}
+        row.insertBefore(newrow);
+        userfields.empty();
+        chooseuser.hide();
+        userfields.show();
+    }
 });

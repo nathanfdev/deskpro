@@ -185,4 +185,18 @@ class Deal extends EntityRepository
         return $query->getResult();
     }
 
+    public function findPersonInDeal(Entity\Person $person, $deal_id = null)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('COUNT(p)')
+                    ->from('DeskPRO:Deal', 'd')
+                    ->innerJoin('d.peoples', 'p')
+                    ->where('p.id = :person_id')
+                    ->andWhere('d.id = :deal_id')
+                    ->setParameters(array('person_id' => $person['id'], 'deal_id' => $deal_id))
+                    ;
+            $query = $qb->getQuery(); //print $query->getSQL();exit;
+            return $query->getSingleScalarResult();
+    }
+
 }

@@ -41,7 +41,7 @@
                 </dd>
                 <dd>                       
                         <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
-                        <div id="{{baseId}}_choose_user" style="display: none" class="choose-user" >
+                        <div id="{{baseId}}_choose_user" style="display:none;" class="choose-user" >
                                 <div
                                         id="{{baseId}}_user_searchbox"
                                         data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
@@ -57,11 +57,12 @@
 
                                         <script type="text/x-deskpro-tmpl" class="user-row-tpl">
                                                 <li>
-                                                        <a>
+                                                    <a>
                                                         <span class="user-name"></span>
                                                         <address>&lt;<span class="user-email"></span>&gt;</address>
                                                         <div class="bound-fade"></div>
-                                                </a></li>
+                                                    </a>
+                                                </li>
                                         </script>
                                         <div class="person-search-box" style="display: none">
                                                 <section>
