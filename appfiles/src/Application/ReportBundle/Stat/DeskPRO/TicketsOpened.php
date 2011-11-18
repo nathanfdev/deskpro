@@ -28,6 +28,10 @@ class TicketsOpened extends AbstractTicket
 	{
 		// timestamp_opened < x < NOW
 		$query = new QueryBuilder();
+		$query->select('COUNT(t.id) AS ticket_count')
+		      ->from('tickets', 't')
+		      ->where('UNIX_TIMESTAMP(t.date_created) >= :date_created')
+		      ->setParameter('date_created', $this->last_stat_date->format('U'));
 
 		$this->addQuery($query);
 	}
