@@ -10,8 +10,4 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
  */
 abstract class AbstractTicket extends AbstractStat
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
 }

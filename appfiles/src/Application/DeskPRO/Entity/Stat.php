@@ -124,6 +124,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $starred = false;
 
 	/**
+	 * Should we generate stats
+	 *
+	 * @var bool
+	 * @ORM_MAPPING\Column(name="generate_stats", type="boolean")
+	 */
+	protected $generate_stats = false;
+
+	/**
 	 * Is the stat disabled
 	 *
 	 * @var bool
@@ -375,7 +383,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $data_points;
 	}
-	
+
 	/**
 	 * Get the number of data points based on the run frequency, eg, For
 	 * daily reports show a week, for montly reports show a year
@@ -717,14 +725,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $results;
 	}
-	
+
 	public function getFormatter()
 	{
 		$concept_class = $this->getStatConceptClass();
-			
+
 		return $concept_class::getFormatter();
 	}
-	
+
 	/**
 	 * Format the data using the set formatter
 	 *
@@ -737,7 +745,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		if (false === is_null($this->getFormatter())) {
 			$data = $this->getFormatter()->formatData($data, $options);
 		}
-		
+
 		return $data;
 	}
 }
