@@ -30,7 +30,7 @@
 
                         {% for person in deal.peoples%}
                         <li class="member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
-                                <span data-person-id="{{ person.id }}">{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
+                                <span data-person-id="{{ person.id }}"><b>{{ person.display_name }}</b> &lt;{{person.primary_email.email}}&gt; </span>
                                 <span class="remove btn-small-remove remove-row-trigger">x</span>
                                 
                         </li>
@@ -95,10 +95,52 @@
                                 <span class="remove btn-small-remove remove-row-trigger"></span>
                             </li>
                         {% endfor%}
-                            <li class="newrow" id="{{baseId}}_org_assign_btn"><span class="btn-small-add"></span>Add Organization</li>
+                            <li class="neworgrow" id="{{baseId}}_org_assign_btn"><span class="btn-small-add"></span>Add Organization</li>
                         
                     </ul>
                 </dd>
+                <dd>
+
+                    <div class="choose-org" style="display: none" id="{{baseId}}_org_edit_wrap">
+                            <div
+                                    class="org-input"
+                                    id="{{baseId}}_org_searchbox"
+                                    data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+                                    data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                                    data-highlight-term="1"
+                                    data-touch-focus="1"
+                                    data-search-param="term"
+                                    data-position-bound="@parent(.org-input)"
+                            >
+                                    Organization:
+                                    <input type="text" class="org-name" id="{{baseId}}_orgselect" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+                                    <input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
+                                    <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                            <li>
+                                                    <a>
+                                                    <span class="org-name"></span>
+                                                    <div class="bound-fade"></div>
+                                            </a></li>
+                                    </script>
+                                    <div class="person-search-box org" style="display: none">
+                                            <section>
+                                                    <ul class="results-list">
+
+                                                    </ul>
+                                                    <footer>
+                                                            <span class="create-org">Create a new organization</span>
+                                                    </footer>
+                                            </section>
+                                    </div>
+                            </div>
+                    </div>
+                    <div id="{{baseId}}_org_choice">
+
+                        </div>
+                        <br class="clear" />
+
+                </dd>
+
             </dl>
         </div>
     </article>
@@ -265,15 +307,3 @@
 
 </div>
 {# /Notes Tab #}
-
-{# Assigne Person#}
-
-{% include 'AgentBundle:Deal:person-option-box.html.twig' with {'persons': people} %}
-
-{# /Assigne Person#}
-
-{# Assigne Organization#}
-
-{% include 'AgentBundle:Deal:organization-option-box.html.twig' with {'organizations': organizations} %}
-
-{# /Assigne Organization#}

@@ -24,8 +24,7 @@ use Application\DeskPRO\Entity\DealNote;
 use Application\DeskPRO\Entity\DealStage;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
-
-
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles viewing and editing deals
@@ -426,6 +425,20 @@ class DealController extends AbstractController
 		));
         }
 
+        public function newdealCreatePersonRowAction($person_id)
+        {
+                if ($person_id)
+                {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		} else{
+                    $person = new Person();
+                }
+
+                return $this->render('AgentBundle:Deal:create-person-row.html.twig', array(
+			'person' => $person
+		));
+        }
+
         public function newdealSetPersonRowAction($person_id)
 	{
                 $deal_repository = $this->em->getRepository('DeskPRO:Deal');
@@ -463,9 +476,33 @@ class DealController extends AbstractController
                   return $this->render('AgentBundle:Deal:person-li.html.twig', array(
 			'person' => $person
                   ));
+              }else{
+                  return new Response('failed');
               }
+        }
 
-              return $this->createJsonResponse(array('success' => false));
+        public function newdealCreateOrganizationRowAction($org_id)
+        {
+            $organization = false;
+            if ($org_id) {
+                    $organization = $this->em->find('DeskPRO:Organization', $org_id);
+            }
+
+            return $this->render('AgentBundle:Deal:create-organization-row.html.twig', array(
+                    'organization' => $organization
+            ));
+        }
+
+        public function newdealSetOrganizationRowAction($org_id)
+	{
+		$organization = false;
+		if ($org_id) {
+			$organization = $this->em->find('DeskPRO:Organization', $org_id);
+		}
+
+		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
+			'organization' => $organization
+		));
         }
 
 

@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignPersonSection();
         this._initAssignOrganizationSection();
         this._initUserSection();
+        this._initOrgEdit();
 
         var el = this.getEl('agent_assign_ob');
         this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
@@ -253,22 +254,14 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
     },
 
     _initAssignOrganizationSection: function() {
+        var newrow = $('li.neworgrow', this.el);
 
-        var self = this;
-        var el = this.getEl('org_assign_ob');
-        this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-            element: el,
-            trigger: this.getEl('org_assign_btn'),
-            onSave: function(ob) {
-                var selections = ob.getAllSelected();
-                var agent_id = parseInt(selections.agents || 0);
-
-                $('.reply-agent-team-ob').slideUp();
-
-            }
+        newrow.on('click', function() {
+            $('.choose-org').toggle();
+            $('.add-new-org-container').remove();
         });
-
     },
+    
     _initUserSection: function() {
         var self = this;
         var searchbox = this.getEl('user_searchbox');
@@ -289,11 +282,6 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                     },
                 context: this,
                 success: function(html) {
-                    if(html.success)
-                        {
-                            placeUserRow('');
-                            //return false;
-                        }
                         $('input.person-id', searchbox).val(personId);
                         placeUserRow(html);
                 }
@@ -304,7 +292,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
             $.ajax({
                 type: 'GET',
-                url: BASE_URL + 'agent/deals/new/get-person-row/0',
+                url: BASE_URL + 'agent/deals/new/create-person-row/0',
                 data: {
                     'email': term
                 },
@@ -361,5 +349,70 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         userfields.empty();
         chooseuser.hide();
         userfields.show();
-    }
+    },
+    _initOrgEdit: function() {
+		var self = this;
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var rechooseBtn = this.getEl('switch_org');
+
+		rechooseBtn.click(function() {
+			showOrganizationChoice();
+                        $('.org-id').val(0);
+                        return false;
+		});
+
+		var showOrganizationChoice = function() {
+			orgfields.empty();
+			orgfields.hide();
+			searchbox.show();
+			rechooseBtn.hide();
+		};
+
+                var placeOrganizationRow = function(html) {
+			self.placeOrganizationRow(html);
+		};
+
+		var orgEdit    = this.getEl('org_edit_wrap');
+
+		//orgEnableBtn
+		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {alert(orgId);
+
+			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
+
+		}).bind('orgsearchboxcreate', function(ev, term, name) {
+
+                        $.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/deals/new/create-organization-row/0',
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					placeOrganizationRow(html);
+					$('input.organization_name', orgfields).val(term);
+				}
+			});
+		}).bind('orgsearchreverted', function(ev, term, name) {
+
+		});
+
+                $('.cancel-org-trigger').live('click', function(){
+                    $('.add-new-org-container').remove();
+                });
+	},
+
+        placeOrganizationRow: function(html) {
+		var searchbox = this.getEl('org_searchbox');
+		var orgfields = this.getEl('org_choice');
+		var newrow = $('li.neworgrow', this.el);
+                var chooseorg = $('.choose-org');
+                var row = $(html);
+
+
+                row.insertBefore(newrow);
+                //userfields.empty();
+                chooseorg.hide();
+		//searchbox.hide();
+		orgfields.show();
+	}
 });

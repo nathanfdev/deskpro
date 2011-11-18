@@ -4,6 +4,7 @@ pageMeta.title = "{{ deal.title}}";
 pageMeta.deal_id = {{deal.id}};
 pageMeta.pageIdentity = 'deal1:{{deal.id}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_deal_ajax_labels_save', {'deal_id': deal.id}) }}';
+pageMeta.ajaxSaveUrl = '{{ path('agent_deal_ajaxsave', {'deal_id': deal.id}) }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
