@@ -27,9 +27,9 @@ class TotalTicketResolveTime extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets.id) AS ticket_count');
-		$query->addFrom('tickets');
-		$query->addWhere("(tickets.status = 'open' OR tickets.status = 'awaiting_agent')");
+		$query->select('COUNT(t.id) AS ticket_count')
+		      ->from('tickets', 't')
+		      ->addWhere("(t.status = 'open' OR t.status = 'awaiting_agent')");
 
 		$this->addQuery($query);
 	}
@@ -52,16 +52,16 @@ class TotalTicketResolveTime extends AbstractTicket
 
 		return $processedResults;
 	}
-	
+
 	/**
 	 * Get the data formatter
-	 * 
+	 *
 	 * @return FormatterInterface
 	 */
 	public static function getFormatter()
 	{
 		$class = new \Application\ReportBundle\Stat\Formatter\TimeFormatter();
-		
+
 		return $class;
 	}
 }

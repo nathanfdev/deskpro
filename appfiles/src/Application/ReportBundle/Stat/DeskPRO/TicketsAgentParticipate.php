@@ -19,9 +19,9 @@ class TicketsAgentParticipate extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets_messages.id) AS message_count');
-		$query->addFrom('tickets_messages');
-		$query->addJoin('INNER JOIN tickets ON tickets.id = tickets_messages.ticket_id');
+		$query->select('COUNT(t.id) AS message_count')
+		      ->from('tickets', 't')
+		      ->innerJoin('t', 'tickets_messages', 'tm', 'tickets_messages.ticket_id = t.id');
 
 		$this->addQuery($query);
 	}
