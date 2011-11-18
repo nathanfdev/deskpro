@@ -104,6 +104,7 @@ class GenerateStatsFloodFill extends AbstractJob
 				->getByIds($stat_ids);
 
 		foreach ($stats as $stat) {
+			var_dump("Processing stat: " . $stat->getTitle());
 			$this->processStat($stat);
 		}
 	}
@@ -116,7 +117,7 @@ class GenerateStatsFloodFill extends AbstractJob
 	protected function processStat($stat)
 	{
 		$stat_concept_class = $stat->getStatConceptClass();
-		
+
 		$stat_concept = new $stat_concept_class($this->date_time);
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats();

@@ -13,13 +13,13 @@ class TotalTicketMessages extends AbstractTicket
 	{
 
 	}
-	
+
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets.id) AS ticket_count');
-		$query->addFrom('tickets');
-		$query->addJoin('INNER JOIN tickets_messages ON tickets_messages.ticket_id = tickets.id');
+		$query->select('COUNT(t.id) AS ticket_count')
+		      ->from('tickets', 't')
+		      ->innerJoin('t', 'tickets_messages', 'tm', 'tickets_messages.ticket_id = t.id');
 
 		$this->addQuery($query);
 	}
