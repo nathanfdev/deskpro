@@ -495,14 +495,35 @@ class DealController extends AbstractController
 
         public function newdealSetOrganizationRowAction($org_id)
 	{
-		$organization = false;
+		$deal_repository = $this->em->getRepository('DeskPRO:Deal');
+                $deal = $this->getDealOr404($this->in->getString('deal_id'));
+                $name = $this->in->getString('name');
+                
 		if ($org_id) {
 			$organization = $this->em->find('DeskPRO:Organization', $org_id);
 		}
+                if(!$organization)
+                {
+                    $organization = new Organization();
+                    $organization->name = $name;
+                }
 
-		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
+                $this->em->persist($organization);
+                //$this->em->flush();
+
+		// Checked if the person already added to the deal.
+              if($deal_repository->findOrganizationInDeal($organization, $this->in->getString('deal_id')) <= 0)
+              {
+                  $deal->addOrganizations($organization);
+                  $this->em->persist($deal);
+                  $this->em->flush();
+
+                  return $this->render('AgentBundle:Deal:org-li.html.twig', array(
 			'organization' => $organization
-		));
+                  ));
+              }else{
+                  return new Response('failed');
+              }
         }
 
 

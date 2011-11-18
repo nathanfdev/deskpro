@@ -199,4 +199,18 @@ class Deal extends EntityRepository
             return $query->getSingleScalarResult();
     }
 
+    public function findOrganizationInDeal(Entity\Organization $organization, $deal_id = null)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('COUNT(o)')
+                    ->from('DeskPRO:Deal', 'd')
+                    ->innerJoin('d.organizations', 'o')
+                    ->where('o.id = :org_id')
+                    ->andWhere('d.id = :deal_id')
+                    ->setParameters(array('org_id' => $organization['id'], 'deal_id' => $deal_id))
+                    ;
+            $query = $qb->getQuery(); //print $query->getSQL();exit;
+            return $query->getSingleScalarResult();
+    }
+
 }

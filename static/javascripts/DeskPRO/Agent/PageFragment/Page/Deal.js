@@ -316,8 +316,8 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                     type: 'GET',
                     url: BASE_URL + 'agent/deals/new/set-person-row/0',
                     data: {
-                        'email': $('input.email').val(),
-                        'name' : $('input.name').val(),
+                        'email': $('.add-new-user-container input.email').val(),
+                        'name' : $('.add-new-user-container input.name').val(),
                         'deal_id': pageMeta.deal_id
                     },
                     dataType: 'html',
@@ -376,9 +376,24 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		var orgEdit    = this.getEl('org_edit_wrap');
 
 		//orgEnableBtn
-		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {alert(orgId);
+		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
 
 			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
+                         $.ajax({
+				type: 'POST',
+				url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
+				dataType: 'html',
+                                data: {
+                                    'name': $('.add-new-org-container input.name').val(),
+                                    'deal_id': pageMeta.deal_id
+                                },
+				context: this,
+				success: function(html) {
+					placeOrganizationRow(html);
+					$('input.organization_name', orgfields).val(term);
+				}
+			});
+
 
 		}).bind('orgsearchboxcreate', function(ev, term, name) {
 
