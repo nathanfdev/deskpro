@@ -74,11 +74,16 @@ abstract class AbstractStat implements StatInterface
 	{
 		// We need to return the select group by field
 		foreach ($this->grouping as $groupField) {
-			if (false === $query->isFieldSelected($groupField)) {
-				$query->addSelect($groupField . ' AS ' . str_replace('.', '_', $groupField));
+			list($table, $field) = explode('.', $groupField);
+
+			$alias = $query->getTableAlias($table);
+			$aliasedGroupField = $alias . '.' . $field;
+			
+			if (false === $query->isFieldSelected($aliasedGroupField)) {
+				$query->addSelect($aliasedGroupField . ' AS ' . str_replace('.', '_', $groupField));
 			}
 
-			$query->addGroupBy($groupField);
+			$query->addGroupBy($aliasedGroupField);
 		}
 
 		return $query;
@@ -171,10 +176,10 @@ abstract class AbstractStat implements StatInterface
 
 		return $dates;
 	}
-	
+
 	/**
 	 * Get the data formatter. Override in your child classes
-	 * 
+	 *
 	 * @return FormatterInterface
 	 */
 	public static function getFormatter()

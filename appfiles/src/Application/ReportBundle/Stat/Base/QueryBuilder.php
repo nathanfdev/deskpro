@@ -8,204 +8,141 @@ namespace Application\ReportBundle\Stat\Base;
  * Could probably use the Doctrine\DBAL\Query\QueryBuilder class with this
  * aswell
  */
-class QueryBuilder
+class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 {
-	protected $selects = array();
+	/**
+	 * List of table aliases
+	 *
+	 * @var array
+	 */
+	protected $table_aliases = array();
 
-	protected $from = '';
-
-	protected $joins = array();
-
-	protected $wheres = array();
-
-	protected $group_by = array();
-
-	protected $order_by = array();
-
-	protected $limit_by = null;
-
-	protected $offset = null;
-
-	public function addSelect($field)
+	/**
+	 * Override the base, Not allowed to delete when querying for reporting
+	 *
+	 * @return QueryBuilder This QueryBuilder instance
+	 */
+	public function delete()
 	{
-		$this->selects[] = $field;
+		return $this;
 	}
 
-	public function addFrom($table)
+	/**
+	 * Override the base, Not allowed to update when querying for reporting
+	 *
+	 * @return QueryBuilder This QueryBuilder instance
+	 */
+	public function update()
 	{
-		$this->from = $table;
+		return $this;
 	}
 
-	public function addJoin($join)
+	/**
+	 * @inheritdoc
+	 */
+	public function from($from, $alias)
 	{
-		$this->joins[] = $join;
+		$this->addTableAlias($from, $alias);
+
+		parent::from($from, $alias);
 	}
 
-	public function addWhere($where)
+	/**
+	 * @inheritdoc
+	 */
+	public function join($fromAlias, $join, $alias, $condition = null)
 	{
-		$this->wheres[] = $where;
+		$this->addTableAlias($join, $alias);
+
+		parent::join($fromAlias, $join, $alias, $condition);
 	}
 
-	public function addGroupBy($field)
+	/**
+	 * @inheritdoc
+	 */
+	public function innerJoin($fromAlias, $join, $alias, $condition = null)
 	{
-		$this->group_by[] = $field;
+		$this->addTableAlias($join, $alias);
+
+		parent::innerJoin($fromAlias, $join, $alias, $condition);
 	}
 
-	public function addOrderBy($field)
+	/**
+	 * @inheritdoc
+	 */
+	public function leftJoin($fromAlias, $join, $alias, $condition = null)
 	{
-		$this->order_by[] = $field;
+		$this->addTableAlias($join, $alias);
+
+		parent::leftJoin($fromAlias, $join, $alias, $condition);
 	}
 
-	public function addLimitBy($limit, $offset = null)
+	/**
+	 * @inheritdoc
+	 */
+	public function rightJoin($fromAlias, $join, $alias, $condition = null)
 	{
-		$this->limit_by = $limit;
-		$this->offset   = $offset;
+		$this->addTableAlias($join, $alias);
+
+		parent::rightJoin($fromAlias, $join, $alias, $condition);
 	}
 
-	public function getSelects()
+	/**
+	 * Get the query select component
+	 *
+	 * @param bool $split True to split the selected fields into an array
+	 * @return mixed The select component
+	 */
+	public function getSelect($split = true)
 	{
-		return $this->selects;
+		$selects = $this->getQueryPart('select');
+		if (count($selects)) {
+			if (true === $split) {
+				$fields = array();
+				foreach ($selects as $select) {
+					foreach (explode(',', $select) as $field) {
+						$fields[] = trim($field);
+					}
+				}
+				return $fields;
+			}
+			else {
+				return join(', ', $selects);
+			}
+		}
 	}
 
-	public function getFrom()
-	{
-		return $this->from;
-	}
-
-	public function getJoins()
-	{
-		return $this->joins;
-	}
-
-	public function getGroupBy()
-	{
-		return $this->group_by;
-	}
-
-	public function getOrderBy()
-	{
-		return $this->order_by;
-	}
-
-	public function getLimit()
-	{
-		return $this->limit_by;
-	}
-
-	public function getOffset()
-	{
-		return $this->offset;
-	}
-
+	/**
+	 * Checks if a field is being selected
+	 *
+	 * @return bool
+	 */
 	public function isFieldSelected($field)
 	{
-		return isset($this->selects[$field]) ? true : false;
+		$selected_fields = $this->getSelect();
+
+		return isset($selected_fields[$field]) ? true : false;
 	}
 
 	/**
-	 * Build the SQL query
-	 */
-	public function getSql()
-	{
-		// Get the select part
-		$select = $this->getSqlSelect();
-
-		// Get the form part
-		$from   = $this->getSqlFrom();
-
-		// Get the where part
-		$where  = $this->getSqlWhere();
-
-		// Get the join part
-		$join   = $this->getSqlJoin();
-
-		// Get the group by part
-		$groupBy = $this->getSqlGroupBy();
-
-		// Get the order by part
-		$orderBy  = $this->getSqlOrderBy();
-
-		// Get the limit part
-		$limit    = $this->getSqlLimit();
-
-		$queryParts = array(
-			$select,
-			$from,
-			$where,
-			$join,
-			$groupBy,
-			$orderBy,
-			$limit
-		);
-
-		return trim(join(' ', $queryParts));
-	}
-
-	/**
-	 * Build the select part of the query
+	 * Get an alias for a table
 	 *
-	 * @return string The select statement
+	 * @param string $table The table name
+	 * @return string The table alias, or the $table name if no alias is found
 	 */
-	protected function getSqlSelect()
+	public function getTableAlias($table)
 	{
-		if (!count($this->selects)) {
-			throw new \Exception("You must select at least one field");
-		}
-
-		return "SELECT " . join(", ", $this->selects);
+		return isset($this->table_aliases[$table]) ? $this->table_aliases[$table] : $table;
 	}
 
-	protected function getSqlFrom()
+	/**
+	 * Adds an internal reference for a table alias
+	 *
+	 * @param string $table The table name
+	 * @param string $alias The alias name
+	 */
+	protected function addTableAlias($table, $alias)
 	{
-		if (0 === strlen($this->from)) {
-			throw new \Exception("You specify a table to select from");
-		}
-
-		return "FROM " . $this->from;
-	}
-
-	protected function getSqlWhere()
-	{
-		$whereSql = "";
-		if (count($this->wheres)) {
-			$whereSql = "WHERE " . join(" AND ", $this->wheres);
-		}
-
-		return $whereSql;
-	}
-
-	protected function getSqlJoin()
-	{
-		return join(" ", $this->joins);
-	}
-
-	protected function getSqlGroupBy()
-	{
-		$groupBySql = "";
-		if (count($this->group_by)) {
-			$groupBySql = "GROUP BY " . join(", ", $this->group_by);
-		}
-
-		return $groupBySql;
-	}
-
-	protected function getSqlOrderBy()
-	{
-		$orderBySql = "";
-		if (count($this->order_by)) {
-			$groupBySql = "ORDER BY " . join(", ", $this->order_by);
-		}
-
-		return $orderBySql;
-	}
-
-	protected function getSqlLimit()
-	{
-		$limitSql = "";
-		if (false === is_null($this->limit_by)) {
-			$limitSql = "LIMIT " . $this->limit_by;
-		}
-
-		return $limitSql;
+		$this->table_aliases[$table] = $alias;
 	}
 }

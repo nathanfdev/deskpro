@@ -30,9 +30,9 @@ class TicketsAwaitingAgent extends AbstractTicket
 		// TODO: remove the 'open' status check when online db has been
 		// switch to use new 'awaiting_agent status
 		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets.id) AS ticket_count');
-		$query->addFrom('tickets');
-		$query->addWhere("(tickets.status = 'open' OR tickets.status = 'awaiting_agent')");
+		$query->select('COUNT(t.id) AS ticket_count');
+		$query->from('tickets', 't');
+		$query->where("(t.status = 'open' OR t.status = 'awaiting_agent')");
 
 		$this->addQuery($query);
 	}
