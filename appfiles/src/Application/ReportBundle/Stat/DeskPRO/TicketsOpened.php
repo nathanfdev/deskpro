@@ -5,18 +5,42 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get number of tickets opened
+ * Get the number of tickets opended in a period
  */
 class TicketsOpened extends AbstractTicket
 {
-	public function buildConceptQueries()
+	public function init()
 	{
-		// Number of tickets opened
-		$this->trendQueries[] = "";
+		$this->addAvailableGroups(array(
+			'department'	=> 'Department',
+			'category'	=> 'Category',
+			'priority'	=> 'Proprity',
+			'workflow'	=> 'Workflow',
+			'language'	=> 'Language',
+			'agent'		=> 'Agent',
+			'agent_team'	=> 'Agent Team',
+			'user_id'	=> 'User',
+			'rating'	=> 'Rating',
+		));
 	}
 
-	public function processResults()
+	public function buildConceptQueries()
 	{
-		return $this->results[0];
+		// timestamp_opened < x < NOW
+		$query = new QueryBuilder();
+
+		$this->addQuery($query);
+	}
+
+	public function processUngroupedResults($result)
+	{
+
+	}
+
+	public function processGroupedResults($results)
+	{
+		$processedResults = array();
+
+		return $processedResults;
 	}
 }

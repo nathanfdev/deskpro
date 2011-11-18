@@ -5,7 +5,9 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets an agent participated in
+ * Get the number of tickets an agent participated in. The agent doesnt
+ * need to be assigned to this ticket, by needs to have sent at least one message
+ * on the ticket
  */
 class TicketsAgentParticipate extends AbstractTicket
 {
@@ -13,7 +15,7 @@ class TicketsAgentParticipate extends AbstractTicket
 	{
 
 	}
-	
+
 	public function buildConceptQueries()
 	{
 		$query = new QueryBuilder();
