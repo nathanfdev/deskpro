@@ -498,18 +498,22 @@ class DealController extends AbstractController
 		$deal_repository = $this->em->getRepository('DeskPRO:Deal');
                 $deal = $this->getDealOr404($this->in->getString('deal_id'));
                 $name = $this->in->getString('name');
+                $organization = false;
                 
 		if ($org_id) {
 			$organization = $this->em->find('DeskPRO:Organization', $org_id);
-		}
+		}else if($name){
+                    $organization = $this->em->getRepository('DeskPRO:Organization')->findOneByName($name);
+
+                }
+                
                 if(!$organization)
                 {
                     $organization = new Organization();
                     $organization->name = $name;
                 }
 
-                $this->em->persist($organization);
-                //$this->em->flush();
+                $this->em->persist($organization);                
 
 		// Checked if the person already added to the deal.
               if($deal_repository->findOrganizationInDeal($organization, $this->in->getString('deal_id')) <= 0)

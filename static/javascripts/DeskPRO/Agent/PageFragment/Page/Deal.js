@@ -19,44 +19,62 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignOrganizationSection();
         this._initUserSection();
         this._initOrgEdit();
+        this._initAssignAgentSection();
+        this._removePersonAndOrg();
 
-        var el = this.getEl('agent_assign_ob');
-        this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
-            element: el,
-            trigger: this.getEl('assign_ob_trigger'),
-            onSave: function(ob) {
-                var selections = ob.getAllSelected();
-                var agent_id = parseInt(selections.agents || 0);
+        $('.select-deal-type').on('change', function(){
 
-                var postData = [];
-                postData.push({
-                    name: 'agent_part_ids[]',
-                    value: selections.agents
-                });
-                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
-
-                var value = selections.agents;
-
-                var el = $('.prop-agent-id');
-                if (value == "0") value = 0;
-                if (value == 0) {
-                    el.text('Unassigned');
-                    el.css('background-image', '');
-                } else {
-                    var agentInfo = DeskPRO_Window.getAgentInfo(value);
-                    el.text(label);
-                    el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
-                }
-                $('.reply-agent-team-ob').slideUp();
-                $.ajax({
-                    url: BASE_URL + 'agent/deals/'+pageMeta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: postData
-                });
-
+            var dealId = pageMeta.deal_id;
+            if (!dealId) {
+                return;
             }
-        });
+
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                data: {
+                    action: 'change-dealtype',
+                    deal_type_id: $(this).val()
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                //row.show();
+                },
+                success: function(data) {
+                    $('.set-deal-stage').html(data.deal_stage);
+                    DeskPRO_Window.sections.deals_section.refresh();
+                }
+            });
+        }) ;
+
+
+        $('.select-deal-stage').live('change', function(){
+
+            var dealId = pageMeta.deal_id;
+            if (!dealId) {
+                return;
+            }
+
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                data: {
+                    action: 'change-dealstage',
+                    deal_stage_id: $(this).val()
+                },
+                type: 'POST',
+                context: this,
+                error: function() {
+                //row.show();
+                },
+                success: function(data) {
+                //$('.set-deal-stage').html(data.deal_stage);
+                }
+            });
+        }) ;
+
+    },
+
+    _removePersonAndOrg: function(){
 
         this.getEl('members_list').on('click', '.remove', function() {
             var row = $(this).closest('.member-row');
@@ -115,56 +133,6 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             });
         });
 
-        $('.select-deal-type').on('change', function(){
-
-            var dealId = pageMeta.deal_id;
-            if (!dealId) {
-                return;
-            }
-
-            $.ajax({
-                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
-                data: {
-                    action: 'change-dealtype',
-                    deal_type_id: $(this).val()
-                },
-                type: 'POST',
-                context: this,
-                error: function() {
-                //row.show();
-                },
-                success: function(data) {
-                    $('.set-deal-stage').html(data.deal_stage);
-                    DeskPRO_Window.sections.deals_section.refresh();
-                }
-            });
-        }) ;
-
-
-        $('.select-deal-stage').live('change', function(){
-
-            var dealId = pageMeta.deal_id;
-            if (!dealId) {
-                return;
-            }
-
-            $.ajax({
-                url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
-                data: {
-                    action: 'change-dealstage',
-                    deal_stage_id: $(this).val()
-                },
-                type: 'POST',
-                context: this,
-                error: function() {
-                //row.show();
-                },
-                success: function(data) {
-                //$('.set-deal-stage').html(data.deal_stage);
-                }
-            });
-        }) ;
-
     },
 
     _initDisplayOptions: function() {
@@ -181,6 +149,51 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             }
         });
         this.ownObject(this.displayOptionsOverlay);
+
+    },
+
+    _initAssignAgentSection: function(){
+
+        var el = this.getEl('agent_assign_ob');
+        this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+            element: el,
+            trigger: this.getEl('assign_ob_trigger'),
+            onSave: function(ob) {
+                var selections = ob.getAllSelected();
+                var agent_id = parseInt(selections.agents || 0);
+
+                var postData = [];
+                postData.push({
+                    name: 'agent_part_ids[]',
+                    value: selections.agents
+                });
+                var label = $('.agent-label-' + agent_id, ob.getElement()).first().text().trim();
+
+                var value = selections.agents;
+
+                var el = $('.prop-agent-id');
+                if (value == "0") value = 0;
+                if (value == 0) {
+                    el.text('Unassigned');
+                    el.css('background-image', '');
+                } else {
+                    var agentInfo = DeskPRO_Window.getAgentInfo(value);
+                    el.text(label);
+                    el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
+                }
+                $('.reply-agent-team-ob').slideUp();
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/'+pageMeta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    success: function(data) {
+                        DeskPRO_Window.sections.deals_section.refresh();
+                    }
+                });
+
+            }
+        });
 
     },
     _initAgentSection: function(){
@@ -279,11 +292,11 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 dataType: 'html',
                 data: {
                     'deal_id': pageMeta.deal_id
-                    },
+                },
                 context: this,
                 success: function(html) {
-                        $('input.person-id', searchbox).val(personId);
-                        placeUserRow(html);
+                    $('input.person-id', searchbox).val(personId);
+                    placeUserRow(html);
                 }
             });
             sb.close();
@@ -351,83 +364,104 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         userfields.show();
     },
     _initOrgEdit: function() {
-		var self = this;
-		var searchbox = this.getEl('org_searchbox');
-		var orgfields = this.getEl('org_choice');
-		var rechooseBtn = this.getEl('switch_org');
+        var self = this;
+        var searchbox = this.getEl('org_searchbox');
+        var orgfields = this.getEl('org_choice');
+        var rechooseBtn = this.getEl('switch_org');
 
-		rechooseBtn.click(function() {
-			showOrganizationChoice();
-                        $('.org-id').val(0);
-                        return false;
-		});
+        rechooseBtn.click(function() {
+            showOrganizationChoice();
+            $('.org-id').val(0);
+            return false;
+        });
 
-		var showOrganizationChoice = function() {
-			orgfields.empty();
-			orgfields.hide();
-			searchbox.show();
-			rechooseBtn.hide();
-		};
+        var showOrganizationChoice = function() {
+            orgfields.empty();
+            orgfields.hide();
+            searchbox.show();
+            rechooseBtn.hide();
+        };
 
-                var placeOrganizationRow = function(html) {
-			self.placeOrganizationRow(html);
-		};
+        var placeOrganizationRow = function(html) {
+            self.placeOrganizationRow(html);
+        };
 
-		var orgEdit    = this.getEl('org_edit_wrap');
+        var orgEdit    = this.getEl('org_edit_wrap');
 
-		//orgEnableBtn
-		this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
+        //orgEnableBtn
+        this.getEl('org_searchbox').bind('orgsearchboxclick', function(ev, orgId, name) {
 
-			 $('.org-id', self.getEl('org_edit_wrap')).val().trim();
-                         $.ajax({
-				type: 'POST',
-				url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
-				dataType: 'html',
-                                data: {
-                                    'name': $('.add-new-org-container input.name').val(),
-                                    'deal_id': pageMeta.deal_id
-                                },
-				context: this,
-				success: function(html) {
-					placeOrganizationRow(html);
-					$('input.organization_name', orgfields).val(term);
-				}
-			});
+            $('.org-id', self.getEl('org_edit_wrap')).val().trim();
+            $.ajax({
+                type: 'POST',
+                url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
+                dataType: 'html',
+                data: {
+                    //'name': $('.add-new-org-container input.name').val(),
+                    'deal_id': pageMeta.deal_id
+                },
+                context: this,
+                success: function(html) {
+                    placeOrganizationRow(html);
+                    $('input.organization_name', orgfields).val(term);
+                    self.El('orgselect').val('');
+                }
+            });
 
 
-		}).bind('orgsearchboxcreate', function(ev, term, name) {
+        }).bind('orgsearchboxcreate', function(ev, term, name) {
 
-                        $.ajax({
-				type: 'GET',
-				url: BASE_URL + 'agent/deals/new/create-organization-row/0',
-				dataType: 'html',
-				context: this,
-				success: function(html) {
-					placeOrganizationRow(html);
-					$('input.organization_name', orgfields).val(term);
-				}
-			});
-		}).bind('orgsearchreverted', function(ev, term, name) {
+            $.ajax({
+                type: 'GET',
+                url: BASE_URL + 'agent/deals/new/create-organization-row/0',
+                dataType: 'html',
+                context: this,
+                success: function(html) {
+                    placeOrganizationRow(html);
+                    $('input.organization_name', orgfields).val(term);
+                }
+            });
+        }).bind('orgsearchreverted', function(ev, term, name) {
 
-		});
+            });
 
-                $('.cancel-org-trigger').live('click', function(){
+        $('.save-org-trigger').live('click', function(){
+
+            $.ajax({
+                type: 'POST',
+                url: BASE_URL + 'agent/deals/new/set-organization-row/0',
+                dataType: 'html',
+                data: {
+                    'name': $('.add-new-org-container input.name').val(),
+                    'deal_id': pageMeta.deal_id
+                },
+                context: this,
+                success: function(html) {
+                    placeOrganizationRow(html);
                     $('.add-new-org-container').remove();
-                });
-	},
-
-        placeOrganizationRow: function(html) {
-		var searchbox = this.getEl('org_searchbox');
-		var orgfields = this.getEl('org_choice');
-		var newrow = $('li.neworgrow', this.el);
-                var chooseorg = $('.choose-org');
-                var row = $(html);
+                }
+            });
 
 
-                row.insertBefore(newrow);
-                //userfields.empty();
-                chooseorg.hide();
-		//searchbox.hide();
-		orgfields.show();
-	}
+        });
+
+        $('.cancel-org-trigger').live('click', function(){
+            $('.add-new-org-container').remove();
+        });
+    },
+
+    placeOrganizationRow: function(html) {
+        var searchbox = this.getEl('org_searchbox');
+        var orgfields = this.getEl('org_choice');
+        var newrow = $('li.neworgrow', this.el);
+        var chooseorg = $('.choose-org');
+        var row = $(html);
+
+
+        row.insertBefore(newrow);
+        //userfields.empty();
+        chooseorg.hide();
+        //searchbox.hide();
+        orgfields.show();
+    }
 });
