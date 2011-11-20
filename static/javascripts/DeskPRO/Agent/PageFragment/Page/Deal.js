@@ -20,7 +20,8 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initUserSection();
         this._initOrgEdit();
         this._initAssignAgentSection();
-        this._removePersonAndOrg();        
+        this._removePersonAndOrg();
+        this._initStatusMenus();
 
 
         $('.profile-box-container.tabbed', this.wrapper).each(function() {
@@ -406,8 +407,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 type: 'POST',
                 url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
                 dataType: 'html',
-                data: {
-                    //'name': $('.add-new-org-container input.name').val(),
+                data: {                    
                     'deal_id': pageMeta.deal_id
                 },
                 context: this,
@@ -473,5 +473,35 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         chooseorg.hide();
         //searchbox.hide();
         orgfields.show();
-    }
+    },
+
+    _initStatusMenus: function() {
+
+		var self = this;
+
+		// Status
+		var statusOb = new DeskPRO.UI.OptionBoxRevertable({
+			trigger: this.getEl('status_trigger'),
+			element: this.getEl('status_ob'),
+			onSave: function(ob) {
+				var catEl = ob.getSelectedElements('status');
+				var catId = catEl.data('item-id');
+				var title = catEl.data('full-title');
+
+				self.getEl('status_label').text(title);
+
+				$.ajax({
+					url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'change-status', status: catId},
+					context: self,
+					dataType: 'json',
+                                        success: function(data) {
+                                            DeskPRO_Window.sections.deals_section.refresh();
+                                        }
+				});
+			}
+		});
+		
+	}
 });

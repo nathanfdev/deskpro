@@ -322,7 +322,7 @@ class DealController extends AbstractController
                     $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
                     if ($person) {
                         $deal->deletePeople($person);
-                        $this->em->persist($deal);
+//                        $this->em->persist($deal);
                         $data['remove_person_id'] = $person['id'];
                     }
                     break;
@@ -330,7 +330,7 @@ class DealController extends AbstractController
                     $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
                     if ($organization) {
                         $deal->deleteOrganization($organization);
-                        $this->em->persist($deal);
+//                        $this->em->persist($deal);
                         $data['remove_organization_id'] = $organization['id'];
                     }
                     break;
@@ -340,7 +340,7 @@ class DealController extends AbstractController
                     if($deal_id){
                         $deal->setDealTypeId($this->in->getUint('deal_type_id'));
                         $deal->setDealStageId(null);
-                        $this->em->persist($deal);
+                        //$this->em->persist($deal);
                     }
                     $data['change_deal_type_id'] = $deal_type['id'];
                     $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
@@ -363,12 +363,17 @@ class DealController extends AbstractController
                 case 'change-dealstage':
 
                     $deal->setDealStageId($this->in->getUint('deal_stage_id'));
-                    $this->em->persist($deal);
+                   // $this->em->persist($deal);
                     $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    break;
+                case 'change-status':
+
+                    $deal['status'] = $this->in->getString('status');
                     break;
                     
             }
-
+            
+            $this->em->persist($deal);
             $this->em->flush();
             $this->em->commit();
 
