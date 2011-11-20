@@ -24,14 +24,15 @@ class NewDeal
 {
     public $person;
     public $title;
-    public $agent_id;
-    public $attach = array();
+    public $agent_id;    
     public $deal_type;
     public $deal_stage;
     public $organizations;
     public $deal_currency;
     public $probability;
     public $deal_value;
+
+    public $attach = array();
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -74,7 +75,7 @@ class NewDeal
 		}
 
 		$em->persist($person);
-                $em->flush();
+                //$em->flush();
 
                 if($this->organizations->id)
                 {
@@ -89,7 +90,7 @@ class NewDeal
                 }
 
                 $em->persist($org);
-                $em->flush();
+                //$em->flush();
                 
                 
                 #------------------------------
@@ -97,6 +98,20 @@ class NewDeal
 		#------------------------------
 
                 $deal = new Deal();
+
+
+                // Deal Attachments
+		foreach ($this->attach as $blob_id) {
+
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$attach = new DealAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->_person_context;
+
+			$deal->addAttachments($attach);
+		}
+
 
                 $deal->setDealTypeId($this->deal_type);
                 $deal->setDealStageId($this->deal_stage);

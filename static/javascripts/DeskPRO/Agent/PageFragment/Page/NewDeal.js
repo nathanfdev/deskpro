@@ -23,6 +23,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 this._initDepartmentSection();
                 this._initUserSection();
                 this._initOrgEdit();
+                this._initOtherSection();
 
                 $('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
                 $('.select-deal-type').on('change', function(){
@@ -235,6 +236,57 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 		rechooseBtn.show();
 		searchbox.hide();
 		orgfields.show();
+	},
+
+        //#########################################################################
+	//# Other Section
+	//#########################################################################
+
+	_initOtherSection: function() {
+
+		this.otherTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li', this.getEl('other_props_tabs')),
+			context: this.getEl('other_props_tabs_content'),
+			autoSelectFirst: false,
+			onTabClick: (function(ev) {
+				var contentWrap = this.getEl('other_props_tabs_content');
+				var navWrap = this.getEl('other_props_tabs_wrap');
+				var tab = ev.tabEl;
+
+				// Toggle content state if we're clicking for the first time,
+				// or re-clicking a tab
+				if (!$('.on', navWrap).length || tab.is('.on')) {
+					if (contentWrap.is(':visible')) {
+						contentWrap.slideUp();
+						navWrap.removeClass('on');
+					} else {
+						window.setTimeout(function() { contentWrap.slideDown() }, 20);
+						navWrap.addClass('on');
+					}
+				}
+			}).bind(this)
+		});
+		this.ownObject(this.otherTabs);
+
+		// Attachments
+		var list = $('.file-list', this.wrapper);
+		$('input', list[0]).live('click', function() {
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+		});
+
+		this.wrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.wrapper),
+			downloadTemplate: $('.template-download', this.wrapper)
+		});
 	}
 
 

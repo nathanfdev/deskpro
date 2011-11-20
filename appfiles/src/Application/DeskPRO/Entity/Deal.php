@@ -194,6 +194,11 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $_label_manager = null;
 
     /**
+     * @ORM_Mapping\OneToMany(targetEntity="DealAttachment", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+     */
+    protected $attachments;
+
+    /**
      * Creates a new deal
      */
     public function __construct()
@@ -202,9 +207,9 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->people = new \Doctrine\Common\Collections\ArrayCollection();
         $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();        
-        //$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();                
         $this->deal_mapper   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 
 
         $this->date_created = new \DateTime();
@@ -528,7 +533,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         }
 
         /**
-	 * Add a peoples
+	 * Add organizations
          * 
 	 * @param \Application\DeskPRO\Entity\Organizations $organizations
 	 */
@@ -546,5 +551,27 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         {
             return $this->organizations;
         }
+        
+        /**
+	 * Add  attachments
+         * 
+	 * @param \Application\DeskPRO\Entity\DealAttachment $attachments
+	 */
+	public function addAttachments(\Application\DeskPRO\Entity\DealAttachment $attachments)
+	{
+		$this->attachments[] = $attachments;
+	}
+
+        /**
+         * Get attachments
+         *
+         * @return \Doctrine\Common\Collections\ArrayCollection
+         */
+        public function getAttachments()
+        {
+            return $this->attachments;
+        }
+
+
 
 }
