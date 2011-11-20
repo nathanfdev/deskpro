@@ -31,11 +31,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DealController extends AbstractController
 {
-    private $_entityManager;
-    private $_currentUser;
-    private $_task_repository;
-
-
     public function newAction()
     {
 
@@ -177,6 +172,8 @@ class DealController extends AbstractController
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
+
+        $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
         
         $participant_person_ids = array();
         $participant_org_ids = array();
@@ -200,7 +197,8 @@ class DealController extends AbstractController
             'deal_stage' => $deal_stage,
             'participant_person_ids' => $participant_person_ids,
             'participant_org_ids' => $participant_org_ids,            
-            'person' => $this->person
+            'person' => $this->person,
+            'deal_attachments' => $deal_attachments
 
         ));
     }

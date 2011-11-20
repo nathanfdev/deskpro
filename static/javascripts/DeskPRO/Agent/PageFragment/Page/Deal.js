@@ -22,6 +22,16 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignAgentSection();
         this._removePersonAndOrg();        
 
+
+        $('.profile-box-container.tabbed', this.wrapper).each(function() {
+			var simpleTabs = new DeskPRO.UI.SimpleTabs({
+				triggerElements: '> header li',
+				context: this
+			});
+
+			self.ownObject(simpleTabs);
+		});
+
         $('.select-deal-type').on('change', function(){
 
             var dealId = pageMeta.deal_id;

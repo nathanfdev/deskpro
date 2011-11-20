@@ -98,21 +98,7 @@ class NewDeal
 		#------------------------------
 
                 $deal = new Deal();
-
-
-                // Deal Attachments
-		foreach ($this->attach as $blob_id) {
-
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new DealAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$deal->addAttachments($attach);
-		}
-
-
+                
                 $deal->setDealTypeId($this->deal_type);
                 $deal->setDealStageId($this->deal_stage);
                 $deal->setPersonId($this->_person_context->id);
@@ -125,9 +111,22 @@ class NewDeal
                 $deal->addPeoples($person);
 
                 $em->persist($deal);
-                $em->flush();
-                //$em->commit();
+                
 
+                // Deal Attachments
+		foreach ($this->attach as $blob_id) {
+
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$attach = new DealAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->_person_context;
+                        $attach['deal'] = $deal;
+
+                        $em->persist($attach);
+		}
+                
+                $em->flush();
                 $this->_deal = $deal;
     }
 
