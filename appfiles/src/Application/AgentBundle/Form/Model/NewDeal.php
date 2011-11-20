@@ -29,6 +29,9 @@ class NewDeal
     public $deal_type;
     public $deal_stage;
     public $organizations;
+    public $deal_currency;
+    public $probability;
+    public $deal_value;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -100,6 +103,9 @@ class NewDeal
                 $deal->setPersonId($this->_person_context->id);
                 $deal->setAsignedAgentId($this->agent_id);
                 $deal['title'] = $this->title;
+                $deal->setDealCurrencyId($this->deal_currency);
+                $deal['probability'] = $this->probability;
+                $deal['deal_value'] = $this->deal_value;
                 $deal->addOrganizations($org);
                 $deal->addPeoples($person);
 

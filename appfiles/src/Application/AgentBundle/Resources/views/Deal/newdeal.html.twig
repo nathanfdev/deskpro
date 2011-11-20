@@ -168,6 +168,36 @@ pageMeta.baseId = '{{ baseId }}';
             </div>
         </div>
 
+
+                <div class="section department-section" id="{{baseId}}_dep_section">
+            <div class="step">
+                    <span class="num">4</span>
+                    <span class="check">Done</span>
+            </div>
+            <div class="content">
+                    <div class="col">
+                            <h4>Type</h4>
+                            {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'newdeal[deal_currency]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Currency',
+                                'options': deal_currency,
+                                'add_classname': 'select-currency'
+                            } %}
+                    </div>
+                    <div class="col">
+                            <h4>Value</h4>
+                            <input type="text" name="newdeal[deal_value]" class="deal-value" id="{{baseId}}_deal_value" value="" />
+                    </div>
+                    <div class="col">
+                            <h4>Probability</h4>
+                            <input type="text" name="newdeal[probability]" class="probability" value="{{deal.probability}}" id="{{baseId}}_probability" />
+                    </div>
+                    <br class="clear" />
+            </div>
+        </div>
+
         <div class="foot">
             <button class="submit-trigger clean-white">Create Deal</button>
         </div>

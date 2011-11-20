@@ -20,7 +20,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initUserSection();
         this._initOrgEdit();
         this._initAssignAgentSection();
-        this._removePersonAndOrg();
+        this._removePersonAndOrg();        
 
         $('.select-deal-type').on('change', function(){
 

@@ -42,13 +42,14 @@ class DealController extends AbstractController
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-
+        $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
            'deal_stage' => $deal_stage,
            'agents' => $agents,
-           'person' => $this->person
+           'person' => $this->person,
+           'deal_currency' => $deal_currency
 
         ));
     }

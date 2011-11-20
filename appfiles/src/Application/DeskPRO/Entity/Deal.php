@@ -132,7 +132,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Deal Currency type
      *
-     * @ORM_Mapping\ManyToOne(targetEntity="Currency")
+     * @ORM_Mapping\ManyToOne(targetEntity="Currency" , cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinColumn(name="currency_id", referencedColumnName="id", onDelete="set null")
      */
     protected $deal_currency = null;
@@ -462,6 +462,40 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
                 $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->find($id);
 		$this->deal_stage = $deal_stage;
 	}
+
+
+         /**
+	 * Returns the deal's currency id
+	 *
+	 * @return int
+	 */
+	public function getDealCurrencyId()
+	{
+		if (! $this->deal_currency) {
+			return 0;
+		}
+
+		return $this->deal_currency['id'];
+	}
+
+	/**
+	 * Sets the deal's currency id
+	 *
+	 * @param int $id
+	 * @throws \InvalidArgumentException Thrown when there's no currenct with that id
+	 */
+        public function setDealCurrencyId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_currency = null;
+                    return;
+                }
+
+                $deal_currency = App::getEntityRepository('DeskPRO:Currency')->find($id);
+		$this->deal_currency = $deal_currency;
+	}
+
+
 
         public function deletePeople(\Application\DeskPRO\Entity\Person $person)
         {
