@@ -71,7 +71,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initTimeago: function() {
-		this.initTimesOnCollection($('.timeago', this.content));
+		//this.initTimesOnCollection($('.timeago', this.content));
 	},
 
 	_getDisplayOptions: function() {

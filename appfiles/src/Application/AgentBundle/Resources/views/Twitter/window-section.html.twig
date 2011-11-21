@@ -1,4 +1,28 @@
 
+<section class="source-section">
+	<ul class="source-list">
+		<li class="auto-load-route" data-route="listpane:">
+			<h3 class="title">
+				<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred|default(0) }}</span>
+				Starred Tweets
+			</h3>
+		</li>
+		<li data-route="listpane:">
+			<h3 class="title">
+				<span class="list-counter" id="twitter_my_statuses_count">{{ statuses.account|default(0) }}</span>
+				My Tweets
+			</h3>
+		</li>
+		<li data-route="listpane:">
+			<h3 class="title">
+				<span class="list-counter" id="twitter_team_statuses_count">{{ statuses.team|default(0) }}</span>
+				Team Tweets
+			</h3>
+		</li>
+	</ul>
+</section>
+
+<!--
 <ul class="nav-list">
 	<li data-route="">
 		<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred }}</span>
@@ -13,16 +37,74 @@
 		Team Tweets
 	</li>
 </ul>
+-->
 
 {% for account in accounts %}
-<header class="section-header" style="margin-top: 28px;">
-	<nav class="mode-buttons">
-		<ul>
-			<li class="with-route" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">List</li>
-		</ul>
-	</nav>
-	<h1>@{{ account.user.screen_name }}</h1>
-</header>
+	<section class="source-section">
+		<header>
+			<h1>@{{ account.user.screen_name }}</h1>
+		</header>
+	</section>
+	<ul class="source-list with-tree no-editor">
+		<li class="has-children dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="sub-toggle">expand</span>
+
+				<span class="title" data-route="listpane:">
+					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count"" data-count="0">0</span>
+					<span>INBOX</span>
+				</span>
+			</div>
+			<ul class="sub-group">
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">
+							<span class="list-counter" id="twitter_{{ account.id }}_direct_count" data-count="{{ account.timeline.count|default(0) }}">{{ account.timeline.count|default(0) }}</span>
+							<span>Direct</span>
+						</span>
+					</div>
+				</li>
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:{{ path('agent_twitter_replies_list', {'account_id': account.id}) }}">
+							<span class="list-counter" id="twitter_{{ account.id }}_replies_count" data-count="{{ account.user.replies.count|default(0) }}">{{ account.user.replies.count|default(0) }}</span>
+							<span>Replies</span>
+						</span>
+					</div>
+				</li>
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:{{ path('agent_twitter_mentions_list', {'account_id': account.id}) }}">
+							<span class="list-counter" id="twitter_{{ account.id }}_mentions_count" data-count="{{ account.user.mentions.count|default(0) }}">{{ account.user.mentions.count|default(0) }}</span>
+							<span>Mentions</span>
+						</span>
+					</div>
+				</li>
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:{{ path('agent_twitter_retweets_list', {'account_id': account.id}) }}">
+							<span class="list-counter" id="twitter_{{ account.id }}_retweets_count" data-count="0">0</span>
+							<span>ReTweets</span>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<!--
+	<header class="section-header" style="margin-top: 28px;">
+		<nav class="mode-buttons">
+			<ul>
+				<li class="with-route" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">List</li>
+			</ul>
+		</nav>
+		<h1>@{{ account.user.screen_name }}</h1>
+	</header>
+	-->
+
+
+<!--
 <ul class="nav-list">
 	<li class="" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">
 		<span class="list-counter" id="twitter_{{ account.id }}_direct_count">{{ account.timeline.count }}</span>
@@ -57,4 +139,5 @@
 		Sent
 	</li>
 </ul>
+	-->
 {% endfor %}
