@@ -21,9 +21,13 @@ pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
 {# /scroll containers #}
 
 <div class="layout-content twitter">
-	{% include 'AgentBundle:TwitterStatus:part-note.html.twig' %}
-	{% include 'AgentBundle:TwitterStatus:part-reply.html.twig' %}
+	<!--{% include 'AgentBundle:TwitterStatus:part-note.html.twig' %}-->
+	<!--{% include 'AgentBundle:TwitterStatus:part-reply.html.twig' %}-->
 
+	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' %}
+	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
+
+	<!--
 	<div class="header">
 		<div class="display-options">
 			<select name="sortbydate">
@@ -40,8 +44,12 @@ pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
 			</span>
 		</div>
 	</div>
+	-->
+
 	<div class="content">
-		{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+		<section class="comments-list list-listing">
+			{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
+		</section>
 	</div>
 </div>
 

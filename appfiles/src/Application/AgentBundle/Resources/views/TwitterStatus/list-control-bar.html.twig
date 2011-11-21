@@ -1,0 +1,25 @@
+<header class="list-control-bar">
+    <ul>
+        <li>Ordered by </li>
+        <li class="order-by-menu-trigger"><a class="button">
+            <span class="label">
+                Oldest First
+            </span>
+            <em></em>
+        </a></li>
+    </ul>
+
+    <span>
+            <input name="account" type="checkbox" />
+            <label data-for="account">Show @{{ account.user.screen_name }}'s tweets</label>
+        </span>
+        <span>
+            <input name="archived" type="checkbox" />
+            <label data-for="archived">Show archived tweets</label>
+        </span>
+
+    <ul class="order-by-menu" style="display: none">
+        <li data-field="twitter_statuses.date_created:asc">Oldest First</li>
+        <li data-field="twitter_statuses.date_created:desc">Newest First</li>
+    </ul>
+</header>

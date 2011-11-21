@@ -5,6 +5,71 @@
 {% else %}
 	{% set retweet = null %}
 {% endif %}
+
+<article class="row-item comment">
+	<input
+		class="item-select"
+		type="checkbox"
+		value="{{ info.content_type }}.{{info.content_id}}"
+		data-content-type="{{ info.content_type }}"
+		data-comment-id="{{ status.id }}"
+		style="vertical-align: middle"
+	/>
+	<div class="top-row">
+		<div class="top-row-left">
+			<div class="by-line">
+
+			</div>
+		</div>
+	</div>
+	<div class="comment-text">
+		<div class="avatar" style="float: left;">
+			<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+				<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
+			</div>
+			<div class="user-meta">
+				{% if status.user.id is not sameas(account.user.id) %}
+					{% if status.user.id in account.friend_ids %}
+						<span class="unfollow"><a>Unfollow</a></span>
+					{% else %}
+						<span class="follow"><a>Follow</a></span>
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+		<div class="extra-fields" style="margin-left: 80px;">
+			<ul>
+				<li>
+					<p>{{ status.parsed_text|raw }}</p>
+					{% if status.in_reply_to_status %}
+						{% set reply = status.in_reply_to_status %}
+						<div class="reply">
+							in reply to "<span class="text">{{ reply.parsed_text|raw }}</span>"
+							by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}">@{{ reply.user.screen_name }}</span>
+							<span class="timeago" title="{{ reply.date_created|date('c') }}">{{ reply.date_created|date('r') }}</span>
+						</div>
+					{% endif %}
+				</li>
+			</ul>
+			<br class="clear" />
+		</div>
+	</div>
+	<div class="controls-row" style="margin-left: 80px; clear: both">
+		<div class="bound-faded"></div>
+		<span class="controls">
+			<button class="clean-white small status-archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></button>
+			<button class="clean-white small status-reply"><a>Reply</a></button>
+			{% if status.isMessage is sameas(false) %}
+				<button class="clean-white small status-retweet"><a>Retweet</a></button>
+			{% endif %}
+			<button class="clean-white small status-assign"><a>Assign</a></button>
+			<button class="clean-white small status-note"><a>Add Note</a></button>
+		</span>
+
+	</div>
+</article>
+
+<!--
 	<div class="status status-{{ status.id }}{% if retweet %} retweet {% endif %}{%if status.in_reply_to_status %} reply {% endif %}" data-status-id="{{ status.id }}" data-user-id="{{ status.user.id }}">
 		<div class="avatar">
 			<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
@@ -74,4 +139,6 @@
 		{% endif %}
 		</div>
 	</div>
+
+	-->
 {% endfor %}
