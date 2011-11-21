@@ -104,7 +104,6 @@ class GenerateStatsFloodFill extends AbstractJob
 				->getByIds($stat_ids);
 
 		foreach ($stats as $stat) {
-			var_dump("Processing stat: " . $stat->getTitle());
 			$this->processStat($stat);
 		}
 	}

@@ -34,19 +34,19 @@ class TicketsAwaitingAgent extends AbstractTicket
 		      ->from('tickets', 't')
 		      ->where("(t.status = 'open' OR t.status = 'awaiting_agent')");
 
-		$this->addQuery($query);
+		$this->addQuery('awaiting_agent', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return $result[0]['ticket_count'];
+		return $result['awaiting_agent'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)
 	{
 		$processedResults = array();
 
-		foreach ($results as $result) {
+		foreach ($results['awaiting_agent'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
 				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],

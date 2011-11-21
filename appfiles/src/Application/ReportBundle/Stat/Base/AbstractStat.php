@@ -69,6 +69,9 @@ abstract class AbstractStat implements StatInterface
 			$this->executeQueries(true);
 		}
 
+		$this->results['ungrouped'] = $this->processUngroupedResults($this->results['ungrouped']);
+		$this->results['grouped']   = $this->processGroupedResults($this->results['grouped']);
+
 		return $this->results;
 	}
 
@@ -82,9 +85,9 @@ abstract class AbstractStat implements StatInterface
 		return new QueryBuilder($this->db);
 	}
 
-	protected function addQuery(QueryBuilder $query)
+	protected function addQuery($identifier, QueryBuilder $query)
 	{
-		$this->trend_queries[] = $query;
+		$this->trend_queries[$identifier] = $query;
 	}
 
 	/**
@@ -92,17 +95,19 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected function executeQueries($with_grouping = false)
 	{
-		foreach ($this->trend_queries as $query) {
+		foreach ($this->trend_queries as $identifier=>$query) {
 			// Need to build the actual queries here and apply grouping if its needed
 			$executeQuery = $query;
 
 			if ($with_grouping) {
 				$executeQuery = $this->applyGroupByToQuery($executeQuery);
-				$this->results['grouped'] = $this->processGroupedResults($executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC));
+				$this->results['grouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
 			else {
-				$this->results['ungrouped'] = $this->processUngroupedResults($executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC));
+
+				$this->results['ungrouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
+			var_dump($executeQuery->getSql());
 		}
 
 	}

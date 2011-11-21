@@ -440,6 +440,16 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return $stat_value;
 	}
 
+	/**
+	 * TODO: return the date the last full data processing happenend, for
+	 * daily it will be the day before last_full_run, for monthly the
+	 * month before last_full_run
+	 */
+	public function getLastFullRun()
+	{
+		return new \DateTime("2011-11-21 00:00:00");
+	}
+
 	public function setRunFrequency($run_frequency)
 	{
 		if (false === self::isValidRunFrequency($run_frequency)) {

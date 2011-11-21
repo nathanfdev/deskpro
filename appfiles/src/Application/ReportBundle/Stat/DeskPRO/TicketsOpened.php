@@ -30,21 +30,29 @@ class TicketsOpened extends AbstractTicket
 		$query = $this->createQuery()
 		      ->select('COUNT(t.id) AS ticket_count')
 		      ->from('tickets', 't')
-		      ->where('UNIX_TIMESTAMP(t.date_created) >= :date_created')
+		      ->where('UNIX_TIMESTAMP(t.date_created) > :date_created')
 		      ->setParameter(':date_created', $this->last_stat_date->format('U'));
 
-		$this->addQuery($query);
+		$this->addQuery('tickets_opened', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
 		var_dump($result);
+		return $result['tickets_opened'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)
 	{
 		var_dump($results);
 		$processedResults = array();
+
+		foreach ($results['tickets_opened'] as $result) {
+			$processedResults[] = array(
+				'value'       => $result['ticket_count'],
+				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+			);
+		}
 
 		return $processedResults;
 	}
