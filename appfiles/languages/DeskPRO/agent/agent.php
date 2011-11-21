@@ -48,29 +48,29 @@
 	'agent.merge' => 'Merge',
 	'agent.approve' => 'Approve',
 	'agent.edit_properties' => 'Edit Properties',
-	
+
 	'agent.set_status' => 'Set Status',
 	'agent.set_category' => 'Set Category',
 	'agent.mark_spam' => 'Mark as spam',
-	
+
 	'agent.copy_permalink' => 'Copy permalink',
-	
+
 	'agent.add_search_term' => 'Add search term',
 	'agent.add_criteria_term' => 'Add criteria',
 	'agent.add_action_term' => 'Add action',
-	
+
 	'agent.published' => 'Published',
 	'agent.unpublished' => 'Unpublished',
 	'agent.draft' => 'Draft',
 	'agent.validating' => 'Validating',
-	
+
 	'agent.categories' => 'Categories',
 	'agent.products' => 'Products',
 	'agent.add_category' => 'Add Category',
 	'agent.add_product' => 'Add Product',
-	
+
 	'agent.ordered_by' => 'Ordered by',
-	
+
 	'agent.label_title' => 'Title',
 	'agent.label_criteria' => 'Criteria',
 	'agent.label_actions' => 'Actions',
@@ -88,9 +88,9 @@
 	'agent.label_url_slug' => 'URL Slug',
 	'agent.label_labels' => 'Labels',
 	'agent.label_rating' => 'Rating',
-	
+
 	'agent.created_and_published' => 'Created and Published',
-	
+
 	'agent.label_page' => 'Page',
 	'agent.label_article' => 'Article',
 	'agent.label_comments' => 'Comments',
@@ -98,17 +98,17 @@
 	'agent.label_related_content' => 'Related Content',
 	'agent.label_search' => 'Search',
 	'agent.add_as_agent_comment' => 'Add as an agent-only comment',
-	
+
 	'agent.view_in_user_interface' => 'View in user interface',
 	'agent.print' => 'Print',
-	
+
 	'agent.all_teams' => 'All Teams',
-	'agent.my_teams' =. 'My Teams',
+	'agent.my_teams' => 'My Teams',
 
 	'agent.not_found'               => 'Not Found',
 	'agent.error_page_not_found'    => 'The page you are looking for could not be found',
 	'agent.anonymous' => 'Anonymous',
-	
+
 	'agent.assign_agent' => 'Assign Agent',
 
 	'agent.none'                    => 'None',
@@ -128,12 +128,12 @@
 	'agent.agent_is_not_me'         => 'Agent is not me',
 	'agent.my_agent_team'           => 'My team',
 	'agent.not_my_agent_team'       => 'Not my team',
-	
+
 	'agent.edit_comment' => 'Edit Comment',
 	'agent.delete_comment' => 'Delete Comment',
 	'agent.validate_comment' => 'Validate Comment',
 	'agent.create_ticket' => 'Create Ticket',
-	
+
 	'agent.move_to_tab' => 'Move To Tab',
 	'agent.unpublish' => 'Unpublish',
 	'agent.publish' => 'Publish',
@@ -161,9 +161,9 @@
 	'agent.date' => 'Date',
 	'agent.num_downloads' => 'Number of Downloads',
 	'agent.num_views'     => 'Number of Views',
-	
-	'agent.merge_x_into' => 'Merge "{{name}}" into...'
-	
+
+	'agent.merge_x_into' => 'Merge "{{name}}" into...',
+
 	'agent.network_error' => 'Network Error',
 	'agent.network_error_explain' => 'A network exception occurred and your last request did not complete. Please try again.',
 
@@ -197,11 +197,11 @@
 	'agent.recycle_bin' => 'Recycle Bin',
 
 	'agent.usergroup_everyone' => 'Everyone',
-	
+
 	'agent.upctrl_drag_note' => '(or drag a file onto this window)',
-	
+
 	'agent.display_options' => 'Display Options',
-	
+
 	'agent.add_new_snippet' => 'Add new snippet',
 	'agent.snippet_text_placeholder' => 'Snippet text',
 );

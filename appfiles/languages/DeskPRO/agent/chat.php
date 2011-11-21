@@ -14,35 +14,35 @@
 	'agent.chat.no_open_chats' => 'There are no open chats.',
 	'agent.chat.title_chat_id' => 'Chat {{chat_id}}',
 	'agent.chat.chat_with_x' => 'Chat with {{name}}',
-	
+
 	'agent.chat.online' => 'Online',
 	'agent.chat.offline' => 'Offline',
 	'agent.chat.show_offline' => 'Show Offline',
 	'agent.chat.no_online_agents' => 'There are no other agents online',
-	
+
 	'agent.chat.label_assigned_to' => 'Assigned to',
 	'agent.chat.label_assigned_others' => 'Other agents in this chat',
 	'agent.chat.invite_another_agnet' => 'Invite another agent',
 	'agent.chat.invite_agent' => 'Invite Agent',
-	'agent.chat.invite_no_agents' = 'There are no other agents you can invite.',
+	'agent.chat.invite_no_agents' => 'There are no other agents you can invite.',
 	'agent.chat.user_typing' => 'Typing',
-	
+
 	'agent.chat.send_file' => 'Send File',
 	'agent.chat.quick_replies' => 'Quick Replies',
 	'agent.chat.create_ticket' => 'Create Ticket',
 	'agent.chat.end_chat' => 'End Chat',
 	'agent.chat.send_message' => 'Send',
-	
+
 	'agent.chat.title_new_chats' => 'New Chats',
 	'agent.chat.title_active_chats' => 'Active Chats',
-	
+
 	'agent.chat.title_send_file' => 'Send File',
 	'agent.chat.title_chat' => 'Chat',
 	'agent.chat.title_leave_chat_prompt' => 'Leave Chat?',
 	'agent.chat.leave_chat_confirm' => 'Are you sure you want to leave this chat?',
 	'agent.chat.leave_unassign' => 'Unassign myself and leave',
 	'agent.chat.leave_end' => 'End chat and leave',
-	
+
 	'agent.chat.msg_ended'             => 'Chat ended',
 	'agent.chat.msg_assigned_agent'    => 'Chat assigned to {{agent_name}}',
 	'agent.chat.msg_unassigned_agent'  => '{{agent_name}} was unassigned',
