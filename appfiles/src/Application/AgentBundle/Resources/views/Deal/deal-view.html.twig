@@ -1,9 +1,11 @@
+{% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Deal';
 pageMeta.title = "{{ deal.title}}";
 pageMeta.deal_id = {{deal.id}};
 pageMeta.pageIdentity = 'deal1:{{deal.id}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_deal_ajax_labels_save', {'deal_id': deal.id}) }}';
+pageMeta.ajaxSaveUrl = '{{ path('agent_deal_ajaxsave', {'deal_id': deal.id}) }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -66,11 +68,21 @@ pageMeta.baseId = '{{ baseId }}';
     </div>
     
     <div class="isRight">
+
         <div class="meta-line">
-            <div class="{% if deal.status == 0%} status {% else %} category {% endif %} open isLeft"><span>Open</span></div>
-            <div class="{% if deal.status == 1%} status {% else %} category {% endif %} won isLeft"><span>Won</span></div>
-            <div class="{% if deal.status == 2%} status {% else %} category {% endif %} lost isLeft"><span>Lost</span></div>
-        </div>
+            <div class="status the-status deal-status" id="{{baseId}}_status_trigger">
+                <span id="{{baseId}}_status_label">
+                        {% if deal.status == 0 %}
+                                Open
+                        {% elseif deal.status == 1 %}
+                                Won
+                        {% elseif deal.status == 2 %}
+                                Lost
+                        {% endif %}
+                </span>
+            </div>
+	</div>
+
     </div>
     
     <div class="clear"></div>
@@ -91,3 +103,22 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 </div>
 {# /Page Containers #}
+
+
+{{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
+	{{ optionbox.section_start('', 'status') }}
+		<li class="top parent-option item-open" data-item-id="0" data-full-title="Open">
+			<input type="radio" name="status" value="o" />
+			<label>Open</label>
+		</li>
+		<li class="top parent-option item-won" data-item-id="1" data-full-title="Won">
+			<input type="radio" name="status" value="1" />
+			<label>Won</label>
+		</li>
+
+		<li class="top parent-option item-lost" data-item-id="2" data-full-title="Lost">
+			<input type="radio" name="status" value="2" />
+			<label>Lost</label>
+		</li>
+	{{ optionbox.section_end() }}
+{{ optionbox.end('Set Status') }}

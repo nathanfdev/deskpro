@@ -30,14 +30,56 @@
 
                         {% for person in deal.peoples%}
                         <li class="member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
-                                <span data-person-id="{{ person.id }}">{{ person.display_name }} &lt;{{person.primary_email.email}}&gt; </span>
+                                <span data-person-id="{{ person.id }}"><b>{{ person.display_name }}</b> &lt;{{person.primary_email.email}}&gt; </span>
                                 <span class="remove btn-small-remove remove-row-trigger">x</span>
                                 
                         </li>
                         {% endfor%}
-                        <li class="newrow" id="{{baseId}}_person_assign_btn"><span class="btn-small-add"></span>Add User</li>
+                        <li class="newpersonrow" id="{{baseId}}_person_assign_btn"><span class="btn-small-add"></span>Add User</li>
                         
                     </ul>
+                </dd>
+                <dd>                       
+                        <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
+                        <div id="{{baseId}}_choose_user" style="display:none;" class="choose-user" >
+                                <div
+                                        id="{{baseId}}_user_searchbox"
+                                        data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                                        data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                                        data-highlight-term="1"
+                                        data-touch-focus="1"
+                                        data-search-param="term"
+                                        data-position-bound="#{{baseId}}_userselect"
+                                >
+                                    Person:
+                                        <input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+                                        <input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
+
+                                        <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                                <li>
+                                                    <a>
+                                                        <span class="user-name"></span>
+                                                        <address>&lt;<span class="user-email"></span>&gt;</address>
+                                                        <div class="bound-fade"></div>
+                                                    </a>
+                                                </li>
+                                        </script>
+                                        <div class="person-search-box" style="display: none">
+                                                <section>
+                                                        <ul class="results-list">
+
+                                                        </ul>
+                                                        <footer>
+                                                                <span class="create-user">Create a new person</span>
+                                                        </footer>
+                                                </section>
+                                        </div>
+                                </div>
+                        </div>
+                        <div id="{{baseId}}_user_choice">
+
+                        </div>
+                        <br class="clear" />
                 </dd>
             </dl>
         </div>
@@ -53,10 +95,52 @@
                                 <span class="remove btn-small-remove remove-row-trigger"></span>
                             </li>
                         {% endfor%}
-                            <li class="newrow" id="{{baseId}}_org_assign_btn"><span class="btn-small-add"></span>Add Organization</li>
+                            <li class="neworgrow" id="{{baseId}}_org_assign_btn"><span class="btn-small-add"></span>Add Organization</li>
                         
                     </ul>
                 </dd>
+                <dd>
+
+                    <div class="choose-org" style="display: none" id="{{baseId}}_org_edit_wrap">
+                            <div
+                                    class="org-input"
+                                    id="{{baseId}}_org_searchbox"
+                                    data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+                                    data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                                    data-highlight-term="1"
+                                    data-touch-focus="1"
+                                    data-search-param="term"
+                                    data-position-bound="@parent(.org-input)"
+                            >
+                                    Organization:
+                                    <input type="text" class="org-name" id="{{baseId}}_orgselect" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+                                    <input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
+                                    <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                            <li>
+                                                    <a>
+                                                    <span class="org-name"></span>
+                                                    <div class="bound-fade"></div>
+                                            </a></li>
+                                    </script>
+                                    <div class="person-search-box org" style="display: none">
+                                            <section>
+                                                    <ul class="results-list">
+
+                                                    </ul>
+                                                    <footer>
+                                                            <span class="create-org">Create a new organization</span>
+                                                    </footer>
+                                            </section>
+                                    </div>
+                            </div>
+                    </div>
+                    <div id="{{baseId}}_org_choice">
+
+                        </div>
+                        <br class="clear" />
+
+                </dd>
+
             </dl>
         </div>
     </article>
@@ -113,9 +197,9 @@
     <header>
             <nav>
                 <ul>
-                    <li data-tab-for="#{{baseId}}_property_tab">Properties</li>
-                    <li data-tab-for="#{{baseId}}_tasks_tab" class="on">Tasks <span class="count" id="{{baseId}}_tasks_count">{{ tasks|length }}</span></li>
-                    <li data-tab-for="#{{baseId}}_files_tab" class="on">Files <span class="count" id="{{baseId}}_files_count">{{ tasks|length }}</span></li>
+                    <li data-tab-for="#{{baseId}}_property_tab" class="on">Properties</li>
+                    <li data-tab-for="#{{baseId}}_tasks_tab" >Tasks <span class="count" id="{{baseId}}_tasks_count">{{ tasks|length }}</span></li>
+                    <li data-tab-for="#{{baseId}}_files_tab" >Files <span class="count" id="{{baseId}}_files_count">{{ deal_attachments|length }}</span></li>
                 </ul>
             </nav>
     </header>
@@ -166,7 +250,7 @@
 
             {# File Tab #}
             <article id="{{baseId}}_files_tab">
-                Files
+                {% include 'AgentBundle:Deal:tab-attachments.html.twig' %}
             </article>
             {# /File Tab #}
 
@@ -223,15 +307,3 @@
 
 </div>
 {# /Notes Tab #}
-
-{# Assigne Person#}
-
-{% include 'AgentBundle:Deal:person-option-box.html.twig' with {'persons': people} %}
-
-{# /Assigne Person#}
-
-{# Assigne Organization#}
-
-{% include 'AgentBundle:Deal:organization-option-box.html.twig' with {'organizations': organizations} %}
-
-{# /Assigne Organization#}

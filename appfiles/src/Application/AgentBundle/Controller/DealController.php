@@ -24,32 +24,33 @@ use Application\DeskPRO\Entity\DealNote;
 use Application\DeskPRO\Entity\DealStage;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
-
-
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles viewing and editing deals
  */
 class DealController extends AbstractController
 {
-    private $_entityManager;
-    private $_currentUser;
-    private $_task_repository;
-
-
     public function newAction()
     {
 
+        $deal = new Deal();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+        $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
 
+        $field_manager = $this->container->getSystemService('deal_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($deal); 
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
            'deal_stage' => $deal_stage,
            'agents' => $agents,
-           'person' => $this->person
+           'person' => $this->person,
+           'deal_currency' => $deal_currency,
+           'custom_fields' => $custom_fields
+
 
         ));
     }
@@ -130,38 +131,64 @@ class DealController extends AbstractController
     {
         $deal_repository = $this->em->getRepository('DeskPRO:Deal');
         $person = $this->person;
+        $order_by = $this->in->getString('order_by');
+        $group_by = $this->in->getString('group_by');
+        $set_group_option = $this->in->getString('set_group_option');
+
+        $deal_group_info = '';
+        $statusArr = array(
+                    'open' => 0,
+                    'close' => -1,
+                    'won' => 1,
+                    'lost' => 2
+                    );
 
         if($owner_type == 'my')
         {
-            if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForPerson($person, 0, $deal_type_id);
-            }
-            else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForPerson($person, -1, $deal_type_id);
-            }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForPerson($person, 1, $deal_type_id);
-            }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForPerson($person, 2, $deal_type_id);
+            $deals = $deal_repository->filterDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+
+            if($group_by){
+                $deal_group_info = $deal_repository->groupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by);
+                if($set_group_option)
+                {
+                    $deals = $deal_repository->filterGroupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by, $set_group_option);
+
+                }
             }
 
-        }else if($owner_type == 'other'){
+        } else if($owner_type == 'other'){
 
-            if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id);
+            $deals = $deal_repository->filterDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+
+            if($group_by){
+                $deal_group_info = $deal_repository->groupByDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $group_by);
             }
-            else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id);
-            }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id);
-            }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id);
-            }
+
         }
 
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
         return $this->render($tpl, array(
-            'deals' => $deals
+            'deals' => $deals,
+            'owner_type' => $owner_type,
+            'deal_status' => $deal_status,
+            'deal_type_id' => $deal_type_id,
+            'order_by' => $order_by,
+            'group_by' => $group_by,
+            'deal_group_info' => $deal_group_info,
+            'group_total' => $this->_getTotalGroupCount($deal_group_info),
+            'set_group_option' => $set_group_option
         ));
+    }
+
+    protected function _getTotalGroupCount($deal_group_info)
+    {
+        $total = 0;
+        if(\is_array($deal_group_info)){
+            foreach($deal_group_info as $group){
+                $total += $group[1];
+            }
+        }
+        return $total;
     }
 
     public function viewAction($deal_id = null)
@@ -177,9 +204,9 @@ class DealController extends AbstractController
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
-        $people = $agents = App::getEntityRepository('DeskPRO:Person')->findAll();
-        $organizations = App::getEntityRepository('DeskPRO:Organization')->findAll();
 
+        $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
+        
         $participant_person_ids = array();
         $participant_org_ids = array();
 
@@ -201,10 +228,9 @@ class DealController extends AbstractController
             'deal_types' => $deal_type,
             'deal_stage' => $deal_stage,
             'participant_person_ids' => $participant_person_ids,
-            'participant_org_ids' => $participant_org_ids,
-            'people' => $people,
-            'organizations' => $organizations,
-            'person' => $this->person
+            'participant_org_ids' => $participant_org_ids,            
+            'person' => $this->person,
+            'deal_attachments' => $deal_attachments
 
         ));
     }
@@ -230,8 +256,7 @@ class DealController extends AbstractController
 		$em->persist($note);
 
 		$em->flush();
-		//$em->commit();
-
+		
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'deal_id' => $deal['id'],
@@ -328,7 +353,6 @@ class DealController extends AbstractController
                     $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
                     if ($person) {
                         $deal->deletePeople($person);
-                        $this->em->persist($deal);
                         $data['remove_person_id'] = $person['id'];
                     }
                     break;
@@ -336,7 +360,6 @@ class DealController extends AbstractController
                     $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
                     if ($organization) {
                         $deal->deleteOrganization($organization);
-                        $this->em->persist($deal);
                         $data['remove_organization_id'] = $organization['id'];
                     }
                     break;
@@ -346,7 +369,6 @@ class DealController extends AbstractController
                     if($deal_id){
                         $deal->setDealTypeId($this->in->getUint('deal_type_id'));
                         $deal->setDealStageId(null);
-                        $this->em->persist($deal);
                     }
                     $data['change_deal_type_id'] = $deal_type['id'];
                     $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
@@ -368,13 +390,17 @@ class DealController extends AbstractController
 
                 case 'change-dealstage':
 
-                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));
-                    $this->em->persist($deal);
+                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));                   
                     $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    break;
+                case 'change-status':
+
+                    $deal['status'] = $this->in->getString('status');
                     break;
                     
             }
-
+            
+            $this->em->persist($deal);
             $this->em->flush();
             $this->em->commit();
 
@@ -428,6 +454,111 @@ class DealController extends AbstractController
 		return $this->render('AgentBundle:Deal:newdeal-organization-row.html.twig', array(
 			'organization' => $organization
 		));
+        }
+
+        public function newdealCreatePersonRowAction($person_id)
+        {
+                if ($person_id)
+                {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		} else{
+                    $person = new Person();
+                }
+
+                return $this->render('AgentBundle:Deal:create-person-row.html.twig', array(
+			'person' => $person
+		));
+        }
+
+        public function newdealSetPersonRowAction($person_id)
+	{
+                $deal_repository = $this->em->getRepository('DeskPRO:Deal');
+                $deal = $this->getDealOr404($this->in->getString('deal_id'));
+
+                $email = $this->in->getString('email');
+                $name = $this->in->getString('name');
+                
+                if ($person_id) {
+                    $person = $this->em->find('DeskPRO:Person', $person_id);
+                    
+		} else if($email){
+                    $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+                }
+
+                if (!$person) {
+			$person = new Person();
+			$person->addEmailAddressString($email);
+		}
+
+                if (!$person->name && $name) {
+			$person->name = $name;
+		}
+
+                $this->em->persist($person);
+                $this->em->flush();
+
+              // Checked if the person already added to the deal.
+              if($deal_repository->findPersonInDeal($person, $this->in->getString('deal_id')) <= 0)
+              {
+                  $deal->addPeoples($person);
+                  $this->em->persist($deal);
+                  $this->em->flush();
+
+                  return $this->render('AgentBundle:Deal:person-li.html.twig', array(
+			'person' => $person
+                  ));
+              }else{
+                  return new Response('failed');
+              }
+        }
+
+        public function newdealCreateOrganizationRowAction($org_id)
+        {
+            $organization = false;
+            if ($org_id) {
+                    $organization = $this->em->find('DeskPRO:Organization', $org_id);
+            }
+
+            return $this->render('AgentBundle:Deal:create-organization-row.html.twig', array(
+                    'organization' => $organization
+            ));
+        }
+
+        public function newdealSetOrganizationRowAction($org_id)
+	{
+		$deal_repository = $this->em->getRepository('DeskPRO:Deal');
+                $deal = $this->getDealOr404($this->in->getString('deal_id'));
+                $name = $this->in->getString('name');
+                $organization = false;
+                
+		if ($org_id) {
+			$organization = $this->em->find('DeskPRO:Organization', $org_id);
+		}else if($name){
+                    $organization = $this->em->getRepository('DeskPRO:Organization')->findOneByName($name);
+
+                }
+                
+                if(!$organization)
+                {
+                    $organization = new Organization();
+                    $organization->name = $name;
+                }
+
+                $this->em->persist($organization);                
+
+		// Checked if the person already added to the deal.
+              if($deal_repository->findOrganizationInDeal($organization, $this->in->getString('deal_id')) <= 0)
+              {
+                  $deal->addOrganizations($organization);
+                  $this->em->persist($deal);
+                  $this->em->flush();
+
+                  return $this->render('AgentBundle:Deal:org-li.html.twig', array(
+			'organization' => $organization
+                  ));
+              }else{
+                  return new Response('failed');
+              }
         }
 
 

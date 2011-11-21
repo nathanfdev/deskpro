@@ -7,7 +7,7 @@
 
         </div>
         <div class="top-row-right">
-            <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol}}{{deal.deal_value}}</span>
+            <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol|default('$')}}{{deal.deal_value}}</span>
         </div>        
     </div>
     <hr class="clear-top">

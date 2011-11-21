@@ -46,6 +46,10 @@ class NewDeal extends AbstractType
 		$builder->add('deal_stage', 'text');
 		$builder->add('agent_id', 'text', array('required' => false));
 
+                $builder->add('deal_currency', 'text');
+		$builder->add('probability', 'text');
+		$builder->add('deal_value', 'text', array('required' => false));
+
                 $builder->add('attach', 'collection', array(
 			'type' => 'hidden',
 			'required' => false,

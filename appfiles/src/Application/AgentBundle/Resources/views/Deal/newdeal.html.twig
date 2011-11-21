@@ -46,6 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
 			>
+                                Person:
 				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
 				<input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
@@ -167,6 +168,92 @@ pageMeta.baseId = '{{ baseId }}';
             </div>
         </div>
 
+
+        <div class="section department-section" id="{{baseId}}_dep_section">
+            <div class="step">
+                    <span class="num">4</span>
+                    <span class="check">Done</span>
+            </div>
+            <div class="content">
+                    <div class="col">
+                            <h4>Type</h4>
+                            {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'newdeal[deal_currency]',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Currency',
+                                'options': deal_currency,
+                                'add_classname': 'select-currency'
+                            } %}
+                    </div>
+                    <div class="col">
+                            <h4>Value</h4>
+                            <input type="text" name="newdeal[deal_value]" class="deal-value" id="{{baseId}}_deal_value" value="" />
+                    </div>
+                    <div class="col">
+                            <h4>Probability</h4>
+                            <input type="text" name="newdeal[probability]" class="probability" value="{{deal.probability}}" id="{{baseId}}_probability" />
+                    </div>
+                    <br class="clear" />
+            </div>
+        </div>
+
+        <div class="section other-section" id="{{baseId}}_other_section">
+            <div class="step">
+                    <span class="num">5</span>
+                    <span class="check">Done</span>
+            </div>
+            <div class="content">
+		{# Tab Container #}
+		<div class="tab-container">
+			<nav id="{{baseId}}_other_props_tabs_wrap">
+				<ul id="{{baseId}}_other_props_tabs">
+					<li data-tab-for="> .tab-properties">Properties</li>					
+					<li data-tab-for="> .tab-attach">Attachments</li>
+				</ul>
+			</nav>
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
+				{# Tab Properties #}
+				<div class="tab-properties" style="display: none">
+					<dl>
+						
+					</dl>
+				</div>
+				{# /Tab Properties #}
+
+				{# Tab Attach #}
+				<div class="tab-attach" style="display: none">
+					<script class="template-upload" type="text/x-jquery-tmpl">
+						<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+					</script>
+					<script class="template-download" type="text/x-jquery-tmpl">
+						<li class="uploaded">
+							<input type="checkbox" checked="checked" name="newdeal[attach][]" value="${blob_id}" />
+							<a href="${download_url}" target="_blank">${filename}</a>
+							<span class="size">${filesize_readable}</span>
+						</li>
+					</script>
+					<h6>Attachments</h6>
+					<div class="file-input">
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+					</div>
+					<ul class="files file-list"></ul>
+				</div>
+				{# /Tab Attach #}
+			</div>
+		</div>
+		{# /Tab Container #}
+	</div>
+</div>
+
+{# To render the form inputs: #}
+{% for f in custom_fields %}
+    <dt class="type-labels">{{ f.title }}</dt>
+    <dd class="people-tags tags-wrap">
+        {{ render_custom_field_form(f) }}
+    </dd>
+{% endfor %}
+
         <div class="foot">
             <button class="submit-trigger clean-white">Create Deal</button>
         </div>
@@ -197,7 +284,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</li>
 
 				{% for agent in agents %}
-					{% if agent.id != deal.person.id %}
+					{% if agent.id != person.id %}
 						<li {% if deal.assigned_agent.id == agent.id %}class="on"{% endif %}>
 							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if deal.assigned_agent.id == agent.id %}checked="checked"{% endif %} />
 							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>

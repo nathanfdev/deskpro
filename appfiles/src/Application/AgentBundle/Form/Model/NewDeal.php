@@ -24,11 +24,15 @@ class NewDeal
 {
     public $person;
     public $title;
-    public $agent_id;
-    public $attach = array();
+    public $agent_id;    
     public $deal_type;
     public $deal_stage;
     public $organizations;
+    public $deal_currency;
+    public $probability;
+    public $deal_value;
+
+    public $attach = array();
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -71,7 +75,7 @@ class NewDeal
 		}
 
 		$em->persist($person);
-                $em->flush();
+                //$em->flush();
 
                 if($this->organizations->id)
                 {
@@ -86,7 +90,7 @@ class NewDeal
                 }
 
                 $em->persist($org);
-                $em->flush();
+                //$em->flush();
                 
                 
                 #------------------------------
@@ -94,19 +98,35 @@ class NewDeal
 		#------------------------------
 
                 $deal = new Deal();
-
+                
                 $deal->setDealTypeId($this->deal_type);
                 $deal->setDealStageId($this->deal_stage);
                 $deal->setPersonId($this->_person_context->id);
                 $deal->setAsignedAgentId($this->agent_id);
                 $deal['title'] = $this->title;
+                $deal->setDealCurrencyId($this->deal_currency);
+                $deal['probability'] = $this->probability;
+                $deal['deal_value'] = $this->deal_value;
                 $deal->addOrganizations($org);
                 $deal->addPeoples($person);
 
                 $em->persist($deal);
-                $em->flush();
-                //$em->commit();
+                
 
+                // Deal Attachments
+		foreach ($this->attach as $blob_id) {
+
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$attach = new DealAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->_person_context;
+                        $attach['deal'] = $deal;
+
+                        $em->persist($attach);
+		}
+                
+                $em->flush();
                 $this->_deal = $deal;
     }
 

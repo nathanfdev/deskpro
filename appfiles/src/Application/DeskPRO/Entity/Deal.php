@@ -132,7 +132,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Deal Currency type
      *
-     * @ORM_Mapping\ManyToOne(targetEntity="Currency")
+     * @ORM_Mapping\ManyToOne(targetEntity="Currency" , cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinColumn(name="currency_id", referencedColumnName="id", onDelete="set null")
      */
     protected $deal_currency = null;
@@ -194,6 +194,16 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $_label_manager = null;
 
     /**
+     * @ORM_Mapping\OneToMany(targetEntity="DealAttachment", mappedBy="deal", cascade={"persist", "remove", "merge"})
+     */
+    protected $attachments;
+
+    /**
+     * @ORM_Mapping\OneToMany(targetEntity="CustomDataDeal", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    protected $custom_data;
+
+    /**
      * Creates a new deal
      */
     public function __construct()
@@ -202,9 +212,10 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->people = new \Doctrine\Common\Collections\ArrayCollection();
         $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();        
-        //$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();                
         $this->deal_mapper   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 
 
         $this->date_created = new \DateTime();
@@ -463,6 +474,40 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		$this->deal_stage = $deal_stage;
 	}
 
+
+         /**
+	 * Returns the deal's currency id
+	 *
+	 * @return int
+	 */
+	public function getDealCurrencyId()
+	{
+		if (! $this->deal_currency) {
+			return 0;
+		}
+
+		return $this->deal_currency['id'];
+	}
+
+	/**
+	 * Sets the deal's currency id
+	 *
+	 * @param int $id
+	 * @throws \InvalidArgumentException Thrown when there's no currenct with that id
+	 */
+        public function setDealCurrencyId($id)
+	{
+		if(!$id || $id == null){
+                    $this->deal_currency = null;
+                    return;
+                }
+
+                $deal_currency = App::getEntityRepository('DeskPRO:Currency')->find($id);
+		$this->deal_currency = $deal_currency;
+	}
+
+
+
         public function deletePeople(\Application\DeskPRO\Entity\Person $person)
         {
             $this->peoples->removeElement($person);
@@ -494,7 +539,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         }
 
         /**
-	 * Add a peoples
+	 * Add organizations
          * 
 	 * @param \Application\DeskPRO\Entity\Organizations $organizations
 	 */
@@ -512,5 +557,27 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         {
             return $this->organizations;
         }
+        
+        /**
+	 * Add  attachments
+         * 
+	 * @param \Application\DeskPRO\Entity\DealAttachment $attachments
+	 */
+	public function addAttachments(\Application\DeskPRO\Entity\DealAttachment $attachments)
+	{
+		$this->attachments[] = $attachments;
+	}
+
+        /**
+         * Get attachments
+         *
+         * @return \Doctrine\Common\Collections\ArrayCollection
+         */
+        public function getAttachments()
+        {
+            return $this->attachments;
+        }
+
+
 
 }

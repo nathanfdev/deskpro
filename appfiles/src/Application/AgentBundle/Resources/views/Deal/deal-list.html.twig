@@ -1,16 +1,19 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
     pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DealList';
-    //pageMeta.search_type = '{#{ search_type }#}';
-    //pageMeta.search_category = '{#{ search_category }#}';
+    pageMeta.owner_type = '{{ owner_type }}';
+    pageMeta.deal_status = '{{ deal_status }}';
 
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>
 {{ agentui.scroll_containers('page-deal-list') }}
-
-{% include 'AgentBundle:Deal:deal-list-bar.html.twig' %}
-
+<article>
+    {% include 'AgentBundle:Deal:deal-list-bar.html.twig' %}
+    {% if deal_group_info|length > 0%}
+        {% include 'AgentBundle:Deal:filter-grouping-bar.html.twig' %}
+    {%endif%}
+</article>
 <section class="list-listing">
   <article class="row-item item-list">
     <div class="extra-fields">
