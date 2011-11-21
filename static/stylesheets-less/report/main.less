@@ -22,6 +22,7 @@
 .stat-list td {
 	padding: 10px;
 	border-bottom: 1px solid #eee;
+	vertical-align: middle;
 }
 
 .stat-list th {
@@ -34,25 +35,57 @@
 	color: #000;
 }
 
+.stat-list .center {
+	text-align: center;
+}
+
 .stat-list .starred {
 	background: url(../../images/report/icons/star.png) no-repeat center center;
 }
 
-.stat-list .icon {
-	padding: 10px 2px;
+.stat-list .prev-value {
 	text-align: center;
 }
 
-.stat-list .down {
-	background: url(../../images/report/icons/arrow_down_green.png) no-repeat center right;
+.stat-list .icon {
+	padding: 10px 15px 10px 15px;
+	text-align: center;
 }
 
-.stat-list .up {
-	background: url(../../images/report/icons/arrow_up_green.png) no-repeat center right;
+.stat-list td.icon {
+	background: #F7F4F4;
+}
+
+.stat-list .direction-up-green  {
+	background: url(../../images/report/icons/variation-up-green-small.png) no-repeat right center;
+}
+
+.stat-list .direction-down-green  {
+	background: url(../../images/report/icons/variation-down-green-small.png) no-repeat right center;
+}
+
+.stat-list .direction-up-red  {
+	background: url(../../images/report/icons/variation-up-red-small.png) no-repeat right center;
+}
+
+.stat-list .direction-down-red  {
+	background: url(../../images/report/icons/variation-down-red-small.png) no-repeat right center;
+}
+
+.stat-list .direction-up-grey  {
+	background: url(../../images/report/icons/variation-up-grey-small.png) no-repeat right center;
+}
+
+.stat-list .direction-down-grey  {
+	background: url(../../images/report/icons/variation-down-grey-small.png) no-repeat right center;
 }
 
 .stat-list .center {
 	text-align: center
+}
+
+#stat_grouping_ref {
+	width: 155px;	
 }
 
 ul.tabs {
@@ -89,9 +122,17 @@ ul.tabs li.margin-left {
 	margin-left: 100px;
 }
 
+h2 {
+	font-size: 28px;
+	padding: 10px 5px;
+	line-height: 46px;
+	color: #666;
+}
+
 .dashboard-state {
 	display: inline-block;
 	margin-bottom: 20px;
+	float: right;
 }
 
 .dashboard-state a {
@@ -136,20 +177,45 @@ ul.tabs li.margin-left {
 	text-align: left;
 	position: relative;
 	min-height: 20px;
+	max-height: 20px;
 	line-height: 20px;
+	overflow: hidden;
+}
+
+#report-dashboard-grid li .grid-slot-toolbar .toolbar-title {
+	color: #000;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar .icons {
 	position: absolute;
 	top: 2px;
 	right: 2px;
+	bottom: 2px;
 	cursor: pointer;
+	background: #fff;
 }
 
 #report-dashboard-grid li .grid-slot-toolbar .icons a {
 	float: left;
 	padding: 5px;
 	display: none;
+}
+
+#report-dashboard-grid li .resize-overlay {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#report-dashboard-grid li .resize-right {
+	background: url(../../images/report/icons/resize_arrow_right.png) no-repeat center right;
+}
+
+#report-dashboard-grid li .resize-left {
+	background: url(../../images/report/icons/resize_arrow_left.png) no-repeat center right;
 }
 
 .ui-resizable-helper {
@@ -161,6 +227,7 @@ ul.tabs li.margin-left {
 	display: block;
 	font-size: 12px;
 	text-align: left;
+	overflow-x: hidden;
 }
 
 #report-dashboard-grid #dashboard-new-placeholder .inner {
@@ -186,6 +253,7 @@ ul.tabs li.margin-left {
 #report-dashboard-options {
 	margin-bottom: 20px;
 	display: none;
+	padding: 0 5px;
 }
 
 #report-dashboard-options-num-columns-slider {
@@ -216,6 +284,14 @@ ul.tabs li.margin-left {
 	margin: -16px 0 0 -16px;
 }
 
+.grid-slot-content .content .chart-not-renderable {
+	margin: 85px auto;
+	background: #cccccc;
+	color: #ffffff;
+	padding: 13px;
+	text-align: center;
+}
+
 /** Simple Variation Chart **/
 .variation-change-chart {
 	padding: 10px 10px;
@@ -229,7 +305,7 @@ ul.tabs li.margin-left {
 	margin: 0 auto;
 	border-bottom: 1px solid #ccc;
 	text-align: center;
-	padding: 50px 20px 15px 20px;
+	padding: 50px 0 15px 0;
 }
 
 .variation-change-chart .main table {
@@ -303,10 +379,23 @@ ul.tabs li.margin-left {
 	background-image: url(../../images/report/icons/variation-down-green.png);
 }
 
+.variation-change-chart .direction-up-grey {
+	background-image: url(../../images/report/icons/variation-up-grey.png);
+}
+
+.variation-change-chart .direction-down-grey {
+	background-image: url(../../images/report/icons/variation-down-grey.png);
+}
+
 .variation-change-chart .footer {
-	padding: 10px 30px;
+	padding: 20px 0 0 0;
 	text-align: center;
 	clear: both;
+}
+
+.variation-change-chart .footer .sparkline {
+	display: block;
+	width: 100%;
 }
 
 /** Simple Drill Down Chart **/
@@ -349,8 +438,8 @@ ul.tabs li.margin-left {
 }
 
 .simple-drill-down table td.bar span {
-	background: #0043ED;
-	border: 1px solid #003BD3;
+	background: #ADC5FF;
+	border: 1px solid #316AF9;
 	display: block;
 	height: 16px;
 }
@@ -394,7 +483,7 @@ ul.tabs li.margin-left {
 .detailed-drill-down table .diff {
 	width: 55px;
 	text-align: center;
-	padding-right: 16px;
+	padding-right: 20px;
 }
 
 .detailed-drill-down table .diff-red {
@@ -402,10 +491,26 @@ ul.tabs li.margin-left {
 	color: #fff;
 }
 
-.detailed-drill-down table .direction-down-green {
-	background: url(../../images/report/icons/arrow_down_green.png) no-repeat center right;
+.detailed-drill-down table .direction-up-green {
+	background: url(../../images/report/icons/variation-up-green-small.png) no-repeat center right;
 }
 
-.detailed-drill-down table .direction-up-green {
-	background: url(../../images/report/icons/arrow_up_green.png) no-repeat center right;
+.detailed-drill-down table .direction-down-green {
+	background: url(../../images/report/icons/variation-down-green-small.png) no-repeat center right;
+}
+
+.detailed-drill-down table .direction-up-red {
+	background: url(../../images/report/icons/variation-up-red-small.png) no-repeat center right;
+}
+
+.detailed-drill-down table .direction-down-red {
+	background: url(../../images/report/icons/variation-down-red-small.png) no-repeat center right;
+}
+
+.detailed-drill-down table .direction-up-grey {
+	background: url(../../images/report/icons/variation-up-grey-small.png) no-repeat center right;
+}
+
+.detailed-drill-down table .direction-down-grey {
+	background: url(../../images/report/icons/variation-down-grey-small.png) no-repeat center right;
 }

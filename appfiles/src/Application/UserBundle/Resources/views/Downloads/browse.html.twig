@@ -1,6 +1,6 @@
 {% extends 'UserBundle:Downloads:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
+	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.section_title') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -8,7 +8,7 @@
 {% block downloads_browse %}
 	<div class="dp-box-nav">
 		<ul>
-			<li class="dp-title">Category:</li>
+			<li class="dp-title">{{ phrase('user.downloads.category') }}:</li>
 			<li class="all {% if not category %}on{% endif %}">
 				<a href="{{ path('user_downloads') }}"><span>All <em>({{ category_counts['0_total']|default(0) }})</em></span></a>
 			</li>
@@ -34,7 +34,7 @@
 		{% if is_partial_request() %}
 			{% if num_results > downloads|length %}
 				<div class="dp-footer">
-					<a class="btn" href="{{ path('user_downloads') }}">View all {{ num_results }} downloads</a>
+					<a class="btn" href="{{ path('user_downloads') }}">{{ phrase('user.downloads.view_all_x', {'count': num_results})}}</a>
 				</div>
 			{% endif %}
 		{% else %}
@@ -44,7 +44,7 @@
 						<ul>
 							{% if pageinfo.prev %}
 								<li>
-									<a href="{{ path('user_downloads', {'slug': cat.url_slug, 'page': pageinfo.prev }) }}">&larr; Prev</a>
+									<a href="{{ path('user_downloads', {'slug': cat.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
 								</li>
 							{% endif %}
 							{% for p in pageinfo.pages %}
@@ -54,7 +54,7 @@
 							{% endfor %}
 							{% if pageinfo.next %}
 								<li>
-									<a href="{{ path('user_downloads', {'slug': cat.url_slug, 'page': pageinfo.next }) }}">Next &rarr;</a>
+									<a href="{{ path('user_downloads', {'slug': cat.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
 								</li>
 							{% endif %}
 						</ul>

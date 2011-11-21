@@ -1,30 +1,34 @@
 <script type="text/javascript">
 	$(function() {
-	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100%', height: '20px'});
+	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100px', height: '20px'});
 	});
 </script>
 
 <div class="simple-drill-down" id="dashboard-chart-{{ dashboard_stat.id }}">
-	<table>
-		<thead>
-			<tr>
-				<th class="name">Name</th>
-				<th class="trend">Trend</th>
-				<th class="value">Value</th>
-				<th class="bar"></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for row in chart.rows %}
+	{% if chart.isChartRenderable %}
+		<table>
+			<thead>
 				<tr>
-					<td class="name">{{ row.label|default('[no group]') }}</td>
-					<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
-					<td class="value">{{ row.sum_data }}</td>
-					<td class="bar">
-						<span style="width: {{ chart.calculateRowValuePercentage(row.sum_data) }}%">&nbsp;</span>
-					</td>
+					<th class="name">Name</th>
+					<th class="trend">Trend</th>
+					<th class="value">Value</th>
+					<th class="bar"></th>
 				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{% for row in chart.rows %}
+					<tr>
+						<td class="name">{{ row.label|default('no group') }}</td>
+						<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
+						<td class="value">{{ chart.formatData(row.sum_data) }}</td>
+						<td class="bar">
+							<span style="width: {{ chart.calculateRowValuePercentage(row.sum_data) }}%">&nbsp;</span>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="chart-not-renderable">{{ chart.getNoDataLabel }}</div>
+	{% endif %}
 </div>

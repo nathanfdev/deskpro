@@ -11,6 +11,20 @@ class SimpleVariationChart extends BaseAbstractChart
 {
 	const CHART_IDENTIFIER = 'simpleVariation';
 
+	/**
+	 * The data points
+	 *
+	 * @var array
+	 */
+	protected $data_points = array();
+
+	/**
+	 * Is a postive difference value good, bad or neutral
+	 *
+	 * @var string
+	 */
+	protected $difference_direction = 'neutral';
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -30,9 +44,14 @@ class SimpleVariationChart extends BaseAbstractChart
 	 *
 	 * @param array $data_points The data points
 	 */
-	public function addDataPoints($data_points)
+	public function addDataPoints(array $data_points)
 	{
-		$this->data_points = $data_points;
+		if (true === is_array($data_points)) {
+			$this->data_points = $data_points;
+		}
+		else {
+			$this->data_points = array();
+		}
 	}
 
 	/**
@@ -52,14 +71,7 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public function getFirstDataPoint($value = true)
 	{
-		$point = array_slice($this->data_points, 0, 1);
-
-		if ($value) {
-			return $point[key($point)];
-		}
-		else {
-			return date("F j", strtotime(key($point)));
-		}
+		return $this->getDataPoint(0, $value);
 	}
 
 	/**
@@ -69,7 +81,30 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public function getLastDataPoint($value = true)
 	{
-		$point = array_slice($this->data_points, -1, 1);
+		return $this->getDataPoint(0, $value, true);
+	}
+
+	/**
+	 * Get a data point by index
+	 *
+	 * @param int $index The index to return (starts at 0). Is $reverse is true
+	 *                   index counts from end of array (ie, index 2 would
+	 *                   get the 2nd from last element)
+	 * @param bool $value True to return the vaule, false to return the label
+	 * @param bool $reverse True to search from the end of the array
+	 */
+	public function getDataPoint($index, $value = true, $reverse = false)
+	{
+		if (0 === count($this->data_points)) {
+			return null;
+		}
+
+		if (true === $reverse) {
+			$point = array_slice($this->data_points, (($index+1) * -1), 1);
+		}
+		else {
+			$point = array_slice($this->data_points, $index, 1);
+		}
 
 		if ($value) {
 			return $point[key($point)];
@@ -83,18 +118,55 @@ class SimpleVariationChart extends BaseAbstractChart
 	 * Calculate the Variance
 	 *
 	 * @param bool $as_percentage Get the variance as a percentage
-	 * @return number The variance
+	 * @return number The difference
 	 */
-	public function calculateVariation($as_percentage = false)
+	public function getDifference($as_percentage = false)
 	{
-		$first_value = $this->getFirstDataPoint();
-		$last_value  = $this->getLastDataPoint();
+		$previous_value = $this->getDataPoint(1, true, true);
+		$current_value  = $this->getLastDataPoint();
 
-		$variation = 0;
-		if ($first_value != 0) {
-			$variation = ($last_value - $first_value) / $first_value;
+		// No values, cannot calculate variations
+		if (true === is_null($previous_value) || true === is_null($current_value)) {
+			return null;
 		}
 
-		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
+		return $this->calculateDifference($previous_value, $current_value, $as_percentage);
+	}
+
+	/**
+	 * Is the chart ready to be rendered, ie do it have all the data it needs
+	 *
+	 * @var bool
+	 */
+	public function isChartRenderable()
+	{
+		$renderable = false;
+
+		// We need at least 2 data points
+		if (count($this->data_points) >= 2) {
+			$renderable = true;
+		}
+
+		return $renderable;
+	}
+
+	/**
+	 * Set the difference directions
+	 *
+	 * @param string $difference_direction
+	 */
+	public function setDifferenceDirection($difference_direction)
+	{
+		$this->difference_direction = $difference_direction;
+	}
+
+	/**
+	 * Get the difference directions
+	 *
+	 * @return string
+	 */
+	public function getDifferenceDirection()
+	{
+		return $this->difference_direction;
 	}
 }

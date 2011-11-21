@@ -39,22 +39,22 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			<div class="dp-box-options">
-				<a class="btn small" href="{{ path('user_ideas_newidea') }}">Submit Idea</a>
+				<a class="btn small" href="{{ path('user_ideas_newidea') }}">{{ phrase('user.ideas.submit_new_idea') }}</a>
 			</div>
 			<h1>
-				<a href="{{ path('user_ideas_all') }}">Ideas</a>
+				<a href="{{ path('user_ideas_all') }}">{{ phrase('user.ideas.section_name') }}</a>
 			</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-nav">
 				<ul>
-					<li class="dp-title">Status</li>
-					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'all', 'slug': category.url_slug}) }}">All</a></li>
-					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug}) }}">Popular</a></li>
-					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug}) }}">New</a></li>
+					<li class="dp-title">{{ phrase('user.ideas.label_status') }}</li>
+					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_all') }}</a></li>
+					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_popular') }}</a></li>
+					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_new') }}</a></li>
 					<li {% if status == 'active' %}class="on"{% endif %}>
-						<a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug}) }}">Active</a>
+						<a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_active') }}</a>
 						<ul>
 							{% for s_cat in active_status_cats %}
 								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
@@ -62,7 +62,7 @@
 						</ul>
 					</li>
 					<li {% if status == 'closed' %}class="on"{% endif %}>
-						<a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug}) }}">Closed</a>
+						<a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_closed') }}</a>
 						<ul>
 							{% for s_cat in closed_status_cats %}
 								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
@@ -73,16 +73,16 @@
 
 				{% if status != 'popular' %}
 					<div class="dp-sort-options">
-						Sort by:<br />
-							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">Votes</a>
+						{{ phrase('user.label_sort_by') }}:<br />
+							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.ideas.label_votes') }}</a>
 							/
-							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">Date Submitted</a>
+							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.label_date') }}</a>
 					</div>
 				{% endif %}
 
 				<ul class="sep">
-					<li class="dp-title">Category</li>
-					<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': status, 'slug': 'all'}) }}">All</a></li>
+					<li class="dp-title">{{ phrase('user.label_category') }}</li>
+					<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.all') }}</a></li>
 					{% for cat in idea_cats %}
 						{{ _self.cat_row(cat, status, category) }}
 					{% endfor %}
@@ -99,7 +99,7 @@
 									<div class="dp-bound-faded"></div>
 								</div>
 								<div class="meta">
-									Submitter: {{ idea.person.display_name }} |
+									{{ phrase('user.created_by_x', {'name': idea.person.display_name}) }} |
 									{{ idea.date_created|date('M d, Y') }} |
 										{% if idea.status_category %}
 											{{ idea.status_category.title }}
@@ -111,14 +111,16 @@
 							</div>
 						</li>
 					{% else %}
-						<li>There are no ideas with those specificiations.</li>
+						<li>{{ phrase('user.ideas.no_ideas_spec') }}</li>
 					{% endfor %}
 				</ul>
 			</div>
 			{% if is_partial_request() %}
 				{% if num_results > ideas|length %}
 					<div class="dp-footer">
-						<a class="btn" href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">View all {{ num_results }} ideas</a>
+						<a class="btn" href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">
+							{{ phrase('user.ideas.view_all_x_ideas', {'count': num_results}) }}
+						</a>
 					</div>
 				{% endif %}
 			{% else %}
@@ -128,7 +130,7 @@
 							<ul>
 								{% if pageinfo.prev %}
 									<li>
-										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">&larr; Prev</a>
+										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
 									</li>
 								{% endif %}
 								{% for p in pageinfo.pages %}
@@ -138,7 +140,7 @@
 								{% endfor %}
 								{% if pageinfo.next %}
 									<li>
-										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">Next &rarr;</a>
+										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
 									</li>
 								{% endif %}
 							</ul>

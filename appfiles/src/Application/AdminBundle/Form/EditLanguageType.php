@@ -21,29 +21,24 @@ use Symfony\Component\Form\FormBuilder;
 
 class EditLanguageType extends AbstractType
 {
-	protected $language;
-
-	public function __construct($language)
-	{
-		$this->language = $language;
-	}
-
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text');
 
-		$language = $this->language;
-		if (!$language['id']) {
-			$parent_options = App::getDb()->fetchAllKeyValue("
-				SELECT id, title
-				FROM languages
-				ORDER BY title ASC
-			");
+		$pack_choices = new \Symfony\Component\Form\Extension\Core\ChoiceList\ArrayChoiceList(function() {
+			$pack_reader = new \Application\DeskPRO\ResourceScanner\LanguagePacks();
+			return $pack_reader->getPacks();
+		});
 
-			if ($parent_options) {
-				Arrays::unshiftAssoc($parent_options, 0, '(none)');
-				$builder->add('parent_id', 'choice', array('choices' => $parent_options));
-			}
-		}
+		$builder->add('language_package', 'choice', array(
+			'choice_list' => $pack_choices
+		));
+
+		$builder->add('locale', 'text');
+	}
+
+	public function getName()
+	{
+		return 'language';
 	}
 }

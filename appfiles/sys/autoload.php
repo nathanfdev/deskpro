@@ -58,6 +58,17 @@ $loader->registerClassNames(array(
 	'FineDiff'                        => DP_ROOT.'/vendor/PHP-FineDiff/finediff.php',
 ));
 
+spl_autoload_register(function($classname) {
+	if (strpos($classname, 'DeskproLanguages') !== 0) return false;
+
+	$classpath = str_replace('DeskproLanguages\\', '', $classname);
+	$classpath = str_replace('\\', DIRECTORY_SEPARATOR, $classpath);
+	$path = DP_ROOT . '/languages/' . $classpath . '.php';
+
+	require($path);
+	return true;
+});
+
 $loader->register();
 
 $GLOBALS['DP_AUTOLOADER'] = $loader;

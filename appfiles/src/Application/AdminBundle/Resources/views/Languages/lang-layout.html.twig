@@ -1,0 +1,32 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block page_nav %}
+<div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
+	<section class="top">
+		<header>
+			<h4>Language</h4>
+		</header>
+		<article>
+			<ul>
+				<li class="{% if this_page == 'edit_lang' %}on{% endif %}"><a href="{{ path('admin_langs_editlang', {'language_id': language.id}) }}">Edit Details</a></li>
+			</ul>
+		</article>
+	</section>
+
+	{% for group,subgroups in phrase_groups %}
+		<section class="top">
+			<header>
+				<h4>{{ phrase('admin.lang.phrasegroup_' ~ group) }}</h4>
+			</header>
+			<article>
+				<ul>
+					{% for subgroup in subgroups %}
+					<li class="{% if this_page == 'phrase_group_' ~ group ~ '_' ~ subgroup %}on{% endif %}">
+						<a href="{{ path('admin_langs_editphrases', {'language_id': language.id, 'group': group ~'.'~ subgroup}) }}">{{ phrase('admin.lang.phrasegroup_' ~ group ~ '_' ~ subgroup) }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</article>
+		</section>
+	{% endfor %}
+</div>
+{% endblock %}

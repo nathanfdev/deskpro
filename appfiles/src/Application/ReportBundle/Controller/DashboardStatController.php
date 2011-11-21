@@ -23,6 +23,7 @@ class DashboardController extends AbstractController
 	public function editAction($dashboard_stat_id)
 	{
 		$dashboardStat = $this->getDashboard($dashboard_stat_id);
+		$stat	       = $dashboardStat->getStat();
 		
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 		
@@ -37,6 +38,7 @@ class DashboardController extends AbstractController
 		
 		return $this->render('ReportBundle:DashboardStat:edit.html.twig', array(
 			'dashboard_stat' => $dashboardStat,
+			'stat'		 => $stat,
 			'form'      	 => $form->createView(),
 		));
 	}

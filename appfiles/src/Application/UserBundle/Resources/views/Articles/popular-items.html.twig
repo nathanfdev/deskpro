@@ -10,8 +10,8 @@
 	</li>
 {% else %}
 	{% if page == 1 %}
-		<li>There are no popular articles yet.</li>
+		<li>{{ phrase('user.articles.no_popular') }}</li>
 	{% else %}
-		<li>There are no more results.</li>
+		<li>{{ phrase('user.no_more_results') }}
 	{% endif %}
 {% endfor %}

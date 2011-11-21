@@ -35,14 +35,18 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	);
 
 	protected static $availableVariations = array(
-		self::VARIATION_BAD, self::VARIATION_NEUTRAL, self::VARIATION_GOOD
+		 self::VARIATION_GOOD, self::VARIATION_NEUTRAL,self::VARIATION_BAD
 	);
 
 	/**
 	 * Lookup references for the grouping
+	 *
+	 * label: The display label for the grouping column
+	 * table: The table the grouped label should come from
+	 * display_column: The column to use in the table
 	 */
 	protected static $groupingReferences = array(
-		'tickets.agent_id' => array('table' => 'people', 'display_column' => 'first_name'),
+		'tickets.agent_id' => array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
 	);
 
 	/**
@@ -151,6 +155,21 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	/**
+	 * Cache of the last data set retrieved. All operations performed on
+	 * the stat such as getting the difference are performed on this data
+	 *
+	 * @var array
+	 */
+	protected $_data = array();
+
+	/**
+	 * Flag to inidicate if data has been cached
+	 *
+	 * @var bool
+	 */
+	protected $_is_data_cached = false;
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -173,38 +192,168 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the Stat amount
 	 *
-	 * TODO: currently random placeholder
+	 * @return number The values summed
 	 */
 	public function getAmount()
 	{
-		return rand(0, 100);
+		if (0 === count($this->_data['ungrouped']['values'])) {
+			return null;
+		}
+
+		return array_sum($this->_data['ungrouped']['values']);
 	}
 
 	/**
-	 * Get the Stat variation
+	 * Get the update period
 	 *
-	 * TODO: currently random placeholder
+	 * @return string The update period
 	 */
-	public function getVariation()
+	public function getPeriod()
 	{
-		return rand(-5, 5);
+		return ucwords($this->getRunFrequency());
+	}
+
+	/**
+	 * Is the stat clonable. At present all stats can be cloned
+	 */
+	public function isClonable()
+	{
+		return true;
+	}
+
+	/**
+	 * Is the stat editable. Only non deskpro stats can be edited
+	 *
+	 * @return bool
+	 */
+	public function isEditable()
+	{
+		if (true === is_null($this->author)) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	/**
+	 * Calculate the Variance
+	 *
+	 * @param bool $as_percentage Get the variance as a percentage
+	 * @return number The difference
+	 */
+	public function getDifference($as_percentage = false)
+	{
+		$previous_value = $this->getDataPoint(1, true, true);
+		$current_value  = $this->getLastDataPoint();
+
+		// No values, cannot calculate variations
+		if (true === is_null($previous_value) || true === is_null($current_value)) {
+			return null;
+		}
+
+		$difference = 0;
+		if ($previous_value != 0) {
+			$difference = ($current_value - $previous_value) / $previous_value;
+		}
+
+		return ($as_percentage) ? number_format($difference * 100, 2) : number_format($difference, 2);
 	}
 
 	/**
 	 * Generate the trend points for the stat
 	 *
-	 * TODO: currently just generate some random placeholer data
+	 * @param int $limit The number of trend points to get. If not specified
+	 *                   will return all of them. Limit works from the end
+	 *                   of the data set (optional)
+	 * @return array The trend points
 	 */
-	public function getTrendPoints()
+	public function getTrendPoints($limit = null)
 	{
-		$trendPoints = range(0, 10);
-		shuffle($trendPoints);
+		if (0 === count($this->_data['ungrouped']['values'])) {
+			return null;
+		}
 
-		return $trendPoints;
+		$points = array_values($this->_data['ungrouped']['values']);
+
+		if (true === is_null($limit)) {
+			return $points;
+		}
+		else {
+			return array_slice($points, ($limit*-1), $limit);
+		}
 	}
 
 	/**
-	 * Get the number of data points based on the run frequency
+	 * Get the first data point
+	 *
+	 * @param bool $value True to return the vaule, false to return the label
+	 */
+	public function getFirstDataPoint($value = true)
+	{
+		return $this->getDataPoint(0, $value);
+	}
+
+	/**
+	 * Get the last data point
+	 *
+	 * @param bool $value True to return the vaule, false to return the label
+	 */
+	public function getLastDataPoint($value = true)
+	{
+		return $this->getDataPoint(0, $value, true);
+	}
+
+	/**
+	 * Get a data point by index
+	 *
+	 * @param int $index The index to return (starts at 0). Is $reverse is true
+	 *                   index counts from end of array (ie, index 2 would
+	 *                   get the 2nd from last element)
+	 * @param bool $value True to return the vaule, false to return the label
+	 * @param bool $reverse True to search from the end of the array
+	 */
+	public function getDataPoint($index, $value = true, $reverse = false)
+	{
+		if (0 === count($this->_data['ungrouped']['values'])) {
+			return null;
+		}
+
+		if (true === $reverse) {
+			$point = array_slice($this->_data['ungrouped']['values'], (($index+1) * -1), 1);
+		}
+		else {
+			$point = array_slice($this->_data['ungrouped']['values'], $index, 1);
+		}
+
+		if ($value) {
+			return $point[key($point)];
+		}
+		else {
+			return date("F j", strtotime(key($point)));
+		}
+	}
+
+	/**
+	 * Gets the values of data from the end of the data set
+	 *
+	 * @param array $row The row to work with
+	 * @param int $label The number of values to get
+	 */
+	public function getEndData($limit)
+	{
+		if (0 === count($this->_data['ungrouped']['values'])) {
+			return null;
+		}
+
+		return array_slice($this->_data['ungrouped']['values'], ($limit * -1), $limit);
+	}
+
+	/**
+	 * Get the number of data points based on the run frequency, eg, For
+	 * daily reports show a week, for montly reports show a year
+	 *
+	 * @return int The number of data points to display
 	 */
 	public function getDefaultDataPointCount()
 	{
@@ -217,6 +366,33 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			case 'monthly':
 				// Get 12 months
 				$data_points = 12;
+				break;
+			case 'yearly':
+				// Get 10 years
+				$data_points = 10;
+				break;
+		}
+
+		return $data_points;
+	}
+	
+	/**
+	 * Get the number of data points based on the run frequency, eg, For
+	 * daily reports show a week, for montly reports show a year
+	 *
+	 * @return int The number of data points to display
+	 */
+	public function getMaxDataPointCount()
+	{
+		$data_points = 7;
+		switch ($this->run_frequency) {
+			case 'daily':
+				// Get a year
+				$data_points = 60;
+				break;
+			case 'monthly':
+				// Get 5 years
+				$data_points = 60;
 				break;
 			case 'yearly':
 				// Get 10 years
@@ -254,16 +430,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $stat_value;
-	}
-
-	/**
-	 * Get a value for a date
-	 *
-	 * @param int $unix Unix timestamp to get value for
-	 */
-	public function getValueForDate($unix)
-	{
-
 	}
 
 	public function setRunFrequency($run_frequency)
@@ -335,6 +501,18 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Get the grouping name. Useful for displaying
+	 *
+	 * @return string The name the stat is grouped by
+	 */
+	public function getGroupingName()
+	{
+		$groupingInformation = $this->getGroupingInformation();
+
+		return $groupingInformation['label'];
+	}
+
+	/**
 	 * Get the data for the Stat
 	 *
 	 * @param \DateTime $end_date The end date, we work backwards from this
@@ -342,15 +520,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getData(\DateTime $end_date, $data_point_count, $with_grouped = false)
 	{
-		$data = array();
+		$this->_data = array();
 		// Get the data points we care about
 		$data_points = $this->generateDataPoints($end_date, $data_point_count);
+
+		$start_date  = new \DateTime($data_points[0] . '00:00:00');
 
 		$stat_value_ids = array();
 
 		// Get the StatValue's
 		$stat_values = App::getEntityRepository('DeskPRO:StatValue')
-				  ->getForStatRangeDate($this->getId(), $end_date, $data_point_count);
+				  ->getForStatRangeDate($this->getId(), $start_date, $end_date);
 
 		// Transform the raw data - Set the default data points. We need
 		// to do this incase there is missing data in the DB, ie we havent
@@ -361,16 +541,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			$stat_value_ids[] = $stat_value['id'];
 		}
 
-		$data['ungrouped'] = array(
-			'label'  => '',
+		$this->_data['ungrouped'] = array(
+			'label'  => 'All',
 			'values' => $values
 		);
 
 		if ($with_grouped) {
-			$data['grouped']   = $this->getGroupedData($data_points, $stat_value_ids);
+			$this->_data['grouped']   = $this->getGroupedData($data_points, $stat_value_ids);
 		}
 
-		return $data;
+		$this->_is_data_cached = true;
+		return $this->_data;
 	}
 
 	/**
@@ -400,6 +581,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					// be a NULL reference
 					if (isset($lookup[$raw_row['grouping_id']])) {
 						$label = $lookup[$raw_row['grouping_id']];
+					}
+					else {
+						// Get the grouping name
+						$label = 'No ' . $this->getGroupingName();
 					}
 
 					// Set the default data points. We need
@@ -531,5 +716,28 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $results;
+	}
+	
+	public function getFormatter()
+	{
+		$concept_class = $this->getStatConceptClass();
+			
+		return $concept_class::getFormatter();
+	}
+	
+	/**
+	 * Format the data using the set formatter
+	 *
+	 * @param mixed $data The data to format
+	 * @param array $options Various formatting options
+	 * @return mixed The formatted data
+	 */
+	public function formatData($data, array $options = array())
+	{
+		if (false === is_null($this->getFormatter())) {
+			$data = $this->getFormatter()->formatData($data, $options);
+		}
+		
+		return $data;
 	}
 }

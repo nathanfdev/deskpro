@@ -3,7 +3,7 @@
 	<div style="background-color: #f8f8f8; border: 2px solid #ccc; padding: 10px; margin-bottom: 15px;">
 		<h1 style="font-size: 18px">Thank you</h1>
 		<p>
-			Thank you for submitting your ticket! You can view your ticket online here:
+			{{ phrase('user.tickets.finish_thanks') }}
 		</p>
 
 		<div style="background-color: #fff; text-align: center; padding: 5px; margin: 10px;">
@@ -14,9 +14,7 @@
 
 		{% if ticket.hidden_status == 'validating' %}
 			<p>
-				<strong style="color:#B31010">But wait</strong>! Before your ticket will be read by
-				our agents, you need to validate your email address. Check your email ({{ticket.person_email.email}})
-				for our confirmation link.
+				{{ phrase('user.tickets.finish_validating', {'email': ticket.person_email.email}) }}
 			</p>
 		{% endif %}
 	</div>

@@ -15,7 +15,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class FormCaptchaFactory
 {
-	public static function create(DeskproContainer $container, array $options = array())
+	public static function create(DeskproContainer $container, $options = array())
 	{
 		$captcha = new \Application\DeskPRO\Form\Captcha\Recaptcha($container);
 		return $captcha;

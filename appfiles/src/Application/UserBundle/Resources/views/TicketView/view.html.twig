@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_tickets') }}">Tickets</a></li>
+	<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
 	<li><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
@@ -8,14 +8,14 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if ticket.status == 'open' or ticket.status == 'pending' %}
-				<div class="dp-status-switcher" title="Click to close the ticket">
-					<div class="dp-status active dp-status-open">Open</div>
-					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">Closed</a>
+				<div class="dp-status-switcher" title="{{ phrase('user.tickets.click_to_close') }}">
+					<div class="dp-status active dp-status-open">{{ phrase('user.tickets.status_open') }}</div>
+					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.tickets.status_closed') }}</a>
 				</div>
 			{% elseif ticket.status == 'resolved' %}
-				<div class="dp-status dp-status-resolved">Resolved</div>
+				<div class="dp-status dp-status-resolved">{{ phrase('user.tickets.status_resolved') }}</div>
 			{% elseif ticket.status == 'closed' %}
-				<div class="dp-status dp-status-closed">Closed</div>
+				<div class="dp-status dp-status-closed">{{ phrase('user.tickets.status_closed') }}</div>
 			{% endif %}
 			<h1>{{ ticket.subject }}</h1>
 		</div>
@@ -52,14 +52,14 @@
 
 						{% if ticket.person.id != app.user.id %}
 							<li>
-								<div class="label">Ticket Starter</div>
+								<div class="label">{{ phrase('user.tickets.label_ticket_starter') }}</div>
 								<div class="value">{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</div>
 							</li>
 						{% endif %}
 
 						{% if user_participants|length %}
 							<li>
-								<div class="label">CCed</div>
+								<div class="label">{{ phrase('user.tickets.label_cced') }}</div>
 								<div class="value">
 									<ul>
 										{% for part in user_participants %}
@@ -123,18 +123,18 @@
 									<div class="feedback-link">
 										<span class="desc">
 											{% if user_ratings[message.id] == 1 %}
-												You rated this message as helpful
+												{{ phrase('user.tickets.you_rated_helpful') }}
 											{% elseif user_ratings[message.id] == -1 %}
-												You rated this message as unhelpful
+												{{ phrase('user.tickets.you_rated_unhelpful') }}
 											{% else %}
-												Was this reply helpful?
+												{{ phrase('user.tickets.was_reply_helpful') }}
 											{% endif %}
 										</span>
-										<span class="desc-helpful">Helpful</span>
-										<span class="desc-not-helpful">Not Helpful</span>
+										<span class="desc-helpful">{{ phrase('user.tickets.rate_helpful') }}</span>
+										<span class="desc-not-helpful">{{ phrase('user.tickets.rate_unhelpful') }}</span>
 
-										<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">Helpful</a>
-										<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">Not Helpful</a>
+										<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">{{ phrase('user.tickets.rate_helpful') }}</a>
+										<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">{{ phrase('user.tickets.rate_unhelpful') }}</a>
 									</div>
 								{% endif %}
 								<br class="dp-clear" style="clear:left" />
@@ -143,7 +143,7 @@
 
 						{% if ticket.status == 'open' %}
 							<li class="close-ticket">
-								Have we answered your question? Feel free to <a href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">close this ticket</a>.
+								{{ phrase('user.tickets.have_we_answered', {'link_url': path('user_tickets_close', {'ticket_ref': ticket.public_id})}) }}
 							</li>
 						{% endif %}
 
@@ -154,7 +154,7 @@
 									<div class="dp-form">
 										{% if errors|length %}
 											<div class="alert-message error">
-												Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+												{{ phrase('user.form_errors_correct') }}
 												<!--
 												{{ debug_var(error_fields) }}
 												{{ debug_var(errors) }}
@@ -163,7 +163,7 @@
 										{% endif %}
 										<div class="dp-form-row {% if error_fields['message'] %}dp-error{% endif %}">
 											<div class="dp-form-label">
-												<label>Add Reply</label>
+												<label>{{ phrase('user.tickets.add_reply_title') }}</label>
 											</div>
 											<div class="dp-form-input">
 												<textarea
@@ -176,7 +176,7 @@
 												>{{ newreply.message }}</textarea>
 
 												<div class="dp-error-explain">
-													Please enter at least 5 characters
+													{{ phrase('user.tickets.message_error') }}
 												</div>
 											</div>
 										</div>
@@ -184,14 +184,14 @@
 
 									<div class="dp-form-row">
 										<div class="dp-form-label">
-											<label>Attachments</label> <em class="desc">You may upload an attachment less than 5 MB</em>
+											<label>{{ phrase('user.attachments_title') }}</label>
 										</div>
 										<div class="dp-form-input">
 											{% include 'UserBundle:Common:form-upload-input.html.twig' %}
 										</div>
 									</div>
 
-									<button class="btn primary" style="margin-top: 10px;">Submit Reply</button>
+									<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.ticekts.add_reply_btn') }}</button>
 								</form>
 							</div>
 						</li>

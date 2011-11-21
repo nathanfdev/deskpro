@@ -9,7 +9,7 @@
 <div class="dp-content-block dp-ticketlist-page dp-open-tickets">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Open Tickets</h1>
+			<h1>{{ phrase('user.tickets.list_open') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
@@ -20,21 +20,20 @@
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
 								{% if ticket.department %}
-									<li>Department: {{ phrase(ticket.department) }}</li>
+									<li>{{ phrase('user.tickets.list_label_department') }}: {{ phrase(ticket.department) }}</li>
 								{% endif %}
 								{% if last_messages[ticket.id] %}
 									<li>
-										Last activity by
 										{% if last_messages[ticket.id].person.id == app.user.id %}
-											you
+											{{ phrase('user.tickets.list_last_activity_by_you') }}
 										{% else %}
-											{{ last_messages[ticket.id].person.display_name }}
+											{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
 										{% endif %}
 										(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('M j Y h:ia') }}</span>)
 									</li>
 								{% endif %}
 								<li>
-									<a class="close-ticket-trigger" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id, 'back': 'list'}) }}">Close</a>
+									<a class="close-ticket-trigger" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id, 'back': 'list'}) }}"></a>
 								</li>
 							</ul>
 						</li>
@@ -50,7 +49,7 @@
 <div class="dp-content-block dp-ticketlist-page dp-open-tickets">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Closed Tickets</h1>
+			<h1>{{ phrase('user.tickets.list_closed') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
@@ -60,10 +59,14 @@
 							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
-								<li>Department: {{ phrase(ticket.department) }}</li>
+								<li>{{ phrase('user.tickets.list_label_department') }}: {{ phrase(ticket.department) }}</li>
 								{% if last_messages[ticket.id] %}
 									<li>
-										Last activity by {{ last_messages[ticket.id].person.display_name }}
+										{% if last_messages[ticket.id].person.id == app.user.id %}
+											{{ phrase('user.tickets.list_last_activity_by_you') }}
+										{% else %}
+											{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
+										{% endif %}
 										(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('M j Y h:ia') }}</span>)
 									</li>
 								{% endif %}

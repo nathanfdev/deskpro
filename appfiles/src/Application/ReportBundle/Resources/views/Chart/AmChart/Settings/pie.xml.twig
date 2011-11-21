@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<redraw>true</redraw>
+
+	<strings>
+		<no_data>{{ chart.getNoDataLabel }}</no_data>
+	</strings>
+
 	<pie>
 		<radius>25%</radius>
+		<colors>{{ chart.getColorCodes|join(',') }}</colors>
 	</pie>
 
 	<animation>
@@ -10,7 +16,8 @@
 	</animation>
 
 	<balloon>
-		<text_color>000000</text_color>
+		<text_color>FFFFFF</text_color>
+		<text_size>16</text_size>
 	</balloon>
 
 	<data_labels>

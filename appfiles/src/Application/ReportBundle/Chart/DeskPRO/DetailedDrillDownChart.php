@@ -16,6 +16,13 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	protected $series = array();
 
+	/**
+	 * Is a postive difference value good, bad or neutral
+	 *
+	 * @var string
+	 */
+	protected $difference_direction = 'neutral';
+
 	public function __construct()
 	{
 		$this->view_chart_vendor 	= 'DeskPRO';
@@ -37,14 +44,7 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getFirstDataPoint($row, $value = true)
 	{
-		$point = array_slice($row, 0, 1);
-
-		if ($value) {
-			return $point[key($point)];
-		}
-		else {
-			return date("F j", strtotime(key($point)));
-		}
+		return $this->getDataPoint($row, 0, $value);
 	}
 
 	/**
@@ -54,7 +54,31 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getLastDataPoint($row, $value = true)
 	{
-		$point = array_slice($row, -1, 1);
+		return $this->getDataPoint($row, 0, $value, true);
+	}
+
+	/**
+	 * Get an array by index
+	 *
+	 * @param array $row The array to operate on
+	 * @param int $index The index to return (starts at 0). Is $reverse is true
+	 *                   index counts from end of array (ie, index 2 would
+	 *                   get the 2nd from last element)
+	 * @param bool $value True to return the vaule, false to return the label
+	 * @param bool $reverse True to search from the end of the array
+	 */
+	public function getDataPoint($row, $index, $value = true, $reverse = false)
+	{
+		if (0 === count($row)) {
+			return null;
+		}
+
+		if (true === $reverse) {
+			$point = array_slice($row, (($index+1) * -1), 1);
+		}
+		else {
+			$point = array_slice($row, $index, 1);
+		}
 
 		if ($value) {
 			return $point[key($point)];
@@ -70,17 +94,17 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 * @param bool $as_percentage Get the variance as a percentage
 	 * @return number The variance
 	 */
-	public function calculateVariation($row, $as_percentage = false)
+	public function getDifference($row, $as_percentage = false)
 	{
-		$first_value = $this->getFirstDataPoint($row);
-		$last_value  = $this->getLastDataPoint($row);
+		$previous_value = $this->getDataPoint($row, 1, true, true);
+		$current_value  = $this->getLastDataPoint($row);
 
-		$variation = 0;
-		if ($first_value != 0) {
-			$variation = ($last_value - $first_value) / $first_value;
+		// No values, cannot calculate variations
+		if (true === is_null($previous_value) || true === is_null($current_value)) {
+			return null;
 		}
 
-		return ($as_percentage) ? number_format($variation * 100, 2) : $variation;
+		return $this->calculateDifference($previous_value, $current_value, $as_percentage);
 	}
 
 	/**
@@ -115,6 +139,10 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getEndSeries($limit)
 	{
+		if (0 === count($this->rows)) {
+			return array();
+		}
+
 		// Get the series from the first row of data
 		$row = array_slice($this->rows, 0, 1);
 		$values = array_slice($row[0]['data'], ($limit * -1), $limit);
@@ -123,7 +151,7 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 		foreach (array_keys($values) as $time) {
 			$series[] = date('M j', strtotime($time));
 		}
-		
+
 		return $series;
 	}
 
@@ -135,8 +163,26 @@ class DetailedDrillDownChart extends AbstractDrillDownChart
 	 */
 	public function getEndData($row, $limit)
 	{
-		$values = array();
-
 		return array_slice($row['data'], ($limit * -1), $limit);
+	}
+
+	/**
+	 * Set the difference directions
+	 *
+	 * @param string $difference_direction
+	 */
+	public function setDifferenceDirection($difference_direction)
+	{
+		$this->difference_direction = $difference_direction;
+	}
+
+	/**
+	 * Get the difference directions
+	 *
+	 * @return string
+	 */
+	public function getDifferenceDirection()
+	{
+		return $this->difference_direction;
 	}
 }

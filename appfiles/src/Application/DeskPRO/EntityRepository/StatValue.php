@@ -45,7 +45,7 @@ class StatValue extends EntityRepository
 	 * @param int $limit The number of results to retrieve (optional)
 	 * @return array
 	 */
-	public function getForStatRangeDate($stat_id, \DateTime $end_date, $limit = null)
+	public function getForStatEndDateLimit($stat_id, \DateTime $end_date, $limit = null)
 	{
 		$qb = $this->getForStatBuilder($stat_id)
 			    ->andWhere("sv.stat_unix < :stat_unix")
@@ -58,6 +58,26 @@ class StatValue extends EntityRepository
 		return $qb->orderBy('sv.stat_unix', 'DESC')
 			  ->getQuery()
 			  ->getArrayResult();
+	}
+
+	/**
+	 * Get the StatValues for a period (between $start_date and $end_date)
+	 *
+	 * @param int $stat_id The Stat id
+	 * @param \DateTime $start_date The start date
+	 * @param \DateTime $end_date The end date
+	 * @return array
+	 */
+	public function getForStatRangeDate($stat_id, \DateTime $start_date, \DateTime $end_date)
+	{
+		return $this->getForStatBuilder($stat_id)
+			    ->andWhere("sv.stat_unix >= :start_unix")
+			    ->andWhere("sv.stat_unix < :end_unix")
+			    ->setParameter('start_unix', $start_date->format('U'))
+			    ->setParameter('end_unix', $end_date->format('U'))
+			    ->orderBy('sv.stat_unix', 'DESC')
+			    ->getQuery()
+			    ->getArrayResult();
 	}
 
 	/**

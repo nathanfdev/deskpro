@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Dashboard of Statistics
@@ -63,6 +64,11 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	protected $author;
 
 	/**
+	 * @ORM_Mapping\OneToMany(targetEntity="ReportDashboardStat", mappedBy="report_dashboard", cascade={"remove"})
+	 */
+        protected $report_dashboard_stat;
+
+	/**
 	 * The number of columns in the dashboard
 	 *
 	 * @var int
@@ -91,6 +97,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 		$this->number_columns = 4;
 		$this->disabled       = false;
 		$this->date_created   = new \DateTime();
+		$this->report_dashboard_stat = new ArrayCollection();
 	}
 
 	/**
@@ -116,7 +123,15 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return self::$availableChartClasses;
 	}
-
+	
+	/**
+	 * Get the index of a chart by its class name
+	 */
+	public static function getChartClassIndex($class)
+	{
+		return array_search($class, self::$availableChartClasses);	
+	}
+	
 	/**
 	 * Get a list of available charts. Human friendly format
 	 *

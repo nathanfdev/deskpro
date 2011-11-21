@@ -13,9 +13,9 @@
 		<div class="dp-box">
 			<div class="dp-box-header">
 				{% if category %}
-					<h1>There are {{ category_children|length  }} Sub-Categories</h1>
+					<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
 				{% else %}
-					<h1>Help Articles</h1>
+					<h1>{{ phrase('user.articles.section_name') }}</h1>
 				{% endif %}
 			</div>
 
@@ -34,7 +34,7 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if category %}
-				<h1>There are {{ articles|length }} Articles</h1>
+				<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
 			{% endif %}
 		</div>
 
@@ -45,8 +45,8 @@
 					<li>
 						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
 						<div class="dp-meta">
-							Author: {{ article.person.display_name }}
-							{% if comment_counts[article.id] %}| Comments: {{ comment_counts[article.id] }}{% endif %}
+							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
+							{{ phrase('user.articles.meta_comments', {'author': comment_counts[article.id]}) }}
 						</div>
 					</li>
 					{% endfor %}

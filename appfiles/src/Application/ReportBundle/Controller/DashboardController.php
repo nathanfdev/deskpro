@@ -35,15 +35,44 @@ class DashboardController extends AbstractController
 
 		$all_stats	 = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
 
+		$form = $this->get('form.factory')->create(new EditReportDashboardType(), $dashboard);
+
 		return $this->render('ReportBundle:Dashboard:view.html.twig', array(
 			'dashboard' 		=> $dashboard,
 			'dashboard_stats'	=> $dashboard_stats,
-			'all_stats'		=> $all_stats
+			'all_stats'		=> $all_stats,
+			'form'      		=> $form->createView(),
 		));
 	}
 
 	/**
-	 * Create/Edit a dashboard
+	 * Create a dashboard
+	 */
+	public function newAction()
+	{
+		$dashboard = new ReportDashboard();
+
+		$form = $this->get('form.factory')->create(new EditReportDashboardType(), $dashboard);
+
+		if ($this->in->getBool('process')) {
+			$request = $this->getRequest();
+			$form->bindRequest($request);
+
+			App::getOrm()->persist($dashboard);
+			App::getOrm()->flush();
+			return $this->redirectRoute('report_trend_dashboard_view', array(
+				'dashboard_id' => $dashboard->getId(),
+			));
+		}
+
+		return $this->render('ReportBundle:Dashboard:edit.html.twig', array(
+			'dashboard' => $dashboard,
+			'form'      => $form->createView(),
+		));
+	}
+
+	/**
+	 * Edit a dashboard
 	 */
 	public function editAction($dashboard_id)
 	{
@@ -56,17 +85,33 @@ class DashboardController extends AbstractController
 		$form = $this->get('form.factory')->create(new EditReportDashboardType(), $dashboard);
 
 		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
+			$request = $this->getRequest();
+			$form->bindRequest($request);
 
-			if ($form->isValid()) {
-				App::getOrm()->persist($dashboard);
-				App::getOrm()->flush();
+			$dashboard_state = json_decode($request->get('dashboard_state'), true);
 
-				$this->session->setFlash('saved', $dashboard->title);
-				return $this->redirectRoute('report_trend_dashboard_view', array(
-					'dashboard_id'	=> $dashboard->id
-				));
+			// Save dashboard information
+			$dashboard->setNumberColumns($dashboard_state['number_columns']);
+			App::getOrm()->persist($dashboard);
+
+			// Save the widgets
+			foreach ($dashboard_state['widgets'] as $widget) {
+				// Get the widget and update it
+				try {
+					$dashboardStat = $this->getDashboardStat($widget['id']);
+
+					$dashboardStat->setGridSlots($widget['number_columns']);
+					$dashboardStat->setSlotNumber($widget['slot_number']);
+
+					App::getOrm()->persist($dashboardStat);
+				}
+				catch (\Exception $e) {
+					$success = false;
+				}
 			}
+
+			App::getOrm()->flush();
+			return $this->createJsonResponse(array('success' => true));
 		}
 
 		return $this->render('ReportBundle:Dashboard:edit.html.twig', array(
@@ -76,38 +121,21 @@ class DashboardController extends AbstractController
 	}
 
 	/**
-	 * Saves the dashboard state
+	 * Remove a dashboard
 	 */
-	public function saveDashboardStateAction($dashboard_id) {
+	public function deleteAction($dashboard_id)
+	{
+		try {
+			$dashboard     = $this->getDashboard($dashboard_id);
 
-		$request = $this->getRequest();
-
-		$success         = true;
-		$dashboard       = $this->getDashboard($dashboard_id);
-		$dashboard_state = json_decode($request->get('dashboard_state'), true);
-
-		// Save dashboard information
-		$dashboard->setNumberColumns($dashboard_state['number_columns']);
-		App::getOrm()->persist($dashboard);
-
-		// Save the widgets
-		foreach ($dashboard_state['widgets'] as $widget) {
-			// Get the widget and update it
-			try {
-				$dashboardStat = $this->getDashboardStat($widget['id']);
-
-				$dashboardStat->setGridSlots($widget['number_columns']);
-				$dashboardStat->setSlotNumber($widget['slot_number']);
-
-				App::getOrm()->persist($dashboardStat);
-			}
-			catch (\Exception $e) {
-				$success = false;
-			}
+			App::getOrm()->remove($dashboard);
+			App::getOrm()->flush();
 		}
-		App::getOrm()->flush();
+		catch (\Exception $e) {
+			die($e);
+		}
 
-		return $this->createJsonResponse(array('success' => $success));
+		return $this->redirectRoute('report_trend_index');
 	}
 
 	/**
@@ -116,63 +144,112 @@ class DashboardController extends AbstractController
 	public function ajaxDeleteWidgetAction($dashboard_id, $dashboard_stat_id)
 	{
 		$success = true;
-		
+
 		try {
 			$dashboard     = $this->getDashboard($dashboard_id);
 			$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
-	
+
 			App::getOrm()->remove($dashboardStat);
 			App::getOrm()->flush();
 		}
 		catch (\Exception $e) {
 			$success = false;
 		}
-		
+
 		return $this->createJsonResponse(array('success' => $success));
 	}
-
+	
 	/**
-	 * Create and fetch dashboard widget
+	 * Add a new stat to the dashboard
 	 */
-	public function ajaxCreateWidgetAction($dashboard_id, $stat_id)
+	public function dashboardStatNewAction($dashboard_id, $stat_id)
 	{
 		$dashboard     = $this->getDashboard($dashboard_id);
-		$stat      	   = $this->getStat($stat_id);
-		$dashboardStat = $this->getDashboard($dashboard_id);
-		
-		$dashboardStat = new ReportDashboardStat();
-		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		$stat          = $this->getStat($stat_id);
 
+		$dashboardStat = new ReportDashboardStat();
+		$dashboardStat->setReportDashboard($dashboard);
+		$dashboardStat->setStat($stat);
+		$dashboardStat->setTitle($stat->getTitle());
+		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
+
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
 				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
 				       ->getNextDashboardStatSlot($dashboard_id);
-
-				$dashboard_stat = new ReportDashboardStat();
-				$dashboard_stat->setReportDashboard($dashboard);
-				$dashboard_stat->setStat($stat);
-				$dashboard_stat->setSlotNumber($next_slot_number);
-		
-				App::getOrm()->persist($dashboard_stat);
+				       
+				$dashboardStat->setSlotNumber($next_slot_number);
+				
+				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
+
+				$widget = $this->getWidgetDetails($dashboardStat);
+
+				return $this->createJsonResponse(array('widget' => $widget));
+			}
+		}
+
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_new', array(
+			'dashboard_id' => $dashboard->getId(),
+			'stat_id' => $stat->getId(),
+		));
 		
-				$widget = $this->getWidgetDetails($dashboard_stat);
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard'  => $dashboard,
+			'stat'       => $stat,
+			'form'       => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_new_form',
+		));
+
+		return $this->createJsonResponse(array('html' => $html));
+	}
+
+
+	/**
+	 * Edit a dashboard stat
+	 */
+	public function dashboardStatEditAction($dashboard_id, $dashboard_stat_id)
+	{
+		$dashboardStat     = $this->getDashboardStat($dashboard_stat_id);
+		$dashboard = $dashboardStat->getReportDashboard();
+		$stat      = $dashboardStat->getStat();
 		
+		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
+		
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				App::getOrm()->persist($dashboardStat);
+				App::getOrm()->flush();
+
+				$widget = $this->getWidgetDetails($dashboardStat);
+
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
 		
-		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
-			'dashboard' => $dashboard,
-			'stat'		=> $stat,
-			'form'      => $form->createView(),
+		$form_route = $this->generateUrl('report_trend_dashboard_stat_edit', array(
+			'dashboard_id' => $dashboard->getId(),
+			'dashboard_stat_id' => $dashboardStat->getId(),
 		));
 		
+		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
+			'dashboard' => $dashboard,
+			'stat'      => $stat,
+			'form'      => $form->createView(),
+			'form_route' => $form_route,
+			'form_id'    => 'dashboard_widget_edit_form',
+		));
+
 		return $this->createJsonResponse(array('html' => $html));
 	}
-	
+
 	/**
 	 * Edit dashboard widget
 	 */
@@ -192,21 +269,21 @@ class DashboardController extends AbstractController
 
 				App::getOrm()->persist($dashboard_stat);
 				App::getOrm()->flush();
-		
+
 				$widget = $this->getWidgetDetails($dashboard_stat);
-		
+
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
-		
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'form'      => $form->createView(),
 		));
-		
+
 		return $this->createJsonResponse(array('html' => $html));
 	}
-	
+
 	/**
 	 * Get the Dashboard Widgets
 	 */
@@ -236,6 +313,9 @@ class DashboardController extends AbstractController
 		$view_class = $dashboard_stat->getViewClass();
 		$chart = new $view_class($dashboard_stat->getStat());
 
+		$title = $dashboard_stat->getDisplayTitle();
+		$title = strlen($title) ? $title : $dashboard_stat->getDefaultTitle();
+		
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
 			'chart_vendor'	=> $chart->getViewChartVendor(),
@@ -244,7 +324,7 @@ class DashboardController extends AbstractController
 			'slot_number'   => $dashboard_stat->getSlotNumber(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),
-				'title' => $stat->getTitle(),
+				'title' => $title,
 			),
 		);
 	}

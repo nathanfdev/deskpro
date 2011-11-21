@@ -3,7 +3,7 @@
 <div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h4>Thank you for rating our support</h4>
+			<h4>{{ phrase('user.tickets.feedback_thanks') }}</h4>
 		</div>
 
 		<div class="dp-box-content-wrapper">
@@ -11,16 +11,18 @@
 				{% if feedback.rating == 1 %}
 					<form action="{{ path('user_tickets_feedback_closeticket', {'ticket_ref': ticket.ref, 'message_id': message.id, 'close_win': 1}) }}">
 						<p>
-							Thanks, we appreciate your feedback!</p>
-							<button class="btn primary small" style="display: inline">I have got what I needed, close my ticket now</button>
+							{{ phrase('user.tickets.feedback_thanks_pos') }}
+							<button class="btn primary small" style="display: inline">{{ phrase('user.tickets.feedback_close_btn') }}</button>
 						</p>
 					</form>
 
-					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
+					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">{{ phrase('user.close_window') }}</button>
 				{% else %}
-					<p>Your feedback will be reviewed by the helpdesk managers. We hope we can do better in the future.</p>
+					<p>
+						{{ phrase('user.tickets.feedback_thanks_neg') }}
+					</p>
 
-					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
+					<button class="btn small" onclick="window.close();" style="margin-top: 10px;">{{ phrase('user.close_window') }}</button>
 				{% endif %}
 			</div>
 		</div>

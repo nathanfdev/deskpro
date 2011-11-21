@@ -128,7 +128,7 @@ class GenerateStatsFloodFill extends AbstractJob
 			$stat_value = new StatValue();
 			$stat_value->setStat($stat);
 		}
-		$stat_value->setValue($values['ungrouped']);
+		$stat_value->setValue($values['ungrouped'] + rand(0, 30));
 		$stat_value->setStatUnix($this->date_time->format('U'));
 		$this->orm->persist($stat_value);
 
@@ -145,7 +145,7 @@ class GenerateStatsFloodFill extends AbstractJob
 				$stat_value_group = new StatValueGroup();
 				$stat_value_group->setStatValue($stat_value);
 			}
-			$stat_value_group->setValue($grouped['value']);
+			$stat_value_group->setValue($grouped['value'] + rand(0, 20));
 			$stat_value_group->setGroupingId($grouped['grouping_id']);
 			$stat_value_group->setStatUnix($this->date_time->format('U'));
 			$this->orm->persist($stat_value_group);

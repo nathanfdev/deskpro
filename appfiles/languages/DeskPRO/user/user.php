@@ -1,10 +1,120 @@
 <?php return array(
 
+	'user.loading' => 'Loading',
+	'user.loading_saving' => 'Saving',
+	'user.loading_wait' => 'Please Wait',
+	'user.no_more_results' => 'There are no more results',
+	'user.more_results_btn' => 'More',
+	'user.cancel' => 'Cancel',
+	'user.close' => 'Close',
+	'user.close_window' => 'Close Window',
+	'user.find' => 'Find',
+	'user.continue' => 'Continue',
+	'user.label_sort_by' => 'Sort by',
+	'user.label_date' => 'Date',
+	'user.label_category' => 'Category',
+	'user.label_category_error' => 'Please choose a category',
+	'user.all' => 'All',
+
+	'user.content_articles' => 'Articles',
+	'user.content_ideas' => 'Ideas',
+	'user.content_downloads' => 'Downloads',
+	'user.content_news' => 'News',
+
+	'user.overlay_open_full' => 'Open full page',
+
 	'user.none' => 'None',
 	'user.department' => 'Department',
 	'user.product'    => 'Product',
 
+	'user.breadcrumb_helpdesk' => 'Helpdesk',
+	'user.breadcrumb_kb' => 'Knowledgebase',
+
 	'user.field_required' => 'Required',
 
 	'user.unassigned' => 'Unassigned',
+
+	'user.comments_count' => '1 Comment|{{count}} Comments',
+	'user.name_anon' => 'Anonymous',
+	'user.post_comment_btn' => 'Post Comment',
+	'user.label_logged_in_as' => 'Logged in as',
+	'user.label_email_address' => 'Email Address',
+
+	'user.rating_x_of_y_found_helpful' => '{{percent}}% of {{vote_count}} found this page helpful',
+	'user.marked_as_helpful' => 'You marked this page as helpful',
+	'user.marked_as_unhelpful' => 'You marked this page as unhelpful',
+	'user.set_as_helpful' => 'This page was helpful',
+	'user.set_as_unhelpful' => 'This page was unhelpful',
+
+	'user.related_articles' => 'Related Articles',
+	'user.related_downloads' => 'Related Downloads',
+	'user.related_news' => 'Related News',
+	'user.related_ideas' => 'Related Ideas',
+
+	'user.label_file_uploading' => 'Uploading:',
+	'user.upload_btn' => 'Upload',
+
+	'user.label_tagged_with' => 'Tagged with',
+	'user.welcome_back_guest' => 'Welcome back, guest',
+	'user.welcome_back_x' => 'Welcome back, {{name}}',
+	'user.login_link' => 'Log In',
+	'user.logout_link' => 'Log Out',
+	'user.register_link' => 'Sign Up',
+	'user.edit_my_profile' => 'Edit my profile',
+
+	'user.label_captcha' => 'Confirmation code',
+
+	'user.view_my_x_tickets' => 'View my ticket|View my {{count}} tickets',
+
+	'user.subscribed_to_page' => 'You are subscribed to this page.',
+	'user.unsubscribe_link' => 'Unsubscribe',
+	'user.subscribe_link' => 'Subscribe to changes made to this page',
+	'user.manage_all_subscriptions_link' => 'Manage all your subscriptions',
+
+	'user.search_did_you_find_it' => 'Did not find what you were looking for?',
+	'user.btn_create_ticket' => 'Create Ticket',
+	'user.btn_create_idea' => 'Create Idea',
+	'user.btn_create_chat' => 'Start Chat',
+
+	'user.page_prev' => '&larr; Prev',
+	'user.page_next' => 'Next  &rarr;',
+
+	'user.form_errors_correct' => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
+	'user.attachments_title' => 'Attachments',
+
+	'user.created_by_x' => 'Created by {{name}}',
+	'user.created_by_x_on_y' => 'Created by {{name}} on {{date}}',
+
+	'user.label_your_name' => 'Your name',
+	'user.label_your_email' => 'Your email address',
+	'user.label_display_name' => 'Display name',
+	'user.change_email' => 'Change email address',
+	'user.done_changing_email' => 'Done changing email address',
+	'user.choose_email' => 'Choose the email address you want to use',
+	'user.choose_email_new' => 'New email address',
+
+	'user.label_login_email' => 'Email',
+	'user.label_login_password' => 'Password',
+	'user.lost_password_link' => 'lost?',
+
+	'user.lost_password_explain' => 'Forgot your password? Fill in your email address above, and then click the button below.',
+	'user.lost_password_sent_explain' => 'If we have an account with this email address, then we have sent you instructions on how to reset your password.',
+	'user.lost_password_send_btn' => 'Send Reset Instructions',
+	'user.lost_password_back_btn' => 'Go back to the login form',
+
+	'user.powered_by' => 'Powered by DeskPRO customer service platform',
+
+	'user.login_error' => 'The email address or password you entered is invalid. Please try again.',
+	'user.login_if_already_reg_note' => 'If you are a registered user, please <a href="{{url}}" class="dp-inline-login-open">log in</a>.',
+	'user.form_fix_email' => 'Enter a valid email address',
+
+	'user.log_in_btn' => 'Log In',
+
+	'user.error_not_allowed_title' => 'You are not allowed to do that',
+	'user.error_not_allowed' => 'Sorry, the action you are trying to perform is not allowed.',
+	'user.error_not_allowed_help' => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',
+
+	'user.error_not_found_title' => 'Not Found',
+	'user.error_not_found' => 'The page you are looking for was not found.',
+
 );

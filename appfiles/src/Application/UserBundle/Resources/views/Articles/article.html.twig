@@ -5,7 +5,7 @@
 	<meta property="og:type" content="article" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.articles.section_name') }}</a></li>
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}

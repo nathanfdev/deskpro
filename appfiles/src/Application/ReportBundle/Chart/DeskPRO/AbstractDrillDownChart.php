@@ -79,4 +79,20 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 			return 0;
 		}
 	}
+	
+	/**
+	 * Is the chart ready to be rendered, ie do it have all the data it needs
+	 *
+	 * @var bool
+	 */
+	public function isChartRenderable()
+	{
+		$renderable = false;
+		
+		if (count($this->rows) > 0) {
+			$renderable = true;
+		}
+		
+		return $renderable;
+	}
 }

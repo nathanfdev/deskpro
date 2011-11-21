@@ -6,7 +6,7 @@
 <div class="register">
 
 <div class="page-title">
-	<h1>Register</h1>
+	<h1>{{ phrase('user.profile.register') }}</h1>
 </div>
 
 <form action="" method="post">
@@ -14,32 +14,32 @@
 <div class="input-form">
 	<table cellspacing="0" cellpadding="0" width="100%">
 		<tr>
-			<td width="160">Name</td>
+			<td width="160">{{ phrase('user.label_your_name') }}</td>
 			<td>
 				{{ form_widget(form.person.name) }}
 			</td>
 		</tr>
 		<tr>
-			<td width="160">Email Address</td>
+			<td width="160">{{ phrase('user.label_your_email') }}</td>
 			<td>
 				{{ form_widget(form.person.email) }}
 			</td>
 		</tr>
 		<tr>
-			<td width="160">Password</td>
+			<td width="160">{{ phrase('user.profile.label_password') }}</td>
 			<td>
 				{{ form_widget(form.person.password) }}
 			</td>
 		</tr>
 		<tr>
-			<td width="160">Repeat Password</td>
+			<td width="160">{{ phrase('user.profile.label_repeat_password') }}</td>
 			<td>
 				{{ form_widget(form.person.password2) }}
 			</td>
 		</tr>
 
 		<tr>
-			<td width="160">Confirmation Code</td>
+			<td width="160">{{ phrase('user.label_captcha') }}</td>
 			<td>
 				{% include 'UserBundle:Common:recaptcha.html.twig' %}
 			</td>
@@ -47,7 +47,7 @@
 
 		<tr class="foot">
 			<td colspan="2">
-				<button class="dp-button">Register</button>
+				<button class="dp-button">{{ phrase('user.profile.register_btn') }}</button>
 			</td>
 		</tr>
 	</table>

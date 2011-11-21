@@ -2,17 +2,22 @@
 
 namespace Application\ReportBundle\Chart;
 
+use Application\DeskPRO\Entity\Stat;
+
 class ChartFactory
 {
-	const LIMIT = 4;
+	const LIMIT = 6;
 
 	/**
 	 * Construct a chart based on its class and some data
 	 *
+	 * TODO: Should pass in series here, rather than trying to work it out
+	 *
 	 * @param string $chart_class The class of the chart to construct
 	 * @param array $data The raw data to give to the chart
+	 * @param Stat The Stat entity
 	 */
-	public static function getChart($chart_class, $data)
+	public static function getChart($chart_class, $data, Stat $stat)
 	{
 		$count = 0;
 
@@ -28,7 +33,9 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
 			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					$chart->addGraph($data_set['label'], $data_set['values']);
@@ -36,7 +43,18 @@ class ChartFactory
 					if (false === $series_set) {
 						// Set the series
 						foreach ($data_set['values'] as $time=>$value) {
-							$chart->addSeries($time);
+							switch ($stat->getRunFrequency()) {
+								case 'daily':
+									$formatted_series = date("j", strtotime($time));
+									break;
+								case 'monthly':
+									$formatted_series = date("M", strtotime($time));
+									break;
+								case 'yearly':
+									$formatted_series = date("Y", strtotime($time));
+									break;
+							}
+							$chart->addSeries($formatted_series);
 						}
 						$series_set = true;
 					}
@@ -55,6 +73,8 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\PieChart':
 				$chart = new $chart_class;
 
+				$chart->setFormatter($stat->getFormatter());
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					$value_sum = array_sum($data_set['values']);
@@ -73,26 +93,52 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
 				$chart = new $chart_class;
+				
+				$chart->setFormatter($stat->getFormatter());
+				
+				$chart->setDifferenceDirection($stat->getVariation());
 
 				// We can only compare one set of data, if there
 				// are others they are simply discarded
-				$data_set = array_shift($data);
-
-				$chart->addDataPoints($data_set['values']);
+				if (count($data)) {
+					$data_set = array_shift($data);
+					$chart->addDataPoints($data_set['values']);
+				}
 
 				break;
 
 			/**
 			 * DeskPRO - Simple Drilldown Chart
-			 * DeskPRO - Detailed Drilldown Chart
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart':
-			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
 				$chart = new $chart_class;
-
+				
+				$chart->setFormatter($stat->getFormatter());
+				
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);
 
+					$count++;
+					if ($count === self::LIMIT) {
+						break;
+					}
+				}
+
+				break;
+
+			/**
+			 * DeskPRO - Detailed Drilldown Chart
+			 */
+			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
+				$chart = new $chart_class;
+				
+				$chart->setFormatter($stat->getFormatter());
+				
+				$chart->setDifferenceDirection($stat->getVariation());
+				
+				foreach ($data as $data_set) {
+					$chart->addRow($data_set['label'], $data_set['values']);
+					
 					$count++;
 					if ($count === self::LIMIT) {
 						break;
@@ -106,5 +152,20 @@ class ChartFactory
 		}
 
 		return $chart;
+	}
+	
+	/**
+	 * Transform a chart class to its full screen view class
+	 */
+	public static function transformChartToFullScreen($chart_class)
+	{
+		switch ($chart_class) {
+			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
+				$chart_class = 'Application\ReportBundle\Chart\AmChart\LineChart';
+				break;
+		}
+		
+		
+		return $chart_class;
 	}
 }

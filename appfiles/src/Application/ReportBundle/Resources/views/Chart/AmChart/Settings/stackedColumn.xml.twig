@@ -3,6 +3,11 @@
 	<type>column</type>
 	<font>Tahoma</font>
 	<redraw>1</redraw>
+	<colors>{{ chart.getColorCodes|join(',') }}</colors>
+
+	<strings>
+		<no_data>{{ chart.getNoDataLabel }}</no_data>
+	</strings>
 
 	<column>
 		<type>stacked</type>
@@ -33,7 +38,8 @@
 	</values>
 
 	<balloon>
-		<text_color>000000</text_color>
+		<text_color>FFFFFF</text_color>
+		<text_size>16</text_size>
 	</balloon>
 
 	<graphs>
@@ -42,7 +48,7 @@
 				<type>column</type>
 				<title>{{ label|default('no group') }}</title>
 				<balloon_text>
-					<![CDATA[{{ label|default('no group') }}: {value}]]>
+					<![CDATA[{{ label|default('no group') }}: {value}{{ chart.getDisplayUnits }}]]>
 				</balloon_text>
 			</graph>
 		{% endfor %}

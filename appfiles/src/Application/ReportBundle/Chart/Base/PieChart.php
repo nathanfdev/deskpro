@@ -63,4 +63,16 @@ abstract class PieChart extends AbstractChart
 	{
 		return $this->slices;
 	}
+	
+	/**
+	 * Is the chart ready to be rendered, ie do it have all the data it needs
+	 *
+	 * @var bool
+	 */
+	public function isChartRenderable()
+	{
+		$renderable = true;
+		
+		return $renderable;
+	}
 }

@@ -32,6 +32,14 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		this.title   = options.title || '';
 	},
 
+	// Update the widget data
+	updateData: function(options) {
+		
+		this.stat_id = options.stat_id || '';
+		this.title   = options.title || '';
+		
+	},
+	
 	// Setup the UI handlers for edit, close, etc
 	addUIHandlers: function() {
 		var self = this;
@@ -41,12 +49,15 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 		this.$widget.find('.edit').on('click', function() {
 			$.ajax({
-				url: DeskPRO_Window.getUrl('report_dashboard_ajaxeditwidget', {dashboard_id: self.dashboard.dashboard_id, dashboard_stat_id: self.widget_id}),
+				url: DeskPRO_Window.getUrl('report_trend_dashboard_stat_edit', {dashboard_id: self.dashboard.dashboard_id, dashboard_stat_id: self.widget_id}),
 				type: 'GET',
 				dataType: 'json',
 				success: function(data) {
 					// Show the edit overlay
 					self.dashboard.openOverlay(data.html);
+					
+					var form = $('#dashboard_widget_edit_form');
+					self.dashboard.saveEditWidget(form);	
 				}
 			});
 
@@ -55,6 +66,11 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 		this.$widget.find('.delete').on('click', function() {
 			self.dashboard.deleteWidget(self.element_id);
+			return false;
+		});
+		
+		this.$widget.find('.toolbar-title').on('click', function() {
+			self.dashboard.showChartFullscreen(self);
 			return false;
 		});
 

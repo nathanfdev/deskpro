@@ -33,7 +33,9 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			escapeClose: true,
 			modalClickClose: true,
 			objectGroup: 'default',
-			addClose: true
+			addClose: true,
+			fullScreen: false,	// Fullscreen overlay, ignores maxHeight, maxWidth options
+			fullScreenMargin: '10px'
 		};
 
 		this.isThisDestroyed = false;
@@ -129,6 +131,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.elements.modal.fadeIn(200);
 
+		var topOffset = $(document).scrollTop();
+
 		if (this.options.contentMethod == 'iframe') {
 
 			var w = $(window).width() - 250;
@@ -142,7 +146,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var x = ($(window).width() - this.elements.wrapperOuter.outerWidth()) / 2;
 			var y = ($(window).height() - this.elements.wrapperOuter.outerHeight()) / 2;
 
-			this.elements.wrapperOuter.css({'left': x, 'top': y});
+			this.elements.wrapperOuter.css({'left': x, 'top': y+topOffset});
 
 		} else {
 			var w = this.elements.wrapperOuter.outerWidth();
@@ -154,16 +158,28 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var topForCenter = (pageH / 2) - (h / 2);
 
 			this.elements.wrapperOuter.css({
-				'top': topForCenter,
+				'top': topForCenter+topOffset,
 				'left': leftForCenter
 			});
 		}
 
-		this.elements.wrapperOuter.css({
-			'z-index': (zindex ? zindex+1 : ''),
-			'position': 'absolute',
-			'left': leftForCenter
-		});
+		if (true == this.getOption('fullScreen')) {
+			this.elements.wrapperOuter.css({
+				'z-index': (zindex ? zindex+1 : ''),
+				'position': 'fixed',
+				'left': this.getOption('fullScreenMargin'),
+				'right': this.getOption('fullScreenMargin'),
+				'top': this.getOption('fullScreenMargin'),
+				'bottom': this.getOption('fullScreenMargin')
+			});
+		}
+		else {
+			this.elements.wrapperOuter.css({
+				'z-index': (zindex ? zindex+1 : ''),
+				'position': 'absolute',
+				'left': leftForCenter
+			});
+		}
 		this.elements.wrapperOuter.fadeIn(450, (function() {
 			this.fireEvent('overlayOpened', { overlay: this });
 		}).bind(this));
@@ -174,18 +190,20 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 * Recalculate positions
 	 */
 	reposition: function() {
-		var w = this.elements.wrapperOuter.outerWidth();
-		var pageW = $(window).width();
-		var leftForCenter = (pageW / 2) - (w / 2);
-
-		var h = this.elements.wrapperOuter.outerHeight();
-		var pageH = $(window).height();
-		var topForCenter = (pageH / 2) - (h / 2);
-
-		this.elements.wrapperOuter.css({
-			'top': topForCenter,
-			'left': leftForCenter
-		});
+		if (false == this.getOption('fullScreen')) {
+			var w = this.elements.wrapperOuter.outerWidth();
+			var pageW = $(window).width();
+			var leftForCenter = (pageW / 2) - (w / 2);
+	
+			var h = this.elements.wrapperOuter.outerHeight();
+			var pageH = $(window).height();
+			var topForCenter = (pageH / 2) - (h / 2);
+	
+			this.elements.wrapperOuter.css({
+				'top': topForCenter,
+				'left': leftForCenter
+			});
+		}
 	},
 
 	recalcForResize: function() {
@@ -252,7 +270,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		this.elements.wrapperOuter = $('<div class="deskpro-overlay-outer '+this.options.customClassname+' ' + this.options.classname + '" style="display:none" />');
 		this.elements.wrapperOuter.appendTo('body');
 
-		this.elements.wrapper = $('<div class="deskpro-overlay '+this.options.customClassname+'">');
+		var overlayStyles = "";
+		if (true == this.getOption('fullScreen')) {
+			overlayStyles = "height: 100%";
+		}
+		this.elements.wrapper = $('<div class="deskpro-overlay '+this.options.customClassname+'" style="'+overlayStyles+'">');
 		this.elements.wrapper.appendTo(this.elements.wrapperOuter);
 
 		switch (this.options.contentMethod) {

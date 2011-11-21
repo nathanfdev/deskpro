@@ -1,13 +1,13 @@
 <div id="dp_userbar">
 	{% if app.user.is_guest %}
-		Welcome back, guest &middot;
-		<a href="{{ path('user_login') }}" id="dp_login_link">Log In</a> &middot; <a href="{{ path('user_register') }}">Sign Up</a>
+		{{ phrase('user.welcome_back_guest') }} &middot;
+		<a href="{{ path('user_login') }}" id="dp_login_link">{{ phrase('user.login_link') }}</a> &middot; <a href="{{ path('user_register') }}">{{ phrase('user.register_link') }}</a>
 	{% else %}
-		Welcome back, {{ app.user.display_name }} &middot;
+		{{ phrase('user.welcome_back_x', {'name': app.user.display_name}) }} &middot;
 		{% if app.user.HelpdeskUser.ticket_count %}
-			<a href="{{ path('user_tickets') }}">View my {{ app.user.HelpdeskUser.ticket_count }} Tickets</a> &middot;
+			<a href="{{ path('user_tickets') }}">{{ phrase('user.view_my_x_tickets', {'count': app.user.HelpdeskUser.ticket_count}) }}</a> &middot;
 		{% endif %}
-		<a href="{{ path('user_profile') }}">Edit My Profile</a> &middot;
-		<a href="{{ path('user_logout', {'auth': security_token('user_logout') }) }}">Log Out</a>
+		<a href="{{ path('user_profile') }}">{{ phrase('user.edit_my_profile') }}</a> &middot;
+		<a href="{{ path('user_logout', {'auth': security_token('user_logout') }) }}">{{ phrase('user.logout_link') }}</a>
 	{% endif %}
 </div>
