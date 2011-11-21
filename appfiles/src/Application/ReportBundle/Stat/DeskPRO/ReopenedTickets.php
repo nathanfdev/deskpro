@@ -27,7 +27,7 @@ class ReopenedTickets extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		// Need to query the ticket log for this
-		$query = new QueryBuilder();
+		$query = $this->createQuery();
 
 		$this->addQuery($query);
 	}

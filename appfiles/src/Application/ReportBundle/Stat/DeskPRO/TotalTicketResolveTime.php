@@ -26,26 +26,56 @@ class TotalTicketResolveTime extends AbstractTicket
 
 	public function buildConceptQueries()
 	{
-		$query = new QueryBuilder();
-		$query->select('COUNT(t.id) AS ticket_count')
+		// Get the total time taken to resolve a ticket
+		$query = $this->createQuery()
+		      ->select('SUM(UNIX_TIMESTAMP(t.date_resolved) - UNIX_TIMESTAMP(t.date_created)) AS resolve_time')
 		      ->from('tickets', 't')
-		      ->addWhere("(t.status = 'open' OR t.status = 'awaiting_agent')");
+		      ->where("t.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
+		$this->addQuery('ticket_resolve_time', $query);
 
-		$this->addQuery($query);
+		// Get the number of tickets resolved
+		$query = $this->createQuery()
+		      ->select('COUNT(t.id) as ticket_count')
+		      ->from('tickets', 't')
+		      ->where("t.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
+
+		$this->addQuery('tickets_resolved', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return rand(0, 130000);
+		$resolveTime 	= $result['ticket_resolve_time'][0]['resolve_time'];
+		$resolved 	= $result['tickets_resolved'][0]['ticket_count'];
+
+		return ($resolved != 0) ? $resolveTime / $resolved : 0;
 	}
 
 	public function processGroupedResults($results)
 	{
+		// Get the Ids and result of the resolved tickets, we use this
+		// array as a lookup based on the grouping_id
+		$resultsResolved = array();
+		foreach ($results['tickets_resolved'] as $result) {
+			$resultsResolved[$result[str_replace('.', '_', $this->grouping[0])]] = $result['ticket_count'];
+		}
+
 		$processedResults = array();
 
-		foreach ($results as $result) {
+		foreach ($results['ticket_resolve_time'] as $result) {
+			$groupingId = $result[str_replace('.', '_', $this->grouping[0])];
+
+			// Check to see if any tickets were resolved for this grouping_id
+			$resolvedCount = 0;
+			if (isset($resultsResolved[$groupingId])) {
+				$resolvedCount = $resultsResolved[$groupingId];
+			}
+
 			$processedResults[] = array(
-				'value'       => rand(0, 130000),
+				'value'       => ($resolvedCount != 0) ? $result['resolve_time'] / $resolvedCount : 0,
 				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
