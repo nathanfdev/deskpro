@@ -246,6 +246,14 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+{# To render the form inputs: #}
+{% for f in custom_fields %}
+    <dt class="type-labels">{{ f.title }}</dt>
+    <dd class="people-tags tags-wrap">
+        {{ render_custom_field_form(f) }}
+    </dd>
+{% endfor %}
+
         <div class="foot">
             <button class="submit-trigger clean-white">Create Deal</button>
         </div>
@@ -276,7 +284,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</li>
 
 				{% for agent in agents %}
-					{% if agent.id != deal.person.id %}
+					{% if agent.id != person.id %}
 						<li {% if deal.assigned_agent.id == agent.id %}class="on"{% endif %}>
 							<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if deal.assigned_agent.id == agent.id %}checked="checked"{% endif %} />
 							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>

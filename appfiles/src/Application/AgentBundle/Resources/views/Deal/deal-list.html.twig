@@ -1,8 +1,8 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
     pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DealList';
-    //pageMeta.search_type = '{#{ search_type }#}';
-    //pageMeta.search_category = '{#{ search_category }#}';
+    pageMeta.owner_type = '{{ owner_type }}';
+    pageMeta.deal_status = '{{ deal_status }}';
 
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';

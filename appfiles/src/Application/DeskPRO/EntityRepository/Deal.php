@@ -122,7 +122,7 @@ class Deal extends EntityRepository
      * @return Array
      */
 
-    public function filterDealsForPerson(Entity\Person $person, $status = 0, $deal_type_id = null) {
+    public function filterDealsForPerson(Entity\Person $person, $status = 0, $deal_type_id = null, $order_by = 'date_created') {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('d')
                 ->from('DeskPRO:Deal', 'd')
@@ -134,9 +134,7 @@ class Deal extends EntityRepository
         if ($status >= 0) {
             $qb->andWhere('d.status = :status');
             $qb->setParameter('status', $status);
-        }
-        else
-        {
+        }else{
             $qb->andWhere('d.status > :status');
             $qb->setParameter('status', 0);
         }
@@ -146,7 +144,23 @@ class Deal extends EntityRepository
             $qb->setParameter('deal_type_id', $deal_type_id);
         }
 
-        $query = $qb->getQuery(); //print $query->getSQL();
+        switch($order_by)
+        {
+            case 'date_created':
+                $qb->orderBy('d.date_created');
+                break;
+            case 'title':
+                $qb->orderBy('d.title');
+                break;
+            case 'deal_size':
+                $qb->orderBy('d.deal_value');
+                break;
+            case 'deal_type':
+                $qb->orderBy('dt.name');
+                break;                
+        }
+
+        $query = $qb->getQuery(); //print $query->getSQL(); exit;
         return $query->getResult();
     }
 
@@ -157,7 +171,7 @@ class Deal extends EntityRepository
      * @return Array
      */
 
-    public function filterDealsForOther(Entity\Person $person, $status = 0, $deal_type_id = null) {
+    public function filterDealsForOther(Entity\Person $person, $status = 0, $deal_type_id = null, $order_by = 'date_created') {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('d')
                 ->from('DeskPRO:Deal', 'd')
@@ -169,9 +183,7 @@ class Deal extends EntityRepository
         if ($status >= 0) {
             $qb->andWhere('d.status = :status');
             $qb->setParameter('status', $status);
-        }
-        else
-        {
+        }else{
             $qb->andWhere('d.status > :status');
             $qb->setParameter('status', 0);
         }
@@ -179,6 +191,22 @@ class Deal extends EntityRepository
         if ($deal_type_id) {
             $qb->andWhere('dt.id = :deal_type_id');
             $qb->setParameter('deal_type_id', $deal_type_id);
+        }
+
+        switch($order_by)
+        {
+            case 'date_created':
+                $qb->orderBy('d.date_created');
+                break;
+            case 'title':
+                $qb->orderBy('d.title');
+                break;
+            case 'deal_size':
+                $qb->orderBy('d.deal_value');
+                break;
+            case 'deal_type':
+                $qb->orderBy('dt.name');
+                break;
         }
 
         $query = $qb->getQuery(); //print $query->getSQL();

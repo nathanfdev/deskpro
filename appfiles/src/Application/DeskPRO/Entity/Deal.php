@@ -194,9 +194,14 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $_label_manager = null;
 
     /**
-     * @ORM_Mapping\OneToMany(targetEntity="DealAttachment", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\OneToMany(targetEntity="DealAttachment", mappedBy="deal", cascade={"persist", "remove", "merge"})
      */
     protected $attachments;
+
+    /**
+     * @ORM_Mapping\OneToMany(targetEntity="CustomDataDeal", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    protected $custom_data;
 
     /**
      * Creates a new deal
@@ -210,6 +215,7 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         $this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();                
         $this->deal_mapper   = new \Doctrine\Common\Collections\ArrayCollection();
         $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 
 
         $this->date_created = new \DateTime();

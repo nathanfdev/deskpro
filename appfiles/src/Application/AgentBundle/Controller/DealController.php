@@ -34,17 +34,23 @@ class DealController extends AbstractController
     public function newAction()
     {
 
+        $deal = new Deal();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
+
+        $field_manager = $this->container->getSystemService('deal_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($deal); 
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
            'deal_stage' => $deal_stage,
            'agents' => $agents,
            'person' => $this->person,
-           'deal_currency' => $deal_currency
+           'deal_currency' => $deal_currency,
+           'custom_fields' => $custom_fields
+
 
         ));
     }
@@ -125,37 +131,44 @@ class DealController extends AbstractController
     {
         $deal_repository = $this->em->getRepository('DeskPRO:Deal');
         $person = $this->person;
+        $order_by = $this->in->getString('order_by');
+        $group_by = $this->in->getString('group_by');
 
         if($owner_type == 'my')
         {
             if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForPerson($person, 0, $deal_type_id);
+                $deals = $deal_repository->filterDealsForPerson($person, 0, $deal_type_id, $order_by);
             }
             else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForPerson($person, -1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForPerson($person, -1, $deal_type_id, $order_by);
             }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForPerson($person, 1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForPerson($person, 1, $deal_type_id, $order_by);
             }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForPerson($person, 2, $deal_type_id);
+                $deals = $deal_repository->filterDealsForPerson($person, 2, $deal_type_id, $order_by);
             }
 
         }else if($owner_type == 'other'){
 
             if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id, $order_by);
             }
             else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id, $order_by);
             }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id, $order_by);
             }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id);
+                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id, $order_by);
             }
         }
 
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
         return $this->render($tpl, array(
-            'deals' => $deals
+            'deals' => $deals,
+            'owner_type' => $owner_type,
+            'deal_status' => $deal_status,
+            'deal_type_id' => $deal_type_id,
+            'order_by' => $order_by,
+            'group_by' => $group_by,
         ));
     }
 
