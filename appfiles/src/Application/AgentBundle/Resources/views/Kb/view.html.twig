@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	This article has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
+	{{ phrase('agent.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.undelete') }}</button>
 </div>
 
 {% if article.status_code == "hidden.validating" %}
@@ -51,11 +51,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container">
 	<header>
-		<h4>Properties</h4>
+		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
-			<dt class="type-labels">Labels:</dt>
+			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="kb-tags tags-wrap">
 				<ul>
 					{% for label in article.labels %}
@@ -63,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% endfor %}
 				</ul>
 			</dd>
-			<dt class="">Categories</dt>
+			<dt class="">{{ phrase('agent.categories') }}</dt>
 			<dd>
 				<ul id="{{baseId}}_categories" class="add-remove-list">
 					{% for cat in article.categories %}
@@ -74,13 +74,13 @@ pageMeta.baseId = '{{ baseId }}';
 						</li>
 					{% endfor %}
 					<li class="add">
-						<span class="add">add</span>
-						Add Category
+						<span class="add"></span>
+						{{ phrase('agent.add_category') }}
 					</li>
 				</ul>
 			</dd>
 
-			<dt class="">Products</dt>
+			<dt class="">{{ phrase('agent.products') }}</dt>
 			<dd>
 				<ul id="{{baseId}}_products" class="add-remove-list">
 					{% for prod in article.products %}
@@ -91,34 +91,34 @@ pageMeta.baseId = '{{ baseId }}';
 						</li>
 					{% endfor %}
 					<li class="add">
-						<span class="add">add</span>
-						Add Product
+						<span class="add"></span>
+						{{ phrase('agent.add_product') }}
 					</li>
 				</ul>
 			</dd>
 
-			<dt>Rating</dt>
+			<dt>{{ phrase('agent.label_rating') }}</dt>
 			<dd>
 				{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
 				<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
 			</dd>
 
 			{% if article.date_created == article.date_published %}
-				<dt>Created and published:</dt>
+				<dt>{{ phrase('agent.created_and_published') }}:</dt>
 				<dd>
 					<time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
 				</dd>
 			{% else %}
-				<dt>Created:</dt>
+				<dt>{{ phrase('agent.date_created') }}:</dt>
 				<dd>
 					<time class="timeago" datetime="{{article.date_created|date('c')}}"></time> by {{ article.person.display_name }} at <time>{{article.date_created|date('H:ia M j Y')}}</time>
 				</dd>
 
 				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
 				{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
-					<dt>Published:</dt>
+					<dt>{{ phrase('agent.date_published') }}:</dt>
 					<dd>
-						Published <time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>
+						<time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>
 					</dd>
 				{% endif %}
 			{% endif %}
@@ -137,9 +137,9 @@ pageMeta.baseId = '{{ baseId }}';
 				<br />
 
 				<ul class="end-action-menu" style="display: none">
-					<li data-action="unpublish">Unpublish</li>
-					<li data-action="delete">Delete</li>
-					<li data-action="archive">Archive</li>
+					<li data-action="unpublish">{{ phrase('agent.unpublish') }}</li>
+					<li data-action="delete">{{ phrase('agent.delete') }}</li>
+					<li data-action="archive">{{ phrase('agent.action_archive') }}</li>
 				</ul>
 			</dd>
 
@@ -168,32 +168,32 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>Save</span></button>
+				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields">
-				<button class="clean-white edit-fields-trigger"><span>Edit Properties</span></button>
-				<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
-				<button class="clean-white permalink">Copy Permalink</button>
-				<button class="clean-white view-user-interface">View in user interface</button>
+				<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>
+				<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
+				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 			</div>
 		</div>
 
 		<ul id="{{baseId}}_more_menu" style="display: none;">
-			<li data-op="delete">Delete</li>
-			<li data-op="print">Print</li>
+			<li data-op="delete">{{ phrase('agent.delete') }}</li>
+			<li data-op="print">{{ phrase('agent.print') }}</li>
 		</ul>
 	</section>
 </div>
 
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
-		<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>Article</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>Comments (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>Revisions</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .kb-related-content"><span>Related Content</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>Search</span></li>
+		<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.label_article') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>{{ phrase('agent.label_revisions') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .kb-related-content"><span>{{ phrase('agent.label_related_content') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
 	</ul>
-	<button class="clean-white small kb-editor-edit" style="float:right; margin: 6px 10px 0 0;">Edit</button>
+	<button class="clean-white small kb-editor-edit" style="float:right; margin: 6px 10px 0 0;">{{ phrase('agent.edit') }}</button>
 </nav>
 
 {# Tab Contents #}
@@ -231,10 +231,10 @@ pageMeta.baseId = '{{ baseId }}';
 							<textarea style="width:98%; height: 80px;"></textarea>
 							<div style="text-align:center; margin-top: 9px;">
 								<div class="loading-off">
-									<button class="dp-button x-small">Add Comment</button>
+									<button class="dp-button x-small">{{ phrase('agent.add_comment') }}</button>
 								</div>
 								<div class="loading-on" style="display:none">
-									Saving ...
+									{{ phrase('agent.loading_saving') }}
 								</div>
 							</div>
 						</p>
@@ -261,7 +261,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
 		<div class="tags-wrap sticky-search-words">
 			<dl class="table-list">
-				<dt class="type-labels">Search Words</dt>
+				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
 				<dd>
 					<ul>
 						{% for word in sticky_search_words %}
@@ -269,7 +269,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% endfor %}
 					</ul>
 					<div class="explain">
-						When a user searches for any of these words, this page will always be listed in their top results.
+						{{ phrase('agent.publish.search_sticky_words_explain') }}
 					</div>
 				</dd>
 			</dl>
@@ -316,13 +316,13 @@ pageMeta.baseId = '{{ baseId }}';
 		{% endfor %}
 	{% endif %}
 {% endmacro %}
-{{ optionbox.start('Add Category', {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.start(phrase('agent.add_category'), {'id': baseId ~ '_cat_ob'}) }}
 	{{ optionbox.section_start('', 'category') }}
 		{% for cat in article_categories %}
 			{{ _self.category_row(cat, 0) }}
 		{% endfor %}
 	{{ optionbox.section_end() }}
-{{ optionbox.end('Add Category') }}
+{{ optionbox.end(phrase('agent.add_category')) }}
 
 {# scroll containers #}
 </div></div></div></div>

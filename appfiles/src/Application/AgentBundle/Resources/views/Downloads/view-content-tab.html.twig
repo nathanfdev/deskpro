@@ -20,7 +20,8 @@
 		<div class="download-editor">
 			{% if state.download.content %}
 				<div class="revert-message-notice">
-					Unsaved changes were restored. <button class="revert-default">Discard and revert to default</button>
+					{{ phrase('agent.publish.restored_unsaved_changes') }}
+					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 					<textarea class="edit-content-field-default" style="display: none;">{{download.content}}</textarea>
 				</div>
@@ -29,10 +30,10 @@
 
 			<br />
 
-			Upload a new file to replace the old one:
-			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+			{{ phrase('agent.publish.download_replace_file') }}:
+			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.upload') }}</button>
 			<script class="template-upload" type="text/x-jquery-tmpl">
-				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">{{ phrase('agent.cancel') }}</button></span></li>
 			</script>
 			<script class="template-download" type="text/x-jquery-tmpl">
 				<li class="uploaded">
@@ -45,8 +46,8 @@
 
 			<br />
 
-			<button class="dp-button editor-save-trigger small">Save</button>
-			<button class="dp-button editor-cancel-trigger small">Cancel</button>
+			<button class="dp-button editor-save-trigger small">{{ phrase('agent.save') }}</button>
+			<button class="dp-button editor-cancel-trigger small">{{ phrase('agent.cancel') }}</button>
 		</div>
 	</div>
 </div>

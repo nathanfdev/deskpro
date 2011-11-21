@@ -12,7 +12,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 	<table width="100%">
 		<thead>
 			<tr>
-				<th>Ticket Fitlers</th>
+				<th>{{ phrase('agent.settings.title_filters') }}</th>
 				<th width="50"></th>
 			</tr>
 		</thead>
@@ -29,7 +29,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="2">You have not defiend any custom filters.</td>
+					<td colspan="2">{{ phrase('agent.settings.no_filters') }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

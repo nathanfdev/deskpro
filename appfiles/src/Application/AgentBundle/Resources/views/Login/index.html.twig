@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Log In</title>
+	<title>{{ phrase('agent.login.login') }}</title>
 	<script type="text/javascript">
 	if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
 	</script>
@@ -107,7 +107,7 @@
 <div id="login_wrapper">
 	<div id="login_box">
 		<header>
-			<h1>Log In</h1>
+			<h1>{{ phrase('agent.login.login') }}</h1>
 		</header>
 		<article>
 			<input type="hidden" name="agent_login" value="1" />
@@ -115,22 +115,22 @@
 				<input type="hidden" name="return" value="{{return}}" />
 			{% endif %}
 			{% if app.session.hasFlash('login_failed') %}
-				<p class="error">Invalid login. Please try again.</p>
+				<p class="error">{{ phrase('agent.login.login_failed') }}</p>
 			{% endif %}
 
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td>Email:</td>
+					<td>{{ phrase('agent.login.label_email') }}:</td>
 					<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
 				</tr>
 				<tr>
-					<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
+					<td>{{ phrase('agent.login.label_password') }} <small>(<a href="{{ path('user_login_resetpass') }}">{{ phrase('agent.login.lost_link') }}</a>)</small>:</td>
 					<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
 				</tr>
 			</table>
 		</article>
 		<footer>
-			<button id="login_btn" tabindex="3">Log In</button>
+			<button id="login_btn" tabindex="3">{{ phrase('agent.login.login') }}</button>
 		</footer>
 	</div>
 </div>

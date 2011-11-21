@@ -20,11 +20,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 
 <div class="delete-notice" {% if idea.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	This idea has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
+	{{ phrase('agent.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.undelete') }}</button>
 </div>
 
 <div class="spam-notice" {% if idea.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
-	This idea has been marked as spam. <button class="clean-gray xxx-small unspam">Unspam</button>
+	{{ phrase('agent.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.unspam') }}</button>
 </div>
 
 {% if idea.status_code == "hidden.validating" %}
@@ -38,27 +38,27 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="meta-line">
 		<div class="status the-status idea-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
 			{% if idea.status == 'new' %}
-				New
+				{{ phrase('agent.ideas.status_active') }}
 			{% elseif idea.status == 'active' %}
-				Active: {{ idea.status_category.title }}
+				{{ phrase('agent.ideas.status_active') }}: {{ idea.status_category.title }}
 			{% elseif idea.status == 'closed' %}
-				Closed: {{ idea.status_category.title }}
+				{{ phrase('agent.ideas.status_closed') }}: {{ idea.status_category.title }}
 			{% else %}
-				Hidden
+				{{ phrase('agent.ideas.status_hidden') }}
 			{% endif %}
 		</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>Category: <span id="{{baseId}}_cat_label">{{ idea.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.category') }}: <span id="{{baseId}}_cat_label">{{ idea.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
 
 <div class="profile-box-container">
 	<header>
-		<h4>Properties</h4>
+		<h4>{{ phrase('agent.properties') }}</h4>
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
-			<dt class="type-labels">Labels:</dt>
+			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="idea-tags tags-wrap">
 				<ul>
 					{% for label in idea.labels %}
@@ -67,13 +67,13 @@ pageMeta.baseId = '{{ baseId }}';
 				</ul>
 			</dd>
 
-			<dt>Votes:</dt>
+			<dt>{{ phrase('agent.votes') }}:</dt>
 			<dd>
 				<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes</span>
 				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 
-			<dt>Submitted:</dt>
+			<dt>{{ phrase('agent.author') }}:</dt>
 			<dd>
 				By {% for author in idea.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
 				on {{ idea.date_created|date('M d Y') }}
@@ -91,15 +91,15 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>Save</span></button>
+				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
-				<button class="clean-white edit-fields-trigger"><span>Edit Properties</span></button>
-				<button class="clean-white delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
-				<button class="clean-white spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}>Spam</button>
-				<button class="clean-white merge">Merge</button>
-				<button class="clean-white permalink">Copy Permalink</button>
-				<button class="clean-white view-user-interface">View in user interface</button>
+				<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>
+				<button class="clean-white delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				<button class="clean-white spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.mark_spam') }}</button>
+				<button class="clean-white merge">{{ phrase('agent.merge') }}</button>
+				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
+				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 			</div>
 		</div>
 	</section>
@@ -107,11 +107,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab"><a>Description</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>Comments (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_revs"><a>Revisions</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_"><a>Related Content</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab"><a>Search</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab"><a>{{ phrase('agent.label_description') }}</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_revs"><a>{{ phrase('agent.label_revisions') }}</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_"><a>{{ phrase('agent.label_related_content') }}</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab"><a>{{ phrase('agent.label_search') }}</a></li>
 	</ul>
 </nav>
 
@@ -149,14 +149,14 @@ pageMeta.baseId = '{{ baseId }}';
 						<p>
 							<textarea style="width:98%; height: 80px;"></textarea><Br />
 							<label>
-								<input type="checkbox" name="agent_comment" value="1" id="{{baseId}}_agent_comment_ck" /> Add as an agent-only comment
+								<input type="checkbox" name="agent_comment" value="1" id="{{baseId}}_agent_comment_ck" /> {{ phrase('agent.add_as_agent_comment') }}
 							</label>
 							<div style="text-align:center; margin-top: 9px;">
 								<div class="loading-off">
-									<button class="dp-button x-small">Add Comment</button>
+									<button class="dp-button x-small">{{ phrase('agent.add_comment') }}</button>
 								</div>
 								<div class="loading-on" style="display:none">
-									Saving ...
+									{{ phrase('agent.loading_saving') }}
 								</div>
 							</div>
 						</p>
@@ -182,14 +182,14 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab: Search #}
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item">
 		<div class="tags-wrap sticky-search-words">
-			<span class="tag-icon with-label">Search Words</span>
+			<span class="tag-icon with-label">{{ phrase('agent.publish.sticky_words_title') }}</span>
 			<ul>
 				{% for word in sticky_search_words %}
 					<li><span>{{word}}</span></li>
 				{% endfor %}
 			</ul>
 			<div class="explain">
-				When a user searches for any of these words, this page will always be listed in their top results.
+				{{ phrase('agent.publish.search_sticky_words_explain') }}
 			</div>
 		</div>
 
@@ -213,7 +213,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>New</li>
+	>{{ phrase('agent.ideas.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
@@ -230,7 +230,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>Closed</li>
+	>{{ phrase('agent.ideas.status_closed') }}</li>
 	{% for cat in closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -244,11 +244,11 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_start('', 'status') }}
 		<li class="top parent-option item-new" data-item-id="new" data-full-title="New">
 			<input type="radio" name="status" value="new" />
-			<label>New</label>
+			<label>{{ phrase('agent.ideas.status_new') }}</label>
 		</li>
 		<li class="top parent-option item-active" data-item-id="active" data-full-title="Active">
 			<input type="radio" name="status" value="active" />
-			<label>Active</label>
+			<label>{{ phrase('agent.ideas.status_active') }}</label>
 		</li>
 		{% for cat in active_status_cats %}
 			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="Active: {{ cat.title }}">
@@ -259,7 +259,7 @@ pageMeta.baseId = '{{ baseId }}';
 		{% endfor %}
 		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="Closed">
 			<input type="radio" name="status" value="closed" />
-			<label>Closed</label>
+			<label>{{ phrase('agent.ideas.status_closed') }}</label>
 		</li>
 		{% for cat in closed_status_cats %}
 			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="Closed: {{ cat.title }}">
@@ -269,9 +269,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</li>
 		{% endfor %}
 	{{ optionbox.section_end() }}
-{{ optionbox.end('Set Status') }}
+{{ optionbox.end(phrase('agent.set_status')) }}
 
-{{ optionbox.category_ob(idea_categories, 'Idea Category', 'Apply', {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(idea_categories, 'Idea Category', phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

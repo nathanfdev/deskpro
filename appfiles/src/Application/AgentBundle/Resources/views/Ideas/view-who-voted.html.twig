@@ -1,27 +1,27 @@
 <div class="overlay-title">
-	<h4>Who Voted</h4>
+	<h4>{{ phrase('agent.publish.who_voted') }}</h4>
 </div>
 
 <div class="overlay-content">
 	<div class="who-voted-controls">
 		<label>
 			<input type="checkbox" class="show-people" value="1" checked="checked" />
-			Show people and contacts
+			{{ phrase('agent.publish.who_voted_show_people') }}
 		</label>
 		&nbsp;&nbsp;
 		<label>
 			<input type="checkbox" class="show-guests" value="1" checked="checked" />
-			Show guests
+			{{ phrase('agent.publish.who_voted_show_guests') }}
 		</label>
 	</div>
-	
+
 	<div class="inner-box-tab-content box-list no-pad">
 	<table class="list general who-voted do-show-people do-show-guests" cellspacing="0" width="100%">
 		<thead>
 			<tr>
-				<th>User</th>
-				<th>Votes</th>
-				<th width="100">Date</th>
+				<th>{{ phrase('agent.publish.who_voted') }}</th>
+				<th>{{ phrase('agent.votes') }}</th>
+				<th width="100">{{ phrase('agent.date') }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -47,7 +47,7 @@
 			{% else %}
 				<tr>
 					<td colspan="3" align="center">
-						No one has voted on this idea yet.
+						{{ phrase('agent.publish.who_voted_none') }}
 					</td>
 				</tr>
 			{% endfor %}

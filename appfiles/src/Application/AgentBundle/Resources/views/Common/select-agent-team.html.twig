@@ -2,12 +2,12 @@
 	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
 	{% if with_blank2 %}<option value=""></option>{% endif %}
 	{% if with_my_teams %}
-		<optgroup label="My Teams">
+		<optgroup label="{{ phrase('agent.my_teams') }}">
 		{% for team in app.user.teams %}
 			<option value="{{ team.id }}" {% if selected == team.id or (with_my_team_default and not selected) %}selected="selected"{% endif %}>{{ label_prefix }}{{ team.name }}</option>
 		{% endfor %}
 		</optgroup>
-		<optgroup label="All Teams">
+		<optgroup label="{{ phrase('agent.all_teams') }}">
 	{% endif %}
 	{% for id,name in agent_teams %}
 		<option value="{{ id }}" {% if selected == id %}selected="selected"{% endif %}>{{ label_prefix }}{{ name }}</option>

@@ -1,6 +1,6 @@
 {% macro name_or_me(person, noval) %}
 	{% if person.id == app.user.id %}
-		Me
+		{{ phrase('agent.me') }}
 	{% elseif not person %}
 		{{ noval }}
 	{% else %}
@@ -10,7 +10,7 @@
 
 {% macro team_name_or_me(team, noval) %}
 	{% if app.user.getAgent().isTeamMember(team.id) and app.user.getAgent().isSingleTeams() %}
-		My team
+		{{ phrase('agent.my_team') }}
 	{% elseif not team %}
 		{{ noval }}
 	{% else %}

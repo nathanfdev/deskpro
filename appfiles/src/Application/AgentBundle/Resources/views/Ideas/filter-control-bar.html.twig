@@ -1,23 +1,23 @@
 <header class="list-control-bar">
 	<ul>
-		<li>Ordered by </li>
+		<li>{{ phrase('agent.ordered_by') }}  </li>
 		<li class="order-by-menu-trigger"><a class="button">
 			<span class="label">
 				{% if 'popularity' in cache.criteria.order_by %}
-					Popularity
+					{{ phrase('agent.ideas.popularity') }}
 				{% elseif 'num_ratings' in cache.criteria.order_by %}
-					Votes
+					{{ phrase('agent.publish.votes') }}
 				{% else %}
-					Date
+					{{ phrase('agent.date_created') }}
 				{% endif %}
 			</span>
 		</a></li>
 		<li><span class="sep"></span></li>
-		<li class="display-options display-options-trigger"><a>Display options</a></li>
+		<li class="display-options display-options-trigger"><a>{{ phrase('agent.display_options') }}</a></li>
 	</ul>
 	<ul class="order-by-menu" style="display: none">
-		<li data-field="popularity">Popularity</li>
-		<li data-field="votes">Votes</li>
-		<li data-field="date">Date</li>
+		<li data-field="popularity">{{ phrase('agent.ideas.popularity') }}</li>
+		<li data-field="votes">{{ phrase('agent.publish.votes') }}</li>
+		<li data-field="date">{{ phrase('agent.date_created') }}</li>
 	</ul>
 </header>

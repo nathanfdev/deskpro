@@ -1,12 +1,11 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
-pageMeta.title = 'Text Snippets';
 </script>
 <div class="ticket-snippets-overlay snippets-overlay">
 	<nav>
 		<header>
-			<span class="new-category">new category</span>
-			<h4>Categories</h4>
+			<span class="new-category"></span>
+			<h4>{{ phrase('agent.categories') }}</h4>
 		</header>
 		<ul>
 			{% for category in text_snippet_cats %}
@@ -33,20 +32,20 @@ pageMeta.title = 'Text Snippets';
 	<div class="new-snippet-category field-overlay" style="display: none">
 		<span class="close">close</span>
 		<dl>
-			<dt>Title:</dt>
+			<dt>{{ phrase('agent.label_title') }}:</dt>
 			<dd>
 				<input type="text" name="title" value="New Category" />
 				<input type="hidden" name="typename" value="{{ typename }}" />
 			</dd>
 
-			<dt>Permissions:</dt>
+			<dt>{{ phrase('agent.label_perms') }}:</dt>
 			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> Just me</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> My Team</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> Everyone</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.label_perms_just_me') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.label_teams') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.label_everyone') }}</label><br />
 			</dd>
 
-			<dt class="perm-teams" style="display: none">Teams:</dt>
+			<dt class="perm-teams" style="display: none">{{ phrase('agent.label_teams') }}:</dt>
 			<dd class="perm-teams" style="display: none">
 				<select name="teams[]" multiple="multiple" size="6">
 					{% for team in agent_teams %}
@@ -57,7 +56,7 @@ pageMeta.title = 'Text Snippets';
 		</dl>
 
 		<div class="controls">
-			<button class="clean-white small new-cat-trigger">Add</button>
+			<button class="clean-white small new-cat-trigger">{{ phrase('agent.add') }}</button>
 		</div>
 	</div>
 </div>

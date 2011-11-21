@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.AgentChatTranscript';
-pageMeta.title         = 'Chat Transcript';
+pageMeta.title         = '{{ phrase('agent.chat.chat_transcript') }}';
 pageMeta.conversation_id = {{convo.id}};
 </script>
 {{ agentui.scroll_containers('agentchat-page') }}
@@ -16,7 +16,7 @@ pageMeta.conversation_id = {{convo.id}};
 
 	<div class="profile-box-container">
 		<header>
-			<h4>Chat Transcript</h4>
+			<h4>{{ phrase('agent.chat.chat_transcript') }}</h4>
 		</header>
 		<section class="chat-transcript">
 			{% for message in convo_messages %}

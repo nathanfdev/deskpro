@@ -43,7 +43,7 @@
 <div class="optionbox" id="agent_optionbox_radio">
 	<section data-section-name="agents">
 		<header>
-			<h3>Agents</h3>
+			<h3>{{ phrase('agent.agents') }}</h3>
 			<input type="text" class="filter-box" placeholder="Filter..." />
 		</header>
 		<ul>
@@ -59,16 +59,16 @@
 <div class="optionbox" id="agent_team_optionbox_radio">
 	<section data-section-name="teams">
 		<header>
-			<h3>Teams</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<h3>{{ phrase('agent.agent_teams') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 		</header>
 		<ul>
 			{% if app.user.teams %}
-				<li class="group-title"><strong>Your Teams</strong></li>
+				<li class="group-title"><strong>{{ phrase('agent.my_teams') }}</strong></li>
 				{% for team in app.user.teams %}
 					<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
 				{% endfor %}
-				<li class="group-title"><strong>All Teams</strong></li>
+				<li class="group-title"><strong>{{ phrase('agent.all_teams') }}</strong></li>
 			{% endif %}
 
 			{% for team in agent_teams %}
@@ -98,7 +98,7 @@
 	<div class="optionbox">
 		<section data-section-name="department">
 			<header>
-				<h3>Department</h3>
+				<h3>{{ phrase('agent.department') }}</h3>
 				<input type="text" class="filter-box" placeholder="Filter..." />
 			</header>
 			<ul>
@@ -226,15 +226,15 @@
 
 {# Comment Menu #}
 <ul id="comment_tools_menu" data-menu-flag="copy-menu">
-	<li data-action="edit">Edit Comment</li>
-	<li data-action="delete">Delete Comment</li>
-	<li data-action="create-ticket">Create Ticket</li>
+	<li data-action="edit">{{ phrase('agent.edit_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.delete_comment') }}</li>
+	<li data-action="create-ticket">{{ phrase('agent.create_ticket') }}</li>
 </ul>
 
 {# Comment Validation Menu #}
 <ul id="comment_validation_menu" data-menu-flag="copy-menu">
-	<li data-action="approve">Validate Comment</li>
-	<li data-action="delete">Delete Comment</li>
+	<li data-action="approve">{{ phrase('agent.validate_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.delete_comment') }}</li>
 </ul>
 
 {# Popover tempalte #}
@@ -242,8 +242,8 @@
 	<div class="mass-actions-overlay-container open popover-wrapper doc-layer">
 		<section class="mass-actions-overlay">
 			<header>
-				<span class="close close-trigger">close</span>
-				<span class="move-to-tab">Move to tab</span>
+				<span class="close close-trigger"></span>
+				<span class="move-to-tab">{{ phrase('agent.move_to_tab') }}</span>
 				<h1 class="tab-title"></h1>
 			</header>
 			<article class="popover-inner no-footer">
@@ -257,7 +257,7 @@
 <script type="text/x-deskpro-plain" id="fragment_overlay_tpl">
     <div class="dp-overlay-container fragment-overlay overlay-loading doc-layer">
 		<section class="dp-overlay">
-			<header><span class="close close-trigger">close</span></header>
+			<header><span class="close close-trigger"></span></header>
 			<article></article>
 		</section>
     </div>
@@ -265,16 +265,13 @@
 
 {# Usergroups #}
 <ul id="usergroups_menu">
-	<li data-usergroup-id="1">Usergroup 1</li>
-	<li data-usergroup-id="2">Usergroup 2</li>
-	<li data-usergroup-id="3">Usergroup 3</li>
-	<li data-usergroup-id="4">Usergroup 4</li>
+	<li data-usergroup-id="1">{{ phrase('agent.usergroup_everyone') }}</li>
 </ul>
 
 <script type="text/x-deskpro-plain" id="comment_edit_tpl">
 	<div class="comment-edit">
 		<textarea class="comment"></textarea><br />
-		<button class="dp-button xx-small save-trigger">Save Comment</button>
+		<button class="dp-button xx-small save-trigger">{{ phrase('agnet.save') }}</button>
 	</div>
 </script>
 
@@ -361,12 +358,12 @@
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>New</li>
+	>{{ phrase('agent.ideas.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>Active</li>
+	>{{ phrase('agent.ideas.status_active') }}</li>
 	{% for cat in idea_active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -378,7 +375,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>Closed</li>
+	>{{ phrase('agent.ideas.status_closed') }}</li>
 	{% for cat in idea_closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -449,10 +446,10 @@
 <div id="global_ajax_error" style="display:none;">
 	<div class="ajax-error-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>Network Error</h4>
+			<h4>{{ phrase('agent.network_error') }}</h4>
 		</div>
 		<div class="overlay-content">
-			<p>A network exception occurred and your last request did not complete. Please try again.</p>
+			<p>{{ phrase('agent.network_error_explain') }}</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
 		</div>
 	</div>
@@ -460,8 +457,8 @@
 <div id="alert_overlay" style="display:none;">
 	<div class="alert-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<span class="close-trigger">Dismiss</span>
-			<h4>Alert</h4>
+			<span class="close-trigger">{{ phrase('agent.dismiss') }}</span>
+			<h4>{{ phrase('agent.alert') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<p id="alert_overlay_msg"></p>
@@ -471,48 +468,48 @@
 <div id="confirm_overlay" style="display:none;">
 	<div class="confirm-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>Confirm</h4>
+			<h4>{{ phrase('agent.confirm') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<p id="confirm_overlay_msg"></p>
 		</div>
 	</div>
 	<div class="overlay-footer">
-		<button class="okay-trigger clean-white">Okay</button>
-		<button class="cancel-trigger clean-white">Cancel</button>
+		<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
+		<button class="cancel-trigger clean-white">{{ phrase('agent.cancel') }}</button>
 	</div>
 </div>
 
 <div id="prompt_overlay" style="display:none;">
 	<div class="prompt-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>Input</h4>
+			<h4></h4>
 		</div>
 		<div class="overlay-content">
 			<p id="prompt_overlay_msg"></p>
 			<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
 		</div>
 		<div class="overlay-footer">
-			<button class="okay-trigger clean-white">Okay</button>
-			<button class="cancel-trigger clean-white">Cancel</button>
+			<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
+			<button class="cancel-trigger clean-white">{{ phrase('agent.cancel') }}</button>
 		</div>
 	</div>
 </div>
 
 <section class="dp-overlay" id="password_confirm" data-element-handler="DeskPRO.Agent.ElementHandler.PasswordPrompt">
 	<header>
-		<span class="close close-trigger">close</span>
-		<h1>Enter your password</h1>
+		<span class="close close-trigger"></span>
+		<h1>{{ phrase('agent.login.enter_password') }}</h1>
 	</header>
 	<article>
 		<div class="explain-wrap"></div>
-		<div class="error-wrap">You entered an incorrect password. Try again.</div>
+		<div class="error-wrap">{{ phrase('agent.login.login_failed') }}</div>
 		<div class="input-wrap">
 			<input type="password" class="password-input" value="" />
 		</div>
 	</article>
 	<footer>
-		<button class="continue-trigger clean-white">Continue</button>
+		<button class="continue-trigger clean-white">{{ phrase('agent.continue') }}</button>
 	</footer>
 </section>
 
@@ -521,7 +518,7 @@
 		<div class="dp-form-input">
 			<div class="search-form actions-list">
 				<div class="search-terms">
-					<div class="term add-term-row" style="display:none"><span class="add-term">+</span> Add a new action</div>
+					<div class="term add-term-row" style="display:none"><span class="add-term">+</span> {{ phrase('agent.add_action_term') }}</div>
 				</div>
 			</div>
 			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}

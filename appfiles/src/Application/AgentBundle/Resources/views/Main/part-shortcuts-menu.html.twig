@@ -4,33 +4,33 @@
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 				<td>
-					<h5>Window Navigation</h5>
+					<h5>{{ phrase('agent.window.window_navigation') }}</h5>
 					<div class="row">
-						<kbd>ctrl+left</kbd> Select left tab
+						<kbd>ctrl+left</kbd> {{ phrase('agent.window.key_left_tab') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+right</kbd> Select right tab
+						<kbd>ctrl+right</kbd> {{ phrase('agent.window.key_right_tab') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+c</kbd> Close tab
+						<kbd>ctrl+shift+c</kbd> {{ phrase('agent.window.key_close_tab') }}
 					</div>
 				</td>
 				<td>
 					<h5>Create Content</h5>
 					<div class="row">
-						<kbd>ctrl+shit+t</kbd> New ticket
+						<kbd>t</kbd> {{ phrase('agent.window.new_ticket') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+p</kbd> New person
+						<kbd>p</kbd> {{ phrase('agent.window.new_person') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+a</kbd> New article
+						<kbd>a</kbd> {{ phrase('agent.window.new_article') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+d</kbd> New download
+						<kbd>d</kbd> {{ phrase('agent.window.new_download') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+i</kbd> New idea
+						<kbd>i</kbd> {{ phrase('agent.window.new_idea') }}
 					</div>
 				</td>
 			</tr>
@@ -38,30 +38,24 @@
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 				<td>
-					<h5>Tickets</h5>
+					<h5>{{ phrase('agent.window.tickets') }}</h5>
 					<div class="row">
-						<kbd>shit+r</kbd> Focus reply box
+						<kbd>shit+r</kbd> {{ phrase('agent.window.focus_reply_box') }}
 					</div>
 					<div class="row">
-						<kbd>shift+c</kbd> Mark ticket resolve
+						<kbd>shift+c</kbd> {{ phrase('agent.window.set_ticket_resolved') }}
 					</div>
 					<div class="row">
-						<kbd>shift+a</kbd> Assign ticket to yourself
+						<kbd>shift+a</kbd> {{ phrase('agent.window.assign_to_self') }}
 					</div>
 				</td>
 				<td>
 					<h5>People</h5>
 					<div class="row">
-						<kbd>shift+r</kbd> Focus notes box
+						<kbd>shift+r</kbd> {{ phrase('agent.window.focus_notes_box') }}
 					</div>
 					<div class="row">
-						<kbd>shift+e</kbd> Add new email
-					</div>
-					<div class="row">
-						<kbd>shift+t</kbd> Create new ticket for this person
-					</div>
-					<div class="row">
-						<kbd>shift+l</kbd> Switch to tab listing tickets
+						<kbd>shift+t</kbd> {{ phrase('agent.window.create_ticket_person') }}
 					</div>
 				</td>
 			</tr>

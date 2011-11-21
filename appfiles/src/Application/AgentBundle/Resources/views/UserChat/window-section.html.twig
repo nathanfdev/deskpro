@@ -1,7 +1,7 @@
 {% macro dep_row(dep, dep_counts, depth) %}
 	<li class="{% if dep.children|length %}has-children{% endif %} dp-cat-li">
 		<div class="item-wrap dp-cat-item">
-			{% if dep.children|length %}<span class="sub-toggle">expand</span>{% endif %}
+			{% if dep.children|length %}<span class="sub-toggle"></span>{% endif %}
 
 			<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'department_id':dep.id}) }}">
 				<span class="list-counter" id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
@@ -20,14 +20,14 @@
 
 <section class="source-section">
 	<header>
-		<h1>New Chats</h1>
+		<h1>{{ phrase('agent.chat.title_new_chats') }}</h1>
 	</header>
 	<ul class="source-list with-tree no-editor">
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
 				<span class="title auto-load-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
 					<span class="list-counter" id="userchat_list_0_counter" data-count="{{ dep_counts['0_total']|default(0) }}">{{ dep_counts['0_total']|default(0) }}</span>
-					<span>All</span>
+					<span>{{ phrase('agent.all') }}</span>
 				</span>
 			</div>
 		</li>
@@ -39,7 +39,7 @@
 
 <section class="source-section">
 	<header>
-		<h1>Active Chats</h1>
+		<h1>{{ phrase('agent.chat.title_active_chats') }}</h1>
 	</header>
 	<ul class="source-list with-tree no-editor">
 		{% for agent_id,agent_name in agent_names %}

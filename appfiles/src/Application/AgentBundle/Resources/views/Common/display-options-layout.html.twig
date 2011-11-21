@@ -1,8 +1,8 @@
 <div class="dp-overlay-container display-options">
 	<section class="dp-overlay">
 		<header>
-			<span class="close close-trigger">close</span>
-			<h1>Dislpay Options</h1>
+			<span class="close close-trigger"></span>
+			<h1>{{ phrase('agent.display_options') }}</h1>
 		</header>
 		<article>
 			<ul class="sortable-list">
@@ -13,10 +13,10 @@
 		</article>
 		<footer>
 			<div class="loading-off">
-				<button class="save-trigger clean-white">Apply</button>
+				<button class="save-trigger clean-white">{{ phrase('agent.apply') }}</button>
 			</div>
 			<div class="loading-on" style="display:none">
-				<span>Saving ...</span>
+				<span>{{ phrase('agent.loading_saving') }}</span>
 			</div>
 		</footer>
 	</section>
