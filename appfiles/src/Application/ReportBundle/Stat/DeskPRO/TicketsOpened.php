@@ -27,8 +27,8 @@ class TicketsOpened extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		// timestamp_opened < x < NOW
-		$query = new QueryBuilder($this->db);
-		$query->select('COUNT(t.id) AS ticket_count')
+		$query = $this->createQuery()
+		      ->select('COUNT(t.id) AS ticket_count')
 		      ->from('tickets', 't')
 		      ->where('UNIX_TIMESTAMP(t.date_created) >= :date_created')
 		      ->setParameter(':date_created', $this->last_stat_date->format('U'));

@@ -7,7 +7,7 @@ use Application\ReportBundle\Stat\Base\QueryBuilder;
 /**
  * Get the time between the first ticket response and the first assignment time
  */
-class TicketFirstResponseToAssignmentTime extends AbstractTicket
+class TicketFirstResponseFromAssignmentTime extends AbstractTicket
 {
 	public function init()
 	{
