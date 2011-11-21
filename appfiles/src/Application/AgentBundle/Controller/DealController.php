@@ -133,6 +133,8 @@ class DealController extends AbstractController
         $person = $this->person;
         $order_by = $this->in->getString('order_by');
         $group_by = $this->in->getString('group_by');
+        $set_group_option = $this->in->getString('set_group_option');
+
         $deal_group_info = '';
         $statusArr = array(
                     'open' => 0,
@@ -144,19 +146,26 @@ class DealController extends AbstractController
         if($owner_type == 'my')
         {
             $deals = $deal_repository->filterDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+
             if($group_by){
                 $deal_group_info = $deal_repository->groupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by);
+                if($set_group_option)
+                {
+                    $deals = $deal_repository->filterGroupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by, $set_group_option);
+
+                }
             }
 
-        }else if($owner_type == 'other'){
+        } else if($owner_type == 'other'){
 
             $deals = $deal_repository->filterDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+
             if($group_by){
                 $deal_group_info = $deal_repository->groupByDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $group_by);
             }
 
         }
-//print_r($deal_group_info);exit;
+
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
         return $this->render($tpl, array(
             'deals' => $deals,
@@ -167,6 +176,7 @@ class DealController extends AbstractController
             'group_by' => $group_by,
             'deal_group_info' => $deal_group_info,
             'group_total' => $this->_getTotalGroupCount($deal_group_info),
+            'set_group_option' => $set_group_option
         ));
     }
 

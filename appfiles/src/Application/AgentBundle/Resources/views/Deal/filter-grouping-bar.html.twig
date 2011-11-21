@@ -4,7 +4,7 @@
 
 <header class="list-grouping-bar">
     <ul>
-        <li>
+        <li  {% if set_group_option == 0 %} class="on" {% endif %} data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id})~ '?group_by=' ~ group_by ~ '&set_group_option= 0' }}">
             <a>
                 All
                 <span>{{group_total}}</span>
@@ -12,8 +12,8 @@
         </li>
     {% for  deal in deal_group_info%}
 
-        <li data-grouping-option="0">
-            <a data-route="">
+        <li {% if set_group_option == deal.id %} class="on" {% endif %} data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id})~ '?group_by=' ~ group_by ~ '&set_group_option= '~ deal.id }}">
+            <a>
                     {{deal.name}}
                     <span>{{ deal[1] }}</span>
             </a>
