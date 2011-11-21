@@ -156,7 +156,7 @@ class DealController extends AbstractController
             }
 
         }
-
+//print_r($deal_group_info);exit;
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
         return $this->render($tpl, array(
             'deals' => $deals,
@@ -166,7 +166,19 @@ class DealController extends AbstractController
             'order_by' => $order_by,
             'group_by' => $group_by,
             'deal_group_info' => $deal_group_info,
+            'group_total' => $this->_getTotalGroupCount($deal_group_info),
         ));
+    }
+
+    protected function _getTotalGroupCount($deal_group_info)
+    {
+        $total = 0;
+        if(\is_array($deal_group_info)){
+            foreach($deal_group_info as $group){
+                $total += $group[1];
+            }
+        }
+        return $total;
     }
 
     public function viewAction($deal_id = null)
@@ -234,8 +246,7 @@ class DealController extends AbstractController
 		$em->persist($note);
 
 		$em->flush();
-		//$em->commit();
-
+		
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'deal_id' => $deal['id'],
@@ -332,7 +343,6 @@ class DealController extends AbstractController
                     $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
                     if ($person) {
                         $deal->deletePeople($person);
-//                        $this->em->persist($deal);
                         $data['remove_person_id'] = $person['id'];
                     }
                     break;
@@ -340,7 +350,6 @@ class DealController extends AbstractController
                     $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
                     if ($organization) {
                         $deal->deleteOrganization($organization);
-//                        $this->em->persist($deal);
                         $data['remove_organization_id'] = $organization['id'];
                     }
                     break;
@@ -350,7 +359,6 @@ class DealController extends AbstractController
                     if($deal_id){
                         $deal->setDealTypeId($this->in->getUint('deal_type_id'));
                         $deal->setDealStageId(null);
-                        //$this->em->persist($deal);
                     }
                     $data['change_deal_type_id'] = $deal_type['id'];
                     $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
@@ -372,8 +380,7 @@ class DealController extends AbstractController
 
                 case 'change-dealstage':
 
-                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));
-                   // $this->em->persist($deal);
+                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));                   
                     $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
                     break;
                 case 'change-status':

@@ -1,4 +1,4 @@
-{% set count = ''%}
+{% set count = 0%}
 {% set name = ''%}
 {% set id = ''%}
 
@@ -7,28 +7,18 @@
         <li>
             <a>
                 All
-                <span>{{deal_group_info|length}}</span>
+                <span>{{group_total}}</span>
             </a>
         </li>
-{% for  deal_groups in deal_group_info%}
-    {% for deal in deal_groups%}
+    {% for  deal in deal_group_info%}
 
-        {% if loop.index == 1%}
-            {% set count = deal%}
-        {%elseif loop.index == 2%}
-            {% set name = deal%}
-        {% else %}
-            {% set id = deal%}
-        {%endif%}
-    {% endfor%}
-
-    <li data-grouping-option="0">
+        <li data-grouping-option="0">
             <a data-route="">
-                    {{name}}
-                    <span>{{ count }}</span>
+                    {{deal.name}}
+                    <span>{{ deal[1] }}</span>
             </a>
-    </li>
-{% endfor %}
+        </li>
+    {% endfor %}
 
     </ul>
 <br class="clear">

@@ -259,7 +259,7 @@ class Deal extends EntityRepository
         $qb->from('DeskPRO:Deal', 'd')
                 ->innerJoin('d.assigned_agent', 'p')
                 ->innerJoin('d.deal_type', 'dt')
-                ->leftJoin('d.deal_stage', 'ds')
+                ->leftJoin('d.deal_stage', 'ds')                
                 ->where('p.id = :person_id');
         
         $qb->setParameter('person_id', $person['id']);
@@ -287,10 +287,6 @@ class Deal extends EntityRepository
                 $qb->select('COUNT(d), dt.name AS name, dt.id AS id');
                 $qb->groupBy('d.deal_type');
                 break;
-//            case 'assigned_agent':
-//                $qb->select('COUNT(d), p.name AS name, p.id AS id');
-//                $qb->groupBy('d.assigned_agent');
-//                break;
             default:
                 $qb->select('COUNT(d)');
                 break;
@@ -333,15 +329,15 @@ class Deal extends EntityRepository
         switch($group_by)
         {
             case 'deal_stage':
-                $qb->select('COUNT(d), ds.name AS name, ds.id AS id');
+                $qb->select('COUNT(d) AS count, ds.name AS name, ds.id AS id');
                 $qb->groupBy('d.deal_stage');
                 break;
             case 'deal_type':
-                $qb->select('COUNT(d), dt.name AS name, dt.id AS id');
+                $qb->select('COUNT(d) AS count, dt.name AS name, dt.id AS id');
                 $qb->groupBy('d.deal_type');
                 break;
             case 'assigned_agent':
-                $qb->select('COUNT(d), p.name AS name, p.id AS id');
+                $qb->select('COUNT(d) AS count, p.name AS name, p.id AS id');
                 $qb->groupBy('d.assigned_agent');
                 break;
             default:
