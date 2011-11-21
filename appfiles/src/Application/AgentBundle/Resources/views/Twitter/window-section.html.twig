@@ -22,36 +22,19 @@
 	</ul>
 </section>
 
-<!--
-<ul class="nav-list">
-	<li data-route="">
-		<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred }}</span>
-		Starred Tweets
-	</li>
-	<li data-route="">
-		<span class="list-counter" id="twitter_my_statuses_count">{{ statuses.account }}</span>
-		My Tweets
-	</li>
-	<li data-route="">
-		<span class="list-counter" id="twitter_team_statuses_count">{{ statuses.team }}</span>
-		Team Tweets
-	</li>
-</ul>
--->
-
 {% for account in accounts %}
 	<section class="source-section">
 		<header>
 			<h1>@{{ account.user.screen_name }}</h1>
 		</header>
 	</section>
-	<ul class="source-list with-tree no-editor">
-		<li class="has-children dp-cat-li">
+	<ul class="source-list with-tree no-editor" style="margin-bottom: 10px">
+		<li class="has-children dp-cat-li sub-expanded">
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">expand</span>
 
 				<span class="title" data-route="listpane:">
-					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count"" data-count="0">0</span>
+					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="0">0</span>
 					<span>INBOX</span>
 				</span>
 			</div>
@@ -90,6 +73,63 @@
 				</li>
 			</ul>
 		</li>
+
+		<li class="has-children dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="sub-toggle">expand</span>
+
+				<span class="title" data-route="listpane:">
+					<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count" data-count="0">0</span>
+					<span>New Followers</span>
+				</span>
+			</div>
+			<ul class="sub-group">
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:">
+							<span>Darren</span>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="has-children dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="sub-toggle">expand</span>
+
+				<span class="title" data-route="listpane:">
+					<span class="list-counter" id="twitter_{{ account.id }}_searches_count" data-count="{{ account.searches.count|default(0) }}">{{ account.searches.count|default(0) }}</span>
+					<span>SEARCHES</span>
+				</span>
+			</div>
+			<ul class="sub-group">
+				<li class="dp-cat-li">
+					<div class="item-wrap dp-cat-item">
+						<span class="title" data-route="listpane:">
+							<span>#deskpro</span>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</li>
+		<li class="dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="title" data-route="listpane:">
+					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.followers.count|default(0) }}">{{ account.followers.count|default(0) }}</span>
+					<span>FOLLOWERS</span>
+				</span>
+			</div>
+		</li>
+		<li class="dp-cat-li">
+			<div class="item-wrap dp-cat-item">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
+					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.user.statuses.count|default(0) }}">{{ account.user.statuses.count|default(0) }}</span>
+					<span>SENT</span>
+				</span>
+			</div>
+		</li>
+
 	</ul>
 
 	<!--
