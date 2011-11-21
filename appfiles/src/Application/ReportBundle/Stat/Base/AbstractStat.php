@@ -89,10 +89,13 @@ abstract class AbstractStat implements StatInterface
 			if ($with_grouping) {
 				$executeQuery = $this->applyGroupByToQuery($executeQuery);
 
-				$this->results['grouped'] = $this->processGroupedResults($this->db->fetchAll($executeQuery->getSql()));
+				var_dump($executeQuery->execute()->fetch(\PDO::FETCH_ASSOC));
+
+				$this->results['grouped'] = $this->processGroupedResults($executeQuery->execute());
 			}
 			else {
-				$this->results['ungrouped'] = $this->processUngroupedResults($this->db->fetchAll($executeQuery->getSql()));
+				var_dump($executeQuery->execute()->fetch(\PDO::FETCH_ASSOC));
+				$this->results['ungrouped'] = $this->processUngroupedResults($executeQuery->execute());
 			}
 		}
 

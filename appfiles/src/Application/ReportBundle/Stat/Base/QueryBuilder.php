@@ -44,7 +44,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	{
 		$this->addTableAlias($from, $alias);
 
-		parent::from($from, $alias);
+		return parent::from($from, $alias);
 	}
 
 	/**
@@ -54,7 +54,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	{
 		$this->addTableAlias($join, $alias);
 
-		parent::join($fromAlias, $join, $alias, $condition);
+		return parent::join($fromAlias, $join, $alias, $condition);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	{
 		$this->addTableAlias($join, $alias);
 
-		parent::innerJoin($fromAlias, $join, $alias, $condition);
+		return parent::innerJoin($fromAlias, $join, $alias, $condition);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	{
 		$this->addTableAlias($join, $alias);
 
-		parent::leftJoin($fromAlias, $join, $alias, $condition);
+		return parent::leftJoin($fromAlias, $join, $alias, $condition);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	{
 		$this->addTableAlias($join, $alias);
 
-		parent::rightJoin($fromAlias, $join, $alias, $condition);
+		return parent::rightJoin($fromAlias, $join, $alias, $condition);
 	}
 
 	/**
