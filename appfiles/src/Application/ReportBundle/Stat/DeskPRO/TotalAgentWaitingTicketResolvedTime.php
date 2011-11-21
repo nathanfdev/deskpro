@@ -27,18 +27,60 @@ class TotalAgentWaitingTicketResolvedTime extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		// AVG time
-		$query = new QueryBuilder();
+		// Get the total time a user was waiting before resolution, subtract
+		// this from the time it took for the ticket to get resolved
+		$query = $this->createQuery()
+		      ->select('SUM(UNIX_TIMESTAMP(t.date_resolved) - UNIX_TIMESTAMP(t.date_created) - t.total_user_waiting) AS user_waiting')
+		      ->from('tickets', 't')
+		      ->where("t.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
+		$this->addQuery('ticket_waiting_time', $query);
 
-		$this->addQuery($query);
+		// Get the number of tickets resolved
+		$query = $this->createQuery()
+		      ->select('COUNT(t.id) as ticket_count')
+		      ->from('tickets', 't')
+		      ->where("t.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
+
+		$this->addQuery('tickets_resolved', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
+		$waitingTime 	= $result['ticket_waiting_time'][0]['user_waiting'];
+		$resolved 	= $result['tickets_resolved'][0]['ticket_count'];
+
+		return ($resolved != 0) ? $waitingTime / $resolved : 0;
 	}
 
 	public function processGroupedResults($results)
 	{
+		// Get the Ids and result of the resolved tickets, we use this
+		// array as a lookup based on the grouping_id
+		$resultsResolved = array();
+		foreach ($results['tickets_resolved'] as $result) {
+			$resultsResolved[$result[str_replace('.', '_', $this->grouping[0])]] = $result['ticket_count'];
+		}
+
 		$processedResults = array();
+
+		foreach ($results['ticket_waiting_time'] as $result) {
+			$groupingId = $result[str_replace('.', '_', $this->grouping[0])];
+
+			// Check to see if any tickets were resolved for this grouping_id
+			$resolvedCount = 0;
+			if (isset($resultsResolved[$groupingId])) {
+				$resolvedCount = $resultsResolved[$groupingId];
+			}
+
+			$processedResults[] = array(
+				'value'       => ($resolvedCount != 0) ? $result['user_waiting'] / $resolvedCount : 0,
+				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+			);
+		}
 
 		return $processedResults;
 	}
