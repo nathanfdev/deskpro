@@ -38,13 +38,11 @@ class TicketsOpened extends AbstractTicket
 
 	public function processUngroupedResults($result)
 	{
-		var_dump($result);
 		return $result['tickets_opened'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)
 	{
-		var_dump($results);
 		$processedResults = array();
 
 		foreach ($results['tickets_opened'] as $result) {
