@@ -133,32 +133,28 @@ class DealController extends AbstractController
         $person = $this->person;
         $order_by = $this->in->getString('order_by');
         $group_by = $this->in->getString('group_by');
+        $deal_group_info = '';
+        $statusArr = array(
+                    'open' => 0,
+                    'close' => -1,
+                    'won' => 1,
+                    'lost' => 2
+                    );
 
         if($owner_type == 'my')
         {
-            if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForPerson($person, 0, $deal_type_id, $order_by);
-            }
-            else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForPerson($person, -1, $deal_type_id, $order_by);
-            }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForPerson($person, 1, $deal_type_id, $order_by);
-            }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForPerson($person, 2, $deal_type_id, $order_by);
+            $deals = $deal_repository->filterDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+            if($group_by){
+                $deal_group_info = $deal_repository->groupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by);
             }
 
         }else if($owner_type == 'other'){
 
-            if($deal_status == 'open'){
-                $deals = $deal_repository->filterDealsForOther($person, 0, $deal_type_id, $order_by);
+            $deals = $deal_repository->filterDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $order_by);
+            if($group_by){
+                $deal_group_info = $deal_repository->groupByDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $group_by);
             }
-            else if($deal_status == 'close'){
-                $deals = $deal_repository->filterDealsForOther($person, -1, $deal_type_id, $order_by);
-            }else if($deal_status == 'won'){
-                $deals = $deal_repository->filterDealsForOther($person, 1, $deal_type_id, $order_by);
-            }else if($deal_status == 'lost'){
-                $deals = $deal_repository->filterDealsForOther($person, 2, $deal_type_id, $order_by);
-            }
+
         }
 
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
@@ -169,6 +165,7 @@ class DealController extends AbstractController
             'deal_type_id' => $deal_type_id,
             'order_by' => $order_by,
             'group_by' => $group_by,
+            'deal_group_info' => $deal_group_info,
         ));
     }
 

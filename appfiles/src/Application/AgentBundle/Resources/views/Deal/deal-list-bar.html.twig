@@ -12,20 +12,20 @@
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
-		<li data-order-by="date_created" class="{% if order_by == 'date_created' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'date_created' }) }}">Date Created</li>
-		<li data-order-by="title" class=" {% if order_by == 'title' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'title' }) }}">Title</li>
-		<li data-order-by="deal_size" class=" {% if order_by == 'deal_size' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_size' }) }}">Deal Size</li>
-                <li data-order-by="deal_type" class=" {% if order_by == 'deal_type' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_type' }) }}">Deal Type</li>
+		<li data-order-by="date_created" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'date_created' }) }}">Date Created</li>
+		<li data-order-by="title" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'title' }) }}">Title</li>
+		<li data-order-by="deal_size" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_size' }) }}">Deal Size</li>
+                <li data-order-by="deal_type" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_type' }) }}">Deal Type</li>
 	</ul>
 	<ul style="display: none" class="group-by-menu">
 		<li data-group-by="">None</li>
 		<li class="sep">-</li>
-		<li data-group-by="deal_stage" class="{% if group_by == 'deal_stage' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'deal_stage' }) }}">Deal Stage</li>
+		<li data-group-by="deal_stage" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'deal_stage' }) }}">Deal Stage</li>
 		{% if deal_type_id <= 0%}
-                    <li data-group-by="deal_type" class="{% if group_by == 'deal_type' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'deal_type' }) }}">Deal Type</li>
+                    <li data-group-by="deal_type" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'deal_type' }) }}">Deal Type</li>
                 {% endif %}
 		{% if owner_type == 'other'%}
-                    <li data-group-by="assigned_agent" class="{% if group_by == 'assigned_agent' %}on{% endif %}" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'assigned_agent' }) }}">Assigned Agent</li>
+                    <li data-group-by="assigned_agent" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'group_by': 'assigned_agent' }) }}">Assigned Agent</li>
                 {% endif%}
 	</ul>
 </header>

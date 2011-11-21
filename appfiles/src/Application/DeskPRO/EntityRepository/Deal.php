@@ -241,4 +241,116 @@ class Deal extends EntityRepository
             return $query->getSingleScalarResult();
     }
 
+
+    
+    /**
+     * Group By deal accor to the filter.
+     *
+     * @param Entity\Person $person
+     * @param <type> $status
+     * @param <type> $deal_type_id
+     * @param <type> $group_by
+     * @return Collection
+     */
+
+    public function groupByDealsForPerson(Entity\Person $person, $status = 0, $deal_type_id = null, $group_by = null) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        
+        $qb->from('DeskPRO:Deal', 'd')
+                ->innerJoin('d.assigned_agent', 'p')
+                ->innerJoin('d.deal_type', 'dt')
+                ->leftJoin('d.deal_stage', 'ds')
+                ->where('p.id = :person_id');
+        
+        $qb->setParameter('person_id', $person['id']);
+
+        if ($status >= 0) {
+            $qb->andWhere('d.status = :status');
+            $qb->setParameter('status', $status);
+        }else{
+            $qb->andWhere('d.status > :status');
+            $qb->setParameter('status', 0);
+        }
+
+        if ($deal_type_id) {
+            $qb->andWhere('dt.id = :deal_type_id');
+            $qb->setParameter('deal_type_id', $deal_type_id);
+        }
+
+        switch($group_by)
+        {
+            case 'deal_stage':
+                $qb->select('COUNT(d), ds.name AS name, ds.id AS id');
+                $qb->groupBy('d.deal_stage');
+                break;            
+            case 'deal_type':
+                $qb->select('COUNT(d), dt.name AS name, dt.id AS id');
+                $qb->groupBy('d.deal_type');
+                break;
+//            case 'assigned_agent':
+//                $qb->select('COUNT(d), p.name AS name, p.id AS id');
+//                $qb->groupBy('d.assigned_agent');
+//                break;
+            default:
+                $qb->select('COUNT(d)');
+                break;
+        }
+
+        $query = $qb->getQuery(); //print $query->getSQL(); exit;
+        return $query->getScalarResult();
+    }
+
+    /**
+     * Find pending tasks assigned to the person.
+     *
+     * @param Person $person The person
+     * @return Array
+     */
+
+    public function groupByDealsForOther(Entity\Person $person, $status = 0, $deal_type_id = null, $group_by = null) {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('d')
+                ->from('DeskPRO:Deal', 'd')
+                ->leftJoin('d.assigned_agent', 'p')
+                ->innerJoin('d.deal_type', 'dt')
+                ->leftJoin('d.deal_stage', 'ds')
+                ->where('p.id IS NULL OR p.id != :person_id')
+                ->setParameter('person_id', $person['id']);
+
+        if ($status >= 0) {
+            $qb->andWhere('d.status = :status');
+            $qb->setParameter('status', $status);
+        }else{
+            $qb->andWhere('d.status > :status');
+            $qb->setParameter('status', 0);
+        }
+
+        if ($deal_type_id) {
+            $qb->andWhere('dt.id = :deal_type_id');
+            $qb->setParameter('deal_type_id', $deal_type_id);
+        }
+
+        switch($group_by)
+        {
+            case 'deal_stage':
+                $qb->select('COUNT(d), ds.name AS name, ds.id AS id');
+                $qb->groupBy('d.deal_stage');
+                break;
+            case 'deal_type':
+                $qb->select('COUNT(d), dt.name AS name, dt.id AS id');
+                $qb->groupBy('d.deal_type');
+                break;
+            case 'assigned_agent':
+                $qb->select('COUNT(d), p.name AS name, p.id AS id');
+                $qb->groupBy('d.assigned_agent');
+                break;
+            default:
+                $qb->select('COUNT(d)');
+                break;
+        }
+
+        $query = $qb->getQuery(); //print $query->getSQL(); exit;
+        return $query->getScalarResult();
+    }
+
 }

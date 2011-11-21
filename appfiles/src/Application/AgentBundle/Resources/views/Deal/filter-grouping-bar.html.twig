@@ -1,0 +1,35 @@
+{% set count = ''%}
+{% set name = ''%}
+{% set id = ''%}
+
+<header class="list-grouping-bar">
+    <ul>
+        <li>
+            <a>
+                All
+                <span>{{deal_group_info|length}}</span>
+            </a>
+        </li>
+{% for  deal_groups in deal_group_info%}
+    {% for deal in deal_groups%}
+
+        {% if loop.index == 1%}
+            {% set count = deal%}
+        {%elseif loop.index == 2%}
+            {% set name = deal%}
+        {% else %}
+            {% set id = deal%}
+        {%endif%}
+    {% endfor%}
+
+    <li data-grouping-option="0">
+            <a data-route="">
+                    {{name}}
+                    <span>{{ count }}</span>
+            </a>
+    </li>
+{% endfor %}
+
+    </ul>
+<br class="clear">
+</header>
