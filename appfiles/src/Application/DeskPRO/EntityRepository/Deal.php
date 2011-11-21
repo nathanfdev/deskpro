@@ -220,7 +220,7 @@ class Deal extends EntityRepository {
                 ->andWhere('d.id = :deal_id')
                 ->setParameters(array('org_id' => $organization['id'], 'deal_id' => $deal_id))
         ;
-        $query = $qb->getQuery(); //print $query->getSQL();exit;
+        $query = $qb->getQuery(); 
         return $query->getSingleScalarResult();
     }
 
