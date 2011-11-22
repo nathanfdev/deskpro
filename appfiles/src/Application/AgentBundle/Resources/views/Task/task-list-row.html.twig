@@ -19,9 +19,7 @@
 	<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
 		{% if task.task_associations|length %}
 			{% for assoc in task.task_associations %}
-				<span class="assoc">
-					{% if assoc.ticket %}<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
-				</span>
+				{% render 'AgentBundle:Task:printAssociativeTask' with {'assoc': assoc} %}
 			{% endfor %}
 		{% endif %}
 		<ul>

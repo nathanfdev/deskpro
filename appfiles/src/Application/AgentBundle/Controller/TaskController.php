@@ -444,7 +444,17 @@ class TaskController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-    /**
+        public function printAssociativeTaskAction($assoc = null)
+        {
+            if(method_exists($assoc, 'getDeal') && $assoc->getDeal())
+            {
+                return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
+            } else{
+                return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
+            }
+        }
+
+        /**
 	 * @return Application\DeskPRO\Entity\Task
 	 */
 	protected function getTaskOr404($task_id)
