@@ -123,6 +123,20 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 						$('input.input-ticket-id', row).val(0);
 					});
 				}
+
+                                activeTab = DeskPRO_Window.getTabWatcher().getActiveTabIfType('deal');
+				if (activeTab) {
+					linkEl = $('.linked-deal', row);
+					$('label', linkEl).text(activeTab.page.meta.title);
+					$('input.input-deal-id', row).val(activeTab.page.meta.deal_id);
+					linkEl.show();
+					$('.remove-link-trigger', row).on('click', function() {
+						nolink = true;
+						linkEl.hide();
+						$('input.input-ticket-id', row).val(0);
+					});
+				}
+
 			}
 
 			rowContainer.append(row);
