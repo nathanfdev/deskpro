@@ -15,11 +15,11 @@ parameters:
   router.options.generator_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
   doctrine.data_collector.class: Application\DeskPRO\Profiler\DataCollector\DoctrineDataCollector
-  profiler.storage.dsn: "mysql:host=localhost;dbname=deskpro"
-  profiler.storage.username: deskpro
-  profiler.storage.password: deskpro
-  profiler.storage.class: Profiler\LiveBundle\Profiler\Storage\MysqlProfilerStorage
-  profiler.storage.lifetime: 86400
+  #profiler.storage.dsn: "mysql:host=localhost;dbname=deskpro"
+  #profiler.storage.username: deskpro
+  #profiler.storage.password: deskpro
+  #profiler.storage.class: Profiler\LiveBundle\Profiler\Storage\MysqlProfilerStorage
+  #profiler.storage.lifetime: 86400
     
 services:
   templating.engine.jsonphp:
