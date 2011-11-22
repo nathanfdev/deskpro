@@ -1,5 +1,10 @@
 <?php return array(
 
+	'agent.misc.change_pic_for' => 'Change picture for for {{name}}',
+	'agent.misc.existing_pic' => 'Existing Picture',
+	'agent.misc.new_pic' => 'New Picture',
+	'agent.misc.set_new_pic' => 'Set as new picture',
+
 	'agent.misc.redirect_title' => 'You are about to leave the helpdesk',
 	'agent.misc.redirect_page_title' => 'Page title',
 	'agent.misc.redirect_page' => 'Page',

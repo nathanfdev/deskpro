@@ -1,34 +1,34 @@
 <header class="list-control-bar">
 	<ul>
-		<li>Ordered by </li>
+		<li>{{ phrase('agent.ordered_by') }} </li>
 		<li class="order-by-menu-trigger"><a class="button"><span class="label">{{ order_by_summary }}</span><em></em></a></li>
 		<li><span class="sep"></span></li>
-		<li>and Grouped by </li>
+		<li>{{ phrase('agent.and_grouped_by') }} </li>
 		<li class="group-by-menu-trigger"><a class="button"><span class="label">{{ grouping_summary|default('None') }}</span><em></em></a></li>
-		<li class="display-options display-options-trigger"><a>Display options</a></li>
-		<li class="detail-view detail-view-trigger"><a class="setupIcon">Detail</a></li>
+		<li class="display-options display-options-trigger"><a></a></li>
+		<li class="detail-view detail-view-trigger"><a class="setupIcon"></a></li>
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
-		<li data-order-by="urgency">Urgency</li>
-		<li data-order-by="date_created">Date Opened</li>
-		<li data-order-by="priority">Priority</li>
+		<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
+		<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
+		<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
 	</ul>
 	<ul style="display: none" class="group-by-menu">
-		<li data-group-by="">None</li>
+		<li data-group-by="">{{ phrase('agent.none') }}</li>
 		<li class="sep">-</li>
-		<li data-group-by="department">Department</li>
-		<li data-group-by="category">Category</li>
-		<li data-group-by="priority">Priority</li>
-		<li data-group-by="product">Product</li>
-		<li data-group-by="workflow">Workflow</li>
-		<li data-group-by="organization">Organization</li>
-		<li data-group-by="language">Language</li>
-		<li data-group-by="urgency">Urgency</li>
-		<li data-group-by="agent">Agent</li>
-		<li data-group-by="agent_team">Agent Team</li>
-		<li data-group-by="time_waiting">Time Waiting</li>
-		<li data-group-by="total_user_waiting">Total Time Waiting</li>
-		<li data-group-by="date_created">Date Created</li>
+		<li data-group-by="department">{{ phrase('agent.department') }}</li>
+		<li data-group-by="category">{{ phrase('agent.category') }}</li>
+		<li data-group-by="priority">{{ phrase('agent.priority') }}</li>
+		<li data-group-by="product">{{ phrase('agent.product') }}</li>
+		<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>
+		<li data-group-by="organization">{{ phrase('agent.organization') }}</li>
+		<li data-group-by="language">{{ phrase('agent.language') }}</li>
+		<li data-group-by="urgency">{{ phrase('agent.urgency') }}</li>
+		<li data-group-by="agent">{{ phrase('agent.agent') }}</li>
+		<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>
+		<li data-group-by="time_waiting">{{ phrase('agent.time_waiting') }}</li>
+		<li data-group-by="total_user_waiting">{{ phrase('agent.total_time_waiting') }}</li>
+		<li data-group-by="date_created">{{ phrase('agent.date_opened') }}</li>
 	</ul>
 </header>

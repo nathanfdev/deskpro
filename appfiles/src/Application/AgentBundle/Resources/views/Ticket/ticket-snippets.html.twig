@@ -6,8 +6,8 @@ pageMeta.ticket_id = {{ ticket.id|default(0) }};
 <div class="ticket-snippets-overlay snippets-overlay" {% if ticket %}data-ticket-id="{{ ticket.id }}"{% endif %}>
 	<nav>
 		<header>
-			<span class="new-category">new category</span>
-			<h4>Categories</h4>
+			<span class="new-category"></span>
+			<h4>{{ phrase('agent.categories') }}</h4>
 		</header>
 		<ul>
 			{% for category in ticket_snippet_cats %}

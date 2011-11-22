@@ -2,13 +2,13 @@
 <div class="pad">
 
 {% if rated_searches.helpful %}
-<h5>Searches where this was rated helpful</h5>
+<h5>{{ phrase('agent.publish.searches_helpful') }}</h5>
 <div class="inner-box-tab-content box-list">
 	<table class="list" cellspacing="0" width="100%">
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
-				<td>Search Terms</td>
-				<td>Frequency</td>
+				<td>{{ phrase('agent.search_terms') }}</td>
+				<td>{{ phrase('agent.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,13 +27,13 @@
 {% endif %}
 
 {% if rated_searches.unhelpful %}
-<h5>Searches where this was rated unhelpful</h5>
+<h5>{{ phrase('agent.publish.searches_unhelpful') }}</h5>
 <div class="inner-box-tab-content box-list">
 	<table class="list" cellspacing="0" width="100%">
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
-				<td>Search Terms</td>
-				<td>Frequency</td>
+				<td>{{ phrase('agent.search_terms') }}</td>
+				<td>{{ phrase('agent.frequency') }}</td>
 			</tr>
 		</thead>
 		<tbody>

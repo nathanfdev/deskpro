@@ -9,7 +9,6 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<div class="by-line">
-				By
 				{% if comment.person %}<a class="with-route person-tip" data-person-id="{{ comment.person.id }}" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
 				{{ comment.user_name }} {% if comment.user_email %}&lt;{{ comment.user_email }}&gt;{% endif %}
 				{% if comment.person %}</a>{% endif %}
@@ -31,10 +30,10 @@
 	</div>
 	<div class="controls-row">
 		<div class="bound-faded"></div>
-		<button class="clean-white small validate-approve">Approve</button>
-		<button class="clean-white small validate-delete">Delete</button>
-		<button class="clean-white small validate-create-ticket">Create Ticket</button>
-		<button class="clean-white small validate-edit">Edit</button>
+		<button class="clean-white small validate-approve">{{ phrase('agent.approve') }}</button>
+		<button class="clean-white small validate-delete">{{ phrase('agent.delete') }}</button>
+		<button class="clean-white small validate-create-ticket">{{ phrase('agent.create_ticket') }}</button>
+		<button class="clean-white small validate-edit">{{ phrase('agent.edit') }}</button>
 	</div>
 </article>
 <div
@@ -44,6 +43,6 @@
 	data-comment-id="{{ comment.id }}"
 >
 	<textarea>{{ comment.content }}</textarea><br />
-	<button class="clean-white small comment-editsave-trigger">Save</button>
-	<button class="clean-white small comment-editcancel-trigger">Cancel</button>
+	<button class="clean-white small comment-editsave-trigger">{{ phrase('agent.save') }}</button>
+	<button class="clean-white small comment-editcancel-trigger">{{ phrase('agent.cancel') }}</button>
 </div>

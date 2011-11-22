@@ -6,7 +6,7 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_recyclebin') }}';
 <div class="content">
 	{% if not tickets_html %}
 		<div class="no-more-results" style="display: block;">
-			There are no items in the recycle bin.
+			{{ phrase('agent.recycle_bin_none') }}
 		</div>
 	{% endif %}
 
@@ -17,7 +17,7 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_recyclebin') }}';
 					<table class="list" cellspacing="0" width="100%">
 						<thead class="display-options-trigger dbl-click-trigger nosel">
 							<tr>
-								<th>Tickets</th>
+								<th>{{ phrase('agent.tickets') }}</th>
 							</tr>
 						</thead>
 						{{tickets_html|raw}}

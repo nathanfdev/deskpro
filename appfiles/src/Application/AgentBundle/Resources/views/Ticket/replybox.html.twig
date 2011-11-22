@@ -40,8 +40,8 @@
 	<header>
 		<nav>
 			<ul>
-				<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">Reply</li>
-				<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type">Note</li>
+				<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.reply') }}</li>
+				<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type">{{ phrase('agent.note') }}</li>
 			</ul>
 		</nav>
 	</header>
@@ -49,23 +49,23 @@
 
 		<nav id="{{replyBaseId}}_header_rows">
 			<ul class="option-buttons">
-				<li class="tipped attach hide-note" title="Add attachments">
+				<li class="tipped attach hide-note" title="{{ phrase('agent.attachments') }}">
 					<input type="file" class="file" name="file-upload" />
-					<span>Attachments</span>
+					<span></span>
 				</li>
-				<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="Insert text snippets"><span>Snippets</span></li>
+				<li class="tipped snippets hide-note" id="{{replyBaseId}}_text_snippets_btn" title="{{ phrase('agent.snippets') }}"><span></span></li>
 			</ul>
 
 			<ul class="option-buttons right">
-				<li class="tipped article toggle hide-note" title="Mark as a pending KB article">
-					<span>Article<em class="check"></em></span>
+				<li class="tipped article toggle hide-note" title="{{ phrase('agent.mark_as_pending_kb') }}">
+					<span><em class="check"></em></span>
 					<input type="checkbox" name="options[do_kbpending]"/>
 				</li>
-				<li class="tipped closetab toggle hide-note" title="Close the ticket tab after reply">
+				<li class="tipped closetab toggle hide-note" title="{{ phrase('agent.tickets.close_tab_after_reply') }}">
 					<span>Close Tab<em class="check"></em></span>
 					<input type="checkbox" name="options[close_tab]" />
 				</li>
-				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">Send</span><span class="hide-reply">Add</span></li>
+				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.send') }}</span><span class="hide-reply">{{ phrase('agent.add') }}</span></li>
 			</ul>
 		</nav>
 		<article>
@@ -74,7 +74,7 @@
 					<li class="to-row hide-note">
 						<label>
 							<span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
-							To:
+							{{ phrase('agent.to') }}:
 						</label>
 						<div>
 							{{ ticket.person.display_name }}
@@ -98,7 +98,7 @@
 						</div>
 					</li>
 					<li class="hide-note">
-						<label>Status:</label>
+						<label>{{ phrase('agent.status') }}:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'open' %}changed{% endif %}">
 							<a class="status-trigger prop-change with-menu-click-position">
 								Change status from {{ phrase('agent.tickets.status_' ~ ticket.status) }} to <span class="new-val-label">{{ phrase('agent.tickets.status_pending') }}</span>
@@ -109,7 +109,7 @@
 						</div>
 					</li>
 					<li class="hide-note">
-						<label>Assign:</label>
+						<label>{{ phrase('agent.assign') }}:</label>
 						<div id="{{replyBaseId}}_assign_detail">
 							<a id="{{replyBaseId}}_assign_btn" class="with-menu-click-position">
 							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
@@ -161,7 +161,7 @@
 						</div>
 					</li>
 					<li class="hide-reply" style="display: none">
-						<label>Followers:</label>
+						<label>{{ phrase('agent.followers') }}:</label>
 						<div id="{{replyBaseId}}_assign_followers">
 							<a id="{{replyBaseId}}_assign_followers_btn" class="with-menu-click-position">
 							<span id="{{replyBaseId}}_assign_followers_detail">
@@ -181,7 +181,7 @@
 						</div>
 					</li>
 					<li id="{{replyBaseId}}_attach_row" class="attach-row hide-note is-hidden" style="display: none">
-						<label><span>Attachments</span></label>
+						<label><span>{{ phrase('agent.attachments') }}</span></label>
 						<div>
 							<ul class="files"></ul>
 							<br class="clear"/>
@@ -189,7 +189,7 @@
 					</li>
 				</ul>
 				<div class="input-wrap">
-					<textarea placeholder="Enter your message..." id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
+					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
 				</div>
 			</section>
 		</article>
@@ -198,19 +198,19 @@
 </div>
 
 <script class="template-upload" type="text/x-jquery-tmpl">
-	<li class="uploading">${name} (uploading)</li>
+	<li class="uploading">${name} ({{ phrase('agent.loading_saving') }})</li>
 </script>
 <script class="template-download" type="text/x-jquery-tmpl">
 	<li>
 		<input type="hidden" name="attach[]" value="${blob_id}" />
-		<em class="remove-attach-trigger">remove attachment</em>
+		<em class="remove-attach-trigger"></em>
 		<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
 	</li>
 </script>
 
 
 <ul style="display: none" id="{{replyBaseId}}_status_menu">
-	<li data-status="no-change">Keep current status: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
+	<li data-status="no-change">{{ phrase('agent.tickets.keep_current_status') }}: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
 	{% if ticket.status != 'open' %}<li data-status="open">{{ phrase('agent.tickets.status_open') }}</li>{% endif %}
 	{% if ticket.status != 'pending' %}<li data-status="pending">{{ phrase('agent.tickets.status_pending') }}</li>{% endif %}
 	{% if ticket.status != 'resolved' %}<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>{% endif %}
@@ -219,24 +219,24 @@
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
 	<header>
-		<h4>Assignments and Followers</h4>
+		<h4>{{ phrase('agent.assignments') }}</h4>
 		<span class="close close-trigger"></span>
 	</header>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>Agents</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<h3>{{ phrase('agent.agents') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
 					<input type="radio" name="{{replyBaseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
 				</li>
 
 				<li>
 					<input type="radio" name="{{replyBaseId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -254,8 +254,8 @@
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
-				<h3>Teams</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<h3>{{ phrase('agent.label_teams') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}
@@ -286,13 +286,13 @@
 	<div class="col">
 		<section data-section-name="followers">
 			<header>
-				<h3>Followers</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<h3>{{ phrase('agent.followers') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 					<input type="checkbox" name="{{replyBaseId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -309,24 +309,24 @@
 	</div>
 	<br class="clear" />
 	<footer>
-		<button class="save-trigger">Apply</button>
+		<button class="save-trigger">{{ phrase('agent.apply') }}</button>
 	</footer>
 </div>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_followers_selector">
 	<header>
-		<h4>Followers</h4>
+		<h4>{{ phrase('agent.followers') }}</h4>
 		<span class="close close-trigger"></span>
 	</header>
 	<section data-section-name="followers">
 		<header>
-			<h3>Followers</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<h3>{{ phrase('agent.followers') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 				<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
 			</li>
 
 			{% for agent in agents %}
@@ -341,7 +341,7 @@
 		</ul>
 	</section>
 	<footer>
-		<button class="save-trigger">Apply</button>
+		<button class="save-trigger">{{ phrase('agent.apply') }}</button>
 	</footer>
 </div>
 

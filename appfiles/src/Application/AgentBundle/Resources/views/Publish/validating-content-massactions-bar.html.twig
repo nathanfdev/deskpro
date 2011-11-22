@@ -1,10 +1,10 @@
 <header class="list-selection-bar">
 	<input type="checkbox" class="selection-control" /> <span class="selected-count">0</span> selected
 	<a class="perform-action perform-actions-trigger disabled">
-		<span>Perform Action</span>
+		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>
 	<ul class="actions-menu" style="display: none">
-		<li data-action="approve">Approve Selected</li>
-		<li data-action="disapprove">Decline Selected</li>
+		<li data-action="approve">{{ phrase('agent.approve') }}</li>
+		<li data-action="disapprove">{{ phrase('agent.delete') }}</li>
 	</ul>
 </header>

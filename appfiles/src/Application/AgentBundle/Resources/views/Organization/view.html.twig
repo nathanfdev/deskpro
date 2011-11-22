@@ -35,7 +35,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="titlewrap">
 		<h1>
 			<span class="editable person-name-editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default('Double-click to set Name') }}</span>
-			<span class="edit-name-gear">edit name</span>
+			<span class="edit-name-gear"></span>
 			<div id="{{baseId}}_editname" style="display: none">
 				<input type="hidden" name="action" value="name" />
 				<input type="text" size="20" name="name" value="{{ org.name }}" />

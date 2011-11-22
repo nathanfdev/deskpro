@@ -5,11 +5,11 @@
 >
 	<header>
 		<div class="controls">
-			<div class="is-loading">Saving</div>
-			<div class="saved" style="display: none">Saved</div>
-			<div class="save" style="display: none">Save</div>
+			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+			<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+			<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 		</div>
-		<h4>Summary</h4>
+		<h4>{{ phrase('agent.summary') }}</h4>
 	</header>
 	<section>
 		<input type="hidden" name="action" value="set-summary" />
@@ -22,9 +22,9 @@
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_members_tab" class="on">Members <span class="count" id="{{baseId}}_members_count">{{members_count|default(0)}}</span></li>
+				<li data-tab-for="#{{baseId}}_members_tab" class="on">{{ phrase('agent.members') }} <span class="count" id="{{baseId}}_members_count">{{members_count|default(0)}}</span></li>
 				{% if org_tickets_count %}
-					<li data-tab-for="#{{baseId}}_tickets_tab">Tickets <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
+					<li data-tab-for="#{{baseId}}_tickets_tab">{{ phrase('agent.tickets') }} <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
 				{% endif %}
 			</ul>
 		</nav>
@@ -54,7 +54,7 @@
 									</a></li>
 								</script>
 								<div class="input-wrapper">
-									<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="Add a person to this organization" class="user-input" />
+									<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('agent.org.add_person') }}" class="user-input" />
 								</div>
 								<input type="hidden" name="person_id" class="person-id" value="" />
 								<div class="person-search-box" style="display: none">
@@ -63,7 +63,7 @@
 
 										</ul>
 										<footer>
-											<span class="create-user">Create a new person</span>
+											<span class="create-user">{{ phrase('agent.create_a_new_person') }}</span>
 										</footer>
 									</section>
 								</div>
@@ -81,8 +81,8 @@
 							</div>
 							<div class="controls">
 								<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
-								<button class="clean-white small" id="{{baseId}}_newmember_btn">Add</button>
-								<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">Cancel</button>
+								<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.add') }}</button>
+								<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.cancel') }}</button>
 							</div>
 						</td>
 					</tr>
@@ -107,7 +107,7 @@
 										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
 									</div>
 									<div class="line">
-										by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}">{{ticket.person.display_name}}</a>
+										<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}">{{ticket.person.display_name}}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
@@ -118,7 +118,9 @@
 					{% if org_tickets|length < org_tickets_count %}
 						<tr class="more">
 							<td colspan="100">
-								<button class="clean-white" id="{{baseId}}_tickets_viewall">View all {{ org_tickets_count }} tickets</button>
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">
+									{{ phrase('agent.view_all_x_tickets', {'count':org_tickets_count}) }}
+								</button>
 							</td>
 						</tr>
 					{% endif %}
@@ -135,7 +137,7 @@
 		<nav>
 			<ul>
 				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
-				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>{% endif %}
+				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -156,13 +158,13 @@
 					>
 						<header>
 							<div class="controls">
-								<div class="is-loading">Saving</div>
-								<div class="saved" style="display: none">Saved</div>
-								<div class="save" style="display: none">Save</div>
+								<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+								<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+								<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 							</div>
-							<h3>New Note</h3>
+							<h3>{{ phrase('agent.new_note') }}</h3>
 						</header>
-						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter note ..."></textarea></div>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder=""></textarea></div>
 					</li>
 				</ul>
 			</div>
@@ -180,14 +182,14 @@
 								{{ action.person.display_name }}
 							</a>
 							{% if action.action_type == 'registered' %}
-								Registered an account
+								{{ phrase('agent.people.act_reg') }}
 							{% elseif action.action_type == 'new_ticket' %}
-								Submitted a new ticket
+								{{ phrase('agent.people.act_submitted_ticket') }}
 								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 									{{ action.details.subject }}
 								</a>
 							{% elseif action.action_type == 'new_ticket_reply' %}
-								Replied to ticket
+								{{ phrase('agent.people.act_replied_ticket') }}
 								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 									{{ action.details.subject }}
 								</a>

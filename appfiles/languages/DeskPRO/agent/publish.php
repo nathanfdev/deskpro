@@ -34,6 +34,9 @@
 
 	'agent.publish.glossary' => 'Glossary',
 	'agent.publish.add_new_glossary' => 'Add new glossary word',
+	'agent.publish.edit_new_glossary' => 'Edit new glossary word',
+	'agent.publish.word_title' => 'Word title',
+	'agent.publish.word_def' => 'Word defintion',
 
 	'agent.publish.votes' => 'Votes',
 
@@ -43,4 +46,22 @@
 	'agent.publish.who_voted_show_people' => 'Show people and contacts',
 	'agent.publish.who_voted_show_guests' => 'Show guests',
 	'agent.publish.who_voted_none' => 'No one has voted yet',
+
+	'agent.publish.draft_revision' => 'Change',
+	'agent.publish.draft_new' => 'New',
+
+	'agent.publish.searches_helpful' => 'Searches where this was rated helpful',
+	'agent.publish.searches_unhelpful' => 'Searches where this was rated unhelpful',
+	'agent.publish.searches_recent' => 'Recent Searches',
+	'agent.publish.searches_popular' => 'Popular Searches',
+	'agent.publish.searches_popular_low' => 'Popular Searches With Low Results',
+	'agent.publish.searches_last_100' => '100 most recent searches',
+	'agent.publish.searches_most_popular_terms' => 'The most popular search terms',
+	'agent.publish.searches_most_popular_low' => 'The most popular search terms that returned the least results',
+
+	'agent.publish.comments_to_validate' => 'Comments To Validate',
+	'agent.publish.content_to_validate' => 'Content To Validate',
+	'agent.publish.pending_articles' => 'Pending Articles',
+	'agent.publish.draft_content' => 'Drafts',
+	'agent.publish.search_logs' => 'Search Logs',
 );

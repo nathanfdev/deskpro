@@ -10,13 +10,13 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="list-grouping-bar">
 	<ul id="{{ baseId }}_tabs">
 		<li data-tab-for="#{{ baseId }}_recentsearches" class="on">
-			<a>Recent Searches</a>
+			<a>{{ phrase('agent.publish.searches_recent') }}</a>
 		</li>
 		<li data-tab-for="#{{ baseId }}_popularsearches">
-			<a>Popular Searchs</a>
+			<a>{{ phrase('agent.publish.searches_popular') }}</a>
 		</li>
 		<li data-tab-for="#{{ baseId }}_popularlowsearches">
-			<a>Popular Searches With Low Results</a>
+			<a>{{ phrase('agent.publish.searches_popular_low') }}</a>
 		</li>
 	</ul>
 	<br style="clear: both; height: 1px; overflow: hidden; "/>
@@ -25,15 +25,15 @@ pageMeta.baseId = '{{ baseId }}';
 <div id="{{ baseId }}_recentsearches" style="display: none;">
 	<div class="profile-box-container">
 		<header>
-			<h4>100 most recent searches</h4>
+			<h4>{{ phrase('agent.publish.searches_last_100') }}</h4>
 		</header>
 		<section>
 			<article>
 				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<thead>
 						<tr>
-							<th>Search Terms</th>
-							<th width="100">Matches</th>
+							<th>{{ phrase('agent.search_terms') }}</th>
+							<th width="100">{{ phrase('agent.matches') }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -53,7 +53,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div id="{{ baseId }}_popularsearches" style="display: none;">
 	<div class="profile-box-container">
 		<header>
-			<h4>The most popular search terms</h4>
+			<h4>{{ phrase('agent.publish.searches_most_popular_terms') }}</h4>
 		</header>
 		<section>
 			<article>
@@ -61,8 +61,8 @@ pageMeta.baseId = '{{ baseId }}';
 					<thead>
 						<tr>
 							<th>Search Terms</th>
-							<th width="100">Frequency</th>
-							<th width="100">Matches</th>
+							<th width="100">{{ phrase('agent.frequency') }}</th>
+							<th width="100">{{ phrase('agent.matches') }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -83,16 +83,16 @@ pageMeta.baseId = '{{ baseId }}';
 <div id="{{ baseId }}_popularlowsearches" style="display: none;">
 	<div class="profile-box-container">
 		<header>
-			<h4>The most popular search terms that returned the least results</h4>
+			<h4>{{ phrase('agent.publish.searches_most_popular_low') }}</h4>
 		</header>
 		<section>
 			<article>
 				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<thead>
 						<tr>
-							<th>Search Terms</th>
-							<th width="100">Frequency</th>
-							<th width="100">Matches</th>
+							<th>{{ phrase('agent.search_terms') }}</th>
+							<th width="100">{{ phrase('agent.frequency') }}</th>
+							<th width="100">{{ phrase('agent.matches') }}</th>
 						</tr>
 					</thead>
 					<tbody>

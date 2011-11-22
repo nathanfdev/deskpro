@@ -5,7 +5,7 @@
 		data-usergroup-ids="{{ download_cats_usergroups[cat.id]|default([])|join(',') }}"
 	>
 		<span class="edit-cat">edit</span>
-		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>delete</span>
+		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}></span>
 		<span class="sub-toggle">expand</span>
 		<span class="title" data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">
 			<span class="list-counter"

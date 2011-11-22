@@ -1,13 +1,13 @@
 <div class="email-assoc-overlay mass-actions-overlay" data-overlay-apply-class="email-assoc-overlay">
 	<div class="overlay-title">
-		<h4>Email Domain Associations for {{ person.display_name }}</h4>
+		<h4>{{ phrase('agent.org.email_domain_assoc_title', {'name': org.name}) }}</h4>
 	</div>
 	<div class="overlay-content">
 
 		{% if org_email_domains|length %}
 		<div class="profile-box-container emails-exist">
 			<header>
-				<h4>Email Domain Associations</h4>
+				<h4>{{ phrase('agent.org.email_domain_assoc') }}</h4>
 			</header>
 			<section>
 				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -20,18 +20,20 @@
 								<div class="controls-box move-controls">
 									<ul>
 										{% if org_count_domain_nonmembers[domain] %}
-											<li class="move-users">Assoicate {{ org_count_domain_nonmembers[domain] }} users</li>
+											<li class="move-users">{{ phrase('agent.org.email_domain_assoc_move', {'count':org_count_domain_nonmembers[domain]}) }}</li>
 										{% endif %}
 										{% if org_count_domain_takenmembers[domain] %}
-											<li class="move-all-users">Assoicate {{ org_count_domain_takenmembers[domain] }} users that already belong to a different organization</li>
+											<li class="move-all-users">{{ phrase('agent.org.email_domain_assoc_move_all', {'count': org_count_domain_takenmembers[domain]}) }}</li>
 										{% endif %}
 									</ul>
 								</div>
 							{% endif %}
 							<div class="controls-box delete-controls" style="display: none">
 								<ul>
-									<li class="remove-email">Remove email domain</li>
-									{% if org_count_domain_members[domain] %}<li class="remove-email-users">Remove email domain and unassign {{ org_count_domain_members[domain] }} users from this organization</li>{% endif %}
+									<li class="remove-email">{{ phrase('agent.org.email_domain_assoc_remove') }}</li>
+									{% if org_count_domain_members[domain] %}<li class="remove-email-users">
+										{{ phrase('agent.org.email_domain_assoc_remove_users', {'count': org_count_domain_members[domain]}) }}
+									</li>{% endif %}
 								</ul>
 							</div>
 						</td></tr>
@@ -45,13 +47,13 @@
 		<div class="profile-box-container new">
 			<header>
 				<div class="controls">
-					<div class="save" style="display: none">Add</div>
-					<div class="saving" style="display: none">Saving</div>
+					<div class="save" style="display: none">{{ phrase('agent.add') }}</div>
+					<div class="saving" style="display: none">{{ phrase('agent.loading_saving') }}</div>
 				</div>
-				<h4>Add New Domain</h4>
+				<h4>{{ phrase('agent.org.email_domain_assoc_add') }}</h4>
 			</header>
 			<section>
-				<div class="textarea-section"><input type="text" class="integrated new-domain" value="" placeholder="Enter email domain ..." /></div>
+				<div class="textarea-section"><input type="text" class="integrated new-domain" value="" placeholder="" /></div>
 			</section>
 		</div>
 		{# /Box Summary #}

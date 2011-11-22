@@ -1,8 +1,8 @@
 {# Box Contact #}
 <div class="profile-box-container contact">
 	<header>
-		<span class="edit-gear contact-edit">edit</span>
-		<h4>Contact Information</h4>
+		<span class="edit-gear contact-edit"></span>
+		<h4>{{ phrase('agent.people.contact_info') }}</h4>
 	</header>
 	<section>
 		<div class="table-content contact-list contact-list-wrapper">
@@ -17,15 +17,15 @@
 	<header>
 		<div class="controls">
 			<span class="edit-gear prop-edit-trigger"></span>
-			<div class="is-loading">Saving</div>
-			<button class="cancel" style="display: none">Cancel</button>
-			<button class="save" style="display: none">Save</button>
+			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+			<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
+			<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
 		</div>
-		<h4>Properties</h4>
+		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
 	<section>
 		<dl class="table-list">
-			<dt class="type-labels">Labels</dt>
+			<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
 			<dd class="org-tags tags-wrap">
 				<ul data-label-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
 					{% for label in org.labels %}
@@ -45,7 +45,7 @@
 		{% endif %}
 
 		<dl class="table-list">
-			<dt class="type-labels">Created</dt>
+			<dt class="type-labels">{{ phrase('agent.date_created') }}</dt>
 			<dd>
 				<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('M j, Y') }}</time>
 			</dd>
