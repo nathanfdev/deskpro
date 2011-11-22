@@ -16,7 +16,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 * @var array
 	 */
 	protected $table_aliases = array();
-
+	
 	/**
 	 * Override the base, Not allowed to delete when querying for reporting
 	 *
@@ -45,6 +45,44 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 		$this->addTableAlias($from, $alias);
 
 		return parent::from($from, $alias);
+	}
+
+	/**
+	 * Adds a join by its full SQL, example
+	 * LEFT JOIN users AS u ON (t.user_id = u.id)
+	 *
+	 * Avoid using this method unless absolutly required (ie you only have the
+	 * join statement in its full form), use one of the
+	 * more explict join methods such as leftJoin, innerJoin, and rightJoin.
+	 */
+	public function addJoin($fromAlias, $join)
+	{
+		$join = strtolower($join);
+
+		list($joinType, $rest) = explode('join', $join);
+		list($table, $condition) = explode('on', $rest);
+
+		// TODO: AS maynot be used, should always work for ' '
+		list($joinTable, $joinAlias) = explode('as', $table);
+
+		$joinType  = trim($joinType);
+		$joinTable = trim($joinTable);
+		$joinAlias = trim($joinAlias);
+		$condition = trim($condition);
+
+		switch ($joinType) {
+			case 'left':
+				$this->leftJoin($fromAlias, $joinTable, $joinAlias, $condition);
+				break;
+			case 'right':
+				$this->rightJoin($fromAlias, $join, $alias, $condition);
+				break;
+			case 'inner':
+				$this->innerJoin($fromAlias, $join, $alias, $condition);
+				break;
+			default:
+				throw new \Exception("Unsupported join type");
+		}
 	}
 
 	/**

@@ -2,12 +2,19 @@
 
 namespace Application\ReportBundle\Stat\Base;
 
+use Application\ReportBundle\Stat\Searcher\ReportSearchInterface;
+
 interface StatInterface
 {
 	/**
 	 * Initialize the Stat
 	 */
 	public function init();
+
+	/**
+	 * Set the searcher
+	 */
+	public function setSearcher(ReportSearchInterface $searcher);
 
 	/**
 	 * Build the Trend Concept Query. This is the base query that needs
@@ -22,7 +29,7 @@ interface StatInterface
 	 * peform additional processing, etc
 	 */
 	public function processGroupedResults($result);
-	
+
 	/**
 	 * Get the data formatter
 	 */

@@ -3,6 +3,7 @@
 namespace Application\ReportBundle\Stat\DeskPRO;
 
 use Application\ReportBundle\Stat\Base\QueryBuilder;
+use Application\ReportBundle\Stat\Searcher\TicketSearch;
 
 /**
  * Get the number of tickets in 'awaiting_agent' status
@@ -22,6 +23,9 @@ class TicketsAwaitingAgent extends AbstractTicket
 			'user_id'	=> 'User',
 			'rating'	=> 'Rating',
 		));
+
+		// Set the searcher to use, we want the ticket searcher
+		$this->setSearcher(new TicketSearch());
 	}
 
 	public function buildConceptQueries()
@@ -30,9 +34,8 @@ class TicketsAwaitingAgent extends AbstractTicket
 		// TODO: remove the 'open' status check when online db has been
 		// switch to use new 'awaiting_agent status
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) AS ticket_count')
-		      ->from('tickets', 't')
-		      ->where("(t.status = 'open' OR t.status = 'awaiting_agent')");
+		      ->select('COUNT(tickets.id) AS ticket_count')
+		      ->andWhere("(tickets.status = 'open' OR tickets.status = 'awaiting_agent')");
 
 		$this->addQuery('awaiting_agent', $query);
 	}

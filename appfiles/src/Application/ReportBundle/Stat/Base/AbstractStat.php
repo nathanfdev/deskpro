@@ -3,9 +3,24 @@
 namespace Application\ReportBundle\Stat\Base;
 
 use Application\DeskPRO\App;
+use Application\ReportBundle\Stat\Searcher\ReportSearchInterface;
 
 abstract class AbstractStat implements StatInterface
 {
+	/**
+	 * The Stat entity to represent
+	 *
+	 * @var Stat
+	 */
+	protected $stat = null;
+
+	/**
+	 * The searcher to use to build the base query
+	 *
+	 * @vas ReportSearchInterface
+	 */
+	protected $searcher = null;
+
 	/**
 	 * List of available grouping the stat has
 	 *
@@ -45,8 +60,9 @@ abstract class AbstractStat implements StatInterface
 	 */
 	protected $db;
 
-	public function __construct(\DateTime $last_stat_date)
+	public function __construct(Stat $stat, \DateTime $last_stat_date)
 	{
+		$this->stat = $stat;
 		$this->last_stat_date = $last_stat_date;
 
 		$this->db = App::getDb();
@@ -54,6 +70,22 @@ abstract class AbstractStat implements StatInterface
 		$this->results = array('ungrouped' => array(), 'grouped' => array());
 
 		$this->init();
+	}
+
+	/**
+	 * Set the searcher
+	 */
+	public function setSearcher(ReportSearchInterface $searcher)
+	{
+		$this->searcher = $searcher;
+	}
+
+	/**
+	 * Get the searcher
+	 */
+	public function getSearcher()
+	{
+		return $this->searcher;
 	}
 
 	/**
@@ -76,13 +108,27 @@ abstract class AbstractStat implements StatInterface
 	}
 
 	/**
-	 * Create a QueryBuilder object ready to be used
+	 * Create a QueryBuilder object ready to be used. The QueryBuilder
+	 * is initialised with the Searcher query first
 	 *
 	 * @return QueryBuilder
 	 */
 	public function createQuery()
 	{
-		return new QueryBuilder($this->db);
+		if (is_null($this->searcher)) {
+			throw new \Exception("You must supply a searcher");
+		}
+
+		// Process the search terms
+		foreach ($this->stat->getCriteria() as $term) {
+			$this->searcher->addTerm($term['type'], $term['op'], $term['options']);
+		}
+
+		// Create the QueryBuilder and apply the Searcher query to it
+		$query = new QueryBuilder($this->db);
+		$this->searcher->buildQuery($query);
+
+		return $query;
 	}
 
 	protected function addQuery($identifier, QueryBuilder $query)
