@@ -82,4 +82,9 @@ class TicketSearch extends BaseTicketSearch implements ReportSearchInterface
 
 		return $query;
 	}
+
+	public function addGroupBy()
+	{
+		
+	}
 }

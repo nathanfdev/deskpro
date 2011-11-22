@@ -12,18 +12,6 @@ class TicketAssignmentDuration extends AbstractTicket
 	public function init()
 	{
 		parent::init();
-
-		$this->addAvailableGroups(array(
-			'department'	=> 'Department',
-			'category'	=> 'Category',
-			'priority'	=> 'Proprity',
-			'workflow'	=> 'Workflow',
-			'language'	=> 'Language',
-			'agent'		=> 'Agent',
-			'agent_team'	=> 'Agent Team',
-			'user_id'	=> 'User',
-			'rating'	=> 'Rating',
-		));
 	}
 
 	public function buildConceptQueries()

@@ -26,7 +26,7 @@ abstract class AbstractStat implements StatInterface
 	 *
 	 * @var array
 	 */
-	protected $available_grouping = array();
+	protected $available_groupings = array();
 
 	/**
 	 * The queries to execute
@@ -146,7 +146,7 @@ abstract class AbstractStat implements StatInterface
 			$executeQuery = $query;
 
 			if ($with_grouping) {
-				$executeQuery = $this->applyGroupByToQuery($executeQuery);
+				$this->applyGroupByToQuery($executeQuery);
 				$this->results['grouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
 			else {
@@ -158,25 +158,63 @@ abstract class AbstractStat implements StatInterface
 
 	}
 
+	/**
+	 * Apply the group by to the query. We may need to do some additional
+	 * processing such as ensuring the group by field is being selected,
+	 * and limiting the number of results. If any group by fields require
+	 * joining to other tables, override this method in the child class.
+	 *
+	 * @param QueryBuilder $query
+	 */
 	protected function applyGroupByToQuery(QueryBuilder $query)
 	{
-		// We need to return the select group by field
+
 		foreach ($this->grouping as $groupField) {
+			// Check if we are allowed to group by this field
+			if (false === $this->isGroupingFieldAllowed($groupField)) {
+				throw new \Exception("Cannot group by field $groupField. Field is not in the available_groupings list.");
+			}
+
 			list($table, $field) = explode('.', $groupField);
 
 			$alias = $query->getTableAlias($table);
 			$aliasedGroupField = $alias . '.' . $field;
 
+			// We need to return the select group by field
 			if (false === $query->isFieldSelected($aliasedGroupField)) {
 				$query->addSelect($aliasedGroupField . ' AS ' . str_replace('.', '_', $groupField));
 			}
-
 			$query->addGroupBy($aliasedGroupField);
-		}
 
-		return $query;
+			// Check for limit
+			$groupingInfo = $this->getAvailableGrouping($groupField);
+			if (false !== $groupingInfo['limit']) {
+				$query->setMaxResults($groupingInfo['limit']);
+			}
+		}
 	}
 
+	/**
+	 * Checks a group by field is allowed on the query
+	 *
+	 * @param string $field The field to check, format table.field_name
+	 * @return bool
+	 */
+	public function isGroupingFieldAllowed($field)
+	{
+		if (isset($this->available_groupings[$field])) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Get the grouping fields
+	 *
+	 * @return string 
+	 */
 	protected function getGroupingFields()
 	{
 		return join(", ", $this->grouping);
@@ -204,9 +242,22 @@ abstract class AbstractStat implements StatInterface
 	/**
 	 * Get the available groupings
 	 */
-	public function getAvailableGrouping()
+	public function getAvailableGroupings()
 	{
-		return $this->available_grouping;
+		return $this->available_groupings;
+	}
+
+	/**
+	 * Get the available groupings
+	 */
+	public function getAvailableGrouping($group_by)
+	{
+		if (isset($this->available_groupings[$group_by])) {
+			return $this->available_groupings[$group_by];
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
@@ -215,8 +266,8 @@ abstract class AbstractStat implements StatInterface
 	public function removeAvailableGrouping($field_value)
 	{
 		// Remove field from grouping
-		if (isset($this->available_grouping[$field_value])) {
-			unset($this->available_grouping[$field_value]);
+		if (isset($this->available_groupings[$field_value])) {
+			unset($this->available_groupings[$field_value]);
 		}
 	}
 
@@ -226,8 +277,8 @@ abstract class AbstractStat implements StatInterface
 	public function addAvailableGroup($field_value, $field_name)
 	{
 		// Add field to grouping
-		if (false === isset($this->available_grouping[$field_value])) {
-			$this->available_grouping[$field_value] = $field_name;
+		if (false === isset($this->available_groupings[$field_value])) {
+			$this->available_groupings[$field_value] = $field_name;
 		}
 	}
 
