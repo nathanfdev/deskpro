@@ -3,7 +3,9 @@
     pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DealList';
     pageMeta.owner_type = '{{ owner_type }}';
     pageMeta.deal_status = '{{ deal_status }}';
-
+    pageMeta.refreshUrl = '{{path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id })}}';
+    pageMeta.viewType = 'list';
+    
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>
