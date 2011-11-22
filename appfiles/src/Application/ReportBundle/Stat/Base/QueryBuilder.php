@@ -16,7 +16,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 * @var array
 	 */
 	protected $table_aliases = array();
-	
+
 	/**
 	 * Override the base, Not allowed to delete when querying for reporting
 	 *
@@ -75,10 +75,10 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 				$this->leftJoin($fromAlias, $joinTable, $joinAlias, $condition);
 				break;
 			case 'right':
-				$this->rightJoin($fromAlias, $join, $alias, $condition);
+				$this->rightJoin($fromAlias, $joinTable, $joinAlias, $condition);
 				break;
 			case 'inner':
-				$this->innerJoin($fromAlias, $join, $alias, $condition);
+				$this->innerJoin($fromAlias, $joinTable, $joinAlias, $condition);
 				break;
 			default:
 				throw new \Exception("Unsupported join type");
