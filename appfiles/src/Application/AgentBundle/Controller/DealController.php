@@ -152,7 +152,6 @@ class DealController extends AbstractController
                 if($set_group_option)
                 {
                     $deals = $deal_repository->filterGroupByDealsForPerson($person, $statusArr[$deal_status], $deal_type_id, $group_by, $set_group_option);
-
                 }
             }
 
@@ -161,7 +160,11 @@ class DealController extends AbstractController
             $deals = $deal_repository->filterDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $order_by);
 
             if($group_by){
+
                 $deal_group_info = $deal_repository->groupByDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $group_by);
+                if($deal_group_info){
+                    $deals = $deal_repository->filterGroupByDealsForOther($person, $statusArr[$deal_status], $deal_type_id, $group_by, $set_group_option);
+                }
             }
 
         }
