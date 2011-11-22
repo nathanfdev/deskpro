@@ -11,6 +11,8 @@ class TicketAssignmentDuration extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -27,7 +29,7 @@ class TicketAssignmentDuration extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		// Need to query the ticket log for this, Interested in the AVG time
-		$query = new QueryBuilder();
+		$query = $this->createQuery();
 
 		$this->addQuery($query);
 	}

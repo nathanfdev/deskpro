@@ -11,6 +11,8 @@ class ReopenedTickets extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',

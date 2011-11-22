@@ -3,7 +3,6 @@
 namespace Application\ReportBundle\Stat\DeskPRO;
 
 use Application\ReportBundle\Stat\Base\QueryBuilder;
-use Application\ReportBundle\Stat\Searcher\TicketSearch;
 
 /**
  * Get the number of tickets in 'awaiting_agent' status
@@ -12,6 +11,8 @@ class TicketsAwaitingAgent extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -23,9 +24,6 @@ class TicketsAwaitingAgent extends AbstractTicket
 			'user_id'	=> 'User',
 			'rating'	=> 'Rating',
 		));
-
-		// Set the searcher to use, we want the ticket searcher
-		$this->setSearcher(new TicketSearch());
 	}
 
 	public function buildConceptQueries()

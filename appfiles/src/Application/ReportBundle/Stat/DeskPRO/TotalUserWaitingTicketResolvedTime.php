@@ -11,6 +11,8 @@ class TotalUserWaitingTicketResolvedTime extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -29,19 +31,17 @@ class TotalUserWaitingTicketResolvedTime extends AbstractTicket
 		// AVG time
 		// Get the total time a user was waiting before resolution
 		$query = $this->createQuery()
-		      ->select('SUM(t.total_user_waiting) AS user_waiting')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->select('SUM(tickets.total_user_waiting) AS user_waiting')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 		$this->addQuery('ticket_waiting_time', $query);
 
 		// Get the number of tickets resolved
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) as ticket_count')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->select('COUNT(tickets.id) as ticket_count')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_resolved', $query);

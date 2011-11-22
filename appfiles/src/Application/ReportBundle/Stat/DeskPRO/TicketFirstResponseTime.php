@@ -11,6 +11,8 @@ class TicketFirstResponseTime extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -29,19 +31,17 @@ class TicketFirstResponseTime extends AbstractTicket
 		// AVG time
 		// Get the total time for first response
 		$query = $this->createQuery()
-		      ->select('SUM(t.total_to_first_reply) AS first_response_total')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_first_agent_reply) > :date_first_agent_reply')
+		      ->select('SUM(tickets.total_to_first_reply) AS first_response_total')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_first_agent_reply) > :date_first_agent_reply')
 		      ->setParameter(':date_first_agent_reply', $this->last_stat_date->format('U'));
 		$this->addQuery('ticket_first_response_time', $query);
 
 		// Get the number of tickets resolved
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) as ticket_count')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_first_agent_reply) > :date_first_agent_reply')
+		      ->select('COUNT(tickets.id) as ticket_count')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_first_agent_reply) > :date_first_agent_reply')
 		      ->setParameter(':date_first_agent_reply', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_replied_to', $query);

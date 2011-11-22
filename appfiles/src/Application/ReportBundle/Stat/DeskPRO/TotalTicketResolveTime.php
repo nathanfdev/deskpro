@@ -11,6 +11,8 @@ class TotalTicketResolveTime extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -28,19 +30,17 @@ class TotalTicketResolveTime extends AbstractTicket
 	{
 		// Get the total time taken to resolve a ticket
 		$query = $this->createQuery()
-		      ->select('SUM(UNIX_TIMESTAMP(t.date_resolved) - UNIX_TIMESTAMP(t.date_created)) AS resolve_time')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->select('SUM(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created)) AS resolve_time')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 		$this->addQuery('ticket_resolve_time', $query);
 
 		// Get the number of tickets resolved
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) as ticket_count')
-		      ->from('tickets', 't')
-		      ->where("t.date_resolved IS NOT NULL")
-		      ->andWhere('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->select('COUNT(tickets.id) as ticket_count')
+		      ->where("tickets.date_resolved IS NOT NULL")
+		      ->andWhere('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_resolved', $query);

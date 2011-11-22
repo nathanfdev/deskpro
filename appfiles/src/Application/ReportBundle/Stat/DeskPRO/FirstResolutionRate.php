@@ -12,6 +12,8 @@ class FirstResolutionRate extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -27,7 +29,7 @@ class FirstResolutionRate extends AbstractTicket
 
 	public function buildConceptQueries()
 	{
-		$query = new QueryBuilder();
+		$query = $this->createQuery();
 
 		$this->addQuery($query);
 	}

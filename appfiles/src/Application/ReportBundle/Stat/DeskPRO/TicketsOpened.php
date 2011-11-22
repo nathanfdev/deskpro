@@ -11,6 +11,8 @@ class TicketsOpened extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -28,9 +30,8 @@ class TicketsOpened extends AbstractTicket
 	{
 		// timestamp_opened < x < NOW
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) AS ticket_count')
-		      ->from('tickets', 't')
-		      ->where('UNIX_TIMESTAMP(t.date_created) > :date_created')
+		      ->select('COUNT(tickets.id) AS ticket_count')
+		      ->where('UNIX_TIMESTAMP(tickets.date_created) > :date_created')
 		      ->setParameter(':date_created', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_opened', $query);

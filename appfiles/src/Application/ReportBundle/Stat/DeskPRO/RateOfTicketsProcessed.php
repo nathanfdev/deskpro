@@ -12,6 +12,8 @@ class RateOfTicketsProcessed extends AbstractTicket
 {
 	public function init()
 	{
+		parent::init();
+
 		$this->addAvailableGroups(array(
 			'department'	=> 'Department',
 			'category'	=> 'Category',
@@ -31,18 +33,16 @@ class RateOfTicketsProcessed extends AbstractTicket
 
 		// Get the opened ticket since the last check
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) AS ticket_count')
-		      ->from('tickets', 't')
-		      ->where('UNIX_TIMESTAMP(t.date_created) > :date_created')
+		      ->select('COUNT(tickets.id) AS ticket_count')
+		      ->where('UNIX_TIMESTAMP(tickets.date_created) > :date_created')
 		      ->setParameter(':date_created', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_opened', $query);
 
 		// Get the resolved tickets since the last check
 		$query = $this->createQuery()
-		      ->select('COUNT(t.id) AS ticket_count')
-		      ->from('tickets', 't')
-		      ->where('UNIX_TIMESTAMP(t.date_resolved) > :date_resolved')
+		      ->select('COUNT(tickets.id) AS ticket_count')
+		      ->where('UNIX_TIMESTAMP(tickets.date_resolved) > :date_resolved')
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 
 		$this->addQuery('tickets_resolved', $query);
@@ -82,7 +82,7 @@ class RateOfTicketsProcessed extends AbstractTicket
 				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
-		
+
 		return $processedResults;
 	}
 }
