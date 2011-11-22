@@ -37,7 +37,7 @@ class TicketsOpened extends AbstractTicket
 		foreach ($results['tickets_opened'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

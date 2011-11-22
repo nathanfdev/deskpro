@@ -101,7 +101,7 @@ class GenerateStats extends AbstractJob
 			// Check if existing StatValueGroup is set for period and reference
 			$stat_value_group = $stat_value->getStatValueGroupForDate(
 				new \DateTime(),
-				$grouped['grouping_id'],
+				$grouped['grouping_ref'],
 				$stat->getRunFrequency()
 			);
 
@@ -110,7 +110,7 @@ class GenerateStats extends AbstractJob
 				$stat_value_group->setStatValue($stat_value);
 			}
 			$stat_value_group->setValue($grouped['value']);
-			$stat_value_group->setGroupingId($grouped['grouping_id']);
+			$stat_value_group->setGroupingRef($grouped['grouping_ref']);
 			$stat_value_group->setStatUnix(time());
 			$this->orm->persist($stat_value_group);
 		}

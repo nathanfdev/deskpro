@@ -17,8 +17,8 @@ class TotalTicketMessages extends AbstractTicket
 	public function buildConceptQueries()
 	{
 		$query = $this->createQuery()
-		      ->select('COUNT(ticket_messages.id) AS message_count')
-		      ->innerJoin('tickets', 'tickets_messages', 'ticket_messages', 'tm.ticket_id = tickets.id');
+		      ->select('COUNT(tickets_messages.id) AS message_count')
+		      ->innerJoin('tickets', 'tickets_messages', 'tickets_messages', 'tickets_messages.ticket_id = tickets.id');
 
 		$this->addQuery('ticket_messages', $query);
 	}
@@ -35,7 +35,7 @@ class TotalTicketMessages extends AbstractTicket
 		foreach ($results['ticket_messages'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['message_count'],
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

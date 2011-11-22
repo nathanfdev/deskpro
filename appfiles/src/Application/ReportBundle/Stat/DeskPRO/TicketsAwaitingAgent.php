@@ -38,7 +38,7 @@ class TicketsAwaitingAgent extends AbstractTicket
 		foreach ($results['awaiting_agent'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

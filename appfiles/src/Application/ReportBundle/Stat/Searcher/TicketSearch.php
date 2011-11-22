@@ -70,7 +70,9 @@ class TicketSearch extends BaseTicketSearch implements ReportSearchInterface
 		if (!empty($ticket_parts['wheres'])) {
 			//$where .= implode(" AND ", $ticket_parts['wheres']);
 			foreach ($ticket_parts['wheres'] as $where) {
-				$query->andWhere($where);
+				if ("tickets.status != 'hidden'" != $where) {
+					$query->andWhere($where);
+				}
 			}
 		}
 		if (!empty($user_parts['wheres'])) {

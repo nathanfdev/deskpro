@@ -31,7 +31,7 @@ abstract class AbstractTicket extends AbstractStat
                         'tickets.person_id'             => array('label' => 'Person', 'limit' => false),
 
                         // Advanced groupings
-                        'labels_tickets.label'                  => array('label' => 'Label', 'limit' => 2),
+                        'labels_tickets.label'                  => array('label' => 'Label', 'limit' => 20),
                         'person2usergroups.usergroup_id'        => array('label' => 'User Group', 'limit' => 20),
 		));
         }
@@ -48,17 +48,27 @@ abstract class AbstractTicket extends AbstractStat
 	{
                 parent::applyGroupByToQuery($query);
 
-                // Some group by fields require joins to other tables
+                // Some group by fields require joins to other tables, or other conditions
 
                 foreach ($this->grouping as $groupField) {
 
 			switch ($groupField) {
+                                case 'tickets.product_id':
+                                        // Only get the top level products
+                                        $query->leftJoin('tickets', 'products', 'products', 'tickets.product_id = products.id')
+                                              ->andWhere('products.parent_id IS NULL');
+                                        break;
+                                case 'tickets.language_id':
+                                        // Only get the top level languages
+                                        $query->leftJoin('tickets', 'languages', 'languages', 'tickets.language_id = languages.id')
+                                              ->andWhere('languages.parent_id IS NULL');
+                                        break;
                                 // These fields require joining to additional tables
                                 case 'labels_tickets.label':
-                                        $query->innerJoin('tickets', 'labels_tickets', 'labels_tickets', 'tickets.id = labels_tickets.ticket_id');
+                                        $query->leftJoin('tickets', 'labels_tickets', 'labels_tickets', 'tickets.id = labels_tickets.ticket_id');
                                         break;
                                 case 'person2usergroups.usergroup_id':
-                                        $query->innerJoin('tickets', 'person2usergroups', 'person2usergroups', 'tickets.person_id = person2usergroups.usergroup_id');
+                                        $query->leftJoin('tickets', 'person2usergroups', 'person2usergroups', 'tickets.person_id = person2usergroups.usergroup_id');
                                         break;
                         }
 		}

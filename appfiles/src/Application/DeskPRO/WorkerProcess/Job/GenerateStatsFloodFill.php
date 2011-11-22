@@ -137,7 +137,7 @@ class GenerateStatsFloodFill extends AbstractJob
 			// Check if existing StatValueGroup is set for period and reference
 			$stat_value_group = $stat_value->getStatValueGroupForDate(
 				$this->date_time,
-				$grouped['grouping_id'],
+				$grouped['grouping_ref'],
 				$stat->getRunFrequency()
 			);
 
@@ -146,7 +146,7 @@ class GenerateStatsFloodFill extends AbstractJob
 				$stat_value_group->setStatValue($stat_value);
 			}
 			$stat_value_group->setValue($grouped['value'] + rand(0, 20));
-			$stat_value_group->setGroupingId($grouped['grouping_id']);
+			$stat_value_group->setGroupingRef($grouped['grouping_ref']);
 			$stat_value_group->setStatUnix($this->date_time->format('U'));
 			$this->orm->persist($stat_value_group);
 		}

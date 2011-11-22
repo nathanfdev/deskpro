@@ -65,7 +65,7 @@ class TotalUserWaitingTicketResolvedTime extends AbstractTicket
 
 			$processedResults[] = array(
 				'value'       => ($resolvedCount != 0) ? $result['user_waiting'] / $resolvedCount : 0,
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

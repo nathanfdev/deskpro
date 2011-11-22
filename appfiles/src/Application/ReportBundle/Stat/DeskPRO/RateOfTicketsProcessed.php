@@ -67,7 +67,7 @@ class RateOfTicketsProcessed extends AbstractTicket
 
 			$processedResults[] = array(
 				'value'       => ($resolvedCount != 0) ? number_format($result['ticket_count'] / $resolvedCount, 2) : $result['ticket_count'],
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

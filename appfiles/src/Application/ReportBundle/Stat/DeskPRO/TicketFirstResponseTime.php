@@ -65,7 +65,7 @@ class TicketFirstResponseTime extends AbstractTicket
 
 			$processedResults[] = array(
 				'value'       => ($repliedCount != 0) ? $result['first_response_total'] / $repliedCount : 0,
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 

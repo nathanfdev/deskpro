@@ -46,7 +46,20 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * display_column: The column to use in the table
 	 */
 	protected static $groupingReferences = array(
-		'tickets.agent_id' => array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
+		'tickets.department_id'	        	=> array('label' => 'Department', 'table' => 'departments', 'display_column' => 'title'),
+		'tickets.category_id'	        	=> array('label' => 'Category', 'table' => 'ticket_categories', 'display_column' => 'title'),
+		'tickets.priority_id'	        	=> array('label' => 'Priority', 'table' => 'ticket_priorities', 'display_column' => 'title'),
+		'tickets.workflow_id'	        	=> array('label' => 'Workflow', 'table' => 'ticket_workflows', 'display_column' => 'title'),
+		'tickets.product_id'            	=> array('label' => 'Product', 'table' => 'products', 'display_column' => 'title'),
+		'tickets.language_id'	        	=> array('label' => 'Language', 'table' => 'languages', 'display_column' => 'title'),
+		'tickets.agent_id'              	=> array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
+		'tickets.agent_team_id'	        	=> array('label' => 'Agent Team', 'table' => 'agent_teams', 'display_column' => 'name'),
+		'tickets.date_created'          	=> array('label' => 'Date Created', 'table' => null, 'display_column' => null),
+		'tickets.organization_id'      		=> array('label' => 'Organization', 'table' => 'organizations', 'display_column' => 'name'),
+		'tickets.person_id'             	=> array('label' => 'Person', 'table' => 'people', 'display_column' => 'first_name'),
+		'labels_tickets.label'          	=> array('label' => 'Label', 'table' => null, 'display_column' => null),
+		'person2usergroups.usergroup_id'	=> array('label' => 'User Group', 'table' => 'usergroups', 'display_column' => 'title'),
+
 	);
 
 	/**
@@ -500,7 +513,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$table 		= $groupingInformation['table'];
 		$displayColumn 	= $groupingInformation['display_column'];
 
-		$refefencesIds  = $this->getGroupingReferenceIds($stat_value_ids);
+		$refefencesIds = array();
+		// Only do the reference lookup if there is a table to look in.
+		// Some group by fields store the label directly with in
+		// StatValueGroup.grouping_ref field
+		if (false === is_null($table)) {
+			$refefencesIds  = $this->getGroupingReferenceIds($stat_value_ids);
+		}
 
 		$lookup = array();
 		if (count($refefencesIds)) {
@@ -582,7 +601,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Get the lookup data for the labels
 		$lookup = $this->getReferenceLookup($stat_value_ids);
-
+		
 		$data = array();
 
 		foreach ($stat_value_ids as $stat_value_id) {
@@ -593,12 +612,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 			// Transform the raw data
 			foreach ($raw as $raw_row) {
-				if (false === isset($data[$raw_row['grouping_id']])) {
+				if (false === isset($data[$raw_row['grouping_ref']])) {
 					$label = '';
-					// Get the label, check the grouping_id is set, could
-					// be a NULL reference
-					if (isset($lookup[$raw_row['grouping_id']])) {
-						$label = $lookup[$raw_row['grouping_id']];
+					// Get the label, check the grouping_ref is set, could
+					// be a NULL reference, or may not require lookup
+					if (isset($lookup[$raw_row['grouping_ref']])) {
+						$label = $lookup[$raw_row['grouping_ref']];
+					}
+					// The grouping_ref its self is the label, there
+					// is no lookup required
+					elseif (strlen($raw_row['grouping_ref']) > 0) {
+						$label = $raw_row['grouping_ref'];
 					}
 					else {
 						// Get the grouping name
@@ -610,13 +634,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					// generated stats as far as 5 years ago
 					$values = array_fill_keys($data_points, null);
 
-					$data[$raw_row['grouping_id']] = array(
+					$data[$raw_row['grouping_ref']] = array(
 						'label'  => $label,
 						'values' => $values,
 					);
 				}
 
-				$data[$raw_row['grouping_id']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
+				$data[$raw_row['grouping_ref']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
 			}
 		}
 
