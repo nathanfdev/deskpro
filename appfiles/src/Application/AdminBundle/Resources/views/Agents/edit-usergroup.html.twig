@@ -1,42 +1,50 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentUsergroupEdit.js') }}"></script>
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+<h1>{% if usergroup.id %}Edit Permission Group{% else %}New Permission Group{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_agents') }}">&larr; Back to Agents</a>
+	</nav>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentUsergroupEdit({{usergroup.id|default(0)}});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParent({{ usergroup.title|json_encode|raw}}, {{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
-{% block header %}
-	<h1>{% if usergroup.id %}Edit Group{% else %}New Group{% endif %}</h1>
-{% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="usergroup[title]" value="{{usergroup.title}}" />
+		</div>
 	</div>
-	<div class="row">
-		<label>Note / Description</label>
-		{{ form_widget(form.note) }}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Members</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="checkbox-rows">
+				<ul>
+					{% for agent in agents %}
+					<li>
+						<label>
+							<input type="checkbox" name="usergroup[members][]" value="{{ agent.id }}" {% if members[agent.id] %}checked="checked"{% endif %} />
+							{{ agent.display_name }}
+						</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 
-<br /><br />
-
+<button class="btn primary save-trigger">Save</button>
 </form>
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" onclick="return confirm('Are you sure you want to delete this permission group?');">delete permission group</a>
+</div>
 
 {% endblock %}

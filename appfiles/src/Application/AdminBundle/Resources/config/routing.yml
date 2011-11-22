@@ -146,14 +146,6 @@ admin_agents:
   pattern: /agents
   defaults: { _controller: AdminBundle:Agents:agents }
 
-admin_agents_groupbyteam:
-  pattern: /agents/group-by-team
-  defaults: { _controller: AdminBundle:Agents:agents, group_by: "team" }
-
-admin_agents_groupbyusergroup:
-  pattern: /agents/group-by-usergroup
-  defaults: { _controller: AdminBundle:Agents:agents, group_by: "usergroup" }
-
 admin_agents_new:
   pattern: /agents/new
   defaults: { _controller: AdminBundle:Agents:newAgent }
@@ -168,13 +160,23 @@ admin_agents_teams_edit:
   defaults: { _controller: AdminBundle:Agents:editTeam }
   requirements: { team_id: "\d+" }
 
+admin_agents_teams_del:
+  pattern: /agents/teams/{team_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:Agents:deleteTeam }
+  requirements: { team_id: "\d+" }
+
 admin_agents_teams_new:
-  pattern: /agents/groups/new
+  pattern: /agents/teams/new
   defaults: { _controller: AdminBundle:Agents:editTeam, team_id: 0 }
 
 admin_agents_groups_edit:
   pattern: /agents/groups/{usergroup_id}/edit
   defaults: { _controller: AdminBundle:Agents:editGroup }
+  requirements: { usergroup_id: "\d+" }
+
+admin_agents_groups_del:
+  pattern: /agents/groups/{usergroup_id}/delete/{security_token}
+  defaults: { _controller: AdminBundle:Agents:deleteGroup }
   requirements: { usergroup_id: "\d+" }
 
 admin_agents_groups_new:

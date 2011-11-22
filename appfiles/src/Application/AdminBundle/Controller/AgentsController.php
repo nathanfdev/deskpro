@@ -151,20 +151,62 @@ class AgentsController extends AbstractController
 			$team = new Entity\AgentTeam();
 		}
 
-		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$team['name'] = $this->in->getString('team.name');
 
-			App::getOrm()->persist($team);
-			App::getOrm()->flush();
+			$this->em->getConnection()->beginTransaction();
 
-			$row_html = $this->renderView('AdminBundle:Agents:list-teams-row.html.twig', array('team' => $team));
+			try {
+				$team->name = $this->in->getString('team.name');
+				if (!$team->name) {
+					$team->name = 'New Team';
+				}
+
+				$this->em->persist($team);
+				$this->em->flush();
+
+				$this->db->delete('agent_team_members', array('team_id' => $team->id));
+
+				foreach ($this->in->getCleanValueArray('team.members', 'uint', 'discard') as $pid) {
+					$this->db->insert('agent_team_members', array('team_id' => $team->id, 'person_id' => $pid));
+				}
+
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+
+			return $this->redirectRoute('admin_agents');
 		}
+
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
 		return $this->render('AdminBundle:Agents:edit-team.html.twig', array(
 			'team' => $team,
-			'row_html' => $row_html
+			'agents' => $agents
 		));
+	}
+
+	public function deleteTeamAction($team_id, $security_token)
+	{
+		$team = $this->getAgentTeamOr404($team_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_team', $security_token)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->remove($team);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents');
 	}
 
 	############################################################################
@@ -176,31 +218,72 @@ class AgentsController extends AbstractController
 		if (!$usergroup_id) {
 			$usergroup = new Entity\Usergroup();
 		} else {
-			$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find($usergroup_id);
+			$usergroup = $this->getAgentGroupOr404($usergroup_id);
 		}
 
-		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$usergroup['title'] = $this->in->getString('usergroup.title');
-			$usergroup['note'] = $this->in->getString('usergroup.note');
 
-			App::getOrm()->persist($usergroup);
-			App::getOrm()->flush();
+			$this->em->getConnection()->beginTransaction();
 
-			$row_html = $this->renderView('AdminBundle:Agents:list-usergroups-row.html.twig', array('usergroup' => $usergroup));
+			try {
+				$usergroup->title = $this->in->getString('usergroup.title');
+				$usergroup->is_agent_group = true;
+
+				$this->em->persist($usergroup);
+				$this->em->flush();
+
+				$this->db->delete('person2usergroups', array('usergroup_id' => $usergroup->id));
+
+				foreach ($this->in->getCleanValueArray('usergroup.members', 'uint', 'discard') as $pid) {
+					$this->db->insert('person2usergroups', array('usergroup_id' => $usergroup->id, 'person_id' => $pid));
+				}
+
+				$this->em->getConnection()->commit();
+
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+
+			return $this->redirectRoute('admin_agents');
 		}
 
-		$form = new Form\Form('usergroup');
-		$form->add(new Form\TextField('title', array('data' => $usergroup['title'])));
-		$form->add(new Form\TextareaField('note', array('data' => $usergroup['note'])));
+		if ($usergroup_id) {
+			$members = $this->em->getRepository('DeskPRO:Person')->getUsergroupMembers($usergroup);
+		} else {
+			$members = array();
+		}
+
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
 		return $this->render('AdminBundle:Agents:edit-usergroup.html.twig', array(
 			'usergroup' => $usergroup,
-			'form'      => $form,
-			'row_html'  => $row_html
+			'members' => $members,
+			'agents' => $agents
 		));
 	}
 
+	public function deleteGroupAction($usergroup_id, $security_token)
+	{
+		$usergroup = $this->getAgentGroupOr404($usergroup_id);
+
+		if (!$this->session->getEntity()->checkSecurityToken('delete_group', $security_token)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->remove($usergroup);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents');
+	}
 
 	############################################################################
 
@@ -215,5 +298,18 @@ class AgentsController extends AbstractController
 		}
 
 		return $team;
+	}
+
+	/**
+	 * @return Application\DeskPRO\Entity\Usergroup
+	 */
+	protected function getAgentGroupOr404($id)
+	{
+		$ug = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+		if (!$ug || !$ug->is_agent_group) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no usergroup with ID $id");
+		}
+
+		return $ug;
 	}
 }

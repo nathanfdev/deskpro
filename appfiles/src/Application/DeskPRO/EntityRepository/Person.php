@@ -13,6 +13,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 
 use Orb\Util\Numbers;
 
@@ -177,6 +178,18 @@ class Person extends \Doctrine\ORM\EntityRepository
 			WHERE p.organization = ?1
 			ORDER BY p.last_name ASC, p.first_name ASC
 		")->execute(array(1=> $org));
+	}
+
+
+	public function getUsergroupMembers(UsergroupEntity $ug)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			LEFT JOIN p.usergroups ug
+			WHERE ug.id = ?1
+			ORDER BY p.last_name ASC, p.first_name ASC
+		")->setParameter(1, $ug)->execute();
 	}
 
 

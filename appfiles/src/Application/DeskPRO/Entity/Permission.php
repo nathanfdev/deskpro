@@ -88,7 +88,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * Combine an array of permissions into a superduper array of effective permissions.
 	 *
 	 * @param \Application\DeskPRO\Entity\Permission[] $perms
-	 * @return void
+	 * @return array
 	 */
 	public static function getEffectivePermissions(array $perms)
 	{

@@ -48,20 +48,11 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"}, indexBy="id")
      * @ORM_Mapping\JoinTable(name="agent_team_members", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
-	 * @ORM_Mapping\OrderBy({"first_name" = "ASC", "last_name" = "ASC"})
+	 * @ORM_Mapping\OrderBy({"name" = "ASC"})
 	 */
 	protected $members = null;
-
-  /**
-	 * The tasks assigned to this team.
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="assigned_agent_team", cascade={"persist", "remove", "merge"})
-	 */
-	protected $assigned_tasks;
-
-
 
 	/**
 	 * Creates a new team.
