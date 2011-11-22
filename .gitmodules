@@ -46,3 +46,6 @@
 [submodule "appfiles/vendor/profiler/Profiler/LiveBundle"]
 	path = appfiles/vendor/profiler/Profiler/LiveBundle
 	url = git@github.com:dsyph3r/ProfilerLiveBundle.git
+[submodule "appfiles/vendor/profiler/Elao/WebProfilerExtraBundle"]
+	path = appfiles/vendor/profiler/Elao/WebProfilerExtraBundle
+	url = git://github.com/Elao/WebProfilerExtraBundle.git

@@ -96,6 +96,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		if ($this->isDebug()) {
 
 			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
 			$bundles[] = new \Application\DevBundle\DevBundle();
 			$bundles[] = new \Profiler\LiveBundle\ProfilerLiveBundle();
 		}
