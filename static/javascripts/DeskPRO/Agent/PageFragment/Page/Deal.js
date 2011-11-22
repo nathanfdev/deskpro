@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 
         $('.select-deal-type').on('change', function(){
 
-            var dealId = pageMeta.deal_id;
+            var dealId = self.meta.deal_id;
             if (!dealId) {
                 return;
             }
@@ -61,7 +61,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 
         $('.select-deal-stage').live('change', function(){
 
-            var dealId = pageMeta.deal_id;
+            var dealId = self.meta.deal_id;
             if (!dealId) {
                 return;
             }
@@ -86,7 +86,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
     },
 
     _removePersonAndOrg: function(){
-
+        //var self = this;
         this.getEl('members_list').on('click', '.remove', function() {
             var row = $(this).closest('.member-row');
             var personId = row.data('person-id');
@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             row.fadeOut('fast');
 
             $.ajax({
-                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
                 data: {
                     action: 'remove-person',
                     person_id: personId
@@ -126,7 +126,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             row.fadeOut('fast');
 
             $.ajax({
-                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
                 data: {
                     action: 'remove-organization',
                     organization_id: organizationId
@@ -194,7 +194,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 }
                 $('.reply-agent-team-ob').slideUp();
                 $.ajax({
-                    url: BASE_URL + 'agent/deals/'+pageMeta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
+                    url: BASE_URL + 'agent/deals/'+self.meta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
                     type: 'POST',
                     dataType: 'json',
                     data: postData,
@@ -302,7 +302,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 url: BASE_URL + 'agent/deals/new/set-person-row/' + personId,
                 dataType: 'html',
                 data: {
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -342,7 +342,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                     data: {
                         'email': $('.add-new-user-container input.email').val(),
                         'name' : $('.add-new-user-container input.name').val(),
-                        'deal_id': pageMeta.deal_id
+                        'deal_id': self.meta.deal_id
                     },
                     dataType: 'html',
                     context: this,
@@ -408,7 +408,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
                 dataType: 'html',
                 data: {                    
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -443,7 +443,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 dataType: 'html',
                 data: {
                     'name': $('.add-new-org-container input.name').val(),
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -491,7 +491,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 				self.getEl('status_label').text(title);
 
 				$.ajax({
-					url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+					url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'change-status', status: catId},
 					context: self,
