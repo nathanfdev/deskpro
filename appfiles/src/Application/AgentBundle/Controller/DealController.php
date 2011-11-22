@@ -298,7 +298,7 @@ class DealController extends AbstractController
 		$this->em->beginTransaction();
 
 		try {
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$field_manager = $this->container->getSystemService('deal_fields_manager');
 			$post_custom_fields = $this->request->request->get('custom_fields', array());
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $org);
@@ -399,6 +399,9 @@ class DealController extends AbstractController
                 case 'change-status':
 
                     $deal['status'] = $this->in->getString('status');
+                    break;
+                case 'change_title':
+                    $deal['title'] = $this->in->getString('title');
                     break;
                     
             }

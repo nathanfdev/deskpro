@@ -7,6 +7,7 @@ pageMeta.pageIdentity = 'deal1:{{deal.id}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_deal_ajax_labels_save', {'deal_id': deal.id}) }}';
 pageMeta.ajaxSaveUrl = '{{ path('agent_deal_ajaxsave', {'deal_id': deal.id}) }}';
 
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -24,8 +25,17 @@ pageMeta.baseId = '{{ baseId }}';
     </nav>
     <div class="titlewrap">        
             <h4 class="id-number">#{{deal.id}}</h4>
-            <h1>{{deal.title}}</h1>
-        </h1>
+            
+
+            <h1>
+			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
+			<span class="edit-name-gear">edit name</span>
+			<div id="{{baseId}}_editname" style="display: none">
+				<input type="hidden" name="action" value="change_title" />
+				<input type="text" size="20" name="title" value="{{ deal.title }}" />
+			</div>
+		</h1>
+
     </div>
     
     <div class="clear"></div>

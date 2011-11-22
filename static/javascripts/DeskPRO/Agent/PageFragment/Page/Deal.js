@@ -24,6 +24,28 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initStatusMenus();
 
 
+        // Name is editable
+		var name = $('h3.name.editable:first', el);
+		if (!name.attr('id')) {
+			name.attr('id', Orb.getUniqueId());
+		}
+
+		var editable = new DeskPRO.Form.InlineEdit({
+			baseElement: this.wrapper,
+			ajax: {
+				url: BASE_URL + 'agent/deals/' + this.meta.deal_id + '/ajax-save'
+			},
+			triggers: '.edit-name-gear'
+		});
+
+		// Attach click to wrapper because
+		// this same code is used on popout on ticket,
+		// and clicks dont bubble to document click
+		$(this.wrapper).on('click', function (ev) {
+			editable.handleDocumentClick(ev);
+		});
+
+
         $('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({
 				triggerElements: '> header li',
