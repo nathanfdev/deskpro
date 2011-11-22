@@ -175,16 +175,23 @@ abstract class AbstractStat implements StatInterface
 				throw new \Exception("Cannot group by field $groupField. Field is not in the available_groupings list.");
 			}
 
+			$groupingInfo = $this->getAvailableGrouping($groupField);
+
 			list($table, $field) = explode('.', $groupField);
 
 			$alias = $query->getTableAlias($table);
 			$aliasedGroupField = $alias . '.' . $field;
+			$formattedGroupField = $aliasedGroupField;
+			if (isset($groupingInfo['format'])) {
+				$formattedGroupField = $groupingInfo['format'];
+			}
 
 			// We need to return the select group by field
 			if (false === $query->isFieldSelected($aliasedGroupField)) {
-				$query->addSelect($aliasedGroupField . ' AS ' . str_replace('.', '_', $groupField));
+				$query->addSelect($formattedGroupField . ' AS ' . str_replace('.', '_', $groupField));
 			}
-			$query->addGroupBy($aliasedGroupField);
+
+			$query->addGroupBy($formattedGroupField);
 
 			// Check for limit
 			$groupingInfo = $this->getAvailableGrouping($groupField);
@@ -213,7 +220,7 @@ abstract class AbstractStat implements StatInterface
 	/**
 	 * Get the grouping fields
 	 *
-	 * @return string 
+	 * @return string
 	 */
 	protected function getGroupingFields()
 	{

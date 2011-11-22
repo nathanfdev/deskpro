@@ -26,7 +26,7 @@ abstract class AbstractTicket extends AbstractStat
 			'tickets.language_id'	        => array('label' => 'Language', 'limit' => false),
 			'tickets.agent_id'              => array('label' => 'Agent', 'limit' => false),
 			'tickets.agent_team_id'	        => array('label' => 'Agent Team', 'limit' => false),
-                        'tickets.date_created'          => array('label' => 'Hour Created', 'limit' => false),
+                        'tickets.date_created'          => array('label' => 'Hour Created', 'limit' => false, 'format' => "DATE_FORMAT(tickets.date_created, '%H')"),
                         'tickets.organization_id'       => array('label' => 'Organization', 'limit' => 20),
                         'tickets.person_id'             => array('label' => 'Person', 'limit' => false),
 
