@@ -85,7 +85,7 @@
 }
 
 #stat_grouping_ref {
-	width: 155px;	
+	width: 155px;
 }
 
 ul.tabs {
@@ -253,7 +253,10 @@ h2 {
 #report-dashboard-options {
 	margin-bottom: 20px;
 	display: none;
-	padding: 0 5px;
+	padding: 15px;
+	background: #F9F9F9;
+	border: 1px solid #ccc;
+	.border-radius(5px, 5px, 5px, 5px);
 }
 
 #report-dashboard-options-num-columns-slider {
@@ -262,10 +265,25 @@ h2 {
 	margin-left: 10px;
 }
 
+#dashboard-empty-notice {
+	text-align: center;
+	border: 1px dashed #ccc;
+	.border-radius(10px, 10px, 10px, 10px);
+	font-size: 32px;
+	background: #fff;
+	line-height: 150px;
+}
+
+#dashboard-empty-notice a {
+	color: #B5B5B5;
+	display: block;
+	padding: 40px;
+}
+
 .grid-slot-content {
 	display: block;
 	width: 100%;
-	height: 230px;
+	height: 220px;
 }
 
 .grid-slot-content .content {
