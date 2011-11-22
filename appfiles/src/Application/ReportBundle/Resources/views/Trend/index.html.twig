@@ -64,7 +64,7 @@ function _page_exec() {
 					<td></td>
 					<td class="icon">
 						{% if stat.isEditable %}
-							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
+							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" class="edit-trend" title="Edit Trend"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
 						{% endif %}
 					<td class="icon">
 						{% if stat.isClonable %}
@@ -77,7 +77,20 @@ function _page_exec() {
 	</table>
 </div>
 
-<div id="overlay_wrapper" style="width: 800px; height: 600px; display: none;">
+<div id="edit_overlay_wrapper" style="width: 700px; height: 450px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Edit Trend</h4>
+	</div>
+	<div class="overlay-content">
+
+	</div>
+	<div class="overlay-footer">
+
+	</div>
+</div>
+
+<div id="clone_overlay_wrapper" style="width: 700px; height: 650px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>Clone Trend</h4>

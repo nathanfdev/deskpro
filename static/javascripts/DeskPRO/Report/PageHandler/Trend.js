@@ -9,7 +9,8 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 	initialize: function() {
 
 		// UI Overlay
-		this.overlay = null;
+		this.cloneOverlay = null;
+		this.editOverlay = null;
 	},
 
 	// Init the page
@@ -17,11 +18,18 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 		var self = this;
 
 		// Create the trend overlay
-		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: $('#overlay_wrapper')
+		this.cloneOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#clone_overlay_wrapper')
 		});
-		$('#overlay_wrapper .close-overlay').on('click', function() {
-			self.overlay.close();
+		$('#clone_overlay_wrapper .close-overlay').on('click', function() {
+			self.cloneOverlay.close();
+		});
+
+		this.editOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#edit_overlay_wrapper')
+		});
+		$('#edit_overlay_wrapper .close-overlay').on('click', function() {
+			self.editOverlay.close();
 		});
 
 		$('.clone-trend').on('click', function() {
@@ -30,28 +38,27 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 				url: href,
 				type: 'GET',
 				success: function(data) {
-					self.openOverlay(data);
+					$('#clone_overlay_wrapper .overlay-content').html(data);
+					self.cloneOverlay.open();
 				}
 			});
 
 			return false;
 		});
-	},
 
-	// Open the overlay loading in a template
-	openOverlay: function(overlay_content) {
+		$('.edit-trend').on('click', function() {
+			var href = $(this).attr('href');
+			$.ajax({
+				url: href,
+				type: 'GET',
+				success: function(data) {
+					$('#edit_overlay_wrapper .overlay-content').html(data);
+					self.editOverlay.open();
+				}
+			});
 
-		$('.overlay-content').html(overlay_content);
-		this.overlay.open();
-
-	},
-
-	// Clean the overlay and close it
-	closeOverlay: function() {
-
-		$('.overlay-content').html('');
-		this.overlay.close();
-
+			return false;
+		});
 	},
 
 });

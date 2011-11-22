@@ -243,18 +243,25 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Is the stat editable. Only non deskpro stats can be edited
+	 * Is the stat editable.  At present all stats can be edited
 	 *
 	 * @return bool
 	 */
 	public function isEditable()
 	{
-		if (true === is_null($this->author)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return true;
+	}
+
+	/**
+	 * Set disabled
+	 *
+	 * When disabling/enabling a stat we also need to disable/enable stat
+	 * generation
+	 */
+	public function setDisabled($disabled)
+	{
+		$this->disabled = $disabled;
+		$this->generate_stats = $disabled;
 	}
 
 	/**
@@ -601,7 +608,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Get the lookup data for the labels
 		$lookup = $this->getReferenceLookup($stat_value_ids);
-		
+
 		$data = array();
 
 		foreach ($stat_value_ids as $stat_value_id) {
@@ -754,7 +761,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$results = array();
 
 		foreach (self::$groupingReferences as $k=>$grouping) {
-			$results[$k] = ucwords($grouping['table']);
+			$results[$k] = $grouping['label'];
 		}
 
 		return $results;
