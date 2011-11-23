@@ -28,7 +28,7 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	 *
 	 * @var string
 	 */
-	protected $data_label = 'name';
+	protected $data_label = 'Name';
 
 	/**
 	 * Adds a row to the list
@@ -49,6 +49,24 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 		if ($sum_data > $this->max_value) {
 			$this->max_value = $sum_data;
 		}
+	}
+
+	/**
+	 * Sort the data
+	 *
+	 * @param string $sort_by The data field to sort on (label|sum_data)
+	 * @param string $direction The direction (asc|desc)
+	 */
+	public function sortData($sort_by = 'label', $direction = 'asc')
+	{
+		usort($this->rows, function($a,$b) use($sort_by, $direction) {
+			if ('asc' === $direction) {
+				return $a[$sort_by]>$b[$sort_by];
+			}
+			else {
+				return $a[$sort_by]<$b[$sort_by];
+			}
+		});
 	}
 
 	/**

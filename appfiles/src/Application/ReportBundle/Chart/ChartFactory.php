@@ -72,6 +72,8 @@ class ChartFactory
 					$chart->addSlice($data_set['label'], $value_sum);
 				}
 
+				$chart->sortData('label');
+
 				break;
 
 			/**
@@ -81,7 +83,6 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
-				$chart->setDataLabel($stat->getGroupingName());
 
 				$chart->setDifferenceDirection($stat->getVariation());
 
@@ -107,6 +108,8 @@ class ChartFactory
 					$chart->addRow($data_set['label'], $data_set['values']);
 				}
 
+				$chart->sortData('label');
+
 				break;
 
 			/**
@@ -116,12 +119,15 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDataLabel($stat->getGroupingName());
 
 				$chart->setDifferenceDirection($stat->getVariation());
 
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);
 				}
+
+				$chart->sortData('label');
 
 				break;
 

@@ -28,12 +28,12 @@ DeskPRO.Report.Chart.DeskPRO.DetailedDrillDown = new Orb.Class({
 
 	renderSparklines: function() {
 
-		$('#' + self.element_id + ' td.trend').each(function() {
+		$('#' + this.element_id + ' td.trend').each(function() {
 			var trendData = $(this).attr('data-trendline').split(',');
 
 			$(this).html('<span class="sparkline"></span>');
 			$(this).find('.sparkline').sparkline(trendData, { width: '100%', height: '20px'});
 		})
 	},
-	
+
 });
