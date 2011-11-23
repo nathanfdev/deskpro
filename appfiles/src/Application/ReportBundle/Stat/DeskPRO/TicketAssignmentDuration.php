@@ -33,4 +33,16 @@ class TicketAssignmentDuration extends AbstractTicket
 
 		return $processedResults;
 	}
+
+	/**
+	 * Get the data formatter
+	 *
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
+	{
+		$class = new \Application\ReportBundle\Stat\Formatter\TimeFormatter();
+
+		return $class;
+	}
 }

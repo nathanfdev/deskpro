@@ -8,6 +8,16 @@ namespace Application\ReportBundle\Stat\Formatter;
 class IntegerFormatter implements FormatterInterface
 {
 	/**
+	 * Get an identifer for the formatter
+	 *
+	 * @return string
+	 */
+	public function getIdentifier()
+	{
+		return 'integer_formatter';
+	}
+
+	/**
 	 * Formats decimal data
 	 *
 	 * @param mixed $data

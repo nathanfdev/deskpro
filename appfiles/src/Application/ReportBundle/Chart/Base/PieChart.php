@@ -19,6 +19,20 @@ abstract class PieChart extends AbstractChart
 	protected $labels = array();
 
 	/**
+	 * The max value in the pie chart
+	 *
+	 * @var number
+	 */
+	protected $max = null;
+
+	/**
+	 * The min value in the pie chart
+	 *
+	 * @var number
+	 */
+	protected $min = null;
+
+	/**
 	 * Adds a slice
 	 *
 	 * @param string $label The label
@@ -32,6 +46,8 @@ abstract class PieChart extends AbstractChart
 		);
 
 		$this->addLabel($label);
+
+		$this->setMinMaxValues($value);
 	}
 
 	/**
@@ -76,6 +92,47 @@ abstract class PieChart extends AbstractChart
 		return $renderable;
 	}
 
+	/**
+	 * Set the current min and max values
+	 *
+	 * @param number $value
+	 */
+	protected function setMinMaxValues($value)
+	{
+		if (true === is_null($this->min)) {
+			$this->min = $value;
+		}
+		else if ($value < $this->min) {
+			$this->min = $value;
+		}
+
+		if (true === is_null($this->max)) {
+			$this->max = $value;
+		}
+		else if ($value > $this->max) {
+			$this->max = $value;
+		}
+	}
+
+	/**
+	 * Get the max value from the data set
+	 *
+	 * @return number The max value
+	 */
+	public function getMax()
+	{
+		return $this->max;
+	}
+
+	/**
+	 * Get the min value from the data set
+	 *
+	 * @return number The min value
+	 */
+	public function getMin()
+	{
+		return $this->min;
+	}
 
 	/**
 	 * Sort the data

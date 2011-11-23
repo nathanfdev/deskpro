@@ -22,7 +22,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 *
 	 * @return QueryBuilder This QueryBuilder instance
 	 */
-	public function delete()
+	public function delete($delete = null, $alias = null)
 	{
 		return $this;
 	}
@@ -32,7 +32,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 *
 	 * @return QueryBuilder This QueryBuilder instance
 	 */
-	public function update()
+	public function update($update = null, $alias = null)
 	{
 		return $this;
 	}

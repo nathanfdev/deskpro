@@ -18,6 +18,13 @@
 	<balloon>
 		<text_color>FFFFFF</text_color>
 		<text_size>16</text_size>
+		<show>
+			{% if chart.getFormatterIdentifier == 'time_formatter' %}
+				<![CDATA[{title}: {value}{{ chart.formatData(chart.getMax, { 'format': 'unit' }) }}]]>
+			{% else %}
+				<![CDATA[{title}: {value}]]>
+			{% endif %}
+		</show>
 	</balloon>
 
 	<data_labels>
@@ -33,9 +40,13 @@
 	<data>
 		<pie>
 			{% for slice in chart.slices %}
-			  <slice title="{{ slice.label|default('[no group]') }}">{{ slice.value }}</slice>
+				{% if chart.getFormatterIdentifier == 'time_formatter' %}
+					<slice title="{{ slice.label|default('') }}">{{ chart.formatData(slice.value, { 'format': 'value', 'normalize_to': chart.getMax }) }}</slice>
+				{% else %}
+					<slice title="{{ slice.label|default('') }}">{{ chart.formatData(slice.value) }}</slice>
+				{% endif %}
 			{% endfor %}
 		</pie>
 	</data>
-	
+
 </settings>

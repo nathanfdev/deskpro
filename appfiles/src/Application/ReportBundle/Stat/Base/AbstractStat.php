@@ -3,6 +3,7 @@
 namespace Application\ReportBundle\Stat\Base;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Stat;
 use Application\ReportBundle\Stat\Searcher\ReportSearchInterface;
 
 abstract class AbstractStat implements StatInterface

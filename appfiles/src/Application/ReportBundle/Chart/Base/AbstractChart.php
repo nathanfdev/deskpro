@@ -12,16 +12,16 @@ abstract class AbstractChart implements ChartInterface
 	protected $chart_type = '';
 
 	protected $chart_vendor = '';
-	
+
 	protected $formatter = null;
-	
+
 	/**
 	 * The display units
 	 *
 	 * @var string
 	 */
 	protected $display_units = null;
-	
+
 	/**
 	 * Color codes used to render chart lines, bars, etc
 	 */
@@ -88,7 +88,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return self::$color_codes;
 	}
-	
+
 	/**
 	 * Sets a formatter than will process the raw data if required
 	 */
@@ -96,7 +96,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		$this->formatter = $formatter;
 	}
-	
+
 	/**
 	 * Gets the data formatter
 	 */
@@ -104,7 +104,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		return $this->formatter;
 	}
-	
+
 	/**
 	 * Format the data using the set formatter
 	 *
@@ -117,10 +117,25 @@ abstract class AbstractChart implements ChartInterface
 		if (false === is_null($this->formatter)) {
 			$data = $this->formatter->formatData($data, $options);
 		}
-		
+
 		return $data;
 	}
-	
+
+	/**
+	 * Get the format identifier
+	 *
+	 * @return string
+	 */
+	public function getFormatterIdentifier()
+	{
+		$identifier = '';
+		if (false === is_null($this->formatter)) {
+			$identifier = $this->formatter->getIdentifier();
+		}
+
+		return $identifier;
+	}
+
 	/**
 	 * Sets the display unit
 	 *
@@ -130,7 +145,7 @@ abstract class AbstractChart implements ChartInterface
 	{
 		$this->display_units = $units;
 	}
-	
+
 	/**
 	 * Get the display units
 	 *

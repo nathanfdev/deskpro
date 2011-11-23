@@ -8,6 +8,13 @@ namespace Application\ReportBundle\Stat\Formatter;
 interface FormatterInterface
 {
 	/**
+	 * Get an identifer for the formatter
+	 *
+	 * @return string
+	 */
+	public function getIdentifier();
+
+	/**
 	 * Formats some data
 	 *
 	 * @param mixed $data
