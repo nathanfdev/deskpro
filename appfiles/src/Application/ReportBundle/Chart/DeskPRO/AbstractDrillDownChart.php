@@ -24,6 +24,13 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	protected $max_value = 0;
 
 	/**
+	 * Label used to describe the rows in the chart
+	 *
+	 * @var string
+	 */
+	protected $data_label = 'name';
+
+	/**
 	 * Adds a row to the list
 	 *
 	 * @param string $label The label
@@ -65,6 +72,26 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	}
 
 	/**
+	 * Get the data label
+	 *
+	 * @return string The data label
+	 */
+	public function getDataLabel()
+	{
+		return $this->data_label;
+	}
+
+	/**
+	 * Set the data label
+	 *
+	 * @param string $data_label The data label to set
+	 */
+	public function setDataLabel($data_label)
+	{
+		$this->data_label = $data_label;
+	}
+
+	/**
 	 * Calculate the row value as a percentage
 	 *
 	 * @param number $row_value The row value
@@ -79,7 +106,7 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Is the chart ready to be rendered, ie do it have all the data it needs
 	 *
@@ -88,11 +115,11 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	public function isChartRenderable()
 	{
 		$renderable = false;
-		
+
 		if (count($this->rows) > 0) {
 			$renderable = true;
 		}
-		
+
 		return $renderable;
 	}
 }

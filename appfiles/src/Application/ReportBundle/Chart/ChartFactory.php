@@ -81,6 +81,7 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDataLabel($stat->getGroupingName());
 
 				$chart->setDifferenceDirection($stat->getVariation());
 
@@ -100,6 +101,7 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDataLabel($stat->getGroupingName());
 
 				foreach ($data as $data_set) {
 					$chart->addRow($data_set['label'], $data_set['values']);

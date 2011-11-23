@@ -34,12 +34,12 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 	// Update the widget data
 	updateData: function(options) {
-		
+
 		this.stat_id = options.stat_id || '';
 		this.title   = options.title || '';
-		
+
 	},
-	
+
 	// Setup the UI handlers for edit, close, etc
 	addUIHandlers: function() {
 		var self = this;
@@ -55,9 +55,9 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 				success: function(data) {
 					// Show the edit overlay
 					self.dashboard.openOverlay(data.html);
-					
+
 					var form = $('#dashboard_widget_edit_form');
-					self.dashboard.saveEditWidget(form);	
+					self.dashboard.saveEditWidget(form);
 				}
 			});
 
@@ -68,7 +68,7 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 			self.dashboard.deleteWidget(self.element_id);
 			return false;
 		});
-		
+
 		this.$widget.find('.toolbar-title').on('click', function() {
 			self.dashboard.showChartFullscreen(self);
 			return false;
@@ -147,6 +147,6 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
 		this.show_loader = false;
 
-	}
+	},
 
 });

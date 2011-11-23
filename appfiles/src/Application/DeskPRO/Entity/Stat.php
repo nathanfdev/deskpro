@@ -54,12 +54,11 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		'tickets.language_id'	        	=> array('label' => 'Language', 'table' => 'languages', 'display_column' => 'title'),
 		'tickets.agent_id'              	=> array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
 		'tickets.agent_team_id'	        	=> array('label' => 'Agent Team', 'table' => 'agent_teams', 'display_column' => 'name'),
-		'tickets.date_created'          	=> array('label' => 'Date Created', 'table' => null, 'display_column' => null),
+		'tickets.date_created'          	=> array('label' => 'Created (Hour)', 'table' => null, 'display_column' => null),
 		'tickets.organization_id'      		=> array('label' => 'Organization', 'table' => 'organizations', 'display_column' => 'name'),
 		'tickets.person_id'             	=> array('label' => 'Person', 'table' => 'people', 'display_column' => 'first_name'),
 		'labels_tickets.label'          	=> array('label' => 'Label', 'table' => null, 'display_column' => null),
 		'person2usergroups.usergroup_id'	=> array('label' => 'User Group', 'table' => 'usergroups', 'display_column' => 'title'),
-
 	);
 
 	/**
