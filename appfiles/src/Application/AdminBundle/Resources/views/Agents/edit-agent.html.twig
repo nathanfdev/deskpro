@@ -1,12 +1,12 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-{% endblock %}
-{% block page_js_exec %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentEditPage.js') }}"></script>
 {% endblock %}
 {% block pagetitle %}
 	<h1>Agent: {{ agent.name }}</h1>
 {% endblock %}
 {% block page %}
+<div data-element-handler="DeskPRO.Admin.ElementHandler.AgentEditPage">
 
 <div class="dp-form">
 	<div class="dp-form-row">
@@ -61,7 +61,7 @@
 						<label>Permission Groups</label>
 					</div>
 					<div class="dp-form-input">
-						<div class="checkbox-rows">
+						<div class="checkbox-rows" id="usergroup_checks">
 							<ul>
 								{% for usergroup in all_usergroups %}
 								<li>
@@ -124,141 +124,142 @@
 	</div>
 
 	<div class="dp-form-row">
-		<div class="dp-form-label">
+		<div class="dp-form-label" id="permgroups">
 			<label>Permissions</label>
-			<div class="check-grid" style="max-height: 200px; overflow: auto; width: 70%;">
-				<table width="100%">
-					<thead>
-						<tr>
-							<th>Permission</th>
-							<th width="60">Overrides</th>
-							{% for group in all_usergroups %}
-								<th width="60">{{ group.title }}</th>
-							{% endfor %}
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
-				</table>
+
+			{##############################
+			 # Ticket Permission
+			 ##############################}
+			{% macro perm_col(permgroup, name, ug_id) %}
+				<td data-ug-id="{{ ug_id }}" class="prop {% if ug_id == 'override' %}highlight ug-override{% else %}ugcol ugcol-{{ ug_id }}{% endif %}" {% if ug_id != 'override' %}style="display: none;"{% endif %}><input class="onoff-slider" type="checkbox" name="permissions[{{ permgroup }}][{{ ug_id }}][{{ name }}]" value="1" /></td>
+			{% endmacro %}
+
+			<div id="permgroup_tickets">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use ticket system</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Create tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View own and teams tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify own and teams tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete own and teams tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve own and teams tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View unassigned tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify unassigned tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete unassigned tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve unassigned tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View others tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify others tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete others tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve others tickets</td>
+								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col('tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-{#
-		<div class="permissions-table">
-			<table cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th width="300" style="text-align: left">
-							<select id="permission_type_switcher">
-								<option>Departments</option>
-								<option>Ticket Permissions</option>
-							</select>
-						</th>
-						<th width="5">&nbsp;</th>
-						<th width="100">Group A</th>
-						<th width="100">Group B</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Use ticket system</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Create tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-#}
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+<button class="clean-white">Save</button>
 
+</div>
 {% endblock %}
