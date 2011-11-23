@@ -209,6 +209,8 @@ class DealController extends AbstractController
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
 
         $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
+        $assoceated_tasks = $this->em->getRepository('DeskPRO:TaskAssociatedDeal')->findByDeal($deal);
+
         
         $participant_person_ids = array();
         $participant_org_ids = array();
@@ -233,7 +235,8 @@ class DealController extends AbstractController
             'participant_person_ids' => $participant_person_ids,
             'participant_org_ids' => $participant_org_ids,            
             'person' => $this->person,
-            'deal_attachments' => $deal_attachments
+            'deal_attachments' => $deal_attachments,
+            'assoceated_tasks' => $assoceated_tasks
 
         ));
     }

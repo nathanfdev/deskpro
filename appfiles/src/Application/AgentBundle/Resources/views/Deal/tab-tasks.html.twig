@@ -1,0 +1,34 @@
+<div class="inner-box-tab-content">
+	
+    <ul class="task-comment-list">
+        {% for deal_task in assoceated_tasks %}
+            <li data-note-id="{{deal_task.task.id}}" class="note">
+
+                <div class="message">
+                    <div class="message-avatar">
+                            {{deal_task.task.title}}
+                    </div>
+                    <div class="message-body">
+                        <span>
+                            Assigned To {% if deal_task.task.assigned_agent.name is not null%} {{deal_task.task.assigned_agent.name}}
+                            {% elseif deal_task.task.assigned_agent_team.name %} {{deal_task.task.assigned_agent_team.name}}
+                            {% endif %}
+                        </span>|
+                        <span>
+                        {% if deal_task.task.isDueToday == true %} Due Today {% elseif deal_task.task.isDueTomorrow%}Due Tomorrow
+                        {% elseif deal_task.task.isOverdue %}Over Due on {{deal_task.task.date_due|date('M j, Y')}}
+                        {% else %}Due {{deal_task.task.date_due|date('M j, Y')}} {% endif %}
+
+                        </span>
+                            
+                    </div>
+                </div>
+
+            </li>
+        {% endfor %}
+</ul>
+    <ul class="createBtnPopups">
+        <li class="create_deal_task_btn"><a><span class="createTask">New Task(k)</span></a></li>
+    </ul>
+
+</div>

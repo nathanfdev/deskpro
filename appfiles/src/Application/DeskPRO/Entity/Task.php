@@ -180,8 +180,25 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$today = clone $now;
 		$today->setTime(23, 59, 59);
 
-		return ($tthis->date_due < $today);
+		return ($this->date_due < $today);
 	}
+
+        public function isDueTomorrow()
+        {
+
+            if (!$this->date_due) {
+			return true;
+		}
+
+		$now = new \DateTime();
+		$today = clone $now;
+		$today->setTime(23, 59, 59);
+
+                $tomorrow = clone $today;
+		$tomorrow->modify('+1 day');
+
+		return ($this->date_due->modify('+1 day') == $tomorrow);
+        }
 
 	/**
 	 * Sets the task visibility.

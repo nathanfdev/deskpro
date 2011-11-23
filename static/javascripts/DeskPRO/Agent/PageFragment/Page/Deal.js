@@ -24,6 +24,13 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initStatusMenus();
 
 
+        // Add new associated task for deal
+        
+        $('.create_deal_task_btn').on('click', function() {
+                        $('form#newTaskForm input, form#newTaskForm select').val('');
+                        DeskPRO_Window.newTaskLoader.toggle();
+        });
+
         // Name is editable
 		var name = $('h3.name.editable:first', el);
 		if (!name.attr('id')) {

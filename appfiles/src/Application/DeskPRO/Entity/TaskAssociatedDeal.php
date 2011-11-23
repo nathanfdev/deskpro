@@ -28,13 +28,13 @@ class TaskAssociatedDeal extends TaskAssociation
    */
   protected $deal;
 
-  public function setDeal(\Application\DeskPRO\Entity\Deal $deal)
-  {
-      $this->deal;
-  }
-  public function getDeal()
-  {
-      return $this->deal;
-  }
+//  public function setDeal(\Application\DeskPRO\Entity\Deal $deal)
+//  {
+//      $this->deal;
+//  }
+//  public function getDeal()
+//  {
+//      return $this->deal;
+//  }
 
 }

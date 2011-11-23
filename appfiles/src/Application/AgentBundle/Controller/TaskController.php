@@ -449,7 +449,7 @@ class TaskController extends AbstractController
             if(method_exists($assoc, 'getDeal') && $assoc->getDeal())
             {
                 return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
-            } else{
+            } else if(method_exists($assoc, 'getTicket') && $assoc->getTicket() != null){
                 return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
             }
         }

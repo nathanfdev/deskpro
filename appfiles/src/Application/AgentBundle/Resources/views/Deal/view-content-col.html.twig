@@ -198,7 +198,7 @@
             <nav>
                 <ul>
                     <li data-tab-for="#{{baseId}}_property_tab" class="on">Properties</li>
-                    <li data-tab-for="#{{baseId}}_tasks_tab" >Tasks <span class="count" id="{{baseId}}_tasks_count">{{ tasks|length }}</span></li>
+                    <li data-tab-for="#{{baseId}}_tasks_tab" >Tasks <span class="count" id="{{baseId}}_tasks_count">{{ assoceated_tasks|length }}</span></li>
                     <li data-tab-for="#{{baseId}}_files_tab" >Files <span class="count" id="{{baseId}}_files_count">{{ deal_attachments|length }}</span></li>
                 </ul>
             </nav>
@@ -244,7 +244,7 @@
 
             {# Task Tab #}
             <article id="{{baseId}}_tasks_tab">
-                Tasks
+                {% include 'AgentBundle:Deal:tab-tasks.html.twig' %}
             </article>
             {# /Task Tab #}
 
