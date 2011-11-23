@@ -41,4 +41,16 @@ class TotalTicketMessages extends AbstractTicket
 
 		return $processedResults;
 	}
+
+	/**
+	 * Get the formatter
+	 *
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
+	{
+		$class = new \Application\ReportBundle\Stat\Formatter\IntegerFormatter();
+
+		return $class;
+	}
 }
