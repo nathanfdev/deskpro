@@ -83,13 +83,6 @@ report_chart_get:
   requirements: 
     dashboard_stat_id: "\d+"
     
-report_chart_get_data:
-  pattern: /chart/{dashboard_stat_id}/data.{_format}
-  defaults: { _controller: ReportBundle:Chart:getChartData }
-  requirements: 
-    dashboard_stat_id: "\d+"
-    _format: xml
-    
 report_chart_get_settings:
   pattern: /chart/{dashboard_stat_id}/settings.{_format}
   defaults: { _controller: ReportBundle:Chart:getChartSettings }

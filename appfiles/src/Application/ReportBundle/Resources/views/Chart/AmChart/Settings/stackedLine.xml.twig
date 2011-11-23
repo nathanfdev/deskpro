@@ -48,4 +48,23 @@
 		{% endfor %}
 	</graphs>
 
+	<data>
+		<chart>
+			<series>
+				{% for series in chart.series %}
+					<value xid="{{ loop.index0 }}">{{ series }}</value>
+				{% endfor %}
+			</series>
+			<graphs>
+				{% for graphs in chart.graphs %}
+					<graph gid="{{ loop.index }}">
+						{% for point in graphs.data %}
+							<value xid="{{ loop.index0 }}">{{ point }}</value>
+						{% endfor %}
+					</graph>
+				{% endfor %}
+			</graphs>
+		</chart>
+	</data>
+	
 </settings>

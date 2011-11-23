@@ -29,4 +29,13 @@
 	<legend>
 		<enabled>0</enabled>
 	</legend>
+
+	<data>
+		<pie>
+			{% for slice in chart.slices %}
+			  <slice title="{{ slice.label|default('[no group]') }}">{{ slice.value }}</slice>
+			{% endfor %}
+		</pie>
+	</data>
+	
 </settings>
