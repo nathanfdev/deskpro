@@ -117,7 +117,7 @@ class GenerateStatsFloodFill extends AbstractJob
 	{
 		$stat_concept_class = $stat->getStatConceptClass();
 
-		$stat_concept = new $stat_concept_class($stat, $this->date_time);
+		$stat_concept = new $stat_concept_class($stat, $stat->getLastFullRun());
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats();
 

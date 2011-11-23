@@ -466,7 +466,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getLastFullRun()
 	{
-		return new \DateTime("2011-11-21 00:00:00");
+		return new \DateTime("2011-11-23 00:00:00");
 	}
 
 	public function setRunFrequency($run_frequency)
