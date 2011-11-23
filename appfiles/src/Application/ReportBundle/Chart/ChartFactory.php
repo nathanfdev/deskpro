@@ -17,6 +17,8 @@ class ChartFactory
 	 */
 	public static function getChart($chart_class, $data, Stat $stat)
 	{
+		$data = $stat->getFormatter()->normalizeData($data);
+
 		switch ($chart_class) {
 			/**
 			 * AmChart - Line Chart
