@@ -42,6 +42,9 @@ abstract class SeriesChart extends AbstractChart
 		);
 
 		$this->addLabel($label);
+
+		$this->setMinMaxValues(max($data));
+		$this->setMinMaxValues(min($data));
 	}
 
 	/**
@@ -93,7 +96,7 @@ abstract class SeriesChart extends AbstractChart
 	{
 		return $this->series;
 	}
-	
+
 	/**
 	 * Is the chart ready to be rendered, ie do it have all the data it needs
 	 *
@@ -102,7 +105,7 @@ abstract class SeriesChart extends AbstractChart
 	public function isChartRenderable()
 	{
 		$renderable = true;
-		
+
 		return $renderable;
 	}
 }

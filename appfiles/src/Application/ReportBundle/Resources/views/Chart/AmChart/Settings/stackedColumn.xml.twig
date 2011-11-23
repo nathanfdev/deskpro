@@ -46,9 +46,13 @@
 		{% for label in chart.labels %}
 			<graph gid="{{ loop.index }}">
 				<type>column</type>
-				<title>{{ label|default('no group') }}</title>
+				<title>{{ label|default('') }}</title>
 				<balloon_text>
-					<![CDATA[{{ label|default('no group') }}: {value}{{ chart.getDisplayUnits }}]]>
+					{% if chart.getFormatterIdentifier == 'time_formatter' %}
+						<![CDATA[{{ label|default('') }}: {value}{{ chart.formatData(chart.getMax, { 'format': 'unit' }) }}]]>
+					{% else %}
+						<![CDATA[{{ label|default('') }}: {value}{{ chart.getDisplayUnits }}]]>
+					{% endif %}
 				</balloon_text>
 			</graph>
 		{% endfor %}
@@ -65,12 +69,16 @@
 				{% for graphs in chart.graphs %}
 					<graph gid="{{ loop.index }}">
 						{% for point in graphs.data %}
-							<value xid="{{ loop.index0 }}">{{ point }}</value>
+							{% if chart.getFormatterIdentifier == 'time_formatter' %}
+								<value xid="{{ loop.index0 }}">{{ chart.formatData(point, { 'format': 'value', 'normalize_to': chart.getMax }) }}</value>
+							{% else %}
+								<value xid="{{ loop.index0 }}">{{ chart.formatData(point) }}</value>
+							{% endif %}
 						{% endfor %}
 					</graph>
 				{% endfor %}
 			</graphs>
 		</chart>
 	</data>
-	
+
 </settings>
