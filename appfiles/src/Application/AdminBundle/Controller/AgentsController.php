@@ -77,38 +77,49 @@ class AgentsController extends AbstractController
 
 	public function newAgentAction()
 	{
+		$errors = array();
+
 		if ($this->in->getBool('process')) {
-			$email_address = $this->in->getString('email');
-			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email_address);
 
-			if ($person AND !$person['is_agent']) {
-				$person['is_agent'] = true;
-				App::getOrm()->beginTransaction();
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
-				App::getOrm()->commit();
+			$email_address = $this->in->getString('agent.email');
+			$first_name    = $this->in->getString('agent.first_name');
+			$last_name     = $this->in->getString('agent.last_name');
+
+			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+				$errors['email'] = true;
+			}
+			if (!$first_name || !$last_name) {
+				$errors['name'] = true;
 			}
 
-			if (!$person) {
-				$person = new Entity\Person();
-				$email = new Entity\PersonEmail();
-				$email['email'] = $email_address;
-				$email['is_validated'] = true;
+			if (!$errors) {
+				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email_address);
+				if (!$person) {
+					$person = new \Application\DeskPRO\Entity\Person();
+					$person->setEmail($email_address, true);
+				}
 
-				$person->addEmailAddress($email);
-				$person['is_agent'] = true;
+				$person->first_name = $first_name;
+				$person->last_name  = $last_name;
+				$person->is_agent = true;
 
-				App::getOrm()->beginTransaction();
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
-				App::getOrm()->commit();
+				$this->em->getConnection()->beginTransaction();
+
+				try {
+					$this->em->persist($person);
+					$this->em->flush();
+					$this->em->getConnection()->commit();
+				} catch (\Exception $e) {
+					$this->em->getConnection()->rollback();
+					throw $e;
+				}
+
+				return $this->redirectRoute('admin_agents_edit', array('person_id' => $person['id']));
 			}
-
-			return $this->redirectRoute('admin_agents_edit', array('person_id' => $person['id']));
 		}
 
 		return $this->render('AdminBundle:Agents:edit-new-agent.html.twig', array(
-
+			'errors' => $errors
 		));
 	}
 
@@ -121,6 +132,12 @@ class AgentsController extends AbstractController
 		$agent = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 		$agent->loadHelper('Agent');
 
+		$all_teams = App::getOrm()->createQuery("
+			SELECT t
+			FROM DeskPRO:AgentTeam t
+			ORDER BY t.name ASC
+		")->execute();
+
 		$all_usergroups = App::getOrm()->createQuery("
 			SELECT ug
 			FROM DeskPRO:Usergroup ug
@@ -128,10 +145,28 @@ class AgentsController extends AbstractController
 			ORDER BY ug.title ASC
 		")->execute();
 
+		$ug_perms = $this->db->fetchAllGrouped("
+			SELECT usergroup_id, name, data
+			FROM permissions
+			LEFT JOIN usergroups ON (usergroups.id = permissions.id)
+			WHERE usergroups.is_agent_group = 1
+		", array(), 'usergroup_id', 'name', 'data');
+
+		$override_perms = $this->db->fetchAllKeyValue("
+			SELECT name, data
+			FROM permissions
+			WHERE person_id = ?
+		", array($agent->id));
+
+		$departments = $this->em->getRepository('DeskPRO:Department')->getAll();
+
 		return $this->render('AdminBundle:Agents:edit-agent.html.twig', array(
 			'agent' => $agent,
 			'all_usergroups' => $all_usergroups,
-
+			'all_teams' => $all_teams,
+			'ug_perms' => $ug_perms,
+			'override_perms' => $override_perms,
+			'departments' => $departments
 		));
 	}
 

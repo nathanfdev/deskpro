@@ -6,9 +6,147 @@
 {% block pagetitle %}
 	<h1>Agent: {{ agent.name }}</h1>
 {% endblock %}
-{% block content %}
-<div class="dp-page-box agent-edit">
-	<div class="page-content">
+{% block page %}
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Name</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:200px;" type="text" name="agent[first_name]" value="{{ agent.first_name }}" />
+			<input style="width:200px;" type="text" name="agent[last_name]" value="{{ agent.last_name }}" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Email</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:409px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
+		</div>
+	</div>
+
+	{% if all_teams or all_usergroups %}
+	<table cellspacing="0" cellpadding="0" width="100%"><tr>
+		{% if all_teams %}
+			<td width="50%">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Teams</label>
+					</div>
+					<div class="dp-form-input">
+						<div class="checkbox-rows">
+							<ul>
+								{% for team in all_teams %}
+								<li>
+									<label>
+										<input type="checkbox" name="agent[teams][]" value="{{ team.id }}" />
+										{{ team.name }}
+									</label>
+								</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</td>
+		{% endif %}
+
+		{% if all_usergroups %}
+			<td width="50%">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Permission Groups</label>
+					</div>
+					<div class="dp-form-input">
+						<div class="checkbox-rows">
+							<ul>
+								{% for usergroup in all_usergroups %}
+								<li>
+									<label>
+										<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" />
+										{{ usergroup.title }}
+									</label>
+								</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</td>
+		{% endif %}
+	</tr></table>
+	{% endif %}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Department Access Permissions</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="check-grid" style="max-height: 200px; overflow: auto; width: 70%;">
+				<table width="100%">
+					<thead>
+						<tr>
+							<th>Department</th>
+							<th width="60">Tickets</th>
+							<th width="60">Chat</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for dep in departments %}
+							<tr>
+								{% if dep.children|length %}
+									<td class="title title-group">{{ dep.title }}</td>
+									<td class="prop">&nbsp;</td>
+									<td class="prop">&nbsp;</td>
+								{% else %}
+									<td class="title">{{ dep.title }}</td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ dep.id }}][tickets]" value="1" /></td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ dep.id }}][chat]" value="1" /></td>
+								{% endif %}
+							</tr>
+							{% if dep.children %}
+								{% for subdep in dep.children %}
+									<tr>
+										<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ subdep.id }}][tickets]" value="1" /></td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ subdep.id }}][chat]" value="1" /></td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Permissions</label>
+			<div class="check-grid" style="max-height: 200px; overflow: auto; width: 70%;">
+				<table width="100%">
+					<thead>
+						<tr>
+							<th>Permission</th>
+							<th width="60">Overrides</th>
+							{% for group in all_usergroups %}
+								<th width="60">{{ group.title }}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{#
 		<div class="permissions-table">
 			<table cellspacing="0" cellpadding="0">
 				<thead>
@@ -118,52 +256,6 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
-</div>
-
-{#
-<form action="{{ path('admin_agents_edit', {'person_id': person.id|default(0)}) }}" method="post">
-<input type="hidden" name="process" value="1" />
-
-<div class="form-panel">
-	<div class="row">
-		<label>First and Last Name</label>
-		{{ form_widget(form.first_name) }}
-		{{ form_widget(form.last_name) }}
-	</div>
-	<div class="row">
-		<label>Email Address</label>
-		{{ form_widget(form.email) }}
-	</div>
-	<div class="row">
-		<label>Password</label>
-		{{ form_widget(form.password) }}
-	</div>
-	<div class="row">
-		<label>Access Zones</label>
-		<div class="field">{{ form_widget(form.access_zones) }}</div>
-
-	</div>
-	<div class="row">
-		<label>Teams</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto; padding: 5px;">{{ form_widget(form.agent_teams) }}</div>
-		<br class="clear" />
-	</div>
-	<div class="row">
-		<label>Department Permissions</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.allowed_departments) }}</div>
-		<br class="clear" />
-	</div>
-	{% if form.usergroups %}
-	<div class="row">
-		<label>Agent Groups</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.usergroups) }}</div>
-		<br class="clear" />
-	</div>
-	{% endif %}
-</div>
-
-</form>
 #}
 {% endblock %}
 {% block footer %}

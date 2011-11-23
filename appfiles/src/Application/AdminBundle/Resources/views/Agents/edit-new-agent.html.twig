@@ -1,33 +1,38 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('agent', 0);
-}
-</script>
-{% endblock %}
-{% block header %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
 	<h1>New Agent</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_agents') }}">&larr; Back to Agents</a>
+	</nav>
 {% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_agents_new') }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Email Address</label>
-		<input type="text" name="email" value="" />
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Name</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:200px;" type="text" name="agent[first_name]" value="" placeholder="First Name" />
+			<input style="width:200px;" type="text" name="agent[last_name]" value="" placeholder="Last Name" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Email</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:409px;" type="text" name="agent[email]" value="" />
+		</div>
 	</div>
 </div>
 
-</form>
+<button class="clean-white">Create agent and continue &rarr;</button>
 
-{% endblock %}
-{% block footer %}
-	<button class="dp-button green save-trigger">Create agent and continue</button>
+</form>
 
 {% endblock %}
