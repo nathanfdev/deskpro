@@ -52,6 +52,9 @@ class SimpleVariationChart extends BaseAbstractChart
 		else {
 			$this->data_points = array();
 		}
+
+		$this->setMinMaxValues(max($data_points));
+		$this->setMinMaxValues(min($data_points));
 	}
 
 	/**

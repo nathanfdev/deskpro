@@ -6,14 +6,22 @@
 			<table>
 				<tr>
 					<td class="prev">
-						<span class="value">{{ chart.formatData(chart.getDataPoint(1, true, true))|default('-') }}</span>
+						{% if chart.getFormatterIdentifier == 'time_formatter' %}
+							<span class="value">{{ chart.formatData(chart.getDataPoint(1, true, true), { 'normalize_to': chart.getMax })|default('-') }}</span>
+						{% else %}
+							<span class="value">{{ chart.formatData(chart.getDataPoint(1, true, true))|default('-') }}</span>
+						{% endif %}
 						<span class="label">{{ chart.getDataPoint(1, false, true)|default('-') }}</span>
 					</td>
 					<td class="variation direction {{ stat_macros.difference_class(chart.difference, chart.differenceDirection) }}">
 						<span class="amount">{{ chart.getDifference(true)|default('-') }}%</span>
 					</td>
 					<td class="actual">
-						<span class="value">{{ chart.formatData(chart.getLastDataPoint())|default('-') }}</span>
+						{% if chart.getFormatterIdentifier == 'time_formatter' %}
+							<span class="value">{{ chart.formatData(chart.getLastDataPoint(), { 'normalize_to': chart.getMax })|default('-') }}</span>
+						{% else %}
+							<span class="value">{{ chart.formatData(chart.getLastDataPoint())|default('-') }}</span>
+						{% endif %}
 						<span class="label">{{ chart.getLastDataPoint(false)|default('-') }}</span>
 					</td>
 				</tr>

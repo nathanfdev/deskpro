@@ -36,19 +36,20 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	 * @param string $label The label
 	 * @param array $data The data points
 	 */
-	public function addRow($label, $data)
+	public function addRow($label, $data, $row_sum)
 	{
-		$sum_data = array_sum($data);
-
 		$this->rows[] = array(
 			'label' => $label,
 			'data'  => $data,
-			'sum_data' => $sum_data
+			'sum_data' => $row_sum
 		);
 
-		if ($sum_data > $this->max_value) {
-			$this->max_value = $sum_data;
+		if ($row_sum > $this->max_value) {
+			$this->max_value = $row_sum;
 		}
+
+		$this->setMinMaxValues(max($data));
+		$this->setMinMaxValues(min($data));
 	}
 
 	/**
