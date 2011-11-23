@@ -5,6 +5,29 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
+
+		this.el.on('submit', function(ev) {
+			var errors = [];
+
+			var f_name = $('input[name="agent[first_name]"]').val().trim();
+			var l_name = $('input[name="agent[last_name]"]').val().trim();
+			var email  = $('input[name="agent[email]"]').val().trim()
+
+			if (!f_name.length) errors.push('Enter a first name');
+			if (!l_name.length) errors.push('Enter a last name');
+			if (!email.length) {
+				errors.push('Enter an email address');
+			} else if (!email.test(/^.+@.+\..+$/)) {
+				errors.push('Enter a valid email address');
+			}
+
+			if (errors.length) {
+				alert("Please correct the following errors and try again:\n - " + errors.join("\n - "));
+				ev.preventDefault();
+			}
+		});
+
+
 		this.usergroupChecks = $('#usergroup_checks :checkbox');
 
 		$('#usergroup_checks').on('click', ':checkbox', this.updatePermissionsGrid.bind(this));

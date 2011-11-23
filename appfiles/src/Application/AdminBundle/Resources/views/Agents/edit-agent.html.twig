@@ -6,7 +6,11 @@
 	<h1>Agent: {{ agent.name }}</h1>
 {% endblock %}
 {% block page %}
-<div data-element-handler="DeskPRO.Admin.ElementHandler.AgentEditPage">
+<form
+	action="{{ path('admin_agents_edit_save', {'person_id': agent.id}) }}"
+	method="POST"
+	data-element-handler="DeskPRO.Admin.ElementHandler.AgentEditPage"
+>
 
 <div class="dp-form">
 	<div class="dp-form-row">
@@ -42,7 +46,7 @@
 								{% for team in all_teams %}
 								<li>
 									<label>
-										<input type="checkbox" name="agent[teams][]" value="{{ team.id }}" />
+										<input type="checkbox" name="agent[teams][]" value="{{ team.id }}" {% if team.id in agent_teams %}checked="checked"{% endif %} />
 										{{ team.name }}
 									</label>
 								</li>
@@ -66,7 +70,7 @@
 								{% for usergroup in all_usergroups %}
 								<li>
 									<label>
-										<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" />
+										<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if usergroup.id in agent_usergroups %}checked="checked"{% endif %} />
 										{{ usergroup.title }}
 									</label>
 								</li>
@@ -103,16 +107,16 @@
 									<td class="prop">&nbsp;</td>
 								{% else %}
 									<td class="title">{{ dep.title }}</td>
-									<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ dep.id }}][tickets]" value="1" /></td>
-									<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ dep.id }}][chat]" value="1" /></td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" /></td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" /></td>
 								{% endif %}
 							</tr>
 							{% if dep.children %}
 								{% for subdep in dep.children %}
 									<tr>
 										<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-										<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ subdep.id }}][tickets]" value="1" /></td>
-										<td class="prop"><input class="onoff-slider" type="checkbox" name="dep_perms[{{ subdep.id }}][chat]" value="1" /></td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
 									</tr>
 								{% endfor %}
 							{% endif %}
@@ -130,8 +134,17 @@
 			{##############################
 			 # Ticket Permission
 			 ##############################}
-			{% macro perm_col(permgroup, name, ug_id) %}
-				<td data-ug-id="{{ ug_id }}" class="prop {% if ug_id == 'override' %}highlight ug-override{% else %}ugcol ugcol-{{ ug_id }}{% endif %}" {% if ug_id != 'override' %}style="display: none;"{% endif %}><input class="onoff-slider" type="checkbox" name="permissions[{{ permgroup }}][{{ ug_id }}][{{ name }}]" value="1" /></td>
+			{% macro perm_col(usergroup_values, permgroup, name, ug_id) %}
+				<td
+					data-ug-id="{{ ug_id }}"
+					class="prop {% if ug_id == 'override' %}highlight ug-override{% else %}ugcol ugcol-{{ ug_id }}{% endif %}" {% if ug_id != 'override' %}style="display: none;"{% endif %}
+				><input
+					class="onoff-slider"
+					type="checkbox"
+					name="permissions[{{ permgroup }}][{{ ug_id }}][{{ name }}]"
+					value="1"
+					{% if usergroup_values[ug_id][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
+				/></td>
 			{% endmacro %}
 
 			<div id="permgroup_tickets">
@@ -149,106 +162,106 @@
 						<tbody>
 							<tr class="permrow">
 								<td class="title">Use ticket system</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'use', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'use', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr>
 								<td class="title">Create tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'create', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'create', group.id) }}
 								{% endfor %}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
 								<td class="title">View own and teams tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_own', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_own', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Modify own and teams tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Delete own and teams tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Resolve own and teams tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own', group.id) }}
 								{% endfor %}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
 								<td class="title">View unassigned tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Modify unassigned tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Delete unassigned tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Resolve unassigned tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned', group.id) }}
 								{% endfor %}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
 								<td class="title">View others tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_others', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_others', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Modify others tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Delete others tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others', group.id) }}
 								{% endfor %}
 							</tr>
 							<tr class="permrow">
 								<td class="title">Resolve others tickets</td>
-								{{ _self.perm_col('tickets', 'use', 'override') }}
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others', 'override') }}
 								{% for group in all_usergroups %}
-									{{ _self.perm_col('tickets', 'use', group.id) }}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others', group.id) }}
 								{% endfor %}
 							</tr>
 						</tbody>
@@ -261,5 +274,5 @@
 
 <button class="clean-white">Save</button>
 
-</div>
+</form>
 {% endblock %}

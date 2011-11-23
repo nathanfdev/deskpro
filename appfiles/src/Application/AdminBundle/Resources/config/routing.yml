@@ -155,6 +155,11 @@ admin_agents_edit:
   defaults: { _controller: AdminBundle:Agents:editAgent }
   requirements: { person_id: "\d+" }
 
+admin_agents_edit_save:
+  pattern: /agents/{person_id}/edit/save
+  defaults: { _controller: AdminBundle:Agents:editAgentSave }
+  requirements: { person_id: "\d+" }
+
 admin_agents_teams_edit:
   pattern: /agents/teams/{team_id}/edit
   defaults: { _controller: AdminBundle:Agents:editTeam }
@@ -837,11 +842,11 @@ admin_customdefideas_setenabled:
 ProfilerLiveBundle:
   resource: "@ProfilerLiveBundle/Resources/config/routing.yml"
   prefix:   /
-  
+
 _profiler:
   resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
   prefix:   /_profiler
-  
+
 _wdt:
   resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
   prefix:   /_wdt

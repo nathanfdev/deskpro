@@ -129,8 +129,7 @@ class AgentsController extends AbstractController
 
 	public function editAgentAction($person_id)
 	{
-		$agent = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-		$agent->loadHelper('Agent');
+		$agent = $this->getAgentOr404($person_id);
 
 		$all_teams = App::getOrm()->createQuery("
 			SELECT t
@@ -146,28 +145,225 @@ class AgentsController extends AbstractController
 		")->execute();
 
 		$ug_perms = $this->db->fetchAllGrouped("
-			SELECT usergroup_id, name, data
+			SELECT usergroup_id, name, value
 			FROM permissions
 			LEFT JOIN usergroups ON (usergroups.id = permissions.id)
 			WHERE usergroups.is_agent_group = 1
-		", array(), 'usergroup_id', 'name', 'data');
+		", array(), 'usergroup_id', 'name', 'value');
 
 		$override_perms = $this->db->fetchAllKeyValue("
-			SELECT name, data
+			SELECT name, value
 			FROM permissions
 			WHERE person_id = ?
 		", array($agent->id));
 
 		$departments = $this->em->getRepository('DeskPRO:Department')->getAll();
 
+		$agent_usergroups = $this->db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($agent->id));
+		$agent_teams = $this->db->fetchAllCol("SELECT team_id FROM agent_team_members WHERE person_id = ?", array($agent->id));
+
+		$agent_deps = $this->db->fetchAllGrouped("
+			SELECT department_id, app
+			FROM department_permissions
+			WHERE person_id = ?
+		", array($agent->id), 'department_id', 'app', 'app');
+
+		$usergroup_values = $this->db->fetchAllGrouped("
+			SELECT usergroup_id, name, value
+			FROM permissions
+		", array(), 'usergroup_id', 'name', 'value');
+
+		$usergroup_values['override'] = $this->db->fetchAllKeyValue("
+			SELECT name, value
+			FROM permissions
+			WHERE person_id = ?
+		", array($agent->id));
+
 		return $this->render('AdminBundle:Agents:edit-agent.html.twig', array(
 			'agent' => $agent,
 			'all_usergroups' => $all_usergroups,
 			'all_teams' => $all_teams,
+			'agent_usergroups' => $agent_usergroups,
+			'agent_teams' => $agent_teams,
+			'usergroup_values' => $usergroup_values,
 			'ug_perms' => $ug_perms,
 			'override_perms' => $override_perms,
-			'departments' => $departments
+			'departments' => $departments,
+			'agent_deps' => $agent_deps,
 		));
+	}
+
+
+	public function editAgentSaveAction($person_id)
+	{
+		$agent = $this->getAgentOr404($person_id);
+		$agent->first_name = $this->in->getString('agent.first_name');
+		$agent->last_name = $this->in->getString('agent.last_name');
+
+		$errors = array();
+
+		if (!$agent->first_name) {
+			$errors[] = 'You did not enter a first name';
+		}
+		if (!$agent->last_name) {
+			$errors[] = 'You did not enter a last name';
+		}
+
+		$set_email = $this->in->getString('agent.email');
+		if (!$agent->findEmailAddress($set_email)) {
+			if (!\Orb\Validator\StringEmail::isValueValid($set_email)) {
+				$errors[] = 'The email address you entered is invalid';
+			} else {
+				$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
+				if ($exist_check) {
+					$errors[] = 'The new email address you entered already belongs to a different user.';
+				}
+			}
+		} else {
+			$set_email = null;
+		}
+
+		// We do client-side validation, so errors checks here are
+		// a backup check.
+		if ($errors) {
+			return $this->renderStandardError(
+				"Please correct these errors and try again.",
+				"Errors with your form",
+				200,
+				array('error_list' => $errors)
+			);
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+
+			#------------------------------
+			# Basic properties
+			#------------------------------
+
+			if ($set_email) {
+				$old_email = $agent->getPrimaryEmail();
+				$agent->removeEmailAddressId($old_email->id);
+
+				$agent->setEmail($set_email, true);
+			}
+
+			$this->em->persist($agent);
+			$this->em->flush();
+
+			#------------------------------
+			# Teams
+			#------------------------------
+
+			$this->db->delete('agent_team_members', array('person_id' => $agent->id));
+
+			$team_ids = $this->in->getCleanValueArray('agent.teams', 'uint', 'discard');
+			if ($team_ids) {
+				$team_ids = $this->db->fetchAllCol("SELECT id FROM agent_teams WHERE id IN (" . implode(',', $team_ids) . ")");
+			}
+
+			foreach ($team_ids as $tid) {
+				$this->db->insert('agent_team_members', array('person_id' => $agent->id, 'team_id' => $tid));
+			}
+
+			$this->em->flush();
+
+			#------------------------------
+			# Usergroups
+			#------------------------------
+
+			$ug_ids = $this->in->getCleanValueArray('agent.usergroups', 'uint', 'discard');
+			$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
+
+			$ch = new \Application\DeskPRO\ORM\CollectionHelper($this->em, $agent, 'usergroups');
+			$ch->setCollection($usergroups);
+
+			$this->em->flush();
+
+			#------------------------------
+			# Departments
+			#------------------------------
+
+			$dep_matrix = $this->in->getCleanValueArray('agent.departments', 'raw', 'uint');
+
+			$this->db->delete('department_permissions', array('person_id' => $agent->id));
+			foreach ($dep_matrix as $dep_id => $apps) {
+				foreach ($apps as $app => $v) {
+					if (!$v) continue;
+					$this->db->insert('department_permissions', array('department_id' => $dep_id, 'person_id' => $agent->id, 'app' => $app));
+				}
+			}
+
+			#------------------------------
+			# Permissions on groups and overrides, oh my
+			#------------------------------
+
+			$ug_perm_matrix = $this->in->getCleanValueArray('permissions', 'raw', 'raw');
+
+			$ug_perms_set = array();
+
+			$overrides = array();
+			foreach ($ug_perm_matrix as $group => $ug_perms) {
+				foreach ($ug_perms as $ug_id => $perms) {
+
+					// Not one we enabled so we dont care
+					if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
+						continue;
+					}
+
+					foreach ($perms as $perm => $v) {
+
+						if (!$v) {
+							continue; //dont care about non 1's
+						}
+
+						$perm_name = "{$group}.{$perm}";
+
+						if ($ug_id == 'override') {
+							$overrides[$perm_name] = 1;
+						} else {
+							if (!isset($ug_perms[$ug_id])) {
+								$ug_perms_set[$ug_id] = array();
+							}
+							$ug_perms_set[$ug_id][$perm_name] = 1;
+						}
+					}
+				}
+			}
+
+			// Figure out if we have any superfluous overrides
+			foreach ($overrides as $perm_name => $v) {
+				foreach ($ug_perms as $perms) {
+					if (isset($perms[$perm_name])) {
+						unset($overrides[$perm_name]);
+						break;
+					}
+				}
+			}
+
+			// Save overrides
+			$this->db->delete('permissions', array('person_id' => $agent->id));
+			foreach ($overrides as $perm_name => $v) {
+				$this->db->insert('permissions', array('person_id' => $agent->id, 'name' => $perm_name, 'value' => 1));
+			}
+
+			// For each of the usergroups we might also have to update those perms now
+			foreach ($ug_perms_set as $ug_id => $perms) {
+				$this->db->delete('permissions', array('usergroup_id' => $ug_id));
+				foreach ($perms as $perm_name => $v) {
+					$this->db->insert('permissions', array('usergroup_id' => $ug_id, 'name' => $perm_name, 'value' => 1));
+				}
+			}
+
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
 
 
@@ -323,7 +519,7 @@ class AgentsController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\DeskPRO\Entity\AgentTeam
+	 * @return \Application\DeskPRO\Entity\AgentTeam
 	 */
 	protected function getAgentTeamOr404($id)
 	{
@@ -336,7 +532,7 @@ class AgentsController extends AbstractController
 	}
 
 	/**
-	 * @return Application\DeskPRO\Entity\Usergroup
+	 * @return \Application\DeskPRO\Entity\Usergroup
 	 */
 	protected function getAgentGroupOr404($id)
 	{
@@ -346,5 +542,20 @@ class AgentsController extends AbstractController
 		}
 
 		return $ug;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getAgentOr404($id)
+	{
+		$agent = $this->em->find('DeskPRO:Person', $id);
+		if (!$agent || !$agent->is_agent) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no agent with ID $id");
+		}
+
+		$agent->loadHelper('Agent');
+
+		return $agent;
 	}
 }
