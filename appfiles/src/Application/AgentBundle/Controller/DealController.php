@@ -210,7 +210,7 @@ class DealController extends AbstractController
 
         $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
         $assoceated_tasks = $this->em->getRepository('DeskPRO:TaskAssociatedDeal')->findByDeal($deal);
-
+        $deal_currency  = App::getEntityRepository('DeskPRO:Currency')->findAll();
         
         $participant_person_ids = array();
         $participant_org_ids = array();
@@ -236,7 +236,8 @@ class DealController extends AbstractController
             'participant_org_ids' => $participant_org_ids,            
             'person' => $this->person,
             'deal_attachments' => $deal_attachments,
-            'assoceated_tasks' => $assoceated_tasks
+            'assoceated_tasks' => $assoceated_tasks,
+            'deal_currency' => $deal_currency
 
         ));
     }
@@ -405,6 +406,12 @@ class DealController extends AbstractController
                     break;
                 case 'change_title':
                     $deal['title'] = $this->in->getString('title');
+                    break;
+                case 'change_probability':
+                    $deal['probability'] = $this->in->getString('probability');
+                    break;
+                case 'change_deal_value':
+                    $deal['deal_value'] = $this->in->getString('deal_value');
                     break;
                     
             }

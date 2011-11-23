@@ -52,6 +52,18 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			editable.handleDocumentClick(ev);
 		});
 
+//                var editable_probability = new DeskPRO.Form.InlineEdit({
+//			baseElement: this.wrapper,
+//			ajax: {
+//				url: BASE_URL + 'agent/deals/' + this.meta.deal_id + '/ajax-save'
+//			}
+//		});
+//
+//		$(this.wrapper).on('click', function (ev) {
+//			editable_probability.handleDocumentClick(ev);
+//		});
+
+
 
         $('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({

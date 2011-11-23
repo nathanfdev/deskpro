@@ -21,20 +21,52 @@ pageMeta.baseId = '{{ baseId }}';
 </form>
 <header class="page-header">
     <nav class="actions" id="{{baseId}}_action_buttons">
-        <span>{{deal.probability}}% of {{deal.deal_currency.symbol}}{{deal.deal_value}} </span>
+        <span class="editable" data-editable-for="#{{baseId}}_editprobablility">{{deal.probability}}</span>
+        <span class="edit-name-gear" style="display: none">edit name</span>
+                <div id="{{baseId}}_editprobablility" style="display: none">
+                        <input type="hidden" name="action" value="change_probability" />
+                        <input type="text" size="20" name="probability" value="{{ deal.probability }}" />
+                </div>
+
+         % of
+        <span class="editable" data-editable-for="#{{baseId}}_editdeal_currency">{{deal.deal_currency.symbol}}</span>
+        <span class="edit-name-gear" style="display: none">edit name</span>
+                <div id="{{baseId}}_editdeal_value" style="display: none">
+                        <input type="hidden" name="action" value="change_deal_currency" />
+                        {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': 'deal_currency',
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Currency',
+                                'options': deal_currency,
+                                'add_classname': 'select-currency',
+                                'selected': deal.deal_currency
+
+                            } %}
+                </div>
+
+
+
+
+        <span class="editable" data-editable-for="#{{baseId}}_editdeal_value">{{deal.deal_value}} </span>
+        <span class="edit-name-gear" style="display: none">edit name</span>
+                <div id="{{baseId}}_editdeal_value" style="display: none">
+                        <input type="hidden" name="action" value="change_deal_value" />
+                        <input type="text" size="20" name="deal_value" value="{{ deal.deal_value }}" />
+                </div>
     </nav>
     <div class="titlewrap">        
             <h4 class="id-number">#{{deal.id}}</h4>
             
 
             <h1>
-			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
-			<span class="edit-name-gear">edit name</span>
-			<div id="{{baseId}}_editname" style="display: none">
-				<input type="hidden" name="action" value="change_title" />
-				<input type="text" size="20" name="title" value="{{ deal.title }}" />
-			</div>
-		</h1>
+                <span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
+                <span class="edit-name-gear">edit name</span>
+                <div id="{{baseId}}_editname" style="display: none">
+                        <input type="hidden" name="action" value="change_title" />
+                        <input type="text" size="20" name="title" value="{{ deal.title }}" />
+                </div>
+            </h1>
 
     </div>
     
