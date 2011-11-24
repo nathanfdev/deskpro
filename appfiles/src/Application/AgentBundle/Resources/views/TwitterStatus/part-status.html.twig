@@ -23,7 +23,18 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<div class="by-line">
-
+				<span class="arrow-left"></span>
+				{% if retweet %}
+					<div class="retweet">
+						retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}">@{{ retweet.user.screen_name }}</span>
+						<span class="timeago" title="{{ retweet.date_created|date('c') }}">{{ retweet.date_created|date('r') }}</span>
+					</div>
+				{% endif %}
+				<div class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+					<h4 class="screen_name">@{{ status.user.screen_name }}</h4>
+					<span class="name">{{ status.user.name }}</span>
+				</div>
+				
 			</div>
 		</div>
 	</div>

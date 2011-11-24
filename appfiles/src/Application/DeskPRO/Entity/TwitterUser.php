@@ -77,6 +77,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $location;
 
 	/**
+	 * @ORM_Mapping\Column(name="description", type="string", length=500, nullable=true)
+	 * @var string
+	 */
+	protected $description;
+	
+	/**
 	 * @var Boolean
 	 * @ORM_Mapping\Column(name="is_geo_enabled", type="boolean")
 	 */
@@ -178,6 +184,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['screen_name']       = (string) $user->screen_name;
 		$entity['profile_image_url'] = (string) $user->profile_image_url;
 		$entity['language']          = (string) $user->lang;
+		$entity['description'] 	     = (string) $user->description;
 		$entity['is_protected']      = (Boolean) (integer) $user->protected;
 		$entity['is_verified']       = (Boolean) (integer) $user->verified;
 		$entity['location']          = (string) $user->location;
@@ -198,6 +205,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$entity['screen_name']       = $user['screen_name'];
 		$entity['profile_image_url'] = $user['profile_image_url'];
 		$entity['language']          = $user['lang'];
+		$entity['description']       = $user['description'];
 		$entity['is_protected']      = $user['protected'];
 		$entity['is_verified']       = $user['verified'];
 		$entity['location']          = $user['location'];
