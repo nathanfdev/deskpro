@@ -26,26 +26,7 @@ pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
 
 	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' %}
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
-
-	<!--
-	<div class="header">
-		<div class="display-options">
-			<select name="sortbydate">
-				<option value="asc">Oldest First</option>
-				<option value="desc">Newest First</option>
-			</select>
-			<span>
-				<input name="account" type="checkbox" />
-				<label data-for="account">Show @{{ account.user.screen_name }}'s tweets</label>
-			</span>
-			<span>
-				<input name="archived" type="checkbox" />
-				<label data-for="archived">Show archived tweets</label>
-			</span>
-		</div>
-	</div>
-	-->
-
+	
 	<div class="content">
 		<section class="comments-list list-listing">
 			{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}

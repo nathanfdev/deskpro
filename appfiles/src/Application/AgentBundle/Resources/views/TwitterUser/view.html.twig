@@ -4,6 +4,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
 pageMeta.title = '@{{user.screen_name|escape}}';
 pageMeta.userId = '{{ user.id|escape }}';
 pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 
 {# Page Containers #}
@@ -15,7 +18,13 @@ pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
 <header class="page-header">
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="create-ticket"><button class="clean-white large">Follow</button></li>
+			{% if user.id is not sameas(account.user.id) %}
+				{% if user.id in account.friend_ids %}
+					<li class="create-ticket"><button class="clean-white large">Unfollow</button></li>
+				{% else %}
+					<li class="create-ticket"><button class="clean-white large">Follow</button></li>
+				{% endif %}
+			{% endif %}
 			<li class="create-ticket"><button class="clean-white large">Message</button></li>
 		</ul>
 	</nav>

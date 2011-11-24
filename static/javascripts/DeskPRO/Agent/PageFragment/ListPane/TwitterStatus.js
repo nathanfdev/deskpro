@@ -345,7 +345,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			dataType: 'json',
 			data: {
 				status_id: id,
-				account_id: id,
+				account_id: this.getMetaData('accountId'),
 				text: text,
 				type: type
 			},

@@ -21,8 +21,6 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 				triggerElements: '> header li',
 				context: this
 			});
-
-			self.ownObject(simpleTabs);
 		});
 		
 	}
