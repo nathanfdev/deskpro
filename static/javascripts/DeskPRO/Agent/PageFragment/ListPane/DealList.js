@@ -13,11 +13,40 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		var openForEl = null;
-                
-                
                 this._initDisplayOptions();
+
+
+                this.listWrapper = $('section.deal-simple-list', this.wrapper)
+			.on('click', 'button.dl-insert-link', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
+			.on('click', 'button.dl-insert-attach', function() { self.insertIntoTicket($(this).data('download-id'), 'attach') });
+
+		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
+		this.addEvent('watchedTabActivated', function(tab) {
+			self.initVisibleTicket();
+		});
+		this.addEvent('watchedTabDeactivated', function(tab) {
+			self.removeVisibleTicket();
+		});
+
+		// Or if we're already viewing a tab ticket...
+		if (DeskPRO_Window.getTabWatcher().isTabTypeActive('ticket')) {
+			self.initVisibleTicket();
+		}
+
+		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+			contentListEl: this.listWrapper
+		});
+		this.ownObject(this.relatedContentList);
 		
 
+	},
+
+	initVisibleTicket: function() {
+		this.listWrapper.addClass('with-visible-ticket');
+	},
+
+	removeVisibleTicket: function() {
+		this.listWrapper.removeClass('with-visible-ticket');
 	},
 
         _initDisplayOptions: function() {
