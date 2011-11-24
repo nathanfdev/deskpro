@@ -87,7 +87,7 @@
 <div class="page-content agent-listing">
 	<ul>
 		{% for person in all_agents %}
-			<li class="agent person-{{agent.person.id}}" data-person-id="{{agent.person.id}}">
+			<li class="agent">
 				<div class="inner">
 					<section class="name">
 						<img src="{{ person.getPictureUrl(38) }}" />
@@ -107,8 +107,7 @@
 							<li>
 								<label>Departments:</label>
 								<div class="items">
-									{% for dep in agent.departments %}
-										{{ dep.full_title }}{% if not loop.last %},{% endif %}
+									{% for dep_id in agents_to_deps[person.id] %}{% set dep = all_departments[dep_id] %}{{ dep.full_title }}{% if not loop.last %},{% endif %}
 									{% else %}
 										<em>None</em>
 									{% endfor %}
@@ -117,8 +116,7 @@
 							<li>
 								<label>Teams:</label>
 								<div class="items">
-									{% for team in person.agent.teams %}
-										{{ team.name }}{% if not loop.last %},{% endif %}
+									{% for team_id in agent_to_teams[person.id] %}{% set team = all_teams[team_id] %}{{ team.name }}{% if not loop.last %},{% endif %}
 									{% else %}
 										<em>None</em>
 									{% endfor %}
@@ -127,11 +125,15 @@
 							<li>
 								<label>Groups:</label>
 								<div class="items">
-									{% for usergroup in person.usergroups %}
-										{{ usergroup.title }}{% if not loop.last %},{% endif %}
+									{% if agent_to_groups[person.id] %}
+										{% for usergroup_id in agent_to_groups[person.id]  %}{% set usergroup = all_usergroups[usergroup_id] %}{{ usergroup.title }}{% if not loop.last %}, {% endif %}{% endfor %}{% if overrides_counts[person.id] %}, +{{ overrides_counts[person.id] }} overrides{% endif %}
 									{% else %}
-										<em>None</em>
-									{% endfor %}
+										{% if overrides_counts[person.id] %}
+											{{ overrides_counts[person.id] }} specific permissions
+										{% else %}
+											<em>No permissions</em>
+										{% endif %}
+									{% endif %}
 								</div>
 							</li>
 						</ul>

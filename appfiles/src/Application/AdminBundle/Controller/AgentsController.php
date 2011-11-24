@@ -29,14 +29,15 @@ class AgentsController extends AbstractController
 	# agents
 	############################################################################
 
-	public function agentsAction($group_by = null)
+	public function agentsAction()
 	{
 		$this->rememberLastPage();
 
 		$all_agents = App::getOrm()->createQuery("
-			SELECT p
+			SELECT p, pic, email
 			FROM DeskPRO:Person p INDEX BY p.id
-			LEFT JOIN p.usergroups u
+			LEFT JOIN p.primary_email email
+			LEFT JOIN p.picture_blob pic
 			WHERE p.is_agent = true
 			ORDER BY p.first_name, p.last_name
 		")->execute();
@@ -47,27 +48,66 @@ class AgentsController extends AbstractController
 
 		$all_teams = App::getOrm()->createQuery("
 			SELECT t
-			FROM DeskPRO:AgentTeam t
+			FROM DeskPRO:AgentTeam t INDEX BY t.id
 			ORDER BY t.name ASC
 		")->execute();
 
 		$all_usergroups = App::getOrm()->createQuery("
 			SELECT ug
-			FROM DeskPRO:Usergroup ug
+			FROM DeskPRO:Usergroup ug INDEX BY ug.id
 			WHERE ug.is_agent_group = true
 			ORDER BY ug.title ASC
 		")->execute();
 
-		$team_member_ids      = App::getEntityRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
+		$team_member_ids = App::getEntityRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
 		$usergroup_member_ids = App::getEntityRepository('DeskPRO:Usergroup')->getSortedAgentIds();
+
+		$agent_to_groups = array();
+		foreach ($usergroup_member_ids as $ug_id => $members) {
+			foreach ($members as $pid) {
+				if (!isset($agent_to_groups[$pid])) $agent_to_groups[$pid] = array();
+				$agent_to_groups[$pid][] = $ug_id;
+			}
+		}
+
+		$agent_to_teams = array();
+		foreach ($team_member_ids as $team_id => $members) {
+			foreach ($members as $pid) {
+				if (!isset($agent_to_teams[$pid])) $agent_to_teams[$pid] = array();
+				$agent_to_teams[$pid][] = $team_id;
+			}
+		}
+
+		$agents_to_deps = $this->db->fetchAllGrouped("
+			SELECT department_id, person_id
+			FROM department_permissions
+		", array(), 'person_id', null, 'department_id');
+
+		$overrides_counts = $this->db->fetchAllKeyValue("
+			SELECT person_id, COUNT(*)
+			FROM permissions
+			WHERE person_id IS NOT NULL
+			GROUP BY person_id
+		");
+
+		$all_departments = $this->em->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d INDEX BY d.id
+			ORDER BY d.display_order
+		")->execute();
 
 		return $this->render('AdminBundle:Agents:list.html.twig', array(
 			'all_agents'     => $all_agents,
+			'agent_to_groups' => $agent_to_groups,
+			'agent_to_teams' => $agent_to_teams,
+			'agents_to_deps' => $agents_to_deps,
 			'all_teams'      => $all_teams,
 			'all_usergroups' => $all_usergroups,
+			'all_departments' => $all_departments,
 
 			'team_member_ids'      => $team_member_ids,
 			'usergroup_member_ids' => $usergroup_member_ids,
+			'overrides_counts' => $overrides_counts,
 		));
 	}
 
