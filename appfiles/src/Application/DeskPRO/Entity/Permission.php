@@ -23,7 +23,7 @@ use Orb\Util\Web;
  * @ORM_Mapping\Entity
  * @ORM_Mapping\Table(name="permissions")
  */
-abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
+class Permission extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -98,7 +98,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 			$k = $perm->name;
 			$v = $perm->value;
 
-			if (Numbers::isInteger($v)) {
+			if (!Numbers::isInteger($v)) {
 				$v = (int)$v;
 			}
 

@@ -38,13 +38,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			// TODO implement no perms
+			return $this->redirect($this->get('router')->generate('admin_login', array('return' => $return)));
 		}
 	}
 
 	protected function _userHasPermissions()
 	{
-		if ($this->person['is_agent']) {
+		if ($this->person['is_agent'] && $this->person->hasPerm('admin.use')) {
 			return true;
 		}
 

@@ -444,7 +444,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function hasPerm($name)
 	{
-		return $this->getHelper('PermissionsManager')->hasPerm($name);
+		return $this->getPermissionsManager()->hasPerm($name);
 	}
 
 	public function getOrganizationId()

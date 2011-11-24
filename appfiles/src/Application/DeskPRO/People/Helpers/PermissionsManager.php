@@ -173,6 +173,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
+		/* TODO make sure caches are being deleted when ug's and perms are udpated
 		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->id, $this->queued_types);
 
 		foreach ($caches as $cache) {
@@ -181,6 +182,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 		}
+		*/
 
 		#-------------------------
 		# Load the rest for the first time
@@ -206,7 +208,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$do_cache[] = PermissionCache::newFromLoader($loader, $this->person->id);
 		}
 
-		if ($do_cache) {
+		if (false && $do_cache) {
+			App::getOrm()->beginTransaction();
 			try {
 				foreach ($do_cache as $c) {
 					App::getOrm()->persist($c);
