@@ -36,7 +36,7 @@ class DealController extends AbstractController
 
         $deal = new Deal();
         $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
-        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(1);
+        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(0);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
 
@@ -377,12 +377,13 @@ class DealController extends AbstractController
                         $deal->setDealTypeId($this->in->getUint('deal_type_id'));
                         $deal->setDealStageId(null);
                     }
+                    
                     $data['change_deal_type_id'] = $deal_type['id'];
                     $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
 
                      
                     $tpl = $this->renderView('AgentBundle:Deal:select-deal-options.html.twig', array(
-                        'name'=> 'actions[dealtype]',
+                        'name'=> 'newdeal[deal_stage]',
                         'with_blank'=> true,
                         'with_blank2'=> true,
                         'blank_title'=> 'Set Deal Stage',
@@ -396,9 +397,10 @@ class DealController extends AbstractController
                     break;
 
                 case 'change-dealstage':
-
-                    $deal->setDealStageId($this->in->getUint('deal_stage_id'));                   
-                    $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    if($deal_id){
+                        $deal->setDealStageId($this->in->getUint('deal_stage_id'));
+                        $data['change_deal_stage_id'] = $this->in->getUint('deal_stage_id');
+                    }
                     break;
                 case 'change-status':
 
@@ -419,10 +421,12 @@ class DealController extends AbstractController
                     break;
                     
             }
-            
-            $this->em->persist($deal);
-            $this->em->flush();
-            $this->em->commit();
+
+            if($deal_id){
+                $this->em->persist($deal);
+                $this->em->flush();
+                $this->em->commit();
+            }
 
             return $this->createJsonResponse($data);
         }
