@@ -469,6 +469,15 @@ class AgentsController extends AbstractController
 					$this->db->insert('person2usergroups', array('usergroup_id' => $usergroup->id, 'person_id' => $pid));
 				}
 
+				$this->db->delete('permissions', array('usergroup_id' => $usergroup->id));
+				$perms_groups = $this->in->getCleanValueArray('permissions', 'raw', 'string');
+				foreach ($perms_groups as $perm_group => $perms) {
+					foreach ($perms as $name => $v) {
+						$perm_name = "{$perm_group}.$name";
+						$this->db->insert('permissions', array('usergroup_id' => $usergroup->id, 'name' => $perm_name, 'value' => 1));
+					}
+				}
+
 				$this->em->getConnection()->commit();
 
 			} catch (\Exception $e) {
@@ -476,21 +485,28 @@ class AgentsController extends AbstractController
 				throw $e;
 			}
 
-			return $this->redirectRoute('admin_agents');
+			return $this->redirectRoute('admin_agents_groups_edit', array('usergroup_id' => $usergroup->id));
 		}
 
 		if ($usergroup_id) {
-			$members = $this->em->getRepository('DeskPRO:Person')->getUsergroupMembers($usergroup);
+			$members = $this->em->getRepository('DeskPRO:Person')->getUsergroupMemberIds($usergroup);
 		} else {
 			$members = array();
 		}
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
+		$usergroup_values = $this->db->fetchAllKeyValue("
+			SELECT name, value
+			FROM permissions
+			WHERE usergroup_id = ?
+		", array($usergroup->id));
+
 		return $this->render('AdminBundle:Agents:edit-usergroup.html.twig', array(
 			'usergroup' => $usergroup,
 			'members' => $members,
-			'agents' => $agents
+			'agents' => $agents,
+			'usergroup_values' => $usergroup_values,
 		));
 	}
 
