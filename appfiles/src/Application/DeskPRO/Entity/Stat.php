@@ -677,6 +677,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 				case 'yearly':
 					$data_point = date('Y-m-d', strtotime("-$i years", $unix));
 					break;
+				default:
+					throw new \Exception("Unsupported run frequency " . $this->getRunFrequency());
+					break;
 			}
 
 			$data_points[] = $data_point;

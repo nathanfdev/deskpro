@@ -19,7 +19,7 @@
 						<td class="name">{{ row.label|default('no group') }}</td>
 						<td class="trend" data-trendline="{{ row.data|join(',') }}"></td>
 						{% for prev_value in chart.getEndData(row, 3) %}
-							<td class="prev-value">{{ chart.formatData(prev_value)|default('-') }}</td>
+							<td class="prev-value">{{ (chart.formatData(prev_value) ~ chart.getDisplayUnits)|default('-') }}</td>
 						{% endfor %}
 						<td class="diff {{ stat_macros.difference_class(chart.getDifference(row.data), chart.differenceDirection) }}">{{ chart.getDifference(row.data, true) }}%</td>
 					</tr>

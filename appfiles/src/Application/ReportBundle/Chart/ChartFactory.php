@@ -16,8 +16,14 @@ class ChartFactory
 	 * @param Stat The Stat entity
 	 */
 	public static function getChart($chart_class, $data, Stat $stat)
-	{
-		$data = $stat->getFormatter()->normalizeData($data);
+	{		
+		$display_unit = '';
+		if (false === is_null($stat->getFormatter())) {
+			// If there is a formatter, it may want to normalize the data,
+			$normalized_result = $stat->getFormatter()->normalizeData($data);
+			$data 		= $normalized_result['data'];
+			$display_unit 	= $normalized_result['unit'];
+		}
 
 		switch ($chart_class) {
 			/**
@@ -33,7 +39,8 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
-
+				$chart->setDisplayUnits($display_unit);
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					$chart->addGraph($data_set['label'], $data_set['values']);
@@ -67,7 +74,8 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
-
+				$chart->setDisplayUnits($display_unit);
+				
 				$series_set = false;
 				foreach ($data as $data_set) {
 					if ('time_formatter' === $chart->getFormatterIdentifier()) {
@@ -92,7 +100,8 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
-
+				$chart->setDisplayUnits($display_unit);
+				
 				$chart->setDifferenceDirection($stat->getVariation());
 
 				// We can only compare one set of data, if there
@@ -112,7 +121,8 @@ class ChartFactory
 
 				$chart->setFormatter($stat->getFormatter());
 				$chart->setDataLabel($stat->getGroupingName());
-
+				$chart->setDisplayUnits($display_unit);
+				
 				foreach ($data as $data_set) {
 					if ('time_formatter' === $chart->getFormatterIdentifier()) {
 						// Time data needs to be divided by the number of points
@@ -137,7 +147,8 @@ class ChartFactory
 
 				$chart->setFormatter($stat->getFormatter());
 				$chart->setDataLabel($stat->getGroupingName());
-
+				$chart->setDisplayUnits($display_unit);
+				
 				$chart->setDifferenceDirection($stat->getVariation());
 
 				foreach ($data as $data_set) {

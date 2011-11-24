@@ -5,7 +5,7 @@ namespace Application\ReportBundle\Stat\Formatter;
 /**
  * Formats to an integer
  */
-class IntegerFormatter implements FormatterInterface
+class IntegerFormatter extends AbstractFormatter
 {
 	/**
 	 * Get an identifer for the formatter
@@ -16,7 +16,7 @@ class IntegerFormatter implements FormatterInterface
 	{
 		return 'integer_formatter';
 	}
-
+	
 	/**
 	 * Formats decimal data
 	 *

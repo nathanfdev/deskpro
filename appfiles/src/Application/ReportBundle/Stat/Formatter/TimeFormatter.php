@@ -7,8 +7,10 @@ use Orb\Util\Dates;
 /**
  * Formats a Time
  */
-class TimeFormatter implements FormatterInterface
+class TimeFormatter extends AbstractFormatter
 {
+	protected $normalized_unit = null;
+	
 	/**
 	 * Get an identifer for the formatter
 	 *
@@ -51,22 +53,30 @@ class TimeFormatter implements FormatterInterface
 				$max = $dataSetMax;
 			}
 		}
+		
+		$this->normalized_unit = $this->normalizeValue($max, array(
+			'format' => 'unit',
+			'normalize_to' => $max
+		));
+		
+		foreach ($data as &$dataSet) {
 
-		foreach($data as &$dataSet) {
-
-			foreach ( $dataSet['values'] as &$value) {
-				$value = $this->formatData($value, array(
+			foreach ($dataSet['values'] as &$value) {
+				$value = $this->normalizeValue($value, array(
 					'format' => 'value',
 					'normalize_to' => $max
 				));
 			}
 		}
-
-		return $data;
+		
+		return array(
+			'unit' => $this->normalized_unit,
+			'data' => $data
+		);
 	}
-
+	
 	/**
-	 * Formats time data
+	 * Normalize a time value
 	 *
 	 * @param mixed $data
 	 * @param array $options Various formatting options
@@ -74,8 +84,8 @@ class TimeFormatter implements FormatterInterface
 	 * 	- normalize_to: Set this value to normalize the current $data based on this value
 	 * @return The formatted data
 	 */
-	public function formatData($data, array $options = array())
-	{
+	public function normalizeValue($data, array $options = array())
+	{	
 		$format = (isset($options['format'])) ? $options['format'] : 'full';
 		$normalize_to = (isset($options['normalize_to'])) ? $options['normalize_to'] : null;
 
@@ -114,6 +124,20 @@ class TimeFormatter implements FormatterInterface
 		else {
 			return '';
 		}
+	}
+	
+	/**
+	 * Formats time data
+	 *
+	 * @param mixed $data
+	 * @param array $options Various formatting options
+	 * 	- format string: (full|value|unit) The return format - defalt: full
+	 * 	- normalize_to: Set this value to normalize the current $data based on this value
+	 * @return The formatted data
+	 */
+	public function formatData($data, array $options = array())
+	{
+		return $data;
 	}
 
 	protected function getFormattedReturnValue($value, $unit, $format)
