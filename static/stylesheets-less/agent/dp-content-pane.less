@@ -3307,6 +3307,13 @@ body.popup section.body textarea.fill {
 	background-color: #E8EAEA;
 }
 
+.check-grid > table > tbody {
+	border-top: 1px solid #C2C6CC;
+}
+.check-grid > table > tbody:first-of-type {
+	border-top: none;
+}
+
 .check-grid > header:first-of-type {
 	border-top: none;
 }
@@ -3324,8 +3331,27 @@ body.popup section.body textarea.fill {
 	font-weight: bold;
 }
 
+nav.check-grid-tabs {
 
+}
 
+nav.check-grid-tabs ul { margin: 0; padding: 0; height: 18px;}
+nav.check-grid-tabs ul li {
+	margin-left: 6px;
+	line-height: 100%;
+	padding: 3px 8px 3px 8px;
+	font-size: 11px;
+	background-color: #E7E8EB;
+	border: 1px solid #ABAFB5;
+	border-bottom: none;
+	cursor: pointer;
+	.border-radius(4px, 4px, 0, 0);
+	float: left;
+}
+
+nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
+	background-color: #fff;
+}
 
 
 .dp-form .dp-form-row {

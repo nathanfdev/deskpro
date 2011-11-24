@@ -39,12 +39,15 @@ class Department extends EntityRepository
 
 	public function getAll()
 	{
-		return $this->getEntityManager()->createQuery("
+		$all_deps = $this->getEntityManager()->createQuery("
 			SELECT d
 			FROM DeskPRO:Department d
+			LEFT JOIN d.children c
 			WHERE d.parent IS NULL
 			ORDER BY d.display_order ASC
 		")->execute();
+
+		return $all_deps;
 	}
 
 	public function getDepartmentIds()

@@ -32,6 +32,18 @@
 		</div>
 	</div>
 
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Administrator</label>
+		</div>
+		<div class="dp-form-input">
+			<label>
+				<input type="checkbox" name="permissions[admin][override][use]" value="1" {% if usergroup_values['override']['admin.use'] %}checked="checked"{% endif %} />
+				The agent is an administrator and can access the Admin Interface
+			</label>
+		</div>
+	</div>
+
 	{% if all_teams or all_usergroups %}
 	<table cellspacing="0" cellpadding="0" width="100%"><tr>
 		{% if all_teams %}
@@ -127,13 +139,13 @@
 		</div>
 	</div>
 
+	{##############################
+	 # Permisssions
+	 ##############################}
 	<div class="dp-form-row">
 		<div class="dp-form-label" id="permgroups">
 			<label>Permissions</label>
 
-			{##############################
-			 # Ticket Permission
-			 ##############################}
 			{% macro perm_col(usergroup_values, permgroup, name, ug_id) %}
 				<td
 					data-ug-id="{{ ug_id }}"
@@ -147,7 +159,17 @@
 				/></td>
 			{% endmacro %}
 
-			<div id="permgroup_tickets">
+			<nav class="check-grid-tabs">
+				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+					<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
+					<li data-tab-for="#permgroup_people"><span>People and Organizations</span></li>
+					<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
+					<li data-tab-for="#permgroup_publish"><span>Publish</span></li>
+				</ul>
+			</nav>
+
+			{# TICKET PERMISSIONS #}
+			<div id="permgroup_tickets" style="display: none">
 				<div class="check-grid">
 					<table width="100%">
 						<thead>
@@ -268,6 +290,202 @@
 					</table>
 				</div>
 			</div>
+			{# /TICKET PERMISSIONS #}
+
+			{# PEOPLE PERMISSIONS #}
+			<div id="permgroup_people" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Edit people
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate users and user email addresses
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'validate', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'validate', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">
+									Edit email addresses
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'manage_emails', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">
+									Reset passwords
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'reset_password', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'reset_password', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /PEOPLE PERMISSIONS #}
+
+			{# CHAT PERMISSIONS #}
+			<div id="permgroup_chat" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use chat system</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can see new unassigned chats</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can see chats assigned to others</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'view_others', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can delete chat transcripts</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+
+			{# PUBLISH PERMISSIONS #}
+			<div id="permgroup_publish" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'publish', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'publish', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit other's content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+								{{ _self.perm_col(usergroup_values, 'publish', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate content and comments (including own)
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'validate', 'override') }}
+								{% for group in all_usergroups %}
+								{{ _self.perm_col(usergroup_values, 'publish', 'validate', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+
 		</div>
 	</div>
 </div>
