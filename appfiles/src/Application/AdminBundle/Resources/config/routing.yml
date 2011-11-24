@@ -155,6 +155,11 @@ admin_agents_edit:
   defaults: { _controller: AdminBundle:Agents:editAgent }
   requirements: { person_id: "\d+" }
 
+admin_agents_getperms:
+  pattern: /agents/{person_id}/get-perms.json
+  defaults: { _controller: AdminBundle:Agents:getAgentPermissions }
+  requirements: { person_id: "\d+" }
+
 admin_agents_edit_save:
   pattern: /agents/{person_id}/edit/save
   defaults: { _controller: AdminBundle:Agents:editAgentSave }

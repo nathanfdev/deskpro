@@ -1,4 +1,8 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.AgentGroupEditPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentGroupEditPage.js') }}"></script>
+{% endblock %}
 {% block pagetitle %}
 	<h1>{% if usergroup.id %}Edit Permission Group{% else %}New Permission Group{% endif %}</h1>
 	<nav>
@@ -48,15 +52,17 @@
 
 			{% macro perm_col(usergroup_values, permgroup, name) %}
 				<td class="prop"><input
-					class="onoff-slider"
+					class="onoff-slider permcheck"
 					type="checkbox"
 					name="permissions[{{ permgroup }}][{{ name }}]"
 					value="1"
+					data-perm-name="{{ permgroup}}.{{ name }}"
 					{% if usergroup_values[permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
 				/></td>
 			{% endmacro %}
 
 			<nav class="check-grid-tabs">
+				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">Load Permissions From Agent</button>
 				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
 					<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
 					<li data-tab-for="#permgroup_people"><span>People and Organizations</span></li>
@@ -286,6 +292,34 @@
 
 <div class="delete-link-wrap">
 	<a href="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" onclick="return confirm('Are you sure you want to delete this permission group?');">delete permission group</a>
+</div>
+
+<div id="load_agent_perms_ob" class="optionbox with-footer">
+	<header>
+		<span class="close close-trigger"></span>
+		<h4>Agents</h4>
+	</header>
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>{{ phrase('agent.agents') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+			</header>
+			<ul>
+				{% for agent in agents %}
+					<li>
+						<input type="radio" name="load_agent_perms_ob_agent" value="{{ agent.id }}" />
+						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+	<footer>
+		<button class="save-trigger" data-fetch-url="{{ path('admin_agents_getperms', {'person_id': '0000'})|replace({'0000': '{person_id}'}) }}">Set all permissions based off of the selected agent</button>
+	</footer>
 </div>
 
 {% endblock %}

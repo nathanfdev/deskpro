@@ -406,6 +406,14 @@ class AgentsController extends AbstractController
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
 
+	public function getAgentPermissionsAction($person_id)
+	{
+		$agent = $this->getAgentOr404($person_id);
+
+		$perms = $agent->getPermissionsManager()->get('Usergroups')->getAllPermissions();
+
+		return $this->createJsonResponse($perms);
+	}
 
 	############################################################################
 	# edit-team
