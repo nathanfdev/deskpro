@@ -29,18 +29,18 @@ pageMeta.baseId = '{{ baseId }}';
                 </div>
 
          % of
-        <span class="editable" data-editable-for="#{{baseId}}_editdeal_currency">{{deal.deal_currency.symbol}}</span>
+        <span class="editable" data-editable-for="#{{baseId}}_editdeal_currency">{{deal.deal_currency.symbol|default('$')}}</span>
         <span class="edit-name-gear" style="display: none">edit name</span>
-                <div id="{{baseId}}_editdeal_value" style="display: none">
+                <div id="{{baseId}}_editdeal_currency" style="display: none">
                         <input type="hidden" name="action" value="change_deal_currency" />
                         {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'deal_currency',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Currency',
-                                'options': deal_currency,
+                                'options': deal_currencys,
                                 'add_classname': 'select-currency',
-                                'selected': deal.deal_currency
+                                'selected': deal.deal_currency.id
 
                             } %}
                 </div>

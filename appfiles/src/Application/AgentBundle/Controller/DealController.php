@@ -237,7 +237,7 @@ class DealController extends AbstractController
             'person' => $this->person,
             'deal_attachments' => $deal_attachments,
             'assoceated_tasks' => $assoceated_tasks,
-            'deal_currency' => $deal_currency
+            'deal_currencys' => $deal_currency
 
         ));
     }
@@ -408,10 +408,14 @@ class DealController extends AbstractController
                     $deal['title'] = $this->in->getString('title');
                     break;
                 case 'change_probability':
-                    $deal['probability'] = $this->in->getString('probability');
+                    if(($this->in->getString('probability') <= 100))
+                    $deal['probability'] =  $this->in->getString('probability');
                     break;
                 case 'change_deal_value':
                     $deal['deal_value'] = $this->in->getString('deal_value');
+                    break;
+                case 'change_deal_currency':
+                    $deal->setDealCurrencyId($this->in->getString('deal_currency'));
                     break;
                     
             }

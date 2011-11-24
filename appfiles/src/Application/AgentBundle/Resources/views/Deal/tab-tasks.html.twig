@@ -10,12 +10,16 @@
                     </div>
                     <div class="message-body">
                         <span>
-                            Assigned To {% if deal_task.task.assigned_agent.name is not null%} {{deal_task.task.assigned_agent.name}}
+                            Assigned To {% if deal_task.task.assigned_agent.name is not null%}
+                            <a data-route="person:{{ path('agent_people_view', {'person_id': deal_task.task.assigned_agent.id|default('0')}) }}">
+                                {{deal_task.task.assigned_agent.name}}
+                            </a>
+
                             {% elseif deal_task.task.assigned_agent_team.name %} {{deal_task.task.assigned_agent_team.name}}
                             {% endif %}
                         </span>|
                         <span>
-                        {% if deal_task.task.isDueToday == true %} Due Today {% elseif deal_task.task.isDueTomorrow%}Due Tomorrow
+                        {% if deal_task.task.isDueToday == 1 %} Due Today{% elseif deal_task.task.isDueTomorrow%}Due Tomorrow
                         {% elseif deal_task.task.isOverdue %}Over Due on {{deal_task.task.date_due|date('M j, Y')}}
                         {% else %}Due {{deal_task.task.date_due|date('M j, Y')}} {% endif %}
 
