@@ -11,13 +11,19 @@ DeskPRO.Agent.PageFragment.Page.TwitterUser = new Orb.Class({
 	},
 
 	_initTimeago: function() {
-		this.initTimesOnCollection($('.timeago', this.el));
+		//this.initTimesOnCollection($('.timeago', this.el));
 	},
 
 	_initTabs: function() {
-		this.tabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed', this.el),
-			triggerElements: $('.full-container-tabbed-tabs li', this.el)
+		
+		$('.profile-box-container.tabbed', this.wrapper).each(function() {
+			var simpleTabs = new DeskPRO.UI.SimpleTabs({
+				triggerElements: '> header li',
+				context: this
+			});
+
+			self.ownObject(simpleTabs);
 		});
+		
 	}
 });

@@ -63,10 +63,12 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initUserPageLinks: function() {
 		$('.photo', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+			return false;
 		});
 
 		$('.user', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+			return false;
 		});
 	},
 
