@@ -83,7 +83,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", fetch="EAGER", indexBy="id")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id")
 	 * @ORM_Mapping\JoinTable(name="organization2usergroups",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
@@ -95,7 +95,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Users who are set to automatically be added to tickets and other org things
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Person", indexBy="id")
 	 * @ORM_Mapping\JoinTable(name="organizations_auto_cc",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}

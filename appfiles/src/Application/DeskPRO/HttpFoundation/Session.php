@@ -54,10 +54,14 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		parent::start();
 
 		// Also make sure the user is a visitor
-		$vis_id = empty($_COOKIE['dpvid']) ? null : $_COOKIE['dpvid'];
 		$vis = null;
-		if ($vis_id) {
-			$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($vis_id);
+		if ($this->getEntity()->visitor) {
+			$vis = $this->getEntity()->visitor;
+		} else{
+			$vis_id = empty($_COOKIE['dpvid']) ? null : $_COOKIE['dpvid'];
+			if ($vis_id) {
+				$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($vis_id);
+			}
 		}
 		if (!$vis) {
 			$vis = App::getEntityRepository('DeskPRO:Visitor')->smartFind(
@@ -131,9 +135,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$person = false;
 
 		if ($person_id) {
-			try {
-				$person = App::getOrm()->find('DeskPRO:Person', $person_id);
-			} catch (\Doctrine\ORM\NoResultException $e) {}
+			$person = $this->getEntity()->person;
 		}
 
 		if (!$person) {

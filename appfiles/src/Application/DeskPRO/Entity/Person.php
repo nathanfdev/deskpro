@@ -28,7 +28,7 @@ use Application\DeskPRO\Entity;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Person")
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="people")
+ * @ORM_Mapping\Table(name="people", indexes={@ORM_Mapping\Index(name="is_agent_idx", columns={"is_agent"})})
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,7 +50,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users profile picture
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\OneToOne(targetEntity="Blob")
 	 * @ORM_Mapping\JoinColumn(name="picture_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $picture_blob = null;
@@ -172,7 +172,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
-	 * @ORM_Mapping\ManyToOne(targetEntity="Language", fetch="EAGER")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
 	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
@@ -223,7 +223,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @ORM_Mapping\OneToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @ORM_Mapping\OneToOne(targetEntity="PersonEmail")
 	 * @ORM_Mapping\JoinColumn(name="primary_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $primary_email;
@@ -254,7 +254,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", fetch="EAGER", indexBy="id")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id")
 	 * @ORM_Mapping\JoinTable(name="person2usergroups",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}

@@ -78,6 +78,8 @@ class Person extends \Doctrine\ORM\EntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p
+			LEFT JOIN p.primary_email email
+			LEFT JOIN p.picture_blob pic
 			WHERE p.is_agent = true
 			ORDER BY p.name ASC
 		")->execute();
@@ -190,6 +192,15 @@ class Person extends \Doctrine\ORM\EntityRepository
 			WHERE ug.id = ?1
 			ORDER BY p.last_name ASC, p.first_name ASC
 		")->setParameter(1, $ug)->execute();
+	}
+
+	public function getUsergroupMemberIds(UsergroupEntity $ug)
+	{
+		return $this->getEntityManager()->getConnection()->fetchAllCol("
+			SELECT person_id
+			FROM person2usergroups
+			WHERE usergroup_id = ?
+		", array($ug->id));
 	}
 
 

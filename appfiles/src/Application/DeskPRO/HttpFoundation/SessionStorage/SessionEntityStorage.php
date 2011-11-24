@@ -125,7 +125,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$this->em->flush();
 
 			session_id($session->getSessionCode());
+		}
 
+		if ($session) {
 			$this->session = $session;
 		}
 
@@ -174,7 +176,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      */
     public function sessionDestroy($id)
     {
-		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
+		if ($this->session && $this->session->getSessionCode() == $id) {
+			$session = $this->session;
+		} else {
+			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
+		}
 
 		$this->em->remove($session);
 		$this->em->flush();
@@ -209,7 +215,13 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      */
     public function sessionRead($id)
     {
-		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
+		$sid = Session::getIdFromCode($id);
+		if ($this->session && $this->session->getSessionCode() == $id) {
+			$session = $this->session;
+		} else {
+			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
+		}
+
 		if ($session) {
 			$this->session = $session;
 			return $session['data'];
