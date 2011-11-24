@@ -256,6 +256,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
+	 * @ORM_Mapping\Column(name="date_first_agent_assign", type="datetime", nullable=true)
+	 */
+	protected $date_first_agent_assign = null;
+	
+	/**
+	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_first_agent_reply",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_reply = null;
@@ -1171,6 +1177,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAgentId($id)
 	{
+		
 		if ($id) {
 			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 			if (!$agent['is_agent']) {
@@ -1178,6 +1185,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			$this['agent'] = $agent;
+			// Do we need to update the first assign date?
+			if (is_null($this->date_first_agent_assign)) {
+				$this['date_first_agent_assign'] = new \DateTime();
+			}
+			
 		} else {
 			$this['agent'] = null;
 		}
