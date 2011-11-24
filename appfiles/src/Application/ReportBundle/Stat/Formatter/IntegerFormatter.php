@@ -24,8 +24,13 @@ class IntegerFormatter extends AbstractFormatter
 	 * @param array $options Various formatting options
 	 * @return The formatted data
 	 */
-	public function formatData($data, array $options = array())
+	public function formatData($data, $unit = '', array $options = array())
 	{
-		return round($data);
+		if (is_numeric($data)) {
+			return round($data) . $unit;
+		}
+		else {
+			return $data;
+		}
 	}
 }

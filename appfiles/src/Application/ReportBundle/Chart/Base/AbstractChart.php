@@ -168,10 +168,10 @@ abstract class AbstractChart implements ChartInterface
 	 * @param array $options Various formatting options
 	 * @return mixed The formatted data
 	 */
-	public function formatData($data, array $options = array())
+	public function formatData($data, $unit = '', array $options = array())
 	{
 		if (false === is_null($this->formatter)) {
-			$data = $this->formatter->formatData($data, $options);
+			$data = $this->formatter->formatData($data, $unit, $options);
 		}
 
 		return $data;

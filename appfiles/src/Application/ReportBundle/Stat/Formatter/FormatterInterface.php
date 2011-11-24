@@ -21,7 +21,7 @@ interface FormatterInterface
 	 * @param array $options Various formatting options
 	 * @return The formatted data
 	 */
-	public function formatData($data, array $options = array());
+	public function formatData($data, $unit = '', array $options = array());
 
 	/**
          * Normalize the data set

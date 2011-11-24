@@ -190,6 +190,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_is_data_cached = false;
 
+	/**
+	 * The display unit
+	 *
+	 * @var string
+	 */
+	protected $_display_unit = '';
+	
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -554,7 +561,38 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $groupingInformation['label'];
 	}
-
+	
+	/**
+	 * Set the display unit
+	 *
+	 * @param string $display_unit The display unit
+	 * @return string
+	 */
+	public function setDisplayUnits($display_unit)
+	{
+		$this->_display_unit = $display_unit;
+	}
+	
+	/**
+	 * Get the display unit
+	 *
+	 * @return string
+	 */
+	public function getDisplayUnits()
+	{
+		return $this->_display_unit;
+	}
+	
+	/**
+	 * Set the data
+	 *
+	 * @param
+	 */
+	public function setData($data)
+	{
+		$this->_data = $data;
+	}
+	
 	/**
 	 * Get the data for the Stat
 	 *
@@ -783,10 +821,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * @param array $options Various formatting options
 	 * @return mixed The formatted data
 	 */
-	public function formatData($data, array $options = array())
+	public function formatData($data, $unit = '', array $options = array())
 	{
+		if (strlen($unit) === 0) {
+			$unit = $this->_display_unit;
+		}
+		
 		if (false === is_null($this->getFormatter())) {
-			$data = $this->getFormatter()->formatData($data, $options);
+			$data = $this->getFormatter()->formatData($data, $unit, $options);
 		}
 
 		return $data;

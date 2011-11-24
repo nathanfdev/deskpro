@@ -32,7 +32,18 @@ class TrendController extends AbstractController
 			$points   = $stat->getDefaultDataPointCount();
 
 			// Get the Stat Data
-			$stat->getData($end_date, $points);
+			$data = $stat->getData($end_date, $points);
+			
+			$display_unit = '';
+			if (false === is_null($stat->getFormatter())) {
+				// If there is a formatter, it may want to normalize the data
+				$normalized_result = $stat->getFormatter()->normalizeData($data);
+				$data 		= $normalized_result['data'];
+				$display_unit 	= $normalized_result['unit'];
+				
+				$stat->setData($data);
+				$stat->setDisplayUnits($display_unit);
+			}
 		}
 
 		return $this->render('ReportBundle:Trend:index.html.twig', array(

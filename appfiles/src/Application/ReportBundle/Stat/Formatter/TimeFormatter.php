@@ -135,9 +135,14 @@ class TimeFormatter extends AbstractFormatter
 	 * 	- normalize_to: Set this value to normalize the current $data based on this value
 	 * @return The formatted data
 	 */
-	public function formatData($data, array $options = array())
+	public function formatData($data, $unit = '', array $options = array())
 	{
-		return $data;
+		if (is_numeric($data)) {
+			return $data . $unit;
+		}
+		else {
+			return $data;
+		}
 	}
 
 	protected function getFormattedReturnValue($value, $unit, $format)
