@@ -22,4 +22,12 @@ interface FormatterInterface
 	 * @return The formatted data
 	 */
 	public function formatData($data, array $options = array());
+
+	/**
+         * Normalize the data set
+         *
+         * @param array $data The dataset to normalize
+         * @return array
+         */
+	public function normalizeData($data);
 }

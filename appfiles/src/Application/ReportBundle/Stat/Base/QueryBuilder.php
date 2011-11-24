@@ -24,6 +24,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 */
 	public function delete($delete = null, $alias = null)
 	{
+		throw new \Exception("Delete operation not permitted");
 		return $this;
 	}
 
@@ -34,6 +35,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 	 */
 	public function update($update = null, $alias = null)
 	{
+		throw new \Exception("Update operation not permitted");
 		return $this;
 	}
 

@@ -20,6 +20,52 @@ class TimeFormatter implements FormatterInterface
 	}
 
 	/**
+         * Normalize the data set. As time can vary across a set of data values
+         * we need to get them all in the same unit, such as days, or hours
+         *
+         * @param array $data The dataset to normalize
+         * @return array
+         */
+	public function normalizeData($data)
+	{
+		$max = null;
+		$min = null;
+
+		foreach($data as $dataSet) {
+			$values = $dataSet['values'];
+
+			$dataSetMax = max($values);
+			$dataSetMin = min($values);
+
+			// Init min and max on first iteration
+			if (true === is_null($min) || true === is_null($max)) {
+				$max = $dataSetMax;
+				$min = $dataSetMin;
+			}
+
+			if (false === is_null($dataSetMin) && $dataSetMin < $min) {
+				$min = $dataSetMin;
+			}
+
+			if (false === is_null($dataSetMax) && $dataSetMax > $max) {
+				$max = $dataSetMax;
+			}
+		}
+
+		foreach($data as &$dataSet) {
+
+			foreach ( $dataSet['values'] as &$value) {
+				$value = $this->formatData($value, array(
+					'format' => 'value',
+					'normalize_to' => $max
+				));
+			}
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Formats time data
 	 *
 	 * @param mixed $data
