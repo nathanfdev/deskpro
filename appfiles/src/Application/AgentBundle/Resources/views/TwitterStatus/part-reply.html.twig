@@ -2,8 +2,17 @@
 <div class="form-reply" style="display: none">
 	<form>
 		<h5>Add Reply</h5>
-		<div class="type">
-			<ul>
+		<div class="type" style="float: left">
+			<div style="float: left"> 
+				<img src="{{ asset('images/agent/icons/twitter_public.png') }}" /><br />
+				<span>Public</span>
+			</div>
+			<div style="float: left">
+				<img src="{{ asset('images/agent/icons/twitter_private.png') }}" /><br />
+				<span>Private</span>
+			</div>
+			
+			<ul style="display: none">
 				<li>
 					<input type="radio" name="type" value="private" />
 					<label for="private">Private</label>
@@ -14,8 +23,8 @@
 				</li>
 			</ul>
 		</div>
-		<div class="accounts">
-			<select name="account" id="twitter-reply-account-{{ account.id }}">
+		<div class="accounts" style="float: left">
+			From Account:<select name="account" id="twitter-reply-account-{{ account.id }}"><br />
 			{% for person_account in person.twitter_accounts %}
 				<option value="{{ person_account.id }}" {% if person_account.id == account.id %}selected="selected"{% endif %}>
 					{{ person_account.user.screen_name }}
