@@ -1,4 +1,13 @@
-<article class="row-item item-list" data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}">
+<article
+    class="row-item item-list article deal-{{deal.id}} deals-{{deal.id}} related-is-linkable"
+    data-content-type="deals"
+    data-content-id="{{ article.id }}"
+    data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}"
+    data-route-title="@selector(a.row-title)"
+    data-route-openclass="open">
+
+
+    
     <div class="top-row">
         <div class="top-row-left">
             <h3>
@@ -6,9 +15,14 @@
             </h3>
 
         </div>
-        <div class="top-row-right">
+        <div class="top-row-right visible-related-content-controls">
             <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol|default('$')}}{{deal.deal_value}}</span>
-        </div>        
+                <div class="bound-faded"></div>
+                <button class="clean-gray xxx-small related-link clean-white small">Add as related</button>
+                <button class="clean-gray xxx-small related-unlink clean-white small">Remove as related</button>
+        </div>
+
+
     </div>
     <hr class="clear-top">
     <div style="margin-left: 22px;">

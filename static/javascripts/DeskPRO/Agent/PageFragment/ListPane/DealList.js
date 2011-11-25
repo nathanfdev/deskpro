@@ -16,22 +16,22 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
                 this._initDisplayOptions();
 
 
-                this.listWrapper = $('section.deal-simple-list', this.wrapper)
-			.on('click', 'button.dl-insert-link', function() { self.insertIntoTicket($(this).data('download-id'), 'link') })
-			.on('click', 'button.dl-insert-attach', function() { self.insertIntoTicket($(this).data('download-id'), 'attach') });
+                this.listWrapper = $('section.deal-simple-list', this.wrapper);
+//			.on('click', 'button.related-link', function() { self.insertIntoTicket($(this).data('deal-id'), 'link') })
+//			.on('click', 'button.related-unlink', function() { self.insertIntoTicket($(this).data('deal-id'), 'content') })
 
-		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
-		this.addEvent('watchedTabActivated', function(tab) {
-			self.initVisibleTicket();
-		});
-		this.addEvent('watchedTabDeactivated', function(tab) {
-			self.removeVisibleTicket();
-		});
-
-		// Or if we're already viewing a tab ticket...
-		if (DeskPRO_Window.getTabWatcher().isTabTypeActive('ticket')) {
-			self.initVisibleTicket();
-		}
+//		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
+//		this.addEvent('watchedTabActivated', function(tab) {
+//			self.initVisibleTicket();
+//		});
+//		this.addEvent('watchedTabDeactivated', function(tab) {
+//			self.removeVisibleTicket();
+//		});
+//
+//		// Or if we're already viewing a tab ticket...
+//		if (DeskPRO_Window.getTabWatcher().isTabTypeActive('ticket')) {
+//			self.initVisibleTicket();
+//		}
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
@@ -41,13 +41,36 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
 
 	},
 
-	initVisibleTicket: function() {
-		this.listWrapper.addClass('with-visible-ticket');
-	},
-
-	removeVisibleTicket: function() {
-		this.listWrapper.removeClass('with-visible-ticket');
-	},
+//	initVisibleTicket: function() {
+//		this.listWrapper.addClass('with-visible-ticket');
+//	},
+//
+//	removeVisibleTicket: function() {
+//		this.listWrapper.removeClass('with-visible-ticket');
+//	},
+//
+//	insertIntoTicket: function(article_id, action) {
+//
+//		var ticketTab = DeskPRO_Window.getTabWatcher().getActiveTabIfType('ticket');
+//		if (!ticketTab) {
+//			return;
+//		}
+//
+//		var ticketPage = ticketTab.page;
+//
+//		$.ajax({
+//			url: BASE_URL + 'agent/kb/article/'+article_id+'/info',
+//			type: 'GET',
+//			dataType: 'json',
+//			success: function(data) {
+//				if (action == 'content') {
+//					ticketPage.appendToMessage(data.content);
+//				} else {
+//					ticketPage.appendToMessage(data.permalink);
+//				}
+//			}
+//		});
+//	},
 
         _initDisplayOptions: function() {
 

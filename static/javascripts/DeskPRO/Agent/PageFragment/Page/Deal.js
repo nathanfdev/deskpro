@@ -24,8 +24,35 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initStatusMenus();
 
 
+
+        this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+			typename: 'deals',
+			content_id: this.meta.deal_id,
+			listEl: $('section.linked-content:first', this.wrapper),
+			onContentLinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			},
+			onContentUnlinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			}
+		});
+		this.ownObject(this.relatedContent);
+
+
+
         // Add new associated task for deal
-        
         $('.create_deal_task_btn').on('click', function() {
                         $('form#newTaskForm input, form#newTaskForm select').val('');
                         DeskPRO_Window.newTaskLoader.toggle();
