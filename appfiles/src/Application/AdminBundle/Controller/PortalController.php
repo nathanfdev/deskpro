@@ -93,14 +93,4 @@ class PortalController extends AbstractController
 	{
 		return $this->render('AdminBundle:Portal:idea-settings.html.twig');
 	}
-
-	public function ideaStatusesAction()
-	{
-		$active_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$closed_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
-		return $this->render('AdminBundle:Portal:idea-statuses.html.twig', array(
-			'active_status_cats' => $active_status_cats,
-			'closed_status_cats' => $closed_status_cats
-		));
-	}
 }

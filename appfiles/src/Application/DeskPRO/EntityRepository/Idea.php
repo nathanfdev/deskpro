@@ -146,6 +146,22 @@ class Idea extends EntityRepository
 	}
 
 
+	/**
+	 * Count the number of ideas in a status category
+	 *
+	 * @param $category
+	 * @return int
+	 */
+	public function countInStatusCategory($category)
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM ideas
+			WHERE status_category_id = ?
+		", array($category->id));
+	}
+
+
 	############################################################################
 	# Fetchers
 	############################################################################
