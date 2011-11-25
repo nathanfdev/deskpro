@@ -6,6 +6,7 @@
 /.buildpath
 /.project
 *.komodoproject
+*.sublime
 
 # cache and log files
 /appfiles/sys/cache/
