@@ -41,7 +41,7 @@
 			<ul>
 				<li class="{% if this_page == 'idea_settings' %}on{% endif %}"><a href="{{ path('admin_ideas_settings' ) }}">Settings</a></li>
 				<li class="{% if this_page == 'idea_statuses' %}on{% endif %}"><a href="{{ path('admin_ideas_statuses') }}">Statuses</a></li>
-				<li><a>Categories</a></li>
+				<li class="{% if this_page == 'idea_cats' %}on{% endif %}"><a href="{{ path('admin_ideas_cats') }}">Categories</a></li>
 				<li class="{% if this_page == 'idea_fields' %}on{% endif %}"><a href="{{ path('admin_customdefideas') }}">Custom Fields</a></li>
 			</ul>
 		</article>

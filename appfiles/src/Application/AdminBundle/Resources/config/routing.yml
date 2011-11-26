@@ -94,6 +94,22 @@ admin_ideas_status_updateorders:
   pattern: /portal/ideas/statuses/update-orders
   defaults: { _controller: AdminBundle:Ideas:updateStatusOrders }
 
+admin_ideas_cats:
+  pattern: /portal/ideas/categories
+  defaults: { _controller: AdminBundle:Ideas:categories }
+
+admin_ideas_cats_edit:
+  pattern: /portal/ideas/categories/{category_id}/edit
+  defaults: { _controller: AdminBundle:Ideas:editCategory }
+
+admin_ideas_cats_del:
+  pattern: /portal/ideas/categories/{category_id}/delete
+  defaults: { _controller: AdminBundle:Ideas:deleteCategory }
+
+admin_ideas_cats_updateorders:
+  pattern: /portal/ideas/categories/update-orders
+  defaults: { _controller: AdminBundle:Ideas:updateCategoryOrders }
+
 ################################################################################
 # Settings
 ################################################################################

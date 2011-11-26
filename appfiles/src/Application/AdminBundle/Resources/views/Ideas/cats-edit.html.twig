@@ -1,0 +1,113 @@
+{% set this_page = 'idea_cats' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.IdeaCategoryEditPage' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
+{% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% block html_head %}
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/IdeaCategoryEditPage.js') }}"></script>
+{% endblock %}
+{% block pagetitle %}
+	<h1>{% if category.id %}Edit Category{% else %}New Category{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_ideas_cats') }}">&larr; Back to categories</a>
+	</nav>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_ideas_cats_edit', {'category_id': category.id|default(0)}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
+	</div>
+
+	{% if form.parent %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Parent Category</label>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.parent) }}
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+{{ form_rest(form) }}
+
+<button class="btn primary save-trigger">Save</button>
+</form>
+
+
+<div class="delete-link-wrap">
+	<a href="#" id="delete_btn">delete category</a>
+</div>
+
+{% if not other_cats|length %}
+	<div id="delete_cat_overlay" class="no-delete" style="width: 400px; height: 165px; display: none;">
+			<div class="overlay-title">
+				<span class="close-overlay close-trigger"></span>
+				<h4>Delete Category</h4>
+			</div>
+			<div class="overlay-content">
+				<p>You cannot delete the last category.</p>
+			</div>
+	</div>
+{% elseif category.children|length %}
+	<div id="delete_cat_overlay" class="no-delete" style="width: 400px; height: 165px; display: none;">
+			<div class="overlay-title">
+				<span class="close-overlay close-trigger"></span>
+				<h4>Delete Category</h4>
+			</div>
+			<div class="overlay-content">
+				<p>This category has children. Delete the child categories first, and then you can delete this one.</p>
+			</div>
+	</div>
+{% else %}
+	<div id="delete_cat_overlay" style="width: 400px; height: 165px; display: none;">
+		<form action="{{ path('admin_ideas_cats_del', {'category_id': category.id}) }}" method="post">
+			<div class="overlay-title">
+				<span class="close-overlay close-trigger"></span>
+				<h4>Delete Category</h4>
+			</div>
+			<div class="overlay-content">
+				{% if count_existing %}
+					<div class="dp-form">
+						<div class="dp-form-row">
+							<div class="dp-form-label">
+								<label>Move {{ count_existing }} ideas using this category to...</label>
+							</div>
+							<div class="dp-form-input">
+								{% macro move_cat_opt(cats, depth) %}
+									{% for cat in cats %}
+										{% if cat.children|length %}
+											<optgroup label="{{ "--"|repeat(depth) }} {{ cat.title }}"></optgroup>
+											{{ _self.move_cat_opt(cat.children, depth+1) }}
+										{% else %}
+											<option value="{{ cat.id }}">{{ "--"|repeat(depth) }} {{ cat.title }}</option>
+										{% endif %}
+									{% endfor %}
+								{% endmacro %}
+								<select name="move_to_cat">
+									{{ _self.move_cat_opt(other_cats, 0) }}
+								</select>
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<p>Are you sure you want to delete this category?</p>
+				{% endif %}
+			</div>
+			<div class="overlay-footer">
+				<button	class="clean-white">Delete Category</button>
+			</div>
+		</form>
+	</div>
+{% endif %}
+{% endblock %}
