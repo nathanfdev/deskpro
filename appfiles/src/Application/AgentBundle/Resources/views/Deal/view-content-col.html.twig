@@ -307,3 +307,18 @@
 
 </div>
 {# /Notes Tab #}
+
+
+{# Related Tabs #}
+<div class="profile-box-container tabbed">
+    <header>
+        <nav>
+            <ul>
+                <li data-tab-for="#{{baseId}}_related_tab" class="on">Related Content</li>
+            </ul>
+        </nav>
+    </header>
+    {% include 'AgentBundle:Common:content-related-list.html.twig' %}
+
+</div>
+{# /Related Tab #}

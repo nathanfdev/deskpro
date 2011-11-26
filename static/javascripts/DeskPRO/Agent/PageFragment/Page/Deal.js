@@ -22,6 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignAgentSection();
         this._removePersonAndOrg();
         this._initStatusMenus();
+        //this._initRelatedTab();
 
 
 
@@ -31,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			listEl: $('section.linked-content:first', this.wrapper),
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					url: BASE_URL + 'agent/kb/article/' + self.meta.deal_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -40,7 +41,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					url: BASE_URL + 'agent/kb/article/' + self.meta.deal_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -558,5 +559,29 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			}
 		});
 		
-	}
+	},
+
+        _initRelatedTab: function(){
+
+            self.bodyTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li.tab-trigger', self.getEl('bodytabs'))//,
+//			onTabSwitch: (function(info) {
+////				if ($(info.tabContent).is('.idea-revs') && !$(info.tabContent).is('.loaded')) {
+////					$.ajax({
+////						url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/view-revisions',
+////						type: 'GET',
+////						dataType: 'html',
+////						context: this,
+////						success: function(html) {
+////							this.getEl('revs').html(html);
+////							this.miscContent._initCompareRevs();
+////							$(info.tabContent).addClass('loaded');
+////						}
+////					});
+////				}
+//			}).bind(self)
+		});
+		self.ownObject(self.bodyTabs);
+
+        }
 });

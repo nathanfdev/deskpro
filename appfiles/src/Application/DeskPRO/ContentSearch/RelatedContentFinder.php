@@ -153,6 +153,9 @@ class RelatedContentFinder
 			case 'news':
 				return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\NewsFetcher';
 				break;
+                        case 'deals':
+				return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\DealsFetcher';
+				break;
 		}
 
 		return null;

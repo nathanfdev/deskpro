@@ -11,20 +11,27 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Application\DeskPRO\Entity;
+
 use Application\DeskPRO\Entity\Deal;
+use Application\DeskPRO\Entity\DealNote;
+use Application\DeskPRO\Entity\DealStage;
+
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\DealNote;
-use Application\DeskPRO\Entity\DealStage;
+
+
 use Application\DeskPRO\Entity\TaskComment;
 use Application\AgentBundle\Form\Type\NewTask;
 use Symfony\Component\HttpFoundation\Response;
+
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 /**
  * Handles viewing and editing deals
@@ -211,6 +218,9 @@ class DealController extends AbstractController
         $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
         $assoceated_tasks = $this->em->getRepository('DeskPRO:TaskAssociatedDeal')->findByDeal($deal);
         $deal_currency  = App::getEntityRepository('DeskPRO:Currency')->findAll();
+
+        $related_finder = new RelatedContentFinder($this->person, $deal);
+        $related_content = $related_finder->getRelatedEntities();
         
         $participant_person_ids = array();
         $participant_org_ids = array();
@@ -237,7 +247,8 @@ class DealController extends AbstractController
             'person' => $this->person,
             'deal_attachments' => $deal_attachments,
             'assoceated_tasks' => $assoceated_tasks,
-            'deal_currencys' => $deal_currency
+            'deal_currencys' => $deal_currency,
+            'related_content' => $related_content,
 
         ));
     }

@@ -1,7 +1,7 @@
 <article
     class="row-item item-list article deal-{{deal.id}} deals-{{deal.id}} related-is-linkable"
     data-content-type="deals"
-    data-content-id="{{ article.id }}"
+    data-content-id="{{ deal.id }}"
     data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}"
     data-route-title="@selector(a.row-title)"
     data-route-openclass="open">

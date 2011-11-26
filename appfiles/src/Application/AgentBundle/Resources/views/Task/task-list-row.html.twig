@@ -20,8 +20,12 @@
 		{% if task.task_associations|length %}
 			{% for assoc in task.task_associations %}
 				<span class="assoc">
-                                        {% if assoc.ticket %}<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
+                                        {% if assoc.ticket is defined %}<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
                                 </span>
+                                <span class="assoc">
+                                        {% if assoc.deal is defined %}<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.deal.id}) }}">{{ assoc.deal.title }}</a>{% endif %}
+                                </span>
+
 			{% endfor %}
 		{% endif %}
 		<ul>
