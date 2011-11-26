@@ -48,6 +48,6 @@ class EditIdeaCategoryType extends AbstractType
 
 	public function getName()
 	{
-		return 'ticket_cat';
+		return 'idea_cat';
 	}
 }

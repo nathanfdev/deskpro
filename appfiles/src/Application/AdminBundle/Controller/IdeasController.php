@@ -166,6 +166,12 @@ class IdeasController extends AbstractController
 		$form = $this->get('form.factory')->create(new EditIdeaCategoryType($category->id ? false : true), $category);
 
 		if ($this->in->getBool('process')) {
+
+			$do_move = false;
+			if (!$category_id && $this->in->getUint('idea_cat.parent')) {
+				$do_move = $this->db->fetchColumn("SELECT COUNT(*) FROM idea_categories c WHERE c.parent_id = ?", array($this->in->getUint('idea_cat.parent')));
+			}
+
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
@@ -174,6 +180,10 @@ class IdeasController extends AbstractController
 				try {
 					$this->em->persist($category);
 					$this->em->flush();
+
+					if ($do_move) {
+						$this->db->update('ideas', array('category_id' => $category->id), array('category_id' => $category->parent-id));
+					}
 
 					$this->em->getRepository('DeskPRO:IdeaCategory')->repair();
 
@@ -213,11 +223,18 @@ class IdeasController extends AbstractController
 
 		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInCategory($category);
 
+		if (!$category_id) {
+			$leaf_ids = $this->em->getRepository('DeskPRO:IdeaCategory')->getLeafIds();
+		} else {
+			$leaf_ids = array();
+		}
+
 		return $this->render('AdminBundle:Ideas:cats-edit.html.twig', array(
 			'category' => $category,
 			'form'      => $form->createView(),
 			'count_existing' => $count_existing,
 			'other_cats' => $other_cats,
+			'leaf_ids' => $leaf_ids,
 		));
 	}
 

@@ -10,6 +10,17 @@ DeskPRO.Admin.ElementHandler.IdeaCategoryEditPage = new Orb.Class({
 			ev.preventDefault();
 			self.openDeleteOverlay();
 		})
+
+		if (window.leaf_ids) {
+			$('#idea_cat_parent').change(function() {
+				var val = $(this).val();
+				if (window.leaf_ids.indexOf(val) !== -1) {
+					$('#move_note').show();
+				} else {
+					$('#move_note').hide();
+				}
+			});
+		}
 	},
 
 	openDeleteOverlay: function() {

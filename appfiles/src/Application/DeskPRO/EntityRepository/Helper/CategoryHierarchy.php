@@ -455,6 +455,22 @@ class CategoryHierarchy
 
 
 	/**
+	 * Get IDs of all categories that are leafs (dont have children)
+	 *
+	 * @retrun array
+	 */
+	public function getLeafIds()
+	{
+		return App::getDb()->fetchAllCol("
+			SELECT DISTINCT c.id
+			FROM idea_categories c
+			LEFT JOIN idea_categories AS c2 ON (c2.parent_id = c.id)
+			WHERE c2.id IS NULL
+		");
+	}
+
+
+	/**
 	 * Runs through the hierarchy to reset 'depth' and 'root' values,
 	 * and updates all 'display_order' so that they are stored in
 	 * real tree order.
