@@ -2,19 +2,10 @@
 {% block form_extra %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Multiple Choice</label>
+			<label>How to display the options</label>
 		</div>
 		<div class="dp-form-input">
-			{{ form_widget(form.multiple) }} Allow the user to select multiple options
-		</div>
-	</div>
-
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>Expanded view</label>
-		</div>
-		<div class="dp-form-input">
-			{{ form_widget(form.expanded) }} Show radio buttons or checkboxes instead of a select box
+			{{ form_widget(form.field_type) }}
 		</div>
 	</div>
 

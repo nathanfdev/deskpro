@@ -17,6 +17,7 @@ class ChoiceField extends CustomFieldAbstract
 {
 	public $multiple = false;
 	public $expanded = false;
+	public $field_type = null;
 
 	// Will be id=>choices on load,
 	// On form submit will be new:label or exist:id:label
@@ -31,10 +32,39 @@ class ChoiceField extends CustomFieldAbstract
 			$this->expanded = true;
 		}
 
+		if ($this->multiple) {
+			if ($this->expanded) {
+				$this->field_type = 'checkbox';
+			} else {
+				$this->field_type = 'multi_select';
+			}
+		} else {
+			if ($this->expanded) {
+				$this->field_type = 'radio';
+			} else {
+				$this->field_type = 'select';
+			}
+		}
+
 		if (!$this->isNewField()) {
 			foreach ($this->_field->children as $child) {
 				$this->choices[$child->id] = $child->title;
 			}
+		}
+	}
+
+	public function setFieldType($field_type)
+	{
+		$this->field_type = $field_type;
+		if ($this->field_type == 'checkbox' || $this->field_type == 'radio') {
+			$this->expanded = true;
+		} else {
+			$this->expanded = false;
+		}
+		if ($this->field_type == 'checkbox' || $this->field_type == 'multi_select') {
+			$this->multiple = true;
+		} else {
+			$this->multiple = false;
 		}
 	}
 
