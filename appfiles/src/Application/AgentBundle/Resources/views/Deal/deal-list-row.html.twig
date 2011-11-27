@@ -1,10 +1,10 @@
 <article
-    class="row-item item-list article deal-{{deal.id}} deals-{{deal.id}} related-is-linkable"
+    class="row-item item-list deal deal-{{deal.id}} deals-{{deal.id}} related-is-linkable"
     data-content-type="deals"
     data-content-id="{{ deal.id }}"
     data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}"
     data-route-title="@selector(a.row-title)"
-    data-route-openclass="open">
+    >
 
 
     
@@ -52,8 +52,26 @@
     <div class="clear"></div>
     <div class="extra-fields">
         <ul >
-            <li><span class="prop-val email_address">Property: XYZ</span></li>
-            <li><span class="prop-val email_address">Property: XYZ</span></li>
+            {% if deal.person.id%}
+            <li>                
+                <span class="prop-title">Created By</span>
+                <span class="prop-val">{{deal.person.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if deal.assigned_agent.id%}
+            <li>
+                <span class="prop-title">Agent</span>
+                <span class="prop-val">{{deal.assigned_agent.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if deal.person.id%}
+            <li>
+                <span class="prop-title">Date Created</span>
+                <span class="prop-val">{{deal.date_created|date('M j, Y')}}</span>
+            </li>
+            {% endif %}
         </ul>
         <br class="clear">
     </div>
