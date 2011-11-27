@@ -210,17 +210,9 @@
 
 
 <ul style="display: none" id="{{replyBaseId}}_status_menu">
-<<<<<<< HEAD
 	<li data-status="no-change">{{ phrase('agent.tickets.keep_current_status') }}: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
-	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_open') }}</li>{% endif %}
-	{% if ticket.status != 'pending' %}<li data-status="pending">{{ phrase('agent.tickets.status_pending') }}</li>{% endif %}
-=======
-	<li data-status="no-change">Keep current status: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
 	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>{% endif %}
 	{% if ticket.status != 'awaiting_user' %}<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>{% endif %}
->>>>>>> Renaming of ticket status 'pending' to 'awaiting_user'. Some additional renames of status 'open' to 'awaiting_agent'
-	{% if ticket.status != 'resolved' %}<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>{% endif %}
-	{% if ticket.status != 'closed' %}<li data-status="closed">{{ phrase('agent.tickets.status_closed') }}</li>{% endif %}
 </ul>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
