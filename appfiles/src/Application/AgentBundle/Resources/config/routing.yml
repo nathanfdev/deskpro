@@ -993,6 +993,11 @@ agent_deal_create_setorganizationrow:
   pattern: /deals/new/create-organization-row/{org_id}
   defaults: { _controller: AgentBundle:Deal:newdealCreateOrganizationRow }
 
+agent_deal_ajaxsavecustomfields:
+  pattern: /deal/{deal_id}/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Deal:ajaxSaveCustomFields }
+  requirements: { deal_id: "\d+" }
+
 
 ################################################################################
 # Publish

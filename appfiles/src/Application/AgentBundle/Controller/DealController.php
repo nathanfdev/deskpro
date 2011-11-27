@@ -46,9 +46,7 @@ class DealController extends AbstractController
         $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(0);
         $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
         $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
-
-        $field_manager = $this->container->getSystemService('deal_fields_manager');
-        $custom_fields = $field_manager->getDisplayArrayForObject($deal); 
+        
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
@@ -56,9 +54,6 @@ class DealController extends AbstractController
            'agents' => $agents,
            'person' => $this->person,
            'deal_currency' => $deal_currency,
-           'custom_fields' => $custom_fields
-
-
         ));
     }
 
@@ -223,6 +218,9 @@ class DealController extends AbstractController
         $related_content = $related_finder->getRelatedEntities();
 //        if(!empty($related_content)){
 //        print \Doctrine\Common\Util\Debug::dump($related_content);exit;}
+
+        $field_manager = $this->container->getSystemService('deal_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($deal); 
         
         $participant_person_ids = array();
         $participant_org_ids = array();
@@ -251,6 +249,7 @@ class DealController extends AbstractController
             'assoceated_tasks' => $assoceated_tasks,
             'deal_currencys' => $deal_currency,
             'related_content' => $related_content,
+            'custom_fields' => $custom_fields,
 
         ));
     }
@@ -318,7 +317,7 @@ class DealController extends AbstractController
 			$field_manager = $this->container->getSystemService('deal_fields_manager');
 			$post_custom_fields = $this->request->request->get('custom_fields', array());
 			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $org);
+				$field_manager->saveFormToObject($post_custom_fields, $deal);
 			}
 
 			$this->em->flush();
@@ -328,14 +327,10 @@ class DealController extends AbstractController
 			throw $e;
 		}
 
-		$custom_fields = $field_manager->getDisplayArrayForObject($org);
+		$custom_fields = $field_manager->getDisplayArrayForObject($deal);
 
-
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-		return $this->render('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
-			'ticket' => $ticket,
-			'ticket_options' => $ticket_options,
+		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+			'deal' => $deal,
 			'custom_fields' => $custom_fields,
 		));
 	}

@@ -246,14 +246,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-{# To render the form inputs: #}
-{% for f in custom_fields %}
-    <dt class="type-labels">{{ f.title }}</dt>
-    <dd class="people-tags tags-wrap">
-        {{ render_custom_field_form(f) }}
-    </dd>
-{% endfor %}
-
         <div class="foot">
             <button class="submit-trigger clean-white">Create Deal</button>
         </div>

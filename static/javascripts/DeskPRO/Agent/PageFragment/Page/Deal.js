@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignAgentSection();
         this._removePersonAndOrg();
         this._initStatusMenus();
-        //this._initRelatedTab();
+        this._initCustomField();
 
 
 
@@ -561,27 +561,44 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 		
 	},
 
-        _initRelatedTab: function(){
+        _initCustomField: function(){
 
-            self.bodyTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li.tab-trigger', self.getEl('bodytabs'))//,
-//			onTabSwitch: (function(info) {
-////				if ($(info.tabContent).is('.idea-revs') && !$(info.tabContent).is('.loaded')) {
-////					$.ajax({
-////						url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/view-revisions',
-////						type: 'GET',
-////						dataType: 'html',
-////						context: this,
-////						success: function(html) {
-////							this.getEl('revs').html(html);
-////							this.miscContent._initCompareRevs();
-////							$(info.tabContent).addClass('loaded');
-////						}
-////					});
-////				}
-//			}).bind(self)
+		var fieldsRendered = this.getEl('custom_fields_rendered');
+		var fieldsForm = this.getEl('custom_fields_editable');
+
+		var buttonsWrap = this.getEl('properties_controls');
+		var propToggle = function(what) {
+			if (what == 'display') {
+				$('.showing-editing-fields', buttonsWrap).hide();
+				$('.showing-rendered-fields', buttonsWrap).show();
+				fieldsForm.hide();
+				fieldsRendered.show();
+			} else {
+				$('.showing-rendered-fields', buttonsWrap).hide();
+				$('.showing-editing-fields', buttonsWrap).show();
+				fieldsRendered.hide();
+				fieldsForm.show();
+			}
+		};
+
+		$('.edit-fields-trigger', buttonsWrap).on('click', function() {
+			propToggle('edit');
 		});
-		self.ownObject(self.bodyTabs);
+
+		$('.save-fields-trigger', buttonsWrap).on('click', function() {
+			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+			$.ajax({
+				url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRendered.empty().html(rendered);
+					propToggle('display');
+				}
+			});
+		});
 
         }
 });
