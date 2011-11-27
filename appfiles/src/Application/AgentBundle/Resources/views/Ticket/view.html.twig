@@ -249,13 +249,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% if macros|length %}
 				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></button>
 			{% endif %}
-			<button class="clean-white arrow" id="{{baseId}}_more_menu_trigger"><span>{{ phrase('agent.more') }}</span><em></em></button>
+			<button class="clean-white arrow" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span><em></em></button>
+			<button class="clean-white arrow" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span><em></em></button>
 		</div>
-
-		<ul id="{{baseId}}_more_menu" style="display: none;">
-			<li data-op="delete">{{ phrase('agent.delete') }}</li>
-			<li data-op="print">{{ phrase('agent.print') }}</li>
-		</ul>
 	</section>
 </div>
 
