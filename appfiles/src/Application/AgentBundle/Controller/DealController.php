@@ -221,6 +221,8 @@ class DealController extends AbstractController
 
         $related_finder = new RelatedContentFinder($this->person, $deal);
         $related_content = $related_finder->getRelatedEntities();
+//        if(!empty($related_content)){
+//        print \Doctrine\Common\Util\Debug::dump($related_content);exit;}
         
         $participant_person_ids = array();
         $participant_org_ids = array();

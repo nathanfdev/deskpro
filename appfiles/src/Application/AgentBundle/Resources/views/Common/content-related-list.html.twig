@@ -1,6 +1,6 @@
 <section class="linked-content">
-	<div class="no-related-content" {% if related_content.articles or related_content.news or related_content.downloads or related_content.deals%}style="display: none"{% endif %}>
-		No other articles, downloads or news posts have been linked to this.
+	<div class="no-related-content" {% if related_content.articles or related_content.news or related_content.downloads or related_content.ideas%}style="display: none"{% endif %}>
+		No other articles, downloads, news or ideas posts have been linked to this.
 		Browse the listings and click "Add as related" to add related content.
 	</div>
 	<div class="articles related-section" {% if not related_content.articles %}style="display: none"{% endif %}>
@@ -37,13 +37,13 @@
 		</ul>
 	</div>
 
-        <div class="deals related-section" {% if not related_content.deals %}style="display: none"{% endif %}>
-		<h4>Related Deals</h4>
+        <div class="deals related-section" {% if not related_content.ideas %}style="display: none"{% endif %}>
+		<h4>Related Ideas</h4>
 		<ul class="related-list">
-			{% for deal in related_content.deals %}
-				<li class="related-content deal-{{deal.id}}" data-content-type="deals" data-content-id="{{ deal.id }}">
+			{% for idea in related_content.ideas %}
+				<li class="related-content idea-{{idea.id}}" data-content-type="ideas" data-content-id="{{ idea.id }}">
 					<button class="clean-gray xxx-small remove">remove</button>
-					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(deal) }}">{{ deal.title }}</a>
+					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(idea) }}">{{ idea.title }}</a>
 				</li>
 			{% endfor %}
 		</ul>
