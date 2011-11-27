@@ -340,7 +340,8 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			if (!self.emailDomainOverlay) {
 				self.emailDomainOverlay = new DeskPRO.UI.Overlay({
 					triggerElement: trigger,
-					contentElement: overlayEl
+					contentElement: overlayEl,
+					zIndex: 1100050
 				});
 
 				newInput.on('keyup', updateNew).on('change', updateNew);
