@@ -61,19 +61,19 @@
 	'agent.tickets.filter_all'         => 'All Tickets',
 
 	'agent.tickets.results_num_summary' => 'Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}} tickets',
-	
+
 	'agent.tickets.set_awaiting_user' => 'Set awaiting user',
 	'agent.tickets.set_awaiting_agent' => 'Set awaiting agent',
 	'agent.tickets.set_resolved' => 'Set resolved',
-	
+
 	'agent.tickets.tickets_on_hold' => 'Tickets on hold',
 	'agent.tickets.inbox' => 'Inbox',
 	'agent.tickets.filters' => 'Filters',
 	'agent.tickets.other_open_tickets' => 'Tickets you currently have open',
 	'agent.tickets.ticket_by_user' => 'Tickets by the same user',
-	
+
 	'agent.tickets.merge_none' => 'The user has no other tickets, and you don\'t have any other ticket tabs open. To merge this ticket into another one, try finding it and opening it in a tab first.',
-	
+
 	'agent.tickets.message_id' => 'Message ID',
 	'agent.tickets.ticket_id' => 'Ticket ID',
 	'agent.ticekts.ticket_ref' => 'Ticket Ref',
@@ -83,15 +83,15 @@
 	'agent.tickets.split_from_here' => 'Split ticket from here',
 	'agent.tickets.close_tab_after_reply' => 'Close this ticket tab after reply',
 	'agent.tickets.keep_current_status' => 'Keep current status',
-	
+
 	'agent.tickets.in_use_by' => 'This ticket is in use by: ',
 	'agent.tickets.deleted_by' => 'This ticket was deleted by: ',
 	'agent.tickets.perm_delete_note' => 'This ticket will be permanantly purged from the system in {{time}}',
 	'agent.tickets.hidden_because' => 'This ticket is currently hidden because: ',
 	'agent.tickets.hidden_explain' => 'This means it won\'t show up in most search results and it will not generate agent notifications.',
-	
+
 	'agent.tickets.set_hold' => 'Set on hold',
-	'agent.tickets.on_hold' => 'Ticket on hold',
+	'agent.tickets.on_hold' => 'On hold',
 	'agent.tickets.user_waiting_x_and_total_y' => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
 	'agent.tickets.ticket_log' => 'Ticket Log',
 );

@@ -16,6 +16,7 @@
 			<div class="bound-fade"></div>
 			<div class="urgency"><a>{{ ticket.urgency }}</a></div>
 			<div class="status {{ ticket.status_code }}">{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}</div>
+			{% if ticket.is_hold %}<div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div>{% endif %}
 			<br class="clear" />
 		</div>
 	</div>
