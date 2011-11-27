@@ -27,6 +27,7 @@
 				<header>
 					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">Add</button>
 				</header>
+				<div style="display: none" id="choice_extra_fields"></div>
 				<ul class="list">
 					{% for id,choice in editfield.choices %}
 					<li class="item" data-choice-id="{{ id }}">
@@ -44,6 +45,21 @@
 						<div class="label"></div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
 					</li>
+				</script>
+				<script type="text/x-deskpro-plain" id="move_options_overlay">
+					<div id="overlay_wrapper" style="width: 400px; height: 160px; display: none;">
+						<div class="overlay-title">
+							<span class="close-trigger close-overlay"></span>
+							<h4>Existing Values</h4>
+						</div>
+						<div class="overlay-content">
+							<p>What should be done with the items that already have this value?</p>
+							<select class="move-value"></select>
+						</div>
+						<div class="overlay-footer">
+							<button class="clean-white save-trigger">Okay</button>
+						</div>
+					</div>
 				</script>
 			</div>
 		</div>

@@ -92,9 +92,43 @@ abstract class CustomDefAbstractController extends AbstractController
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
 
 		if ($this->request->isPost()) {
-			$form->bindRequest($this->get('request'));
 			if (1 /*$form->isValid()*/) {
-				$editfield->save();
+
+				// Sort out moves first
+				$moves = $this->in->getCleanValueArray('move', 'string', 'uint');
+
+				$move_to_map = array();
+
+				foreach ($moves as $choice_id => $find_val) {
+					foreach ($field->children as $f) {
+						if ($f->title == $find_val) {
+							$move_to_map[$choice_id] = $f->id;
+							break;
+						}
+					}
+				}
+
+				$this->em->getConnection()->beginTransaction();
+
+				try {
+
+					$name = str_replace('custom_def_', '', $field->getTableName());
+
+					foreach ($move_to_map as $from_id => $to_id) {
+						$this->db->executeUpdate("UPDATE IGNORE custom_data_$name SET field_id = $to_id WHERE field_id = $from_id");
+						$this->db->executeUpdate("DELETE FROM custom_data_$name WHERE field_id = $from_id");
+					}
+
+					$form->bindRequest($this->get('request'));
+					$editfield->save();
+
+					$this->em->getConnection()->commit();
+				} catch (\Exception $e) {
+					$this->em->getConnection()->rollback();
+					throw $e;
+				}
+
+
 				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));
 			} else {
