@@ -32,7 +32,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			listEl: $('section.linked-content:first', this.wrapper),
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.deal_id + '/ajax-save',
+					url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -41,9 +41,9 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/kb/article/' + self.meta.deal_id + '/ajax-save',
+					url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
 					type: 'POST',
-					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
 					dataType: 'json'
 				});

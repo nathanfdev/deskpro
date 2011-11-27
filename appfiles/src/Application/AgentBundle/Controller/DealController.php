@@ -432,6 +432,21 @@ class DealController extends AbstractController
                 case 'change_deal_currency':
                     $deal->setDealCurrencyId($this->in->getString('deal_currency'));
                     break;
+                case 'add-related':
+                        $updater = new RelatedContentUpdate($deal);
+                        $updater->addRelated(
+                                $this->in->getString('content_type'),
+                                $this->in->getString('content_id')
+                        );
+                        break;
+
+                case 'remove-related':
+                        $updater = new RelatedContentUpdate($deal);
+                        $updater->removeRelated(
+                                $this->in->getString('content_type'),
+                                $this->in->getString('content_id')
+                        );
+                        break;
                     
             }
 
