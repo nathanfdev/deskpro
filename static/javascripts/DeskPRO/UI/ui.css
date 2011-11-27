@@ -53,8 +53,8 @@
 
 .close-overlay {
 	background: transparent url(../../../images/agent/close-big.png) no-repeat 50% 50%;
-	width: 18px;
-	height: 18px;
+	width: 30px;
+	height: 30px;
 	overflow: hidden;
 	text-indent: -100px;
 
