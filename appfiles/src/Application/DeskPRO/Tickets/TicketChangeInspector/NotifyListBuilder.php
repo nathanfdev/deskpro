@@ -126,6 +126,16 @@ class NotifyListBuilder
 			}
 		}
 
+		$person_context = App::getCurrentPerson();
+		if ($person_context && $person_context->id) {
+			$agent_ids = array_filter($agent_ids, function($aid) use ($person_context) {
+				if ($aid == $person_context->id) {
+					return false;
+				}
+				return true;
+			});
+		}
+
 		$this->tracker->logMessage("[NotifyListBuilder] " . count($agent_ids) . " agents and " . count($filter_ids) . " filters");
 
 		$agent_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgents($agent_ids, $filter_ids);
