@@ -1708,10 +1708,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new'
 		});
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/tasks/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new'
+			loadUrl: BASE_URL + 'agent/tasks/new'
 		});
-                this.newDealLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+
+        this.newDealLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/deals/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/deals/new'
 		});
