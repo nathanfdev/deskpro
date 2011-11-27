@@ -883,34 +883,41 @@ section.mass-actions-overlay > header {
 
 section.mass-actions-overlay > header .close,
 .mass-actions-overlay .close-trigger {
-	background-image: url("../../images/agent/close.png") /** sprite-ref: ui-v */;
-	width: 18px;
-	height: 18px;
+	background-image: url("../../images/agent/close-big.png") /** sprite-ref: ui-v */;
+	width: 30px;
+	height: 30px;
 	overflow: hidden;
 	text-indent: -100px;
 
 	position: absolute;
-	right: 2px;
-	top: 2px;
+	right: 3px;
+	top: 3px;
 	cursor: pointer;
+}
+
+section.mass-actions-overlay > header .close:hover,
+.mass-actions-overlay .close-trigger:hover {
+	background-image: url("../../images/agent/close-big-over.png") /** sprite-ref: ui-v */;
 }
 
 section.mass-actions-overlay > header .move-to-tab {
-	float: right;
-	margin-right: 25px;
-	margin-top: 4px;
+    .iconbase(10px, 10px);
+    text-indent: -100px;
+    background-image: url("../../images/agent/icons/move-to-tab.png") /** sprite-ref: ui-v */;
+
+    margin-top: 12px;
+    margin-left: 5px;
+
+	float: left;
 	cursor: pointer;
-	font-size: 9px;
-	line-height: 100%;
-	.gradient(#eeeeee, #cccccc);
-	border: 1px solid #ccc;
-	border-bottom: 1px solid #bbb;
-	padding: 1px;
-	.rounded(3px);
-	.box-shadow(0px 0px 2px rgba(0,0,0, 0.1));
+	.opacity(60);
+}
+section.mass-actions-overlay > header .move-to-tab:hover {
+	.opacity(100);
 }
 
 section.mass-actions-overlay > header h1 {
+    float: left;
 	color: #595959;
 	font-size: 14px;
 	font-weight: bold;

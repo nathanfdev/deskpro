@@ -52,7 +52,7 @@
 }
 
 .close-overlay {
-	background: transparent url(../../../images/agent/close.png) no-repeat 50% 50%;
+	background: transparent url(../../../images/agent/close-big.png) no-repeat 50% 50%;
 	width: 18px;
 	height: 18px;
 	overflow: hidden;
@@ -60,13 +60,13 @@
 
 	display: block;
 	position: absolute;
-	right: 2px;
-	top: 2px;
+	right: 3px;
+	top: 3px;
 	cursor: pointer;
 }
 
 .close-overlay:hover {
-	background: transparent url(../../../images/agent/close-over.png) no-repeat 50% 50%;
+	background: transparent url(../../../images/agent/close-big-over.png) no-repeat 50% 50%;
 }
 
 /* The inner wrapper */
