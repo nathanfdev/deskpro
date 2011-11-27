@@ -115,39 +115,36 @@
 							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
 								<span class="prop-change">
 									{% if ticket.agent %}
-										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">Me</span>,
+										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">Me</span> |
 									{% else %}
-										Assign ticket to <span class="new-val-label">Me</span>,
+										Assign ticket to <span class="new-val-label">Me</span> |
 									{% endif %}
 								</span>
 								<span class="prop-no-change">
 									{% if ticket.agent %}
-										Remain assigned to agent: {{ tools.name_or_me(ticket.agent) }},
+										Remain assigned to agent: {{ tools.name_or_me(ticket.agent) }} |
 									{% else %}
-										Remain unassigned,
+										Remain unassigned |
 									{% endif %}
 								</span>
 							</span>
 							<span id="{{replyBaseId}}_assign_detail_agent_team">
 								<span class="prop-change">
 									{% if ticket.agent_team %}
-										Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">me</span>,
+										Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">me</span>
 									{% else %}
-										Remain assigned to <span class="new-val-label"></span>,
+										Remain assigned to <span class="new-val-label"></span>
 									{% endif %}
 								</span>
 								<span class="prop-no-change">
 									{% if ticket.agent_team %}
-										Remain assigned to team: {{ tools.team_name_or_me(ticket.agent_team) }},
+										Remain assigned to team: {{ tools.team_name_or_me(ticket.agent_team) }}
 									{% else %}
-										Remain unassigned team,
+										Remain unassigned team
 									{% endif %}
 								</span>
 							</span>
 							<span id="{{replyBaseId}}_assign_detail_followers">
-								<span class="no-followers" {% if agent_parts|length %}style="display: none"{% endif %}>
-									No followers
-								</span>
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
 									<span class="count">{{ agent_parts|length }}</span> Followers
 									<div class="inputs" style="display: none">
@@ -169,7 +166,7 @@
 									No followers
 								</span>
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									<span class="count">{{ agent_parts|length }}</span> Followers
+									| <span class="count">{{ agent_parts|length }}</span> Followers
 									<div class="inputs" style="display: none">
 										{% for p in agent_parts %}
 											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
