@@ -1541,15 +1541,17 @@ ul.activity-stream time {
 .profile-box-container > header .edit-gear {
 	display: block;
 	float: right;
-	width: 16px;
-	height: 16px;
+	width: 11px;
+	height: 11px;
 	overflow: hidden;
 	text-indent: -100px;
 	background-repeat: no-repeat;
 	background-position: 0 0;
-	background-image: url("../../images/agent/icons/cog.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/icons/gear.png") /** sprite-ref: ui-v */;
 	cursor: pointer;
-	margin: 3px 5px 0 0;
+	position: relative;
+	top: 2px;
+	right: 2px;
 }
 
 .profile-box-container > header .controls .edit-gear {
@@ -2540,10 +2542,11 @@ padding: 30px;
 }
 
 .snippets-overlay .controls .edit-trigger {
-	.iconbase(16px, 16px);
+	.iconbase(11px, 11px);
 	background-repeat: no-repeat;
-	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v */;
+	background-image: url(../../images/agent/icons/gear.png) /** sprite-ref: ui-v */;
 	margin-right: 4px;
+	margin-top: 4px;
 	float: left;
 	cursor: pointer;
 }
@@ -2576,12 +2579,12 @@ padding: 30px;
 }
 
 .snippets-overlay > nav li .edit-cat-trigger {
-    .iconbase(16px, 16px);
+    .iconbase(11px, 11px);
     position: absolute;
-    top: 5px; right: 4px;
+    top: 8px; right: 4px;
 
 
-	background-image: url(../../images/agent/icons/cog.png) /** sprite-ref: ui-v */;
+	background-image: url(../../images/agent/icons/gear.png) /** sprite-ref: ui-v */;
 	z-index: 2;
 }
 
