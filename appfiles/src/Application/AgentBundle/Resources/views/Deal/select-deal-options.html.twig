@@ -1,6 +1,10 @@
 {% macro render_options(k, cat, selected, depth) %}
 	{% set id = cat.id|default(k) %}
-	{% set title = cat.name|default(cat.name|default(cat)) %}
+	{% if not cat.name is defined %}
+            {% set title = cat.symbol|default(cat.symbol|default(cat)) %}
+        {% else%}
+            {% set title = cat.name|default(cat.name|default(cat)) %}
+        {%endif%}
 	<option value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
 	
 {% endmacro %}
