@@ -136,7 +136,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 		new_row.data('row-id', rowId);
 
 		// Add select
-		$('.type:first', new_row).html('<span class="current-value menu-trigger">Choose criteria...</span><input type="hidden" class="type" name="type" value="" />');
+		$('.type:first', new_row).html('<span class="current-value menu-trigger">Choose...</span><input type="hidden" class="type" name="type" value="" />');
 		var select = $('input.type:first', new_row);
 
 		var self = this;
