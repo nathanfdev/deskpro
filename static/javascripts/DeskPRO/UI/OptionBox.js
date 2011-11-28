@@ -283,24 +283,23 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 		this.el.addClass('open');
 
-		var cols = $('.col > section > ul', this.el);
+		var cols = $('.col', this.el);
 		if (cols.length) {
 			var max = 0;
 			var w = 0;
 			cols.each(function() {
+				var ul = $('> section > ul', this);
 				w += $(this).width();
-				if ($(this).height() >= 320) {
-					w += $.getScrollbarWidth(); // it has a scrollbar
-				}
-				max += $(this).outerHeight();
+				max += ul.height();
 			});
-			cols.each(function() {
+			$('.col > section > ul', this.el).each(function() {
 				if ($(this).height() < max) {
 					$(this).height(max);
 				}
 			});
 
-			w += (2 * cols.length);  // border/margin on the cols
+			w += (1 * cols.length);  // border/margin on the cols
+			console.log('setting w %i', w);
 
 			this.el.width(w);
 		}
