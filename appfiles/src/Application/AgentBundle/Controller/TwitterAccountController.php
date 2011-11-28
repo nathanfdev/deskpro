@@ -13,6 +13,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TwitterAccountSearch;
 
 /**
  *
@@ -62,16 +63,45 @@ class TwitterAccountController extends AbstractController
                 ));
         }
 
-        public function runSearchAction($search_id)
+        public function runSearchAction($account_id, $search_id)
         {
+                $account = $this->getAccount($account_id);
                 $search = App::getEntityRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
 
                 if (!$search) {
                         throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
                 }
 
+                $twitterSearcher = new \Zend_Service_Twitter_Search();
+                $searchResults = $twitterSearcher->search($search->getTerm());
+
                 return $this->render('AgentBundle:TwitterAccount:run-search.html.twig', array(
-                        'search' => $search,
+                        'account'       => $account,
+                        'search'        => $search,
+                        'results'       => $searchResults['results'],
+                ));
+        }
+
+        public function newSearchAction($account_id)
+        {
+                $account = $this->getAccount($account_id);
+                $search_term = $this->in->getValue('search_term');
+
+                // Add the search term to the account
+                $twitterAccountSearch = new TwitterAccountSearch();
+                $twitterAccountSearch->setAccount($account);
+                $twitterAccountSearch->setTerm($search_term);
+
+                $em = App::getOrm();
+                $em->persist($twitterAccountSearch);
+                $em->flush();
+
+                $twitterSearcher = new \Zend_Service_Twitter_Search();
+                $searchResults = $twitterSearcher->search($search_term);
+
+                return $this->render('AgentBundle:TwitterAccount:search-part.html.twig', array(
+                        //'search' => $search,
+                        'results' => $searchResults['results'],
                 ));
         }
 

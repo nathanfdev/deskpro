@@ -2,6 +2,9 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearch';
 
 pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
+pageMeta.accountId = '{{ account.id|escape }}';
+
+pageMeta.newSearchUrl = '{{ path('agent_twitter_new_search', { 'account_id': account.id }) }}';
 </script>
 
 
@@ -11,10 +14,27 @@ pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
+<style type="text/css">
+    .search-results table { margin: 5px 5px; }
+    .search-results .user { display: inline; }
+    .search-results .user * { font-size: 10px; display: inline; }
+    .search-results .user-info .retweet { float: right; }
+    .search-results .user-info .reply { float: right; }
+    .search-results td { padding: 0 5px 5px 0; text-align: left; }
+    .search-results .status-text { }
+    .search-results .screen_name { display: inline; }
+    .search-results .status-text p.raw { background: #eee; display: block; width: 100%; min-height: 37px; }
+    .search-results .status-text p.raw span { margin: 5px; display: block; }
+</style>
+
+
 <div class="layout-content twitter">
+
+    {% include 'AgentBundle:TwitterAccount:search-control-bar.html.twig' %}
+
     <div class="content">
         <section class="search-results list-listing">
-        todo
+            {% include 'AgentBundle:TwitterAccount:search-part.html.twig' %}
         </section>
     </div>
 </div>

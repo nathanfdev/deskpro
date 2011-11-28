@@ -879,9 +879,15 @@ agent_twitter_list_searches:
   requirements: { account_id: "\d+" }
 
 agent_twitter_run_search:
-  pattern: /twitter/search/{search_id}
+  pattern: /twitter/{account_id}/search/{search_id}
   defaults: { _controller: AgentBundle:TwitterAccount:runSearch }
-  requirements: { search_id: "\d+" }
+  requirements: { account_id: "\d+", search_id: "\d+" }
+
+agent_twitter_new_search:
+  pattern: /twitter/{account_id}/search/new
+  defaults: { _controller: AgentBundle:TwitterAccount:newSearch }
+  requirements: { account_id: "\d+" }
+
 
 ################################################################################
 # Tasks

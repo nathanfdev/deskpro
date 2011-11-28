@@ -111,7 +111,7 @@
 				{% for search in account.searches %}
 					<li class="dp-cat-li">
 						<div class="item-wrap dp-cat-item">
-							<span class="title" data-route="listpane:page:{{ path('agent_twitter_run_search', {'search_id': search.id}) }}">
+							<span class="title" data-route="listpane:page:{{ path('agent_twitter_run_search', {'account_id': account.id, 'search_id': search.id}) }}">
 								<span>{{ search.term }}</span>
 							</span>
 						</div>

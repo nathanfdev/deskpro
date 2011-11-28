@@ -1,5 +1,5 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearches';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterAccountSearch';
 
 pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
 </script>
@@ -12,6 +12,9 @@ pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
 {# /scroll containers #}
 
 <div class="layout-content twitter">
+
+    {% include 'AgentBundle:TwitterAccount:search-control-bar.html.twig' %}
+
     <div class="content">
         <section class="search-results list-listing">
         todo
