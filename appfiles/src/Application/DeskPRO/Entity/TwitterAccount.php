@@ -232,6 +232,27 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Retrieve a count of the timeline for this account.
+	 *
+	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
+	 * @return array
+	 */
+	public function countTimeline($includeArchived = false, $includeAccount = false)
+	{
+		// get ids of users account is following
+		$friendIds = $this->getFriendIds();
+
+		// include accounts' user id
+		if ($includeAccount) {
+			$friendIds[] = $this->getUserId();
+		}
+
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countByUserIds($friendIds, $includeArchived);
+	}
+
+	/**
 	 * Count the total inbox statuses
      *
 	 * @param Boolean $includeArchived (optional)

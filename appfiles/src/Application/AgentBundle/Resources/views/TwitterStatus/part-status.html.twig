@@ -1,3 +1,4 @@
+<section class="comments-list list-listing">
 {% for status in statuses %}
 {% if status.isRetweet is sameas(true) %}
 	{% set retweet = status %}
@@ -18,6 +19,7 @@
 	.status .status-text p.raw { background: #eee; display: block; width: 100%; min-height: 37px; }
 	.status .status-text p.raw span { margin: 5px; display: block; }
 	.status .controls-row { margin-top: 10px; }
+	.status .note { backgroud: #fff; margin-left: 20px; border: 1px solid #ddd; padding: 2px 5px; font-size: 10px; }
 </style>
 
 <article class="row-item status status-{{ status.id }}{% if retweet %} retweet {% endif %}{%if status.in_reply_to_status %} reply {% endif %}" data-status-id="{{ status.id }}" data-user-id="{{ status.user.id }}">
@@ -115,4 +117,7 @@
 		</tr>
 	</table>
 </article>
+{% else %}
+    <p class="twitter-no-results">There are no results</p>
 {% endfor %}
+</section>

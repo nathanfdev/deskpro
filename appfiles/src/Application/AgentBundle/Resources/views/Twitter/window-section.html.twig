@@ -34,7 +34,7 @@
 				<span class="sub-toggle">expand</span>
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countInboxTotal() }}">{{ account.countInboxTotal() }}</span>
+					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
 					<span>INBOX</span>
 				</span>
 			</div>
@@ -126,7 +126,7 @@
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
-					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.user.statuses.count|default(0) }}">{{ account.user.statuses.count|default(0) }}</span>
+					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.countOutgoing() }}">{{ account.countOutgoing() }}</span>
 					<span>SENT</span>
 				</span>
 			</div>

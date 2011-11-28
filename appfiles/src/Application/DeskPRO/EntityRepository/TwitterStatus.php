@@ -111,7 +111,7 @@ class TwitterStatus extends EntityRepository
 		}
 
 		$query = "
-			SELECT s
+			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.user IN (".implode(',', $userIds).")
 			AND s.recipient IS NULL
@@ -124,9 +124,6 @@ class TwitterStatus extends EntityRepository
 		return $this
 			->getEntityManager()
 			->createQuery($query)
-			->setParameters(array(
-				'user_id' => $id
-			))
 			->getSingleScalarResult();
 	}
 

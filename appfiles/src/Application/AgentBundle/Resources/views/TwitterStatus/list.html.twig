@@ -26,11 +26,9 @@ pageMeta.saveUnfollowUrl = '{{ path('agent_twitter_user_ajaxsave_unfollow') }}';
 
 	{% include 'AgentBundle:TwitterStatus:list-control-bar.html.twig' %}
 	{% include 'AgentBundle:TwitterStatus:list-massactions-bar.html.twig' %}
-	
+
 	<div class="content">
-		<section class="comments-list list-listing">
 			{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
-		</section>
 	</div>
 </div>
 
