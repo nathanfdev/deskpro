@@ -33,8 +33,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		}
 
 		$('section.kb-simple-list', this.wrapper)
-			.on('click', 'button.kb-insert-link', function() { self.insertIntoTicket($(this).data('article-id'), 'link') })
-			.on('click', 'button.kb-insert-content', function() { self.insertIntoTicket($(this).data('article-id'), 'content') })
+			.on('click', '.kb-insert-link', function(ev) { ev.stopPropagation(); self.insertIntoTicket($(this).data('article-id'), 'link') })
+			.on('click', '.kb-insert-content', function(ev) { ev.stopPropagation(); self.insertIntoTicket($(this).data('article-id'), 'content') })
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper

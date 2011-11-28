@@ -17,13 +17,13 @@
 				</div>
 				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-faded"></div>
-					<button class="clean-gray xxx-small kb-insert-link" data-article-id="{{ article.id }}">{{ phrase('agent.insert_link') }}</button>
-					<button class="clean-gray xxx-small kb-insert-content" data-article-id="{{ article.id }}">{{ phrase('agent.insert_content') }}</button>
+					<span class="tipped kb-insert-link" title="{{ phrase('agent.insert_link') }}" data-article-id="{{ article.id }}"></span>
+					<span class="tipped kb-insert-content" title="{{ phrase('agent.insert_content') }}" data-article-id="{{ article.id }}"></span>
 				</div>
 				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-faded"></div>
-					<button class="clean-gray xxx-small related-link">{{ phrase('agent.add_related') }}</button>
-					<button class="clean-gray xxx-small related-unlink">{{ phrase('agent.remove_related') }}</button>
+					<span class="tipped related-link" title="{{ phrase('agent.add_related') }}"></span>
+					<span class="tipped related-unlink" title="{{ phrase('agent.remove_related') }}"></span>
 				</div>
 			</div>
 			<hr class="clear-top" />
