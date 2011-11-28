@@ -93,5 +93,6 @@
 	'agent.tickets.set_hold' => 'Set on hold',
 	'agent.tickets.on_hold' => 'On hold',
 	'agent.tickets.user_waiting_x_and_total_y' => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
+	'agent.tickets.user_waiting_total_x' => 'User has been waiting a total of <time>{{total}}</time> since the ticket started.',
 	'agent.tickets.ticket_log' => 'Ticket Log',
 );
