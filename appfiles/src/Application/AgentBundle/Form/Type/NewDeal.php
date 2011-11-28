@@ -49,6 +49,7 @@ class NewDeal extends AbstractType
                 $builder->add('deal_currency', 'text');
 		$builder->add('probability', 'text');
 		$builder->add('deal_value', 'text', array('required' => false));
+                $builder->add('visibility', 'text');
 
                 $builder->add('attach', 'collection', array(
 			'type' => 'hidden',

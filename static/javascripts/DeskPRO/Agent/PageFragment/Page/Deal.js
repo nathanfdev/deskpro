@@ -100,28 +100,40 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         var curncyMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('currency')
 		});
-		this.ownObject(curncyMenu);
+        this.ownObject(curncyMenu);
 
-        		this.getEl('currency').on('change', function(){
-			var val = $(this).val();
-			//$('.timezone-info', this.wrapper).empty();
-			$.ajax({
-				url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'change_deal_currency',
-					deal_currency: val
-				},
-				context: this,
-				success: function(data) {
-					//$('.timezone-info', this.wrapper).empty().html(data.bit_html);
-				}
-			});
-		});
+        var dltypeMenu = new DeskPRO.UI.Menu({
+                menuElement: this.getEl('select_deal_type')
+        });
+        this.ownObject(dltypeMenu);
+        
+        var dlstgMenu = new DeskPRO.UI.Menu({
+                menuElement: this.getEl('select_deal_stage')
+        });
+        this.ownObject(dlstgMenu);
+
+
+
+                this.getEl('currency').on('change', function(){
+                var val = $(this).val();
+                //$('.timezone-info', this.wrapper).empty();
+                $.ajax({
+                        url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                                action: 'change_deal_currency',
+                                deal_currency: val
+                        },
+                        context: this,
+                        success: function(data) {
+                                //$('.timezone-info', this.wrapper).empty().html(data.bit_html);
+                        }
+                });
+        });
                 
 
-        $('.select-deal-type').on('change', function(){
+        this.getEl('select_deal_type').on('change', function(){
 
             var dealId = self.meta.deal_id;
             if (!dealId) {
@@ -141,6 +153,12 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 },
                 success: function(data) {
                     $('.set-deal-stage').html(data.deal_stage);
+
+                     var dlstgDyMenu = new DeskPRO.UI.Menu({
+                        menuElement: this.getEl('select_deal_stage')
+                        });
+                     this.ownObject(dlstgDyMenu);
+
                     DeskPRO_Window.sections.deals_section.refresh();
                 }
             });
@@ -584,6 +602,33 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                     data: {
                         action: 'change-status',
                         status: catId
+                    },
+                    context: self,
+                    dataType: 'json',
+                    success: function(data) {
+                        DeskPRO_Window.sections.deals_section.refresh();
+                    }
+                });
+            }
+        });
+
+        // Visibility
+        var visibilityOb = new DeskPRO.UI.OptionBoxRevertable({
+            trigger: this.getEl('visibility_trigger'),
+            element: this.getEl('visibility_ob'),
+            onSave: function(ob) {
+                var catEl = ob.getSelectedElements('visibility');
+                var catId = catEl.data('item-id');
+                var title = catEl.data('full-title');
+
+                self.getEl('visibility_label').text(title);
+
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
+                    type: 'POST',
+                    data: {
+                        action: 'change-visibility',
+                        visibility: catId
                     },
                     context: self,
                     dataType: 'json',

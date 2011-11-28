@@ -395,6 +395,7 @@ class DealController extends AbstractController
                      
                     $tpl = $this->renderView('AgentBundle:Deal:select-deal-options.html.twig', array(
                         'name'=> 'newdeal[deal_stage]',
+                        'id' => uniqid().'_select_deal_stage',
                         'with_blank'=> true,
                         'with_blank2'=> true,
                         'blank_title'=> 'Set Deal Stage',
@@ -414,8 +415,10 @@ class DealController extends AbstractController
                     }
                     break;
                 case 'change-status':
-
                     $deal['status'] = $this->in->getString('status');
+                    break;
+                case 'change-visibility':
+                    $deal['visibility'] = $this->in->getString('visibility');
                     break;
                 case 'change_title':
                     $deal['title'] = $this->in->getString('title');

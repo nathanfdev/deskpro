@@ -77,6 +77,7 @@ pageMeta.baseId = '{{ baseId }}';
                 <dd>
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealtype]',
+                                'id': baseId~'_select_deal_type',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Type',
@@ -94,6 +95,7 @@ pageMeta.baseId = '{{ baseId }}';
                 <dd class="set-deal-stage">
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealstage]',
+                                'id': baseId~'_select_deal_stage',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Stage',
@@ -110,7 +112,17 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="isRight">
 
         <div class="meta-line">
-            <div class="status the-status deal-status" id="{{baseId}}_status_trigger">
+            <div class="isLeft category the-visibility deal-visibility" id="{{baseId}}_visibility_trigger">
+                <span id="{{baseId}}_visibility_label">
+                        {% if deal.visibility == 0 %}
+                                Private
+                        {% elseif deal.visibility == 1 %}
+                                Public
+                        {% endif %}
+                </span>
+            </div>
+
+            <div class="isLeft hasMargineLeft-10px status the-status deal-status" id="{{baseId}}_status_trigger">
                 <span id="{{baseId}}_status_label">
                         {% if deal.status == 0 %}
                                 Open
@@ -161,3 +173,17 @@ pageMeta.baseId = '{{ baseId }}';
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Status') }}
+
+
+{{ optionbox.start('Visibility', {'id': baseId ~ '_visibility_ob'}) }}
+	{{ optionbox.section_start('', 'visibility') }}
+		<li class="top parent-option item-private" data-item-id="0" data-full-title="Private">
+			<input type="radio" name="visibility" value="o" />
+			<label>Private</label>
+		</li>
+		<li class="top parent-option item-public" data-item-id="1" data-full-title="Public">
+			<input type="radio" name="visibility" value="1" />
+			<label>Public</label>
+		</li>
+	{{ optionbox.section_end() }}
+{{ optionbox.end('Set Visibility') }}

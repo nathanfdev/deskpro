@@ -25,6 +25,12 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 this._initOrgEdit();
                 this._initOtherSection();
 
+
+                var visiMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('visibility')
+		});
+                this.ownObject(visiMenu);
+
                 $('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
                 $('.select-deal-type').on('change', function(){
 
