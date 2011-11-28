@@ -234,49 +234,107 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Retrieve a list of messages for this account.
 	 *
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getMessages($sortByDate = 'asc')
+	public function getMessages($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findMessagesForUserId($this->getUserId(), $sortByDate);
+			->findMessagesForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+	}
+
+	/**
+	 * Count the messages for this account.
+	 *
+	 * @param Boolean $includeArchived (optional)
+	 * @return array
+	 */
+	public function countMessages($includeArchived = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countMessagesForUserId($this->getUserId(), $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of replies for this account.
 	 *
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getReplies($sortByDate = 'asc')
+	public function getReplies($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findRepliesForUserId($this->getUserId(), $sortByDate);
+			->findRepliesForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+	}
+
+	/**
+	 * Retrieve a list of replies for this account.
+	 *
+	 * @param Boolean $includeArchived (optional)
+	 * @return array
+	 */
+	public function countReplies($includeArchived = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countRepliesForUserId($this->getUserId(), $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of mentions for this account.
 	 *
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getMentions($sortByDate = 'asc')
+	public function getMentions($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findMentionsForUserId($this->getUserId(), $sortByDate);
+			->findMentionsForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+	}
+
+	/**
+	 * Count the mentions for this account.
+	 *
+	 * @return array
+	 */
+	public function countMentions($includeArchived = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countMentionsForUserId($this->getUserId(), $includeArchived);
 	}
 
 	/**
 	 * Retrieve a list of retweets for this account.
 	 *
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getRetweets($sortByDate = 'asc')
+	public function getRetweets($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findRetweetsForUserId($this->getUserId(), $sortByDate);
+			->findRetweetsForUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
+	}
+
+	/**
+	 * Count the retweets for this account.
+	 *
+	 * @return array
+	 */
+	public function countRetweets($includeArchived = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countRetweetsForUserId($this->getUserId(), $includeArchived);
 	}
 
 	/**
@@ -289,6 +347,17 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
 			->findOutgoingByUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
+	 * Count the outgoings for this account.
+	 *
+	 * @return array
+	 */
+	public function countOutgoing($includeArchived = false)
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->countOutgoingByUserId($this->getUserId(), $includeArchived);
 	}
 
 	/**

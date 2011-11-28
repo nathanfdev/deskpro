@@ -93,18 +93,26 @@ class TwitterStatus extends EntityRepository
 
 	/**
 	 * @param integer $id
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findMessagesForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findMessagesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		$query = sprintf("
+		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.recipient IS NOT NULL
 			AND (s.user = :user_id OR s.recipient = :user_id)
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -120,14 +128,42 @@ class TwitterStatus extends EntityRepository
 
 	/**
 	 * @param integer $id
+	 * @param Boolean $includeArchived (optional)
+	 * @return array
+	 */
+	public function countMessagesForUserId($id, $includeArchived = false)
+	{
+		$query = "
+			SELECT COUNT(s.id)
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.recipient IS NOT NULL
+			AND (s.user = :user_id OR s.recipient = :user_id)
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameters(array(
+				'user_id' => $id
+			))
+			->getSingleScalarResult();
+	}
+
+	/**
+	 * @param integer $id
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findRepliesForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findRepliesForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		$query = sprintf("
+		$query = "
 			SELECT r
 			FROM DeskPRO:TwitterStatus r
 			WHERE r.in_reply_to_status IN (
@@ -135,7 +171,14 @@ class TwitterStatus extends EntityRepository
 				FROM DeskPRO:TwitterStatus s
 				WHERE s.user = :user_id
 			)
-			ORDER BY r.date_created %s
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND r.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
+			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
 		return $this
@@ -150,37 +193,32 @@ class TwitterStatus extends EntityRepository
 
 	/**
 	 * @param integer $id
-	 * @param string $sortByDate (optional)
-	 * @param integer $limit (optional)
-	 * @param integer $page (optional)
-	 * @return array
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
 	 */
-	public function findMentionsForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function countRepliesForUserId($id, $includeArchived = false)
 	{
-		$query = sprintf("
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			LEFT JOIN s.mentions m
-			WHERE m.user = :user_id
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+		$query = "
+			SELECT COUNT(r.id)
+			FROM DeskPRO:TwitterStatus r
+			WHERE r.in_reply_to_status IN (
+				SELECT s.id
+				FROM DeskPRO:TwitterStatus s
+				WHERE s.user = :user_id
+			)
+		";
 
-	 	return $this
+		if (!$includeArchived) {
+			$query .= " AND r.is_archived = 0 ";
+		}
+
+		return $this
 			->getEntityManager()
 			->createQuery($query)
-			->setMaxResults($limit)
-			->setFirstResult($this->calculateOffset($limit, $page))
-			->execute(array(
+			->setParameters(array(
 				'user_id' => $id
-			));
-	}
-
-	/**
-	 * @todo implement
-	 */
-	public function findRetweetsForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
-	{
-	 	return array();
+			))
+			->getSingleScalarResult();
 	}
 
 	/**
@@ -190,12 +228,20 @@ class TwitterStatus extends EntityRepository
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findOutgoingByUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findMentionsForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
-		$query = sprintf("
+		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
-			WHERE s.user = :user_id
+			LEFT JOIN s.mentions m
+			WHERE m.user = :user_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -207,6 +253,106 @@ class TwitterStatus extends EntityRepository
 			->execute(array(
 				'user_id' => $id
 			));
+	}
+
+	/**
+	 * @param integer $id
+	 * @return int
+	 */
+	public function countMentionsForUserId($id, $includeArchived = false)
+	{
+		$query = "
+			SELECT COUNT(s.id)
+			FROM DeskPRO:TwitterStatus s
+			LEFT JOIN s.mentions m
+			WHERE m.user = :user_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameters(array(
+				'user_id' => $id
+			))
+			->getSingleScalarResult();
+	}
+
+	/**
+	 * @todo implement
+	 */
+	public function findRetweetsForUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	{
+	 	return array();
+	}
+
+	/**
+	 * @todo implement
+	 */
+	public function countRetweetsForUserId($id, $includeArchived = false)
+	{
+	 	return 0;
+	}
+
+	/**
+	 * @param integer $id
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function findOutgoingByUserId($id, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
+	{
+		$query = "
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.user = :user_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute(array(
+				'user_id' => $id
+			));
+	}
+
+	/**
+	 * @param integer $id
+	 * @return array
+	 */
+	public function countOutgoingByUserId($id, $includeArchived = false)
+	{
+		$query = "
+			SELECT COUNT(s.id)
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.user = :user_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameters(array(
+				'user_id' => $id
+			))
+			->getSingleScalarResult();
 	}
 
 	/**

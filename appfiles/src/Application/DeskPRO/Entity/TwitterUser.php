@@ -81,7 +81,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $description;
-	
+
 	/**
 	 * @var Boolean
 	 * @ORM_Mapping\Column(name="is_geo_enabled", type="boolean")
@@ -168,6 +168,145 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	public function isGeoEnabled()
 	{
 		return (Boolean) $this->is_geo_enabled;
+	}
+
+	/**
+	 * Count the total inbox statuses
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countInboxTotal($includeArchived = false)
+	{
+		return 0;
+		return $this->countDirectMessages()
+			   + $this->countReplies()
+			   + $this->countMentions()
+			   + $this->countRetweets()
+			   ;
+	}
+
+	/**
+	 * Get the direct messages for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function getDirectMessages($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->getDirectMessages(
+			$this->id, $includeArchived, $sortByDate, $limit, $page
+		);
+	}
+
+	/**
+	 * Count the direct messages for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countDirectMessages($includeArchived = false)
+	{
+		return 0;
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countDirectMessages(
+			$this->id, $includeArchived
+		);
+
+	}
+
+	/**
+	 * Get the replies for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function getReplies($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->getReplies(
+			$this->id, $includeArchived, $sortByDate, $limit, $page
+		);
+	}
+
+	/**
+	 * Count the replies for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countReplies($includeArchived = false)
+	{
+		return 0;
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countReplies(
+			$this->id, $includeArchived
+		);
+
+	}
+
+	/**
+	 * Get the mentions for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function getMentions($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->getMentions(
+			$this->id, $includeArchived, $sortByDate, $limit, $page
+		);
+	}
+
+	/**
+	 * Count the mentions for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countMentions($includeArchived = false)
+	{
+		return 0;
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMentions(
+			$this->id, $includeArchived
+		);
+
+	}
+
+	/**
+	 * Get the retweets for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function getRetweets($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->getRetweets(
+			$this->id, $includeArchived, $sortByDate, $limit, $page
+		);
+	}
+
+	/**
+	 * Count the retweets for a user
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countRetweets($includeArchived = false)
+	{
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRetweets(
+			$this->id, $includeArchived
+		);
+
 	}
 
 	/**
