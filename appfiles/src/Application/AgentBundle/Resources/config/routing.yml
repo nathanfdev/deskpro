@@ -873,6 +873,16 @@ agent_twitter_getsectiondata:
   pattern: /twitter/get-section-data.json
   defaults: { _controller: AgentBundle:Twitter:getSectionData }
 
+agent_twitter_list_searches:
+  pattern: /twitter/searches/{account_id}
+  defaults: { _controller: AgentBundle:TwitterAccount:listSearches }
+  requirements: { account_id: "\d+" }
+
+agent_twitter_run_search:
+  pattern: /twitter/search/{search_id}
+  defaults: { _controller: AgentBundle:TwitterAccount:runSearch }
+  requirements: { search_id: "\d+" }
+
 ################################################################################
 # Tasks
 ################################################################################

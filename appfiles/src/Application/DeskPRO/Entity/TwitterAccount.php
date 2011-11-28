@@ -209,6 +209,42 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_person_ids;
 	}
 
+	public function getNewFollowers()
+	{
+		$query = App::getOrm()->createQuery("
+			SELECT f
+			FROM DeskPRO:TwitterAccountFriend f
+			WHERE f.account = :account_id
+			ORDER BY f.id DESC
+		");
+
+		$followers = $query
+			->setMaxResults(5)
+			->setParameters(array(
+				'account_id' => $this->getId(),
+			))
+			->execute();
+
+		return $followers;
+	}
+
+	public function countNewFollowers()
+	{
+		$query = App::getOrm()->createQuery("
+			SELECT COUNT(f.id)
+			FROM DeskPRO:TwitterAccountFriend f
+			WHERE f.account = :account_id
+			ORDER BY f.id DESC
+		");
+
+		return $query
+			->setMaxResults(5)
+			->setParameters(array(
+				'account_id' => $this->getId(),
+			))
+			->getSingleScalarResult();
+	}
+
 	/**
 	 * Retrieve a timeline for this account.
 	 *
