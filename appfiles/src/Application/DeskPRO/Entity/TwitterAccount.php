@@ -306,16 +306,23 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return integer
 	 */
-	public function countStarredStatuses()
+	public function countStarredStatuses($includeArchived = false)
 	{
 		$userIds = $this->getFriendIds();
 		$userIds[] = $this->getUserId();
 
-		return App::getDb()->fetchColumn(sprintf("
+		$query = sprintf("
 			SELECT COUNT(s.id)
 			FROM twitter_statuses s
 			WHERE s.user_id IN (%s)
 			AND s.is_favorited = 1
-		", implode(',', $userIds)));
+		", implode(',', $userIds));
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		return App::getDb()->fetchColumn($query);
+
 	}
 }

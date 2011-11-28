@@ -213,15 +213,15 @@ class TwitterStatus extends EntityRepository
 	 * Get starred tweets for an agent
 	 *
 	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findStarredTweetsForAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findStarredTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		var_dump($id);
-		$query = sprintf("
+		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			INNER JOIN s.user u
@@ -229,15 +229,13 @@ class TwitterStatus extends EntityRepository
 			INNER JOIN a.persons p
 			WHERE s.is_favorited = :is_favorited
 			AND p.id = :agent_id
-			ORDER BY s.date_created %s
-		", $this->normalizeSortByDate($sortByDate));
+		";
 
-		$query = sprintf("
-			SELECT s
-			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.user u
-			INNER JOIN u.account a
-			WHERE s.is_favorited = :is_favorited
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -247,26 +245,63 @@ class TwitterStatus extends EntityRepository
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
-				//'agent_id' => $id,
+				'agent_id' => $id,
 				'is_favorited' => true
 			));
+	}
+
+	/**
+	 * Count starred tweets for an agent
+	 *
+	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
+	 * @return array
+	 */
+	public function countStarredTweetsForAgentId($id, $includeArchived = false)
+	{
+		$query = "
+			SELECT COUNT(s.id)
+			FROM DeskPRO:TwitterStatus s
+			INNER JOIN s.user u
+			INNER JOIN u.account a
+			INNER JOIN a.persons p
+			WHERE s.is_favorited = :is_favorited
+			AND p.id = :agent_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameter('agent_id', $id)
+			->getSingleScalarResult();
 	}
 
 	/**
 	 * Get tweets for an agent
 	 *
 	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		$query = sprintf("
+		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.agent = :agent_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -284,15 +319,20 @@ class TwitterStatus extends EntityRepository
 	 * Counts tweets for an agent
 	 *
 	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
 	 * @return int
 	 */
-	public function countTweetsForAgentId($id)
+	public function countTweetsForAgentId($id, $includeArchived = false)
 	{
 		$query = "
 			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.agent = :agent_id
 		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
 
 	 	return $this
 			->getEntityManager()
@@ -305,19 +345,27 @@ class TwitterStatus extends EntityRepository
 	 * Get tweets for an agent team
 	 *
 	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentTeamByAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		$query = sprintf("
+		$query = "
 			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
 			INNER JOIN s.agent_team at
 			INNER JOIN at.members m
 			WHERE m.id = :agent_id
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= sprintf("
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -335,9 +383,10 @@ class TwitterStatus extends EntityRepository
 	 * Count tweets for an agent team
 	 *
 	 * @param integer $id Agent Id
+	 * @param Boolean $includeArchived (optional)
 	 * @return int
 	 */
-	public function countTweetsForAgentTeamByAgentId($id)
+	public function countTweetsForAgentTeamByAgentId($id, $includeArchived = false)
 	{
 		$query = "
 			SELECT COUNT(s.id)
@@ -346,6 +395,10 @@ class TwitterStatus extends EntityRepository
 			INNER JOIN at.members m
 			WHERE m.id = :agent_id
 		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
 
 	 	return $this
 			->getEntityManager()
