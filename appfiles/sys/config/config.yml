@@ -15,12 +15,12 @@ parameters:
   router.options.generator_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
   doctrine.data_collector.class: Application\DeskPRO\Profiler\DataCollector\DoctrineDataCollector
-  #profiler.storage.dsn: "mysql:host=localhost;dbname=deskpro"
-  #profiler.storage.username: deskpro
-  #profiler.storage.password: deskpro
-  #profiler.storage.class: Profiler\LiveBundle\Profiler\Storage\MysqlProfilerStorage
-  #profiler.storage.lifetime: 86400
-    
+  profiler.storage.dsn: "mysql:host=localhost;dbname=deskpro_dev"
+  profiler.storage.username: deskpro_dev
+  profiler.storage.password: deskpro_dev
+  profiler.storage.class: Profiler\LiveBundle\Profiler\Storage\MysqlProfilerStorage
+  profiler.storage.lifetime: 86400
+
 services:
   templating.engine.jsonphp:
     class: Orb\Templating\Engine\PhpVarJsonEngine
@@ -63,7 +63,7 @@ framework:
   form:
     enabled: true
   profiler: { only_exceptions: false }
-    
+
 doctrine:
   orm:
     auto_generate_proxy_classes: false
