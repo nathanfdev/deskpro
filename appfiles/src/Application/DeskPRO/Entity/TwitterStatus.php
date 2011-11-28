@@ -425,12 +425,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 			$this->_parsed_text .= substr($this['text'], $cursor);
 		}
 
-		if (true === is_null($length)) {
-			return $this->_parsed_text;
-		}
-		else {
-			return substr($this->_parsed_text, 0, $length);
-		}
+		return $this->_parsed_text;
 	}
 
 	public function getClippedParsedText($length = null)
