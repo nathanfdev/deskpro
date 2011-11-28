@@ -455,13 +455,13 @@ class GroupingCounter
 			case TicketSearch::TERM_AGENT:
 				$this->grouping_summary = "Agent";
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.unassigned'));
 				break;
 
 			case TicketSearch::TERM_AGENT_TEAM:
 				$this->grouping_summary = "Agent";
 				$titles = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.unassigned'));
 				break;
 
 			case TicketSearch::TERM_URGENCY:
