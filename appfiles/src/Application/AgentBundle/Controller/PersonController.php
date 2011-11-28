@@ -475,6 +475,11 @@ class PersonController extends AbstractController
 				// Adding emails
 				$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
 				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
+
+					if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+						continue;
+					}
+
 					$email_rec = $person->addEmailAddressString($email);
 					$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
 					$this->em->persist($email_rec);
