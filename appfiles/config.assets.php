@@ -121,6 +121,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',

@@ -92,6 +92,45 @@ class TwitterStatus extends EntityRepository
 	}
 
 	/**
+	 * @param array $userIds An array of TwitterUser ids
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countByUserIds(array $userIds, $includeArchived = false)
+	{
+		$userIds = array_filter($userIds, function ($value) {
+			if (Numbers::isInteger($value)) {
+				return true;
+			}
+
+			return false;
+		});
+
+		if (!$userIds) {
+			return array();
+		}
+
+		$query = "
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.user IN (".implode(',', $userIds).")
+			AND s.recipient IS NULL
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameters(array(
+				'user_id' => $id
+			))
+			->getSingleScalarResult();
+	}
+
+	/**
 	 * @param integer $id
 	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)

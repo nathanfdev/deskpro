@@ -1,22 +1,38 @@
 <style type="text/css">
 	.message { clear: both; margin-bottom: 20px; }
 	.message-avatar { margin: 0 10px 10px 0; }
+	.message h4 { display: inline-block; }
+	.message table td { padding: 0 5px 5px 0;}
+	.message {
+		border-bottom: 1px solid #E1E3E6;
+		border-top: 1px solid #FCFDFE
+	};
 </style>
 
 <div class="message status-{{ status.id }}" data-status-id="{{ status.id }}">
-	<div class="message-avatar left">
-		<img src="{{ status.user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
-	</div>
-	<div class="message-body">
-		<div class="message-meta">
-			<span class="arrow-left"></span>
-			<h4>@{{ status.user.screen_name }}</h4>
-			<span class="timestamp">
-				<span class="timeago" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</span>
-			</span>
-		</div>
-		<div class="message-text">
-			<p>{{ status.parsed_text|raw }}</p>
-		</div>
-	</div>
+	<table width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td colspan="2">
+				<div class="message-meta">
+					<span class="arrow-left"></span>
+					<h4>@{{ status.user.screen_name }}</h4>
+					<span class="timestamp">
+						<span class="timeago" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td width="35px">
+				<div class="message-avatar left">
+					<img src="{{ status.user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
+				</div>
+			</td>
+			<td>
+				<div class="message-text">
+					<p>{{ status.parsed_text|raw }}</p>
+				</div>
+			</td>
+		</tr>
+	</table>
 </div>

@@ -1,0 +1,53 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterFollowers';
+
+pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
+</script>
+
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-listing">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
+
+<style type="text/css">
+    .followers-list article { margin: 5px; }
+    .followers-list table td { padding: 0 5px 5px 0; }
+</style>
+
+<div class="layout-content twitter">
+    <div class="content">
+        <section class="followers-list list-listing">
+
+            {% for follower in account.followers %}
+                <article class="row-item status status-{{ follower.id }}">
+                    <table width="100%" cellpadding="0" cellspacing="0" >
+                        <tr>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0" >
+                                    <tr>
+                                        <td class="avatar" width="48px">
+                                            <div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': follower.user.id}) }}">
+                                                <img src="{{ follower.user.profile_image_url }}" width="48" height="48" border="0" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': follower.user.id}) }}">
+                                                <h4 class="screen_name">@{{ follower.user.screen_name }}</h4> /
+                                                <span class="name">{{ follower.user.name }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </article>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+
+{# scroll containers #}
+</div></div></div></div>
+{# /scroll containers #}
