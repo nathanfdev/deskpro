@@ -1,6 +1,9 @@
+{#% extends 'AgentBundle:Common:display-options-layout.html.twig' %#}
 {% if deal_type_id is null%}
     {% set deal_type_id = 0 %}
 {% endif %}
+
+{#% block other_options %#}
 <header class="list-control-bar">
 	<ul>
 		<li>Ordered by </li>
@@ -29,3 +32,4 @@
                 {% endif%}
 	</ul>
 </header>
+{#% endblock %#}

@@ -11,6 +11,7 @@
 </script>
 {{ agentui.scroll_containers('page-deal-list') }}
 <article>
+    {% include 'AgentBundle:Deal:filter-display-options.html.twig' %}
     {% include 'AgentBundle:Deal:deal-list-bar.html.twig' %}
     {% if deal_group_info|length > 0%}
         {% include 'AgentBundle:Deal:filter-grouping-bar.html.twig' %}

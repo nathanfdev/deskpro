@@ -170,6 +170,8 @@ class DealController extends AbstractController
             }
 
         }
+        $filter['id'] = 0; //To Do (Will be dynamic later)
+        $pref_display_fields = $this->person->getPref('agent.ui.deal-filter-display-fields.' . $filter['id']);
 
         $tpl = 'AgentBundle:Deal:deal-list.html.twig';
         return $this->render($tpl, array(
@@ -181,7 +183,8 @@ class DealController extends AbstractController
             'group_by' => $group_by,
             'deal_group_info' => $deal_group_info,
             'group_total' => $this->_getTotalGroupCount($deal_group_info),
-            'set_group_option' => $set_group_option
+            'set_group_option' => $set_group_option,
+            'display_fields' => $pref_display_fields
         ));
     }
 
