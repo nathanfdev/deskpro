@@ -20,14 +20,18 @@ use Application\DeskPRO\App;
  */
 class Date extends HandlerAbstract
 {
-	public function renderHtml(array $data, array $template_vars = array())
+	public function renderHtml(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) return '';
+
 		$data['value'] = date('M d, Y', $data['value']);
 		parent::renderText($data, $template_vars);
 	}
 
-	public function renderText(array $data, array $template_vars = array())
+	public function renderText(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) return '';
+
 		$data['value'] = date('M d, Y', $data['value']);
 		parent::renderText($data, $template_vars);
 	}

@@ -52,8 +52,10 @@ class Display extends HandlerAbstract
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	public function renderHtml(array $data)
+	public function renderHtml(array $data = null)
 	{
+		if ($data === null) return '';
+
 		$ev = $this->makeEventObject(array('data' => $data, 'html' => $this->field_def->getOption('html', '')));
 		$this->event_dispatcher->dispatch(self::EVENT_RENDER_HTML, $ev);
 
@@ -68,8 +70,10 @@ class Display extends HandlerAbstract
 	/**
 	 * Render the field
 	 */
-	public function renderText(array $data)
+	public function renderText(array $data = null)
 	{
+		if ($data === null) return '';
+
 		$ev = $this->makeEventObject(array('data' => $data, 'text' => strip_tags($this->field_def->getOption('html', ''))));
 		$this->event_dispatcher->dispatch(self::EVENT_RENDER_TEXT, $ev);
 

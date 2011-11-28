@@ -180,8 +180,10 @@ abstract class HandlerAbstract
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	public function renderHtml(array $data, array $template_vars = array())
+	public function renderHtml(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) $data = array();
+
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, array(
@@ -200,8 +202,10 @@ abstract class HandlerAbstract
 	/**
 	 * Render the field
 	 */
-	public function renderText(array $data, array $template_vars = array())
+	public function renderText(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) $data = array();
+
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, array(

@@ -18,8 +18,10 @@ use Application\DeskPRO\Entity;
  */
 class TextUrl extends Text
 {
-	public function renderHtml(array $data)
+	public function renderHtml(array $data = null)
 	{
+		if ($data === null) return '';
+
 		$snipped = preg_replace('#^https?://#', '', $data['value']);
 		$html = '<a href="' . htmlspecialchars($data['value']) . '" target="_blank">' . htmlspecialchars($snipped) . '</a>';
 		return $html;

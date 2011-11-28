@@ -28,14 +28,18 @@ class Choice extends HandlerAbstract
 		$this->expanded = $this->field_def->getOption('expanded', false);
 	}
 
-	public function renderHtml(array $data, array $template_vars = array())
+	public function renderHtml(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) return '';
+
 		$data['value'] = $this->_getRenderableString($data);
 		return parent::renderText($data, $template_vars);
 	}
 
-	public function renderText(array $data, array $template_vars = array())
+	public function renderText(array $data = null, array $template_vars = array())
 	{
+		if ($data === null) return '';
+		
 		$data['value'] = $this->_getRenderableString($data);
 		return  parent::renderText($data, $template_vars);
 	}

@@ -18,8 +18,10 @@ use Application\DeskPRO\Entity;
  */
 class TextEmail extends Text
 {
-	public function renderHtml(array $data)
+	public function renderHtml(array $data = null)
 	{
+		if ($data === null) return '';
+
 		$html = '<a href="mailto:' . htmlspecialchars($data['value']) . '">' . htmlspecialchars($data['value']) . '</a>';
 		return $html;
 	}
