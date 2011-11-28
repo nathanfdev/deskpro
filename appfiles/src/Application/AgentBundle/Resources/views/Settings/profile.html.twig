@@ -4,32 +4,32 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 <form action="{{ path('agent_settings_profile_save') }}" method="post">
 	<div class="dp-form">
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Name</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.label_name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.name) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Email</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.label_email') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Timezone</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.label_timezone') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row new-picture">
-			<div class="dp-form-label"><label>Picture</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.label_picture') }}</label></div>
 			<div class="dp-form-input">
 				<table cellspacing="0" cellpadding="0"><tr>
 				{% if app.user.picture_blob %}
-					<td style="padding-right: 15px;"><img src="{{ app.user.getPictureUrl(80) }}" /><br /><em class="desc">Your current picture</em></td>
+					<td style="padding-right: 15px;"><img src="{{ app.user.getPictureUrl(80) }}" /><br /><em class="desc">{{ phrase('agent.settings.your_current_picture') }}</em></td>
 				{% endif %}
 				<td>
 					<input type="file" name="file-upload" />
@@ -49,22 +49,22 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Change Password</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.settings.change_password') }}</label></div>
 			<div class="dp-form-input double-password">
-				{{ form_widget(form.password, {'attr': { 'placeholder': 'New password', 'class': 'password1' }}) }}
-				{{ form_widget(form.password2, {'attr': { 'placeholder': 'Repeat password', 'class': 'password2' }}) }}
-				<br /><em class="desc">Leave this field blank to keep your password the same</em>
+				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.settings.label_new_password'), 'class': 'password1' }}) }}
+				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.settings.label_new_password2'), 'class': 'password2' }}) }}
+				<br /><em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Ticket Signature</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.settings.ticket_signature') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.ticket_signature) }}
-				<br /><em class="desc">This signature will be appended automatically when you send ticket replies</em>
+				<br /><em class="desc">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
 			</div>
 		</div>
 	</div>
 
-	<button type="submit" class="clean-white submit-trigger">Save</button>
+	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.save') }}</button>
 </form>

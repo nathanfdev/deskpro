@@ -4,106 +4,157 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
 pageMeta.title = '@{{user.screen_name|escape}}';
 pageMeta.userId = '{{ user.id|escape }}';
 pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 
-<div class="profile layout-content">
+{# Page Containers #}
+<div class="profile layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /Page Containers #}
 
-	<div class="inner-box-tab-content-2">
-		<div class="person-info-top">
-			<div style="float:left; margin-right: 7px; padding: 4px 0;">
-				<img src="{{ user.profile_image_url }}" alt="" />
-			</div>
-			<h3 class="name">@{{ user.screen_name}}</h3>
-			<h4 class="name">{{ user.name }}</h4>
+<header class="page-header">
+	<nav class="actions" id="{{baseId}}_action_buttons">
+		<ul>
+			{% if user.id is not sameas(account.user.id) %}
+				{% if user.id in account.friend_ids %}
+					<li class="create-ticket"><button class="clean-white large">Unfollow</button></li>
+				{% else %}
+					<li class="create-ticket"><button class="clean-white large">Follow</button></li>
+				{% endif %}
+			{% endif %}
+			<li class="create-ticket"><button class="clean-white large">Message</button></li>
+		</ul>
+	</nav>
+	<div class="person-picture-box">
+		<img src="{{ user.profile_image_url }}"  />
+	</div>
+	<div class="titlewrap">
+		<h1>
+			<span class="editable">@{{ user.screen_name}}</span>
+		</h1>
+		<div class="meta-line">
+			<div class="org"><span>
+				<span>{{ user.name }}</span><br />
+				<span>{{ user.description }}
+			</span></div>
 		</div>
 	</div>
 
-	<div class="ticket-properties right">
-		<div class="table-container">
-			<div class="table-title">
-				<h4>Profile</h4>
+	
+	<br class="clear" />
+</header>
+
+<style type="text/css">
+	.table-content td { padding: 10px; }
+	.table-content .title-col { font-weight: bold; }
+	.tabbed article { padding: 10px; }
+</style>
+
+<table class="layout-table" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+	<td valign="top" width="60%">
+		<section class="content-col">
+			{# Activity Tabs #}
+			<div class="profile-box-container tabbed">
+				<header>
+					<nav>
+						<ul>
+							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">Statuses</li>
+							<li data-tab-for="#{{baseId}}_messages_tab">Messages</li>
+							<li data-tab-for="#{{baseId}}_mentions_tab">Mentions</li>
+						</ul>
+					</nav>
+				</header>
+				<section>
+					<article id="{{baseId}}_statuses_tab" class="on">
+						{% for status in user.statuses %}
+							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+						{% else %}
+							No Statuses for User
+						{% endfor %}
+					</article>
+					<article id="{{baseId}}_messages_tab">
+						{% for status in user.messages %}
+							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+						{% else %}
+							No Messages for User
+						{% endfor %}
+					</article>
+					<article id="{{baseId}}_mentions_tab">
+						{% for mention in user.mentions %}
+							{% set status = mention.status %}
+							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+						{% else %}
+							No Mentions for User
+						{% endfor %}
+					</article>
+				</section>
 			</div>
-			<div class="table-content contact-info-list-wrap">
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Language</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{{ user.language }}
-					</div>
+			{# /Activity Tabs #}
+		</section>
+	</td>
+	<td valign="top">
+		<section class="property-col">
+			{# Box Profile #}
+				<div class="profile-box-container summary">
+					<header>
+						<h4>Profile</h4>
+					</header>
+					<section>
+						<table class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display" width="100%">
+							<tr class="row-table-cotent">
+								<td class="col-table-content title-col">
+									<span>Language</span>
+								</td>
+								<td width="70%"  class="col-table-content prop-val">
+									{{ user.language }}
+								</td>
+							</tr>
+							<tr class="row-table-cotent dark">
+								<td class="col-table-content title-col">
+									<span>Location</span>
+								</div>
+								<td width="70%"  class="col-table-content prop-val">
+									{% if user.location is none %}unknown{% else %}{{ user.location }}{% endif %}
+								</td>
+							</tr>
+							<tr class="row-table-cotent">
+								<td class="col-table-content title-col">
+									<span>Protected</span>
+								</td>
+								<td width="70%"  class="col-table-content prop-val">
+									{% if user.is_protected %}yes{% else %}no{% endif %}
+								</td>
+							</tr>
+							<tr class="row-table-cotent dark">
+								<td class="col-table-content title-col">
+									<span>Verified</span>
+								</td>
+								<td width="70%"  class="col-table-content prop-val">
+									{% if user.is_verified %}yes{% else %}no{% endif %}
+								</td>
+							</tr>
+							<tr class="row-table-cotent">
+								<td class="col-table-content title-col">
+									<span>GEO</span>
+								</td>
+								<td width="70%" class="col-table-content prop-val">
+									{% if user.is_geo_enabled %}yes{% else %}no{% endif %}
+								</td>
+							</tr>
+						</table>
+					</section>
 				</div>
-				<div class="row-table-cotent dark">
-					<div class="col-table-content title-col">
-						<span>Location</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{% if user.location is none %}unknown{% else %}{{ user.location }}{% endif %}
-					</div>
-				</div>
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Protected</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{% if user.is_protected %}yes{% else %}no{% endif %}
-					</div>
-				</div>
-				<div class="row-table-cotent dark">
-					<div class="col-table-content title-col">
-						<span>Verified</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{% if user.is_verified %}yes{% else %}no{% endif %}
-					</div>
-				</div>
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>GEO</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{% if user.is_geo_enabled %}yes{% else %}no{% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="full-container-tabbed messages-container">
-		<div class="full-container-tabbed-tabs">
-			<ul>
-				<li class="tab-trigger twitter-statuses" data-tab-for=".tab-content.twitter-statuses"><a>Statuses</a></li>
-				<li class="tab-trigger twitter-messages" data-tab-for=".tab-content.twitter-messages"><a>Messages</a></li>
-				<li class="tab-trigger twitter-mentions" data-tab-for=".tab-content.twitter-mentions"><a>Mentions</a></li>
-			</ul>
-		</div>
-		<div class="full-container-tabbed-contents-wrap">
-			<div class="full-container-tabbed-contents tab-content twitter-statuses" data-tab-trigger=".tab-trigger.twitter-statuses">
-				<div class="full-tab-content">
-					<div class="note-list">
-					{% for status in user.statuses %}
-						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-					{% endfor %}
-					</div>
-				</div>
-			</div>
-			<div class="full-container-tabbed-contents tab-content twitter-messages" data-tab-trigger=".tab-trigger.twitter-messages">
-				<div class="full-tab-content">
-					<div class="note-list">
-					{% for status in user.messages %}
-						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-					{% endfor %}
-					</div>
-				</div>
-			</div>
-			<div class="full-container-tabbed-contents tab-content twitter-mentions" data-tab-trigger=".tab-trigger.twitter-mentions">
-				<div class="full-tab-content">
-					<div class="note-list">
-					{% for mention in user.mentions %}
-						{% set status = mention.status %}
-						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
-					{% endfor %}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+			{# /Box Profile #}
+		</section>
+	</td>
+</tr>
+</table>
+{# Page Containers #}
 </div>
+</div>
+</div>
+{# /Page Containers #}

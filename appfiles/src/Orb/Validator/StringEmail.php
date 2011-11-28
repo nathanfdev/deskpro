@@ -9,8 +9,19 @@
 
 namespace Orb\Validator;
 
-class StringEmail extends AbstractValidator
+class StringEmail extends AbstractValidator implements StaticValidator
 {
+	/**
+	 * @param $value
+	 * @return bool
+	 */
+	public static function isValueValid($value)
+	{
+		$validator = new self();
+		return $validator->isValid($value);
+	}
+
+
 	/**
 	 * Check $value to see if its valid.
 	 *

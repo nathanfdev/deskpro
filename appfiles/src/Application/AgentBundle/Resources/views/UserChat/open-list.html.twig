@@ -28,14 +28,14 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 					{% elseif convo.person_name or convo.person_email %}
 						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
 					{% else %}
-						Anonymous
+						{{ phrase('agent.anonymous') }}
 					{% endif %}
     				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
     			</div>
     		</article>
     	{% else %}
     		<article class="row-item">
-	    		<p style="padding: 15px;">There are no open chats.</p>
+	    		<p style="padding: 15px;">{{ phrase('agent.chat.no_open_chats') }}</p>
     		</article>
     	{% endfor %}
     </section>

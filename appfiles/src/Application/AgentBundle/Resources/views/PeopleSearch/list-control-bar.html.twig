@@ -1,23 +1,23 @@
 <header class="list-control-bar">
 	<ul>
-		<li>Ordered by </li>
+		<li>{{ phrase('agent.ordered_by') }} </li>
 		<li class="order-by-menu-trigger"><a class="button">
 			<span class="label">
 				{% if 'name' in cache.criteria.order_by %}
-					Alphabetical
+					{{ phrase('agent.alphabetical') }}
 				{% else %}
-					Date Registered
+					{{ phrase('agent.date_created') }}
 				{% endif %}
 			</span>
 			<em></em>
 		</a></li>
-		<li class="display-options display-options-trigger"><a>Display options</a></li>
-		<li class="detail-view detail-view-trigger"><a class="setupIcon">Detail</a></li>
+		<li class="display-options display-options-trigger"><a></a></li>
+		<li class="detail-view detail-view-trigger"><a class="setupIcon"></a></li>
 	</ul>
 
 	<ul class="order-by-menu" style="display: none">
-		<li data-field="people.name">Alphabetical</li>
-		<li data-field="people.date">Date Registered</li>
+		<li data-field="people.name">{{ phrase('agent.alphabetical') }}</li>
+		<li data-field="people.date">{{ phrase('agent.date_created') }}</li>
 	</ul>
 
 	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}

@@ -58,7 +58,7 @@ class TicketsController extends AbstractController
 
 		foreach ($tickets as $t) {
 			$ticket_ids[] = $t['id'];
-			if ($t['status'] == 'open' OR $t['status'] == 'pending') {
+			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
 			} else {
 				$resolved_tickets[] = $t;

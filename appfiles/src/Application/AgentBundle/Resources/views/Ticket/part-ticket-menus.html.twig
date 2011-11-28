@@ -1,7 +1,7 @@
 <ul class="ticket-message-edit-menu" style="display:none">
-	<li data-option-id="view-details">Detail</li>
-	<li data-option-id="quote">Quote</li>
-	<li data-option-id="split">Split ticket from here</li>
+	<li data-option-id="view-details">{{ phrase('agent.detail') }}</li>
+	<li data-option-id="quote">{{ phrase('agent.quote') }}</li>
+	<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>
 </ul>
 <ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
 	{% for macro in macros %}
@@ -11,19 +11,19 @@
 
 <div class="delete-ticket-overlay overlay" style="display:none">
 	<div class="overlay-title">
-		<h4>Display Options</h4>
+		<h4>{{ phrase('agent.delete') }}</h4>
 	</div>
 
 	<div class="overlay-content">
-		Reason for deleting: <input type="text" value="" class="delete-reason" style="width: 200px;" />
+		{{ phrase('agent.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 	</div>
 
 	<div class="overlay-actions">
 		<div class="loading-off">
-			<button class="save-trigger dp-button small">Delete</button>
+			<button class="save-trigger dp-button small">{{ phrase('agent.delete') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>Deleting ...</span>
+			<span>{{ phrase('agent.loading_saving') }}</span>
 		</div>
 	</div>
 </div>

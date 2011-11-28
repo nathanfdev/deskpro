@@ -28,39 +28,7 @@ use Application\DeskPRO\Entity;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Person")
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="people")
- *
- * @property-read  int      $id
- * @property       \Application\DeskPRO\Entity\Blob $blob
- * @property       string   $gravatar_url
- * @property       bool     $is_contact
- * @property       bool     $is_user
- * @property       bool     $is_agent
- * @property       bool     $is_autoresponder
- * @property       bool     $is_confirmed
- * @property       bool     $is_agent_confirmed
- * @property       int      $importance
- * @property       string   $creation_system
- * @property       string   $name
- * @property       string   $first_name
- * @property       string   $last_name
- * @property       string   $summary
- * @property-read  string   $secret_string
- * @property       \Application\DeskPRO\Entity\Language $language
- * @property       \Application\DeskPRO\Entity\Organization $organization
- * @property       string   $organization_position
- * @property       string   $timezone
- * @property       string   $password
- * @property-read  string   $salt
- * @property       \Application\DeskPRO\Entity\PersonEmail $primary_email
- * @property       \Application\DeskPRO\Entity\PersonEmail[] $emails
- * @property       \Application\DeskPRO\Entity\LabelPerson[] $labels
- * @property       \Application\DeskPRO\Entity\CustomDataPerson[] $custom_data
- * @property       \Application\DeskPRO\Entity\PersonContactData[] $contact_data
- * @property       \Application\DeskPRO\Entity\Usergroup[] $usergroups
- * @property       \Application\DeskPRO\Entity\PersonPref[] $preferences
- * @property-read  \DateTime $date_created
- * @property-read  \DateTime $date_last_login
+ * @ORM_Mapping\Table(name="people", indexes={@ORM_Mapping\Index(name="is_agent_idx", columns={"is_agent"})})
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -82,7 +50,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users profile picture
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\OneToOne(targetEntity="Blob")
 	 * @ORM_Mapping\JoinColumn(name="picture_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $picture_blob = null;
@@ -204,7 +172,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
-	 * @ORM_Mapping\ManyToOne(targetEntity="Language", fetch="EAGER")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
 	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
@@ -255,7 +223,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @ORM_Mapping\OneToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @ORM_Mapping\OneToOne(targetEntity="PersonEmail")
 	 * @ORM_Mapping\JoinColumn(name="primary_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $primary_email;
@@ -286,7 +254,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", fetch="EAGER", indexBy="id")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id")
 	 * @ORM_Mapping\JoinTable(name="person2usergroups",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
@@ -476,7 +444,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function hasPerm($name)
 	{
-		return $this->getHelper('PermissionsManager')->hasPerm($name);
+		return $this->getPermissionsManager()->hasPerm($name);
 	}
 
 	public function getOrganizationId()

@@ -46,7 +46,19 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * display_column: The column to use in the table
 	 */
 	protected static $groupingReferences = array(
-		'tickets.agent_id' => array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
+		'tickets.department_id'	        	=> array('label' => 'Department', 'table' => 'departments', 'display_column' => 'title'),
+		'tickets.category_id'	        	=> array('label' => 'Category', 'table' => 'ticket_categories', 'display_column' => 'title'),
+		'tickets.priority_id'	        	=> array('label' => 'Priority', 'table' => 'ticket_priorities', 'display_column' => 'title'),
+		'tickets.workflow_id'	        	=> array('label' => 'Workflow', 'table' => 'ticket_workflows', 'display_column' => 'title'),
+		'tickets.product_id'            	=> array('label' => 'Product', 'table' => 'products', 'display_column' => 'title'),
+		'tickets.language_id'	        	=> array('label' => 'Language', 'table' => 'languages', 'display_column' => 'title'),
+		'tickets.agent_id'              	=> array('label' => 'Agent', 'table' => 'people', 'display_column' => 'first_name'),
+		'tickets.agent_team_id'	        	=> array('label' => 'Agent Team', 'table' => 'agent_teams', 'display_column' => 'name'),
+		'tickets.date_created'          	=> array('label' => 'Created (Hour)', 'table' => null, 'display_column' => null),
+		'tickets.organization_id'      		=> array('label' => 'Organization', 'table' => 'organizations', 'display_column' => 'name'),
+		'tickets.person_id'             	=> array('label' => 'Person', 'table' => 'people', 'display_column' => 'first_name'),
+		'labels_tickets.label'          	=> array('label' => 'Label', 'table' => null, 'display_column' => null),
+		'person2usergroups.usergroup_id'	=> array('label' => 'User Group', 'table' => 'usergroups', 'display_column' => 'title'),
 	);
 
 	/**
@@ -124,6 +136,14 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $starred = false;
 
 	/**
+	 * Should we generate stats
+	 *
+	 * @var bool
+	 * @ORM_MAPPING\Column(name="generate_stats", type="boolean")
+	 */
+	protected $generate_stats = false;
+
+	/**
 	 * Is the stat disabled
 	 *
 	 * @var bool
@@ -170,6 +190,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_is_data_cached = false;
 
+	/**
+	 * The display unit
+	 *
+	 * @var string
+	 */
+	protected $_display_unit = '';
+	
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -222,18 +249,25 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * Is the stat editable. Only non deskpro stats can be edited
+	 * Is the stat editable.  At present all stats can be edited
 	 *
 	 * @return bool
 	 */
 	public function isEditable()
 	{
-		if (true === is_null($this->author)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return true;
+	}
+
+	/**
+	 * Set disabled
+	 *
+	 * When disabling/enabling a stat we also need to disable/enable stat
+	 * generation
+	 */
+	public function setDisabled($disabled)
+	{
+		$this->disabled = $disabled;
+		$this->generate_stats = $disabled;
 	}
 
 	/**
@@ -375,7 +409,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $data_points;
 	}
-	
+
 	/**
 	 * Get the number of data points based on the run frequency, eg, For
 	 * daily reports show a week, for montly reports show a year
@@ -432,6 +466,16 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return $stat_value;
 	}
 
+	/**
+	 * TODO: return the date the last full data processing happenend, for
+	 * daily it will be the day before last_full_run, for monthly the
+	 * month before last_full_run
+	 */
+	public function getLastFullRun()
+	{
+		return new \DateTime("2011-11-23 00:00:00");
+	}
+
 	public function setRunFrequency($run_frequency)
 	{
 		if (false === self::isValidRunFrequency($run_frequency)) {
@@ -482,7 +526,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$table 		= $groupingInformation['table'];
 		$displayColumn 	= $groupingInformation['display_column'];
 
-		$refefencesIds  = $this->getGroupingReferenceIds($stat_value_ids);
+		$refefencesIds = array();
+		// Only do the reference lookup if there is a table to look in.
+		// Some group by fields store the label directly with in
+		// StatValueGroup.grouping_ref field
+		if (false === is_null($table)) {
+			$refefencesIds  = $this->getGroupingReferenceIds($stat_value_ids);
+		}
 
 		$lookup = array();
 		if (count($refefencesIds)) {
@@ -511,7 +561,38 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $groupingInformation['label'];
 	}
-
+	
+	/**
+	 * Set the display unit
+	 *
+	 * @param string $display_unit The display unit
+	 * @return string
+	 */
+	public function setDisplayUnits($display_unit)
+	{
+		$this->_display_unit = $display_unit;
+	}
+	
+	/**
+	 * Get the display unit
+	 *
+	 * @return string
+	 */
+	public function getDisplayUnits()
+	{
+		return $this->_display_unit;
+	}
+	
+	/**
+	 * Set the data
+	 *
+	 * @param
+	 */
+	public function setData($data)
+	{
+		$this->_data = $data;
+	}
+	
 	/**
 	 * Get the data for the Stat
 	 *
@@ -575,12 +656,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 			// Transform the raw data
 			foreach ($raw as $raw_row) {
-				if (false === isset($data[$raw_row['grouping_id']])) {
+				if (false === isset($data[$raw_row['grouping_ref']])) {
 					$label = '';
-					// Get the label, check the grouping_id is set, could
-					// be a NULL reference
-					if (isset($lookup[$raw_row['grouping_id']])) {
-						$label = $lookup[$raw_row['grouping_id']];
+					// Get the label, check the grouping_ref is set, could
+					// be a NULL reference, or may not require lookup
+					if (isset($lookup[$raw_row['grouping_ref']])) {
+						$label = $lookup[$raw_row['grouping_ref']];
+					}
+					// The grouping_ref its self is the label, there
+					// is no lookup required
+					elseif (strlen($raw_row['grouping_ref']) > 0) {
+						$label = $raw_row['grouping_ref'];
 					}
 					else {
 						// Get the grouping name
@@ -592,13 +678,13 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					// generated stats as far as 5 years ago
 					$values = array_fill_keys($data_points, null);
 
-					$data[$raw_row['grouping_id']] = array(
+					$data[$raw_row['grouping_ref']] = array(
 						'label'  => $label,
 						'values' => $values,
 					);
 				}
 
-				$data[$raw_row['grouping_id']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
+				$data[$raw_row['grouping_ref']]['values'][date('Y-m-d', $raw_row['stat_unix'])] = $raw_row['value'];
 			}
 		}
 
@@ -628,6 +714,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 					break;
 				case 'yearly':
 					$data_point = date('Y-m-d', strtotime("-$i years", $unix));
+					break;
+				default:
+					throw new \Exception("Unsupported run frequency " . $this->getRunFrequency());
 					break;
 			}
 
@@ -712,19 +801,19 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$results = array();
 
 		foreach (self::$groupingReferences as $k=>$grouping) {
-			$results[$k] = ucwords($grouping['table']);
+			$results[$k] = $grouping['label'];
 		}
 
 		return $results;
 	}
-	
+
 	public function getFormatter()
 	{
 		$concept_class = $this->getStatConceptClass();
-			
+
 		return $concept_class::getFormatter();
 	}
-	
+
 	/**
 	 * Format the data using the set formatter
 	 *
@@ -732,12 +821,16 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * @param array $options Various formatting options
 	 * @return mixed The formatted data
 	 */
-	public function formatData($data, array $options = array())
+	public function formatData($data, $unit = '', array $options = array())
 	{
-		if (false === is_null($this->getFormatter())) {
-			$data = $this->getFormatter()->formatData($data, $options);
+		if (strlen($unit) === 0) {
+			$unit = $this->_display_unit;
 		}
 		
+		if (false === is_null($this->getFormatter())) {
+			$data = $this->getFormatter()->formatData($data, $unit, $options);
+		}
+
 		return $data;
 	}
 }

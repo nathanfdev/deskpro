@@ -8,8 +8,8 @@
 	</select>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><input type="checkbox" name="author" /> Author</li>
-	<li data-field="category"><input type="checkbox" name="category" /> Category</li>
-	<li data-field="date_created"><input type="checkbox" name="date_created" /> Date Created</li>
-	<li data-field="num_downloads"><input type="checkbox" name="num_downloads" /> Number of Downloads</li>
+	<li data-field="author"><input type="checkbox" name="author" /> {{ phrase('agent.author') }}</li>
+	<li data-field="category"><input type="checkbox" name="category" /> {{ phrase('agent.category') }}</li>
+	<li data-field="date_created"><input type="checkbox" name="date_created" /> {{ phrase('agent.date_created') }}</li>
+	<li data-field="num_downloads"><input type="checkbox" name="num_downloads" /> {{ phrase('agent.num_downloads') }}</li>
 {% endblock %}

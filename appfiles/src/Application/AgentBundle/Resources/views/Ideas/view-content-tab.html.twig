@@ -6,7 +6,7 @@
 		<div class="idea-editor">
 			{% if state.idea.content %}
 				<div class="revert-message-notice">
-					Unsaved changes were restored. <button class="revert-default">Discard and revert to default</button>
+					Unsaved changes were restored. <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 					<textarea class="edit-content-field-default" style="display: none;">{{idea.content}}</textarea>
 				</div>
@@ -15,8 +15,8 @@
 
 			<br />
 
-			<button class="dp-button editor-save-trigger small">Save</button>
-			<button class="dp-button editor-cancel-trigger small">Cancel</button>
+			<button class="dp-button editor-save-trigger small">{{ phrase('agent.save') }}</button>
+			<button class="dp-button editor-cancel-trigger small">{{ phrase('agent.cancel') }}</button>
 		</div>
 	</div>
 </div>

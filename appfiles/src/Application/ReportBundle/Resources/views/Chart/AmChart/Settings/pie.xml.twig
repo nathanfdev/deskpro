@@ -18,6 +18,9 @@
 	<balloon>
 		<text_color>FFFFFF</text_color>
 		<text_size>16</text_size>
+		<show>
+			<![CDATA[{title}: {value}{{ chart.getDisplayUnits }}]]>
+		</show>
 	</balloon>
 
 	<data_labels>
@@ -29,4 +32,13 @@
 	<legend>
 		<enabled>0</enabled>
 	</legend>
+
+	<data>
+		<pie>
+			{% for slice in chart.slices %}
+				<slice title="{{ slice.label|default('') }}">{{ chart.formatData(slice.value) }}</slice>
+			{% endfor %}
+		</pie>
+	</data>
+
 </settings>

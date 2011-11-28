@@ -159,14 +159,14 @@ class Ticket extends EntityRepository
 	{
 		$ids = App::getDb()->fetchAllCol("
 			SELECT id,
-				CASE WHEN `status` =  'open' THEN 1
-				WHEN `status` =  'pending' THEN 2
+				CASE WHEN `status` =  'awaiting_agent' THEN 1
+				WHEN `status` =  'awaiting_user' THEN 2
 				WHEN `status` =  'resolved' THEN 3
 				WHEN `status` =  'closed' THEN 4
 				ELSE 3
 				END AS status_order
 			FROM tickets
-			WHERE organization_id = {$org->id} AND status IN ('open', 'pending', 'closed', 'resolved')
+			WHERE organization_id = {$org->id} AND status IN ('awaiting_agent', 'awaiting_user', 'closed', 'resolved')
 			ORDER BY status_order ASC, date_created DESC
 			LIMIT $num
 		", array($org->id));
@@ -257,7 +257,7 @@ class Ticket extends EntityRepository
 				`date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `total_user_waiting`,
 				`total_to_first_reply`
 			FROM tickets
-			WHERE status IN ('open', 'pending')
+			WHERE status IN ('awaiting_agent', 'awaiting_user')
 		");
 	}
 
@@ -314,7 +314,7 @@ class Ticket extends EntityRepository
 			SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
 			FROM tickets
 			WHERE
-				status IN ('pending', 'closed', 'resolved', 'hidden')
+				status IN ('awaiting_user', 'closed', 'resolved', 'hidden')
 			GROUP BY status_code
 		");
 	}

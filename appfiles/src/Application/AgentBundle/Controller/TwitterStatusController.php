@@ -205,7 +205,7 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 
 		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
+			$status = $this->getStatus($this->in->getValue('status_id'));
 
 			$note = new TwitterStatusNote();
 			$note['status'] = $status;
@@ -234,8 +234,8 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 
 		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
-			$account = $this->getAccount($this->in->getInt('account_id'));
+			$status = $this->getStatus($this->in->getValue('status_id'));
+			$account = $this->getAccount($this->in->getValue('account_id'));
 
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 			$response = $twitter->status->retweet($status['id']);
@@ -261,8 +261,8 @@ class TwitterStatusController extends AbstractController
 		$error = null;
 
 		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
-			$account = $this->getAccount($this->in->getInt('account_id'));
+			$status = $this->getStatus($this->in->getValue('status_id'));
+			$account = $this->getAccount($this->in->getValue('account_id'));
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 
 			$type = $this->in->getValue('type');

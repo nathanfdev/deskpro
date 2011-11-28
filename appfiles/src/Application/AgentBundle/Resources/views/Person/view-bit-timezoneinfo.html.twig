@@ -1,2 +1,2 @@
 (GMT {{ person.getTimezoneOffset(true) }})
-<br />Local time: {{ person.date_time|date('H:ia M j Y', person) }}
+<br />{{ phrase('agent.local_time') }}: {{ person.date_time|date('H:ia M j Y', person) }}

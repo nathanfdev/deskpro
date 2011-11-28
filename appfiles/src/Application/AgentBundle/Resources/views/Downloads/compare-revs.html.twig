@@ -2,13 +2,13 @@
 	<table class="list" cellspacing="0" width="100%">
 		<tbody>
 			<tr class="line-1">
-				<td>Older</td>
+				<td>{{ phrase('agent.publish.compare_older_title') }}</td>
 				<td>
 					By {{ rev_old.person.display_name }} ({{ rev_old.date_created|date('H:ia M j Y') }})
 				</td>
 			</tr>
 			<tr class="line-2">
-				<td>Newer</td>
+				<td>{{ phrase('agent.publish.compare_newer_title') }}</td>
 				<td>
 					By {{ rev_new.person.display_name }} ({{ rev_new.date_created|date('H:ia M j Y') }})
 				</td>
@@ -16,14 +16,14 @@
 
 			{% if new_blob %}
 			<tr class="line-2">
-				<td>File changed</td>
+				<td>{{ phrase('agent.publsih.file_changed') }}</td>
 				<td>
-					Old File: {% if not old_blob %}N/A
+					{{ phrase('agent.publish.label_old_file') }}: {% if not old_blob %}N/A
 					{% else %}
 						<a href="{{ old_blob.getDownloadUrl() }}">{{ old_blob.filename }}</a> ({{ old_blob.readable_filesize }})
 					{% endif %}
 					<br />
-					New File: {% if not new_blob %}N/A
+					{{ phrase('agent.publish.label_new_file') }}: {% if not new_blob %}N/A
 					{% else %}
 						<a href="{{ new_blob.getDownloadUrl() }}">{{ new_blob.filename }}</a> ({{ new_blob.readable_filesize }})
 					{% endif %}
@@ -33,14 +33,14 @@
 
 			{% if rendered_title_diff %}
 			<tr class="line-2">
-				<td>Changes in title</td>
+				<td>{{ phrase('agent.publish.changes_in_title') }}</td>
 				<td><div class="diff-box">{{ rendered_title_diff|raw }}</div></td>
 			</tr>
 			{% endif %}
 
 			{% if rendered_content_diff %}
 			<tr class="line-2">
-				<td>Changes in post</td>
+				<td>{{ phrase('agent.publish.changes_in_post') }}</td>
 				<td><div class="diff-box">{{ rendered_content_diff|raw }}</div></td>
 			</tr>
 			{% endif %}
@@ -48,7 +48,7 @@
 			{% if not rendered_title_diff and not rendered_content_diff %}
 			<tr class="line-2">
 				<td>&nbsp;</td>
-				<td>No changes detected between these two revisions</td>
+				<td>{{ phrase('agent.publish.no_changes') }}</td>
 			</tr>
 			{% endif %}
 		</tbody>

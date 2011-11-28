@@ -1,9 +1,9 @@
 <section id="publish_outline_glossary">
 	<ul class="source-list">
 		<li class="all on">
-			<span class="add-new tipped glossary-new-trigger" title="Add new glossary word">add</span>
+			<span class="add-new tipped glossary-new-trigger" title="{{ phrase('agent.publish.add_new_glossary') }}"></span>
 			<span class="title">
-				Glossary
+				{{ phrase('agent.publish.glossary') }}
 			</span>
 		</li>
 	</ul>
@@ -28,18 +28,18 @@
 	</section>
 
 	<div class="glossary-add-dlg dp-overlay" style="display:none;">
-		<div class="overlay-title"><h4>Add a new glossary word</h4></div>
+		<div class="overlay-title"><h4>{{ phrase('agent.publish.add_new_glossary') }}</h4></div>
 		<div class="overlay-content">
-			<input type="text" class="word" value="" style="width: 150px; margin-bottom: 5px;" placeholder="Word title" /><br />
-			<textarea class="content" rows="2" cols="50" style="width: 98%; height: 175px;" placeholder="Definition"></textarea>
+			<input type="text" class="word" value="" style="width: 150px; margin-bottom: 5px;" placeholder="{{ phrase('agent.publish.word_title') }}" /><br />
+			<textarea class="content" rows="2" cols="50" style="width: 98%; height: 175px;" placeholder="{{ phrase('agent.publish.word_def') }}"></textarea>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white save-trigger">Add</button>
+			<button class="clean-white save-trigger">{{ phrase('agent.add') }}</button>
 		</div>
 	</div>
 
 	<div class="glossary-edit-dlg dp-overlay" style="display:none;">
-		<div class="overlay-title"><h4>Edit glossary word</h4></div>
+		<div class="overlay-title"><h4>{{ phrase('agent.publish.edit_new_glossary') }}</h4></div>
 		<div class="overlay-content">
 			<div class="form">
 				<strong class="word"></strong><br />
@@ -48,8 +48,8 @@
 			</div>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white delete-trigger">Delete</button>
-			<button class="clean-white save-trigger">Save</button>
+			<button class="clean-white delete-trigger">{{ phrase('agent.delete') }}</button>
+			<button class="clean-white save-trigger">{{ phrase('agent.save') }}</button>
 		</div>
 	</div>
 </section>

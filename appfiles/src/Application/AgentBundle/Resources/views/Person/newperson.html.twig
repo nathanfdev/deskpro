@@ -16,15 +16,15 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section cat-section" id="{{baseId}}_cat_section">
 	<div class="step">
 		<span class="num">1</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Name</h4>
+			<h4>{{ phrase('agent.label_name') }}</h4>
 			<input type="input" name="newperson[name]" id="{{baseId}}_name" value="" />
 		</div>
 		<div class="col">
-			<h4 class="light">Email</h4>
+			<h4>{{ phrase('agent.email') }}</h4>
 			<input type="input" name="newperson[email]" id="{{baseId}}_email" value="" />
 		</div>
 		<br class="clear" />
@@ -34,20 +34,20 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_org_section">
 	<div class="step">
 		<span class="num">2</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Organization</h4>
+			<h4>{{ phrase('agent.organization') }}</h4>
 			<div id="{{baseId}}_org_container"></div>
 		</div>
 		<div class="col">
-			<h4 class="light">Or create a new organization:</h4>
+			<h4 class="light">{{ phrase('agent.create_a_new_org') }}:</h4>
 			<input type="input" name="newperson[new_organization]" id="{{baseId}}_new_org" value="" />
 		</div>
 		<br class="clear" />
 
-		<strong>Position at the organization:</strong><br />
+		<strong>{{ phrase('agent.people.pos_at_org') }}:</strong><br />
 		<input type="input" name="newperson[organization_position]" value="" />
 	</div>
 </div>
@@ -55,7 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_fields_section">
 	<div class="step">
 		<span class="num">3</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
         {% for f in custom_fields %}
@@ -69,21 +69,21 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">4</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">Properties</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.label_properties') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">Labels</dt>
+						<dt class="prop">{{ phrase('agent.label_labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<span class="tag-icon"></span>
@@ -95,14 +95,14 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						</dd>
 
-						<dt class="prop">Usergroups</dt>
+						<dt class="prop">{{ phrase('agent.usergroups') }}</dt>
 						<dd class="prop">
 							<div id="{{baseId}}_ug_container"></div>
 						</dd>
 
-						<dt class="prop">Timezone</dt>
+						<dt class="prop">{{ phrase('agent.label_timezone') }}</dt>
 						<dd class="prop">
-							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="Choose a timezone" style="width: 200px">
+							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.label_timezone') }}" style="width: 200px">
 								<option></option>
 								{% for tz in timezone_options %}
 									<option value="{{tz}}">{{ tz }}</option>
@@ -119,7 +119,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="foot">
-	<button class="dp-button submit-trigger">Create Person</button>
+	<button class="dp-button submit-trigger">{{ phrase('agent.create') }}</button>
 </div>
 
 </form>

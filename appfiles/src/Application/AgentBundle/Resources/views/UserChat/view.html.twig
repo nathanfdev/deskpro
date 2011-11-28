@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 	{% if convo.person_email %}t.push({{ '<' ~ convo.person_email ~ '>'|json_encode|raw }});{% endif %}
 	pageMeta.title = t.join(' ');
 {% else %}
-	pageMeta.title = 'Chat ' + {{ convo.id }};
+	pageMeta.title = '{{ phrase('agent.chat.title_chat_id', {'chat_id': convo.id}) }}';
 {% endif %}
 pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
@@ -36,32 +36,35 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>Department: <span class="label-department-id">{{ convo.department.full_title|default('No Department') }}</span></span></div>
 	</div>
 	<h1>
-		Chat with {% if convo.person %}
-			<a
-				class="user-link as-popover preload"
-				style="background-image: url('{{ convo.person.getPictureUrl(20) }}');"
-				data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-			>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
-		{% else %}
-			<a
-				class="as-popover"
-				data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}"
-			>
-				{% if convo.person_name or convo.person_email %}
-					{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
-				{% else %}
-					Anonymous
-				{% endif %}
-			</a>
-		{% endif %}
+		{% set chat_person_name %}
+			{% if convo.person %}
+				<a
+					class="user-link as-popover preload"
+					style="background-image: url('{{ convo.person.getPictureUrl(20) }}');"
+					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
+				>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
+			{% else %}
+				<a
+					class="as-popover"
+					data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}"
+				>
+					{% if convo.person_name or convo.person_email %}
+						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
+					{% else %}
+						{{ phrase('agent.anonymous') }}
+					{% endif %}
+				</a>
+			{% endif %}
+		{% endset %}
+		{{ phrase('agent.chat.chat_with_x', {'name': chat_person_name}) }}
 	</h1>
 	<div class="assigned">
-		<label>Chat assigned to: </label>
+		<label>{{ phrase('agent.chat.label_assigned_to') }}: </label>
 		<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
 		<br />
-		<label>Other agents in this chat: </label>
+		<label>{{ phrase('agent.chat.label_assigned_others') }}: </label>
 		<ul class="agent-parts-link" id="{{baseId}}_agent_parts">
-			<li id="{{ baseId }}_agent_parts_btn"><em class="invite-button">Invite another agent</em></li>
+			<li id="{{ baseId }}_agent_parts_btn"><em class="invite-button">{{ phrase('agent.chat.invite_another_agnet') }}</em></li>
 			{% for part in convo.participants %}
 				{% if not part.id == convo.id %}
 					<li class="agent-{{ part.id }}" data-agent-id="{{ part.id }}"><a class="agent-link" style="background-image: url('{{ part.getPictureUrl(20) }}');">{{ part.display_name }}</a></li>
@@ -73,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="profile-box-container">
 	<header>
-		<h4>Chat</h4>
+		<h4>{{ phrase('agent.chat.title_chat') }}</h4>
 	</header>
 	<section>
 		<article id="{{baseId}}_chat" class="chat-tab">
@@ -127,7 +130,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="message-content">
 						<div class="chatRecieve">
 							<div class="chatMsgRecieve">
-								<label>Typing: </label>
+								<label>{{ phrase('agent.chat.user_typing') }}: </label>
 								<div class="prop-msg"></div>
 								<span class="bubbleRight"></span>
 							</div>
@@ -138,16 +141,16 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="chatreply" id="{{baseId}}_replybox" {% if convo.status != 'open' %}style="display: none"{% endif %}>
 				<nav>
 					<ul class="option-buttons">
-						<li class="tipped attach" title="Send File" id="{{baseId}}_send_file">
-							<span>Send File</span>
+						<li class="tipped attach" title="{{ phrase('agent.chat.send_file') }}" id="{{baseId}}_send_file">
+							<span></span>
 						</li>
-						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="Quick Replies"><span>Quick Replies</span></li>
-						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="Create Ticket"><span>Create Ticket</span></li>
+						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="{{ phrase('agent.chat.quick_replies') }}"><span></span></li>
+						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="{{ phrase('agent.chat.create_ticket') }}"><span></span></li>
 					</ul>
 
 					<ul class="option-buttons right">
-						<li class="closetab tipped" id="{{baseId}}_end_btn" title="End Chat"><span>End Chat</span></li>
-						<li class="send" id="{{baseId}}_send_btn"><span>Send</span></li>
+						<li class="closetab tipped" id="{{baseId}}_end_btn" title="End Chat"><span>{{ phrase('agent.chat.end_chat') }}</span></li>
+						<li class="send" id="{{baseId}}_send_btn"><span>{{ phrase('agent.chat.send_message') }}</span></li>
 					</ul>
 				</nav>
 				<div class="input-wrap">
@@ -160,19 +163,19 @@ pageMeta.baseId = '{{ baseId }}';
 
 <section id="{{baseId}}_upfile_overlay" style="display: none;">
 	<div class="overlay-title">
-		<h4>Send File</h4>
+		<h4>{{ phrase('agent.chat.title_send_file') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="file-input">
-			<input type="file" name="file-upload" multiple="multiple" size="15" /> (or drag a file onto this window)
+			<input type="file" name="file-upload" multiple="multiple" size="15" /> {{ phrase('agent.upctrl_drag_note') }}
 		</div>
 		<ul class="files file-list"></ul><br />
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white send-trigger">Send File</button>
+		<button class="clean-white send-trigger">{{ phrase('agent.chat.send_file') }}</button>
 	</div>
 	<script class="template-upload" type="text/x-jquery-tmpl">
-		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">{{ phrase('agent.cancel') }}</button></span></li>
 	</script>
 	<script class="template-download" type="text/x-jquery-tmpl">
 		<li class="uploaded">
@@ -187,13 +190,13 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="optionbox" id="{{baseId}}_agent_selector">
 	<section data-section-name="agents">
 		<header>
-			<h3>Assign Agent</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<h3>{{ phrase('agent.assign_agent') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 		</header>
 		<ul class="with-agents-online">
 			<li class="agent-row agent-0">
 				<input type="radio" name="{{baseId}}_agent" value="0" style="display: none" />
-				<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+				<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
 			</li>
 
 			<li class="me last-me agent-row agent-{{ app.user.id }} {% if convo.agent.id == app.user.id %}on{% endif %}">
@@ -216,8 +219,8 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="optionbox" id="{{baseId}}_agentpart_selector">
 	<section data-section-name="agents">
 		<header>
-			<h3>Invite Agent</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<h3>{{ phrase('agent.chat.invite_agent') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 		</header>
 		<ul class="with-agents-online">
 			{% for agent in agents %}
@@ -230,7 +233,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 			{% endfor %}
 			<li id="{{baseId}}_agentpart_sel_none">
-				There are no other agents you can invite.
+				{{ phrase('agent.chat.invite_no_agents') }}
 			</li>
 		</ul>
 	</section>
@@ -239,15 +242,15 @@ pageMeta.baseId = '{{ baseId }}';
 <div id="{{baseId}}_closetab_prompt" style="display:none;">
 	<div class="confirm-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>Leave Chat?</h4>
+			<h4>{{ phrase('agent.chat.title_leave_chat_prompt') }}</h4>
 		</div>
 		<div class="overlay-content">
-			Are you sure you want to leave this chat?
+			{{ phrase('agent.chat.leave_chat_confirm') }}
 		</div>
 	</div>
 	<div class="overlay-footer prop-footer">
-		<button class="clean-white unassign-trigger">Unassign myself and leave</button>
-		<button class="clean-white end-trigger">End chat and leave</button>
+		<button class="clean-white unassign-trigger">{{ phrase('agent.chat.leave_unassign') }}</button>
+		<button class="clean-white end-trigger">{{ phrase('agent.chat.leave_end') }}</button>
 	</div>
 </div>
 

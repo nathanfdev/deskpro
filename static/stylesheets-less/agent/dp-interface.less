@@ -806,9 +806,8 @@ a.clean-white {
 }
 
 .clean-white:hover {
-	-webkit-box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
-	-moz-box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
-	box-shadow: 0px 0px 2px 0px rgba(100, 100, 100, 0.5);
+	border: 1px solid #999C9C;
+	.inner-shadow(0, 0, 3px, 0.3);
 }
 
 .clean-white.large {
@@ -1361,6 +1360,17 @@ a.clean-white {
 .drop-icon {
     .iconbase(7px, 5px);
 	background-image: url(../../images/agent/button-downarrow.png) /** sprite-ref: ui-v; */
+}
+
+
+.small-light-icon {
+    .iconbase(10px, 10px);
+	background-image: url(../../images/agent/icons/small-light-off.png) /** sprite-ref: ui-v; */
+}
+
+.small-light-icon.on, .small-light-icon-on, .small-light-icon:hover {
+    .iconbase(10px, 10px);
+	background-image: url(../../images/agent/icons/small-light-on.png) /** sprite-ref: ui-v; */
 }
 
 .color-wheel-icon {

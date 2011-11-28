@@ -635,9 +635,13 @@ table.structure-list thead th:last-of-type {
 	border-radius: 0 6px 0 0;
 }
 
+table.structure-list thead th.only {
+    .border-radius(6px,6px,0px,0px);
+}
+
 table.structure-list thead th {
 	background-color: #DDDDDD;
-	border-left: 1px solid #ddd;
+	border-left: none;
 	font-size: 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	vertical-align: middle;
@@ -2129,4 +2133,13 @@ tr.phrase-row.custom td {
 	 display: block;
 	.transition(0.1s);
 	.opacity(100);
+}
+
+
+.checkbox-rows {
+	overflow: auto;
+	max-height: 160px;
+	background-color: #EFF5FD;
+	border: 1px solid #E5E7E7;
+	width: 70%;
 }

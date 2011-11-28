@@ -28,7 +28,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 	array(
 		'type'      => 'is_hold',
@@ -57,7 +57,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 	array(
 		'type'      => 'is_hold',
@@ -86,7 +86,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 	array(
 		'type'      => 'is_hold',
@@ -115,7 +115,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 	array(
 		'type'      => 'is_hold',
@@ -140,7 +140,7 @@ $q['terms']      = array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 	array(
 		'type'      => 'is_hold',
@@ -168,7 +168,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -192,7 +192,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -216,7 +216,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -240,7 +240,7 @@ $q['terms']      = array(array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -260,7 +260,7 @@ $q['terms']      = array(
 	array(
 		'type'      => 'status',
 		'op'        => 'is',
-		'options'   => array('status'    => 'open',)
+		'options'   => array('status'    => 'awaiting_agent',)
 	),
 );
 \Application\DeskPRO\App::getOrm()->persist($q);

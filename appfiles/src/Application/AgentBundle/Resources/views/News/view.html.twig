@@ -21,7 +21,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if news.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	This post has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
+	{{ phrase('agent.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.undelete') }}</button>
 </div>
 
 {% if news.status_code == "hidden.validating" %}
@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <section id="{{baseId}}_tabs_content_wrap" class="mid-page">
 	<dl class="table-list">
-		<dt class="type-labels">Labels</dt>
+		<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
 		<dd>
 			<ul>
 				<div class="tags-wrap news-tags">
@@ -54,7 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 		</dd>
 
-		<dt>Rating</dt>
+		<dt>{{ phrase('agent.label_rating') }}</dt>
 		<dd>
 			{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
 			<small>{{ news.up_votes }} found the post helpful, {{ article.news }} found the post unhelpful</small>
@@ -64,16 +64,20 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 
 	<div class="controls" id="{{baseId}}_action_buttons">
-		<button class="clean-white delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>Delete</button>
-		<button class="clean-white permalink">Copy Permalink</button>
-		<button class="clean-white view-user-interface">View in user interface</button>
+		<button class="clean-white delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+		<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
+		<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 		<br class="clear" />
 	</div>
 
 	<footer class="time-info">
 		<ul>
 			<li>
-				Created <time class="timeago" datetime="{{news.date_created|date('c')}}"></time> by {{ news.person.display_name }} at <time>{{news.date_created|date('H:ia M j Y')}}</time>
+				{{ phrase('agent.created_timeago_by_x_on_y', {
+					'timeago': '<time class="timeago" datetime="' ~ news.date_created|date('c') ~'"></time>',
+					'name': news.person.display_name,
+					'date': '<time>' ~ news.date_created|date('H:ia M j Y') ~ '</time>'
+				}) }}
 			</li>
 		</ul>
 	</footer>
@@ -81,13 +85,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
-		<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>Post</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>Comments (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>Revisions</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .related-content"><span>Related Content</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>Search</span></li>
+		<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.label_page') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>{{ phrase('agent.label_revisions') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .related-content"><span>{{ phrase('agent.label_related_content') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
 	</ul>
-	<button class="clean-white small news-editor-edit" style="float:right; margin: 6px 10px 0 0;">Edit</button>
+	<button class="clean-white small news-editor-edit" style="float:right; margin: 6px 10px 0 0;">{{ phrase('agent.edit') }}</button>
 </nav>
 
 {# Tab Contents #}
@@ -126,10 +130,10 @@ pageMeta.baseId = '{{ baseId }}';
 							<textarea style="width:98%; height: 80px;"></textarea>
 							<div style="text-align:center; margin-top: 9px;">
 								<div class="loading-off">
-									<button class="dp-button x-small">Add Comment</button>
+									<button class="dp-button x-small">{{ phrase('agent.add_comment') }}</button>
 								</div>
 								<div class="loading-on" style="display:none">
-									Saving ...
+									{{ phrase('agent.loading_saving') }}
 								</div>
 							</div>
 						</p>
@@ -156,7 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
 		<div class="tags-wrap sticky-search-words">
 			<dl class="table-list">
-				<dt class="type-labels">Search Words</dt>
+				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
 				<dd>
 					<ul>
 						{% for word in sticky_search_words %}
@@ -164,7 +168,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% endfor %}
 					</ul>
 					<div class="explain">
-						When a user searches for any of these words, this page will always be listed in their top results.
+						{{ phrase('agent.publish.search_sticky_words_explain') }}
 					</div>
 				</dd>
 			</dl>

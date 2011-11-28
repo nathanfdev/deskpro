@@ -3,47 +3,47 @@
 {% block body %}
 <section class="description-area">
 <dl class="info-list">
-	<dt>Message ID</dt>
+	<dt>{{ phrase('agent.tickets.message_id') }}</dt>
 	<dd>{{ message.id }}</dd>
 
-	<dt>Ticket ID</dt>
+	<dt>{{ phrase('agent.tickets.ticket_id') }}</dt>
 	<dd>{{ ticket.id }}</dd>
 
-	<dt>Ticket Ref</dt>
+	<dt>{{ phrase('agent.tickets.ticket_ref') }}</dt>
 	<dd>{{ ticket.ref }}</dd>
 
-	<dt>Creation System</dt>
+	<dt>{{ phrase('agent.tickets.creation_system') }}</dt>
 	<dd>{{ message.creation_system }}</dd>
 
 	{% if message.email_source %}
-		<dt>Gateway Source ID</dt>
+		<dt>{{ phrase('agent.tickets.gateway_source_id') }}</dt>
 		<dd>{{ message.email_source.id }}</dd>
 	{% endif %}
 
 	{% if message.email %}
-		<dt>Sent From Address</dt>
+		<dt>{{ phrase('agent.tickets.sent_from_address') }}</dt>
 		<dd>{{ message.email }}</dd>
 	{% endif %}
 
 	{% if message.ip_address %}
-		<dt>IP Address</dt>
+		<dt>{{ phrase('agent.ip_address') }}</dt>
 		<dd>{{ message.ip_address }}</dd>
 	{% endif %}
 
 	{% if message.visitor %}
-		<dt>Visitor ID</dt>
+		<dt>{{ phrase('agent.visitor_id') }}</dt>
 		<dd>{{ message.visitor.id }}</dd>
 
-		<dt>User Agent</dt>
+		<dt>{{ phrase('agent.browser_agent') }}</dt>
 		<dd>{{ message.visitor.user_agent }}</dd>
 
-		<dt>First Visit Time</dt>
+		<dt>{{ phrase('agent.initial_visit') }}</dt>
 		<dd>{{ message.visitor.date_created|date('M j, Y H:ia') }}</dd>
 
-		<dt>Last Activity Time</dt>
+		<dt>{{ phrase('agent.last_activity') }}</dt>
 		<dd>{{ message.visitor.date_last|date('M j, Y H:ia') }}</dd>
 
-		<dt>Landing Page</dt>
+		<dt>{{ phrase('agent.landing_page') }}</dt>
 		<dd>{{ message.visitor.landing_page }}</dd>
 	{% endif %}
 </dl>

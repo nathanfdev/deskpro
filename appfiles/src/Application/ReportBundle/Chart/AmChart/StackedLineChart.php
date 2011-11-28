@@ -11,6 +11,6 @@ class StackedLineChart extends AmLineChart
 	 */
 	public static function getChartLabel()
 	{
-		return 'Stacked Column Chart';
+		return 'Stacked Line Chart';
 	}
 }

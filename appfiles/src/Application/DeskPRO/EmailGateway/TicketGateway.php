@@ -54,7 +54,7 @@ class TicketGateway extends AbstractGateway
 
 		$ticket = null;
 		$person = null;
-		
+
 		if (App::getSetting('core_tickets.gateway_catchall')) {
 			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
 			$ticket = $detector->findExistingTicket($this->reader);
@@ -208,9 +208,9 @@ class TicketGateway extends AbstractGateway
 		}
 
 		if ($person['is_agent']) {
-			$ticket['status'] = Entity\Ticket::STATUS_PENDING;
+			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
 		} else {
-			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
+			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
 		}
 
 		App::getOrm()->transactional(function($em) use ($ticket, $message, $person) {
@@ -328,7 +328,7 @@ class TicketGateway extends AbstractGateway
 
 		$message = $newticket->new_message;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
-		
+
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
@@ -396,7 +396,7 @@ class TicketGateway extends AbstractGateway
 			'fwd_cutter' => $fwd_cutter,
 			'cancel' => false,
 		));
-		
+
 		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_FWD_NEWTICKET, $ev);
 
 		if ($ev->cancel OR !$fwd_cutter->isValid()) {
@@ -435,10 +435,10 @@ class TicketGateway extends AbstractGateway
 
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save();
-		
+
 		$ticket['agent'] = $agent;
 		App::getOrm()->persist($ticket);
-		
+
 		App::getOrm()->commit();
 
 		// Add agent reply if there was one

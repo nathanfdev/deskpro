@@ -1,6 +1,7 @@
 <header class="list-selection-bar">
-	<input type="checkbox" class="selection-control" /> <span class="selected-count">0</span> selected
+	<input type="checkbox" class="selection-control" />
+	{{ phrase('agent.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
 	<a class="perform-action perform-actions-trigger disabled">
-		<span>Perform Action</span>
+		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>
 </header>

@@ -43,6 +43,23 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	 */
 	public function getPermission($name)
 	{
+		$this->getAllPermissions();
+
+		if (!isset($this->perms[$name])) {
+			return null;
+		}
+
+		return $this->perms[$name];
+	}
+
+
+	/**
+	 * Get an array of all effective permissions
+	 *
+	 * @return array
+	 */
+	public function getAllPermissions()
+	{
 		if ($this->perms === null) {
 			$ids_string = implode(',', $this->usergroup_ids);
 			if ($this->person_id) {
@@ -63,11 +80,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 			$this->perms = Permission::getEffectivePermissions($perms);
 		}
 
-		if (!isset($this->perms[$name])) {
-			return null;
-		}
-
-		return $this->perms[$name];
+		return $this->perms;
 	}
 
 

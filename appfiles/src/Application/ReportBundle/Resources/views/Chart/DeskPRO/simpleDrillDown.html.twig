@@ -1,15 +1,9 @@
-<script type="text/javascript">
-	$(function() {
-	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100px', height: '20px'});
-	});
-</script>
-
 <div class="simple-drill-down" id="dashboard-chart-{{ dashboard_stat.id }}">
 	{% if chart.isChartRenderable %}
 		<table>
 			<thead>
 				<tr>
-					<th class="name">Name</th>
+					<th class="name">{{ chart.getDataLabel }}</th>
 					<th class="trend">Trend</th>
 					<th class="value">Value</th>
 					<th class="bar"></th>
@@ -19,8 +13,8 @@
 				{% for row in chart.rows %}
 					<tr>
 						<td class="name">{{ row.label|default('no group') }}</td>
-						<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
-						<td class="value">{{ chart.formatData(row.sum_data) }}</td>
+						<td class="trend" data-trendline="{{ row.data|join(',') }}"></td>
+						<td class="value">{{ chart.formatData(row.sum_data, chart.getDisplayUnits)|default('-') }}</td>
 						<td class="bar">
 							<span style="width: {{ chart.calculateRowValuePercentage(row.sum_data) }}%">&nbsp;</span>
 						</td>

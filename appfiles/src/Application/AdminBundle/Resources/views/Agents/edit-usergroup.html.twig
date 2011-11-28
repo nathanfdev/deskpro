@@ -1,42 +1,325 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.AgentGroupEditPage' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentUsergroupEdit.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentGroupEditPage.js') }}"></script>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentUsergroupEdit({{usergroup.id|default(0)}});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParent({{ usergroup.title|json_encode|raw}}, {{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
+{% block pagetitle %}
+	<h1>{% if usergroup.id %}Edit Permission Group{% else %}New Permission Group{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_agents') }}">&larr; Back to Agents</a>
+	</nav>
 {% endblock %}
-{% block header %}
-	<h1>{% if usergroup.id %}Edit Group{% else %}New Group{% endif %}</h1>
-{% endblock %}
-{% block content %}
+{% block page %}
 
 <form action="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="usergroup[title]" value="{{usergroup.title}}" />
+		</div>
 	</div>
-	<div class="row">
-		<label>Note / Description</label>
-		{{ form_widget(form.note) }}
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Members</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="checkbox-rows">
+				<ul>
+					{% for agent in agents %}
+					<li>
+						<label>
+							<input type="checkbox" name="usergroup[members][]" value="{{ agent.id }}" {% if agent.id in members %}checked="checked"{% endif %} />
+							{{ agent.display_name }}
+						</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	{##############################
+	 # Permisssions
+	 ##############################}
+	<div class="dp-form-row">
+		<div class="dp-form-label" id="permgroups">
+			<label>Permissions</label>
+
+			{% macro perm_col(usergroup_values, permgroup, name) %}
+				<td class="prop"><input
+					class="onoff-slider permcheck"
+					type="checkbox"
+					name="permissions[{{ permgroup }}][{{ name }}]"
+					value="1"
+					data-perm-name="{{ permgroup}}.{{ name }}"
+					{% if usergroup_values[permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
+				/></td>
+			{% endmacro %}
+
+			<nav class="check-grid-tabs">
+				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">Load Permissions From Agent</button>
+				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+					<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
+					<li data-tab-for="#permgroup_people"><span>People and Organizations</span></li>
+					<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
+					<li data-tab-for="#permgroup_publish"><span>Publish</span></li>
+				</ul>
+			</nav>
+
+			{# TICKET PERMISSIONS #}
+			<div id="permgroup_tickets" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">On/Off</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use ticket system</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'use') }}
+							</tr>
+							<tr>
+								<td class="title">Create tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'create') }}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_own') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own') }}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned') }}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_others') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others') }}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /TICKET PERMISSIONS #}
+
+			{# PEOPLE PERMISSIONS #}
+			<div id="permgroup_people" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">On/Off</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'create') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Edit people
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'edit') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'delete') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate users and user email addresses
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'validate') }}
+							</tr>
+							<tr>
+								<td class="title">
+									Edit email addresses
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails') }}
+							</tr>
+							<tr>
+								<td class="title">
+									Reset passwords
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'reset_password') }}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'create') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'edit') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'delete') }}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /PEOPLE PERMISSIONS #}
+
+			{# CHAT PERMISSIONS #}
+			<div id="permgroup_chat" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">On/Off</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use chat system</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'use') }}
+							</tr>
+							<tr>
+								<td class="title">Can see new unassigned chats</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned') }}
+							</tr>
+							<tr>
+								<td class="title">Can see chats assigned to others</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_others') }}
+							</tr>
+							<tr>
+								<td class="title">Can delete chat transcripts</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'delete') }}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+
+			{# PUBLISH PERMISSIONS #}
+			<div id="permgroup_publish" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">On/Off</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'create') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'delete') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit other's content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'edit') }}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate content and comments (including own)
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'validate') }}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+		</div>
 	</div>
 </div>
 
-<br /><br />
-
+<button class="btn primary save-trigger">Save</button>
 </form>
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" onclick="return confirm('Are you sure you want to delete this permission group?');">delete permission group</a>
+</div>
+
+<div id="load_agent_perms_ob" class="optionbox with-footer">
+	<header>
+		<span class="close close-trigger"></span>
+		<h4>Agents</h4>
+	</header>
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>{{ phrase('agent.agents') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+			</header>
+			<ul>
+				{% for agent in agents %}
+					<li>
+						<input type="radio" name="load_agent_perms_ob_agent" value="{{ agent.id }}" />
+						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+						<div class="bound-fade"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+	<footer>
+		<button class="save-trigger" data-fetch-url="{{ path('admin_agents_getperms', {'person_id': '0000'})|replace({'0000': '{person_id}'}) }}">Set all permissions based off of the selected agent</button>
+	</footer>
+</div>
 
 {% endblock %}

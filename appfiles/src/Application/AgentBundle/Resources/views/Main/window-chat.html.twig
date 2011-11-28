@@ -6,21 +6,21 @@
 				<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">Team</span></a></li>
 			</ul>
 		</div>
-		<span class="close-btn close-trigger">close</span>
+		<span class="close-btn close-trigger"></span>
 	</header>
 	<section>
 		<div class="show-offline">
-			<label><input type="checkbox" class="show-offline-opt" />Show offline</label>
+			<label><input type="checkbox" class="show-offline-opt" />{{ phrase('agent.chat.show_offline') }}</label>
 		</div>
 		<div class="agents-list">
 			<div class="online-list">
-				<h6>Online</h6>
+				<h6>{{ phrase('agent.chat.online') }}</h6>
 				<ul id="agent_online_list" class="list">
-					<li class="no-agents">No other agents are online</li>
+					<li class="no-agents">{{ phrase('agent.chat.no_online_agents') }}</li>
 				</ul>
 			</div>
 			<div class="offline-list">
-				<h6>Offline</h6>
+				<h6>{{ phrase('agent.chat.offline') }}</h6>
 				<ul id="agent_offline_list" class="list">
 					{% for agent in agents %}
 						<li
@@ -59,7 +59,7 @@
 		</div>
 	</section>
 	<footer>
-		<button class="view-history view-history-trigger">View History</button>
+		<button class="view-history view-history-trigger">{{ phrase('agent.chat.chat_history') }}</button>
 	</footer>
 </div>
 

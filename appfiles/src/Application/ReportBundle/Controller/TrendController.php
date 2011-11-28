@@ -12,6 +12,7 @@
 namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\ReportBundle\Form\CloneStatType;
 use Application\ReportBundle\Form\EditStatType;
 use Application\ReportBundle\Stat\Base\AbstractStat;
 use Application\DeskPRO\UI\RuleBuilder;
@@ -31,7 +32,18 @@ class TrendController extends AbstractController
 			$points   = $stat->getDefaultDataPointCount();
 
 			// Get the Stat Data
-			$stat->getData($end_date, $points);
+			$data = $stat->getData($end_date, $points);
+			
+			$display_unit = '';
+			if (false === is_null($stat->getFormatter())) {
+				// If there is a formatter, it may want to normalize the data
+				$normalized_result = $stat->getFormatter()->normalizeData($data);
+				$data 		= $normalized_result['data'];
+				$display_unit 	= $normalized_result['unit'];
+				
+				$stat->setData($data);
+				$stat->setDisplayUnits($display_unit);
+			}
 		}
 
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
@@ -64,16 +76,49 @@ class TrendController extends AbstractController
 	{
 		$stat = $this->getStat($stat_id);
 
-		$form = $this->get('form.factory')->create(new EditStatType($stat->id ? false : true), $stat);
+		$form = $this->get('form.factory')->create(new EditStatType(), $stat);
 
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$term_rules = RuleBuilder::newTermsBuilder();
-				$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
 				App::getOrm()->persist($stat);
+				App::getOrm()->flush();
+
+				$this->session->setFlash('saved', $stat->title);
+				$redirect_url = $this->generateUrl('report_trend_index');
+				return $this->createJsonResponse(array('success' => true, 'redirect' => $redirect_url));
+			}
+		}
+
+		return $this->render('ReportBundle:Trend:edit.html.twig', array(
+			'stat' => $stat,
+			'form' => $form->createView(),
+		));
+	}
+
+	/**
+	 * Clone an existing trend
+	 */
+	public function cloneAction($stat_id)
+	{
+		$stat = $this->getStat($stat_id);
+
+		$form = $this->get('form.factory')->create(new CloneStatType(), $stat);
+
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$cloned = clone $stat;
+				$cloned->setId(null);
+				$cloned->setTitle("[Cloned] " . $cloned->getTitle());
+				$cloned->setAuthor($this->person);
+
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$cloned['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				App::getOrm()->persist($cloned);
 				App::getOrm()->flush();
 
 				$this->session->setFlash('saved', $stat->title);
@@ -88,29 +133,11 @@ class TrendController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 		$term_options['custom_ticket_fields'] = $custom_fields;
 
-		return $this->render('ReportBundle:Trend:edit.html.twig', array(
+		return $this->render('ReportBundle:Trend:clone.html.twig', array(
 			'stat' => $stat,
 			'form' => $form->createView(),
 			'term_options' => $term_options,
 		));
-	}
-
-	/**
-	 * Clone an existing trend
-	 */
-	public function cloneAction($stat_id)
-	{
-		$stat = $this->getStat($stat_id);
-
-		//$cloned = clone $stat;
-		//$cloned->setId(null);
-		//$cloned->setTitle("[Cloned] " . $cloned->getTitle());
-		//$cloned->setAuthor($this->person);
-		//
-		//App::getOrm()->persist($cloned);
-		//App::getOrm()->flush();
-
-		return $this->redirectRoute('report_trend_edit', array('stat_id' => $stat['id']));
 	}
 
 	/**

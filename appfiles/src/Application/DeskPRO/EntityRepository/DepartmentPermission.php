@@ -29,32 +29,11 @@ class DepartmentPermission extends EntityRepository
 	 */
 	public function getDepartmentIdsForPerson(PersonEntity $person)
 	{
-		$agent_team_ids = array();
-		$usergroup_ids  = $person->getUsergroupIds();
-
-		if ($person->is_agent) {
-			$person->loadHelper('AgentTeam');
-			$agent_team_ids = $person->getAgent()->getTeamIds();
-		}
-
 		$wheres = array();
 		$params = array();
 
 		$wheres[] = "person_id = ?";
-		$params[] = DepartmentPermissionEntity::TYPE_PERSON;
 		$params[] = $person->id;
-
-		if ($agent_team_ids) {
-			$agent_team_ids = implode(',', $agent_team_ids);
-			$wheres[] = "agent_team_id IN($agent_team_ids)";
-			$params[] = DepartmentPermissionEntity::TYPE_AGENT_TEAM;
-		}
-
-		if ($usergroup_ids) {
-			$usergroup_ids = implode(',', $agent_team_ids);
-			$wheres[] = "usergroup_id IN($usergroup_ids)";
-			$params[] = DepartmentPermissionEntity::TYPE_USERGROUP;
-		}
 
 		$wheres = implode(' AND ', $wheres);
 		$sql = "
@@ -65,37 +44,6 @@ class DepartmentPermission extends EntityRepository
 
 		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
 	}
-
-
-	/**
-	 * Get an array of id's for `agent_team` and `usergroup` types.
-	 *
-	 * Returns array('agent_team' => array(1,2,3), 'usergroup' => array(1,2,3))
-	 *
-	 * @param \Application\DeskPRO\Entity\Department $department
-	 * @return array
-	 */
-	public function getPermissionsForDepartment(DepartmentEntity $department, $inc_child = true)
-	{
-		$ids = array();
-		if ($inc_child) {
-			foreach ($department->getChildren() as $c) {
-				$ids[] = $c->id;
-			}
-		}
-
-		$ids = implode(',', $ids);
-
-		$results = $this->getEntityManager()->getConnection()->fetchAllGrouped("
-			SELECT apply_type, COALESCE(usergroup_id, agent_team_id, person_id) AS apply_who
-			FROM department_permissions
-			WHERE
-				department_id IN ($ids);
-		", array(), 'apply_type', null, 'apply_who');
-
-		return $results;
-	}
-
 
 	/**
 	 * Get an array of id's for `agent_team` and `usergroup` types.
@@ -143,28 +91,13 @@ class DepartmentPermission extends EntityRepository
 
 		$ids = implode(',', $ids);
 
-		$results = $this->getEntityManager()->getConnection()->fetchAll("
-			SELECT department_id, apply_type, COALESCE(usergroup_id, agent_team_id, person_id) AS apply_who
+		$results = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+			SELECT department_id, person_id
 			FROM department_permissions
-			WHERE
-				department_id IN ($ids);
+			WHERE department_id IN ($ids)
 		");
 
-		$return_results = array();
-
-		foreach ($results as $r) {
-			if (!isset($return_results[$r['department_id']])) {
-				$return_results[$r['department_id']] = array();
-			}
-
-			if (!isset($return_results[$r['department_id']][$r['apply_type']])) {
-				$return_results[$r['department_id']][$r['apply_type']] = array();
-			}
-
-			$return_results[$r['department_id']][$r['apply_type']][] = $r['apply_who'];
-		}
-
-		return $return_results;
+		return $results;
 	}
 
 

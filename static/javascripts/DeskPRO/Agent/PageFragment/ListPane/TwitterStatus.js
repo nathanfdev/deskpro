@@ -63,15 +63,17 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	_initUserPageLinks: function() {
 		$('.photo', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+			return false;
 		});
 
 		$('.user', this.content).on('click', function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+			return false;
 		});
 	},
 
 	_initTimeago: function() {
-		this.initTimesOnCollection($('.timeago', this.content));
+		//this.initTimesOnCollection($('.timeago', this.content));
 	},
 
 	_getDisplayOptions: function() {
@@ -165,7 +167,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initAddNote: function() {
-		var buttons = $('.controls .note a', this.content);
+		var buttons = $('.controls .status-note', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
 			if ($('.form-note', $(e.target).parents('.status')).length) {
@@ -176,7 +178,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				note = this.note.clone(),
 				area = $('textarea[name=text]', note);
 
-			$(e.target).parents('.body').append(note);
+
+			$(e.target).parents('.controls-row').find('.forms').append(note);
 			this.highlightStatus(status);
 
 			// close on ESCAPE
@@ -239,16 +242,17 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initAssign: function() {
-		var buttons = $('.controls .assign a', this.content);
+		var buttons = $('.controls .status-assign', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
 			e.preventDefault();
+			alert("Todo");
 			return false;
 		}, this));
 	},
 
 	_initRetweet: function() {
-		var buttons = $('.controls .retweet a', this.content);
+		var buttons = $('.controls .status-retweet', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
 			this.doRetweet($(e.target).parents('.status').attr('data-status-id'));
@@ -278,7 +282,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initReply: function() {
-		var buttons = $('.controls .reply a', this.content);
+		var buttons = $('.controls .status-reply', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
 			if ($('.form-reply', $(e.target).parents('.status')).length) {
@@ -289,7 +293,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				reply = this.reply.clone(),
 				area = $('textarea[name=text]', reply);
 
-			$(e.target).parents('.body').append(reply);
+			$(e.target).parents('.controls-row').find('.forms').append(reply);
 			this.highlightStatus(status);
 
 			// close on ESCAPE
@@ -341,7 +345,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 			dataType: 'json',
 			data: {
 				status_id: id,
-				account_id: id,
+				account_id: this.getMetaData('accountId'),
 				text: text,
 				type: type
 			},
@@ -357,7 +361,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initArchive: function() {
-		var buttons = $('.controls .archive a', this.content);
+		var buttons = $('.controls .status-archive', this.content);
 
 		buttons.on('click', $.proxy(function(e) {
 			// $.data('status-id') results in math(status-id - 4) so use .attr()

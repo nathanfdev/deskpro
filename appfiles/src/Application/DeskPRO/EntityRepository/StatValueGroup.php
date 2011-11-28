@@ -17,7 +17,7 @@ use Application\DeskPRO\App;
 class StatValueGroup extends EntityRepository
 {
 	/**
-	 * Get the reference Id's for a StatValue
+	 * Get the references Id's for a StatValue
 	 *
 	 * @param array $stat_value_ids List of StatValue Ids
 	 * @return array()
@@ -28,7 +28,7 @@ class StatValueGroup extends EntityRepository
 			return array();
 		}
 
-		$query = "SELECT DISTINCT grouping_id
+		$query = "SELECT DISTINCT grouping_ref
 			FROM stat_value_group svg
 			WHERE svg.stat_value_id IN (" . join(',', $stat_value_ids) . ")";
 
@@ -69,17 +69,17 @@ class StatValueGroup extends EntityRepository
 	 * Get the StatValueGroup for a day
 	 *
 	 * @param int $stat_value_id The StatValue id
-	 * @param int $grouping_id The grouping id
+	 * @param string $grouping_ref The grouping ref
 	 * @param \DateTime $date The date
 	 * @return StatValueGroup
 	 */
-	public function getForStatValueByDay($stat_value_id, $grouping_id, \DateTime $date)
+	public function getForStatValueByDay($stat_value_id, $grouping_ref, \DateTime $date)
 	{
 		$day_start = mktime(0, 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
 		$day_end   = mktime(23, 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
 
 		try {
-			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_ref)
 				->andWhere("svg.stat_unix BETWEEN :day_start AND :day_end")
 				->setParameter('day_start', $day_start)
 				->setParameter('day_end', $day_end)
@@ -96,17 +96,17 @@ class StatValueGroup extends EntityRepository
 	 * Get the StatValueGroup for a month
 	 *
 	 * @param int $stat_value_id The StatValue id
-	 * @param int $grouping_id The grouping id
+	 * @param string $grouping_ref The grouping ref
 	 * @param \DateTime $date The date
 	 * @return StatValueGroup
 	 */
-	public function getForStatValueByMonth($stat_value_id, $grouping_id, \DateTime $date)
+	public function getForStatValueByMonth($stat_value_id, $grouping_ref, \DateTime $date)
 	{
 		$month_start = Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
 		$month_end   = Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
 
 		try {
-			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_ref)
 				->andWhere("svg.stat_unix BETWEEN :month_start AND :month_end")
 				->setParameter('month_start', $month_start)
 				->setParameter('month_end', $month_end)
@@ -123,17 +123,17 @@ class StatValueGroup extends EntityRepository
 	 * Get the StatValueGroup for a year
 	 *
 	 * @param int $stat_value_id The StatValue id
-	 * @param int $grouping_id The grouping id
+	 * @param string $grouping_ref The grouping ref
 	 * @param \DateTime $date The date
 	 * @return StatValueGroup
 	 */
-	public function getForStatValueByYear($stat_value_id, $grouping_id, \DateTime $date)
+	public function getForStatValueByYear($stat_value_id, $grouping_ref, \DateTime $date)
 	{
 		$year_start = mktime(0, 0, 0, 1, 1, $date->format('Y'));
 		$year_end   = mktime(23, 59, 59, 12, 31, $date->format('Y'));
 
 		try {
-			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_id)
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_ref)
 				->andWhere("svg.stat_unix BETWEEN :year_start AND :year_end")
 				->setParameter('year_start', $year_start)
 				->setParameter('year_end', $year_end)
@@ -150,10 +150,10 @@ class StatValueGroup extends EntityRepository
 	 * Get a basic StatValueGroup query
 	 *
 	 * @param int $stat_value_id The StatValue Id
-	 * @param int $grouping_id The grouping id
+	 * @param string $grouping_ref The grouping ref
 	 * @return QueryBuilder The QueryBuilder Object
 	 */
-	protected function getForStatValueBuilder($stat_value_id, $grouping_id)
+	protected function getForStatValueBuilder($stat_value_id, $grouping_ref)
 	{
 		$qb = $this->getEntityManager()->createQueryBuilder()
 			->select('svg')
@@ -162,12 +162,12 @@ class StatValueGroup extends EntityRepository
 			->where('sv.id = :stat_value_id')
 			->setParameter('stat_value_id', $stat_value_id);
 
-		if (true === is_null($grouping_id)) {
-			$qb->andWhere('svg.grouping_id IS NULL');
+		if (true === is_null($grouping_ref)) {
+			$qb->andWhere('svg.grouping_ref IS NULL');
 		}
 		else {
-			$qb->andWhere('svg.grouping_id = :grouping_id')
-			   ->setParameter('grouping_id', $grouping_id);
+			$qb->andWhere('svg.grouping_ref = :grouping_ref')
+			   ->setParameter('grouping_ref', $grouping_ref);
 		}
 
 		return $qb;

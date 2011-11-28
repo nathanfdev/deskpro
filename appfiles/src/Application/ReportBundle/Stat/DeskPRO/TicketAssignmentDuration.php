@@ -5,15 +5,44 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the time a ticket is assigned to someone
+ * Length of time until a ticket is assigned to an agent
  */
 class TicketAssignmentDuration extends AbstractTicket
 {
-	public function buildConceptQueries()
+	public function init()
 	{
+		parent::init();
 	}
 
-	public function processResults()
+	public function buildConceptQueries()
 	{
+		// Need to query the ticket log for this, Interested in the AVG time
+		$query = $this->createQuery();
+
+		$this->addQuery($query);
+	}
+
+	public function processUngroupedResults($result)
+	{
+
+	}
+
+	public function processGroupedResults($results)
+	{
+		$processedResults = array();
+
+		return $processedResults;
+	}
+
+	/**
+	 * Get the data formatter
+	 *
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
+	{
+		$class = new \Application\ReportBundle\Stat\Formatter\TimeFormatter();
+
+		return $class;
 	}
 }

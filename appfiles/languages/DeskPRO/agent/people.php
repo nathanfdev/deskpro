@@ -1,0 +1,50 @@
+<?php return array(
+
+	'agent.people.contact_info_for_x' => 'Contact Information For {{name}}',
+	'agent.people.contact_info' => 'Contact Information',
+	'agent.people.contact_add_another' => 'Add Another',
+	'agent.people.contact_add_label' => 'Add a label',
+
+	'agent.people.pos_at_org' => 'Position at organization',
+
+	'agent.people.make_primary_email' => 'make primary',
+	'agent.people.primary_email' => 'primary',
+
+	'agent.people.reg_website' => 'User registered using the website',
+	'agent.people.reg_agent' => 'User created by an agent',
+	'agent.people.reg_gateway' => 'User was created by submitting an email to the helpdesk',
+	
+	'agent.people.auto_responder' => 'Auto-responder?',
+	'agent.people.auto_responder_yes' => 'Yes, this user auto-responds to emails',
+	'agent.people.reset_password' => 'Reset Password',
+	'agent.people.delete_user' => 'Delete User',
+	
+	'agent.people.warn_email_address' => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
+
+	'agent.people.phone' => 'Phone',
+	'agent.people.add_phone' => 'Add a phone number',
+	'agent.people.phone_country_placeholder' => 'Country',
+	'agent.people.phone_number_placeholder' => 'Phone Number',
+	
+	'agent.people.website' => 'Website',
+	'agent.people.add_website' => 'Add a website URL',
+	'agent.people.website_url_placeholder' => 'Website URL',
+	
+	'agent.people.im' => 'IM',
+	'agent.people.add_im' => 'Add an instant messaging account',
+	'agent.people.im_account_placeholder' => 'Account username',
+	
+	'agent.people.add_twitter_profile' => 'Add a twitter profile',
+	'agent.people.add_linkedin_profile' => 'Add a LinkedIn profile',
+	'agent.people.add_facebook_profile' => 'Add a Facebook profile',
+	
+	'agent.people.address' => 'Address',
+	'agent.people.address_city' => 'City',
+	'agent.people.address_state' => 'State',
+	'agent.people.address_postal' => 'Post Code',
+	'agent.people.add_address' => 'Add an address',
+	
+	'agent.people.act_reg' => 'Registered an account',
+	'agent.people.act_submitted_ticket' => 'Submitted a ticket: ',
+	'agent.people.act_replied_ticket' => 'Replied to a ticket: ',
+);

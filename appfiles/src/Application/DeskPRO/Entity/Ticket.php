@@ -34,8 +34,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const CREATED_WEB_AGENT = 'web.agent';
 	const CREATED_GATEWAT_PERSON = 'gateway.person';
 
-	const STATUS_OPEN = 'open';
-	const STATUS_PENDING = 'pending';
+	const STATUS_AWAITING_AGENT = 'awaiting_agent';
+	const STATUS_AWAITING_USER = 'awaiting_user';
 	const STATUS_RESOLVED = 'resolved';
 	const STATUS_CLOSED = 'closed';
 	const STATUS_HIDDEN = 'hidden';
@@ -254,6 +254,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_closed = null;
 
+	/**
+	 * @var \DateTime
+	 * @ORM_Mapping\Column(name="date_first_agent_assign", type="datetime", nullable=true)
+	 */
+	protected $date_first_agent_assign = null;
+	
 	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_first_agent_reply",type="datetime",nullable=true)
@@ -1171,6 +1177,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAgentId($id)
 	{
+		
 		if ($id) {
 			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 			if (!$agent['is_agent']) {
@@ -1178,6 +1185,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			$this['agent'] = $agent;
+			// Do we need to update the first assign date?
+			if (is_null($this->date_first_agent_assign)) {
+				$this['date_first_agent_assign'] = new \DateTime();
+			}
+			
 		} else {
 			$this['agent'] = null;
 		}
@@ -1455,7 +1467,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->undeleteTicket();
 		}
 
-		if ($this->is_hold && $status != self::STATUS_OPEN) {
+		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
 		}
 	}
@@ -1464,7 +1476,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if (!$hstatus) {
 			if ($this->status == 'hidden') {
-				$this->setStatus('open');
+				$this->setStatus('awaiting_agent');
 			}
 		} else {
 			$this->setStatus('hidden.' . $hstatus);
@@ -1480,7 +1492,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Undelete a ticket.
 	 *
-	 * This will set the status to 'open' if it wasn't changed before.
+	 * This will set the status to 'awaiting_agent' if it wasn't changed before.
 	 */
 	public function undeleteTicket()
 	{
@@ -1490,7 +1502,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($this->status == 'hidden') {
-			$this->status = self::STATUS_OPEN;
+			$this->status = self::STATUS_AWAITING_AGENT;
 		}
 
 		App::getOrm()->remove($del);
@@ -1866,9 +1878,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		switch ($status) {
-			case self::STATUS_OPEN:
+			case self::STATUS_AWAITING_AGENT:
 				return 100;
-			case self::STATUS_PENDING:
+			case self::STATUS_AWAITING_USER:
 				return 110;
 			case self::STATUS_RESOLVED:
 				return 200;

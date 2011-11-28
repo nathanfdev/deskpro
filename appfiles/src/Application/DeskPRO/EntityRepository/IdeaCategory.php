@@ -100,7 +100,7 @@ class IdeaCategory extends AbstractCategoryRepository
 			SELECT c
 			FROM DeskPRO:IdeaCategory c INDEX BY c.id
 			ORDER BY c.id DESC
-		")->execute();;
+		")->execute();
 	}
 
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')

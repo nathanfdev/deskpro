@@ -5,11 +5,11 @@
 >
 	<header>
 		<div class="controls">
-			<div class="is-loading">Saving</div>
-			<div class="saved" style="display: none">Saved</div>
-			<div class="save" style="display: none">Save</div>
+			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+			<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+			<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 		</div>
-		<h4>Summary</h4>
+		<h4>{{ phrase('agent.summary') }}</h4>
 	</header>
 	<section>
 		<input type="hidden" name="action" value="set-summary" />
@@ -23,15 +23,15 @@
 	<header>
 		<div class="controls">
 			<span class="edit-gear prop-edit-trigger"></span>
-			<div class="is-loading">Saving</div>
-			<button class="cancel" style="display: none">Cancel</button>
-			<button class="save" style="display: none">Save</button>
+			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+			<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
+			<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
 		</div>
-		<h4>Properties</h4>
+		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
 	<section>
 		<dl class="table-list">
-			<dt class="type-labels">Labels</dt>
+			<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
 			<dd class="people-tags tags-wrap">
 				<ul data-label-route="listpane:{{ path('agent_peoplesearch') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
 					{% for label in person.labels %}
@@ -51,7 +51,7 @@
 		{% endif %}
 
 		<dl class="table-list">
-			<dt class="type-labels">Timezone</dt>
+			<dt class="type-labels">{{ phrase('agent.label_timezone') }}</dt>
 			<dd>
 				<select id="{{baseId}}_timezone">
 					{% for tz in timezone_options %}
@@ -73,8 +73,8 @@
 	<header>
 		<nav>
 			<ul>
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">Tickets <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
-				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">Chats <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -100,7 +100,9 @@
 					{% if person_tickets|length %}
 						<tr class="more" >
 							<td colspan="100">
-								<button class="clean-white" id="{{baseId}}_tickets_viewall">View all {{ person_tickets_count }} tickets</button>
+								<button class="clean-white" id="{{baseId}}_tickets_viewall">
+									{{ phrase('agent.view_all_x_tickets', {'count':person_tickets_count}) }}
+								</button>
 							</td>
 						</tr>
 					{% endif %}
@@ -156,8 +158,8 @@
 		<nav>
 			<ul>
 				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
-				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">Activity Stream</li>{% endif %}
-				<li data-tab-for="#{{baseId}}_tracking_tab">Detail</li>
+				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
+				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.detail') }}</li>
 			</ul>
 		</nav>
 	</header>
@@ -178,13 +180,13 @@
 					>
 						<header>
 							<div class="controls">
-								<div class="is-loading">Saving</div>
-								<div class="saved" style="display: none">Saved</div>
-								<div class="save" style="display: none">Save</div>
+								<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+								<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+								<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 							</div>
-							<h3>New Note</h3>
+							<h3>{{ phrase('agent.new_note') }}</h3>
 						</header>
-						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="Enter note ..." data-not-blank="1"></textarea></div>
+						<div class="textarea-section"><textarea class="integrated" name="note" placeholder="" data-not-blank="1"></textarea></div>
 					</li>
 				</ul>
 			</div>
@@ -199,14 +201,14 @@
 					<li>
 						<span class="what">
 							{% if action.action_type == 'registered' %}
-								Registered an account
+								{{ phrase('agent.people.act_reg') }}
 							{% elseif action.action_type == 'new_ticket' %}
-								Submitted a new ticket
+								{{ phrase('agent.people.act_submitted_ticket') }}
 								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 									{{ action.details.subject }}
 								</a>
 							{% elseif action.action_type == 'new_ticket_reply' %}
-								Replied to ticket
+								{{ phrase('agent.people.act_replied_ticket') }}
 								<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 									{{ action.details.subject }}
 								</a>
@@ -240,45 +242,44 @@
 					<td class="label">Creation By</td>
 					<td class="value">
 						{% if person.creation_system == 'web.person' %}
-							User registered using the website.
+							{{ phrase('agent.people.reg_website') }}
 						{% elseif person.creation_system == 'web.agent' %}
-							User created by an agent.
+							{{ phrase('agent.people.reg_agent') }}
 						{% elseif person.creation_system == 'gateway.person' %}
-							User was created by submitting an email to the helpdesk.
+							{{ phrase('agent.people.reg_gateway') }}
 						{% else %}
 							{{ person.creation_system }}
 						{% endif %}
 					</td>
 				</tr>
 				<tr>
-					<td class="label">Last Login</td>
+					<td class="label">{{ phrase('agent.last_login') }}</td>
 					<td class="value">
 						{% if person.date_last_login %}
 							<time>{{person.date_last_login|date('H:ia M j Y')}}</time>
 							(<time class="timeago" datetime="{{person.date_last_login|date('c')}}"></time>)
 						{% else %}
-							Never
+							{{ phrase('agent.never') }}
 						{% endif %}
 					</td>
 				</tr>
 				{% if session %}
 					<tr>
-						<td class="label">Online Now</td>
+						<td class="label">{{ phrase('agent.online_now') }}</td>
 						<td class="value">
-							Since
 							<time>{{session.date_created|date('H:ia M j Y')}}</time>
 							(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
 						</td>
 					</tr>
 					<tr>
-						<td class="label">Last Activity</td>
+						<td class="label">{{ phrase('agent.last_activity') }}</td>
 						<td class="value">
 							<time>{{session.date_last|date('H:ia M j Y')}}</time>
 							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 							on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 					</tr>
 					<tr>
-						<td class="label">Landing Page</td>
+						<td class="label">{{ phrase('agent.landing_page') }}</td>
 						<td class="value">
 							User landed on page
 							<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
@@ -289,27 +290,27 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">IP Address</td>
+						<td class="label">{{ phrase('agent.ip_address') }}</td>
 						<td class="value">
 							{{ session.visitor.ip_address }}
 						</td>
 					</tr>
 					<tr>
-						<td class="label">User Agent</td>
+						<td class="label">{{ phrase('agent.browser_agent') }}</td>
 						<td class="value">
 							{{ session.visitor.user_agent }}
 						</td>
 					</tr>
 				{% elseif visitor %}
 					<tr>
-						<td class="label">Last Activity</td>
+						<td class="label">{{ phrase('agent.last_activity') }}</td>
 						<td class="value">
 							<time>{{visitor.date_last|date('H:ia M j Y')}}</time>
 							(<time class="timeago" datetime="{{visitor.date_last|date('c')}}"></time>)
 							on page <em class="tipped" title="{{ visitor.last_page }}">...</em>
 					</tr>
 					<tr>
-						<td class="label">Landing Page</td>
+						<td class="label">{{ phrase('agent.landing_page') }}</td>
 						<td class="value">
 							User landed on page
 							<em class="tipped" title="{{ visitor.landing_page }}">...</em>
@@ -320,24 +321,24 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">IP Address</td>
+						<td class="label">{{ phrase('agent.ip_address') }}</td>
 						<td class="value">
 							{{ visitor.ip_address }}
 						</td>
 					</tr>
 					<tr>
-						<td class="label">User Agent</td>
+						<td class="label">{{ phrase('agent.browser_agent') }}</td>
 						<td class="value">
 							{{ visitor.user_agent }}
 						</td>
 					</tr>
 				{% endif %}
 				<tr>
-					<td class="label">Auto-responder?</td>
+					<td class="label">{{ phrase('agent.people.auto_responder') }}</td>
 					<td class="value">
 						<select id="{{baseId}}_is_autoresponder">
-							<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>No</option>
-							<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>Yes, this user auto-responds to emails</option>
+							<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>{{ phrase('agent.no') }}</option>
+							<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>{{ phrase('agent.people.auto_responder_yes') }}</option>
 						</select>
 					</td>
 				</tr>

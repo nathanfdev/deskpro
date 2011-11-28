@@ -14,11 +14,11 @@
 			<div class="row" style="margin-top: 0;">
 				<div class="search-form" id="criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> Add a new term</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_search_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:download-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': download_options } %}
 			</div>
-			<div style="text-align: center;"><button class="dp-button x-small">Search</button></div>
+			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('agent.search') }}</button></div>
 		</form>
 	</div>
 

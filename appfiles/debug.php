@@ -41,18 +41,13 @@ $CONFIG['debug']['mail'] = array();
 ################################################################################
 
 /**
- * Command prefix to run YUI compressor with dpdev:js-compile
- */
-$CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor.jar';
-
-
-/**
  * Packs listed will be served in their raw form, not their compiled build form.
  * Useful for debugging since you dont need to re-compile the files each time.
  * Possible values are in config.assets.php
  */
 // TODO remove in distribution. Enabled just for devs
 $CONFIG['debug']['raw_assets'] = array();
+//$CONFIG['debug']['raw_assets'][] = 'all -vendors';
 $CONFIG['debug']['raw_assets'][] = 'all';
 
 /**
@@ -74,24 +69,57 @@ $CONFIG['debug']['templates'] = array();
  */
 $CONFIG['debug']['js'] = array(
 
-	// Disables menu handlers in the agent interface
-	//'disableMenuHandlers' => true,
+	/**
+	 * Adds a fixed div in top right (overlaps user icon). right now only has button
+	 * that reloads current tab.
+	 */
+	'devbar' => true,
+
+	/**
+	 * The ajax polling interval for messages
+	 */
+	'pollerInterval' => 10000,
+
+	/**
+	 * Show the 'test' section, and also disable the requirement of a listpane
+	 * matching a section. When no match is found, it'll use the test
+	 */
+	'useTestSection' => true,
+
+	// Disables section handlers in the agent interface,
+	'disableSectionHandlers' => true,
 
 	// When the above option is true, still enable these
-	//'enableMenuHandlers' => array('DeskPRO.Agent.WindowElement.MainMenu.People'),
+	'enableSectionHandlers' => array(
+		//'DeskPRO.Agent.WindowElement.Section.Test',
+		//'DeskPRO.Agent.WindowElement.Section.Publish',
+		//'DeskPRO.Agent.WindowElement.Section.Ideas',
+		//'DeskPRO.Agent.WindowElement.Section.Tickets',
+		//'DeskPRO.Agent.WindowElement.Section.Tasks',
+		//'DeskPRO.Agent.WindowElement.Section.People',
+		//'DeskPRO.Agent.WindowElement.Section.UserChat',
+		//'DeskPRO.Agent.WindowElement.Section.AgentChat',
+		//'DeskPRO.Agent.WindowElement.Section.Twitter',
+		//'DeskPRO.Agent.WindowElement.Section.Deal',
+	),
 
-	// Disables use of URL fragments
-	//'disableUrlFragments' => true,
-
-	// Do not automatically load a filter when first entering agent UI
-	//'noAutoLoadFilter' => true,
+	// When selecting a new section, dont run the auto load route
+	'noAutoLoadList' => true,
 
 	// Disables the AJAX that saves and relaods previous state
-	//'disableSaveState' => true,
+	'disableSaveState' => true,
+
+	// Disables use of URL fragments
+	'disableUrlFragments' => true,
 
 	// Run these routes automatically when first entering the agent UI
 	// array(array('ticket', 'route_name', array('param' => 'xxx')))
-	//'autoLoadRoutes' => array(),
+	'autoLoadRoutes' => array(
+		//array('person', 'agent_people_view', array('person_id' => 20001)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 21)),
+		//array('listpane', 'agent_ticketsearch_runnamedfilter', array('filter_name' => 'all')),
+		//array('page', 'agent_test_tab', array('rand' => mt_rand(1,1000000))),
+	),
 
 	// Write incoming client messages to console.log (see AbstractChanneler)
 	//'logClientMessages' => true,

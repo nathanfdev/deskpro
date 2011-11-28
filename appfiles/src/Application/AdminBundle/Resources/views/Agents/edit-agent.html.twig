@@ -1,172 +1,496 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-{% endblock %}
-{% block page_js_exec %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentEditPage.js') }}"></script>
 {% endblock %}
 {% block pagetitle %}
 	<h1>Agent: {{ agent.name }}</h1>
 {% endblock %}
-{% block content %}
-<div class="dp-page-box agent-edit">
-	<div class="page-content">
-		<div class="permissions-table">
-			<table cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th width="300" style="text-align: left">
-							<select id="permission_type_switcher">
-								<option>Departments</option>
-								<option>Ticket Permissions</option>
-							</select>
-						</th>
-						<th width="5">&nbsp;</th>
-						<th width="100">Group A</th>
-						<th width="100">Group B</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Use ticket system</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Create tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve own and teams tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve unassigned tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr>
-						<td>View others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Modify others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Delete others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-					<tr>
-						<td>Resolve others tickets</td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-						<td><input type="checkbox" class="onoff-slider" /></td>
-					</tr>
-				</tbody>
-			</table>
+{% block page %}
+<form
+	action="{{ path('admin_agents_edit_save', {'person_id': agent.id}) }}"
+	method="POST"
+	data-element-handler="DeskPRO.Admin.ElementHandler.AgentEditPage"
+>
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Name</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:200px;" type="text" name="agent[first_name]" value="{{ agent.first_name }}" />
+			<input style="width:200px;" type="text" name="agent[last_name]" value="{{ agent.last_name }}" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Email</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:409px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Administrator</label>
+		</div>
+		<div class="dp-form-input">
+			<label>
+				<input type="checkbox" name="permissions[admin][override][use]" value="1" {% if usergroup_values['override']['admin.use'] %}checked="checked"{% endif %} />
+				The agent is an administrator and can access the Admin Interface
+			</label>
+		</div>
+	</div>
+
+	{% if all_teams or all_usergroups %}
+	<table cellspacing="0" cellpadding="0" width="100%"><tr>
+		{% if all_teams %}
+			<td width="50%">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Teams</label>
+					</div>
+					<div class="dp-form-input">
+						<div class="checkbox-rows">
+							<ul>
+								{% for team in all_teams %}
+								<li>
+									<label>
+										<input type="checkbox" name="agent[teams][]" value="{{ team.id }}" {% if team.id in agent_teams %}checked="checked"{% endif %} />
+										{{ team.name }}
+									</label>
+								</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</td>
+		{% endif %}
+
+		{% if all_usergroups %}
+			<td width="50%">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Permission Groups</label>
+					</div>
+					<div class="dp-form-input">
+						<div class="checkbox-rows" id="usergroup_checks">
+							<ul>
+								{% for usergroup in all_usergroups %}
+								<li>
+									<label>
+										<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if usergroup.id in agent_usergroups %}checked="checked"{% endif %} />
+										{{ usergroup.title }}
+									</label>
+								</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</td>
+		{% endif %}
+	</tr></table>
+	{% endif %}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Department Access Permissions</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="check-grid" style="max-height: 200px; overflow: auto; width: 70%;">
+				<table width="100%">
+					<thead>
+						<tr>
+							<th>Department</th>
+							<th width="60">Tickets</th>
+							<th width="60">Chat</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for dep in departments %}
+							<tr>
+								{% if dep.children|length %}
+									<td class="title title-group">{{ dep.title }}</td>
+									<td class="prop">&nbsp;</td>
+									<td class="prop">&nbsp;</td>
+								{% else %}
+									<td class="title">{{ dep.title }}</td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" /></td>
+									<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" /></td>
+								{% endif %}
+							</tr>
+							{% if dep.children %}
+								{% for subdep in dep.children %}
+									<tr>
+										<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
+										<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	{##############################
+	 # Permisssions
+	 ##############################}
+	<div class="dp-form-row">
+		<div class="dp-form-label" id="permgroups">
+			<label>Permissions</label>
+
+			{% macro perm_col(usergroup_values, permgroup, name, ug_id) %}
+				<td
+					data-ug-id="{{ ug_id }}"
+					class="prop {% if ug_id == 'override' %}highlight ug-override{% else %}ugcol ugcol-{{ ug_id }}{% endif %}" {% if ug_id != 'override' %}style="display: none;"{% endif %}
+				><input
+					class="onoff-slider"
+					type="checkbox"
+					name="permissions[{{ permgroup }}][{{ ug_id }}][{{ name }}]"
+					value="1"
+					{% if usergroup_values[ug_id][permgroup ~ '.' ~ name] %}checked="checked"{% endif %}
+				/></td>
+			{% endmacro %}
+
+			<nav class="check-grid-tabs">
+				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+					<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
+					<li data-tab-for="#permgroup_people"><span>People and Organizations</span></li>
+					<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
+					<li data-tab-for="#permgroup_publish"><span>Publish</span></li>
+				</ul>
+			</nav>
+
+			{# TICKET PERMISSIONS #}
+			<div id="permgroup_tickets" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use ticket system</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Create tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_own', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_own', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve own and teams tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve unassigned tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">View others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'view_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'view_others', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Modify others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Resolve others tickets</td>
+								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /TICKET PERMISSIONS #}
+
+			{# PEOPLE PERMISSIONS #}
+			<div id="permgroup_people" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Edit people
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete people</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate users and user email addresses
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'validate', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'validate', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">
+									Edit email addresses
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'manage_emails', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">
+									Reset passwords
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'people', 'reset_password', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'people', 'reset_password', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete organizations</td>
+								{{ _self.perm_col(usergroup_values, 'org', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'org', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /PEOPLE PERMISSIONS #}
+
+			{# CHAT PERMISSIONS #}
+			<div id="permgroup_chat" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Use chat system</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'use', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'use', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can see new unassigned chats</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can see chats assigned to others</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'view_others', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'view_others', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr>
+								<td class="title">Can delete chat transcripts</td>
+								{{ _self.perm_col(usergroup_values, 'chat', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'chat', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+
+			{# PUBLISH PERMISSIONS #}
+			<div id="permgroup_publish" style="display: none">
+				<div class="check-grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>Permission</th>
+								<th width="60">This Agent</th>
+								{% for group in all_usergroups %}
+									<th data-ug-id="{{ group.id }}" class="ugcol ugcol-{{ group.id }}" style="overflow: hidden; width: 120px; white-space: nowrap; display: none;" title="{{ group.title }}">{{ group.title }}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="permrow">
+								<td class="title">Create content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'create', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'publish', 'create', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Delete content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'delete', 'override') }}
+								{% for group in all_usergroups %}
+									{{ _self.perm_col(usergroup_values, 'publish', 'delete', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">Edit other's content</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'edit', 'override') }}
+								{% for group in all_usergroups %}
+								{{ _self.perm_col(usergroup_values, 'publish', 'edit', group.id) }}
+								{% endfor %}
+							</tr>
+							<tr class="permrow">
+								<td class="title">
+									Validate content and comments (including own)
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>
+								</td>
+								{{ _self.perm_col(usergroup_values, 'publish', 'validate', 'override') }}
+								{% for group in all_usergroups %}
+								{{ _self.perm_col(usergroup_values, 'publish', 'validate', group.id) }}
+								{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{# /CHAT PERMISSIONS #}
+
 		</div>
 	</div>
 </div>
 
-{#
-<form action="{{ path('admin_agents_edit', {'person_id': person.id|default(0)}) }}" method="post">
-<input type="hidden" name="process" value="1" />
-
-<div class="form-panel">
-	<div class="row">
-		<label>First and Last Name</label>
-		{{ form_widget(form.first_name) }}
-		{{ form_widget(form.last_name) }}
-	</div>
-	<div class="row">
-		<label>Email Address</label>
-		{{ form_widget(form.email) }}
-	</div>
-	<div class="row">
-		<label>Password</label>
-		{{ form_widget(form.password) }}
-	</div>
-	<div class="row">
-		<label>Access Zones</label>
-		<div class="field">{{ form_widget(form.access_zones) }}</div>
-
-	</div>
-	<div class="row">
-		<label>Teams</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto; padding: 5px;">{{ form_widget(form.agent_teams) }}</div>
-		<br class="clear" />
-	</div>
-	<div class="row">
-		<label>Department Permissions</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.allowed_departments) }}</div>
-		<br class="clear" />
-	</div>
-	{% if form.usergroups %}
-	<div class="row">
-		<label>Agent Groups</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.usergroups) }}</div>
-		<br class="clear" />
-	</div>
-	{% endif %}
-</div>
+<button class="clean-white">Save</button>
 
 </form>
-#}
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
-
 {% endblock %}

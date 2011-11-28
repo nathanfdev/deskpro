@@ -303,7 +303,7 @@ class Current extends AbstractGenerator
 				$ticket['date_resolved'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
 			} elseif ($ticket['status'] == 'awaiting_tech') {
 
-			} elseif ($ticket['status'] == 'pending') {
+			} elseif ($ticket['status'] == 'awaiting_user') {
 
 			} elseif ($ticket['status'] == 'resolved') {
 				$ticket['date_resolved'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');

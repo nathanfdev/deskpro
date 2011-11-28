@@ -1,11 +1,11 @@
 <select name="{{ name }}">
-	<option value="new">New</option>
-	<optgroup label="Active">
+	<option value="new">{{ phrase('agent.ideas.status_new') }}</option>
+	<optgroup label="{{ phrase('agent.ideas.status_active') }}">
 		{% for cat in active_status_cats %}
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
-	<optgroup label="Closed">
+	<optgroup label="{{ phrase('agent.ideas.status_closed') }}">
 		{% for cat in closed_status_cats %}
 			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}

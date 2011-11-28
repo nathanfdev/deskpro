@@ -1,17 +1,11 @@
 {% import "ReportBundle:Common:macros.html.twig" as stat_macros %}
 
-<script type="text/javascript">
-	$(function() {
-	      $('#dashboard-chart-{{ dashboard_stat.id }} .sparkline').sparkline('html', { width: '100px', height: '20px'});
-	});
-</script>
-
 <div class="detailed-drill-down" id="dashboard-chart-{{ dashboard_stat.id }}">
 	{% if chart.isChartRenderable %}
 		<table>
 			<thead>
 				<tr>
-					<th class="name">Name</th>
+					<th class="name">{{ chart.getDataLabel }}</th>
 					<th class="trend">Trend</th>
 					{% for series in chart.getEndSeries(3) %}
 						<th class="prev-value">{{ series }}</th>
@@ -23,9 +17,9 @@
 				{% for row in chart.rows %}
 					<tr>
 						<td class="name">{{ row.label|default('no group') }}</td>
-						<td class="trend"><span class="sparkline">{{ row.data|join(',') }}</span></td>
+						<td class="trend" data-trendline="{{ row.data|join(',') }}"></td>
 						{% for prev_value in chart.getEndData(row, 3) %}
-							<td class="prev-value">{{ chart.formatData(prev_value)|default('-') }}</td>
+							<td class="prev-value">{{ chart.formatData(prev_value, chart.getDisplayUnits)|default('-') }}</td>
 						{% endfor %}
 						<td class="diff {{ stat_macros.difference_class(chart.getDifference(row.data), chart.differenceDirection) }}">{{ chart.getDifference(row.data, true) }}%</td>
 					</tr>

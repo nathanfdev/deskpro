@@ -59,7 +59,7 @@ class AutoCloseOptions
 			$triggers[] = $tr;
 		}
 
-		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'pending'));
+		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'awaiting_user'));
 		$tr['event_trigger_option'] = $this->resolve_agent_reply;
 
 		#------------------------------
@@ -75,7 +75,7 @@ class AutoCloseOptions
 			$triggers[] = $tr;
 		}
 
-		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'pending'));
+		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'awaiting_user'));
 		$tr['event_trigger_option'] = $this->resolve_agent_reply;
 
 		#------------------------------
@@ -91,7 +91,7 @@ class AutoCloseOptions
 			$triggers[] = $tr;
 		}
 
-		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'open'));
+		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'awaiting_agent'));
 		$tr['event_trigger_option'] = $this->resolve_agent_reply;
 
 		#------------------------------
@@ -107,7 +107,7 @@ class AutoCloseOptions
 			$triggers[] = $tr;
 		}
 
-		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'open'));
+		$tr['terms'] = array('type' => 'status', 'options' => array('status' => 'awaiting_agent'));
 		$tr['event_trigger_option'] = $this->close_user_reply;
 
 

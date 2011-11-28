@@ -12,7 +12,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Macros';
 	<table width="100%">
 		<thead>
 			<tr>
-				<th>Ticket Macros</th>
+				<th>{{ phrase('agent.settings.title_macros') }}</th>
 				<th width="50"></th>
 			</tr>
 		</thead>
@@ -29,7 +29,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Macros';
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="2">You have not defiend any custom macros.</td>
+					<td colspan="2">{{ phrase('agent.settings.no_macros') }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

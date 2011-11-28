@@ -73,7 +73,7 @@ class TriggerExecutor
 
 		// If we've just validated, then we'll send off a fake
 		// ticket_created event for the TriggerExecutor
-		if (!$this->tracker->isExtraSet('ticket_created') && $this->ticket->status_code == 'open' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating')) {
+		if (!$this->tracker->isExtraSet('ticket_created') && $this->ticket->status_code == 'awaiting_agent' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating')) {
 			$this->tracker->recordExtra('ticket_created', true);
 		}
 

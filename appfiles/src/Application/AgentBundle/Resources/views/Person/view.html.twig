@@ -20,8 +20,8 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="create-ticket"><button class="clean-white large">Create Ticket</button></li>
-			<li class="more"><button class="clean-white large inner-arrow no-sep">More <span class="arrow"></span></button></li>
+			<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.create_ticket') }}</button></li>
+			<li class="more"><button class="clean-white large inner-arrow no-sep">{{ phrase('agent.more') }} <span class="arrow"></span></button></li>
 		</ul>
 	</nav>
 	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="titlewrap">
 		<h1>
 			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('Double-click to set Name') }}</span>
-			<span class="edit-name-gear">edit name</span>
+			<span class="edit-name-gear"></span>
 			<div id="{{baseId}}_editname" style="display: none">
 				<input type="hidden" name="action" value="name" />
 				<input type="text" size="20" name="name" value="{{ person.name }}" />
@@ -42,19 +42,19 @@ pageMeta.baseId = '{{ baseId }}';
 					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
 					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
-					No Organization
+					&nbsp;
 				{% endif %}
 			</span></div>
 		</div>
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		{% if app.user.hasPerm('users.set-password') %}<li data-action="reset-password" class="reset-password">Reset Password</li>{% endif %}
+		{% if app.user.hasPerm('users.set-password') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.people.reset_password') }}</li>{% endif %}
 		{% if app.user.hasPerm('users.delete') %}
 			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
-				class="delete-trigger">Delete User</li>{% endif %}
+				class="delete-trigger">{{ phrase('agent.people.delete_user') }}</li>{% endif %}
 	</ul>
 	<br class="clear" />
 </header>
@@ -76,11 +76,9 @@ pageMeta.baseId = '{{ baseId }}';
 {% if with_warn_for_email %}
 <div class="full-tab-warn">
 	<div class="message">
-		The email address {{ with_warn_for_email }} matches this profile. But
-		because the user has not logged in to the helpdesk, we cannot verify their
-		identity. Be careful not to release any sensitive information.
+		{{ phrase('agent.people.warn_email_address', {'email': with_warn_for_email}) }}
 		<div class="controls">
-			<button class="clean-white dismiss-trigger">Okay</button>
+			<button class="clean-white dismiss-trigger">{{ phrase('agent.okay') }}</button>
 		</div>
 	</div>
 </div>

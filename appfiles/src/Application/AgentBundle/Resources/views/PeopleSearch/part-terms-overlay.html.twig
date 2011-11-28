@@ -1,6 +1,6 @@
 <div class="display-terms overlay">
 	<div class="overlay-title">
-		<h4>Search Terms</h4>
+		<h4>{{ phrase('agent.label_search') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div style="margin-right: 250px;">
@@ -9,7 +9,7 @@
 					<input type="hidden" name="copy_display_options" value="{{cache_id}}" />
 					<div class="search-form">
 						<div class="search-terms"></div>
-						<div class="term"><span class="add-term">+</span> Add a new search term</div>
+						<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_search_term') }}</div>
 					</div>
 				</form>
 			</div>
@@ -179,10 +179,10 @@
 	</div>
 	<div class="overlay-actions">
 		<div class="loading-off">
-			<button class="save-trigger dp-button small">Search</button>
+			<button class="save-trigger dp-button small">{{ phrase('agent.search') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>Loading ...</span>
+			<span>{{ phrase('agent.loading_saving') }}</span>
 		</div>
 	</div>
 </div>

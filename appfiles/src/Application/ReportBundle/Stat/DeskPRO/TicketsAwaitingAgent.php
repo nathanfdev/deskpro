@@ -5,56 +5,55 @@ namespace Application\ReportBundle\Stat\DeskPRO;
 use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets awaiting agent
+ * Get the number of tickets in 'awaiting_agent' status
  */
 class TicketsAwaitingAgent extends AbstractTicket
 {
 	public function init()
 	{
-		$this->addAvailableGroups(array(
-			'department'	=> 'Department',
-			'category'	=> 'Category',
-			'priority'	=> 'Proprity',
-			'workflow'	=> 'Workflow',
-			'language'	=> 'Language',
-			'agent'		=> 'Agent',
-			'agent_team'	=> 'Agent Team',
-			'user_id'	=> 'User',
-			'rating'	=> 'Rating',
-		));
+		parent::init();
 	}
 
 	public function buildConceptQueries()
 	{
-		$query = new QueryBuilder();
-		$query->addSelect('COUNT(tickets.id) AS ticket_count');
-		$query->addFrom('tickets');
-		$query->addWhere("(tickets.status = 'open' OR tickets.status = 'awaiting_agent')");
+		// Get the number of tickets in 'awaiting_agent' status
+		// TODO: remove the 'open' status check when online db has been
+		// switch to use new 'awaiting_agent status
+		$query = $this->createQuery()
+		      ->select('COUNT(tickets.id) AS ticket_count')
+		      ->andWhere("(tickets.status = 'open' OR tickets.status = 'awaiting_agent')");
 
-		$this->addQuery($query);
+		$this->addQuery('awaiting_agent', $query);
 	}
 
 	public function processUngroupedResults($result)
 	{
-		return $result[0]['ticket_count'];
+		return $result['awaiting_agent'][0]['ticket_count'];
 	}
 
 	public function processGroupedResults($results)
 	{
 		$processedResults = array();
 
-		foreach ($results as $result) {
+		foreach ($results['awaiting_agent'] as $result) {
 			$processedResults[] = array(
 				'value'       => $result['ticket_count'],
-				'grouping_id' => $result[str_replace('.', '_', $this->grouping[0])],
+				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
 
 		return $processedResults;
 	}
-	
-	public static function formatData($data)
+
+	/**
+	 * Get the formatter
+	 *
+	 * @return FormatterInterface
+	 */
+	public static function getFormatter()
 	{
-		return $data;
+		$class = new \Application\ReportBundle\Stat\Formatter\IntegerFormatter();
+
+		return $class;
 	}
 }

@@ -6,8 +6,6 @@ use Application\DeskPRO\Entity\Stat;
 
 class ChartFactory
 {
-	const LIMIT = 6;
-
 	/**
 	 * Construct a chart based on its class and some data
 	 *
@@ -18,8 +16,14 @@ class ChartFactory
 	 * @param Stat The Stat entity
 	 */
 	public static function getChart($chart_class, $data, Stat $stat)
-	{
-		$count = 0;
+	{		
+		$display_unit = '';
+		if (false === is_null($stat->getFormatter())) {
+			// If there is a formatter, it may want to normalize the data,
+			$normalized_result = $stat->getFormatter()->normalizeData($data);
+			$data 		= $normalized_result['data'];
+			$display_unit 	= $normalized_result['unit'];
+		}
 
 		switch ($chart_class) {
 			/**
@@ -33,8 +37,9 @@ class ChartFactory
 			case 'Application\ReportBundle\Chart\AmChart\ColumnChart':
 			case 'Application\ReportBundle\Chart\AmChart\StackedColumnChart':
 				$chart = new $chart_class;
-				
+
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDisplayUnits($display_unit);
 				
 				$series_set = false;
 				foreach ($data as $data_set) {
@@ -58,11 +63,6 @@ class ChartFactory
 						}
 						$series_set = true;
 					}
-
-					$count++;
-					if ($count === self::LIMIT) {
-						break;
-					}
 				}
 
 				break;
@@ -74,17 +74,22 @@ class ChartFactory
 				$chart = new $chart_class;
 
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDisplayUnits($display_unit);
 				
 				$series_set = false;
 				foreach ($data as $data_set) {
-					$value_sum = array_sum($data_set['values']);
-					$chart->addSlice($data_set['label'], $value_sum);
-
-					$count++;
-					if ($count === self::LIMIT) {
-						break;
+					if ('time_formatter' === $chart->getFormatterIdentifier()) {
+						// Time data needs to be divided by the number of points
+						$value_sum = (count($data_set['values']) != 0) ? array_sum($data_set['values']) / count($data_set['values']) : 0;
 					}
+					else {
+						$value_sum = array_sum($data_set['values']);
+					}
+
+					$chart->addSlice($data_set['label'], $value_sum);
 				}
+
+				$chart->sortData('label');
 
 				break;
 
@@ -93,8 +98,9 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleVariationChart':
 				$chart = new $chart_class;
-				
+
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDisplayUnits($display_unit);
 				
 				$chart->setDifferenceDirection($stat->getVariation());
 
@@ -112,17 +118,24 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\SimpleDrillDownChart':
 				$chart = new $chart_class;
-				
+
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDataLabel($stat->getGroupingName());
+				$chart->setDisplayUnits($display_unit);
 				
 				foreach ($data as $data_set) {
-					$chart->addRow($data_set['label'], $data_set['values']);
-
-					$count++;
-					if ($count === self::LIMIT) {
-						break;
+					if ('time_formatter' === $chart->getFormatterIdentifier()) {
+						// Time data needs to be divided by the number of points
+						$value_sum = (count($data_set['values']) != 0) ? array_sum($data_set['values']) / count($data_set['values']) : 0;
 					}
+					else {
+						$value_sum = array_sum($data_set['values']);
+					}
+
+					$chart->addRow($data_set['label'], $data_set['values'], $value_sum);
 				}
+
+				$chart->sortData('label');
 
 				break;
 
@@ -131,19 +144,26 @@ class ChartFactory
 			 */
 			case 'Application\ReportBundle\Chart\DeskPRO\DetailedDrillDownChart':
 				$chart = new $chart_class;
-				
+
 				$chart->setFormatter($stat->getFormatter());
+				$chart->setDataLabel($stat->getGroupingName());
+				$chart->setDisplayUnits($display_unit);
 				
 				$chart->setDifferenceDirection($stat->getVariation());
-				
+
 				foreach ($data as $data_set) {
-					$chart->addRow($data_set['label'], $data_set['values']);
-					
-					$count++;
-					if ($count === self::LIMIT) {
-						break;
+					if ('time_formatter' === $chart->getFormatterIdentifier()) {
+						// Time data needs to be divided by the number of points
+						$value_sum = (count($data_set['values']) != 0) ? array_sum($data_set['values']) / count($data_set['values']) : 0;
 					}
+					else {
+						$value_sum = array_sum($data_set['values']);
+					}
+
+					$chart->addRow($data_set['label'], $data_set['values'], $value_sum);
 				}
+
+				$chart->sortData('label');
 
 				break;
 
@@ -153,7 +173,7 @@ class ChartFactory
 
 		return $chart;
 	}
-	
+
 	/**
 	 * Transform a chart class to its full screen view class
 	 */
@@ -164,8 +184,7 @@ class ChartFactory
 				$chart_class = 'Application\ReportBundle\Chart\AmChart\LineChart';
 				break;
 		}
-		
-		
+
 		return $chart_class;
 	}
 }

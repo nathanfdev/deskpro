@@ -17,9 +17,66 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 			ev.stopPropagation();
 
 			var li = $(this).closest('li.item');
-			li.fadeOut('fast', function() {
-				li.remove();
+			var choiceVal = $('div.label', li).text().trim();
+
+			var found = false;
+			$('input.move-val', '#choice_extra_fields').each(function() {
+				if ($(this).val() == choiceVal) {
+					found = true;
+					return false;
+				}
 			});
+
+			if (found) {
+				alert('You cannot delete this option because in a previously deleted option you chose to move existing values to this one. You can refresh the page if you need to start over.');
+				return;
+			}
+
+			var choiceId = li.data('choice-id');
+
+			if (choiceId) {
+
+				var overlayEl = $(DeskPRO_Window.util.getPlainTpl($('#move_options_overlay')));
+				var sel = $('select.move-value', overlayEl);
+				sel.append('<option>Remove existing selections</option>');
+				$('div.label', list).each(function() {
+					if ($(this).closest('li').data('choice-id') == choiceId) {
+						return;
+					}
+
+					var opt = $('<option />');
+					opt.val($(this).text().trim());
+					opt.text('Move to: ' + opt.val());
+
+					opt.appendTo(sel);
+				});
+
+				$('button.save-trigger', overlayEl).click(function() {
+					if (sel.val().length) {
+						var hidden = $('<input type="hidden" class="move-val" name="move[' + choiceId + ']" />');
+						hidden.val(sel.val());
+
+						hidden.appendTo($('#choice_extra_fields'));
+					}
+
+					overlay.close();
+
+					li.fadeOut('fast', function() {
+						li.remove();
+					});
+				});
+
+				var overlay = new DeskPRO.UI.Overlay({
+					contentElement: overlayEl,
+					destroyOnClose: true
+				});
+				overlay.open();
+
+			} else {
+				li.fadeOut('fast', function() {
+					li.remove();
+				});
+			}
 		}
 
 		function handleAdd() {

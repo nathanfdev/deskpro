@@ -246,7 +246,7 @@ class ChatConversation extends EntityRepository
 			$conversation = null;
 		}
 
-		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_OPEN)) {
+		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_AWAITING_AGENT)) {
 			$conversation = null;
 		}
 

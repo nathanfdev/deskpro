@@ -297,7 +297,7 @@ WHERE
 //			FROM tickets
 //			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL)
 //			WHERE
-//				tickets.status = 'open'
+//				tickets.status = 'awaiting_agent'
 //				AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30)
 //		";
 //
@@ -306,7 +306,7 @@ WHERE
 //			FROM tickets
 //			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30))
 //			WHERE
-//				tickets.status = 'open'
+//				tickets.status = 'awaiting_agent'
 //				AND ticket_field_data.id IS NOT NULL
 //		";
 //
@@ -315,7 +315,7 @@ WHERE
 //			FROM tickets
 //			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NULL)
 //			WHERE
-//				tickets.status = 'open'
+//				tickets.status = 'awaiting_agent'
 //				AND (
 //					ticket_field_data.value LIKE '%:5:%'
 //					OR ticket_field_data.value LIKE '%:10:%'

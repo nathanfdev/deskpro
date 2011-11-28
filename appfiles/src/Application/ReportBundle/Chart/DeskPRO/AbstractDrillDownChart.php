@@ -24,24 +24,50 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	protected $max_value = 0;
 
 	/**
+	 * Label used to describe the rows in the chart
+	 *
+	 * @var string
+	 */
+	protected $data_label = 'Name';
+
+	/**
 	 * Adds a row to the list
 	 *
 	 * @param string $label The label
 	 * @param array $data The data points
 	 */
-	public function addRow($label, $data)
+	public function addRow($label, $data, $row_sum)
 	{
-		$sum_data = array_sum($data);
-
 		$this->rows[] = array(
 			'label' => $label,
 			'data'  => $data,
-			'sum_data' => $sum_data
+			'sum_data' => $row_sum
 		);
 
-		if ($sum_data > $this->max_value) {
-			$this->max_value = $sum_data;
+		if ($row_sum > $this->max_value) {
+			$this->max_value = $row_sum;
 		}
+
+		$this->setMinMaxValues(max($data));
+		$this->setMinMaxValues(min($data));
+	}
+
+	/**
+	 * Sort the data
+	 *
+	 * @param string $sort_by The data field to sort on (label|sum_data)
+	 * @param string $direction The direction (asc|desc)
+	 */
+	public function sortData($sort_by = 'label', $direction = 'asc')
+	{
+		usort($this->rows, function($a,$b) use($sort_by, $direction) {
+			if ('asc' === $direction) {
+				return $a[$sort_by]>$b[$sort_by];
+			}
+			else {
+				return $a[$sort_by]<$b[$sort_by];
+			}
+		});
 	}
 
 	/**
@@ -65,6 +91,26 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	}
 
 	/**
+	 * Get the data label
+	 *
+	 * @return string The data label
+	 */
+	public function getDataLabel()
+	{
+		return $this->data_label;
+	}
+
+	/**
+	 * Set the data label
+	 *
+	 * @param string $data_label The data label to set
+	 */
+	public function setDataLabel($data_label)
+	{
+		$this->data_label = $data_label;
+	}
+
+	/**
 	 * Calculate the row value as a percentage
 	 *
 	 * @param number $row_value The row value
@@ -79,7 +125,7 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Is the chart ready to be rendered, ie do it have all the data it needs
 	 *
@@ -88,11 +134,11 @@ abstract class AbstractDrillDownChart extends BaseAbstractChart
 	public function isChartRenderable()
 	{
 		$renderable = false;
-		
+
 		if (count($this->rows) > 0) {
 			$renderable = true;
 		}
-		
+
 		return $renderable;
 	}
 }

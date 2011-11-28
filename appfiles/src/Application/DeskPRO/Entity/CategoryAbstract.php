@@ -203,6 +203,16 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	}
 
 
+	public function getSelectTitle()
+	{
+		if ($this->depth) {
+			return str_repeat('--', $this->depth) . ' ' . $this->title;
+		} else {
+			return $this->title;
+		}
+	}
+
+
 	public function __toString()
 	{
 		return $this->getFullTitle();

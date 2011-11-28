@@ -17,13 +17,13 @@
 				</div>
 				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-faded"></div>
-					<button class="clean-gray xxx-small dl-insert-link" data-download-id="{{ download.id }}">Insert Link</button>
-					<button class="clean-gray xxx-small dl-insert-attach" data-download-id="{{ download.id }}">Add Attachment</button>
+					<button class="clean-gray xxx-small dl-insert-link" data-download-id="{{ download.id }}">{{ phrase('agent.insert_link') }}</button>
+					<button class="clean-gray xxx-small dl-insert-attach" data-download-id="{{ download.id }}">{{ phrase('agent.add_attachment') }}</button>
 				</div>
 				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-faded"></div>
-					<button class="clean-gray xxx-small related-link">Add as related</button>
-					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
+					<button class="clean-gray xxx-small related-link">{{ phrase('agent.add_related') }}</button>
+					<button class="clean-gray xxx-small related-unlink">{{ phrase('agent.remove_related') }}</button>
 				</div>
 			</div>
 			<hr class="clear-top" />
@@ -33,22 +33,22 @@
 						{% for field in display_fields %}
 							{% if field == 'category' %}
 								<li>
-									<span class="prop-title">Category</span>
+									<span class="prop-title">{{ phrase('agent.category') }}</span>
 									<span class="prop-val">{{ download.category.full_title }}</span>
 								</li>
 							{% elseif field == 'author' %}
 								<li>
-									<span class="prop-title">Author</span>
+									<span class="prop-title">{{ phrase('agent.author') }}</span>
 									<span class="prop-val">{{ download.person.display_name }}</span>
 								</li>
 							{% elseif field == 'date_created' %}
 								<li>
-									<span class="prop-title">Date Created</span>
+									<span class="prop-title">{{ phrase('agent.date_created') }}</span>
 									<span class="prop-val">{{ download.date_created|date('M j, Y')}}</span>
 								</li>
 							{% elseif field == 'num_downloads' %}
 								<li>
-									<span class="prop-title">Number of downloads</span>
+									<span class="prop-title">{{ phrase('agent.num_downloads') }}</span>
 									<span class="prop-val">{{ download.num_downloads|default(0) }}</span>
 								</li>
 							{% endif %}

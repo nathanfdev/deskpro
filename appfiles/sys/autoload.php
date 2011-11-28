@@ -28,6 +28,8 @@ $loader->registerNamespaces(array(
     'Doctrine'                       => DP_ROOT.'/vendor/doctrine/lib',
 	'Zend'                           => DP_ROOT.'/vendor/zend/library',
 	'FOQ'                            => DP_ROOT.'/vendor',
+	'Elao'                           => DP_ROOT.'/vendor/profiler',
+	'Profiler'                       => DP_ROOT.'/vendor/profiler',
 ));
 
 $loader->registerPrefixes(array(
@@ -75,7 +77,10 @@ $GLOBALS['DP_AUTOLOADER'] = $loader;
 
 // ezC autoloading
 require DP_ROOT.'/vendor/ezcomponents/Base/src/ezc_bootstrap.php';
-spl_autoload_register(array('ezcBase', 'autoload'), true, true);
+spl_autoload_register(function($classname) {
+	if (strpos($classname, 'ezc') !== 0) return false;
+	return ezcBase::autoload($classname);
+});
 
 class_exists('Markdown_Parser');
 class_exists('FineDiff');
@@ -90,4 +95,4 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
 });
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
 
-require_once DP_ROOT.'/vendor/swiftmailer/lib/swift_required.php';
+require DP_ROOT.'/vendor/swiftmailer/lib/swift_required.php';

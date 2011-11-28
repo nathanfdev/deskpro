@@ -695,7 +695,7 @@ class TicketSearch extends SearcherAbstract
 					$this->summary[] = $tr->phrase($phrase, array('field' => $tr->phrase('agent_tickets.status'), 'value' => $choice_str));
 
 					$archive_statuses = array_filter((array)$choice, function($val) {
-						if ($val != 'open' AND $val != 'pending') {
+						if ($val != 'awaiting_agent' AND $val != 'awaiting_user') {
 							return true;
 						}
 

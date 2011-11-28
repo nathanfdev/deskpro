@@ -32,7 +32,7 @@
 					<textarea name="message"></textarea>
 					<input type="hidden" name="options[agent_id]" value="{{app.user.id}}" />
 					<input type="hidden" name="options[agent_team_id]" value="{{app.user.getAgentTeamIds[0]}}" />
-					<input type="hidden" name="options[status]" value="pending" />
+					<input type="hidden" name="options[status]" value="awaiting_user" />
 
 					<div class="send-reply" style="float:right; margin-right: 8px; margin-top: 4px;">
 						<button class="dp-button">Add Reply</button>
@@ -89,8 +89,8 @@
 					{% endfor %}
 				</ul>
 				<ul class="reply-status-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="status" data-option-value="open">Open</li>
-					<li data-option-id="standard" data-option-name="status" data-option-value="pending">Pending</li>
+					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_agent">Awaiting Agent</li>
+					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_user">Awaiting User</li>
 					<li data-option-id="standard" data-option-name="status" data-option-value="resolved">Resolved</li>
 				</ul>
 			</div>

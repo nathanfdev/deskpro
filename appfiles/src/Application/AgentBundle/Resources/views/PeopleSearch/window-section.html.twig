@@ -4,14 +4,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>People</h1>
+		<h1>{{ phrase('agent.people') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_people_list">
 			<li class="people nav-people">
 				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 					<span class="list-counter">{{ people_count }}</span>
-					People
+					{{ phrase('agent.people') }}
 				</h3>
 			</li>
 
@@ -31,8 +31,8 @@
 
 		<section class="source-tabs" id="people_outline_tabstrip" style="margin-top: 8px;">
 			<ul>
-				<li data-tab-for="#people_outline_tagcloud"><span>Cloud</span></li>
-				<li data-tab-for="#people_outline_taglist"><span>List</span></li>
+				<li data-tab-for="#people_outline_tagcloud"><span>{{ phrase('agent.labels_cloud') }}</span></li>
+				<li data-tab-for="#people_outline_taglist"><span>{{ phrase('agent.labels_list') }}</span></li>
 			</ul>
 		</section>
 
@@ -71,14 +71,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>Organizations</h1>
+		<h1>{{ phrase('agent.organizations') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_org_list">
 			<li class="people nav-people">
 				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
 					<span class="list-counter">{{ org_count|default('0') }}</span>
-					Organizations
+					{{ phrase('agent.organizations') }}
 				</h3>
 			</li>
 
@@ -98,8 +98,8 @@
 
 		<section class="source-tabs" id="people_outline_org_tabstrip" style="margin-top: 8px;">
 			<ul>
-				<li data-tab-for="#people_outline_org_tagcloud"><span>Cloud</span></li>
-				<li data-tab-for="#people_outline_org_taglist"><span>List</span></li>
+				<li data-tab-for="#people_outline_org_tagcloud"><span>{{ phrase('agent.labels_cloud') }}</span></li>
+				<li data-tab-for="#people_outline_org_taglist"><span>{{ phrase('agent.labels_list') }}</span></li>
 			</ul>
 		</section>
 
@@ -108,7 +108,7 @@
 				{% for label,css_class in org_tag_cloud %}
 					<li class="{{css_class}}"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 				{% else %}
-					<li>You haven't labeled any tickets. Load a ticket to label it.</li>
+					<li>{{ phrase('agent.no_people_labels') }}</li>
 				{% endfor %}
 			</ul>
 		</section>

@@ -18,6 +18,8 @@ abstract class PieChart extends AbstractChart
 	 */
 	protected $labels = array();
 
+
+
 	/**
 	 * Adds a slice
 	 *
@@ -32,6 +34,8 @@ abstract class PieChart extends AbstractChart
 		);
 
 		$this->addLabel($label);
+
+		$this->setMinMaxValues($value);
 	}
 
 	/**
@@ -63,7 +67,7 @@ abstract class PieChart extends AbstractChart
 	{
 		return $this->slices;
 	}
-	
+
 	/**
 	 * Is the chart ready to be rendered, ie do it have all the data it needs
 	 *
@@ -72,7 +76,26 @@ abstract class PieChart extends AbstractChart
 	public function isChartRenderable()
 	{
 		$renderable = true;
-		
+
 		return $renderable;
 	}
+
+	/**
+	 * Sort the data
+	 *
+	 * @param string $sort_by The data field to sort on (label|value)
+	 * @param string $direction The direction (asc|desc)
+	 */
+	public function sortData($sort_by = 'label', $direction = 'asc')
+	{
+		usort($this->slices, function($a,$b) use($sort_by, $direction) {
+			if ('asc' === $direction) {
+				return $a[$sort_by]>$b[$sort_by];
+			}
+			else {
+				return $a[$sort_by]<$b[$sort_by];
+			}
+		});
+	}
+
 }

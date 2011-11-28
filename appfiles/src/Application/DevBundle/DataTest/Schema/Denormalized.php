@@ -167,7 +167,7 @@ class Denormalized extends AbstractSchema
 			FROM tickets
 			WHERE field_1 = 5
 		";
-		
+
 		return $sql;
 	}
 
@@ -201,7 +201,7 @@ class Denormalized extends AbstractSchema
 			FROM tickets
 			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2)
 			WHERE
-				tickets.status = 'open'
+				tickets.status = 'awaiting_agent'
 				AND ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30)
 		";
 
@@ -210,7 +210,7 @@ class Denormalized extends AbstractSchema
 			FROM tickets
 			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2 AND ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30))
 			WHERE
-				tickets.status = 'open'
+				tickets.status = 'awaiting_agent'
 				AND ticket_search_fieldassoc.id IS NOT NULL
 		";
 

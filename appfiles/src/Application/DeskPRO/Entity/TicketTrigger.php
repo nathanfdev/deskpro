@@ -190,13 +190,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$params = array('date_cut' => $date);
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_UNRESOLVED:
-				$qb->where("t.status IN('open','pending') AND t.date_created < :date_cut");
+				$qb->where("t.status IN('awaiting_agent','awaiting_user') AND t.date_created < :date_cut");
 				break;
 			case self::EVENT_TIME_USER_WAITING:
-				$qb->where("t.status = 'open' AND t.date_user_waiting < :date_cut");
+				$qb->where("t.status = 'awaiting_agent' AND t.date_user_waiting < :date_cut");
 				break;
 			case self::EVENT_TIME_AGENT_WAITING:
-				$qb->where("t.status = 'open' AND t.date_user_waiting < :date_cut");
+				$qb->where("t.status = 'awaiting_agent' AND t.date_user_waiting < :date_cut");
 				break;
 		}
 

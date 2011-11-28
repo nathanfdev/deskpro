@@ -17,11 +17,11 @@
 					<li>{{ get_type(content) }}</li>
 					{% if info.revision_id %}
 						<li>
-							Revision
+							{{ phrase('agent.publish.draft_revision') }}
 						</li>
 					{% else %}
 						<li>
-							New
+							{{ phrase('agent.publish.draft_new') }}
 						</li>
 					{% endif %}
 				</ul>

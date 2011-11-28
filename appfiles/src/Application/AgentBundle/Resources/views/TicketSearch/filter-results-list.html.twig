@@ -39,36 +39,36 @@ pageMeta.baseId = '{{ baseId }}';
 <section class="dp-overlay">
 	<header>
 		<div class="controls">
-			<button class="order-by-menu-trigger clean-white small arrow">Ordeded by <span class="label">{{ order_by_summary }}</span><em></em></button>
-			<button class="group-by-menu-trigger clean-white small arrow">Grouped by <span class="label">{{ grouping_summary|default('None') }}</span><em></em></button>
-			<button class="display-options-trigger clean-white small">Display Options</button>
+			<button class="order-by-menu-trigger clean-white small arrow">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></button>
+			<button class="group-by-menu-trigger clean-white small arrow">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default('None') }}</span><em></em></button>
+			<button class="display-options-trigger clean-white small">{{ phrase('agent.display_options') }}</button>
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="urgency">Urgency</li>
-			<li data-order-by="date_created">Date Opened</li>
-			<li data-order-by="priority">Priority</li>
+			<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
+			<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
+			<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
 		</ul>
 		<ul style="display: none" class="group-by-menu">
 			<li data-group-by="">None</li>
 			<li class="sep">-</li>
-			<li data-group-by="department">Department</li>
-			<li data-group-by="category">Category</li>
-			<li data-group-by="priority">Priority</li>
-			<li data-group-by="product">Product</li>
-			<li data-group-by="workflow">Workflow</li>
-			<li data-group-by="organization">Organization</li>
-			<li data-group-by="language">Language</li>
-			<li data-group-by="urgency">Urgency</li>
-			<li data-group-by="agent">Agent</li>
-			<li data-group-by="agent_team">Agent Team</li>
-			<li data-group-by="time_waiting">Time Waiting</li>
-			<li data-group-by="total_user_waiting">Total Time Waiting</li>
-			<li data-group-by="date_created">Date Created</li>
+			<li data-group-by="department">{{ phrase('agent.department') }}</li>
+			<li data-group-by="category">{{ phrase('agent.category') }}</li>
+			<li data-group-by="priority">{{ phrase('agent.priority') }}</li>
+			<li data-group-by="product">{{ phrase('agent.product') }}</li>
+			<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>
+			<li data-group-by="organization">{{ phrase('agent.organization') }}</li>
+			<li data-group-by="language">{{ phrase('agent.language') }}</li>
+			<li data-group-by="urgency">{{ phrase('agent.urgency') }}</li>
+			<li data-group-by="agent">{{ phrase('agent.agent') }}</li>
+			<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>
+			<li data-group-by="time_waiting">{{ phrase('agent.time_waiting') }}</li>
+			<li data-group-by="total_user_waiting">{{ phrase('agent.total_time_waiting') }}</li>
+			<li data-group-by="date_created">{{ phrase('agent.date_opened') }}</li>
 		</ul>
 
-		<span class="close close-trigger">close</span>
-		<h1>Tickets</h1>
+		<span class="close close-trigger"></span>
+		<h1>{{ phrase('agent.tickets') }}</h1>
 	</header>
 	<article>
 		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
@@ -87,17 +87,17 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			<div class="check-count selection-bar">
-				<span class="selected-count">0</span> selected
+				{{ phrase('agent.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
 
 				<button class="clean-white perform-actions-trigger">
-					<span>Perform Action</span>
+					<span>{{ phrase('agent.perform_actions') }}</span>
 				</button>
 			</div>
 			<div class="results-count">
 				Showing <span class="results-showing-count"></span> of {{ ticket_ids|length }} tickets
 			</div>
 			<div class="more-btn">
-				<button class="clean-white show-more is-not-loading">More Results</button>
+				<button class="clean-white show-more is-not-loading">{{ phrase('agent.more') }}</button>
 				<div class="is-loading"></div>
 			</div>
 

@@ -8,4 +8,6 @@
 	'agent.kb.hidden_status_unpublished'   => 'Unpublished',
 	'agent.kb.hidden_status_deleted'       => 'Deleted',
 	'agent.kb.hidden_status_draft'         => 'Draft',
+	
+	'agent.kb.add_pending' => 'Add a new pending article',
 );

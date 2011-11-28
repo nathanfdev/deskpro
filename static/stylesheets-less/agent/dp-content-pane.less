@@ -3246,14 +3246,14 @@ body.popup section.body textarea.fill {
 	margin-top: 5px;
 }
 
-#settingswin .check-grid {
+.check-grid {
 	border: 1px solid #ABAFB5;
 }
 
-#settingswin .check-grid.item-list > table thead th {
+.check-grid.item-list > table thead th {
 	padding: 4px 0 4px 0;
 }
-#settingswin .check-grid > table thead th {
+.check-grid > table thead th {
 	font-family: @heading-font;
 	font-weight: bold;
 	font-size: 9px;
@@ -3266,41 +3266,59 @@ body.popup section.body textarea.fill {
 	vertical-align: middle;
 }
 
-#settingswin .check-grid > table td {
+.check-grid > table td {
 	padding: 2px 0 2px 0;
 }
 
-#settingswin .check-grid.item-list > table td {
+.check-grid.item-list > table td {
 	border-top: 1px solid #DCE2E9;
 }
 
-#settingswin .check-grid.item-list > table td {
+.check-grid.item-list > table td {
 	vertical-align: middle;
 }
-#settingswin .check-grid.item-list > table td {
+.check-grid.item-list > table td {
 	padding: 0 0 0 5px;
 }
 
-#settingswin .check-grid > table td.title {
+.check-grid > table td.title {
 	padding-left: 5px;
 }
 
-#settingswin .check-grid > table td.prop {
+.check-grid > table td.title.title-group {
+	color: #8E8F91;
+}
+
+.check-grid > table td.prop {
 	text-align: center;
 	background-color: #E8E8E8;
 }
 
-#settingswin .check-grid > table td.prop.new {
+.check-grid > table td.prop.new, .check-grid > table td.prop.highlight {
     background-color: #DADBDE;
 	border-left: 1px solid #C2C6CC;
 	border-right: 1px solid #C2C6CC;
 }
 
-#settingswin .check-grid > header:first-of-type {
+.check-grid > table tr:hover td.prop {
+	background-color: #D0D1D1;
+}
+.check-grid > table tr:hover td.title {
+	background-color: #E8EAEA;
+}
+
+.check-grid > table > tbody {
+	border-top: 1px solid #C2C6CC;
+}
+.check-grid > table > tbody:first-of-type {
 	border-top: none;
 }
 
-#settingswin .check-grid > header {
+.check-grid > header:first-of-type {
+	border-top: none;
+}
+
+.check-grid > header {
 	.gradient(#ffffff, #e5e5e5);
 
 	border-bottom: 1px solid #B3B6B8;
@@ -3313,8 +3331,27 @@ body.popup section.body textarea.fill {
 	font-weight: bold;
 }
 
+nav.check-grid-tabs {
 
+}
 
+nav.check-grid-tabs ul { margin: 0; padding: 0; height: 18px;}
+nav.check-grid-tabs ul li {
+	margin-left: 6px;
+	line-height: 100%;
+	padding: 3px 8px 3px 8px;
+	font-size: 11px;
+	background-color: #E7E8EB;
+	border: 1px solid #ABAFB5;
+	border-bottom: none;
+	cursor: pointer;
+	.border-radius(4px, 4px, 0, 0);
+	float: left;
+}
+
+nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
+	background-color: #fff;
+}
 
 
 .dp-form .dp-form-row {

@@ -6,23 +6,23 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 	<header class="pageheader">
 		<nav>
 			<ul>
-				<li class="on" data-tab-for="#settingswin_ticket_notifications_email">Email Notifications</li>
-				<li data-tab-for="#settingswin_ticket_notifications_alert">Browser Notifications</li>
+				<li class="on" data-tab-for="#settingswin_ticket_notifications_email">{{ phrase('agent.settings.email_notifications') }}</li>
+				<li data-tab-for="#settingswin_ticket_notifications_alert">{{ phrase('agent.settings.browser_notifications') }}</li>
 			</ul>
 		</nav>
 	</header>
 
 	<div id="settingswin_ticket_notifications_email">
 		<div class="check-grid">
-			<header>Inbox</header>
+			<header>{{ phrase('agent.settings.ticket_notif_inbox') }}</header>
 			<table width="100%">
 				<thead>
 					<tr>
 						<th></th>
-						<th width="60">New</th>
-						<th width="60">User<br />Messages</th>
-						<th width="60">Agent<br />Messages</th>
-						<th width="60">All</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_new') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_user_messages') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_agent_messages') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_all') }}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,15 +38,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 				</tbody>
 			</table>
 			{% if custom_filters|length %}
-				<header>Custom Filters</header>
+				<header>{{ phrase('agent.settings.ticket_notif_filters') }}</header>
 				<table width="100%">
 					<thead>
 						<tr>
 							<th></th>
-							<th width="60">New</th>
-							<th width="60">User<br />Messages</th>
-							<th width="60">Agent<br />Messages</th>
-							<th width="60">All</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_new') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_user_messages') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_agent_messages') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_all') }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -66,15 +66,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 	</div>
 	<div id="settingswin_ticket_notifications_alert" style="display: none">
 		<div class="check-grid">
-			<header>Inbox</header>
+			<header>{{ phrase('agent.settings.ticket_notif_inbox') }}</header>
 			<table width="100%">
 				<thead>
 					<tr>
 						<th></th>
-						<th width="60">New</th>
-						<th width="60">User<br />Messages</th>
-						<th width="60">Agent<br />Messages</th>
-						<th width="60">All</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_new') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_user_messages') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_agent_messages') }}</th>
+						<th width="60">{{ phrase('agent.settings.ticket_notif_all') }}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -90,15 +90,15 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 				</tbody>
 			</table>
 			{% if custom_filters|length %}
-				<header>Custom Filters</header>
+				<header>{{ phrase('agent.settings.ticket_notif_filters') }}</header>
 				<table width="100%">
 					<thead>
 						<tr>
 							<th></th>
-							<th width="60">New</th>
-							<th width="60">User<br />Messages</th>
-							<th width="60">Agent<br />Messages</th>
-							<th width="60">All</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_new') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_user_messages') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_agent_messages') }}</th>
+							<th width="60">{{ phrase('agent.settings.ticket_notif_all') }}</th>
 						</tr>
 					</thead>
 					<tbody>

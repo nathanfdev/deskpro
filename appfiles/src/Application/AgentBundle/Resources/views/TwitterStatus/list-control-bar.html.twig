@@ -1,0 +1,50 @@
+<header class="list-control-bar">
+    <ul>
+	<ul>
+		<li>Sort by </li>
+		<li><a class="button {% if sort_by == 'date_oldest_first' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'date'}) }}">Oldest First</a></li>
+		<li><a class="button {% if group_by == 'date_newest_first' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'assigned'}) }}">Newest First</a></li>
+	</ul>
+	
+        <!--<li>Ordered by </li>
+        <li class="order-by-menu-trigger"><a class="button">
+            <span class="label">
+                Oldest First
+            </span>
+            <em></em>
+        </a></li>-->
+    </ul>
+
+    <span>
+            <input name="account" type="checkbox" />
+            <label data-for="account">Show @{{ account.user.screen_name }}'s tweets</label>
+        </span>
+        <span>
+            <input name="archived" type="checkbox" />
+            <label data-for="archived">Show archived tweets</label>
+        </span>
+
+    <ul class="order-by-menu" style="display: none">
+        <li data-field="twitter_statuses.date_created:asc">Oldest First</li>
+        <li data-field="twitter_statuses.date_created:desc">Newest First</li>
+    </ul>
+</header>
+
+	<!--
+	<div class="header">
+		<div class="display-options">
+			<select name="sortbydate">
+				<option value="asc">Oldest First</option>
+				<option value="desc">Newest First</option>
+			</select>
+			<span>
+				<input name="account" type="checkbox" />
+				<label data-for="account">Show @{{ account.user.screen_name }}'s tweets</label>
+			</span>
+			<span>
+				<input name="archived" type="checkbox" />
+				<label data-for="archived">Show archived tweets</label>
+			</span>
+		</div>
+	</div>
+	-->

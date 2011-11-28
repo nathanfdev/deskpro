@@ -3,13 +3,13 @@
 		<li class="auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
 			<h3 class="title">
 				<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
-				Ideas to validate
+				{{ phrase('agent.ideas.ideas_to_validate') }}
 			</h3>
 		</li>
 		<li data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
 			<h3 class="title">
 				<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
-				Comments to validate
+				{{ phrase('agent.publish.comments_to_validate') }}
 			</h3>
 		</li>
 	</ul>
@@ -17,9 +17,9 @@
 
 <section class="source-tabs" id="ideas_outline_tabstrip">
 	<ul>
-			<li data-tab-for="#ideas_outline_status"><span>Status</span></li>
-			<li data-tab-for="#ideas_outline_category"><span>Category</span></li>
-			<li data-tab-for="#ideas_outline_labels"><span>Labels</span></li>
+			<li data-tab-for="#ideas_outline_status"><span>{{ phrase('agent.status') }}</span></li>
+			<li data-tab-for="#ideas_outline_category"><span>{{ phrase('agent.category') }}</span></li>
+			<li data-tab-for="#ideas_outline_labels"><span>{{ phrase('agent.labels') }}</span></li>
 		</ul>
 </section>
 
@@ -28,13 +28,13 @@
 		<li class="auto-load-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
 			<span class="title">
 				<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
-				New
+				{{ phrase('agent.ideas.status_new') }}
 			</span>
 		</li>
 		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'active'}) }}">
 			<span class="title">
 				<span class="list-counter" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
-				Active
+				{{ phrase('agent.ideas.status_active') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in active_status_cats %}
@@ -50,7 +50,7 @@
 		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'closed'}) }}">
 			<span class="title">
 				<span class="list-counter" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
-				Closed
+				{{ phrase('agent.ideas.status_closed') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in closed_status_cats %}
@@ -66,19 +66,19 @@
 		<li data-route="listpane:{{ path('agent_ideas_status', {'status': 'hidden'}) }}">
 			<span class="title">
 				<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
-				Hidden
+				{{ phrase('agent.ideas.status_hidden') }}
 			</span>
 			<ul class="sub-group indented-list">
 				<li class="indent" data-route="listpane:">
 					<span class="title">
 						<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
-						Deleted
+						{{ phrase('agent.ideas.status_deleted') }}
 					</span>
 				</li>
 				<li class="indent" data-route="listpane:">
 					<span class="title">
 						<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
-						Spam
+						{{ phrase('agent.ideas.status_spam') }}
 					</span>
 				</li>
 			</ul>

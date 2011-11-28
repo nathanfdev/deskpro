@@ -131,9 +131,22 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 		});
 
-		this.initFeatures();
+		$(document).on('mouseover', '.tipped', function() {
+			if ($(this).is('.tipped-inited')) {
+				return;
+			}
+			var options = {};
+			if ($(this).data('tipped-options')) {
+				eval('options = {' + $(this).data('tipped-options') + '}');
+			}
+
+			Tipped.create(this, $(this).data('tipped') || $(this).attr('title'), options);
+			$(this).addClass('tipped-inited');
+		});
 
 		DeskPRO.ElementHandler_Exec();
+
+		$('time.timeago').timeago();
 
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
@@ -233,13 +246,5 @@ DeskPRO.Admin.Window = new Orb.Class({
 			url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
 			type: 'GET'
 		});
-	},
-
-	initFeatures: function(contextEl) {
-		var self = this;
-
-		DeskPRO.ElementHandler_Exec();
-
-		$('.timeago').timeago();
 	}
 });

@@ -1,6 +1,6 @@
 <div class="display-options overlay">
 	<div class="overlay-title">
-		<h4>Display Options</h4>
+		<h4>{{ phrase('agent.display_options') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div style="float: right;">
@@ -12,20 +12,20 @@
 		<div style="margin-right: 250px;">
 			<strong>Display Elements</strong><br />
 			<ul class="sortable-list">
-				<li data-field="name"><input type="checkbox" name="name" /> Name</li>
-				<li data-field="members_count"><input type="checkbox" name="members_count" /> Number of members</li>
+				<li data-field="name"><input type="checkbox" name="name" /> {{ phrase('agent.name') }}</li>
+				<li data-field="members_count"><input type="checkbox" name="members_count" /> {{ phrase('agent.number_of_members') }}</li>
 				{% for f in org_field_defs %}
-					<li data-field="organization_fields[{{f.id}}]"><input type="checkbox" name="organization_fields[{{f.id}}]" /> Field: {{f.title}}</li>
+					<li data-field="organization_fields[{{f.id}}]"><input type="checkbox" name="organization_fields[{{f.id}}]" />{{f.title}}</li>
 				{% endfor %}
 			</ul>
 		</div>
 	</div>
 	<div class="overlay-actions">
 		<div class="loading-off">
-			<button class="save-trigger dp-button small">Save</button>
+			<button class="save-trigger dp-button small">{{ phrase('agent.save') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>Saving ...</span>
+			<span>{{ phrase('agent.loading_saving') }}</span>
 		</div>
 	</div>
 </div>

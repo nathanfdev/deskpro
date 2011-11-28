@@ -8,9 +8,8 @@ function _page_exec() {
 	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxfetchwidgets']  = '{{ path('report_dashboard_ajaxfetchwidgets', {'dashboard_id': dashboard.id }) }}';
 	window.DESKPRO_URL_REGISTRY['report_trend_dashboard_stat_edit']  = '{{ path('report_trend_dashboard_stat_edit', {'dashboard_id': dashboard.id, 'dashboard_stat_id': '000' })|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_dashboard_ajaxdeletewidget']  = '{{ path('report_dashboard_ajaxdeletewidget', {'dashboard_id': dashboard.id, 'dashboard_stat_id': '000' })|replace({'000': '{dashboard_stat_id}'}) }}';
-        window.DESKPRO_URL_REGISTRY['report_chart_get_fullscreen_details']  = '{{ path('report_chart_get_fullscreen_details', {'dashboard_stat_id': '000'})|replace({'000': '{dashboard_stat_id}'}) }}';
+    window.DESKPRO_URL_REGISTRY['report_chart_get_fullscreen_details']  = '{{ path('report_chart_get_fullscreen_details', {'dashboard_stat_id': '000'})|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get']  = '{{ path('report_chart_get', {'dashboard_stat_id': '000'})|replace({'000': '{dashboard_stat_id}'}) }}';
-	window.DESKPRO_URL_REGISTRY['report_chart_get_data']  = '{{ path('report_chart_get_data', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['report_chart_get_settings']  = '{{ path('report_chart_get_settings', {'dashboard_stat_id': '000', '_format': 'xml'})|replace({'000': '{dashboard_stat_id}'}) }}';
 
 	var options = {};
@@ -27,7 +26,6 @@ function _page_exec() {
 			<a id="report-dashboard-set-editable" href="#" class="clean-white">Edit</a>
 		</span>
 	</h2>
-
 
 	<div id="report-dashboard-options">
 		<form id="dashboard_edit_form" action="{{ path('report_trend_dashboard_edit', {'dashboard_id': dashboard.id}) }}" method="post">
@@ -64,7 +62,7 @@ function _page_exec() {
 		<div style="clear: both"></div>
 	</div>
 
-	<div id="overlay_wrapper" style="width: 800px; height: 400px; display: none;">
+	<div id="overlay_wrapper" style="width: 950px; height: 600px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4>Add Dashboard Chart</h4>
@@ -76,7 +74,7 @@ function _page_exec() {
 
 		</div>
 	</div>
-        
+
         <div id="fullscreen_overlay_wrapper" style="display: none; height: 100%; width: 100%;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>

@@ -1492,3 +1492,19 @@ agent_userchat_changeprop:
 agent_userchat_getsectiondata:
   pattern: /chat/get-section-data.json
   defaults: { _controller: AgentBundle:UserChat:getSectionData }
+
+################################################################################
+# Profiler
+################################################################################
+
+ProfilerLiveBundle:
+  resource: "@ProfilerLiveBundle/Resources/config/routing.yml"
+  prefix:   /
+  
+_profiler:
+  resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
+  prefix:   /_profiler
+  
+_wdt:
+  resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
+  prefix:   /_wdt

@@ -18,6 +18,7 @@
 
 {% macro structure_table(options) %}
 	<table
+		{% if options.id %}id="{{ options.id }}"{% endif %}
 		cellspacing="0"
 		cellpadding="0"
 		width="100%"

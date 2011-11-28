@@ -6,7 +6,7 @@
 				<span style="float:right">
 					{{ rev.date_created|date('Y-m-d') }}
 				</span>
-				By {{ rev.person.display_name }}
+				{{ phrase('agent.by_x', {'name': rev.person.display_name}) }}
 			</td>
 			<td width="150">
 				<input type="checkbox" class="rev-compare-check" value="{{rev.id}}" />
@@ -15,5 +15,5 @@
 	{% endfor %}
 </table>
 <div style="text-align: right">
-	<button class="dp-button compare-trigger">Compare Selected</button>
+	<button class="dp-button compare-trigger">{{ phrase('agent.publish.compare_selected') }}</button>
 </div>

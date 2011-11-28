@@ -1,11 +1,11 @@
 <div class="ticket-lock-bar validating-bar" style="padding: 4px; text-align: right;">
 	<div class="options">
-		<button class="dp-button x-small disapprove-trigger">Disapprove</button>
-		<button class="dp-button x-small approve-trigger">Approve</button>
+		<button class="dp-button x-small disapprove-trigger">{{ phrase('agent.disapprove') }}</button>
+		<button class="dp-button x-small approve-trigger">{{ phrase('agent.approve') }}</button>
 	</div>
 	<div class="disapprove-form" style="display: none">
-		Reason or comment to send to the author:
+		{{ phrase('agent.disapprove_input') }}:
 		<input type="text" size="55" value="" class="disapprove-reason" />
-		<button class="dp-button x-small disapprove2-trigger">Disapprove</button>
+		<button class="dp-button x-small disapprove2-trigger">{{ phrase('agent.disapprove') }}</button>
 	</div>
 </div>

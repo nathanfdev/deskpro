@@ -46,12 +46,31 @@
 		{% for label in chart.labels %}
 			<graph gid="{{ loop.index }}">
 				<type>column</type>
-				<title>{{ label|default('no group') }}</title>
+				<title>{{ label|default('') }}</title>
 				<balloon_text>
-					<![CDATA[{{ label|default('no group') }}: {value}{{ chart.getDisplayUnits }}]]>
+					<![CDATA[{{ label|default('') }}: {value}{{ chart.getDisplayUnits }}]]>
 				</balloon_text>
 			</graph>
 		{% endfor %}
 	</graphs>
+
+	<data>
+		<chart>
+			<series>
+				{% for series in chart.series %}
+					<value xid="{{ loop.index0 }}">{{ series }}</value>
+				{% endfor %}
+			</series>
+			<graphs>
+				{% for graphs in chart.graphs %}
+					<graph gid="{{ loop.index }}">
+						{% for point in graphs.data %}
+							<value xid="{{ loop.index0 }}">{{ chart.formatData(point) }}</value>
+						{% endfor %}
+					</graph>
+				{% endfor %}
+			</graphs>
+		</chart>
+	</data>
 
 </settings>

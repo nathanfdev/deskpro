@@ -36,13 +36,12 @@
 <div id="dp_admin_page">
 	<div class="dp-page-box">
 		<div class="page-content">
-			<h1>You are about to leave the helpdesk</h1>
+			<h1>{{ phrase('agent.misc.redirect_title') }}</h1>
 			<p>
-				The link you clicked is for an external site on <em class="highlight">{{ urlinfo.host }}</em>.
-				Are you sure you want to continue?
+				{{ phrase('agent.misc.redirect_explain', {'host': urlinfo.host|e}) }}
 			</p>
 			<div class="url-go">
-				<a class="clean-white" href="{{ url }}">Continue to <em>{{ url }}</em></a>
+				<a class="clean-white" href="{{ url }}">{{ phrase('agent.misc.redirect_continue', {'url': url|e}) }}</a>
 			</div>
 			<div id="url_info" class="url-info" style="display: none"></div>
 		</div>

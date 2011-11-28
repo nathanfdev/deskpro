@@ -23,7 +23,7 @@ use Orb\Util\Web;
  * @ORM_Mapping\Entity
  * @ORM_Mapping\Table(name="permissions")
  */
-abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
+class Permission extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -47,7 +47,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * a person or a usergroup, never both.
 	 *
 	 * @var Application\DeskPRO\Entity\Usergroup
-	 * @ORM_Mapping\OneToOne(targetEntity="Usergroup")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup")
 	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usergroup;
@@ -57,7 +57,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * a person or a usergroup, never both.
 	 *
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\OneToOne(targetEntity="Person")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
@@ -66,7 +66,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * Any numeric number (ex filesize, flag)
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="data", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="value", type="text", nullable=true)
 	 */
 	protected $value = null;
 
@@ -88,7 +88,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * Combine an array of permissions into a superduper array of effective permissions.
 	 *
 	 * @param \Application\DeskPRO\Entity\Permission[] $perms
-	 * @return void
+	 * @return array
 	 */
 	public static function getEffectivePermissions(array $perms)
 	{
@@ -98,7 +98,7 @@ abstract class Permission extends \Application\DeskPRO\Domain\DomainObject
 			$k = $perm->name;
 			$v = $perm->value;
 
-			if (Numbers::isInteger($v)) {
+			if (!Numbers::isInteger($v)) {
 				$v = (int)$v;
 			}
 

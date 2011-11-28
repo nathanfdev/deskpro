@@ -18,8 +18,12 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
 {
 	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('multiple', 'checkbox', array('required' => false));
-		$builder->add('expanded', 'checkbox', array('required' => false));
+		$builder->add('field_type', 'choice', array('choices' => array(
+			'select' => 'Select box (single selection)',
+			'multi_select' => 'Mutli-Select box (multiple selection)',
+			'radio' => 'Radio buttons (single selection)',
+			'checkbox' => 'Checkboxes (multiple selection)',
+		)));
 
 		$builder->add('choices', 'collection', array(
 			'type' => 'hidden',
