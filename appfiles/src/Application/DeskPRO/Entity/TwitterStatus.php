@@ -142,7 +142,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent_team = null;
-	
+
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatusLong
 	 * @ORM_Mapping\OneToOne(targetEntity="TwitterStatusLong", mappedBy="status")

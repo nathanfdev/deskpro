@@ -794,17 +794,17 @@ agent_twitter_starred_tweets_list:
   pattern: /twitter/starred-tweets
   defaults: { _controller: AgentBundle:TwitterAccount:starredTweets }
   requirements: { account_id: "\d+" }
-  
+
 agent_twitter_my_tweets_list:
   pattern: /twitter/my-tweets
   defaults: { _controller: AgentBundle:TwitterAccount:myTweets }
   requirements: { account_id: "\d+" }
-  
+
 agent_twitter_team_tweets_list:
   pattern: /twitter/team-tweets
   defaults: { _controller: AgentBundle:TwitterAccount:TeamTweets }
   requirements: { account_id: "\d+" }
-  
+
 agent_twitter_statuses_list:
   pattern: /twitter/statuses/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:list }
@@ -834,7 +834,7 @@ agent_twitter_followers_list:
   pattern: /twitter/followers/{account_id}
   defaults: { _controller: AgentBundle:TwitterUser:listFollowers }
   requirements: { account_id: "\d+" }
-  
+
 agent_twitter_outgoing_list:
   pattern: /twitter/outgoing/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listOutgoing }
@@ -1520,11 +1520,11 @@ agent_userchat_getsectiondata:
 ProfilerLiveBundle:
   resource: "@ProfilerLiveBundle/Resources/config/routing.yml"
   prefix:   /
-  
+
 _profiler:
   resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
   prefix:   /_profiler
-  
+
 _wdt:
   resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
   prefix:   /_wdt

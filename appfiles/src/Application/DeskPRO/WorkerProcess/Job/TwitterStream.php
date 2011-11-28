@@ -197,18 +197,20 @@ class TwitterStream extends AbstractJob
 		}
 
 		// fetch mentions
-		foreach ($data['entities']['user_mentions'] as $mention) {
-			$this->processStatusMention($account, $status, $mention);
-		}
+		if (isset($data['entities'])) {
+			foreach ($data['entities']['user_mentions'] as $mention) {
+				$this->processStatusMention($account, $status, $mention);
+			}
 
-		// fetch hashtags
-		foreach ($data['entities']['hashtags'] as $hashtag) {
-			$this->processStatusTag($status, $hashtag);
-		}
+			// fetch hashtags
+			foreach ($data['entities']['hashtags'] as $hashtag) {
+				$this->processStatusTag($status, $hashtag);
+			}
 
-		// fetch urls
-		foreach ($data['entities']['urls'] as $url) {
-			$this->processStatusUrl($status, $url);
+			// fetch urls
+			foreach ($data['entities']['urls'] as $url) {
+				$this->processStatusUrl($status, $url);
+			}
 		}
 
 		$this->em->flush();
@@ -275,6 +277,44 @@ class TwitterStream extends AbstractJob
 
 	protected function processEvent(TwitterAccount $account, array $data)
 	{
+		$source = $data['source'];
+		$target = $data['target'];
+
+		$targetObject = $data['target_object'];
+
+		$eventType = $data['event'];
+		$createdAt = $data['created_at'];
+
+		// Check source user exists
+		if (!($user = $this->findUser($source['id_str']))) {
+			$xml = $this->getTwitter($account['id'])->user->show($source['id_str']);
+			$user = TwitterUser::createFromXML($xml);
+			$this->em->persist($user);
+		}
+
+		// Check target user exists
+		if (!($user = $this->findUser($target['id_str']))) {
+			$xml = $this->getTwitter($account['id'])->user->show($target['id_str']);
+			$user = TwitterUser::createFromXML($xml);
+			$this->em->persist($user);
+		}
+
+		// Get the status, or create it
+		$status = $this->findStatus($targetObject['id_str']);
+		if (!$status) {
+			$this->processStatus($account, $targetObject);
+			$status = $this->findStatus($targetObject);
+		}
+
+		switch ($eventType) {
+			// Process a favorite
+			case 'favorite':
+				$status->setIsFavorited(true);
+				$this->em->persist($status);
+				return true;
+				break;
+		}
+
 		return false;
 	}
 

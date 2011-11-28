@@ -220,6 +220,7 @@ class TwitterStatus extends EntityRepository
 	 */
 	public function findStarredTweetsForAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
+		var_dump($id);
 		$query = sprintf("
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
@@ -231,13 +232,22 @@ class TwitterStatus extends EntityRepository
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
+		$query = sprintf("
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			INNER JOIN s.user u
+			INNER JOIN u.account a
+			WHERE s.is_favorited = :is_favorited
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
 	 	return $this
 			->getEntityManager()
 			->createQuery($query)
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
-				'agent_id' => $id,
+				//'agent_id' => $id,
 				'is_favorited' => true
 			));
 	}
