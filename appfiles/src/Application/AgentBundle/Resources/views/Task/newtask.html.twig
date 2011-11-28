@@ -24,6 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="0" />
 			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
+                        <input type="hidden" class="input-deal-id" name="newtask[%baseId%][deal_id]" value="0" />
 		</div>
 		<div class="task-info">
 			<ul>
@@ -32,6 +33,11 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 			<span class="linked-ticket" style="display:none">
 				Task linked to: Ticket "<label></label>"
+				<span class="btn-small-delete remove-link-trigger"></span>
+			</span>
+
+                        <span class="linked-deal" style="display:none">
+				Task linked to: Deal "<label></label>"
 				<span class="btn-small-delete remove-link-trigger"></span>
 			</span>
 		</div>

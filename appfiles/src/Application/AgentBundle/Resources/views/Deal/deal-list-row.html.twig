@@ -1,4 +1,13 @@
-<article class="row-item item-list" data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}">
+<article
+    class="row-item item-list deal deal-{{deal.id}} deals-{{deal.id}} related-is-linkable"
+    data-content-type="deals"
+    data-content-id="{{ deal.id }}"
+    data-route="page:{{ path('agent_deal_view', {'deal_id': deal.id|default('0')}) }}"
+    data-route-title="@selector(a.row-title)"
+    >
+
+
+    
     <div class="top-row">
         <div class="top-row-left">
             <h3>
@@ -8,7 +17,15 @@
         </div>
         <div class="top-row-right">
             <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol|default('$')}}{{deal.deal_value}}</span>
-        </div>        
+        </div>
+        <div class="top-row-right visible-related-content-controls">
+            <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol|default('$')}}{{deal.deal_value}}</span>
+                <div class="bound-faded"></div>
+                <button class="clean-gray xxx-small related-link clean-white small">Add as related</button>
+                <button class="clean-gray xxx-small related-unlink clean-white small">Remove as related</button>
+        </div>
+
+
     </div>
     <hr class="clear-top">
     <div style="margin-left: 22px;">
@@ -38,8 +55,33 @@
     <div class="clear"></div>
     <div class="extra-fields">
         <ul >
-            <li><span class="prop-val email_address">Property: XYZ</span></li>
-            <li><span class="prop-val email_address">Property: XYZ</span></li>
+            {% if deal.person.id%}
+            <li>                
+                <span class="prop-title">Created By:</span>
+                <span class="prop-val">{{deal.person.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if deal.assigned_agent.id and 'assigned_agent' in display_fields%}
+            <li>
+                <span class="prop-title">Agent:</span>
+                <span class="prop-val">{{deal.assigned_agent.name}}</span>
+            </li>
+            {% endif %}
+
+            {% if 'date_created' in display_fields %}
+            <li>
+                <span class="prop-title">Date Created:</span>
+                <span class="prop-val">{{deal.date_created|date('M j, Y')}}</span>
+            </li>
+            {% endif %}
+            {% if 'visibility' in display_fields %}
+            <li>
+                <span class="prop-title">Visibility:</span>
+                <span class="prop-val">{% if deal.visibility == 0%} Private {% else%} Public{% endif %}</span>
+            </li>
+            {% endif %}
+
         </ul>
         <br class="clear">
     </div>

@@ -31,6 +31,7 @@ class NewDeal
     public $deal_currency;
     public $probability;
     public $deal_value;
+    public $visibility;
 
     public $attach = array();
 
@@ -107,6 +108,7 @@ class NewDeal
                 $deal->setDealCurrencyId($this->deal_currency);
                 $deal['probability'] = $this->probability;
                 $deal['deal_value'] = $this->deal_value;
+                $deal['visibility'] = $this->visibility;
                 $deal->addOrganizations($org);
                 $deal->addPeoples($person);
 

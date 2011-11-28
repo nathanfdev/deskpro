@@ -7,6 +7,7 @@ pageMeta.pageIdentity = 'deal1:{{deal.id}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_deal_ajax_labels_save', {'deal_id': deal.id}) }}';
 pageMeta.ajaxSaveUrl = '{{ path('agent_deal_ajaxsave', {'deal_id': deal.id}) }}';
 
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -20,12 +21,51 @@ pageMeta.baseId = '{{ baseId }}';
 </form>
 <header class="page-header">
     <nav class="actions" id="{{baseId}}_action_buttons">
-        <span>{{deal.probability}}% of {{deal.deal_currency.symbol}}{{deal.deal_value}} </span>
+        <span class="editable" data-editable-for="#{{baseId}}_editprobablility">{{deal.probability}}</span>
+        <span class="edit-name-gear" style="display: none">edit name</span>
+                <div id="{{baseId}}_editprobablility" style="display: none">
+                        <input type="hidden" name="action" value="change_probability" />
+                        <input type="text" size="20" name="probability" value="{{ deal.probability }}" />
+                </div>
+
+         <span>% of</span>
+
+         <span>{% set selectCurrency = baseId~'_currency'%}
+
+                           {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
+                                'name': selectCurrency,
+                                'id': selectCurrency,
+                                'with_blank': true,
+                                'with_blank2': true,
+                                'blank_title': 'Set Currency',
+                                'options': deal_currencys,
+                                'add_classname': 'select-currency',
+                                'selected': deal.deal_currency.id
+
+                            } %}
+         </span>
+        
+
+        <span class="editable" data-editable-for="#{{baseId}}_editdeal_value">{{deal.deal_value}} </span>
+        <span class="edit-name-gear" style="display: none">edit name</span>
+                <div id="{{baseId}}_editdeal_value" style="display: none">
+                        <input type="hidden" name="action" value="change_deal_value" />
+                        <input type="text" size="20" name="deal_value" value="{{ deal.deal_value }}" />
+                </div>
     </nav>
     <div class="titlewrap">        
             <h4 class="id-number">#{{deal.id}}</h4>
-            <h1>{{deal.title}}</h1>
-        </h1>
+            
+
+            <h1>
+                <span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
+                <span class="edit-name-gear">edit name</span>
+                <div id="{{baseId}}_editname" style="display: none">
+                        <input type="hidden" name="action" value="change_title" />
+                        <input type="text" size="20" name="title" value="{{ deal.title }}" />
+                </div>
+            </h1>
+
     </div>
     
     <div class="clear"></div>
@@ -37,6 +77,7 @@ pageMeta.baseId = '{{ baseId }}';
                 <dd>
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealtype]',
+                                'id': baseId~'_select_deal_type',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Type',
@@ -54,6 +95,7 @@ pageMeta.baseId = '{{ baseId }}';
                 <dd class="set-deal-stage">
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealstage]',
+                                'id': baseId~'_select_deal_stage',
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Stage',
@@ -70,7 +112,17 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="isRight">
 
         <div class="meta-line">
-            <div class="status the-status deal-status" id="{{baseId}}_status_trigger">
+            <div class="isLeft category the-visibility deal-visibility" id="{{baseId}}_visibility_trigger">
+                <span id="{{baseId}}_visibility_label">
+                        {% if deal.visibility == 0 %}
+                                Private
+                        {% elseif deal.visibility == 1 %}
+                                Public
+                        {% endif %}
+                </span>
+            </div>
+
+            <div class="isLeft hasMargineLeft-10px status the-status deal-status" id="{{baseId}}_status_trigger">
                 <span id="{{baseId}}_status_label">
                         {% if deal.status == 0 %}
                                 Open
@@ -95,7 +147,6 @@ pageMeta.baseId = '{{ baseId }}';
                 </td>
             </tr>
         </table>
-
 
 {# Page Containers #}
 </div>
@@ -122,3 +173,17 @@ pageMeta.baseId = '{{ baseId }}';
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Status') }}
+
+
+{{ optionbox.start('Visibility', {'id': baseId ~ '_visibility_ob'}) }}
+	{{ optionbox.section_start('', 'visibility') }}
+		<li class="top parent-option item-private" data-item-id="0" data-full-title="Private">
+			<input type="radio" name="visibility" value="o" />
+			<label>Private</label>
+		</li>
+		<li class="top parent-option item-public" data-item-id="1" data-full-title="Public">
+			<input type="radio" name="visibility" value="1" />
+			<label>Public</label>
+		</li>
+	{{ optionbox.section_end() }}
+{{ optionbox.end('Set Visibility') }}

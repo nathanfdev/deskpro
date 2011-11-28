@@ -22,20 +22,120 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         this._initAssignAgentSection();
         this._removePersonAndOrg();
         this._initStatusMenus();
+        this._initCustomField();
 
+
+
+        this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+            typename: 'deals',
+            content_id: this.meta.deal_id,
+            listEl: $('section.linked-content:first', this.wrapper),
+            onContentLinked: function(typename, content_id) {
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
+                    type: 'POST',
+                    data: {
+                        content_type: typename,
+                        content_id: content_id,
+                        action: 'add-related'
+                    },
+                    context: this,
+                    dataType: 'json'
+                });
+            },
+            onContentUnlinked: function(typename, content_id) {
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
+                    type: 'POST',
+                    data: {
+                        content_type: typename,
+                        content_id: content_id,
+                        action: 'remove-related'
+                    },
+                    context: this,
+                    dataType: 'json'
+                });
+            }
+        });
+        this.ownObject(this.relatedContent);
+
+
+
+        // Add new associated task for deal
+        $('.create_deal_task_btn').on('click', function() {
+            $('form#newTaskForm input, form#newTaskForm select').val('');
+            DeskPRO_Window.newTaskLoader.toggle();
+        });
+
+        // Name is editable
+        var name = $('h3.name.editable:first', el);
+        if (!name.attr('id')) {
+            name.attr('id', Orb.getUniqueId());
+        }
+
+        var editable = new DeskPRO.Form.InlineEdit({
+            baseElement: this.wrapper,
+            ajax: {
+                url: BASE_URL + 'agent/deals/' + this.meta.deal_id + '/ajax-save'
+            },
+            triggers: '.edit-name-gear'
+        });
+
+        // Attach click to wrapper because
+        // this same code is used on popout on ticket,
+        // and clicks dont bubble to document click
+        $(this.wrapper).on('click', function (ev) {
+            editable.handleDocumentClick(ev);
+        });
 
         $('.profile-box-container.tabbed', this.wrapper).each(function() {
-			var simpleTabs = new DeskPRO.UI.SimpleTabs({
-				triggerElements: '> header li',
-				context: this
-			});
+            var simpleTabs = new DeskPRO.UI.SimpleTabs({
+                triggerElements: '> header li',
+                context: this
+            });
 
-			self.ownObject(simpleTabs);
+            self.ownObject(simpleTabs);
+        }); 
+
+        var curncyMenu = new DeskPRO.UI.Menu({
+			menuElement: this.getEl('currency')
 		});
+        this.ownObject(curncyMenu);
 
-        $('.select-deal-type').on('change', function(){
+        var dltypeMenu = new DeskPRO.UI.Menu({
+                menuElement: this.getEl('select_deal_type')
+        });
+        this.ownObject(dltypeMenu);
+        
+        var dlstgMenu = new DeskPRO.UI.Menu({
+                menuElement: this.getEl('select_deal_stage')
+        });
+        this.ownObject(dlstgMenu);
 
-            var dealId = pageMeta.deal_id;
+
+
+                this.getEl('currency').on('change', function(){
+                var val = $(this).val();
+                //$('.timezone-info', this.wrapper).empty();
+                $.ajax({
+                        url: BASE_URL + 'agent/deals/' + dealId + '/ajax-save',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                                action: 'change_deal_currency',
+                                deal_currency: val
+                        },
+                        context: this,
+                        success: function(data) {
+                                //$('.timezone-info', this.wrapper).empty().html(data.bit_html);
+                        }
+                });
+        });
+                
+
+        this.getEl('select_deal_type').on('change', function(){
+
+            var dealId = self.meta.deal_id;
             if (!dealId) {
                 return;
             }
@@ -53,6 +153,12 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 },
                 success: function(data) {
                     $('.set-deal-stage').html(data.deal_stage);
+
+                     var dlstgDyMenu = new DeskPRO.UI.Menu({
+                        menuElement: this.getEl('select_deal_stage')
+                        });
+                     this.ownObject(dlstgDyMenu);
+
                     DeskPRO_Window.sections.deals_section.refresh();
                 }
             });
@@ -61,7 +167,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 
         $('.select-deal-stage').live('change', function(){
 
-            var dealId = pageMeta.deal_id;
+            var dealId = self.meta.deal_id;
             if (!dealId) {
                 return;
             }
@@ -86,7 +192,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
     },
 
     _removePersonAndOrg: function(){
-
+        //var self = this;
         this.getEl('members_list').on('click', '.remove', function() {
             var row = $(this).closest('.member-row');
             var personId = row.data('person-id');
@@ -97,7 +203,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             row.fadeOut('fast');
 
             $.ajax({
-                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
                 data: {
                     action: 'remove-person',
                     person_id: personId
@@ -126,7 +232,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
             row.fadeOut('fast');
 
             $.ajax({
-                url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
+                url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
                 data: {
                     action: 'remove-organization',
                     organization_id: organizationId
@@ -194,7 +300,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 }
                 $('.reply-agent-team-ob').slideUp();
                 $.ajax({
-                    url: BASE_URL + 'agent/deals/'+pageMeta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
+                    url: BASE_URL + 'agent/deals/'+self.meta.deal_id+'/'+selections.agents+'/set-agent-parts.json',
                     type: 'POST',
                     dataType: 'json',
                     data: postData,
@@ -302,7 +408,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 url: BASE_URL + 'agent/deals/new/set-person-row/' + personId,
                 dataType: 'html',
                 data: {
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -342,7 +448,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                     data: {
                         'email': $('.add-new-user-container input.email').val(),
                         'name' : $('.add-new-user-container input.name').val(),
-                        'deal_id': pageMeta.deal_id
+                        'deal_id': self.meta.deal_id
                     },
                     dataType: 'html',
                     context: this,
@@ -408,7 +514,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 url: BASE_URL + 'agent/deals/new/set-organization-row/'+orgId,
                 dataType: 'html',
                 data: {                    
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -443,7 +549,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
                 dataType: 'html',
                 data: {
                     'name': $('.add-new-org-container input.name').val(),
-                    'deal_id': pageMeta.deal_id
+                    'deal_id': self.meta.deal_id
                 },
                 context: this,
                 success: function(html) {
@@ -477,31 +583,102 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
 
     _initStatusMenus: function() {
 
-		var self = this;
+        var self = this;
 
-		// Status
-		var statusOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: this.getEl('status_trigger'),
-			element: this.getEl('status_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('status');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
+        // Status
+        var statusOb = new DeskPRO.UI.OptionBoxRevertable({
+            trigger: this.getEl('status_trigger'),
+            element: this.getEl('status_ob'),
+            onSave: function(ob) {
+                var catEl = ob.getSelectedElements('status');
+                var catId = catEl.data('item-id');
+                var title = catEl.data('full-title');
 
-				self.getEl('status_label').text(title);
+                self.getEl('status_label').text(title);
 
-				$.ajax({
-					url: BASE_URL + 'agent/deals/' + pageMeta.deal_id + '/ajax-save',
-					type: 'POST',
-					data: {action: 'change-status', status: catId},
-					context: self,
-					dataType: 'json',
-                                        success: function(data) {
-                                            DeskPRO_Window.sections.deals_section.refresh();
-                                        }
-				});
-			}
-		});
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
+                    type: 'POST',
+                    data: {
+                        action: 'change-status',
+                        status: catId
+                    },
+                    context: self,
+                    dataType: 'json',
+                    success: function(data) {
+                        DeskPRO_Window.sections.deals_section.refresh();
+                    }
+                });
+            }
+        });
+
+        // Visibility
+        var visibilityOb = new DeskPRO.UI.OptionBoxRevertable({
+            trigger: this.getEl('visibility_trigger'),
+            element: this.getEl('visibility_ob'),
+            onSave: function(ob) {
+                var catEl = ob.getSelectedElements('visibility');
+                var catId = catEl.data('item-id');
+                var title = catEl.data('full-title');
+
+                self.getEl('visibility_label').text(title);
+
+                $.ajax({
+                    url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save',
+                    type: 'POST',
+                    data: {
+                        action: 'change-visibility',
+                        visibility: catId
+                    },
+                    context: self,
+                    dataType: 'json',
+                    success: function(data) {
+                        DeskPRO_Window.sections.deals_section.refresh();
+                    }
+                });
+            }
+        });
 		
-	}
+    },
+
+    _initCustomField: function(){
+
+        var fieldsRendered = this.getEl('custom_fields_rendered');
+        var fieldsForm = this.getEl('custom_fields_editable');
+
+        var buttonsWrap = this.getEl('properties_controls');
+        var propToggle = function(what) {
+            if (what == 'display') {
+                $('.showing-editing-fields', buttonsWrap).hide();
+                $('.showing-rendered-fields', buttonsWrap).show();
+                fieldsForm.hide();
+                fieldsRendered.show();
+            } else {
+                $('.showing-rendered-fields', buttonsWrap).hide();
+                $('.showing-editing-fields', buttonsWrap).show();
+                fieldsRendered.hide();
+                fieldsForm.show();
+            }
+        };
+
+        $('.edit-fields-trigger', buttonsWrap).on('click', function() {
+            propToggle('edit');
+        });
+
+        $('.save-fields-trigger', buttonsWrap).on('click', function() {
+            var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+
+            $.ajax({
+                url: BASE_URL + 'agent/deals/' + self.meta.deal_id + '/ajax-save-custom-fields',
+                type: 'POST',
+                data: formData,
+                dataType: 'html',
+                success: function(rendered) {
+                    fieldsRendered.empty().html(rendered);
+                    propToggle('display');
+                }
+            });
+        });
+
+    }
 });

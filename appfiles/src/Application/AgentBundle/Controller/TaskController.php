@@ -132,6 +132,16 @@ class TaskController extends AbstractController
 				$task->task_associations->add($assoc);
 			}
 
+                        if (!empty($task_data['deal_id'])) {
+				$deal = $this->em->find('DeskPRO:Deal', $task_data['deal_id']);
+
+				$assoc = new \Application\DeskPRO\Entity\TaskAssociatedDeal();
+				$assoc->deal = $deal;
+				$assoc->task   = $task;
+
+				$task->task_associations->add($assoc);
+			}
+
 			$task->setVisibility($task_data['visibility']);
 			if (!empty($task_data['date_due'])) {
 				$task->setDueDate($task_data['date_due']);
@@ -434,7 +444,17 @@ class TaskController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
-    /**
+        public function printAssociativeTaskAction($assoc = null)
+        {
+            if(method_exists($assoc, 'getDeal') && $assoc->getDeal())
+            {
+                return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
+            } else if(method_exists($assoc, 'getTicket') && $assoc->getTicket() != null){
+                return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
+            }
+        }
+
+        /**
 	 * @return Application\DeskPRO\Entity\Task
 	 */
 	protected function getTaskOr404($task_id)

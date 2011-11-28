@@ -6,14 +6,22 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
 	initializeProperties: function() {
 		this.parent();
 		this.TYPENAME = 'deal-list';
+                this.resultTypeName = 'basic';
+		this.resultTypeId = 'general';
 	},
 
 	initPage: function(el) {
 		var self = this;
 		var openForEl = null;
-                
-                
                 this._initDisplayOptions();
+
+
+                this.listWrapper = $('section.deal-simple-list', this.wrapper);
+
+		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+			contentListEl: this.listWrapper
+		});
+		this.ownObject(this.relatedContentList);
 		
 
 	},
@@ -36,12 +44,9 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
 				// Change the displayed label for some visual feedback
 				$('.label', sortMenuBtn).text(label);
 
-				var disOptWrap = self.displayOptions.getWrapperElement();
-				var sel = $('select.sel-order-by', disOptWrap);
-				$('option', sel).prop('selected', false);
-				$('option.' + prop, sel).prop('selected', true);
-
-				self.displayOptions.saveAndRefresh();
+				var url = self.meta.refreshUrl;
+				url = Orb.appendQueryData(url, 'order_by', prop);
+                                DeskPRO_Window.loadListPane(url);
 			}
 		});
 		this.ownObject(this.sortingMenu);
@@ -61,15 +66,18 @@ DeskPRO.Agent.PageFragment.ListPane.DealList = new Orb.Class({
 
 				var url = self.meta.refreshUrl;
 				url = Orb.appendQueryData(url, 'group_by', prop);
-
-				if (self.meta.viewType == 'list') {
-					self.loadNewListviewUrl(url +'&view_type=list');
-				} else {
-					DeskPRO_Window.loadListPane(url);
-				}
+                                DeskPRO_Window.loadListPane(url);
+			
 			}
 		});
 		this.ownObject(this.groupingMenu);
+
+                this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'deal-filter',
+			//resultId: this.meta.resultId,
+			refreshUrl: this.meta.refreshUrl
+		});
+		this.ownObject(this.displayOptions);
         }
 
 });

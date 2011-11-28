@@ -198,7 +198,7 @@
             <nav>
                 <ul>
                     <li data-tab-for="#{{baseId}}_property_tab" class="on">Properties</li>
-                    <li data-tab-for="#{{baseId}}_tasks_tab" >Tasks <span class="count" id="{{baseId}}_tasks_count">{{ tasks|length }}</span></li>
+                    <li data-tab-for="#{{baseId}}_tasks_tab" >Tasks <span class="count" id="{{baseId}}_tasks_count">{{ assoceated_tasks|length }}</span></li>
                     <li data-tab-for="#{{baseId}}_files_tab" >Files <span class="count" id="{{baseId}}_files_count">{{ deal_attachments|length }}</span></li>
                 </ul>
             </nav>
@@ -230,6 +230,26 @@
                     </dl>
                 </div>
 
+                {% if custom_fields|length %}
+                    <div class="meta-line">
+                        <dl class="info-list" id="{{baseId}}_custom_fields_rendered">
+                                {% include 'AgentBundle:deal:view-customfields-rendered-rows.html.twig' %}
+                        </dl>
+                        <dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+                                {% include 'AgentBundle:deal:view-customfields-edit-rows.html.twig' %}
+                        </dl>
+                     </div>
+
+
+                    <div class="controls" id="{{baseId}}_properties_controls">
+                            <div class="showing-editing-fields" style="display: none">
+                                    <button class="clean-white save-fields-trigger"><span>Save</span></button>
+                            </div>
+                        <div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
+                                    <button class="clean-white edit-fields-trigger"><span>Edit Custome Fields</span></button>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="meta-line">
                     <dl class="table-list">
                         <dt class="type-labels">Custom Field A</dt>
@@ -244,7 +264,7 @@
 
             {# Task Tab #}
             <article id="{{baseId}}_tasks_tab">
-                Tasks
+                {% include 'AgentBundle:Deal:tab-tasks.html.twig' %}
             </article>
             {# /Task Tab #}
 
@@ -307,3 +327,18 @@
 
 </div>
 {# /Notes Tab #}
+
+
+{# Related Tabs #}
+<div class="profile-box-container tabbed">
+    <header>
+        <nav>
+            <ul>
+                <li data-tab-for="#{{baseId}}_related_tab" class="on">Related Content</li>
+            </ul>
+        </nav>
+    </header>
+    {% include 'AgentBundle:Common:content-related-list.html.twig' %}
+
+</div>
+{# /Related Tab #}

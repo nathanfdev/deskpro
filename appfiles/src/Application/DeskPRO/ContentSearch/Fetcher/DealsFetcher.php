@@ -16,9 +16,9 @@ use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Strings;
 
-class IdeasFetcher extends AbstractFetcher
+class DealsFetcher extends AbstractFetcher
 {
-	const TYPENAME = 'ideas';
+	const TYPENAME = 'deals';
 
 	/**
 	 * Returns an array of entities identified by $related_ids, that the user is able to see.
@@ -28,6 +28,6 @@ class IdeasFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:Idea')->findById($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:Deal')->findById($related_ids, $this->person);
 	}
 }
