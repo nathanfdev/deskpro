@@ -2,7 +2,7 @@
 
 	// Statuses shown to techs
 	'agent.tickets.status_awaiting_agent' => 'Awaiting Agent',
-	'agent.tickets.status_pending'        => 'Awaiting User',
+	'agent.tickets.status_awaiting_user'  => 'Awaiting User',
 	'agent.tickets.status_hidden'         => 'Hidden',
 	'agent.tickets.status_resolved'       => 'Resolved',
 	'agent.tickets.status_closed'         => 'Closed',
@@ -12,9 +12,9 @@
 	'agent.tickets.status_hidden_validating'  => 'Awaiting Validating',
 
 	// Depreciated: Use the above ids
-	'agent.tickets.hidden_status_spam'       => '[[Spam]]',
-	'agent.tickets.hidden_status_deleted'    => '[[Deleted]]',
-	'agent.tickets.hidden_status_validating' => '[[Awaiting Validation]]',
+	'agent.tickets.hidden_status_spam'       => 'Spam',
+	'agent.tickets.hidden_status_deleted'    => 'Deleted',
+	'agent.tickets.hidden_status_validating' => 'Awaiting Validation',
 
 	'agent.tickets.creation_system_web'        => 'Web interface',
 	'agent.tickets.creation_system_web_person' => 'Web interface by user',

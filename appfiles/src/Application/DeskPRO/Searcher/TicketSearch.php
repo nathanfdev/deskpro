@@ -232,7 +232,7 @@ class TicketSearch extends SearcherAbstract
 
 		$where = '';
 
-		if ($this->isArchiveSearch()) {
+		if (true || $this->isArchiveSearch()) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';

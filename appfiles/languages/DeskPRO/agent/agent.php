@@ -64,7 +64,8 @@
 	'agent.no' => 'No',
 	'agent.disapprove_input' => 'Reason or comment to send to the author',
 	'agent.to' => 'To',
-	
+	'agent.priority' => 'Priority',
+
 	'agent.create_a_new_person' => 'Create a new person',
 	'agent.create_a_new_org' => 'Create a new organization',
 	'agent.set_a_org_pos' => 'Set a position...',
@@ -125,7 +126,7 @@
 	'agent.view_in_user_interface' => 'View in user interface',
 	'agent.print' => 'Print',
 	'agent.view_all_x_tickets' => 'View 1 ticket|View all {{count}} tickets',
-	
+
 	'agent.members' => 'Members',
 	'agent.tickets' => 'Tickets',
 	'agent.chats' => 'Chats',
@@ -173,7 +174,7 @@
 	'agent.validate_comment' => 'Validate Comment',
 	'agent.create_ticket' => 'Create Ticket',
 	'agent.more' => 'More',
-	
+
 	'agent.edit_categories' => 'Edit Categories',
 	'agent.create_new_category' => 'Create Category',
 	'agent.create_download' => 'Create download',
@@ -261,9 +262,9 @@
 	'agent.snippets' => 'Snippets',
 	'agent.add_new_snippet' => 'Add new snippet',
 	'agent.snippet_text_placeholder' => 'Snippet text',
-	
+
 	'agent.local_time' => 'Local Time',
-	
+
 	'agent.landing_page' => 'Landing Page',
 	'agent.current_page' => 'Current Page',
 	'agent.referrer' => 'Referrer',
@@ -276,28 +277,28 @@
 	'agent.last_login' => 'Last Login',
 	'agent.never' => 'Never',
 	'agent.online_now' => 'Onlne Now',
-	
+
 	'agent.search_terms' => 'Search Terms',
 	'agent.frequency' => 'Frequency',
 	'agent.matches' => 'Matches',
-	
+
 	'agent.number_of_members' => 'Number of members',
-	
+
 	'agent.recycle_bin_none' => 'There are no items in the recycle bin.',
 	'agent.no_org_labels' => 'You haven\'t labeled any organizations. View an organization to label it.',
 	'agent.no_people_labels' => 'You haven\'t labeled any people. View person to label them.',
 	'agent.alphabetical' => 'Alphabetical',
-	
+
 	'agent.search' => 'Search',
-	
+
 	'agent.people' => 'People',
 	'agent.organizations' => 'Organizations',
 	'agent.labels_cloud' => 'Cloud',
 	'agent.labels_list' => 'List',
-	
+
 	'agent.ticket_field' => 'Ticket Field',
 	'agent.user_field' => 'User Field',
-	
+
 	'agent.deleted_reason' => 'Deleted Reason',
 
 	'agent.change_property' => 'Change Property',
@@ -313,6 +314,6 @@
 	'agent.apply_to_x_selections' => 'Apply actions to {{placeholder}} selections',
 	'agent.load_macro' => 'Load macro',
 	'agent.mark_as_pending_kb' => 'Mark as a pending KB article',
-	
+
 	'agent.owner' => 'Owner',
 );
