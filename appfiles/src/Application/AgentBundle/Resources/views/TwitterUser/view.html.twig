@@ -43,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</div>
 
-	
+
 	<br class="clear" />
 </header>
 
@@ -84,8 +84,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% endfor %}
 					</article>
 					<article id="{{baseId}}_mentions_tab">
-						{% for mention in user.mentions %}
-							{% set status = mention.status %}
+						{% for status in user.mentions %}
 							{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
 						{% else %}
 							No Mentions for User

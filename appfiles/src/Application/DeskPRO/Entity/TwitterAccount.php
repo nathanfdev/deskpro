@@ -232,6 +232,21 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Count the total inbox statuses
+     *
+	 * @param Boolean $includeArchived (optional)
+	 * @return int
+	 */
+	public function countInboxTotal($includeArchived = false)
+	{
+		return $this->countMessages()
+			   + $this->countReplies()
+			   + $this->countMentions()
+			   + $this->countRetweets()
+			   ;
+	}
+
+	/**
 	 * Retrieve a list of messages for this account.
 	 *
 	 * @param Boolean $includeArchived (optional)
@@ -340,13 +355,16 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Retrieve a list of sent statuses for this account.
 	 *
+	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getOutgoing($sortByDate = 'asc')
+	public function getOutgoing($includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
 	{
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findOutgoingByUserId($this->getUserId(), $sortByDate);
+			->findOutgoingByUserId($this->getUserId(), $includeArchived, $sortByDate, $limit, $page);
 	}
 
 	/**

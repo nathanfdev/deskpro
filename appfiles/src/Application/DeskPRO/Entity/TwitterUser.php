@@ -178,8 +178,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countInboxTotal($includeArchived = false)
 	{
-		return 0;
-		return $this->countDirectMessages()
+		return $this->countMessages()
 			   + $this->countReplies()
 			   + $this->countMentions()
 			   + $this->countRetweets()
@@ -195,9 +194,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function getDirectMessages($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function getMessages($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->getDirectMessages(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->findMessagesForUserId(
 			$this->id, $includeArchived, $sortByDate, $limit, $page
 		);
 	}
@@ -208,10 +207,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $includeArchived (optional)
 	 * @return int
 	 */
-	public function countDirectMessages($includeArchived = false)
+	public function countMessages($includeArchived = false)
 	{
-		return 0;
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countDirectMessages(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMessagesForUserId(
 			$this->id, $includeArchived
 		);
 
@@ -228,7 +226,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getReplies($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->getReplies(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->findRepliesForUserId(
 			$this->id, $includeArchived, $sortByDate, $limit, $page
 		);
 	}
@@ -241,8 +239,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countReplies($includeArchived = false)
 	{
-		return 0;
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countReplies(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRepliesForUserId(
 			$this->id, $includeArchived
 		);
 
@@ -259,7 +256,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getMentions($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->getMentions(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->findMentionsForUserId(
 			$this->id, $includeArchived, $sortByDate, $limit, $page
 		);
 	}
@@ -272,8 +269,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countMentions($includeArchived = false)
 	{
-		return 0;
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMentions(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countMentionsForUserId(
 			$this->id, $includeArchived
 		);
 
@@ -290,7 +286,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getRetweets($includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->getRetweets(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->findRetweetsForUserId(
 			$this->id, $includeArchived, $sortByDate, $limit, $page
 		);
 	}
@@ -303,7 +299,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countRetweets($includeArchived = false)
 	{
-		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRetweets(
+		return App::getEntityRepository('DeskPRO:TwitterStatus')->countRetweetsForUserId(
 			$this->id, $includeArchived
 		);
 
