@@ -235,7 +235,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 * @param {Integer} count
 	 */
 	updateBadge: function(count) {
-		var el = $('.nav-counter', this.buttonEl);
+		var el = $('.count-badge', this.buttonEl);
 		var elCount = $('span', el);
 
 		var count = parseInt(count);
