@@ -226,7 +226,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				</ul>
 			</dd>
 
-			<dt>{{ phrase('agent.createad') }}:</dt>
+			<dt>{{ phrase('agent.created') }}:</dt>
 			<dd>
 				<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
 				on {{ ticket.date_created|date('M j Y H:ia') }}
@@ -249,8 +249,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% if macros|length %}
 				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></button>
 			{% endif %}
-			<button class="clean-white arrow" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span><em></em></button>
-			<button class="clean-white arrow" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span><em></em></button>
+			<button class="clean-white" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span></button>
+			<button class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span></button>
 		</div>
 	</section>
 </div>

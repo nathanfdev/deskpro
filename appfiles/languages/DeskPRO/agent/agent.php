@@ -65,6 +65,9 @@
 	'agent.disapprove_input' => 'Reason or comment to send to the author',
 	'agent.to' => 'To',
 	'agent.priority' => 'Priority',
+	'agent.flag' => 'Flag',
+	'agent.user_waiting' => 'User Waiting',
+	'agent.notes' => 'Notes',
 
 	'agent.create_a_new_person' => 'Create a new person',
 	'agent.create_a_new_org' => 'Create a new organization',
