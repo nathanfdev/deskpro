@@ -53,7 +53,12 @@ class TwitterStatusController extends AbstractController
 	public function listMessagesAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$messages = $account->getMessages($this->getSortByDate());
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		$messages = $account->getMessages($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $messages, 'messages');
 	}
@@ -67,7 +72,12 @@ class TwitterStatusController extends AbstractController
 	public function listRepliesAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$replies = $account->getReplies($this->getSortByDate());
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		$replies = $account->getReplies($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $replies, 'replies');
 	}
@@ -81,7 +91,12 @@ class TwitterStatusController extends AbstractController
 	public function listMentionsAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$mentions = $account->getMentions($this->getSortByDate());
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		$mentions = $account->getMentions($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $mentions, 'mentions');
 	}
@@ -95,7 +110,12 @@ class TwitterStatusController extends AbstractController
 	public function listRetweetsAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$retweets = $account->getRetweets($this->getSortByDate());
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		$retweets = $account->getRetweets($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $retweets, 'retweets');
 	}
@@ -109,7 +129,12 @@ class TwitterStatusController extends AbstractController
 	public function listOutgoingAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$statuses = $account->getOutgoing($this->getSortByDate());
+
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getValue('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		$statuses = $account->getOutgoing($includeArchived, $this->getSortByDate());
 
 		return $this->renderList($account, $statuses, 'outgoing');
 	}
