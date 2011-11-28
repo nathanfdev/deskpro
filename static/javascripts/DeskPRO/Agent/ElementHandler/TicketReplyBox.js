@@ -42,6 +42,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
+		this.getElById('cc_row').on('click', function() {
+			self.getElById('cc_input').get(0).focus();
+		});
 		this.getElById('cc_input').tokenField();
 
 

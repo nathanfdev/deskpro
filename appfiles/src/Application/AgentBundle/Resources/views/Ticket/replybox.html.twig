@@ -146,7 +146,7 @@
 							</span>
 							<span id="{{replyBaseId}}_assign_detail_followers">
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									<span class="count">{{ agent_parts|length }}</span> Followers
+									| <span class="count">{{ agent_parts|length }}</span> Followers
 									<div class="inputs" style="display: none">
 										{% for p in agent_parts %}
 											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
