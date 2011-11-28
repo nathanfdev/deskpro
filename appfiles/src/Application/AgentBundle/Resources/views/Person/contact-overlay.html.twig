@@ -15,7 +15,7 @@
 							<span>{{ email.email }}</span>
 						</div>
 						<div class="label">
-							<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="Add a label" />
+							<input type="text" size="10" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="Add a label" />
 						</div>
 					<br class="clear" /></li>
 				{% endfor %}

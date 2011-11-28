@@ -463,15 +463,12 @@ class PersonController extends AbstractController
 			// Editing emails
 			if ($this->person->hasPerm('users.add-emails')) {
 				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
-				foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
-					if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
-						if (!$email) {
-							$this->em->remove($person->emails[$email_id]);
-							$person->emails->remove($email_id);
-						} else {
-							$person->emails[$email_id]->comment = isset($email_comments[$email]) ? $email_comments[$email] : '';
-							$this->em->persist($person->emails[$email_id]);
-						}
+
+				// Setting comment
+				foreach ($email_comments as $email_id => $comment) {
+					if (isset($person->emails[$email_id])) {
+						$person->emails[$email_id]->comment = $comment;
+						$this->em->persist($person->emails[$email_id]);
 					}
 				}
 
