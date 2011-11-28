@@ -27,7 +27,7 @@ class Twitter extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
-		$contact_record->comment = $input['comment'];
+		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
 		$contact_record->field_1 = $input['username'];
 		$contact_record->field_2 = isset($input['display_feed']) && $input['display_feed'] ? 1 : 0;
 	}

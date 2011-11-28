@@ -494,18 +494,14 @@ class PersonController extends AbstractController
 			// Adding contact data
 			foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
 				foreach ($inputs as $input) {
-					try {
-						$contact_data = new PersonContactData();
-						$contact_data->contact_type = $type;
-						$contact_data->applyFormData($input);
+					$contact_data = new PersonContactData();
+					$contact_data->contact_type = $type;
+					$contact_data->applyFormData($input);
 
-						$contact_data->person = $person;
+					$contact_data->person = $person;
 
-						$this->em->persist($contact_data);
-						$person->contact_data->add($contact_data);
-					} catch (\Exception $e) {
-						throw $e;
-					}
+					$this->em->persist($contact_data);
+					$person->contact_data->add($contact_data);
 				}
 			}
 

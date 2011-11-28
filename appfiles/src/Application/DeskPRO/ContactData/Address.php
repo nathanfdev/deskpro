@@ -27,7 +27,7 @@ class Address extends AbstractContactData
 	 */
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
-		$contact_record->comment = $input['comment'];
+		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
 		$contact_record->field_1 = isset($input['address']) ? $input['address'] : '';
 		$contact_record->field_2 = isset($input['city']) ? $input['city'] : '';
 		$contact_record->field_3 = isset($input['state']) ? $input['state'] : '';

@@ -29,7 +29,7 @@ class InstantMessage extends AbstractContactData
 	{
 		$contact_record->field_1 = $input['username'];
 		$contact_record->field_2 = $input['service'];
-		$contact_record->comment = $input['comment'];
+		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
 	}
 
 	/**
