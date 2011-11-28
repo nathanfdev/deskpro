@@ -46,7 +46,7 @@ class TwitterAccountController extends AbstractController
         {
                 $agentId = $accounts = $this->person->getId();
 
-                $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')->findTweetsForAgentTeamId($agentId);
+                $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')->findTweetsForAgentTeamByAgentId($agentId);
 
                 return $this->render('AgentBundle:TwitterAccount:team-tweets.html.twig', array(
                         'statuses' => $statuses

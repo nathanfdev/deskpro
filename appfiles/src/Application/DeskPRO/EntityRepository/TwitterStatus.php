@@ -310,14 +310,14 @@ class TwitterStatus extends EntityRepository
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentTeamId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentTeamByAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = sprintf("
-			SELECT s
+			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.person p
-			INNER JOIN p.agent_teams at
-			WHERE s.agent = :agent_id
+			INNER JOIN s.agent_team at
+			INNER JOIN at.members m
+			WHERE m.id = :agent_id
 			ORDER BY s.date_created %s
 		", $this->normalizeSortByDate($sortByDate));
 
@@ -327,7 +327,7 @@ class TwitterStatus extends EntityRepository
 			->setMaxResults($limit)
 			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
-				'agent_team_id' => $id
+				'agent_id' => $id
 			));
 	}
 
@@ -337,14 +337,14 @@ class TwitterStatus extends EntityRepository
 	 * @param integer $id Agent Id
 	 * @return int
 	 */
-	public function countTweetsForAgentTeamId($id)
+	public function countTweetsForAgentTeamByAgentId($id)
 	{
 		$query = "
-			SELECT s
+			SELECT COUNT(s.id)
 			FROM DeskPRO:TwitterStatus s
-			INNER JOIN s.person p
-			INNER JOIN p.agent_teams at
-			WHERE s.agent = :agent_id
+			INNER JOIN s.agent_team at
+			INNER JOIN at.members m
+			WHERE m.id = :agent_id
 		";
 
 	 	return $this
