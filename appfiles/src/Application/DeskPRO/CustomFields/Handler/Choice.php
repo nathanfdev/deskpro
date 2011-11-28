@@ -39,7 +39,7 @@ class Choice extends HandlerAbstract
 	public function renderText(array $data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
-		
+
 		$data['value'] = $this->_getRenderableString($data);
 		return  parent::renderText($data, $template_vars);
 	}
