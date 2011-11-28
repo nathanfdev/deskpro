@@ -1,11 +1,13 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
-	Order By: <select name="order_by">
-		<option value="article.date_created:desc">Date Created (Newest-Oldest)</option>
-		<option value="article.date_created:asc">Date Created (Oldest-Newest)</option>
-		<option value="article.view_count:desc">View Count (Highest-Lowest)</option>
-		<option value="article.view_count:asc">View Count (Lowest-Highest)</option>
-	</select>
+	<div style="display: none">
+		<select name="order_by">
+			<option value="article.date_created:desc">Date Created (Newest-Oldest)</option>
+			<option value="article.date_created:asc">Date Created (Oldest-Newest)</option>
+			<option value="article.view_count:desc">View Count (Highest-Lowest)</option>
+			<option value="article.view_count:asc">View Count (Lowest-Highest)</option>
+		</select>
+	</div>
 {% endblock %}
 {% block display_elements_list %}
 	<li data-field="author"><input type="checkbox" name="author" /> {{ phrase('agent.author') }}</li>
