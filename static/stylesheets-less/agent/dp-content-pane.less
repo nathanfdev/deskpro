@@ -506,9 +506,31 @@ header.page-header .meta-line .status span {
 
 	font-size: 11px;
 	color: #FFF !important;
-	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5) !important;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6) !important;
 	padding: 5px;
 }
+
+header.page-header .meta-line .status.awaiting_user span {
+    border-color: #C1BE6C;
+	.gradient(darken(#C1BE6C, 5%), darken(#C1BE6C, 10%));
+}
+
+header.page-header .meta-line .status.awaiting_agent span {
+	.gradient(darken(#8bbe72, 10%), darken(#71b058, 10%));
+	.box-shadow();
+}
+
+header.page-header .meta-line .status.resolved span,
+header.page-header .meta-line .status.hidden span,
+header.page-header .meta-line .status.closed span {
+	border-color: #C9CCD4;
+	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
+}
+
+header.page-header .meta-line .status.hidden span {
+	.opacity(80);
+}
+
 
 header.page-header .meta-line .set-hold span {
 	.border-radius(3px, 3px, 3px, 3px);
