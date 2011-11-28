@@ -54,6 +54,8 @@ class Deal extends EntityRepository {
                 ->innerJoin('d.deal_type', 'dt')
                 ->where('p.id IS NULL OR p.id != :person_id')
                 ->andWhere('d.status = :status')
+                ->andWhere('d.visibility > :visibility')
+                ->setParameter('visibility', 0)
                 ->groupBy('d.deal_type')
                 ->setParameters(array('person_id' => $person['id'], 'status' => $status))
         ;
@@ -96,6 +98,8 @@ class Deal extends EntityRepository {
                 ->innerJoin('d.deal_type', 'dt')
                 ->where('p.id IS NULL OR p.id != :person_id')
                 ->andWhere('d.status = :status')
+                ->andWhere('d.visibility > :visibility')
+                ->setParameter('visibility', 0)
                 ->setParameters(array('person_id' => $person['id'], 'status' => $status))
         ;
         $query = $qb->getQuery(); //print $query->getSQL();
@@ -164,7 +168,10 @@ class Deal extends EntityRepository {
                 ->innerJoin('d.deal_type', 'dt')
                 ->leftJoin('d.deal_stage', 'ds')
                 ->where('p.id IS NULL OR p.id != :person_id')
-                ->setParameter('person_id', $person['id']);
+                ->andWhere('d.visibility > :visibility')
+                ->setParameter('visibility', 0)
+                ->setParameter('person_id', $person['id'])               
+                ;
 
         if ($status >= 0) {
             $qb->andWhere('d.status = :status');
@@ -289,6 +296,8 @@ class Deal extends EntityRepository {
                 ->innerJoin('d.deal_type', 'dt')
                 ->leftJoin('d.deal_stage', 'ds')
                 ->where('p.id IS NULL OR p.id != :person_id')
+                ->andWhere('d.visibility > :visibility')
+                ->setParameter('visibility', 0)
                 ->setParameter('person_id', $person['id']);
 
         if ($status >= 0) {
@@ -388,6 +397,8 @@ class Deal extends EntityRepository {
                 ->innerJoin('d.deal_type', 'dt')
                 ->leftJoin('d.deal_stage', 'ds')
                 ->where('p.id IS NULL OR p.id != :person_id')
+                ->andWhere('d.visibility > :visibility')
+                ->setParameter('visibility', 0)
                 ->setParameter('person_id', $person['id']);
         $qb->orderBy('d.date_created');
 
