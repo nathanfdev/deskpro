@@ -318,22 +318,4 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 			AND s.is_favorited = 1
 		", implode(',', $userIds)));
 	}
-
-	/**
-	 * @return integer
-	 * @todo implement
-	 */
-	public function countAssignedStatusesToAgent()
-	{
-		return 0;
-	}
-
-	/**
-	 * @return integer
-	 * @todo implement
-	 */
-	public function countAssignedStatusesToTeam()
-	{
-		return 0;
-	}
 }

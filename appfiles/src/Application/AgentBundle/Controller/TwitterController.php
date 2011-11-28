@@ -25,6 +25,8 @@ class TwitterController extends AbstractController
 	{
 		$data = array();
 
+		$agentId = $accounts = $this->person->getId();
+
 		#------------------------------
 		# Statuses
 		#------------------------------
@@ -42,9 +44,10 @@ class TwitterController extends AbstractController
 		// iterate accounts, count statuses
 		foreach ($accounts as $account) {
 			$statuses['starred'] += $account->countStarredStatuses();
-			$statuses['account'] += $account->countAssignedStatusesToAgent();
-			$statuses['team'] += $account->countAssignedStatusesToTeam();
 		}
+
+		$statuses['account'] = App::getEntityRepository('DeskPRO:TwitterStatus')->countTweetsForAgentId($agentId);
+		//$statuses['team'] = App::getEntityRepository('DeskPRO:TwitterStatus')->countTweetsForAgentTeamId($agentId);
 
 		$data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', array(
 			'statuses' => $statuses,

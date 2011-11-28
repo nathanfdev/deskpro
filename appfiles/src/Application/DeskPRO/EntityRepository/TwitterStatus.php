@@ -281,6 +281,27 @@ class TwitterStatus extends EntityRepository
 	}
 
 	/**
+	 * Counts tweets for an agent
+	 *
+	 * @param integer $id Agent Id
+	 * @return int
+	 */
+	public function countTweetsForAgentId($id)
+	{
+		$query = "
+			SELECT COUNT(s.id)
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.agent = :agent_id
+		";
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameter('agent_id', $id)
+			->getSingleScalarResult();
+	}
+
+	/**
 	 * Get tweets for an agent team
 	 *
 	 * @param integer $id Agent Id
@@ -308,5 +329,28 @@ class TwitterStatus extends EntityRepository
 			->execute(array(
 				'agent_team_id' => $id
 			));
+	}
+
+	/**
+	 * Count tweets for an agent team
+	 *
+	 * @param integer $id Agent Id
+	 * @return int
+	 */
+	public function countTweetsForAgentTeamId($id)
+	{
+		$query = "
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			INNER JOIN s.person p
+			INNER JOIN p.agent_teams at
+			WHERE s.agent = :agent_id
+		";
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setParameter('agent_id', $id)
+			->getSingleScalarResult();
 	}
 }
