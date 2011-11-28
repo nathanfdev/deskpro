@@ -208,4 +208,95 @@ class TwitterStatus extends EntityRepository
 				'user_id' => $id
 			));
 	}
+
+	/**
+	 * Get starred tweets for an agent
+	 *
+	 * @param integer $id Agent Id
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function findStarredTweetsForAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		$query = sprintf("
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			INNER JOIN s.user u
+			INNER JOIN u.account a
+			INNER JOIN a.persons p
+			WHERE s.is_favorited = :is_favorited
+			AND p.id = :agent_id
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute(array(
+				'agent_id' => $id,
+				'is_favorited' => true
+			));
+	}
+
+	/**
+	 * Get tweets for an agent
+	 *
+	 * @param integer $id Agent Id
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function findTweetsForAgentId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		$query = sprintf("
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			WHERE s.agent = :agent_id
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute(array(
+				'agent_id' => $id
+			));
+	}
+
+	/**
+	 * Get tweets for an agent team
+	 *
+	 * @param integer $id Agent Id
+	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
+	 * @return array
+	 */
+	public function findTweetsForAgentTeamId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	{
+		$query = sprintf("
+			SELECT s
+			FROM DeskPRO:TwitterStatus s
+			INNER JOIN s.person p
+			INNER JOIN p.agent_teams at
+			WHERE s.agent = :agent_id
+			ORDER BY s.date_created %s
+		", $this->normalizeSortByDate($sortByDate));
+
+	 	return $this
+			->getEntityManager()
+			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute(array(
+				'agent_team_id' => $id
+			));
+	}
 }

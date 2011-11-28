@@ -130,6 +130,20 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $source;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $agent = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $agent_team = null;
+	
+	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatusLong
 	 * @ORM_Mapping\OneToOne(targetEntity="TwitterStatusLong", mappedBy="status")
 	 */

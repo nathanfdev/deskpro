@@ -1,19 +1,19 @@
 
 <section class="source-section">
 	<ul class="source-list">
-		<li class="auto-load-route" data-route="listpane:">
+		<li class="auto-load-route" data-route="listpane:{{ path('agent_twitter_starred_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred|default(0) }}</span>
 				Starred Tweets
 			</h3>
 		</li>
-		<li data-route="listpane:">
+		<li data-route="listpane:{{ path('agent_twitter_my_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_my_statuses_count">{{ statuses.account|default(0) }}</span>
 				My Tweets
 			</h3>
 		</li>
-		<li data-route="listpane:">
+		<li data-route="listpane:{{ path('agent_twitter_team_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_team_statuses_count">{{ statuses.team|default(0) }}</span>
 				Team Tweets
@@ -33,7 +33,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="sub-toggle">expand</span>
 
-				<span class="title" data-route="listpane:">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="0">0</span>
 					<span>INBOX</span>
 				</span>
@@ -116,7 +116,7 @@
 
 		<li class="dp-cat-li">
 			<div class="item-wrap dp-cat-item">
-				<span class="title" data-route="listpane:">
+				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.followers.count|default(0) }}">{{ account.followers.count|default(0) }}</span>
 					<span>FOLLOWERS</span>
 				</span>

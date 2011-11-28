@@ -112,4 +112,13 @@ class TwitterUserController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => $success));
 	}
+
+	/**
+	 * List the followers for an account
+	 */
+	public function listFollowers($account_id)
+	{
+		$account = $this->getAccount($this->in->getInt('account_id'));
+
+	}
 }
