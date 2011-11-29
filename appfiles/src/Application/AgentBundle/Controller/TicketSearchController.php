@@ -603,8 +603,11 @@ class TicketSearchController extends AbstractController
 		$vars = array(
 			'cache'               => $result_cache,
 			'cache_id'            => $result_cache['id'],
-			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
-			'ticket_ids'          => $results
+			'order_by_summary' => $searcher->getOrderBySummary(),
+			'terms_summary' => $searcher->getSummary(),
+			'ticket_ids'          => $results,
+			'view_name'           => $this->in->getString('view_name'),
+			'view_extra'           => $this->in->getString('view_extra')
 		);
 
 		$search_form = array(

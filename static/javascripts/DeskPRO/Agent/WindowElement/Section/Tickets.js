@@ -12,8 +12,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated, this);
 
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('list-page-fragment.activated', this.highlightActiveSection, this);
-
 		// Simulate instant switching when clicking nav items
 		var self = this;
 		this.getSectionElement().on('click', '[data-route]', function(ev) {
@@ -162,43 +160,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	onShow: function() {
 		this.activeNavClass = null;
-	},
-
-	highlightActiveSection: function(info) {
-
-		if (!this.isVisible()) return;
-
-		var page = info.page;
-
-		if (page.TYPENAME == 'ticket-filter') {
-			this.activeNavClass = '.nav-filter-' + page.getMetaData('filter_id');
-		} else if (page.TYPENAME == 'recyclebin') {
-			this.activeNavClass = '.archive-recycle-bin';
-		} else if (page.TYPENAME == 'ticket-custom-filter' || page.TYPENAME == 'ticket-flagged') {
-			var view_extra = page.getMetaData('view_extra');
-			var view_name = page.getMetaData('view_name');
-			switch (view_name) {
-				case 'flag':
-					if (view_extra) {
-						this.activeNavClass = '.nav-flag-' + view_extra;
-					}
-					break;
-
-				case 'label':
-					if (view_extra) {
-						this.activeNavClass = '.nav-label-' + DeskPRO_Window.util.slugify(view_extra);
-					}
-					break;
-
-				case 'spam': this.activeNavClass = '.nav-archive-spam'; break;
-				case 'validating': this.activeNavClass = '.nav-archive-validating'; break;
-				case 'pending': this.activeNavClass = '.nav-archive-pending'; break;
-				case 'resolved': this.activeNavClass = '.nav-archive-resolved'; break;
-				case 'closed': this.activeNavClass = '.nav-archive-closed'; break;
-			}
-		}
-
-		this.highlightNav();
 	},
 
 	highlightNav: function() {

@@ -29,6 +29,8 @@ pageMeta.fetchResultsUrl = '{{ path('agent_ticketsearch_getpage') }}';
 pageMeta.perPage = {{ per_page }};
 pageMeta.ticketResultIds = {{ ticket_ids|json_encode|raw }};
 
+pageMeta.view_name = '{{ view_name }}';
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
