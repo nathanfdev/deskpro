@@ -242,6 +242,10 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			contentH += 31;
 		}
 
+		if (contentH < 350) {
+			contentH = 350;
+		}
+
 		var maxH = $(window).height() - top - 10;
 
 		if (contentH && contentH < maxH) {
