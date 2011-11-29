@@ -36,6 +36,27 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	protected $filter_detector;
 	protected $notify_list_builder;
 
+	protected $has_non_ignored = false;
+
+	/**
+	 * Fields that shouldnt trigger the full logger and filter inspections
+	 * THey are still recoreded and may still be used as criteria, but they are always
+	 * accompanied by a real trigger such as a status change etc. So by themselves
+	 * they dont trigger inspections.
+	 *
+	 * (Really the only one that needs to be here is date_locked since the others are never
+	 * actually set in code.)
+	 *
+	 * @var array
+	 */
+	public static $ignored_fields = array(
+		'id', 'ref', 'auth', 'attachments', 'access_codes', 'email_gateway', 'ticket_hash',
+		'date_created', 'date_resolved', 'date_closed', 'date_closed', 'date_first_agent_assign',
+		'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply',
+		'date_agent_waiting', 'date_user_waiting', 'total_user_waiting', 'total_to_first_reply',
+		'locked_by_agent', 'date_locked', 'has_attachments',
+	);
+
 	protected $log;
 
 	protected $start_time;
@@ -210,6 +231,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
+		if (!in_array($prop, self::$ignored_fields)) {
+			$this->has_non_ignored = true;
+		}
+
 		if (in_array($prop, array('messages'))) {
 			$this->recordMultiPropertyChanged($prop, $old_val, $new_val);
 		} else {
@@ -297,6 +322,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function preDone()
 	{
+		if (!$this->has_non_ignored) {
+			return;
+		}
 		$this->logMessage("[TicketChangeTracker] BEGIN TICKET {$this->ticket['id']}");
 		$this->start_time = microtime(true);
 		$this->getLogInspector()->runPre();
@@ -309,6 +337,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		if (!$this->has_non_ignored) {
+			return;
+		}
+
 		$this->logMessage('[TicketChangeTracker] done');
 
 		$this->getListUpdater()->run();
