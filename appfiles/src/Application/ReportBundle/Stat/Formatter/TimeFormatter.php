@@ -10,7 +10,7 @@ use Orb\Util\Dates;
 class TimeFormatter extends AbstractFormatter
 {
 	protected $normalized_unit = null;
-	
+
 	/**
 	 * Get an identifer for the formatter
 	 *
@@ -53,12 +53,12 @@ class TimeFormatter extends AbstractFormatter
 				$max = $dataSetMax;
 			}
 		}
-		
+
 		$this->normalized_unit = $this->normalizeValue($max, array(
 			'format' => 'unit',
 			'normalize_to' => $max
 		));
-		
+
 		foreach ($data as &$dataSet) {
 
 			foreach ($dataSet['values'] as &$value) {
@@ -68,13 +68,13 @@ class TimeFormatter extends AbstractFormatter
 				));
 			}
 		}
-		
+
 		return array(
 			'unit' => $this->normalized_unit,
 			'data' => $data
 		);
 	}
-	
+
 	/**
 	 * Normalize a time value
 	 *
@@ -85,7 +85,7 @@ class TimeFormatter extends AbstractFormatter
 	 * @return The formatted data
 	 */
 	public function normalizeValue($data, array $options = array())
-	{	
+	{
 		$format = (isset($options['format'])) ? $options['format'] : 'full';
 		$normalize_to = (isset($options['normalize_to'])) ? $options['normalize_to'] : null;
 
@@ -122,10 +122,10 @@ class TimeFormatter extends AbstractFormatter
 
 		}
 		else {
-			return '';
+			return null;
 		}
 	}
-	
+
 	/**
 	 * Formats time data
 	 *
