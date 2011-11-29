@@ -259,7 +259,7 @@ class AgentHelper implements PersonContextInterface
 			$sql_parts[] = "(
 				SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
 				FROM {$t_info['table']}
-				WHERE status = 'validating'
+				WHERE status = 'validating' OR is_reviewed = 0
 			)";
 		}
 
@@ -325,7 +325,7 @@ class AgentHelper implements PersonContextInterface
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM {$t_info['table']}
-				WHERE status = 'validating'
+				WHERE status = 'validating' OR is_reviewed = 0
 			) AS count_$t";
 		}
 
