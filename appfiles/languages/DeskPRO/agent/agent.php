@@ -55,6 +55,8 @@
 	'agent.disapprove' => 'Disapprove',
 	'agent.edit_properties' => 'Edit Properties',
 	'agent.macros' => 'Macros',
+	'agent.macro_actions_loaded' => 'Macro Actions Loaded',
+	'agent.macro_actions_loaded_explain' => 'The following actions were loaded into the mass-actions editor:',
 	'agent.print' => 'Print',
 	'agent.messages' => 'Messages',
 	'agent.other_properties' => 'Other Properties',

@@ -717,6 +717,24 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		}
 	},
 
+	_initMacroOverlay: function() {
+		var self = this;
+		if (this.macroOverlay) {
+			return;
+		}
+
+		var overlayEl = this.getElById('confirm_macro_overlay');
+
+		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
+		$('.actions-list', overlayEl).empty().append(add);
+
+		this.macroOverlay = new DeskPRO.UI.Overlay({
+			contentElement: overlayEl,
+			zIndex: 1100001
+		});
+	},
+
+
 	/**
 	 * Load a macro into the form
 	 */
@@ -727,6 +745,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			return;
 		}
 
+		var macroBtnEl = $('div.macro-load', this.wrapper).addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
 			data: { macro_id: macro_id },
@@ -734,6 +754,29 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
+
+				this._initMacroOverlay();
+
+				var add = $('.actions-list', this.macroOverlay.getElement());
+				$('.search-terms', add).empty();
+
+				var editor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
+				Array.each(data.macro_actions, function(info, x) {
+					var basename = 'actions[initial_' + x + ']';
+					editor.addNewRow($('.search-terms', add), basename, {
+						type: info.type,
+						options: info.options
+					});
+				});
+
+				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
+				$('.remove', add).remove();
+
+				this.macroOverlay.open();
+
+
+				macroBtnEl.removeClass('loading');
+
 				self.hasAnyChange = true;
 
 				console.log(data);

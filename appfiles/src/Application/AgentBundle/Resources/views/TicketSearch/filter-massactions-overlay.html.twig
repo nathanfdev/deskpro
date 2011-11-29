@@ -16,15 +16,16 @@
 		<article>
 			{% if macros|length %}
 				<div class="macro-load">
-					<select class="macro">
-						<option value="">{{ phrase('agent.load_macro') }}</option>
+					<select class="macro is-not-loading">
+						<option value="">{{ phrase('agent.macros') }}</option>
 						<option value="">------------</option>
 						{% for macro in macros %}
 							<option value="{{ macro.id }}">{{ macro.title }}</option>
 						{% endfor %}
 					</select>
 
-					<button class="clean-white apply-macro-trigger">{{ phrase('agent.apply') }}</button>
+					<button class="is-not-loading clean-white small apply-macro-trigger">{{ phrase('agent.load_macro') }}</button>
+					<span class="is-loading loading-icon" style="float:left; position: relative; top: 2px;"></span>
 				</div>
 			{% endif %}
 
@@ -156,6 +157,19 @@
 			</button>
 		</footer>
 	</section>
+
+	<div class="confirm-macro-overlay" id="{{baseId}}_confirm_macro_overlay" style="width: 400px; height: 400px; display: none;">
+		<div class="overlay-title">
+			<h4>{{ phrase('agent.macro_actions_loaded') }}</h4>
+		</div>
+		<div class="overlay-content">
+			<p>{{ phrase('agent.macro_actions_loaded_explain') }}</p>
+			<div class="actions-list"></div>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white close-trigger">{{ phrase('agent.okay') }}</button>
+		</div>
+	</div>
 
     <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
     	<header>
