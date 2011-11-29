@@ -210,6 +210,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 
 		var overlayEl = this.getEl('confirm_macro_overlay');
+		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
+		$('.actions-list', overlayEl).empty().append(add);
 
 		this.getEl('apply_macro_btn').on('click', function() {
 			self.saveMacro();
@@ -218,9 +220,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.macroOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlayEl
 		});
-
-		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
-		$('.actions-list', this.macroOverlay.getElement()).empty().append(add);
 	},
 
 	confirmMacro: function(macroId) {
@@ -248,16 +247,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				});
 
 				this.macroActions = data.actions_apply;
-
 				$('.menu-trigger', add).removeClass('menu-trigger').unbind('click');
 				$('.remove', add).remove();
 
-				this.macroOverlay.close();
+				this.macroOverlay.open();
 			}
 		});
 	},
 
 	saveMacro: function() {
+
+		this.macroOverlay.close();
+
 		if (!this.macroActions || !this.macroActions.length) {
 			return;
 		}
