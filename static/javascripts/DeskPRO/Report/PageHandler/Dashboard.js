@@ -573,6 +573,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Set handler to process click events, we want to display an overlay
 		$("#dashboard-new-placeholder-link").on('click', function() {
 			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
+			$('#overlay_wrapper .overlay-loader').css('display', 'none');
 			self.openOverlay($.tmpl('dashboard_widget_select'));
 			self.addAddChartUIHandlers();
 

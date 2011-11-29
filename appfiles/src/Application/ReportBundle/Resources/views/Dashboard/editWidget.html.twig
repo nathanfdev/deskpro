@@ -10,7 +10,7 @@
 				{{ form_widget(form.title, { 'placeholder': 'test' }) }}
 			</div>
 		</div>
-		
+
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Chart Type</label>
@@ -19,7 +19,7 @@
 				{{ form_widget(form.chart_type) }}
 			</div>
 		</div>
-		
+
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Display Grouping Data?</label>
@@ -29,11 +29,11 @@
 				{{ form_widget(form.display_grouping) }}
 			</div>
 		</div>
-		
+
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Data Range</label>
-				<span>How many days worth of data do you want to display?</span>
+				<span>How many {{ stat.getRunPeriodLength() }} worth of data do you want to display?</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.number_data_points) }}
@@ -42,6 +42,6 @@
 	</div>
 
 	{{ form_rest(form) }}
-	
+
 	<button class="btn primary save-trigger">Save</button>
 </form>

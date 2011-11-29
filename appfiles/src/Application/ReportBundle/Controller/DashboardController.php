@@ -158,7 +158,7 @@ class DashboardController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => $success));
 	}
-	
+
 	/**
 	 * Add a new stat to the dashboard
 	 */
@@ -172,18 +172,19 @@ class DashboardController extends AbstractController
 		$dashboardStat->setStat($stat);
 		$dashboardStat->setTitle($stat->getTitle());
 		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
+		$dashboardStat->setDisplayGrouping(false);
 
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
-		
+
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
 				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
 				       ->getNextDashboardStatSlot($dashboard_id);
-				       
+
 				$dashboardStat->setSlotNumber($next_slot_number);
-				
+
 				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 
@@ -197,7 +198,7 @@ class DashboardController extends AbstractController
 			'dashboard_id' => $dashboard->getId(),
 			'stat_id' => $stat->getId(),
 		));
-		
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard'  => $dashboard,
 			'stat'       => $stat,
@@ -218,9 +219,9 @@ class DashboardController extends AbstractController
 		$dashboardStat     = $this->getDashboardStat($dashboard_stat_id);
 		$dashboard = $dashboardStat->getReportDashboard();
 		$stat      = $dashboardStat->getStat();
-		
+
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
-		
+
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
 
@@ -233,12 +234,12 @@ class DashboardController extends AbstractController
 				return $this->createJsonResponse(array('widget' => $widget));
 			}
 		}
-		
+
 		$form_route = $this->generateUrl('report_trend_dashboard_stat_edit', array(
 			'dashboard_id' => $dashboard->getId(),
 			'dashboard_stat_id' => $dashboardStat->getId(),
 		));
-		
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'stat'      => $stat,
@@ -315,7 +316,7 @@ class DashboardController extends AbstractController
 
 		$title = $dashboard_stat->getDisplayTitle();
 		$title = strlen($title) ? $title : $dashboard_stat->getDefaultTitle();
-		
+
 		return array(
 			'id' 		=> $dashboard_stat->getId(),
 			'chart_vendor'	=> $chart->getViewChartVendor(),

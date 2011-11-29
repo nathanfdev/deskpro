@@ -196,7 +196,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $_display_unit = '';
-	
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -438,6 +438,28 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+     * Get the run period length
+     *
+     * @return string
+     */
+	public function getRunPeriodLength()
+	{
+		$length = '';
+		switch ($this->run_frequency) {
+			case 'daily':
+				$length = 'days';
+				break;
+			case 'monthly':
+				$length = 'months';
+				break;
+			case 'yearly':
+				$length = 'years';
+				break;
+		}
+
+		return $length;
+	}
+	/**
 	 * Get a StatValue by date
 	 *
 	 * @param \DateTime $date The DateTime to check
@@ -473,7 +495,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getLastFullRun()
 	{
-		return new \DateTime("2011-11-23 00:00:00");
+		return new \DateTime("2011-11-29 00:00:00");
 	}
 
 	public function setRunFrequency($run_frequency)
@@ -561,7 +583,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $groupingInformation['label'];
 	}
-	
+
 	/**
 	 * Set the display unit
 	 *
@@ -572,7 +594,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->_display_unit = $display_unit;
 	}
-	
+
 	/**
 	 * Get the display unit
 	 *
@@ -582,7 +604,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->_display_unit;
 	}
-	
+
 	/**
 	 * Set the data
 	 *
@@ -592,7 +614,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->_data = $data;
 	}
-	
+
 	/**
 	 * Get the data for the Stat
 	 *
@@ -826,7 +848,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		if (strlen($unit) === 0) {
 			$unit = $this->_display_unit;
 		}
-		
+
 		if (false === is_null($this->getFormatter())) {
 			$data = $this->getFormatter()->formatData($data, $unit, $options);
 		}

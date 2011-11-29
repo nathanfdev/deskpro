@@ -33,14 +33,14 @@ class TrendController extends AbstractController
 
 			// Get the Stat Data
 			$data = $stat->getData($end_date, $points);
-			
+
 			$display_unit = '';
 			if (false === is_null($stat->getFormatter())) {
 				// If there is a formatter, it may want to normalize the data
 				$normalized_result = $stat->getFormatter()->normalizeData($data);
 				$data 		= $normalized_result['data'];
 				$display_unit 	= $normalized_result['unit'];
-				
+
 				$stat->setData($data);
 				$stat->setDisplayUnits($display_unit);
 			}
@@ -112,7 +112,7 @@ class TrendController extends AbstractController
 			if ($form->isValid()) {
 				$cloned = clone $stat;
 				$cloned->setId(null);
-				$cloned->setTitle("[Cloned] " . $cloned->getTitle());
+				$cloned->setTitle($cloned->getTitle());
 				$cloned->setAuthor($this->person);
 
 				$term_rules = RuleBuilder::newTermsBuilder();
