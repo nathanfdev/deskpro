@@ -65,6 +65,10 @@ class TicketTerms
 	{
 		foreach ($this->terms as $info) {
 
+			if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
+				continue;
+			}
+
 			$term = $info['type'];
 			if (!$term) continue;
 

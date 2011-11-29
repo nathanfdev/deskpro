@@ -163,6 +163,13 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
+						<dt class="prop type-labels">{{ phrase('agent.label_labels') }}:</dt>
+						<dd class="prop ticket-tags tags-wrap">
+							<ul data-label-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}"></ul>
+						</dd>
+					</dl>
+
+					<dl class="fieldprop ticket_category" style="display: none">
 						<dt class="prop">Category</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-category.html.twig' with {
@@ -172,37 +179,59 @@ pageMeta.baseId = '{{ baseId }}';
 								'with_blank': true
 							} %}
 						</dd>
+					</dl>
 
+					<dl class="fieldprop ticket_priority" style="display: none">
 						<dt class="prop">Priority</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-priority.html.twig' with {
 								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
+								'add_classname': 'ticket_priority',
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
 							} %}
 						</dd>
+					</dl>
 
+					<dl class="fieldprop ticket_workflow" style="display: none">
 						<dt class="prop">Workflow</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
+								'add_classname': 'ticket_workflow',
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
 							} %}
 						</dd>
+					</dl>
 
+					<dl class="fieldprop ticket_product" style="display: none">
 						<dt class="prop">Product</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-product.html.twig' with {
 								'name': "newticket[product_id]",
-								'id': baseId ~ '_work',
+								'id': baseId ~ '_prod',
+								'add_classname': 'ticket_product',
 								'products': ticket_options.products_hierarchy,
 								'with_blank': true
 							} %}
 						</dd>
 					</dl>
+
+					{% if custom_fields %}
+						{% for f in custom_fields %}
+							<div class="fieldprop ticket-field ticket-field-{{f.field_def.id}}" style="display: none">
+								<dl>
+									<dt class="prop">{{f.title}}</dt>
+									<dd class="porp">
+										{{ render_custom_field_form(f) }}
+									</dd>
+								</dl>
+							</div>
+						{% endfor %}
+					{% endif %}
 				</div>
 				{# /Tab Properties #}
 

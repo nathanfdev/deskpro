@@ -250,17 +250,50 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.openSnippetsViewer();
 		});
 
+		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay();
+		function updateFields() {
+			$('.fieldprop', self.wrapper).hide();
+			var fieldDisplay = fieldDisplayFetch.getFields($('select.department_id', self.wrapper).val());
+
+			Object.each(fieldDisplay, function(fields, section) {
+				console.log(fields);
+				Array.each(fields, function(f) {
+					console.log(f);
+					if (f.item_type == 'ticket_field') {
+						var classname = 'ticket-field-' + f.item_id;
+					} else {
+						var classname = f.item_type;
+					}
+
+					$('.' + classname, self.wrapper).show();
+				});
+			});
+		};
+
 		var depOb = new DeskPRO.UI.OptionBoxBuilder({
 			values: this.getEl('dep'),
 			noValText: 'Choose a department',
-			title: 'Department'
+			title: 'Department',
+			onClose: function() {
+				updateFields();
+			}
 		});
+
 		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('status'),
 			title: 'Status'
 		});
 
 		this.loadSnippetsViewer();
+
+		// Tags
+		this.labelsList = $(".ticket-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'tickets',
+			list: this.labelsList
+		});
+		this.ownObject(this.labelsInput);
 	},
 
 	loadSnippetsViewer: function() {

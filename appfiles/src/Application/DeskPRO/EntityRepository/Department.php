@@ -162,6 +162,17 @@ class Department extends EntityRepository
 	 */
 	public function getIdsInTree($parent_id, $incude_top = true)
 	{
+		if (is_object($parent_id)) {
+			$parent_id = $parent_id->id;
+		} else if (is_array($parent_id)) {
+			$ids = array();
+			foreach ($parent_id as $pid) {
+				$ids = array_merge($ids, $this->getIdsInTree($pid, $incude_top));
+			}
+
+			return $ids;
+		}
+
 		$ids = array();
 		if ($incude_top AND $parent_id) {
 			$ids[] = $parent_id;
@@ -169,7 +180,13 @@ class Department extends EntityRepository
 
 		$deps = $this->getDepartmentsInHierarchy();
 		if ($parent_id) {
-			if (empty($deps[$parent_id]) OR empty($deps[$parent_id]['children'])) return $ids; // $ids because it'll have top if requested with $include_top
+			if (
+				empty($deps[$parent_id])
+				OR
+				empty($deps[$parent_id]['children'])
+			) {
+				return $ids; // $ids because it'll have top if requested with $include_top
+			}
 			$deps = $deps[$parent_id]['children'];
 		}
 

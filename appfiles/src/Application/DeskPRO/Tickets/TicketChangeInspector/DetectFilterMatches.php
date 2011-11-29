@@ -179,7 +179,7 @@ class DetectFilterMatches
 				if (isset($team2agents[$filter->agent_team->id])) {
 					$agent_scopes = array();
 					foreach ($team2agents[$filter->agent_team->id] as $id) {
-						$agent_scopes[] = $all_agents[$id];
+						if (isset($all_agents[$id])) $agent_scopes[] = $all_agents[$id];
 					}
 				}
 			} elseif ($filter->person) {

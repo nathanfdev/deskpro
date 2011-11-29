@@ -1373,10 +1373,19 @@ class TicketController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		$ticket = new \Application\DeskPRO\Entity\Ticket();
+		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
 			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
 		));
 	}
 
@@ -1392,8 +1401,22 @@ class TicketController extends AbstractController
 			$form->isValid();
 
 			$newticket->save();
-
 			$ticket = $newticket->getTicket();
+
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->request->request->get('custom_fields', array());
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $ticket);
+			}
+
+			$this->em->flush();
+
+			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+			if ($labels) {
+				$ticket->getLabelManager()->setLabelsArray($labels);
+			}
+
+			$this->em->flush();
 
 			$comment_type   = $this->in->getString('for_comment_type');
 			$comment_id     = $this->in->getUint('for_comment_id');
