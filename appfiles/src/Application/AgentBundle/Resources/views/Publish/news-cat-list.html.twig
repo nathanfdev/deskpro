@@ -6,7 +6,7 @@
 		<span class="edit-cat">edit</span>
 		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}></span>
 		<span class="sub-toggle">expand</span>
-		<span class="title" data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
+		<span class="title is-nav-item" data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
 			<span class="list-counter"
 				id="news_cat_count_{{ cat.id }}"
 				data-count="{{ counts[cat.id]|default(0) }}"
