@@ -18,9 +18,14 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			row.appendTo(list);
 		});
 
+		var getReplyController = function() {
+			return $('.ticket-reply-form', self.el.data('replybox-container')).data('handler');
+		};
+
 		this.el.on('click', '.remove-row-trigger', function(ev) {
 			var row = $(this).closest('li');
 			var personId = row.data('person-id');
+			var email = row.data('email-address');
 
 			if (personId) {
 				$.ajax({
@@ -36,6 +41,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				});
 
 				row.fadeOut('fast');
+
+				var trb = getReplyController();
+				trb.removeCc(email);
 			}
 
 			row.fadeOut('fast', function() {
@@ -62,6 +70,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 					var li = $(html);
 
 					li.appendTo(list);
+
+					var email = li.data('email-address');
+					var trb = getReplyController();
+					trb.addCc(email);
+
 					row.remove();
 				}
 			});

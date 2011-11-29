@@ -26,7 +26,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 		});
-
 		//------------------------------
 		// Expanding cc row
 		//------------------------------
@@ -262,6 +261,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	getElById: function(id) {
 		var el = $('#' + this.baseId + '_' + id);
 		return el;
+	},
+
+	addCc: function(email) {
+		var input = $('.token-input input', this.getElById('cc_input'));
+		input.val(email).focus().blur();
+	},
+
+	removeCc: function(email) {
+		$('.token-x', this.getElById('cc_input')).each(function() {
+			if ($(this).data('for-value') == email) {
+				$(this).click();
+			}
+		});
 	},
 
 	destroy: function() {

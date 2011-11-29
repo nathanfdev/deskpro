@@ -142,6 +142,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
 						data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
 						data-add-trigger="#{{baseId}}_new_cc_user"
+						data-replybox-container="#{{baseId}}_replybox_wrap"
 					>
 						<ul>
 							{% for part in user_parts %}

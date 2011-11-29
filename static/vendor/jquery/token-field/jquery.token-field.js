@@ -165,7 +165,7 @@
       return "<a href='#' class='token'><span><span><span><span>"
               + text
               + (settings.nested ? "<input type='hidden' value='"+text+"' name='"+name+"'/>" : "")
-              + "<span href='#' class='token-x'>x</span></span></span></span></span></a>";
+              + "<span href='#' class='token-x' data-for-value=\"" + Orb.escapeHtml(text) + "\">x</span></span></span></span></span></a>";
     }
 
     return this.each(function(){
