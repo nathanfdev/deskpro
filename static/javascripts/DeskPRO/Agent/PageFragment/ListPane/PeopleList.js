@@ -131,6 +131,23 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.ownObject(this.massActionsMenu);
 
 		this.enableHighlightOpenRows('person', 'person_id', 'article.person-');
+
+		var opt = {
+			resultIds: this.meta.peopleResultIds,
+			perPage: this.meta.perPage || 50
+		};
+		if (this.meta.viewType == 'list') {
+			opt.resultRowSelector = 'tr.row-item';
+			opt.resultsContainer = $('.table-result-list table', el);
+			opt.navEl = $('.bottom-action-bar', el);
+		}
+		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
+		this.ownObject(this.resultsHelper);
+
+		// We dont need them anymore, and resultsHelper
+		// has its own strucutred array anyway,
+		// since it could be large we can delete it from memory
+		delete this.meta.peopleResultIds;
 	},
 
 	destroyPage: function() {

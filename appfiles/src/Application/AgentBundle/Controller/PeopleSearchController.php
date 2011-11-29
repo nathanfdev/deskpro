@@ -136,6 +136,35 @@ class PeopleSearchController extends AbstractController
 		}
 	}
 
+	/**
+	 * Render a new pageset.
+	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+	 */
+	public function getPeoplePageAction()
+	{
+		$person_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
+		$person_ids = Arrays::removeFalsey($person_ids);
+		$person_ids = array_unique($person_ids);
+
+		$people = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($person_ids);
+		$people = Arrays::orderIdArray($person_ids, $people);
+
+		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+
+		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+
+		$tpl = 'list-page.html.twig';
+		if ($this->in->getString('view_type') == 'list') {
+			$tpl = 'list-page.html.twig';
+		}
+
+		return $this->render("AgentBundle:PeopleSearch:$tpl", array(
+			'people'           => $people,
+			'display_fields'    => $display_fields,
+			'person_field_defs' => $person_field_defs,
+		));
+	}
+
 
 	############################################################################
 	# search
@@ -248,6 +277,7 @@ class PeopleSearchController extends AbstractController
 		$vars = array(
 			'cache' => $result_cache,
 			'cache_id' => $result_cache['id'],
+			'person_ids' => $results,
 			'terms_summary' => $result_cache->getExtraData('terms_summary')
 		);
 

@@ -316,6 +316,10 @@ agent_peoplesearch_customfilter:
   pattern: /people-search/search
   defaults: { _controller: AgentBundle:PeopleSearch:search }
 
+agent_peoplesearch_getpage:
+  pattern: /people-search/get-page
+  defaults: { _controller: AgentBundle:PeopleSearch:getPeoplePage }
+
 agent_peoplesearch_performquick:
   pattern: /people-search/search-quick
   defaults: { _controller: AgentBundle:PeopleSearch:performQuickSearch }
