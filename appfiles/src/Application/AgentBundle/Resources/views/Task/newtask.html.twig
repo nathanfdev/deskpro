@@ -31,15 +31,17 @@ pageMeta.baseId = '{{ baseId }}';
 				<li class="noval opt-trigger assigned_agent"><label>Me</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger date_due"><label>No due date</label><span class="drop-icon"></span></li>
 			</ul>
-			<span class="linked-ticket" style="display:none">
-				Task linked to: Ticket "<label></label>"
-				<span class="btn-small-delete remove-link-trigger"></span>
-			</span>
+			<div class="linked-container" style="display:none">
+				<span class="linked-ticket" style="display:none">
+					<span class="btn-small-delete remove-link-trigger"></span>
+					Task linked to: Ticket "<label></label>"
+				</span>
 
-                        <span class="linked-deal" style="display:none">
-				Task linked to: Deal "<label></label>"
-				<span class="btn-small-delete remove-link-trigger"></span>
-			</span>
+				 <span class="linked-deal" style="display:none">
+					<span class="btn-small-delete remove-link-trigger"></span>
+					Task linked to: Deal "<label></label>"
+				</span>
+			</div>
 		</div>
 	</div>
 </script>

@@ -121,10 +121,11 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 						nolink = true;
 						linkEl.hide();
 						$('input.input-ticket-id', row).val(0);
+						$('.linked-container', row).hide();
 					});
 				}
 
-                                activeTab = DeskPRO_Window.getTabWatcher().getActiveTabIfType('deal');
+				activeTab = DeskPRO_Window.getTabWatcher().getActiveTabIfType('deal');
 				if (activeTab) {
 					linkEl = $('.linked-deal', row);
 					$('label', linkEl).text(activeTab.page.meta.title);
@@ -134,9 +135,13 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 						nolink = true;
 						linkEl.hide();
 						$('input.input-ticket-id', row).val(0);
+						$('.linked-container', row).hide();
 					});
 				}
 
+				if (linkEl) {
+					$('.linked-container', row).show();
+				}
 			}
 
 			rowContainer.append(row);

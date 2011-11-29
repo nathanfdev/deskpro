@@ -4202,8 +4202,18 @@ ul.agent-parts-link li {
 
 
 .page-task-new .task-row .task-info {
+}
+
+.page-task-new .task-row .task-info .linked-container {
+    border-top: 1px dotted #999999;
+    padding: 0 5px 0 8px;
+	clear: left;
+}
+
+.page-task-new .task-row .task-info ul {
 	height: 16px;
 }
+
 .page-task-new .task-row .task-info ul li {
 	float: left;
 	font-size: 10px;
@@ -4228,12 +4238,8 @@ ul.agent-parts-link li {
 	right: -6px;
 }
 
-.page-task-new .task-row .linked-ticket {
-	float: right;
-}
-
-.page-task-new .task-row .linked-ticket .remove-link-trigger {
-	margin: 0 3px 0 5px;
+.page-task-new .task-row .task-info .linked-container .remove-link-trigger {
+	margin: 0 5px 0 0;
 	position: relative;
 	top: 1px;
 	opacity: 0.6;
