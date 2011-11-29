@@ -34,12 +34,15 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 
 		$('.clone-trend').on('click', function() {
 			var href = $(this).attr('href');
+			// Show the overlay
+			self.cloneOverlay.open();
+			$('#clone_overlay_wrapper .overlay-loader').css('display', 'block');
 			$.ajax({
 				url: href,
 				type: 'GET',
 				success: function(data) {
 					$('#clone_overlay_wrapper .overlay-content').html(data);
-					self.cloneOverlay.open();
+					$('#clone_overlay_wrapper .overlay-loader').css('display', 'none');
 				}
 			});
 
@@ -48,12 +51,15 @@ DeskPRO.Report.PageHandler.Trend = new Orb.Class({
 
 		$('.edit-trend').on('click', function() {
 			var href = $(this).attr('href');
+			// Show the overlay
+			self.editOverlay.open();
+			$('#edit_overlay_wrapper .overlay-loader').css('display', 'block');
 			$.ajax({
 				url: href,
 				type: 'GET',
 				success: function(data) {
 					$('#edit_overlay_wrapper .overlay-content').html(data);
-					self.editOverlay.open();
+					$('#edit_overlay_wrapper .overlay-loader').css('display', 'none');
 				}
 			});
 

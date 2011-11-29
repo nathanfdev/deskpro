@@ -102,6 +102,8 @@
 		}
 
 		$('#clone_trend_save').click(function(ev) {
+			$('#clone_overlay_wrapper .overlay-loader').css('display', 'block');
+
 			ev.preventDefault();
 			ev.stopPropagation();
 
