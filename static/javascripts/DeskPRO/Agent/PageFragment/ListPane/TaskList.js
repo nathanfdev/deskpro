@@ -31,7 +31,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				els.push(document.getElementById('tasks_counter_team_total'));
 				checksub('tasks_counter_team');
 			}
-			if (row.data('in-my-teams')) {
+			if (row.data('in-delegated')) {
 				els.push(document.getElementById('tasks_counter_delegated_total'));
 				checksub('tasks_counter_delegated');
 			}
