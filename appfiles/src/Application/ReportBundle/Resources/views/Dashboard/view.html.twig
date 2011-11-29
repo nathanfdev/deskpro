@@ -70,18 +70,24 @@ function _page_exec() {
 		<div class="overlay-content">
 
 		</div>
+		<div class="overlay-loader">
+			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="Loading..." />
+		</div>
 		<div class="overlay-footer">
 
 		</div>
 	</div>
 
-        <div id="fullscreen_overlay_wrapper" style="display: none; height: 100%; width: 100%;">
+	<div id="fullscreen_overlay_wrapper" style="display: none; height: 100%; width: 100%;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4>View Chart</h4>
 		</div>
 		<div class="overlay-content" id="fullscreen_overlay_wrapper_content" style="padding: 0">
 
+		</div>
+		<div class="overlay-loader">
+			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="Loading..." />
 		</div>
 		<div class="overlay-footer">
 
@@ -96,8 +102,8 @@ function _page_exec() {
 				<tr>
 					<th width="16"></th>
 					<th>Title</th>
-                                        <th width="100">Group By</th>
-                                        <th width="100">Updates</th>
+					<th width="100">Group By</th>
+					<th width="100">Updates</th>
 					<th width="100">Author</th>
 					<th width="16" class="icon"></th>
 				</tr>
@@ -107,8 +113,8 @@ function _page_exec() {
 					<tr>
 						<td class="{{stat.starred ? 'starred' : ''}}"></td>
 						<td>{{stat.title}}</td>
-                                                <td>{{ stat.getGroupingName }} </td>
-                                                <td class="period">{{ stat.period }}</td>
+						<td>{{ stat.getGroupingName }} </td>
+						<td class="period">{{ stat.period }}</td>
 						<td>{{stat.authorName}}</td>
 						<td class="icon"><a href="{{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="Add Chart" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="[Add]"/></a></td>
 					</tr>

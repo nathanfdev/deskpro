@@ -268,16 +268,21 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var widget_index = this.getWidgetIndexByElementId(element_id);
 		var widget       = this.widgets[widget_index];
 
-		// Destroy the widget
-		$.ajax({
-			url: DeskPRO_Window.getUrl('report_dashboard_ajaxdeletewidget', {dashboard_id: this.dashboard_id, dashboard_stat_id: widget.widget.widget_id}),
-			dataType: 'json',
-			type: 'GET',
-			success: function(data) {
-				self.$dashboard.find('li#' + element_id).remove();
-				self.widgets.splice(widget_index, 1);
-			}
-		});
+		if (confirm('Are you sure you want to delete this chart?')) {
+			// Destroy the widget
+			$.ajax({
+				url: DeskPRO_Window.getUrl('report_dashboard_ajaxdeletewidget', {dashboard_id: this.dashboard_id, dashboard_stat_id: widget.widget.widget_id}),
+				dataType: 'json',
+				type: 'GET',
+				success: function(data) {
+					self.$dashboard.find('li#' + element_id).remove();
+					self.widgets.splice(widget_index, 1);
+				}
+			});
+		}
+		else {
+			return false;
+		}
 
 	},
 
@@ -420,6 +425,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var self = this;
 
 		$('#dashboard_widget_select a.add-chart').on('click', function() {
+			// Set the edit content
+			$('#overlay_wrapper .overlay-loader').css('display', 'block');
+
 			var href = $(this).attr('href');
 			$.ajax({
 				url: href,
@@ -427,6 +435,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					$('#overlay_wrapper .overlay-content').html(data.html);
+					$('#overlay_wrapper .overlay-loader').css('display', 'none');
 
 					var form = $('#dashboard_widget_new_form');
 					self.saveNewWidget(form);
@@ -474,6 +483,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var self = this;
 
 		form.submit(function() {
+			$('#overlay_wrapper .overlay-loader').css('display', 'block');
+
 			var postData = form.serializeArray();
 
 			$.ajax({
@@ -484,6 +495,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				success: function(data) {
 
 					// Close the overlay
+					$('#overlay_wrapper .overlay-loader').css('display', 'none');
 					self.closeOverlay();
 
 					// Insert the new widget
@@ -509,6 +521,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var self = this;
 
 		form.submit(function() {
+			$('#overlay_wrapper .overlay-loader').css('display', 'block');
+
 			var postData = form.serializeArray();
 
 			$.ajax({
@@ -519,6 +533,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				success: function(data) {
 
 					// Close the overlay
+					$('#overlay_wrapper .overlay-loader').css('display', 'none');
 					self.closeOverlay();
 
 					// Update the new widget
@@ -557,6 +572,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Set handler to process click events, we want to display an overlay
 		$("#dashboard-new-placeholder-link").on('click', function() {
+			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
 			self.openOverlay($.tmpl('dashboard_widget_select'));
 			self.addAddChartUIHandlers();
 
