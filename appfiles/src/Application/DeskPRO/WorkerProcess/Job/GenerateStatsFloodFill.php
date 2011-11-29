@@ -34,7 +34,7 @@ class GenerateStatsFloodFill extends AbstractJob
 	 *
 	 * @var int
 	 */
-	protected $flood_fill_count = 10;
+	protected $flood_fill_count = 50;
 
 	public function run()
 	{
