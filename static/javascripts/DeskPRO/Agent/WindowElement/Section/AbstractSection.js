@@ -32,6 +32,25 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this._isVisible = false;
 
 		this.init();
+
+		// Simulate instant switching when clicking nav items
+		var self = this;
+		this.getSectionElement().on('click', '[data-route]', function(ev) {
+			self.highlightNavItem($(this));
+		});
+	},
+
+	highlightNavItem: function(el) {
+
+		if (!el.is('.is-nav-section')) {
+			var el = el.closest('.is-nav-item');
+			if (!el) {
+				return;
+			}
+		}
+
+		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');
+		el.addClass('nav-selected');
 	},
 
 	/**

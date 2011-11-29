@@ -8,7 +8,7 @@
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_people_list">
-			<li class="people nav-people">
+			<li class="people nav-people is-nav-item">
 				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 					<span class="list-counter">{{ people_count }}</span>
 					{{ phrase('agent.people') }}
@@ -17,7 +17,7 @@
 
 			{% for id,title in usergroup_names %}
 				<li
-					class="usergroup-{{id}} nav-usergroup-{{id}}"
+					class="usergroup-{{id}} nav-usergroup-{{id}} is-nav-item"
 					data-usergroup-id="{{id}}"
 					data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 				>
@@ -39,7 +39,7 @@
 		<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_tagcloud">
 			<ul>
 				{% for label,css_class in people_tag_cloud %}
-					<li class="{{css_class}} nav-label-{{label|slugify}}" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><span>{{label}}</span></li>
+					<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><span>{{label}}</span></li>
 				{% else %}
 					<li>You haven't labeled any tickets. Load a ticket to label it.</li>
 				{% endfor %}
@@ -54,7 +54,7 @@
 					<dd>
 						<ul>
 							{% for label in labels %}
-								<li><span data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
+								<li class="is-nav-item"><span data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 							{% endfor %}
 						</ul>
 					</dd>
@@ -75,7 +75,7 @@
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_org_list">
-			<li class="people nav-people">
+			<li class="people nav-people is-nav-item">
 				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
 					<span class="list-counter">{{ org_count|default('0') }}</span>
 					{{ phrase('agent.organizations') }}
@@ -84,7 +84,7 @@
 
 			{% for id,title in usergroup_names %}
 				<li
-					class="usergroup-{{id}} nav-usergroup-org-{{id}}"
+					class="usergroup-{{id}} nav-usergroup-org-{{id}} is-nav-item"
 					data-usergroup-id="{{id}}"
 					data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
 				>
@@ -106,7 +106,7 @@
 		<section class="source-labels-cloud deskpro-tab-item on" id="people_outline_org_tagcloud">
 			<ul>
 				{% for label,css_class in org_tag_cloud %}
-					<li class="{{css_class}}"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
+					<li class="{{css_class}} is-nav-item"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 				{% else %}
 					<li>{{ phrase('agent.no_people_labels') }}</li>
 				{% endfor %}
@@ -120,7 +120,7 @@
 					<dd>
 						<ul>
 							{% for label in labels %}
-								<li><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
+								<li class="is-nav-item"><span data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</span></li>
 							{% endfor %}
 						</ul>
 					</dd>
