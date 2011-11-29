@@ -594,7 +594,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var self = this;
 
-		$('#fullscreen_overlay_wrapper .overlay-content').html('');
+		$('#fullscreen_overlay_wrapper .overlay-content #fullscreen_overlay_wrapper_content').html('');
 
 		var chart = widget.getContent();
 
