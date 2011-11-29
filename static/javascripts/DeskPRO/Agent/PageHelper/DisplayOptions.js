@@ -117,12 +117,22 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var data = [];
 		var pref_name = 'prefs[agent.ui.'+ this.options.prefId + '-display-fields.' + this.options.resultId +'][]';
 
+		var has = false;
+
 		$('input[type="checkbox"]:checked', wrap).each(function() {
+			has = true;
 			data.push({
 				name: pref_name,
 				value: $(this).attr('name')
 			});
 		});
+
+		if (!has) {
+			data.push({
+				name: pref_name,
+				value: 'NONE'
+			});
+		}
 
 		// and the ordering
 		data.push({
