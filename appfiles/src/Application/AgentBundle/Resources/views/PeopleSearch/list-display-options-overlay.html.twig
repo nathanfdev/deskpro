@@ -1,34 +1,19 @@
-<div class="display-options overlay">
-	<div class="overlay-title">
-		<h4>{{ phrase('agent.display_options') }}</h4>
+{% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block other_options %}
+	<div style="display: none">
+		Order By: <select name="order_by" class="sel-order-by">
+			<option value="person.id:desc" class="people_id">Date Craeted (Newest-Oldest)</option>
+			<option value="person.id:asc">Date Craeted (Oldest-Newest)</option>
+			<option value="person.name:asc" class="people_name">Name (A-Z)</option>
+			<option value="person.name:desc">Name (Z-A)</option>
+		</select>
 	</div>
-	<div class="overlay-content">
-		<div style="float: right;">
-			Order By: <select name="order_by" class="sel-order-by">
-				<option value="person.id:desc" class="people_id">Date Craeted (Newest-Oldest)</option>
-				<option value="person.id:asc">Date Craeted (Oldest-Newest)</option>
-				<option value="person.name:asc" class="people_name">Name (A-Z)</option>
-				<option value="person.name:desc">Name (Z-A)</option>
-			</select>
-		</div>
-		<div style="margin-right: 250px;">
-			<strong>{{ phrase('agent.display_elements') }}</strong><br />
-			<ul class="sortable-list">
-				<li data-field="email_address"><input type="checkbox" name="email_address" /> {{ phrase('agent.email') }}</li>
-				<li data-field="organization"><input type="checkbox" name="organization" /> {{ phrase('agent.organization') }}</li>
-				<li data-field="language"><input type="checkbox" name="language" /> {{ phrase('agent.language') }}</li>
-				{% for f in person_field_defs %}
-					<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> {{f.title}}</li>
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
-	<div class="overlay-actions">
-		<div class="loading-off">
-			<button class="save-trigger dp-button small">{{ phrase('agent.save') }}</button>
-		</div>
-		<div class="loading-on" style="display:none">
-			<span>{{ phrase('agent.loading_saving') }}</span>
-		</div>
-	</div>
-</div>
+{% endblock %}
+{% block display_elements_list %}
+	<li data-field="email_address"><input type="checkbox" name="email_address" {% if 'email_address' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.email') }}</li>
+	<li data-field="organization"><input type="checkbox" name="organization" {% if 'organization' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.organization') }}</li>
+	<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.language') }}</li>
+	{% for f in person_field_defs %}
+		<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> {{f.title}}</li>
+	{% endfor %}
+{% endblock %}

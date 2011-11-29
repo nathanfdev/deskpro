@@ -66,6 +66,7 @@
 	'agent.to' => 'To',
 	'agent.priority' => 'Priority',
 	'agent.workflow' => 'Workflow',
+	'agent.language' => 'Language',
 	'agent.flag' => 'Flag',
 	'agent.user_waiting' => 'User Waiting',
 	'agent.notes' => 'Notes',

@@ -258,6 +258,9 @@ class PeopleSearchController extends AbstractController
 		$pref_display_fields = $this->person->getPref('agent.ui.people-filter-display-fields.' . $result_cache['id']);
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			$pref_display_fields = $this->person->getPref('agent.ui.people-filter-display-fields.0');
+			$vars['display_fields'] = $pref_display_fields;
 		}
 
 		if ($this->in->getString('page_title')) {

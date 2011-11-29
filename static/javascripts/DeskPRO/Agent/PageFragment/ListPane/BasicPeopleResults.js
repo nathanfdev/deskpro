@@ -121,33 +121,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Orb.Class({
 			});
 		}
 
-		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
-		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
-
-		this.displayOptionsOverlay = new DeskPRO.UI.Overlay({
-			contentElement: overlay_wrapper,
-			triggerElement: $('.display-options-trigger', this.contentWrapper),
-			onContentSet: function(eventData) {
-				$('ul.sortable-list', eventData.wrapperEl).sortable({
-					'axis': 'y'
-				});
-			}
+		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'people-' + this.resultTypeName,
+			resultId: this.resultId,
+			refreshUrl: this.meta.refreshUrl,
+			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
-		this.ownObject(this.displayOptionsOverlay);
-
-		$('.close-trigger', overlay_wrapper).on('click', (function() {
-			this.displayOptionsOverlay.closeOverlay();
-		}).bind(this));
-
-		$('.save-trigger', overlay_wrapper).on('click', (function() {
-			this.saveDisplayOptions();
-		}).bind(this));
-
-		// Set default checked values based on table
-		var self = this;
-		$('.list thead th', this.contentWrapper).each(function() {
-			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
-		});
+		this.ownObject(this.displayOptions);
 
 		$('.detail-view-trigger', this.wrapper).on('click', (function() {
 			this.switchViewType('list');

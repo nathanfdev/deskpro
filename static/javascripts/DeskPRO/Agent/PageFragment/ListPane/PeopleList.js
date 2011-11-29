@@ -31,7 +31,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'people-filter',
-			resultId: this.resultTypeId,
+			resultId: this.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
 		this.ownObject(this.displayOptions);
