@@ -105,6 +105,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.wrapper = this.wrapperEl.clone();
 		this._hasInit = false;
 
+		this.hasAnyChange = false;
+
 		if (wasopen) {
 			this.open();
 		}
@@ -345,6 +347,9 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			var basename = 'actions_set['+x+']';
 			self.actionsEditor.addNewRow($('.search-terms', actList), basename);
 		});
+
+		$('select, :radio, :checkbox', this.wrapper).on('change', function() { self.hasAnyChange = true; });
+		$('input, textarea', this.wrapper).on('change keypress', function() { self.hasAnyChange = true; });
 	},
 
 	updateAssignmentsDisplay: function() {
@@ -532,6 +537,11 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	 * Updates the listing with a preview of the changes we're making
 	 */
 	updatePreview: function(specific_id, force) {
+
+		// No changes detected
+		if (!this.hasAnyChange) {
+			return;
+		}
 
 		// No previews on list view
 		if (this.options.isListView) {
@@ -724,6 +734,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
+				self.hasAnyChange = true;
+
 				console.log(data);
 				if (!data.macro_actions) {
 					return;
@@ -813,7 +825,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.updateCount(null);
 		this.wrapper.addClass('open');
 
-		this.updatePreview();
+		//this.updatePreview();
 	},
 
 
