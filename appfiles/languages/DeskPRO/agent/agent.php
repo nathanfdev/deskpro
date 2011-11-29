@@ -313,7 +313,7 @@
 	'agent.assignments' => 'Assignments',
 	'agent.assign_team' => 'Assign Team',
 	'agent.assign_agent' => 'Assign Agent',
-	'agent.add_follower' => 'Add Followers',
+	'agent.add_followers' => 'Add Followers',
 	'agent.reply' => 'Reply',
 	'agent.note' => 'Note',
 	'agent.dont_change_agent' => 'Do not change agent',
