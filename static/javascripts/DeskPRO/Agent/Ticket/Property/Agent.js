@@ -26,10 +26,12 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 
 		if (value == 0) {
 			el.text('Unassigned');
+			el.data('agent-id', 0);
 			el.css('background-image', '');
 		} else {
 			var agentInfo = DeskPRO_Window.getAgentInfo(value);
 			el.text(agentInfo.name);
+			el.data('agent-id', agentInfo.id);
 			el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
 		}
 

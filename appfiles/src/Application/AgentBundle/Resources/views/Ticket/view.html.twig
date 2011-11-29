@@ -132,19 +132,21 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						</a>
 						<div class="clear"></div>
 					</dd>
+				</dl>
+				<dl>
 
-					<dt>CC</dt>
+					<dt>CC <span id="{{baseId}}_new_cc_user" class="btn-small-add"></span></dt>
 					<dd
 						class="cc-row"
 						data-element-handler="DeskPRO.Agent.ElementHandler.TicketCcManage"
 						data-add-url="{{ path('agent_ticket_addpart', {'ticket_id': ticket.id}) }}"
 						data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+						data-add-trigger="#{{baseId}}_new_cc_user"
 					>
 						<ul>
 							{% for part in user_parts %}
 								{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person } %}
 							{% endfor %}
-							<li class="newrow"><span class="btn-small-add"></span>Add a new user</li>
 						</ul>
 						<script type="text/x-deskpro-plain" class="addrow-tpl">
 							<li class="addrow">
@@ -170,21 +172,21 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<section id="{{baseId}}_people_box_agent">
 			<article>
 				<dl>
-					<dt>{{ phrase('agent.assigned') }}</dt>
-					<dd>
-						<span class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default('Unassigned') }}</span>
+					<dt class="agent-row">{{ phrase('agent.assigned') }}</dt>
+					<dd class="agent-row">
+						<span class="agent-link agent-icon prop-agent-id" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default('Unassigned') }}</span>
 					</dd>
 
-					<dt>{{ phrase('agent.team') }}</dt>
-					<dd>
+					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.team') }}</dt>
+					<dd class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>
 						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default('None') }}</span>
 					</dd>
 
-					<dt>{{ phrase('agent.followers') }}</dt>
-					<dd>
-						<ul id="{{baseId}}_followers_list">
-							{% for agent in agent_parts %}
-								<li><span>{{ agent.person.display_name }}</span></li>
+					<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.followers') }}</dt>
+					<dd class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>
+						<ul id="{{baseId}}_followers_list" class="comma-list">
+							{% for part in agent_parts %}
+								<li><span class="agent-link" data-agent-id="{{ part.person.id }}">{{ part.person.display_name }}</span></li>
 							{% else %}
 								<li>No Followers</li>
 							{% endfor %}

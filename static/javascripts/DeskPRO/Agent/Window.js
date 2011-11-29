@@ -2107,6 +2107,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}, 120);
 
+		window.setTimeout(function() {
+			$(context).on('click', '.agent-link', function(ev) {
+				ev.stopPropagation();
+				ev.preventDefault();
+
+				var agentId = $(this).data('agent-id');
+				console.log('Agent click %i', agentId);
+				if (!agentId || agentId === '0' || agentId === '') {
+					return;
+				}
+
+				if (!DeskPRO_Window.sections.agent_chat_section) {
+					console.warn('The agent chat section is not enabled');
+					return;
+				}
+
+				DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
+			});
+		}, 300);
+
 		// Accept clicks on popovers
 		// Keeps track of which tabs have them open so they can be reused
 		window.setTimeout(function() {

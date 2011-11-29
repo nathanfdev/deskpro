@@ -85,11 +85,10 @@ span.user-link, a.user-link {
 	padding: 2px 0 2px 23px;
 }
 
-span.agent-link, a.agent-link {
+.agent-icon {
 	background-position: 0 50%;
 	background-repeat: no-repeat;
 	padding-left: 23px;
-	padding: 2px 0 2px 23px;
 }
 
 span.team-link, a.team-link {
@@ -108,6 +107,19 @@ strong.warning {
 	margin:  20px;
 	background:  url("../../images/spinners/loading-big-circle.gif") no-repeat 50% 50%;
 	height: 40px;
+}
+
+ul.comma-list > li {
+	display: inline;
+	padding-right: 5px;
+}
+
+ul.comma-list > li:after {
+	content: ",";
+}
+
+ul.comma-list > li:last-child:after {
+	content: "";
 }
 
 :-moz-placeholder{color:#bfbfbf !important;}
@@ -1306,6 +1318,13 @@ a.clean-white {
 	padding: 8px;
 }
 
+.agent-link {
+	cursor: pointer;
+}
+
+.agent-link:hover {
+	text-decoration: underline;
+}
 
 .btn-add {
 	.iconbase(16px, 16px);
@@ -1320,13 +1339,13 @@ a.clean-white {
 }
 
 .btn-small-add {
-	.iconbase(11px, 11px);
+	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/action-add.png) /** sprite-ref: ui-v; */;
 	cursor: pointer;
 }
 
 .btn-small-remove {
-	.iconbase(11px, 11px);
+	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/action-remove.png) /** sprite-ref: ui-v; */;
 	cursor: pointer;
 }

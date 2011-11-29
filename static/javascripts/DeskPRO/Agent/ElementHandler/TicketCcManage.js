@@ -4,16 +4,18 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {
-
+		var self = this;
 		var addUrl = this.el.data('add-url');
 		var deleteUrl = this.el.data('delete-url');
 
+
+		var list = $('ul', this.el).first();
 		var newrow = $('li.newrow', this.el);
 		var rowtpl = DeskPRO_Window.util.getPlainTpl($('.addrow-tpl', this.el));
 
-		newrow.on('click', function() {
+		$(this.el.data('add-trigger')).on('click', function() {
 			var row = $(rowtpl);
-			row.insertBefore(newrow);
+			row.appendTo(list);
 		});
 
 		this.el.on('click', '.remove-row-trigger', function(ev) {
@@ -59,7 +61,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				success: function(html) {
 					var li = $(html);
 
-					li.insertBefore(newrow);
+					li.appendTo(list);
 					row.remove();
 				}
 			});

@@ -51,7 +51,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
 
 					var li = $('<li />');
-					li.text(label);
+					var span = $('<span />');
+					span.addClass('agent-link');
+					span.data('agent-id', part_id);
+					span.text(label);
+					span.appendTo(li);
 
 					followersList.append(li);
 
@@ -71,24 +75,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					dataType: 'json',
 					data: postData
 				});
+
+				if (!agent_team_id) {
+					$('.team-row', self.getEl('people_box_agent')).hide();
+				} else {
+					$('.team-row', self.getEl('people_box_agent')).show();
+				}
+				if (!selections.followers.length) {
+					$('.followers-row', self.getEl('people_box_agent')).hide();
+				} else {
+					$('.followers-row', self.getEl('people_box_agent')).show();
+				}
 			}
 		});
 
 		var box1 = self.getEl('people_box_person');
 		var box2 = self.getEl('people_box_agent');
-		var syncSizes = function() {
-			var h1 = box1.height();
-			var h2 = box2.height();
+		var box1_in = $('> article', box1);
+		var box2_in = $('> article', box2);
 
-			if (h1 > h2) {
-				box2.css('min-height', h1);
-			} else {
-				box1.css('min-height', h2);
-			}
+		var syncSizes = function() {
+			var h1 = box1_in.height();
+			var h2 = box2_in.height();
+
+			var h = (h1 > h2) ? h1 : h2;
+
+			box2.css('min-height', h);
+			box1.css('min-height', h);
 		};
 
-		box1.on('resize', syncSizes);
-		box2.on('resize', syncSizes);
+		box1_in.on('resize', syncSizes);
+		box2_in.on('resize', syncSizes);
 		syncSizes();
 
 		//------------------------------
