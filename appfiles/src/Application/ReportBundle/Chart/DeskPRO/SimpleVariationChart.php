@@ -36,7 +36,7 @@ class SimpleVariationChart extends BaseAbstractChart
 	 */
 	public static function getChartLabel()
 	{
-		return 'Variation Chart';
+		return 'Difference Chart';
 	}
 
 	/***

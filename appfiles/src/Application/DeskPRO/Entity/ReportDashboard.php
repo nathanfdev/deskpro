@@ -28,7 +28,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	protected static $availableChartClasses = array(
 		// Am Charts
 		'Application\ReportBundle\Chart\AmChart\LineChart',
-		'Application\ReportBundle\Chart\AmChart\StackedLineChart',
+		//'Application\ReportBundle\Chart\AmChart\StackedLineChart',
 		'Application\ReportBundle\Chart\AmChart\ColumnChart',
 		'Application\ReportBundle\Chart\AmChart\StackedColumnChart',
 		'Application\ReportBundle\Chart\AmChart\PieChart',
@@ -123,15 +123,15 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return self::$availableChartClasses;
 	}
-	
+
 	/**
 	 * Get the index of a chart by its class name
 	 */
 	public static function getChartClassIndex($class)
 	{
-		return array_search($class, self::$availableChartClasses);	
+		return array_search($class, self::$availableChartClasses);
 	}
-	
+
 	/**
 	 * Get a list of available charts. Human friendly format
 	 *
