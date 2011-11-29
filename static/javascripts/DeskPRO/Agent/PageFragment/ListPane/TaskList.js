@@ -103,9 +103,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			var value = $(this).is(':checked');
 
 			if (value) {
-				$('.task-info', row).slideUp();
-				$('.task-comments', row).slideUp();
-				$('.new-comment', row).slideUp();
+				$('.task-sub-wrap', row).slideUp();
 				row.addClass('completed');
 
 				sendUpdate(row, 'completed', 1);
@@ -113,9 +111,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				updateCount('-', row);
 			} else {
 				row.removeClass('expanded');
-				$('.task-info', row).slideDown();
-				$('.task-comments', row).slideDown();
-				$('.new-comment', row).slideDown();
+				$('.task-sub-wrap', row).slideDown();
 				row.removeClass('completed');
 
 				sendUpdate(row, 'completed', 0);
@@ -176,16 +172,18 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		});
 
 		el.on('click', '.comment-btn', function(ev) {
-			var input = $(this).parent().find('.comment-input');
-			$(this).slideUp('fast', function() {
+			var row = $(this).closest('article.task');
+			var input = $('.new-comment', row);
+			if (input.is(':visible')) {
+				input.slideUp('fast');
+			} else {
 				input.slideDown('fast');
-			});
+			}
 		});
 		el.on('click', '.cancel-comment-trigger', function(ev) {
 			var row = $(this).closest('article.task');
 			var btn = $('.comment-btn', row);
-			$('.comment-input', row).slideUp('fast', function() {
-				btn.slideDown('fast');
+			$('.new-comment', row).slideUp('fast', function() {
 			});
 		});
 
@@ -195,8 +193,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 
 			var closefn = function() {
 				commentTxt.val('');
-				$('.comment-btn', row).show();
-				$('.comment-input', row).hide();
+				$('.new-comment', row).hide();
 			};
 
 			if (!commentTxt.val().trim().length) {

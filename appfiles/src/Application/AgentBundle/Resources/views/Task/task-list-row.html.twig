@@ -17,46 +17,50 @@
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
 		<h5>{{ task.title }}</h5>
 	</div>
-	<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
-		{% if task.task_associations|length %}
-			{% for assoc in task.task_associations %}
-				<span class="assoc">
-					{% if assoc['ticket'] is defined %}Ticket: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
-				</span>
-				<span class="assoc">
-					{% if assoc['deal'] is defined %}Deal: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.deal.id}) }}">{{ assoc.deal.title }}</a>{% endif %}
-				</span>
-			{% endfor %}
-		{% endif %}
-		<ul>
-			<li class="noval opt-trigger assigned_agent">
-				<label>
-					{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
-					{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
-					{% else %}Me{% endif %}
-				</label><span class="drop-icon"></span></li>
-			<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('Y-m-d') }}{% endif %}</label><span class="drop-icon"></span></li>
-		</ul>
-	</div>
-	<div class="task-comments notes-wrap" {% if not task.comments|length or task.is_completed %}style="display: none"{% endif %}>
-		<ul class="task-comment-list">
-			{% for comment in task.comments %}
-				{% include 'AgentBundle:Task:comment-li.html.twig' with {'comment': comment} %}
-			{% endfor %}
-		</ul>
-	</div>
-	<div class="new-comment" {% if task.is_completed %}style="display: none"{% endif %}>
-		<div class="comment-btn">
-			<span>Add new comment</span>
+	<div class="task-sub-wrap">
+		<div class="task-info" {% if task.is_completed %}style="display: none"{% endif %}>
+			<ul>
+				<li class="noval opt-trigger assigned_agent">
+					<label>
+						{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
+						{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
+						{% else %}Me{% endif %}
+					</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('Y-m-d') }}{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="comment-btn">
+						<label>{{ phrase('agent.add_comment') }}</label><span class="drop-icon"></span>
+					</li>
+			</ul>
 		</div>
-		<div class="comment-input" style="display: none">
-			<textarea placeholder="Enter your comment..."></textarea>
-			<div class="is-not-loading">
-				<button class="clean-white small save-comment-trigger">Add Comment</button>
-				or <span class="cancel-comment-trigger">cancel</span>
+		{% if task.task_associations|length %}
+			<div class="task-linked">
+				{% for assoc in task.task_associations %}
+					<span class="assoc">
+						{% if assoc['ticket'] is defined %}Linked Ticket: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
+					</span>
+					<span class="assoc">
+						{% if assoc['deal'] is defined %}Linked Deal: <a data-route="ticket:{{ path('agent_deal_view', {'deal_id': assoc.deal.id}) }}">{{ assoc.deal.title }}</a>{% endif %}
+					</span>
+				{% endfor %}
 			</div>
-			<div class="is-loading">
-				Adding comment
+		{% endif %}
+		<div class="task-comments notes-wrap" {% if not task.comments|length or task.is_completed %}style="display: none"{% endif %}>
+			<ul class="task-comment-list">
+				{% for comment in task.comments %}
+					{% include 'AgentBundle:Task:comment-li.html.twig' with {'comment': comment} %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="new-comment" style="display: none">
+			<div class="comment-input">
+				<textarea placeholder="Enter your comment..."></textarea>
+				<div class="is-not-loading">
+					<button class="clean-white small save-comment-trigger">{{ phrase('agent.add_comment') }}</button>
+					or <span class="cancel-comment-trigger">{{ phrase('agent.cancel') }}</span>
+				</div>
+				<div class="is-loading">
+					{{ phrase('agent.loading_saving') }}
+				</div>
 			</div>
 		</div>
 	</div>
