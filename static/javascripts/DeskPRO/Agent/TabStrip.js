@@ -315,7 +315,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				page.fireEvent('render', [container]);
 			},
 			callback_remove_content: function(data, container, tabManager) {
-				page.fireEvent('destroy');
+				if (data.isInserted && data.isInited) {
+					page.fireEvent('destroy');
+				}
 			},
 			callback_activate: function() {
 				page.fireEvent('activate');
@@ -331,9 +333,15 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	addTabPlaceholder: function(url, routeData) {
 		var html = DeskPRO_Window.util.getPlainTpl($('#tab_loading_template'));
 
+		routeData.noUpdateHash = true;
+
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
+
+		if (routeData.url_fragment) {
+			page.meta.url_fragment = routeData.url_fragment;
+		}
 
 		if (routeData.title) {
 			page.meta.title = routeData.title;
@@ -462,7 +470,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 			loadingTabData = this.getTabById(tabData.page.meta.tabPlaceholderId);
 			loadingTabData.isReplacing = true;
-			this.removeTabById(tabData.page.meta.tabPlaceholderId);
+
+			this.tabManager.removeTab(tabData.page.meta.tabPlaceholderId, true);
 
 			$('#' + btnId).replaceWith(li);
 
@@ -589,7 +598,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			}
 		}
 
-		DeskPRO_Window.updateWindowUrlFragment();
+		if (!tabData.page.meta.routeData.noUpdateHash) {
+			DeskPRO_Window.updateWindowUrlFragment();
+		}
 	},
 
 	_onTabRemove: function(tabData) {
@@ -615,6 +626,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		$('#' + tabData.btnId + '_mi');
 		this.recalculateScrolling();
 
-		DeskPRO_Window.updateWindowUrlFragment();
+		if (tabData.page.TYPENAME != 'loading') {
+			DeskPRO_Window.updateWindowUrlFragment();
+		}
 	}
 });

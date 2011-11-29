@@ -101,6 +101,10 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		this.tabs[id] = data;
 
+		var el = $(data.html).appendTo(this.containerEl);
+		data.isInserted = true;
+		data.isInited = false;
+
 		this.fireEvent('addTab', [data, this]);
 
 		if (!this.currentTabId || this.options.activateNew) {
@@ -134,50 +138,32 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 		}
 
 		var data = this.tabs[id];
+		var wrapper = $('#' + data.wrapperId).show();
 
-		//----------------------------------------
-		// If we kept data nodes, we can just reinsert them
-		//----------------------------------------
-
-		if (data.isInserted && data.hideMode == 'hide') {
-
-			console.log('Re-showing tab node: %s', id);
-
-			var wrapper = $('#' + data.wrapperId, this.containerEl).show();
-
-			if (data.callback_reinsert !== undefined) {
-				data.callback_reinsert(data, $('#' + data.wrapperId, this.containerEl), this);
-			}
-
-			this.fireEvent('activateTabReinsert', [data, wrapper, this]);
-
-
-		//----------------------------------------
-		// Otherwise we're re-rendering or inserting for the first time
-		//----------------------------------------
-
-		} else {
-			console.log('Rendering tab content: %s', id);
-
-			var el = $(data.html).appendTo(this.containerEl);
-			data.isInserted = true;
-
-			el.show();
+		if (!data.isInited) {
+			data.isInited = true;
 
 			if (data.callback_render !== undefined) {
-				data.callback_render(data, $('#' + data.wrapperId, this.containerEl), this);
+				data.callback_render(data, wrapper, this);
 			}
 
-			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId, this.containerEl), this]);
+			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
 		}
 
+		if (data.callback_reinsert !== undefined) {
+			data.callback_reinsert(data, wrapper, this);
+		}
+
+		this.fireEvent('activateTabReinsert', [data, wrapper, this]);
+
+
 		if (data.callback_activate !== undefined) {
-			data.callback_activate(data, this.containerEl, this);
+			data.callback_activate(data, wrapper, this);
 		}
 
 		this.currentTabId = id;
 
-		this.fireEvent('activateTab', [data, this.containerEl, this]);
+		this.fireEvent('activateTab', [data, wrapper, this]);
 
 		this.isActivating = false;
 
@@ -202,33 +188,17 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 		this.fireEvent('deactivateTabBefore', [data, this.containerEl, this.isActivating, this]);
 
 		if (data.callback_deactivate !== undefined) {
-			data.callback_deactivate(data, $('#' + data.wrapperId, this.containerEl), this);
+			data.callback_deactivate(data, $('#' + data.wrapperId), this);
 		}
 
-		// Removing
-		if (data.hideMode == 'remove') {
+		console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
+		$('#' + data.wrapperId).hide();
 
-			console.log('Removing tab content: %o', this.currentTabId);
-
-			$('#' + data.wrapperId, this.containerEl).remove();
-
-			data.isInserted = false;
-
-			if (data.callback_remove_content !== undefined) {
-				data.callback_remove_content(data, $('#' + data.wrapperId, this.containerEl), this);
-			}
-
-		// hide
-		} else {
-			console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
-			$('#' + data.wrapperId, this.containerEl).hide();
-
-			if (data.callback_hide_content !== undefined) {
-				data.callback_hide_content(data, $('#' + data.wrapperId, this.containerEl), this);
-			}
+		if (data.callback_hide_content !== undefined) {
+			data.callback_hide_content(data, $('#' + data.wrapperId), this);
 		}
 
-		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId, this.containerEl), this.isActivating, this]);
+		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId), this.isActivating, this]);
 
 		this.currentTabId = null;
 	},
@@ -240,7 +210,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 	 *
 	 * @param {String} id The tab ID
 	 */
-	removeTab: function(id) {
+	removeTab: function(id, silent) {
 
 		Tipped.hideAll();
 		(function() {
@@ -259,16 +229,18 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 		delete this.tabs[id];
 
 		if (data.callback_remove_content !== undefined) {
-			data.callback_remove_content(data, $('#' + data.wrapperId, this.containerEl), this);
+			data.callback_remove_content(data, $('#' + data.wrapperId), this);
 		}
 
-		$('#' + data.wrapperId, this.containerEl).remove();
+		$('#' + data.wrapperId).remove();
 
-		this.fireEvent('removeTab', [data, this]);
+		if (!silent) {
+			this.fireEvent('removeTab', [data, this]);
 
-		var last_tab_id = Object.keys(this.tabs).getLast();
-		if (last_tab_id) {
-			this.activateTab(last_tab_id);
+			var last_tab_id = Object.keys(this.tabs).getLast();
+			if (last_tab_id) {
+				this.activateTab(last_tab_id);
+			}
 		}
 	}
 });

@@ -223,6 +223,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var segments = browserHash.split(',');
 		var activateSection = null;
 		var activateTabId = null;
+		var firstTabId = null;
+
+		this.tabManager.options.activateNew = false;
+		this.cancelHashLaod = true;
 
 		Array.each(segments, function (hash, i) {
 
@@ -242,8 +246,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var tabId = this.pageTabStrip.findTabByFragment(hash);
 			if (tabId) {
-				if (!activateTabId || isOpen) {
+				if (isOpen) {
 					activateTabId = tabId;
+				} else if (!firstTabId) {
+					firstTabId = tabId;
 				}
 				return;
 			}
@@ -282,12 +288,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
 				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true });
+				this.loadPage(url, { url_fragment: hash, noToggle: true, noUpdateHash: true });
 			}
 		}, this);
 
 		if (activateTabId) {
 			this.pageTabStrip.activateTabById(activateTabId);
+		} else {
+			this.pageTabStrip.activateTabById(firstTabId);
 		}
 		if (activateSection) {
 			var activateSectionId = null;
@@ -302,6 +310,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.switchToSection(activateSectionId);
 			}
 		}
+
+		this.tabManager.options.activateNew = true;
+		this.cancelHashLaod = false;
 	},
 
 	updateWindowUrlFragment: function() {
