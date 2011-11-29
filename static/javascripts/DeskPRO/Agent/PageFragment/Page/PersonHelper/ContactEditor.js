@@ -73,11 +73,16 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 			var formData = $(':input, select, textarea', contactEditor).serializeArray();
 
+			contactEditor.addClass('loading');
+
 			$.ajax({
 				url: self.options.saveUrl,
 				type: 'POST',
 				dataType: 'json',
 				data: formData,
+				complete: function() {
+					contactEditor.removeClass('loading');
+				},
 				success: function(data) {
 					self.contactOverlay.close();
 					var displayEl = $(self.options.displayEl || '.contact-list-wrapper', self.wrapper);
