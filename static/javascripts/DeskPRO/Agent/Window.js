@@ -1965,6 +1965,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#dp_source > section.on').removeClass('on');
 		$('#dp_list > section.on').removeClass('on');
 
+
 		$('#dp_list_loading, #dp_source_loading').addClass('on');
 
 		if (this.openSection) {

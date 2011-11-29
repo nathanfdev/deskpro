@@ -24,6 +24,11 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.addEvent('show', this._onFirstShowFire);
 		this.addEvent('show', this._onShowSetVisible);
 		this.addEvent('show', this._onShowActivateList);
+		this.addEvent('show', function() {
+			if (this.hasLoaded) {
+				$('#dp_source_loading').removeClass('on');
+			}
+		}, this);
 		this.addEvent('firstshow', this.onFirstShow);
 		this.addEvent('hide', this.onHide);
 		this.addEvent('hide', this._onHideSetVisible);
