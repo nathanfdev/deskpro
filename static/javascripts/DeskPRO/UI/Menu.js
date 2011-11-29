@@ -559,6 +559,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		$('li', this.elements.list[0]).live('click', this._menuItemClicked.bind(this));
+		$('li', this.elements.list[0]).live('mouseover', this._menuItemMouseover.bind(this));
 
 		// Copy referenced submenus into the source
 		$('> li[data-submenu-selector]', this.elements.list[0]).each((function(i,el) {
