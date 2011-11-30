@@ -19,7 +19,7 @@ parameters:
   profiler.storage.username: deskpro_dev
   profiler.storage.password: deskpro_dev
   profiler.storage.class: Profiler\LiveBundle\Profiler\Storage\MysqlProfilerStorage
-  profiler.storage.lifetime: 86400
+  profiler.storage.lifetime: 1800
 
 services:
   templating.engine.jsonphp:
