@@ -1,0 +1,343 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage InstallBundle
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\InstallBundle\Install;
+
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Log\Logger;
+
+class ServerChecks
+{
+	/**
+	 * @var \Application\DeskPRO\Log\Logger
+	 */
+	protected $logger = null;
+
+	/**
+	 * @var array
+	 */
+	protected $server_errors = array();
+
+	/**
+	 * @param \Application\DeskPRO\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+	protected function getLogger()
+	{
+		if ($this->logger === null) {
+			$this->logger = new \Orb\Log\Logger();
+		}
+
+		return $this->logger;
+	}
+
+
+	/**
+	 * Are there any errors?
+	 *
+	 * @return bool
+	 */
+	public function hasErrors()
+	{
+		if ($this->server_errors) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Are there any fatal errors?
+	 *
+	 * @return bool
+	 */
+	public function hasFatalErrors()
+	{
+		foreach ($this->server_errors as $e) {
+			if ($e['level'] == 'fatal') {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Check if a speciifc error occurred
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	public function hasErrorType($type)
+	{
+		return isset($this->server_errors[$type]);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getErrors()
+	{
+		return $this->server_errors;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getErrorTypes()
+	{
+		return array_keys($this->server_errors);
+	}
+
+
+	/**
+	 * Runs through basic server checks
+	 *
+	 * @return bool True if all okay, or false if there are errors
+	 */
+	public function checkServer($type = 'all')
+	{
+		#------------------------------
+		# php_version
+		#------------------------------
+
+		if ($type == 'php_version' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking PHP version >= 5.3.2", Logger::DEBUG);
+			if (version_compare(phpversion(), '5.3.2', '>=')) {
+				$this->getLogger()->log("[OK] PHP version of " . phpversion() . " is OK", Logger::DEBUG);
+			} else {
+				$msg = "[FATAL] Install PHP 5.3.2 or newer. You currently have " . phpversion();
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['php_version'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+
+				// Lets not go any further in case the php version is so old something in this script fails
+				return false;
+			}
+		}
+
+		#------------------------------
+		# json_ext
+		#------------------------------
+
+		if ($type == 'json_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for json extension", Logger::DEBUG);
+			if (function_exists('json_encode')) {
+				$this->getLogger()->log("[OK] json extension installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the json extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['json_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# session_ext
+		#------------------------------
+
+		if ($type == 'session_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for session extension", Logger::DEBUG);
+			if (function_exists('session_start')) {
+				$this->getLogger()->log("[OK] json session installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the session extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['session_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# ctype_ext
+		#------------------------------
+
+		if ($type == 'ctype_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for ctype extension", Logger::DEBUG);
+			if (function_exists('ctype_alpha')) {
+				$this->getLogger()->log("[OK] ctype session installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the ctype extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['ctype_ext'] = array(
+					'message' => "Install and enable the ctype extension",
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# tokenizer_ext
+		#------------------------------
+
+		if ($type == 'tokenizer_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for tokenizer extension", Logger::DEBUG);
+			if (function_exists('token_get_all')) {
+				$this->getLogger()->log("[OK] tokenizer session installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the tokenizer extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['tokenizer_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# pdo_ext
+		#------------------------------
+
+		if ($type == 'pdo_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for PDO extension", Logger::DEBUG);
+			if (class_exists('PDO', false)) {
+				$this->getLogger()->log("[OK] PDO installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the PDO extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['pdo_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# apc_check
+		#------------------------------
+
+		if ($type == 'apc_check' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if APC is enabled", Logger::DEBUG);
+			if (function_exists('apc_store') && ini_get('apc.enabled')) {
+				$this->getLogger()->log("[OK] APC store installed", Logger::DEBUG);
+
+				$this->getLogger()->log("[CHECK] Checking APC version", Logger::DEBUG);
+				if (version_compare(phpversion('apc'), '3.0.17', '>=')) {
+					$this->getLogger()->log("[OK] APC version OK", Logger::DEBUG);
+				} else {
+					$msg = "You should install the APC extension";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['apc_check_version'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
+				}
+			} else {
+				$msg = "You should install the APC extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['apc_check'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
+				);
+			}
+		}
+
+		#------------------------------
+		# cache_write
+		#------------------------------
+
+		if ($type == 'cache_write' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if cache dir is writable", Logger::DEBUG);
+			if (is_writable(DP_ROOT.'/sys/cache')) {
+				$this->getLogger()->log("[OK] Cache dir is writable", Logger::DEBUG);
+			} else {
+				$msg = "The appfiles/sys/cache directory must be writable";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['cache_write'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# logs_write
+		#------------------------------
+
+		if ($type == 'logs_write' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
+			if (is_writable(DP_ROOT.'/sys/logs')) {
+				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
+			} else {
+				$msg = "The appfiles/sys/logs directory must be writable";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['logs_write'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		if ($this->server_errors) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Checks the database to make sure details are correct and version etc is ok
+	 *
+	 * @param array $db_conf
+	 * @return bool
+	 */
+	public function checkDatabase(array $db_conf)
+	{
+		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
+		try {
+			$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
+			$db->connect();
+		} catch (\Exception $e) {
+			$msg = "Connection failed: {$e->getMessage()}";
+			$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+			$this->server_errors['db_connect'] = array(
+				'message' => $msg,
+				'level' => 'fatal'
+			);
+
+			return false;
+		}
+
+		$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.5", Logger::DEBUG);
+		$ver = $db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
+		if (version_compare($ver, '5.5', '>=')) {
+			$this->getLogger()->log("[OK] mysql version is okay", Logger::DEBUG);
+		} else {
+			$msg = "Install MySQL verson 5.5 or newer";
+			$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+			$this->server_errors['db_version'] = array(
+				'message' => $msg,
+				'level' => 'fatal'
+			);
+		}
+
+
+		if ($this->server_errors) {
+			return false;
+		}
+		return true;
+	}
+}

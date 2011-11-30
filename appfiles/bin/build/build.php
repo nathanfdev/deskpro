@@ -100,3 +100,21 @@ if (!$proc->isSuccessful()) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+
+#####################################################################
+
+$time = microtime(true);
+echo "build-schema-file ... ";
+
+$proc = new \Symfony\Component\Process\Process('./build-schema-file.php', DP_ROOT.'/bin/build');
+$proc->run();
+
+if (!$proc->isSuccessful()) {
+	echo "ERROR\n";
+	echo $proc->getOutput();
+	echo $proc->getErrorOutput();
+	exit($proc->getExitCode());
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
