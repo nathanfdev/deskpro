@@ -810,8 +810,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var new_width = this.calculateWidthOfWidgetByColumnCount(number_columns);
 
-		this.widgets[widget_index].widget.width = new_width;
-		this.widgets[widget_index].widget.units_width = number_columns;
+		this.widgets[widget_index].widget.setWidth(new_width);
+
+		this.widgets[widget_index].widget.setTop(this.caclTop(this.widgets[widget_index].widget.slot_number));
+		this.widgets[widget_index].widget.setLeft(this.caclLeft(this.widgets[widget_index].widget.slot_number));
+
 		// Do the resize, we may want to animate
 		if (animate) {
 			$('#' + this.widgets[widget_index].widget.element_id).animate({
