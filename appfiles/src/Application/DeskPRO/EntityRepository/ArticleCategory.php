@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 

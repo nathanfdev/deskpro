@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Table(name="search_term_boosters")
  * @Orm:HasLifecycleCallbacks
  */
-class SearchTermBoosters extends \Application\DeskPRO\Domain\DomainObject
+class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * A 'voted' boost means the boost comes from a user
@@ -34,7 +34,7 @@ class SearchTermBoosters extends \Application\DeskPRO\Domain\DomainObject
 	const METHOD_AGENT = 'agent';
 
 
-	
+
 	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)

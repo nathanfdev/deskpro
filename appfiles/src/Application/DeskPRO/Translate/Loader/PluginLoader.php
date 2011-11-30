@@ -15,7 +15,7 @@ namespace Application\DeskPRO\Translate\Loader;
  * Loads phrases from plugin directories in a similar manner as the BundleLoader loads
  * them from the bundle directories.
  */
-class BundleLoader implements LoaderInterface
+class PluginLoader implements LoaderInterface
 {
 	protected $plugin_manager;
 
