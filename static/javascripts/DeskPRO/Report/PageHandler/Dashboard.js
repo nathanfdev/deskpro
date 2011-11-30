@@ -260,10 +260,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		Array.each(this.widgets, function(v) {
-			v.widget.getContent().render();
-			v.widget.hideLoader();
-		});
+		// Array.each(this.widgets, function(v) {
+		// 	v.widget.getContent().render();
+		// 	v.widget.hideLoader();
+		// });
 
 	},
 
@@ -1046,8 +1046,17 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
         var maxY  = Math.floor(this.grid.length / this.number_columns);
 
-        // Check neighbour spaces
         var widget = this.widgets[this.getWidgetIndexById(widget_id)];
+
+        // Check there is room for a drop - accross
+        if (slotx + widget.widget.units_width > this.number_columns)
+        	return false;
+
+        // - down
+        if (sloty + widget.widget.units_height > maxY)
+        	return false;
+
+        // Check neighbour spaces
         for (var x = slotx; x < (slotx + widget.widget.units_width); x++) {
             for (var y = sloty; y < (sloty + widget.widget.units_height); y++) {
                 if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
@@ -1103,13 +1112,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
         var maxY  = Math.floor(this.grid.length / this.number_columns);
 
-        var colSpan = this.calcColumnSpan(widget_el.css('width').replace('px', ''));
-        var rowSpan = this.calcRowSpan(widget_el.css('height').replace('px', ''));
+        var colSpan = this.calculateClosestColumnSize(widget_el.css('width').replace('px', ''));
+        var rowSpan = this.calculateClosestRowSize(widget_el.css('height').replace('px', ''));
 
-        for (var x = slotx; x < (slotx + colSpan-1); x++) {
-            for (var y = sloty; y < (sloty + rowSpan-1); y++) {
+        for (var x = slotx; x < (slotx + colSpan); x++) {
+            for (var y = sloty; y < (sloty + rowSpan); y++) {
 
                 var currentIndex = this.number_columns*y + x;
+                console.log(currentIndex)
                 if (currentIndex != slot_id) {
                     if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
                         return false;
@@ -1202,7 +1212,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     dumpGrid: function() {
-    	return;
+    	//return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 

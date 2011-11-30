@@ -29,7 +29,7 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		this.show_loader = false;
 
 		this.stat_id = options.stat.stat_id || '';
-		this.title   = '[' + widget_id + ']' + options.stat.title || '';
+		this.title   = options.stat.title || '';
 
 		this.width = 0;
 		this.height = 0;
