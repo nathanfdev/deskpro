@@ -164,7 +164,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             var html = '\
 <div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
 <span class="inner"> \
-	<a href="#" class="dashboard-new-placeholder-link">Click to Add Chart<br />Or Drop an Existing Chart</a>\
+	<a href="#" class="dashboard-new-placeholder-link">Click to Add a Chart<br />Or<br />Drop an Existing Chart</a>\
 </span>\
 </div>';
             this.$dashboard.append(html);
@@ -214,8 +214,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.resizeAllWidgets();
 
 					self.renderWidgets();
-
-					//self.setEditable(true);
 				}
 				else {
 					self.addDashboardEmptyNotice();
@@ -260,10 +258,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		Array.each(this.widgets, function(v) {
-			v.widget.getContent().render();
-			v.widget.hideLoader();
-		});
+		// Array.each(this.widgets, function(v) {
+		// 	v.widget.getContent().render();
+		// 	v.widget.hideLoader();
+		// });
 
 	},
 
@@ -310,9 +308,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		widget.setLeft(this.caclLeft(widget.slot_number));
 
 		this.initWidgetInGrid(widget);
-
-		// Setup the spacing
-		this.applySpacingToElements($('.widget'));
 	},
 
 	// Removes a widget from the dashboard
@@ -420,12 +415,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             },
         });
 
-
-		// Make the dashboard widgets sortable
-		// this.$dashboard.sortable({
-		// 	handle: '.grid-slot-toolbar',
-		// 	items:  "li:not(#dashboard-new-placeholderd)"
-		// });
 		this.$dashboard.disableSelection();
 
 		// Make the dashboard widgets resizable
@@ -684,19 +673,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Create the placeholder for the add chart widget
 	createAddChartPlaceholder: function() {
 
-		return;
-
 		var self = this;
 
-		this.$dashboard.find('.cell').html($.tmpl('dashboard_widget_create'));
-
-		this.applySpacingToElements($('#dashboard-new-placeholder'));
+		//this.$dashboard.find('.cell').html($.tmpl('dashboard_widget_create'));
 
 		// Ensure widget is the correct size
 		this.resizePlacerHolderWidget();
 
 		// Set handler to process click events, we want to display an overlay
-		$("#dashboard-new-placeholder-link").on('click', function() {
+		$(".cell .dashboard-new-placeholder-link").on('click', function() {
 			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
 			$('#overlay_wrapper .overlay-loader').css('display', 'none');
 			self.openOverlay($.tmpl('dashboard_widget_select'));
@@ -861,26 +846,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Always takes up 1 column in width
 		var new_width = this.calculateWidthOfWidgetByColumnCount(1);
-		$('#dashboard-new-placeholder').css('width', new_width + 'px');
-
-	},
-
-	// Apply the spacing to an element group
-	applySpacingToElements: function($elements) {
-
-		// $elements.css('margin-top', this.column_spacing[0] + 'px');
-		// $elements.css('margin-right', this.column_spacing[1] + 'px');
-		// $elements.css('margin-bottom', this.column_spacing[2] + 'px');
-		// $elements.css('margin-left', this.column_spacing[3] + 'px');
-
-	},
-
-	// Setup the jQuery resizable grid
-	setupResizableGrid: function() {
-
-		this.$dashboard.find("li").resizable("option", "grid", [5, 5]);
-		this.$dashboard.find("li").resizable("option", "minWidth", this.column_width);
-		this.$dashboard.find("li").resizable("option", "maxWidth", this.getDashboardWidth());
+		$('.cell').css('width', new_width + 'px');
 
 	},
 
@@ -928,7 +894,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.column_width = this.min_column_width;
 		}
 
-		this.setupResizableGrid();
 	},
 
 	// Calculate the width of a widget by the number of columns it takes up
