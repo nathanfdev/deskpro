@@ -1,0 +1,123 @@
+#!/usr/bin/env php
+<?php
+define('DP_ROOT', realpath(__DIR__ . '/../../'));
+
+require(DP_ROOT . '/sys/bootstrap-dev.php');
+
+use Symfony\Component\ClassLoader\ClassCollectionLoader;
+use Symfony\Component\Finder\Finder;
+
+$cachefile = DP_ROOT.'/sys/compiled.php';
+if (file_exists($cachefile)) {
+    unlink($cachefile);
+}
+
+######################################################################
+# Files that symfony thinks we should preload
+######################################################################
+
+$files = require DP_ROOT.'/sys/cache/prod/classes.map';
+
+######################################################################
+# Our files
+######################################################################
+
+$files = array_merge($files, array(
+	'Orb\\Helper\\HelperManager',
+	'Orb\\Helper\\ShortCallableInterface',
+
+	'Orb\\Input\\Cleaner\\Cleaner',
+	'Orb\\Input\\Reader\\Reader',
+	'Orb\\Input\\Reader\\Source\\ArrayVal',
+	'Orb\\Input\\Reader\\Source\\SourceInterface',
+	'Orb\\Input\\Reader\\Source\\Superglobal',
+
+	'Orb\\Templating\\Engine\\PhpVarEngine',
+	'Orb\\Templating\\Engine\\PhpVarJsonEngine',
+
+    'Orb\\Util\\Arrays',
+    'Orb\\Util\\CapabilityInformerInterface',
+    'Orb\\Util\\ChainCaller',
+    'Orb\\Util\\Dates',
+    'Orb\\Util\\Numbers',
+    'Orb\\Util\\Strings',
+    'Orb\\Util\\Util',
+    'Orb\\Util\\Web',
+
+	'Application\\DeskPRO\\App',
+	'Application\\DeskPRO\\DBAL\\Connection',
+	'Application\\DeskPRO\\DBAL\\ConnectionFactory',
+	'Application\\DeskPRO\\DBAL\\DoctrineEvent',
+	'Application\\DeskPRO\\DBAL\\SymfonyEventConnector',
+	'Application\\DeskPRO\\Domain\\BasicDomainObject',
+	'Application\\DeskPRO\\Domain\\ChangeTracker',
+	'Application\\DeskPRO\\Domain\\DomainObject',
+	'Application\\DeskPRO\\HttpFoundation\\Cookie',
+	'Application\\DeskPRO\\HttpFoundation\\Request',
+	'Application\\DeskPRO\\HttpFoundation\\Session',
+	'Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage',
+
+	'Application\\DeskPRO\\ORM\\Util\\Util',
+	'Application\\DeskPRO\\ORM\\CollectionHelper',
+	'Application\\DeskPRO\\ORM\\EntityManager',
+	'Application\\DeskPRO\\ORM\\QueryPartial',
+
+	'Application\\DeskPRO\\Settings\\Settings',
+	'Application\\DeskPRO\\Settings\\SettingsLocator',
+
+	'Application\\DeskPRO\\Templating\\Asset\\UrlPackage',
+	'Application\\DeskPRO\\Templating\\GlobalVariables',
+
+	'Application\\DeskPRO\\Translate\\Loader\\BundleLoader',
+	'Application\\DeskPRO\\Translate\\Loader\\CombinationLoader',
+	'Application\\DeskPRO\\Translate\\Loader\\DbLoader',
+	'Application\\DeskPRO\\Translate\\Loader\\LoaderInterface',
+	'Application\\DeskPRO\\Translate\\Loader\\PluginLoader',
+	'Application\\DeskPRO\\Translate\\Loader\\SystemLoader',
+	'Application\\DeskPRO\\Translate\\DelegatePhrase',
+	'Application\\DeskPRO\\Translate\\DelegatePhraseInterface',
+	'Application\\DeskPRO\\Translate\\DephrasifyTemplate',
+	'Application\\DeskPRO\\Translate\\HasPhraseName',
+	'Application\\DeskPRO\\Translate\\ObjectPhraseNamer',
+	'Application\\DeskPRO\\Translate\\SystemLanguage',
+	'Application\\DeskPRO\\Translate\\Translate',
+
+	'Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension',
+	'Application\\DeskPRO\\Twig\\Loader\\HybridLoader',
+));
+
+######################################################################
+# Entities
+######################################################################
+
+//$it = Finder::create()
+//	->in(DP_ROOT.'/src/Application/DeskPRO/Entity')
+//	->depth(0)
+//	->files()
+//	->name('*.php')
+//	->getIterator();
+//
+//foreach ($it as $file) {
+//	$name = str_replace('.php', '', $file->getFilename());
+//	$name = 'Application\\DeskPRO\\Entity\\' . $name;
+//
+//	$files[] = $name;
+//}
+//
+//$it = Finder::create()
+//	->in(DP_ROOT.'/src/Application/DeskPRO/EntityRepository')
+//	->depth(0)
+//	->files()
+//	->name('*.php')
+//	->getIterator();
+//
+//foreach ($it as $file) {
+//	$name = str_replace('.php', '', $file->getFilename());
+//	$name = 'Application\\DeskPRO\\EntityRepository\\' . $name;
+//
+//	$files[] = $name;
+//}
+
+ClassCollectionLoader::load($files, dirname($cachefile), basename($cachefile, '.php'), false, false, '.php');
+
+file_put_contents($cachefile, "<?php\n".substr(file_get_contents($cachefile), 5));
