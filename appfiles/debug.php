@@ -48,7 +48,7 @@ $CONFIG['debug']['mail'] = array();
 // TODO remove in distribution. Enabled just for devs
 $CONFIG['debug']['raw_assets'] = array();
 //$CONFIG['debug']['raw_assets'][] = 'all -vendors';
-$CONFIG['debug']['raw_assets'][] = 'all';
+//$CONFIG['debug']['raw_assets'][] = 'all';
 
 /**
  * True to rename use .css from stylesheets/ instead of .less from stylesheets-less.

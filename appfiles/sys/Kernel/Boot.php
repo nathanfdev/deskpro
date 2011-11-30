@@ -11,17 +11,30 @@
 
 namespace DeskPRO\Kernel;
 
-require(DP_ROOT . '/sys/autoload.php');
-
-use Application\DeskPRO\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-
 class Boot
 {
-	public static function bootWeb($env = 'prod', $debug = false, Request $request = null)
+	protected static function bootstrap($debug)
 	{
+		$debug = false;
+		if ($debug) {
+			require(DP_ROOT . '/sys/bootstrap-dev.php');
+		} else {
+
+			if (!file_exists(DP_ROOT . '/sys/bootstrap.php') || !file_exists((DP_ROOT . '/sys/compiled.php'))) {
+				die('You must run the build scripts before you can use the DeskPRO Source in production');
+			}
+
+			require(DP_ROOT . '/sys/bootstrap.php');
+			require(DP_ROOT . '/sys/compiled.php');
+		}
+	}
+
+	public static function bootWeb($env = 'prod', $debug = false, \Application\DeskPRO\HttpFoundation\Request $request = null)
+	{
+		self::bootstrap($debug);
+
 		if ($request === null) {
-			$request = Request::createfromGlobals();
+			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		}
 
 		$path = $request->getPathInfo();
@@ -55,11 +68,13 @@ class Boot
 
 	public static function bootCli($env = 'prod', $debug = false)
 	{
+		self::bootstrap($debug);
+
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 
 		define('DP_INTERFACE', 'cli');
 
-		$application = new Application($kernel);
+		$application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 		$application->run();
 	}
 }

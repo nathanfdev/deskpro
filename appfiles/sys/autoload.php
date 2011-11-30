@@ -1,8 +1,4 @@
 <?php
-
-require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
-
 set_include_path(
 	DP_ROOT.'/vendor/zend1/library'
 	.PATH_SEPARATOR.

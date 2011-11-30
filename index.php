@@ -7,4 +7,4 @@ define('DP_ROOT', __DIR__ . '/appfiles');
 
 
 require(DP_ROOT . '/sys/Kernel/Boot.php');
-\DeskPRO\Kernel\Boot::bootWeb('prod', true);
+\DeskPRO\Kernel\Boot::bootWeb('prod', false);
