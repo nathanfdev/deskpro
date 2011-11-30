@@ -18,6 +18,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// List of the dashboard widgets
 		this.widgets = [];
 
+		this.grid = [];
+
 		// State of the dashboard, can be in view or edit state
 		this.is_edit_state = false;
 
@@ -37,7 +39,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.min_row_height = 240;
 
 		// Spacing between widgets in the columns [top, right, bottom, left]
-		this.column_spacing = [0, 5, 10, 5];
+		this.column_spacing = [0, 10, 10, 0];
 
 		// Time for animation of widget resize to take place
 		this.animation_duration = 100;
@@ -130,14 +132,46 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		// Need to ensure dashboard update correctly if window size changes
-		this.$dashboardGrid.on('resize', function() {
+		this.$dashboard.on('resize', function() {
 			self.calculateColumnWidth();
 			self.resizeAllWidgets();
 		});
 
+
 		// Calculate initial dashboard column width, grab the widgets
 		this.calculateColumnWidth();
+
 		this.fetchWidgets();
+	},
+
+	setupCellGrid: function(rowsRequired) {
+
+		rowsRequired++;
+
+		this.$dashboard.find('.slot').remove();
+
+		var size = rowsRequired * this.number_columns;
+
+		for (var i = 0; i < size; i++) {
+			this.grid.push(null);
+
+            var height = this.caclHeight(1);
+            var width  = this.caclWidth(1);
+
+            var top  = this.caclTop(i, 1);
+            var left = this.caclLeft(i, 1);
+
+            var html = '\
+<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
+<span class="inner"> \
+	<a href="#" class="dashboard-new-placeholder-link">Click to Add Chart<br />Or Drop an Existing Chart</a>\
+</span>\
+</div>';
+            this.$dashboard.append(html);
+        }
+
+        this.resizeDashboardHeightToGrid();
+
 	},
 
 	// Open the overlay loading in a template
@@ -165,6 +199,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			type: 'GET',
 			success: function(data) {
 				if (data.widgets.length > 0) {
+
+					var rowsRequired = Math.ceil(data.widgets.length / self.number_columns);
+					if (data.widgets.length % self.number_columns == 0)
+						rowsRequired++;
+
+					self.setupCellGrid(rowsRequired);
+
 					Array.each(data.widgets, function(v) {
 						self.createWidgetFromJSON(v);
 					});
@@ -173,6 +214,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.resizeAllWidgets();
 
 					self.renderWidgets();
+
+					self.setEditable(true);
 				}
 				else {
 					self.addDashboardEmptyNotice();
@@ -184,7 +227,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Create a widget from a JSON response
 	createWidgetFromJSON: function(data) {
 
-		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data.stat);
+		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data);
 		this.addWidget(widget, data.grid_slots);
 
 		widget.setContent(this.createChart(
@@ -244,19 +287,27 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		else {
 			// Need to insert at postion
 			this.widgets.splice(pos, 0, insert_widget)
+
 		}
+		this.initWidgetInGrid(widget);
 
 		// Add widget to UI - Need to insert before the add chart placeholder
 		// if its showing
 		if (this.is_edit_state) {
 			this.removeAddChartPlaceholder();
-			this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));;
+			this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));;
 			this.createAddChartPlaceholder();
 		}
 		else {
-			this.$dashboardGrid.append($.tmpl('dashboard_widget', {widget: widget}));
+			this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));
 		}
 		widget.addUIHandlers();
+
+		widget.setHeight(this.caclHeight(widget.units_height));
+		widget.setWidth(this.caclWidth(widget.units_width));
+
+		widget.setTop(this.caclTop(widget.slot_number, 1));
+		widget.setLeft(this.caclLeft(widget.slot_number, 1));
 
 		// Setup the spacing
 		this.applySpacingToElements($('.widget'));
@@ -334,12 +385,46 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Create the 'Add Widget' placeholder
 		this.createAddChartPlaceholder();
 
-		// Make the dashboard widgets sortable
-		this.$dashboardGrid.sortable({
+		this.$dashboard.find('.widget').draggable({
+			revert: 'invalid',
 			handle: '.grid-slot-toolbar',
-			items:  "li:not(#dashboard-new-placeholderd)"
-		});
-		this.$dashboardGrid.disableSelection();
+			start: function(event, ui) {
+				$(this).addClass('dragging');
+			},
+			stop: function(event, ui) {
+				$(this).removeClass('dragging');
+			}
+        });
+        this.$dashboard.find('.cell').droppable({
+        	tolerance: 'pointer',
+            drop: function(event, ui) {
+                self.doDrop($(this), ui.draggable);
+
+                $(this) .removeClass("drop-allowed");
+            },
+            over: function(event, ui) {
+                var dropAllowed = self.isDropAllowed($(this), ui.draggable);
+
+                if (dropAllowed) {
+                    $(this).addClass("drop-allowed");
+                }
+                else {
+                    $(this).addClass("drop-denied");
+                }
+            },
+            out: function(event, ui) {
+                $(this).removeClass("drop-allowed");
+                $(this).removeClass("drop-denied");
+            },
+        });
+
+
+		// Make the dashboard widgets sortable
+		// this.$dashboard.sortable({
+		// 	handle: '.grid-slot-toolbar',
+		// 	items:  "li:not(#dashboard-new-placeholderd)"
+		// });
+		this.$dashboard.disableSelection();
 
 		// Make the dashboard widgets resizable
 		this.applyResizeToWidgets();
@@ -367,9 +452,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Remove the add placeholder
 		this.removeAddChartPlaceholder();
 
-		// Remove the sortable and resizable functionality
-		this.$dashboardGrid.sortable('destroy');
-		this.$dashboardGrid.find("li").resizable('destroy');
+		// Remove the resizable functionality
+		this.$dashboard.find("div").resizable('destroy');
 
 		// Set each widget back to viewable
 		Array.each(this.widgets, function(v) {
@@ -386,35 +470,62 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Apply to all by default, otherwise we can specify, useful
 		// for when a widget is added
-		selector = selector || "li.chart-widget";
+		selector = selector || ".widget";
 
 		// Make the dashboard widgets resizable
-		this.$dashboardGrid.find(selector).resizable({
+		this.$dashboard.find(selector).resizable({
 			helper: "ui-resizable-helper",
-			handles: 'e',
+			//handles: 'e',
 			distance: 40,
+			minWidth: this.column_width,
+			minHeight: this.row_height,
 			start: function(event, ui) {
+				$(this).addClass('dragging');
 				var html = '<div class="resize-overlay resize-left"></div>';
 				$(this).find('.ui-resizable-helper').append(html);
 			},
 			resize: function(event, ui) {
 				// Prevent height resize
-				ui.size.height = ui.originalSize.height;
+				//ui.size.height = ui.originalSize.height;
 			},
 			stop: function(event, ui) {
+				$(this).removeClass('dragging');
 				// Remove the resize overlay
 				$(this).find('.resize-overlay').remove();
 
-				// TODO: remove this when window resize event handler is working
-				self.calculateColumnWidth();
+				var resizeAllowed = self.isResizeAllowed($(this));
+				if (resizeAllowed) {
+					// TODO: remove this when window resize event handler is working
+					self.calculateColumnWidth();
 
-				var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
-				//var closest_row_resize  = self.calculateClosestRowSize(ui.size.height);
-				var widget_index = self.getWidgetIndexByElementId(ui.element.attr('id'));
+					var closest_column_size = self.calculateClosestColumnSize(ui.size.width);
+					var closest_row_resize  = self.calculateClosestRowSize(ui.size.height);
 
-				// Adjust the resized widget to the closest column
-				self.resizeWidgetToColumn(widget_index, closest_column_size, true);
-				//self.resizeWidgetToRow(widget_index, closest_row_resize, true);
+					var widget_index = self.getWidgetIndexByElementId(ui.element.attr('id'));
+
+					var widget = self.widgets[widget_index];
+					var currentIndex = self.getWidgetPosById(widget.widget.widget_id);
+					self.resizeWidget(widget.widget.units_width, widget.widget.units_height, closest_column_size, closest_row_resize, widget.widget);
+
+
+					widget.widget.units_width = closest_column_size;
+					widget.widget.units_height = closest_row_resize;
+
+					// Adjust the resized widget to the closest column
+					self.resizeWidgetToColumn(widget_index, closest_column_size, true);
+					self.resizeWidgetToRow(widget_index, closest_row_resize, true);
+				}
+				else {
+					var widget_index = self.getWidgetIndexByElementId(ui.element.attr('id'));
+					var widget = self.widgets[widget_index];
+
+					$(this).animate({
+                        width: widget.widget.width,
+                        height: widget.widget.height
+                    }, 1000, function() {
+
+                    });
+				}
 			}
 		});
 
@@ -454,14 +565,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var form = $('#dashboard_edit_form');
 		var postData = form.serializeArray();
 
-		dashboardState = { widgets: [], number_columns: this.number_columns };
+		dashboardState = {
+			widgets: [],
+			number_columns: this.number_columns
+		};
 
 		// Get the state of each of the dashboard widgets
-		this.$dashboardGrid.find("li.chart-widget").each(function(i, el) {
+		this.$dashboard.find(".widget").each(function(i, el) {
 			var widget_index = self.getWidgetIndexByElementId($(this).attr('id'));
 			var v = self.widgets[widget_index];
 
-			dashboardState.widgets.push({id: v.widget.widget_id, number_columns: v.num_slots, slot_number: i})
+			dashboardState.widgets.push({
+				id: v.widget.widget_id,
+				number_columns: v.num_slots,
+				grid_columns: v.widget.units_width,
+				grid_rows: v.widget.units_height,
+				slot_number: self.getWidgetPosById(v.widget.widget_id),
+			})
 		});
 
 		postData.push({name: 'dashboard_state', value: JSON.stringify(dashboardState)});
@@ -561,9 +681,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Create the placeholder for the add chart widget
 	createAddChartPlaceholder: function() {
+
+		return;
+
 		var self = this;
 
-		this.$dashboardGrid.append($.tmpl('dashboard_widget_create'));
+		this.$dashboard.find('.cell').html($.tmpl('dashboard_widget_create'));
 
 		this.applySpacingToElements($('#dashboard-new-placeholder'));
 
@@ -592,30 +715,31 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Show a chart fullscreen
 	showChartFullscreen: function(widget) {
 
-		var self = this;
+		// TODO: uncomment
+		// var self = this;
 
-		$('#fullscreen_overlay_wrapper .overlay-content #fullscreen_overlay_wrapper_content').html('');
+		// $('#fullscreen_overlay_wrapper .overlay-content #fullscreen_overlay_wrapper_content').html('');
 
-		var chart = widget.getContent();
+		// var chart = widget.getContent();
 
-		$.ajax({
-			url: DeskPRO_Window.getUrl('report_chart_get_fullscreen_details', {dashboard_stat_id: chart.dashboard_stat_id}),
-			dataType: 'json',
-			type: 'GET',
-			success: function(data) {
+		// $.ajax({
+		// 	url: DeskPRO_Window.getUrl('report_chart_get_fullscreen_details', {dashboard_stat_id: chart.dashboard_stat_id}),
+		// 	dataType: 'json',
+		// 	type: 'GET',
+		// 	success: function(data) {
 
-				// Build and render the new chart
-				var new_chart = self.createChart(data.chart.chart_vendor,
-					data.chart.chart_class,
-					'fullscreen_overlay_wrapper_content',
-					data.chart.dashboard_stat_id);
-				new_chart.chart_type_index = data.chart.chart_type;
-				new_chart.render();
+		// 		// Build and render the new chart
+		// 		var new_chart = self.createChart(data.chart.chart_vendor,
+		// 			data.chart.chart_class,
+		// 			'fullscreen_overlay_wrapper_content',
+		// 			data.chart.dashboard_stat_id);
+		// 		new_chart.chart_type_index = data.chart.chart_type;
+		// 		new_chart.render();
 
-			}
-		});
+		// 	}
+		// });
 
-		this.fullscreen_overlay.open();
+		// this.fullscreen_overlay.open();
 
 	},
 
@@ -649,6 +773,22 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		return foundIndex;
 	},
 
+	getWidgetPosById: function(id) {
+
+		var index      = 0;
+		var foundIndex = -1;
+
+		Array.each(this.grid, function(v) {
+			if (v === id && foundIndex == -1) {
+				foundIndex = index;
+			}
+			index++;
+		});
+
+		return foundIndex;
+
+	},
+
 	// Resize all the widgets
 	resizeAllWidgets: function() {
 		var self  = this;
@@ -680,6 +820,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var new_width = this.calculateWidthOfWidgetByColumnCount(number_columns);
 
+		this.widgets[widget_index].widget.width = new_width;
+		this.widgets[widget_index].widget.units_width = number_columns;
 		// Do the resize, we may want to animate
 		if (animate) {
 			$('#' + this.widgets[widget_index].widget.element_id).animate({
@@ -698,6 +840,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var new_height = this.calculateHeightOfWidgetByRowCount(number_rows);
 
+		this.widgets[widget_index].widget.height = new_height;
+		this.widgets[widget_index].widget.units_height = number_rows;
 		// Do the resize, we may want to animate
 		if (animate) {
 			$('#' + this.widgets[widget_index].widget.element_id).animate({
@@ -769,7 +913,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			}
 		}
 
-		return 2;
+		return row_size;
 	},
 
 	// Calculate the width of 1 column
@@ -834,6 +978,233 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		$('body').css('min-width', '1240px');
 
-	}
+	},
 
+	isGridIndexFree: function(index) {
+
+		if (!this.grid[index]) {
+			return false;
+		}
+		else {
+			return true;
+		}
+
+	},
+
+	isGridCellFreeBy: function(col, row) {
+
+		var index = getGridCellByColRow;
+
+		return this.isGridCellFree(index);
+
+	},
+
+	getGridCellByColRow: function(col, row) {
+
+		return this.grid[this.number_columns*row + col];
+
+	},
+
+	caclWidth: function(units) {
+
+        return units * this.column_width;
+
+    },
+
+    caclHeight: function(units) {
+
+        return units * this.row_height + ((units-1) * 10);
+
+    },
+
+    caclTop: function(index, units) {
+
+        var topNoSpacing = Math.floor(index / this.number_columns) * units * this.row_height;
+        var spacing = Math.floor(index / this.number_columns) * 10;
+
+        return topNoSpacing + spacing;
+
+    },
+
+    caclLeft: function(index, units) {
+
+        var leftNoSpacing = (index % this.number_columns) * units * this.column_width;
+        var spacing = (index % this.number_columns) * 10;
+
+        return leftNoSpacing + spacing;
+
+    },
+
+    isDropAllowed: function(slot_el, widget_el) {
+    	var slot_id = slot_el.data('id');
+    	var widget_id =  widget_el.data('id');
+
+        var slotx = (slot_id % this.number_columns);
+        var sloty = Math.floor(slot_id / this.number_columns);
+
+        var maxY  = Math.floor(this.grid.length / this.number_columns);
+
+        // Check neighbour spaces
+        var widget = this.widgets[this.getWidgetIndexById(widget_id)];
+        for (var x = slotx; x < (slotx + widget.widget.units_width); x++) {
+            for (var y = sloty; y < (sloty + widget.widget.units_height); y++) {
+                if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    },
+
+    doDrop: function(slot_el, widget_el) {
+    	var slot_id = slot_el.data('id');
+    	var widget_id =  widget_el.data('id')
+
+        var self = this;
+
+        var dropAllowed = this.isDropAllowed(slot_el, widget_el);
+        if (dropAllowed) {
+            var widget = this.widgets[this.getWidgetIndexById(widget_id)];
+            widget.widget.left = slot_el.css('left').replace('px', '');
+            widget.widget.top = slot_el.css('top').replace('px', '');
+
+            // Need to reorganise grid
+            self.moveWidget(self.getWidgetPosById(widget_id), slot_id, widget.widget);
+
+            widget_el.animate({
+                left: slot_el.css('left'),
+                top: slot_el.css('top')
+            }, 500, function() {
+
+            });
+        }
+        else {
+            var widget = this.widgets[this.getWidgetIndexById(widget_id)];
+            widget_el.animate({
+                left: widget.widget.left,
+                top: widget.widget.top
+            }, 500, function() {
+                // Animation complete.
+            });
+            $(this).addClass("drop-denied");
+        }
+
+    },
+
+    isResizeAllowed: function(widget_el) {
+    	var widget_id =  this.getWidgetPosById(widget_el.data('id'));
+    	var slot_id = widget_id;
+
+        var slotx = (slot_id % this.number_columns);
+        var sloty = Math.floor(slot_id / this.number_columns);
+
+        var maxY  = Math.floor(this.grid.length / this.number_columns);
+
+        var colSpan = this.calcColumnSpan(widget_el.css('width').replace('px', ''));
+        var rowSpan = this.calcRowSpan(widget_el.css('height').replace('px', ''));
+
+        for (var x = slotx; x < (slotx + colSpan); x++) {
+            for (var y = sloty; y < (sloty + rowSpan); y++) {
+
+                var currentIndex = this.number_columns*y + x;
+                if (currentIndex != slot_id) {
+                    if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    },
+
+    calcColumnSpan: function(width) {
+        return Math.ceil(width / this.column_width);
+    },
+
+    calcRowSpan: function(height) {
+        return Math.ceil(height / this.row_height);
+    },
+
+    moveWidget: function(currentIndex, newIndex, widget) {
+        var colSpan = widget.units_width;
+        var rowSpan = widget.units_height;
+
+        var startX = newIndex % this.number_columns;
+        var startY = Math.floor(newIndex / this.number_columns);
+
+        for (var x = startX; x < (startX + colSpan); x++) {
+            for (var y = startY; y < (startY + rowSpan); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+                var oldLoopIndex = newLoopIndex - (newIndex - currentIndex);
+
+                this.grid.splice(oldLoopIndex, 1, null);
+        		this.grid.splice(newLoopIndex, 1, widget.widget_id);
+
+            }
+        }
+    },
+
+    resizeWidget: function(current_cols, current_rows, new_cols, new_rows, widget) {
+
+        var currentIndex = this.getWidgetPosById(widget.widget_id);
+
+        var startX = currentIndex % this.number_columns;
+        var startY = Math.floor(currentIndex / this.number_columns);
+
+         // Clean up the old
+        for (var x = startX; x < (startX + current_cols); x++) {
+            for (var y = startY; y < (startY + current_rows); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+                this.grid.splice(newLoopIndex, 1, null);
+
+            }
+        }
+
+        for (var x = startX; x < (startX + new_cols); x++) {
+            for (var y = startY; y < (startY + new_rows); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+        		this.grid.splice(newLoopIndex, 1, widget.widget_id);
+
+            }
+        }
+    },
+
+    initWidgetInGrid: function(widget) {
+
+        var currentIndex = widget.slot_number;
+
+
+        var startX = currentIndex % this.number_columns;
+        var startY = Math.floor(currentIndex / this.number_columns);
+
+         // Clean up the old
+        for (var x = startX; x < (startX + widget.units_width); x++) {
+            for (var y = startY; y < (startY + widget.units_height); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+                this.grid.splice(newLoopIndex, 1, null);
+
+            }
+        }
+
+        for (var x = startX; x < (startX + widget.units_width); x++) {
+            for (var y = startY; y < (startY + widget.units_height); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+        		this.grid.splice(newLoopIndex, 1, widget.widget_id);
+
+            }
+        }
+    },
+
+    resizeDashboardHeightToGrid: function() {
+
+    	var numberRows = Math.floor(this.grid.length / this.number_columns);
+    	var height = numberRows * this.row_height + (numberRows * 10);
+
+    	this.$dashboard.css('height', height + 'px');
+    },
 });

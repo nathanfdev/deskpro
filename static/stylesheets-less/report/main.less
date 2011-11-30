@@ -165,37 +165,55 @@ h2 {
 	padding: 8px;
 }
 
+.drop-allowed { background: #00ff00; }
+.drop-denied { background: #ff0000; }
+
 #report-dashboard {
 	min-height: 600px;
+	position: relative;
 }
 
-#report-dashboard-grid {
-	list-style-type: none;
+#report-dashboard .widget {
 	margin: 0;
-	padding: 0;
-	clear: both;
-}
-
-#report-dashboard-grid li {
-	margin: 0;
-	float: left;
 	width: 25%;
 	font-size: 4em;
 	text-align: center;
 	color: #000;
 	background: #fff;
-}
-
-#report-dashboard-grid li .inner {
+	position: absolute;
+	top: 0;
+	left: 0;
 	border: 1px solid #ccc;
 	border-radius: 5px;
+}
+
+#report-dashboard .dragging {
+	z-index: 10000;
+}
+
+#report-dashboard .cell {
+	margin: 0;
+	width: 25%;
+	font-size: 4em;
+	text-align: center;
+	color: #000;
+	background: #fff;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 1px dashed #ccc;
+	border-radius: 5px;
+}
+
+#report-dashboard .widget .inner {
+	height: 100%;
 	padding: 2px;
 	display: block;
 	font-size: 12px;
 	position: relative;
 }
 
-#report-dashboard-grid li .grid-slot-toolbar {
+#report-dashboard .widget .grid-slot-toolbar {
 	font-size: 12px;
 	display: block;
 	border: 1px solid #ccc;
@@ -208,11 +226,11 @@ h2 {
 	overflow: hidden;
 }
 
-#report-dashboard-grid li .grid-slot-toolbar .toolbar-title {
+#report-dashboard .widget .grid-slot-toolbar .toolbar-title {
 	color: #000;
 }
 
-#report-dashboard-grid li .grid-slot-toolbar .icons {
+#report-dashboard .widget .grid-slot-toolbar .icons {
 	position: absolute;
 	top: 2px;
 	right: 2px;
@@ -221,13 +239,13 @@ h2 {
 	background: #fff;
 }
 
-#report-dashboard-grid li .grid-slot-toolbar .icons a {
+#report-dashboard .widget .grid-slot-toolbar .icons a {
 	float: left;
 	padding: 5px;
 	display: none;
 }
 
-#report-dashboard-grid li .resize-overlay {
+#report-dashboard .widget .resize-overlay {
 	display: block;
 	position: absolute;
 	top: 0;
@@ -236,11 +254,11 @@ h2 {
 	bottom: 0;
 }
 
-#report-dashboard-grid li .resize-right {
+#report-dashboard .widget .resize-right {
 	background: url(../../images/report/icons/resize_arrow_right.png) no-repeat center right;
 }
 
-#report-dashboard-grid li .resize-left {
+#report-dashboard .widget .resize-left {
 	background: url(../../images/report/icons/resize_arrow_left.png) no-repeat center right;
 }
 
@@ -249,31 +267,20 @@ h2 {
 	padding-right: -10px;
 }
 
-#report-dashboard-grid .content {
+#report-dashboard .content {
 	display: block;
 	font-size: 12px;
 	text-align: left;
 	overflow-x: hidden;
 }
 
-#report-dashboard-grid #dashboard-new-placeholder .inner {
-	border: 1px dashed #ccc;
-}
-
-#report-dashboard-grid #dashboard-new-placeholder a {
+#report-dashboard .cell a {
 	color: #ccc;
-	font-size: 36px;
-	line-height: 250px;
+	font-size: 28px;
+	line-height: 100px;
 	display: block;
-}
-
-#report-dashboard-grid .widget {
-	width: 25%;
-}
-
-#grid-lines div.widget {
-	border-right: 1px solid #ccc;
 	height: 100%;
+	width: 100%;
 }
 
 #report-dashboard-options {
@@ -308,8 +315,11 @@ h2 {
 
 .grid-slot-content {
 	display: block;
-	width: 100%;
-	height: 220px;
+	position: absolute;
+	top: 35px;
+	bottom: 9px;
+	left: 0px;
+	right: 5px;
 }
 
 .grid-slot-content .content {
