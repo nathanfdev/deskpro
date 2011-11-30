@@ -175,7 +175,7 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
     setWidth: function(width) {
 
-    	this.width - width;
+    	this.width = width;
 
         $('#' + this.element_id).css('width', width + 'px');
 
