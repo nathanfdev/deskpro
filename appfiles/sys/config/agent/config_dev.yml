@@ -8,14 +8,4 @@ framework:
   router:   { resource: "%kernel.root_dir%/config/routing_dev.yml" }
 
 twig:
-  debug: %kernel.debug%
-
-web_profiler:
-  toolbar: true
-  intercept_redirects: false
-
-web_profiler_extra:
-  routing:    true
-  container:  true
-  assetic:    false
-  twig:       true
+  debug: false

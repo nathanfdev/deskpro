@@ -22,6 +22,9 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Routing\Route;
+
 class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
@@ -32,54 +35,69 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$notfound = array();
+		$time = microtime(true);
 
-		$search_paths = array(
-			realpath(DP_ROOT . '/../static/stylesheets-less'),
-			realpath(DP_ROOT . '/../static/stylesheets'),
-			realpath(DP_ROOT . '/src/Application/AdminBundle/Resources'),
-			realpath(DP_ROOT . '/src/Application/AgentBundle/Resources'),
-			realpath(DP_ROOT . '/src/Application/UserBundle/Resources'),
-		);
+		$filepath = DP_ROOT . '/src/Application/ApiBundle/Resources/config/routing.yml';
+		$outpath = DP_ROOT . '/src/Application/ApiBundle/Resources/config/routing.php';
+		$config = Yaml::parse($filepath);
 
-		$path = realpath(DP_ROOT . '/../static/images');
+		//print_r($config);exit;
 
-		$it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
-		foreach ($it as $filename => $file) {
+		$php = array();
+		$php[] = "<?php\n\n";
+		$php[] = "use Symfony\\Component\\Routing\\RouteCollection;\n";
+		$php[] = "use Symfony\\Component\\Routing\\Route;\n\n";
 
-			$filename = $file->getFilename();
-			if ($filename[0] == '.') {
-				continue;
+		$php[] = "\$collection = new RouteCollection();\n\n";
+
+		foreach ($config as $routename => $info) {
+			$php[] = "\$collection->add('$routename', new Route(\n\t'{$info['pattern']}',\n";
+
+			$php[] = "\tarray(";
+			$subphp = array();
+			foreach ($info['defaults'] as $k => $v) {
+				$subphp[] = "'$k' => " . var_export($v, true);
 			}
+			$subphp = implode(", ", $subphp);
+			$php[] = $subphp;
 
-			$nicepath = str_replace($path, '', $file->getRealPath());
+			$php[] = "),\n\tarray(";
 
-			$found = false;
-			foreach ($search_paths as $search_path) {
-				exec('grep -m 1 -l -n -r \'' . $file->getFilename() . '\' ' . $search_path, $out);
-				$out = Arrays::removeEmptyString($out);
-
-				if ($out && !empty($out)) {
-					$found = true;
-					break;
+			if (!empty($info['requirements'])) {
+				$subphp = array();
+				foreach ($info['requirements'] as $k => $v) {
+					$subphp[] = "'$k' => " . var_export($v, true);
 				}
+				$subphp = implode(", ", $subphp);
+				$php[] = $subphp;
 			}
 
-			if (!$found) {
-				echo "[Check] $nicepath ... ";
-				echo "\tNot Found";
-				$notfound[] = $nicepath;
-			} else {
-				//echo "\tFound";
+			$php[] = "),\n";
+
+			$php[] = "\tarray(";
+			if (!empty($info['options'])) {
+				$subphp = array();
+				foreach ($info['options'] as $k => $v) {
+					$subphp[] = "'$k' => " . var_export($v, true);
+				}
+				$subphp = implode(", ", $subphp);
+				$php[] = $subphp;
 			}
+			$php[] = ")\n";
+			$php[] = "));\n";
 
-			echo "\n";
+			$php[] = "\n";
 		}
 
-		if ($notfound) {
-			echo "\n\n";
-			echo "These files were not found:\n";
-			echo "\t " . implode("\n\t ", $notfound) . "\n";
-		}
+		$php[] = "\nreturn \$collection;\n";
+
+		$php = implode('', $php);
+
+		@unlink($outpath);
+		file_put_contents($outpath, $php);
+
+		$end = microtime(true);
+
+		printf("Took %.f s", $end-$time);
 	}
 }

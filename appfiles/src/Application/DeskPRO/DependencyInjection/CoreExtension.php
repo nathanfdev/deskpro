@@ -181,16 +181,14 @@ class CoreExtension extends Extension
 	protected function loadDoctrineCaches(ContainerBuilder $container)
 	{
 		if (App::getConfig('doctrine_cache_type') == 'sqlite') {
-			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache');
-			$definition->addMethodCall('setDbFile', array(
+			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
 				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
 				'query_cache',
 				'doctrinecache'
 			));
 			$container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
-			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache');
-			$definition->addMethodCall('setDbFile', array(
+			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
 				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
 				'metadata_cache',
 				'doctrinecache'

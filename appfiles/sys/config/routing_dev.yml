@@ -3,4 +3,4 @@ _main:
 
 dev:
   prefix: /dev
-  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.yml"
+  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.php"
