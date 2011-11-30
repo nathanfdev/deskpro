@@ -158,8 +158,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             var height = this.caclHeight(1);
             var width  = this.caclWidth(1);
 
-            var top  = this.caclTop(i, 1);
-            var left = this.caclLeft(i, 1);
+            var top  = this.caclTop(i);
+            var left = this.caclLeft(i);
 
             var html = '\
 <div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
@@ -216,6 +216,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.renderWidgets();
 
 					self.setEditable(true);
+
+					console.log(self.grid);
 				}
 				else {
 					self.addDashboardEmptyNotice();
@@ -260,10 +262,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		Array.each(this.widgets, function(v) {
-			v.widget.getContent().render();
-			v.widget.hideLoader();
-		});
+		// Array.each(this.widgets, function(v) {
+		// 	v.widget.getContent().render();
+		// 	v.widget.hideLoader();
+		// });
 
 	},
 
@@ -289,7 +291,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.widgets.splice(pos, 0, insert_widget)
 
 		}
-		this.initWidgetInGrid(widget);
+
 
 		// Add widget to UI - Need to insert before the add chart placeholder
 		// if its showing
@@ -303,11 +305,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		}
 		widget.addUIHandlers();
 
+		console.log("w "+ widget.units_width);
+
 		widget.setHeight(this.caclHeight(widget.units_height));
 		widget.setWidth(this.caclWidth(widget.units_width));
 
-		widget.setTop(this.caclTop(widget.slot_number, 1));
-		widget.setLeft(this.caclLeft(widget.slot_number, 1));
+		widget.setTop(this.caclTop(widget.slot_number));
+		widget.setLeft(this.caclLeft(widget.slot_number));
+
+		this.initWidgetInGrid(widget);
 
 		// Setup the spacing
 		this.applySpacingToElements($('.widget'));
@@ -776,7 +782,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	getWidgetPosById: function(id) {
 
 		var index      = 0;
-		var foundIndex = -1;
+		var foundIndex = 0;
 
 		Array.each(this.grid, function(v) {
 			if (v === id && foundIndex == -1) {
@@ -864,10 +870,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Apply the spacing to an element group
 	applySpacingToElements: function($elements) {
 
-		$elements.css('margin-top', this.column_spacing[0] + 'px');
-		$elements.css('margin-right', this.column_spacing[1] + 'px');
-		$elements.css('margin-bottom', this.column_spacing[2] + 'px');
-		$elements.css('margin-left', this.column_spacing[3] + 'px');
+		// $elements.css('margin-top', this.column_spacing[0] + 'px');
+		// $elements.css('margin-right', this.column_spacing[1] + 'px');
+		// $elements.css('margin-bottom', this.column_spacing[2] + 'px');
+		// $elements.css('margin-left', this.column_spacing[3] + 'px');
 
 	},
 
@@ -1007,28 +1013,28 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	caclWidth: function(units) {
 
-        return units * this.column_width;
+        return units * this.column_width + ((units-1) * this.getWidgetSpacerWidth());
 
     },
 
     caclHeight: function(units) {
 
-        return units * this.row_height + ((units-1) * 10);
+        return units * this.row_height + ((units-1) * this.getWidgetSpacerHeight());
 
     },
 
-    caclTop: function(index, units) {
+    caclTop: function(index) {
 
-        var topNoSpacing = Math.floor(index / this.number_columns) * units * this.row_height;
+        var topNoSpacing = Math.floor(index / this.number_columns) * this.row_height;
         var spacing = Math.floor(index / this.number_columns) * 10;
 
         return topNoSpacing + spacing;
 
     },
 
-    caclLeft: function(index, units) {
+    caclLeft: function(index) {
 
-        var leftNoSpacing = (index % this.number_columns) * units * this.column_width;
+        var leftNoSpacing = (index % this.number_columns) * this.column_width;
         var spacing = (index % this.number_columns) * 10;
 
         return leftNoSpacing + spacing;
@@ -1174,21 +1180,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     initWidgetInGrid: function(widget) {
 
-        var currentIndex = widget.slot_number;
+    	console.log(widget.widget_id + ' - ' + widget.slot_number);
 
+        var currentIndex = widget.slot_number;
 
         var startX = currentIndex % this.number_columns;
         var startY = Math.floor(currentIndex / this.number_columns);
-
-         // Clean up the old
-        for (var x = startX; x < (startX + widget.units_width); x++) {
-            for (var y = startY; y < (startY + widget.units_height); y++) {
-
-                var newLoopIndex = this.number_columns*y + x;
-                this.grid.splice(newLoopIndex, 1, null);
-
-            }
-        }
 
         for (var x = startX; x < (startX + widget.units_width); x++) {
             for (var y = startY; y < (startY + widget.units_height); y++) {
@@ -1198,6 +1195,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
             }
         }
+
+        this.dumpGrid();
     },
 
     resizeDashboardHeightToGrid: function() {
@@ -1207,4 +1206,17 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     	this.$dashboard.css('height', height + 'px');
     },
+
+    dumpGrid: function() {
+
+    	var rows = Math.floor(this.grid.length / this.number_columns);
+
+    	for (var x = 0; x < rows; x++) {
+    		var debug = '';
+    		for (var y = 0; y < this.number_columns; y++) {
+    			debug += this.grid[this.number_columns*x + y] + ', ';
+    		}
+    		console.log(debug);
+    	}
+    }
 });
