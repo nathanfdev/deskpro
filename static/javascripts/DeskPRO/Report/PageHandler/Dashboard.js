@@ -490,16 +490,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				var html = '<div class="resize-overlay resize-left"></div>';
 				$(this).find('.ui-resizable-helper').append(html);
 			},
-			resize: function(event, ui) {
-				// Prevent height resize
-				//ui.size.height = ui.originalSize.height;
-			},
 			stop: function(event, ui) {
 				$(this).removeClass('dragging');
 				// Remove the resize overlay
 				$(this).find('.resize-overlay').remove();
 
 				var resizeAllowed = self.isResizeAllowed($(this));
+				console.log(resizeAllowed);
 				if (resizeAllowed) {
 					// TODO: remove this when window resize event handler is working
 					self.calculateColumnWidth();
@@ -532,6 +529,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
                     });
 				}
+
+				self.dumpGrid();
 			}
 		});
 
@@ -783,10 +782,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		var index      = 0;
 		var foundIndex = 0;
+		var found = false
 
 		Array.each(this.grid, function(v) {
-			if (v === id && foundIndex == -1) {
+			if (v === id && found === false) {
 				foundIndex = index;
+				found = true;
 			}
 			index++;
 		});
@@ -1095,6 +1096,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             $(this).addClass("drop-denied");
         }
 
+        this.dumpGrid();
     },
 
     isResizeAllowed: function(widget_el) {
@@ -1109,10 +1111,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
         var colSpan = this.calcColumnSpan(widget_el.css('width').replace('px', ''));
         var rowSpan = this.calcRowSpan(widget_el.css('height').replace('px', ''));
 
-        for (var x = slotx; x < (slotx + colSpan); x++) {
-            for (var y = sloty; y < (sloty + rowSpan); y++) {
+        console.log((slotx + colSpan));
+        console.log((sloty + rowSpan));
+        for (var x = slotx; x < (slotx + colSpan-1); x++) {
+            for (var y = sloty; y < (sloty + rowSpan-1); y++) {
 
                 var currentIndex = this.number_columns*y + x;
+                console.log("index " + currentIndex);
                 if (currentIndex != slot_id) {
                     if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
                         return false;
@@ -1132,6 +1137,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     moveWidget: function(currentIndex, newIndex, widget) {
+
+    	console.log(currentIndex + ' ' + newIndex);
+
         var colSpan = widget.units_width;
         var rowSpan = widget.units_height;
 
@@ -1211,6 +1219,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
+    	console.log("----");
     	for (var x = 0; x < rows; x++) {
     		var debug = '';
     		for (var y = 0; y < this.number_columns; y++) {
@@ -1218,5 +1227,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     		}
     		console.log(debug);
     	}
+    	console.log("----");
     }
 });
