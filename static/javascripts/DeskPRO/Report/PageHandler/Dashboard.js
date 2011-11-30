@@ -216,8 +216,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.renderWidgets();
 
 					self.setEditable(true);
-
-					console.log(self.grid);
 				}
 				else {
 					self.addDashboardEmptyNotice();
@@ -304,8 +302,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));
 		}
 		widget.addUIHandlers();
-
-		console.log("w "+ widget.units_width);
 
 		widget.setHeight(this.caclHeight(widget.units_height));
 		widget.setWidth(this.caclWidth(widget.units_width));
@@ -496,7 +492,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				$(this).find('.resize-overlay').remove();
 
 				var resizeAllowed = self.isResizeAllowed($(this));
-				console.log(resizeAllowed);
 				if (resizeAllowed) {
 					// TODO: remove this when window resize event handler is working
 					self.calculateColumnWidth();
@@ -1111,13 +1106,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
         var colSpan = this.calcColumnSpan(widget_el.css('width').replace('px', ''));
         var rowSpan = this.calcRowSpan(widget_el.css('height').replace('px', ''));
 
-        console.log((slotx + colSpan));
-        console.log((sloty + rowSpan));
         for (var x = slotx; x < (slotx + colSpan-1); x++) {
             for (var y = sloty; y < (sloty + rowSpan-1); y++) {
 
                 var currentIndex = this.number_columns*y + x;
-                console.log("index " + currentIndex);
                 if (currentIndex != slot_id) {
                     if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
                         return false;
@@ -1137,9 +1129,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     moveWidget: function(currentIndex, newIndex, widget) {
-
-    	console.log(currentIndex + ' ' + newIndex);
-
         var colSpan = widget.units_width;
         var rowSpan = widget.units_height;
 
@@ -1187,9 +1176,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     initWidgetInGrid: function(widget) {
-
-    	console.log(widget.widget_id + ' - ' + widget.slot_number);
-
         var currentIndex = widget.slot_number;
 
         var startX = currentIndex % this.number_columns;
@@ -1216,6 +1202,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     dumpGrid: function() {
+    	return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
