@@ -39,8 +39,6 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function boot()
 	{
-		require(DP_ROOT.'/src/Application/DeskPRO/compat.php');
-
 		parent::boot();
 		App::setContainer($this->container, 'default');
 		$this->container->get('deskpro.sys_events_loader');
