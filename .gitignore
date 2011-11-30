@@ -11,6 +11,8 @@
 # cache and log files
 /appfiles/sys/cache/
 /appfiles/sys/logs/
+/appfiles/sys/bootstrap.php
+/appfiles/sys/compiled.php
 /static/build
 /static/stylesheets/agent
 /static/stylesheets/admin
