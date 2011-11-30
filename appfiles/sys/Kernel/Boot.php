@@ -15,7 +15,6 @@ class Boot
 {
 	protected static function bootstrap($debug)
 	{
-		$debug = false;
 		if ($debug) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
