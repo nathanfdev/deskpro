@@ -262,10 +262,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		// Array.each(this.widgets, function(v) {
-		// 	v.widget.getContent().render();
-		// 	v.widget.hideLoader();
-		// });
+		Array.each(this.widgets, function(v) {
+			v.widget.getContent().render();
+			v.widget.hideLoader();
+		});
 
 	},
 
