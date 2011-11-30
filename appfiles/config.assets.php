@@ -386,7 +386,7 @@ $CONFIG['report_graphs'] = array(
  * Report Dashboard specific, maily files for AM Chart vendor
  */
 $CONFIG['report_dashboard'] = array(
-	'out'	=> 'js/reports_dashboard',
+	'out'	=> 'js/reports_dashboard.js',
 	'files' => array(
 		'vendor/jquery/sparkline/jquery.sparkline.min.js',
 		// swf object (version 2.2) is used to detect if flash is installed and include swf in the page
