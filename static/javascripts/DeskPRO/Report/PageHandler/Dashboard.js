@@ -215,7 +215,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 					self.renderWidgets();
 
-					self.setEditable(true);
+					//self.setEditable(true);
 				}
 				else {
 					self.addDashboardEmptyNotice();
@@ -260,10 +260,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		// Array.each(this.widgets, function(v) {
-		// 	v.widget.getContent().render();
-		// 	v.widget.hideLoader();
-		// });
+		Array.each(this.widgets, function(v) {
+			v.widget.getContent().render();
+			v.widget.hideLoader();
+		});
 
 	},
 
@@ -454,6 +454,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Remove the add placeholder
 		this.removeAddChartPlaceholder();
 
+		this.$dashboard.find(".widget").draggable('destroy');
+		this.$dashboard.find(".cell").droppable('destroy');
 		// Remove the resizable functionality
 		this.$dashboard.find("div").resizable('destroy');
 
@@ -1119,7 +1121,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             for (var y = sloty; y < (sloty + rowSpan); y++) {
 
                 var currentIndex = this.number_columns*y + x;
-                console.log(currentIndex)
                 if (currentIndex != slot_id) {
                     if (this.grid[this.number_columns*y + x] && this.grid[this.number_columns*y + x] != widget_el.data('id')) {
                         return false;
@@ -1212,7 +1213,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     dumpGrid: function() {
-    	//return;
+    	return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
