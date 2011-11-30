@@ -86,7 +86,7 @@ class StatValueGroup extends EntityRepository
 				->getQuery()
 				->getSingleResult();
 		} catch (\Doctrine\Orm\NoResultException $e) {
-			$stat_value = null;
+			$stat_value_group = null;
 		}
 
 		return $stat_value_group;
@@ -113,7 +113,7 @@ class StatValueGroup extends EntityRepository
 				->getQuery()
 				->getSingleResult();
 		} catch (\Doctrine\Orm\NoResultException $e) {
-			$stat_value = null;
+			$stat_value_group = null;
 		}
 
 		return $stat_value_group;
@@ -140,7 +140,7 @@ class StatValueGroup extends EntityRepository
 				->getQuery()
 				->getSingleResult();
 		} catch (\Doctrine\Orm\NoResultException $e) {
-			$stat_value = null;
+			$stat_value_group = null;
 		}
 
 		return $stat_value_group;
