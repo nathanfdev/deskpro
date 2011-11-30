@@ -58,9 +58,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Refernce to the dashboard
 		this.$dashboard = $("#report-dashboard");
-
-		// Reference to dashboard grid
-		this.$dashboardGrid = $("#report-dashboard-grid");
 	},
 
 	// Init the page
@@ -790,9 +787,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		// Resize the placeholder is we are in edit state
-		if (this.is_edit_state === true) {
+		//if (this.is_edit_state === true) {
 			this.resizePlacerHolderWidget()
-		}
+		//}
 	},
 
 	// Resize a widget to fit into number_columns
@@ -851,6 +848,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Always takes up 1 column in width
 		var new_width = this.calculateWidthOfWidgetByColumnCount(1);
 		$('.cell').css('width', new_width + 'px');
+
+		for (var = 0; i < this.grid.length; i++) {
+			$('#cell_'+i).css('top', this.caclTop(i));
+			$('#cell_'+i).css('left', this.caclLeft(i));
+		}
 
 	},
 
