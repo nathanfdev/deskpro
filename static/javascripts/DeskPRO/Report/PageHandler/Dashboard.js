@@ -394,6 +394,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
         });
         this.$dashboard.find('.cell').droppable({
         	tolerance: 'pointer',
+        	hoverClass: 'dashboard-cell-hover-over',
             drop: function(event, ui) {
                 self.doDrop($(this), ui.draggable);
 
@@ -949,25 +950,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	},
 
-	isGridIndexFree: function(index) {
-
-		if (!this.grid[index]) {
-			return false;
-		}
-		else {
-			return true;
-		}
-
-	},
-
-	isGridCellFreeBy: function(col, row) {
-
-		var index = getGridCellByColRow;
-
-		return this.isGridCellFree(index);
-
-	},
-
 	getGridCellByColRow: function(col, row) {
 
 		return this.grid[this.number_columns*row + col];
@@ -1097,11 +1079,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     calcColumnSpan: function(width) {
+
         return Math.ceil(width / this.column_width);
+
     },
 
     calcRowSpan: function(height) {
+
         return Math.ceil(height / this.row_height);
+
     },
 
     moveWidget: function(currentIndex, newIndex, widget) {
