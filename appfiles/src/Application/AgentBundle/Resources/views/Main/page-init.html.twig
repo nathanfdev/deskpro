@@ -24,6 +24,8 @@
 			desktopNotifications: {% if app.user.getPref('agent.ui.desktop_notifications') %}'{{ app.user.getPref('agent.ui.desktop_notifications') }}'{% else %}false{% endif %}
 		});
 
+		DP_POLLER_INTERVAL = 2000;
+
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {
 				disableSectionHandlers: {% if js_debug.disableSectionHandlers %}true{% else %}false{% endif %},

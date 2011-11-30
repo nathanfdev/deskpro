@@ -169,7 +169,7 @@ class TemplatingExtension extends \Twig_Extension
 		$raw_packs = App::getConfig('debug.raw_assets', array());
 		$less_use_css = App::getConfig('debug.less_use_css_dir', false);
 
-		if (in_array($name, $raw_packs) OR in_array('all', $raw_packs) OR (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors')) {
+		if ($raw_packs && (in_array($name, $raw_packs) OR in_array('all', $raw_packs) OR (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
 			$urls = $this->getAsseticRaw($name);
 		} else {
 			$urls = array($this->getAssetic($name));
