@@ -34,7 +34,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="title", type="string", length="255")
 	 */
 	protected $title;
-	
+
 	/**
 	 * The Dashboard
 	 *
@@ -70,6 +70,22 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $grid_slots;
 
 	/**
+	 * Number of cols the stat takes up in the dashboard
+	 *
+	 * @var int
+	 * @ORM_MAPPING\Column(name="grid_columns", type="smallint")
+	 */
+	protected $grid_columns;
+
+	/**
+	 * Number of rows the stat takes up in the dashboard
+	 *
+	 * @var int
+	 * @ORM_MAPPING\Column(name="grid_rows", type="smallint")
+	 */
+	protected $grid_rows;
+
+	/**
 	 * The order of the stat in the dashboard
 	 *
 	 * @var int
@@ -82,7 +98,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_MAPPING\Column(name="number_data_points", type="integer")
 	 */
 	protected $number_data_points;
-	
+
 	/**
 	 * Indicates if the ungrouped or grouped data should be displayed
 	 *
@@ -114,7 +130,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $view;
 	}
-	
+
 	/**
 	 * Get the number of data points
 	 *
@@ -122,9 +138,9 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getDefaultNumberDataPoints()
 	{
-		return $this->getStat()->getDefaultDataPointCount();		
+		return $this->getStat()->getDefaultDataPointCount();
 	}
-	
+
 	/**
 	 * Get the Title. Constructed from the stat title and its various attributes.
 	 *
@@ -133,10 +149,10 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getDefaultTitle()
 	{
 		$stat_title = $this->getStat()->getTitle();
-		
+
 		return $stat_title;
 	}
-	
+
 	/**
 	 * Get the Title. Constructed from the stat title and its various attributes.
 	 *
@@ -145,13 +161,13 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getDisplayTitle()
 	{
 		$title = $this->getTitle();
-		
+
 		if (strlen($title) === 0) {
 			$title = $this->getDefaultTitle();
 		}
-		
+
 		$grouping_name = $this->getStat()->getGroupingName();
-		
+
 		// Add the grouping if we need it
 		if ($this->getDisplayGrouping()) {
 			$title .= ' by ' . $grouping_name;
@@ -175,7 +191,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 		return $title;
 	}
-	
+
 	/**
 	 * Sets the chart type
 	 *
@@ -184,12 +200,12 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function setChartType($chart_type)
 	{
 		$chart_list = ReportDashboard::getChartClasses();
-		
+
 		$chart_class = $chart_list[$chart_type];
 
 		$this->setViewClass($chart_class);
 	}
-	
+
 	/**
 	 * Get the chart type from the view_class
 	 *
@@ -198,7 +214,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	public function getChartType()
 	{
 		$chart_list = ReportDashboard::getChartClasses();
-		
+
 		$index = 0;
 		foreach ($chart_list as $chart) {
 			if ($chart === $this->getViewClass()) {
@@ -206,7 +222,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 			}
 			$index++;
 		}
-		
+
 		return $index;
 	}
 }

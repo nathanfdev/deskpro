@@ -66,7 +66,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="ReportDashboardStat", mappedBy="report_dashboard", cascade={"remove"})
 	 */
-        protected $report_dashboard_stat;
+	protected $report_dashboard_stat;
 
 	/**
 	 * The number of columns in the dashboard

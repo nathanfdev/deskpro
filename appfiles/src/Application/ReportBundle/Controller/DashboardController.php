@@ -101,6 +101,8 @@ class DashboardController extends AbstractController
 					$dashboardStat = $this->getDashboardStat($widget['id']);
 
 					$dashboardStat->setGridSlots($widget['number_columns']);
+					$dashboardStat->setGridColumns($widget['grid_columns']);
+					$dashboardStat->setGridRows($widget['grid_rows']);
 					$dashboardStat->setSlotNumber($widget['slot_number']);
 
 					App::getOrm()->persist($dashboardStat);
@@ -322,6 +324,8 @@ class DashboardController extends AbstractController
 			'chart_vendor'	=> $chart->getViewChartVendor(),
 			'chart_class'   => $chart->getViewChartClass(),
 			'grid_slots'	=> $dashboard_stat->getGridSlots(),
+			'grid_columns'  => $dashboard_stat->getGridColumns(),
+			'grid_rows'     => $dashboard_stat->getGridRows(),
 			'slot_number'   => $dashboard_stat->getSlotNumber(),
 			'stat'		=> array(
 				'id'	=> $stat->getId(),

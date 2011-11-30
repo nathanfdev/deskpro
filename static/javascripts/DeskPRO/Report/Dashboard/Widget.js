@@ -28,8 +28,17 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		// Show loader
 		this.show_loader = false;
 
-		this.stat_id = options.stat_id || '';
-		this.title   = options.title || '';
+		this.stat_id = options.stat.stat_id || '';
+		this.title   = options.stat.title || '';
+
+		this.width = 0;
+		this.height = 0;
+		this.top = 0;
+		this.left = 0;
+
+		this.units_width    = options.grid_columns || 1;
+		this.units_height   = options.grid_rows || 1;
+		this.slot_number    = options.slot_number || 1;
 	},
 
 	// Update the widget data
@@ -155,5 +164,61 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		this.show_loader = false;
 
 	},
+
+	setHeight: function(height) {
+
+		this.height = height;
+
+        $('#' + this.element_id).css('height', height + 'px');
+
+    },
+
+    setWidth: function(width) {
+
+    	this.width - width;
+
+        $('#' + this.element_id).css('width', width + 'px');
+
+    },
+
+    setTop: function(top) {
+
+    	this.top = top;
+
+        $('#' + this.element_id).css('top', top + 'px');
+
+    },
+
+    setLeft: function(left) {
+
+    	this.left = left;
+
+        $('#' + this.element_id).css('left', left + 'px');
+
+    },
+
+    getHeight: function() {
+
+        $('#' + this.element_id).css('height').replace('px', '');
+
+    },
+
+    getWidth: function() {
+
+        $('#' + this.element_id).css('width').replace('px', '');
+
+    },
+
+    getTop: function() {
+
+        $('#' + this.element_id).css('top').replace('px', '');
+
+    },
+
+    getLeft: function() {
+
+        $('#' + this.element_id).css('left').replace('px', '');
+
+    },
 
 });
