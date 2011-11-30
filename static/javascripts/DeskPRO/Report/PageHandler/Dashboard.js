@@ -255,10 +255,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		// Array.each(this.widgets, function(v) {
-		// 	v.widget.getContent().render();
-		// 	v.widget.hideLoader();
-		// });
+		Array.each(this.widgets, function(v) {
+			v.widget.getContent().render();
+			v.widget.hideLoader();
+		});
 
 	},
 
@@ -849,7 +849,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var new_width = this.calculateWidthOfWidgetByColumnCount(1);
 		$('.cell').css('width', new_width + 'px');
 
-		for (var = 0; i < this.grid.length; i++) {
+		for (var i = 0; i < this.grid.length; i++) {
 			$('#cell_'+i).css('top', this.caclTop(i));
 			$('#cell_'+i).css('left', this.caclLeft(i));
 		}
