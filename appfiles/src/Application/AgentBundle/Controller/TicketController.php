@@ -657,13 +657,15 @@ class TicketController extends AbstractController
 				$this->em->flush();
 			}
 
-			$ticket->addParticipantPerson($person);
+			$part = $ticket->addParticipantPerson($person);
+			$this->em->persist($part);
 			$this->em->persist($ticket);
+			$this->em->flush();
 
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
-			$this->db->commit();
+			throw $e;
 		}
 
 		return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person));
@@ -1205,50 +1207,6 @@ class TicketController extends AbstractController
 		")->setParameter(1, $ticket)->execute();
 
 		return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', array(
-			'ticket' => $ticket,
-			'participants' => $participants
-		));
-	}
-
-	public function saveUserPartsAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$set_user_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
-		$ticket->setParticipantUserIds($set_user_ids);
-
-		$this->em->transactional(function($em) use ($ticket) {
-			$em->persist($ticket);
-			$em->flush();
-		});
-
-		$participants = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:TicketParticipant p
-			LEFT JOIN p.person person
-			LEFT JOIN p.person_email person_email
-			WHERE p.ticket = ?1
-		")->setParameter(1, $ticket)->execute();
-
-		return $this->render('AgentBundle:Ticket:view-participants-users.html.twig', array(
-			'ticket' => $ticket,
-			'participants' => $participants
-		));
-	}
-
-	public function ccReplyTabAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$participants = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:TicketParticipant p
-			LEFT JOIN p.person person
-			LEFT JOIN p.person_email person_email
-			WHERE p.ticket = ?1
-		")->setParameter(1, $ticket)->execute();
-
-		return $this->render('AgentBundle:Ticket:view-reply-cctab.html.twig', array(
 			'ticket' => $ticket,
 			'participants' => $participants
 		));
