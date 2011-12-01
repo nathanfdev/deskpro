@@ -54,6 +54,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Position to add next new chart
 		this.add_chart_position = null;
 
+		// Flag to indicate if widget is being dragged
+		this.is_widget_dragging = false;
+
 		// The supported vendor namespaces
 		this.supported_vendors = ['AmChart', 'DeskPRO'];
 
@@ -134,8 +137,11 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Need to ensure dashboard update correctly if window size changes
 		this.$dashboard.on('resize', function() {
-			self.calculateColumnWidth();
-			self.resizeAllWidgets();
+			// Dont do this while we are dragging
+			if (false === self.is_widget_dragging) {
+				self.calculateColumnWidth();
+				self.resizeAllWidgets();
+			}
 		});
 
 
@@ -405,17 +411,20 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             drop: function(event, ui) {
                 self.doDrop($(this), ui.draggable);
 
+                // Save the new state of the dashboard
+				self.saveDashboardState();
+
                 $(this) .removeClass("drop-allowed");
             },
             over: function(event, ui) {
-                var dropAllowed = self.isDropAllowed($(this), ui.draggable);
+                // var dropAllowed = self.isDropAllowed($(this), ui.draggable);
 
-                if (dropAllowed) {
-                    $(this).addClass("drop-allowed");
-                }
-                else {
-                    $(this).addClass("drop-denied");
-                }
+                // if (dropAllowed) {
+                //     $(this).addClass("drop-allowed");
+                // }
+                // else {
+                //     $(this).addClass("drop-denied");
+                // }
             },
             out: function(event, ui) {
                 $(this).removeClass("drop-allowed");
@@ -477,10 +486,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.$dashboard.find(selector).draggable({
 				revert: 'invalid',
 				handle: '.grid-slot-toolbar',
+				containment: '#report-dashboard',
 				start: function(event, ui) {
+					self.is_widget_dragging = true;
 					$(this).addClass('dragging');
 				},
 				stop: function(event, ui) {
+					self.is_widget_dragging = false;
 					$(this).removeClass('dragging');
 				}
 		});
@@ -541,6 +553,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
                     });
 				}
+
+				// Save the new state of the dashboard
+				self.saveDashboardState();
 
 				self.dumpGrid();
 			}
