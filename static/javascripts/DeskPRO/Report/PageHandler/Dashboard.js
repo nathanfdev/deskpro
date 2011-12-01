@@ -226,7 +226,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	createWidgetFromJSON: function(data) {
 
 		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data);
-		this.addWidget(widget, widget.grid_slots);
+		this.addWidget(widget, null, widget.slot_number);
 
 		widget.setContent(this.createChart(
 			data.chart_vendor,
@@ -373,16 +373,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Create the 'Add Widget' placeholder
 		this.showAddChartPlaceholder();
 
-		this.$dashboard.find('.widget').draggable({
-			revert: 'invalid',
-			handle: '.grid-slot-toolbar',
-			start: function(event, ui) {
-				$(this).addClass('dragging');
-			},
-			stop: function(event, ui) {
-				$(this).removeClass('dragging');
-			}
-        });
         this.$dashboard.find('.cell').droppable({
         	tolerance: 'pointer',
         	hoverClass: 'dashboard-cell-hover-over',
@@ -411,6 +401,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Make the dashboard widgets resizable
 		this.applyResizeToWidgets();
+		this.applyDraggableToWidgets();
 
 		// Set each widget as editable
 		Array.each(this.widgets, function(v) {
@@ -446,6 +437,28 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		this.is_edit_state = false;
+	},
+
+	// Apply the draggable plugin to widgets
+	applyDraggableToWidgets: function(selector) {
+
+		var self = this;
+
+		// Apply to all by default, otherwise we can specify, useful
+		// for when a widget is added
+		selector = selector || ".widget";
+
+		this.$dashboard.find(selector).draggable({
+				revert: 'invalid',
+				handle: '.grid-slot-toolbar',
+				start: function(event, ui) {
+					$(this).addClass('dragging');
+				},
+				stop: function(event, ui) {
+					$(this).removeClass('dragging');
+				}
+		});
+
 	},
 
 	// Apply the resizable plugin to widgets
@@ -602,9 +615,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.closeOverlay();
 
 					// Insert the new widget
+					data.widget.slot_number = 2;
 					var widget = self.createWidgetFromJSON(data.widget);
-					//self.addWidget(widget, data.grid_slots);
-
 					widget.setEditable(true);
 					widget.getContent().render();
 					widget.hideLoader();
@@ -613,6 +625,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.resizeAllWidgets();
 
 					self.applyResizeToWidgets('#' + widget.element_id);
+					self.applyDraggableToWidgets('#' + widget.element_id);
 				}
 			});
 
