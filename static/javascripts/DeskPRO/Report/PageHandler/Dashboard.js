@@ -700,31 +700,30 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Show a chart fullscreen
 	showChartFullscreen: function(widget) {
 
-		// TODO: uncomment
-		// var self = this;
+		var self = this;
 
-		// $('#fullscreen_overlay_wrapper .overlay-content #fullscreen_overlay_wrapper_content').html('');
+		$('#fullscreen_overlay_wrapper .overlay-content #fullscreen_overlay_wrapper_content').html('');
 
-		// var chart = widget.getContent();
+		var chart = widget.getContent();
 
-		// $.ajax({
-		// 	url: DeskPRO_Window.getUrl('report_chart_get_fullscreen_details', {dashboard_stat_id: chart.dashboard_stat_id}),
-		// 	dataType: 'json',
-		// 	type: 'GET',
-		// 	success: function(data) {
+		$.ajax({
+			url: DeskPRO_Window.getUrl('report_chart_get_fullscreen_details', {dashboard_stat_id: chart.dashboard_stat_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
 
-		// 		// Build and render the new chart
-		// 		var new_chart = self.createChart(data.chart.chart_vendor,
-		// 			data.chart.chart_class,
-		// 			'fullscreen_overlay_wrapper_content',
-		// 			data.chart.dashboard_stat_id);
-		// 		new_chart.chart_type_index = data.chart.chart_type;
-		// 		new_chart.render();
+				// Build and render the new chart
+				var new_chart = self.createChart(data.chart.chart_vendor,
+					data.chart.chart_class,
+					'fullscreen_overlay_wrapper_content',
+					data.chart.dashboard_stat_id);
+				new_chart.chart_type_index = data.chart.chart_type;
+				new_chart.render();
 
-		// 	}
-		// });
+			}
+		});
 
-		// this.fullscreen_overlay.open();
+		this.fullscreen_overlay.open();
 
 	},
 
