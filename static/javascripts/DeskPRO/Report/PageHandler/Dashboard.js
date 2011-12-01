@@ -497,7 +497,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.$dashboard.find(selector).resizable({
 			helper: "ui-resizable-helper",
 			//handles: 'e',
-			distance: 40,
+			//distance: 20,
 			minWidth: this.column_width,
 			minHeight: this.row_height,
 			stop: function(event, ui) {
