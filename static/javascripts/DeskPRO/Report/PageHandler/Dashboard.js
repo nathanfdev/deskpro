@@ -196,8 +196,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			success: function(data) {
 				if (data.widgets.length > 0) {
 
-					var rowsRequired = Math.ceil(data.widgets.length / self.number_columns);
-
+					// Get the max cell position, we use this to build the grid
+					var maxCellPosition = 0;
+					Array.each(data.widgets, function(v) {
+						if (v.slot_number > maxCellPosition) {
+							maxCellPosition = v.slot_number;
+						}
+					});
+					var rowsRequired = Math.ceil(maxCellPosition / self.number_columns);
 					self.setupCellGrid(rowsRequired);
 
 					Array.each(data.widgets, function(v) {
@@ -220,7 +226,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	createWidgetFromJSON: function(data) {
 
 		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data);
-		this.addWidget(widget, data.grid_slots);
+		this.addWidget(widget, widget.grid_slots);
 
 		widget.setContent(this.createChart(
 			data.chart_vendor,
@@ -597,6 +603,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 					// Insert the new widget
 					var widget = self.createWidgetFromJSON(data.widget);
+					//self.addWidget(widget, data.grid_slots);
+
 					widget.setEditable(true);
 					widget.getContent().render();
 					widget.hideLoader();
@@ -1172,8 +1180,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     resizeDashboardHeightToGrid: function() {
 
-    	var numberRows = Math.floor(this.grid.length / this.number_columns);
+console.log(this.grid);
+    	var numberRows = Math.ceil(this.grid.length / this.number_columns);
     	var height = numberRows * this.row_height + (numberRows * 10);
+console.log(this.grid.length + ' / ' + this.number_columns);
 
     	this.$dashboard.css('height', height + 'px');
     },
