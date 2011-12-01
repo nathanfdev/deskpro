@@ -86,7 +86,10 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 		});
 
 		this.$widget.find('.toolbar-title').on('click', function() {
-			self.dashboard.showChartFullscreen(self);
+			// Dont show overlays when in edit mode
+			if (false === self.is_edit_state) {
+				self.dashboard.showChartFullscreen(self);
+			}
 			return false;
 		});
 
