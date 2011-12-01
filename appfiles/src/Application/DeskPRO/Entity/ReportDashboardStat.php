@@ -128,6 +128,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		$this->grid_slots   = 1;
 		$this->grid_columns = 1;
 		$this->grid_rows    = 1;
+		$this->show_legend  = 0;
 		$this->view_class   = "Application\ReportBundle\Chart\AmChart\LineChart";
 		$this->date_created = new \DateTime();
 	}

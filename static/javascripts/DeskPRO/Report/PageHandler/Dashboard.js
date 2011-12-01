@@ -18,6 +18,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// List of the dashboard widgets
 		this.widgets = [];
 
+		// List of widgets in the grid
 		this.grid = [];
 
 		// State of the dashboard, can be in view or edit state
@@ -143,8 +144,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	setupCellGrid: function(rowsRequired) {
 
-		rowsRequired++;
-
 		this.$dashboard.find('.slot').remove();
 
 		var size = rowsRequired * this.number_columns;
@@ -198,8 +197,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				if (data.widgets.length > 0) {
 
 					var rowsRequired = Math.ceil(data.widgets.length / self.number_columns);
-					if (data.widgets.length % self.number_columns == 0)
-						rowsRequired++;
 
 					self.setupCellGrid(rowsRequired);
 
@@ -255,10 +252,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		Array.each(this.widgets, function(v) {
-			v.widget.getContent().render();
-			v.widget.hideLoader();
-		});
+		// Array.each(this.widgets, function(v) {
+		// 	v.widget.getContent().render();
+		// 	v.widget.hideLoader();
+		// });
 
 	},
 
@@ -310,8 +307,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				dataType: 'json',
 				type: 'GET',
 				success: function(data) {
-					self.$dashboard.find('li#' + element_id).remove();
+					self.$dashboard.find('#' + element_id).remove();
 					self.widgets.splice(widget_index, 1);
+					self.removeWidgetFromGrid(widget.widget);
 				}
 			});
 		}
@@ -1131,6 +1129,29 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
         }
     },
 
+    removeWidgetFromGrid: function(widget) {
+
+    	this.dumpGrid();
+
+    	var currentIndex = this.getWidgetPosById(widget.widget_id);
+
+        var startX = currentIndex % this.number_columns;
+        var startY = Math.floor(currentIndex / this.number_columns);
+
+         // Clean up the old
+        for (var x = startX; x < (startX + widget.units_width); x++) {
+            for (var y = startY; y < (startY + widget.units_height); y++) {
+
+                var newLoopIndex = this.number_columns*y + x;
+                this.grid.splice(newLoopIndex, 1, null);
+
+            }
+        }
+
+        this.dumpGrid();
+
+    },
+
     initWidgetInGrid: function(widget) {
         var currentIndex = widget.slot_number;
 
@@ -1158,7 +1179,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     dumpGrid: function() {
-    	return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
