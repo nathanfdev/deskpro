@@ -216,11 +216,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					// Get the max cell position, we use this to build the grid
 					var maxCellPosition = 0;
 					Array.each(data.widgets, function(v) {
-						if (v.slot_number > maxCellPosition) {
-							maxCellPosition = v.slot_number;
+						var cellPosition = v.slot_number +
+										   ((v.grid_rows-1) * self.number_columns) +
+										   (v.grid_columns - 1);
+						if (cellPosition > maxCellPosition) {
+							maxCellPosition = cellPosition;
 						}
 					});
-					var rowsRequired = Math.ceil(maxCellPosition / self.number_columns);
+					var rowsRequired = Math.ceil((maxCellPosition+1) / self.number_columns);
 					self.setupCellGrid(rowsRequired);
 
 					Array.each(data.widgets, function(v) {
@@ -243,7 +246,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	createWidgetFromJSON: function(data) {
 
 		var widget = new DeskPRO.Report.Dashboard.Widget(this, data.id, data);
-		this.addWidget(widget, null, widget.slot_number);
+		this.addWidget(widget, widget.slot_number);
 
 		widget.setContent(this.createChart(
 			data.chart_vendor,
@@ -275,19 +278,19 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// widget content may need to redraw itself
 	renderWidgets: function() {
 
-		// Array.each(this.widgets, function(v) {
-		// 	v.widget.getContent().render();
-		// 	v.widget.hideLoader();
-		// });
+		Array.each(this.widgets, function(v) {
+			v.widget.getContent().render();
+			v.widget.hideLoader();
+		});
 
 	},
 
 	// Add a widget to the dashboard.
 	// pos start index at 0
-	addWidget: function(widget, num_slots, pos) {
+	addWidget: function(widget, pos) {
 
 		pos = pos || -1;
-		num_slots = num_slots || 1;
+		num_slots = 1;
 
 		var insert_widget = {
 			widget: widget,
@@ -494,11 +497,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			distance: 40,
 			minWidth: this.column_width,
 			minHeight: this.row_height,
-			start: function(event, ui) {
-				$(this).addClass('dragging');
-				var html = '<div class="resize-overlay resize-left"></div>';
-				$(this).find('.ui-resizable-helper').append(html);
-			},
 			stop: function(event, ui) {
 				$(this).removeClass('dragging');
 				// Remove the resize overlay
@@ -631,8 +629,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					$('#overlay_wrapper .overlay-loader').css('display', 'none');
 					self.closeOverlay();
 
-					// Set the position the new widget should be inserted into
-					data.widget.slot_number = self.add_chart_position;
 					// Insert the new widget
 					var widget = self.createWidgetFromJSON(data.widget);
 					widget.setEditable(true);
@@ -644,6 +640,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 					self.applyResizeToWidgets('#' + widget.element_id);
 					self.applyDraggableToWidgets('#' + widget.element_id);
+
+					self.saveDashboardState();
 				}
 			});
 
@@ -798,14 +796,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var index = 0;
 
 		Array.each(this.widgets, function(v) {
-			self.resizeWidgetToColumn(index, v.num_slots, false);
+			self.resizeWidgetToColumn(index, v.widget.units_width, false);
 			index++;
 		});
 
 		// Resize the placeholder is we are in edit state
-		//if (this.is_edit_state === true) {
+		if (this.is_edit_state === true) {
 			this.resizePlacerHolderWidgets()
-		//}
+		}
 	},
 
 	// Resize a widget to fit into number_columns
@@ -822,7 +820,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.widgets[widget_index].num_slots = number_columns;
 
 		var new_width = this.calculateWidthOfWidgetByColumnCount(number_columns);
-
 		this.widgets[widget_index].widget.setWidth(new_width);
 
 		this.widgets[widget_index].widget.setTop(this.caclTop(this.widgets[widget_index].widget.slot_number));
@@ -1048,13 +1045,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             var widget = this.widgets[this.getWidgetIndexById(widget_id)];
             widget.widget.left = slot_el.css('left').replace('px', '');
             widget.widget.top = slot_el.css('top').replace('px', '');
+            widget.widget.slot_number = slot_id;
 
             // Need to reorganise grid
             self.moveWidget(self.getWidgetPosById(widget_id), slot_id, widget.widget);
 
             widget_el.animate({
-                left: slot_el.css('left'),
-                top: slot_el.css('top')
+                left: widget.widget.left,
+                top: widget.widget.top
             }, 500, function() {
 
             });
@@ -1201,15 +1199,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     resizeDashboardHeightToGrid: function() {
 
-console.log(this.grid);
     	var numberRows = Math.ceil(this.grid.length / this.number_columns);
     	var height = numberRows * this.row_height + (numberRows * 10);
-console.log(this.grid.length + ' / ' + this.number_columns);
 
     	this.$dashboard.css('height', height + 'px');
     },
 
     dumpGrid: function() {
+
+    	return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 

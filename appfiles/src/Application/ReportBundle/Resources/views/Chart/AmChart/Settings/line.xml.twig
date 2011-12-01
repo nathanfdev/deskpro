@@ -66,7 +66,7 @@
 		{% for label in chart.labels %}
 			<graph gid="{{ loop.index }}">
 				<axis>left</axis>
-				<title>dasd{{ label|default('') }}</title>
+				<title>{{ label|default('') }}</title>
 				<balloon_text>
 					<![CDATA[{{ label|default('') }}: {value}{{ chart.getDisplayUnits }}]]>
 				</balloon_text>
