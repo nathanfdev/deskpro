@@ -27,6 +27,12 @@ class EditReportDashboardStatType extends AbstractType
 		$builder->add('chart_type', 'choice', array(
 			'choices'   => $chart_types,
 		));
+		$builder->add('show_legend', 'choice', array(
+			'required' => false,
+			'choices'  => array(0 => 'No', 1 => 'Yes'),
+			'multiple'  => false,
+			'expanded'  => true,
+		));
 		$builder->add('display_grouping', 'choice', array(
 			'required' => false,
 			'choices'  => array(0 => 'No', 1 => 'Yes'),

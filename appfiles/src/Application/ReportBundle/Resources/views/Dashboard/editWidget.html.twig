@@ -22,6 +22,16 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
+				<label>Show Legend?</label>
+				<span>Select yes to display the chart legend (works best with bigger charts)</span>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.show_legend) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
 				<label>Display Grouping Data?</label>
 				<span>Select yes to display the data grouped by {{ stat.getGroupingName }}</span>
 			</div>

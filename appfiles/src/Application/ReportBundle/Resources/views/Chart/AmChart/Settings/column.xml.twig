@@ -26,10 +26,6 @@
 		</margins>
 	</plot_area>
 
-	<legend>
-		<enabled>0</enabled>
-	</legend>
-
 	<values>
 		<category>
 			<frequency>1</frequency>
@@ -45,6 +41,16 @@
 	<error_messages>
 		<color>#cccccc</color>
 	</error_messages>
+
+	{% if dashboard_stat.getShowLegend() == true %}
+		<legend>
+			<enabled>1</enabled>
+		</legend>
+	{% else %}
+		<legend>
+			<enabled>0</enabled>
+		</legend>
+	{% endif %}
 
 	<graphs>
 		{% for label in chart.labels %}

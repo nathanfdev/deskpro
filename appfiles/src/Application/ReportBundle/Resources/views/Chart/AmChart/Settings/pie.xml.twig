@@ -33,9 +33,15 @@
 		<color>#cccccc</color>
 	</error_messages>
 
-	<legend>
-		<enabled>0</enabled>
-	</legend>
+	{% if dashboard_stat.getShowLegend() == true %}
+		<legend>
+			<enabled>1</enabled>
+		</legend>
+	{% else %}
+		<legend>
+			<enabled>0</enabled>
+		</legend>
+	{% endif %}
 
 	<data>
 		<pie>

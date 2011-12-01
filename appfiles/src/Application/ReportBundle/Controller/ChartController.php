@@ -19,7 +19,7 @@ use Application\DeskPRO\Entity\ReportDashboard;
 class ChartController extends AbstractController
 {
 	public function getChartAction($dashboard_stat_id)
-	{	
+	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
 		$end_date = new \DateTime();
@@ -92,7 +92,8 @@ class ChartController extends AbstractController
 		$settings_template = $chart->getViewChartVendor() . '/Settings/' . $chart::CHART_IDENTIFIER . '.xml.twig';
 
 		return $this->render("ReportBundle:Chart:$settings_template", array(
-			'chart' => $chart
+			'dashboard_stat' => $dashboard_stat,
+			'chart'          => $chart
 		));
 	}
 

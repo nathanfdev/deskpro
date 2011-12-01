@@ -100,6 +100,14 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	protected $number_data_points;
 
 	/**
+	 * Indicates is the legend should be show on the chart
+	 *
+	 * @var bool
+	 * @ORM_MAPPING\Column(name="show_legend", type="boolean")
+	 */
+	protected $show_legend;
+
+	/**
 	 * Indicates if the ungrouped or grouped data should be displayed
 	 *
 	 * @var bool
