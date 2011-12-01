@@ -19,9 +19,9 @@
 
 	<plot_area>
 		<margins>
-			<left>50</left>
-			<top>30</top>
-			<right>30</right>
+			<left>60</left>
+			<top>20</top>
+			<right>20</right>
 			<bottom>30</bottom>
 		</margins>
 	</plot_area>
@@ -51,6 +51,26 @@
 			<enabled>0</enabled>
 		</legend>
 	{% endif %}
+
+	<axes>
+		<x>
+			<width>1</width>
+		</x>
+		<y_left>
+			<width>1</width>
+		</y_left>
+	</axes>
+
+	<labels>
+		<label lid="0">
+			<x>10</x>
+			<y>100%</y>
+			<rotate>true</rotate>
+			<width></width>
+			<align>center</align>
+			<text><![CDATA[Y label]]></text>
+		</label>
+	</labels>
 
 	<graphs>
 		{% for label in chart.labels %}
