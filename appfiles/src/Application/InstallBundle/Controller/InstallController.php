@@ -137,7 +137,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$agent->first_name = $this->getIn()->getString('admin.first_name');
 			$agent->last_name = $this->getIn()->getString('admin.last_name');
 			$agent->setEmail($this->getIn()->getString('admin.email'), true);
-			$agent->password = $this->getIn()->getString('admin.password');
+			$agent->setPassword($this->getIn()->getString('admin.password'));
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
 			$agent->is_agent = true;
 
 			$this->getOrm()->persist($agent);
