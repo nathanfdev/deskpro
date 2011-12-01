@@ -175,6 +175,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$(".cell .dashboard-new-placeholder-link").on('click', function() {
 
 			self.add_chart_position = $(this).parent().parent().data('id');
+			console.log(self.add_chart_position);
 
 			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
 			$('#overlay_wrapper .overlay-loader').css('display', 'none');
@@ -288,7 +289,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Add a widget to the dashboard.
 	// pos start index at 0
 	addWidget: function(widget, pos) {
-
 		pos = pos || -1;
 		num_slots = 1;
 
@@ -633,6 +633,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.closeOverlay();
 
 					// Insert the new widget
+					data.widget.slot_number = self.add_chart_position;
 					var widget = self.createWidgetFromJSON(data.widget);
 					widget.setEditable(true);
 					widget.getContent().render();
@@ -1209,8 +1210,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     },
 
     dumpGrid: function() {
-
-    	return;
 
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
