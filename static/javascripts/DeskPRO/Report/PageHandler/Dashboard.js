@@ -194,6 +194,48 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.resizeDashboardHeightToGrid();
 	},
 
+	addCellGrids: function(rowsRequired) {
+
+		var self = this;
+
+		var size = this.grid.length + (rowsRequired * this.number_columns);
+
+		for (var i = this.grid.length; i < size; i++) {
+			this.grid.push(null);
+
+            var height = this.caclHeight(1);
+            var width  = this.caclWidth(1);
+
+            var top  = this.caclTop(i);
+            var left = this.caclLeft(i);
+
+            var html = '\
+<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
+<span class="inner"> \
+	<a href="#" class="dashboard-new-placeholder-link">Click to Add a Chart<br />Or<br />Drop an Existing Chart</a>\
+</span>\
+</div>';
+            this.$dashboard.append(html);
+        }
+
+        // Set handler to process click events, we want to display an overlay
+		$(".cell .dashboard-new-placeholder-link").on('click', function() {
+
+			self.add_chart_position = $(this).parent().parent().data('id');
+			console.log(self.add_chart_position);
+
+			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
+			$('#overlay_wrapper .overlay-loader').css('display', 'none');
+			self.openOverlay($.tmpl('dashboard_widget_select'));
+			self.addAddChartUIHandlers();
+
+			return false;
+		});
+
+		this.applyDroppableToWidgets();
+		this.resizeDashboardHeightToGrid();
+	},
+
 	// Open the overlay loading in a template
 	openOverlay: function(overlay_content) {
 
@@ -405,36 +447,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Create the 'Add Widget' placeholder
 		this.showAddChartPlaceholder();
 
-        this.$dashboard.find('.cell').droppable({
-        	tolerance: 'pointer',
-        	hoverClass: 'dashboard-cell-hover-over',
-            drop: function(event, ui) {
-                self.doDrop($(this), ui.draggable);
-
-                // Save the new state of the dashboard
-				self.saveDashboardState();
-
-                $(this) .removeClass("drop-allowed");
-            },
-            over: function(event, ui) {
-                // var dropAllowed = self.isDropAllowed($(this), ui.draggable);
-
-                // if (dropAllowed) {
-                //     $(this).addClass("drop-allowed");
-                // }
-                // else {
-                //     $(this).addClass("drop-denied");
-                // }
-            },
-            out: function(event, ui) {
-                $(this).removeClass("drop-allowed");
-                $(this).removeClass("drop-denied");
-            },
-        });
-
 		this.$dashboard.disableSelection();
 
 		// Make the dashboard widgets resizable
+		this.applyDroppableToWidgets();
 		this.applyResizeToWidgets();
 		this.applyDraggableToWidgets();
 
@@ -475,6 +491,38 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	},
 
 	// Apply the draggable plugin to widgets
+	applyDroppableToWidgets: function(selector) {
+		var self = this;
+
+		this.$dashboard.find('.cell').droppable({
+        	tolerance: 'pointer',
+        	hoverClass: 'dashboard-cell-hover-over',
+            drop: function(event, ui) {
+                self.doDrop($(this), ui.draggable);
+
+                // Save the new state of the dashboard
+				self.saveDashboardState();
+
+                $(this) .removeClass("drop-allowed");
+            },
+            over: function(event, ui) {
+                // var dropAllowed = self.isDropAllowed($(this), ui.draggable);
+
+                // if (dropAllowed) {
+                //     $(this).addClass("drop-allowed");
+                // }
+                // else {
+                //     $(this).addClass("drop-denied");
+                // }
+            },
+            out: function(event, ui) {
+                $(this).removeClass("drop-allowed");
+                $(this).removeClass("drop-denied");
+            },
+        });
+    },
+
+	// Apply the draggable plugin to widgets
 	applyDraggableToWidgets: function(selector) {
 
 		var self = this;
@@ -486,10 +534,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.$dashboard.find(selector).draggable({
 				revert: 'invalid',
 				handle: '.grid-slot-toolbar',
-				containment: '#report-dashboard',
+				//containment: '#report-dashboard',
 				start: function(event, ui) {
 					self.is_widget_dragging = true;
 					$(this).addClass('dragging');
+				},
+				drag: function(event, ui) {
+					self.checkNewPlacerholderRowRequired(parseInt($(this).css('top'))+parseInt($(this).css('height')));
 				},
 				stop: function(event, ui) {
 					self.is_widget_dragging = false;
@@ -1220,9 +1271,21 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     resizeDashboardHeightToGrid: function() {
 
     	var numberRows = Math.ceil(this.grid.length / this.number_columns);
-    	var height = numberRows * this.row_height + (numberRows * 10);
+    	// Adds on an extra half row so can can add more placeholders in if we need to
+    	var height = numberRows * this.row_height + (numberRows * 10);// + (this.row_height / 4);
 
     	this.$dashboard.css('height', height + 'px');
+    },
+
+    checkNewPlacerholderRowRequired: function(yPos) {
+
+    	var rows = Math.ceil(this.grid.length / this.number_columns);
+    	var boundary = this.caclHeight(rows) + (this.row_height / 2);
+
+    	if (yPos > boundary) {
+    		this.addCellGrids(1);
+    	}
+
     },
 
     dumpGrid: function() {
