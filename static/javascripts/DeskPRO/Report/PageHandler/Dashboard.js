@@ -51,6 +51,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Fullscreen over lay
 		this.fullscreen_overlay = null;
 
+		// Position to add next new chart
+		this.add_chart_position = null;
+
 		// The supported vendor namespaces
 		this.supported_vendors = ['AmChart', 'DeskPRO'];
 
@@ -144,6 +147,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	setupCellGrid: function(rowsRequired) {
 
+		var self = this;
+
 		this.$dashboard.find('.slot').remove();
 
 		var size = rowsRequired * this.number_columns;
@@ -166,8 +171,20 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             this.$dashboard.append(html);
         }
 
-        this.resizeDashboardHeightToGrid();
+        // Set handler to process click events, we want to display an overlay
+		$(".cell .dashboard-new-placeholder-link").on('click', function() {
 
+			self.add_chart_position = $(this).parent().parent().data('id');
+
+			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
+			$('#overlay_wrapper .overlay-loader').css('display', 'none');
+			self.openOverlay($.tmpl('dashboard_widget_select'));
+			self.addAddChartUIHandlers();
+
+			return false;
+		});
+
+		this.resizeDashboardHeightToGrid();
 	},
 
 	// Open the overlay loading in a template
@@ -614,8 +631,9 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					$('#overlay_wrapper .overlay-loader').css('display', 'none');
 					self.closeOverlay();
 
+					// Set the position the new widget should be inserted into
+					data.widget.slot_number = self.add_chart_position;
 					// Insert the new widget
-					data.widget.slot_number = 2;
 					var widget = self.createWidgetFromJSON(data.widget);
 					widget.setEditable(true);
 					widget.getContent().render();
@@ -685,17 +703,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Ensure the widget is the correct size
 		this.resizePlacerHolderWidgets();
 
-		this.$dashboard.find('.cell').css('display', 'block')
-
-		// Set handler to process click events, we want to display an overlay
-		$(".cell .dashboard-new-placeholder-link").on('click', function() {
-			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
-			$('#overlay_wrapper .overlay-loader').css('display', 'none');
-			self.openOverlay($.tmpl('dashboard_widget_select'));
-			self.addAddChartUIHandlers();
-
-			return false;
-		});
+		this.$dashboard.find('.cell').css('display', 'block');
 	},
 
 	// Remove the placeholder
