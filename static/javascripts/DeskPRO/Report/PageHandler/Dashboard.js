@@ -181,7 +181,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$(".cell .dashboard-new-placeholder-link").on('click', function() {
 
 			self.add_chart_position = $(this).parent().parent().data('id');
-			console.log(self.add_chart_position);
 
 			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
 			$('#overlay_wrapper .overlay-loader').css('display', 'none');
@@ -222,7 +221,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$(".cell .dashboard-new-placeholder-link").on('click', function() {
 
 			self.add_chart_position = $(this).parent().parent().data('id');
-			console.log(self.add_chart_position);
 
 			$('#overlay_wrapper .overlay-title h4').html('Add Dashboard Chart');
 			$('#overlay_wrapper .overlay-loader').css('display', 'none');
@@ -571,6 +569,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 				var resizeAllowed = self.isResizeAllowed($(this));
 				if (resizeAllowed) {
+					self.checkNewPlacerholderRowRequired(parseInt($(this).css('top'))+parseInt($(this).css('height')));
 					// TODO: remove this when window resize event handler is working
 					self.calculateColumnWidth();
 
@@ -1272,7 +1271,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
     	var numberRows = Math.ceil(this.grid.length / this.number_columns);
     	// Adds on an extra half row so can can add more placeholders in if we need to
-    	var height = numberRows * this.row_height + (numberRows * 10);// + (this.row_height / 4);
+    	var height = numberRows * this.row_height + (numberRows * 10) + (this.row_height / 4);
 
     	this.$dashboard.css('height', height + 'px');
     },
@@ -1280,16 +1279,17 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     checkNewPlacerholderRowRequired: function(yPos) {
 
     	var rows = Math.ceil(this.grid.length / this.number_columns);
-    	var boundary = this.caclHeight(rows) + (this.row_height / 2);
+    	var boundary = this.caclHeight(rows) + (this.row_height / 4);
 
+    	var newRowCount = this.calculateClosestRowSize(yPos);
     	if (yPos > boundary) {
-    		this.addCellGrids(1);
+    		this.addCellGrids(newRowCount - rows);
     	}
 
     },
 
     dumpGrid: function() {
-
+    	return;
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
     	console.log("----");
