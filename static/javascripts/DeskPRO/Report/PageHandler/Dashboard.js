@@ -345,12 +345,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	},
 
-	// Add the notice informing the dashboard is empty
+	// Add the notice informing the dashboard is empty, and setups an default grid
 	addDashboardEmptyNotice: function() {
 		var self = this;
 
 		var html = '<div id="dashboard-empty-notice"><a href="#">The dashboard is currently empty. Click here to add some charts</a></div>';
 		this.$dashboard.append(html);
+
+		// Add one row to the grid
+		self.setupCellGrid(1);
 
 		$('#dashboard-empty-notice a').click(function() {
 			self.setEditable(true);
