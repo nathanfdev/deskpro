@@ -28,7 +28,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	protected static $availableChartClasses = array(
 		// Am Charts
 		'Application\ReportBundle\Chart\AmChart\LineChart',
-		//'Application\ReportBundle\Chart\AmChart\StackedLineChart',
+		'Application\ReportBundle\Chart\AmChart\StackedLineChart',
 		'Application\ReportBundle\Chart\AmChart\ColumnChart',
 		'Application\ReportBundle\Chart\AmChart\StackedColumnChart',
 		'Application\ReportBundle\Chart\AmChart\PieChart',
