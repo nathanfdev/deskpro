@@ -511,8 +511,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Make the dashboard widgets resizable
 		this.$dashboard.find(selector).resizable({
 			helper: "ui-resizable-helper",
-			//handles: 'e',
-			//distance: 20,
 			minWidth: this.column_width,
 			minHeight: this.row_height,
 			stop: function(event, ui) {

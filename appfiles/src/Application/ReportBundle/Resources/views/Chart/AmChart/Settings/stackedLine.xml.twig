@@ -66,6 +66,7 @@
 			<graph gid="{{ loop.index }}">
 				<axis>left</axis>
 				<title>{{ label|default('') }}</title>
+				<fill_alpha>70</fill_alpha>
 				<balloon_text>
 					<![CDATA[{{ label|default('') }}: {value}{{ chart.getDisplayUnits }}]]>
 				</balloon_text>
