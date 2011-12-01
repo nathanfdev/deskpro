@@ -9,4 +9,4 @@ framework:
   profiler: { only_exceptions: false }
 
 twig:
-  debug: false
+  debug: %kernel.debug%
