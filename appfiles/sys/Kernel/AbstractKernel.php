@@ -2,8 +2,11 @@
 
 namespace DeskPRO\Kernel;
 
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Application\DeskPRO\App;
 
@@ -55,6 +58,74 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			$logger = App::get('deskpro.exception_logger');
 			$logger->handleError($errno, $errstr, $errfile, $errline);
 		}, E_ALL | E_STRICT);
+	}
+
+	public function handle_x(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		if (false === $this->booted) {
+			$this->boot();
+		}
+
+		/** @var $response \Symfony\Component\HttpFoundation\Response */
+		$response = $this->getHttpKernel()->handle($request, $type, $catch);
+
+		#------------------------------
+		# License checksc
+		#------------------------------
+
+		if ($response->headers->get('content-type') == 'text/html' && $type == HttpKernelInterface::MASTER_REQUEST) {
+			$path = $request->getPathInfo();
+
+			#------------------------------
+			# No license
+			#------------------------------
+
+			if (!License::get()->hasLicense() && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+				$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
+				return $response;
+			}
+
+
+			#------------------------------
+			# Max agent checks
+			#------------------------------
+
+			if (License::get()->getMaxAgents()) {
+				// The main interface frame is a good place to stick this check
+				if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
+					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+					if ($count > License::get()->getMaxAgents()) {
+						die('[LIC ERR 1] Too many agents');
+					}
+				}
+
+				// On every admin page, redirect them to agents management, dont let them do anything else
+				// Also let them use the license page to update the license!
+				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
+					if ($count > License::get()->getMaxAgents()) {
+						$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
+						return $response;
+					}
+				}
+			}
+
+			#------------------------------
+			# Expiry checks
+			#------------------------------
+
+			if (License::get()->isPastExpireDate()) {
+				// On every admin page, redirect them to license management
+				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+					$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
+					return $response;
+				} else {
+					die('[LIC ERR 2] License has expired');
+				}
+			}
+		}
+
+		return $response;
 	}
 
 	protected function getContainerClass()
@@ -203,4 +274,173 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
     {
         return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
     }
+}
+
+final class License
+{
+	/**
+	 * @var \DeskPRO\Kernel\License
+	 */
+	static private $inst;
+
+	/**
+	 * @var string
+	 */
+	private $license_id;
+
+	/**
+	 * @var string
+	 */
+	private $license_salt;
+
+	/**
+	 * @var string
+	 */
+	private $license_code;
+
+	/**
+	 * @var array
+	 */
+	private $license;
+
+	/**
+	 * @static
+	 * @param $license_code
+	 * @return \DeskPRO\Kernel\License
+	 */
+	public static function create($license_code)
+	{
+		if (self::$inst) {
+			die('[ERR 2] License already made');
+		}
+
+		self::$inst = new self($license_code);
+		return self::$inst;
+	}
+
+
+	/**
+	 * @static
+	 * @return \DeskPRO\Kernel\License
+	 */
+	public static function get()
+	{
+		if (!self::$inst) {
+			if (defined('DP_LIC_FILE')) {
+				$license_code = file_get_contents(DP_LIC_FILE);
+			} else {
+				$license_code = App::getSetting('dp.license');
+				if (!$license_code) $license_code = null;
+			}
+
+			self::create($license_code);
+		}
+
+		return self::$inst;
+	}
+
+
+	/**
+	 * $license_code is a combined string in the form of:
+	 *
+	 *     <license id><license salt><encrypted license code>
+	 *
+	 * The license id is like: ASDD-2000-GGHF (14 chars)
+	 * The license salt is like: JKHNNSDSD90809SJHDJK (20 chars)
+	 * The encrypted bit is a base64 encoded string (remaining)
+	 *
+	 * @param $license_code
+	 */
+	private function __construct($license_code)
+	{
+		// "no license" mode
+		if ($license_code === null) {
+			$this->data = array('no_license' => true);
+			return;
+		}
+
+		if (strlen($license_code) < 300) {
+			die('[ERR 1] Invalid license code');
+		}
+
+		$license_code = base64_decode($license_code);
+
+		$this->license_id   = substr($license_code, 0, 14);
+		$this->license_salt = substr($license_code, 14, 20);
+
+		$enc  = substr($license_code, 34);
+		$enc = strrev($enc);
+
+		$key = sha1($this->license_salt . $this->license_id . '5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS');
+		$enc = $this->xorString($enc, $key);
+
+		$enc = base64_decode($enc);
+		$data = @unserialize($enc);
+
+		$this->data = $data;
+
+		if (!$data) {
+			die('[ERR 4] Invalid license code');
+		}
+	}
+
+	public function isDemo()
+	{
+		return isset($this->data['demo']) && $this->data['demo'];
+	}
+
+	public function getMaxAgents()
+	{
+		if (!isset($this->data['agents']) || !$this->data['agents']) {
+			return 0;
+		}
+
+		return $this->data['agents'];
+	}
+
+	public function getExpireDate()
+	{
+		if (!isset($this->data['expire']) || !$this->data['expire']) {
+			return null;
+		}
+
+		return new \DateTime($this->data['expire']);
+	}
+
+	public function isPastExpireDate()
+	{
+		$date = $this->getExpireDate();
+		if (!$date) {
+			return false;
+		}
+
+		$now = new \DateTime();
+		if ($now < $date) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function hasLicense()
+	{
+		return !isset($this->data['no_license']);
+	}
+
+	private function xorString($string, $key)
+	{
+		$string_len  = strlen($string);
+		$key_len     = strlen($key);
+		$new_string  = array();
+
+		for ($i = 0, $j = 0; $i < $string_len; $i++, $j++) {
+			if ($j >= $key_len) $j = 0;
+
+			$new_string[] = chr(ord($string[$i]) ^ ord($key[$j]));
+		}
+
+		$new_string = implode('', $new_string);
+
+		return $new_string;
+	}
 }
