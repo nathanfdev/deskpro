@@ -285,17 +285,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		}
 
-
-		// Add widget to UI - Need to insert before the add chart placeholder
-		// if its showing
-		if (this.is_edit_state) {
-			this.removeAddChartPlaceholder();
-			this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));;
-			this.createAddChartPlaceholder();
-		}
-		else {
-			this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));
-		}
+		this.$dashboard.append($.tmpl('dashboard_widget', {widget: widget}));
 		widget.addUIHandlers();
 
 		widget.setHeight(this.caclHeight(widget.units_height));
@@ -377,7 +367,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$("#report-dashboard-options").css('display', 'block');
 
 		// Create the 'Add Widget' placeholder
-		this.createAddChartPlaceholder();
+		this.showAddChartPlaceholder();
 
 		this.$dashboard.find('.widget').draggable({
 			revert: 'invalid',
@@ -439,7 +429,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$("#report-dashboard-options").css('display', 'none');
 
 		// Remove the add placeholder
-		this.removeAddChartPlaceholder();
+		this.hideAddChartPlaceholder();
 
 		this.$dashboard.find(".widget").draggable('destroy');
 		this.$dashboard.find(".cell").droppable('destroy');
@@ -668,15 +658,15 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	},
 
-	// Create the placeholder for the add chart widget
-	createAddChartPlaceholder: function() {
+	// Show the placeholders for the add chart widget
+	showAddChartPlaceholder: function() {
 
 		var self = this;
 
-		//this.$dashboard.find('.cell').html($.tmpl('dashboard_widget_create'));
+		// Ensure the widget is the correct size
+		this.resizePlacerHolderWidgets();
 
-		// Ensure widget is the correct size
-		this.resizePlacerHolderWidget();
+		this.$dashboard.find('.cell').css('display', 'block')
 
 		// Set handler to process click events, we want to display an overlay
 		$(".cell .dashboard-new-placeholder-link").on('click', function() {
@@ -690,10 +680,10 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	},
 
 	// Remove the placeholder
-	removeAddChartPlaceholder: function() {
+	hideAddChartPlaceholder: function() {
 
-		// Remove the 'Add Widget' placeholder
-		$('#dashboard-new-placeholder').remove();
+		// Remove the 'Add Widget' placeholders
+		this.$dashboard.find('.cell').css('display', 'none')
 
 	},
 
@@ -787,7 +777,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Resize the placeholder is we are in edit state
 		//if (this.is_edit_state === true) {
-			this.resizePlacerHolderWidget()
+			this.resizePlacerHolderWidgets()
 		//}
 	},
 
@@ -842,7 +832,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	},
 
 	// Resize the placeholder widget
-	resizePlacerHolderWidget: function() {
+	resizePlacerHolderWidgets: function() {
 
 		// Always takes up 1 column in width
 		var new_width = this.calculateWidthOfWidgetByColumnCount(1);
