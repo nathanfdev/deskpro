@@ -239,6 +239,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				else {
 					self.addDashboardEmptyNotice();
 				}
+				self.setEditable(true);
 			}
 		});
 	},
@@ -376,6 +377,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.updateToEditable();
 		}
 		else {
+			// Disabled view mode for now
+			return;
 			// Switch dashbaord to view stat
 			this.updateToViewable();
 
@@ -391,7 +394,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
-		$("#report-dashboard-options").css('display', 'block');
+		//$("#report-dashboard-options").css('display', 'block');
 
 		// Create the 'Add Widget' placeholder
 		this.showAddChartPlaceholder();
