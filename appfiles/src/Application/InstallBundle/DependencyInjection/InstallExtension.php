@@ -70,6 +70,6 @@ class InstallExtension extends Extension
 
 	public function getAlias()
     {
-        return 'deskpro_install';
+        return 'install';
     }
 }

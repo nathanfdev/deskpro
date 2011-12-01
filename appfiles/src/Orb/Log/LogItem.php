@@ -63,7 +63,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	}
 
 
-	
+
 	/**
 	 * Empty init method for children
 	 */
@@ -84,7 +84,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	}
 
 
-	
+
 	/**
 	 * Get the priority name
 	 * @return string
@@ -120,11 +120,11 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 		return $this[self::MESSAGE_LINE];
 	}
 
-	
+
 
 	/**
 	 * Get the time of the event
-	 * 
+	 *
 	 * @return DateTime
 	 */
 	public function getDatetime()
@@ -132,7 +132,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 		return $this[self::DATETIME];
 	}
 
-	
+
 
 	/**
 	 * Get the session name
@@ -145,7 +145,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	}
 
 
-	
+
 	/**
 	 * Get extra, non-standard event data.
 	 */
@@ -160,6 +160,11 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 		}
 
 		return $ret;
+	}
+
+	public function toArray()
+	{
+		return $this->info;
 	}
 
 

@@ -26,7 +26,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->person['id'] OR !$this->_userHasPermissions()) {
+		if (!$this->person['id']) {
 			if ($this->request->isXmlHttpRequest()) {
 				$data = array(
 					'error' => 'session_expired',
@@ -49,7 +49,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			// TODO implement no perms
+			die('no permission');
 		}
 
 		$this->person->loadHelper('Agent');

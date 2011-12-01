@@ -119,7 +119,7 @@ class ServerChecks
 
 		if ($type == 'php_version' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking PHP version >= 5.3.2", Logger::DEBUG);
-			if (version_compare(phpversion(), '5.3.2', '>=')) {
+			if (deskpro_install_check_version()) {
 				$this->getLogger()->log("[OK] PHP version of " . phpversion() . " is OK", Logger::DEBUG);
 			} else {
 				$msg = "[FATAL] Install PHP 5.3.2 or newer. You currently have " . phpversion();
@@ -212,10 +212,23 @@ class ServerChecks
 
 		if ($type == 'pdo_ext' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking for PDO extension", Logger::DEBUG);
-			if (class_exists('PDO', false)) {
+			if (deskpro_install_check_pdo()) {
 				$this->getLogger()->log("[OK] PDO installed", Logger::DEBUG);
+
+
+				$this->getLogger()->log("[CHECK] Checking for PDO_MySQL", Logger::DEBUG);
+				if (deskpro_install_check_pdo_mysql()) {
+					$this->getLogger()->log("[OK] PDO_MySQL installed", Logger::DEBUG);
+				} else {
+					$msg = "You need to install the MySQL PDO driver";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['pdo_mysql_ext'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
+				}
 			} else {
-				$msg = "Install and enable the PDO extension";
+				$msg = "Install and enable the PDO/PDO_MySQL extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['pdo_ext'] = array(
 					'message' => $msg,
@@ -332,12 +345,25 @@ class ServerChecks
 				'message' => $msg,
 				'level' => 'fatal'
 			);
-		}
 
-
-		if ($this->server_errors) {
 			return false;
 		}
+
+		$this->getLogger()->log("[CHECK] checking for pre-existing tables", Logger::DEBUG);
+			$ver = $db->fetchColumn("SHOW TABLES");
+			if (!$ver) {
+				$this->getLogger()->log("[OK] no existing tables", Logger::DEBUG);
+			} else {
+				$msg = "There appear to be tables in this database already";
+				$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
+				$this->server_errors['db_not_empty'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+
+				return false;
+			}
+
 		return true;
 	}
 }

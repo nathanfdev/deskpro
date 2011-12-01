@@ -1,0 +1,38 @@
+parameters:
+  kernel.include_core_classes: false
+  routing.file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
+
+services:
+  doctrine.dbal.connection_factory:
+    class: Application\DeskPRO\DBAL\ConnectionFactory
+    arguments: [%doctrine.dbal.connection_factory.types%]
+    calls:
+      - [ setContainer, [@service_container] ]
+
+framework:
+  charset: UTF-8
+  secret: mube224etsmhxky1gvwixc4b
+  router: { resource: "%DP_ROOT%/src/Application/InstallBundle/Resources/config/routing.php" }
+  templating:
+    engines: ['php']
+    assets_base_urls: "CONFIG_HTTP"
+  session:
+    default_locale: en
+    lifetime: 3600
+
+doctrine:
+  orm:
+    auto_generate_proxy_classes: false
+    default_entity_manager: default
+    entity_managers:
+      default:
+        mappings:
+          DeskPRO: ~
+  dbal:
+    default_connection: default
+    connections:
+      default:
+        host: 'from_user_config.db'
+        logging: true
+
+install: ~

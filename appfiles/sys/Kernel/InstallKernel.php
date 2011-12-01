@@ -58,6 +58,8 @@ class InstallKernel extends \Symfony\Component\HttpKernel\Kernel
 		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\InstallBundle\InstallBundle(),
 		);
 
 		return $bundles;
@@ -92,7 +94,7 @@ class InstallKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/sys/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/install/config.yml');
 	}
 
 	protected function getContainerBaseClass()

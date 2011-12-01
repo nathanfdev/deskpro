@@ -43,6 +43,7 @@ $loader->registerClassNames(array(
 	'DeskPRO\\Kernel\\UserKernel'        => DP_ROOT.'/sys/Kernel/UserKernel.php',
 	'DeskPRO\\Kernel\\CliKernel'         => DP_ROOT.'/sys/Kernel/CliKernel.php',
 	'DeskPRO\\Kernel\\SysKernel'         => DP_ROOT.'/sys/Kernel/SysKernel.php',
+	'DeskPRO\\Kernel\\InstallKernel'     => DP_ROOT.'/sys/Kernel/InstallKernel.php',
 
 	'CssMin'                          => DP_ROOT.'/vendor/cssmin/cssmin.php',
 	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',

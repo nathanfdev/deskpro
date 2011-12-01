@@ -12,7 +12,7 @@
 namespace Application\InstallBundle\Install;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Log\Logger;
+use Orb\Log\Logger;
 
 class InstallSchema
 {
@@ -37,7 +37,7 @@ class InstallSchema
 	 * @param \Application\DeskPRO\DBAL\Connection $db
 	 * @param array $schema
 	 */
-	public function __constract($db, array $schema)
+	public function __construct($db, array $schema)
 	{
 		$this->db = $db;
 		$this->schema = $schema;
@@ -61,6 +61,10 @@ class InstallSchema
 		return $this->logger;
 	}
 
+	public function countQueries()
+	{
+		return count($this->schema['create']) + count($this->schema['alter']);
+	}
 
 	/**
 	 * Run through all the queries
@@ -68,46 +72,75 @@ class InstallSchema
 	 * @param bool $halt_on_error True to stop and throw an exception when an error is encountered.
 	 * @return bool True on success, false on error
 	 */
-	public function run($halt_on_error = true)
+	public function run($halt_on_error = true, $limit = 1000000, $skip = 0)
 	{
+		$has_error = false;
+
 		$s_time = microtime(true);
 		$this->getLogger()->log("InstallSchema::run started " . sprintf("%.f", $s_time), Logger::DEBUG);
 
 		if (!$this->schema['create']) $this->schema['create'] = array();
 		if (!$this->schema['alter']) $this->schema['alter'] = array();
 
-		foreach ($this->schema['create'] as $k => $sql) {
-			$this->getLogger()->log("[QUERY:TABLE:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+		if ($limit) {
+			foreach ($this->schema['create'] as $k => $sql) {
 
-			try {
-				$this->db->exec($sql);
-			} catch (\Exception $e) {
-				if (strlen($sql) > 30) {
-					$sub = substr($sql, 0, 30) . '...';
-				} else {
-					$sub = $sql;
+				if ($skip) {
+					$skip--;
+					continue;
 				}
-				$this->getLogger()->log("[QUERY:TABLE:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('sql' => $sql, 'exception' => $e));
-				if ($halt_on_error) {
-					throw $e;
+
+				$this->getLogger()->log("[QUERY:TABLE:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+
+				try {
+					$this->db->exec($sql);
+				} catch (\Exception $e) {
+					$has_error = true;
+					if (strlen($sql) > 30) {
+						$sub = substr($sql, 0, 30) . '...';
+					} else {
+						$sub = $sql;
+					}
+					$this->getLogger()->log("[QUERY:TABLE:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($halt_on_error) {
+						throw $e;
+					}
+				}
+
+				$limit--;
+				if (!$limit) {
+					break;
 				}
 			}
 		}
 
-		foreach ($this->schema['alter'] as $k => $sql) {
-			$this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
-
-			try {
-				$this->db->exec($sql);
-			} catch (\Exception $e) {
-				if (strlen($sql) > 30) {
-					$sub = substr($sql, 0, 30) . '...';
-				} else {
-					$sub = $sql;
+		if ($limit) {
+			foreach ($this->schema['alter'] as $k => $sql) {
+				if ($skip) {
+					$skip--;
+					continue;
 				}
-				$this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('sql' => $sql, 'exception' => $e));
-				if ($halt_on_error) {
-					throw $e;
+
+				$this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+
+				try {
+					$this->db->exec($sql);
+				} catch (\Exception $e) {
+					$has_error = true;
+					if (strlen($sql) > 30) {
+						$sub = substr($sql, 0, 30) . '...';
+					} else {
+						$sub = $sql;
+					}
+					$this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($halt_on_error) {
+						throw $e;
+					}
+				}
+
+				$limit--;
+				if (!$limit) {
+					break;
 				}
 			}
 		}

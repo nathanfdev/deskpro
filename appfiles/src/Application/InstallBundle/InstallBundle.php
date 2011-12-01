@@ -17,11 +17,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class InstallBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function __construct()
-	{
-		$this->name = 'Install';
-	}
-
 	public function build(ContainerBuilder $container)
     {
         $container->registerExtension(new \Application\InstallBundle\DependencyInjection\InstallExtension());
