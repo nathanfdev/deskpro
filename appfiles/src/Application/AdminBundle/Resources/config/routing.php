@@ -19,6 +19,13 @@ $collection->add('admin_test', new Route(
 	array()
 ));
 
+$collection->add('admin_license', new Route(
+	'/license',
+	array('_controller' => 'AdminBundle:License:index'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_fields', new Route(
 	'/tickets/fields',
 	array('_controller' => 'AdminBundle:TicketProperties:list'),
@@ -1180,6 +1187,5 @@ $collection->add('admin_customdefideas_test', new Route(
 	array('field_id' => '\\d+'),
 	array()
 ));
-
 
 return $collection;

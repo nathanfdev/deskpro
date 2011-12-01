@@ -1,4 +1,4 @@
-<?php $view->extend('InstallBundle::layout.html.php') ?>
+<?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 1: Server and Config Checks<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
 <h3>Server Checks</h3>
