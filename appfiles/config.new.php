@@ -17,17 +17,17 @@ $CONFIG['db']['host'] = 'localhost';
 /**
  * The database user
  */
-$CONFIG['db']['user'] = 'root';
+$CONFIG['db']['user'] = 'YOUR_DATABSE_USER';
 
 /**
  * The password for the database user
  */
-$CONFIG['db']['password'] = '';
+$CONFIG['db']['password'] = 'YOUR_DATABASE_PASS';
 
 /**
  * The name of the database
  */
-$CONFIG['db']['dbname'] = 'deskpro';
+$CONFIG['db']['dbname'] = 'YOUR_DATABASE_NAME';
 
 /**
  * The database driver. Currently only pdo_mysql is supported.
