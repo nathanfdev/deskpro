@@ -17,7 +17,7 @@ $CONFIG['db']['host'] = 'localhost';
 /**
  * The database user
  */
-$CONFIG['db']['user'] = 'YOUR_DATABSE_USER';
+$CONFIG['db']['user'] = 'YOUR_DATABASE_USER';
 
 /**
  * The password for the database user
