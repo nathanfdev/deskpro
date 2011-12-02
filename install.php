@@ -19,6 +19,16 @@ if (!deskpro_install_check_version()) {
 	exit;
 }
 
+if (!deskpro_install_check_config()) {
+	echo deskpro_install_basic_error(sprintf("Before you begin you must copy <code>/appfiles/config.new.php</code> to <code>/appfiles/config.php</code> and edit the values within."));
+	exit;
+}
+
+if (!deskpro_install_check_writable()) {
+	echo deskpro_install_basic_error("Before you proceed, you must make <code>/appfiles/src/cache</code> and <code>/appfiles/src/logs</code> writable by the server.");
+	exit;
+}
+
 ###############################################################################
 # Boot up the install kernel
 ###############################################################################

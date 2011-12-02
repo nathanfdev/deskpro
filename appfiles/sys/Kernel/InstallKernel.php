@@ -76,12 +76,20 @@ class InstallKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function getCacheDir()
 	{
-		return App::getCacheDir();
+		if (is_file(DP_ROOT.'/config.php')) {
+			return App::getCacheDir();
+		} else {
+			return DP_ROOT . '/sys/cache/%env%';
+		}
 	}
 
 	public function getLogDir()
 	{
-		return App::getLogDir();
+		if (is_file(DP_ROOT.'/config.php')) {
+			return App::getLogDir();
+		} else {
+			return DP_ROOT . '/sys/logs';
+		}
 	}
 
 	protected function getKernelParameters()

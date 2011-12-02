@@ -38,6 +38,16 @@ class Boot
 
 		$path = $request->getPathInfo();
 
+		if (!file_exists(DP_ROOT.'/config.php')) {
+			if (file_exists(DP_ROOT.'/../install.php')) {
+				header('Location: ' . $request->getBasePath() . '/install.php/');
+				exit;
+			} else {
+				echo "No config.php file found";
+				exit;
+			}
+		}
+
 		if (preg_match('#^/agent/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');

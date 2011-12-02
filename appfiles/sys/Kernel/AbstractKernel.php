@@ -7,6 +7,9 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Config\ConfigCache;
 
 use Application\DeskPRO\App;
 
@@ -126,6 +129,29 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Dumps the service container to PHP code in the cache.
+	 *
+	 * @param ConfigCache      $cache     The config cache
+	 * @param ContainerBuilder $container The service container
+	 * @param string           $class     The name of the class to generate
+	 * @param string           $baseClass The name of the container's base class
+	 */
+	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
+	{
+		// cache the container
+		$dumper = new PhpDumper($container);
+		$content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
+		if (!$this->debug) {
+			$content = self::stripComments($content);
+		}
+
+		// Re-write absolute paths to use DP_ROOT instead
+					$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+
+		$cache->write($content, $container->getResources());
 	}
 
 	protected function getContainerClass()
