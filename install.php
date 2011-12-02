@@ -25,7 +25,7 @@ if (!deskpro_install_check_config()) {
 }
 
 if (!deskpro_install_check_writable()) {
-	echo deskpro_install_basic_error("Before you proceed, you must make <code>/appfiles/src/cache</code> and <code>/appfiles/src/logs</code> writable by the server.");
+	echo deskpro_install_basic_error("Before you proceed, you must make <code>/appfiles/sys/cache</code> and <code>/appfiles/sys/logs</code> writable by the server.");
 	exit;
 }
 
