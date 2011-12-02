@@ -319,7 +319,7 @@ final class License
 	public static function create($license_code)
 	{
 		if (!defined('DP_LIC_SERVER')) {
-			define('DP_LIC_SERVER', 'http://deskprodev.com/dptools');
+			define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
 		}
 
 		$inst = new self($license_code);
