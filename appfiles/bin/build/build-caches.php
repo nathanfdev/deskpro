@@ -25,6 +25,7 @@ if ($proc_kernel === null) {
 
 		$cmd = './build-caches.php --knum ' . $k;
 		$proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
+		$proc->setTimeout(600);
 		$proc->run();
 
 		if (!$proc->isSuccessful()) {
