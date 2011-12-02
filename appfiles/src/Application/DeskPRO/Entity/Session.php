@@ -191,7 +191,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * Check a security token to see if its valid
 	 *
 	 * @param $name
-	 * @return void
+	 * @return bool
 	 */
 	public function checkSecurityToken($name, $token)
 	{

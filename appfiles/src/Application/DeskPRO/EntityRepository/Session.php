@@ -85,7 +85,7 @@ class Session extends EntityRepository
 			LEFT JOIN person.language lang
 
 			WHERE session.id = :id
-		")->setParameters(array('id' => $session_id))->getSingleResult();
+		")->setParameters(array('id' => $session_id))->getOneOrNullResult();
 
 		$session = $this->find($session_id);
 		if (!$session OR !$session->checkSessionCode($sess_code)) {
