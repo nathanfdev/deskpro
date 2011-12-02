@@ -7,6 +7,14 @@ $l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 $em->persist($l);
 $em->flush();
 
+##BEGIN:create_department.default##
+
+$q = new \Application\DeskPRO\Entity\Department();
+$q['title'] = 'General';
+$q['is_tickets_enabled'] = true;
+$q['is_chat_enabled'] = true;
+$em->persist($q);
+$em->flush();
 
 ##BEGIN:create_filter.agent##
 $q = new \Application\DeskPRO\Entity\TicketFilter();
@@ -259,6 +267,7 @@ $em->flush();
 $s = new \Application\DeskPRO\Entity\Style();
 $s['title'] = 'Default';
 $s['note'] = 'Default style';
+$s['css_dir'] = 'stylesheets/user';
 $em->persist($s);
 $em->flush();
 
