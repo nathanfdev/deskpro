@@ -30,11 +30,11 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$is_fatal = $server_check->hasFatalErrors();
 
+		$has_config = false;
 		$has_db_checks = false;
 
 		if (!$is_fatal) {
 			$has_db_checks = true;
-			$has_config = false;
 			if (file_exists(DP_ROOT . '/config.php')) {
 				$has_config = true;
 				$server_check->checkDatabase(App::getConfig('db'));
