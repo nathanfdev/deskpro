@@ -60,7 +60,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}, E_ALL | E_STRICT);
 	}
 
-	public function handle_x(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
 		if (false === $this->booted) {
 			$this->boot();
@@ -80,7 +80,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			# No license
 			#------------------------------
 
-			if (!License::get()->hasLicense() && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+			if (!License::getLicense()->hasLicense() && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
 				$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
 				return $response;
 			}
@@ -90,11 +90,11 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			# Max agent checks
 			#------------------------------
 
-			if (License::get()->getMaxAgents()) {
+			if (License::getLicense()->getMaxAgents()) {
 				// The main interface frame is a good place to stick this check
 				if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
 					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
-					if ($count > License::get()->getMaxAgents()) {
+					if ($count > License::getLicense()->getMaxAgents()) {
 						die('[LIC ERR 1] Too many agents');
 					}
 				}
@@ -103,7 +103,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 				// Also let them use the license page to update the license!
 				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
 					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
-					if ($count > License::get()->getMaxAgents()) {
+					if ($count > License::getLicense()->getMaxAgents()) {
 						$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
 						return $response;
 					}
@@ -114,7 +114,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			# Expiry checks
 			#------------------------------
 
-			if (License::get()->isPastExpireDate()) {
+			if (License::getLicense()->isPastExpireDate()) {
 				// On every admin page, redirect them to license management
 				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
 					$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
@@ -276,6 +276,11 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
     }
 }
 
+
+###############################################################################
+# License
+###############################################################################
+
 final class License
 {
 	/**
@@ -294,14 +299,17 @@ final class License
 	private $license_salt;
 
 	/**
-	 * @var string
-	 */
-	private $license_code;
-
-	/**
 	 * @var array
 	 */
-	private $license;
+	private $data;
+
+	/**
+	 * When non-null, then it means there was a problem with the license (ie bad format).
+	 * The License class goes into unlicensed mode in these cases, but if there was
+	 * a license code but it was just invalid, then you can always check this.
+	 * @var string
+	 */
+	private $error_code = null;
 
 	/**
 	 * @static
@@ -310,12 +318,18 @@ final class License
 	 */
 	public static function create($license_code)
 	{
-		if (self::$inst) {
-			die('[ERR 2] License already made');
+		if (!defined('DP_LIC_SERVER')) {
+			define('DP_LIC_SERVER', 'http://deskprodev.com/dptools');
 		}
 
-		self::$inst = new self($license_code);
-		return self::$inst;
+		$inst = new self($license_code);
+
+		// First invocation always the singleton used for lic checks
+		if (!self::$inst) {
+			self::$inst = $inst;
+		}
+
+		return $inst;
 	}
 
 
@@ -323,13 +337,15 @@ final class License
 	 * @static
 	 * @return \DeskPRO\Kernel\License
 	 */
-	public static function get()
+	public static function getLicense()
 	{
 		if (!self::$inst) {
 			if (defined('DP_LIC_FILE')) {
 				$license_code = file_get_contents(DP_LIC_FILE);
+			} elseif (defined('DP_LIC_STR')) {
+				$license_code = DP_LIC_STR;
 			} else {
-				$license_code = App::getSetting('dp.license');
+				$license_code = App::getSetting('core.license');
 				if (!$license_code) $license_code = null;
 			}
 
@@ -360,9 +376,13 @@ final class License
 		}
 
 		if (strlen($license_code) < 300) {
-			die('[ERR 1] Invalid license code');
+			$this->error_code = 'invalid_license_code_1';
+			$this->data = array('no_license' => true);
+			return;
 		}
 
+		$license_code = trim($license_code);
+		$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
 		$license_code = base64_decode($license_code);
 
 		$this->license_id   = substr($license_code, 0, 14);
@@ -380,8 +400,15 @@ final class License
 		$this->data = $data;
 
 		if (!$data) {
-			die('[ERR 4] Invalid license code');
+			$this->error_code = 'invalid_license_code_2';
+			$this->data = array('no_license' => true);
+			return;
 		}
+	}
+
+	public function getLicenseId()
+	{
+		return $this->license_id;
 	}
 
 	public function isDemo()
@@ -404,7 +431,7 @@ final class License
 			return null;
 		}
 
-		return new \DateTime($this->data['expire']);
+		return new \DateTime("@" . $this->data['expire']);
 	}
 
 	public function isPastExpireDate()
@@ -415,7 +442,7 @@ final class License
 		}
 
 		$now = new \DateTime();
-		if ($now < $date) {
+		if ($now > $date) {
 			return true;
 		}
 
@@ -425,6 +452,26 @@ final class License
 	public function hasLicense()
 	{
 		return !isset($this->data['no_license']);
+	}
+
+	public function isLicenseCodeError()
+	{
+		return $this->error_code !== null;
+	}
+
+	public function getLicenseCodeError()
+	{
+		return $this->error_code;
+	}
+
+	public function get($key, $default = null)
+	{
+		return isset($this->data[$key]) ? $this->data[$key] : $default;
+	}
+
+	public function has($key)
+	{
+		return isset($this->data[$key]);
 	}
 
 	private function xorString($string, $key)

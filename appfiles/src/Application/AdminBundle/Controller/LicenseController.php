@@ -11,6 +11,7 @@
 
 namespace Application\AdminBundle\Controller;
 
+use DeskPRO\Kernel\License;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 
@@ -25,8 +26,200 @@ use Symfony\Component\Form;
 
 class LicenseController extends AbstractController
 {
-	public function licenseAction()
+	protected function init()
 	{
+		parent::init();
+		License::getLicense();
+	}
 
+	############################################################################
+	# index
+	############################################################################
+
+	public function indexAction()
+	{
+		if (!License::getLicense()->hasLicense()) {
+			return $this->redirectRoute('admin_license_reqdemo');
+		}
+
+		return $this->render('AdminBundle:License:license.html.twig', array(
+			'lic' => License::getLicense()
+		));
+	}
+
+
+	############################################################################
+	# request-demo
+	############################################################################
+
+	public function requestDemoAction()
+	{
+		$errors = array();
+		if ($this->in->getBool('process')) {
+			$email_address = $this->in->getString('email_address');
+			if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
+				$errors['email'] = true;
+			}
+
+			if (!$errors) {
+
+				$client = new \Zend_Http_Client(null, array('timeout' => 15));
+				$client->setMethod(\Zend_Http_Client::POST);
+				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
+				$client->setParameterPost('email_address', $email_address);
+				$client->setParameterPost('url', App::getRequest()->getBaseUrl());
+
+				$hostname = gethostname();
+
+				if ($hostname) {
+					$client->setParameterPost('hostname', $hostname);
+
+					$ip_address = gethostbyname($hostname);
+					if ($ip_address) {
+						$client->setParameterPost('ip_address', $ip_address);
+					}
+				}
+
+				$failed = false;
+				try {
+					$result = $client->request();
+
+					if ($result->isError()) {
+						$failed = 'server_error';
+					} else {
+						$data = @json_decode($result->getBody(), true);
+						if (!$data) {
+							$failed = 'server_error';
+						} else {
+							if (isset($data['error'])) {
+								if ($data['error_code']) {
+									$errors['email'] = true;
+								} else {
+									$errors['request_error'] = $data['error_code'];
+								}
+							} else {
+								return $this->redirectRoute('admin_license_input', array('from_demo' => 1));
+							}
+						}
+					}
+
+				} catch (\Zend_Http_Client_Adapter_Exception $e) {
+					if ($e->getCode() == \Zend_Http_Client_Adapter_Exception::READ_TIMEOUT) {
+						$failed = 'timeout';
+					} else {
+						$failed = true;
+					}
+				} catch (\Exception $e) {
+					$failed = true;
+				}
+
+				if ($failed) {
+					if ($failed === true) {
+						$errors['unknown_request_error'] = true;
+					} else {
+						$errors[$failed] = true;
+					}
+				}
+			}
+		}
+
+		return $this->render('AdminBundle:License:request-demo.html.twig', array(
+			'errors' => $errors,
+		));
+	}
+
+
+	############################################################################
+	# input
+	###########################################################################
+
+	public function inputAction()
+	{
+		$from_demo = $this->in->getBool('from_demo');
+		$invalid = $this->in->getString('invalid');
+		return $this->render('AdminBundle:License:input.html.twig', array(
+			'from_demo' => $from_demo,
+			'invalid' => $invalid,
+			'currently_has_license' => License::getLicense()->hasLicense()
+		));
+	}
+
+	public function saveNewLicenseAction()
+	{
+		$license_code = $this->in->getString('license_code');
+
+		$lic = License::create($license_code);
+		if ($lic->isLicenseCodeError()) {
+			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
+		}
+
+		#------------------------------
+		# Check against lic server
+		#------------------------------
+
+		if (!$lic->has('no_confirm_license')) {
+
+			// Check it against the license server now
+			$client = new \Zend_Http_Client(null, array('timeout' => 15));
+			$client->setMethod(\Zend_Http_Client::POST);
+			$client->setUri(DP_LIC_SERVER . '/license/confirm-demo.json');
+			$client->setParameterPost('license_code', $license_code);
+
+			$failed = false;
+			try {
+				$result = $client->request();
+
+				if ($result->isError()) {
+					$failed = 'server_error';
+				} else {
+					$data = @json_decode($result->getBody(), true);
+					if (!$data) {
+						$failed = 'server_error';
+					} else {
+						if (isset($data['error'])) {
+							$failed = $data['error_code'];
+						}
+					}
+				}
+			} catch (\Zend_Http_Client_Adapter_Exception $e) {
+				if ($e->getCode() == \Zend_Http_Client_Adapter_Exception::READ_TIMEOUT) {
+					$failed = 'timeout';
+				} else {
+					$failed = true;
+				}
+			} catch (\Exception $e) {
+				$failed = true;
+			}
+
+			if ($failed) {
+				if ($failed === true) {
+					return $this->redirectRoute('admin_license_input', array('invalid' => 'unknown_request_error'));
+				} else {
+					return $this->redirectRoute('admin_license_input', array('invalid' => 'req_' . $failed));
+				}
+			}
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$lic_setting = $this->em->find('DeskPRO:Setting', array('name' => 'core.license'));
+			if (!$lic_setting) {
+				$lic_setting = new \Application\DeskPRO\Entity\Setting();
+				$lic_setting->name = 'core.license';
+			}
+
+			$lic_setting->value = $license_code;
+			$this->em->persist($lic_setting);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		$this->session->setFlash('saved', "License code");
+		return $this->redirectRoute('admin_license');
 	}
 }

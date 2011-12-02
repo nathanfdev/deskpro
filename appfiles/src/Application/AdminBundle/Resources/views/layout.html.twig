@@ -185,6 +185,16 @@
 	<div id="dp_admin_page_sidebar_right">{{ sidebar_right|raw }}</div>
 {% endif %}
 
+{% if app.session.hasFlash('success_message') %}
+	<div class="alert-message success">
+		{{ app.session.getFlash('success_message') }}
+	</div>
+{% endif %}
+{% if app.session.hasFlash('error_message') %}
+	<div class="alert-message error">
+		{{ app.session.getFlash('error_message') }}
+	</div>
+{% endif %}
 {% if app.session.hasFlash('saved') %}
 	<div class="alert-message success">
 		"{{ app.session.getFlash('saved') }}" was saved successfully

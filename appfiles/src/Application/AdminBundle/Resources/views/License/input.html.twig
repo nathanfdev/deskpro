@@ -1,0 +1,54 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Save License Code</h1>
+{% endblock %}
+{% block sidebar_right %}
+{% if not currently_has_license %}
+<div class="dp-page-box">
+	<div class="resource-item-list icon-group">
+		<header>
+			<h4>Don't have a license code?</h4>
+		</header>
+		<article>
+			If you'd have a license code yet,
+			<a href="{{ path('admin_license_reqdemo') }}">click here generate a demo license</a>.
+		</article>
+	</div>
+</div>
+{% endif %}
+{% endblock %}
+{% block page %}
+
+{% if from_demo %}
+	<div class="alert-message block-message success">
+		Your personal demo license code has been sent to your email address. Just copy and paste the license code into
+		the box below.
+	</div>
+{% endif %}
+
+<form action="{{ path('admin_license_input_save') }}" method="post">
+
+{% if invalid %}
+<div class="alert-message block-message error">
+	<strong>We encountered a problem:</strong>
+	<ul>
+		{% if invalid %}<li>The license code you entered appears to be invalid. If you think this is a mistake, please email support@deskpro.com. (Code: {{ invalid }})</li>{% endif %}
+	</ul>
+</div>
+{% endif %}
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Your license code</label>
+		</div>
+		<div class="dp-form-input">
+			<textarea name="license_code" style="height: 150px"></textarea>
+		</div>
+	</div>
+</div>
+
+	<button class="clean-white">Save License</button>
+</form>
+
+{% endblock %}

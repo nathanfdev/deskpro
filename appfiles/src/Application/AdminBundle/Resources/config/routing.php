@@ -26,6 +26,27 @@ $collection->add('admin_license', new Route(
 	array()
 ));
 
+$collection->add('admin_license_reqdemo', new Route(
+	'/license/generate-demo',
+	array('_controller' => 'AdminBundle:License:requestDemo'),
+	array(),
+	array()
+));
+
+$collection->add('admin_license_input', new Route(
+	'/license/input',
+	array('_controller' => 'AdminBundle:License:input'),
+	array(),
+	array()
+));
+
+$collection->add('admin_license_input_save', new Route(
+	'/license/input/save',
+	array('_controller' => 'AdminBundle:License:saveNewLicense'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_fields', new Route(
 	'/tickets/fields',
 	array('_controller' => 'AdminBundle:TicketProperties:list'),

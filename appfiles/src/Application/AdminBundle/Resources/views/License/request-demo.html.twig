@@ -1,0 +1,55 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagetitle %}
+	<h1>Generate A Demo License</h1>
+{% endblock %}
+{% block sidebar_right %}
+<div class="dp-page-box">
+	<div class="resource-item-list icon-group">
+		<header>
+			<h4>Already have a license code?</h4>
+		</header>
+		<article>
+			If you already have a license code, <a href="{{ path('admin_license_input') }}">click here to enter it</a>.
+		</article>
+	</div>
+</div>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_license_reqdemo') }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+{% if errors|length %}
+<div class="alert-message block-message error">
+	<strong>We encountered a problem:</strong>
+	<ul>
+		{% if errors.email %}<li>Please enter a valid email address</li>{% endif %}
+		{% if errors.timeout %}<li>Your server timed-out while trying to contact our licesing server to generate your license code.</li>{% endif %}
+		{% if errors.server_error %}<li>Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you</li>{% endif %}
+		{% if errors.request_error %}<li>Our licensing server responded with the error code "{{ errors.request_error }}". You should contact support@deskpro.com if the problem persists.</li>{% endif %}
+		{% if errors.unknown_request_error %}<li>There was an unknown problem while trying to connect to our licensing server.</li>{% endif %}
+	</ul>
+
+	{% if errors.timeout or errors.unknown_request_error %}
+		A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.
+		If your server is behind a firewall, you can contact support@deskpro.com and one of our agents will generate a license code for you.
+	{% endif %}
+</div>
+{% endif %}
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Your Email Address</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /><br />
+			<small>Your personal demo license code will be sent to this address</small>
+		</div>
+	</div>
+</div>
+
+	<button class="clean-white">Get your demo license &rarr;</button>
+</form>
+
+{% endblock %}
