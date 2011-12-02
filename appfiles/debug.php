@@ -73,21 +73,21 @@ $CONFIG['debug']['js'] = array(
 	 * Adds a fixed div in top right (overlaps user icon). right now only has button
 	 * that reloads current tab.
 	 */
-	'devbar' => true,
+	//'devbar' => true,
 
 	/**
 	 * The ajax polling interval for messages
 	 */
-	'pollerInterval' => 10000,
+	//'pollerInterval' => 10000,
 
 	/**
 	 * Show the 'test' section, and also disable the requirement of a listpane
 	 * matching a section. When no match is found, it'll use the test
 	 */
-	'useTestSection' => true,
+	//'useTestSection' => true,
 
 	// Disables section handlers in the agent interface,
-	'disableSectionHandlers' => true,
+	//'disableSectionHandlers' => true,
 
 	// When the above option is true, still enable these
 	'enableSectionHandlers' => array(
@@ -104,13 +104,13 @@ $CONFIG['debug']['js'] = array(
 	),
 
 	// When selecting a new section, dont run the auto load route
-	'noAutoLoadList' => true,
+	//'noAutoLoadList' => true,
 
 	// Disables the AJAX that saves and relaods previous state
-	'disableSaveState' => true,
+	//'disableSaveState' => true,
 
 	// Disables use of URL fragments
-	'disableUrlFragments' => true,
+	//'disableUrlFragments' => true,
 
 	// Run these routes automatically when first entering the agent UI
 	// array(array('ticket', 'route_name', array('param' => 'xxx')))
