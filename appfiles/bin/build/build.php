@@ -17,6 +17,7 @@ $time = microtime(true);
 echo "build-boostrap ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-bootstrap.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
@@ -35,6 +36,7 @@ $time = microtime(true);
 echo "build-kernels ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-kernels.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
@@ -53,6 +55,7 @@ $time = microtime(true);
 echo "build-caches ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-caches.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
@@ -71,6 +74,7 @@ $time = microtime(true);
 echo "build-assetic ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-assetic.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
@@ -89,6 +93,7 @@ $time = microtime(true);
 echo "build-compiled ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-compiled.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
@@ -107,6 +112,7 @@ $time = microtime(true);
 echo "build-schema-file ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-schema-file.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
 $proc->run();
 
 if (!$proc->isSuccessful()) {
