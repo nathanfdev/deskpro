@@ -6,5 +6,5 @@
 </p>
 
 <div class="well">
-	<a class="btn large primary" href="../admin/">Start using DeskPRO &rarr;</a>
+	<a class="btn large primary" href="../index.php/admin/">Start using DeskPRO &rarr;</a>
 </div>
