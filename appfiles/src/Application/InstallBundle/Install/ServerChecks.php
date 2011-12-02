@@ -334,12 +334,12 @@ class ServerChecks
 			return false;
 		}
 
-		$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.5", Logger::DEBUG);
+		$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.1", Logger::DEBUG);
 		$ver = $db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
-		if (version_compare($ver, '5.5', '>=')) {
+		if (version_compare($ver, '5.1', '>=')) {
 			$this->getLogger()->log("[OK] mysql version is okay", Logger::DEBUG);
 		} else {
-			$msg = "Install MySQL verson 5.5 or newer";
+			$msg = "Install MySQL verson 5.1 or newer";
 			$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 			$this->server_errors['db_version'] = array(
 				'message' => $msg,
