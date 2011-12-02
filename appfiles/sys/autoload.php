@@ -79,12 +79,6 @@ spl_autoload_register(function($classname) {
 	return ezcBase::autoload($classname);
 });
 
-class_exists('Markdown_Parser');
-class_exists('FineDiff');
-class_exists('Facebook');
-class_exists('FacebookApiException');
-class_exists('CssMin');
-
 use Doctrine\Common\Annotations\AnnotationRegistry;
 AnnotationRegistry::registerLoader(function($class) use ($loader) {
     $loader->loadClass($class);
