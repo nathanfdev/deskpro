@@ -79,6 +79,9 @@ spl_autoload_register(function($classname) {
 	return ezcBase::autoload($classname);
 });
 
+// Needed for assetic build to work
+class_exists('CssMin');
+
 use Doctrine\Common\Annotations\AnnotationRegistry;
 AnnotationRegistry::registerLoader(function($class) use ($loader) {
     $loader->loadClass($class);
