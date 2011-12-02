@@ -40,5 +40,11 @@ define('DP_INTERFACE', 'install');
 
 $request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 
+// Always force trailing slash
+if (strpos($request->getRequestUri(), '/install.php/') === false) {
+	header('Location: ' . $request->getBasePath() . '/install.php/');
+	exit;
+}
+
 $kernel = new $kernel_class('prod', true);
 $kernel->handle($request)->send();
