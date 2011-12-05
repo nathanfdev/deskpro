@@ -65,7 +65,7 @@ class KernelBooter
 		} elseif (preg_match('#^/_sys/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 			define('DP_INTERFACE', 'sys');
-		} elseif (preg_match('#^/install(/|$)$#', $path)) {
+		} elseif (preg_match('#^/install#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
 			define('DP_INTERFACE', 'install');
 			$debug=true;
@@ -91,7 +91,19 @@ class KernelBooter
 
 	public static function bootCli($env = 'prod', $debug = false)
 	{
-		self::bootstrap($debug);
+		#------------------------------
+		# Load main config now
+		#------------------------------
+
+		global $DP_CONFIG;
+		require DP_CONFIG_FILE;
+
+		if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+			$env = 'dev';
+			$debug = true;
+		}
+
+		self::bootstrap(true);
 
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 

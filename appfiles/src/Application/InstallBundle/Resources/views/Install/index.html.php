@@ -206,7 +206,7 @@
 		to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>">Go to step 2: Install database tables</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>">Go to step 2: Verify file integrity</a>
 		</div>
 	</div>
 <?php endif ?>

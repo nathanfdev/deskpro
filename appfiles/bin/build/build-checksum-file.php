@@ -6,45 +6,23 @@ require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalCl
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
+$loader->registerNamespaces(array('Orb' => DP_ROOT.'/src'));
+$loader->registerNamespaces(array('Application' => DP_ROOT.'/src'));
 $loader->register();
 
-$finder = new \Symfony\Component\Finder\Finder();
-$finder->files()
-		     ->in(DP_ROOT)
-		     ->notName('distro-checksums.php')
-		     ->notName('.gitignore')
-		     ->notName('.DS_Store')
-		     ->notName('dev_debug.php')
-		     ->notName('config.php')
-			 ->ignoreVCS(true)
-		     ->exclude('sys/cache/dev');
-
-foreach ($dirs as $d) {
-	$finder->exclude($d);
-}
-
-$it = $finder->getIterator();
-
-$hashes = array();
-$count = 0;
-
 $start = microtime(true);
-echo "Starting at " . sprintf("%.f", $start) . "\n";
+echo sprintf("Starting :: %.f\n", $start);
 
-foreach ($it as $file) {
+$checker = new \Application\DeskPRO\Distribution\ChecksumChecker();
 
-	$count++;
-	if ($count && $count % 100 == 0) {
+$checker->load(function($count, $file, $hash) {
+	if ($count % 100 == 0) {
 		echo "Processed $count files...\n";
 	}
+});
 
-	$path = str_replace(DP_ROOT, '', $file->getRealPath());
-	$hashes[$path] = md5_file($file->getRealPath());
-}
-
-$php = '<?php return ' . var_export($hashes, true) . ";\n";
-
-file_put_contents(DP_ROOT.'/sys/distro-checksums.php', $php);
+$checker->dumpToStardnardFile();
+$count = $checker->count();
 
 $end = microtime(true);
-echo sprintf("\nDone $count files in %.f seconds\n", $end-$start);
+echo sprintf("\nDone :: $count files :: %.f seconds\n", $end-$start);

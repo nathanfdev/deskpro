@@ -13,8 +13,7 @@
 /appfiles/sys/logs/
 /appfiles/sys/bootstrap.php
 /appfiles/sys/compiled.php
-/appfiles/sys/compiled.php
-/appfiles/sys/distro-checksums.php
+/appfiles/sys/Resources/distro-checksums.php
 /static/build
 /static/stylesheets/agent
 /static/stylesheets/admin

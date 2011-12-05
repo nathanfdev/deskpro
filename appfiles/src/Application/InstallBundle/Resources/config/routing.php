@@ -12,6 +12,20 @@ $collection->add('install', new Route(
 	array()
 ));
 
+$collection->add('install_verify_files', new Route(
+	'/verify-files',
+	array('_controller' => 'InstallBundle:Install:verifyFiles'),
+	array(),
+	array()
+));
+
+$collection->add('install_verify_files_do', new Route(
+	'/verify-files/do/{batch}',
+	array('_controller' => 'InstallBundle:Install:doVerifyFiles', 'batch' => 0),
+	array(),
+	array()
+));
+
 $collection->add('install_create_tables', new Route(
 	'/install-database',
 	array('_controller' => 'InstallBundle:Install:createTables'),

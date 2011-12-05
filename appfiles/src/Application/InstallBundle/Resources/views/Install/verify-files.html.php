@@ -1,49 +1,69 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 3: Installing database tables<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 2: Verifying file integrity<?php $view['slots']->stop() ?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript">
-var installStatus = {
+var status = {
+	allCount: <?php echo $count ?>,
+	currentCount: 0,
+	hasErrors: false,
 	update: function(info) {
 		var tr = $('<tr><td></td></tr>');
-		$('td', tr).text(info.message);
 
-		$('#install_log').text($('#install_log').text() + "\n\n" + info.message);
-
-		if (info.error) {
-			installStatus.hasError = true;
-			var err = $('<span />');
-			err.addClass('label important');
-			err.text(info.error);
-			err.prependTo($('td', tr));
-
-			$('#install_log').text($('#install_log').text() + "\n\n" + info.error);
-
-			var li = $('<li>');
-			li.text(info.message);
-			li.appendTo($('#error_list'));
+		if (info.okay) {
+			var tr = $('<tr><td></td></tr>');
+			$('td', tr).text(info.okay.length + ' files check okay');
+			$('#log tbody').append(tr);
 		}
-
-		if (info.sql) {
-			installStatus.currentCount++;
-			$('#current_count').text(installStatus.currentCount);
-
-			$('#progress_done_td').attr('width', Math.ceil((installStatus.currentCount / installStatus.allCount) * 100) + '%');
+		if (info.added) {
+			for (var i = 0; i < info.added.length; i++) { var f = info.added[i];
+				var tr = $('<tr><td></td></tr>');
+				$('td', tr).text('ADDED: ' + f);
+				$('#log tbody').append(tr);
+			};
 		}
+		if (info.changed) {
+			for (var i = 0; i < info.changed.length; i++) { var f = info.changed[i];
+				var tr = $('<tr><td></td></tr>');
+				$('td', tr).text('CHANGED: ' + f);
 
-		$('#log tbody').append(tr);
-	},
-	setCount: function(count) {
+				tr.appendTo();
+				$('#log tbody').append(tr);
 
-		$('#preloading').hide();
-		$('#install_loading').show();
+				var li = $('<li />');
+				li.text('CHANGED: ' + f);
+				$('#error_list').append(li);
+			};
 
-		installStatus.allCount = count;
-		installStatus.currentCount = 0;
-		$('#all_count').text(count);
+			status.hasErrors = true;
+		}
+		if (info.removed) {
+			for (var i = 0; i < info.removed.length; i++) { var f = info.removed[i];
+				var tr = $('<tr><td></td></tr>');
+				$('td', tr).text('MISSING: ' + f);
+				$('#log tbody').append(tr);
+
+				var li = $('<li />');
+				li.text('MISSING: ' + f);
+				$('#error_list').append(li);
+			};
+
+			status.hasErrors = true;
+		}
 	},
 	doneBatch: function(batch) {
-		var url = $('#runner_iframe').data('src-url') + (batch+1);
-		$('#runner_iframe').attr('src', url);
+		batch = parseInt(batch);
+
+		status.currentCount++;
+
+		$('#current_count').text(status.currentCount);
+
+		if (status.currentCount >= status.allCount) {
+			status.done();
+		} else {
+			$('#progress_done_td').attr('width', Math.ceil((status.currentCount / status.allCount) * 100) + '%');
+			var url = $('#runner_iframe').data('src-url') + status.currentCount;
+			$('#runner_iframe').attr('src', url);
+		}
 	},
 	done: function() {
 		$('#progress_done_td').attr('width', '100%');
@@ -53,7 +73,7 @@ var installStatus = {
 		$('#hide_log').hide();
 		$('#log').hide();
 
-		if (installStatus.hasError) {
+		if (status.hasErrors) {
 			$('#install_error').show();
 		} else {
 			$('#install_done').show();
@@ -62,6 +82,10 @@ var installStatus = {
 };
 
 $(document).ready(function() {
+
+	$('#preloading').hide();
+	$('#install_loading').show();
+
 	$('#show_log').on('click', function() {
 		$(this).hide();
 		$('#hide_log').show();
@@ -123,7 +147,7 @@ $(document).ready(function() {
 	<div id="show_log" style="float: right; cursor: pointer"><span class="label notice">Show Log</span></div>
 	<div id="hide_log" style="float: right; cursor: pointer; display: none"><span class="label notice">Hide Log</span></div>
 
-	<h3>Installing Database: <span id="current_count">0</span> of <span id="all_count">0</span> objects inserted</h3>
+	<h3>Checking files: <span id="current_count">0</span> of <span id="all_count"><?php echo $count ?></span> checks performed</h3>
 	<div class="progress">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
@@ -145,18 +169,16 @@ $(document).ready(function() {
 
 <div id="install_error" style="display: none">
 	<div class="alert-message block-message error">
-		<strong>There was an error!</strong> An error was detected during the installation.
+		<strong>There was an error!</strong> We detected some incorrect files. This might be caused by a corrupt upload or some other upload problem:
 
 		<ul id="error_list">
 		</ul>
 
-		You should contact DeskPRO Support to get help on how to fix this error. Include this log with any message you send to us:
-		<textarea id="install_log"></textarea>
+		You should contact DeskPRO Support to get help on how to fix this error. Include the above list with any message you send to us:
 
 		<div class="alert-actions">
 			<a class="btn" href="mailto:support@deskpro.com">Email support@deskpro.com</a>
 			<a class="btn" href="http://support.deskpro.com/">Visit our helpdesk</a>
-			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Ignore the errors and continue to the next step anyway</a>
 		</div>
 	</div>
 </div>
@@ -166,15 +188,15 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 3: Create your admin account</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>">Go to step 3: Install database</a>
 		</div>
 	</div>
 </div>
 
 <iframe
 	id="runner_iframe"
-	data-src-url="<?php echo $view['router']->generate('install_create_tables_do') ?>/"
-	src="<?php echo $view['router']->generate('install_create_tables_do') ?>"
+	data-src-url="<?php echo $view['router']->generate('install_verify_files_do') ?>/"
+	src="<?php echo $view['router']->generate('install_verify_files_do') ?>"
 	style="width: 1px; height: 1px; border: none; margin: 0; padding: 0;"
 	width="1"
 	height="1"

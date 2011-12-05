@@ -54,6 +54,31 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	}
 
 	###############################################################################
+	# verify-files
+	###############################################################################
+
+	public function verifyFilesAction()
+	{
+		$verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
+		$count  = $verify->countChunks();
+
+		return $this->render('InstallBundle:Install:verify-files.html.php', array(
+			'count' => $count,
+		));
+	}
+
+	public function doVerifyFilesAction($batch = 0)
+	{
+		$verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
+		$results = $verify->compareChunk($batch);
+
+		return $this->render('InstallBundle:Install:verify-files-do.html.php', array(
+			'results' => $results,
+			'batch' => $batch
+		));
+	}
+
+	###############################################################################
 	# create-tables
 	###############################################################################
 
