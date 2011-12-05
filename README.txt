@@ -13,7 +13,7 @@ Quick overview:
     1. Copy /config.new.php to /config.php
     2. Open /config.php with a text editor and edit the database options
     3. In your web-browser, view /index.php/install/ to start the web-based installer.
-       For example: http://www.mysite.com/deskpro/index.php/install/
+       For example: http://www.mysite.com/deskpro/index.php
     4. Follow the on-screen instructions.
 
 
