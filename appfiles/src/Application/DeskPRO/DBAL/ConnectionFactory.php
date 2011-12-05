@@ -46,6 +46,9 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			unset($params['host']);
 
 			$params = array_merge($params, App::getConfig($key));
+			if (empty($params['driver'])) {
+				$params['driver'] = 'pdo_mysql';
+			}
 		}
 
 		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
