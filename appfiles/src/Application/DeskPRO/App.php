@@ -757,7 +757,7 @@ class App
 		if ($name != self::DEFAULT_NAME) {
 			$name = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
 			$filename = 'config.' . $name . '.php';
-			$filepath = DP_ROOT . "/$filename";
+			$filepath = DP_ROOT . "/sys/config/$filename";
 
 			require($filepath);
 			if (!isset($CONFIG)) {
@@ -789,7 +789,7 @@ class App
 			$filename = 'config.php';
 		}
 
-		$filepath = DP_ROOT . "/$filename";
+		$filepath = DP_ROOT . "/sys/config/$filename";
 
 		if (!file_exists($filepath)) {
 			throw new \RuntimeException("$filename does not exist");

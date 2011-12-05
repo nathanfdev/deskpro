@@ -94,6 +94,3 @@ $DP_CONFIG['elastica'] = array(
  * When none provided, the /static/ directory under the current request is used.
  */
 //$DP_CONFIG['static_path'] = 'http://static.example.com/';
-
-// Include debug file (all debug options are disabled by default)
-require DP_ROOT . '/debug.php';

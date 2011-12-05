@@ -1,4 +1,11 @@
 <?php
+// This file is not loaded automatically.
+// You can copy+paste options here into your config.php file,
+//
+// Or you can edit thie file directly and just add this line to
+// the end of your config.php:
+//    require DP_ROOT.'/sys/config/debug.php';
+
 $CONFIG['debug'] = array();
 
 /**
