@@ -691,19 +691,7 @@ class App
 	 */
 	public static function getCacheDir()
 	{
-		static $cache_dir = null;
-
-		if ($cache_dir === null) {
-			$dir = self::getConfig('cache_dir');
-			if (!$dir) {
-				$dir = DP_ROOT . '/sys/cache/%env%';
-			}
-
-			$dir = str_replace('%env%', self::$_environment, $dir);
-			$cache_dir = $dir;
-		}
-
-		return $cache_dir;
+		return self::$_kernel->getCacheDir();
 	}
 
 
@@ -714,12 +702,7 @@ class App
 	 */
 	public static function getLogDir()
 	{
-		$dir = self::getConfig('logs_dir');
-		if (!$dir) {
-			$dir = DP_ROOT . '/sys/logs';
-		}
-
-		return $dir;
+		return self::$_kernel->getLogDir();
 	}
 
 
@@ -771,26 +754,22 @@ class App
 	 */
 	protected static function _loadConfig($name = null)
 	{
-		if (!$name OR $name != self::DEFAULT_NAME) {
+		if ($name != self::DEFAULT_NAME) {
 			$name = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
 			$filename = 'config.' . $name . '.php';
+			$filepath = DP_ROOT . "/$filename";
+
+			require($filepath);
+			if (!isset($CONFIG)) {
+				throw new \UnexpectedValueException("$filename does not define \$CONFIG");
+			}
+
+			self::$_fileconfig[$name] = $CONFIG;
 		} else {
+			global $DP_CONFIG;
 			$name = self::DEFAULT_NAME;
-			$filename = 'config.php';
+			self::$_fileconfig[$name] = $DP_CONFIG;
 		}
-
-		$filepath = DP_ROOT . "/$filename";
-
-		if (!file_exists($filepath)) {
-			throw new \RuntimeException("$filename does not exist");
-		}
-
-		require($filepath);
-		if (!isset($CONFIG)) {
-			throw new \UnexpectedValueException("$filename does not define \$CONFIG");
-		}
-
-		self::$_fileconfig[$name] = $CONFIG;
 	}
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
-require(DP_ROOT . '/sys/bootstrap-dev.php');
+require DP_ROOT . '/bin/build/inc.php';
 
 $proc_kernel = null;
 if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
@@ -16,6 +16,7 @@ $kernel_classes = array(
 	'DeskPRO\\Kernel\\ReportKernel',
 	'DeskPRO\\Kernel\\UserKernel',
 	'DeskPRO\\Kernel\\SysKernel',
+	'DeskPRO\\Kernel\\InstallKernel',
 );
 
 if ($proc_kernel === null) {
@@ -55,7 +56,11 @@ if ($proc_kernel === null) {
 
 	exit(0);
 } else {
+
+	require DP_ROOT.'/sys/system.php';
+
 	$class = $kernel_classes[$proc_kernel];
-	$kernel = new $class('prod', false);
+	$kernel = new $class('prod', true);
 	$kernel->boot();
+	exit(0);
 }

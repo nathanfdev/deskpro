@@ -1,9 +1,10 @@
 <?php
-// Developers: You can copy this file and name it dev_debug.php
-// if you want, and update the path in config.php.
-// That file pattern is ignored by git so you can modify the file easier.
-
 $CONFIG['debug'] = array();
+
+/**
+ * When enabled, boots Symfony into dev environment with debug options enabeld
+ */
+//$CONFIG['debug']['dev'] = true;
 
 /**
  * Email a copy of errors to this address.

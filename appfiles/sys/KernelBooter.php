@@ -1,17 +1,8 @@
 <?php
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Kernel
- * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
- * @license http://www.deskpro.com/license-agreement DeskPRO License
- * @author Christopher Nadeau <chris.nadeau@deskpro.com>
- */
 
 namespace DeskPRO\Kernel;
 
-class Boot
+class KernelBooter
 {
 	protected static function bootstrap($debug)
 	{
@@ -26,27 +17,35 @@ class Boot
 			require(DP_ROOT . '/sys/bootstrap.php');
 			require(DP_ROOT . '/sys/compiled.php');
 		}
+
+		require(DP_ROOT . '/sys/system.php');
 	}
 
-	public static function bootWeb($env = 'prod', $debug = false, \Application\DeskPRO\HttpFoundation\Request $request = null)
+	public static function bootWeb()
 	{
+		$env = 'prod';
+		$debug = false;
+
+		#------------------------------
+		# Load main config now
+		#------------------------------
+
+		global $DP_CONFIG;
+		require DP_CONFIG_FILE;
+
+		if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+			$env = 'dev';
+			$debug = true;
+		}
+
+		#------------------------------
+		# Boot up
+		#------------------------------
+
 		self::bootstrap($debug);
 
-		if ($request === null) {
-			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
-		}
-
+		$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		$path = $request->getPathInfo();
-
-		if (!file_exists(DP_ROOT.'/config.php')) {
-			if (file_exists(DP_ROOT.'/../install.php')) {
-				header('Location: ' . $request->getBasePath() . '/install.php/');
-				exit;
-			} else {
-				echo "No config.php file found";
-				exit;
-			}
-		}
 
 		if (preg_match('#^/agent/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
@@ -66,10 +65,25 @@ class Boot
 		} elseif (preg_match('#^/_sys/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 			define('DP_INTERFACE', 'sys');
+		} elseif (preg_match('#^/install(/|$)$#', $path)) {
+			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
+			define('DP_INTERFACE', 'install');
+			$debug=true;
+
+			// Always force full URL with trailing slash
+			if (strpos($request->getRequestUri(), '/index.php/') === false) {
+				header('Location: ' . $request->getBasePath() . '/index.php/');
+				exit;
+			}
+
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
 		}
+
+		#------------------------------
+		# Handle request
+		#------------------------------
 
 		$kernel = new $kernel_class($env, $debug);
 		$kernel->handle($request)->send();

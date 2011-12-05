@@ -1,5 +1,15 @@
 #!/usr/bin/env php
 <?php
+/**
+ * The path to the 'appfiles' directory.
+ * If you move that directory, you must update this path.
+ */
 define('DP_ROOT', realpath(__DIR__ . '/../'));
-require(DP_ROOT.'/sys/Kernel/Boot.php');
-\DeskPRO\Kernel\Boot::bootCli('prod', false);
+
+/**
+ * The path to the config.php file.
+ * If you want to that file, you must update this path.
+ */
+define('DP_CONFIG_FILE', DP_ROOT . '/../config.php');
+
+require DP_ROOT.'/sys/boot_cli.php';

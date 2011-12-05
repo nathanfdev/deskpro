@@ -37,7 +37,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		if (!$is_fatal) {
 			$has_db_checks = true;
-			if (file_exists(DP_ROOT . '/config.php')) {
+			if (file_exists(DP_CONFIG_FILE)) {
 				$has_config = true;
 				$server_check->checkDatabase(App::getConfig('db'));
 			}

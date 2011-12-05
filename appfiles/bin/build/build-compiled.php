@@ -1,8 +1,7 @@
 #!/usr/bin/env php
 <?php
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
-
-require(DP_ROOT . '/sys/bootstrap-dev.php');
+require(DP_ROOT . '/bin/build/inc.php');
 
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
 use Symfony\Component\Finder\Finder;

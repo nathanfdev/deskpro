@@ -1,5 +1,0 @@
-#!/usr/bin/env php
-<?php
-define('DP_ROOT', realpath(__DIR__ . '/../'));
-require(DP_ROOT.'/sys/Kernel/Boot.php');
-\DeskPRO\Kernel\Boot::bootCli('dev', true);

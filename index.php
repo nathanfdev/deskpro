@@ -1,10 +1,14 @@
 <?php
 /**
- * The path to the 'appfiles' directory. If you want to move the directory,
- * you must update this path.
+ * The path to the 'appfiles' directory.
+ * If you move that directory, you must update this path.
  */
 define('DP_ROOT', __DIR__ . '/appfiles');
 
+/**
+ * The path to the config.php file.
+ * If you want to that file, you must update this path.
+ */
+define('DP_CONFIG_FILE', __DIR__ . '/config.php');
 
-require(DP_ROOT . '/sys/Kernel/Boot.php');
-\DeskPRO\Kernel\Boot::bootWeb('prod', false);
+require DP_ROOT.'/sys/boot_web.php';

@@ -7,7 +7,7 @@ function deskpro_install_check_version()
 
 function deskpro_install_check_config()
 {
-	if (!is_file(DP_ROOT.'/config.php')) {
+	if (!is_file(DP_CONFIG_FILE)) {
 		return false;
 	}
 
@@ -35,13 +35,17 @@ function deskpro_install_check_writable()
 
 function deskpro_install_basic_error($message)
 {
+	// We dont know the root path yet, so lets just inline the CSS
+	$css = file_get_contents(DP_ROOT.'/../static/stylesheets/install/install.css');
 	$html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>DeskPRO</title>
-	<link rel="stylesheet" type="text/css" href="../static/stylesheets/install/install.css" />
+	<style type="text/css">
+	$css
+	</style>
 </head>
 <body>
 <div class="container">

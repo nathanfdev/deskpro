@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>DeskPRO</title>
-	<link rel="stylesheet" type="text/css" href="../static/stylesheets/install/install.css" />
+	<link rel="stylesheet" type="text/css" href="../../static/stylesheets/install/install.css" />
 	<?php $view['slots']->output('head') ?>
 </head>
 <body>

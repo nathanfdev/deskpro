@@ -12,7 +12,7 @@ services:
 framework:
   charset: UTF-8
   secret: mube224etsmhxky1gvwixc4b
-  router: { resource: "%DP_ROOT%/src/Application/InstallBundle/Resources/config/routing.php" }
+  router: { resource: "%kernel.root_dir%/config/install/routing.yml" }
   templating:
     engines: ['php']
     assets_base_urls: "CONFIG_HTTP"
