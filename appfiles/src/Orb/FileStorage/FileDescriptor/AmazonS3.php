@@ -9,6 +9,7 @@
 
 namespace Orb\FileStorage\FileDescriptor;
 
+use Zend\Service\Amazon\S3\S3;
 use Orb\FileStorage;
 
 /**
@@ -20,7 +21,7 @@ class AmazonS3 extends AbstractFileDescriptor
 {
 	/**
 	 * The S3 object to connect to AmazonS3.
-	 * @var Zend_Service_Amazon_S3
+	 * @var \Zend\Service\Amazon\S3
 	 */
 	protected $s3;
 
@@ -119,7 +120,7 @@ class AmazonS3 extends AbstractFileDescriptor
 	public function write($data, $meta = null)
 	{
 		if (!is_array($meta)) $meta = $meta === null ? array() : array($meta);
-		$meta[Zend_Service_Amazon_S3::S3_ACL_HEADER] = Zend_Service_Amazon_S3::S3_ACL_PUBLIC_READ;
+		$meta[S3::S3_ACL_HEADER] = S3::S3_ACL_PUBLIC_READ;
 
 		if ($meta[self::METADATA_FILENAME]) {
 			$tmp = $meta[self::METADATA_FILENAME];
@@ -200,7 +201,7 @@ class AmazonS3 extends AbstractFileDescriptor
 	}
 
 
-	
+
 	/**
 	 * Get the URL to the file.
 	 *

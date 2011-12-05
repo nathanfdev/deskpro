@@ -442,12 +442,12 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $status
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $status
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
 	static public function createFromXML($status)
 	{
-		// @!TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
+		// @!TODO check against \SimpleXMLElement & \Zend\Rest\Client\Result
 
 		$entity                 = new self();
 		$entity['id']           = (string) $status->id;

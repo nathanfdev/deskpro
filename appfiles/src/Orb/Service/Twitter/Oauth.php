@@ -7,7 +7,7 @@ use \Application\DeskPRO\App;
 class Oauth
 {
 	/**
-	 * @var \Zend_Oauth_Consumer
+	 * @var \Zend\Oauth\Consumer
 	 */
 	static protected $consumer;
 
@@ -35,7 +35,7 @@ class Oauth
 
 	/**
 	 * @param string $callbackUrl (optional)
-	 * @return \Zend_Oauth_Consumer
+	 * @return \Zend\Oauth\Consumer
 	 */
 	static public function getConsumer($callbackUrl = null)
 	{
@@ -56,7 +56,7 @@ class Oauth
 		}
 
 		// create Zend Oauth Consumer
-		self::$consumer = new \Zend_Oauth_Consumer($config);
+		self::$consumer = new \Zend\Oauth\Consumer($config);
 
 		return self::$consumer;
 	}

@@ -63,8 +63,8 @@ class LicenseController extends AbstractController
 
 			if (!$errors) {
 
-				$client = new \Zend_Http_Client(null, array('timeout' => 15));
-				$client->setMethod(\Zend_Http_Client::POST);
+				$client = new \Zend\Http\Client(null, array('timeout' => 15));
+				$client->setMethod(\Zend\Http\Client::POST);
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
 				$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
 				$client->setParameterPost('email_address', $email_address);
@@ -104,8 +104,8 @@ class LicenseController extends AbstractController
 						}
 					}
 
-				} catch (\Zend_Http_Client_Adapter_Exception $e) {
-					if ($e->getCode() == \Zend_Http_Client_Adapter_Exception::READ_TIMEOUT) {
+				} catch (\Zend\Http\Client\Adapter\Exception $e) {
+					if ($e->getCode() == \Zend\Http\Client\Adapter\Exception::READ_TIMEOUT) {
 						$failed = 'timeout';
 					} else {
 						$failed = true;
@@ -161,8 +161,8 @@ class LicenseController extends AbstractController
 		if (!$lic->has('no_confirm_license')) {
 
 			// Check it against the license server now
-			$client = new \Zend_Http_Client(null, array('timeout' => 15));
-			$client->setMethod(\Zend_Http_Client::POST);
+			$client = new \Zend\Http\Client(null, array('timeout' => 15));
+			$client->setMethod(\Zend\Http\Client::POST);
 			$client->setUri(DP_LIC_SERVER . '/license/confirm-demo.json');
 			$client->setParameterPost('license_code', $license_code);
 			$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
@@ -183,8 +183,8 @@ class LicenseController extends AbstractController
 						}
 					}
 				}
-			} catch (\Zend_Http_Client_Adapter_Exception $e) {
-				if ($e->getCode() == \Zend_Http_Client_Adapter_Exception::READ_TIMEOUT) {
+			} catch (\Zend\Http\Client\Adapter\Exception $e) {
+				if ($e->getCode() == \Zend\Http\Client\Adapter\Exception::READ_TIMEOUT) {
 					$failed = 'timeout';
 				} else {
 					$failed = true;

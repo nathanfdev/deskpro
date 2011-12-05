@@ -62,7 +62,7 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * @return \Zend_Oauth_Consumer
+	 * @return \Zend\Oauth\Consumer
 	 */
 	protected function getConsumer()
 	{
@@ -166,7 +166,7 @@ class TwitterAccountController extends AbstractController
 				}
 			}
 			$em->flush();
-		} catch (\Exception $e) { // Zend_Oauth_Exception
+		} catch (\Exception $e) {
 			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
 				'error' => array(
 					'class' => get_class($e),
@@ -200,7 +200,7 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $status
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $status
 	 * @return \Application\DeskPRO\Entity\TwitterStatus
 	 */
 	protected function processStatus($status)
@@ -273,7 +273,7 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $user
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $user
 	 * @return \Application\DeskPRO\Entity\TwitterUser
 	 */
 	protected function getOrCreateUser($user)

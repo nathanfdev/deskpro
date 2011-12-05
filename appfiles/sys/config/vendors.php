@@ -35,7 +35,7 @@
 		'version' => '1.1.0',
 	),
 	'monolog' => array(
-		'into' => DP_ROOT.'/vendor/metadata',
+		'into' => DP_ROOT.'/vendor/monolog',
 		'repos' => 'git://github.com/Seldaek/monolog.git',
 		'version' => '1.0.2',
 	),

@@ -306,12 +306,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $user
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $user
 	 * @return \Application\DeskPRO\Entity\TwitterUser
 	 */
 	static public function createFromXML($user)
 	{
-		// @!TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
+		// @!TODO check against \SimpleXMLElement & \Zend\Rest\Client\Result
 
 		$entity                      = new self();
 		$entity['id']                = (integer) $user->id;

@@ -9,7 +9,8 @@
 
 namespace Orb\FileStorage;
 
-use \Orb\Util\Util;
+use Zend\Service\Amazon\S3\S3;
+use Orb\Util\Util;
 
 /**
  * AmazonS3 storage handler
@@ -20,7 +21,7 @@ class AmazonS3 extends AbstractStorage
 {
 	/**
 	 * The S3 object to connect to AmazonS3.
-	 * @var Zend_Service_Amazon_S3
+	 * @var \Zend\Service\Amazon\S3\S3
 	 */
     protected $s3;
 
@@ -32,7 +33,7 @@ class AmazonS3 extends AbstractStorage
 
 	public function __construct($aws_access_key, $aws_secret_key, $bucket, $use_ssl = true)
 	{
-		$this->s3 = new Zend_Service_Amazon_S3(
+		$this->s3 = new S3(
     		$aws_access_key,
     		$aws_secret_key,
     		$use_ssl
@@ -93,11 +94,11 @@ class AmazonS3 extends AbstractStorage
 	}
 
 
-	
+
 	/**
 	 * Get the S3 object.
 	 *
-	 * @return Zend_Service_Amazon_S3
+	 * @return \Zend\Service\Amazon\S3\S3
 	 */
 	public function getS3()
 	{

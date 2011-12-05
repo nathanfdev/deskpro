@@ -84,7 +84,7 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $tag
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $tag
 	 * @return \Application\DeskPRO\Entity\TwitterStatusTag
 	 */
 	static public function createFromXML($tag)

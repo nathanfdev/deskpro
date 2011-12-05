@@ -19,11 +19,9 @@ $loader->registerNamespaces(array(
 	'Assetic'                        => DP_ROOT.'/vendor/assetic/src',
 	'Symfony'                        => DP_ROOT.'/vendor/symfony/src',
     'Doctrine\\Common'               => DP_ROOT.'/vendor/doctrine-common/lib',
-    'Doctrine\\DBAL\\Migrations'     => DP_ROOT.'/vendor/doctrine-migrations/lib',
     'Doctrine\\DBAL'                 => DP_ROOT.'/vendor/doctrine-dbal/lib',
     'Doctrine'                       => DP_ROOT.'/vendor/doctrine/lib',
 	'Zend'                           => DP_ROOT.'/vendor/zend/library',
-	'FOQ'                            => DP_ROOT.'/vendor',
 	'Elao'                           => DP_ROOT.'/vendor/profiler',
 	'Profiler'                       => DP_ROOT.'/vendor/profiler',
 ));
@@ -31,7 +29,6 @@ $loader->registerNamespaces(array(
 $loader->registerPrefixes(array(
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
-	'Zend_'       => DP_ROOT.'/vendor/zend1/library',
 	'Elastica_'   => DP_ROOT.'/vendor/Elastica/lib'
 ));
 

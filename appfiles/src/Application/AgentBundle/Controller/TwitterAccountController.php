@@ -72,7 +72,7 @@ class TwitterAccountController extends AbstractController
                         throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
                 }
 
-                $twitterSearcher = new \Zend_Service_Twitter_Search();
+                $twitterSearcher = new \Zend\Service\Twitter\Search();
                 $searchResults = $twitterSearcher->search($search->getTerm());
 
                 return $this->render('AgentBundle:TwitterAccount:run-search.html.twig', array(
@@ -96,7 +96,7 @@ class TwitterAccountController extends AbstractController
                 $em->persist($twitterAccountSearch);
                 $em->flush();
 
-                $twitterSearcher = new \Zend_Service_Twitter_Search();
+                $twitterSearcher = new \Zend\Service\Twitter\Search();
                 $searchResults = $twitterSearcher->search($search_term);
 
                 return $this->render('AgentBundle:TwitterAccount:search-part.html.twig', array(

@@ -105,7 +105,7 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $mention
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $mention
 	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
 	 */
 	static public function createFromXML($mention)

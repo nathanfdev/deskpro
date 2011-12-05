@@ -436,11 +436,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return \Zend_Oauth_Token_Access
+	 * @return \Zend\Oauth\Token\Access
 	 */
 	public function getOauthAccessToken()
 	{
-		$accessToken = new \Zend_Oauth_Token_Access();
+		$accessToken = new \Zend\Oauth\Token\Access();
 		$accessToken->setToken($this['oauth_token']);
 		$accessToken->setTokenSecret($this['oauth_token_secret']);
 

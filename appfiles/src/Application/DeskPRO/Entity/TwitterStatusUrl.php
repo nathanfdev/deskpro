@@ -84,7 +84,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $url
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $url
 	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
 	 */
 	static public function createFromXML($url)
@@ -98,7 +98,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $url
+	 * @param \SimpleXMLElement|\Zend\Rest\Client\Result $url
 	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
 	 */
 	static public function createFromJson(array $url)

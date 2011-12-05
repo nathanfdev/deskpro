@@ -57,7 +57,7 @@ class Recaptcha extends CaptchaAbstract
 			return false;
 		}
 
-		$client = new \Zend_Http_Client(self::RECAPTCHA_VERIFY_URL);
+		$client = new \Zend\Http\Client(self::RECAPTCHA_VERIFY_URL);
 		$client->setParameterPost('privatekey', $this->private_key);
 		$client->setParameterPost('remoteip', $remote_ip);
 		$client->setParameterPost('challenge', $challenge);

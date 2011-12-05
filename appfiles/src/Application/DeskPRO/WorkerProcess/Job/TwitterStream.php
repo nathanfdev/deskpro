@@ -89,7 +89,7 @@ class TwitterStream extends AbstractJob
 
 	/**
 	 * @param integer $id
-	 * @return \Zend_Service_Twitter
+	 * @return \Zend\Service\Twitter
 	 */
 	protected function getTwitter($id)
 	{

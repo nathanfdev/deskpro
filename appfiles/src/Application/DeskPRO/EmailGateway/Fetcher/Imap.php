@@ -10,6 +10,7 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Zend\Mail\Storage\Imap;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
@@ -21,11 +22,11 @@ class Imap extends AbstractFetcher
 	/**
 	 * Initiates the connection
 	 *
-	 * @return \Zend_Mail_Storage_Imap
+	 * @return \Zend\Mail\Storage\Imap
 	 */
 	protected function _initConnection()
 	{
-		$storage = new \Zend_Mail_Storage_Imap($this->gateway['connection_options']);
+		$storage = new Imap($this->gateway['connection_options']);
 		return $storage;
 	}
 
@@ -38,7 +39,7 @@ class Imap extends AbstractFetcher
 	{
 		try {
 			$headers = $this->storage->getRawHeader(1);
-		} catch (\Zend_Mail_Storage_Exception $e) {
+		} catch (\Zend\Mail\Storage\Exception $e) {
 			// means there is none
 			return null;
 		}

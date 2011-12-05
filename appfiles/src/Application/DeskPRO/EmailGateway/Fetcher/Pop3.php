@@ -21,7 +21,7 @@ class Pop3 extends AbstractFetcher
 	/**
 	 * Initiates the connection
 	 *
-	 * @return \Zend_Mail_Storage_Pop3
+	 * @return \Zend\Mail\Storage\Pop3
 	 */
 	protected function _initConnection()
 	{
@@ -35,7 +35,7 @@ class Pop3 extends AbstractFetcher
 			$options['ssl'] = true;
 		}
 
-		$storage = new \Zend_Mail_Storage_Pop3($options);
+		$storage = new \Zend\Mail\Storage\Pop3($options);
 		return $storage;
 	}
 
@@ -48,7 +48,7 @@ class Pop3 extends AbstractFetcher
 	{
 		try {
 			$headers = $this->storage->getRawHeader(1);
-		} catch (\Zend_Mail_Protocol_Exception $e) {
+		} catch (\Zend\Mail\Protocol\Exception $e) {
 			// means there is none
 			return null;
 		}
@@ -70,7 +70,7 @@ class Pop3 extends AbstractFetcher
 	{
 		try {
 			$this->storage->removeMessage($id);
-		} catch (\Zend_Mail_Protocol_Exception $e) {
+		} catch (\Zend\Mail\Protocol\Exception $e) {
 			/* usually reading a pop message marks it for deletion, which
 			 throws an -ERR. So we'll ignore it
 			 */

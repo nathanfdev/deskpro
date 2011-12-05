@@ -41,7 +41,7 @@ class Twitter extends AbstractCallbackAdatper
 
 		try {
 			$token = $oauth->getRequestToken();
-		} catch (\Zend_Oauth_Exception $e) {
+		} catch (\Zend\Oauth\Exception $e) {
 			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
 			return $result;
 		}
@@ -74,7 +74,7 @@ class Twitter extends AbstractCallbackAdatper
 
 		$client = $access_token->getHttpClient($this->getOauthConfig());
 		$client->setUri('http://api.twitter.com/account/verify_credentials.json');
-		$client->setMethod(\Zend_Http_Client::GET);
+		$client->setMethod(\Zend\Http\Client::GET);
 		$response = $client->request();
 
 		$account_data = @json_decode($response->getBody(), true);
@@ -103,11 +103,11 @@ class Twitter extends AbstractCallbackAdatper
 	}
 
 	/**
-	 * @return Zend_OAuth_Consumer
+	 * @return Zend\OAuth\Consumer
 	 */
 	public function getOauthConsumer()
 	{
-		return new \Zend_Oauth_Consumer($this->getOauthConfig());
+		return new \Zend\Oauth\Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()

@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
+use Zend\Feed\Reader\Reader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 
@@ -27,7 +28,7 @@ class Feed extends PortalItemAbstract implements CacheableItem
 	public function getHtml()
 	{
 		try {
-			$channel = new \Zend_Feed_Rss($this->getOption('feed_url'));
+			$channel = Reader::import($this->getOption('feed_url'));
 		} catch (\Exception $e) {
 			return '';
 		}

@@ -88,7 +88,7 @@ class UserStream extends \UserstreamPhirehose
 	}
 
 	/**
-	 * @return \Zend_Service_Twitter
+	 * @return \Zend\Service\Twitter
 	 */
 	public function getTwitterService()
 	{

@@ -134,17 +134,9 @@ class Web
 
 				if (!$expire) {
 					$expire = null;
-					throw new Exception('Unknown expire format: ' . $expire);
+					throw new \Exception('Unknown expire format: ' . $expire);
 				}
 			}
-		}
-
-		if ($path === null and Zend_Registry::isRegistered('cookie_path')) {
-			$path = Zend_Registry::get('cookie_path');
-		}
-
-		if ($domain === null AND Zend_Registry::isRegistered('cookie_domain')) {
-			$domain = Zend_Registry::get('cookie_domain');
 		}
 
 		if ($path === null) {
