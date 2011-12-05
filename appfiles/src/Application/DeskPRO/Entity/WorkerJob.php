@@ -51,7 +51,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * What it does
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="description", type="string", length=100)
+	 * @ORM_Mapping\Column(name="description", type="string", length=255)
 	 */
 	protected $description = '';
 

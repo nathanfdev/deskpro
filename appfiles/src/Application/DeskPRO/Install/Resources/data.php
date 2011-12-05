@@ -307,7 +307,7 @@ $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'ensure_search_tables';
 $j['worker_group'] = 'ensure_search_tables';
 $j['title'] = 'Ensure Search Tables';
-$j['description'] = 'Checks to make sure volatile search tables are fileld (i.e., in event of a reboot they are re-filled)';
+$j['description'] = 'Checks to make sure volatile search tables are fileld';
 $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\EnsureSearchTables';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\EnsureSearchTables::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
