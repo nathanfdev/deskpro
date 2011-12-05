@@ -308,7 +308,7 @@ function deskpro_build_cleanvendors_facebook($dir)
 
 function deskpro_build_cleanvendors_metadata($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests phpunit.xml.dist README.rst", $dir);
+	deskpro_build_exec_exit_error("rm -rf tests .gitignore phpunit.xml.dist README.rst", $dir);
 }
 
 function deskpro_build_cleanvendors_monolog($dir)
