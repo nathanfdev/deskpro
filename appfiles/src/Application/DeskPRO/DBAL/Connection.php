@@ -20,6 +20,16 @@ class Connection extends \Doctrine\DBAL\Connection
 {
 	protected $_max_packet_size = null;
 
+	public function connect()
+	{
+		if (parent::connect()) {
+			$this->exec("SET sql_mode=''");
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Gets the max packet size.
 	 *
