@@ -2,6 +2,11 @@
 <?php
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 
+$only_vendor_id = false;
+if (($k = array_search('--vendor-id', $_SERVER['argv'])) !== false) {
+	$only_vendor_id = $_SERVER['argv'][$k+1];
+}
+
 ###############################################################################
 # Helpers
 ###############################################################################
@@ -308,12 +313,12 @@ function deskpro_build_cleanvendors_facebook($dir)
 
 function deskpro_build_cleanvendors_metadata($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests .gitignore phpunit.xml.dist README.rst", $dir);
+	deskpro_build_exec_exit_error("rm -rf tests .gitignore phpunit.xml.dist README.rst CHANGELOG.md", $dir);
 }
 
 function deskpro_build_cleanvendors_monolog($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests CHANGELOG.mdown composer.json phpunit.xml.dist README.mdown", $dir);
+	deskpro_build_exec_exit_error("rm -rf doc tests CHANGELOG.mdown .gitignore composer.json phpunit.xml.dist README.mdown", $dir);
 }
 
 function deskpro_build_cleanvendors_pheanstalk($dir)
@@ -364,6 +369,10 @@ $output = new \Output();
 
 $vendors_config = require DP_ROOT.'/sys/config/vendors.php';
 foreach ($vendors_config as $vendor_id => $vendors_config) {
+
+	if ($only_vendor_id && $vendor_id != $only_vendor_id) {
+		continue;
+	}
 
 	$output->writeln("\n$vendor_id\nRepository: {$vendors_config['repos']}\nVersion: {$vendors_config['version']}\nInto: {$vendors_config['into']}");
 
