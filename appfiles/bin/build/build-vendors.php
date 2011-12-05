@@ -1,0 +1,385 @@
+#!/usr/bin/env php
+<?php
+define('DP_ROOT', realpath(__DIR__ . '/../../'));
+
+###############################################################################
+# Helpers
+###############################################################################
+
+function deskpro_build_exec_exit_error($cmd, $dir = null)
+{
+	global $output;
+	$output->writeln("> $cmd");
+
+	$proc = new \Process($cmd, $dir);
+	$proc->setTimeout(600);
+	$proc->run(function($type, $out) {
+		if ($type == 'out') {
+			echo $out;
+		}
+	});
+
+	if (!$proc->isSuccessful()) {
+		echo $proc->getErrorOutput();
+		echo $output->writeln("<error>Error with command</error>");
+		exit($proc->getExitCode());
+	}
+
+	return true;
+}
+
+class Output { function writeln($line) { echo "$line\n"; } }
+
+class Process
+{
+    private $commandline;
+    private $cwd;
+    private $env;
+    private $stdin;
+    private $timeout;
+    private $options;
+    private $exitcode;
+    private $status;
+    private $stdout;
+    private $stderr;
+
+    public function __construct($commandline, $cwd = null, array $env = null, $stdin = null, $timeout = 60, array $options = array())
+    {
+        if (!function_exists('proc_open')) {
+            throw new \RuntimeException('The Process class relies on proc_open, which is not available on your PHP installation.');
+        }
+
+        $this->commandline = $commandline;
+        $this->cwd = null === $cwd ? getcwd() : $cwd;
+        if (null !== $env) {
+            $this->env = array();
+            foreach ($env as $key => $value) {
+                $this->env[(binary) $key] = (binary) $value;
+            }
+        } else {
+            $this->env = null;
+        }
+        $this->stdin = $stdin;
+        $this->timeout = $timeout;
+        $this->options = array_merge(array('suppress_errors' => true, 'binary_pipes' => true, 'bypass_shell' => false), $options);
+    }
+
+    public function run($callback = null)
+    {
+        $this->stdout = '';
+        $this->stderr = '';
+        $that = $this;
+        $callback = function ($type, $data) use ($that, $callback)
+        {
+            if ('out' == $type) {
+                $that->addOutput($data);
+            } else {
+                $that->addErrorOutput($data);
+            }
+
+            if (null !== $callback) {
+                call_user_func($callback, $type, $data);
+            }
+        };
+
+        $descriptors = array(array('pipe', 'r'), array('pipe', 'w'), array('pipe', 'w'));
+
+        $process = proc_open($this->commandline, $descriptors, $pipes, $this->cwd, $this->env, $this->options);
+
+        if (!is_resource($process)) {
+            throw new \RuntimeException('Unable to launch a new process.');
+        }
+
+        foreach ($pipes as $pipe) {
+            stream_set_blocking($pipe, false);
+        }
+
+        if (null === $this->stdin) {
+            fclose($pipes[0]);
+            $writePipes = null;
+        } else {
+            $writePipes = array($pipes[0]);
+            $stdinLen = strlen($this->stdin);
+            $stdinOffset = 0;
+        }
+        unset($pipes[0]);
+
+        while ($pipes || $writePipes) {
+            $r = $pipes;
+            $w = $writePipes;
+            $e = null;
+
+            $n = @stream_select($r, $w, $e, $this->timeout);
+
+            if (false === $n) {
+                break;
+            } elseif ($n === 0) {
+                proc_terminate($process);
+
+                throw new \RuntimeException('The process timed out.');
+            }
+
+            if ($w) {
+                $written = fwrite($writePipes[0], (binary) substr($this->stdin, $stdinOffset), 8192);
+                if (false !== $written) {
+                    $stdinOffset += $written;
+                }
+                if ($stdinOffset >= $stdinLen) {
+                    fclose($writePipes[0]);
+                    $writePipes = null;
+                }
+            }
+
+            foreach ($r as $pipe) {
+                $type = array_search($pipe, $pipes);
+                $data = fread($pipe, 8192);
+                if (strlen($data) > 0) {
+                    call_user_func($callback, $type == 1 ? 'out' : 'err', $data);
+                }
+                if (false === $data || feof($pipe)) {
+                    fclose($pipe);
+                    unset($pipes[$type]);
+                }
+            }
+        }
+
+        $this->status = proc_get_status($process);
+
+        $time = 0;
+        while (1 == $this->status['running'] && $time < 1000000) {
+            $time += 1000;
+            usleep(1000);
+            $this->status = proc_get_status($process);
+        }
+
+        $exitcode = proc_close($process);
+
+        if ($this->status['signaled']) {
+            throw new \RuntimeException(sprintf('The process stopped because of a "%s" signal.', $this->status['stopsig']));
+        }
+
+        return $this->exitcode = $this->status['running'] ? $exitcode : $this->status['exitcode'];
+    }
+
+    public function getOutput()
+    {
+        return $this->stdout;
+    }
+
+    public function getErrorOutput()
+    {
+        return $this->stderr;
+    }
+
+    public function getExitCode()
+    {
+        return $this->exitcode;
+    }
+
+    public function isSuccessful()
+    {
+        return 0 == $this->exitcode;
+    }
+
+    public function hasBeenSignaled()
+    {
+        return $this->status['signaled'];
+    }
+
+    public function getTermSignal()
+    {
+        return $this->status['termsig'];
+    }
+
+    public function hasBeenStopped()
+    {
+        return $this->status['stopped'];
+    }
+
+    public function getStopSignal()
+    {
+        return $this->status['stopsig'];
+    }
+
+    public function addOutput($line)
+    {
+        $this->stdout .= $line;
+    }
+
+    public function addErrorOutput($line)
+    {
+        $this->stderr .= $line;
+    }
+
+    public function getCommandLine()
+    {
+        return $this->commandline;
+    }
+
+    public function setCommandLine($commandline)
+    {
+        $this->commandline = $commandline;
+    }
+
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
+    public function getWorkingDirectory()
+    {
+        return $this->cwd;
+    }
+
+    public function setWorkingDirectory($cwd)
+    {
+        $this->cwd = $cwd;
+    }
+
+    public function getEnv()
+    {
+        return $this->env;
+    }
+
+    public function setEnv(array $env)
+    {
+        $this->env = $env;
+    }
+
+    public function getStdin()
+    {
+        return $this->stdin;
+    }
+
+    public function setStdin($stdin)
+    {
+        $this->stdin = $stdin;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+}
+
+###############################################################################
+# Cleanup functions
+###############################################################################
+
+function deskpro_build_cleanvendors_assetic($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore CHANGELOG phpunit.xml.dist README.md", $dir);
+}
+
+function deskpro_build_cleanvendors_elastica($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf test .gitignore build.xml changes.txt README.markdown", $dir);
+}
+
+function deskpro_build_cleanvendors_doctrine($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf bin tests tools .gitignore .gitmodules composer.json build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
+}
+
+function deskpro_build_cleanvendors_doctrine_common($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf tests .gitignore build.properties.dev build.xml phpunit.xml.dist UPGRADE_TO_2_1", $dir);
+}
+
+function deskpro_build_cleanvendors_doctrine_dbal($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf bin tests .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist run-all.sh", $dir);
+}
+
+function deskpro_build_cleanvendors_facebook($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf examples tests readme.md", $dir);
+}
+
+function deskpro_build_cleanvendors_metadata($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf tests phpunit.xml.dist README.rst", $dir);
+}
+
+function deskpro_build_cleanvendors_monolog($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf tests CHANGELOG.mdown composer.json phpunit.xml.dist README.mdown", $dir);
+}
+
+function deskpro_build_cleanvendors_pheanstalk($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf doc tests .gitmodules README.md", $dir);
+}
+
+function deskpro_build_cleanvendors_webprofilerextra($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf README.md screen.png", $dir);
+}
+
+function deskpro_build_cleanvendors_profilerlive($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf .gitignore README.rd", $dir);
+}
+
+function deskpro_build_cleanvendors_swiftmailer($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf doc notes test-suite tests .gitignore build.xml CHANGES composer.json create_pear_package.php package.xml.tpl README README.git VERSION", $dir);
+}
+
+function deskpro_build_cleanvendors_symfony($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf tests .gitignore autoload.php.dist CHANGELOG-2.0.md check_cs composer.json CONTRIBUTORS.md phpunit.xml.dist README.md UPDATE.ja.md UPDATE.md vendors.php", $dir);
+}
+
+function deskpro_build_cleanvendors_twig($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf bin doc test AUTHORS CHANGELOG package.xml.tpl phpunit.xml.dist README.markdown", $dir);
+}
+
+function deskpro_build_cleanvendors_zend($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf bin demos documentation resources tests tools working .gitignore .gitmodules INSTALL.txt README-DEV.txt README-GIT.txt README.txt", $dir);
+}
+
+function deskpro_build_cleanvendors_zend1($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf bin demos documentation externals extras resources tests INSTALL.txt README.txt", $dir);
+}
+
+###############################################################################
+# Run
+###############################################################################
+
+$output = new \Output();
+
+$vendors_config = require DP_ROOT.'/sys/config/vendors.php';
+foreach ($vendors_config as $vendor_id => $vendors_config) {
+
+	$output->writeln("\n$vendor_id\nRepository: {$vendors_config['repos']}\nVersion: {$vendors_config['version']}\nInto: {$vendors_config['into']}");
+
+	if (file_exists($vendors_config['into'])) {
+		$output->writeln('<info>Removing existing directory</info>');
+		deskpro_build_exec_exit_error("rm -rf {$vendors_config['into']}", null);
+	}
+
+	deskpro_build_exec_exit_error("mkdir -p {$vendors_config['into']}", null);
+
+	deskpro_build_exec_exit_error("git clone {$vendors_config['repos']} .", $vendors_config['into']);
+	deskpro_build_exec_exit_error("git checkout {$vendors_config['version']}", $vendors_config['into']);
+	deskpro_build_exec_exit_error("rm -rf .git", $vendors_config['into']);
+
+	$fn = "deskpro_build_cleanvendors_{$vendor_id}";
+	if (function_exists($fn)) {
+		$fn($vendors_config['into']);
+	}
+}
