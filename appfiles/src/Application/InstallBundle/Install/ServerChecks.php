@@ -319,6 +319,8 @@ class ServerChecks
 	 */
 	public function checkDatabase(array $db_conf)
 	{
+		$db_conf['driver'] = 'pdo_mysql';
+
 		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
 		try {
 			$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);

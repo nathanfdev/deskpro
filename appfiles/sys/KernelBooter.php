@@ -68,11 +68,10 @@ class KernelBooter
 		} elseif (preg_match('#^/install#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
 			define('DP_INTERFACE', 'install');
-			$debug=true;
 
 			// Always force full URL with trailing slash
-			if (strpos($request->getRequestUri(), '/index.php/') === false) {
-				header('Location: ' . $request->getBasePath() . '/index.php/');
+			if (strpos($request->getRequestUri(), '/index.php/install/') === false) {
+				header('Location: ' . $request->getBasePath() . '/index.php/install/');
 				exit;
 			}
 

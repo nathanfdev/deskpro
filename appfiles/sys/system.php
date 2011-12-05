@@ -179,6 +179,17 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$this->boot();
 		}
 
+		try {
+			App::getSetting('core.license');
+		} catch (\PDOException $e) {
+			if ($e->getCode() == '42S02') {
+				$response = new RedirectResponse($request->getBaseUrl() . '/install/');
+				return $response;
+			} else {
+				throw $e;
+			}
+		}
+
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
