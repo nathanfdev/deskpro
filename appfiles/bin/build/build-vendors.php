@@ -354,6 +354,46 @@ function deskpro_build_cleanvendors_twig($dir)
 function deskpro_build_cleanvendors_zend($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf bin demos documentation resources tests tools working .gitignore .gitmodules INSTALL.txt README-DEV.txt README-GIT.txt README.txt", $dir);
+
+	$remove_modules = array(
+		'Acl',
+		'Amf',
+		'Application',
+		'Barcode',
+		'Captcha',
+		'CodeGenerator',
+		'Console',
+		'Controller',
+		'Currency',
+		'Db',
+		'Dojo',
+		'Form',
+		'GData',
+		'InfoCard',
+		'Layout',
+		'Markup',
+		'Measure',
+		'Memory',
+		'Navigation',
+		'Pagination',
+		'Pdf',
+		'ProgressBar',
+		'Search',
+		'Serializer',
+		'Server',
+		'Tag',
+		'Test',
+		'Text',
+		'TimeSync',
+		'Tool',
+		'Translator',
+		'View',
+		'Wildfire',
+	);
+
+	foreach ($remove_modules as $d) {
+		deskpro_build_exec_exit_error('rm -rf library/Zend/' . $d, $dir);
+	}
 }
 
 function deskpro_build_cleanvendors_zend1($dir)
