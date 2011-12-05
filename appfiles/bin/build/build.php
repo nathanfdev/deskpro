@@ -124,3 +124,22 @@ if (!$proc->isSuccessful()) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+
+#####################################################################
+
+$time = microtime(true);
+echo "build-checksum-file ... ";
+
+$proc = new \Symfony\Component\Process\Process('./build-checksum-file.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
+$proc->run();
+
+if (!$proc->isSuccessful()) {
+	echo "ERROR\n";
+	echo $proc->getOutput();
+	echo $proc->getErrorOutput();
+	exit($proc->getExitCode());
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
