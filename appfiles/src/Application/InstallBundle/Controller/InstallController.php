@@ -14,6 +14,8 @@ namespace Application\InstallBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+use Orb\Util\Strings;
+
 /**
  * Installation
  */
@@ -171,10 +173,18 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function installDoneAction()
 	{
-		$this->getDb()->insert('settings', array(
-			'name' => 'dp.install_timestamp',
-			'groupname' => 'dp',
+		$db = $this->getOrm()->getConnection();
+		$db->insert('settings', array(
+			'name' => 'core.install_timestamp',
+			'groupname' => 'core',
 			'value' => time(),
+			'created_at' => date('Y-m-d H:i:s'),
+			'updated_at' => date('Y-m-d H:i:s'),
+		));
+		$db->insert('settings', array(
+			'name' => 'core.install_key',
+			'groupname' => 'core',
+			'value' => Strings::random(20, Strings::CHARS_KEY),
 			'created_at' => date('Y-m-d H:i:s'),
 			'updated_at' => date('Y-m-d H:i:s'),
 		));

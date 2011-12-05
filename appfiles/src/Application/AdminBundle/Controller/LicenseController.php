@@ -66,6 +66,7 @@ class LicenseController extends AbstractController
 				$client = new \Zend_Http_Client(null, array('timeout' => 15));
 				$client->setMethod(\Zend_Http_Client::POST);
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
+				$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
 				$client->setParameterPost('email_address', $email_address);
 				$client->setParameterPost('url', App::getRequest()->getBaseUrl());
 
@@ -148,7 +149,7 @@ class LicenseController extends AbstractController
 	{
 		$license_code = $this->in->getString('license_code');
 
-		$lic = License::create($license_code);
+		$lic = License::create($license_code, $this->settings->get('core.install_key'));
 		if ($lic->isLicenseCodeError()) {
 			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
 		}
@@ -164,6 +165,7 @@ class LicenseController extends AbstractController
 			$client->setMethod(\Zend_Http_Client::POST);
 			$client->setUri(DP_LIC_SERVER . '/license/confirm-demo.json');
 			$client->setParameterPost('license_code', $license_code);
+			$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
 
 			$failed = false;
 			try {

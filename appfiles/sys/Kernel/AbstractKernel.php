@@ -325,6 +325,11 @@ final class License
 	private $license_salt;
 
 	/**
+	 * @var string
+	 */
+	private $install_key;
+
+	/**
 	 * @var array
 	 */
 	private $data;
@@ -342,13 +347,13 @@ final class License
 	 * @param $license_code
 	 * @return \DeskPRO\Kernel\License
 	 */
-	public static function create($license_code)
+	public static function create($license_code, $install_key = '')
 	{
 		if (!defined('DP_LIC_SERVER')) {
 			define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
 		}
 
-		$inst = new self($license_code);
+		$inst = new self($license_code, $install_key);
 
 		// First invocation always the singleton used for lic checks
 		if (!self::$inst) {
@@ -375,7 +380,14 @@ final class License
 				if (!$license_code) $license_code = null;
 			}
 
-			self::create($license_code);
+
+			if (defined('DP_INSTALL_KEY')) {
+				$install_key = DP_INSTALL_KEY;
+			} else {
+				$install_key = App::getSetting('core.install_key');
+			}
+
+			self::create($license_code, $install_key);
 		}
 
 		return self::$inst;
@@ -393,7 +405,7 @@ final class License
 	 *
 	 * @param $license_code
 	 */
-	private function __construct($license_code)
+	private function __construct($license_code, $install_key = '')
 	{
 		// "no license" mode
 		if ($license_code === null) {
@@ -413,11 +425,15 @@ final class License
 
 		$this->license_id   = substr($license_code, 0, 14);
 		$this->license_salt = substr($license_code, 14, 20);
+		$this->install_key  = $install_key;
 
 		$enc  = substr($license_code, 34);
 		$enc = strrev($enc);
 
-		$key = sha1($this->license_salt . $this->license_id . '5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS');
+		$key  = sha1($this->license_id . $this->license_salt . $this->install_key . '5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS') . '7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
+		$key .= sha1($this->license_id . $this->license_salt . $this->install_key . 'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4') . 'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
+		$key  = $key . strrev($key);
+
 		$enc = $this->xorString($enc, $key);
 
 		$enc = base64_decode($enc);
