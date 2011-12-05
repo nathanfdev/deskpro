@@ -288,17 +288,17 @@ function deskpro_build_cleanvendors_elastica($dir)
 
 function deskpro_build_cleanvendors_doctrine($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin tests tools .gitignore .gitmodules composer.json build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin tests tools .travis.yml .gitignore .gitmodules composer.json build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
 }
 
 function deskpro_build_cleanvendors_doctrine_common($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests .gitignore build.properties.dev build.xml phpunit.xml.dist UPGRADE_TO_2_1", $dir);
+	deskpro_build_exec_exit_error("rm -rf tests .travis.yml .gitignore build.properties.dev build.xml phpunit.xml.dist UPGRADE_TO_2_1", $dir);
 }
 
 function deskpro_build_cleanvendors_doctrine_dbal($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin tests .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist run-all.sh", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin tests .travis.yml .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist run-all.sh", $dir);
 }
 
 function deskpro_build_cleanvendors_facebook($dir)
