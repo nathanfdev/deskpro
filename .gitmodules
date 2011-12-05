@@ -1,3 +1,0 @@
-[submodule "appfiles/vendor/FOQ/ElasticaBundle"]
-	path = appfiles/vendor/FOQ/ElasticaBundle
-	url = git://github.com/Exercise/ElasticaBundle.git
