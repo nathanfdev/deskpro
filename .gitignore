@@ -13,6 +13,7 @@
 /appfiles/sys/logs/
 /appfiles/sys/bootstrap.php
 /appfiles/sys/compiled.php
+/appfiles/sys/compiled.php
 /appfiles/sys/distro-checksums.php
 /static/build
 /static/stylesheets/agent
@@ -20,5 +21,6 @@
 /static/stylesheets/report
 
 # Per-site files
-/appfiles/config.php
+/config.php
+/appfiles/sys/config/dev_debug.php
 /appfiles/sys/VERSION
