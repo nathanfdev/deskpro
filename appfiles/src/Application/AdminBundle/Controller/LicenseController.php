@@ -105,7 +105,7 @@ class LicenseController extends AbstractController
 					}
 
 				} catch (\Zend\Http\Client\Adapter\Exception $e) {
-					if ($e->getCode() == \Zend\Http\Client\Adapter\Exception::READ_TIMEOUT) {
+					if ($e->getCode() == \Zend\Http\Client\Adapter\Exception\TimeoutException::READ_TIMEOUT) {
 						$failed = 'timeout';
 					} else {
 						$failed = true;
@@ -184,7 +184,7 @@ class LicenseController extends AbstractController
 					}
 				}
 			} catch (\Zend\Http\Client\Adapter\Exception $e) {
-				if ($e->getCode() == \Zend\Http\Client\Adapter\Exception::READ_TIMEOUT) {
+				if ($e->getCode() == \Zend\Http\Client\Adapter\Exception\TimeoutException::READ_TIMEOUT) {
 					$failed = 'timeout';
 				} else {
 					$failed = true;
