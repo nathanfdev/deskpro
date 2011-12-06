@@ -460,7 +460,7 @@ class Reader
         if ($xpath->query('//atom:feed')->length) {
             return self::TYPE_ATOM_10;
         }
-        
+
         if ($xpath->query('//atom:entry')->length) {
             if ($specOnly == true) {
                 return self::TYPE_ATOM_10;
@@ -496,7 +496,7 @@ class Reader
     public static function getPluginLoader()
     {
         if (!isset(self::$_pluginLoader)) {
-            self::setPluginLoader(new Loader\PluginLoader(array(
+            self::setPluginLoader(new Loader\PluginClassLoader(array(
                 'Zend\\Feed\\Reader\\Extension\\' => 'Zend/Feed/Reader/Extension/',
             )));
         }
@@ -653,7 +653,7 @@ class Reader
         self::registerExtension('Thread');
         self::registerExtension('Podcast');
     }
-    
+
     /**
      * Utility method to apply array_unique operation to a multidimensional
      * array.
@@ -672,5 +672,5 @@ class Reader
         }
         return $array;
     }
- 
+
 }
