@@ -19,72 +19,31 @@ use Application\DeskPRO\Build\VersionReader;
 
 /**
  * The abstract controller sets up some default objects.
+ *
+ * @property $em \Doctrine\ORM\EntityManager
+ * @property $db \Application\DeskPRO\DBAL\Connection
+ * @property $in \Orb\Input\Reader\Reader
+ * @property $cleaner \Orb\Input\Cleaner\Cleaner
+ * @property $tpl \Application\DeskPRO\Templating\Engine
+ * @property $settings \Application\DeskPRO\Settings\Settings
+ * @property $session \Application\DeskPRO\HttpFoundation\Session
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
-	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	public $em;
-
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	public $db;
-
-	/**
-	 * Input reader
-	 * @var \Orb\Input\Reader\Reader
-	 */
-	public $in;
-
-	/**
-	 * A generic value cleaner
-	 * @var \Orb\Input\Cleaner\Cleaner
-	 */
-	public $cleaner;
-
-	/**
-	 * Shared template vars
-	 * @var ArrayObject
-	 */
-	public $tplvars;
-
-	/**
-	 * @var \Application\DeskPRO\Templating\Engine
-	 */
-	public $tpl;
-
-	/**
-	 * Fetch settings
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
-	public $settings;
-
-	/**
-	 * The session
-	 * @var \Application\DeskPRO\HttpFoundation\Session
-	 */
-	public $session;
-
-	/**
-	 * An empty callback function
-	 */
-	protected function init()
+	public function __get($prop)
 	{
-		$this->em       = $this->get('doctrine.orm.entity_manager');
-		$this->db       = $this->get('database_connection');
-		$this->in       = $this->get('deskpro.core.input_reader');
-		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
-		$this->settings = $this->get('deskpro.core.settings');
-		$this->session  = $this->get('session');
-
-		$this->tpl = $this->get('templating');
+		switch ($prop) {
+			case 'em': return $this->get('doctrine.orm.entity_manager');
+			case 'db': return $this->get('database_connection');
+			case 'in': return $this->get('deskpro.core.input_reader');
+			case 'cleaner': return $this->get('deskpro.core.input_cleaner');
+			case 'settings': return $this->get('deskpro.core.settings');
+			case 'session': return $this->get('session');
+			case 'tpl': return $this->get('templating');
+			default:
+				throw new \InvalidArgumentException("Unknown property {$prop}");
+		}
 	}
-
-
 
 	/**
 	 * Is this a POST request?
