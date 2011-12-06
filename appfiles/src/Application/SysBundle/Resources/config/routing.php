@@ -19,34 +19,6 @@ $collection->add('sys_test', new Route(
 	array()
 ));
 
-$collection->add('sys_install', new Route(
-	'/install',
-	array('_controller' => 'SysBundle:Install:index'),
-	array(),
-	array()
-));
-
-$collection->add('sys_install_check', new Route(
-	'/install/check',
-	array('_controller' => 'SysBundle:Install:check'),
-	array(),
-	array()
-));
-
-$collection->add('sys_install_createtables', new Route(
-	'/install/create-tables',
-	array('_controller' => 'SysBundle:Install:createTables'),
-	array(),
-	array()
-));
-
-$collection->add('sys_install_createdata', new Route(
-	'/install/create-data',
-	array('_controller' => 'SysBundle:Install:createData'),
-	array(),
-	array()
-));
-
 $collection->add('sys_user_css', new Route(
 	'/res/user/{filename}',
 	array('_controller' => 'SysBundle:Resource:userCss'),

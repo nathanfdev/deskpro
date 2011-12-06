@@ -82,48 +82,6 @@ $collection->add('dev_phptest_run', new Route(
 	array()
 ));
 
-$collection->add('dev_datagen', new Route(
-	'/data-generator',
-	array('_controller' => 'DevBundle:DataGenerator:index'),
-	array(),
-	array()
-));
-
-$collection->add('dev_datagen_run', new Route(
-	'/data-generator/run',
-	array('_controller' => 'DevBundle:DataGenerator:run'),
-	array(),
-	array()
-));
-
-$collection->add('dev_install', new Route(
-	'/install',
-	array('_controller' => 'DevBundle:Install:index'),
-	array(),
-	array()
-));
-
-$collection->add('dev_install_check', new Route(
-	'/install/check',
-	array('_controller' => 'DevBundle:Install:check'),
-	array(),
-	array()
-));
-
-$collection->add('dev_install_createtables', new Route(
-	'/install/create-tables',
-	array('_controller' => 'DevBundle:Install:createTables'),
-	array(),
-	array()
-));
-
-$collection->add('dev_install_createdata', new Route(
-	'/install/create-data',
-	array('_controller' => 'DevBundle:Install:createData'),
-	array(),
-	array()
-));
-
 $collection->add('dev_build', new Route(
 	'/build',
 	array('_controller' => 'DevBundle:Build:index'),
