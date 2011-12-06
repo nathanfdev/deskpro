@@ -76,6 +76,18 @@ class Cleaner
 
 
 	/**
+	 * See if we support a type of cleaner
+	 *
+	 * @param $type
+	 * @return bool
+	 */
+	public function supportsType($type)
+	{
+		return isset($this->cleaner_type_map[$type]);
+	}
+
+
+	/**
 	 * Get the cleaner for a particular input request type
 	 *
 	 * @param string $type

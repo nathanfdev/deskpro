@@ -168,6 +168,10 @@ class TicketGateway extends AbstractGateway
 			$email_info['body_is_html'] = false;
 		}
 
+		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+		}
+
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
 			'person' => $person,
@@ -299,6 +303,10 @@ class TicketGateway extends AbstractGateway
 			$email_info['body_is_html'] = false;
 		}
 
+		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+		}
+
 		$ev = $this->createGatewayEvent(array(
 			'person' => $person,
 			'email_info' => $email_info,
@@ -387,6 +395,10 @@ class TicketGateway extends AbstractGateway
 		} else {
 			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
 			$email_info['body_is_html'] = false;
+		}
+
+		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
 		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);

@@ -45,6 +45,11 @@ abstract class AbstractGateway
 	 */
 	protected $processed_blobs = null;
 
+	/**
+	 * @var \Orb\Input\Cleaner\Cleaner
+	 */
+	protected $cleaner;
+
 	public function __construct(Entity\EmailGateway $gateway_info, AbstractReader $reader, array $options = array())
 	{
 		$this->gateway_info = $gateway_info;
@@ -56,6 +61,8 @@ abstract class AbstractGateway
 		} else {
 			$this->event_dispatcher = App::getEventDispatcher();
 		}
+
+		$this->cleaner = App::get('deskpro.core.input_cleaner');
 
 		$this->init();
 	}
@@ -109,7 +116,7 @@ abstract class AbstractGateway
 	{
 		return $this->gateway_info;
 	}
-	
+
 
 	/**
 	 * @return \Application\DeskPRO\EmailGateway\Reader\AbstractReader
@@ -141,7 +148,7 @@ abstract class AbstractGateway
 		return Arrays::getValue($this->options, $name, $default);
 	}
 
-	
+
 	/**
 	 * @return \Application\DeskPRO\EmailGateway\GatewayEvent
 	 */
