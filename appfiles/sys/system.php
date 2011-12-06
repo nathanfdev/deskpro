@@ -459,12 +459,18 @@ class SysKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
-
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-
+			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\SysBundle\SysBundle(),
 		);
+
+		if ($this->isDebug()) {
+			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
+			$bundles[] = new \Application\DevBundle\DevBundle();
+			$bundles[] = new \Profiler\LiveBundle\ProfilerLiveBundle();
+		}
 
 		return $bundles;
 	}

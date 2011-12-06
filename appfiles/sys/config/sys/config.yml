@@ -1,56 +1,5 @@
-parameters:
-  kernel.include_core_classes: false
-  http_kernel.class: "Application\DeskPRO\HttpKernel\HttpKernel"
-  controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
-  swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
-  file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
-  routing.file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
-  router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
-  router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
-  templating.asset.url_package.class: "Application\DeskPRO\\Templating\Asset\UrlPackage"
-  router.options.generator_dumper_class: "Application\DeskPRO\Routing\Generator\Dumper\\PhpGeneratorDumper"
-  router.options.generator_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
-  router.options.generator_base_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
-
-services:
-  doctrine.dbal.connection_factory:
-    class: Application\DeskPRO\DBAL\ConnectionFactory
-    arguments: [%doctrine.dbal.connection_factory.types%]
-    calls:
-      - [ setContainer, [@service_container] ]
+imports:
+ - { resource: "../config.yml" }
 
 framework:
-  charset: UTF-8
-  secret: mube224etsmhxky1gvwixc4b
-  templating:
-    engines: ['php']
-    assets_base_urls: "CONFIG_HTTP"
-  validation:
-    enabled: true
-  router:   { resource: "%kernel.root_dir%/config/routing_sys.yml" }
-  session:
-    default_locale: en
-    lifetime: 3600
-    auto_start: true
-  form:
-    enabled: true
-
-doctrine:
-  orm:
-    auto_generate_proxy_classes: false
-    default_entity_manager: default
-    entity_managers:
-      default:
-        mappings:
-          DeskPRO: ~
-  dbal:
-    default_connection: default
-    connections:
-      default:
-        host: 'from_user_config.db'
-        logging: true
-
-swiftmailer:
-  transport: 'deskpro.mail.delegating_transport'
-
-deskpro_core: ~
+  router: { resource: "%kernel.root_dir%/config/sys/routing.yml" }
