@@ -22,7 +22,7 @@
 
 	'agent.chat.label_assigned_to' => 'Assigned to',
 	'agent.chat.label_assigned_others' => 'Other agents in this chat',
-	'agent.chat.invite_another_agnet' => 'Invite another agent',
+	'agent.chat.invite_another_agent' => 'Invite another agent',
 	'agent.chat.invite_agent' => 'Invite Agent',
 	'agent.chat.invite_no_agents' => 'There are no other agents you can invite.',
 	'agent.chat.user_typing' => 'Typing',

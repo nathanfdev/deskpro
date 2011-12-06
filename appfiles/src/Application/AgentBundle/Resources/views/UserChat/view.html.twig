@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<br />
 		<label>{{ phrase('agent.chat.label_assigned_others') }}: </label>
 		<ul class="agent-parts-link" id="{{baseId}}_agent_parts">
-			<li id="{{ baseId }}_agent_parts_btn"><em class="invite-button">{{ phrase('agent.chat.invite_another_agnet') }}</em></li>
+			<li id="{{ baseId }}_agent_parts_btn"><em class="invite-button">{{ phrase('agent.chat.invite_another_agent') }}</em></li>
 			{% for part in convo.participants %}
 				{% if not part.id == convo.id %}
 					<li class="agent-{{ part.id }}" data-agent-id="{{ part.id }}"><a class="agent-link" style="background-image: url('{{ part.getPictureUrl(20) }}');">{{ part.display_name }}</a></li>
