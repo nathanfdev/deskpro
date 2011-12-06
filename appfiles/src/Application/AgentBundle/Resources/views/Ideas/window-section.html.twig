@@ -18,7 +18,7 @@
 <section class="source-tabs" id="ideas_outline_tabstrip">
 	<ul>
 			<li data-tab-for="#ideas_outline_status"><span>{{ phrase('agent.status') }}</span></li>
-			<li data-tab-for="#ideas_outline_category"><span>{{ phrase('agent.category') }}</span></li>
+			{% if not idea_cats|length or idea_cats|length == 1 %}<li data-tab-for="#ideas_outline_category"><span>{{ phrase('agent.category') }}</span></li>{% endif %}
 			<li data-tab-for="#ideas_outline_labels"><span>{{ phrase('agent.labels') }}</span></li>
 		</ul>
 </section>
