@@ -71,7 +71,7 @@ class KernelBooter
 
 			// Always force full URL with trailing slash
 			if (strpos($request->getRequestUri(), '/index.php/install/') === false) {
-				header('Location: ' . $request->getBasePath() . '/index.php/install/');
+				header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
 				exit;
 			}
 
