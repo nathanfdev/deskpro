@@ -16,7 +16,6 @@ if (!deskpro_install_check_safemode()) {
 
 if (!deskpro_install_check_config()) {
 	$errors[] = sprintf("You do not have a configuration file. Copy <code>/config.new.php</code> to <code>/config.php</code> and edit the values within.");
-	exit;
 }
 
 if (!deskpro_install_check_writable()) {
