@@ -9,6 +9,7 @@
 
 namespace Orb\Input\Cleaner;
 
+use Orb\Input\Cleaner\CleanerPlugin\CleanerPlugin;
 
 /**
  * A cleaner class that cleans any input to fit a data type.
@@ -16,39 +17,79 @@ namespace Orb\Input\Cleaner;
 class Cleaner
 {
 	/**
-	 * A map of aliases to a cleaner type
+	 * A map of types to their cleaner
 	 * @var array
 	 */
-	protected $string_type_map = array(
-		'discard'       => 'discard',
-		'raw'           => 'raw',
-		'bool'          => 'bool',
-		'boolean'       => 'bool',
-		'bool_int'      => 'bool_int',
-		'ibool'         => 'bool_int',
-		'int'           => 'int',
-		'integer'       => 'int',
-		'uint'          => 'uint',
-		'float'         => 'float',
-		'ufloat'        => 'ufloat',
-		'num'           => 'num',
-		'number'        => 'num',
-		'unum'          => 'unum',
-		'str'           => 'str',
-		'string'        => 'str',
-		'str_notrim'    => 'str_notrim',
-		'str_nohtml'    => 'str_nohtml',
-		'nohtml'        => 'str_nohtml',
-		'str_striphtml' => 'str_striphtml',
-		'striphtml'     => 'str_striphtml',
-		'str_simple'    => 'str_simple',
-		'simplestr'     => 'str_simple',
-		'str_raw'       => 'str_raw',
-		'rawstr'        => 'str_raw',
-		'rawstring'     => 'str_raw',
-		'array'         => 'array',
-	);
+	protected $cleaner_type_map = array();
 
+	/**
+	 * @var \Orb\Input\Cleaner\CleanerPlugin\CleanerPlugin[]
+	 */
+	protected $cleaners = array();
+
+	public function __construct()
+	{
+		$basic = new \Orb\Input\Cleaner\CleanerPlugin\Basic();
+		$basic->enableUtfHandling();
+
+		$this->addCleaner($basic);
+	}
+
+
+	/**
+	 * Add a cleaner
+	 *
+	 * @param CleanerPlugin\CleanerPlugin $cleaner
+	 */
+	public function addCleaner(CleanerPlugin $cleaner)
+	{
+		$this->cleaners[$cleaner->getCleanerId()] = $cleaner;
+
+		foreach ($cleaner->getCleanerTypes() as $t) {
+			$this->cleaner_type_map[$t] = $cleaner->getCleanerId();
+		}
+	}
+
+
+	/**
+	 * Get a  cleaner
+	 *
+	 * @param $id
+	 * @return CleanerPlugin\CleanerPlugin
+	 */
+	public function getCleaner($id)
+	{
+		return $this->cleaners[$id];
+	}
+
+
+	/**
+	 * Check if a cleaner has been added
+	 *
+	 * @param $id
+	 * @return bool
+	 */
+	public function hasCleaner($id)
+	{
+		return isset($this->cleaners[$id]);
+	}
+
+
+	/**
+	 * Get the cleaner for a particular input request type
+	 *
+	 * @param string $type
+	 * @return CleanerPlugin\CleanerPlugin
+	 */
+	public function getCleanerForType($type)
+	{
+		if (!isset($this->cleaner_type_map[$type])) {
+			return null;
+		}
+
+		$id = $this->cleaner_type_map[$type];
+		return $this->getCleaner($id);
+	}
 
 
 	/**
@@ -61,80 +102,13 @@ class Cleaner
 	 */
 	public function clean($value, $type = 'raw', $options = null)
 	{
-		if (isset($this->string_type_map[$type])) {
-			$type = $this->string_type_map[$type];
-		} else {
+		if (!$options) $options = array();
+
+		if (!isset($this->cleaner_type_map[$type])) {
 			throw new \InvalidArgumentException("Invalid cleaner type `$type`");
 		}
 
-
-		#----------------------------------------
-		# Do the cleaning
-		#----------------------------------------
-
-		switch ($type) {
-			case 'bool':
-				$value = (bool)$value;
-				break;
-
-			case 'bool_int':
-				$value = (int)((bool)$value);
-				break;
-
-			case 'int':
-				$value = (int)$value;
-				break;
-
-			case 'uint':
-				$value = (int)$value;
-
-				if ($value < 0) {
-					$value = 0;
-				}
-				break;
-
-			case 'num':
-				$value = ((string)$value) + 0;
-				break;
-
-			case 'unum':
-				$value = ((string)$value) + 0;
-
-				if ($value < 0) {
-					$value = 0;
-				}
-				break;
-
-			case 'str':
-				$value = trim($this->cleanUtf8($value));
-				break;
-
-			case 'str_notrim':
-				$value = (string)$this->cleanUtf8($value);
-				break;
-
-			case 'str_nohtml':
-				$value = htmlspecialchars(trim($this->cleanUtf8($value)));
-				break;
-
-			case 'str_striphtml':
-				$value = strip_tags(trim($this->cleanUtf8($value)));
-				break;
-
-			case 'str_simple':
-				$value = preg_replace('#[^a-zA-Z0-9 _\-\.:]#', '', trim($this->cleanUtf8($value)));
-				break;
-
-			case 'str_raw':
-				$value = (string)$value;
-				break;
-
-			case 'array':
-				$value = (array)$value;
-				break;
-		}
-
-		return $value;
+		return $this->getCleanerForType($type)->cleanValue($value, $type, $options, $this);
 	}
 
 
@@ -170,61 +144,5 @@ class Cleaner
 		}
 
 		return $ret_array;
-	}
-
-
-
-	/**
-	 * If a string has mb characters, this will ensure the string is well-formed and
-	 * fix it if it's not (most secure thing to do).
-	 *
-	 * This uses phputf8 from sourceforge if it's available. If it's not available,
-	 * this cleaner does nothing.
-	 *
-	 * @link http://sourceforge.net/projects/phputf8/
-	 *
-	 * @param string|array $string The string to work on, or an array to go through
-	 * @return string
-	 */
-	public function cleanUtf8($string)
-	{
-		static $has_utf8_funcs = null;
-		if ($has_utf8_funcs === null) {
-			$has_utf8_funcs = function_exists('utf8_is_ascii');
-		}
-
-		if (!$has_utf8_funcs) {
-			return $string;
-		}
-
-		#-------------------------
-		# Recursively clean arrays
-		#-------------------------
-
-		if (is_array($string)) {
-			foreach ($string as $k => $v) {
-				$k = $this->cleanUtf8($k);
-				$v = $this->cleanUtf8($v);
-
-				$string[$k] = $v;
-			}
-
-			return $string;
-		}
-
-
-		#-------------------------
-		# Clean normal strings
-		#-------------------------
-
-		if (!is_string($string)) {
-			return $string;
-		}
-
-		if (!utf8_is_ascii($string) AND !utf8_is_valid($string)) {
-			$string = utf8_bad_strip($string);
-		}
-
-		return $string;
 	}
 }

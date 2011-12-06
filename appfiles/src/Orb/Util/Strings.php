@@ -1067,6 +1067,20 @@ class Strings
 	}
 
 
+	/**
+	 * Removes "invisible" characters from strings, except for legit ones like newlines
+	 * and tabs.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function removeInvisibleCharacters($string)
+	{
+		$string = preg_replace('#[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+#S', '', $string);
+		return $string;
+	}
+
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable

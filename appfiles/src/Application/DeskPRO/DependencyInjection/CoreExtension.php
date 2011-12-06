@@ -144,8 +144,13 @@ class CoreExtension extends Extension
 		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
 		$container->setDefinition('deskpro.core.input_reader_cookie', $definition);
 
+		// Cleaner plugin: XssCleaner
+		$definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\BasicXssCleaner');
+		$container->setDefinition('deskpro.core.input_cleaner_plugin_xss', $definition);
+
 		// Init cleaner
 		$definition = new Definition('Orb\Input\Cleaner\Cleaner');
+		$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_xss')));
 		$container->setDefinition('deskpro.core.input_cleaner', $definition);
 
 		// Init reader
