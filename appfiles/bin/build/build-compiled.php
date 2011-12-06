@@ -53,8 +53,6 @@ $files = array_merge($files, array(
 	'Application\\DeskPRO\\Domain\\DomainObject',
 	'Application\\DeskPRO\\HttpFoundation\\Cookie',
 	'Application\\DeskPRO\\HttpFoundation\\Request',
-	'Application\\DeskPRO\\HttpFoundation\\Session',
-	'Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage',
 
 	'Application\\DeskPRO\\ORM\\Util\\Util',
 	'Application\\DeskPRO\\ORM\\CollectionHelper',
@@ -84,38 +82,6 @@ $files = array_merge($files, array(
 	'Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension',
 	'Application\\DeskPRO\\Twig\\Loader\\HybridLoader',
 ));
-
-######################################################################
-# Entities
-######################################################################
-
-//$it = Finder::create()
-//	->in(DP_ROOT.'/src/Application/DeskPRO/Entity')
-//	->depth(0)
-//	->files()
-//	->name('*.php')
-//	->getIterator();
-//
-//foreach ($it as $file) {
-//	$name = str_replace('.php', '', $file->getFilename());
-//	$name = 'Application\\DeskPRO\\Entity\\' . $name;
-//
-//	$files[] = $name;
-//}
-//
-//$it = Finder::create()
-//	->in(DP_ROOT.'/src/Application/DeskPRO/EntityRepository')
-//	->depth(0)
-//	->files()
-//	->name('*.php')
-//	->getIterator();
-//
-//foreach ($it as $file) {
-//	$name = str_replace('.php', '', $file->getFilename());
-//	$name = 'Application\\DeskPRO\\EntityRepository\\' . $name;
-//
-//	$files[] = $name;
-//}
 
 ClassCollectionLoader::load($files, dirname($cachefile), basename($cachefile, '.php'), false, false, '.php');
 

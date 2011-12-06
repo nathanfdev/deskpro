@@ -5,6 +5,16 @@ function deskpro_install_check_version()
 	return version_compare(phpversion(), '5.3.2', '>=');
 }
 
+function deskpro_install_check_safemode()
+{
+	$v = ini_get('safe_mode');
+	if (!$v || $v != 'Off' || $v != 'false') {
+		return true;
+	}
+
+	return false;// samemode on, fails test
+}
+
 function deskpro_install_check_config()
 {
 	if (!is_file(DP_CONFIG_FILE)) {
@@ -52,7 +62,7 @@ function deskpro_install_basic_error($message)
 	<div class="page-header">
 		<h1>DeskPRO Installation</h1>
 	</div>
-	<div class="alert-message error">
+	<div class="alert-message block-message error">
 		{$message}
 	</div>
 
