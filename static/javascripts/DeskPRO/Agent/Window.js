@@ -288,7 +288,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
 				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true, noUpdateHash: true });
+				this.loadPage(url, { url_fragment: hash, noToggle: true });
 			}
 		}, this);
 

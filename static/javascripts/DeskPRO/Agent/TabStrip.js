@@ -333,8 +333,6 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	addTabPlaceholder: function(url, routeData) {
 		var html = DeskPRO_Window.util.getPlainTpl($('#tab_loading_template'));
 
-		routeData.noUpdateHash = true;
-
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
