@@ -34,12 +34,6 @@ var DpErrorLog = {
 		});
 
 		console.log('[JS Error] %s', message);
-
-		var e = printStackTrace();
-		if (e) {
-			e = e.join("\n");
-			console.log('[JS Error] %s', e);
-		}
 	},
 
 	handleError: function(message, script, line) {

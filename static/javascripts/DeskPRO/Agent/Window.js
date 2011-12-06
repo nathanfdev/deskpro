@@ -1084,7 +1084,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url, routeData, callback) {
-
+		var self = this;
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 			if (existTab && routeData.noToggle) {
@@ -1107,7 +1107,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-			var page = this.createPageFragment(data);
+			try {
+				var page = this.createPageFragment(data);
+			} catch (e) {
+				if (routeData.tabPlaceholderId) {
+					self.pageTabStrip.removeTabById(routeData.tabPlaceholderId);
+				}
+				if (typeof e == 'string') {
+					DeskPRO_Window.showAlert('There was a problem loading the tab: ' + e);
+				} else {
+					DeskPRO_Window.showAlert('There was a problem loading the tab');
+					DpErrorLog.logError(printStackTrace().join("\n\n"));
+				}
+			}
 
 			page.setMetaData('routeUrl', url);
 			if (routeData) {
@@ -1123,8 +1135,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.addPageTab(page);
 
 			if (callback) callback(page);
-		}).bind(this)
-		);
+		}).bind(this));
 	},
 
 
@@ -1200,7 +1211,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (matches && matches.length) {
-
 			eval(matches[1]);
 
 			// Cut out the pageMeta from the HTML string
