@@ -26,5 +26,12 @@ $collection->add('sys_user_css', new Route(
 	array()
 ));
 
+$collection->add('sys_log_js_error', new Route(
+	'/log-js-error.json',
+	array('_controller' => 'SysBundle:Misc:logJsError'),
+	array(),
+	array()
+));
+
 
 return $collection;

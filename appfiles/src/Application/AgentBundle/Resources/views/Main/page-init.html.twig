@@ -10,6 +10,10 @@
 	{# {% endif %} #}
 
 	$(document).ready(function() {
+
+		DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';
+		DpErrorLog.init();
+
 		$('pane_list_content').css('display', '');
 		$('pane_content').css('display', '');
 

@@ -206,9 +206,42 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
     }
 
+
+	/**
+	 * Get a secret string
+	 *
+	 * @param string $secret
+	 * @return string
+	 */
 	public function getSessionSecret($secret = '')
 	{
 		return $this->getEntity()->getSessionSecret($secret);
+	}
+
+
+	/**
+	 * Check if a security token is valid
+	 *
+	 * @param $name
+	 * @param $token
+	 * @return bool
+	 */
+	public function checkSecurityToken($name, $token)
+	{
+		return $this->getEntity()->checkSecurityToken($name, $token);
+	}
+
+
+	/**
+	 * Generate a new security token
+	 *
+	 * @param $name
+	 * @param int $timeout
+	 * @return string
+	 */
+	public function generateSecurityToken($name, $timeout = 43200)
+	{
+		return $this->getEntity()->generateSecurityToken($name, $timeout);
 	}
 
 
