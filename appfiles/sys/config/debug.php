@@ -6,23 +6,23 @@
 // the end of your config.php:
 //    require DP_ROOT.'/sys/config/debug.php';
 
-$CONFIG['debug'] = array();
+$DP_CONFIG['debug'] = array();
 
 /**
  * When enabled, boots Symfony into dev environment with debug options enabeld
  */
-//$CONFIG['debug']['dev'] = true;
+//$DP_CONFIG['debug']['dev'] = true;
 
 /**
  * Email a copy of errors to this address.
  */
-//$CONFIG['email_on_error'] = 'example@email.com';
+//$DP_CONFIG['email_on_error'] = 'example@email.com';
 
 ################################################################################
 # Mail related
 ################################################################################
 
-$CONFIG['debug']['mail'] = array();
+$DP_CONFIG['debug']['mail'] = array();
 
 /**
  * Enable logging all email sources to the filesystem.
@@ -31,17 +31,17 @@ $CONFIG['debug']['mail'] = array();
  * - true: Enable logging to sys/logs/emails
  * - string: Enable logging to a specific directory
  */
-//$CONFIG['debug']['mail']['save_to_file'] = true;
+//$DP_CONFIG['debug']['mail']['save_to_file'] = true;
 
 /**
  * Rewrite the 'to' address on all emails to this address.
  */
-//$CONFIG['debug']['mail']['force_to'] = 'example@example.com';
+//$DP_CONFIG['debug']['mail']['force_to'] = 'example@example.com';
 
 /**
  * Completely disable the sending of emails.
  */
-//$CONFIG['debug']['mail']['disable_send'] = true;
+//$DP_CONFIG['debug']['mail']['disable_send'] = true;
 
 
 ################################################################################
@@ -54,28 +54,28 @@ $CONFIG['debug']['mail'] = array();
  * Possible values are in config.assets.php
  */
 // TODO remove in distribution. Enabled just for devs
-$CONFIG['debug']['raw_assets'] = array();
-//$CONFIG['debug']['raw_assets'][] = 'all -vendors';
-//$CONFIG['debug']['raw_assets'][] = 'all';
+$DP_CONFIG['debug']['raw_assets'] = array();
+//$DP_CONFIG['debug']['raw_assets'][] = 'all -vendors';
+//$DP_CONFIG['debug']['raw_assets'][] = 'all';
 
 /**
  * True to rename use .css from stylesheets/ instead of .less from stylesheets-less.
  * This is only useful if you are auto-compiling LESS stylesheets to CSS which
  * may be useful in development.
  */
-//$CONFIG['debug']['less_use_css_dir'] = true;
+//$DP_CONFIG['debug']['less_use_css_dir'] = true;
 
-$CONFIG['debug']['templates'] = array();
+$DP_CONFIG['debug']['templates'] = array();
 
 /**
  * When enabled, templates are never fetched from the database.
  */
-//$CONFIG['debug']['templates']['disable_db_templates'] = true;
+//$DP_CONFIG['debug']['templates']['disable_db_templates'] = true;
 
 /**
  * These options are passed to JS handlers to enable various debug options.
  */
-$CONFIG['debug']['js'] = array(
+$DP_CONFIG['debug']['js'] = array(
 
 	/**
 	 * Adds a fixed div in top right (overlaps user icon). right now only has button
