@@ -19,7 +19,7 @@ use Orb\Util\Strings;
  * This basic cleaner is based on CI_Security::xss_clean() in CodeIgniter
  * @link http://codeigniter.com/
  */
-class BasicXssCleaner implements CleanerPlugin
+class BasicXss implements CleanerPlugin
 {
 	protected $_never_allowed_str = array(
 		'document.cookie'	=> '[removed]',
