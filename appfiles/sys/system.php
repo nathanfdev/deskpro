@@ -212,7 +212,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		#------------------------------
 
 		if ($response->headers->get('content-type') == 'text/html' && $type == HttpKernelInterface::MASTER_REQUEST) {
-			$path = $request->getServerBaseUrl();
+			$path = $request->getBasePath();
 
 			#------------------------------
 			# No license
