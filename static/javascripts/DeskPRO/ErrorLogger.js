@@ -17,8 +17,8 @@ var DpErrorLog = {
 
 		if (window.console.error) {
 			var oldConsole = window.console.error;
-			window.console.error = function() {
-				DpErrorLog.logError(printStackTrace().join(", "));
+			window.console.error = function(msg) {
+				DpErrorLog.logError(msg + " " + printStackTrace().join(", "));
 				oldConsole.apply(oldConsole, arguments);
 			}
 		}

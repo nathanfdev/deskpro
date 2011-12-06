@@ -44,6 +44,9 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 				}
 			}
 		});
+
+		this.backdrop = $('<div class="backdrop fade" />').hide().appendTo('body').css('z-index', 99999998);
+		this.backdrop.click(this.close.bind(this));
 	},
 
 	_loadPageForTabTarget: function(wrapper) {
@@ -120,6 +123,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		}
 
 		this.el.show();
+		this.backdrop.show();
 	},
 
 	isOpen: function() {
@@ -133,6 +137,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 	close: function() {
 		if (this.isOpen()) {
 			this.el.hide();
+			this.backdrop.hide();
 
 			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
 
