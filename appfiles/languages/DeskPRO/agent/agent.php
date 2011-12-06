@@ -34,6 +34,7 @@
 	'agent.done' => 'Done',
 	'agent.remove' => 'Remove',
 	'agent.upload' => 'Upload',
+	'agent.uploading' => 'Uploading:',
 	'agent.upload_explain' => 'Click the upload button or drop a file onto this area.',
 	'agent.create' => 'Create',
 	'agent.search' => 'Search',
