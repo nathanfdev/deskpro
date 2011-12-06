@@ -105,9 +105,8 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			}, ev);
 		});
 
-		var tpl = DeskPRO_Window.util.getPlainTpl(this.getEl('task_row_tpl'));
-
 		var addTaskRow = function() {
+			var tpl = DeskPRO_Window.util.getPlainTpl(self.getEl('task_row_tpl'));
 			var row = $(tpl);
 
 			if (!nolink) {
