@@ -5,7 +5,7 @@ parameters:
   kernel.debug: true
 
 framework:
-  router:   { resource: "%kernel.root_dir%/config/agent/routing_dev.yml" }
+  router:   { resource: "%kernel.root_dir%/config/admin/routing_dev.yml" }
   profiler: { only_exceptions: false }
 
 twig:

@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', true);
+
 /**
  * The path to the 'appfiles' directory.
  * If you move that directory, you must update this path.

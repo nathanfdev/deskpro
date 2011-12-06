@@ -51,7 +51,7 @@ class KernelBooter
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
 		} elseif (preg_match('#^/admin/#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
+			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
 			define('DP_INTERFACE', 'admin');
 		} elseif (preg_match('#^/report/#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';

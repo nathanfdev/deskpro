@@ -148,7 +148,7 @@
 						<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
 					</tr>
 					<tr>
-						<td>Password <small>(<a href="{{ path('user_login_resetpass') }}">lost?</a>)</small>:</td>
+						<td>Password <small>(<a href="{{ app.request.getBaseUrl() }}/login/reset-password">lost?</a>)</small>:</td>
 						<td><input type="password" value="" name="password" id="password" size="40"  tabindex="2" /></td>
 					</tr>
 				</table>

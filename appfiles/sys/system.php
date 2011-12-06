@@ -351,12 +351,33 @@ abstract class AbstractKernel extends BaseAbstractKernel
 # AgentKernel
 ###############################################################################
 
-class AgentKernel extends AbstractKernel
+class AdminKernel extends AbstractKernel
 {
 	protected function registerAdditionalBundles()
 	{
 		$bundles = array(
 			new \Application\AdminBundle\AdminBundle(),
+		);
+
+		return $bundles;
+	}
+
+	public function registerContainerConfiguration(LoaderInterface $loader)
+	{
+		$loader->load(DP_ROOT.'/sys/config/admin/config_'.$this->getEnvironment().'.yml');
+	}
+}
+
+
+###############################################################################
+# AgentKernel
+###############################################################################
+
+class AgentKernel extends AbstractKernel
+{
+	protected function registerAdditionalBundles()
+	{
+		$bundles = array(
 			new \Application\AgentBundle\AgentBundle(),
 		);
 

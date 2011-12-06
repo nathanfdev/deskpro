@@ -18,7 +18,7 @@
 
     <script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
-		var BASE_URL = '{{ path('user') }}';
+		var BASE_URL = '{{ app.request.getBaseUrl() }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
@@ -107,10 +107,10 @@
 				<a><span>Admin Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ path('agent') }}"><span class="check">Agent Interface</span></a></li>
+				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>
 				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
-				<li><a class="report" href="{{ path('report') }}"><span class="check">Report Interface</span></a></li>
-				<li><a class="portal" href="{{ path('user') }}"><span class="check">User Interface</span></a></li>
+				<li><a class="report" href="{{ app.request.getBaseUrl() }}/report"><span class="check">Report Interface</span></a></li>
+				<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>
 			</ul>
 		</div>
 		</div>

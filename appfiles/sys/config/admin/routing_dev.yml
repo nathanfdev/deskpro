@@ -1,0 +1,10 @@
+deskpro:
+  resource: "%DP_ROOT%/src/Application/DeskPRO/Resources/config/routing.php"
+
+admin:
+  prefix: /admin
+  resource: "%DP_ROOT%/src/Application/AdminBundle/Resources/config/routing.php"
+
+dev:
+  prefix: /dev
+  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.php"
