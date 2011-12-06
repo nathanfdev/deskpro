@@ -102,17 +102,21 @@
 </section>
 <section id="ideas_outline_labels" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.labels">
 	<section class="source-labels-list">
-		<dl>
-			{% for letter,labels in ideas_tag_index %}
-				<dt>{{ letter }}</dt>
-				<dd>
-					<ul>
-						{% for label in labels %}
-							<li><span data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</span></li>
-						{% endfor %}
-					</ul>
-				</dd>
-			{% endfor %}
-		</dl>
+		{% if not ideas_tag_index|length %}
+			<dl>
+				{% for letter,labels in ideas_tag_index %}
+					<dt>{{ letter }}</dt>
+					<dd>
+						<ul>
+							{% for label in labels %}
+								<li><span data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</span></li>
+							{% endfor %}
+						</ul>
+					</dd>
+				{% endfor %}
+			</dl>
+		{% else %}
+			<p>{{ phrase('agent.ideas.no_labels_explain') }}</p>
+		{% endif %}
 	</section>
 </section>
