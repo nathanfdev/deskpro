@@ -59,8 +59,8 @@
 	'agent.publish.searches_most_popular_terms' => 'The most popular search terms',
 	'agent.publish.searches_most_popular_low' => 'The most popular search terms that returned the least results',
 
-	'agent.publish.comments_to_validate' => 'Comments To Validate',
-	'agent.publish.content_to_validate' => 'Content To Validate',
+	'agent.publish.comments_to_validate' => 'Comments to Validate',
+	'agent.publish.content_to_validate' => 'Content to Validate',
 	'agent.publish.pending_articles' => 'Pending Articles',
 	'agent.publish.draft_content' => 'Drafts',
 	'agent.publish.search_logs' => 'Search Logs',
