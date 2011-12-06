@@ -69,7 +69,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			this.panelEl.toggleClass('open');
 		}).bind(this));
-		$('body, #agent_chat_panel .close-trigger').on('click', (function() {
+		$('#agent_chat_panel .close-trigger').on('click', (function() {
 			this.close();
 		}).bind(this));
 

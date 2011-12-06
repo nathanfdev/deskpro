@@ -99,7 +99,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				to_agent_name: agentInfo.name,
 				to_agent_shortname: agentInfo.shortName,
 				to_agent_id: agentInfo.id,
-				to_agent_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 15)
+				to_agent_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 15)
 			});
 		} else {
 			var newContainer = $.tmpl('agent_groupchat_conversation', {
@@ -143,9 +143,9 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			self.destroy();
 		});
 
-		$('.minimize', nav).on('click', function(ev) {
+		$('.minimize', newContainer).on('click', function(ev) {
 			ev.stopPropagation();
-			self.destroy();
+			self.close();
 		});
 	},
 
@@ -245,7 +245,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		var newMessage = $.tmpl('agent_chat_message', {
 			author_id: agent_id,
 			author_name: agentInfo.name,
-			author_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 25),
+			author_picture: agentInfo.pictureUrlSizable.replace(/_SIZE_/g, 25),
 			message: message
 		});
 
