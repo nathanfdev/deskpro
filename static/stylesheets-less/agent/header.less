@@ -1109,31 +1109,45 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	font-family: @toolbar-font;
 	height: 35px;
 	overflow: hidden;
-	padding: 5px 0 0 7px;
+	padding: 6px 0 0 7px;
 	position: relative;
+}
+
+#DP-userControl .drop {
+	float: right;
+	position: relative;
+	top: 9px;
+
+	background-image: url("../../images/agent/dropdown-white.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50% !important;
+
+	width: 6px;
+	height: 5px;
+	display: block;
+	padding: 0;
+	margin: 0 4px 0 7px !important;
 }
 
 
 .currentUserAvatar .userWrapper{
-	background: #f2f2f2;
-	box-shadow: 0 2px 2px 0 #D2D2D2 inset, 0 2px 0 #D6D6D6 inset, 0 0 0 2px #E5E5E5 inset;
+	.gradient(#5a90b8, #3c6094);
 	border: 1px solid #314559;
-	.border-radius(5px, 5px, 5px, 5px);
+	.border-radius(3px, 3px, 3px, 3px);
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
 	float: left;
 	position: relative;
-}
-.ie .currentUserAvatar .userWrapper{
-	background: #f2f2f2;
+	margin-right: 4px;
 }
 .userWrapper a{
 	cursor: pointer;
 	float: left;
-	padding: 3px 4px 0px 4px;
+	padding: 2px 3px 0px 5px;
+	line-height: 100%;
 }
 
 .userWrapper a img {
 	position: relative;
-	top: 1px;
 	.rounded(4px);
 }
 
@@ -1154,11 +1168,11 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	border-right: 1px solid #314559;
 	.border-radius(4px, 4px, 0, 0);
     position: absolute;
-    right: -1px;
+    right: 0px;
 	top: -37px;
 }
 .userProfileDropdownHeader a{
-	padding: 5px 8px 8px;
+	padding: 5px 15px 4px 15px;
 	float: left;
 	cursor: pointer;
 }

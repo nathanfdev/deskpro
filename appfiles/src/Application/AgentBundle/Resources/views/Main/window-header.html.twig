@@ -66,16 +66,17 @@
 		<div id="DP-userControl">
 			<div class="currentUserAvatar">
 				<div class="userWrapper">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
+					<a onclick="toggle_visibility('userSetting');">
+						<img src="{{ app.user.getPictureUrl(22) }}" alt="" />
+						<span class="drop"></span>
+					</a>
 				</div>
 			</div>
 		</div>
 		<!-- Header - User Control Dropdown -->
 		<div id="userSetting" style="display:none;">
 			<div class="userProfileDropdown" >
-				<div class="userProfileDropdownHeader">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
-				</div>
+				<div class="userProfileDropdownHeader"><a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(22) }}" alt="" /></a></div>
 				<ul>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 					<li class="setting" id="user_settings_link"><a>{{ phrase('agent.window.settings') }}</a></li>
