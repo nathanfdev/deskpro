@@ -195,8 +195,13 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		try {
 			App::getSetting('core.license');
 		} catch (\PDOException $e) {
-			if ($e->getCode() == '42S02') {
-				$response = new RedirectResponse($request->getBaseUrl() . '/install/');
+			global $DP_CONFIG;
+			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
+				$base = $request->getBaseUrl();
+				if (strpos($base, 'index.php') === false) {
+					$base .= '/index.php';
+				}
+				$response = new RedirectResponse($base . '/install/');
 				return $response;
 			} else {
 				throw $e;
