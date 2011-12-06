@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpKernel\Debug\ErrorHandler;
+use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
 use Application\DeskPRO\App;
 
@@ -41,6 +43,17 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		App::setKernel($this);
+	}
+
+	public function init()
+	{
+		error_reporting(E_ALL);
+		ini_set('display_errors', 1);
+
+		ErrorHandler::register();
+		if ('cli' !== php_sapi_name()) {
+			ExceptionHandler::register();
+		}
 	}
 
 	public function boot()
