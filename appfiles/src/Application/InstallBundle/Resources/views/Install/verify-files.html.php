@@ -21,7 +21,7 @@ var status = {
 				$('#log tbody').append(tr);
 			};
 		}
-		if (info.changed) {
+		if (info.changed && info.changed.length) {
 			for (var i = 0; i < info.changed.length; i++) { var f = info.changed[i];
 				var tr = $('<tr><td></td></tr>');
 				$('td', tr).text('CHANGED: ' + f);
@@ -34,9 +34,13 @@ var status = {
 				$('#error_list').append(li);
 			};
 
+			if (console && console.log) {
+				console.log(info.changed);
+			}
+
 			status.hasErrors = true;
 		}
-		if (info.removed) {
+		if (info.removed && info.removed.length) {
 			for (var i = 0; i < info.removed.length; i++) { var f = info.removed[i];
 				var tr = $('<tr><td></td></tr>');
 				$('td', tr).text('MISSING: ' + f);
@@ -47,12 +51,14 @@ var status = {
 				$('#error_list').append(li);
 			};
 
+			if (console && console.log) {
+				console.log(info.removed);
+			}
+
 			status.hasErrors = true;
 		}
 	},
 	doneBatch: function(batch) {
-		batch = parseInt(batch);
-
 		status.currentCount++;
 
 		$('#current_count').text(status.currentCount);
