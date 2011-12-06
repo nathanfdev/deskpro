@@ -98,7 +98,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$response->headers->set('Content-Type', 'text/html');
 		$response->sendHeaders();
 		flush();
-		ob_flush();
+		@ob_flush();
 
 		echo $this->renderView('InstallBundle:Install:install-tables-do.html.php', array());
 		echo '<script type="text/javascript">';
