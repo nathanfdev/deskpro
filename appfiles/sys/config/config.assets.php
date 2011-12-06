@@ -38,6 +38,7 @@ $CONFIG['agent'] = array(
 $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
+		'vendor/stacktrace.js',
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
@@ -220,6 +221,7 @@ $CONFIG['agent_element_handlers'] = array(
 $CONFIG['agent_common'] = array(
 	'out' => 'js/agent-common.js',
 	'files' => array(
+		'javascripts/DeskPRO/ErrorLogger.js',
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
 		'javascripts/Orb/Class.js',
