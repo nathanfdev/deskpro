@@ -27,41 +27,37 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 			}
 		}
 
-		$.ajax({
-			url: BASE_URL + 'agent/tasks/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this._initSection(data);
+		DeskPRO_Window.getSectionData('tasks_section', (function(data) {
+			this._initSection(data);
 
-				// Get button count now
-				var count = 0;
-				$('span.count-in-badge', this.contentEl).each(function() {
-					count += parseInt($(this).text()) || 0;
-				});
-				this.updateBadge(count);
+			// Get button count now
+			var count = 0;
+			$('span.count-in-badge', this.contentEl).each(function() {
+				count += parseInt($(this).text()) || 0;
+			});
+			this.updateBadge(count);
 
-				if (selectedCountId) {
-					var countEl = $('#' + selectedCountId);
-					var newCount = countEl.text().trim();
-					var nav = countEl.closest('.is-nav-item');
+			if (selectedCountId) {
+				var countEl = $('#' + selectedCountId);
+				var newCount = countEl.text().trim();
+				var nav = countEl.closest('.is-nav-item');
 
-					// Re-select the proper nav item
-					nav.addClass('nav-selected');
+				// Re-select the proper nav item
+				nav.addClass('nav-selected');
 
-					// And reload the view if its changed
-					if (newCount != countmap[selectedCountId]) {
-						var routeEl;
-						if (nav.data('route')) {
-							routeEl = nav;
-						} else {
-							routeEl = $('[data-route]', nav).first();
-						}
-						DeskPRO_Window.runPageRouteFromElement(routeEl);
+				// And reload the view if its changed
+				if (newCount != countmap[selectedCountId]) {
+					var routeEl;
+					if (nav.data('route')) {
+						routeEl = nav;
+					} else {
+						routeEl = $('[data-route]', nav).first();
 					}
-
+					DeskPRO_Window.runPageRouteFromElement(routeEl);
 				}
+
 			}
-		});
+		}).bind(this));
 	},
 
 	_initSection: function(data) {

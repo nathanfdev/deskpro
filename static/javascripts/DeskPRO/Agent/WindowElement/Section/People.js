@@ -14,29 +14,24 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	},
 
 	reload: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/people/get-section-data.json',
-			context: this,
-			success: function(data) {
+		DeskPRO_Window.getSectionData('people_section', (function(data) {
+			var wasLaoded = false;
+			if (this.hasLoaded) {
+				wasLoaded = true;
 
-				var wasLaoded = false;
-				if (this.hasLoaded) {
-					wasLoaded = true;
+				this.peopleTabs.destroy();
+				delete this.peopleTabs;
 
-					this.peopleTabs.destroy();
-					delete this.peopleTabs;
-
-					this.orgTabs.destroy();
-					delete this.orgTabs;
-				}
-
-				this._initSection(data);
-
-				if (!wasLaoded) {
-					this.fireEvent('sectionInit');
-				}
+				this.orgTabs.destroy();
+				delete this.orgTabs;
 			}
-		});
+
+			this._initSection(data);
+
+			if (!wasLaoded) {
+				this.fireEvent('sectionInit');
+			}
+		}).bind(this));
 	},
 
 	reloadLabels: function() {

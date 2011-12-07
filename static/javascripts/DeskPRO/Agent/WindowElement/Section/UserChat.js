@@ -32,19 +32,28 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				}
 			}
 		});
+
+		this._lastLoaded = new Date();
+		DeskPRO_Window.getSectionData('chat_section', (function(data) {
+			this.setHasInitialLoaded();
+			this.contentEl.html(data.section_html);
+			this._lastLoaded = new Date();
+		}).bind(this));
 	},
 
 	onShow: function() {
 
-		this.setHasInitialLoaded();
+		// Dont autorefresh until at least 8 seconds
+		if ((new Date()).getTime() - this._lastLoaded.getTime() < 8000) {
+			return;
+		}
 
-		$.ajax({
-			url: BASE_URL + 'agent/chat/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this.contentEl.html(data.section_html);
-			}
-		});
+		this._lastLoaded = new Date();
+		DeskPRO_Window.getSectionData('chat_section', (function(data) {
+			this.setHasInitialLoaded();
+			this.contentEl.html(data.section_html);
+			this._lastLoaded = new Date();
+		}).bind(this));
 	},
 
 	handleUpdateCounts: function(data) {

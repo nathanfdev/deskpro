@@ -16,6 +16,13 @@ $collection->add('agent', new Route(
 	array()
 ));
 
+$collection->add('agent_combined_sectiondata', new Route(
+	'/get-combined-section-data.json',
+	array('_controller' => 'AgentBundle:Main:getCombinedSectionData'),
+	array(),
+	array()
+));
+
 $collection->add('agent_test', new Route(
 	'/test',
 	array('_controller' => 'AgentBundle:Test:index'),

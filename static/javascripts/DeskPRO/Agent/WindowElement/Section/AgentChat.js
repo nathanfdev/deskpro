@@ -17,17 +17,28 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this._initMessageHandlers();
 		this._initInterface();
+
+		this._lastLoaded = new Date();
+		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
+			this.setHasInitialLoaded();
+			this.contentEl.html(data.section_html);
+			this._lastLoaded = new Date();
+		}).bind(this));
 	},
 
 	onShow: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/agent-chat/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this.setHasInitialLoaded();
-				this.contentEl.html(data.section_html);
-			}
-		});
+
+		// Dont autorefresh until at least 8 seconds
+		if ((new Date()).getTime() - this._lastLoaded.getTime() < 8000) {
+			return;
+		}
+
+		this._lastLoaded = new Date();
+		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
+			this.setHasInitialLoaded();
+			this.contentEl.html(data.section_html);
+			this._lastLoaded = new Date();
+		}).bind(this));
 	},
 
 	_initMessageHandlers: function() {

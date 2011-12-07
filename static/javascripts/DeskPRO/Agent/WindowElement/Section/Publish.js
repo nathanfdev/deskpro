@@ -10,13 +10,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		this.setSectionElement($('<section id="publish_outline"></section>'));
 
-		$.ajax({
-			url: BASE_URL + 'agent/publish/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this._initSection(data);
-			}
-		});
+		DeskPRO_Window.getSectionData('publish_section', this._initSection.bind(this));
 	},
 
 	_initSection: function(data) {

@@ -10,13 +10,7 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 
 		this.setSectionElement($('<section id="ideas_outline"></section>'));
 
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this._initSection(data);
-			}
-		});
+		DeskPRO_Window.getSectionData('ideas_section', this._initSection.bind(this));
 	},
 
 	_initSection: function(data) {

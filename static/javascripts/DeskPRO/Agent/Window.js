@@ -1909,6 +1909,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var secttimeout = 2500;
 
+		this.getSectionDataStartQueue();
+
 		$('#dp_nav [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
@@ -1944,6 +1946,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.on('click', function() { self.switchToSection(el.attr('id')) });
 			}
 		});
+
+		this.getSectionDataSendQueued();
 	},
 
 	switchToSection: function(section_id, no_load_list) {
@@ -2261,6 +2265,101 @@ DeskPRO.Agent.Window = new Orb.Class({
 					$(this).removeClass('checked');
 				}
 			});
+		});
+	},
+
+	getSectionData: function(section_id, callback) {
+		var url;
+
+		// If we're in queued mode, then dont send anything yet
+		if (this._getSectionDataQueued) {
+			this._getSectionDataQueued.push([section_id, callback]);
+			return;
+		}
+
+		switch (section_id) {
+			case 'tickets_section':
+				url = BASE_URL + 'agent/ticket-search/get-section-data.json';
+				break;
+
+			case 'chat_section':
+				url = BASE_URL + 'agent/chat/get-section-data.json';
+				break;
+
+			case 'twitter_section':
+				url = BASE_URL + 'agent/twitter/get-section-data.json';
+				break;
+
+			case 'people_section':
+				url = BASE_URL + 'agent/people-search/get-section-data.json';
+				break;
+
+			case 'ideas_section':
+				url = BASE_URL + 'agent/ideas/get-section-data.json';
+				break;
+
+			case 'publish_section':
+				url = BASE_URL + 'agent/publish/get-section-data.json';
+				break;
+
+			case 'tasks_section':
+				url = BASE_URL + 'agent/tasks/get-section-data.json';
+				break;
+
+			case 'deals_section':
+				url = BASE_URL + 'agent/deals/get-section-data.json';
+				break;
+
+			case 'agent_chat_section':
+				url = BASE_URL + 'agent/agent-chat/get-section-data.json';
+				break;
+		}
+
+		if (!url) {
+			console.error('getSectionData: Unknown section %s', section_id);
+			return;
+		}
+
+		$.ajax({
+			url: url,
+			success: callback
+		});
+	},
+
+	getSectionDataStartQueue: function() {
+		this._getSectionDataQueued = [];
+	},
+
+	getSectionDataSendQueued: function() {
+		if (!this._getSectionDataQueued || !this._getSectionDataQueued.length) {
+			return;
+		}
+
+		var callback_map = {};
+		var data = [];
+		Array.each(this._getSectionDataQueued, function(info) {
+			data.push({
+				name: 'section_ids[]',
+				value: info[0]
+			});
+
+			callback_map[info[0]] = info[1];
+		});
+
+		this._getSectionDataQueued = null;
+
+		$.ajax({
+			url: BASE_URL + 'agent/get-combined-section-data.json',
+			type: 'GET',
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				Object.each(data, function(sectionData, sectionId) {
+					if (callback_map[sectionId]) {
+						callback_map[sectionId](sectionData);
+					}
+				});
+			}
 		});
 	}
 });

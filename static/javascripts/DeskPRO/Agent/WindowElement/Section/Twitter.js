@@ -14,13 +14,7 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 	},
 
 	refresh: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/twitter/get-section-data.json',
-			context: this,
-			success: function(data) {
-				this._initSection(data);
-			}
-		});
+		DeskPRO_Window.getSectionData('twitter_section', this._initSection.bind(this));
 	},
 
 	_initSection: function(data) {

@@ -83,4 +83,52 @@ class MainController extends AbstractController
 			'open_chats' => $open_chats,
 		));
     }
+
+
+	public function getCombinedSectionDataAction()
+	{
+		$data = array();
+
+		foreach ($this->in->getCleanValueArray('section_ids', 'str_simple', 'discard') as $name) {
+			switch ($name) {
+				case 'tickets_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:TicketSearch:getSectionData')->getContent());
+					break;
+
+				case 'chat_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:UserChat:getSectionData')->getContent());
+					break;
+
+				case 'twitter_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:Twitter:getSectionData')->getContent());
+					break;
+
+				case 'people_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:PeopleSearch:getSectionData')->getContent());
+					break;
+
+				case 'ideas_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:Ideas:getSectionData')->getContent());
+					break;
+
+				case 'publish_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:Publish:getSectionData')->getContent());
+					break;
+
+				case 'tasks_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:Task:getSectionData')->getContent());
+					break;
+
+				case 'deals_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:Deal:getSectionData')->getContent());
+					break;
+
+				case 'agent_chat_section':
+					$data[$name] = @json_decode($this->forward('AgentBundle:AgentChat:getSectionData')->getContent());
+					break;
+			}
+		}
+
+		return $this->createJsonResponse($data);
+	}
 }
