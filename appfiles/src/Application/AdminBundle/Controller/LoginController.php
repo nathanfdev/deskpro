@@ -27,7 +27,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
-		$agent_session_code = $this->in->getString('dpsid-agent');
+		$agent_session_code = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : false;
 		$agent_session = null;
 		if ($agent_session_code) {
 			$agent_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($agent_session_code);
@@ -40,7 +40,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		if ($this->in->getString('return')) {
 			$url = $this->in->getString('return');
 		}
-		
+
 		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
 	}
 }

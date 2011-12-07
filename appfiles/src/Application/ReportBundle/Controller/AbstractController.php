@@ -19,6 +19,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->person = $this->session->getPerson();
 		$this->person->loadHelper('HelpMessages');
+
+		if (!$this->person->id) {
+			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			$cas->process();
+		}
 	}
 
 
@@ -33,7 +38,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				$return = $this->request->getRequestUri();
 			}
-			
+
 			return $this->redirect($this->get('router')->generate('report_login', array('return' => $return)));
 		}
 

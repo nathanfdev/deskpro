@@ -18,6 +18,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		parent::init();
 
 		$this->person = $this->session->getPerson();
+
+		if (!$this->person->id) {
+			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			$cas->process();
+		}
 	}
 
 
