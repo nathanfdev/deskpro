@@ -733,16 +733,16 @@ $collection->add('agent_orgsearch_namelookup', new Route(
 	array()
 ));
 
-$collection->add('agent_ticketsearch', new Route(
-	'/ticket-search',
-	array('_controller' => 'AgentBundle:TicketSearch:index'),
+$collection->add('agent_ticketsearch_getsectiondata', new Route(
+	'/ticket-search/get-section-data.json',
+	array('_controller' => 'AgentBundle:TicketSearch:getSectionData'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ticketsearch_getsectiondata', new Route(
-	'/tickets/get-section-data.json',
-	array('_controller' => 'AgentBundle:TicketSearch:getSectionData'),
+$collection->add('agent_ticketsearch_getlabelssection', new Route(
+	'/ticket-search/get-section/labels',
+	array('_controller' => 'AgentBundle:TicketSearch:getLabelsSection'),
 	array(),
 	array()
 ));
@@ -768,62 +768,6 @@ $collection->add('agent_ticketsearch_getflaggedsectiondata', new Route(
 	array()
 ));
 
-$collection->add('agent_ticketsearch_getrecentsearchlist', new Route(
-	'/ticket-search/get-recent-search-list',
-	array('_controller' => 'AgentBundle:TicketSearch:getRecentSearchesList'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_overviewpane', new Route(
-	'/ticket-search/overview-pane',
-	array('_controller' => 'AgentBundle:TicketSearch:overviewPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_labelspane', new Route(
-	'/ticket-search/labels-pane',
-	array('_controller' => 'AgentBundle:TicketSearch:labelsPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_labelsindexpane', new Route(
-	'/ticket-search/labels-index-pane',
-	array('_controller' => 'AgentBundle:TicketSearch:labelsIndexPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_overviewnav', new Route(
-	'/ticket-search/overview-nav',
-	array('_controller' => 'AgentBundle:TicketSearch:overviewNav'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_runoverview', new Route(
-	'/ticket-search/overview-run',
-	array('_controller' => 'AgentBundle:TicketSearch:overviewRun'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_filterspane', new Route(
-	'/ticket-search/filters-pane',
-	array('_controller' => 'AgentBundle:TicketSearch:filtersPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_findpane', new Route(
-	'/ticket-search/find-pane',
-	array('_controller' => 'AgentBundle:TicketSearch:findPane'),
-	array(),
-	array()
-));
-
 $collection->add('agent_ticketsearch_customfilter', new Route(
 	'/ticket-search/custom-filter/new-search',
 	array('_controller' => 'AgentBundle:TicketSearch:newCustomFilter'),
@@ -845,20 +789,6 @@ $collection->add('agent_ticketsearch_search', new Route(
 	array()
 ));
 
-$collection->add('agent_ticketsearch_runsearch', new Route(
-	'/ticket-search/search/run',
-	array('_controller' => 'AgentBundle:TicketSearch:runSearch'),
-	array(),
-	array()
-));
-
-$collection->add('agent_ticketsearch_runsearchquery', new Route(
-	'/ticket-search/search-query',
-	array('_controller' => 'AgentBundle:TicketSearch:searchQuery'),
-	array(),
-	array()
-));
-
 $collection->add('agent_ticketsearch_singleticketrow', new Route(
 	'/ticket-search/single-ticket-row/{filter_id}',
 	array('_controller' => 'AgentBundle:TicketSearch:getSingleTicketRow'),
@@ -873,25 +803,11 @@ $collection->add('agent_ticketsearch_runfilter', new Route(
 	array('fragment_name' => 'filter', 'fragment_type' => 'list')
 ));
 
-$collection->add('agent_ticketsearch_filter_getsummary', new Route(
-	'/ticket-search/filter/{filter_id}/get-summary',
-	array('_controller' => 'AgentBundle:TicketSearch:getFilterSummary'),
-	array('filter_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticketsearch_runnamedfilter', new Route(
 	'/ticket-search/filter/{filter_name}',
 	array('_controller' => 'AgentBundle:TicketSearch:runNamedFilter'),
 	array(),
 	array('fragment_name' => 'inbox', 'fragment_type' => 'list')
-));
-
-$collection->add('agent_ticketsearch_save_resultprefs', new Route(
-	'/ticket-search/save-result-prefs/{cache_id}',
-	array('_controller' => 'AgentBundle:TicketSearch:ajaxSaveResultPrefs'),
-	array('cache_id' => '\\d+'),
-	array()
 ));
 
 $collection->add('agent_ticketsearch_ajax_get_macro', new Route(

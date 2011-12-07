@@ -21,7 +21,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.filterTicketIds = {};
 
 		$.ajax({
-			url: BASE_URL + 'agent/tickets/get-section-data.json',
+			url: BASE_URL + 'agent/ticket-search/get-section-data.json',
 			context: this,
 			success: function(data) {
 				this._initSection(data);
@@ -687,7 +687,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/ticket-search/labels-index-pane',
+			url: BASE_URL + 'agent/ticket-search/get-section/labels',
 			dataType: 'html',
 			context: this,
 			success: function(html) {

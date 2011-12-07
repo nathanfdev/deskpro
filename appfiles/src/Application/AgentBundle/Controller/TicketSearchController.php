@@ -112,6 +112,20 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function getLabelsSectionAction()
+	{
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
+		$index = $label_lister->getIndexList();
+
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+
+		return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
+			'labels_index' => $index,
+			'labels_cloud' => $cloud,
+		));
+	}
 
 	/**
 	 * Render a new pageset.
@@ -496,7 +510,7 @@ class TicketSearchController extends AbstractController
 	}
 
 	############################################################################
-	# find-pane
+	# run-custom-filter
 	############################################################################
 
 	public function runCustomFilterAction()
@@ -630,73 +644,6 @@ class TicketSearchController extends AbstractController
 		}
 
 		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
-	}
-
-	############################################################################
-	# labels-pane
-	############################################################################
-
-	public function labelsPaneAction()
-	{
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:TicketSearch:pane-labels.html.twig', array(
-			'cloud' => $cloud
-		));
-	}
-
-	public function labelsIndexPaneAction()
-	{
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
-		$index = $label_lister->getIndexList();
-
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
-			'labels_index' => $index,
-			'labels_cloud' => $cloud,
-		));
-	}
-
-	############################################################################
-	# save-result-prefs
-	############################################################################
-
-	public function ajaxSaveResultPrefsAction($cache_id)
-	{
-		$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($cache_id);
-
-		$extra = $result_cache['extra'];
-
-		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
-		{
-			// Remove trailing .ID for cleaner case test
-			$pref_name = str_replace('.'.$result_cache['id'], '', $pref_name);
-			switch ($pref_name) {
-				case 'agent.ui.ticket-filter-order-by':
-					$pref_name = 'order_by';
-					break;
-				case 'agent.ui.ticket-filter-display-fields':
-					$pref_name = 'display_fields';
-					break;
-				default:
-					throw new \InvalidArgumentException("Invalid preference `$pref_name`");
-					break;
-			}
-
-			$extra[$pref_name] = $value;
-		}
-
-		$result_cache['extra'] = $extra;
-
-		App::getOrm()->persist($result_cache);
-		App::getOrm()->flush();
-
-		return $this->createJsonResponse(array('success' => true));
 	}
 
 	############################################################################

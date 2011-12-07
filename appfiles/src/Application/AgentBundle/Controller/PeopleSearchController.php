@@ -517,31 +517,6 @@ class PeopleSearchController extends AbstractController
 	}
 
 	############################################################################
-	# labels-pane
-	############################################################################
-
-	public function labelsPaneAction()
-	{
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-labels.html.twig', array(
-			'cloud' => $cloud
-		));
-	}
-
-	public function labelsIndexPaneAction()
-	{
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
-		$index = $label_lister->getIndexList();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-labels-index.html.twig', array(
-			'labels_index' => $index
-		));
-	}
-
-	############################################################################
 	# org-labels-pane
 	############################################################################
 
