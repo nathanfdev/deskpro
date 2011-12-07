@@ -32,6 +32,7 @@ var DpErrorLog = {
 			data: {
 				message: message
 			},
+			error: function() { },// prevents DeskPRO_Window's global error handler from firing on error
 			type: 'POST'
 		});
 

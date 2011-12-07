@@ -75,7 +75,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			}
 
 			// Check again, there might not be any tabs
-			if (firstTab) {
+			if (firstTab.length) {
 				this.activateTab(firstTab);
 			}
 		}
