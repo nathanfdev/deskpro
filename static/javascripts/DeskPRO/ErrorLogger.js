@@ -6,10 +6,6 @@ var DpErrorLog = {
 			return;
 		}
 
-		if (!window.console || !window.console.firebug) {
-
-		}
-
 		window.onerror = this.handleError;
 		if (window.onerror) {
 			this._origHandler = window.onerror;
@@ -18,13 +14,19 @@ var DpErrorLog = {
 		if (window.console.error) {
 			var oldConsole = window.console.error;
 			window.console.error = function(msg) {
-				DpErrorLog.logError(msg + " " + printStackTrace().join(", "));
+				DpErrorLog.logError(jsDump.parse(arguments) + "\n" + printStackTrace().join("\n"));
 				oldConsole.apply(oldConsole, arguments);
 			}
 		}
 	},
 
 	logError: function(message) {
+
+		if (ASSETS_BASE_URL) {
+			var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
+			message = message.replace(r, '');
+		}
+
 		$.ajax({
 			url: this.saveUrl,
 			data: {
