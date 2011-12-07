@@ -54,37 +54,42 @@
 	</article>
 </section>
 
-{% if custom_filters %}
 <section class="source-section custom-filters-section">
 	<header>
 		<h1>{{ phrase('agent.tickets.filters') }}</h1>
-		<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings"></span>
-		<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor"></span>
+		<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings {% if not custom_filters|length %}solo{% endif %}"></span>
+		{% if custom_filters|length %}<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor"></span>{% endif %}
 	</header>
 	<article id="custom_filters_wrap">
 		<ul id="tickets_outline_custom_filters" class="source-list">
-			{% for filter in custom_filters %}
-				<li
-					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
-					data-filter-id="{{filter.id}}"
-					data-filter-name="{{filter.sys_name}}"
-				>
-					<h3
-						class="title {% if loop.first %}auto-load-route{% endif %}"
-						data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+			{% if custom_filters|length %}
+				{% for filter in custom_filters %}
+					<li
+						class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
+						data-filter-id="{{filter.id}}"
+						data-filter-name="{{filter.sys_name}}"
 					>
-						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-						{{ filter.title }}
-					</h3>
+						<h3
+							class="title {% if loop.first %}auto-load-route{% endif %}"
+							data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+						>
+							<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
+							{{ filter.title }}
+						</h3>
+					</li>
+				{% endfor %}
+				<li class="no-data launch-customfilters-editor">
+					{{ phrase('agent.window.click_icon_to_show_filters') }}
+
 				</li>
-			{% endfor %}
-			<li class="no-data launch-customfilters-editor">
-				Click <span class="gear-icon"></span> to show filters
-			</li>
+			{% else %}
+				<li class="no-data launch-customfilters-editor">
+					{{ phrase('agent.window.click_icon_to_add_filter') }}
+				</li>
+			{% endif %}
 		</ul>
 	</article>
 </section>
-{% endif %}
 
 <section class="source-tabs" id="tickets_outline_tabstrip">
 	<ul>

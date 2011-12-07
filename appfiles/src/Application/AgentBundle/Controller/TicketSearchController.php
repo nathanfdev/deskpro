@@ -45,6 +45,7 @@ class TicketSearchController extends AbstractController
 		$sys_filters      = $filter_info['sys_filters'];
 		$sys_filters_hold = $filter_info['sys_filters_hold'];
 		$custom_filters   = $filter_info['custom_filters'];
+		$custom_filters = array();
 
 		$filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters);
 		$filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');

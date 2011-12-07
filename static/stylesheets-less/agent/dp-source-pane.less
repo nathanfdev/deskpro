@@ -115,6 +115,10 @@ section.source-section header span.add {
 	cursor: pointer;
 }
 
+section.source-section header span.add.solo {
+	right: 0;
+}
+
 /*****************************************************************************
  * Lists
 /*****************************************************************************/
@@ -171,13 +175,25 @@ ul.source-list.ed-open li.no-data {
 	display: none;
 }
 
-ul.source-list li.no-data span {
+ul.source-list li.no-data span.gear-icon {
 	position: relative;
 	top: 2px;
 	display: inline-block;
 	background-image: url("../../images/agent/source-gear.png") /** sprite-ref: ui-v */;
 	width: 11px;
 	height: 11px;
+	text-indent: -100px;
+	overflow: hidden;
+	.opacity(50);
+}
+
+ul.source-list li.no-data span.add-icon {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	background-image: url("../../images/agent/icons/add-small-gray.png") /** sprite-ref: ui-v */;
+	width: 10px;
+	height: 10px;
 	text-indent: -100px;
 	overflow: hidden;
 	.opacity(50);
