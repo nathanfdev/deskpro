@@ -1520,7 +1520,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!this.ajaxErrorOverlay) {
 			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
 				contentElement: $('#global_ajax_error'),
-				zIndex: 10000000 /* this should be bigger than everything */
+				zIndex: 999999999 /* this should be bigger than everything */
 			});
 		}
 

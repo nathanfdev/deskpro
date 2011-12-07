@@ -23,6 +23,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			downloadTemplate: $('.template-download', form)
 		}).bind('fileuploadadd', function() {
 			$('.files', form).empty();
+		}).bind('fileuploadfail', function(e, data) {
+			DeskPRO_Window._showAjaxError();
 		});
 
 		var startEmail = $('#settings_profile_email').val();
