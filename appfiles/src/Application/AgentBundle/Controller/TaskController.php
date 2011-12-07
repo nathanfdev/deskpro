@@ -423,7 +423,7 @@ class TaskController extends AbstractController
 					}
 				}
 
-				$cms = $this->getCmForAssigned($t,false);
+				$cms = $this->getCmForAssigned($task,false);
 				foreach ($cms as $cm) {
 					$this->em->persist($cm);
 				}
