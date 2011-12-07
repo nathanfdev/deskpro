@@ -15,6 +15,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 	_initSection: function(data) {
 
+		var self = this;
 		this.setHasInitialLoaded();
 
 		this.contentEl.html(data.section_html);
@@ -22,10 +23,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
 			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '-');
+			self.modBadgeCount('-');
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-add', function (info) {
 			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '+');
+			self.modBadgeCount('+');
 		});
 
 		var self = this;
@@ -244,7 +247,18 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			this.recountChildCounts(listEl);
 		}, this);
 
+
+		this.recountBadge();
+
 		this.fireEvent('sectionInit');
+	},
+
+	recountBadge: function() {
+		var count = 0;
+		count += parseInt($('#kb_pending_count').text().trim()) || 0;
+		count += parseInt($('#publish_validating_count').text().trim()) || 0;
+		count += parseInt($('#publish_validating_comments_count').text().trim()) || 0;
+		this.updateBadge(count);
 	},
 
 	recountChildCounts: function(ul) {

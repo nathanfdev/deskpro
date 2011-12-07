@@ -8,7 +8,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		this.wrapper = el;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
-			$('article.' + info.typename + '-' + info.contentId).slideUp();
+			var el = $('article.' + info.typename + '-' + info.contentId).slideUp();
+			self.listRemove(el);
 		});
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
@@ -40,7 +41,9 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 						type: 'POST',
 						dataType: 'json',
 						success: function() {
-							$(lines).fadeOut();
+							$(lines).fadeOut().each(function() {
+								self.listRemove($(this));
+							});
 						}
 					});
 				}
@@ -66,5 +69,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 			}
 		});
 		this.ownObject(this.selectionBar);
+	},
+
+	listRemove: function(el) {
+		DeskPRO_Window.util.modCountEl($('#publish_validating_count'), '-');
+		DeskPRO_Window.sections.publish_section.recountBadge();
 	}
 });

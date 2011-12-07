@@ -284,6 +284,25 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		});
 	},
 
+	modBadgeCount: function(op, num) {
+		if (!num && num !== 0) {
+			num = 1;
+		}
+
+		var count = this.getBadgeCount();
+
+		if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
+			count -= num;
+			if (count < 0) count = 0;
+		} else if (op == '+' || op == 'add') {
+			count += num;
+		} else {
+			count = num;
+		}
+
+		this.updateBadge(count);
+	},
+
 	getBadgeCount: function() {
 		return this.badgeCount || 0;
 	},

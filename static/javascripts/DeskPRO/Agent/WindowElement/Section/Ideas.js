@@ -28,6 +28,15 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 			}
 		});
 
+		this.recountBadge();
+
 		this.fireEvent('sectionInit');
+	},
+
+	recountBadge: function() {
+		var count = 0;
+		count += parseInt($('#ideas_validating_count').text().trim()) || 0;
+		count += parseInt($('#ideas_comments_validating_count').text().trim()) || 0;
+		this.updateBadge(count);
 	}
 });

@@ -231,5 +231,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		}
 
 		var countEl = $('#publish_validating_comments_count').text(count);
+
+		DeskPRO_Window.sections.publish_section.recountBadge();
 	}
 });
