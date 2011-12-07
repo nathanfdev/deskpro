@@ -16,4 +16,4 @@ deskpro_cache:
   portal: ~
 
 framework:
-  router: { resource: "%kernel.root_dir%/config/routing.yml" }
+  router: { resource: "%kernel.root_dir%/config/user/routing.yml" }

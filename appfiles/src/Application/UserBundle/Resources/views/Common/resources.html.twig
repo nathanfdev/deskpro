@@ -5,12 +5,9 @@
 	{{ dp_asset_html('user') }}
 {% endif %}
 
-<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-gen.css') }}" media="screen,print" />
+<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+<link rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
 
-{#
-<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ path('user') }}_sys/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
-<link rel="stylesheet" type="text/css" href="{{ path('user') }}_sys/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
-#}
 <script type="text/javascript">
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
