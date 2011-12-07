@@ -705,16 +705,9 @@ $collection->add('agent_org_changepicoverlay', new Route(
 	array()
 ));
 
-$collection->add('agent_orgsearch_labelspane', new Route(
-	'/organization-search/labels-pane',
-	array('_controller' => 'AgentBundle:OrganizationSearch:labelsPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_orgsearch_labelsindexpane', new Route(
-	'/organization-search/labels-index-pane',
-	array('_controller' => 'AgentBundle:OrganizationSearch:labelsIndexPane'),
+$collection->add('agent_orgsearch_getpage', new Route(
+	'/organization-search/get-page',
+	array('_controller' => 'AgentBundle:OrganizationSearch:getOrgPage'),
 	array(),
 	array()
 ));
@@ -723,13 +716,6 @@ $collection->add('agent_orgsearch_customfilter', new Route(
 	'/organization-search/search',
 	array('_controller' => 'AgentBundle:OrganizationSearch:search'),
 	array(),
-	array()
-));
-
-$collection->add('agent_orgsearch_save_resultprefs', new Route(
-	'/people-search/save-result-prefs/{cache_id}',
-	array('_controller' => 'AgentBundle:OrganizationSearch:ajaxSaveResultPrefs'),
-	array('cache_id' => '\\d+'),
 	array()
 ));
 

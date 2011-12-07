@@ -1,0 +1,14 @@
+{% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block other_options %}
+	<div style="display: none"><select name="order_by">
+		<option class="name-asc" value="organization.name:asc">Name (A-Z)</option>
+		<option class="name-desc" value="organization.name:desc">Name (Z-A)</option>
+	</select></div>
+{% endblock %}
+{% block display_elements_list %}
+	<li data-field="members_count"><input type="checkbox" name="members_count" {% if 'members_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.number_of_members') }}</li>
+	{% for f in org_field_defs %}
+		{% set t = 'organization_fields[' ~ f.id ~ ']' %}
+		<li data-field="organization_fields[{{f.id}}]"><input type="checkbox" name="organization_fields[{{f.id}}]" {% if t in display_fields %}checked="checked"{% endif %} />{{f.title}}</li>
+	{% endfor %}
+{% endblock %}

@@ -26,10 +26,10 @@ class OrganizationSearchController extends AbstractController
 	protected function _getResponseForOrgs($type, $type_id, $results_helper, array $vars = array())
 	{
 		$is_partial = false;
-		$tpl = 'AgentBundle:OrganizationSearch:'.$type.'-results.html.twig';
+		$tpl = 'AgentBundle:OrganizationSearch:filter.html.twig';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
-			$tpl = 'AgentBundle:OrganizationSearch:part-results-list.html.twig';
+			$tpl = 'AgentBundle:OrganizationSearch:filter-page.html.twig';
 		}
 
 		#------------------------------
@@ -57,10 +57,6 @@ class OrganizationSearchController extends AbstractController
 			return $this->createJsonResponse(array('no_more_results' => true));
 		}
 
-		if (empty($vars['display_fields'])) {
-			$vars['display_fields'] = array('members_count');
-		}
-
 		// person defs for columns
 		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
@@ -84,6 +80,35 @@ class OrganizationSearchController extends AbstractController
 		} else {
 			return $this->createResponse($html);
 		}
+	}
+
+	/**
+	 * Render a new pageset.
+	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+	 */
+	public function getOrgPageAction()
+	{
+		$org_ids = $this->in->getCleanValueArray('result_ids', 'uint', 'discard');
+		$org_ids = Arrays::removeFalsey($org_ids);
+		$org_ids = array_unique($org_ids);
+
+		$orgs = $this->em->getRepository('DeskPRO:Organization')->getOrganizationsFromIds($org_ids);
+		$orgs = Arrays::orderIdArray($org_ids, $orgs);
+
+		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+
+		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
+
+		$tpl = 'filter-page.html.twig';
+		if ($this->in->getString('view_type') == 'list') {
+			$tpl = 'filter-list-page.html.twig';
+		}
+
+		return $this->render("AgentBundle:OrganizationSearch:$tpl", array(
+			'organizations'           => $orgs,
+			'display_fields'    => $display_fields,
+			'org_field_defs' => $org_field_defs,
+		));
 	}
 
 
@@ -172,16 +197,16 @@ class OrganizationSearchController extends AbstractController
 
 		$vars = array(
 			'cache' => $result_cache,
-			'cache_id' => $result_cache['id']
+			'cache_id' => $result_cache['id'],
+			'org_ids' => $result_cache['results'],
 		);
 
-		if (!empty($result_cache['extra']['display_fields'])) {
-			$vars['display_fields'] =$result_cache['extra']['display_fields'];
-		}
-
-		$pref_name = 'agent.ui.org-filter-display-fields.' . $result_cache['id'];
-		if (!empty($result_cache['extra'][$pref_name])) {
-			$vars['display_fields'] = $result_cache['extra'][$pref_name];
+		$pref_display_fields = $this->person->getPref('agent.ui.org-filter-display-fields.0');
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			// Default display fields based on the filter
+			$vars['display_fields'] = array('members_count');
 		}
 
 		if ($this->in->getString('page_title')) {
@@ -189,68 +214,6 @@ class OrganizationSearchController extends AbstractController
 		}
 
 		return $this->_getResponseForOrgs('custom-filter', $result_cache['id'], $results_helper, $vars);
-	}
-
-	############################################################################
-	# org-labels-pane
-	############################################################################
-
-	public function labelsPaneAction()
-	{
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:OrganizationSearch:pane-org-labels.html.twig', array(
-			'cloud' => $cloud
-		));
-	}
-
-	public function labelsIndexPaneAction()
-	{
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
-		$index = $label_lister->getIndexList();
-
-		return $this->render('AgentBundle:OrganizationSearch:pane-org-labels-index.html.twig', array(
-			'labels_index' => $index
-		));
-	}
-
-	############################################################################
-	# save-result-prefs
-	############################################################################
-
-	public function ajaxSaveResultPrefsAction($cache_id)
-	{
-		$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($cache_id);
-
-		$extra = $result_cache['extra'];
-
-		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
-		{
-			// Remove trailing .ID for cleaner case test
-			$pref_name = str_replace('.'.$result_cache['id'], '', $pref_name);
-			switch ($pref_name) {
-				case 'agent.ui.org-filter-order-by':
-					$pref_name = 'order_by';
-					break;
-				case 'agent.ui.org-filter-display-fields':
-					$pref_name = 'display_fields';
-					break;
-				default:
-					throw new \InvalidArgumentException("Invalid preference `$pref_name`");
-					break;
-			}
-
-			$extra[$pref_name] = $value;
-		}
-
-		$result_cache['extra'] = $extra;
-
-		App::getOrm()->persist($result_cache);
-		App::getOrm()->flush();
-
-		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function performQuickNameSearchAction()

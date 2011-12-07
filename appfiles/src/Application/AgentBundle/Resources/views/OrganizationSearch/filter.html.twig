@@ -1,0 +1,43 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.OrganizationList';
+
+pageMeta.refreshUrl = '{{ path('agent_orgsearch_customfilter') }}?cache_id={{cache_id}}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_orgsearch_getpage') }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+
+pageMeta.resultId = {{cache_id}};
+pageMeta.perPage = 50;
+pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
+</script>
+{{ agentui.scroll_containers('page-org-list') }}
+
+{% include 'AgentBundle:OrganizationSearch:filter-display-options.html.twig' %}
+{% include 'AgentBundle:OrganizationSearch:filter-control-bar.html.twig' %}
+
+<section class="downloads-simple-list list-listing">
+	{% include 'AgentBundle:OrganizationSearch:filter-page.html.twig' %}
+</section>
+
+{% if not organizations|length %}
+	<section class="list-listing no-results">
+		<p>{{ phrase('agent.there_are_no_results') }}</p>
+	</section>
+{% endif %}
+
+<footer class="results-nav">
+	<div class="cursor">
+		{{ phrase('agent.people.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': org_ids|length })|raw }}
+	</div>
+	<div class="more">
+		<button class="show-more">Load More</button>
+	</div>
+	<div class="loading">
+
+	</div>
+</footer>
+
+{{ agentui.scroll_containers_end() }}
