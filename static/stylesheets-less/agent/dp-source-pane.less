@@ -908,11 +908,6 @@ input.dp-cat-input:focus {
 	box-shadow: none;
 }
 
-
-#publish_outline_glossary {
-	margin-top: 12px;
-}
-
 #publish_outline_glossary li.all {
 	cursor: default;
 }
@@ -986,9 +981,9 @@ input.dp-cat-input:focus {
 
 
 
-.deskpro-tab-item li.all .edit-mode,
-.deskpro-tab-item li.all .add-new-cat,
-.deskpro-tab-item li.all .add-new-article {
+li.all .edit-mode,
+li.all .add-new-cat,
+li.all .add-new-article {
 	position: absolute;
 	right: 4px;
 	top: 1px;
@@ -1005,26 +1000,26 @@ input.dp-cat-input:focus {
 	z-index: 1;
 }
 
-.deskpro-tab-item li.all .add-new-cat {
+li.all .add-new-cat {
 	background: url("../../images/agent/icons/folder_add.png") no-repeat 50% 50%;
 	right: 24px;
 	top: 0px;
 }
 
-.deskpro-tab-item li.all .add-new-article {
+li.all .add-new-article {
 	background: url("../../images/agent/icons/page_add.png") no-repeat 50% 50%;
 	right: 43px;
 }
 
-.deskpro-tab-item li.all .edit-mode {
+li.all .edit-mode {
 	background-image: url("../../images/agent/icons/cog.png");
 }
 
-.deskpro-tab-item .edit-mode li.all .edit-mode {
+.edit-mode li.all .edit-mode {
 	background-image: url("../../images/agent/icons/cog_delete.png");
 }
 
-.deskpro-tab-item li.all .add-new {
+li.all .add-new {
 	background-image: url("../../images/agent/icons/add.png");
 	right: 23px;
 	display: none;
@@ -1044,4 +1039,48 @@ input.dp-cat-input:focus {
 	color: #878A8F;
 	text-align: center;
 	line-height: 120%;
+}
+
+
+
+section.group-section {
+	> header {
+		.gradient(darken(#F0F3F4, 10%), darken(#DDE3E7, 10%));
+		border-bottom: 1px solid #BFC5C9;
+		.inner-shadow-color(0, 0, 9px);
+		cursor: pointer;
+
+		h2 {
+		    display: block;
+			line-height: 25px;
+			color: #575E66;
+			font-family: @heading-font;
+			font-weight: bold;
+			font-size: 13px;
+			padding: 0 0 0 6px;
+
+			text-shadow: 0px 1px 0px darken(#ffffff, 5%);
+		}
+
+		&:hover {
+		    .gradient(darken(#F0F3F4, 15%), darken(#DDE3E7, 15%));
+			.inner-shadow-color(0, 0, 18px);
+		}
+	}
+
+	> article {
+		border-bottom: 1px solid #BFC5C9;
+	}
+}
+
+section.group-section.first {
+	header {
+		border-top: 1px solid #BFC5C9;
+	}
+}
+
+section.group-section.last{
+	> article {
+		border-bottom: none;
+	}
 }

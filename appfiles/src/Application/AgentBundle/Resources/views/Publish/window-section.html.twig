@@ -30,17 +30,34 @@
 	</ul>
 </section>
 
-<section class="source-tabs many" id="publish_outline_tabstrip">
-	<ul>
-		<li data-tab-for="#publish_outline_kb_tab"><span>Knowledgebase</span></li>
-		<li data-tab-for="#publish_outline_news"><span>News</span></li>
-		<li data-tab-for="#publish_outline_downloads" class="fill-out"><span>Files</span></li>
-	</ul>
+<section class="group-section first open">
+	<header><h2>Knowledgebase</h2></header>
+	<article>
+		{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
+	</article>
 </section>
 
-{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
-{% include 'AgentBundle:Publish:news-tab.html.twig' %}
-{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
+<section class="group-section">
+	<header><h2>News</h2></header>
+	<article style="display: none">
+		{% include 'AgentBundle:Publish:news-tab.html.twig' %}
+	</article>
+</section>
+
+<section class="group-section">
+	<header><h2>Downloads</h2></header>
+	<article style="display: none">
+		{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
+	</article>
+</section>
+
+<section class="group-section last">
+	<header><h2>{{ phrase('agent.publish.glossary') }}</h2></header>
+	<article style="display: none">
+		{% include 'AgentBundle:Publish:kb-glossary.html.twig' %}
+		<br class="clear" />
+	</article>
+</section>
 
 {# Category editor #}
 <div id="publish_cat_editor_backdrop" class="backdrop cat-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;"></div>

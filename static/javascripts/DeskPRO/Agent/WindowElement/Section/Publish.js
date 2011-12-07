@@ -32,23 +32,18 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		var self = this;
-		this.typeTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.sectionEl,
-			triggerElements: $('#publish_outline_tabstrip li'),
-			onTabSwitch: function(info) {
-				var catEditorClass = info.tabContent.data('editor-class');
-				if (catEditorClass) {
-					$('#publish_outline_edit_cats').data('editor-class', catEditorClass).show();
-				} else {
-					$('#publish_outline_edit_cats').hide();
-				}
 
-				var all = $('a.all-route:first', info.tabContent);
-				if (all.length) {
-					//DeskPRO_Window.runPageRouteFromElement(all);
-				}
+		$('section.group-section header', this.contentEl).click(function() {
+			var section = $(this).parent();
+			if (section.is('.open')) {
+				section.removeClass('open');
+				$('> article', section).slideUp('fast');
+			} else {
+				section.addClass('open');
+				$('> article', section).slideDown('fast');
 			}
 		});
+
 		this._initGlossary();
 
 		var types = ['articles','downloads','news'];

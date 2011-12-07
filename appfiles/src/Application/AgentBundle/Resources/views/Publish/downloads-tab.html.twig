@@ -1,4 +1,4 @@
-<section id="publish_outline_downloads" class="deskpro-tab-item" data-editor-class="download-cat-editor">
+<section id="publish_outline_downloads" data-editor-class="download-cat-editor">
 	<ul class="source-list with-tree" id="publish_outline_downloadscat_list">
 		<li class="all">
 			<span class="edit-mode tipped" id="publish_outline_downloadscat_editmode" title="{{ phrase('agent.edit_categories') }}"></span>
@@ -8,4 +8,5 @@
 		</li>
 		{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 	</ul>
+	<br class="clear" />
 </section>

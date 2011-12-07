@@ -1,4 +1,4 @@
-<section id="publish_outline_news" class="deskpro-tab-item" data-editor-class="news-cat-editor">
+<section id="publish_outline_news" data-editor-class="news-cat-editor">
 	<ul class="source-list with-tree" id="publish_outline_newscat_list">
 		<li class="all">
 			<span class="edit-mode tipped" id="publish_outline_newscat_editmode" title="{{ phrase('agent.edit_categories') }}"></span>
@@ -8,4 +8,5 @@
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 	</ul>
+	<br class="clear" />
 </section>
