@@ -94,6 +94,13 @@ class TicketSearchController extends AbstractController
 		# Misc
 		#------------------------------
 
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
+		$index = $label_lister->getIndexList();
+
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+
 		$archive_counts = $this->em->getRepository('DeskPRO:Ticket')->getArchiveCounts();
 
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
@@ -105,6 +112,8 @@ class TicketSearchController extends AbstractController
 			'flags' => $flags,
 			'archive_counts' => $archive_counts,
 			'filter_show_options' => $filter_show_options,
+			'labels_index' => $index,
+			'labels_cloud' => $cloud,
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;

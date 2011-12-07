@@ -32,11 +32,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
 			onTabSwitch: function(info) {
-				if (info.tabEl.is('.labels')) {
-					self.showLabelsList();
-				} else if (info.tabEl.is('.flagged')) {
-					self.loadFlagCounts();
-				}
+
 			}
 		});
 
@@ -664,36 +660,5 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.updateFlagCountFor(info.old_flag, old_flag_count-1);
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
-	},
-
-	//#########################################################################
-	// Labels
-	//#########################################################################
-
-	showLabelsList: function() {
-
-		if (this.hasLoadedLabels) return;
-
-		this.hasLoadedLabels = true;
-
-		$.ajax({
-			timeout: 20000,
-			type: 'POST',
-			url: BASE_URL + 'agent/ticket-search/get-section/labels',
-			dataType: 'html',
-			context: this,
-			success: function(html) {
-				this._setLabelsList(html);
-			}
-		});
-	},
-
-	_setLabelsList: function(html) {
-		$('#tickets_outline_labels').html(html);
-
-		this.labelsTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.sectionEl,
-			triggerElements: $('#tickets_outline_labels_switcher li')
-		});
 	}
 });
