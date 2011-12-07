@@ -172,10 +172,29 @@ class MiscController extends AbstractController
     public function acceptTempUploadAction()
     {
 		$file = $this->request->files->get('file-upload');
+
+		if (!$file->isValid() || !is_uploaded_file($file->getRealPath())) {
+			return $this->createJsonResponse(array(array(
+				'error' => 'invalid',
+			)));
+		}
+
 		$desc = App::getApi('filestorage')->createRandomPath();
 
+		try {
+			$mime_type = $file->getMimeType();
+		} catch (\Exception $e) {
+			$mime_type = $file->getClientMimeType();
+		}
+
+		if (!$mime_type) {
+			return $this->createJsonResponse(array(array(
+				'error' => 'invalid',
+			)));
+		}
+
 		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $file->getMimeType(),
+			'content_type' => $mime_type,
 			'filename' => $file->getClientOriginalName()
 		));
 

@@ -142,7 +142,6 @@ class SettingsController extends AbstractController
 		return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
 			'term_options' => $term_options,
 			'filter' => $filter,
-			'is_saved' => $is_saved,
 		));
 	}
 
