@@ -74,6 +74,33 @@ class PeopleSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function reloadLabelDataAction()
+	{
+		// People
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$people_tag_cloud = $cloud_gen->getCloud();
+
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
+		$people_tag_index = $label_lister->getIndexList();
+
+		// Orgs
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$org_tag_cloud = $cloud_gen->getCloud();
+
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
+		$org_tag_index = $label_lister->getIndexList();
+
+		$data = array();
+		$data['people_label_cloud'] = $this->renderView('AgentBundle:PeopleSearch:window-people-label-cloud.html.twig', array('people_tag_cloud' => $people_tag_cloud));
+		$data['people_label_list'] = $this->renderView('AgentBundle:PeopleSearch:window-people-label-list.html.twig', array('people_tag_index' => $people_tag_index));
+		$data['org_label_cloud'] = $this->renderView('AgentBundle:PeopleSearch:window-org-label-cloud.html.twig', array('org_tag_cloud' => $org_tag_cloud));
+		$data['org_label_list'] = $this->renderView('AgentBundle:PeopleSearch:window-org-label-list.html.twig', array('org_tag_index' => $org_tag_index));
+
+		return $this->createJsonResponse($data);
+	}
+
 	protected function _getResponseForPeople($type, $type_id, $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');

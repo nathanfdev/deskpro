@@ -434,11 +434,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	saveLabels: function() {
-		if (this._saveLabelsTimeout) {
-			window.clearTimeout(this._saveLabelsTimeout);
-		}
-
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._doSaveLabels();
 	},
 
 	_doSaveLabels: function() {
@@ -451,7 +447,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-
+				var sect = DeskPRO_Window.sections.people_section;
+				sect.reloadLabels();
 			}
 		});
 	}

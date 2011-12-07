@@ -572,6 +572,13 @@ $collection->add('agent_peoplesearch_getsectiondata', new Route(
 	array()
 ));
 
+$collection->add('agent_peoplesearch_reload_label_sectiondata', new Route(
+	'/people/get-section-data/labels.json',
+	array('_controller' => 'AgentBundle:PeopleSearch:reloadLabelData'),
+	array(),
+	array()
+));
+
 $collection->add('agent_org_newfrompane', new Route(
 	'/organization-search/new-organization',
 	array('_controller' => 'AgentBundle:Organization:newOrgFromPane'),

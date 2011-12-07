@@ -10,20 +10,53 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 		this.setSectionElement($('<section id="people_outline"></section>'));
 
+		this.reload();
+	},
+
+	reload: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/people/get-section-data.json',
 			context: this,
 			success: function(data) {
+
+				var wasLaoded = false;
+				if (this.hasLoaded) {
+					wasLoaded = true;
+
+					this.peopleTabs.destroy();
+					delete this.peopleTabs;
+
+					this.orgTabs.destroy();
+					delete this.orgTabs;
+				}
+
 				this._initSection(data);
+
+				if (!wasLaoded) {
+					this.fireEvent('sectionInit');
+				}
+			}
+		});
+	},
+
+	reloadLabels: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/people/get-section-data/labels.json',
+			context: this,
+			success: function(data) {
+				$('#people_outline_tagcloud').empty().html(data.people_label_cloud);
+				$('#people_outline_taglist').empty().html(data.people_label_list);
+
+				$('#people_outline_org_tagcloud').empty().html(data.org_label_cloud);
+				$('#people_outline_org_taglist').empty().html(data.org_label_list);
 			}
 		});
 	},
 
 	_initSection: function(data) {
-
 		this.setHasInitialLoaded();
 
-		this.contentEl.html(data.section_html);
+		this.contentEl.empty().html(data.section_html);
 
 		var self = this;
 		this.peopleTabs = new DeskPRO.UI.SimpleTabs({
@@ -41,7 +74,5 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
-
-		this.fireEvent('sectionInit');
 	}
 });

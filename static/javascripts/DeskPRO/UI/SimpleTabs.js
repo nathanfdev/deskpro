@@ -145,5 +145,9 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		}
 
 		return el;
+	},
+
+	destroy: function() {
+
 	}
 });
