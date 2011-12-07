@@ -91,12 +91,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	_initMessageHandlers: function() {
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new', this.handleNewChat, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.reassigned', this.handleReassignedChat, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.unassigned', this.handleUnassignedChat, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', this.handleChatEnded, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.depchange', this.handleDepChange, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.invited', this.handleInvited, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new', this.handleNewChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.reassigned', this.handleReassignedChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.unassigned', this.handleUnassignedChat, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', this.handleChatEnded, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.depchange', this.handleDepChange, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.invited', this.handleInvited, this);
 	},
 
 	modListingCount: function(id, op, count) {
