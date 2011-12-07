@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
 
-DeskPRO.Agent.WindowElement.Section.Deal = new Orb.Class({
+DeskPRO.Agent.WindowElement.Section.Deals = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
