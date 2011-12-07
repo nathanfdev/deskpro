@@ -33,6 +33,13 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 			success: function(data) {
 				this._initSection(data);
 
+				// Get button count now
+				var count = 0;
+				$('span.count-in-badge', this.contentEl).each(function() {
+					count += parseInt($(this).text()) || 0;
+				});
+				this.updateBadge(count);
+
 				if (selectedCountId) {
 					var countEl = $('#' + selectedCountId);
 					var newCount = countEl.text().trim();
@@ -51,6 +58,7 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 						}
 						DeskPRO_Window.runPageRouteFromElement(routeEl);
 					}
+
 				}
 			}
 		});
