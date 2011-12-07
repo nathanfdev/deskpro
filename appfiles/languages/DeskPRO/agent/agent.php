@@ -297,7 +297,8 @@
 
 	'agent.recycle_bin_none' => 'There are no items in the recycle bin.',
 	'agent.no_org_labels' => 'You haven\'t labeled any organizations. View an organization to label it.',
-	'agent.no_people_labels' => 'You haven\'t labeled any people. View person to label them.',
+	'agent.no_people_labels' => 'You haven\'t labeled any people. View a person to label them.',
+	'agent.no_ticket_labels' => 'You haven\'t labeled any tickets. View a ticket to label it.',
 	'agent.alphabetical' => 'Alphabetical',
 
 	'agent.search' => 'Search',
