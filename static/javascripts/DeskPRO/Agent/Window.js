@@ -1540,9 +1540,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
-		this.messageChanneler.subscribeChannel('agent-notification');
-		this.messageChanneler.subscribeChannel('agent-notify');
-		this.messageChanneler.subscribeChannel('agent-notify.tickets');
 
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {

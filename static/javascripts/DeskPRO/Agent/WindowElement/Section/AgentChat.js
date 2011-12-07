@@ -31,9 +31,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	_initMessageHandlers: function() {
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent_chat.new-message');
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-agent-online');
-
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.newIncomingMessage, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', function(info) {
 			var agent_id = info.agent_id;

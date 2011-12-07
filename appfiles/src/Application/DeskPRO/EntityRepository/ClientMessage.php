@@ -198,11 +198,20 @@ class ClientMessage extends EntityRepository
 		}
 
 		$person = App::findEntity('DeskPRO:Person', $person_id);
+
+		// Implicit subscriptions
 		if ($person->is_agent && $since_id) {
 			$channels[] = 'chat.new';
 			$channels[] = 'chat.reassigned';
 			$channels[] = 'chat.unassigned';
 			$channels[] = 'chat.ended';
+
+			$channels[] = 'agent_chat.new-message';
+			$channels[] = 'agent.new-agent-online';
+
+			$channels[] = 'agent-notification';
+			$channels[] = 'agent-notify';
+			$channels[] = 'agent-notify.tickets';
 		}
 
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);
