@@ -305,6 +305,10 @@ class UserChatController extends AbstractController
 
 		// Departments
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+		$single_dep_mode = false;
+		if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
+			$single_dep_mode = true;
+		}
 
 		foreach ($departments as $dep) {
 			$c_id = $dep['id'];
@@ -330,7 +334,8 @@ class UserChatController extends AbstractController
 			'counts' => $initial_counts,
 			'dep_counts' => $dep_counts,
 			'agent_names' => $agent_names,
-			'departments' => $departments
+			'departments' => $departments,
+			'single_dep_mode' => $single_dep_mode,
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));

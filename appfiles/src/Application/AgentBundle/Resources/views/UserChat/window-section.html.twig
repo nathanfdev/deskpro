@@ -31,9 +31,11 @@
 				</span>
 			</div>
 		</li>
-		{% for dep in departments %}
-			{{ _self.dep_row(dep, dep_counts, 0) }}
-		{% endfor %}
+		{% if not single_dep_mode %}
+			{% for dep in departments %}
+				{{ _self.dep_row(dep, dep_counts, 0) }}
+			{% endfor %}
+		{% endif %}
 	</ul>
 </section>
 
