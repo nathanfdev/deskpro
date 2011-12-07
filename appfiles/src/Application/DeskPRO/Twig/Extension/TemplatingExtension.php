@@ -95,8 +95,19 @@ class TemplatingExtension extends \Twig_Extension
 			'join' => new \Twig_Filter_Method($this, 'implodeArray'),
 			'implode' => new \Twig_Filter_Method($this, 'implodeArray'),
 			'crc32' => new \Twig_Filter_Method($this, 'crc32'),
+			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
         );
     }
+
+	public function getUrlDomain($string)
+	{
+		$urlinfo = @parse_url($string);
+		if (!$urlinfo) {
+			return $string;
+		}
+
+		return $urlinfo['host'];
+	}
 
 	public function crc32($string)
 	{

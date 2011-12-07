@@ -1,6 +1,16 @@
 {% for f in custom_fields %}
-	<dt class="type-labels">{{ f.title }}</dt>
-	<dd class="people-tags tags-wrap">
+	<dt>{{ f.title }}</dt>
+	<dd>
 		{{ render_custom_field_form(f) }}
 	</dd>
 {% endfor %}
+<dt>Timezone</dt>
+<dd>
+	<select name="timezone">
+		<option value=""></option>
+		{% for tz in timezone_options %}
+			<option value="{{tz}}" {% if person.timezone == tz %}selected="selected"{% endif %}>{{ tz }}</option>
+		{% endfor %}
+	</select>
+</dd>
+<br class="clear" />

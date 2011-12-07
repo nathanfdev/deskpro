@@ -415,6 +415,12 @@ class PersonController extends AbstractController
 	public function ajaxSaveCustomFieldsAction($person_id)
 	{
 		$person = $this->getPersonOr404($person_id);
+		$timezone_options = \DateTimeZone::listIdentifiers();
+
+		$timezone = $this->in->getString('timezone');
+		if (!$timezone || !in_array($timezone, $timezone_options)) {
+			$timezone = null;
+		}
 
 		$this->em->beginTransaction();
 
@@ -423,6 +429,11 @@ class PersonController extends AbstractController
 			$post_custom_fields = $this->request->request->get('custom_fields', array());
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $person);
+			}
+
+			if ($timezone) {
+				$person->timezone = $timezone;
+				$this->em->persist($person);
 			}
 
 			$this->em->flush();
@@ -435,6 +446,7 @@ class PersonController extends AbstractController
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 
 		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+			'timezone_options' => $timezone_options,
 			'person' => $person,
 			'custom_fields' => $custom_fields,
 		));

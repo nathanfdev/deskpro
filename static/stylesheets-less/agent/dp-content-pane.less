@@ -695,11 +695,11 @@ dl.table-list {
 	font-size: 10px;
 }
 
-dl.table-list         dt { width: 80px;  }    dl.table-list dd         { margin-left: 85px;  }
-dl.table-list.wide    dt { width: 110px; }    dl.table-list.wide dd    { margin-left: 115px; }
-dl.table-list.wwide   dt { width: 130px; }    dl.table-list.wwide dd   { margin-left: 135px; }
-dl.table-list.wwwide  dt { width: 150px; }    dl.table-list.wwwide dd  { margin-left: 155px; }
-dl.table-list.wwwwide dt { width: 170px; }    dl.table-list.wwwwide dd { margin-left: 170px; }
+dl.table-list         dt { width: 80px;  }    dl.table-list dd         { margin-left: 0px; }
+dl.table-list.wide    dt { width: 110px; }    dl.table-list.wide dd    { margin-left: 0px; }
+dl.table-list.wwide   dt { width: 130px; }    dl.table-list.wwide dd   { margin-left: 0px; }
+dl.table-list.wwwide  dt { width: 150px; }    dl.table-list.wwwide dd  { margin-left: 0px; }
+dl.table-list.wwwwide dt { width: 170px; }    dl.table-list.wwwwide dd { margin-left: 0px; }
 
 dl.table-list dt:first-of-type,
 dl.table-list dt:first-of-type {
@@ -717,6 +717,7 @@ dl.table-list dt {
 
 dl.table-list dd {
 	margin-top: 8px;
+	float: left;
 }
 
 dl.table-list dt.type-labels {
@@ -4436,4 +4437,10 @@ article.task .new-comment .comment-input span {
 .delete-ticket-overlay {
 	width: 400px;
 	height: 160px;
+}
+
+
+.short-url-prev {
+	cursor: default;
+	color:#73879E;
 }

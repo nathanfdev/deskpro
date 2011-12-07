@@ -1,8 +1,13 @@
 {% for f in custom_fields %}
 	{% if f.hasValue %}
-		<dt class="type-labels">{{ f.title }}</dt>
-		<dd class="people-tags tags-wrap">
+		<dt>{{ f.title }}</dt>
+		<dd>
 			{{ render_custom_field(f) }}
 		</dd>
 	{% endif %}
 {% endfor %}
+<dt>Timezone</dt>
+<dd>
+	{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }}, {{ phrase('agent.local_time') }}: {{ person.date_time|date('H:ia M j Y', person) }})
+</dd>
+<br class="clear" />

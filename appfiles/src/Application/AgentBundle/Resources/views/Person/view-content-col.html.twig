@@ -49,20 +49,6 @@
 				{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
 			</dl>
 		{% endif %}
-
-		<dl class="table-list">
-			<dt class="type-labels">{{ phrase('agent.label_timezone') }}</dt>
-			<dd>
-				<select id="{{baseId}}_timezone">
-					{% for tz in timezone_options %}
-						<option value="{{tz}}" {% if person.timezone == tz %}selected="selected"{% endif %}>{{ tz }}</option>
-					{% endfor %}
-				</select>
-				<span class="timezone-info">
-					{% include 'AgentBundle:Person:view-bit-timezoneinfo.html.twig' %}
-				</span>
-			</dd>
-		</dl>
 	</section>
 </div>
 {# /Properties Box #}
@@ -94,7 +80,7 @@
 									<div class="bound-fade"></div>
 								</div>
 							</td>
-							<td class="status {{ticket.status}}" width="25"><span class="status">{{ ticket.status }}</span></td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}</span></td>
 						</tr>
 					{% endfor %}
 					{% if person_tickets|length %}
@@ -276,16 +262,16 @@
 						<td class="value">
 							<time>{{session.date_last|date('H:ia M j Y')}}</time>
 							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
-							on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+							on page <em class="short-url-prev tipped" title="{{ session.visitor.last_page }}">{{ session.visitor.last_page|url_domain }}</em>
 					</tr>
 					<tr>
 						<td class="label">{{ phrase('agent.landing_page') }}</td>
 						<td class="value">
 							User landed on page
-							<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
+							<em class="short-url-prev tipped" title="{{ session.visitor.landing_page }}">{{ session.visitor.landing_page|url_domain }}</em>
 							{% if session.visitor.ref_page %}
 								and came from
-								<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
+								<em class="short-url-prev tipped" title="{{ session.visitor.ref_page }}">{{ session.visitor.ref_page|url_domain }}</em>
 							{% endif %}
 						</td>
 					</tr>
