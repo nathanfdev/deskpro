@@ -270,6 +270,7 @@
 	'agent.snippets' => 'Snippets',
 	'agent.add_new_snippet' => 'Add new snippet',
 	'agent.snippet_text_placeholder' => 'Snippet text',
+	'agent.snippets_none_explain' => 'You have not defined any snippets yet. Start by adding a category to the left.',
 
 	'agent.local_time' => 'Local Time',
 
