@@ -18,26 +18,16 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this._initMessageHandlers();
 		this._initInterface();
 
-		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
-			this.setHasInitialLoaded();
-			this.contentEl.html(data.section_html);
-			this._lastLoaded = new Date();
-		}).bind(this));
+					this.setHasInitialLoaded();
+					this.contentEl.html(data.section_html);
+				}).bind(this));
 	},
 
 	onShow: function() {
-
-		// Dont autorefresh until at least 8 seconds
-		if ((new Date()).getTime() - this._lastLoaded.getTime() < 8000) {
-			return;
-		}
-
-		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
 			this.setHasInitialLoaded();
 			this.contentEl.html(data.section_html);
-			this._lastLoaded = new Date();
 		}).bind(this));
 	},
 
@@ -80,18 +70,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('#agent_chat_panel .close-trigger').on('click', (function() {
 			this.close();
 		}).bind(this));
-
-		$.ajax({
-			url: BASE_URL + 'agent/agent-chat/get-online-agents.json',
-			context: this,
-			success: function(data) {
-				if (data.online_agents) {
-					Array.each(data.online_agents, function(info) {
-						this.addOnlineAgent(info);
-					}, this);
-				}
-			}
-		});
 
 		// stop propagation for clicks on the chat wrapper
 		// so it dorsnt bubble up and close the open chat window
@@ -136,6 +114,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('#agent_chat_panel .view-history-trigger').on('click', function(ev) {
 			DeskPRO_Window.switchToSection('agent_chat_section');
 			self.close();
+		});
+
+		$('li.online-now', '#agent_offline_list').each(function() {
+			self.addOnlineAgent($(this).removeClass('online-now').data('agent-id'));
 		});
 	},
 

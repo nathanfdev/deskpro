@@ -24,7 +24,7 @@
 				<ul id="agent_offline_list" class="list">
 					{% for agent in agents %}
 						<li
-							class="agent-{{ agent.id }}"
+							class="agent-{{ agent.id }} {% if agent.id in online_agent_ids %}online-now{% endif %}"
 							style="{% if agent.id == app.user.id %}display: none;{% endif %}"
 							data-agent-id="{{ agent.id }}"
 							data-email="{{ agent.primary_email_address }}"

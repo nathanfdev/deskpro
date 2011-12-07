@@ -65,10 +65,19 @@ class MainController extends AbstractController
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
+		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+		$online_agent_ids = App::getDb()->fetchAllCol("
+			SELECT p.id
+			FROM sessions s
+			LEFT JOIN people AS p ON p.id = s.person_id
+			WHERE p.is_agent = true AND s.date_last > ?
+		", array($cutoff));
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
+			'online_agent_ids' => $online_agent_ids,
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
 			'last_message_id' => $last_message_id,
 			'js_debug' => App::getConfig('debug.js', array()),
