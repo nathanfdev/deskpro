@@ -19,5 +19,15 @@ DeskPRO.Agent.WindowElement.Section.Deals = new Orb.Class({
 	_initSection: function(data) {
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
+		this.recountBadge();
+	},
+
+	recountBadge: function() {
+		var count = 0;
+		$('span.badge-count', this.contentEl).each(function() {
+			count += parseInt($(this).text().trim()) || 0;
+		});
+
+		this.updateBadge(count);
 	}
 });

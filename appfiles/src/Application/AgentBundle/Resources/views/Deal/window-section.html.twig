@@ -5,7 +5,7 @@
         <ul class="source-list">
              <li class="sub-expanded">
                 <h3 class="title" data-route="listpane:{{ path('agent_deal_list',{'owner_type': 'my', 'deal_status': 'open'}) }}">
-                    <span class="list-counter" id="">{{my_total_opendeals|default(0)}}</span>
+                    <span class="list-counter badge-count" id="">{{my_total_opendeals|default(0)}}</span>
                     My Deals
                 </h3>
                  {% include 'AgentBundle:Deal:deal-nav-list.html.twig' with{'opendeals': myopendeals,'owner_type': 'my', 'deal_status': 'open'} %}
@@ -13,12 +13,12 @@
 
             <li class="sub-expanded">
                 <h3 class="title" data-route="listpane:{{ path('agent_deal_list',{'owner_type': 'other', 'deal_status': 'open'}) }}">
-                    <span class="list-counter" id="">{{other_total_opendeals|default(0)}}</span>
+                    <span class="list-counter badge-count" id="">{{other_total_opendeals|default(0)}}</span>
                     Others Deals
                 </h3>
                  {% include 'AgentBundle:Deal:deal-nav-list.html.twig' with{'opendeals': otheropendeals, 'owner_type': 'other', 'deal_status': 'open'} %}
             </li>
-        </ul>    
+        </ul>
 </section>
 
 <section class="source-section sys-filters-section">
