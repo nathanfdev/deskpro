@@ -5,14 +5,11 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('agent', new Route(
-	'/',
-	array('_controller' => 'AgentBundle:Main:index'),
-	array(),
-	array()
-));
+################################################################################
+# Misc
+################################################################################
 
-$collection->add('agent_dashboard', new Route(
+$collection->add('agent', new Route(
 	'/',
 	array('_controller' => 'AgentBundle:Main:index'),
 	array(),
@@ -117,6 +114,11 @@ $collection->add('agent_password_confirm_code', new Route(
 	array()
 ));
 
+
+################################################################################
+# Snippets
+################################################################################
+
 $collection->add('agent_snippetviewer', new Route(
 	'/misc/snippet-viewer/view/{typename}',
 	array('_controller' => 'AgentBundle:Misc:snippetsViewer'),
@@ -166,6 +168,7 @@ $collection->add('agent_snippetviewer_delcat', new Route(
 	array()
 ));
 
+
 $collection->add('agent_recyclebin', new Route(
 	'/recycle-bin',
 	array('_controller' => 'AgentBundle:RecycleBin:list'),
@@ -201,6 +204,11 @@ $collection->add('agent_client_messages_unsubscribe_channels', new Route(
 	array()
 ));
 
+
+################################################################################
+# Login
+################################################################################
+
 $collection->add('agent_login_preload_sources', new Route(
 	'/login/preload-sources',
 	array('_controller' => 'AgentBundle:Login:preloadSources'),
@@ -229,19 +237,10 @@ $collection->add('agent_login_authenticate_local', new Route(
 	array()
 ));
 
-$collection->add('agent_login_authenticate', new Route(
-	'/login/authenticate/{usersource_id}',
-	array('_controller' => 'AgentBundle:Login:authenticate', 'usersource_id' => 0),
-	array('usersource_id' => '\\d+'),
-	array()
-));
 
-$collection->add('agent_login_callback', new Route(
-	'/login/authenticate-callback/{usersource_id}',
-	array('_controller' => 'AgentBundle:Login:authenticateCallback'),
-	array('usersource_id' => '\\d+'),
-	array()
-));
+################################################################################
+# Settings
+################################################################################
 
 $collection->add('agent_settings', new Route(
 	'/settings',
@@ -281,13 +280,6 @@ $collection->add('agent_settings_othernotif', new Route(
 $collection->add('agent_settings_othernotif_save', new Route(
 	'/settings/other-notifications/save.json',
 	array('_controller' => 'AgentBundle:Settings:otherNotificationsSave'),
-	array(),
-	array()
-));
-
-$collection->add('agent_settings_picture', new Route(
-	'/settings/picture',
-	array('_controller' => 'AgentBundle:Settings:picture'),
 	array(),
 	array()
 ));
@@ -362,12 +354,9 @@ $collection->add('agent_settings_ticketfilters_new', new Route(
 	array()
 ));
 
-$collection->add('agent_people_newfrompane', new Route(
-	'/people-search/new-person',
-	array('_controller' => 'AgentBundle:Person:newPersonFromPane'),
-	array(),
-	array()
-));
+################################################################################
+# People and People Search
+################################################################################
 
 $collection->add('agent_people_view', new Route(
 	'/people/{person_id}',
@@ -446,23 +435,9 @@ $collection->add('agent_people_ajaxsave_note', new Route(
 	array()
 ));
 
-$collection->add('agent_person_ajaxgetupdatedcounts', new Route(
-	'/people/{person_id}/ajax-get-updated-counts',
-	array('_controller' => 'AgentBundle:Person:getUpdatedCounts'),
-	array('person_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_people_ajaxsave_organization', new Route(
 	'/people/{person_id}/ajax-save-organization',
 	array('_controller' => 'AgentBundle:Person:ajaxSaveOrganization'),
-	array('person_id' => '\\d+'),
-	array()
-));
-
-$collection->add('agent_people_ajaxget_notes', new Route(
-	'/people/{person_id}/ajax-get-notes',
-	array('_controller' => 'AgentBundle:Person:ajaxGetNotes'),
 	array('person_id' => '\\d+'),
 	array()
 ));
@@ -502,55 +477,6 @@ $collection->add('agent_peoplesearch_performquick', new Route(
 	array()
 ));
 
-$collection->add('agent_peoplesearch', new Route(
-	'/people-search',
-	array('_controller' => 'AgentBundle:PeopleSearch:search'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_labelspane', new Route(
-	'/people-search/labels-pane',
-	array('_controller' => 'AgentBundle:PeopleSearch:labelsPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_labelsindexpane', new Route(
-	'/people-search/labels-index-pane',
-	array('_controller' => 'AgentBundle:PeopleSearch:labelsIndexPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_findpane', new Route(
-	'/people-search/find-pane',
-	array('_controller' => 'AgentBundle:PeopleSearch:findPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_directorypane', new Route(
-	'/people-search/directory-pane',
-	array('_controller' => 'AgentBundle:PeopleSearch:directoryPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_usergroupspane', new Route(
-	'/people-search/usergroups-pane',
-	array('_controller' => 'AgentBundle:PeopleSearch:usergroupsPane'),
-	array(),
-	array()
-));
-
-$collection->add('agent_peoplesearch_save_resultprefs', new Route(
-	'/people-search/save-result-prefs/{cache_id}',
-	array('_controller' => 'AgentBundle:PeopleSearch:ajaxSaveResultPrefs'),
-	array('cache_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_peoplesearch_quickfind', new Route(
 	'/people-search/quick-find',
 	array('_controller' => 'AgentBundle:PeopleSearch:quickFind'),
@@ -579,12 +505,10 @@ $collection->add('agent_peoplesearch_reload_label_sectiondata', new Route(
 	array()
 ));
 
-$collection->add('agent_org_newfrompane', new Route(
-	'/organization-search/new-organization',
-	array('_controller' => 'AgentBundle:Organization:newOrgFromPane'),
-	array(),
-	array()
-));
+
+################################################################################
+# Organizations and Organizations Search
+################################################################################
 
 $collection->add('agent_org_view', new Route(
 	'/organizations/{organization_id}',
@@ -677,13 +601,6 @@ $collection->add('agent_org_ajaxsave_organization', new Route(
 	array()
 ));
 
-$collection->add('agent_org_ajaxget_notes', new Route(
-	'/organizations/{organization_id}/ajax-get-notes',
-	array('_controller' => 'AgentBundle:Organization:ajaxGetNotes'),
-	array('organization_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_org_ajax_labels_save', new Route(
 	'/organizations/{organization_id}/ajax-save-labels',
 	array('_controller' => 'AgentBundle:Organization:ajaxSaveLabels'),
@@ -732,6 +649,11 @@ $collection->add('agent_orgsearch_namelookup', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Tickets and Ticket Search
+################################################################################
 
 $collection->add('agent_ticketsearch_getsectiondata', new Route(
 	'/ticket-search/get-section-data.json',
@@ -971,13 +893,6 @@ $collection->add('agent_ticket_ajaxsavereply', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_ajaxupdatecheck', new Route(
-	'/tickets/{ticket_id}/ajax-update-check',
-	array('_controller' => 'AgentBundle:Ticket:ajaxUpdateCheck'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_ajaxsaveoptions', new Route(
 	'/tickets/{ticket_id}/ajax-save-options',
 	array('_controller' => 'AgentBundle:Ticket:ajaxSaveOptions'),
@@ -1090,19 +1005,17 @@ $collection->add('agent_ticket_saveuserparts', new Route(
 	array()
 ));
 
-$collection->add('agent_ticket_ccreplytab', new Route(
-	'/ticket/{ticket_id}/cc-reply-tab',
-	array('_controller' => 'AgentBundle:Ticket:ccReplyTab'),
-	array('ticket_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_ticket_delete', new Route(
 	'/tickets/{ticket_id}/delete',
 	array('_controller' => 'AgentBundle:Ticket:delete'),
 	array('ticket_id' => '\\d+'),
 	array()
 ));
+
+
+################################################################################
+# Twitter
+################################################################################
 
 $collection->add('agent_twitter_accountspane', new Route(
 	'/twitter/pane/accounts',
@@ -1265,6 +1178,11 @@ $collection->add('agent_twitter_new_search', new Route(
 	array()
 ));
 
+
+################################################################################
+# Tasks
+################################################################################
+
 $collection->add('agent_tasks_list_pending', new Route(
 	'/tasks/pending/list',
 	array('_controller' => 'AgentBundle:Task:listPending'),
@@ -1348,6 +1266,11 @@ $collection->add('agent_task_ajaxsave', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Deals
+################################################################################
 
 $collection->add('agent_dealearch_getsectiondata', new Route(
 	'/deal/get-section-data.json',
@@ -1460,6 +1383,11 @@ $collection->add('agent_deal_create_setorganizationrow', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Publish
+################################################################################
 
 $collection->add('agent_publish_getsectiondata', new Route(
 	'/publish/get-section-data.json',
@@ -2097,6 +2025,11 @@ $collection->add('agent_ideas_merge', new Route(
 	array('idea_id' => '\\d+', 'other_idea_id' => '\\d+'),
 	array()
 ));
+
+
+################################################################################
+# Agent and User Chat
+################################################################################
 
 $collection->add('agent_agentchat_getonlineagents', new Route(
 	'/agent-chat/get-online-agents.json',

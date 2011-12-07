@@ -200,57 +200,6 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
-	# /agent/people/:person_id/ajax-get-notes           agent_people_ajaxget_notes
-	############################################################################
-
-	public function ajaxGetNotesAction($person_id)
-	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
-		}
-
-		$per_page = min($this->in->getUint('pp'), 20);
-		$page = $this->in->getUint('p');
-		if (!$page) {
-			$page = 1;
-		}
-
-		$start = ($page - 1) * $per_page;
-
-		$em = App::getOrm();
-
-		$notes = $em->createQuery("
-			SELECT n, a
-			FROM DeskPRO:PersonNote n
-			LEFT JOIN n.agent a
-			WHERE n.person_id = ?1
-			ORDER BY n.id DESC
-		")->setParameter(1, $person['id'])
-			->setMaxResults($per_page)
-			->setFirstResult($start)
-			->execute();
-
-		$html = array();
-
-		foreach ($notes as $note) {
-			$html[] = $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note));
-		}
-
-		$html = implode('', $html);
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'person_id' => $person['id'],
-			'notes_html' => $html,
-			'page' => $page
-		));
-	}
-
-
-
-	############################################################################
 	# /agent/people/:person_id/ajax-save                     agent_people_ajaxsave
 	############################################################################
 
