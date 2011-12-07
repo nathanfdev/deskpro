@@ -212,6 +212,15 @@ class ClientMessage extends EntityRepository
 			$channels[] = 'agent-notification';
 			$channels[] = 'agent-notify';
 			$channels[] = 'agent-notify.tickets';
+
+			$channels[] = 'agent.filter-update';
+			$channels[] = 'chat.new';
+			$channels[] = 'chat.reassigned';
+			$channels[] = 'chat.reassigned';
+			$channels[] = 'chat.unassigned';
+			$channels[] = 'chat.ended';
+			$channels[] = 'chat.depchange';
+			$channels[] = 'chat.invited';
 		}
 
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);

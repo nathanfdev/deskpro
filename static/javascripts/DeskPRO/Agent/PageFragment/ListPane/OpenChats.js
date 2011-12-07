@@ -22,24 +22,24 @@ DeskPRO.Agent.PageFragment.ListPane.OpenChats = new Orb.Class({
 			DeskPRO_Window.loadRoute(self.meta.routeData);
 		};
 
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new', function(data) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new', function(data) {
 			if (data.agent_id && data.agent_id == agentId) {
 				addConvo(data.conversation_id);
 			}
 		}, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.reassigned', function(data) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.reassigned', function(data) {
 			if (data.old_agent_id && data.old_agent_id == agentId) {
 				removeConvo(data.conversation_id);
 			} else if (data.agent_id && data.agent_id == agentId) {
 				addConvo(data.conversation_id);
 			}
 		}, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.unassigned', function(data) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.unassigned', function(data) {
 			if (data.old_agent_id && data.old_agent_id == agentId) {
 				removeConvo(data.conversation_id);
 			}
 		}, this);
-		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.ended', function(data) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', function(data) {
 			if (data.agent_id && data.agent_id == agentId) {
 				removeConvo(data.conversation_id);
 			}
