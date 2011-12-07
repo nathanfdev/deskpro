@@ -18,6 +18,12 @@
 		{% include 'AgentBundle:Publish:validating-comments-page.html.twig' %}
 	</section>
 
+	{% if not validating_comments|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 {# scroll containers #}
 </div></div></div></div>
 {# /scroll containers #}

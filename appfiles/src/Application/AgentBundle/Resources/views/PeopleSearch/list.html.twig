@@ -27,6 +27,12 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 		{% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
 	</section>
 
+	{% if not people|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 	<footer class="results-nav">
 		<div class="cursor">
 			{{ phrase('agent.people.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': person_ids|length })|raw }}

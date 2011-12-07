@@ -18,6 +18,12 @@ pageMeta.isValidating = true;
 		{% include 'AgentBundle:Ideas:validating-comments-list-part.html.twig' %}
 	</section>
 
+	{% if not comments|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 	<div class="loading-more">
 		{{ phrase('agent.loading') }}
 	</div>

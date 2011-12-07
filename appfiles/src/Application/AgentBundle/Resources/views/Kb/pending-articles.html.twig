@@ -33,5 +33,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<section class="pending-articles-list list-listing">
 		{% include 'AgentBundle:Kb:pending-articles-page.html.twig' %}
 	</section>
+
+	{% if not pending_articles|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
 </div>
 </div>

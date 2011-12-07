@@ -36,6 +36,12 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 		{% include 'AgentBundle:Ideas:filter-page.html.twig' %}
 	</section>
 
+	{% if not ideas|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 {# scroll containers #}
 </div></div></div></div>
 {# /scroll containers #}

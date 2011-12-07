@@ -18,6 +18,12 @@
 		{% include 'AgentBundle:Publish:validating-content-page.html.twig' %}
 	</section>
 
+	{% if not content_validating|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 {# scroll containers #}
 </div></div></div></div>
 {# /scroll containers #}

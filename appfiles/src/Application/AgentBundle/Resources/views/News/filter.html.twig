@@ -19,6 +19,12 @@ pageMeta.baseId = '{{ baseId }}';
 		{% include 'AgentBundle:News:filter-page.html.twig' %}
 	</section>
 
+	{% if not results|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
 {# scroll containers #}
 </div></div></div></div>
 {# /scroll containers #}

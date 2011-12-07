@@ -27,10 +27,9 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_orgsearch_save_resultprefs', {'cache
 		</div>
 	</div>
 
-	<div class="loading-more">
-		{{ phrase('agent.loading') }}
-	</div>
-	<div class="no-more-results">
-		{{ phrase('agent.no_more_results') }}
-	</div>
+	{% if not organizations|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
 </div>

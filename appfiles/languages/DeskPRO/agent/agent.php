@@ -74,6 +74,8 @@
 	'agent.user_waiting' => 'User Waiting',
 	'agent.notes' => 'Notes',
 
+	'agent.there_are_no_results' => 'There are no results',
+
 	'agent.create_a_new_person' => 'Create a new person',
 	'agent.create_a_new_org' => 'Create a new organization',
 	'agent.set_a_org_pos' => 'Set a position...',
