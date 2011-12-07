@@ -3,56 +3,69 @@
 	<li><a href="{{ path('user_register') }}">Register</a></li>
 {% endblock %}
 {% block content %}
-<div class="register">
+<div
+	class="dp-content-block dp-register-page with-handler"
+>
+	<div class="dp-box">
+		<div class="dp-box-header">
+			<h1>{{ phrase('user.profile.register') }}</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content dp-form">
+				<form action="" method="post">
+				<input type="hidden" name="process" value="1" />
 
-<div class="page-title">
-	<h1>{{ phrase('user.profile.register') }}</h1>
-</div>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>{{ phrase('user.label_your_name') }} *</label>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.person.name) }}
+						</div>
+					</div>
 
-<form action="" method="post">
-<input type="hidden" name="process" value="1" />
-<div class="input-form">
-	<table cellspacing="0" cellpadding="0" width="100%">
-		<tr>
-			<td width="160">{{ phrase('user.label_your_name') }}</td>
-			<td>
-				{{ form_widget(form.person.name) }}
-			</td>
-		</tr>
-		<tr>
-			<td width="160">{{ phrase('user.label_your_email') }}</td>
-			<td>
-				{{ form_widget(form.person.email) }}
-			</td>
-		</tr>
-		<tr>
-			<td width="160">{{ phrase('user.profile.label_password') }}</td>
-			<td>
-				{{ form_widget(form.person.password) }}
-			</td>
-		</tr>
-		<tr>
-			<td width="160">{{ phrase('user.profile.label_repeat_password') }}</td>
-			<td>
-				{{ form_widget(form.person.password2) }}
-			</td>
-		</tr>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>{{ phrase('user.label_your_email') }} *</label>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.person.email) }}
+						</div>
+					</div>
 
-		<tr>
-			<td width="160">{{ phrase('user.label_captcha') }}</td>
-			<td>
-				{% include 'UserBundle:Common:recaptcha.html.twig' %}
-			</td>
-		</tr>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>{{ phrase('user.profile.label_password') }} *</label>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.person.password) }}
+						</div>
+					</div>
 
-		<tr class="foot">
-			<td colspan="2">
-				<button class="dp-button">{{ phrase('user.profile.register_btn') }}</button>
-			</td>
-		</tr>
-	</table>
-</div>
-</form>
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>{{ phrase('user.profile.label_repeat_password') }} *</label>
+						</div>
+						<div class="dp-form-input">
+							{{ form_widget(form.person.password2) }}
+						</div>
+					</div>
 
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>{{ phrase('user.label_captcha') }} *</label>
+						</div>
+						<div class="dp-form-input">
+							{% include 'UserBundle:Common:recaptcha.html.twig' %}
+						</div>
+					</div>
+
+					<div class="dp-footer">
+						<input class="btn primary" type="submit" value="{{ phrase('user.profile.register_btn') }}" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
