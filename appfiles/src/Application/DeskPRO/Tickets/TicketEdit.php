@@ -72,6 +72,10 @@ class TicketEdit
 					$this->ticket['status'] = $action;
 					break;
 
+				case 'is_hold':
+					$this->ticket['is_hold'] = $action;
+					break;
+
 				case 'flag':
 					$agent = App::getCurrentPerson();
 

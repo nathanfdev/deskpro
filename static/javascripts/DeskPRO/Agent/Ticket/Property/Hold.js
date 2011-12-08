@@ -27,6 +27,8 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 		} else {
 			$('.set-hold.hold', this.ticketPage.wrapper).show();
 		}
+
+		this.getFormEl().val(value);
 	},
 
 	_formEl: null,

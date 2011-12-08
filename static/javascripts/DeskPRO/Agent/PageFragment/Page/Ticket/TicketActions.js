@@ -168,15 +168,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Hold/unhold
 		//------------------------------
 
-		$('.set-hold.hold', wrapper).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('is_hold');
-			this.changeManager.setInstantChange(prop, 1);
-		}).bind(this));
-		$('.set-hold.unhold', wrapper).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('is_hold');
-			this.changeManager.setInstantChange(prop, 0);
-		}).bind(this));
+		wrapper.on('click', '.set-hold', (function() {
 
+			var val = 1;
+			if ($(this).is('.unhold')) {
+				val = 0;
+			}
+
+			var prop = this.changeManager.getPropertyManager('is_hold');
+			this.changeManager.setInstantChange(prop, val);
+		}).bind(this));
 
 		//------------------------------
 		// Macros
