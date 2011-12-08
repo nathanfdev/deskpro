@@ -143,7 +143,7 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 
 		$exists = $this->_db->fetchColumn("SELECT name FROM sqlite_master WHERE type='table' AND name='{$this->_cache_name}'");
 		if (!$exists) {
-			if ($this->_no_expire) {
+			if (!$this->_no_expire) {
 				$this->_db->exec("CREATE TABLE {$this->_cache_name} (id TEXT PRIMARY KEY, data BLOB, expire INTEGER)");
 			} else {
 				$this->_db->exec("CREATE TABLE {$this->_cache_name} (id TEXT PRIMARY KEY, data BLOB)");
