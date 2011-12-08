@@ -35,6 +35,8 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		if (this._hasInit) return;
 		this._hasInit = true;
 
+		this.fireEvent('preInit', [this]);
+
 		//------------------------------
 		// Basic elements
 		//------------------------------

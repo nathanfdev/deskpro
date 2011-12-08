@@ -354,12 +354,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</header>
 			<ul>
 				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
-					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
+					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id %}checked="checked"{% endif %} />
 					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
 				</li>
 
 				<li>
-					<input type="radio" name="{{bsaeId}}_agent" value="0" />
+					<input type="radio" name="{{bsaeId}}_agent" value="0" {% if not ticket.agent %}checked="checked"{% endif %}  />
 					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
 				</li>
 
