@@ -1,3 +1,5 @@
+if (!DP_DEBUG) DP_DEBUG = false;
+
 var DP = {
 	console: {
 		error: function() {},
