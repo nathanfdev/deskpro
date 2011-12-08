@@ -1285,13 +1285,15 @@ a.clean-white {
 	white-space: nowrap;
 }
 
-.person-search-box ul li a:hover {
+.person-search-box ul li:hover a,
+.person-search-box ul li.on a {
 	background-color: #2F7FD0;
 	color: #fff;
 	text-decoration: none;
 }
 
-.person-search-box ul li a:hover span {
+.person-search-box ul li:hover a span,
+.person-search-box ul li.on a span {
 	color: #fff;
 }
 
@@ -1308,12 +1310,13 @@ a.clean-white {
 	padding-top: 3px;
 }
 
-.person-search-box ul li:hover address {
+.person-search-box ul li:hover address,
+.person-search-box ul li.on {
 	color: #ccc;
 }
 
 .person-search-box ul li .bound-fade { .fade-away(rgba(255,255,255,0), rgba(255,255,255,1), 45px); }
-.person-search-box ul li:hover .bound-fade { .fade-away(rgba(47,127,208,0), rgba(47,127,208,1), 45px); }
+.person-search-box ul li:hover .bound-fade, .person-search-box ul li.on .bound-fade { .fade-away(rgba(47,127,208,0), rgba(47,127,208,1), 45px); }
 
 .person-search-box footer {
 	background-color: #F5F7FA;

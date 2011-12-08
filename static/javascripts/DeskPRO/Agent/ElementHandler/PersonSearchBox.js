@@ -15,19 +15,8 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsBox  = $('.person-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 
-		// Always show results when the box is in focus
 		this.termInput.on('focus', function() {
 			self.open();
-			if (self.el.data('touch-focus')) {
-				// double touch forces an update
-				self.updateCaller.touch(self.getTerm(), true);
-			}
-		}).on('keypress', function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();//dont enter enter key
-				var term = $(this).val().trim();
-				self.el.trigger('personsearchenter', [term, self]);
-			}
 		});
 	},
 
@@ -59,8 +48,64 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		// Input events
 		//------------------------------
 
-		// Touch the timer so we will search in a few seconds
-		this.termInput.on('keyup', function() { updateCaller.touch(self.getTerm()); }).on('change', function() { updateCaller.touch(self.getTerm()); });
+		// Touch the timer so we will search in a few seconds,
+		// or handle arrow and enter keys to select values in the list
+		this.termInput.on('keypress', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+
+				ev.preventDefault();
+
+				var current = $('li.on', self.resultsList);
+				console.log(self.resultsList);
+				console.log(current);
+				if (current.length) {
+					var personId = current.data('person-id');
+					var name  = $('.user-name', current).text().trim();
+					var email = $('.user-email', current).text().trim();
+
+					self.termInput.val(email);
+
+					self.el.trigger('personsearchboxclick', [personId, name, email, self]);
+				} else {
+					var term = self.getTerm();
+					self.el.trigger('personsearchboxclicknew', [term, self]);
+				}
+
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
+
+				ev.preventDefault();
+
+				var dir = ev.keyCode == 40 ? 'down' : 'up';
+
+				var current = $('li.on', self.resultsList);
+				$('li', self.resultsList).removeClass('on');
+
+				if (!current.length) {
+					if (dir == 'down') {
+						$('li', self.resultsList).first().addClass('on');
+					} else {
+						$('li', self.resultsList).last().addClass('on');
+					}
+				} else {
+					if (dir == 'down') {
+						var next = current.next('li');
+						if (!next.length) {
+							next = $('li', self.resultsList).first();
+						}
+					} else {
+						var next = current.prev('li');
+						if (!next.length) {
+							next = $('li', self.resultsList).last();
+						}
+					}
+
+					next.addClass('on');
+				}
+			} else {
+				console.log(ev.keyCode);
+				updateCaller.touch(self.getTerm());
+			}
+		}).on('change', function() { updateCaller.touch(self.getTerm()); });
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
@@ -121,6 +166,10 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * Reset the box back to empty
 	 */
 	reset: function() {
+		if (this.runningAjax) {
+			this.runningAjax.abort();
+			this.runningAjax = null;
+		}
 		this.termInput.val('');
 		this.resultsList.empty();
 	},
@@ -176,6 +225,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 				this.runningAjax = null;
 			},
 			success: function(data) {
+				var currentPersonId = parseInt($('li.on', this.resultsList).data('person-id')) || 0;
 				this.resultsList.empty();
 
 				Array.each(data, function(user) {
@@ -183,6 +233,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 					row.data('person-id', user.id);
 					row.attr('person-id', user.id);
+					row.addClass('person-' + user.id);
+
+					if (currentPersonId && currentPersonId == parseInt(user.id)) {
+						row.addClass('on');
+						currentPersonId = false;
+					}
 
 					if (this.el.data('highlight-term')) {
 						var term  = Orb.escapeHtml(this.getTerm());
