@@ -204,6 +204,13 @@ class CoreExtension extends Extension
 				'doctrinecache'
 			));
 			$container->setDefinition('doctrine.orm.default_metadata_cache', $definition);
+
+			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
+				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
+				'result_cache',
+				'doctrinecache'
+			));
+			$container->setDefinition('doctrine.orm.default_result_cache', $definition);
 		}
 	}
 

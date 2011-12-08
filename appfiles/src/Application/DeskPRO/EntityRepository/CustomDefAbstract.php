@@ -13,30 +13,39 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
-class CustomDefAbstract extends EntityRepository
+class CustomDefAbstract extends AbstractEntityRepository
 {
+	public static function getCacheId($id)
+	{
+		return 'customdef' . get_called_class() . '_' . $id;
+	}
+
 	/**
 	 * @return array
 	 */
 	public function getFields()
 	{
-		return $this->_em->createQuery("
+		$q = $this->_em->createQuery("
 			SELECT f
 			FROM {$this->_entityName} f
 			ORDER BY f.display_order ASC
-		")->execute();
+		");
+		$q->useResultCache(true, null, static::getCacheId('getfields'));
+
+		return $q->execute();
 	}
 
 	public function getEnabledFields()
 	{
-		return $this->_em->createQuery("
+		$q = $this->_em->createQuery("
 			SELECT f
 			FROM {$this->_entityName} f
 			WHERE f.is_enabled = true
 			ORDER BY f.display_order ASC
-		")->execute();
+		");
+		$q->useResultCache(true, null, static::getCacheId('getenabledfields'));
+
+		return $q->execute();
 	}
 
 	/**
@@ -44,21 +53,29 @@ class CustomDefAbstract extends EntityRepository
 	 */
 	public function getTopFields()
 	{
-		return $this->_em->createQuery("
+		$q = $this->_em->createQuery("
 			SELECT f
 			FROM {$this->_entityName} f
 			WHERE f.parent IS NULL
 			ORDER BY f.display_order ASC
-		")->execute();
+		");
+
+		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
+
+		return $q->execute();
 	}
 
 	public function getEnabledTopFields()
 	{
-		return $this->_em->createQuery("
+		$q = $this->_em->createQuery("
 			SELECT f
 			FROM {$this->_entityName} f
 			WHERE f.parent IS NULL AND f.is_enabled = true
 			ORDER BY f.display_order ASC
-		")->execute();
+		");
+
+		$q->useResultCache(true, null, static::getCacheId('gettopfields'));
+
+		return $q->execute();
 	}
 }

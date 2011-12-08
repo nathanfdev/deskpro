@@ -90,21 +90,6 @@ class TicketController extends AbstractController
 			$this->em->flush();
 		}
 
-		// Widgets
-		$widget_recs = $this->em->getRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
-		$widgets = array();
-		if (count($widget_recs)) {
-			$widgets = \Application\DeskPRO\Widgets\Factory::createHandlersForWidgets(
-				$widget_recs,
-				array('ticket' => $ticket, 'person' => $this->person)
-			);
-		}
-
-		$widgets = Arrays::groupItems($widgets, 'section', true);
-		if (!isset($widgets['agent.ticket.tabs'])) $widgets['agent.ticket.tabs'] = array();
-		if (!isset($widgets['agent.ticket.display'])) $widgets['agent.ticket.display'] = array();
-
-		$ticket_deleted = null;
 		$hard_delete_time = null;
 		if ($ticket['hidden_status'] == 'deleted') {
 			$ticket_deleted = $ticket->getDeletionRecord();
@@ -188,7 +173,6 @@ class TicketController extends AbstractController
 			'ticket_options' => $ticket_options,
 			'ticket_flagged' => $ticket_flagged,
 			'macros' => $macros,
-			'widgets' => $widgets,
 
 			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
