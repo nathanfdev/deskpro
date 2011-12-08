@@ -17,7 +17,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 * @param {Object} options Options to set.
 	 */
 	initialize: function(options) {
-		
+
 		this.dataTransformers = [];
 		this.filterdData = [];
 		this.messageBroker = null;
@@ -34,7 +34,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		};
 
 		this.disabled = false;
-		
+
 		this.setOptions(options);
 
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
@@ -233,7 +233,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	_handleAjaxError: function (sent_info, xhr, textStatus, errorThrown) {
 		this.resetSentItems(sent_info);
 
-		console.error("Polling Error %s for %o", textStatus, xhr);
+		DP.console.error("Polling Error %s for %o", textStatus, xhr);
 
 		this.fireEvent('ajaxError', [xhr, textStatus, errorThrown]);
 

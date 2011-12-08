@@ -22,7 +22,7 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 	},
 
 	setValue: function(value) {
-		console.log('set %o', value);
+		DP.console.log('set %o', value);
 		$('li', this.ticketPage.getEl('flag_opt')).removeClass('on');
 		$('li.flag-' + value, this.ticketPage.getEl('flag_opt')).addClass('on');
 	}

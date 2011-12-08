@@ -16,7 +16,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.fireEvent('init');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) {
-			console.log(info);
+			DP.console.log(info);
 			this.addRow(info.row);
 		}, this);
 	},

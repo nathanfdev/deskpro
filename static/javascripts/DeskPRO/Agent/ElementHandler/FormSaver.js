@@ -15,7 +15,7 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 			this.list = this.el.closest(this.el.data('form-list-selector'));
 		}
 
-		console.log(this.list);
+		DP.console.log(this.list);
 
 		this.url = this.el.data('form-save-url');
 

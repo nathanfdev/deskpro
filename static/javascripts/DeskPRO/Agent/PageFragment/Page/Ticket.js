@@ -341,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	getPropertyManager: function(type, type_id) {
 
-		console.warn('Depreciated');
+		DP.console.error('Depreciated');
 		return this.changeManager.getPropertyManager(type, type_id);
 	},
 
@@ -394,7 +394,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_saveCustomFields: function(fieldEls) {
-		console.warn('This method shold be overriden in a subclass!');
+		DP.console.error('This method shold be overriden in a subclass!');
 	},
 
 	//#################################################################
@@ -570,7 +570,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			triggerElement: null,
 			menuElement: $('.ticket-message-edit-menu', this.wrapper),
 			onItemClicked: function(info) {
-				console.log($(info.menu.getOpenTriggerElement()));
+				DP.console.log($(info.menu.getOpenTriggerElement()));
 				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
@@ -612,7 +612,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						context: this,
 						dataType: 'json',
 						success: function(data) {
-							console.log('Ticket split return %o', data);
+							DP.console.log('Ticket split return %o', data);
 							if (data.success) {
 								DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + data.ticket_id);
 							}

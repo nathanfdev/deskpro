@@ -188,7 +188,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		}
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
-		console.log('depItems %o', depItems);
+		DP.console.log('depItems %o', depItems);
 
 		Array.each(depItems, function(item) {
 			var itemId = this.getItemId(item);

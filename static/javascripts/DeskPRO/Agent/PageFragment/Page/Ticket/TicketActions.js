@@ -264,7 +264,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			return;
 		}
 
-		console.log('Applying macro actions: %o', this.macroActions);
+		DP.console.log('Applying macro actions: %o', this.macroActions);
 
 		Array.each(this.macroActions, function(action_info) {
 			var type = action_info.action;
@@ -293,7 +293,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				}
 				this.changeManager.addChange(prop, action);
 			} else {
-				console.warn('Unknown property `%s`. Actions: %o', type, action);
+				DP.console.error('Unknown property `%s`. Actions: %o', type, action);
 			}
 		}, this);
 

@@ -23,7 +23,7 @@ DeskPRO.Admin.PageHandler.TicketCategoryEdit = new Class({
 		var parent_win = this.getOpenerDeskPRO('DeskPRO_Page_TicketCategories');
 		if (!parent_win) return;
 
-		console.log(parent_win);
+		DP.console.log(parent_win);
 		parent_win.getMessageBroker().sendMessage('category.list.change', {
 			category_id: this.category_id,
 			parent_id: this.parent_id,

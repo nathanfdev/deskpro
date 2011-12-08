@@ -2,13 +2,13 @@ Orb.createNamespace('DeskPRO.Report');
 
 DeskPRO.Report.Window = new Orb.Class({
 	Extends: DeskPRO.Admin.Window,
-	
+
 	/**
 	 * Get a URL pattern
 	 */
 	getUrl: function(name, vars) {
 		if (!window.DESKPRO_URL_REGISTRY[name]) {
-			console.warn('Unknown url name %s', name);
+			DP.console.error('Unknown url name %s', name);
 			return null;
 		}
 

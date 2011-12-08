@@ -69,7 +69,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 	acceptMessage: function(id, data) {
 
 		data = data || {};
-		console.log("New message: %s %o", id, data);
+		DP.console.log("New message: %s %o", id, data);
 
 		switch (id) {
 			case 'loaded':
@@ -176,7 +176,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			this.iframeDocument = iframe.document;
 		} else {
 			this.iframeDocument = null;
-			console.error("Could not get iframe document");
+			DP.console.error("Could not get iframe document");
 		}
 
 		this.iframeWindow = this.iframeDocument.window;

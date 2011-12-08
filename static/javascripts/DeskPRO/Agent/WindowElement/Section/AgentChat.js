@@ -92,9 +92,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.agentTeamList.on('click', 'li', function(ev) {
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
-			console.log(agentIds);
+			DP.console.log(agentIds);
 			agentIds = (agentIds+"").split(',');
-			console.log(agentIds);
+			DP.console.log(agentIds);
 
 			self.newChatWindow(agentIds);
 		});
@@ -171,7 +171,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var origLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!origLi.length) {
-			console.warn('No agent element for %i', agent_id);
+			DP.console.error('No agent element for %i', agent_id);
 			return;
 		}
 

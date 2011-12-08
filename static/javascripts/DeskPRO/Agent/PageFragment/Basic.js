@@ -172,12 +172,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 	getUrl: function(name, vars) {
 
 		if (!this.meta.urls) {
-			console.error('Unknown url name %s (no urls set)', name);
+			DP.console.error('Unknown url name %s (no urls set)', name);
 			return null;
 		}
 
 		if (!this.meta.urls[name]) {
-			console.error('Unknown url name %s', name);
+			DP.console.error('Unknown url name %s', name);
 			return null;
 		}
 

@@ -48,7 +48,7 @@ DeskPRO.Agent.PageHelper.ListColResize = new Orb.Class({
 
 					var width = helperPos.left - pos.left;
 
-					console.log('%i %i', el.width(), width);
+					DP.console.log('%i %i', el.width(), width);
 					el.css('width', width);
 
 					self.fireEvent('widthUpdated', [heads, self])

@@ -1292,14 +1292,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     	return;
     	var rows = Math.floor(this.grid.length / this.number_columns);
 
-    	console.log("----");
+    	DP.console.log("----");
     	for (var x = 0; x < rows; x++) {
     		var debug = '';
     		for (var y = 0; y < this.number_columns; y++) {
     			debug += this.grid[this.number_columns*x + y] + ', ';
     		}
-    		console.log(debug);
+    		DP.console.log(debug);
     	}
-    	console.log("----");
+    	DP.console.log("----");
     }
 });

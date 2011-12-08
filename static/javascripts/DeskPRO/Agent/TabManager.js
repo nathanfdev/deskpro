@@ -122,7 +122,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 	activateTab: function(id) {
 
 		if (this.tabs[id] == undefined) {
-			console.warn('Unknown tab: %s', id);
+			DP.console.error('Unknown tab: %s', id);
 			return false;
 		}
 
@@ -191,7 +191,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 			data.callback_deactivate(data, $('#' + data.wrapperId), this);
 		}
 
-		console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
+		DP.console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
 		$('#' + data.wrapperId).hide();
 
 		if (data.callback_hide_content !== undefined) {

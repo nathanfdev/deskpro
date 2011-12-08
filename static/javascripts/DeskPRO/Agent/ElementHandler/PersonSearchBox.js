@@ -110,7 +110,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		}
 
 		if (!this.boundEl || !this.boundEl.length) {
-			console.error('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
+			DP.console.error('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
 		}
 
 		this.resultsBox.detach().hide().appendTo('body');

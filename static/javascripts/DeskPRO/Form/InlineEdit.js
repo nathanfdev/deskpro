@@ -202,11 +202,11 @@ DeskPRO.Form.InlineEdit = new Class({
 			var self = this;
 			var ajax_options = Object.merge({
 				success: function(data, textStatus, XMLHttpRequest) {
-					console.log('ajax-save data: %o', data);
+					DP.console.log('ajax-save data: %o', data);
 					self.handleAjaxSuccess(ajax_id, data);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					console.log('ajax-save error: %s', textStatus);
+					DP.console.log('ajax-save error: %s', textStatus);
 					self.handleAjaxFailure(ajax_id);
 				},
 				context: this,
@@ -214,8 +214,8 @@ DeskPRO.Form.InlineEdit = new Class({
 				data: data
 			}, this.options['ajax']);
 
-			console.log('ajax-save: %s', ajax_options.url);
-			console.log('ajax-save data: %o', ajax_options.data);
+			DP.console.log('ajax-save: %s', ajax_options.url);
+			DP.console.log('ajax-save data: %o', ajax_options.data);
 
 			$.ajax(ajax_options);
 		} else {

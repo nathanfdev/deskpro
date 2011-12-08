@@ -117,7 +117,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		});
 
 		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
-			console.log('click');
+			DP.console.log('click');
 			if ($(this).val() == 'team') {
 				$('.perm-teams', self.newCatOverlay).slideDown();
 			} else {

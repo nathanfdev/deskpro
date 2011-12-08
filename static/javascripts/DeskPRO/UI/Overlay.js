@@ -327,7 +327,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				break;
 		}
 
-		console.error('Unknown content method: %s', this.options.contentMethod);
+		DP.console.error('Unknown content method: %s', this.options.contentMethod);
 
 		return false;
 	},

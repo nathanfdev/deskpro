@@ -36,7 +36,7 @@ var DpErrorLog = {
 			type: 'POST'
 		});
 
-		console.log('[JS Error] %s', message);
+		DP.console.log('[JS Error] %s', message);
 	},
 
 	handleError: function(message, script, line) {

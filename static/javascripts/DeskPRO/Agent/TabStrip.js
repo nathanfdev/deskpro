@@ -381,7 +381,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		// If its not a tab, we can just ignore the event
 		if (!el.is('li')) {
-			console.log('not click %o', event.target);
+			DP.console.log('not click %o', event.target);
 			return;
 		}
 
@@ -514,7 +514,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		// Current scrolling but not needed anymore
 		// > Remove scroller
 		} else if (isScroll && !needsScroll) {
-			console.debug('[TabStrip] Remove scrolling');
+			DP.console.debug('[TabStrip] Remove scrolling');
 
 			tabPane.removeClass('with-overflow');
 			this.tabStrip.scrollLeft(0);
@@ -523,7 +523,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		// Not scrolling but needs to now
 		// > Add scroller
 		} else if (!isScroll && needsScroll) {
-			console.debug('[TabStrip] Add scrolling');
+			DP.console.debug('[TabStrip] Add scrolling');
 			tabPane.addClass('with-overflow');
 			$('#tabNavigationPane').removeClass('far-left').removeClass('far-right');
 			this.recalcScrollControls();

@@ -12,7 +12,7 @@ DeskPRO.ElementHandler_Exec = function(context) {
 		var classObj = Orb.getNamespacedObject(className);
 
 		if (!classObj) {
-			console.error("Unknown element handler `%s` on element %o", className, this);
+			DP.console.error("Unknown element handler `%s` on element %o", className, this);
 			return;
 		}
 
@@ -64,11 +64,11 @@ DeskPRO.ElementHandler = new Orb.Class({
 					this.parentHandlerElement = parentHandlerEl;
 					parentHandlerEl.data('handler')._registerChildHandler(this.el);
 				} else {
-					console.warn('Parent handler element %s has no handler object on element %o and handler %o', sel, this.el, this);
+					DP.console.error('Parent handler element %s has no handler object on element %o and handler %o', sel, this.el, this);
 				}
 				initNow = false;
 			} else {
-				console.warn('Unknow parent handler element %s on element %o and handler %o', sel, this.el, this);
+				DP.console.error('Unknow parent handler element %s on element %o and handler %o', sel, this.el, this);
 			}
 		}
 

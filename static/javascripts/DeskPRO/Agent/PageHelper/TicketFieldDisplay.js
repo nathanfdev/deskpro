@@ -11,7 +11,7 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 
 	getFields: function(department_id) {
 		department_id = parseInt(department_id);
-		console.log('[TicketFieldDisplay] department %i', department_id);
+		DP.console.log('[TicketFieldDisplay] department %i', department_id);
 
 		if (!window.DESKPRO_TICKET_DISPLAY || !window.DESKPRO_TICKET_DISPLAY[department_id]) {
 			// The department is empty of fields
@@ -20,12 +20,12 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		}
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
-		console.log('[TicketFieldDisplay] depItems %o', depItems);
+		DP.console.log('[TicketFieldDisplay] depItems %o', depItems);
 
 		//depItems = this.runRules(depItems);
 
 		var items = this.runRules(depItems);
-		console.log('[TicketFieldDisplay] items %o', items);
+		DP.console.log('[TicketFieldDisplay] items %o', items);
 
 		return items;
 	},

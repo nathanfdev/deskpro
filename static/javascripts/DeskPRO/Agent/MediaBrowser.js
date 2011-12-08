@@ -50,7 +50,7 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 				return els;
 			}
 		}).bind('fileuploaddragover', function(e) {
-			console.log(e);
+			DP.console.log(e);
 			wrapper.addClass('file-drag-over');
 		});
 	},

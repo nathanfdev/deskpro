@@ -557,7 +557,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		$('button.send-trigger', overlayWrapper).on('click', function() {
 			var blobId = $('input.send_blob_id', overlayWrapper).val();
-			console.log(blobId);
+			DP.console.log(blobId);
 
 			if (!blobId) {
 				return;

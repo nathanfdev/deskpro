@@ -9,7 +9,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 		$('#department_switcher').on('change', function() {
 			var opt = $('option:selected', this);
 			var url = opt.data('refresh-url');
-			console.log(url);
+			DP.console.log(url);
 			if (url) {
 				window.location = url;
 			}

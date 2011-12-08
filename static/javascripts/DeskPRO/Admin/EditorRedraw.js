@@ -7,7 +7,7 @@ Orb.createNamespace('DeskPRO.Admin');
  */
 DeskPRO.Admin.EditorRedraw = new Orb.Class({
 	setItemsForSection: function(data, editor, choice_container, target) {
-		//console.log("Args: %o", arguments);
+		//DP.console.log("Args: %o", arguments);
 
 		Array.each(data, function(item) {
 
@@ -28,7 +28,7 @@ DeskPRO.Admin.EditorRedraw = new Orb.Class({
 				}
 
 				if (!li_option.length) {
-					console.warn('Invalid choice for %s: %o', item.item_type, item);
+					DP.console.error('Invalid choice for %s: %o', item.item_type, item);
 					return;
 				}
 

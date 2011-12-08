@@ -107,7 +107,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 				self.fireEvent('reordered', [ui.draggable, this]);
 
 				if (movedTree) {
-					console.log('structed');
+					DP.console.log('structed');
 					window.setTimeout(function() {
 						self.fireEvent('restructured', [ui.draggable, this]);
 					}, 200);

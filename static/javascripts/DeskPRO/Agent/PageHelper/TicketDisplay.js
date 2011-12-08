@@ -202,7 +202,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 */
 	setDepartment: function(department_id, refresh) {
 		department_id = parseInt(department_id);
-		console.log('Setting %i', department_id);
+		DP.console.log('Setting %i', department_id);
 
 		this.clearAll();
 
@@ -221,7 +221,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		}
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
-		console.log('depItems %o', depItems);
+		DP.console.log('depItems %o', depItems);
 
 		//------------------------------
 		// Add items to their right places
@@ -472,7 +472,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		var sectionBodyTabContents = this.sectionBodyTabContents;
 		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
 
-		console.log($('.fields-edit-rows > *', this.sectionProperties).length);
+		DP.console.log($('.fields-edit-rows > *', this.sectionProperties).length);
 		if ($('.fields-edit-rows > *', this.sectionProperties).length) {
 			$('.properties-edit-trigger', this.wrapper).show();
 		} else {

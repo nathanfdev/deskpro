@@ -256,9 +256,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var fieldDisplay = fieldDisplayFetch.getFields($('select.department_id', self.wrapper).val());
 
 			Object.each(fieldDisplay, function(fields, section) {
-				console.log(fields);
+				DP.console.log(fields);
 				Array.each(fields, function(f) {
-					console.log(f);
+					DP.console.log(f);
 					if (f.item_type == 'ticket_field') {
 						var classname = 'ticket-field-' + f.item_id;
 					} else {

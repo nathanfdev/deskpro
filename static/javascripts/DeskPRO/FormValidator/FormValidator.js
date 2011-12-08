@@ -44,7 +44,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 				var classObj = Orb.getNamespacedObject(className);
 
 				if (!classObj) {
-					console.error("Unknown form validator `%s` on element %o", className, this);
+					DP.console.error("Unknown form validator `%s` on element %o", className, this);
 					continue;
 				}
 

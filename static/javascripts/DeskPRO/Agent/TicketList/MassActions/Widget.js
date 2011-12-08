@@ -779,7 +779,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 				self.hasAnyChange = true;
 
-				console.log(data);
+				DP.console.log(data);
 				if (!data.macro_actions) {
 					return;
 				}

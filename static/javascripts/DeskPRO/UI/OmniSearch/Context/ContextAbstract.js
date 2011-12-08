@@ -67,7 +67,7 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 
 		return labels;
 	},
-	
+
 
 	/**
 	 * Get a term ID for a trigger word
@@ -80,7 +80,7 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 
 	/**
 	 * Get the term for a trigger
-	 * 
+	 *
 	 * @param triggerWord
 	 */
 	getTermByTrigger: function(triggerWord) {
@@ -99,6 +99,6 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 	 * @return {String}
 	 */
 	getLabel: function() {
-		console.error('Abstract method');
+		DP.console.error('Abstract method');
 	}
 });
