@@ -33,6 +33,7 @@
 	'agent.chat.end_chat' => 'End Chat',
 	'agent.chat.send_message' => 'Send',
 
+	'agent.chat.title_chats' => 'Chats',
 	'agent.chat.title_new_chats' => 'New Chats',
 	'agent.chat.title_active_chats' => 'Active Chats',
 

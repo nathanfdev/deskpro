@@ -1,58 +1,57 @@
 {% macro dep_row(dep, dep_counts, depth) %}
-	<li class="{% if dep.children|length %}has-children{% endif %} dp-cat-li">
-		<div class="item-wrap dp-cat-item">
-			{% if dep.children|length %}<span class="sub-toggle"></span>{% endif %}
-
-			<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'department_id':dep.id}) }}">
-				<span class="list-counter" id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
-				<span>{{ dep.title }}</span>
-			</span>
-		</div>
-		{% if dep.children|length %}
-			<ul class="sub-group">
-			{% for subdep in dep.children %}
-				{{ _self.dep_row(subdep, dep_counts, depth+1) }}
-			{% endfor %}
-			</ul>
+	<li class="{% if depth %}sub-item with-elbow{% endif %}">
+		{% if depth %}
+			<span class="elbow">|</span>
 		{% endif %}
+		<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'department_id':dep.id}) }}">
+			<span class="list-counter" id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
+			{{ dep.title }}
+		</span>
 	</li>
+	{% if dep.children|length %}
+		{% for subdep in dep.children %}
+			{{ _self.dep_row(subdep, dep_counts, depth+1) }}
+		{% endfor %}
+	{% endif %}
 {% endmacro %}
 
-<section class="source-section">
+<section class="source-section sys-filters-section">
 	<header>
-		<h1>{{ phrase('agent.chat.title_new_chats') }}</h1>
+		<h1>{{ phrase('agent.chat.title_chats') }}</h1>
 	</header>
-	<ul class="source-list with-tree no-editor">
-		<li class="dp-cat-li">
-			<div class="item-wrap dp-cat-item">
-				<span class="title auto-load-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
+	<article>
+		<ul class="source-list">
+			{# New Chats #}
+			<li>
+				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
 					<span class="list-counter" id="userchat_list_0_counter" data-count="{{ dep_counts['0_total']|default(0) }}">{{ dep_counts['0_total']|default(0) }}</span>
-					<span>{{ phrase('agent.all') }}</span>
-				</span>
-			</div>
-		</li>
-		{% if not single_dep_mode %}
-			{% for dep in departments %}
-				{{ _self.dep_row(dep, dep_counts, 0) }}
-			{% endfor %}
-		{% endif %}
-	</ul>
-</section>
-
-<section class="source-section">
-	<header>
-		<h1>{{ phrase('agent.chat.title_active_chats') }}</h1>
-	</header>
-	<ul class="source-list with-tree no-editor">
-		{% for agent_id,agent_name in agent_names %}
-			<li class="dp-clat-li" {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
-				<div class="item-wrap dp-cat-item">
-					<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
-						<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">{{ counts[agent_id]|default(0) }}</span>
-						{{ agent_name }}
-					</span>
-				</div>
+					{{ phrase('agent.chat.title_new_chats') }}
+				</h3>
+				{% if not single_dep_mode %}
+				<ul class="sub-group show">
+					{% for dep in departments %}
+						{{ _self.dep_row(dep, dep_counts, 0) }}
+					{% endfor %}
+				</ul>
+				{% endif %}
 			</li>
-		{% endfor %}
-	</ul>
+
+			{# Active Chats #}
+			<li>
+				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
+					{{ phrase('agent.chat.title_active_chats') }}
+				</h3>
+				<ul class="sub-group">
+					{% for agent_id,agent_name in agent_names %}
+						<li class="" {% if not counts[agent_id] or 1 %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
+							<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
+								<span class="list-counter" id="userchat_list_{{ agent_id }}_counter">{{ counts[agent_id]|default(0) }}</span>
+								{{ agent_name }}
+							</span>
+						</li>
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+	</article>
 </section>
