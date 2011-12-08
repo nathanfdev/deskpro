@@ -221,6 +221,7 @@ $CONFIG['agent_element_handlers'] = array(
 $CONFIG['agent_common'] = array(
 	'out' => 'js/agent-common.js',
 	'files' => array(
+		'javascripts/DeskPRO/DP.js',
 		'javascripts/DeskPRO/ErrorLogger.js',
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
@@ -453,6 +454,7 @@ $CONFIG['user_common'] = array(
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
+		'javascripts/Orb/DP.js',
 		'javascripts/Orb/Class.js',
 		'javascripts/Orb/Util/Options.js',
 		'javascripts/Orb/Util/Events.js',
