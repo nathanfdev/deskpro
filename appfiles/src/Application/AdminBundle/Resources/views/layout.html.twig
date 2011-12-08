@@ -5,6 +5,14 @@
 	<meta name="robots" content="NOINDEX" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 
+	<script type="text/javascript">
+		{% if constant('DP_DEBUG') %}
+			DP_DEBUG = true;
+		{% else %}
+			DP_DEBUG = false;
+		{% endif %}
+	</script>
+
 	{{ dp_asset_html('agent_vendors_css') }}
 	{{ dp_asset_html('agent_deskpro_ui_css') }}
 	{{ dp_asset_html('agent_interface_css') }}

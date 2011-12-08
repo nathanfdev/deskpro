@@ -1,3 +1,15 @@
+<script type="text/javascript">
+	var BASE_URL = '{{ path('user') }}';
+	var ASSETS_BASE_URL = '{{ asset('') }}';
+	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+	{% if constant('DP_DEBUG') %}
+		DP_DEBUG = true;
+	{% else %}
+		DP_DEBUG = false;
+	{% endif %}
+</script>
+
 {% if app.isDebug() %}
 	{{ dp_asset_html('user_vendors') }}
 	{{ dp_asset_html('user_common') }}
@@ -8,11 +20,6 @@
 <link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
 <link rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
 
-<script type="text/javascript">
-	var BASE_URL = '{{ path('user') }}';
-	var ASSETS_BASE_URL = '{{ asset('') }}';
-	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
-</script>
 <script type="text/javascript">
 	window.DeskPRO_Window = new DeskPRO.User.Window();
 	$(document).ready(function() {
