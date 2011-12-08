@@ -57,6 +57,16 @@ class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 			}
 		}
 
+		$php_creates[] = <<<SQL
+CREATE TABLE `content_search` (
+  `object_type` varchar(15) NOT NULL DEFAULT '',
+  `object_id` int(11) NOT NULL,
+  `content` longtext NOT NULL,
+  PRIMARY KEY (`object_type`,`object_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL;
+
+
 		$php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array());\n\n";
 		$php .= implode("\n", $php_creates);
 		$php .= "\n\n\n\n\n";

@@ -25,26 +25,45 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 {
 	/**
 	 * Entity manager
-	 * @var Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
 	public function __construct($options, Queue $queue = null)
 	{
-		parent::__construct($options, $queue);
-
 		$this->em = $options['em'];
-		$this->db = $options['db'];
+		unset($options['em']);
+
+		$this->db = $this->em->getConnection();
+
+		parent::__construct($options, $queue);
 
 		$this->_queues = null;
 	}
 
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->em;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->db;
+	}
 
 
 	/**
@@ -71,7 +90,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	public function getQueues()
 	{
 		if ($this->_queues === null) {
-			$this->_queues = $this->db->fetchAllCol("SELECT DISTINCT(groupname) FROM queue_item");
+			$this->_queues = $this->db->fetchAllCol("SELECT DISTINCT(groupname) FROM queue_items");
 		}
 
 		return $this->_queues;
@@ -100,7 +119,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	 */
 	public function delete($name)
 	{
-		$this->db->delete('queue_item', array('groupname' => $name));
+		$this->db->delete('queue_items', array('groupname' => $name));
 
 		return true;
 	}
@@ -113,9 +132,9 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	 * @param Queue\Queue $queue
 	 * @return int
 	 */
-	public function count(Queue\Queue $queue=null)
+	public function count(Queue $queue=null)
 	{
-		return $this->db->fetchColumn("SELECT COUNT(*) FROM queue_item WHERE groupname = ?", array($queue->getName()));
+		return $this->db->fetchColumn("SELECT COUNT(*) FROM queue_items WHERE groupname = ?", array($queue->getName()));
 	}
 
 
@@ -127,30 +146,39 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	 * @param Queue\Queue $queue
 	 * @return classname
 	 */
-	public function send($message, Queue\Queue $queue=null)
+	public function send($message, Queue $queue=null)
 	{
 		if ($queue === null) {
 			$queue = $this->_queue;
 		}
 
+		if (is_string($message)) {
+			$message = array('message' => $message);
+		}
+
 		$item = new \Application\DeskPRO\Entity\QueueItem();
 		$item['groupname'] = $queue->getName();
+
+		foreach (array('is_ready', 'is_ignored', 'priority', 'delay_until', 'ttr') as $k) {
+			if (isset($message[$k])) {
+				$item->$k = $message[$k];
+				unset($message[$k]);
+			}
+		}
+
 		$item['data'] = $message;
 
 		$this->em->persist($item);
 		$this->em->flush();
 
-		if ($queue AND $this->_current_used_tube != $queue->getName()) {
-			$this->_current_used_tube = $queue->getName();
-			$this->_pheanstalk->useTube($queue->getName());
-		}
-
-		$this->_pheanstalk->put((string)$message);
+		$message['qi_id'] = $item->id;
 
 		$options = array(
 			'queue' => $queue,
-			'data'  => $item->toArray(),
+			'data'  => $message,
 		);
+		$classname = $queue->getMessageClass();
+
 		$classname = $queue->getMessageClass();
 		return new $classname($options);
 	}
@@ -165,7 +193,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	 * @param Queue\Queue $queue
 	 * @return classname
 	 */
-	public function receive($maxMessages=null, $timeout=null, Queue\Queue $queue=null)
+	public function receive($maxMessages=null, $timeout=null, Queue $queue=null)
 	{
 		if ($maxMessages === null) {
 			$maxMessages = 1;
@@ -183,18 +211,19 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 
 			$timenow = new \DateTime();
 			$results = $this->em->createQuery("
-				SELECT *
+				SELECT i
 				FROM DeskPRO:QueueItem i
 				WHERE
-					i.is_dataonly = ?
-					AND (i.is_ready = ? AND (i.reserved_at IS NULL OR i.timeout_at < ?))
-					AND (i.delay_until IS NULL OR i.delay_until < ?)
+					i.is_dataonly = false
+					AND i.is_ignored = false
+					AND i.is_ready = true
+					AND (i.reserved_at IS NULL OR i.timeout_at < ?0)
+					AND (i.delay_until IS NULL OR i.delay_until < ?1)
 				ORDER BY i.priority
-				LIMIT ?
-			")->setParameters(array(false, true, $timenow, $timenow));
+			")->setParameters(array($timenow, $timenow))->setMaxResults($maxMessages)->execute();
 
 			foreach ($results as $item) {
-				$msgs[] = $item->toArray();
+				$msgs[] = array_merge($item->data, array('qi_id' => $item->id));
 
 				$item['reserved_at'] = $timenow;
 				$item['timeout_at'] = $timenow->add(new \DateInterval('PT' . $item['ttr'] . 'S'));
@@ -220,7 +249,21 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 	 */
 	public function deleteMessage(Message $message)
 	{
-		$this->db->delete('queue_item', array('id' => $message->id));
+		$this->db->delete('queue_items', array('id' => $message->qi_id));
 		return true;
+	}
+
+	public function getCapabilities()
+	{
+		return array(
+			'create'        => true,
+			'delete'        => true,
+			'send'          => true,
+			'receive'       => true,
+			'deleteMessage' => true,
+			'getQueues'     => true,
+			'count'         => true,
+			'isExists'      => true,
+		);
 	}
 }

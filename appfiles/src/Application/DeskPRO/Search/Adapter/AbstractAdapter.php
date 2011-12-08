@@ -30,7 +30,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
 	public static $capabilities = array();
-	
+
 	/**#@+
 	 * Capability constants for use with CapabilityInformerInterface
 	 */
@@ -103,7 +103,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
 	/**
 	 * Get person context
-	 * 
+	 *
 	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	public function getPersonContext()
@@ -126,7 +126,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 		return $this->class_to_contenttype;
 	}
 
-	
+
 	/**
 	 * Adds a mapping that maps a class to a contenttype
 	 *
@@ -205,7 +205,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 		return $this->contenttypes[$type_name];
 	}
 
-	
+
 	/**
 	 * Create a new instance of a contenttype object.
 	 *
@@ -219,7 +219,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
 	/**
 	 * Convert a result into its real object.
-	 * 
+	 *
 	 * This is a shortcut of getting the content type for the result, and then
 	 * using resultToObject on it.
 	 *
@@ -264,7 +264,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 			if (!isset($result_set_typed[$type_name])) {
 				$result_set_typed[$type_name] = array();
 			}
-			
+
 			$result_set_typed[$type_name][$result->getId()] = $result;
 		}
 
@@ -331,6 +331,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 */
 	public function updateObjectsInIndex(array $objects)
 	{
+		if (!$objects) return;
+
 		$documents = array();
 
 		foreach ($objects as $object) {
@@ -350,6 +352,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 */
 	public function deleteObjectsFromIndex(array $objects)
 	{
+		if (!$objects) return;
+
 		$documents = array();
 
 		foreach ($objects as $object) {
@@ -369,7 +373,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 */
 	abstract public function updateDocumentsInIndex(array $documents);
 
-	
+
 	/**
 	 * Delete the specified docs from the index
 	 *

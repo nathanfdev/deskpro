@@ -15,11 +15,6 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Application\DeskPRO\Entity\QueueItem;
 
-
-use \Zend\Queue\Queue;
-use \Zend\Queue\Exception as QueueException;
-use \Zend\Queue\Message;
-
 /**
  * Automatically load the body from a QI item
  */
@@ -37,7 +32,7 @@ class Message extends \Zend\Queue\Message
 			$this->_has_init_qi = true;
 			$match = null;
 			if (preg_match('#^<QueueItem:([0-9]+)>$#', $this->_data['body'])) {
-				$db = $this->getAdapter()->getOption('db');
+				$db = $this->getAdapter()->getDb();
 				$this->_data['body'] = $db->fetchColumn("SELECT data FROM queue_item WHERE id = ?", array($match[1]));
 			}
 		}

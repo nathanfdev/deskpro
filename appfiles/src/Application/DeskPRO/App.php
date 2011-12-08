@@ -182,7 +182,7 @@ class App
 	 * Get a registered container.
 	 *
 	 * @param string $name
-	 * @return \Symfony\Component\DependencyInjection\ContainerInterface
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
 	public static function getContainer($name = self::DEFAULT_NAME)
 	{

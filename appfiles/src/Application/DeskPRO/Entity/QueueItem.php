@@ -36,7 +36,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -53,7 +53,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The priority of this job
-	 * 
+	 *
 	 * @var int
 	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
@@ -61,9 +61,9 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Don't process this item until this date.
-	 * 
+	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="delay_until",type="datetime")
+	 * @ORM_Mapping\Column(name="delay_until",type="datetime",nullable=true)
 	 */
 	protected $delay_until = null;
 
@@ -81,7 +81,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * When this is true, the job is ready to be reserved.
-	 * 
+	 *
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_ready", type="boolean")
 	 */
@@ -113,7 +113,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * should use this job.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="reserved_at",type="datetime")
+	 * @ORM_Mapping\Column(name="reserved_at",type="datetime",nullable=true)
 	 */
 	protected $reserved_at = null;
 
@@ -122,7 +122,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * That is, $reserved_at+$ttr
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="timeout_at",type="datetime")
+	 * @ORM_Mapping\Column(name="timeout_at",type="datetime",nullable=true)
 	 */
 	protected $timeout_at = null;
 
@@ -138,7 +138,12 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Any data pertaining to the job
 	 * !TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
-	protected $data = '';
+	protected $data = array();
+
+	public function __construct()
+	{
+		$this->created_at = new \DateTime();
+	}
 }

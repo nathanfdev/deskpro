@@ -35,6 +35,18 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		/** @var $queue \Application\DeskPRO\Queue\Queue */
+		$queue = $this->getContainer()->getQueue('test');
 
+		$queue->send('my message woo' . mt_rand(0,10000000));
+		$queue->send('my message woo' . mt_rand(0,10000000));
+		$queue->send('my message woo' . mt_rand(0,10000000));
+
+		foreach ($queue->receive(10, 100) as $m) {
+			echo $m->message;
+			echo "\n";
+
+			$queue->deleteMessage($m);
+		}
 	}
 }

@@ -31,6 +31,11 @@ class SearchExtension extends Extension
 		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostPersist'));
 		$definition->addTag('kernel.listener', array('event' => 'Doctrine_onPostRemove'));
 		$container->setDefinition('deskpro.search_adapter_entity_listener', $definition);
+
+		// Doctrine listener to support search engine
+		$definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
+		$definition->addTag('doctrine.event_subscriber');
+		$container->setDefinition('deskpro.search.entity_listener', $definition);
 	}
 
 	public function getXsdValidationBasePath()

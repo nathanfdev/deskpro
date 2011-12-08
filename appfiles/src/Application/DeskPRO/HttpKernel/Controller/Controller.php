@@ -23,6 +23,11 @@ use Symfony\Component\EventDispatcher\Event;
 abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
 	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $container;
+
+	/**
 	 * The request
 	 * @var \Symfony\Component\HttpFoundation\Request
 	 */
