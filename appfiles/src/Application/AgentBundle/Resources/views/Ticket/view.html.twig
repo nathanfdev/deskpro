@@ -168,14 +168,14 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<div class="controls">
 				<span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
 			</div>
-			<h4>{{ phrase('agent.agents') }}</h4>
+			<h4>{{ phrase('agent.assignments') }}</h4>
 		</header>
 		<section id="{{baseId}}_people_box_agent">
 			<article>
 				<dl>
-					<dt class="agent-row">{{ phrase('agent.assigned') }}</dt>
+					<dt class="agent-row">{{ phrase('agent.agent') }}</dt>
 					<dd class="agent-row">
-						<span class="agent-link agent-icon prop-agent-id" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default('Unassigned') }}</span>
+						<span class="agent-link agent-icon prop-agent-id" data-none-label="{{ phrase('agent.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default(phrase('agent.no_agent_assigned')) }}</span>
 					</dd>
 
 					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.team') }}</dt>

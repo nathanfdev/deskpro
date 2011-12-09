@@ -156,6 +156,7 @@
 
 	'agent.assign_agent' => 'Assign Agent',
 	'agent.assigned' => 'Assigned',
+	'agent.assignments' => 'Assignments',
 	'agent.assign' => 'Assign',
 
 	'agent.none'                    => 'None',
@@ -200,6 +201,7 @@
 	'agent.unassigned'    => 'Unassigned',
 	'agent.department'    => 'Department',
 	'agent.product'       => 'Product',
+	'agent.agent'         => 'Agent',
 	'agent.agent'         => 'Agent',
 	'agent.agents'        => 'Agents',
 	'agent.agent_team'    => 'Agent Team',
@@ -316,6 +318,7 @@
 	'agent.change_property' => 'Change Property',
 	'agent.change_status' => 'Change Status',
 	'agent.assignments' => 'Assignments',
+	'agent.no_agent_assigned' => 'No agent assigned',
 	'agent.assign_team' => 'Assign Team',
 	'agent.assign_agent' => 'Assign Agent',
 	'agent.add_followers' => 'Add Followers',
