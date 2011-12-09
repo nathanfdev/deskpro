@@ -848,7 +848,7 @@ class App
 		$writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
 		$logger->addWriter($writer);
 
-		if ($log_name == 'error_log' && !App::getConfig('no_report_errors')) {
+		if (($log_name == 'error_log' || $log_name == 'error_log.js') && !App::getConfig('no_report_errors')) {
 			$writer = new \Application\DeskPRO\Log\Writer\ReportErrors();
 			$logger->addWriter($writer);
 		}
