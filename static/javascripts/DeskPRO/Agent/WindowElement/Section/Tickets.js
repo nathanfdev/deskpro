@@ -10,6 +10,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
+
 		// Simulate instant switching when clicking nav items
 		var self = this;
 		this.getSectionElement().on('click', '[data-route]', function(ev) {
@@ -410,6 +412,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 			}
 		}, this);
+
+		// Nothing to do
+		if (!postData.length) {
+			return;
+		}
 
 		var countEls = $('.list-counter', $(els)).first();
 		countEls.addClass('loading');
