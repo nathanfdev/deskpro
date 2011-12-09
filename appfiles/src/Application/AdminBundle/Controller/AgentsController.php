@@ -124,12 +124,21 @@ class AgentsController extends AbstractController
 			$email_address = $this->in->getString('agent.email');
 			$first_name    = $this->in->getString('agent.first_name');
 			$last_name     = $this->in->getString('agent.last_name');
+			$password      = $this->in->getString('agent.password');
+			$password2      = $this->in->getString('agent.password2');
 
 			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
 				$errors['email'] = true;
 			}
 			if (!$first_name || !$last_name) {
 				$errors['name'] = true;
+			}
+
+			if (!$password) {
+				$errors['password'] = true;
+			}
+			if ($password != $password2) {
+				$errors['password2'] = true;
 			}
 
 			if (!$errors) {
@@ -139,8 +148,11 @@ class AgentsController extends AbstractController
 					$person->setEmail($email_address, true);
 				}
 
+				$person->setPassword($password);
 				$person->first_name = $first_name;
 				$person->last_name  = $last_name;
+				$person->is_user = true;
+				$person->is_confirmed = true;
 				$person->is_agent = true;
 
 				$this->em->getConnection()->beginTransaction();

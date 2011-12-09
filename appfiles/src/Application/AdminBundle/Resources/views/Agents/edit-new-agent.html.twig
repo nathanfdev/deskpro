@@ -7,6 +7,18 @@
 {% endblock %}
 {% block page %}
 
+{% if errors|length %}
+<div class="alert-message block-message error">
+	<strong>Please correct the following problem(s):</strong>
+	<ul>
+		{% if errors.email %}<li>Please enter a valid email address</li>{% endif %}
+		{% if errors.name %}<li>Please enter a first and last name</li>{% endif %}
+		{% if errors.password %}<li>Please enter an initial password</li>{% endif %}
+		{% if not errors.password and errors.password2 %}<li>The second password box did not match the first. Please type in both passwords again.</li>{% endif %}
+	</ul>
+</div>
+{% endif %}
+
 <form action="{{ path('admin_agents_new') }}" method="post">
 <input type="hidden" name="process" value="1" />
 
@@ -27,6 +39,16 @@
 		</div>
 		<div class="dp-form-input">
 			<input style="width:409px;" type="text" name="agent[email]" value="" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Initial Password</label>
+		</div>
+		<div class="dp-form-input">
+			<input style="width:200px;" type="password" name="agent[password]" value="" placeholder="Password" />
+			<input style="width:200px;" type="password" name="agent[password2]" value="" placeholder="Repeat Password" />
 		</div>
 	</div>
 </div>
