@@ -401,11 +401,6 @@ function deskpro_build_cleanvendors_zend($dir)
 	}
 }
 
-function deskpro_build_cleanvendors_zend1($dir)
-{
-	deskpro_build_exec_exit_error("rm -rf bin demos documentation externals extras resources tests INSTALL.txt README.txt", $dir);
-}
-
 ###############################################################################
 # Run
 ###############################################################################

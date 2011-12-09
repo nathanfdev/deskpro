@@ -67,7 +67,7 @@
 	'symfony' => array(
 		'into' => DP_ROOT.'/vendor/symfony',
 		'repos' => 'git://github.com/symfony/symfony.git',
-		'version' => 'v2.0.6',
+		'version' => 'v2.0.7',
 	),
 	'twig' => array(
 		'into' => DP_ROOT.'/vendor/twig',
@@ -77,11 +77,6 @@
 	'zend' => array(
 		'into' => DP_ROOT.'/vendor/zend',
 		'repos' => 'git://github.com/zendframework/zf2.git',
-		'version' => '5f06010d6e244d4451ebaaf999e620192d01b0bc',
-	),
-	'zend1' => array(
-		'into' => DP_ROOT.'/vendor/zend1',
-		'repos' => 'git://github.com/mridgway/Zend-Framework-1.x-Mirror.git',
-		'version' => '1.11.10',
-	),
+		'version' => 'b3d72e224b74563bc9c29c30cb7d42ffa34efad8',
+	)
 );
