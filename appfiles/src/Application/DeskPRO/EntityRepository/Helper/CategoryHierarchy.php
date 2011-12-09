@@ -203,7 +203,7 @@ class CategoryHierarchy
 					$c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
 				}
 			}
-			$c = null;
+			unset($c);
 
 			if ($this->processor_callback) {
 				$cats = $this->processor_callback($cats);
