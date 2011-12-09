@@ -71,7 +71,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					if (this.orgSel.val() && !this.fromCompanyTab) {
+					if (!this.orgSel.val() || (this.orgSel.val() && !this.fromCompanyTab)) {
 						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
 					}
 
