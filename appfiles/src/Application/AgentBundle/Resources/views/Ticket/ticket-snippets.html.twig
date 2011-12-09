@@ -26,7 +26,7 @@ pageMeta.ticket_id = {{ ticket.id|default(0) }};
 				{% include 'AgentBundle:Ticket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
 			{% endfor %}
 
-			<div class="no-cats-message" {% if not ticket_snippet_cats|length %}style="display: none"{% endif %}>
+			<div class="no-cats-message" {% if ticket_snippet_cats|length %}style="display: none"{% endif %}>
 				{{ phrase('agent.snippets_none_explain') }}
 			</div>
         {# Page Containers #}
