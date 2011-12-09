@@ -13,6 +13,7 @@
 /appfiles/sys/logs/
 /appfiles/sys/bootstrap.php
 /appfiles/sys/compiled.php
+/appfiles/sys/config/build-time.php
 /appfiles/sys/Resources/distro-checksums.php
 /appfiles/src/Application/InstallBundle/Data/schema.php
 /static/build

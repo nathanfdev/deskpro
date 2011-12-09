@@ -190,6 +190,9 @@ class TemplatingExtension extends \Twig_Extension
 
 		foreach ($urls as $url) {
 			$type = Strings::getExtension($url);
+
+			$url .= '?' . DP_BUILD_TIME;
+
 			switch ($type) {
 				case 'js':
 					$html[] = '<script type="text/javascript" src="' . $url . '"></script>';

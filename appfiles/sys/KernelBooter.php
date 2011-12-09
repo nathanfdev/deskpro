@@ -38,6 +38,14 @@ class KernelBooter
 			$debug = true;
 		}
 
+		if (!defined('DP_BUILD_TIME')) {
+			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+				require(DP_ROOT.'/sys/config/build-time.php');
+			} else {
+				define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
+			}
+		}
+
 		#------------------------------
 		# Boot up
 		#------------------------------
