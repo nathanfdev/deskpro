@@ -34,19 +34,19 @@ class Feed extends PortalItemAbstract implements CacheableItem
 		}
 
 		$feed_info = array(
-			'title'       => $channel->title(),
-			'description' => $channel->description(),
-			'link'        => $channel->link(),
+			'title'       => $channel->getTitle(),
+			'description' => $channel->getDescription(),
+			'link'        => $channel->getLink(),
 		);
 
 		$feed_items = array();
 		foreach ($channel as $item) {
 			$feed_items[] = array(
-				'title'       => $item->title(),
-				'link'        => $item->link(),
-				'description' => $item->description(),
-				'author'      => $item->author(),
-				'date'        => new \DateTime($item->pubDate()),
+				'title'       => $item->getTitle(),
+				'link'        => $item->getLink(),
+				'description' => $item->getDescription(),
+				'author'      => $item->getAuthor(),
+				'date'        => $item->getDateCreated(),
 			);
 
 			if (count($feed_items) >= $this->getOption('max_items', 5)) {
