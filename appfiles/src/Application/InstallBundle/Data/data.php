@@ -8,11 +8,28 @@ $em->persist($l);
 $em->flush();
 
 ##BEGIN:create_department.default##
-
 $q = new \Application\DeskPRO\Entity\Department();
 $q['title'] = 'General';
 $q['is_tickets_enabled'] = true;
 $q['is_chat_enabled'] = true;
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_article_cat.default##
+$q = new \Application\DeskPRO\Entity\ArticleCategory();
+$q['title'] = 'General';
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_download_cat.default##
+$q = new \Application\DeskPRO\Entity\DownloadCategory();
+$q['title'] = 'General';
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_news_cat.default##
+$q = new \Application\DeskPRO\Entity\NewsCategory();
+$q['title'] = 'General';
 $em->persist($q);
 $em->flush();
 
