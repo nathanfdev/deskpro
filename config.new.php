@@ -1,11 +1,14 @@
 <?php
-$DP_CONFIG = array();
+
+$DP_CONFIG = array();			// please do not edit this line
+$DP_CONFIG['db'] = array();		// please do not edit this line
 
 ################################################################################
-# Database Configuration
+# Your mySQL Database Configuration
+#
+# Your server administrator or webhost can provide this information for you.
+# Please contact support@deskpro.com for further help
 ################################################################################
-
-$DP_CONFIG['db'] = array();
 
 /**
  * The database server, usually localhost
