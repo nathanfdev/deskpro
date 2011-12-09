@@ -358,7 +358,7 @@ function deskpro_build_cleanvendors_twig($dir)
 
 function deskpro_build_cleanvendors_zend($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin demos documentation resources tests tools working .gitignore .gitmodules INSTALL.txt README-DEV.txt README-GIT.txt README.txt ext/twig/.gitignore", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin demos documentation resources tests tools working .gitignore .gitmodules INSTALL.txt README-DEV.txt README-GIT.txt README.txt ext/twig/.gitignore modules", $dir);
 
 	$remove_modules = array(
 		'Acl',
