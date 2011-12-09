@@ -37,6 +37,7 @@ class VerifyChecksums
 		$chunk_hashes = array();
 
 		$uproot = realpath(DP_ROOT.'/../');
+
 		foreach ($chunk_files as $f) {
 			$filepath = $uproot.$f;
 			if (file_exists($filepath)) {
@@ -56,7 +57,7 @@ class VerifyChecksums
 				$results['added'][] = $path;
 			} elseif ($checksum != $standard_chunk_hashes[$path]) {
 				$results['changed'][] = $path;
-			} elseif (!file_exists(DP_ROOT.$path)) {
+			} elseif (!file_exists($uproot.$path)) {
 				$results['removed'][] = $path;
 			} else {
 				$results['okay'][] = $path;
