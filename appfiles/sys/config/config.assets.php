@@ -454,7 +454,7 @@ $CONFIG['user_common'] = array(
 	'files' => array(
 		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
-		'javascripts/Orb/DP.js',
+		'javascripts/DeskPRO/DP.js',
 		'javascripts/Orb/Class.js',
 		'javascripts/Orb/Util/Options.js',
 		'javascripts/Orb/Util/Events.js',
@@ -568,7 +568,7 @@ $CONFIG['agent_interface_css'] = array(
 
 $CONFIG['agent_interface_print_css'] = array(
 	'out' => 'css/agent-interface-print.css',
-	'filters' => array('css_path'),
+	'filters' => array('less'),
 	'media' => 'print',
 	'files' => array(
 		'stylesheets-less/agent/print.less',
@@ -579,24 +579,7 @@ $CONFIG['agent_vendors_css'] = array(
 	'out' => 'css/agent-vendors.css',
 	'filters' => array('css_path'),
 	'files' => array(
-		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
-		'vendor/jquery/tipped/css/tipped.css',
-		'vendor/jquery/colorbox/colorbox.css',
-		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
-		'vendor/jquery/chosen/chosen.css',
-		'vendor/jquery/jquery-checkbox/jquery.checkbox.css',
-
-		'vendor/jquery/markitup/markitup/skins/simple/style.css',
-		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
-		'vendor/jquery/token-field/token-field.css',
-	)
-);
-
-$CONFIG['agent_vendors_css'] = array(
-	'out' => 'css/agent-vendors.css',
-	'filters' => array('css_path'),
-	'files' => array(
-		'vendor/jquery/jquery-ui/css/dp-theme/jquery-ui.css',
+		'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
 		'vendor/jquery/tipped/css/tipped.css',
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
@@ -611,7 +594,7 @@ $CONFIG['agent_vendors_css'] = array(
 
 $CONFIG['report_interface_css'] = array(
 	'out' => 'css/report-interface.css',
-	'filters' => array('css_path'),
+	'filters' => array('less'),
 	'media' => 'screen',
 	'files' => array(
 		'stylesheets-less/report/main.less',
