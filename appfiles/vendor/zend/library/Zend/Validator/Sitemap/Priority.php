@@ -51,7 +51,7 @@ class Priority extends \Zend\Validator\AbstractValidator
      * @var array
      */
     protected $_messageTemplates = array(
-        self::NOT_VALID => "'%value%' is no valid sitemap priority",
+        self::NOT_VALID => "'%value%' is not a valid sitemap priority",
         self::INVALID   => "Invalid type given. Numeric string, integer or float expected",
     );
 
@@ -66,14 +66,14 @@ class Priority extends \Zend\Validator\AbstractValidator
     public function isValid($value)
     {
         if (!is_numeric($value)) {
-            $this->_error(self::INVALID);
+            $this->error(self::INVALID);
             return false;
         }
 
-        $this->_setValue($value);
+        $this->setValue($value);
         $value = (float) $value;
         if ($value < 0 || $value > 1) {
-            $this->_error(self::NOT_VALID);
+            $this->error(self::NOT_VALID);
             return false;
         }
 

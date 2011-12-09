@@ -22,17 +22,11 @@
 * @namespace
 */
 namespace Zend\Feed\Reader;
-use Zend\HTTP;
-use Zend\Loader;
+
+use Zend\Http,
+    Zend\Loader;
 
 /**
-* @uses \Zend\Feed\Feed
-* @uses \Zend\Feed\Exception
-* @uses \Zend\Feed\Reader\FeedSet
-* @uses \Zend\Feed\Reader\Feed\Atom\Atom
-* @uses \Zend\Feed\Reader\Feed\RSS
-* @uses \Zend\HTTP\Client
-* @uses \Zend\Loader\PluginLoader
 * @category Zend
 * @package Zend_Feed_Reader
 * @copyright Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
@@ -71,14 +65,14 @@ class Reader
     /**
      * Cache instance
      *
-     * @var \Zend\Cache\Core
+     * @var \Zend\Cache\Frontend\Core
      */
     protected static $_cache = null;
 
     /**
      * HTTP client object to use for retrieving feeds
      *
-     * @var \Zend\HTTP\Client
+     * @var \Zend\Http\Client
      */
     protected static $_httpClient = null;
 
@@ -117,7 +111,7 @@ class Reader
     /**
      * Get the Feed cache
      *
-     * @return \Zend\Cache\Core
+     * @return \Zend\Cache\Frontend\Core
      */
     public static function getCache()
     {
@@ -127,10 +121,10 @@ class Reader
     /**
      * Set the feed cache
      *
-     * @param \Zend\Cache\Core $cache
+     * @param \Zend\Cache\Frontend\Core $cache
      * @return void
      */
-    public static function setCache(\Zend\Cache\Core $cache)
+    public static function setCache(\Zend\Cache\Frontend\Core $cache)
     {
         self::$_cache = $cache;
     }
@@ -140,24 +134,24 @@ class Reader
      *
      * Sets the HTTP client object to use for retrieving the feeds.
      *
-     * @param  \Zend\HTTP\Client $httpClient
+     * @param  \Zend\Http\Client $httpClient
      * @return void
      */
-    public static function setHttpClient(HTTP\Client $httpClient)
+    public static function setHttpClient(Http\Client $httpClient)
     {
         self::$_httpClient = $httpClient;
     }
 
 
     /**
-     * Gets the HTTP client object. If none is set, a new \Zend\HTTP\Client will be used.
+     * Gets the HTTP client object. If none is set, a new \Zend\Http\Client will be used.
      *
-     * @return \Zend\HTTP\Client
+     * @return \Zend\Http\Client
      */
     public static function getHttpClient()
     {
-        if (!self::$_httpClient instanceof HTTP\Client) {
-            self::$_httpClient = new HTTP\Client();
+        if (!self::$_httpClient instanceof Http\Client) {
+            self::$_httpClient = new Http\Client();
         }
 
         return self::$_httpClient;
@@ -217,8 +211,8 @@ class Reader
         $responseXml = '';
         $client      = self::getHttpClient();
         $client->resetParameters();
-        $client->setHeaders('If-None-Match', null);
-        $client->setHeaders('If-Modified-Since', null);
+        $headers = new Http\Headers();
+        $client->setHeaders($headers);
         $client->setUri($uri);
         $cacheId = 'Zend_Feed_Reader_' . md5($uri);
 
@@ -232,17 +226,17 @@ class Reader
                     $lastModified = $cache->load($cacheId.'_lastmodified');;
                 }
                 if ($etag) {
-                    $client->setHeaders('If-None-Match', $etag);
+                    $headers->addHeaderLine('If-None-Match', $etag);
                 }
                 if ($lastModified) {
-                    $client->setHeaders('If-Modified-Since', $lastModified);
+                    $headers->addHeaderLine('If-Modified-Since', $lastModified);
                 }
             }
-            $response = $client->request('GET');
-            if ($response->getStatus() !== 200 && $response->getStatus() !== 304) {
-                throw new Exception('Feed failed to load, got response code ' . $response->getStatus());
+            $response = $client->send();
+            if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 304) {
+                throw new Exception('Feed failed to load, got response code ' . $response->getStatusCode());
             }
-            if ($response->getStatus() == 304) {
+            if ($response->getStatusCode() == 304) {
                 $responseXml = $data;
             } else {
                 $responseXml = $response->getBody();
@@ -260,17 +254,17 @@ class Reader
             if ($data !== false) {
                 return self::importString($data);
             }
-            $response = $client->request('GET');
-            if ($response->getStatus() !== 200) {
-                throw new Exception('Feed failed to load, got response code ' . $response->getStatus());
+            $response = $client->send();
+            if ((int)$response->getStatusCode() !== 200) {
+                throw new Exception('Feed failed to load, got response code ' . $response->getStatusCode());
             }
             $responseXml = $response->getBody();
             $cache->save($responseXml, $cacheId);
             return self::importString($responseXml);
         } else {
-            $response = $client->request('GET');
-            if ($response->getStatus() !== 200) {
-                throw new Exception('Feed failed to load, got response code ' . $response->getStatus());
+            $response = $client->send();
+            if ((int)$response->getStatusCode() !== 200) {
+                throw new Exception('Feed failed to load, got response code ' . $response->getStatusCode());
             }
             $reader = self::importString($response->getBody());
             $reader->setOriginalSourceUri($uri);
@@ -341,9 +335,9 @@ class Reader
     {
         $client = self::getHttpClient();
         $client->setUri($uri);
-        $response = $client->request();
-        if ($response->getStatus() !== 200) {
-            throw new Exception("Failed to access $uri, got response code " . $response->getStatus());
+        $response = $client->send();
+        if ($response->getStatusCode() !== 200) {
+            throw new Exception("Failed to access $uri, got response code " . $response->getStatusCode());
         }
         $responseHtml = $response->getBody();
         $libxml_errflag = libxml_use_internal_errors(true);
@@ -460,7 +454,7 @@ class Reader
         if ($xpath->query('//atom:feed')->length) {
             return self::TYPE_ATOM_10;
         }
-
+        
         if ($xpath->query('//atom:entry')->length) {
             if ($specOnly == true) {
                 return self::TYPE_ATOM_10;
@@ -481,9 +475,9 @@ class Reader
     /**
      * Set plugin loader for use with Extensions
      *
-     * @param  \Zend\Loader\ShortNameLocater $loader
+     * @param  \Zend\Loader\ShortNameLocator $loader
      */
-    public static function setPluginLoader(Loader\ShortNameLocater $loader)
+    public static function setPluginLoader(Loader\ShortNameLocator $loader)
     {
         self::$_pluginLoader = $loader;
     }
@@ -491,13 +485,13 @@ class Reader
     /**
      * Get plugin loader for use with Extensions
      *
-     * @return  \Zend\Loader\PluginLoader $loader
+     * @return  \Zend\Loader\PrefixPathLoader $loader
      */
     public static function getPluginLoader()
     {
         if (!isset(self::$_pluginLoader)) {
-            self::setPluginLoader(new Loader\PluginClassLoader(array(
-                'Zend\\Feed\\Reader\\Extension\\' => 'Zend/Feed/Reader/Extension/',
+            self::setPluginLoader(new Loader\PrefixPathLoader(array(
+                'Zend\Feed\Reader\Extension\\' => 'Zend/Feed/Reader/Extension/',
             )));
         }
         return self::$_pluginLoader;
@@ -553,27 +547,23 @@ class Reader
     {
         $feedName  = $name . '\Feed';
         $entryName = $name . '\Entry';
+        $loader    = self::getPluginLoader();
         if (self::isRegistered($name)) {
-            if (self::getPluginLoader()->isLoaded($feedName) ||
-                self::getPluginLoader()->isLoaded($entryName)) {
+            if ($loader->isLoaded($feedName) || $loader->isLoaded($entryName)) {
                 return;
             }
         }
-        try {
-            self::getPluginLoader()->load($feedName);
-            self::$_extensions['feed'][] = $feedName;
-        } catch (Loader\PluginLoaderException $e) {
-        }
-        try {
-            self::getPluginLoader()->load($entryName);
-            self::$_extensions['entry'][] = $entryName;
-        } catch (Loader\PluginLoaderException $e) {
-        }
-        if (!self::getPluginLoader()->isLoaded($feedName)
-            && !self::getPluginLoader()->isLoaded($entryName)
-        ) {
+        $loader->load($feedName);
+        $loader->load($entryName);
+        if (!$loader->isLoaded($feedName) && !$loader->isLoaded($entryName)) {
             throw new \Zend\Feed\Exception('Could not load extension: ' . $name
-                . 'using Plugin Loader. Check prefix paths are configured and extension exists.');
+                . ' using Plugin Loader. Check prefix paths are configured and extension exists.');
+        }
+        if ($loader->isLoaded($feedName)) {
+            self::$_extensions['feed'][] = $feedName;
+        }
+        if ($loader->isLoaded($entryName)) {
+            self::$_extensions['entry'][] = $entryName;
         }
     }
 
@@ -653,7 +643,7 @@ class Reader
         self::registerExtension('Thread');
         self::registerExtension('Podcast');
     }
-
+    
     /**
      * Utility method to apply array_unique operation to a multidimensional
      * array.
@@ -672,5 +662,5 @@ class Reader
         }
         return $array;
     }
-
+ 
 }

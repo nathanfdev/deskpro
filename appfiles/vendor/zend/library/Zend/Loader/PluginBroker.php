@@ -21,6 +21,8 @@
 
 namespace Zend\Loader;
 
+use Zend\Di\Locator;
+
 /**
  * Plugin broker base implementation
  *
@@ -29,7 +31,7 @@ namespace Zend\Loader;
  * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class PluginBroker implements Broker
+class PluginBroker implements Broker, LocatorAware
 {
     /**
      * @var string Default class loader to utilize with this broker
@@ -37,9 +39,14 @@ class PluginBroker implements Broker
     protected $defaultClassLoader = 'Zend\Loader\PluginClassLoader';
 
     /**
-     * @var ShortNameLocater Plugin class loader used by this instance
+     * @var ShortNameLocator Plugin class loader used by this instance
      */
     protected $classLoader;
+    
+    /**
+     * @var boolean Whether plugins should be registered on load
+     */
+    protected $registerPluginsOnLoad = true;
 
     /**
      * @var array Cache of loaded plugin instances
@@ -50,6 +57,11 @@ class PluginBroker implements Broker
      * @var Callback Routine to use when validating plugins
      */
     protected $validator;
+
+    /**
+     * @var Zend\Di\Locator
+     */
+    protected $locator;
 
     /**
      * Constructor
@@ -96,7 +108,7 @@ class PluginBroker implements Broker
                         }
                         $value = new $value;
                     }
-                    if ($value instanceof ShortNameLocater) {
+                    if ($value instanceof ShortNameLocator) {
                         $this->setClassLoader($value);
                         break;
                     } 
@@ -138,6 +150,9 @@ class PluginBroker implements Broker
                     // Aggregate plugins; register only after a validator has 
                     // been registered
                     $plugins = $value;
+                    break;
+                case 'register_plugins_on_load':
+                    $this->setRegisterPluginsOnLoad($value);
                     break;
                 case 'validator':
                     $this->setValidator($value);
@@ -182,16 +197,31 @@ class PluginBroker implements Broker
             }
         }
 
-        if (empty($options)) {
-            $instance = new $class();
-        } elseif ($this->isAssocArray($options)) {
-            $instance = new $class($options);
+        if ($this->getLocator()) {
+            if (empty($options)) {
+                $instance = $this->getLocator()->get($class);
+            } elseif ($this->isAssocArray($options)) {
+                // This might be inconsistent with what $options should be?
+                $instance = $this->getLocator()->get($class, $options);
+            } else {
+                // @TODO: Clean this up, somehow?
+                $instance = $this->getLocator()->get($class);
+            }
         } else {
-            $r = new \ReflectionClass($class);
-            $instance = $r->newInstanceArgs($options);
+            if (empty($options)) {
+                $instance = new $class();
+            } elseif ($this->isAssocArray($options)) {
+                $instance = new $class($options);
+            } else {
+                $r = new \ReflectionClass($class);
+                $instance = $r->newInstanceArgs($options);
+            }
         }
 
-        $this->register($pluginName, $instance);
+        if ($this->getRegisterPluginsOnLoad()) {
+            $this->register($pluginName, $instance);
+        }
+        
         return $instance;
     }
 
@@ -256,10 +286,10 @@ class PluginBroker implements Broker
     /**
      * Set class loader to use when resolving plugin names to class names
      * 
-     * @param  ShortNameLocater $loader 
+     * @param  ShortNameLocator $loader 
      * @return PluginBroker
      */
-    public function setClassLoader(ShortNameLocater $loader)
+    public function setClassLoader(ShortNameLocator $loader)
     {
         $this->classLoader = $loader;
         return $this;
@@ -268,9 +298,9 @@ class PluginBroker implements Broker
     /**
      * Retrieve the class loader
      *
-     * Lazy-loads an instance of PluginClassLocater if no loader is registered.
+     * Lazy-loads an instance of PluginClassLocator if no loader is registered.
      * 
-     * @return ShortNameLocater
+     * @return ShortNameLocator
      */
     public function getClassLoader()
     {
@@ -279,6 +309,28 @@ class PluginBroker implements Broker
             $this->setClassLoader(new $loaderClass());
         }
         return $this->classLoader;
+    }
+    
+    /**
+     * Set if plugins should be registered on load.
+     * 
+     * @param  boolean $flag
+     * @return PluginBroker
+     */
+    public function setRegisterPluginsOnLoad($flag)
+    {
+        $this->registerPluginsOnLoad = (bool) $flag;
+        return $this;
+    }
+
+    /**
+     * Retrieve if plugins are registered on load.
+     * 
+     * @return boolean
+     */
+    public function getRegisterPluginsOnLoad()
+    {
+        return $this->registerPluginsOnLoad;
     }
 
     /**
@@ -338,5 +390,26 @@ class PluginBroker implements Broker
             return false;
         }
         return true;
+    }
+ 
+    /**
+     * Get locator. 
+     * 
+     * @return Zend\Di\Locator
+     */
+    public function getLocator()
+    {
+        return $this->locator;
+    }
+
+    /**
+     * Set locator.
+     *
+     * @param Zend\Di\Locator $locator
+     */
+    public function setLocator(Locator $locator)
+    {
+        $this->locator = $locator;
+        return $this;
     }
 }

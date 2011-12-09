@@ -24,6 +24,8 @@
  */
 namespace Zend\Locale;
 
+use Zend\Locale\Data\Cldr;
+
 /**
  * @uses       \Zend\Locale\Locale
  * @uses       \Zend\Locale\Data\Cldr
@@ -764,7 +766,7 @@ class Format
             }
         }
 
-        return join($values);
+        return implode($values);
     }
 
     /**
@@ -1148,7 +1150,7 @@ class Format
 
         if (empty($options['date_format'])) {
             $options['format_type'] = 'iso';
-            $options['date_format'] = self::getDateFormat($options['locale']);
+            $options['date_format'] = self::getDateFormat(isset($options['locale']) ? $options['locale'] : null);
         }
         $options = self::_checkOptions($options) + self::$_options;
 

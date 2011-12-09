@@ -27,7 +27,7 @@ use Zend\File\Transfer,
     Zend\File\Transfer\Exception,
     Zend\Loader\PrefixPathLoader,
     Zend\Loader\PrefixPathMapper,
-    Zend\Loader\ShortNameLocater,
+    Zend\Loader\ShortNameLocator,
     Zend\Validator,
     Zend\Filter;
 
@@ -223,12 +223,12 @@ abstract class AbstractAdapter
     /**
      * Set plugin loader to use for validator or filter chain
      *
-     * @param  \Zend\Loader\PrefixPathMapper $loader
+     * @param  \Zend\Loader\ShortNameLocator $loader
      * @param  string $type 'filter', or 'validator'
      * @return \Zend\File\Transfer\Adapter\AbstractAdapter
      * @throws \Zend\File\Transfer\Exception on invalid type
      */
-    public function setPluginLoader(ShortNameLocater $loader, $type)
+    public function setPluginLoader(ShortNameLocator $loader, $type)
     {
         $type = strtoupper($type);
         switch ($type) {
@@ -248,7 +248,7 @@ abstract class AbstractAdapter
      * 'filter' or 'validator' for $type.
      *
      * @param  string $type
-     * @return \Zend\Loader\ShortNameLocater
+     * @return \Zend\Loader\ShortNameLocator
      * @throws \Zend\File\Transfer\Exception on invalid type.
      */
     public function getPluginLoader($type)
@@ -375,7 +375,7 @@ abstract class AbstractAdapter
      * @param  boolean      $breakChainOnFailure If the validation chain should stop an failure
      * @param  string|array $options             Options to set for the validator
      * @param  string|array $files               Files to limit this validator to
-     * @return Zend_File_Transfer_Adapter
+     * @return \Zend\File\Transfer\Adapter\AbstractAdapter
      */
     public function addValidator($validator, $breakChainOnFailure = false, $options = null, $files = null)
     {
@@ -1093,7 +1093,7 @@ abstract class AbstractAdapter
     {
         if (null === $translator) {
             $this->_translator = null;
-        } elseif ($translator instanceof \Zend\Translator\Adapter\Adapter) {
+        } elseif ($translator instanceof \Zend\Translator\Adapter\AbstractAdapter) {
             $this->_translator = $translator;
         } elseif ($translator instanceof \Zend\Translator\Translator) {
             $this->_translator = $translator->getAdapter();

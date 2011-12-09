@@ -57,7 +57,7 @@ class Lastmod extends \Zend\Validator\AbstractValidator
      * @var array
      */
     protected $_messageTemplates = array(
-        self::NOT_VALID => "'%value%' is no valid sitemap lastmod",
+        self::NOT_VALID => "'%value%' is not a valid sitemap lastmod",
         self::INVALID   => "Invalid type given. String expected",
     );
 
@@ -72,14 +72,14 @@ class Lastmod extends \Zend\Validator\AbstractValidator
     public function isValid($value)
     {
         if (!is_string($value)) {
-            $this->_error(self::INVALID);
+            $this->error(self::INVALID);
             return false;
         }
 
-        $this->_setValue($value);
+        $this->setValue($value);
         $result = @preg_match(self::LASTMOD_REGEX, $value);
         if ($result != 1) {
-            $this->_error(self::NOT_VALID);
+            $this->error(self::NOT_VALID);
             return false;
         }
 

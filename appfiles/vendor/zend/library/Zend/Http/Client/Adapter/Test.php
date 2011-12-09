@@ -35,10 +35,6 @@ use Zend\Http\Client\Adapter as HttpAdapter,
  * object manually, and then set it as the client's adapter. Then, you can
  * set the expected response using the setResponse() method.
  *
- * @uses       \Zend\Http\Client\Adapter\Exception
- * @uses       \Zend\Http\Client\Adapter
- * @uses       \Zend\Http\Response
- * @uses       \Zend\Uri\Url
  * @category   Zend
  * @package    Zend_Http
  * @subpackage Client_Adapter
@@ -139,7 +135,7 @@ class Test implements HttpAdapter
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Zend\Uri\Url $uri
+     * @param \Zend\Uri\Uri $uri
      * @param string        $http_ver
      * @param array         $headers
      * @param string        $body
@@ -198,10 +194,10 @@ class Test implements HttpAdapter
     public function setResponse($response)
     {
         if ($response instanceof Response) {
-            $response = $response->asString("\r\n");
+            $response = $response->toString();
         }
 
-        $this->responses = (array)$response;
+        $this->responses = (array) $response;
         $this->responseIndex = 0;
     }
 
@@ -213,7 +209,7 @@ class Test implements HttpAdapter
     public function addResponse($response)
     {
          if ($response instanceof Response) {
-            $response = $response->asString("\r\n");
+            $response = $response->toString();
         }
 
         $this->responses[] = $response;
