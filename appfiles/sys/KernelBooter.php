@@ -55,25 +55,25 @@ class KernelBooter
 		$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		$path = $request->getPathInfo();
 
-		if (preg_match('#^/agent/#', $path)) {
+		if (preg_match('#^/agent(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
-		} elseif (preg_match('#^/admin/#', $path)) {
+		} elseif (preg_match('#^/admin(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
 			define('DP_INTERFACE', 'admin');
-		} elseif (preg_match('#^/report/#', $path)) {
+		} elseif (preg_match('#^/report(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';
 			define('DP_INTERFACE', 'report');
-		} elseif (preg_match('#^/api/#', $path)) {
+		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'api');
-		} elseif (preg_match('#^/dev/#', $path)) {
+		} elseif (preg_match('#^/dev(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'dev');
-		} elseif (preg_match('#^/dp/#', $path)) {
+		} elseif (preg_match('#^/dp(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 			define('DP_INTERFACE', 'sys');
-		} elseif (preg_match('#^/install#', $path)) {
+		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
 			define('DP_INTERFACE', 'install');
 
