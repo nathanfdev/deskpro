@@ -36,8 +36,9 @@ class VerifyChecksums
 		$chunk_files = array_keys($standard_chunk_hashes);
 		$chunk_hashes = array();
 
+		$uproot = realpath(DP_ROOT.'/../');
 		foreach ($chunk_files as $f) {
-			$filepath = DP_ROOT.$f;
+			$filepath = $uproot.$f;
 			if (file_exists($filepath)) {
 				$chunk_hashes[$f] = md5_file($filepath);
 			}
