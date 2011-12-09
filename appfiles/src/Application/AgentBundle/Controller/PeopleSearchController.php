@@ -182,7 +182,7 @@ class PeopleSearchController extends AbstractController
 
 		$tpl = 'list-page.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
-			$tpl = 'list-page.html.twig';
+			$tpl = 'list-list-page.html.twig';
 		}
 
 		return $this->render("AgentBundle:PeopleSearch:$tpl", array(
@@ -304,7 +304,7 @@ class PeopleSearchController extends AbstractController
 		$vars = array(
 			'cache' => $result_cache,
 			'cache_id' => $result_cache['id'],
-			'person_ids' => $results,
+			'person_ids' => $result_cache['results'],
 			'terms_summary' => $result_cache->getExtraData('terms_summary')
 		);
 

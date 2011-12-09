@@ -159,53 +159,40 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
 
 		if (view_type == 'list') {
+			var oldlist = this.listview;
+			this.listview = new DeskPRO.Agent.PageHelper.PeopleList.ListView(this);
 
-			var w = $(window).width() - 100;
-			var h = $(window).height() - 100;
-
-			var contentEl = $('<div>Loading...</div>');
-			contentEl.width(w);
-			contentEl.height(h);
-			contentEl.css('overflow', 'auto');
-
-			var  overlay = new DeskPRO.UI.Overlay({
-				contentElement: contentEl,
-				destroyOnClose: true,
-				customClassname: 'no-padding',
-				maxWidth: w,
-				maxHeight: h
-			});
-			overlay.openOverlay();
-
-			var pageReloader = function(new_url) {
-				$.ajax({
-					timeout: 20000,
-					type: 'GET',
-					url: new_url,
-					dataType: 'html',
-					success: function(html) {
-						if (overlay.isDestroyed()) {
-							return;
-						}
-
-						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
-						page.setMetaData('routeUrl', new_url);
-						page.setMetaData('pageReloader', pageReloader);
-
-						contentEl.html(page.html);
-						page.fireEvent('render', [contentEl]);
-						page.fireEvent('activate');
+			if (oldlist && !oldlist.OBJ_DESTROYED) {
+				this.listview.addEvent('ajaxLoaded', function() {
+					if (!oldlist.OBJ_DESTROYED) {
+						oldlist.destroy();
 					}
 				});
 			}
 
-			pageReloader(new_url);
+			this.listview.open();
 			return;
 		}
 
 		DeskPRO_Window.loadListPane(new_url, null, function() {
 			DeskPRO_Window.removePage(self);
 		});
+	},
+
+	loadNewListviewUrl: function(new_url) {
+		var oldlist = this.listview;
+		this.listview = new DeskPRO.Agent.PageHelper.PeopleList.ListView({ load_url: new_url });
+
+		if (oldlist && !oldlist.OBJ_DESTROYED) {
+			oldlist.showInnerLoading();
+			this.listview.addEvent('ajaxLoaded', function() {
+				if (!oldlist.OBJ_DESTROYED) {
+					oldlist.destroy();
+				}
+			});
+		}
+
+		this.listview.open();
 	},
 
 	saveDisplayOptions: function() {

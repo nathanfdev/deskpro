@@ -1,0 +1,72 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
+pageMeta.title = {{ page_title|json_encode|raw }};
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleList';
+pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
+pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
+pageMeta.resultId = {{cache_id}};
+pageMeta.cache_id = {{cache_id}};
+{% if not people %}
+	pageMeta.noResults = true;
+{% endif %}
+
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage', {'view_type': 'list'}) }}';
+pageMeta.viewType = 'list';
+
+pageMeta.perPage = 50;
+pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+<section class="dp-overlay">
+	<header>
+		<div class="controls">
+			<button class="order-by-menu-trigger clean-white small arrow">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary|default('Date Created') }}</span><em></em></button>
+			<button class="display-options-trigger clean-white small">{{ phrase('agent.display_options') }}</button>
+		</div>
+
+		<ul style="display: none" class="order-by-menu">
+			<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
+			<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
+			<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
+		</ul>
+
+		<span class="close close-trigger"></span>
+		<h1>{{ phrase('agent.people') }}</h1>
+	</header>
+	<article>
+		{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
+		<div class="table-result-list">
+			<table cellspacing="0" width="100%">
+				{% include 'AgentBundle:PeopleSearch:list-list-thead.html.twig' %}
+				{% include 'AgentBundle:PeopleSearch:list-list-page.html.twig' %}
+			</table>
+		</div>
+	</article>
+	<div class="full-loading" style="display: none">
+		<em>Loading</em>
+	</div>
+	<footer class="is-ticket-list bottom-action-bar">
+			{#
+			<div class="check-count selection-bar">
+				{{ phrase('agent.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
+
+				<button class="clean-white perform-actions-trigger">
+					<span>{{ phrase('agent.perform_actions') }}</span>
+				</button>
+			</div>
+			#}
+			<div class="results-count">
+				Showing <span class="results-showing-count"></span> of {{ person_ids|length }} people
+			</div>
+			<div class="more-btn">
+				<button class="clean-white show-more is-not-loading">{{ phrase('agent.more') }}</button>
+				<div class="is-loading"></div>
+			</div>
+	</footer>
+</section>

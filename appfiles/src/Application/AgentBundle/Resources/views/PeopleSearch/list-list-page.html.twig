@@ -1,0 +1,48 @@
+<tbody class="search-results page-set" data-page="{{page}}">
+{% for person in people %}
+	<tr
+		class="row-item person-{{person.id}}"
+		data-ticket-id="{{person.id}}"
+		data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)"
+		data-route-title="@selector(.subject-link span)"
+		data-route-openclass="open"
+	>
+		{#
+		<td class="check-all" style="vertical-align: middle;">
+			<input type="checkbox" value="{{person.id}}" class="person item-select" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+		</td>
+		#}
+		<td class="subject">
+			<a class="subject-link"><span>{{person.display_name}}</span></a>
+		</td>
+		{% for field in display_fields %}
+			{% if field == 'email_address' %}
+				<td class="{{field}}">
+					{{ person.primaryEmailAddress }}
+				</td>
+			{% elseif field == 'organization' %}
+				<td class="{{field}}">
+					{% if person.organization_position %}{{ person.organization_position }}, {% endif %}
+					{{ person.organization.name }}
+				</td>
+			{% elseif field == 'language' %}
+				<td class="{{field}}">
+					{{ticket.language.title}}
+				</td>
+			{% else %}
+				{% for f in person_field_defs %}
+					{% if field == 'person_fields['~f.id~']' %}
+						<td class="person-field">
+							<div class="prop-val person_fields_{{f.id}}">
+								{% if person.hasCustomField(f.id) %}
+									{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+								{% endif %}
+							</div>
+						</td>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</tr>
+{% endfor %}
+</tbody>
