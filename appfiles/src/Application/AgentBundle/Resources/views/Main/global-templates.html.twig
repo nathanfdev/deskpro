@@ -426,11 +426,41 @@
 	</li>
 </script>
 
-{# Ticket Search Menus #}
+{# Everything Menus #}
+<div id="everything_search_terms_global">
+	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				{% if with_change_terms %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to include</option>
+					<option value="changed_from">Changed to remove</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
+		</div>
+	</div>
+</div>
+
+{# Ticket Menus #}
 <div id="ticket_search_terms_global">
 	{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': ticket_options }%}
 </div>
 
+{# People Menus #}
+<div id="people_search_terms_global">
+	{% include 'DeskPRO:Common:people-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': people_options }%}
+</div>
+
+
+{# Org Search #}
+<div id="org_search_terms_global">
+	{% include 'DeskPRO:Common:org-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': org_options }%}
+</div>
 {#
 	This isnt a jQuery template. Its used in TabStrip.js because
 	it needs an html string, and jQuery creates real HTML elements.

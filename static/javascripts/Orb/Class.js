@@ -80,9 +80,11 @@ Orb.Class = function(properties) {
 	// for those that dont we can just play it safe and assume parent
 	// is used.
 	} else {
-		var do_parent_detect = (function() {xyz}).toString().indexOf('xyz') != -1;
+		if (typeof ORB_CLASS_DO_PARENT_DETECT == 'undefined') {
+			ORB_CLASS_DO_PARENT_DETECT = (function() {xyz}).toString().indexOf('xyz') != -1;
+		}
 		function checkParentUse(obj) {
-			if (!do_parent_detect) {
+			if (!ORB_CLASS_DO_PARENT_DETECT) {
 				return true;
 			}
 

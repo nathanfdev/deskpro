@@ -1756,16 +1756,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_idea_btn').on('click', function() {
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
-                $('#create_task_btn').on('click', function() {
-                        $('form#newTaskForm input, form#newTaskForm select').val('');
-                        DeskPRO_Window.newTaskLoader.toggle();
-                });
-                $('#create_deal_btn').on('click', function() {
-                        DeskPRO_Window.newDealLoader.toggle();
-                });
+		$('#create_task_btn').on('click', function() {
+			$('form#newTaskForm input, form#newTaskForm select').val('');
+			DeskPRO_Window.newTaskLoader.toggle();
+		});
+		$('#create_deal_btn').on('click', function() {
+			DeskPRO_Window.newDealLoader.toggle();
+		});
 
 
-		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
+		this.omnisearch = new DeskPRO.Agent.UI.OmniSearch.SearchBox();
 
 		// Create toggle
 		$('#createContentTrigger').on('click', function(ev) {

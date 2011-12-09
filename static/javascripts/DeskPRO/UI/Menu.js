@@ -18,6 +18,15 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 	initialize: function(options) {
 
+		// element is the standard UI option name
+		// so alias it to menuElement that used in this widget
+		if (options && options.element) {
+			options.menuElement = options.element;
+		}
+		if (options && options.trigger) {
+			options.triggerElement = options.trigger;
+		}
+
 		// Initialize
 		this.options = {
 			triggerElement: null,

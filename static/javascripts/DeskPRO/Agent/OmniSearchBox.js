@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent');
 
-DeskPRO.Agent.OmniSearchBox = new Orb.Class({
+DeskPRO.Agent.UI.OmniSearch.SearchBox = new Orb.Class({
 	Extends: DeskPRO.UI.OmniSearch.SearchBox,
 
 	getDefaultOptions: function() {
@@ -16,6 +16,8 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 		var self = this;
 
 		this.wrapperEl.detach().appendTo('body');
+
+		this._initTypeSwitcher();
 
 		//-----
 		// Tickets
@@ -96,5 +98,24 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 		});
 
 		this.addContext('tickets', ticketsContext);
+	},
+
+	_initTypeSwitcher: function() {
+		var self = this;
+		this.typeSwitcher = new DeskPRO.UI.Menu({
+			element: $('ul.type-switcher', '#dp_omnibox'),
+			trigger: $('#dp_omnibox_type'),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+				var type = item.data('type');
+
+				var current = $('#dp_omnibox_type').data('type');
+				$('#dp_omnibox_type').removeClass(current);
+
+				$('#dp_omnibox_type').addClass(type).data('type', type);
+
+				self.activateContext(type);
+			}
+		});
 	}
 });

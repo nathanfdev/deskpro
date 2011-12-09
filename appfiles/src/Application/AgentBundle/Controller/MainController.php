@@ -40,7 +40,6 @@ class MainController extends AbstractController
 		}
 
 		// Agent info
-		$agent_info = array();
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
 
@@ -64,6 +63,13 @@ class MainController extends AbstractController
 		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+
+		$people_options = $titles;
+		$people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
+
+		$org_options = array(
+			'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
+		);
 
 		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
 		$online_agent_ids = App::getDb()->fetchAllCol("
@@ -90,6 +96,8 @@ class MainController extends AbstractController
 			'agent_teams' => $agent_teams,
 			'phone_country_info' => $phone_country_info,
 			'open_chats' => $open_chats,
+			'people_options' => $people_options,
+			'org_options' => $org_options,
 		));
     }
 

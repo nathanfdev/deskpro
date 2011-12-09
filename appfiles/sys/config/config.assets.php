@@ -264,9 +264,12 @@ $CONFIG['agent_agent_ui'] = array(
 
 		// Omnisearch
 		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',
-		'javascripts/DeskPRO/Agent/OmniSearchBox.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Context/ContextAbstract.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Context/TicketsContext.js',
+		'javascripts/DeskPRO/Agent/UI/OmniSearch/SearchBox.js',
+		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/EverythingContext.js',
+		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/OrganizationsContext.js',
+		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/PeopleContext.js',
+		'javascripts/DeskPRO/Agent/UI/OmniSearch/Context/TicketsContext.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericInputTerm.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericMenuTerm.js',

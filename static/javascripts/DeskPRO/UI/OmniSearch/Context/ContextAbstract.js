@@ -15,9 +15,31 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 		this.init();
 
 		this.triggerWords = {};
+		this.menu = null;
+		this.menuEl = null;
 	},
 
 	init: function() {},
+
+	getSearchTermsForm: function() {
+		return null;
+	},
+
+
+	/**
+	 * Get the term menu
+	 *
+	 * @return {DeskPRO.UI.Menu}
+	 */
+	getMenu: function() {
+		if (!this.menu) {
+			this.menu = new DeskPRO.UI.Menu({
+				element: this.menuEl
+			});
+		}
+
+		return this.menu;
+	},
 
 
 	/**
@@ -34,6 +56,13 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 	 * @param term
 	 */
 	addTerm: function(id, term) {
+
+		if (!this.menuEl) {
+			this.menuEl = $('<ul />');
+		}
+
+		this.menuEl.append('<li data-rule-type="' + id + '">' + term.getLabel() + '</li>');
+
 		this.terms[id] = term;
 
 		Array.each(term.getTriggerWords(), function(word) {
@@ -90,15 +119,5 @@ DeskPRO.UI.OmniSearch.Context.ContextAbstract = new Orb.Class({
 		}
 
 		return this.getTerm(termId);
-	},
-
-
-	/**
-	 * Get the label for this context
-	 *
-	 * @return {String}
-	 */
-	getLabel: function() {
-		DP.console.error('Abstract method');
 	}
 });

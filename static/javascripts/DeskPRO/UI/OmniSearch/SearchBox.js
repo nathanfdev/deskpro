@@ -112,30 +112,6 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 
 	/**
-	 * Lazy-init menu element and return it.
-	 * Use in addContext to add the context to the menu
-	 */
-	_getContextMenuEl: function() {
-		if (!this.contextMenuEl) {
-			this.contextMenuEl = $('<ul style="display:none;" id="omnisearch_context_menu" />');
-			this.contextMenuEl.appendTo('body');
-
-			this.contextMenu = new DeskPRO.UI.Menu({
-				triggerElement: this.contextBtnEl,
-				menuElement: this.contextMenuEl,
-				defaultEventContext: this,
-				onItemClicked: function(info) {
-					var contextId = $(info.itemEl).data('context');
-					this.activateContext(contextId);
-				}
-			});
-		}
-
-		return this.contextMenuEl;
-	},
-
-
-	/**
 	 * Add a context
 	 *
 	 * @param {String} id
@@ -144,15 +120,94 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 	addContext: function(id, context) {
 		this.contexts[id] = context;
 
-		var menuLi = $('<li />');
-		menuLi.text(context.getLabel());
-		menuLi.data('context', id);
-
-		menuLi.appendTo(this._getContextMenuEl());
+		var searchform = context.getSearchTermsForm();
+		if (searchform) {
+			this.processTermTypes(context, searchform);
+		}
 
 		if (!this.activeContext) {
 			this.activateContext(id);
 		}
+	},
+
+
+	/**
+	 * Process term types in a standard search div
+	 *
+	 * @param wrap
+	 */
+	processTermTypes: function(context, wrap) {
+
+		$('div.type[data-term-type]', wrap).each(function() {
+			var el = $(this);
+			var termTypeHandler = el.data('term-type');
+			var ruleType = el.data('rule-type');
+			var label = el.attr('title');
+			var triggers = el.data('term-triggers').split(',');
+
+			var term = null;
+
+			switch (termTypeHandler) {
+				case 'GenericInputTerm':
+
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericInputTerm({
+						//inputName: inputName,
+						label: label,
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+
+					break;
+
+				case 'GenericMenuTerm':
+					var menuEl = $('<ul />').hide();
+
+					var sel = $('.options select', el);
+					var inputName = sel.attr('name');
+
+					$('option', sel).each(function() {
+						var li = $('<li />');
+						li.data('prop-val', sel.val());
+						li.text($(this).text().trim());
+
+						menuEl.append(li);
+					});
+
+					menuEl.appendTo('body');
+
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericMenuTerm({
+						menuEl: menuEl,
+						inputName: inputName,
+						label: label,
+						menuDataKey: 'prop-val',
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+					break;
+
+				case 'GenericDateTerm':
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericDateTerm({
+						inputName: inputName,
+						label: label,
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+					break;
+			}
+
+			if (term) {
+				context.addTerm(ruleType, term);
+			}
+		});
 	},
 
 
@@ -183,8 +238,6 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		this.activeContextId = id;
 		var context = this.getContext(id);
 		context.fireEvent('activate');
-
-		$('.label', this.contextBtnEl).text(context.getLabel());
 	},
 
 
@@ -221,6 +274,17 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 			return;
 		}
 
+		this.addSearchTerm(termId);
+	},
+
+
+	/**
+	 * Add a search term to the box
+	 *
+	 * @param termId
+	 */
+	addSearchTerm: function(termId) {
+		var context = this.getActiveContext();
 		var term = context.getTerm(termId);
 
 		var el = term.createTermElement(this);

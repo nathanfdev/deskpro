@@ -1,0 +1,123 @@
+{% if id or classname %}
+	{# if given an id or classname then we want a wrapper #}
+	<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname }}" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="remove">-</div>
+			<div class="controls">
+				<div class="type"></div>
+				<div class="op"></div>
+				<div class="options"></div>
+			</div>
+		</div>
+	</div>
+	<div class="type" title="Choose criteria..." data-rule-type="">
+	</div>
+{% endif %}
+
+<div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="lte">before</option>
+			<option value="gte">after</option>
+			<option value="between">between</option>
+		</select>
+	</div>
+	<div class="options">
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+	</div>
+</div>
+<div class="type" title="Email Domains" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="email_domain" value="" />
+	</div>
+</div>
+<div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="op">
+		<select name="op">
+			<option value="is">includes label</option>
+			<option value="not">does not include label</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="label" value="" />
+	</div>
+</div>
+<div class="type" title="Name" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="contains">contains</option>
+			<option value="notcontains">does not contain</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="name" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="phone" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="address" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="im" value="" />
+	</div>
+</div>
+{% if term_options.custom_org_fields %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% for field in term_options.custom_org_fields %}
+	<div class="type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">
+		<div class="op">
+			<select name="op">
+				{% if search_context == 'filter' %}
+					{% for op in field.field_def.getFilterCapabilities(search_context) %}
+						<option value="{{op}}">{{op_lang[op]}}</option>
+					{% endfor %}
+				{% else %}
+					{% for op in field.field_def.getSearchCapabilities(search_context) %}
+						<option value="{{op}}">{{op_lang[op]}}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			{{ form_widget(field.formView) }}
+		</div>
+	</div>
+	{% endfor %}
+{% endif %}
+
+{% if id or classname %}
+	</div>
+{% endif %}

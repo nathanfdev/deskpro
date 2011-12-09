@@ -329,18 +329,110 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 
 .searchBoxWrap{
-	padding: 4px 0 4px 20px;
-	background-repeat: no-repeat;
-	background-position: 5px 5px;
-	background-image: url(../../images/agent/mag-left.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+	padding: 4px 0 4px 28px;
 }
 .searchBoxWrap #dp_omniinput {
 	outline: none;
 	border: none;
 	min-width: 50px;
 	background-color: #FAFAFA;
+	margin-left: 5px;
 }
 
+#dp_omnibox .type-icon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 25px;
+
+	cursor: pointer;
+}
+
+#dp_omnibox .type-icon .icon {
+    position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 13px;
+	height: 13px;
+
+
+	background-repeat: no-repeat;
+	background-image: url(../../images/agent/mag-right.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+}
+
+#dp_omnibox .type-icon.tickets {
+    width: 29px;
+	.icon {
+	 	top: 6px;
+     	left: 6px;
+     	width: 14px;
+     	height: 10px;
+
+		background-image: url(../../images/agent/tabs/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+	}
+}
+
+#dp_omnibox .type-icon.people {
+    width: 29px;
+	.icon {
+	 	top: 6px;
+     	left: 6px;
+     	width: 14px;
+     	height: 10px;
+
+		background-image: url(../../images/agent/tabs/tabtype-person.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+	}
+}
+
+#dp_omnibox .type-icon.organizations {
+    width: 29px;
+	.icon {
+	 	top: 6px;
+     	left: 6px;
+     	width: 14px;
+     	height: 10px;
+
+		background-image: url(../../images/agent/tabs/tabtype-org.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+	}
+}
+
+#dp_omnibox .type-icon.content {
+    width: 28px;
+	.icon {
+	 	top: 6px;
+     	left: 8px;
+     	width: 9px;
+     	height: 11px;
+
+		background-image: url(../../images/agent/tabs/tabtype-content.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+	}
+}
+
+#dp_omnibox .type-icon .drop {
+    position: absolute;
+	top: 10px;
+	right: 0;
+	width: 6px;
+	height: 4px;
+
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url(../../images/agent/icons/omni-down.png) /** sprite-ref: ui-v; sprite-alignment: right; */;
+}
+
+#dp_omnibox .addterm-icon {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 10px;
+	height: 10px;
+	display: block;
+
+	background-image: url(../../images/agent/icons/omni-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; */;
+
+	cursor: pointer;
+}
 
 #dp_omnibox .term {
     float: left;
@@ -369,8 +461,8 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
     margin-top: -7px;
     margin-right: -10px;
 
-    width: 20px;
-    height: 20px;
+    width: 13px;
+    height: 13px;
 
     background-image: url(../../images/agent/close-small.png) /** sprite-ref: ui-v */;
 

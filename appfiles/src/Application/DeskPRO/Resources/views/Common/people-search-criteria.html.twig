@@ -16,7 +16,7 @@
 {% endif %}
 
 {% if term_options.organizations %}
-<div class="type" title="Organization" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_organization">
+<div class="type" title="Organization" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="person_organization">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -33,7 +33,7 @@
 </div>
 {% endif %}
 {% if term_options.usergroups %}
-<div class="type" title="Usergroup" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_usergroup">
+<div class="type" title="Usergroup" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-rule-type="person_usergroup" data-term-triggers="usergroup,group">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -50,7 +50,7 @@
 </div>
 {% endif %}
 {% if term_options.languages %}
-<div class="type" title="Language" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_language">
+<div class="type" title="Language" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-rule-type="person_language" data-term-triggers="lang,language">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -67,7 +67,7 @@
 </div>
 {% endif %}
 
-<div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+<div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="lte">before</option>
@@ -79,7 +79,7 @@
 		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 	</div>
 </div>
-<div class="type" title="Email Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email">
+<div class="type" title="Email Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email" data-term-type="GenericInputTerm" data-term-triggers="email,emailaddress">
 	<div class="op">
 		<select name="op">
 			<option value="contains">contains</option>
@@ -91,7 +91,7 @@
 		<input type="text" name="email" value="" />
 	</div>
 </div>
-<div class="type" title="Email Domain" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email_domain">
+<div class="type" title="Email Domain" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -102,7 +102,7 @@
 		<input type="text" name="email_domain" value="" />
 	</div>
 </div>
-<div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label">
+<div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-term-triggers="label,labelled,labels">
 	<div class="op">
 		<select name="op">
 			<option value="is">includes label</option>
@@ -113,7 +113,7 @@
 		<input type="text" name="label" value="" />
 	</div>
 </div>
-<div class="type" title="Name" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_name">
+<div class="type" title="Name" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
@@ -125,7 +125,7 @@
 		<input type="text" name="name" value="" />
 	</div>
 </div>
-<div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_phone">
+<div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
@@ -136,7 +136,7 @@
 		<input type="text" name="phone" value="" />
 	</div>
 </div>
-<div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_address">
+<div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
@@ -147,7 +147,7 @@
 		<input type="text" name="address" value="" />
 	</div>
 </div>
-<div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_im">
+<div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
@@ -158,10 +158,10 @@
 		<input type="text" name="im" value="" />
 	</div>
 </div>
-{% if people_fields %}
+{% if term_options.custom_people_fields %}
 	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
-	{% for field in people_fields %}
-	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_person_field[{{field.field_def.id}}]">
+	{% for field in term_options.custom_people_fields %}
+	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">
 		<div class="op">
 			<select name="op">
 				{% if search_context == 'filter' %}
