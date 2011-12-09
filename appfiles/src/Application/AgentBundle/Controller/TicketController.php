@@ -91,6 +91,7 @@ class TicketController extends AbstractController
 		}
 
 		$hard_delete_time = null;
+		$ticket_deleted = false;
 		if ($ticket['hidden_status'] == 'deleted') {
 			$ticket_deleted = $ticket->getDeletionRecord();
 
