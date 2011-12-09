@@ -25,6 +25,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.addEvent('show', this._onShowSetVisible);
 		this.addEvent('show', this._onShowActivateList);
 		this.addEvent('show', function() {
+			DeskPRO_Window.updateWindowUrlFragment();
 			if (this.hasLoaded) {
 				$('#dp_source_loading').removeClass('on');
 			}

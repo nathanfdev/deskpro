@@ -6,6 +6,7 @@ DeskPRO.Agent.PageFragment.ListPane.Basic = new Orb.Class({
 		this.parent(html);
 
 		this.addEvent('activate', function() {
+			DeskPRO_Window.updateWindowUrlFragment();
 			DeskPRO_Window.getMessageBroker().sendMessage('list-page-fragment.activated', { page: this });
 		}, this);
 	},

@@ -211,6 +211,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (!browserHash.length) {
+			return;
+		}
+
 		// Hashes are #keyword.tabid:arg1:arg2
 		// tabid part is for non-unique pages (ie newticket) and
 		// a user is clicking between tabs. It is optional,
@@ -294,7 +298,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (activateTabId) {
 			this.pageTabStrip.activateTabById(activateTabId);
-		} else {
+		} else if (firstTabId) {
 			this.pageTabStrip.activateTabById(firstTabId);
 		}
 		if (activateSection) {
@@ -319,8 +323,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (this.DEBUG.disableUrlFragments) return;
 
-		this.cancelHashLaod = true;
-
 		var segments = [];
 
 		if (this.openSection) {
@@ -335,37 +337,36 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (this.pageTabStrip) {
 			var currentTab = this.pageTabStrip.getActiveTab();
 
-			// No current tab means there are no tabs open at all
-			if (!currentTab) {
-				jQuery.history.load('');
-				return;
-			}
+			// Only if we have current tab, cuz no current tab means there are no tabs open at all
+			if (currentTab) {
+				var tabs = this.pageTabStrip.getTabs();
+				Object.each(tabs, function(tab, id) {
+					var tabPage = tab.page;
+					var hash = tabPage.getMetaData('url_fragment');
 
-			var tabs = this.pageTabStrip.getTabs();
-			Object.each(tabs, function(tab, id) {
-				var tabPage = tab.page;
-				var hash = tabPage.getMetaData('url_fragment');
-
-				if (hash) {
-					if (tab.id == currentTab.id) {
-						if (hash.indexOf(':') !== -1) {
-							// ticket:123 to ticket.o:123
-							hash = hash.replace(/:/, '.o:');
-						} else {
-							// somename to somename.o
-							hash = hash + '.o';
+					if (hash) {
+						if (tab.id == currentTab.id) {
+							if (hash.indexOf(':') !== -1) {
+								// ticket:123 to ticket.o:123
+								hash = hash.replace(/:/, '.o:');
+							} else {
+								// somename to somename.o
+								hash = hash + '.o';
+							}
 						}
-					}
 
-					segments.push(hash);
-				}
-			});
+						segments.push(hash);
+					}
+				});
+			}
 		}
 
 		var browserHash = '';
 		browserHash = segments.join(',');
 
+		this.cancelHashLaod = true;
 		jQuery.history.load(browserHash);
+		this.cancelHashLaod = false;
 	},
 
 	windowStateUpdated: function(type) {
