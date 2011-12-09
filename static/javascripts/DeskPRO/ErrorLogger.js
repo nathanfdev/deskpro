@@ -30,7 +30,8 @@ var DpErrorLog = {
 		$.ajax({
 			url: this.saveUrl,
 			data: {
-				message: message
+				message: message,
+				hash: (window.location && window.location.hash) ? window.location.hash : ''
 			},
 			error: function() { },// prevents DeskPRO_Window's global error handler from firing on error
 			type: 'POST'
