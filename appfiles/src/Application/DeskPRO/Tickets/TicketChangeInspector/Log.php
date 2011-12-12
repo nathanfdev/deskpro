@@ -194,7 +194,7 @@ class Log
 
 		if ($this->tracker->isExtraSet('ticket_merge')) {
 			$merge_info = $this->tracker->getExtra('ticket_merge');
-			$action = new LogActions\Merge($this->ticket, $merge_info['other_ticket']);
+			$action = new LogActions\Merge($this->ticket, $merge_info['other_ticket_id']);
 			$this->addLogItem($action);
 		}
 

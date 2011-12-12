@@ -40,6 +40,12 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 	protected $other_ticket;
 
 	/**
+	 * The ticket ID (copied because after its deleted, the id would be lost)
+	 * @var int
+	 */
+	protected $other_ticket_id;
+
+	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
@@ -47,10 +53,12 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 	public function __construct(Person $person_performer, Ticket $ticket, Ticket $other_ticket)
 	{
 		$this->em = App::getOrm();
-		
+
 		$this->ticket = $ticket;
 		$this->other_ticket = $other_ticket;
 		$this->setPersonContext($person_performer);
+
+		$this->other_ticket_id = $other_ticket->id;
 
 		if ($ticket == $other_ticket) {
 			throw new \InvalidArgumentException("You cannot merge a ticket with itself");
@@ -135,7 +143,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->em->remove($this->other_ticket);
 
 			$this->other_ticket->resetTicketLogger();
-			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket' => $this->other_ticket));
+			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket_id' => $this->other_ticket_id));
 
 			$this->em->flush();
 		} catch (\Exception $e) {
@@ -143,7 +151,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 			throw $e;
 		}
-		
+
 		$this->em->commit();
 
 		return true;

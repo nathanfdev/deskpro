@@ -17,12 +17,12 @@ use Application\DeskPRO\Entity;
 class Merge implements LogActionInterface
 {
 	protected $ticket;
-	protected $old_ticket;
+	protected $old_ticket_id;
 
-	public function __construct($ticket, $old_ticket)
+	public function __construct($ticket, $old_ticket_id)
 	{
 		$this->ticket = $ticket;
-		$this->old_ticket = $old_ticket;
+		$this->old_ticket_id = $old_ticket_id;
 	}
 
 	public function getLogName()
@@ -33,10 +33,8 @@ class Merge implements LogActionInterface
 	public function getLogDetails()
 	{
 		return array(
-			'id_before' => $this->old_ticket['id'] ?: null,
+			'id_before' => $this->old_ticket_id ?: null,
 			'id_after'  => $this->ticket['id'] ?: null,
-
-			'other_ticket_id' => $this->old_ticket['id']
 		);
 	}
 
