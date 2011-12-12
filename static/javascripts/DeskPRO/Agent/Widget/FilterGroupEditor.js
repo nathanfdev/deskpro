@@ -236,7 +236,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			boundMode = true;
 		}
 
-		var listHeight = listEl.outerHeight();
+		var listHeight = listEl.height();
 
 		this.controlRealEl.css({
 			height: listHeight,
@@ -267,7 +267,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			}
 
 			editEl.css({
-				top: pos.top-25
+				top: pos.top-25-1,
+				height: el.height()
 			});
 		}).bind(this));
 	},
