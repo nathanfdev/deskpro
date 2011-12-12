@@ -65,6 +65,27 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 	}
 
+
+	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		if (false === $this->booted) {
+			$this->boot();
+		}
+
+		$response = $this->getHttpKernel()->handle($request, $type, $catch);
+
+		$this->postResponseHandled($response);
+
+		return $response;
+	}
+
+	protected function postResponseHandled($response)
+	{
+		if (session_id() !== '') {
+			session_write_close();
+		}
+	}
+
 	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
 	{
 		// cache the container
@@ -262,6 +283,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				}
 			}
 		}
+
+		$this->postResponseHandled($response);
 
 		return $response;
 	}
