@@ -17,7 +17,6 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
-use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -293,6 +292,8 @@ class UserChatController extends AbstractController
 			WHERE c.status = 'open'
 			GROUP BY agent_id
 		");
+
+		$initial_counts['total'] = array_sum(array_values($initial_counts));
 
 		$dep_counts = App::getDb()->fetchAllKeyValue("
 			SELECT IF(department_id, department_id, 0) AS department_id, COUNT(*) AS count
