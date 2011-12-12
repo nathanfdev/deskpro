@@ -557,7 +557,6 @@ $CONFIG['agent_interface_css'] = array(
 	'filters' => array('less'),
 	'files' => array(
 		'stylesheets-less/agent/dp-interface.less',
-		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-source-pane.less',
 		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
@@ -588,7 +587,6 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/jquery/jcrop/css/jquery.Jcrop.css',
 		'vendor/jquery/chosen/chosen.css',
-		'vendor/jquery/jquery-checkbox/jquery.checkbox.css',
 
 		'vendor/jquery/markitup/markitup/skins/simple/style.css',
 		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
