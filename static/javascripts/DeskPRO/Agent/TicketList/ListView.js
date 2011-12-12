@@ -29,22 +29,28 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 			new_url = this.options.load_url.replace('$view_type', 'list');
 		}
 
+		this.wrapper = $('<div class="dp-overlay-container ticketlist" />').appendTo('body');
+		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
+		this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
+		this.backdropEl.on('click', (function(ev) {
+			ev.stopPropagation();
+			this.close();
+		}).bind(this));
+
+		this.wrapper.html('<section class="dp-overlay"><div class="loading"></div></section>');
+
+		this.updatePositions();
+
+		this.wrapper.addClass('open');
+		this.backdropEl.show();
+
 		$.ajax({
 			url: new_url,
 			dataType: 'html',
 			context:  this,
 			success: function(html) {
 
-				this.wrapper = $('<div class="dp-overlay-container ticketlist" />').appendTo('body');
 				this.wrapper.html(html);
-
-				this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
-				this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
-
-				this.backdropEl.on('click', (function(ev) {
-					ev.stopPropagation();
-					this.close();
-				}).bind(this));
 
 				$('header .close-trigger', this.wrapper).first().on('click', (function(ev) {
 					ev.stopPropagation();
