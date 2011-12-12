@@ -177,6 +177,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			theme_advanced_toolbar_align: 'left',
 			theme_advanced_resizing: true,
 			theme_advanced_statusbar_location: 'bottom',
+			theme_advanced_path: false,
 
 			setup: function(ed) {
 				ed.onClick.add(function() {
