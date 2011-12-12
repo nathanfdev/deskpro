@@ -209,6 +209,10 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	updatePositions: function() {
 
+		if (!this.isOpen()) {
+			return;
+		}
+
 		var changeVis = false;
 		if (!this.popoverOuter.is(':visible')) {
 			changeVis = true;
@@ -362,6 +366,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.popover) {
 			this.popoverOuter.remove();
+			this.popover.remove();
 		}
 
 		this.popoverOuter = null;
