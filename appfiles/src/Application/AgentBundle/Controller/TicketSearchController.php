@@ -375,7 +375,7 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		if (!$this->in->checkIsset('grouping_option')) {
+		if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1') {
 			// User looking at all results
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
@@ -385,6 +385,7 @@ class TicketSearchController extends AbstractController
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
 			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $per_page);
+			$vars['ticket_ids'] = $results_helper->getGroupTicketIds();
 		}
 
 		#------------------------------

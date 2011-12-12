@@ -7,8 +7,8 @@
 	<header class="list-grouping-bar">
 		<ul>
 		{% if grouped_info.counts[-1].total > 0 %}
-			<li data-grouping-option="" {% if grouping_option == 'DP_NOT_SET' %}class="on"{% endif %}>
-				<a data-route="{{ grouping_url }}">
+			<li data-grouping-option="-1" {% if grouping_option == 'DP_NOT_SET' or grouping_option == '-1' %}class="on"{% endif %}>
+				<a data-route="{{ grouping_url ~ '-1' }}">
 					All
 					<span>{{ grouped_info.counts[-1].total }}</span>
 				</a>
