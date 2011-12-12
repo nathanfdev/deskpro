@@ -104,9 +104,9 @@ class TemplatingExtension extends \Twig_Extension
         );
     }
 
-	public function startCounter($name = 'default')
+	public function startCounter($name = 'default', $start = 1)
 	{
-		$this->counter_registry[$name] = 0;
+		$this->counter_registry[$name] = 1;
 		return '';
 	}
 
