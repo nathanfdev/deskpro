@@ -209,7 +209,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	updatePositions: function() {
 
-		if (!this.isOpen()) {
+		if (this.isDestroyed) {
 			return;
 		}
 
@@ -359,6 +359,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	destroy: function() {
 
+		this.isDestroyed = true;
 		if (this.page) {
 			this.page.fireEvent('destroy');
 			this.page = null;
