@@ -24,16 +24,19 @@
 		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
 	<section>
-		<dl class="table-list">
-			<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
-			<dd class="org-tags tags-wrap">
-				<ul data-label-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
-					{% for label in org.labels %}
-						<li><span>{{label.label}}</span></li>
-					{% endfor %}
-				</ul>
-			</dd>
-		</dl>
+		<div>
+			<dl class="table-list">
+				<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
+				<dd class="org-tags tags-wrap">
+					<ul data-label-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
+						{% for label in org.labels %}
+							<li><span>{{label.label}}</span></li>
+						{% endfor %}
+					</ul>
+				</dd>
+			</dl>
+			<br class="clear" />
+		</div>
 
 		{% if custom_fields|length %}
 			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
@@ -42,14 +45,18 @@
 			<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
 				{% include 'AgentBundle:Organization:view-customfields-edit-rows.html.twig' %}
 			</dl>
+			<br class="clear" />
 		{% endif %}
 
-		<dl class="table-list">
-			<dt class="type-labels">{{ phrase('agent.date_created') }}</dt>
-			<dd>
-				<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('M j, Y') }}</time>
-			</dd>
-		</dl>
+		<div>
+			<dl class="table-list">
+				<dt class="type-labels">{{ phrase('agent.date_created') }}</dt>
+				<dd>
+					<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('M j, Y') }}</time>
+				</dd>
+			</dl>
+			<br class="clear" />
+		</div>
 	</section>
 </div>
 {# /Properties Box #}
