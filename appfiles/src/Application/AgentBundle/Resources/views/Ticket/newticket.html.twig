@@ -20,13 +20,16 @@ pageMeta.baseId = '{{ baseId }}';
 <input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
 
 <div class="pending-info" style="display: none;">
-	<h3>Creating ticket for comment</h3>
-	<div class="pending-ticket">
-		 Commented on <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a><br />
-		 <select name="comment_action" id="{{baseId}}_comment_action">
-		 	<option value="delete">Delete</option>
-		 	<option value="approve">Validate</option>
-		 </select> comment after ticket is created
+	<h3>Creating ticket for comment:</h3>
+	<div class="pending-item pending-ticket">
+		<div class="about">Commented on: <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a></div>
+		<div class="post-action">
+			<select name="comment_action" id="{{baseId}}_comment_action">
+				<option value="delete">Delete</option>
+				<option value="approve">Validate</option>
+			</select>
+			comment after ticket is created
+		</div>
 	</div>
 </div>
 

@@ -102,11 +102,17 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		this.wrapper.on('click', '.comment-editsave-trigger', function(ev) {
 			var info = findRowInfo(this);
 
+			var commentText = $('textarea', info.editRow).val().trim();
+			if (!commentText.length) {
+				info.row.show();
+				info.editRow.hide();
+			}
+
 			$.ajax({
 				url: BASE_URL + 'agent/publish/comments/save-comment/'+info.contentType+'/'+info.commentId,
 				type: 'POST',
 				data: {
-					comment: $('textarea:first', info.row).val()
+					comment: commentText
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -196,22 +202,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 
 		el.hide();
 		var editEl = info.editRow;
-
-		if (!editEl.is('.rte-inited')) {
-			editEl.addClass('rte-inited');
-			$('textarea', editEl).tinymce({
-				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
-
-				theme: 'advanced',
-				plugins : "fullscreen",
-				fullscreen_new_window: true,
-				theme_advanced_buttons1: 'bold,italic,underline,|,link,unlink,anchor,image',
-				theme_advanced_buttons3: '',
-				theme_advanced_toolbar_location: 'top',
-				theme_advanced_toolbar_align: 'left',
-				theme_advanced_statusbar_location: 'none'
-			});
-		}
 
 		editEl.show();
 	},
