@@ -56,33 +56,6 @@ class TicketSearchController extends AbstractController
 			$filters_summary[$filter['id']] = $searcher->getSummary();
 		}
 
-		#------------------------------
-		# Flags / flag order
-		#------------------------------
-
-		$flags = array('blue','green','orange','pink','purple','red','yellow');
-		$flags = array_combine($flags, $flags);
-
-		$order = $this->person->getPref('agent.ui.ticket-flag-order');
-		if ($order) {
-			$flags_unordered = $flags;
-			$flags = array();
-
-			foreach ($order as $id) {
-				if (isset($flags_unordered[$id])) {
-					$flags[] = $flags_unordered[$id];
-					unset($flags_unordered[$id]);
-				}
-			}
-
-			if (count($flags_unordered)) {
-				foreach ($flags_unordered as $id) {
-					$flags[] = $id;
-				}
-			}
-		}
-		$flags = array_values($flags);
-
 		//agent.ui.filter
 		$filter_show_options = App::getDb()->fetchAllKeyValue("
 			SELECT name, value_str
@@ -93,6 +66,9 @@ class TicketSearchController extends AbstractController
 		#------------------------------
 		# Misc
 		#------------------------------
+
+		$flags = array('blue','green','orange','pink','purple','red','yellow');
+		$flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
 		$index = $label_lister->getIndexList();
@@ -110,6 +86,7 @@ class TicketSearchController extends AbstractController
 			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
+			'flag_counts' => $flag_counts,
 			'archive_counts' => $archive_counts,
 			'filter_show_options' => $filter_show_options,
 			'labels_index' => $index,
@@ -119,6 +96,20 @@ class TicketSearchController extends AbstractController
 		$data['filter_id_matches'] = $filter_id_matches;
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function refreshSectionDataAction($section)
+	{
+		switch ($section) {
+			case 'labels':
+				return $this->getLabelsSectionAction();
+
+			case 'flagged':
+				return $this->getFlaggedSectionAction();
+
+			default:
+				return $this->createResponse('');
+		}
 	}
 
 	public function getLabelsSectionAction()
@@ -133,6 +124,17 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
 			'labels_index' => $index,
 			'labels_cloud' => $cloud,
+		));
+	}
+
+	public function getFlaggedSectionAction()
+	{
+		$flags = array('blue','green','orange','pink','purple','red','yellow');
+		$flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
+
+		return $this->render('AgentBundle:TicketSearch:window-flagged.html.twig', array(
+			'flags' => $flags,
+			'flag_counts' => $flag_counts
 		));
 	}
 

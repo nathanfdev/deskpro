@@ -23,7 +23,17 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 
 	setValue: function(value) {
 		DP.console.log('set %o', value);
+
+		var old_flag = $('li.last-on', this.ticketPage.getEl('flag_opt')).removeClass('last-on').data('value');
+
 		$('li', this.ticketPage.getEl('flag_opt')).removeClass('on');
-		$('li.flag-' + value, this.ticketPage.getEl('flag_opt')).addClass('on');
+		var new_flag = $('li.flag-' + value, this.ticketPage.getEl('flag_opt')).addClass('on last-on').data('value');
+
+		if (DeskPRO_Window.sections.tickets_section) {
+			DeskPRO_Window.sections.tickets_section.changeFlagCountsForSwitch({
+				old_flag: old_flag,
+				new_flag: new_flag
+			});
+		}
 	}
 });

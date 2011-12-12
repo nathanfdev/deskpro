@@ -662,6 +662,13 @@ $collection->add('agent_ticketsearch_getsectiondata', new Route(
 	array()
 ));
 
+$collection->add('agent_ticketsearch_refreshsectiondata', new Route(
+	'/ticket-search/refresh-section-data/{section}.json',
+	array('_controller' => 'AgentBundle:TicketSearch:refreshSectionData'),
+	array(),
+	array()
+));
+
 $collection->add('agent_ticketsearch_getlabelssection', new Route(
 	'/ticket-search/get-section/labels',
 	array('_controller' => 'AgentBundle:TicketSearch:getLabelsSection'),

@@ -629,16 +629,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 	},
 
-	loadFlagCounts: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/get-flagged-section-data.json',
-			context: this,
-			success: function(data) {
-				this.updateFlagCounts(data.flag_counts);
-			}
-		});
-	},
-
 	updateFlagCounts: function(counts) {
 
 		$('ol#ticket_flagged_list span.list-counter').html('0');
@@ -657,15 +647,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			count_str = '0';
 		}
 
-		var el = $('#ticket_flag_' + flag + '_count').html(count_str);
+		var el = $('#ticket_flag_' + flag + '_count').text(count_str);
 	},
 
 	changeFlagCountsForSwitch: function(info) {
+		console.log(info);
 
-		var old_flag_count = parseInt($('#ticket_flag_' + info.old_flag + '_count').html());
-		var new_flag_count = parseInt($('#ticket_flag_' + info.new_flag + '_count').html());
+		if (info.old_flag) {
+			var old_flag_count = parseInt($('#ticket_flag_' + info.old_flag + '_count').text());
+			this.updateFlagCountFor(info.old_flag, old_flag_count-1);
+		}
 
-		this.updateFlagCountFor(info.old_flag, old_flag_count-1);
+		var new_flag_count = parseInt($('#ticket_flag_' + info.new_flag + '_count').text());
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
 	}
 });
