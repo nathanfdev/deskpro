@@ -133,6 +133,9 @@
 			{% if app.session.hasFlash('login_failed') %}
 				<p class="error">Invalid login. Please try again.</p>
 			{% endif %}
+			{% if has_logged_out %}
+				<p>{{ phrase('agent.login.has_logged_out') }}</p>
+			{% endif %}
 
 			{% if agent_session %}
 				<div class="exist-session">

@@ -28,7 +28,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	public function indexAction()
 	{
 		$url = $this->generateUrl('agent', array(), true);
-		return $this->render('AgentBundle:Login:index.html.twig', array('return' => $url));
+		$has_logged_out = $this->in->checkIsset('o');
+		return $this->render('AgentBundle:Login:index.html.twig', array('return' => $url, 'has_logged_out' => $has_logged_out));
 	}
 
 	public function preloadSourcesAction()

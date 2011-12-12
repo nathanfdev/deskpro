@@ -117,6 +117,9 @@
 			{% if app.session.hasFlash('login_failed') %}
 				<p class="error">{{ phrase('agent.login.login_failed') }}</p>
 			{% endif %}
+			{% if has_logged_out %}
+				<p>{{ phrase('agent.login.has_logged_out') }}</p>
+			{% endif %}
 
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>

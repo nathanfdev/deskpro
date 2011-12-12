@@ -230,13 +230,6 @@ $collection->add('agent_login', new Route(
 	array()
 ));
 
-$collection->add('agent_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'AgentBundle:Login:logout'),
-	array(),
-	array()
-));
-
 $collection->add('agent_login_authenticate_local', new Route(
 	'/login/authenticate-password',
 	array('_controller' => 'AgentBundle:Login:authenticateLocal', 'usersource_id' => 0),

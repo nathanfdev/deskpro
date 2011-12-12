@@ -66,6 +66,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_type'  => new \Twig_Function_Method($this, 'getType'),
 			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
 			'security_token' => new \Twig_Function_Method($this, 'securityToken'),
+			'static_security_token' => new \Twig_Function_Method($this, 'staticSecurityToken'),
 			'render_usersource' => new \Twig_Function_Method($this, 'renderUsersource', array('is_safe' => array('html'))),
 			'get_data' => new \Twig_Function_Method($this, 'getData'),
 			'dp_asset' => new \Twig_Function_Method($this, 'getAssetic'),
@@ -297,6 +298,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function securityToken($name = '', $timeout = 43200)
 	{
 		return App::getSession()->getEntity()->generateSecurityToken($name, $timeout);
+	}
+
+	public function staticSecurityToken($name = '', $timeout = 43200)
+	{
+		return Util::generateStaticSecurityToken(md5(App::getAppSecret() . $name), $timeout);
 	}
 
 	public function debugVar($var)

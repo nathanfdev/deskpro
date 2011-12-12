@@ -41,6 +41,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			$url = $this->in->getString('return');
 		}
 
-		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session));
+		$has_logged_out = $this->in->checkIsset('o');
+		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session, 'has_logged_out' => $has_logged_out));
 	}
 }

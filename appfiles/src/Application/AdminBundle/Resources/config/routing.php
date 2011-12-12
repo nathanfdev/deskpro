@@ -131,13 +131,6 @@ $collection->add('admin_login', new Route(
 	array()
 ));
 
-$collection->add('admin_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'AdminBundle:Login:logout'),
-	array(),
-	array()
-));
-
 $collection->add('admin_login_authenticate_local', new Route(
 	'/login/authenticate-password',
 	array('_controller' => 'AdminBundle:Login:authenticateLocal', 'usersource_id' => 0),

@@ -58,8 +58,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	public function logoutAction($auth)
 	{
-		if (!$this->session->getEntity()->checkSecurityToken('user_logout', $auth)) {
-			return $this->redirectRoute($this->route_prefix);
+		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
+			return $this->redirectRoute('user');
 		}
 
 		// When an agent actually logs out, we should be clearing the state
@@ -73,6 +73,18 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		$this->session->replace(array());
 		$this->session->save();
+
+		foreach (array('dpsid', 'dpsid-agent', 'dpsid-admin') as $cookie_name) {
+			if (!empty($_COOKIE[$cookie_name])) {
+				$sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+				if ($sess2) {
+					$this->em->remove($sess2);
+					$this->em->flush();
+				}
+			}
+
+			setcookie($cookie_name, '0', strtotime('-30 days'), '/');
+		}
 
 		if ($this->in->getString('quicklogout') == 'ajax') {
 			if ($this->in->getString('callback')) {
@@ -98,7 +110,13 @@ HTML;
 			$this->createResponse($html);
 		}
 
-		return $this->redirectRoute($this->route_prefix);
+		if ($this->in->getString('to') == 'admin') {
+			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o');
+		} elseif ($this->in->getString('to') == 'agent') {
+			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o');
+		} else {
+			return $this->redirectRoute('user');
+		}
 	}
 
 	public function authenticateLocalAction($usersource_id)
