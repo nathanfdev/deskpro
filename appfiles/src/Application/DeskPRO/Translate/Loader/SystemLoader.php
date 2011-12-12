@@ -47,6 +47,11 @@ class SystemLoader implements LoaderInterface
 		foreach ($lang_packs as $pack_class) {
 
 			$ns_parts = explode('\\', $pack_class);
+			if (!isset($ns_parts[1])) {
+				// invalid name
+				continue;
+			}
+
 			$file = DP_ROOT . '/languages/' . $ns_parts[1] . '/LangPackage.php';
 			if (!file_exists($file)) {
 				continue;
