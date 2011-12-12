@@ -927,16 +927,23 @@ a.clean-white {
 }
 
 .clean-white.arrow {
-	padding-right: 0;
+	position: relative;
+	padding-right: 19px;
 }
 
 .clean-white.arrow em {
+    position: absolute;
+    padding: 0;
+    marign: 0;
+    top: 12px;
+    right: 2px;
     background-repeat: no-repeat;
-    background-position: 0 5px;
+    background-position: 0 0;
     background-image: url(../../images/agent/button-downarrow.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
-	margin-left: 8px;
-	line-height: 12px;
-	padding: 0 12px 0 0;
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	overflow:hidden;
 }
 
 /*
@@ -945,31 +952,19 @@ a.clean-white {
  * to open a menu to change the value of the button itself
  */
 .clean-white.inner-arrow {
+    position: relative !important;
 	padding-right: 20px !important;
 }
 .clean-white.inner-arrow span.arrow {
 	display: block;
-	background-color: #F0F3F4;
 	background-image: url("../../images/agent/icons/bullet_arrow_down.png");
-	background-position: 100% 50%;
+	background-position: 0 50%;
 	background-repeat: no-repeat;
 	position: absolute;
 	top: 0px;
 	right: 2px;
 	bottom: 0px;
 	width: 16px;
-	border-left: 1px solid #B6BABF;
-}
-
-.clean-white.inner-arrow.no-sep {
-	padding-right: 15px;
-}
-
-.clean-white.inner-arrow.no-sep span.arrow {
-	border-left: none;
-}
-.clean-white.large.inner-arrow.no-sep span.arrow {
-	right: 18px !important;
 }
 
 .clean-white.inner-arrow.small span.arrow {
