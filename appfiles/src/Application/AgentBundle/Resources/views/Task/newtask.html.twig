@@ -8,6 +8,9 @@ pageMeta.noMoveToTab = false;
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {{ agentui.scroll_containers('page-task-new') }}
+
+<a class="tab-anchor" href="#">&nbsp;</a>
+
 <form action="{{ path('agent_task_save') }}" method="post" id="{{baseId}}_form">
 	<div id="{{baseId}}_tasks"></div>
 	<div class="add-new-task">

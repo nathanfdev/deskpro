@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewPerson';
 pageMeta.title = 'New Person';
@@ -5,13 +6,11 @@ pageMeta.title = 'New Person';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-new-news page-new-content">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{{ agentui.scroll_containers('page-new-news page-new-content') }}
 
-<form id="{{baseId}}_newperson">
+<a class="tab-anchor" href="#">&nbsp;</a>
+
+<form id="{{baseId}}_newperson" class="keybound-submit">
 
 <div class="section cat-section" id="{{baseId}}_cat_section">
 	<div class="step">
@@ -118,13 +117,15 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-<div class="foot">
-	<button class="dp-button submit-trigger">{{ phrase('agent.create') }}</button>
-</div>
+<footer class="pop-footer">
+	<div class="is-not-loading">
+		<button class="submit-trigger clean-white">Create Person <kbd>(alt+c)</kbd></button>
+	</div>
+	<div class="is-loading" style="padding-top: 9px;">
+		<img src="{{ asset('images/spinners/loading-small.gif') }}" />
+	</div>
+</footer>
 
 </form>
 
-{# scroll containers #}
-</div></div>
-</div>
-{# /scroll containers #}
+{{ agentui.scroll_containers_end() }}

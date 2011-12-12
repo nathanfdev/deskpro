@@ -11,12 +11,14 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		var self = this;
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
+			self.submit();
 		});
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));

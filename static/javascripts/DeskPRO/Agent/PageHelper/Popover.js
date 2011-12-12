@@ -306,6 +306,9 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this._loadPage();
 		}
 
+		var tabAnchor = $('a.tab-anchor', this.popover);
+		tabAnchor.focus();
+
 		// Already open
 		if (this.isOpen()) {
 			return;
@@ -319,6 +322,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}, this);
 
 		this.popoverOuter.show();
+
 		if (this.page) {
 			this.page.fireEvent('popover-open', [this]);
 		}

@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewArticle';
 
@@ -7,13 +8,11 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-new-article page-new-content">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{{ agentui.scroll_containers('page-new-article page-new-content') }}
 
-<form id="{{baseId}}_newarticle">
+<a class="tab-anchor" href="#">&nbsp;</a>
+
+<form id="{{baseId}}_newarticle" class="keybound-submit">
 <input type="hidden" name="pending_article_id" id="{{baseId}}_pending_article_id" value="0" />
 
 <div class="pending-info" style="display: none;">
@@ -145,13 +144,16 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-<div class="foot">
-	<button class="dp-button submit-trigger">Create Article</button>
-</div>
+
+<footer class="pop-footer">
+	<div class="is-not-loading">
+		<button class="submit-trigger clean-white">Create Article <kbd>(alt+c)</kbd></button>
+	</div>
+	<div class="is-loading" style="padding-top: 9px;">
+		<img src="{{ asset('images/spinners/loading-small.gif') }}" />
+	</div>
+</footer>
 
 </form>
 
-{# scroll containers #}
-</div></div>
-</div>
-{# /scroll containers #}
+{{ agentui.scroll_containers_end() }}

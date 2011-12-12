@@ -7,6 +7,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+left', this.tabLeft.bind(this));
 		$(document).bind('keydown', 'ctrl+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
+		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 
 		// Create-type
 		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
@@ -17,9 +18,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'p', this.showNewPerson.bind(this));
 		$(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
 		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
-                $(document).bind('keydown', 'l', this.showNewDeal.bind(this));
-
-
+        $(document).bind('keydown', 'l', this.showNewDeal.bind(this));
 
 		this.boundShortkuts = {};
 
@@ -67,7 +66,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		page.fireEvent(this.boundShortkuts[key][page.TYPENAME], [ev, key]);
 	},
 
-
 	//#########################################################################
 	//# Global Shortcuts
 	//#########################################################################
@@ -97,8 +95,44 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$('form#newTaskForm input, form#newTaskForm select').val('');
                 DeskPRO_Window.newTaskLoader.toggle();
 	},
-        showNewDeal: function() {
-                DeskPRO_Window.newDealLoader.toggle();
+	showNewDeal: function() {
+		DeskPRO_Window.newDealLoader.toggle();
+	},
+
+	/**
+	 * Saves content by looking for the 'submit-trigger' in the open fragment. Popovers
+	 * are checked first, and then tabs.
+	 */
+	saveContent: function() {
+		var page = null;
+		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+			if (inst.isOpen()) {
+				page = inst.page;
+			}
+		});
+
+		if (!page) {
+			var tab = DeskPRO_Window.getTabWatcher().getActiveTab();
+			if (tab) {
+				page = tab.page;
+			}
+		}
+
+		if (!page) {
+			return false;
+		}
+
+		var wrapper = page.wrapper || page.el || page.wrap || false;
+		if (!wrapper) {
+			return false;
+		}
+
+		var form = $('form.keybound-submit', wrapper);
+		if (!form.length) {
+			return false;
+		}
+
+		form.submit();
 	},
 
 	tabLeft: function() {

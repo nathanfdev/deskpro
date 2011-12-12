@@ -1,4 +1,5 @@
- <script>
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = 'New Ticket';
 pageMeta.ticket_id = 0;
@@ -9,13 +10,11 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{# scroll containers #}
-<div class="layout-content with-scrollbar page-new-ticket page-new-content">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-{# /scroll containers #}
+{{ agentui.scroll_containers('page-new-ticket page-new-content') }}
 
-<form id="{{baseId}}_newticket">
+<a class="tab-anchor" href="#">&nbsp;</a>
+
+<form id="{{baseId}}_newticket" class="keybound-submit">
 
 <input type="hidden" name="for_comment_type" id="{{baseId}}_for_comment_type" value="" />
 <input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
@@ -265,12 +264,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-<div class="foot">
-	<button class="submit-trigger clean-white">Create Ticket</button>
-</div>
-
-</form>
-
 <div class="optionbox reply-agent-team-ob newticket" id="{{baseId}}_agent_selector">
 	<div class="col">
 		<section data-section-name="agents">
@@ -336,7 +329,15 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </div>
 
-{# scroll containers #}
-</div></div>
-</div>
-{# /scroll containers #}
+<footer class="pop-footer">
+	<div class="is-not-loading">
+		<button class="submit-trigger clean-white">Create Ticket <kbd>(alt+c)</kbd></button>
+	</div>
+	<div class="is-loading" style="padding-top: 9px;">
+		<img src="{{ asset('images/spinners/loading-small.gif') }}" />
+	</div>
+</footer>
+
+</form>
+
+{{ agentui.scroll_containers_end() }}
