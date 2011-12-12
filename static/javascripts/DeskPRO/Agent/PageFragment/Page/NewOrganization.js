@@ -31,14 +31,6 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			listenOn: this.getEl('neworg')
 		});
 		this.ownObject(this.stateSaver);
-
-		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
-		ugSel.data('placeholder', 'Choose usergroups');
-		ugSel.attr('name', 'newperson[usergroup_ids][]');
-		ugSel.attr('multiple', 'multiple');
-		ugSel.css('width', '400');
-		ugSel.prepend('<option selected />');
-		//ugSel.chosen();
 	},
 
 	closeSelf: function() {

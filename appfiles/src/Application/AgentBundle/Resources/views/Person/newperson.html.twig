@@ -7,53 +7,85 @@ pageMeta.title = 'New Person';
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {{ agentui.scroll_containers('page-new-news page-new-content') }}
+{{ start_counter('steps') }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <form id="{{baseId}}_newperson" class="keybound-submit">
 
-<div class="section cat-section" id="{{baseId}}_cat_section">
+<div class="section cat-section" id="{{baseId}}_email_section">
 	<div class="step">
-		<span class="num">1</span>
+		<span class="num">{{ inc_counter('steps') }}</span>
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<div class="col">
-			<h4>{{ phrase('agent.label_name') }}</h4>
-			<input type="input" name="newperson[name]" id="{{baseId}}_name" value="" />
-		</div>
-		<div class="col">
-			<h4>{{ phrase('agent.email') }}</h4>
-			<input type="input" name="newperson[email]" id="{{baseId}}_email" value="" />
-		</div>
-		<br class="clear" />
+		<h4>{{ phrase('agent.email') }}</h4>
+		<input type="text" name="newperson[email]" id="{{baseId}}_email" value="" class="fill" />
 	</div>
 </div>
+
+<div class="section cat-section" id="{{baseId}}_name_section">
+	<div class="step">
+		<span class="num">{{ inc_counter('steps') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
+	</div>
+	<div class="content">
+		<h4>{{ phrase('agent.label_name') }}</h4>
+		<input type="text" name="newperson[name]" id="{{baseId}}_name" value="" class="fill" />
+	</div>
+</div>
+
 
 <div class="section title-section" id="{{baseId}}_org_section">
 	<div class="step">
-		<span class="num">2</span>
+		<span class="num">{{ inc_counter('steps') }}</span>
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<div class="col">
-			<h4>{{ phrase('agent.organization') }}</h4>
-			<div id="{{baseId}}_org_container"></div>
-		</div>
-		<div class="col">
-			<h4 class="light">{{ phrase('agent.create_a_new_org') }}:</h4>
-			<input type="input" name="newperson[new_organization]" id="{{baseId}}_new_org" value="" />
-		</div>
-		<br class="clear" />
+		<h4>{{ phrase('agent.organization') }}</h4>
+		<div
+			class="org-input"
+			id="{{baseId}}_org_searchbox"
+			data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+			data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+			data-highlight-term="1"
+			data-touch-focus="1"
+			data-search-param="term"
+			data-position-bound=".org-name"
+			data-super-container=".page-new-content"
+		>
+			<input type="text" class="org-name fill" name="newperson[new_organization]" placeholder="Enter an organization name..." value="" />
+			<input type="hidden" class="org-id" id="{{baseId}}_org_id" name="newperson[organization_id]" value="" />
+			<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+				<li>
+					<a>
+					<span class="org-name"></span>
+					<div class="bound-fade"></div>
+				</a></li>
+			</script>
+			<div class="person-search-box org" style="display: none">
+				<section>
+					<ul class="results-list">
 
-		<strong>{{ phrase('agent.people.pos_at_org') }}:</strong><br />
-		<input type="input" name="newperson[organization_position]" value="" />
+					</ul>
+					<footer>
+						<span class="create-org">{{ phrase('agent.create_a_new_org') }}</span>
+					</footer>
+				</section>
+			</div>
+
+			<div id="{{baseId}}_org_pos" style="display: none; margin-top: 10px">
+				<h4>Position</h4>
+				<input type="text" name="newperson[organization_position]" value="" size="40" />
+			</div>
+		</div>
 	</div>
 </div>
 
+{% if custom_fields|length %}
 <div class="section title-section" id="{{baseId}}_fields_section">
 	<div class="step">
-		<span class="num">3</span>
+		<span class="num">{{ inc_counter('steps') }}</span>
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
@@ -64,10 +96,11 @@ pageMeta.baseId = '{{ baseId }}';
         {% endfor %}
 	</div>
 </div>
+{% endif %}
 
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
-		<span class="num">4</span>
+		<span class="num">{{ inc_counter('steps') }}</span>
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
@@ -94,10 +127,18 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						</dd>
 
+						{% if usergroup_names|length %}
 						<dt class="prop">{{ phrase('agent.usergroups') }}</dt>
 						<dd class="prop">
-							<div id="{{baseId}}_ug_container"></div>
+							<div id="{{baseId}}_ug_container">
+								<select name="newperson[usergroups][]">
+									{% for id,name in usergroup_names %}
+										<option value="{{ id }}">{{ name }}</option>
+									{% endfor %}
+								</select>
+							</div>
 						</dd>
+						{% endif %}
 
 						<dt class="prop">{{ phrase('agent.label_timezone') }}</dt>
 						<dd class="prop">
@@ -111,6 +152,8 @@ pageMeta.baseId = '{{ baseId }}';
 					</dl>
 				</div>
 				{# /Tab Properties #}
+
+				<br class="clear" />
 			</div>
 		</div>
 		{# /Tab Container #}

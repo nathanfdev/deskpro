@@ -733,11 +733,13 @@ class PersonController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
 		return $this->render('AgentBundle:Person:newperson.html.twig', array(
 			'state' => $state,
 			'custom_fields' => $custom_fields,
 			'timezone_options' => $timezone_options,
+			'usergroup_names' => $usergroup_names,
 		));
 	}
 

@@ -32,25 +32,11 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
-		// Init the org selection
-		var orgSel = $('#organizations_select').clone().appendTo(this.getEl('org_container'));
-		orgSel.data('placeholder', 'Select an existing organization');
-		orgSel.attr('name', 'newperson[organization_id]');
-		orgSel.css('width', 200);
-		orgSel.prepend('<option selected />');
-
-		this.orgSel = orgSel;
-
-		var ugSel = $('#usergroups_select').clone().appendTo(this.getEl('ug_container'));
-		ugSel.data('placeholder', 'Choose usergroups');
-		ugSel.attr('name', 'newperson[usergroup_ids][]');
-		ugSel.attr('multiple', 'multiple');
-		ugSel.css('width', '400');
-		ugSel.prepend('<option selected />');
-		//ugSel.chosen();
-
-		var tzSel = this.getEl('timezone');
-		//tzSel.chosen();
+		this.getEl('org_searchbox').on('orgsearchboxclick orgsearchboxcreate', function() {
+			self.getEl('org_pos').show();
+		}).on('orgsearchboxcleared', function() {
+			self.getEl('org_pos').hide();
+		});
 	},
 
 	closeSelf: function() {
@@ -73,15 +59,13 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					if (!this.orgSel.val() || (this.orgSel.val() && !this.fromCompanyTab)) {
-						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
-					}
-
-					if (this.orgSel.val() && this.fromCompanyTab) {
+					if (this.getEl('org_id').val().length && this.fromCompanyTab) {
 						DeskPRO_Window.getMessageBroker().sendMessage('new-org-user', {
 							organization_id: this.orgSel.val(),
 							person_id: data.person_id
 						});
+					} else {
+						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
 					}
 
 					this.closeSelf();

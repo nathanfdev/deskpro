@@ -2,6 +2,14 @@ Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 /**
  * TODO: Refactor out common bits from PersonSearchBox
+ *
+ * Data options:
+ * touch-focus: When the box is in focus, show the list immediately (even if no text and no change)
+ * super-container: The selector that represents the master container. Whena click bubbles to this container, the box is closed. Defaults to document
+ * position-bound: The selector of the element to bind the box position to. Defaults to this element.
+ * search-url: The AJAX search url
+ * search-term: The name of the 'term' to pass in the querystring
+ * highlight-term: Attempt to highlight the searched text string in the results
  */
 DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
@@ -59,7 +67,11 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
 		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
 
-		$(document).on('click', this.close.bind(this));
+		if (this.el.data('super-container')) {
+			this.el.closest(this.el.data('super-container')).on('click', this.close.bind(this));
+		} else {
+			$(document).on('click', this.close.bind(this));
+		}
 
 		//------------------------------
 		// Clicking on an item fires an event that
@@ -229,8 +241,14 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		this.resultsBox.hide();
 
 		if (!this.wasSet) {
-			this.termInput.val(this.origValue);
-			this.el.trigger('orgsearchreverted', [this.getTerm(), this]);
+			if (!this.termInput.val().trim().length) {
+				this.idInput.val('0');
+				this.el.removeClass('is-new').removeClass('is-set');
+				this.el.trigger('orgsearchboxcleared', [this]);
+			} else {
+				this.termInput.val(this.origValue);
+				this.el.trigger('orgsearchreverted', [this.getTerm(), this]);
+			}
 		}
 	},
 

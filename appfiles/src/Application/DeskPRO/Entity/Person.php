@@ -1710,4 +1710,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		return $user_offset;
 	}
+
+	/**
+	 * @param string $organization_position
+	 */
+	public function setOrganizationPosition($organization_position)
+	{
+		if (!$organization_position) {
+			$organization_position = '';
+		}
+		$this->organization_position = $organization_position;
+	}
 }

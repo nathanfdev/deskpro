@@ -21,6 +21,7 @@ use Orb\Util\Strings;
 class TemplatingExtension extends \Twig_Extension
 {
     protected $container;
+	protected $counter_registry;
 
     public function __construct(ContainerInterface $container)
     {
@@ -72,6 +73,9 @@ class TemplatingExtension extends \Twig_Extension
 			'dp_asset' => new \Twig_Function_Method($this, 'getAssetic'),
 			'dp_asset_raw' => new \Twig_Function_Method($this, 'getAsseticRaw'),
 			'dp_asset_html' => new \Twig_Function_Method($this, 'htmlGetAssetic', array('is_safe' => array('html'))),
+			'start_counter' => new \Twig_Function_Method($this, 'startCounter'),
+			'get_counter' => new \Twig_Function_Method($this, 'getCounter'),
+			'inc_counter' => new \Twig_Function_Method($this, 'incCounter'),
         );
     }
 
@@ -99,6 +103,27 @@ class TemplatingExtension extends \Twig_Extension
 			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
         );
     }
+
+	public function startCounter($name = 'default')
+	{
+		$this->counter_registry[$name] = 0;
+		return '';
+	}
+
+	public function getCounter($name = 'default')
+	{
+		return isset($this->counter_registry[$name]) ? $this->counter_registry[$name] : 0;
+	}
+
+	public function incCounter($name = 'default')
+	{
+		if (!isset($this->counter_registry[$name])) {
+			$this->counter_registry[$name] = 0;
+		}
+
+		$v = $this->counter_registry[$name]++;
+		return $v;
+	}
 
 	public function getUrlDomain($string)
 	{
