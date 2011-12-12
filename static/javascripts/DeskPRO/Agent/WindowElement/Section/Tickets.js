@@ -145,6 +145,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			$('#settingswin').trigger('dp_open', 'filters');
 		});
 
+		DeskPRO_Window.initInterfaceLayerEvents(this.contentEl);
+
 		this.fireEvent('sectionInit');
 	},
 

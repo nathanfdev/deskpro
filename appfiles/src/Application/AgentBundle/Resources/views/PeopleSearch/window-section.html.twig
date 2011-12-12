@@ -36,7 +36,7 @@
 			</ul>
 		</section>
 
-		<section class="source-switcher-tabs spaced" id="people_outline_tabstrip">
+		<section class="source-switcher-tabs spaced" id="people_outline_tabstrip" {% if not people_tag_index|length %}style="display:none"{% endif %}>
 			<ul>
 				<li data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.labels_cloud') }}</li>
 				<li data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.labels_list') }}</li>
@@ -92,7 +92,7 @@
 			</ul>
 		</section>
 
-		<section class="source-switcher-tabs spaced" id="people_outline_org_tabstrip">
+		<section class="source-switcher-tabs spaced" id="people_outline_org_tabstrip" {% if not org_tag_index|length %}style="display:none"{% endif %}>
 			<ul>
 				<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.labels_cloud') }}</li>
 				<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.labels_list') }}</li>

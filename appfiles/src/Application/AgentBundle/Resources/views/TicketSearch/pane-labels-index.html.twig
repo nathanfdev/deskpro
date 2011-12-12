@@ -1,4 +1,4 @@
-<section class="source-switcher-tabs spaced" id="tickets_outline_labels_switcher">
+<section class="source-switcher-tabs spaced" id="tickets_outline_labels_switcher" {% if not labels_index|length %}style="display: none"{% endif %} data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 	<ul>
 		<li data-tab-for="#ticket_labels_list" class="list on">{{ phrase('agent.labels_list') }}</li>
 		<li data-tab-for="#ticket_labels_cloud" class="cloud">{{ phrase('agent.labels_cloud') }}</li>

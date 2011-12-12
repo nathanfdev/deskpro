@@ -42,8 +42,20 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 				$('#people_outline_tagcloud').empty().html(data.people_label_cloud);
 				$('#people_outline_taglist').empty().html(data.people_label_list);
 
+				if ($('.no-labels', '#people_outline_taglist').length) {
+					$('#people_outline_tabstrip').hide();
+				} else {
+					$('#people_outline_tabstrip').show();
+				}
+
 				$('#people_outline_org_tagcloud').empty().html(data.org_label_cloud);
 				$('#people_outline_org_taglist').empty().html(data.org_label_list);
+
+				if ($('.no-labels', '#people_outline_org_taglist').length) {
+					$('#people_outline_org_tabstrip').hide();
+				} else {
+					$('#people_outline_org_tabstrip').show();
+				}
 			}
 		});
 	},
