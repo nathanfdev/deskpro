@@ -257,13 +257,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="fields-edit" style="display: none;"></div>
 
 		<div class="controls" id="{{baseId}}_properties_controls">
-			<button class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>
-			<button class="clean-white" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.merge') }}</span></button>
+			<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></a>
+			<a class="clean-white" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.merge') }}</span></a>
 			{% if macros|length %}
-				<button class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></button>
+				<a class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></a>
 			{% endif %}
-			<button class="clean-white" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span></button>
-			<button class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span></button>
+			<a class="clean-white" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span></a>
+			<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span></a>
 		</div>
 	</section>
 </div>
