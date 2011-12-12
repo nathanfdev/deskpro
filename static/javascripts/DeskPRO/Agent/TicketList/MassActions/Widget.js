@@ -73,6 +73,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
+		console.log(this.wrapper);
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());
@@ -135,6 +136,11 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this.wrapper.css('z-index', '1000100');
 
 		this.baseId = this.wrapper.data('base-id');
+
+		// These events registered first because hasAnyChange flag must be set before updatePreview()
+		// is called
+		$('select, :radio, :checkbox', this.wrapper).on('change', function() { self.hasAnyChange = true; });
+		$('input, textarea', this.wrapper).on('change keypress', function() { self.hasAnyChange = true; });
 
 		this.wrapper.on('click', function(ev) {
 			ev.stopPropagation();
@@ -262,10 +268,6 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
-
-			if (this.options.isListView) {
-				this.close();
-			}
 		}).bind(this));
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
@@ -347,9 +349,6 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			var basename = 'actions_set['+x+']';
 			self.actionsEditor.addNewRow($('.search-terms', actList), basename);
 		});
-
-		$('select, :radio, :checkbox', this.wrapper).on('change', function() { self.hasAnyChange = true; });
-		$('input, textarea', this.wrapper).on('change keypress', function() { self.hasAnyChange = true; });
 	},
 
 	updateAssignmentsDisplay: function() {
@@ -496,6 +495,8 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		rows = $(rows);
 		rows.addClass('loading');
 
+		this.wrapper.addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
 			type: 'POST',
@@ -517,6 +518,9 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 				$('.preview-edit-hide', this.listWrapper).remove();
 				$('.row-item.changed, .prop-val.changed', this.listWrapper).removeClass('changed');
 
+				this.wrapper.removeClass('loading');
+
+				this.close();
 				this.resetForm();
 			}
 		});
@@ -539,7 +543,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 	updatePreview: function(specific_id, force) {
 
 		// No changes detected
-		if (!this.hasAnyChange) {
+		if (!this.hasAnyChange && !force) {
 			return;
 		}
 

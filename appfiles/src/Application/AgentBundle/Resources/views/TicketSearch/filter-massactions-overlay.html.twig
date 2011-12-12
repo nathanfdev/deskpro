@@ -152,9 +152,10 @@
 			</dl>
 		</article>
 		<footer>
-			<button class="apply-actions">
-				{{ phrase('agent.apply') }}
-			</button>
+			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.apply') }}</button></div>
+			<div class="is-loading">
+				<div class="loading-icon" style="margin-top: 5px;">&nbsp;</div>
+			</div>
 		</footer>
 	</section>
 
