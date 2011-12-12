@@ -112,6 +112,24 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Orb\Input\Reader\Reader
+	 */
+	public function getIn()
+	{
+		return $this->get(self::SERVICE_INPUT_READER);
+	}
+
+
+	/**
+	 * @return \Orb\Input\Cleaner\Cleaner
+	 */
+	public function getInputCleaner()
+	{
+		return $this->get(self::SERVICE_INPUT_CLEANER);
+	}
+
+
+	/**
 	 * Get the search adapter.
 	 *
 	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter

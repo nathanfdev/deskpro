@@ -68,7 +68,7 @@ class BasicXss implements CleanerPlugin
 			return $value;
 		}
 
-		if (strpos('<', $value) !== false || strpos('"', $value) !== false || strpos("'", $value) !== false) {
+		if (strpos($value, '<') !== false || strpos($value, '"') !== false || strpos($value, "'") !== false) {
 			$self = $this;
 
 			$value = str_replace("\t", '    ', $value);
@@ -108,7 +108,7 @@ class BasicXss implements CleanerPlugin
 				}
 
 				if (preg_match("/script/i", $value) OR preg_match("/xss/i", $value)) {
-					$value = preg_replace("#<(/*)(script|xss)(.*?)\>#si", '[removed]', $value);
+					$value = preg_replace("#<(/*)(script|xss)(.*?)\>#si", '', $value);
 				}
 			} while($original != $value);
 			unset($original);
