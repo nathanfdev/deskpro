@@ -64,29 +64,31 @@ class LicenseController extends AbstractController
 			if (!$errors) {
 
 				$client = new \Zend\Http\Client(null, array('timeout' => 15));
-				$client->setMethod(\Zend\Http\Client::POST);
+				$client->setMethod(\Zend\Http\Request::METHOD_POST);
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
-				$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
-				$client->setParameterPost('email_address', $email_address);
-				$client->setParameterPost('url', App::getRequest()->getBaseUrl());
+				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
+				$client->getRequest()->post()->set('email_address', $email_address);
+				$client->getRequest()->post()->set('url', App::getRequest()->getBaseUrl());
 
 				$hostname = gethostname();
 
 				if ($hostname) {
-					$client->setParameterPost('hostname', $hostname);
+					$client->getRequest()->post()->set('hostname', $hostname);
 
 					$ip_address = gethostbyname($hostname);
 					if ($ip_address) {
-						$client->setParameterPost('ip_address', $ip_address);
+						$client->getRequest()->post()->set('ip_address', $ip_address);
 					}
 				}
 
 				$failed = false;
 				try {
-					$result = $client->request();
+					$result = $client->send();
 
-					if ($result->isError()) {
+					if ($result->isServerError()) {
 						$failed = 'server_error';
+					} elseif ($result->isClientError()) {
+						$failed = true;
 					} else {
 						$data = @json_decode($result->getBody(), true);
 						if (!$data) {
@@ -162,16 +164,16 @@ class LicenseController extends AbstractController
 
 			// Check it against the license server now
 			$client = new \Zend\Http\Client(null, array('timeout' => 15));
-			$client->setMethod(\Zend\Http\Client::POST);
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(DP_LIC_SERVER . '/license/confirm-demo.json');
-			$client->setParameterPost('license_code', $license_code);
-			$client->setParameterPost('install_key', $this->settings->get('core.install_key'));
+			$client->getRequest()->post()->set('license_code', $license_code);
+			$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
 
 			$failed = false;
 			try {
-				$result = $client->request();
+				$result = $client->send();
 
-				if ($result->isError()) {
+				if ($result->isClientError() || $result->isServerError()) {
 					$failed = 'server_error';
 				} else {
 					$data = @json_decode($result->getBody(), true);

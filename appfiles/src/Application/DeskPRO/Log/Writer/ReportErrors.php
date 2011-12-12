@@ -46,10 +46,10 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 			}
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 10));
-			$client->setMethod(\Zend\Http\Client::POST);
-			$client->setParameterPost('log', $log);
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->getRequest()->post()->set('log', $log);
 			$client->setUri(DP_LIC_SERVER . '/report-error.json');
-			$client->request();
+			$client->send();
 		} catch (\Exception $e) {}
 	}
 }
