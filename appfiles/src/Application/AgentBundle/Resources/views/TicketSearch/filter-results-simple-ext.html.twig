@@ -55,9 +55,11 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="cursor">
 				{{ phrase('agent.tickets.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': ticket_ids|length })|raw }}
 			</div>
+			{% if ticket_ids|length > per_page %}
 			<div class="more">
 				<button class="show-more">Load More</button>
 			</div>
+			{% endif %}
 			<div class="loading">
 
 			</div>

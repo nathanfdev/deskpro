@@ -17,9 +17,9 @@ pageMeta.perPage = 50;
 pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 </script>
 {{ agentui.scroll_containers() }}
-<div class="content">
-	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
 
+{% if people|length %}
+	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
  	{% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
  	{#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
@@ -27,22 +27,24 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 		{% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
 	</section>
 
-	{% if not people|length %}
-		<section class="list-listing no-results">
-			<p>{{ phrase('agent.there_are_no_results') }}</p>
-		</section>
-	{% endif %}
-
 	<footer class="results-nav">
 		<div class="cursor">
 			{{ phrase('agent.people.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': person_ids|length })|raw }}
 		</div>
+		{% if person_ids|length > 50 %}
 		<div class="more">
 			<button class="show-more">Load More</button>
 		</div>
+		{% endif %}
 		<div class="loading">
 
 		</div>
 	</footer>
-</div>
+{% else %}
+	<section class="list-listing no-results">
+		<article class="row-item no-results">
+			<p style="padding: 15px;">{{ phrase('agent.there_are_no_results') }}</p>
+		</article>
+	</section>
+{% endif %}
 {{ agentui.scroll_containers_end() }}
