@@ -89,7 +89,7 @@
 			<div class="userProfileDropdown" >
 				<div class="userProfileDropdownHeader">
 					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(22) }}" alt="" /></a>
-					<span class="drop"></span>
+					<span onclick="toggle_visibility('userSetting');" class="drop"></span>
 				</div>
 				<ul>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
