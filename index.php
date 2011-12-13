@@ -14,4 +14,10 @@ define('DP_ROOT', __DIR__ . '/appfiles');
  */
 define('DP_CONFIG_FILE', __DIR__ . '/config.php');
 
-require DP_ROOT.'/sys/boot_web.php';
+if (!defined('DP_BOOT_MODE')) define('DP_BOOT_MODE', 'web');
+
+switch (DP_BOOT_MODE) {
+	case 'cron': require DP_ROOT.'/sys/boot_cron.php'; break;
+	case 'cli':  require DP_ROOT.'/sys/boot_cli.php'; break;
+	case 'web':  require DP_ROOT.'/sys/boot_web.php'; break;
+}

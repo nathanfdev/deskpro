@@ -114,6 +114,26 @@ class KernelBooter
 
 	public static function bootCli($env = 'prod', $debug = false)
 	{
+		static::ensureCli();
+		$app = static::getCliApp($env, $debug);
+		$app->run();
+	}
+
+	public static function bootCron($env = 'prod', $debug = false)
+	{
+		static::ensureCli();
+		$app = static::getCliApp($env, $debug);
+
+		$argv = $_SERVER['argv'];
+		array_shift($argv); // remove cron.php
+		array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
+		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
+
+		$app->run($input);
+	}
+
+	protected static function getCliApp($env, $debug)
+	{
 		#------------------------------
 		# Load main config now
 		#------------------------------
@@ -132,7 +152,16 @@ class KernelBooter
 
 		define('DP_INTERFACE', 'cli');
 
-		$application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
-		$application->run();
+		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		return $app;
+	}
+
+	protected static function ensureCli()
+	{
+		if (php_sapi_name() != 'cli') {
+			echo "This script must only be run from the CLI.\n";
+			echo "Contact support@deskpro.com if you require assistance.\n";
+			exit(1);
+		}
 	}
 }
