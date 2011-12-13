@@ -92,8 +92,18 @@ class KernelBooter
 		# Handle request
 		#------------------------------
 
-		$kernel = new $kernel_class($env, $debug);
-		$kernel->handle($request)->send();
+		try {
+			$kernel = new $kernel_class($env, $debug);
+			$kernel->handle($request)->send();
+		} catch (\PDOException $e) {
+			if ($e->getCode() == '1049') {
+				echo deskpro_install_basic_error('<ul><li>The database name you have set in <code>/config.php</code> does not exist</li></ul>');
+			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
+				echo deskpro_install_basic_error('<ul><li>The database user you have set in <code>/config.php</code> does not exist or does not have permission to use the database</li></ul>');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	public static function bootCli($env = 'prod', $debug = false)
