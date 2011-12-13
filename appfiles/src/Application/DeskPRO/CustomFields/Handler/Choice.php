@@ -83,6 +83,8 @@ class Choice extends HandlerAbstract
 		$setData = null;
 		if ($selected_options && !$this->multiple) {
 			$setData = array_pop($selected_options);
+		} else {
+			$setData = $selected_options;
 		}
 
 		$field_opts = array(
@@ -96,7 +98,8 @@ class Choice extends HandlerAbstract
 			$field_opts['expanded'] = true;
 		}
 
-		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), $setData, $field_opts);
+		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), null, $field_opts);
+		$field_choice->setData($setData);
 
 		return $field_choice;
 	}
