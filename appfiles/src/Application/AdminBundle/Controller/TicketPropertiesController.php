@@ -54,7 +54,7 @@ class TicketPropertiesController extends AbstractController
 	/**
 	 * Shows the editor
 	 */
-	public function editorAction($department_id)
+	public function editorAction($department_id, $section = 'create')
 	{
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$department_names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(' > ', false);
@@ -76,10 +76,10 @@ class TicketPropertiesController extends AbstractController
 
 		// Existing options
 		$is_default = false;
-		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'user', 'default');
-		if (!$page_data) {
+		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, $section, 'default');
+		if (!$page_data && $department_id) {
 			$is_default = true;
-			$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'user', 'default');
+			$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, $section, 'default');
 		}
 
 
@@ -93,10 +93,11 @@ class TicketPropertiesController extends AbstractController
 			'ticket_options' => $ticket_options,
 			'is_default' => $is_default,
 			'page_data' => $page_data,
+			'section' => $section
 		));
 	}
 
-	public function saveEditorAction($department_id)
+	public function saveEditorAction($department_id, $section = 'create')
 	{
 		$department = null;
 
@@ -105,7 +106,7 @@ class TicketPropertiesController extends AbstractController
 		}
 
 		$page_data = $this->in->getArrayValue('items', 'post');
-		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, 'user', 'default');
+		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
 		$page_display->data = $page_data;
 
 		App::getOrm()->transactional(function($em) use ($page_display) {
@@ -116,18 +117,41 @@ class TicketPropertiesController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function copyDefaultEditorAction($department_id)
+	{
+		if (!$department_id) {
+			return $this->redirectRoute('admin_tickets_editor');
+		}
+
+		foreach (array('create', 'view', 'modify') as $section) {
+			$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate(null, $section, 'default');
+
+			$department = $this->em->find('DeskPRO:Department', $department_id);
+			$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
+			$page_display->data = $page_display_default->data;
+			App::getOrm()->transactional(function($em) use ($page_display) {
+				$em->persist($page_display);
+				$em->flush();
+			});
+		}
+
+		return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id));
+	}
+
 	public function revertEditorAction($department_id)
 	{
 		if (!$department_id) {
 			return $this->redirectRoute('admin_tickets_editor');
 		}
 
-		$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id, 'zone' => 'user', 'section' => 'default'));
-		if ($d) {
-			App::getOrm()->transactional(function($em) use ($d) {
-				$em->remove($d);
-				$em->flush();
-			});
+		foreach (array('create', 'view', 'modify') as $section) {
+			$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id, 'zone' => $section, 'section' => 'default'));
+			if ($d) {
+				App::getOrm()->transactional(function($em) use ($d) {
+					$em->remove($d);
+					$em->flush();
+				});
+			}
 		}
 
 		return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id));

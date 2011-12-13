@@ -9,6 +9,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% block page_nav %}
 <div>
 	<section class="top">
+		<div class="disable-overlay" {% if not is_default %}style="display: none"{% endif %}></div>
 		<header>
 			<h4>Ticket Elements</h4>
 		</header>
@@ -30,49 +31,59 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% endblock %}
 {% block pagetitle %}
 	<h1>
-		Ticket Form	Editor:
-		<select id="department_switcher">
-			<option
-				value="0"
-				data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': 0}) }}"
-			>Default</option>
-			<option></option>
-			{% for id,title in department_names %}
-				<option
-					value="{{id}}"
-					{% if department.id == id %}selected="selected"{% endif %}
-					data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': id}) }}"
-				>{{title}}</option>
-			{% endfor %}
-		</select>
+		Ticket Form	Editor
 	</h1>
+
+	<nav class="admin-object-nav" {% if department%}style="margin-bottom: 18px"{% endif %}>
+		<ul>
+			<li class="master">
+				<select id="department_switcher">
+					<option	value="0" data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': 0}) }}">Default</option>
+					<optgroup label="Department Customizations">
+						{% for id,title in department_names %}
+							<option value="{{id}}" {% if department.id == id %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': id}) }}">{{title}}</option>
+						{% endfor %}
+					</optgroup>
+				</select>
+			</li>
+			<li {% if section == 'create' %}class="on"{% endif %}>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0')}) }}">New Ticket Form</a>
+			</li>
+			<li {% if section == 'view' %}class="on"{% endif %}>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
+			</li>
+			<li class="{% if section == 'modify' %}on{% endif %} last">
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
+			</li>
+		</ul>
+		<br class="clear" />
+	</nav>
+	<br class="clear" />
 {% endblock %}
 {% block content %}
-
-{% if department and not is_default %}
-<nav class="page-top-hugnav">
-	<ul>
-		<li><a href="{{ path('admin_tickets_editor_dep_revert', {'department_id': department.id}) }}" onclick="return confirm('The department form will be reverted back to the default. Are you sure you want to continue?');">Revert to default</a></li>
-	</ul>
-	<br class="clear" />
-</nav>
-{% endif %}
-
+	{% if department%}
+	<div class="note-top">
+		{% if is_default %}
+			This department is currently using the default layout. You can turn on customizations
+			to make changes. Customizations are currently
+			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_copydefault', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').hide();" class="onoff-slider" />
+		{% else %}
+			This department is using a custom layout. You can revert back to the default by disabling
+			customizations. Customizations are currently
+			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_revert', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').show();" class="click-go onoff-slider" checked="checked" />
+		{% endif %}
+	</div>
+	{% endif %}
 <form
-	action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0) }) }}"
+	action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0), 'section': section }) }}"
 	method="post"
 	class="dp-page-box"
 	id="admin_ticket_editor"
 	data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
 >
+<div class="disable-overlay" {% if not is_default %}style="display: none"{% endif %}></div>
 
 <ul id="admin_ticket_editor_items" class="dp-form">
-	{% if is_default %}
-		<li class="is-default-notice">
-			This department is currently set to use the default layout. You can make changes below to
-			customize the ticket form for this department.
-		</li>
-	{% endif %}
 	<li class="no-items-notice">
 		Drag and drop fields from the left onto this area to start designing your form.
 	</li>

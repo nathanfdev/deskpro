@@ -144,6 +144,15 @@ DeskPRO.Admin.Window = new Orb.Class({
 			$(this).addClass('tipped-inited');
 		});
 
+		$(document).on('click', '.click-go', function(ev) {
+			var url = $(this).data('url');
+			if (url) {
+				window.location = url;
+				ev.preventDefault();
+				ev.stopPropagation();
+			}
+		});
+
 		DeskPRO.ElementHandler_Exec();
 
 		$('time.timeago').timeago();

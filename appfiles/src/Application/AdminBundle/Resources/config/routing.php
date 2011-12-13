@@ -56,21 +56,28 @@ $collection->add('admin_tickets_fields', new Route(
 
 $collection->add('admin_tickets_editor', new Route(
 	'/tickets/editor',
-	array('_controller' => 'AdminBundle:TicketProperties:editor', 'department_id' => 0),
+	array('_controller' => 'AdminBundle:TicketProperties:editor', 'department_id' => 0, 'section' => 'create'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickets_editor_dep', new Route(
-	'/tickets/editor/{department_id}',
-	array('_controller' => 'AdminBundle:TicketProperties:editor'),
+	'/tickets/editor/{department_id}/{section}',
+	array('_controller' => 'AdminBundle:TicketProperties:editor', 'section' => 'create'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickets_editor_dep_save', new Route(
-	'/tickets/editor/{department_id}/save',
+	'/tickets/editor/{department_id}/{section}/save',
 	array('_controller' => 'AdminBundle:TicketProperties:saveEditor'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_editor_dep_copydefault', new Route(
+	'/tickets/editor/{department_id}/copy-default',
+	array('_controller' => 'AdminBundle:TicketProperties:copyDefaultEditor'),
 	array(),
 	array()
 ));

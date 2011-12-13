@@ -364,6 +364,23 @@ a.delete-link:hover {
 	font-size: 14px !important;
 }
 
+.note-top {
+	position: absolute;
+	top: -21px;
+	right: 10px;
+	left: 10px;
+
+	background-color: #fff;
+	border: 1px solid #CACFD6;
+	border-bottom: none;
+	height: 16px;
+	padding: 2px 4px 2px 4px;
+
+	.border-radius(4px, 4px, 0, 0);
+	line-height: 100%;
+	text-align: center;
+}
+
 #dp_admin_prepage {
 	position: relative;
 	top: -5px;
@@ -1244,7 +1261,22 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 }
 
 #dp_page_nav section {
+    position: relative;
 	margin-bottom: 10px;
+}
+
+#dp_page_nav section .disable-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: -10px;
+    left: 0;
+
+	.border-radius(5px, 0, 0, 5px);
+
+	margin: 1px;
+	background-color: #ccc;
+	.opacity(60);
 }
 
 #portal_nav.disabled section {
@@ -2113,6 +2145,19 @@ tr.phrase-row.custom td {
 	padding-bottom: 38px;
 }
 
+#admin_ticket_editor .disable-overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: #ccc;
+	.opacity(60);
+	.rounded(5px);
+	margin: 1px;
+	z-index: 100000;
+}
+
 #admin_ticket_editor .save-row {
 	position: absolute;
 	bottom: 0;
@@ -2169,4 +2214,39 @@ tr.phrase-row.custom td {
 	background-color: #EFF5FD;
 	border: 1px solid #E5E7E7;
 	width: 70%;
+}
+
+
+nav.admin-object-nav {
+	.gradient(#F0F1F3, #DADBDE);
+	height: 27px;
+	border: 1px solid #c2c6cc;
+	.rounded(4px);
+	overflow: hidden;
+	float: left;
+}
+
+nav.admin-object-nav li {
+    display: block;
+    float: left;
+  	line-height: 27px;
+  	padding: 0 10px 0 10px;
+}
+
+nav.admin-object-nav li.master,
+nav.admin-object-nav li.master:hover {
+	.gradient(darken(#F0F1F3, 10%), darken(#DADBDE, 10%));
+}
+
+nav.admin-object-nav li {
+	border-right: 1px solid #c2c6cc;
+}
+nav.admin-object-nav li.last {
+	border-right: none;
+}
+
+nav.admin-object-nav li.on,
+nav.admin-object-nav li:hover {
+	.gradient(lighten(#F0F1F3, 10%), lighten(#DADBDE, 10%));
+	cursor: pointer;
 }
