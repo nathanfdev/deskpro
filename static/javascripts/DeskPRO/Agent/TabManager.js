@@ -97,7 +97,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		data.wrapperId = Orb.getUniqueId('tab_');
 		data.isInserted = false;
-		data.html = '<div id="'+data.wrapperId+'" class="tabViewDetailContent">' + data.html + '</div>';
+		data.html = '<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + data.html + '</div>';
 
 		this.tabs[id] = data;
 
@@ -107,7 +107,12 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		this.fireEvent('addTab', [data, this]);
 
-		if (!this.currentTabId || this.options.activateNew) {
+		var noactivate = false;
+		if (data.page && data.page.meta && data.page.meta.tabPlaceholderId) {
+			noactivate = true;
+		}
+
+		if (!this.currentTabId || (this.options.activateNew && !noactivate)) {
 			this.activateTab(id);
 		}
 	},
