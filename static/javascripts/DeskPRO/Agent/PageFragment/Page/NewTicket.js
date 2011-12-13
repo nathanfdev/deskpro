@@ -221,15 +221,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		searchbox.hide();
 		userfields.show();
 
-		var e = $('input.email', userfields).val();
-		var fnCheck = function() {
-			if (e && e.length && e.indexOf('@') !== -1) {
-				self.clearErrorCode('person_email_address');
-				self.clearErrorCode('person_no_user');
+		var e = $('input.email', userfields);
+		if (e.length) {
+			var fnCheck = function() {
+				if (e.val().length && e.val().indexOf('@') !== -1) {
+					self.clearErrorCode('person_email_address');
+					self.clearErrorCode('person_no_user');
+				}
 			}
+			fnCheck();
+			e.on('change', fnCheck);
 		}
-		fnCheck();
-		e.on('change', fnCheck);
 	},
 
 	//#########################################################################

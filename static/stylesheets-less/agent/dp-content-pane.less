@@ -274,6 +274,8 @@ span.gear{
 
 .deskproTabList li.activeTabList{
 	background: #FFFFFF;
+	filter: none;
+ 	-ms-filter: none;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) inset;
 	border-right: 1px solid #b6babf;
 	border-left: 1px solid #b6babf;
@@ -287,6 +289,8 @@ span.gear{
 }*/
 .deskproTabList li.activeTabList:hover{
 	background: #FFFFFF;
+	filter: none;
+	-ms-filter: none;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) inset;
 	position: relative;
 }
@@ -2463,8 +2467,7 @@ padding: 30px;
 
 .snippets-overlay > nav li:hover a,
 .snippets-overlay > nav li.on a {
-	background: -moz-linear-gradient(top, #6baccc, #5182b3);
-	background: -webkit-gradient(linear, center top, center bottom, from(#6baccc), to(#5182b3));
+    .gradient(#6baccc, #5182b3);
 	box-shadow: inset 0 1px 0 #82bdd7;
 	border-bottom: 1px solid #4d7399!important;
 	border-top: 1px solid #709ecc!important;
@@ -2744,11 +2747,7 @@ padding: 30px;
 	.gradient(#ffffff, #e5e5e5);
 	height: 22px;
 	border-bottom: 1px solid #B3B6B8;
-	position: relative;
-	position: relative;
-
 	overflow: hidden;
-
 	position: relative;
 }
 
