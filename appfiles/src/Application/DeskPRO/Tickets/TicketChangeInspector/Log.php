@@ -150,12 +150,6 @@ class Log
 						}
 						break;
 
-					case 'hidden_status':
-						if (!$this->tracker->isNewTicket()) {
-							$action = new LogActions\HiddenStatus($old_val, $new_val);
-						}
-						break;
-
 					default:
 						$unknown[] = $prop;
 						break;
