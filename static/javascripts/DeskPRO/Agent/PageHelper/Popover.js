@@ -370,6 +370,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this.popover.remove();
 		}
 
+		if (this.autoloadTimeout) {
+			window.clearTimeout(this.autoloadTimeout);
+			this.autoloadTimeout = null;
+		}
+
+
 		this.popoverOuter = null;
 		this.popover = null;
 		this.options = null;
