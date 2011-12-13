@@ -359,7 +359,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				</li>
 
 				<li>
-					<input type="radio" name="{{bsaeId}}_agent" value="0" {% if not ticket.agent %}checked="checked"{% endif %}  />
+					<input type="radio" name="{{baseId}}_agent" value="0" {% if not ticket.agent %}checked="checked"{% endif %}  />
 					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
 				</li>
 
