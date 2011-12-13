@@ -37,6 +37,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.ajaxErrorOverlay = null;
 
 		this.winStateQueue = [];
+		this.cancelHashLoad = 0;
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -206,8 +207,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// This is sometimes set to prevent any of the below loading
 		// to happen when the hash is updated to reflect an already-set
 		// URL state
-		if (this.cancelHashLaod) {
-			this.cancelHashLaod = false;
+		if (this.cancelHashLoad > 0) {
+			this.cancelHashLoad--;
+			if (this.cancelHashLoad < 0) {
+				this.cancelHashLoad = 0;
+			}
 			return;
 		}
 
@@ -230,7 +234,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var firstTabId = null;
 
 		this.tabManager.options.activateNew = false;
-		this.cancelHashLaod = true;
+		this.cancelHashLoad++;
 
 		Array.each(segments, function (hash, i) {
 
@@ -316,7 +320,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		this.tabManager.options.activateNew = true;
-		this.cancelHashLaod = false;
+		this.cancelHashLoad--;
 	},
 
 	updateWindowUrlFragment: function() {
@@ -364,9 +368,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var browserHash = '';
 		browserHash = segments.join(',');
 
-		this.cancelHashLaod = true;
+		this.cancelHashLoad++;
 		jQuery.history.load(browserHash);
-		this.cancelHashLaod = false;
 	},
 
 	windowStateUpdated: function(type) {
