@@ -290,6 +290,14 @@ class FieldManager
 		$this->em->beginTransaction();
 
 		try {
+
+			// Remove whatever we have before
+			// We'll just re-insert if its still there
+			foreach ($this->getFields() as $field_def) {
+				$this->removeCustomDataOnObject($object, $field_def);
+			}
+			$this->em->flush();
+
 			foreach ($this->getFields() as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($form) as $info) {
 					$this->setCustomDataOnObject($object, $field_def, $info);
@@ -317,11 +325,6 @@ class FieldManager
 
 		try {
 			list($set_field_id, $value_type, $value) = $in_data;
-
-			// Remove whatever we have before
-			// We'll just re-insert if its still there
-			$this->removeCustomDataOnObject($object, $field_def);
-			$this->em->flush();
 
 			// The field we're actually saving under
 			// Usually the same as $field_def, but not always
@@ -381,7 +384,7 @@ class FieldManager
 		}
 
 		foreach ($object->$prop as $v) {
-			if ($v->field->id == $field_def->id) {
+			if ($v->field->id == $field_def->id || ($v->field->parent && $v->field->parent->id == $field_def->id)) {
 				$object->$prop->removeElement($v);
 			}
 		}
