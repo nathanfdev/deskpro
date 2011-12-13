@@ -23,10 +23,9 @@ var installStatus = {
 			li.appendTo($('#error_list'));
 		}
 
-		if (info.sql) {
+		if (info.sql || info.skipped) {
 			installStatus.currentCount++;
 			$('#current_count').text(installStatus.currentCount);
-
 			$('#progress_done_td').attr('width', Math.ceil((installStatus.currentCount / installStatus.allCount) * 100) + '%');
 		}
 

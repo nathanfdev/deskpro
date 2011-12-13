@@ -32,15 +32,20 @@ class InstallSchema
 	 */
 	protected $logger = null;
 
+	/**
+	 * @var string
+	 */
+	protected $build = 'default';
 
 	/**
 	 * @param \Application\DeskPRO\DBAL\Connection $db
 	 * @param array $schema
 	 */
-	public function __construct($db, array $schema)
+	public function __construct($db, array $schema, $build = 'default')
 	{
 		$this->db = $db;
 		$this->schema = $schema;
+		$this->build = $build;
 	}
 
 
@@ -64,6 +69,16 @@ class InstallSchema
 	public function countQueries()
 	{
 		return count($this->schema['create']) + count($this->schema['alter']);
+	}
+
+	public function hasDoneStep($id)
+	{
+		return (bool)($this->db->fetchColumn("SELECT COUNT(*) FROM install_data WHERE build = ? AND name = ?", array($this->build, $id)));
+	}
+
+	public function markStepDone($id)
+	{
+		$this->db->insert('install_data', array('build' => $this->build, 'name' => $id, 'data' => 1));
 	}
 
 	/**
@@ -90,10 +105,21 @@ class InstallSchema
 					continue;
 				}
 
+				$step_id = "query_table_$k";
+				if ($this->hasDoneStep($step_id)) {
+					$this->getLogger()->log("[QUERY:TABLE:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					$limit--;
+					if (!$limit) {
+						break;
+					}
+					continue;
+				}
+
 				$this->getLogger()->log("[QUERY:TABLE:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
 				try {
 					$this->db->exec($sql);
+					$this->markStepDone($step_id);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {
@@ -121,10 +147,21 @@ class InstallSchema
 					continue;
 				}
 
+				$step_id = "query_alter_$k";
+				if ($this->hasDoneStep($step_id)) {
+					$this->getLogger()->log("[QUERY:ALTER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					$limit--;
+					if (!$limit) {
+						break;
+					}
+					continue;
+				}
+
 				$this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
 				try {
 					$this->db->exec($sql);
+					$this->markStepDone($step_id);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {

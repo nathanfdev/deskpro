@@ -84,6 +84,27 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function createTablesAction()
 	{
+		$db = $this->getDb();
+		$check = $db->fetchColumn("SHOW TABLES LIKE 'install_data'");
+
+		if ($check != 'install_data') {
+			try {
+				$db->exec("
+					CREATE TABLE `install_data` (
+					  `build` varchar(30) NOT NULL,
+					  `name` varchar(75) NOT NULL DEFAULT '',
+					  `data` blob NOT NULL,
+					  PRIMARY KEY (`build`,`name`)
+					) ENGINE=InnoDB DEFAULT CHARSET=latin1
+				");
+			} catch (\Exception $e) {
+				$html = deskpro_install_basic_error('There was a problem trying to create the first database table `install_data`: ' . $e->getCode() . ' ' . $e->getMessage());
+				$res = new \Symfony\Component\HttpFoundation\Response($html);
+				$res->headers->set('Content-Type', 'text/html');
+				return $res;
+			}
+		}
+
 		return $this->render('InstallBundle:Install:install-tables.html.php', array(
 
 		));
@@ -91,8 +112,17 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function doCreateTablesAction($batch = 0)
 	{
+		if (!defined('DP_BUILD_TIME')) {
+			$build_file = DP_ROOT.'/sys/config/build-time.php';
+			if (is_file($build_file)) {
+				require $build_file;
+			} else {
+				define('DP_BUILD_TIME', time());
+			}
+		}
+
 		$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
-		$install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema);
+		$install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema, DP_BUILD_TIME);
 
 		$response = new \Symfony\Component\HttpFoundation\Response();
 		$response->headers->set('Content-Type', 'text/html');
