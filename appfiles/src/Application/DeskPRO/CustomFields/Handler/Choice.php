@@ -81,6 +81,9 @@ class Choice extends HandlerAbstract
 		}
 
 		$setData = $selected_options;
+		if (!$this->multiple) {
+			$setData = array_pop($setData);
+		}
 
 		$field_opts = array(
 			'choices' => $options,
