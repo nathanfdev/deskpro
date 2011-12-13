@@ -288,7 +288,7 @@ HTML;
 
 	public function resetPasswordAction($invalid_email = false, $invalid_code = false)
 	{
-		return $this->render($this->tpl_prefix . 'Login:reset-password.html.twig', array(
+		return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
 			'invalid_email' => $invalid_email,
 			'invalid_code' => $invalid_code
 		));
@@ -353,7 +353,7 @@ HTML;
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' =>1 ));
 		}
-		return $this->render($this->tpl_prefix . 'Login:reset-password-sent.html.twig', array());
+		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
 	}
 
 	public function resetPasswordNewPassAction($code)
@@ -384,7 +384,7 @@ HTML;
 			}
 		}
 
-		return $this->render($this->tpl_prefix . 'Login:reset-password-newpass.html.twig', array(
+		return $this->render($this->tpl_prefix . ':reset-password-newpass.html.twig', array(
 			'code' => $code_data->getCode()
 		));
 	}
