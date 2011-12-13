@@ -2,7 +2,7 @@
 <?php $view['slots']->start('subtitle') ?>Step 2: Verifying file integrity<?php $view['slots']->stop() ?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript">
-var status = {
+window.DpStatus = {
 	allCount: <?php echo $count ?>,
 	currentCount: 0,
 	hasErrors: false,
@@ -38,7 +38,7 @@ var status = {
 				console.log(info.changed);
 			}
 
-			status.hasErrors = true;
+			DpStatus.hasErrors = true;
 		}
 		if (info.removed && info.removed.length) {
 			for (var i = 0; i < info.removed.length; i++) { var f = info.removed[i];
@@ -55,19 +55,19 @@ var status = {
 				console.log(info.removed);
 			}
 
-			status.hasErrors = true;
+			DpStatus.hasErrors = true;
 		}
 	},
 	doneBatch: function(batch) {
-		status.currentCount++;
+		DpStatus.currentCount++;
 
-		$('#current_count').text(status.currentCount);
+		$('#current_count').text(DpStatus.currentCount);
 
-		if (status.currentCount >= status.allCount) {
-			status.done();
+		if (DpStatus.currentCount >= DpStatus.allCount) {
+			DpStatus.done();
 		} else {
-			$('#progress_done_td').attr('width', Math.ceil((status.currentCount / status.allCount) * 100) + '%');
-			var url = $('#runner_iframe').data('src-url') + status.currentCount;
+			$('#progress_done_td').attr('width', Math.ceil((DpStatus.currentCount / DpStatus.allCount) * 100) + '%');
+			var url = $('#runner_iframe').data('src-url') + DpStatus.currentCount;
 			$('#runner_iframe').attr('src', url);
 		}
 	},
@@ -79,7 +79,7 @@ var status = {
 		$('#hide_log').hide();
 		$('#log').hide();
 
-		if (status.hasErrors) {
+		if (DpStatus.hasErrors) {
 			$('#install_error').show();
 		} else {
 			$('#install_done').show();
