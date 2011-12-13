@@ -6,6 +6,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 	init: function() {
 		var self = this;
 
+		window.TicketEditor = this;
 		$('#department_switcher').on('change', function() {
 			var opt = $('option:selected', this);
 			var url = opt.data('refresh-url');
@@ -13,6 +14,15 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			if (url) {
 				window.location = url;
 			}
+		});
+
+		this.el.submit(function(ev) {
+			ev.preventDefault();
+		});
+
+		$('button.save-trigger', this.el).click(function(ev) {
+			ev.preventDefault();
+			self.save();
 		});
 
 		//------------------------------
@@ -72,11 +82,12 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					return;
 				}
 
-				$('#admin_ticket_editor_items .no-items-notice').hide();
+				$('#admin_ticket_editor').addClass('changed');
+
+				$('#admin_ticket_editor_items .no-items-notice, #admin_ticket_editor_items .is-default-notice').hide();
 
 				var formItem = $(DeskPRO_Window.util.getPlainTpl($('#editor_row_tpl')));
 				formItem.data('item-id', el.data('item-id'));
-				formItem.data('item-el', draggingSidebarEl);
 				$('label.field-title', formItem).text($('label', el).text());
 
 				formItem.data('sidebar-item', draggingSidebarEl);
@@ -94,6 +105,8 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 				draggingSidebarEl = false;
 			}
+		}).on('change keypress', function() {
+			$('#admin_ticket_editor').addClass('changed');
 		});
 
 
@@ -111,6 +124,9 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					$('#admin_ticket_editor_items .no-items-notice').show();
 				}
 			});
+
+			$('#admin_ticket_editor').addClass('changed');
+			$('#admin_ticket_editor_items .is-default-notice').hide();
 		});
 
 		//------------------------------
@@ -123,6 +139,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 			if (!overlay) {
 				var overlayEl = $('.field-options-overlay', el);
+				overlayEl.attr('id', Orb.getUniqueId());
+
+				el.data('options-id', overlayEl.attr('id'));
+
 				var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 				editor.addEvent('newRow', function(new_row) {
 					$('.remove', new_row).on('click', function() {
@@ -143,7 +163,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				});
 				el.data('options-overlay', overlay);
 
-				var select = $('select', el).first();
+				var select = $('.custom-options select', el).first();
 				if (select.length) {
 					var select = select.clone();
 					select.attr('multiple', 'multiple');
@@ -167,5 +187,102 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 			overlay.open();
 		});
+
+
+		this.redraw();
+	},
+
+	addItem: function(item_id) {
+
+	},
+
+	save: function() {
+		$('#admin_ticket_editor').removeClass('changed');
+
+		var postData = this.encode();
+		var saveUrl = this.el.attr('action');
+
+		$.ajax({
+			url: saveUrl,
+			type: 'POST',
+			data: postData
+		});
+	},
+
+	redraw: function() {
+		if (!TICKET_DISPLAY_DATA || !TICKET_DISPLAY_DATA.length) {
+			return;
+		}
+
+		Array.each(TICKET_DISPLAY_DATA, function(item) {
+			$('#admin_ticket_editor_items .no-items-notice').hide();
+
+			var draggingSidebarEl = $('li[data-item-id="' + item.id + '"]', '#ticket_elements');
+
+			var formItem = $(DeskPRO_Window.util.getPlainTpl($('#editor_row_tpl')));
+			formItem.data('item-id', draggingSidebarEl.data('item-id'));
+			$('label.field-title', formItem).text($('label', draggingSidebarEl).text());
+
+			formItem.data('sidebar-item', draggingSidebarEl);
+
+			var tplEl = $('#rendered_field_' + formItem.data('item-id').replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/_$/, ''));
+			if (tplEl.length) {
+				var renderedField = $(DeskPRO_Window.util.getPlainTpl(tplEl));
+				$('article', formItem).append(renderedField);
+			}
+
+			$('#admin_ticket_editor_items').append(formItem);
+			draggingSidebarEl.hide();
+		});
+	},
+
+	encode: function() {
+		var data = [];
+
+		var items = $('li.form-item', '#admin_ticket_editor_items');
+		for (var x = 0; x < items.length; x++) {
+			var el = items.eq(x);
+
+			var baseKey = 'items[' + x + ']';
+
+			data.push({ name: baseKey+'[id]', value: el.data('item-id') });
+
+			if (el.data('options-id')) {
+				var optionsEl = $('#' + el.data('options-id'));
+			} else {
+				var optionsEl = $('.field-options-overlay', el);
+			}
+
+			// Custom options
+			if ($(':checkbox.custom_options', optionsEl).is(':checked')) {
+				var customOptions = [];
+				$('.custom-options select option:selected').each(function(index) {
+					data.push({ name: baseKey+'[custom_options]['+index+']', value: $(this).val() });
+				});
+			}
+
+			// Rules
+			var termRows = $('.search-terms .term', optionsEl);
+			if (termRows.length) {
+				data.push({ name: baseKey+'[rule_match_type]', value: $('select[name="term_match_type"]', optionsEl).val() });
+
+				termRows.each(function(index) {
+					var type = $('> .type > input.type', this).val();
+					data.push({ name: baseKey+'[rules]['+index+'][type]', value: type });
+
+					var op = $('> .op > select', this).val();
+					data.push({ name: baseKey+'[rules]['+index+'][op]', value: op });
+
+					$('input, select, textarea', $('> .options', this)).each(function() {
+						var name = $(this).attr('name');
+						name = name.replace(/^(.*)\[(.*?)\]$/, '$2');
+
+						data.push({ name: baseKey+'[rules]['+index+'][options]['+name+']', value: $(this).val() });
+					});
+				});
+			}
+		}
+
+		return data;
 	}
 });

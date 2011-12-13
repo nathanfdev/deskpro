@@ -80,12 +80,7 @@ class Choice extends HandlerAbstract
 			}
 		}
 
-		$setData = null;
-		if ($selected_options && !$this->multiple) {
-			$setData = array_pop($selected_options);
-		} else {
-			$setData = $selected_options;
-		}
+		$setData = $selected_options;
 
 		$field_opts = array(
 			'choices' => $options,
@@ -99,7 +94,9 @@ class Choice extends HandlerAbstract
 		}
 
 		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), null, $field_opts);
-		$field_choice->setData($setData);
+		if ($setData) {
+			$field_choice->setData($setData);
+		}
 
 		return $field_choice;
 	}

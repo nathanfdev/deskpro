@@ -75,6 +75,13 @@ $collection->add('admin_tickets_editor_dep_save', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_editor_dep_revert', new Route(
+	'/tickets/editor/{department_id}/revert',
+	array('_controller' => 'AdminBundle:TicketProperties:revertEditor'),
+	array(),
+	array()
+));
+
 $collection->add('admin_email_properties', new Route(
 	'/email-settings',
 	array('_controller' => 'AdminBundle:EmailProperties:list'),

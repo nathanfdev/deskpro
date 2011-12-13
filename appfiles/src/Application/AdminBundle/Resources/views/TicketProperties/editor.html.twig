@@ -2,6 +2,9 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketEditor.js') }}"></script>
+<script type="text/javascript">
+var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
+</script>
 {% endblock %}
 {% block page_nav %}
 <div>
@@ -33,7 +36,7 @@
 				value="0"
 				data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': 0}) }}"
 			>Default</option>
-			<option>--------------</option>
+			<option></option>
 			{% for id,title in department_names %}
 				<option
 					value="{{id}}"
@@ -45,13 +48,31 @@
 	</h1>
 {% endblock %}
 {% block content %}
-<div
+
+{% if not is_default %}
+<nav class="page-top-hugnav">
+	<ul>
+		<li id="revert_to_default">Revert to default</li>
+	</ul>
+	<br class="clear" />
+</nav>
+{% endif %}
+
+<form
+	action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0) }) }}"
+	method="post"
 	class="dp-page-box"
 	id="admin_ticket_editor"
 	data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
 >
 
 <ul id="admin_ticket_editor_items" class="dp-form">
+	{% if is_default %}
+		<li class="is-default-notice">
+			This department is currently set to use the default layout. You can make changes below to
+			customize the ticket form for this department.
+		</li>
+	{% endif %}
 	<li class="no-items-notice">
 		Drag and drop fields from the left onto this area to start designing your form.
 	</li>
@@ -118,7 +139,7 @@
 				<input type="checkbox" class="custom_options" name="custom_options" value="1" /> Customize choices to display
 			</label>
 		</div>
-		<div class="dp-form-input" style="display:none"></div>
+		<div class="dp-form-input custom-options" style="display:none"></div>
 	</div>
 </script>
 
@@ -127,7 +148,7 @@
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_category">
 	<div class="ticket-category">
-		<select class="ticket-category-input">
+		<select class="ticket-category-input field-value">
 			<option>Choose a category...</option>
 			{% for id,label in term_options.ticket_categories_full %}
 				<option value="{{id}}">{{label}}</option>
@@ -141,7 +162,7 @@
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_product">
 	<div class="ticket-product">
-		<select class="ticket-product-input">
+		<select class="ticket-product-input field-value">
 			<option>Choose a product...</option>
 			{% for id,label in term_options.products %}
 				<option value="{{id}}">{{label}}</option>
@@ -155,7 +176,7 @@
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_priority">
 	<div class="ticket-priority">
-		<select class="ticket-priority-input">
+		<select class="ticket-priority-input field-value">
 			<option>Choose a priority...</option>
 			{% for id,label in term_options.priorities %}
 				<option value="{{id}}">{{label}}</option>
@@ -170,7 +191,7 @@
 
 {% for field in custom_ticket_fields %}
 	<script type="text/x-deskpro-plain" id="rendered_field_ticket_field_{{field.id}}">
-		<div class="ticket-field">
+		<div class="ticket-field field-value">
 			{{ render_custom_field_form(field) }}
 		</div>
 	</script>
@@ -270,6 +291,8 @@
 	{% endif %}
 </div>
 
-
+<div class="save-row">
+	<button class="clean-white save-trigger">Save Form</button>
 </div>
+</form>
 {% endblock %}

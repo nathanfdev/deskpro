@@ -2076,6 +2076,13 @@ tr.phrase-row.custom td {
 	margin: 10px;
 }
 
+.is-default-notice {
+	background-color: #FFFBC3;
+	padding: 10px;
+	border: 1px solid #DFDBAA;
+	margin: 10px;
+}
+
 #admin_ticket_editor_items {
 	min-height: 400px;
 }
@@ -2099,6 +2106,27 @@ tr.phrase-row.custom td {
 #admin_ticket_editor.is-dragging .form-item {
 	background-color: #F7F3DD;
 	border: 1px solid #E4E0CD;
+}
+
+#admin_ticket_editor {
+	position: relative;
+	padding-bottom: 38px;
+}
+
+#admin_ticket_editor .save-row {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 30px;
+	text-align: center;
+	padding-top: 6px;
+	background-color: #BECAD6;
+	display: none;
+}
+
+#admin_ticket_editor.changed .save-row {
+	display: block;
 }
 
 .form-item.dp-form-row {

@@ -33,9 +33,6 @@ class TicketPageDisplay extends PageDisplayAbstract
 	const ZONE_USER  = 'user';
 
 	const SECTION_DEFAULT    = 'default';
-	const SECTION_TOPTABS    = 'toptabs';
-	const SECTION_MIDDLETABS = 'middletabs';
-	const SECTION_BODYTABS   = 'bodytabs';
 
 	/**
 	 * Where this element description applies. Examples:

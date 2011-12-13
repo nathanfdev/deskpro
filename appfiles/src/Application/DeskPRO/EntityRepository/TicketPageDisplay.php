@@ -51,11 +51,19 @@ class TicketPageDisplay extends EntityRepository
 
 	public function getSectionData($department, $zone, $section)
 	{
-		$data = App::getDb()->fetchColumn("
-			SELECT data
-			FROM ticket_page_display
-			WHERE department_id = ? AND zone = ? AND section = ?
-		", array($department['id'], $zone, $section));
+		if ($department === null) {
+			$data = App::getDb()->fetchColumn("
+				SELECT data
+				FROM ticket_page_display
+				WHERE department_id IS NULL AND zone = ? AND section = ?
+			", array($zone, $section));
+		} else {
+			$data = App::getDb()->fetchColumn("
+				SELECT data
+				FROM ticket_page_display
+				WHERE department_id = ? AND zone = ? AND section = ?
+			", array($department['id'], $zone, $section));
+		}
 
 		if ($data) {
 			$data = unserialize($data);
@@ -72,7 +80,7 @@ class TicketPageDisplay extends EntityRepository
 	{
 		$d = null;
 		try {
-			$d = $this->findOneBy(array('department' => $department['id'], 'zone' => $zone, 'section' => $section));
+			$d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
 		} catch (\Exception $e) {}
 
 		if (!$d) {

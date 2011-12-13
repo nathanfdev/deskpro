@@ -32,15 +32,6 @@ class TicketPropertiesController extends AbstractController
 	{
 		$this->rememberLastPage();
 
-		/*
-		$tabs = array(
-			'categories'    => $this->forward('AdminBundle:TicketCategories:list')->getContent(),
-			'priorities'    => $this->forward('AdminBundle:TicketPriorities:list')->getContent(),
-			'workflows'     => $this->forward('AdminBundle:TicketWorkflows:list')->getContent(),
-			'custom_def'    => $this->forward('AdminBundle:CustomDefTickets:index')->getContent(),
-		);
-		*/
-
 		$counts = array();
 		$counts['ticket_category'] = App::getEntityRepository('DeskPRO:TicketCategory')->countAll();
 		$counts['ticket_priority'] = App::getEntityRepository('DeskPRO:TicketPriority')->countAll();
@@ -66,7 +57,7 @@ class TicketPropertiesController extends AbstractController
 	public function editorAction($department_id)
 	{
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-		$department_names = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames();
+		$department_names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(' > ', false);
 
 		$department = null;
 		if ($department_id) {
@@ -83,16 +74,14 @@ class TicketPropertiesController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$user_section = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSection($department, 'user', 'default');
-
 		// Existing options
-		//$current_state = array(
-		//	'user_default'      => $user_section['data'],
-		//	'agent_default'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'default'),
-		//	'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
-		//	'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
-		//	'agent_bodytabs'    => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'bodytabs'),
-		//);
+		$is_default = false;
+		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'user', 'default');
+		if (!$page_data) {
+			$is_default = true;
+			$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'user', 'default');
+		}
+
 
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
@@ -102,61 +91,45 @@ class TicketPropertiesController extends AbstractController
 			'custom_people_fields' => $custom_people_fields,
 			'term_options' => $term_options,
 			'ticket_options' => $ticket_options,
-			//'current_state' => $current_state,
-			'user_section' => $user_section
+			'is_default' => $is_default,
+			'page_data' => $page_data,
 		));
 	}
 
 	public function saveEditorAction($department_id)
 	{
-		$department = App::findEntity('DeskPRO:Department', $department_id);
+		$department = null;
 
-		$page_displays = array();
-		$editors = array('user_default', 'agent_default', 'agent_toptabs', 'agent_middletabs', 'agent_bodytabs');
-
-		foreach ($editors as $editor) {
-			$zone = strpos($editor, 'user_') === 0 ? 'user' : 'agent';
-			$section = str_replace("{$zone}_", '', $editor);
-			$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $zone, $section);
-
-			$page_data = $this->in->getArrayValue($editor, 'post');
-			if (!$page_data) $page_data = array();
-
-			$page_display['data'] = $page_data;
-
-			$page_displays[$editor] = $page_display;
+		if ($department_id) {
+			$department = App::findEntity('DeskPRO:Department', $department_id);
 		}
 
-		$enable_captcha = $this->in->getBool('enable_captcha');
-		$user_page = $page_displays['user_default'];
-		$user_page->setOption('enable_captcha', $enable_captcha);
+		$page_data = $this->in->getArrayValue('items', 'post');
+		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, 'user', 'default');
+		$page_display->data = $page_data;
 
-		$user_dep_phrase_name = "obj_department.{$department_id}_title_user";
-		$user_dep_phrase = App::getEntityRepository('DeskPRO:Phrase')->getPhraseForLanguage($user_dep_phrase_name);
-		$user_dep_name = $this->in->getString('user_dep_name');
-
-		if (!$user_dep_name OR $user_dep_name == $department['title']) {
-			if ($user_dep_phrase) {
-				App::getOrm()->remove($user_dep_phrase);
-			}
-		} else {
-			if (!$user_dep_phrase) {
-				$user_dep_phrase = new \Application\DeskPRO\Entity\Phrase();
-				$user_dep_phrase['name'] = $user_dep_phrase_name;
-			}
-
-			$user_dep_phrase['phrase'] = $user_dep_name;
-
-			App::getOrm()->persist($user_dep_phrase);
-		}
-
-		App::getOrm()->transactional(function($em) use ($page_displays) {
-			foreach ($page_displays as $page_display) {
-				$em->persist($page_display);
-			}
+		App::getOrm()->transactional(function($em) use ($page_display) {
+			$em->persist($page_display);
 			$em->flush();
 		});
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function revertEditorAction($department_id)
+	{
+		if (!$department_id) {
+			return $this->redirectRoute('admin_tickets_editor');
+		}
+
+		$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id, 'zone' => 'user', 'section' => 'default'));
+		if ($d) {
+			App::getOrm()->transactional(function($em) use ($d) {
+				$em->remove($d);
+				$em->flush();
+			});
+		}
+
+		return $this->redirectRoute('admin_tickets_editor');
 	}
 }
