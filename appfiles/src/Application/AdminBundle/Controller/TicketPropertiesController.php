@@ -130,6 +130,6 @@ class TicketPropertiesController extends AbstractController
 			});
 		}
 
-		return $this->redirectRoute('admin_tickets_editor');
+		return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id));
 	}
 }

@@ -49,10 +49,10 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% endblock %}
 {% block content %}
 
-{% if not is_default %}
+{% if department and not is_default %}
 <nav class="page-top-hugnav">
 	<ul>
-		<li id="revert_to_default">Revert to default</li>
+		<li><a href="{{ path('admin_tickets_editor_dep_revert', {'department_id': department.id}) }}" onclick="return confirm('The department form will be reverted back to the default. Are you sure you want to continue?');">Revert to default</a></li>
 	</ul>
 	<br class="clear" />
 </nav>
