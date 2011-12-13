@@ -1,197 +1,222 @@
-###############################################################################
-# 2011-12-13
-###############################################################################
-
+* Always force index.php
+* Catch invalid database name or invalid credentials while attempting to boot, and show it as an install error page
+* Fix notices in chat session starter
+* Fix installer on chrome
+* Add changelog
 * Fix jumping tabs problem
-
 * Fix ticket assignment
-
 * Tweak positioning of arrow a bit
-
 * Fix JS error when debug disabled
-
 * Create/update build time file before checksum file is generated
-
 * Remove hidden status type, not used
-
 * Remove person tooltip
-
 * Fix log proxy giving errors in IE
-
 * Fix alignment of checkbox/selection count in listbar on Windows
-
 * remove test debug comments
-
 * New ticket valdiation
-
 * Dev message in omnibox
-
 * Fix clearing issue on people list, some margins
-
 * Fix close menu on empty space
-
 * Show coming soon message on twitter and deals
-
 * Show listview box with loading spinner while list loads
-
 * Fix messed up alighment on vieworg
-
 * The arrow itself becomes a close trigger
-
 * Fix extra h-line on first row of new forms
-
 * Fix weird new org pop
-
 * Fix RTE menus and remove path: bits
-
 * Fix weirdness with buttons
 - Firefox freaks out with positioned elements inside a button el, so if there is an arrow must use an anchor instead
-
 * Visual feedback on applying ticket actions
-
 * Number of changes to Http client in ZF2 update
-
 * Fix jumping avatar when opening profile menu
-
 * Fix weirdo arrow icon
-
 * Tweak style of ticket grouping editor a bit
-
 * Fix merging and ticket log
-
 * Clean up handful of validating comment related things
-
 * Fix popover positioning in firefox due to visibility detection applied earlier
-
 * Fix for APC bug with customs session handlers (see PHP bug #58739)
-
 * Fix selected state of idea nav elements
-
 * Fix going back to "all" when viewing a grouped ticket list, and fix counts/pagination when viewing a grouped list
-
 * Fix scrollbar issue
-
 * Fix console proxy in chrome
-
 * Clean up new person popup using same org widget from viewperson
-
 * Bind focus to create windows (fixes tab index) when they're opened, standardize footers of create windows, standardize save button to "Create x", add standard keyboard shortcut alt+c to submit forms
-
 * Count for 'active chats' row
-
 * Dont show x of y or 'show more' when no results, dont show 'show more' when already showing full result set
-
 * Hide label display type switcher when no labels, fix switcher tabs on tickets section
-
 * Fix flagged counts, and keeping them updated as you change flags
-
 * Fix rendering comments as raw html, fix basic xss filter logic that determines when it needs to be run on input
-
 * Fix on/off checkboxes in admin
-
 * Fix notice with bad lang pack name
-
 * Fix logout across different session types, actually remove session records, redirect back to originating interface with confirmation message
-
 * Chnage tasks badge count to 'all my tasks'
-
 * Save the #anchor when saving JS error reports
-
 * Fix merge log error
-
 * Fix message with no text snippets defined
-
 * Fix deleting the first category!
-
 * Insert initial categories on install
-
 * Setting up agent lets you set password, correctly sets the is_user flag, and has basic error checking
-
 * Fix bad phrase for created date in user interface
-
 * Fix filter update event not being handled (aka list counters not updating after a change)
-
 * Fix custom filters hide/show editor beign triggered by "no filters" message
-
 * People list view
-
 * Fix dreadful blue IE gradients
-
 * Redirect sections without the trailing slash instead of erroring
-
 * Create a build time, and use that to cache break with assetic resources
-
 * Fix weird person profile ui when no custom fields
-
 * Fix not opening new person if you didnt also give them an org
-
 * Update actual symfony and zend2 files
-
 * Update cleanup method for latest zend2 checkout
-
 * Update Feed reader to support newest zend2 additions
-
 * Update symfony and zend versions in vendor build script
-
 * Update mootools to 1.4.2
-
 * Work with the omnisearch box
-
 * Fix $ticket_deleted error
-
 * Delete and ignore generated schema file
-
 - minor style update for config file
-
 * Remove ContentSearch entity
-
 * Fix schema file with extra table
-
 * Fix checksum check with static (or anything outside of appfiles/)
-
 * Send js error logs
-
 * Show KB section even when empty
-
 * Slightly bigger font on massactions select, bit more spacing around them
-
 * Fix no hash for app/list when no tabs, and js error when hash had no tab descriptions
-
 * Improve wording of unassigned
-
 * Fix some missing file loading problems
-
 * Fix static files not being checked with checksum verifier
-
 * Get proper queue system working with mysql-powered default, add fulltext search table for mysql-powered search, get proper entity listeners ready to automatically update search indexes when objects of interest change
-
 * Update layout of chat section
-
 * Fix labels in filter builder
-
 * Fix button placement
-
 * Remove call to PIE.htc
-
 * Set default
-
 * Add DP_DEBUG constant definition to other interfaces
-
 * Add new error log writer that posts data to our server for saving
-
 * Fix preselected 'me' instead of unassigned
-
 * Arrow keys and enter key with the person selector
-
 * Do console logging through DP.console
-
 * Add DP object
-
 * Bit of a play with query cache
-
 * Fix bug with expire caches
-
 * Fix setting ticket on hold
-
 * Shrink width of bg image
-
+* Updated publish section with collapsible areas
+* Deals badge
+* Rename Deal.js to Deals.js
+* Badges on ideas/publish icons, and some other count continuity fixes
+* Kill off another load query to fetch online agents
+* These messages were made implicit, no need to subscribe and send a request
+* Kill off another ajax request by inlining ticket labels section
+* Get rid of another ajax request by removing need to subscribe to more always-on channels
+* Load all section data at once, turns 9 ajax requests into 1
+* Fix wrong url to admin
+* No cat title when no categories exist
+* Restyle regsiter page
+* Typo
+* Fix user css, fine-tune routing resources
+* Fix org box icon placement
+* Fix url to label search
+* Fix error to do with bad url
+* Fix more bad image paths
+* Tweak colorbox theme a bit and put css for it into dp-interface (fixes bad path too)
+- Fix wrong path to mag icon in omnisearch
+* Icons for away status
+* Small icon for content types
+* Fix many visitors being created due to cookie path, carry over admin sessions to agent and reports
+* Handle when only one dep
+* Fix misc errors
+* Task badge count
+* Fix client messages sending when assigned task changes (and fixes php notice)
+* No labels messages
+* More cleanup
+* Some cleanup of old routes and methods
+* Updates to organization listings
+"No more results" message
+* Fix clicking on "no online" agents bringing up weirdo chat box
+* Show error when upload fails
+* Show message when there are no snippets defined yet
+* Dont show ajax error on ErrorLogger saving some other error
+* Fix when SimpleTabs are used on a container with no tabs yet
+* Remove subscription calls to channels everyone is always interested in (saves an ajax request on load)
+* Fix debug override
+* Remove template/type chooser
+* Add editing timezone with 'edit mode' of custom fields, showing session info about landing page and referrer
+* Show message about creating new filters when there are none
+* Reload labels sections when they're edited from a person or org
+* More work on better js errors
+* Remove test email file
+* Fix capitalization
+* Update twig vendor files to 1.4
+* Update twig from 1.3 to 1.4
+* Make tabbar same width as fields
+* Dont show category tabs if none
+* Fix missing close button on some overlays
+* Dont show teams tab if none, add missing phrases
+* Missing phrase and typo
+* Show current picture
+- Will always show gravatar if none, and default picture if no gravatar
+* Typos
+* Improve user icon
+* Fix ugly font on logout button
+* Add backdrop on settings wind
+* No labels message
+* Standardize capitalization
+* Make flags a bit smaller and fix weirdness in ui
+* Agent chat fixes
+- Fix huge default avatars on button
+- Fix minimize
+- Fix closing chatbox on document click
+- Add hover images for close/min buttons
+* Fix typo bug in zend framework 2
+* Fix redirect loop round 2
+* Fix only one task being saved on multi-task adding
+* Fix license infinite redirect
+* Fix setting changed flag when it shouldnt on verify files step
+* Force index.php in URL
+* Improve install redirect when config is detected but is default values, or settings table doesnt exist
+* Fix whitepage on no config check
+* Enable full error info by default so it's available preboot
+* Dont include classes.map
+* Add safe mode check, change preboot checks so more than one message can be displayed at a time if multiple checks fail
+@ suppress ob_flush()
+* Clean html bodies
+* Add HtmlPurifier cleaner type for html, simple_html and html_email
+* Add vendor build process for html purifier, add it to autoloading
+* Add HTMLPurifier
+* Enable input filtering of malformed utf8, enable filtering of bad 'invisible' characters, and enable basic xss filter based on codeigniters xss_clean
+* Fix browser hashes
+* Handle errors when opening new tabs to try and prevent 'phantom' tabs
+* Log JS errors if possible
+* Clean up the sys bundle and kernel and routing
+* Add a stacktrace helper
+* Dont assign system objects to vars, instead fetch them with magic so they can be lazy-initiated through the DI
+* Fix timeout exception handling
+* Cleanup a bunch of other old files and controllers
+* Remove old form component from orb
+* Separate out admin and agent kernels from eachother, and differentiate routing loaded for each (they dont need to know eachothers routing, makes them slower)
+* Fix varname in debug.php
+* Fix redirect to install on detecting missing table, fix installer being in debug mode
+* File checksum in installer
+* Clean up config.php, remove config line for database driver since it's always mysql
+* Update readme
+* Update build-vendors to get rid of zend stuff we dont need
+* Remove unneeded zend stuff
+* Trim down ezC
+* Change zend1 to zend2
+* Remove elasticabundle from submodules
+* Fix some vendor builds
+* Remove zend1
+* Add monolog
+* Adding vendors as files
+* Remove some fixture descriptions from doctrine
+* Remove .gitignore from metadata
+* Remove vendors as submodules, add script to build vendors
+* Remove submodules
+* Move debug and assets config into sys config dir
+* Remove old js-sources and command
+* Fix .gitignore
+* Build checksums
+* Changes to config location, install loading, booting and kernel sources
+* Install key compoent to licenses
+* Disable sql mode on connect
+* Fix long description
