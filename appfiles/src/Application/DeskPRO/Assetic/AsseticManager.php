@@ -433,7 +433,7 @@ class AsseticManager
 					"ConvertHslColors"              => false,
 					"ConvertRgbColors"              => false,
 					"ConvertNamedColors"            => true,
-					"CompressColorValues"           => true,
+					"CompressColorValues"           => false,
 					"CompressUnitValues"            => true,
 					"CompressExpressionValues"      => true
 				));
