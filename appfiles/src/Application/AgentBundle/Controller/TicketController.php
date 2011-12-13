@@ -1343,6 +1343,44 @@ class TicketController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			#------------------------------
+			# Validate
+			#------------------------------
+
+			$errors = array();
+
+			// Person
+			$person_id = $this->in->getUint('newticket.person.id');
+			if ($person_id) {
+				$check_person = $this->em->find('DeskPRO:Person', $person_id);
+				if (!$check_person) {
+					$errors['person_id'] = true;
+				}
+			} else {
+				$new_email = $this->in->getString('newticket.person.email_address');
+				if (!$new_email && !$this->in->getString('newticket.person.name')) {
+					$errors['person_no_user'] = true;
+				} elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
+					$errors['person_email_address'] = true;
+				}
+			}
+
+			if (!$this->in->getString('newticket.subject')) {
+				$errors['subject'] = true;
+			}
+			if (!$this->in->getString('newticket.message')) {
+				$errors['message'] = true;
+			}
+
+			if ($errors) {
+				$errors = array_keys($errors);
+				return $this->createJsonResponse(array('error' => true, 'error_codes' => $errors));
+			}
+
+			#------------------------------
+			# Save
+			#------------------------------
+
 			$newticket->save();
 			$ticket = $newticket->getTicket();
 

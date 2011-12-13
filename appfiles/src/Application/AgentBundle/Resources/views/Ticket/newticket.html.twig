@@ -76,6 +76,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<div id="{{baseId}}_user_choice">
 
 		</div>
+		<div class="error-message person_id person_no_user">Please choose or create a user</div>
+		<div class="error-message person_email_address">Please enter a a valid email address</div>
 		<br class="clear" />
 	</div>
 </div>
@@ -123,6 +125,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>Subject</h4>
 		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
+		<div class="error-message subject">Please enter a subject</div>
 	</div>
 </div>
 
@@ -134,6 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>Message</h4>
 		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
+		<div class="error-message message">Please enter a message</div>
 	</div>
 </div>
 

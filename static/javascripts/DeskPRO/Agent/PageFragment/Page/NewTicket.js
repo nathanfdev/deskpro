@@ -40,7 +40,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	submit: function() {
+
 		var formData = this.form.serializeArray();
+
+		$('div.error.section', this.wrapper).removeClass('error');
+		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
@@ -49,22 +53,61 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
-				if (data.success) {
-
-					if (data.comment_id) {
-						DeskPRO_Window.getMessageBroker().sendMessage('agent-ui.comment-remove', {
-							comment_id: data.comment_id,
-							comment_type: data.comment_type
-						});
-					}
-
-					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-					this.closeSelf();
-				} else {
-					alert('There was an error with the form');
+				if (data.error) {
+					Array.each(data.error_codes, function(code) {
+						this.showErrorCode(code);
+					}, this);
 				}
+
+				if (data.comment_id) {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent-ui.comment-remove', {
+						comment_id: data.comment_id,
+						comment_type: data.comment_type
+					});
+				}
+
+				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+				this.closeSelf();
 			}
 		});
+	},
+
+	showErrorCode: function(code) {
+		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
+		switch (code) {
+			case 'person_id':
+			case 'person_no_user':
+			case 'person_email_address':
+				$('div.user-section.section', this.wrapper).addClass('error');
+				break;
+
+			case 'subject':
+				$('div.subject-section.section', this.wrapper).addClass('error');
+				break;
+
+			case 'message':
+				$('div.message-section.section', this.wrapper).addClass('error');
+				break;
+		}
+	},
+
+	clearErrorCode: function(code) {
+		$('.' + code + '.error-message', this.wrapper).removeClass('error-message-on');
+		switch (code) {
+			case 'person_id':
+			case 'person_no_user':
+			case 'person_email_address':
+				$('div.user-section.section', this.wrapper).removeClass('error');
+				break;
+
+			case 'subject':
+				$('div.subject-section.section', this.wrapper).removeClass('error');
+				break;
+
+			case 'message':
+				$('div.message-section.section', this.wrapper).removeClass('error');
+				break;
+		}
 	},
 
 	setNewByComment: function(data) {
@@ -118,6 +161,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				dataType: 'html',
 				context: this,
 				success: function(html) {
+					self.clearErrorCode('person_id');
+					self.clearErrorCode('person_email_address');
+					self.clearErrorCode('person_no_user');
+
 					$('input.person-id', searchbox).val(personId);
 					placeUserRow(html);
 					self.loadSnippetsViewer();
@@ -162,6 +209,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	placeUserRow: function(html) {
+		var self = this;
 		var searchbox = this.getEl('user_searchbox');
 		var userfields = this.getEl('user_choice');
 		var rechooseBtn = this.getEl('switch_user');
@@ -172,6 +220,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		rechooseBtn.show();
 		searchbox.hide();
 		userfields.show();
+
+		var e = $('input.email', userfields).val();
+		var fnCheck = function() {
+			if (e.length && e.indexOf('@') !== -1) {
+				self.clearErrorCode('person_email_address');
+				self.clearErrorCode('person_no_user');
+			}
+		}
+		fnCheck();
+		e.on('change', fnCheck);
 	},
 
 	//#########################################################################
@@ -225,6 +283,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			if ($(this).val().trim() == '') {
 				self.getEl('subject_section').removeClass('done');
 			} else {
+				self.clearErrorCode('subject');
 				self.getEl('subject_section').addClass('done');
 			}
 		};
@@ -242,6 +301,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			if ($(this).val().trim() == '') {
 				self.getEl('message_section').removeClass('done');
 			} else {
+				self.clearErrorCode('message');
 				self.getEl('message_section').addClass('done');
 			}
 		};
