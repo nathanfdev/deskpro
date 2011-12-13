@@ -55,6 +55,12 @@ class KernelBooter
 		$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		$path = $request->getPathInfo();
 
+		// Always force index.php
+		if (strpos($request->getRequestUri(), '/index.php') === false) {
+			header('Location: ' . $request->getBasePath() . '/index.php' . $path);
+			exit;
+		}
+
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'agent');
