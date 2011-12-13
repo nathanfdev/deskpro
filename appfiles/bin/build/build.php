@@ -18,7 +18,7 @@ echo "build-boostrap ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-bootstrap.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -37,7 +37,7 @@ echo "build-kernels ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-kernels.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -56,7 +56,7 @@ echo "build-caches ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-caches.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -75,7 +75,7 @@ echo "build-assetic ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-assetic.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -94,7 +94,7 @@ echo "build-compiled ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-compiled.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -113,7 +113,7 @@ echo "build-schema-file ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-schema-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
@@ -132,7 +132,7 @@ echo "build-checksum-file ... ";
 
 $proc = new \Symfony\Component\Process\Process('./build-checksum-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-//$proc->run();
+$proc->run();
 
 if (!$proc->isSuccessful()) {
 	echo "ERROR\n";
