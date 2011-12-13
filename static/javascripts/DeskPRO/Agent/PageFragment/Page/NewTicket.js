@@ -223,7 +223,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var e = $('input.email', userfields).val();
 		var fnCheck = function() {
-			if (e.length && e.indexOf('@') !== -1) {
+			if (e && e.length && e.indexOf('@') !== -1) {
 				self.clearErrorCode('person_email_address');
 				self.clearErrorCode('person_no_user');
 			}
