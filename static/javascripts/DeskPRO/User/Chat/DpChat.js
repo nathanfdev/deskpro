@@ -1,4 +1,4 @@
-if (DpChat_EnableDebug) {
+if (window.DpChat_EnableDebug) {
 	var DpChatConsole = window.console;
 } else {
 	var DpChatConsole = {};
