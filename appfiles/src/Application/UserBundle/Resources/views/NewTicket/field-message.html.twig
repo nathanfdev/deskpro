@@ -1,0 +1,17 @@
+<div class="dp-form-row {% if error_fields['ticket.message'] %}dp-error{% endif %}">
+	<div class="dp-form-label">
+		<label>What is your question?</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.ticket.message, {
+			'attr': {
+				'class': 'dp-message',
+				'data-field-validators': 'DeskPRO.Form.LengthValidator',
+				'data-min-len': 10
+			}
+		}) }}
+		<div class="dp-error-explain">
+			Please enter at least 10 characters
+		</div>
+	</div>
+</div>

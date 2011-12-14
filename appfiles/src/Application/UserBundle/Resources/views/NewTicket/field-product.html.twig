@@ -1,0 +1,28 @@
+<div class="dp-form-row ticket_product {% if error_fields['ticket.product_id'] %}dp-error{% endif %}">
+	<div class="dp-form-label">
+		<label>{{ phrase('user.product') }}</label>
+	</div>
+	<div class="dp-form-input with-sub-options">
+		<select name="newticket[ticket][product_id]" class="parent-option product_id">
+			<option value=""></option>
+			{% for id,info in ticket_options.products_hierarchy %}
+				<option value="{{id}}">{{info.title}}</option>
+			{% endfor %}
+		</select>
+		{% for parent_id, parent_info in ticket_options.products_hierarchy %}
+			{% if parent_info.children|length %}
+			<div class="dp-sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
+				<select class="sub_product_id">
+					<option value=""></option>
+					{% for id,info in parent_info.children %}
+						<option value="{{id}}">{{info.title}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			{% endif %}
+		{% endfor %}
+		<div class="dp-error-explain">
+			Please choose a product
+		</div>
+	</div>
+</div>
