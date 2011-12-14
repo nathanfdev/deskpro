@@ -45,19 +45,19 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<option	value="0" data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': 0}) }}">Default</option>
 					<optgroup label="Department Customizations">
 						{% for id,title in department_names %}
-							<option value="{{id}}" {% if department.id == id %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': id}) }}">{{title}}</option>
+							<option value="{{id}}" {% if department.id == id %}selected="selected"{% endif %} data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': id, 'section': section}) }}">{{title}}</option>
 						{% endfor %}
 					</optgroup>
 				</select>
 			</li>
 			<li {% if section == 'create' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0')}) }}">New Ticket Form</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">New Ticket Form</a>
 			</li>
 			<li {% if section == 'view' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
 			</li>
 			<li class="{% if section == 'modify' %}on{% endif %} last">
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': dpeartment.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
 			</li>
 		</ul>
 		<br class="clear" />
