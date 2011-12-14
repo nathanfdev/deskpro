@@ -216,10 +216,15 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 		var postData = this.encode();
 		var saveUrl = this.el.attr('action');
 
+		this.el.addClass('loading');
 		$.ajax({
 			url: saveUrl,
 			type: 'POST',
-			data: postData
+			data: postData,
+			context: this,
+			complete: function() {
+				this.el.removeClass('loading');
+			}
 		});
 	},
 

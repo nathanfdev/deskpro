@@ -322,7 +322,12 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </div>
 
 <div class="save-row">
-	<button class="clean-white save-trigger">Save Form</button>
+	<div class="is-not-loading">
+		<button class="clean-white save-trigger">Save Form</button>
+	</div>
+	<div class="is-loading" style="padding-top: 7px">
+		<div class="loading-icon-flat">&nbsp;</div>
+	</div>
 </div>
 </form>
 {% endblock %}
