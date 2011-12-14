@@ -156,35 +156,21 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	},
 
 	setDepartment: function(department_id) {
-		this.clearAll();
 
 		if (department_id == this.departmentId) {
 			return;
 		}
 
+		this.clearAll();
+
 		this.departmentId = department_id;
+		var activeDepId = this.departmentId;
 
 		if (!window.DESKPRO_TICKET_DISPLAY) {
 			return;
 		}
-
-		var activeDepId = this.departmentId;
-
-		if (!window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
-			if (!window.DESKPRO_TICKET_CAT_PARENTS) {
-				return;
-			}
-
-			while (true) {
-				var activeDepId = window.DESKPRO_TICKET_CAT_PARENTS[activeDepId];
-				if (!activeDepId) {
-					return;
-				}
-
-				if (window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
-					return;
-				}
-			}
+		if (!activeDepId || !window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
+			activeDepId = 0;
 		}
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
@@ -192,8 +178,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		Array.each(depItems, function(item) {
 			var itemId = this.getItemId(item);
-			var itemEl = $('.' + itemId + ':first');
-			itemEl.show();
+			var itemEl = $('.' + itemId);
+			itemEl.detach().appendTo('#fields_container').show();
 		}, this);
 	},
 
@@ -203,9 +189,10 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	getItemId: function(item) {
 
-		var itemId = item.item_type;
-		if (item.item_id) {
-			itemId += '_' + item.item_id;
+		console.log(item);
+		var itemId = item.field_type;
+		if (item.field_id) {
+			itemId += '_' + item.field_id;
 		}
 
 		return itemId;

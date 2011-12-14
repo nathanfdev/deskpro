@@ -117,4 +117,24 @@ class TicketPageDisplay extends PageDisplayAbstract
 	{
 		$this->options[$name] = $value;
 	}
+
+
+	public function setData(array $data)
+	{
+		$d = array();
+
+		foreach ($data as $k => $item_data) {
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $item_data['id'], $m)) {
+				$item_data['field_type'] = $m[1];
+				$item_data['field_id'] = $m[2];
+			} else {
+				$item_data['field_type'] = $item_data['id'];
+			}
+
+			$d[$k] = $item_data;
+		}
+
+		$this->setModelField('data', $d);
+	}
 }

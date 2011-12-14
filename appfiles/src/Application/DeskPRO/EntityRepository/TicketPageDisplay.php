@@ -27,13 +27,13 @@ class TicketPageDisplay extends EntityRepository
 
 			return $this->getEntityManager()->createQuery("
 				SELECT d
-				FROM DeskPRO:TicketPageDisplay d INDEX BY d.section
+				FROM DeskPRO:TicketPageDisplay d
 				WHERE d.zone = :zone AND d.department = :department
 			")->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
 		} else {
 			return $this->getEntityManager()->createQuery("
 				SELECT d
-				FROM DeskPRO:TicketPageDisplay d INDEX BY d.section
+				FROM DeskPRO:TicketPageDisplay d
 				WHERE d.zone = :zone
 			")->setParameters(array('zone' => $zone))->execute();
 		}
@@ -42,7 +42,7 @@ class TicketPageDisplay extends EntityRepository
 	public function getSection($department, $zone, $section)
 	{
 		try {
-			$d = $this->findOneBy(array('department' => $department['id'], 'zone' => $zone, 'section' => $section));
+			$d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
 			return $d;
 		} catch (\Exception $e) {
 			return null;

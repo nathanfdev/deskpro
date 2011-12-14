@@ -21,9 +21,15 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Department;
 
 /**
- * TicketPage's have a zone context (user, agent) and a department context.
+ * Ticket layouts have three components:
  *
- * The person context is used in criteria for rule matching only.
+ * ZONE: This is the top-level grouping of ticket page descriptions. Zones include:
+ * create, view, modify and agent.
+ *
+ * SECTION: This is a specific part of the page in a zone. So you might have
+ * top tabs, bottom tabs, body, etc. Usually this doesnt matter and is 'default'
+ *
+ * PageDisplay's are items to display on the page.
  */
 class TicketPageZone extends BasicPage implements PersonContextInterface
 {
@@ -47,13 +53,13 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	 * @param string $zone The zone (one of TicketPageDisplay::ZONE_*)
 	 * @param Department $department The department context
 	 */
-	public function __construct($zone, Department $department)
+	public function __construct($zone, Department $department = null)
 	{
 		$this->zone = $zone;
 		$this->department = $department;
 	}
 
-	
+
 	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return void
@@ -77,9 +83,6 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		if ($this->zone != $page_display['zone']) {
 			throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
 		}
-		if ($this->department['id'] != $page_display->department['id']) {
-			throw new \InvalidArgumentException('Invalid department context. Must be: ' . $this->department['id']);
-		}
 
 		parent::addPageDisplay($page_display);
 	}
@@ -95,21 +98,21 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		$this->addPageDisplays($page_displays);
 	}
 
-	
+
 	/**
 	 * Get the zone
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getZone()
 	{
 		return $this->zone;
 	}
-	
+
 
 	/**
 	 * Get the department
-	 * 
+	 *
 	 * @return \Application\DeskPRO\Entity\Department
 	 */
 	public function getDepartment()
@@ -123,7 +126,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		$part = array();
 
 		$function_tokens = array();
-		
+
 		foreach ($this->page_displays as $ticket_page) {
 			/** @var $ticket_page \Application\DeskPRO\Entity\TicketPageDisplay */
 			$page_part = $this->compileTicketPage($ticket_page, $function_tokens);
@@ -147,11 +150,11 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		if (!$ticket_page['data']) {
 			return false;
 		}
-		
+
 		$parts = array();
 
 		foreach ($ticket_page['data'] as $item) {
-			if ($item['item_type'] == 'group') {
+			if ($item['id'] == 'group') {
 				if (empty($item['items'])) {
 					continue;
 				}
@@ -161,7 +164,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 					$sub_item_parts[] = $this->_compileArrayForItem($ticket_page, $sub_item, $function_tokens);
 				}
 
-				$parts[] = array('section' => $ticket_page['section'], 'item_type' => 'group', 'title' => $item['title'], 'items' => $sub_item_parts);
+				$parts[] = array('section' => $ticket_page['section'], 'id' => 'group', 'title' => $item['title'], 'items' => $sub_item_parts);
 			} else {
 				$parts[] = $this->_compileArrayForItem($ticket_page, $item, $function_tokens);
 			}
@@ -170,7 +173,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		if (!$parts) {
 			return false;
 		}
-		
+
 		return $parts;
 	}
 
@@ -178,10 +181,13 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	{
 		$part = array();
 		$part['section'] = $ticket_page['section'];
-		$part['item_type'] = $item['item_type'];
+		$part['id'] = $item['id'];
 
-		if (isset($item['item_id'])) {
-			$part['item_id'] = $item['item_id'];
+		if (isset($item['field_type'])) {
+			$part['field_type'] = $item['field_type'];
+		}
+		if (isset($item['field_id'])) {
+			$part['field_id'] = $item['field_id'];
 		}
 
 		$check = array('ticket_categories', 'ticket_workflows', 'ticket_priorities', 'ticket_products');
@@ -191,12 +197,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 			}
 		}
 
-		$part['initial_display'] = 'visible';
-		if (!empty($item['initial_display'])) {
-			$part['initial_display'] = $item['initial_display'];
-		}
-
-		if (empty($item['terms_all']) && empty($item['terms_any'])) {
+		if (empty($item['rules'])) {
 			$part['check'] = false;
 		} else {
 			$token = '%' . microtime(true) . mt_rand(1000, 9999) . mt_rand(1000, 9999) . '%';
@@ -206,7 +207,6 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 
 			$part['check'] = $token;
 		}
-		$part['check'] = false;
 
 		return $part;
 	}
@@ -215,25 +215,9 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	{
 		$function = array();
 		$function[] = 'function (ticket) {';
-		if (!empty($item['terms_all'])) {
-			$terms_compiler = new \Application\DeskPRO\Tickets\TicketTerms($item['terms_all']);
-			$terms_checks = $terms_compiler->compileTermsToJavascript('all');
 
-			$function[] = 'var all = (function(){' . $terms_checks. '})();';
-		} else {
-			$function[] = 'var all = true;';
-		}
-		if (!empty($item['terms_any'])) {
-			$terms_compiler = new \Application\DeskPRO\Tickets\TicketTerms($item['terms_any']);
-			$terms_checks = $terms_compiler->compileTermsToJavascript('any');
-
-			$function[] = 'var any = (function(){' . $terms_checks. '})();';
-		} else {
-			$function[] = 'var any = true;';
-		}
-
-		$function[] = "if (all && any) return true;";
-		$function[] = "else return false;";
+		$terms_compiler = new \Application\DeskPRO\Tickets\TicketTerms($item['rules']);
+		$function[] = $terms_compiler->compileTermsToJavascript($item['rule_match_type']);
 
 		$function[] = '}';
 

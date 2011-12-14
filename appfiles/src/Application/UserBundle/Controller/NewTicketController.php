@@ -58,13 +58,6 @@ class NewTicketController extends AbstractController
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
-		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
-		$ticket_display->addPagesFromDb();
-		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
-
-		$cat_parents = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryHelper()->getParentMap();
-		$ticket_display_js .= 'window.DESKPRO_TICKET_CAT_PARENTS = ' . json_encode($cat_parents) . ';';
-
 		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
 		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
 
@@ -137,6 +130,21 @@ class NewTicketController extends AbstractController
 			}
 		}
 
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+		$ticket_display->addPagesFromDb();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+
+		$default_dep = null;
+		if ($newticket->ticket->department_id) {
+			$default_page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($newticket->ticket->department_id, 'create', 'default');
+		} else {
+			$default_page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'create', 'default');
+		}
+		$page_data_field_ids = array();
+		foreach ($default_page_data as $info) {
+			$page_data_field_ids[] = $info['id'];
+		}
+
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
 			'departments' => $departments,
 			'ticket_categories' => $ticket_categories,
@@ -152,6 +160,9 @@ class NewTicketController extends AbstractController
 			'captcha_html' => $captcha_html,
 			'errors' => $errors,
 			'error_fields' => $error_fields,
+
+			'default_page_data' => $default_page_data,
+			'page_data_field_ids' => $page_data_field_ids,
 		));
     }
 

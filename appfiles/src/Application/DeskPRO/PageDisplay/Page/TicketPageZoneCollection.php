@@ -22,6 +22,10 @@ use Application\DeskPRO\Entity\Department;
 
 use Orb\Util\Arrays;
 
+/**
+ * This is a collection of TicketPageZone's meant to group a bunch of layouts
+ * under one object. All pages must be the same zone, but the department changes.
+ */
 class TicketPageZoneCollection implements PersonContextInterface
 {
 	/**
@@ -67,14 +71,20 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$dep_page_displays = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getFromZone($this->zone);
 		$dep_page_displays = Arrays::groupItems($dep_page_displays, 'department_id');
 
-		foreach ($dep_page_displays as $dep_id => $page_displays) {
-			$dep = App::findEntity('DeskPRO:Department', $dep_id);
-			if ($dep) {
-				$ticket_page_zone = new TicketPageZone($this->zone, $dep);
-				$ticket_page_zone->addPageDisplays($page_displays);
+		$default_page = null;
 
-				$this->addPage($ticket_page_zone);
+		foreach ($dep_page_displays as $dep_id => $page_displays) {
+			$dep = null;
+			if ($dep_id) {
+				$dep = App::findEntity('DeskPRO:Department', $dep_id);
+				if (!$dep) {
+					continue;
+				}
 			}
+
+			$ticket_page_zone = new TicketPageZone($this->zone, $dep);
+			$ticket_page_zone->addPageDisplays($page_displays);
+			$this->addPage($ticket_page_zone);
 		}
 	}
 
@@ -89,7 +99,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 			throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
 		}
 
-		$dep_id = $page->getDepartment()->getId();
+		$dep_id = $page->getDepartment() ? $page->getDepartment()->getId() : 0;
 		$this->department_pages[$dep_id] = $page;
 	}
 
@@ -142,15 +152,11 @@ class TicketPageZoneCollection implements PersonContextInterface
 	public function compileJs()
 	{
 		$part = array();
-		$part[] = "{";
-
 		foreach ($this->department_pages as $dep_id => $page_zone) {
-			$part[] = "$dep_id: " . $page_zone->compileJs() . ",";
+			$part[] = "$dep_id: " . $page_zone->compileJs();
 		}
 
-		$part[] = "0: []";
-		$part[] = "}";
-
-		return implode("\n", $part);
+		$part = "{\n" . implode(",\n", $part) . "\n}";
+		return $part;
 	}
 }
