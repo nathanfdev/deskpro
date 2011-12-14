@@ -365,20 +365,22 @@ a.delete-link:hover {
 }
 
 .note-top {
-	position: absolute;
-	top: -21px;
-	right: 10px;
-	left: 10px;
-
 	background-color: #fff;
 	border: 1px solid #CACFD6;
-	border-bottom: none;
-	height: 16px;
-	padding: 2px 4px 2px 4px;
+	padding: 10px;
 
-	.border-radius(4px, 4px, 0, 0);
+	.rounded(4px);
 	line-height: 100%;
 	text-align: center;
+	font-size: 11px;
+	margin-top: 9px;
+	line-height: 100%;
+
+	.inner-shadow-color(0, 0, 6px, rgba(0, 0, 0, 0.2));
+}
+
+.note-top em {
+    
 }
 
 #dp_admin_prepage {

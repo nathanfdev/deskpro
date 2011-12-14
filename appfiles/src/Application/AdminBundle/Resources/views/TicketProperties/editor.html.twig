@@ -38,7 +38,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		Ticket Form	Editor
 	</h1>
 
-	<nav class="admin-object-nav" {% if department%}style="margin-bottom: 18px"{% endif %}>
+	<nav class="admin-object-nav">
 		<ul>
 			<li class="master">
 				<select id="department_switcher">
@@ -63,21 +63,23 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<br class="clear" />
 	</nav>
 	<br class="clear" />
-{% endblock %}
-{% block content %}
+
 	{% if department%}
 	<div class="note-top">
 		{% if is_default %}
-			This department is currently using the default layout. You can turn on customizations
+			This department is currently using the <em>default layout</em>. You can turn on customizations
 			to make changes. Customizations are currently
 			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_copydefault', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').hide();" class="onoff-slider" />
 		{% else %}
-			This department is using a custom layout. You can revert back to the default by disabling
+			This department is using a <em>custom layout</em>. You can revert back to the default by disabling
 			customizations. Customizations are currently
 			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_revert', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').show();" class="click-go onoff-slider" checked="checked" />
 		{% endif %}
 	</div>
 	{% endif %}
+
+{% endblock %}
+{% block content %}
 <form
 	action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0), 'section': section }) }}"
 	method="post"
