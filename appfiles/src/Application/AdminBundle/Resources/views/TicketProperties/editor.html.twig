@@ -15,6 +15,10 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
+				{% if section == 'create' %}
+					<li class="draggable" data-item-id="message"><label>Ticket Message</label></li>
+					<li class="draggable" data-item-id="attachments"><label>Attachments</label></li>
+				{% endif %}
 				<li class="draggable" data-item-id="ticket_category"><label>Category</label></li>
 				<li class="draggable" data-item-id="ticket_product"><label>Product</label></li>
 				<li class="draggable" data-item-id="ticket_priority"><label>Priority</label></li>
@@ -151,6 +155,24 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</label>
 		</div>
 		<div class="dp-form-input custom-options" style="display:none"></div>
+	</div>
+</script>
+
+{############################
+ # Message field
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_message">
+	<div class="message">
+		<textarea class="message-input" style="height: 80px"></textarea>
+	</div>
+</script>
+
+{############################
+ # Attachments field
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_attachments">
+	<div class="attachments">
+		<input type="file" /> <button class="clean-white small">Upload</button>
 	</div>
 </script>
 
