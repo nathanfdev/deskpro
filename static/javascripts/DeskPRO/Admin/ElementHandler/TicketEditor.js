@@ -158,6 +158,20 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					editor.addNewRow(to_el, basename);
 				});
 
+				if (el.data('rules')) {
+					var terms = el.data('rules');
+					el.data('terms', false);
+
+					Array.each(terms, function(termitem) {
+						var basename = 'terms_all['+Orb.uuid()+']';
+						editor.addNewRow(to_el, basename, {
+							type: termitem.type,
+							op: termitem.op,
+							options: termitem.options
+						});
+					});
+				}
+
 				overlay = new DeskPRO.UI.Overlay({
 					contentElement: overlayEl
 				});
@@ -233,6 +247,14 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 			$('#admin_ticket_editor_items').append(formItem);
 			draggingSidebarEl.hide();
+
+			// Add terms object to the element too, so they're redrawn when the overlay is opened
+			if (item.rules) {
+				if (item.rule_match_type) {
+					$('select[name="term_match_type"]', formItem).val(item.rule_match_type);
+				}
+				formItem.data('rules', item.rules);
+			}
 		});
 	},
 

@@ -41,6 +41,9 @@ var ticketReader = {
 	},
 	getOrganizationId: function() {
 		return {{ app.user.organization.id|default(0) }};
+	},
+	getWorkflow: function() {
+		return 0;
 	}
 };
 </script>

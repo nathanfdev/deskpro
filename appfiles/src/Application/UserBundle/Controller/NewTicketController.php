@@ -59,7 +59,6 @@ class NewTicketController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
-		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
 
 		$captcha_html = '';
 		if ($captcha) {
@@ -147,7 +146,6 @@ class NewTicketController extends AbstractController
 
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
 			'departments' => $departments,
-			'ticket_categories' => $ticket_categories,
 
 			'newticket' => $newticket,
 			'ticket_options' => $newticket_formtype->getTicketOptions(),

@@ -1,7 +1,7 @@
 {% for item in page_data %}
 
 {% if (mode == 'default' and item.field_type == 'message') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div class="dp-form-row ticket-display-field message {% if error_fields['ticket.message'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="message" class="dp-form-row ticket-display-field message {% if error_fields['ticket.message'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	<div class="dp-form-label">
 		<label>What is your question?</label>
 	</div>
@@ -21,7 +21,7 @@
 {% endif %}
 
 {% if (mode == 'default' and item.field_type == 'attachments') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div class="dp-form-row ticket-display-field attachments" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="attachments" class="dp-form-row ticket-display-field attachments" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	<div class="dp-form-label">
 		<label>Attachments</label> <em class="desc">You may upload an attachment less than 5 MB</em>
 	</div>
@@ -34,8 +34,9 @@
 {###############
  # Category
  ###############}
+{% if ticket_options.ticket_categories_hierarchy %}
 {% if (mode == 'default' and item.field_type == 'ticket_category') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div class="dp-form-row ticket_category standard-field ticket-display-field {% if error_fields['ticket.category_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="ticket_category" class="dp-form-row ticket_category standard-field ticket-display-field {% if error_fields['ticket.category_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	<div class="dp-form-label">
 		<label>{{ phrase('user.tickets.category') }}</label>
 	</div>
@@ -64,13 +65,14 @@
 	</div>
 </div>
 {% endif %}
+{% endif %}
 
 {###############
  # Product
  ###############}
-{% if form.ticket.product_id %}
+{% if ticket_options.products_hierarchy %}
 {% if (mode == 'default' and item.field_type == 'ticket_product') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div class="dp-form-row ticket_product standard-field ticket-display-field {% if error_fields['ticket.product_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="ticket_product" class="dp-form-row ticket_product standard-field ticket-display-field {% if error_fields['ticket.product_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	<div class="dp-form-label">
 		<label>{{ phrase('user.product') }}</label>
 	</div>
@@ -106,7 +108,7 @@
  ###############}
 {% if form.ticket.priority_id %}
 {% if (mode == 'default' and item.field_type == 'ticket_priority') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div class="dp-form-row ticket_priority standard-field ticket-display-field {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="ticket_priority" class="dp-form-row ticket_priority standard-field ticket-display-field {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	<div class="dp-form-label">
 		<label>{{ phrase('user.tickets.priority') }}</label>
 	</div>
@@ -126,7 +128,7 @@
 
 {% for f in custom_fields %}
 	{% if (mode == 'default' and item.field_type == 'ticket_field' and item.field_id == f.id) or (mode =='non_default' and item.id not in page_data_field_ids) %}
-	<div class="dp-form-row custom-field ticket_field_{{f.id}} ticket-display-field" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+	<div data-field-id="ticket_field[{{f.id}}]" class="dp-form-row custom-field ticket_field_{{f.id}} ticket-display-field" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 		<div class="dp-form-label">
 			<label>{{f.title}}</label>
 		</div>
@@ -137,7 +139,7 @@
 
 {% if captcha_html %}
 	{% if (mode == 'default' and item.field_type == 'captcha') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-	<div class="dp-form-row ticket-display-field captcha">
+	<div data-field-id="captcha" class="dp-form-row ticket-display-field captcha">
 		<div class="dp-form-label">
 			<label>Please prove you are human!</label>
 		</div>

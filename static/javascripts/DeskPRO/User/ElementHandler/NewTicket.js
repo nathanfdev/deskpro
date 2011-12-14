@@ -115,6 +115,12 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			});
 		});
 
+		$('.ticket_category.ticket-display-field select, .ticket_priority.ticket-display-field select, .ticket_product.ticket-display-field select').on('change', function() {
+			if (self.depItemsWithChecked) {
+				self.runChecks();
+			}
+		});
+
 		$('form', this.el).on('submit', function(ev) {
 
 			$('.sub-options:hidden', this.el).remove();
@@ -129,6 +135,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 				}
 			});
 		});
+
+		this.handleDepChange();
 	},
 
 	handleDepChange: function() {
@@ -158,6 +166,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	setDepartment: function(department_id) {
 
 		if (department_id == this.departmentId) {
+			// nochange
 			return;
 		}
 
@@ -174,22 +183,83 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		}
 
 		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
+		this.depItems = depItems;
+		this.depItemsWithChecked = false;
+
 		DP.console.log('depItems %o', depItems);
 
 		Array.each(depItems, function(item) {
 			var itemId = this.getItemId(item);
 			var itemEl = $('.' + itemId);
-			itemEl.detach().appendTo('#fields_container').show();
+
+			itemEl.detach().appendTo('#fields_container').addClass('field-enabled');
+
+			// Turn on criteria-less fields now
+			if (!item.check) {
+				itemEl.show();
+			} else {
+				itemEl.addClass('with-criteria');
+				this.depItemsWithChecked = true;
+			}
 		}, this);
+
+		this.runChecksRecursionCount = 0;
+		if (this.depItemsWithChecked) {
+			this.runChecks();
+		}
+	},
+
+	runChecks: function() {
+		if (this.runChecksRecursionCount > 30) {
+			console.error('runChecks running too many times: %o', this.depItems);
+			return;
+		}
+
+		var self = this;
+		var changed = false;
+		$('.with-criteria').each(function() {
+			var el = $(this);
+			var item = self.findItemForEl(el);
+			if (!item) return;
+
+			if (item.check(ticketReader)) {
+				if (!el.is(':visible')) {
+					changed = true;
+					el.show();
+				}
+			} else {
+				if (el.is(':visible')) {
+					changed = true;
+					el.hide();
+				}
+			}
+		});
+
+		if (changed) {
+			this.runChecksRecursionCount++;
+			this.runChecks();
+			this.runChecksRecursionCount--;
+		}
+	},
+
+	findItemForEl: function(el) {
+		var fieldId = el.data('field-id');
+		var theitem = null;
+		Array.each(this.depItems, function(item) {
+			if (item.id == fieldId) {
+				theitem = item;
+				return false;
+			}
+		});
+
+		return theitem;
 	},
 
 	clearAll: function() {
-		$('.ticket-display-field').hide();
+		$('.ticket-display-field').hide().removeClass('field-enabled with-criteria');
 	},
 
 	getItemId: function(item) {
-
-		console.log(item);
 		var itemId = item.field_type;
 		if (item.field_id) {
 			itemId += '_' + item.field_id;
