@@ -66,7 +66,7 @@ class TicketSearch extends SearcherAbstract
 	 * Summary of terms in phrases
 	 * @var array
 	 */
-	protected $summary = null;
+	protected $summary = array();
 
 	/**
 	 * Summary of sorting in phrases
