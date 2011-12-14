@@ -57,7 +57,7 @@ class TicketPropertiesController extends AbstractController
 	public function editorAction($department_id, $section = 'create')
 	{
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-		$department_names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(' > ', false);
+		$department_hierarchy = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 
 		$department = null;
 		if ($department_id) {
@@ -85,7 +85,7 @@ class TicketPropertiesController extends AbstractController
 
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
-			'department_names' => $department_names,
+			'department_hierarchy' => $department_hierarchy,
 			'department' => $department,
 			'custom_ticket_fields' => $custom_ticket_fields,
 			'custom_people_fields' => $custom_people_fields,

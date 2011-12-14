@@ -7,11 +7,11 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 		var self = this;
 
 		window.TicketEditor = this;
-		$('#department_switcher').on('change', function() {
-			var opt = $('option:selected', this);
-			var url = opt.data('refresh-url');
-			DP.console.log(url);
-			if (url) {
+		var ob = new DeskPRO.UI.OptionBox({
+			element: $('#department_ob'),
+			trigger: $('#department_switcher'),
+			onChecked: function(check, ob) {
+				var url = check.data('refresh-url');
 				window.location = url;
 			}
 		});
