@@ -250,6 +250,14 @@ $collection->add('user_tickets_new', new Route(
 	array()
 ));
 
+$collection->add('user_tickets_new', new Route(
+	'/tickets/new.js',
+	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'script'),
+	array(),
+	array()
+));
+
+
 $collection->add('user_tickets_new_login', new Route(
 	'/tickets/new/login',
 	array('_controller' => 'UserBundle:NewTicket:handleLogin'),
