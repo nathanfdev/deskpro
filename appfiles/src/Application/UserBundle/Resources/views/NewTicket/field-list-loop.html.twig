@@ -10,6 +10,18 @@
 
 {% for item in page_data %}
 
+{% if (mode == 'default' and item.field_type == 'ticket_department') or (mode =='non_default' and item.id not in page_data_field_ids) %}
+<div data-field-id="ticket_department" class="ticket-display-field ticket_department" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+	{% include 'UserBundle:NewTicket:field-department.html.twig' %}
+</div>
+{% endif %}
+
+{% if (mode == 'default' and item.field_type == 'ticket_subject') or (mode =='non_default' and item.id not in page_data_field_ids) %}
+<div data-field-id="ticket_subject" class="ticket-display-field ticket_subject" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+	{% include 'UserBundle:NewTicket:field-subject.html.twig' %}
+</div>
+{% endif %}
+
 {% if (mode == 'default' and item.field_type == 'message') or (mode =='non_default' and item.id not in page_data_field_ids) %}
 <div data-field-id="message" class="ticket-display-field message" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-message.html.twig' %}

@@ -15,8 +15,10 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
+				<li class="draggable irremovable" data-item-id="ticket_department"><label>Department</label></li>
 				{% if section == 'create' %}
-					<li class="draggable" data-item-id="message"><label>Ticket Message</label></li>
+					<li class="draggable irremovable" data-item-id="message"><label>Ticket Message</label></li>
+					<li class="draggable irremovable" data-item-id="ticket_subject"><label>Ticket Subject</label></li>
 					<li class="draggable" data-item-id="attachments"><label>Attachments</label></li>
 				{% endif %}
 				<li class="draggable" data-item-id="ticket_category"><label>Category</label></li>
@@ -150,6 +152,24 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</label>
 		</div>
 		<div class="dp-form-input custom-options" style="display:none"></div>
+	</div>
+</script>
+
+{############################
+ # Subject
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_subject">
+	<div class="subject">
+		<input type="text" />
+	</div>
+</script>
+
+{############################
+ # Department
+ ############################}
+<script type="text/x-deskpro-plain" id="rendered_field_ticket_department">
+	<div class="subject">
+		<select><option></option><option>------------------</option></select>
 	</div>
 </script>
 

@@ -98,6 +98,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					$('article', formItem).append(renderedField);
 				}
 
+				if (draggingSidebarEl.is('.irremovable')) {
+					$('.dp-block-controls', formItem).remove();
+				}
+
 				formItem.insertAfter(el);
 
 				draggingSidebarEl.hide();
@@ -229,11 +233,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 	},
 
 	redraw: function() {
-		if (!TICKET_DISPLAY_DATA || !TICKET_DISPLAY_DATA.length) {
-			return;
-		}
-
-		Array.each(TICKET_DISPLAY_DATA, function(item) {
+		function drawItem(item) {
 			$('#admin_ticket_editor_items .no-items-notice').hide();
 
 			var draggingSidebarEl = $('li[data-item-id="' + item.id + '"]', '#ticket_elements');
@@ -250,6 +250,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				$('article', formItem).append(renderedField);
 			}
 
+			if (draggingSidebarEl.is('.irremovable')) {
+				$('.dp-block-controls', formItem).remove();
+			}
+
 			$('#admin_ticket_editor_items').append(formItem);
 			draggingSidebarEl.hide();
 
@@ -260,7 +264,23 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				}
 				formItem.data('rules', item.rules);
 			}
-		});
+		}
+
+		if (TICKET_DISPLAY_DATA && TICKET_DISPLAY_DATA.length) {
+			Array.each(TICKET_DISPLAY_DATA, function(item) {
+				drawItem(item);
+			});
+		}
+
+		$('.irremovable', '#ticket_elements').each(function() {
+			if ($(this).is(':visible')) {
+				var item = {
+					id: $(this).data('item-id')
+				};
+
+				drawItem(item);
+			}
+		})
 	},
 
 	encode: function() {
