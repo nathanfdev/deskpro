@@ -1317,7 +1317,6 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-newticket-page textarea.dp-message {
-	width: 95%;
 	height: 160px;
 }
 
@@ -1600,10 +1599,6 @@ body.dp-simple-popup .dp-content-block {
 
 #deskpro .dp-form input[type="text"], #deskpro .dp-form input[type="password"], #deskpro .dp-form textarea {
 	width: 70%;
-}
-
-#deskpro #newticket_ticket_subject {
-	width: 95%;
 }
 
 #deskpro .dp-form .dp-form-label {
