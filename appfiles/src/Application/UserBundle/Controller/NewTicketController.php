@@ -65,7 +65,13 @@ class NewTicketController extends AbstractController
 			$captcha_html = $captcha->getHtml();
 		}
 
-		if ($this->get('request')->getMethod() == 'POST') {
+		$set_dep_id = null;
+		if ($this->in->getUint('set_dep_id')) {
+			$newticket->ticket->department_id = $this->in->getUint('set_dep_id');
+			$set_dep_id = $newticket->ticket->department_id;
+		}
+
+		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 			$form->bindRequest($this->get('request'));
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
@@ -146,6 +152,7 @@ class NewTicketController extends AbstractController
 
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
 			'departments' => $departments,
+			'set_dep_id' => $set_dep_id,
 
 			'newticket' => $newticket,
 			'ticket_options' => $newticket_formtype->getTicketOptions(),

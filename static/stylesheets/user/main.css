@@ -216,6 +216,11 @@ html{
 #deskpro .btn.small{padding:3px 5px 3px;font-size:11px;}
 
 
+body .require-js { display: none; }
+body.with-js .require-js { display: block; }
+body .without-js { display: block; }
+body.with-js .without-js { display: none; }
+
 /**********************************************************
 * Layout
 **********************************************************/

@@ -58,11 +58,14 @@ class TicketPageDisplay extends EntityRepository
 				WHERE department_id IS NULL AND zone = ? AND section = ?
 			", array($zone, $section));
 		} else {
+			if (is_array($department) || is_object($department)) {
+				$department = $department['id'];
+			}
 			$data = App::getDb()->fetchColumn("
 				SELECT data
 				FROM ticket_page_display
 				WHERE department_id = ? AND zone = ? AND section = ?
-			", array($department['id'], $zone, $section));
+			", array($department, $zone, $section));
 		}
 
 		if ($data) {
