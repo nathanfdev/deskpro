@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--  $Id: tech_glossary.xml 5988 2008-08-30 07:34:00Z chroder $ -->
+<glossary>
+	<entry>
+		<word>admin</word>
+		<content>An admin or administrator is someone with permissions to use the admin interface. The admin interface controls how {$DP_NAME} is setup for a particular company. Administrators are also technicians and they can log into the technician interface in exactly the same was as technicians can.</content>
+	</entry>
+	<entry>
+		<word>Tech</word>
+		<content>A tech or a technician is someone who is is the person who answers questions. A tech uses the technician interface, which is what you are currently viewing. As a tech you will interact with users in a number of ways including through tickets, knowledgebase articles, troubleshooters et. The role of a technician is to answer the questions of the users, either retroactively by answering their direct questions or proactively by creating self help resources.</content>
+	</entry>
+	<entry>
+		<word>User</word>
+		<content>A user is someone who is looking for the solution to a problem or answer to a question. A user can use {$DP_NAME} either by email or through the web based user interface. A user will interact with technicians via tickets.</content>
+	</entry>
+	<entry>
+		<word>Ticket</word>
+		<content>A ticket is a question asked by a user. The ticket consists of the question itself, and then any replies between the tech and the user.</content>
+	</entry>
+	<entry>
+		<word>Ticket ID</word>
+		<content>A ticket ID is a unique number that is used to identify a ticket. Only techs make use of ticket ID's, end users will use a ticket reference.</content>
+	</entry>
+	<entry>
+		<word>Ticket Ref</word>
+		<content>A ticket reference is a unique code in the form of AAAA-####-AAAA. This is how end users identify a ticket, but techs can also make use of it.</content>
+	</entry>
+	<entry>
+		<word>Quick Reply</word>
+		<content>A quick reply is a reply that a tech has saved. When replying to a ticket, a tech can then insert the quick reply with a single click.</content>
+	</entry>
+	<entry>
+		<word>Awaiting User</word>
+		<content>A ticket that is awaiting the user means the next action is on the user. This usually means a tech has replied and is waiting on the user to respond. Tickets that are awaiting user usually do not need the attention of the tech and can be ignored.</content>
+	</entry>
+	<entry>
+		<word>Awaiting Tech</word>
+		<content>A ticket that is awaiting a tech means the next action is on the tech. This usually means the user has made a new reply to the ticket and the ticket requires the attention of the tech.</content>
+	</entry>
+	<entry>
+		<word>Knowledgebase</word>
+		<content>The knowledgebase consists of articls created by techs. The helpdesk users read the articles and can leave comments and rate them.</content>
+	</entry>
+	<entry>
+		<word>Troubleshooters</word>
+		<content>A troubleshooter is meant to solve a specific problem by walking the user through a series of steps. Each step can be forked into multiple directions based on predefined options (for example, if Step 1 did not work, the user can be directed to Step 1.5).</content>
+	</entry>
+	<entry>
+		<word>Manuals</word>
+		<content>A manual is a collection of pages that is meant to be a complete explanation of something. While the knowledgebase is single articles, usually about something specific, a manual should contain a page for every aspect of your product.</content>
+	</entry>
+	<entry>
+		<word>Files</word>
+		<content>Files are just files that you offer to the helpdesk users to download. They can be categorized for easy access, and can also be part of a knowledgebase article.</content>
+	</entry>
+	<entry>
+		<word>Private Message</word>
+		<content>A private message is a message sent through the {$DP_NAME} system between techs. You can think of it like an email, but it is self-contained within {$DP_NAME} instead of sent over the internet.</content>
+	</entry>
+	<entry>
+		<word>Forums</word>
+		<content>The forum is meant to help the techs work together. You can discuss users and problems with eachother by posting new topics and replies to existing topics.</content>
+	</entry>
+	<entry>
+		<word>Calendar</word>
+		<content>The calendar contains tasks for techs. A task can be a one time event or it can be a repeating task.</content>
+	</entry>
+	<entry>
+		<word>News</word>
+		<content>The news system lets techs notify other techs of news, or notify users of news.</content>
+	</entry>
+	<entry>
+		<word>Resources</word>
+		<content>Each tech can use {$DP_NAME} to store certain resources such as bookmarks (website addresses), files and notes.</content>
+	</entry>
+	<entry>
+		<word>Reports</word>
+		<content>{$DP_NAME} offers advanced reporting features to help you visualize your activity.</content>
+	</entry>
+	<entry>
+		<word>User Expire Date</word>
+		<content>It is possible to set an expiration date on users. Once the date has passed, the user will no longer be able to submit new tickets.</content>
+	</entry>
+	<entry>
+		<word>User Expire Tickets</word>
+		<content>It is possible to limit how many tickets a user can create before expiring. Once the user has created the set number of tickets, they will no longer be able to create new ones.</content>
+	</entry>
+	<entry>
+		<word>User Awaiting Validation</word>
+		<content>A user that is awaiting validation means they need to verify their email address (by clicking the link sent to them upon registration), or waiting for a tech to verify them manually.</content>
+	</entry>
+	<entry>
+		<word>Saved Ticket</word>
+		<content>A saved ticket is a ticket you have saved to your own personal collection. This just makes it easier to save tickets that you might need to review later on.</content>
+	</entry>
+	<entry>
+		<word>Ticket Closed</word>
+		<content>A closed ticket usually means the issue was resolved, or the user had abandonded it. A closed ticket can not recieve new replies from the user nor any techs.</content>
+	</entry>
+	<entry>
+		<word>Ticket Locked</word>
+		<content>A locked ticket prevents any other tech from performing any actions on the ticket. The ticket lock automatically disappears after 20 minutes. This feature is used so a tech can take his time working with the ticket while being confident no other techs can change it.</content>
+	</entry>
+	<entry>
+		<word>Ticket Note</word>
+		<content>A ticket note is a note that techs can add to tickets to keep track of various details the end user should not see. All techs can read other techs notes.</content>
+	</entry>
+	<entry>
+		<word>Ticket Log</word>
+		<content>The ticket log shows all actions done to the ticket, and who performed that action, and when. This is useful when you are confused as to how a ticket got to its current state.</content>
+	</entry>
+	<entry>
+		<word>Ticket Reminder</word>
+		<content>A ticket reminder can be set on tickets so a reminder is sent to the specified tech after a certain time period.</content>
+	</entry>
+	<entry>
+		<word>Ticket Views</word>
+		<content>A ticket view defines what information (subject, waiting time, assigned tech etc) is shown on the ticket search results.</content>
+	</entry>
+	<entry>
+		<word>Saved Searches</word>
+		<content>A saved search is a set of saved critera. Instead of inputting the same critera over and over again, you can define a saved search and run the search with the click of a button.</content>
+	</entry>
+	<entry>
+		<word>Ticket Owner</word>
+		<content>The owner of a ticket is the current tech that a ticket is assigned to. A ticket may not be assigned in which case the ticket is considered unassigned.</content>
+	</entry>
+	<entry>
+		<word>Ticket Hidden</word>
+		<content>A hidden ticket is a ticket which exists but is not yet ready for tech action. A typical example will be a ticket that has been submitted by email but is awaiting the user who sent the email to validate their email account (a spam prevention measure). Until they validate themselves the ticket will remain hidden unless specifically searched for.</content>
+	</entry>
+	<entry>
+		<word>Ticket Category</word>
+		<content>The category of a ticket specifies an important grouping. Categories are set up by the helpdesk administrator to help organize the tickets. A typical example would be to have Sales, Support and General categories. In addition to organizing the tickets in the system, you can choose to recieve notifications for specific categories. Using notifications can help you keep on top of categories assigned to you.</content>
+	</entry>
+	<entry>
+		<word>Ticket Priority</word>
+		<content>This field specifies an importance level for a ticket.</content>
+	</entry>
+	<entry>
+		<word>Ticket Workflow</word>
+		<content>The workflow field is used to help manage the status of tickets. The workflow field is customizable by the helpdesk admin. A typical use of the workflow field might be 'In Progress', 'Awaiting Supplier Confirmation', 'Awaiting Lab Testing' etc.</content>
+	</entry>
+	<entry>
+		<word>Framed Interface</word>
+		<content>{$DP_NAME} offers a framed interface which adds more useful controls to the bottom of the browser window. It lets you easily navigate the helpdesk.</content>
+	</entry>
+	<entry>
+		<word>Ticket Email</word>
+		<content>The ticket email is the email address of the user who submitted the ticket. Registered users can have multiple emails tied to their account, so it may not be the same for all of their tickets. This is the email address any notifications are sent to, if the user chose to recieve them at all.</content>
+	</entry>
+	<entry>
+		<word>Ticket Subject</word>
+		<content>The ticket subject is the subject or question the user inputted when submitting the ticket.</content>
+	</entry>
+</glossary>

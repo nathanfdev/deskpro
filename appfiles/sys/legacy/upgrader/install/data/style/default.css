@@ -1,0 +1,1616 @@
+/************************************************
+* GENERIC
+*************************************************/
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+/* Background color of the page */
+body {
+	background-color: #d2e4fc;
+}
+
+/* Default font, font size and color */
+html {
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #000;
+}
+
+/* Default margins */
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, label, ul, ol, dl, address {
+	margin: 0;
+	padding: 0;
+}
+
+/* Default padding for lists */
+ul, ol, dl {
+	padding: 0;
+}
+
+td, th {
+	vertical-align: top;
+}
+
+th {
+	text-align: left;
+}
+
+/* Remove borders from image links */
+a img {
+	border: none;
+}
+
+/* Default link colors */
+a:link {
+	color: #326892;
+}
+
+a:visited {
+	color: #326892;
+}
+
+a:hover, a:active, a:focus {
+	color: #444444;
+}
+
+/************************************************
+* FORM FIELDS
+*************************************************/
+
+form {
+	padding: 0;
+	margin: 0;
+}
+
+/* Normalize padding accross browsers */
+option {
+	padding: 0 20px 0 4px;
+}
+
+/* This defines how input type="text" and textarea fields look */
+select{
+	color: #000000;
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 11px;
+	padding: 2px;
+}
+
+/* This defines how input type="text" and textarea fields look */
+input.text, input.input, textarea{
+	color: #000000;
+	background-color: #E6E6E6;
+	border: 1px solid #727272;
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 11px;
+	padding: 2px;
+}
+
+/* This is the color when the focus is on a field */
+input.input:focus, textarea:focus, input.focus, textarea.focus {
+	background-color: #FFFFDD;
+}
+
+/* Don't want fieldsets to have a border */
+fieldset {
+	border: none;
+}
+
+/* make all form labels show a hand-cursor, as they're clickable */
+form label {
+	cursor: pointer;
+}
+
+/************************************************
+* MISC
+*************************************************/
+
+/* Inserts empty space */
+.spacer {
+	padding-top: 45px;
+}
+
+/* A few paragraphs need a smaller font */
+.small {
+	font-size: 85%;
+}
+
+/* Easy centering with a class="center" */
+.center {
+	text-align: center;
+}
+
+/* This is an accessibility aid; not necessary for visual users, helpful for the rest */
+.xs {
+	display: none;
+}
+
+.clear {  clear: both; }
+.clearl { clear: left; }
+.clearr { clear: right; }
+
+/* Selection fieldset (troubleshooters, rating tickets, rating knowledgebase articles etc) */
+.makeselection fieldset {
+	display: inline;
+	margin-left: 5px;
+}
+
+/* This controls the notices (expired, awaiting validation etc) */
+.header_subhead {
+	padding: 20px;
+	width: 90%;
+	text-align: center;
+	font-weight: bold;
+	border: 2px dashed #FF0000;
+}
+
+#pop_chat_btn {
+	font-size: 150%;
+}
+
+/************************************************
+* RSS FEEDS
+*************************************************/
+
+.rss_feeds li {
+	padding-bottom: 5px;
+	margin: 2px;
+	list-style: none;
+}
+
+/************************************************
+* ERRORS & SUCCESS
+* - These control the display of error messages when
+*    forms aren't entered properly
+*************************************************/
+
+/* Highlight the section with the error */
+.success_section {
+	margin: 0 10px 0px 10px;
+	padding: 10px;
+}
+
+/* Information about the error */
+.success_note {
+	color: #397A39;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+/* Sub Categories */
+.success li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/tick.gif) 0 50% no-repeat;
+	padding: 0 0 0 25px;
+	margin: 0px;
+}
+
+/* Highlight the section with the error */
+.error_section {
+	margin: 0 10px 0px 10px;
+	padding: 10px;
+}
+
+/* Information about the error */
+.error_note {
+	color: #FF0000;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+/* Sub Categories */
+.error li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/exclamation.gif) 0 50% no-repeat;
+	padding: 0 0 0 25px;
+	margin: 0px;
+}
+
+/* The field label highlight */
+.error label {
+	padding: 0;
+	margin: 0;
+	color: #326892;
+	text-decoration: underline;
+}
+
+/* The field itself is highlighted */
+.errorfield {
+	border: 1px dotted #FF0000;
+	padding: 0.5em 1em 0.5em 0.5em;
+	margin: 0.5em;
+}
+
+/************************************************
+* CONTENT
+* - The main content of each page, the part where everything else is put in.
+*************************************************/
+
+#content {
+	background-color: #FFFFFF;
+	border: 1px solid #59708C;
+	padding: 15px;
+	margin: 15px;
+	height: 1%;
+	
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+/* Paragraphs and items with class="padd" get some margin inside the content */
+#content p, #content .padd {
+	margin: 1em 1em 1em 0.5em;
+}
+
+/* This contains the big image for each area, the big title and the breadcrumbs with the arrows */
+.topsection {
+	padding: 4px;
+	margin-top: 10px;
+	margin-left: 240px;
+	margin-bottom: 10px;
+}
+
+.topsection_noside {
+	margin-left: 0;
+}
+
+/* The page title */
+.topsection h2 {
+    font-family: "Trebuchet MS", Tahoma, Arial;
+    font-size: 180%;
+	margin: 1px;
+	padding: 0;
+	color: #F02B00;
+}
+
+h4.item_title {
+	font-size: 11pt;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+}
+
+.floating_info_box {
+	float: right;
+	border: 2px solid #000;
+	background-color: #fff;
+	margin: 0 25px 25px 25px;
+}
+
+.floating_info_box h4 {
+	margin: 0 0 0 0;
+	padding: 6px;
+	text-align: center;
+	font-size: 13pt;
+	font-weight: bold;
+	background-color: #E6E6E6;	
+}
+
+.floating_info_box .meta {
+	font-size: 11px;
+	border-bottom: 1px solid #000;
+	padding: 6px;
+}
+
+.floating_info_box .content {
+	padding: 6px;
+}
+
+
+/************************************************
+* pagetext
+* - This is where HTML from the user is placed into (ie KB articles, troubleshooters and manual pages)
+* - Use this to override things like how headings should be displayed etc
+*************************************************/
+
+.pagetext {
+	margin: 1em 1em 1em 0.5em;
+}
+
+.pagetext p {
+	margin: 1em 0 0 0.5em;
+}
+
+.pagetext h1, .pagetext h2, .pagetext h3, .pagetext h4, .pagetext h5, .pagetext h6 {
+    font-family: "Trebuchet MS", Tahoma, Arial;
+    font-weight: bold;
+	margin: 40px 0 5px 0;
+}
+
+.pagetext h1 { font-size: 180%; }
+.pagetext h2 { font-size: 150%; }
+.pagetext h3 { font-size: 140%; color: #000; padding: 0; background: transparent; line-height: 100%; }
+.pagetext h4 { font-size: 110%; }
+
+/* Lists within content should display normally,
+so reset the padding/margin we took away globally */
+.pagetext ul, .pagetext ol, .pagetext dl {
+	padding-left: 10px;
+	margin-left: 40px;
+}
+
+
+/************************************************
+* SIDE
+* - This makes the sidebar go to the side. The width is set as 10px less than ".hasside" creates
+*   room for, so that there will be some space between the two columns/sections
+*************************************************/
+
+.side {
+	width: 210px;
+	float: left;
+	margin: 0px 0px 0px 0px;
+}
+
+.sidesection ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* Each section on the side is given its own border, padding and margin at the bottom */
+.sidesection {
+	border: 1px solid #CCCCCC;
+	padding: 6px;
+	margin-bottom: 10px;
+	background-color:#FBFDFF;
+}
+
+/* Top top title of each side section */
+.sidesection_top {
+	background-color: #67849C;
+	padding: 4px;
+	margin-bottom: 5px;
+	color: #FFFFFF;
+}
+
+/* Make sure the lists in the side section are styled properly */
+.sidelist {
+	margin-top: 10px;
+	margin-bottom: 0px;
+	padding: 0;
+	list-style: none;
+}
+.sidelist dd {
+	padding: 4px 0 10px 15px;
+	margin: 0;
+}
+.sidelist dt {
+	padding: 3px;
+	background-color: #A6C0D6
+}
+
+/************************************************
+* LEFT COLUMN LISTS
+*************************************************/
+
+/* News */
+.news li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/document.gif) 0 50% no-repeat;
+	padding: 2px 0 2px 20px;
+	margin-left: 5px;
+}
+
+/************************************************
+* LEFT COLUMN LINKS STYLES
+*************************************************/
+
+/* Section Links */
+ul#headerlinks li {
+	list-style: none;
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding: 3px 0 3px 20px;
+	margin-left:5px;
+}
+
+ul#headerlinks .current {
+	font-weight: bold;
+	font-style: italic;
+}
+
+/* Sub Section Links */
+ul#links li {
+	list-style: none;
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding: 3px 0 3px 20px;
+	margin-left:5px;
+}
+
+/************************************************
+* MAIN
+* - The content column of the page
+*************************************************/
+
+.main {
+	margin-left: 225px;
+	height: 1%;
+}
+
+.section {
+	padding: 4px;
+	border: 1px solid #CCCCCC;
+	margin-bottom: 10px;
+	height: 1%;
+}
+
+.main ul, .main li {
+	margin: 0.5em 1em;
+}
+
+/* In the .main we do want fieldsets to have a border, and also some padding
+(the padding is the 4px space between the border and content items) */
+.main form fieldset {
+	padding: 4px;
+	border: 1px solid #999999;
+}
+
+/* Give labels the right color, padding and styling */
+.main form fieldset legend {
+	font-weight: bold;
+	font-size: 100%;
+	border: 1px solid #999999;
+	padding: 2px 8px;
+	color: #000000;
+}
+
+/* Various parts need a margin, this sets it - otherwise, they're all cluttered against each other */
+.user, .question, .answer {
+	margin: 1em;
+}
+
+.subselects { padding: 8px; }
+.subselects img { padding-right: 8px; }
+
+.notice_message {
+	background: #E6EBF0 url(./images/user/$style[images]/user.gif) no-repeat 10px 50%;
+	border: 1px solid #A6C0D6;
+	padding: 18px 50px 18px 50px;
+	margin-bottom: 10px;
+	
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.notice_message .warn_title {
+	color: red;
+	border-bottom: 2px solid red;
+	padding-bottom: 6px;
+	margin-bottom: 9px;
+	margin-top: -10px;
+	font-size: 130%;
+}
+
+#img_verify_wrap {
+	background: #eef3f6;
+}
+
+#img_verify_img {
+	padding: 5px;
+}
+
+#img_verify_reload {
+	background: #d6e1ea;
+	text-align: center;
+	padding: 4px 6px 4px 6px;
+}
+
+.misc_nav_bar {
+	background-color: #E5EAF0;
+	border: 1px solid #BCCDE0;
+	padding: 4px;
+	margin-top: 4px;
+}
+
+.read_all_link {
+	font-style: italic;
+}
+
+/************************************************
+* TOP ICONS
+*************************************************/
+
+.topicons {
+	float:right;
+	margin: 0px;
+	padding: 0px;
+}
+
+/************************************************
+* TOP MENU
+* - Menu at the top of the page (KB, Downloads, Ask a Question etc)
+*************************************************/
+
+/* This is the container element for the main navigation. */
+#outer_menudiv {
+	clear: both;
+	height: 1%;
+}
+
+/* This is the actual main menu element */
+#menudiv {
+	padding: 4px;
+	border: 1px solid #727272;
+	background-color: #E6E6CC;
+}
+
+ul#menu {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* The main navigation items */
+#menu li {
+	float: left;
+	margin: 0;
+	padding: 2px;
+
+	/* Force it again, sometimes with external_headfoot other apps overwrite */
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 11px;
+	color: #000;
+}
+
+/* The links in the main navigation. Their unique backgrounds are given later */
+#menu a {
+	display: block;
+	float: left;
+	padding: 5px 3px 5px 26px;
+	color: #000000;
+	text-decoration: none;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #E6E6CC;
+}
+
+/* Hover/active state on the navigation */
+#menu a:hover, #menu .header_selected a, #menu a:active {
+	text-decoration: none;
+	color: #444444;
+}
+
+#menu a:hover {
+	background-color: #CCCC99;
+	text-decoration: none;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+}
+
+/* The selected state; when you're in an area */
+#menu a:active {
+	background-color: #CCCC99;
+	border-left: 1px solid #999999;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+}
+
+/* The selected state; when you're in an area */
+#menu .header_selected a, #menu .header_selected a:hover {
+	background-color: #CCCC99;
+	border-left: 1px solid #999999;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+}
+
+/* Button images for each link */
+#top_knowledgebase { background: url(./images/user/$style[images]/nav/knowledgebase.gif) 6px 50% no-repeat; }
+#top_trouble { background: url(./images/user/$style[images]/nav/troubleshooter.gif) 6px 50% no-repeat; }
+#top_newquestion { background: url(./images/user/$style[images]/nav/ask_a_question.gif) 6px 50% no-repeat; }
+#top_downloads { background: url(./images/user/$style[images]/nav/downloads.gif) 6px 50% no-repeat; }
+#top_manuals { background: url(./images/user/$style[images]/nav/manual.gif) 6px 50% no-repeat; }
+#top_register { background: url(./images/user/$style[images]/nav/register.gif) 6px 50% no-repeat; }
+#top_login { background: url(./images/user/$style[images]/nav/login.gif) 6px 50% no-repeat; }
+#top_profile { background: url(./images/user/$style[images]/nav/profile.gif) 6px 50% no-repeat; }
+#top_questions { background: url(./images/user/$style[images]/nav/my_questions.gif) 6px 50% no-repeat; }
+#top_forums { background: url(./images/user/$style[images]/nav/forums.gif) 6px 50% no-repeat; }
+#top_telephone { background: url(./images/user/$style[images]/nav/telephone.gif) 6px 50% no-repeat; }
+#top_contact { background: url(./images/user/$style[images]/nav/contact.gif) 6px 50% no-repeat; }
+#top_chat_transcript { background: url(./images/user/$style[images]/icons/script.gif) 6px 50% no-repeat; }
+#top_chat_new { background: url(./images/user/$style[images]/icons/status_online.gif) 6px 50% no-repeat; }
+#top_ideas { background: url(./images/user/$style[images]/nav/lightbulb.png) 6px 50% no-repeat; }
+
+/************************************************
+* NAVIGATION
+* - Top breadcrumb nav
+*************************************************/
+
+/* This is the breadcrumb navigation in the .topsection */
+.navigation {
+	padding: 0 20px 25px 4px;
+	font-size: 11px;
+}
+
+/* The navigation and top navigation are styled here */
+.navigation li {
+	display: block;
+	float: left;
+	font-weight: bold;
+	margin:0;
+	padding: 3px 10px 3px 20px;
+	background: url(./images/user/$style[images]/icons/arrow_right.gif) 0 50% no-repeat;
+
+	/* Force font for external_headfoot */
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 85%;
+	color: #000;
+}
+
+#navigation_home { background: url(./images/user/$style[images]/nav/house.gif) 0 50% no-repeat; }
+
+.timezone {
+	text-align:right;
+	padding:0;
+	margin:0;
+	margin-top:2px;
+	font-size:85%;
+	color:#808080;
+}
+
+/************************************************
+* FOOTER
+*************************************************/
+
+#copyright {
+	clear:both;
+	float: none;
+	margin: 0;
+	font-size: 85%;
+	color: #CCCCFF;
+	text-align: center;
+}
+
+/************************************************
+* VIEW TICKET
+*************************************************/
+
+.comment_wrap {
+	padding: 5px 5px 0 5px;
+}
+
+.comment_section {
+	border-bottom:1px solid #CCCCCC;
+	margin-left:10px;
+}
+
+.comment_number {
+	font-size:250%;
+	color:gray;
+}
+
+.comment_title_user {
+	vertical-align:50%;
+	color:gray;
+}
+
+.comment_title_tech {
+	vertical-align:50%;
+	color:gray;
+}
+
+.comment_title_other {
+	vertical-align:50%;
+	color:gray;
+}
+
+.comment_message_tech {
+	margin-left: 10px;
+	margin-top: 10px;
+	padding-bottom: 5px;
+}
+
+.comment_message_other {
+	margin-left: 10px;
+	margin-top: 10px;
+	padding-bottom: 5px;
+}
+
+.comment_message_user {
+	margin-left: 10px;
+	margin-top: 10px;
+	color: #67849C
+}
+
+.comment {
+
+}
+
+.tech {
+	border-top: 1px solid #67849C;
+	border-left: 15px solid #67849C;
+	border-bottom: 1px solid #67849C;
+	margin-left: 5px;
+}
+
+.other {
+	border-top: 1px solid #A6C0D6;
+	border-left: 15px solid #A6C0D6;
+	border-bottom: 1px solid #A6C0D6;
+	margin-left: 5px;
+}
+
+.user {
+	border-left: 5px solid #A6C0D6;
+	margin-left: 15px;
+}
+
+/* Ticket Pages */
+ul#links li.print					{ background-image: url(./images/user/$style[images]/icons/print.gif); }
+ul#links li.question_modify			{ background-image: url(./images/user/$style[images]/icons/page_white_edit.gif); }
+ul#links li.question_close			{ background-image: url(./images/user/$style[images]/icons/page_white_close.gif); }
+ul#links li.question_reopen			{ background-image: url(./images/user/$style[images]/icons/page_white_reopen.gif); }
+ul#links li.question_format_on		{ background-image: url(./images/user/$style[images]/icons/font_go.gif); }
+ul#links li.question_format_off		{ background-image: url(./images/user/$style[images]/icons/font_delete.gif); }
+
+/* The container that has the subcat select box when creating a ticket */
+#contain_subcats {
+	padding: 8px;
+}
+
+/* The subcat 'L' image */
+#contain_subcats img {
+	padding-right: 8px;
+}
+
+/************************************************
+* FRONT PAGE
+* - Takes care of the frontpage navigation list
+*************************************************/
+
+/* Remove list bullet */
+.frontnav {
+	list-style:none;
+}
+
+/* Front page main, large items */
+.frontnav li {
+	margin: 14px 0;
+	font-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 10px 50%;
+	padding: 14px 5px 10px 75px;
+	color: #444444;
+	border: 1px solid #EBEBEB;
+	background-color:#FBFDFF;
+}
+
+/* The primary links in the items */
+.frontnav li strong a {
+	color: #326892;
+	font-size: 145%;
+	display: block;
+}
+.frontnav li strong a:hover {
+	color: #444444;
+}
+.frontnav li.hover, #frontnav li:hover {
+	border-color: #6098A7;
+}
+
+/* Give each item its own unique image */
+#front_knowledgebase { background-image: url(./images/user/$style[images]/front/knowledgebase.gif); }
+#front_files { background-image: url(./images/user/$style[images]/front/downloads.gif); }
+#front_trouble { background-image: url(./images/user/$style[images]/front/troubleshooter.gif); }
+#front_newquestion { background-image: url(./images/user/$style[images]/front/ask_a_question.gif); }
+#front_questions { background-image: url(./images/user/$style[images]/front/my_questions.gif); }
+#front_profile { background-image: url(./images/user/$style[images]/front/profile.gif); }
+#front_register { background-image: url(./images/user/$style[images]/front/register.gif); }
+#front_forums { background-image: url(./images/user/$style[images]/front/forums.gif); }
+#front_bugs { background-image: url(./images/user/$style[images]/front/bug.gif); }
+#front_contact { background-image: url(./images/user/$style[images]/front/contact_information.gif); }
+#front_telephone { background-image: url(./images/user/$style[images]/front/telephone_support.gif); }
+#front_chat { background-image: url(./images/user/$style[images]/front/instant_chat.gif); }
+#front_chat_transcripts { background-image: url(./images/user/$style[images]/front/chat_transcripts.gif); }
+#front_manuals { background-image: url(./images/user/$style[images]/front/manual.gif); }
+#front_feedback { background-image: url(./images/user/$style[images]/front/feedback.gif); background-position: 15px 50% }
+
+/************************************************
+* TITLE SECTIONS
+* - These are the titles for each section in a page
+*************************************************/
+
+/* Right hand section */
+h3 {
+	margin: 0;
+	color: #FFFFFF;
+	font-size: 100%;
+	background-color: #A6C0D6;
+	padding: 4px 6px;
+	height: 1.3em;
+	font-weight: normal;
+}
+
+/* Left hand section */
+h3 span {
+	color: #FFFFFF;
+	display: block;
+	float: left;
+	margin: -4px -6px !important;
+	margin: -4px -3px;
+	padding: 4px 6px;
+	height: 1.3em;
+	padding-right: 30px;
+	background-color: #67849C;
+}
+
+h3 a:link, h3 a:visited, h3 a:hover, h3 a:focus, h3 a:active {
+	color: #fff;
+}
+
+h4.subheading {
+	margin: 0;
+	color: #000;
+	font-size: 100%;
+	background-color: #A6C0D6;
+	padding: 4px 6px;
+	height: 1.3em;
+	font-weight: normal;
+}
+
+/************************************************
+* TABLE STRUCTURE
+*************************************************/
+
+table.listing {
+	border-collapse: collapse;
+	width: auto;
+}
+
+table.listing/* */ {
+	width:/**/99%;
+	margin: 0 auto;
+}
+
+table.listing thead th {
+	background-color: #E7EbF3;
+	color: #000000;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	padding: 4px;
+	white-space: nowrap
+}
+
+table.listing tr.alt1 td {
+	border: 1px solid #CCCCCC;
+	color: #000000;
+	border-width: 1px 0;
+	background-color: #FFFFFF;
+	padding: 4px;
+}
+
+table.listing tr.alt2 td {
+	border: 1px solid #CCCCCC;
+	color: #000000;
+	border-width: 1px 0;
+	background-color: #F5F5FF;
+	padding: 4px;
+}
+
+table.listing tr.alt3 td {
+	border: 1px solid #CCCCCC;
+	color: #000000;
+	border-width: 1px 0;
+	background-color: #FFFFFF;
+	padding: 4px;
+}
+
+table.nolines tr.alt1 td, table.nolines tr.alt2 td, table.nolines tr.alt3 td {
+	border: none;
+}
+
+/* Two column label/entry table currently used in new ticket template */
+
+.table_form {
+	margin:0;
+	padding:0;
+	width:100%;
+	margin-bottom: 5px;
+}
+.table_form_left {
+	text-align: right;
+	width: 165px;
+	vertical-align: middle;
+	padding: 6px;
+	padding-left: 20px;
+	border-bottom: 1px solid #CCCCCC;
+}
+.table_form_left_error {
+	color: #FF0000;
+}
+.table_form_right {
+	padding:6px;
+	padding-left: 15px;
+	padding-right: 75px;
+	border-bottom: 1px solid #CCCCCC;
+}
+.table_captcha_left {
+	text-align: right;
+	width: 300px;
+	vertical-align: middle;
+	padding: 6px;
+	padding-left: 20px;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+tr.last td.table_form_left, tr.last td.table_form_right {
+	border-bottom: none;
+}
+
+td.vmiddle {
+	vertical-align: middle;
+}
+
+/************************************************
+* KNOWLEDGEBASE
+*************************************************/
+
+/* Categories */
+
+.kb_category_link {
+	background: url(./images/user/$style[images]/fileicons/folder.gif) 0 50% no-repeat;
+	padding: 0 0 0 20px;
+}
+.kb_category_related li {
+	list-style: none;
+	background: url(./images/user/$style[images]/fileicons/folder.gif) 0 50% no-repeat;
+	padding: 5px 0 5px 20px;
+	margin: 0px;
+}
+
+/* Listed Articles */
+.kb_article_list li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/document.gif) 0 50% no-repeat;
+	padding: 3px;
+	margin: 0px;
+	padding-left: 24px;
+}
+
+
+/* knowledgebase Articles */
+.frontarticles li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/document.gif) 0 50% no-repeat;
+	padding: 2px 0 2px 20px;
+	margin: 0px;
+}
+
+/* Sub Categories */
+.subcat li {
+	list-style: none;
+	background: url(./images/user/$style[images]/fileicons/folder.gif) 0 50% no-repeat;
+	padding: 2px 1px 2px 20px;
+}
+
+/* Sub Articles */
+.articlebit li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/document.gif) 0 50% no-repeat;
+	padding: 2px 1px 2px 20px;
+}
+
+/* Knowledgebase ARTICLE */
+ul#links li.kb_article_subscribe			{ background-image: url(./images/user/$style[images]/icons/email_add.gif); }
+ul#links li.kb_article_send_email			{ background-image: url(./images/user/$style[images]/icons/send_email.gif); }
+ul#links li.kb_article_comment				{ background-image: url(./images/user/$style[images]/icons/comment_add.gif); }
+
+/* Knowledgebase CATEGORY */
+ul#links li.kb_category_subscribe			{ background-image: url(./images/user/$style[images]/icons/email_add.gif); }
+ul#links li.kb_category_summary				{ background-image: url(./images/user/$style[images]/icons/application.gif); }
+ul#links li.kb_category_detailed			{ background-image: url(./images/user/$style[images]/icons/application_view_detail.gif); }
+
+/* Knowledgebase HEADER  */
+ul#headerlinks li.kb_header_search			{ background: url(./images/user/$style[images]/icons/application_form_magnify.gif) 0px 50% no-repeat; }
+ul#headerlinks li.kb_header_browse			{ background: url(./images/user/$style[images]/icons/application_view_list.gif) 0px 50% no-repeat; }
+ul#headerlinks li.kb_header_subscriptions	{ background: url(./images/user/$style[images]/icons/transmit.gif) 0px 50% no-repeat; }
+ul#headerlinks li.kb_header_submit_article	{ background: url(./images/user/$style[images]/icons/page_add.gif) 0px 50% no-repeat; }
+ul#headerlinks li.kb_header_rss				{ background: url(./images/user/$style[images]/icons/rss.gif) 0px 50% no-repeat; }
+
+/************************************************
+* PROFILE
+*************************************************/
+
+/* PROFILE HEADER */
+ul#headerlinks li.profile_header_profile			{ background: url(./images/user/$style[images]/nav/profile.gif) 0px 50% no-repeat; }
+ul#headerlinks li.profile_header_password		{ background: url(./images/user/$style[images]/icons/textfield_key.gif) 0px 50% no-repeat; }
+ul#headerlinks li.profile_header_email				{ background: url(./images/user/$style[images]/icons/email_edit.gif) 0px 50% no-repeat; }
+ul#headerlinks li.profile_header_subscriptions		{ background: url(./images/user/$style[images]/icons/transmit.gif) 0px 50% no-repeat; }
+ul#headerlinks li.profile_header_company		{ background: url(./images/user/$style[images]/icons/script.gif) 0px 50% no-repeat; }
+
+/************************************************
+* TROUBLESHOOTERS
+*************************************************/
+
+/* Lists of Troubleshooters */
+
+.troubleshooters {
+	padding: 0 0 2px 6px;
+}
+.troubleshooters dt {
+	background: url(./images/user/$style[images]/icons/arrow_switch.gif) 0 50% no-repeat;
+	padding: 0 0 2px 20px;
+}
+.troubleshooters dd {
+	padding: 5px 0 10px 20px;
+	margin: 0px;
+}
+.troubleshooter_option_list li {
+	list-style: none;
+	margin: 0;
+	padding: 2px;
+}
+
+/************************************************
+* HELP PAGE
+*************************************************/
+ul.help_articles {
+	margin-left: 20px;
+}
+
+ul.help_articles li {
+	list-style: none;
+	background: url(./images/user/$style[images]/icons/document.gif) 0 50% no-repeat;
+	padding: 3px;
+	margin: 0px;
+	padding-left: 24px;
+}
+
+.help_entry ul, .help_entry ol {
+	margin-left: 20px;
+}
+
+.help_entry h4 {
+	border-bottom: 1px solid #ddd;
+	color: #3B76AD;
+	font-weight: bold;
+	font-size: 160%;
+	margin: 25px 9px 9px 9px;
+	padding-bottom: 4px;
+}
+
+.help_entry .gotop {
+	display: block;
+	font-size: 95%;
+	text-align: right;
+}
+
+
+/************************************************
+* TOOLTIPS
+*************************************************/
+
+.hovertip {
+	background-color: #FAFAD4;
+	border: 1px solid #ADAB5E;
+	padding: 5px;
+	margin-left: 15px; /* Move away from mouse cursor */
+}
+
+.hovertip_maxwidth {
+	width: 200px;
+}
+
+/************************************************
+* DOWNLOADS
+*************************************************/
+
+/* Download Categories */
+
+.downloads {
+	padding: 0 0 2px 6px;
+}
+.downloads dt {
+	background: url(./images/user/$style[images]/fileicons/folder.gif) 0 50% no-repeat;
+	padding: 0 0 2px 20px;
+}
+.downloads dt.selected {
+	font-weight: bold;
+}
+.downloads dd {
+	padding: 2px 0 6px 40px;
+	margin-bottom: 10px;
+	margin:0px;
+}
+
+/* Download Files */
+
+.downloads_files {
+	padding: 0 0 0 3px;
+}
+.downloads_files dt {
+	padding: 2px 0 2px 20px;
+}
+.downloads_files dd {
+	padding: 0 0 0 40px;
+	margin: 2px 0 10px 0;
+}
+.downloads_files li {
+	padding: 2px 0 2px 20px;
+	list-style: none;
+}
+.downloads_files ul {
+	padding: 0 0 0 0;
+}
+
+.comment_wrap .downloads_files {
+    margin-top: 10px;
+    border-top: 1px solid #CCCCCC;
+    margin-left: 10px;   
+}
+
+/************************************************
+* ATTACHMENTS
+* - Icons for li, dt attachment lists
+*************************************************/
+
+li.icon-attachment_gif, dt.icon-attachment_gif	{ background: url(./images/user/$style[images]/fileicons/blank.png) 0 50% no-repeat; }
+li.icon-doc_gif, dt.icon-doc_gif				{ background: url(./images/user/$style[images]/fileicons/doc.png) 0 50% no-repeat; }
+li.icon-folder_gif, dt.icon-folder_gif			{ background: url(./images/user/$style[images]/fileicons/folder.png) 0 50% no-repeat; }
+li.icon-gif_gif, dt.icon-gif_gif				{ background: url(./images/user/$style[images]/fileicons/gif.png) 0 50% no-repeat; }
+li.icon-pdf_gif, dt.icon-pdf_gif				{ background: url(./images/user/$style[images]/fileicons/pdf.png) 0 50% no-repeat; }
+li.icon-php_gif, dt.icon-php_gif				{ background: url(./images/user/$style[images]/fileicons/php.png) 0 50% no-repeat; }
+li.icon-txt_gif, dt.icon-txt_gif				{ background: url(./images/user/$style[images]/fileicons/txt.png) 0 50% no-repeat; }
+li.icon-zip_gif, dt.icon-zip_gif				{ background: url(./images/user/$style[images]/fileicons/zip.png) 0 50% no-repeat; }
+
+/************************************************
+* REDIRECTS
+* - redirect page
+*************************************************/
+
+#redirect_wrap {
+	padding: 20px 0 20px 0;
+	text-align: center;
+}
+
+#redirect_box {
+	background-color: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 7px;
+	text-align: left;
+	width: 80%;
+}
+
+/************************************************
+* PAGENAV
+*************************************************/
+
+.page_nav {
+	margin-top: 10px;
+	text-align: center;
+}
+.page_nav ul li {
+	display: inline;
+	font-size: 95%;
+	padding: 0 3px 0 3px;
+	margin: 0;
+}
+
+.page_nav ul li.prev {
+	margin-right: 10px;
+}
+
+.page_nav ul li.next {
+	margin-left: 10px;
+}
+
+.page_nav ul li a:link, .page_nav ul li a:visited {
+	background-color: #EEEEEE;
+	border: 1px solid #A8A8A8;
+	color: #000;
+	padding: 4px 6px 4px 6px;
+	text-decoration: none;
+}
+
+.page_nav ul li a:hover, .page_nav ul li a:active, .page_nav ul li a:focus, .page_nav ul li.cur_page a {
+	background-color: #BDBDBD;
+}
+
+
+/************************************************
+* MANUAL
+*************************************************/
+
+ul#headerlinks li.manual { background: url(./images/user/$style[images]/icons/book.gif) 0px 50% no-repeat; }
+
+ul.manual_toc {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+ul.manual_toc li {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+ul.manual_toc li li {
+	padding-left: 18px;
+}
+
+ul.manual_toc li h4 {
+	font-size: 11pt;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+
+#pagelink_nav .hl {
+	background-color: #C7D2E2;
+	font-weight: bold;
+	font-style: italic;
+}
+
+
+ul.commentlist {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+ul.commentlist li {
+	background: #EDF1F5;
+	padding: 0;
+	margin: 0 0 10px 0;
+}
+
+ul.commentlist li cite {
+	background-color: #DCE9F3;
+	display: block;
+	padding: 3px;
+	margin-bottom: 3px;
+}
+
+ul.commentlist li .own {
+	background-color: #B8D0E2;
+}
+
+ul.commentlist li p {
+	padding: 0 3px 5px 5px;
+	margin: 0;
+}
+
+
+
+ul.manual_controls {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: right;
+}
+
+ul.manual_controls li {
+	display: block;
+	float: left;
+	margin-left: 15px;
+	padding-left: 20px;
+	line-height: 20px;
+}
+
+ul.manual_controls li.manual { background: url(./images/user/$style[images]/icons/book_open.gif) 0px 50% no-repeat; }
+ul.manual_controls li.singlepage { background: url(./images/user/$style[images]/icons/page_red.gif) 0px 50% no-repeat; }
+ul.manual_controls li.dlzip { background: url(./images/user/$style[images]/icons/compress.gif) 0px 50% no-repeat; }
+
+
+#manual_searchresults {
+
+}
+
+#manual_searchresults ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#manual_searchresults li {
+	background-color: #fff;
+	border-bottom: 1px solid #ecf1f8;
+	padding: 10px;
+	margin: 0;
+}
+
+#manual_searchresults li .highlight {
+	background-color: #ECE98C;
+}
+
+#manual_searchresults li.alt {
+	background-color: #f7f8fa;
+}
+
+#manual_searchresults li:hover {
+	background-color: #fcfcfc;
+}
+
+#manual_searchresults li h4 {
+	color: #3469ba;
+	font: bold 11pt Arial, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+#manual_searchresults li div {
+	color: #555;
+	line-height: 130%;
+	margin-left: 15px;
+}
+
+#manual_loading {
+	width: 350px;
+	background-color: #C0D6EB;
+	border: 2px solid #6E8CA8;
+	padding: 5px 10px 5px 10px;
+	text-align: center;
+	margin: 15px auto 0 auto;
+}
+
+table.search_adv_example td {
+	padding: 4px;
+	background-color: #E6EEF5;
+	border-bottom: 1px solid #A6BDD1;
+}
+
+
+/************************************************
+************************************************
+************************************************
+* IDAES
+************************************************
+************************************************
+*************************************************/
+
+#headerlinks li.ideas_new        { background: url(./images/user/$style[images]/icons/document.gif) 0px 50% no-repeat; }
+#headerlinks li.ideas_accepted   { background: url(./images/user/$style[images]/icons/page_green.png) 0px 50% no-repeat; }
+#headerlinks li.ideas_declined   { background: url(./images/user/$style[images]/icons/page_red.gif) 0px 50% no-repeat; }
+#headerlinks li.ideas_completed  { background: url(./images/user/$style[images]/icons/page_lightning.png) 0px 50% no-repeat; }
+
+ul#ideas_cat_list {
+	margin: 0;
+	margin-left: 5px;
+	padding: 0;
+}
+
+ul#ideas_cat_list li {
+	list-style: none;
+}
+
+ul#ideas_cat_list li.all {
+	font-size: 130%;
+	font-weight: bold;
+}
+
+ul#ideas_cat_list li.depth0 {
+	margin-top: 8px;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+ul#ideas_cat_list li.depth1 { margin-left: 15px; list-style-type: circle; }
+ul#ideas_cat_list li.depth2 { margin-left: 30px; list-style-type: circle; }
+ul#ideas_cat_list li.depth3 { margin-left: 45px; list-style-type: circle; }
+ul#ideas_cat_list li.depth4 { margin-left: 60px; list-style-type: circle; }
+
+#ideas_topnav {
+	background-color: #E7F2FF;
+	margin-bottom: 20px;
+	padding: 5px 0 0 0;
+	border-bottom: 2px solid #9AB5D6;
+}
+
+#ideas_topnav ul {
+	margin: 0;
+	padding: 6px 10px 6px 10px;
+}
+
+#ideas_topnav ul li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+#ideas_topnav ul li a {
+	margin: 0;
+	padding: 6px 10px 6px 10px;
+	border: 1px solid transparent;
+	border-bottom: none;
+	text-decoration: none;
+	color: #000;
+}
+
+#ideas_topnav ul li.on a, #ideas_topnav ul li a:hover {
+	background-color: #fff;
+	border: 1px solid #BACADF;
+	border-bottom: none;
+}
+
+#ideas_topnav_sort_control {
+	float: right;
+	padding-right: 10px;
+}
+
+#ideas_topnav_sort_control select {
+	font-size: 11px;
+}
+
+#votes_remain { color: #1F5291; font-size: 150%; }
+
+/********************
+* Idea list
+*********************/
+
+#ideas_list .idea {
+	margin-bottom: 30px;
+}
+
+/* Vote stuff, to the left */
+#ideas_list .idea .vote_wrap {
+	float: left;
+	width: 70px;
+	text-align: center;
+}
+
+#ideas_list .idea .vote_wrap .stats {
+	padding: 6px;
+	background-color: #F1F1F1;
+	border: 1px solid #C2C2C2;
+	font-size: 10px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#ideas_list .idea .vote_wrap .stats strong {
+	display: block;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#ideas_list .idea .vote_wrap .btn {
+	margin-top: 4px;
+	color: #918C67;
+	padding: 3px;
+	cursor: pointer;
+	background-color: #FFFCDF;
+	border: 1px solid #E9E3AC;
+	font-size: 10px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#ideas_list .idea .vote_wrap .btn a {
+	color: #918C67;
+	text-decoration: none;
+}
+
+/* Info about the idea */
+#ideas_list .idea .content_wrap {
+	margin-left: 80px;
+}
+
+#ideas_list .idea .content_wrap h2 {
+	font-size: 12pt;
+	margin: 0;
+	padding: 0 0 0 0;
+}
+
+#ideas_list .idea .content_wrap p {
+	margin: 10px 0 10px 0;
+	padding: 0 0 5px 0;
+}
+
+#ideas_list .idea .content_wrap .info_wrap {
+	font-size: 10px;
+	color: #757575;
+}
+
+#ideas_list .idea .content_wrap .info_wrap .idea_status {
+	background-color: #E8EBF1;
+	padding: 4px 4px 4px 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#ideas_list .idea .content_wrap .info_wrap .idea_status_declined {
+	background-color: #F2E9E9 !important;
+}
+
+#ideas_list .idea .content_wrap .info_wrap .idea_status_accepted {
+	background-color: #D3F0C3 !important;
+}
+
+#ideas_list .idea .content_wrap .info_wrap .idea_status_completed {
+	background-color: #A6DD89 !important;
+}
+
+/********************
+* Comments
+*********************/
+
+#ideas_comments_list .comment {
+	padding: 10px 5px 10px 5px;
+	margin: 5px;
+	border-top: 1px solid #BEC4CA;
+}
+
+#ideas_comments_list .comment:hover {
+	background-color: #F2F4F7;
+}
+
+#ideas_comments_list .first_comment {
+	border-top: none !important;
+}
+
+#ideas_comments_list .staff_comment {
+	background-color: #E8EBF1;
+}
+
+#ideas_comments_list .posted_comment {
+	background-color: #FFFAE0;
+}
+
+#ideas_comments_list .comment .author {
+	font-size: 130%;
+}
+
+#ideas_comments_list .comment .author .author_type {
+	font-size: 11px;
+	color: #777;
+	padding-left: 10px;
+}
+
+#ideas_comments_list .comment .message {
+	margin-left: 25px;
+}
+#ideas_comments_list .comment .message p {
+	margin: 5px 0 5px 0;
+}
+
+#ideas_comments_list .comment .date {
+	text-align: right;
+	font-size: 10px;
+	color: #616569;
+	float: right;
+}
+
+/********************
+* Vote popup
+*********************/
+
+#vote_popup {
+	display: none;
+	background-color: #fff;
+	padding: 5px 10px 5px 10px;
+	border: 1px solid #999;
+	font-size: 9pt;
+	position: absolute;
+}
+
+#vote_popup .numwrap {
+	margin: 4px;
+}
+
+#vote_popup .num {
+	cursor: pointer;
+	padding: 4px 8px 4px 8px;
+	border: 1px solid transparent;
+}
+
+#vote_popup .num:hover {
+	background-color: #DCEEFC;
+}
+
+#vote_popup .num_on {
+	background-color: #C1D7E7 !important;
+	border: 1px solid #8FA5B4 !important;
+}
+

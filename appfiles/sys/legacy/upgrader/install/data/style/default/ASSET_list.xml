@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--  $Id: LIST_ticketlisting.xml 4943 2007-11-19 05:01:23Z chroder $i -->
+<template category="ticket_listing" displayorder="1">
+<description>Generates page of tickets</description>
+<content><![CDATA[
+
+$header
+
+<div class="topsection">
+
+<%!-- Page Title --!%>
+<h2><img src="./images/user/$style[images]/front/my_questions.gif" style="vertical-align:middle" alt="" />&nbsp;&nbsp;&nbsp;<span style="vertical-align:middle">
+
+<%if $search_total > -1%>
+	<%phrase 1="$search_total"%>$dplang[ticketlist_your_questions_some]<%endphrase%>
+<%else%>
+	<%phrase 1="$total"%>$dplang[ticketlist_your_questions]<%endphrase%>
+<%endif%>
+
+</span></h2>
+
+</div>
+
+<div class="main">
+
+<div class="section">
+
+<form method="post" action="ticketlist.php" name="deskpro_form">
+<input type="hidden" name="do" value="submit" />
+
+<h3><span>$dplang[ticketlist_properties]</span>&nbsp;</h3>
+<p>
+<%loop $fields%>
+	<label for="show_$fields[field]"><input type="checkbox" value="1" id="show_$fields[field]" name="show[$fields[field]]"<%if $showfields[$fields[field]]%> checked="checked"<%endif%> />&nbsp;$fields[name]</label>&nbsp;&nbsp;
+<%endloop%>
+</p>
+
+<h3><span>$dplang[ticketlist_status]</span>&nbsp;</h3>
+<p>
+	<label for="open"><input type="checkbox" id="open" name="open" <%if $clean[show_open]%> checked="checked"<%endif%> />&nbsp;$dplang[ticket_open]</label>
+	&nbsp;&nbsp;<label for="closed"><input type="checkbox" id="closed" name="closed" <%if $clean[show_closed]%> checked="checked"<%endif%> />&nbsp;$dplang[ticket_closed]</label>
+</p>
+
+<h3><span><label for="order">$dplang[ticketlist_order]</label></span>&nbsp;</h3>
+<p>
+<select name="order" id="order">
+<%loop $order%>
+	<option<%if $order[selected]%> selected="selected" <%endif%> value="$order[field]">$order[name]</option>
+<%endloop%>
+</select>
+</p>
+
+<h3><span><label for="submit">$dplang[ticketlist_run_search]</label></span>&nbsp;</h3>
+<p>
+<input type="submit" id="submit" name="Find" class="button" value="$dplang[submit]" />
+</p>
+
+</form>
+
+</div>
+
+<div class="section">
+
+	<h3><span><%phrase 1="$num_tickets"%>$dplang[ticketlist_matches]<%endphrase%></span>&nbsp;</h3>
+	<div class="padd">
+
+	<table class="listing" cellspacing="0" cellpadding="0">
+		<thead>
+		<tr>
+
+		<%loop $showcols%>
+			<th>$showcols</th>
+		<%endloop%>
+
+		</tr>
+		</thead>
+		<tbody>
+
+		$row
+
+		</tbody>
+	</table>
+	</div>
+
+	$pagenav_html
+
+</div>
+
+</div>
+
+$footer
+
+]]></content>
+</template>

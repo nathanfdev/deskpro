@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<crons>
+	<cron>
+		<title>Close Tickets</title>
+		<scriptname>close.php</scriptname>
+		<description>This task closes tickets that have had no activity for a certain period of time.</description>
+		<frequency>6</frequency>
+	</cron>
+	<cron>
+		<title>Unlock Tickets</title>
+		<scriptname>unlock_tickets.php</scriptname>
+		<description>This task unlocks tickets that have been locked for too long, preventing other techs from handling it.</description>
+		<frequency>2</frequency>
+	</cron>
+	<cron>
+		<title>Ticket Reminders</title>
+		<scriptname>ticketreminders.php</scriptname>
+		<description>Sends emails to techs about tickets they are watching.</description>
+		<frequency>5</frequency>
+	</cron>
+	<cron>
+		<title>Internal Maintenance</title>
+		<scriptname>cleanup.php</scriptname>
+		<description>Performs assorted internal maintenance tasks.</description>
+		<frequency>6</frequency>
+	</cron>
+	<cron>
+		<title>Knowledgebase Subscriptions</title>
+		<scriptname>faqsubscriptions.php</scriptname>
+		<description>Sends users category and article knowledgebase subscriptions.</description>
+		<frequency>8</frequency>
+	</cron>
+	<cron>
+		<title>Ticket Escalations</title>
+		<scriptname>escalate.php</scriptname>
+		<description>Performs ticket auto-escalation.</description>
+		<frequency>1</frequency>
+	</cron>
+	<cron>
+		<title>Manual Exports</title>
+		<scriptname>manual.php</scriptname>
+		<description>Exports manual images to the filesystems, generates manual downloads.</description>
+		<frequency>8</frequency>
+	</cron>
+	<cron>
+		<title>Incomplete Ticket Reminders</title>
+		<scriptname>temptickets.php</scriptname>
+		<description>Sends reminder emails to users when they have incomplete ticket submissions</description>
+		<frequency>5</frequency>
+	</cron>
+	<cron>
+		<title>Resend Failed Emails</title>
+		<scriptname>failed_emails.php</scriptname>
+		<description>Attempts to resend emails that faield sending the first time (i.e., if a temporary SMTP outage occurred).</description>
+		<frequency>3</frequency>
+	</cron>
+	<cron>
+		<title>Expire User Subscriptions</title>
+		<scriptname>expire_user_plans.php</scriptname>
+		<description>Expires user subscription plans and reverses them.</description>
+		<frequency>5</frequency>
+	</cron>
+		<cron>
+		<title>Prune Sessions</title>
+		<scriptname>prune_sessions.php</scriptname>
+		<description>Deletes old session records from the database, and for techs, inserts timelog data.</description>
+		<frequency>4</frequency>
+	</cron>
+	<cron>
+		<title>Send updates to ideas</title>
+		<scriptname>user_ideas_updated.php</scriptname>
+		<description>Sends notifications when ideas have been updated</description>
+		<frequency>8</frequency>
+	</cron>
+</crons>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--  $Id$ -->
+<styles>
+	<style>
+		<title>Info: Button</title>
+		<name>info-btn</name>
+		<elm>kbd</elm>
+		<attr></attr>
+		<css><![CDATA[background: #e3e8f1;
+border-top: 1px solid #eceff6;
+border-right: 1px solid #d4d9e1;
+border-bottom: 2px solid #bcc0c7;
+font-family: 'Courier New', monospace;
+padding: 0 3px 0 3px;]]></css>
+	</style>
+	<style>
+		<title>Info: Misc</title>
+		<name>info-misc</name>
+		<elm>kbd</elm>
+		<attr></attr>
+		<css><![CDATA[background: #f3f6fa;
+font-family: 'Courier New', monospace;
+font-style: italic;
+padding: 3px;]]></css>
+	</style>
+	<style>
+		<title>Img: Screenshot</title>
+		<name>screenshot</name>
+		<elm>img</elm>
+		<attr></attr>
+		<css><![CDATA[border: 1px solid #000;
+margin: 5px;]]></css>
+	</style>
+	<style>
+		<title>Keyboard</title>
+		<name></name>
+		<elm>kbd</elm>
+		<attr></attr>
+		<css><![CDATA[font-family: 'Courier New', monospace;
+background: #eee;
+padding: 3px;]]></css>
+	</style>
+	<style>
+		<title>Page Reference</title>
+		<name>pageref</name>
+		<elm>span</elm>
+		<attr></attr>
+		<css><![CDATA[background-color: #F8F5EE;]]></css>
+	</style>
+	<style>
+		<title>Code</title>
+		<name>code</name>
+		<elm>div</elm>
+		<attr></attr>
+		<css><![CDATA[background: #E4E4E4;
+border: 1px solid #9E9E9E;
+font-family: 'Courier New', monospace;
+padding: 3px;
+margin: 5px;]]></css>
+	</style>
+</styles>

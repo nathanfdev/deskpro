@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--  $Id: question_tech_reply.xml 4173 2007-07-18 23:20:57Z chris $i -->
+<template>
+	<description><![CDATA[Template used when a ticket is assigned to a btech]]></description>
+	<subject><![CDATA[<%phrase 1="$ticket[subject]"%>$dplang[email_subject_question_btech_assigned]<%endphrase%>]]></subject>
+	<email><![CDATA[
+<%if $settings[gateway_user_on]%>$dplang[email_question_cut]<%line%><%else%>$dplang[email_question_noreply]<%line%><%endif%>
+<%line%>
+<%phrase 1="$user_details[greeting]"%>$dplang[email_greeting]<%endphrase%><%line%>
+<%line%>
+$dplang[email_question_btech_assigned]<%line%>
+<%line%>
+$user_message<%line%>
+<%line%>
+$dplang[email_question_online]<%line%>
+$settings[helpdesk_url]view.php?ticketref=$ticket[ref]&pass=$user_details[password_url]
+]]></email>
+</template>
