@@ -221,6 +221,13 @@ body.with-js .require-js { display: block; }
 body .without-js { display: block; }
 body.with-js .without-js { display: none; }
 
+body.dp-simple-iframe {
+	background: transparent;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
 /**********************************************************
 * Layout
 **********************************************************/

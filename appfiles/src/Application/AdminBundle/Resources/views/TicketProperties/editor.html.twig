@@ -54,8 +54,11 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			<li {% if section == 'view' %}class="on"{% endif %}>
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
 			</li>
-			<li class="{% if section == 'modify' %}on{% endif %} last">
+			<li class="{% if section == 'modify' %}on{% endif %}">
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
+			</li>
+			<li class="last">
+				<a href="{{ path('admin_tickets_editor_form_embed', {'department_id': department.id|default('0')}) }}">Website Widget</a>
 			</li>
 		</ul>
 		<br class="clear" />

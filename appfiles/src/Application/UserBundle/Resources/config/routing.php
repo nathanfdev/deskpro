@@ -244,15 +244,22 @@ $collection->add('user_tickets', new Route(
 ));
 
 $collection->add('user_tickets_new', new Route(
-	'/tickets/new',
-	array('_controller' => 'UserBundle:NewTicket:new'),
+	'/new-ticket/{for_department_id}',
+	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'normal', 'for_department_id' => 0),
 	array(),
 	array()
 ));
 
-$collection->add('user_tickets_new', new Route(
-	'/tickets/new.js',
-	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'script'),
+$collection->add('user_tickets_new_simple', new Route(
+	'/tickets/new-simple/{for_department_id}',
+	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'iframe', 'for_department_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('user_tickets_new_js', new Route(
+	'/tickets/new-js/{for_department_id}.js',
+	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'script', 'for_department_id' => 0),
 	array(),
 	array()
 ));

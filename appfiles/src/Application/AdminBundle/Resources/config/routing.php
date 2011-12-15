@@ -75,6 +75,13 @@ $collection->add('admin_tickets_editor_dep_revert', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_editor_form_embed', new Route(
+	'/tickets/editor/{department_id}/website-widget',
+	array('_controller' => 'AdminBundle:TicketProperties:formEmbed'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_editor_dep', new Route(
 	'/tickets/editor/{department_id}/{section}',
 	array('_controller' => 'AdminBundle:TicketProperties:editor', 'section' => 'create'),

@@ -1,0 +1,144 @@
+{% extends 'UserBundle::layout-simple-iframe.html.twig' %}
+{% block head %}
+<script type="text/javascript">
+var DpFrameController = {
+	init: function() {
+		this.sendMessage('ready');
+		window.setInterval(this.checkHeight.bind(this), 200);
+	},
+	checkHeight: function() {
+		var h = $('#deskpro').outerHeight();
+		if (!this.lastH || this.lastH != h) {
+			this.lastH = h;
+			this.sendMessage('height', h);
+		}
+	},
+	sendMessage: function(id,data) {
+		if (window.parent && window.parent != window && window.parent.DpNewTicket_Controller) {
+			window.parent.DpNewTicket_Controller.acceptMessage(id, data);
+		}
+	},
+	getHeight: function() {
+		return $(document).height();
+	}
+};
+$(document).ready(function() {
+	DpFrameController.init();
+});
+</script>
+<script type="text/javascript">
+var ticketReader = {
+	getCategoryId: function() {
+		var cat = $('select.category_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-category_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getPriorityId: function() {
+		var cat = $('select.priority_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-priority_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getProductId: function() {
+		var cat = $('select.product_id');
+		var catId = cat.val();
+
+		var subCat = $('.sub-options-product_id.sub-options-' + catId);
+		if (subCat.length) {
+			var subCatId = $('select', subCat).val();
+			return parseInt(subCatId) || 0;
+		}
+
+		return parseInt(catId) || 0;
+	},
+	getOrganizationId: function() {
+		return {{ app.user.organization.id|default(0) }};
+	},
+	getWorkflow: function() {
+		return 0;
+	}
+};
+</script>
+<script type="text/javascript">
+{{ ticket_display_js|raw }}
+</script>
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div
+	class="dp-newticket-page with-handler {% if not set_dep_id %}require-js{% endif %}"
+	data-element-handler="DeskPRO.User.ElementHandler.NewTicket"
+	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}"
+>
+
+{% if errors|length %}
+	<div class="alert-message error">
+		Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+		<!--
+		{{ debug_var(error_fields) }}
+		{{ debug_var(errors) }}
+		-->
+	</div>
+{% endif %}
+<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
+<input type="hidden" name="process" value="1" />
+
+{###############
+ # Email
+ ###############}
+
+{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
+
+
+{###############
+ # Name
+ ###############}
+<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
+	<div class="dp-form-label">
+		<label>Your Name *</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.person.name, {
+			'attr': {
+				'data-field-validators': 'DeskPRO.Form.LengthValidator',
+				'data-min-len': 2
+			}
+		}) }}
+		<div class="dp-error-explain">
+			Please enter your name
+		</div>
+	</div>
+</div>
+
+{#--- FIELDS CONTAINER ---#}
+<div id="fields_container">
+	{# First time outputs items in order and visible depending on the page data #}
+	{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+
+	{# Second time outputs the remaining order invisible, JS will handle reordering when changing departments #}
+	{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'non_default', 'page_data_field_ids': page_data_field_ids }%}
+</div>
+{#--- FIELDS CONTAINER ---#}
+
+<div class="dp-footer">
+	<input class="btn primary" type="submit" value="Submit" />
+</div>
+
+</form>
+
+</div>
+{% endblock %}
