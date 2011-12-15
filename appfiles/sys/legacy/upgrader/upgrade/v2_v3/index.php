@@ -1990,6 +1990,7 @@ class upgrade_v2 extends upgrade_base_v2 {
 				");
 
 				$unique_email = true;
+
 			}
 
 			if (in_array($result['username'], $usernames)) {
@@ -2098,9 +2099,9 @@ class upgrade_v2 extends upgrade_base_v2 {
 		while ($result = $db->row_array()) {
 
 			if ($result['active'] == 1) {
-				$db->query("UPDATE tech SET active = 0 WHERE id = $result[id]");
+				$db2->query("UPDATE tech SET active = 0 WHERE id = $result[id]");
 			} else {
-				$db->query("UPDATE tech SET active = 1 WHERE id = $result[id]");
+				$db2->query("UPDATE tech SET active = 1 WHERE id = $result[id]");
 			}
 		}
 
@@ -2161,6 +2162,7 @@ class upgrade_v2 extends upgrade_base_v2 {
 
 		// give rss password
 		while ($result = $db->row_array()) {
+
 			$db2->query("
 				UPDATE tech
 					SET rsspassword = '" . $db->escape(make_randomstring(20)) . "'
@@ -3646,9 +3648,6 @@ class upgrade_v2 extends upgrade_base_v2 {
 
 // check we are in correct location
 install_check();
-
-// need 2nd db object
-$db2 =& database_object_factory();
 
 // display header
 $header->build();

@@ -171,9 +171,6 @@ class upgrade_3 extends upgrade_base_v3 {
 // check we are in correct location
 install_check();
 
-// need 2nd db object
-$db2 =& database_object_factory();
-
 // display header
 $header->build();
 

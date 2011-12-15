@@ -2,9 +2,15 @@
 
 error_reporting(E_ALL & ~E_NOTICE & ~8192);
 
-define('UPGRADE_DEBUG', true);
-
 ##################################### START UP THE SYSTEM #####################################
+
+/***************
+* Define Upgrade Type
+***************/
+
+define('INSTALLER', 1);
+define('UPGRADE_DEBUG', true);
+define('UPGRADE_TYPE', 'shell');
 
 /***************
 * Check if we should be using this
@@ -14,12 +20,6 @@ if (!in_array(php_sapi_name(), array('cgi-fcgi', 'cgi', 'cli'))) {
 	die('You should only run this file from shell');
 }
 
-/***************
-* Define Upgrade Type
-***************/
-
-define('UPGRADE_TYPE', 'shell');
-
 /*******************************
 * Try and extend length of time script runs, make sure gzip is off
 *******************************/
@@ -28,14 +28,11 @@ define('UPGRADE_TYPE', 'shell');
 @set_time_limit(0);
 @ignore_user_abort(1);
 @ini_set('max_execution_time', 0);
-
-// @ini_set('memory_limit', '128M');
+@ini_set('memory_limit', '128M');
 
 /***********
 * Initiate System
 ***********/
-
-define('INSTALLER', 1);
 
 define('CWD_DESKPRO', __DIR__ . '/');
 define('ROOT', CWD_DESKPRO);
@@ -68,9 +65,7 @@ require_once(INC . 'functions/import_functions.php');
 require_once(INC . 'classes/database/database_factory.php');
 require_once(INC . 'functions/email_functions.php');
 require_once(INC . 'functions/date_functions.php');
-// require_once(INC . 'classes/class_SessionAdmin.php');
 
-require_once(INSTALL . 'includes/checks.php');
 require_once(INSTALL . 'includes/functions.php');
 require_once(INSTALL . 'includes/functions_legacy.php');
 
@@ -78,7 +73,8 @@ require_once(INSTALL . 'includes/functions_legacy.php');
 require_once(INSTALL . 'includes/upgrade_abstract.php');
 require_once(INSTALL . 'includes/upgrade_shell.php');
 
-$config_included = include_once(INC . 'config.php');
+require_once(ROOT . '../../../../config.php');
+require_once(INSTALL . 'includes/config.php');
 
 /*******************************
 * Security Check (2)
@@ -99,12 +95,8 @@ $header = new Header();
 * Create database connection
 *******************************/
 
-$have_db = false;
-if ($config_included AND defined('DATABASE_NAME')) {
-	$db = new checkDatabase(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
-	$have_db = $db->parentconnect();
-}
-$db->error_halt = true;
+$db =& database_factory(DATABASE_TYPE);
+$db2 =& database_object_factory(DATABASE_TYPE, TRUE);
 
 /*******************************
 * Get Tables
@@ -172,12 +164,6 @@ if (in_array('admin_help_cat', $tables) AND in_array('pm_relations', $tables)) {
 *******************************/
 
 require_once(INSTALL . 'upgrade/v3/shell.php');
-
-/*******************************
-* Do Standard Upgrade
-*******************************/
-
-//require_once(INSTALL . 'upgrade/standard/shell.php');
 
 /*******************************
 * Turn helpdesk back on

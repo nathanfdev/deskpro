@@ -26,41 +26,9 @@ error_reporting(E_ALL & ~E_NOTICE & ~8192);
  */
 function &database_factory($type = 'pdomysql', $forcenew = false) {
 	
-	static $object = null;
+	require_once(INC . 'classes/database/PdoMysql.php');
+	return new DB_PdoMysql();
 
-	if(!$object OR $forcenew) {
-
-		$type = strtolower($type);
-		$db = null;
-
-		switch($type) {
-			case 'mssql':
-				require_once(INC . 'classes/database/mssql.php');
-				$db = new DB_MsSQL();
-				break;
-			
-			case 'mysql':
-			case 'mysqli':
-			case 'pdomysql':
-				require_once(INC . 'classes/database/PdoMysql.php');
-				$db = new DB_PdoMysql();
-				break;
-
-
-			default:
-				$db = null;
-				break;
-		}
-
-		if ($forcenew) {
-			$db->force_new = true;
-			return $db;
-		} else {
-			$object = $db;
-		}
-	}
-
-	return $object;
 }
 
 function init_doctrine() {

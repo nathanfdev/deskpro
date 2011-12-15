@@ -55,7 +55,7 @@ class DB_PdoMysql extends DB_Abstract
 
 	function wrapper_query($query_string) {
 		// Need to use exec() for non-select type queries
-		if (!preg_match('#^\s*(SELECT|SHOW)#m', $query_string)) {
+		if (!preg_match('#^\s*(SELECT|SHOW|DESCRIBE)#m', $query_string)) {
 			return $this->exec_query($query_string);
 		}
 		
