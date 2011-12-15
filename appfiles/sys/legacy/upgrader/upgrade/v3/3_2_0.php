@@ -205,8 +205,6 @@ class upgrade_3020001 extends upgrade_base_v3 {
 			)
 		");
 		$this->yes();
-
-	
 		
 		$this->start('Make sure mapid in user_email is not null');
 		$table_info = $db->query_return_array("DESCRIBE user_email", 'Field');
@@ -217,8 +215,6 @@ class upgrade_3020001 extends upgrade_base_v3 {
 		}
 		$this->yes();
 
-	exit();
-		
 		$this->start('Adding global flag to ticket fields table');
 		$db->query("ALTER TABLE  `ticket_def` ADD  `is_global` TINYINT( 1 ) NOT NULL DEFAULT  '0'");
 		$this->yes();
