@@ -27,7 +27,7 @@ class NewTicketController extends AbstractController
 	/**
 	 * Create a new ticket
 	 */
-    public function newAction($format = 'normal')
+    public function newAction($format = 'normal', $for_department_id = 0)
     {
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_WEB_PERSON,
@@ -67,7 +67,11 @@ class NewTicketController extends AbstractController
 
 		$set_dep_id = null;
 		if ($this->in->getUint('set_dep_id')) {
-			$newticket->ticket->department_id = $this->in->getUint('set_dep_id');
+			$for_department_id = $this->in->getUint('set_dep_id');
+		}
+
+		if ($for_department_id) {
+			$newticket->ticket->department_id = $for_department_id;
 			$set_dep_id = $newticket->ticket->department_id;
 		}
 
@@ -154,7 +158,7 @@ class NewTicketController extends AbstractController
 		if ($format == 'iframe') {
 			$tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
 		} elseif ($format == 'script') {
-			$tpl = 'UserBundle:NewTicket:new-ticket-script.js.twig';
+			$tpl = 'UserBundle:NewTicket:new-ticket-jsloader.js.twig';
 		}
 
 		return $this->render($tpl, array(

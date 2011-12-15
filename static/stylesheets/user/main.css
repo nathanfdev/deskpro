@@ -58,7 +58,6 @@ html{
 #deskpro input[type="search"]{-webkit-appearance:textfield;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;}
 #deskpro input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}
 #deskpro textarea{overflow:auto;vertical-align:top;}
-#deskpro html,body{background-color:#ffffff;}
 #deskpro p{font-weight:normal;margin-bottom:9px;}
 #deskpro ul,ol{margin:0 0 18px 25px;}
 #deskpro ul ul,#deskpro ul ol,#deskpro ol ol,#deskpro ol ul{margin-bottom:0;}
@@ -221,12 +220,16 @@ body.with-js .require-js { display: block; }
 body .without-js { display: block; }
 body.with-js .without-js { display: none; }
 
+body.dp-simple-iframe {
+	background: transparent !important;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
 /**********************************************************
 * Layout
 **********************************************************/
-html {
-	background-color: @bg_color !important;
-}
 body {
 	background-color: @bg_color !important;
 	margin:0;
