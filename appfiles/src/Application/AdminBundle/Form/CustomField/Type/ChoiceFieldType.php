@@ -34,6 +34,9 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
 
 		$builder->add('min_length', 'text', array('required' => false));
 		$builder->add('max_length', 'text', array('required' => false));
+
+		$builder->add('agent_min_length', 'text', array('required' => false));
+		$builder->add('agent_max_length', 'text', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)

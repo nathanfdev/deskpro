@@ -21,9 +21,12 @@ abstract class CustomFieldAbstract
 	public $handler_class;
 
 	public $required = false;
+	public $agent_required = false;
+
 	public $custom_css_classname = '';
 	public $custom_css = '';
 	public $validation_type = '';
+	public $agent_validation_type = '';
 
 	protected $_field = null;
 	protected $_is_new = false;

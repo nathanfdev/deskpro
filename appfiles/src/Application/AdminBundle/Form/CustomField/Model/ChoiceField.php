@@ -19,6 +19,10 @@ class ChoiceField extends CustomFieldAbstract
 	public $expanded = false;
 	public $min_length;
 	public $max_length;
+
+	public $agent_min_length;
+	public $agent_max_length;
+
 	public $field_type = null;
 
 	// Will be id=>choices on load,
@@ -43,6 +47,17 @@ class ChoiceField extends CustomFieldAbstract
 			$this->validation_type = 'required';
 			$this->required = true;
 			$this->max_length = $this->_field->getOption('max_length');
+		}
+
+		if ($this->_field->getOption('admin_min_length')) {
+			$this->agent_validation_type = 'required';
+			$this->agent_required = true;
+			$this->agent_min_length = $this->_field->getOption('agent_min_length');
+		}
+		if ($this->_field->getOption('agent_max_length')) {
+			$this->agent_validation_type = 'required';
+			$this->agent_required = true;
+			$this->agent_max_length = $this->_field->getOption('agent_max_length');
 		}
 
 		if ($this->multiple) {
@@ -93,7 +108,19 @@ class ChoiceField extends CustomFieldAbstract
 			$field->setOption('min_length', $this->min_length);
 			$field->setOption('max_length', $this->max_length);
 		} else {
-			$field->setOption('required', false);
+			$field->setOption('required', null);
+			$field->setOption('min_length', null);
+			$field->setOption('max_length', null);
+		}
+
+		if ($this->agent_validation_type == 'required') {
+			$field->setOption('agent_required',   $this->agent_required);
+			$field->setOption('agent_min_length', $this->agent_min_length);
+			$field->setOption('agent_max_length', $this->agent_max_length);
+		} else {
+			$field->setOption('agent_required', null);
+			$field->setOption('agent_min_length', null);
+			$field->setOption('agent_max_length', null);
 		}
 	}
 

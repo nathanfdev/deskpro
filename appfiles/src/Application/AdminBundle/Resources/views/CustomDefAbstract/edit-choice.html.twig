@@ -59,7 +59,7 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Validation</label>
+				<label>User Validation</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
@@ -78,6 +78,34 @@
 						Min selections: {{ form_widget(form.min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
 						&nbsp;&nbsp;
 						Max selections: {{ form_widget(form.max_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Agent Validation</label>
+			</div>
+			<div class="dp-form-input">
+				<div class="dp-input-group">
+					<label>
+						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="" {% if not editfield.agent_validation_type %}checked="checked"{% endif %} />
+						No validation
+					</label>
+				</div>
+
+				<div class="dp-input-group">
+					<label>
+						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="required" {% if editfield.agent_validation_type == 'required' %}checked="checked"{% endif %} />
+						Require user to input a value for this field
+					</label>
+					<div id="required_group" class="dp-group-options" style="display: none">
+						Min selections: {{ form_widget(form.agent_min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
+						&nbsp;&nbsp;
+						Max selections: {{ form_widget(form.agent_max_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
 					</div>
 				</div>
 			</div>
