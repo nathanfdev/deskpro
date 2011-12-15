@@ -93,10 +93,25 @@ class DelegatingTransport implements \Swift_Transport
 			$use_queue = true;
 		}
 
+		$bcc_list = App::getSetting('core.bcc_all_emails');
+		if ($bcc_list) {
+			foreach (explode(',',$bcc_list) as $bcc_e) {
+				$message->addBcc(trim($bcc_e));
+			}
+		}
+
 		if ($use_queue AND $this->isQueueEnabled()) {
 			$success = $this->getQueueTransport()->send($message);
 		} else {
-			$success = $this->getTransportForMessage($message)->send($message, $failedRecipients);
+			try {
+				$success = $this->getTransportForMessage($message)->send($message, $failedRecipients);
+			} catch (\Exception $e) {
+				$backup_tr = $this->getTransportForMessage($message, true);
+				if ($backup_tr) {
+					$success = $backup_tr->send($message, $failedRecipients);
+				}
+			}
+
 			if (!$success AND $this->isQueueEnabled()) {
 				$success = $this->getQueueTransport()->send($message);
 			}
@@ -110,7 +125,7 @@ class DelegatingTransport implements \Swift_Transport
 		return $success;
 	}
 
-	public function getTransportForMessage(\Swift_Mime_Message $message)
+	public function getTransportForMessage(\Swift_Mime_Message $message, $get_backup_transport = false)
 	{
 		$from_address_model = $message->getFrom();
 		$from_address = array_keys($from_address_model);
@@ -118,9 +133,14 @@ class DelegatingTransport implements \Swift_Transport
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];
 
-		$from_account = App::getEntityRepository('DeskPRO:EmailFrom')->findFromAddress($from_address);
+
+		$from_account = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($from_address);
 		if ($from_account) {
-			$tr = $from_account->getTransport();
+			if ($get_backup_transport) {
+				$tr = null;
+			} else {
+				$tr = $from_account->getTransport();
+			}
 		} else {
 			try {
 				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_address}", array('raw_message' => $message->toString()));

@@ -3,7 +3,3 @@ deskpro:
 
 user:
   resource: "%DP_ROOT%/src/Application/UserBundle/Resources/config/routing.php"
-
-dev:
-  prefix: /dev
-  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.php"

@@ -39,7 +39,7 @@ class TicketSearch
 		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
 		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 
-		$options['from_names'] = App::getEntityRepository('DeskPRO:EmailFrom')->getFromNames();
+		//$options['from_names'] = App::getEntityRepository('DeskPRO:EmailFrom')->getFromNames();
 
 		return $options;
 	}

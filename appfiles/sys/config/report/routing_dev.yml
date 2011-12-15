@@ -4,7 +4,3 @@ deskpro:
 report:
   prefix: /report
   resource: "%DP_ROOT%/src/Application/ReportBundle/Resources/config/routing.php"
-
-dev:
-  prefix: /dev
-  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.php"

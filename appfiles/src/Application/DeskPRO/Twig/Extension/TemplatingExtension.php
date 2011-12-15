@@ -76,6 +76,7 @@ class TemplatingExtension extends \Twig_Extension
 			'start_counter' => new \Twig_Function_Method($this, 'startCounter'),
 			'get_counter' => new \Twig_Function_Method($this, 'getCounter'),
 			'inc_counter' => new \Twig_Function_Method($this, 'incCounter'),
+			'form_token' => new \Twig_Function_Method($this, 'formToken', array('is_safe' => array('html'))),
         );
     }
 
@@ -318,6 +319,13 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $date->format($format);
+	}
+
+	public function formToken($name = '', $field_name = '_dp_security_token')
+	{
+		$html = '<input type="hidden" name="'.$field_name.'" value="' . App::getSession()->getEntity()->generateSecurityToken($name, 43200) . '" />';
+
+		return $html;
 	}
 
 	public function securityToken($name = '', $timeout = 43200)

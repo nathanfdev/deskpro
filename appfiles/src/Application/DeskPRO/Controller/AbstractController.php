@@ -54,4 +54,36 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	{
 		return ($this->get('request')->getMethod() == 'POST');
 	}
+
+
+	/**
+	 * Checks a request token in a form
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 * @return bool
+	 */
+	public function checkRequestToken($name = '', $field_name = '_dp_security_token')
+	{
+		if (empty($_REQUEST[$field_name])) {
+			return false;
+		}
+
+		return $this->session->getEntity()->checkSecurityToken($name, $_REQUEST[$field_name]);
+	}
+
+
+	/**
+	 * Just like checkRequestToken but this shows an error for you if its bad
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 */
+	public function ensureRequestToken($name = '', $field_name = '_dp_security_token')
+	{
+		if (!$this->checkRequestToken($name, $field_name)) {
+			echo 'invalid security token';
+			exit;
+		}
+	}
 }

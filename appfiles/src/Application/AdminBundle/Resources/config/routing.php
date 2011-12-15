@@ -19,6 +19,10 @@ $collection->add('admin_test', new Route(
 	array()
 ));
 
+################################################################################
+# License
+################################################################################
+
 $collection->add('admin_license', new Route(
 	'/license',
 	array('_controller' => 'AdminBundle:License:index'),
@@ -46,6 +50,11 @@ $collection->add('admin_license_input_save', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Tickets
+################################################################################
 
 $collection->add('admin_tickets_fields', new Route(
 	'/tickets/fields',
@@ -95,6 +104,150 @@ $collection->add('admin_tickets_editor_dep_save', new Route(
 	array(),
 	array()
 ));
+
+$collection->add('admin_tickets_filters', new Route(
+	'/tickets/filters',
+	array('_controller' => 'AdminBundle:TicketFilters:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_filters_getgloballist', new Route(
+	'/tickets/filters/get-global-list',
+	array('_controller' => 'AdminBundle:TicketFilters:getGlobalList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_filters_getteamlist', new Route(
+	'/tickets/filters/get-team-list',
+	array('_controller' => 'AdminBundle:TicketFilters:getTeamList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_filters_getagentlist', new Route(
+	'/tickets/filters/get-agent-list',
+	array('_controller' => 'AdminBundle:TicketFilters:getAgentList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_tickets_filters_edit', new Route(
+	'/tickets/filters/{filter_id}',
+	array('_controller' => 'AdminBundle:TicketFilters:edit'),
+	array('filter_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_tickets_filters_new', new Route(
+	'/tickets/filters/new',
+	array('_controller' => 'AdminBundle:TicketFilters:newChooseType'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketcats', new Route(
+	'/tickets/categories',
+	array('_controller' => 'AdminBundle:TicketCategories:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketcats_edit', new Route(
+	'/tickets/categories/{category_id}',
+	array('_controller' => 'AdminBundle:TicketCategories:edit'),
+	array('category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketcats_updateorders', new Route(
+	'/tickets/categories/update-orders',
+	array('_controller' => 'AdminBundle:TicketCategories:updateOrders'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketcats_del', new Route(
+	'/tickets/categories/{category_id}/delete',
+	array('_controller' => 'AdminBundle:TicketCategories:delete'),
+	array('category_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketcats_dodel', new Route(
+	'/tickets/categories/{category_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:TicketCategories:doDelete'),
+	array('category_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
+	array()
+));
+
+$collection->add('admin_ticketpris', new Route(
+	'/tickets/priorities',
+	array('_controller' => 'AdminBundle:TicketPriorities:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketpris_edit', new Route(
+	'/tickets/priorities/{priority_id}',
+	array('_controller' => 'AdminBundle:TicketPriorities:edit'),
+	array('priority_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketpris_del', new Route(
+	'/tickets/priorities/{priority_id}/delete',
+	array('_controller' => 'AdminBundle:TicketPriorities:delete'),
+	array('priority_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketpris_dodel', new Route(
+	'/tickets/priorities/{priority_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:TicketPriorities:doDelete'),
+	array('priority_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
+	array()
+));
+
+$collection->add('admin_ticketworks', new Route(
+	'/tickets/workflows',
+	array('_controller' => 'AdminBundle:TicketWorkflows:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketworks_edit', new Route(
+	'/tickets/workflows/{workflow_id}',
+	array('_controller' => 'AdminBundle:TicketWorkflows:edit'),
+	array('workflow_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketworks_del', new Route(
+	'/tickets/workflows/{workflow_id}/delete',
+	array('_controller' => 'AdminBundle:TicketWorkflows:delete'),
+	array('workflow_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_ticketworks_dodel', new Route(
+	'/tickets/workflows/{workflow_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:TicketWorkflows:doDelete'),
+	array('workflow_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
+	array()
+));
+
+$collection->add('admin_ticketworks_updateorders', new Route(
+	'/tickets/workflows/update-orders',
+	array('_controller' => 'AdminBundle:TicketWorkflows:updateOrders'),
+	array(),
+	array()
+));
+
+################################################################################
+# Portal
+################################################################################
 
 $collection->add('admin_email_properties', new Route(
 	'/email-settings',
@@ -159,75 +312,10 @@ $collection->add('admin_login_authenticate_local', new Route(
 	array()
 ));
 
-$collection->add('admin_ideas_settings', new Route(
-	'/portal/ideas/settings',
-	array('_controller' => 'AdminBundle:Ideas:ideaSettings'),
-	array(),
-	array()
-));
 
-$collection->add('admin_ideas_statuses', new Route(
-	'/portal/ideas/statuses',
-	array('_controller' => 'AdminBundle:Ideas:statuses'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_statuses_ajaxadd', new Route(
-	'/portal/ideas/statuses/new',
-	array('_controller' => 'AdminBundle:Ideas:ajaxNewStatus'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_statuses_edit', new Route(
-	'/portal/ideas/statuses/{category_id}/edit',
-	array('_controller' => 'AdminBundle:Ideas:editStatus'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_statuses_del', new Route(
-	'/portal/ideas/statuses/{category_id}/delete',
-	array('_controller' => 'AdminBundle:Ideas:deleteStatus'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_status_updateorders', new Route(
-	'/portal/ideas/statuses/update-orders',
-	array('_controller' => 'AdminBundle:Ideas:updateStatusOrders'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_cats', new Route(
-	'/portal/ideas/categories',
-	array('_controller' => 'AdminBundle:Ideas:categories'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_cats_edit', new Route(
-	'/portal/ideas/categories/{category_id}/edit',
-	array('_controller' => 'AdminBundle:Ideas:editCategory'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_cats_del', new Route(
-	'/portal/ideas/categories/{category_id}/delete',
-	array('_controller' => 'AdminBundle:Ideas:deleteCategory'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ideas_cats_updateorders', new Route(
-	'/portal/ideas/categories/update-orders',
-	array('_controller' => 'AdminBundle:Ideas:updateCategoryOrders'),
-	array(),
-	array()
-));
+################################################################################
+# Settings
+################################################################################
 
 $collection->add('admin_settings', new Route(
 	'/settings',
@@ -285,6 +373,11 @@ $collection->add('admin_labels_del', new Route(
 	array()
 ));
 
+
+################################################################################
+# User : Banning
+################################################################################
+
 $collection->add('admin_banning_emails', new Route(
 	'/banning/emails',
 	array('_controller' => 'AdminBundle:Banning:listEmails'),
@@ -326,6 +419,10 @@ $collection->add('admin_banning_delemail', new Route(
 	array(),
 	array()
 ));
+
+################################################################################
+# Agents
+################################################################################
 
 $collection->add('admin_agents', new Route(
 	'/agents',
@@ -404,6 +501,11 @@ $collection->add('admin_agents_groups_new', new Route(
 	array()
 ));
 
+
+################################################################################
+# Styles
+################################################################################
+
 $collection->add('admin_styles', new Route(
 	'/styles',
 	array('_controller' => 'AdminBundle:Styles:listStyles'),
@@ -452,6 +554,11 @@ $collection->add('admin_styles_editorpopup', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Language
+################################################################################
 
 $collection->add('admin_langs', new Route(
 	'/languages',
@@ -502,6 +609,11 @@ $collection->add('admin_langs_editphrases_save', new Route(
 	array()
 ));
 
+
+################################################################################
+# User sources
+################################################################################
+
 $collection->add('admin_usersources', new Route(
 	'/usersources',
 	array('_controller' => 'AdminBundle:Usersources:index'),
@@ -537,6 +649,11 @@ $collection->add('admin_usersources_new', new Route(
 	array()
 ));
 
+
+################################################################################
+# API
+################################################################################
+
 $collection->add('admin_api_keylist', new Route(
 	'/api',
 	array('_controller' => 'AdminBundle:Api:index'),
@@ -564,6 +681,11 @@ $collection->add('admin_api_newkey', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Users
+################################################################################
 
 $collection->add('admin_customdefpeople', new Route(
 	'/people-fields',
@@ -599,6 +721,7 @@ $collection->add('admin_customdefpeople_test', new Route(
 	array('field_id' => '\\d+'),
 	array()
 ));
+
 
 $collection->add('admin_features', new Route(
 	'/tickets/features',
@@ -740,6 +863,11 @@ $collection->add('admin_customdeforganizations_test', new Route(
 	array()
 ));
 
+
+################################################################################
+# Users : Usergroups
+################################################################################
+
 $collection->add('admin_usergroups', new Route(
 	'/usergroups',
 	array('_controller' => 'AdminBundle:Usergroups:list'),
@@ -754,19 +882,10 @@ $collection->add('admin_usergroups_edit', new Route(
 	array()
 ));
 
-$collection->add('admin_organizations', new Route(
-	'/organizations',
-	array('_controller' => 'AdminBundle:Organizations:list'),
-	array(),
-	array()
-));
 
-$collection->add('admin_organizations_edit', new Route(
-	'/organizations/{organization_id}',
-	array('_controller' => 'AdminBundle:Organizations:edit'),
-	array('organization_id' => '\\d+'),
-	array()
-));
+################################################################################
+# Products
+################################################################################
 
 $collection->add('admin_products', new Route(
 	'/products',
@@ -802,6 +921,11 @@ $collection->add('admin_products_dodel', new Route(
 	array('product_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
 	array()
 ));
+
+
+################################################################################
+# Departments
+################################################################################
 
 $collection->add('admin_departments', new Route(
 	'/departments',
@@ -880,103 +1004,10 @@ $collection->add('admin_departments_updateorders', new Route(
 	array()
 ));
 
-$collection->add('admin_ticketcats', new Route(
-	'/tickets/categories',
-	array('_controller' => 'AdminBundle:TicketCategories:list'),
-	array(),
-	array()
-));
 
-$collection->add('admin_ticketcats_edit', new Route(
-	'/tickets/categories/{category_id}',
-	array('_controller' => 'AdminBundle:TicketCategories:edit'),
-	array('category_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketcats_updateorders', new Route(
-	'/tickets/categories/update-orders',
-	array('_controller' => 'AdminBundle:TicketCategories:updateOrders'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ticketcats_del', new Route(
-	'/tickets/categories/{category_id}/delete',
-	array('_controller' => 'AdminBundle:TicketCategories:delete'),
-	array('category_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketcats_dodel', new Route(
-	'/tickets/categories/{category_id}/delete/{security_token}',
-	array('_controller' => 'AdminBundle:TicketCategories:doDelete'),
-	array('category_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
-	array()
-));
-
-$collection->add('admin_ticketpris', new Route(
-	'/tickets/priorities',
-	array('_controller' => 'AdminBundle:TicketPriorities:list'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ticketpris_edit', new Route(
-	'/tickets/priorities/{priority_id}',
-	array('_controller' => 'AdminBundle:TicketPriorities:edit'),
-	array('priority_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketpris_del', new Route(
-	'/tickets/priorities/{priority_id}/delete',
-	array('_controller' => 'AdminBundle:TicketPriorities:delete'),
-	array('priority_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketpris_dodel', new Route(
-	'/tickets/priorities/{priority_id}/delete/{security_token}',
-	array('_controller' => 'AdminBundle:TicketPriorities:doDelete'),
-	array('priority_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
-	array()
-));
-
-$collection->add('admin_ticketworks', new Route(
-	'/tickets/workflows',
-	array('_controller' => 'AdminBundle:TicketWorkflows:list'),
-	array(),
-	array()
-));
-
-$collection->add('admin_ticketworks_edit', new Route(
-	'/tickets/workflows/{workflow_id}',
-	array('_controller' => 'AdminBundle:TicketWorkflows:edit'),
-	array('workflow_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketworks_del', new Route(
-	'/tickets/workflows/{workflow_id}/delete',
-	array('_controller' => 'AdminBundle:TicketWorkflows:delete'),
-	array('workflow_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_ticketworks_dodel', new Route(
-	'/tickets/workflows/{workflow_id}/delete/{security_token}',
-	array('_controller' => 'AdminBundle:TicketWorkflows:doDelete'),
-	array('workflow_id' => '\\d+', 'security_token' => '[a-zA-Z0-9\\-]+'),
-	array()
-));
-
-$collection->add('admin_ticketworks_updateorders', new Route(
-	'/tickets/workflows/update-orders',
-	array('_controller' => 'AdminBundle:TicketWorkflows:updateOrders'),
-	array(),
-	array()
-));
+################################################################################
+# Twitter
+################################################################################
 
 $collection->add('admin_twitter_accounts', new Route(
 	'/twitter/account',
@@ -1005,6 +1036,11 @@ $collection->add('admin_twitter_accounts_edit', new Route(
 	array(),
 	array()
 ));
+
+
+################################################################################
+# Logs
+################################################################################
 
 $collection->add('admin_logs', new Route(
 	'/logs',
@@ -1048,6 +1084,11 @@ $collection->add('admin_logs_errors_clear', new Route(
 	array()
 ));
 
+
+################################################################################
+# Email Gatewayss
+################################################################################
+
 $collection->add('admin_emailgateways', new Route(
 	'/email-gateways',
 	array('_controller' => 'AdminBundle:EmailGateways:list'),
@@ -1062,26 +1103,10 @@ $collection->add('admin_emailgateways_edit', new Route(
 	array()
 ));
 
-$collection->add('admin_emailfroms', new Route(
-	'/email-from-addresses',
-	array('_controller' => 'AdminBundle:EmailFroms:list'),
-	array(),
-	array()
-));
 
-$collection->add('admin_emailfroms_edit', new Route(
-	'/email-from-addresses/{email_id}',
-	array('_controller' => 'AdminBundle:EmailFroms:edit'),
-	array('email_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_emailfroms_new', new Route(
-	'/email-from-addresses/new',
-	array('_controller' => 'AdminBundle:EmailFroms:new'),
-	array(),
-	array()
-));
+################################################################################
+# Plugins
+################################################################################
 
 $collection->add('admin_plugins', new Route(
 	'/plugins',
@@ -1111,44 +1136,77 @@ $collection->add('admin_plugins_uninstall', new Route(
 	array()
 ));
 
-$collection->add('admin_tickets_filters', new Route(
-	'/tickets/filters',
-	array('_controller' => 'AdminBundle:TicketFilters:index'),
+
+################################################################################
+# Publish
+################################################################################
+
+$collection->add('admin_ideas_settings', new Route(
+	'/portal/ideas/settings',
+	array('_controller' => 'AdminBundle:Ideas:ideaSettings'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_tickets_filters_getgloballist', new Route(
-	'/tickets/filters/get-global-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getGlobalList'),
+$collection->add('admin_ideas_statuses', new Route(
+	'/portal/ideas/statuses',
+	array('_controller' => 'AdminBundle:Ideas:statuses'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_tickets_filters_getteamlist', new Route(
-	'/tickets/filters/get-team-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getTeamList'),
+$collection->add('admin_ideas_statuses_ajaxadd', new Route(
+	'/portal/ideas/statuses/new',
+	array('_controller' => 'AdminBundle:Ideas:ajaxNewStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_tickets_filters_getagentlist', new Route(
-	'/tickets/filters/get-agent-list',
-	array('_controller' => 'AdminBundle:TicketFilters:getAgentList'),
+$collection->add('admin_ideas_statuses_edit', new Route(
+	'/portal/ideas/statuses/{category_id}/edit',
+	array('_controller' => 'AdminBundle:Ideas:editStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_tickets_filters_edit', new Route(
-	'/tickets/filters/{filter_id}',
-	array('_controller' => 'AdminBundle:TicketFilters:edit'),
-	array('filter_id' => '\\d+'),
+$collection->add('admin_ideas_statuses_del', new Route(
+	'/portal/ideas/statuses/{category_id}/delete',
+	array('_controller' => 'AdminBundle:Ideas:deleteStatus'),
+	array(),
 	array()
 ));
 
-$collection->add('admin_tickets_filters_new', new Route(
-	'/tickets/filters/new',
-	array('_controller' => 'AdminBundle:TicketFilters:newChooseType'),
+$collection->add('admin_ideas_status_updateorders', new Route(
+	'/portal/ideas/statuses/update-orders',
+	array('_controller' => 'AdminBundle:Ideas:updateStatusOrders'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ideas_cats', new Route(
+	'/portal/ideas/categories',
+	array('_controller' => 'AdminBundle:Ideas:categories'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ideas_cats_edit', new Route(
+	'/portal/ideas/categories/{category_id}/edit',
+	array('_controller' => 'AdminBundle:Ideas:editCategory'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ideas_cats_del', new Route(
+	'/portal/ideas/categories/{category_id}/delete',
+	array('_controller' => 'AdminBundle:Ideas:deleteCategory'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ideas_cats_updateorders', new Route(
+	'/portal/ideas/categories/update-orders',
+	array('_controller' => 'AdminBundle:Ideas:updateCategoryOrders'),
 	array(),
 	array()
 ));
@@ -1220,6 +1278,46 @@ $collection->add('admin_customdefideas_test', new Route(
 	'/idea-fields/{field_id}/test',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:test'),
 	array('field_id' => '\\d+'),
+	array()
+));
+
+
+################################################################################
+# Email Transports
+################################################################################
+
+$collection->add('admin_emailtrans_set_default_from', new Route(
+	'/email/outgoing/update-default-from',
+	array('_controller' => 'AdminBundle:EmailTransports:setDefaultFrom'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailtrans_list', new Route(
+	'/email/outgoing',
+	array('_controller' => 'AdminBundle:EmailTransports:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailtrans_setup', new Route(
+	'/email/outgoing/setup',
+	array('_controller' => 'AdminBundle:EmailTransports:setup'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailtrans_newaccount', new Route(
+	'/email/outgoing/accounts/new',
+	array('_controller' => 'AdminBundle:EmailTransports:editAccount', 'id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailtrans_editaccount', new Route(
+	'/email/outgoing/accounts/{id}/edit',
+	array('_controller' => 'AdminBundle:EmailTransports:editAccount'),
+	array(),
 	array()
 ));
 

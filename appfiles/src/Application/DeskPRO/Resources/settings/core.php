@@ -11,6 +11,9 @@
 	'core.deskpro_assets_full_url' => 'http://localhost/static/',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
+	'core.default_from_email' => '',
+	'core.bcc_all_emails' => '',
+
 	'core.deskpro_version' => '4.0',
 	'core.deskpro_version_id' => '',
 
