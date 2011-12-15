@@ -24,8 +24,10 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('handler_class', 'hidden', array('required' => true));
+		$builder->add('validation_type', 'hidden', array('required' => false));
 
 		$builder->add('required', 'checkbox', array('required' => false));
+		$builder->add('custom_css_classname', 'text', array('required' => false));
 
 		$this->buildCustomFieldForm($builder, $options);
     }

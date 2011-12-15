@@ -1,8 +1,8 @@
 {% set field_input %}
 	{% block field_input %}
-		{{ form_widget(formView, {'attr':{'id': elId}}) }}
+		{{ form_widget(formView, {'attr':{'id': elId, 'class': field_def.getOption('custom_css_classname', '') }}) }}
 	{% endblock %}
 {% endset %}
 {% block content %}
-	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form" id="{{elId}}_form_wrap">{{ field_input }}</div>
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }}" id="{{elId}}_form_wrap">{{ field_input }}</div>
 {% endblock %}

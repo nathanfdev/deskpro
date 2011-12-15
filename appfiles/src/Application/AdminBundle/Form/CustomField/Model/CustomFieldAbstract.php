@@ -21,6 +21,9 @@ abstract class CustomFieldAbstract
 	public $handler_class;
 
 	public $required = false;
+	public $custom_css_classname = '';
+	public $custom_css = '';
+	public $validation_type = '';
 
 	protected $_field = null;
 	protected $_is_new = false;
@@ -35,6 +38,7 @@ abstract class CustomFieldAbstract
 		$this->_field = $field;
 		$this->title = $field->title;
 		$this->handler_class = $field->handler_class;
+		$this->custom_css_classname = $field->getOption('custom_css_classname');
 
 		if ($field->getOption('required')) {
 			$this->required = true;
@@ -65,7 +69,7 @@ abstract class CustomFieldAbstract
 			$field->handler_class = $this->handler_class;
 		}
 
-		$field->setOption('required', $this->required);
+		$field->setOption('custom_css_classname', $this->custom_css_classname);
 
 		$this->setFieldProperties();
 

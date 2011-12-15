@@ -31,6 +31,9 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
 			'allow_add' => true,
 			'allow_delete' => true
 		));
+
+		$builder->add('min_length', 'text', array('required' => false));
+		$builder->add('max_length', 'text', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)

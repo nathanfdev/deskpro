@@ -17,6 +17,8 @@ class ChoiceField extends CustomFieldAbstract
 {
 	public $multiple = false;
 	public $expanded = false;
+	public $min_length;
+	public $max_length;
 	public $field_type = null;
 
 	// Will be id=>choices on load,
@@ -30,6 +32,17 @@ class ChoiceField extends CustomFieldAbstract
 		}
 		if ($this->_field->getOption('expanded')) {
 			$this->expanded = true;
+		}
+
+		if ($this->_field->getOption('min_length')) {
+			$this->validation_type = 'required';
+			$this->required = true;
+			$this->min_length = $this->_field->getOption('min_length');
+		}
+		if ($this->_field->getOption('max_length')) {
+			$this->validation_type = 'required';
+			$this->required = true;
+			$this->max_length = $this->_field->getOption('max_length');
 		}
 
 		if ($this->multiple) {
@@ -74,6 +87,14 @@ class ChoiceField extends CustomFieldAbstract
 
 		$field->setOption('multiple', $this->multiple);
 		$field->setOption('expanded', $this->expanded);
+
+		if ($this->validation_type == 'required') {
+			$field->setOption('required', $this->required);
+			$field->setOption('min_length', $this->min_length);
+			$field->setOption('max_length', $this->max_length);
+		} else {
+			$field->setOption('required', false);
+		}
 	}
 
 	protected function saveAdditional()
