@@ -54,7 +54,7 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="match_pattern", type="string", length=15)
+	 * @ORM_Mapping\Column(name="match_pattern", type="string", length=255)
 	 */
 	protected $match_pattern = '';
 
