@@ -145,7 +145,6 @@ class EmailTransportsController extends AbstractController
 			} else {
 				$tr = $transport->getTransport();
 			}
-			$tr->start();
 
 			$message = App::getMailer()->createMessage();
 			$message->setTo($this->in->getString('send_to'));
