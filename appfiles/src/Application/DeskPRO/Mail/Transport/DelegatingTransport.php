@@ -11,6 +11,8 @@ namespace Application\DeskPRO\Mail\Transport;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Orb\Mail\Transport\QueueTransport;
 use Orb\Mail\Message;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -21,31 +23,64 @@ use Orb\Util\Util;
  */
 class DelegatingTransport implements \Swift_Transport
 {
+	/**
+	 * @var bool
+	 */
 	protected $queue_disabled = false;
 
+	/**
+	 * @var \Swift_Events_EventDispatcher
+	 */
 	protected $event_dispatcher;
+
+	/**
+	 * @var array
+	 */
 	protected $transports = array();
+
+	/**
+	 * @var Orb\Mail\Transport\QueueTransport
+	 */
 	protected $queue_transport = null;
 
+	/**
+	 * @param \Swift_Events_EventDispatcher $event_dispatcher
+	 */
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
 	{
 		$this->event_dispatcher = $event_dispatcher;
 	}
 
+
+	/**
+	 * Disable the use of the queue, all messages are sent instantly.
+	 * Note that messages are still saved in the event of a send failure.
+	 */
 	public function disableQueue()
 	{
 		$this->queue_disabled = true;
 	}
 
+
+	/**
+	 * Enable the queue.
+	 */
 	public function enableQueue()
 	{
 		$this->queue_disabled = false;
 	}
 
+
+	/**
+	 * Is queueing currently enabeld?
+	 *
+	 * @return bool
+	 */
 	public function isQueueEnabled()
 	{
 		return !$this->queue_disabled;
 	}
+
 
 	/**
 	 * Get the queue transport with the database queue processor.
@@ -57,27 +92,18 @@ class DelegatingTransport implements \Swift_Transport
 	{
 		if ($this->queue_transport !== null) return $this->queue_transport;
 
-		$db_proc = new \Application\DeskPRO\Mail\QueueProcessor\Database();
-		$this->queue_transport = new \Orb\Mail\Transport\QueueTransport($db_proc, $this->event_dispatcher);
+		$db_proc = new DatabaseQueueProcessor();
+		$this->queue_transport = new QueueTransport($db_proc, $this->event_dispatcher);
 
 		return $this->queue_transport;
 	}
 
-	public function isStarted()
-	{
-		return true;
-	}
 
-	public function start()
-	{
-
-	}
-
-	public function stop()
-	{
-
-	}
-
+	/**
+	 * @param \Swift_Mime_Message $message
+	 * @param null $failedRecipients
+	 * @return int
+	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
@@ -125,8 +151,14 @@ class DelegatingTransport implements \Swift_Transport
 				}
 			}
 
-			if (!$success AND $this->isQueueEnabled()) {
+			if (!$success) {
 				$success = $this->getQueueTransport()->send($message);
+			} else {
+				// Save a logged copy too
+				$queue_proc = $this->getQueueTransport()->getQueueProcessor();
+				if ($queue_proc instanceof DatabaseQueueProcessor) {
+					$queue_proc->addLoggedMessage($message);
+				}
 			}
 		}
 
@@ -138,6 +170,14 @@ class DelegatingTransport implements \Swift_Transport
 		return $success;
 	}
 
+
+	/**
+	 * Given a message, inspect the 'From' address to see which transport we sholud use to send it.
+	 *
+	 * @param \Swift_Mime_Message $message
+	 * @param bool $get_backup_transport
+	 * @return \Swift_MailTransport
+	 */
 	public function getTransportForMessage(\Swift_Mime_Message $message, $get_backup_transport = false)
 	{
 		$from_address_model = $message->getFrom();
@@ -165,8 +205,24 @@ class DelegatingTransport implements \Swift_Transport
 		return $tr;
 	}
 
+
 	public function registerPlugin(\Swift_Events_EventListener $plugin)
 	{
 		$this->event_dispatcher->bindEventListener($plugin);
+	}
+
+	public function isStarted()
+	{
+		return true;
+	}
+
+	public function start()
+	{
+
+	}
+
+	public function stop()
+	{
+
 	}
 }

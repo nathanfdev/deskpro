@@ -47,9 +47,27 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
+	 * @ORM_Mapping\Column(name="date_next_attempt",type="datetime", nullable=true)
+	 */
+	protected $date_next_attempt = null;
+
+	/**
+	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	/**
+	 * @var \DateTime
+	 * @ORM_Mapping\Column(name="date_sent",type="datetime", nullable=true)
+	 */
+	protected $date_sent = null;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="has_sent", type="boolean")
+	 */
+	protected $has_sent = false;
 
 	public function __construct()
 	{

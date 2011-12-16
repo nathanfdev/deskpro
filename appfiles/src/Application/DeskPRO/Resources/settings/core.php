@@ -13,6 +13,7 @@
 
 	'core.default_from_email' => '',
 	'core.bcc_all_emails' => '',
+	'core.store_sent_mail_days' => 7,
 
 	'core.deskpro_version' => '4.0',
 	'core.deskpro_version_id' => '',
