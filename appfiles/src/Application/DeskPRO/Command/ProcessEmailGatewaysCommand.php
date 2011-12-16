@@ -26,18 +26,20 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 	protected function configure()
 	{
 		$this->setName('dp:process-email-gateways');
-		$this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED, 'Process this gateway only');
+		$this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED, 'Process this gateway ID only');
+		$this->addOption('force', 'f', InputOption::VALUE_REQUIRED, 'Process the gateway even if its disabled');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$verbose = $input->getOption('verbose');
+		$force = $input->getOption('force');
 
 		if ($input->getOption('gateway')) {
-			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'))
+			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'));
 
 			if (!$gateway) {
-				$output->writeln("<error>No gateway account found with that email address</error>");
+				$output->writeln("<error>No gateway account found with that ID</error>");
 				return 2;
 			}
 
@@ -46,14 +48,34 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 			$gateways = App::getEntityRepository('DeskPRO:EmailGateway')->findAll();
 		}
 
+		$count = count($gateways);
+		if ($verbose) {
+			$output->writeln("<info>{$count} gateways found</info>");
+		}
+
+		$time_start = microtime(true);
+
 		foreach ($gateways as $gateway) {
 
 			if ($verbose) {
-				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['name']}</info>");
+				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}</info>");
+			}
+
+			if (!$gateway->is_enabled) {
+				if (!$force) {
+					if ($verbose) {
+						$output->writeln("<info>Gateway disabled. Skipping.</info>");
+					}
+					continue;
+				}
+
+				if ($verbose) {
+					$output->writeln("<info>Gateway disabled but --force enabled so processing anyway</info>");
+				}
 			}
 
 			/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
-			$fetcher = $gateway->getNewFetcher();
+			$fetcher = $gateway->getFetcher();
 
 			while ($source = $fetcher->readNext()) {
 
@@ -96,5 +118,11 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 				}
 			}
 		}
+
+		if ($verbose) {
+			$output->writeln(sprintf("<info>Finished in %.f seconds</info>", microtime(true) - $time_start));
+		}
+
+		return 0;
 	}
 }

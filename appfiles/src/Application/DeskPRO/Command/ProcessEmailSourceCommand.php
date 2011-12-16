@@ -26,50 +26,70 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 	protected function configure()
 	{
 		$this->setName('dp:process-email-source');
-		$this->addOption('source', 'r', InputOption::VALUE_REQUIRED, 'The source ID to process');
+		$this->addOption('source', 'r', InputOption::VALUE_REQUIRED, 'The source ID to process. Without this option, all unprocessed sources will be processed.');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$verbose = $input->getOption('verbose');
 
-		$source = App::getEntityRepository('DeskPRO:EmailSource')->find($input->getOption('source'));
+		if ($input->getOption('source')) {
+			$source = App::getEntityRepository('DeskPRO:EmailSource')->find($input->getOption('source'));
 
-		if (!$source) {
-			$output->writeln("<error>No source found with that ID</error>");
-			return 2;
-		}
-
-		$gateway = $source['gateway'];
-
-		$reader = new EzcReader();
-		$reader->setRawSource($source['raw_source']);
-		$reader->setProperty('email_source', $source);
-
-		App::getOrm()->beginTransaction();
-
-		try {
-			/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
-			$proc = $gateway->getNewProcessor($reader);
-			$created_obj = $proc->run();
-
-			$source['status'] = 'complete';
-			App::getOrm()->persist($source);
-			App::getOrm()->flush();
-
-			App::getOrm()->commit();
-
-			if ($verbose) {
-				if ($created_obj) {
-					$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
-				} else {
-					$output->writeln("No object created");
-				}
+			if (!$source) {
+				$output->writeln("<error>No source found with ID {$input->getOption('source')}</error>");
+				return 2;
 			}
-		} catch (\Exception $e) {
-			App::getOrm()->rollback();
 
-			throw $e;
+			$source_ids = array($source->id);
+		} else {
+			$source_ids = App::getDb()->fetchAllCol("SELECT id FROM email_sources WHERE status = ? ORDER BY id ASC", array('inserted'));
 		}
+
+		$count = count($source_ids);
+		$output->writeln("<info>Processing {$count} sources</info>");
+
+		$time_start = microtime(true);
+
+		foreach ($source_ids as $source_id) {
+
+			$source = App::getEntityRepository('DeskPRO:EmailSource')->find($source_id);
+
+			$gateway = $source->gateway;
+
+			$reader = new EzcReader();
+			$reader->setRawSource($source['raw_source']);
+			$reader->setProperty('email_source', $source);
+
+			App::getOrm()->beginTransaction();
+
+			try {
+				/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
+				$proc = $gateway->getNewProcessor($reader);
+				$created_obj = $proc->run();
+
+				$source['status'] = 'complete';
+				App::getOrm()->persist($source);
+				App::getOrm()->flush();
+
+				App::getOrm()->commit();
+
+				if ($verbose) {
+					if ($created_obj) {
+						$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
+					} else {
+						$output->writeln("No object created");
+					}
+				}
+			} catch (\Exception $e) {
+				App::getOrm()->rollback();
+
+				throw $e;
+			}
+		}
+
+		$output->writeln(sprintf("<info>Finished in %.f seconds</info>", microtime(true) - $time_start));
+
+		return 0;
 	}
 }

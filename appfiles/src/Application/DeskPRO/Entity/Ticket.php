@@ -32,7 +32,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
-	const CREATED_GATEWAT_PERSON = 'gateway.person';
+	const CREATED_GATEWAY_PERSON = 'gateway.person';
 
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
 	const STATUS_AWAITING_USER = 'awaiting_user';
@@ -259,7 +259,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="date_first_agent_assign", type="datetime", nullable=true)
 	 */
 	protected $date_first_agent_assign = null;
-	
+
 	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_first_agent_reply",type="datetime",nullable=true)
@@ -1177,7 +1177,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setAgentId($id)
 	{
-		
+
 		if ($id) {
 			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 			if (!$agent['is_agent']) {
@@ -1189,7 +1189,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			if (is_null($this->date_first_agent_assign)) {
 				$this['date_first_agent_assign'] = new \DateTime();
 			}
-			
+
 		} else {
 			$this['agent'] = null;
 		}

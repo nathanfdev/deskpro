@@ -321,9 +321,10 @@ class TicketGateway extends AbstractGateway
 		$email_info = $ev->email_info;
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
-			Entity\Ticket::CREATED_GATEWAT_PERSON,
+			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+		$newticket->setPersonContext($person);
 
 		$newticket->ticket->subject = $email_info['subject'];
 		$newticket->ticket->message = $email_info['body'];
@@ -436,9 +437,11 @@ class TicketGateway extends AbstractGateway
 		#------------------------------
 
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
-			Entity\Ticket::CREATED_GATEWAT_PERSON,
+			Entity\Ticket::CREATED_GATEWAY_PERSON,
 			$person
 		);
+		$newticket->setPersonContext($person);
+
 		$newticket->ticket->subject = $email_info['subject'];
 		$newticket->ticket->message = strip_tags($fwd_cutter->getForwardedMessage());
 

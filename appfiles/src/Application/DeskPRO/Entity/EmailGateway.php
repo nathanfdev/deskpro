@@ -81,11 +81,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_last_check = null;
 
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\AbstractGateway
-	 */
-	protected $_processor = null;
-
-	/**
 	 * @var \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
 	 */
 	protected $_fetcher = null;
@@ -115,25 +110,23 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
 	 * @return \Application\DeskPRO\EmailGateway\AbstractGateway
 	 */
-	public function getProcessor(AbstractReader $reader)
+	public function getNewProcessor(AbstractReader $reader)
 	{
-		if ($this->_processor !== null) return $this->_processor;
-
 		switch ($this->gateway_type) {
 			case self::GATEWAY_TICKETS:
-				$this->_processor = new \Application\DeskPRO\EmailGateway\TicketGateway($this, $reader);
+				$proc = new \Application\DeskPRO\EmailGateway\TicketGateway($this, $reader);
 				break;
 
 			default:
 				throw new \InvalidArgumentException("Invalid gateway type `{$this->gateway_type}`");
 		}
 
-		return $this->_processor;
+		return $proc;
 	}
 
 
 	/**
-	 * Get a new instance of the fetcher class
+	 * Get an instance of the fetcher class
 	 *
 	 * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
 	 */
