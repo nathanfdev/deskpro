@@ -100,12 +100,15 @@ class DelegatingTransport implements \Swift_Transport
 			}
 		}
 
-		if ($use_queue AND $this->isQueueEnabled()) {
+		if ($message->getSpecificTransport()) {
+			$tr = $message->getSpecificTransport();
+			$tr->send($message, $failedRecipients);
+		} elseif ($use_queue AND $this->isQueueEnabled()) {
 			$success = $this->getQueueTransport()->send($message);
 		} else {
 			try {
 				$success = $this->getTransportForMessage($message)->send($message, $failedRecipients);
-			} catch (\Exception $e) {
+			} catch (\Swift_TransportException $e) {
 				$backup_tr = $this->getTransportForMessage($message, true);
 				if ($backup_tr) {
 					$success = $backup_tr->send($message, $failedRecipients);

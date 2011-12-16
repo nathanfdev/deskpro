@@ -125,4 +125,45 @@ class EmailTransportsController extends AbstractController
 			'edittrans' => $edittrans,
 		));
 	}
+
+	############################################################################
+	# setup
+	############################################################################
+
+	public function ajaxTestAction()
+	{
+		$transport = new \Application\DeskPRO\Entity\EmailTransport();
+
+		$edittrans = new EditEmailTransportModel($transport);
+		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+		$form->bindRequest($this->get('request'));
+		$edittrans->apply();
+
+		try {
+			if ($this->in->getBool('backup')) {
+				$tr = $transport->getBackupTransport();
+			} else {
+				$tr = $transport->getTransport();
+			}
+			$tr->start();
+
+			$message = App::getMailer()->createMessage();
+			$message->setTo($this->in->getString('send_to'));
+			$message->setFrom($this->in->getString('send_from'));
+			$message->setSubject('Test DeskPRO Email');
+			$message->setBody('This is a test of the DeskPRO email system.');
+			$message->setForceTransport($tr);
+
+			$failed = array();
+			App::getMailer()->send($message, $failed);
+
+			if ($failed) {
+				return $this->createJsonResponse(array('error' => true, 'error_code' => 'dp_1', 'error_message' => 'Connection succeeded, but the server was unable or unwilling to deliver the test email to ' . $this->in->getString('send_to')));
+			}
+		} catch (\Exception $e) {
+			return $this->createJsonResponse(array('error' => true, 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

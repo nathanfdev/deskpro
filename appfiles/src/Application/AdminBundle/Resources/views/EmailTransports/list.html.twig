@@ -20,32 +20,34 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; Account</th>
-				<th style="text-align:left">Criteria</th>
-				<th style="text-align:left">Backup</th>
+				<th style="text-align:left">&nbsp; Use Criteria</th>
+				<th style="text-align:left">Account</th>
+				<th style="text-align:left">Backup Account</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for transport in transports %}
-				<tr>
-					<td>{{ transport.title }}</td>
+				<tr {% if transport.match_type == 'all' %}class="highlight"{% endif %}>
 					<td>
-						{% if transport.match_type == 'exact' %}{{ transport.match_pattern }}
-						{% elseif transport.match_type == 'domain' %}*@{{ transport.match_pattern }}
-						{% elseif transport.match_type == 'regex' %}{{ transport.match_pattern }}
+						{% if transport.match_type == 'exact' %}From {{ transport.match_pattern }}
+						{% elseif transport.match_type == 'domain' %}From *@{{ transport.match_pattern }}
+						{% elseif transport.match_type == 'regex' %}From {{ transport.match_pattern }}
 						{% elseif transport.match_type == 'all' %}Default{% endif %}
 					</td>
+					<td>{{ transport.title }}</td>
 					<td>
 						{% if transport.backup_transport_type %}
 							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
-							{% elseif transport.background_transport_type == 'php' %}PHP mail()
+							{% elseif transport.backup_transport_type == 'gmail' %}Google Apps: {{ transport.backup_transport_options.username }}
+							{% elseif transport.backup_transport_type == 'mail' %}PHP mail()
+							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}
 						{% else %}
 							None
 						{% endif %}
 					</td>
-					<td>
+					<td style="padding: 3px 3px 0 0">
 						<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}"><span class="btn-edit-gear"></span></a>
 					</td>
 				</tr>

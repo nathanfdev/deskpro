@@ -25,9 +25,11 @@ class EditEmailTransport
 
 	public $transport_type;
 	public $smtp_options = array();
+	public $gmail_options = array();
 
 	public $backup_transport_type;
 	public $backup_smtp_options = array();
+	public $backup_gmail_options = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailTransport
@@ -39,7 +41,7 @@ class EditEmailTransport
 		$this->transport = $transport;
 	}
 
-	public function save()
+	public function apply()
 	{
 		$this->transport->match_type = $this->match_type;
 
@@ -55,6 +57,9 @@ class EditEmailTransport
 		if ($this->transport_type == 'smtp') {
 			$this->transport->title = $this->smtp_options['host'] . ':' . $this->smtp_options['username'];
 			$this->transport->transport_options = $this->smtp_options;
+		} elseif ($this->transport_type == 'gmail') {
+			$this->transport->title = 'Google Apps: ' . $this->smtp_options['username'];
+			$this->transport->transport_options = $this->gmail_options;
 		} else {
 			$this->transport->title = 'PHP mail()';
 		}
@@ -63,12 +68,20 @@ class EditEmailTransport
 			$this->transport->backup_transport_type = $this->backup_transport_type;
 			if ($this->backup_transport_type == 'smtp') {
 				$this->transport->backup_transport_options = $this->backup_smtp_options;
+			} elseif ($this->backup_transport_type == 'gmail') {
+				$this->transport->backup_transport_options = $this->backup_gmail_options;
 			}
 		}
 
 		if ($this->match_type == 'any') {
 			$this->transport->run_order = 100000000;
 		}
+	}
+
+
+	public function save()
+	{
+		$this->apply();
 
 		App::getOrm()->persist($this->transport);
 		App::getOrm()->flush();

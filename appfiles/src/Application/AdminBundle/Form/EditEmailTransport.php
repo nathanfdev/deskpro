@@ -45,6 +45,13 @@ class EditEmailTransport extends AbstractType
 			$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
 			$builder->add($options_form);
 		}
+
+		foreach (array('gmail_options', 'backup_gmail_options') as $n) {
+			$options_form = $builder->create($n, 'form');
+			$options_form->add('username', 'text', array('required' => false));
+			$options_form->add('password', 'text', array('required' => false));
+			$builder->add($options_form);
+		}
 	}
 
 	public function getName()

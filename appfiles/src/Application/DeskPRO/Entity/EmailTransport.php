@@ -28,6 +28,7 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	const MATCH_TYPE_ANY    = 'all';
 
 	const TRANSPORT_TYPE_SMTP     = 'smtp';
+	const TRANSPORT_TYPE_GMAIL    = 'gmail';
 	const TRANSPORT_TYPE_SENDMAIL = 'sendmail';
 	const TRANSPORT_TYPE_MAIL     = 'mail';
 
@@ -171,15 +172,26 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	{
 		switch ($type) {
 			case 'smtp':
-				if (!$options['ssl']) $options['ssl'] = null;
-				else $options['ssl'] = 'ssl';
+				if (!$options['secure']) $options['secure'] = null;
 
-				$tr = \Swift_SmtpTransport::newInstance($options['server'], $options['port'], $options['ssl']);
+				$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
 
 				if (!empty($options['username']) OR !empty($options['password'])) {
 					$tr->setUsername($options['username']);
 					$tr->setPassword($options['password']);
 				}
+
+				break;
+
+			case 'gmail':
+
+				$options['host'] = 'smtp.gmail.com';
+				$options['secure'] = 'ssl';
+				$options['port'] = 465;
+
+				$tr = \Swift_SmtpTransport::newInstance($options['host'], $options['port'], $options['secure']);
+				$tr->setUsername($options['username']);
+				$tr->setPassword($options['password']);
 
 				break;
 

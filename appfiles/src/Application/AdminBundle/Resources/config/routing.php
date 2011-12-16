@@ -1321,4 +1321,11 @@ $collection->add('admin_emailtrans_editaccount', new Route(
 	array()
 ));
 
+$collection->add('admin_emailtrans_testaccount', new Route(
+	'/email/outgoing/accounts/test-account.json',
+	array('_controller' => 'AdminBundle:EmailTransports:ajaxTest'),
+	array(),
+	array()
+));
+
 return $collection;
