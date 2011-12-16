@@ -344,112 +344,19 @@ class DB_Abstract {
 			return false;
 		}
 
-		// get explain
-		if (!$this->nodebug AND !defined('INSTALLER') AND (defined('DESKPRO_DEBUG_DISPLAYQUERIES') OR defined('DESKPRO_DEBUG_LOGQUERIES')) AND strpos($query_string, 'SELECT') !== false) {
-			$explain = @$this->wrapper_query("EXPLAIN $query_string");
-			while ($res = @$this->row_array($explain)) {
-				$explain_log[] = $res;
-			}
-			$this->free($explain);
-		}
-
-		// start time
-		list ($userc, $sec) = explode(' ', microtime());
-		$this->start = ((float)$userc + (float)$sec);
-
 		// run query; get certain variables
 		$this->query_id = @$this->wrapper_query($query_string);
-
-		// log to gateway debug
-		if (defined('GATEWAYZONE') AND defined('GATEWAY_DEBUG_MYSQL')) {
-
-			global $debug;
-			if (is_object($debug)) {
-				$debug->add("Query : $query_string");
-			}
-		}
 
 		// if we have an error, deal with ith
 		if (!$this->query_id) {
 			$this->halt("Invalid SQL: $query_string");
 		}
 
-		// end time
-		list ($userc, $sec) = explode(' ', microtime());
-		$this->stop = ((float)$userc + (float)$sec);
-
-		// duration
-		$duration = $this->stop - $this->start;
-
 		$results = $this->wrapper_affected_rows($this->query_id);
-
-		// log query
-		if (defined('DESKPRO_DEBUG_LOGQUERIES') AND !defined('INSTALLER')) {
-
-			if (
-			DESKPRO_DEBUG_LOGQUERIES == 1
-			OR (DESKPRO_DEBUG_LOGQUERIES == 2 AND $duration > 0.1)
-			OR (DESKPRO_DEBUG_LOGQUERIES == 3 AND $duration > 0.5)
-			OR (DESKPRO_DEBUG_LOGQUERIES == 4 AND $duration > 5)
-			)
-			{
-
-				if ($duration > 5) {
-					$slow3 = 1;
-				} elseif ($duration > 0.5) {
-					$slow2 = 1;
-				} elseif ($duration > 0.1) {
-					$slow1 = 1;
-				}
-
-				$this->querylog[] = "
-					INSERT INTO query_log
-						(query, duration, matches, stamp, keytype,
-						slow1, slow2, slow3, explain_log, filename)
-					VALUES
-						('" . $this->escape($query_string) . "',
-						'$duration', '" . $this->escape($results) . "',
-						" . TIMENOW . ", '$data[key]', '$slow1',
-						'$slow2', '$slow3', '" . $this->escape(serialize($explain_log)) . "',
-						'" . $this->escape($_SERVER['SCRIPT_NAME']) . "'
-					)";
-			}
-		}
-
-		if ((defined('DESKPRO_DEBUG_DISPLAYQUERIES') AND !defined('INSTALLER') AND !defined('NODISPLAYQUERIES')) OR defined('DESKPRO_DEBUG_DEVELOPERMODE_FOOTER')) {
-
-			$datastore['query_count']++;
-			$datastore['query_log'][] = array(
-				'count' => $datastore['query_count'],
-				'duration' => $duration,
-				'query_string' => $query_string,
-				'explain_log' => $explain_log,
-				'memory' => $mem . ' => ' . filesize_display(memory_get_usage())
-			);
-			$datastore['query_time'] += $duration;
-		}
-
-		if (defined('DEVELOPERMODE')) {
-
-			if (substr($query_string, 0, 6) == 'UPDATE') {
-
-				// get the table
-				$table = preg_match("#UPDATE ([a-zA-Z_]+) #", $query_string, $matches);
-				$result = $this->query_return("SELECT COUNT(*) AS total FROM $matches[1]");
-				$total = $result['total'];
-
-				if ($total > 1 AND $total = $results) {
-					echo "We just updated every row. Good idea?";
-				}
-			}
-		}
 
 		return $this->query_id;
 
 	}
-
-
-
 
 
 	/**

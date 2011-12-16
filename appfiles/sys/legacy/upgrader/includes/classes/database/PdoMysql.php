@@ -84,7 +84,7 @@ class DB_PdoMysql extends DB_Abstract
 		// PDO object, we'll have to store the row counts.
 		// We use an MD5 string key and return that as the "query id"
 		// and then we can look it up again in wrapper_affected_rows
-		
+
 		$md5 = md5($query_string);
 		
 		try {

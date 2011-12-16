@@ -30,7 +30,7 @@ class upgrade_5 extends upgrade_base_v3 {
 	***************************************************/
 
 	function step1($page) {
-		
+
 		global $db, $settings;
 	
 		if ($page == 1) {
@@ -48,7 +48,7 @@ class upgrade_5 extends upgrade_base_v3 {
 		$tickets = $db->query_return_array("SELECT subject, id FROM ticket LIMIT $page, 5000");
 	
 		if (is_array($tickets)) {
-	
+
 			foreach ($tickets AS $result) {
 				
 				$db->query("

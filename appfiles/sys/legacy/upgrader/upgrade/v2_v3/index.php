@@ -391,7 +391,7 @@ class upgrade_v2 extends upgrade_base_v2 {
 
 		while ($result = $db->row_array()) {
 
-			$db->query("
+			$db2->query("
 				INSERT INTO tech_pms SET
 					toid = " . intval($result['toid']) . ",
 					fromid = " . intval($result['fromid']) . ",

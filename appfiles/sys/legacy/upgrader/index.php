@@ -28,7 +28,8 @@ if (!in_array(php_sapi_name(), array('cgi-fcgi', 'cgi', 'cli'))) {
 @set_time_limit(0);
 @ignore_user_abort(1);
 @ini_set('max_execution_time', 0);
-@ini_set('memory_limit', '128M');
+@ini_set('memory_limit', '25M');
+@ini_set('xdebug.max_nesting_level', 10000);
 
 /***********
 * Initiate System
