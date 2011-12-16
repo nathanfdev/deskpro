@@ -83,7 +83,7 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="80">Host:</td>
+								<td width="100">Host:</td>
 								<td>
 									{{ form_widget(form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
@@ -97,10 +97,21 @@
 								<td>{{ form_widget(form.smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
+								<td>Requires Auth:</td>
+								<td>
+									<input
+										type="checkbox"
+										{% if edittrans.smtp_options.username or edittrans.smtp_options.password %}checked="checked"{% endif %}
+										data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
+										data-targets="#smtp_auth_username, #smtp_auth_password"
+									/> Yes
+								</td>
+							</tr>
+							<tr id="smtp_auth_username">
 								<td>Username:</td>
 								<td>{{ form_widget(form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
-							<tr>
+							<tr id="smtp_auth_password">
 								<td>Password:</td>
 								<td>{{ form_widget(form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
@@ -173,10 +184,21 @@
 								<td>{{ form_widget(form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
+								<td>Requires Auth:</td>
+								<td>
+									<input
+										type="checkbox"
+										{% if edittrans.backup_smtp_options.username or edittrans.backup_smtp_options.password %}checked="checked"{% endif %}
+										data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
+										data-targets="#backup_smtp_auth_username, #backup_smtp_auth_password"
+									/> Yes
+								</td>
+							</tr>
+							<tr id="backup_smtp_auth_username">
 								<td>Username:</td>
 								<td>{{ form_widget(form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
-							<tr>
+							<tr id="backup_smtp_auth_password">
 								<td>Password:</td>
 								<td>{{ form_widget(form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>

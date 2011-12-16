@@ -39,6 +39,30 @@ class EditEmailTransport
 	public function __construct(EmailTransport $transport)
 	{
 		$this->transport = $transport;
+
+		$this->match_type = $transport->match_type;
+		if ($this->match_type == 'exact') {
+			$this->match_email = $transport->match_pattern;
+		} elseif ($this->match_type == 'domain') {
+			$this->match_domain = $transport->match_pattern;
+		} elseif ($this->match_type == 'regex') {
+			$this->match_regex = $transport->match_pattern;
+		}
+
+		if ($transport->transport_type == 'smtp') {
+			$this->smtp_options = $transport->transport_options;
+		} elseif ($transport->transport_type == 'gmail') {
+			$this->gmail_options = $transport->transport_options;
+		}
+
+		if ($transport->backup_transport_type == 'smtp') {
+			$this->backup_smtp_options = $transport->backup_transport_options;
+		} elseif ($transport->backup_transport_type == 'gmail') {
+			$this->backup_gmail_options = $transport->backup_gmail_options;
+		}
+
+		if (!isset($this->smtp_options['port'])) $this->smtp_options['port'] = 25;
+		if (!isset($this->backup_smtp_options['port'])) $this->backup_smtp_options['port'] = 25;
 	}
 
 	public function apply()
@@ -58,7 +82,7 @@ class EditEmailTransport
 			$this->transport->title = $this->smtp_options['host'] . ':' . $this->smtp_options['username'];
 			$this->transport->transport_options = $this->smtp_options;
 		} elseif ($this->transport_type == 'gmail') {
-			$this->transport->title = 'Google Apps: ' . $this->smtp_options['username'];
+			$this->transport->title = 'Google Apps: ' . $this->gmail_options['username'];
 			$this->transport->transport_options = $this->gmail_options;
 		} else {
 			$this->transport->title = 'PHP mail()';

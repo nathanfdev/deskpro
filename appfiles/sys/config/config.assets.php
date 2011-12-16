@@ -234,6 +234,7 @@ $CONFIG['agent_common'] = array(
 		'javascripts/DeskPRO/ElementHandler.js',
 		'javascripts/DeskPRO/ElementHandler/ListRadio.js',
 		'javascripts/DeskPRO/ElementHandler/SimpleTabs.js',
+		'javascripts/DeskPRO/ElementHandler/CheckboxToggle.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/TouchCaller.js',
