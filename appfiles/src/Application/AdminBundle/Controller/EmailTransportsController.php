@@ -127,7 +127,7 @@ class EmailTransportsController extends AbstractController
 	}
 
 	############################################################################
-	# setup
+	# ajax-test
 	############################################################################
 
 	public function ajaxTestAction()

@@ -34,11 +34,7 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		$verbose = $input->getOption('verbose');
 
 		if ($input->getOption('gateway')) {
-			if (Numbers::isInteger($input->getOption('gateway'))) {
-				$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'));
-			} else {
-				$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayFromAddress($input->getOption('gateway'));
-			}
+			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'))
 
 			if (!$gateway) {
 				$output->writeln("<error>No gateway account found with that email address</error>");
@@ -53,7 +49,7 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		foreach ($gateways as $gateway) {
 
 			if ($verbose) {
-				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['name']} <{$gateway['address']}></info>");
+				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['name']}</info>");
 			}
 
 			/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */

@@ -124,4 +124,16 @@ abstract class AbstractFetcher
 
 		return $source;
 	}
+
+
+	/**
+	 * Test the resource to see if configuration is correct and/or that the service
+	 * supports the required features.
+	 *
+	 * @return bool
+	 */
+	public function test()
+	{
+		return true;
+	}
 }

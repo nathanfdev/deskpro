@@ -26,13 +26,13 @@ class Pop3 extends AbstractFetcher
 	protected function _initConnection()
 	{
 		$options = array();
-		$options['host']     = $this->gateway['connection_options']['server'];
+		$options['host']     = $this->gateway['connection_options']['host'];
 		$options['port']     = $this->gateway['connection_options']['port'];
 		$options['user']     = $this->gateway['connection_options']['username'];
 		$options['password'] = $this->gateway['connection_options']['password'];
 
-		if (isset($this->gateway['connection_options']['ssl']) AND $this->gateway['connection_options']['ssl']) {
-			$options['ssl'] = true;
+		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
+			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
 		}
 
 		$storage = new \Zend\Mail\Storage\Pop3($options);
@@ -75,5 +75,10 @@ class Pop3 extends AbstractFetcher
 			 throws an -ERR. So we'll ignore it
 			 */
 		}
+	}
+
+	public function test()
+	{
+		return true;
 	}
 }
