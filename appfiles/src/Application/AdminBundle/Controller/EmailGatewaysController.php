@@ -80,6 +80,23 @@ class EmailGatewaysController extends AbstractController
 		));
 	}
 
+	public function quickToggleAction($id)
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
+		if (!$id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$gateway->is_enabled = !$gateway->is_enabled;
+
+		$this->em->transactional(function ($em) use ($gateway) {
+			$em->persist($gateway);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array('success' => true, 'is_enabled' => $gateway->is_enabled));
+	}
+
 	############################################################################
 	# ajax-test
 	############################################################################

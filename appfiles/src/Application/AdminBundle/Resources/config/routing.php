@@ -1281,6 +1281,13 @@ $collection->add('admin_emailgateways_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_quicktoggle', new Route(
+	'/email/incoming/accounts/{id}/quick-toggle.json',
+	array('_controller' => 'AdminBundle:EmailGateways:quickToggle'),
+	array('id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_emailgateways_testaccount', new Route(
 	'/email/incoming/accounts/test-account.json',
 	array('_controller' => 'AdminBundle:EmailGateways:ajaxTest'),

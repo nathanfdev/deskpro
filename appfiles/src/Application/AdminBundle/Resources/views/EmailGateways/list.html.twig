@@ -12,15 +12,23 @@
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; Account</th>
-				<th style="text-align:left">Enabled</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for gateway in all_gateways %}
 				<tr>
-					<td>{{ gateway.title }}</td>
-					<td><input type="checkbox" class="onoff-slider" {% if gateway.is_enabled %}checked="checked"{% endif %} data-gateway-id="{{ gateway.id }}" /></td>
+					<td>
+						<input
+							type="checkbox"
+							class="onoff-slider"
+							{% if gateway.is_enabled %}checked="checked"{% endif %}
+							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
+							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
+							data-state-property="is_enabled"
+						/>
+						{{ gateway.title }}
+					</td>
 					<td style="padding: 3px 3px 0 0">
 						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}"><span class="btn-edit-gear"></span></a>
 					</td>
