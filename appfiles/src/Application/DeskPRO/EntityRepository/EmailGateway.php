@@ -28,10 +28,10 @@ class EmailGateway extends EntityRepository
 			$recs = App::getDb()->fetchAll("
 				SELECT id, name, address
 				FROM email_gateways
-				ORDER BY name DESC
+				ORDER BY title DESC
 			");
 			foreach ($recs as $rec) {
-				$this->_gateway_names[$rec['id']] = "{$rec['name']} <{$rec['address']}>";
+				$this->_gateway_names[$rec['id']] = $rec['title'];
 			}
 		}
 

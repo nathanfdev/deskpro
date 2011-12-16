@@ -4,9 +4,10 @@ namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\AdminBundle\Form\EditGatewayType;
 use Orb\Util\Arrays;
-use Symfony\Component\Form;
+
+use Application\AdminBundle\Form\EditEmailGateway as EditEmailGatewayForm;
+use Application\AdminBundle\FormModel\EditEmailGateway as EditEmailGatewayModel;
 
 class EmailGatewaysController extends AbstractController
 {
@@ -19,13 +20,15 @@ class EmailGatewaysController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$this->rememberLastPage();
-
 		$all_gateways = $this->em->createQuery("
 			SELECT g
 			FROM DeskPRO:EmailGateway g
-			ORDER BY g.name ASC
+			ORDER BY g.title ASC
 		")->getResult();
+
+		if (!count($all_gateways)) {
+			return $this->redirectRoute('admin_emailgateways_new');
+		}
 
 		return $this->render('AdminBundle:EmailGateways:list.html.twig', array(
 			'all_gateways' => $all_gateways
@@ -36,41 +39,67 @@ class EmailGatewaysController extends AbstractController
 	# edit
 	############################################################################
 
-	/**
-	 * Edit a gateway
-	 */
-	public function editAction($gateway_id)
+	public function editAccountAction($id)
 	{
-		if (!$gateway_id) {
-			$gateway = new Entity\EmailGateway();
+		if ($id) {
+			$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
+			if (!$id) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			}
 		} else {
-			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($gateway_id);
+			$gateway = new \Application\DeskPRO\Entity\EmailGateway();
 		}
 
-		$gateway['connection_class'] = 'Application\\DeskPRO\\EmailGateway\\Fetcher\\Pop3';
-		$gateway['processor_class']  = 'Application\\DeskPRO\\EmailGateway\\TicketGateway';
+		$editgateway = new EditEmailGatewayModel($gateway);
+		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
 
-		$form = $this->get('form.factory')->create(new EditGatewayType($gateway), $gateway);
-
-		$is_edited = false;
-		$row_html = false;
-		if ($this->in->getBool('process')) {
+		if ($this->request->isPost()) {
+			$this->ensureRequestToken('edit_gateway');
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
-				App::getOrm()->persist($gateway);
-				App::getOrm()->flush();
 
-				$row_html = $this->renderView('AdminBundle:EmailGateways:list-row.html.twig', array('gateway' => $gateway));
+				$this->em->getConnection()->beginTransaction();
+				try {
+					$editgateway->save();
+					$this->em->getConnection()->commit();
+				} catch (\Exception $e) {
+					$this->em->getConnection()->rollback();
+					throw $e;
+				}
+
+				$this->session->setFlash('saved', $gateway->title);
+				return $this->redirectRoute('admin_emailgateways');
 			}
 		}
 
-		return $this->render('AdminBundle:EmailGateways:edit.html.twig', array(
+		return $this->render('AdminBundle:EmailGateways:edit-account.html.twig', array(
 			'gateway' => $gateway,
-			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html
+			'form' => $form->createView(),
+			'editgateway' => $editgateway,
 		));
+	}
+
+	############################################################################
+	# ajax-test
+	############################################################################
+
+	public function ajaxTestAction()
+	{
+		$gateway = new \Application\DeskPRO\Entity\EmailGateway();
+
+		$editgateway = new EditEmailGatewayModel($gateway);
+		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
+		$form->bindRequest($this->get('request'));
+		$editgateway->apply();
+
+		try {
+			$conn = $gateway->getFetcher();
+			$conn->test();
+		} catch (\Exception $e) {
+			return $this->createJsonResponse(array('error' => true, 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

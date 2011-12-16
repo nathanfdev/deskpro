@@ -249,13 +249,6 @@ $collection->add('admin_ticketworks_updateorders', new Route(
 # Portal
 ################################################################################
 
-$collection->add('admin_email_properties', new Route(
-	'/email-settings',
-	array('_controller' => 'AdminBundle:EmailProperties:list'),
-	array(),
-	array()
-));
-
 $collection->add('admin_accept_upload', new Route(
 	'/misc/accept-upload',
 	array('_controller' => 'AdminBundle:Main:acceptTempUpload'),
@@ -1086,25 +1079,6 @@ $collection->add('admin_logs_errors_clear', new Route(
 
 
 ################################################################################
-# Email Gatewayss
-################################################################################
-
-$collection->add('admin_emailgateways', new Route(
-	'/email-gateways',
-	array('_controller' => 'AdminBundle:EmailGateways:list'),
-	array(),
-	array()
-));
-
-$collection->add('admin_emailgateways_edit', new Route(
-	'/email-gateways/{gateway_id}',
-	array('_controller' => 'AdminBundle:EmailGateways:edit'),
-	array('gateway_id' => '\\d+'),
-	array()
-));
-
-
-################################################################################
 # Plugins
 ################################################################################
 
@@ -1281,6 +1255,38 @@ $collection->add('admin_customdefideas_test', new Route(
 	array()
 ));
 
+
+################################################################################
+# Email Gatewayss
+################################################################################
+
+$collection->add('admin_emailgateways', new Route(
+	'/email/incoming',
+	array('_controller' => 'AdminBundle:EmailGateways:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateways_new', new Route(
+	'/email/incoming/new',
+	array('_controller' => 'AdminBundle:EmailGateways:editAccount', 'id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateways_edit', new Route(
+	'/email/incoming/accounts/{id}/edit',
+	array('_controller' => 'AdminBundle:EmailGateways:editAccount'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_emailgateways_testaccount', new Route(
+	'/email/incoming/accounts/test-account.json',
+	array('_controller' => 'AdminBundle:EmailGateways:ajaxTest'),
+	array('id' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # Email Transports
