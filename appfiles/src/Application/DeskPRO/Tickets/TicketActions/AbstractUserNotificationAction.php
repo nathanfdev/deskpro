@@ -30,6 +30,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	protected $tracker;
 	protected $person_context;
 	protected $template_suffix = '';
+	protected $from_address = null;
 
 	public function __construct(TicketChangeTracker $tracker, $template_suffix = '')
 	{
@@ -44,6 +45,11 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	public function getTemplateSuffix()
 	{
 		return $this->template_suffix;
+	}
+
+	public function setFromAddress($from_address)
+	{
+		$this->from_address = $from_address;
 	}
 
 	public function getFromAddress()
@@ -93,6 +99,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			}
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
+			$message->setFrom($this->getFromAddress());
 			$message->enableQueueHint();
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 

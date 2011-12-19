@@ -1,20 +1,27 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersNewChoosePage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersNewChoosePage.js') }}"></script>
+{% endblock %}
 {% block pagetitle %}
-	{% if trigger_type == 'trigger' %}
-		<h1>Choose Trigger Type</h1>
-	{% else %}
-		<h1>Choose Escalation Type</h1>
-	{% endif %}
+	<h1>New Trigger</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_tickettriggers') }}">&larr; Back to list</a>
+	</nav>
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post">
+<p>
+	Choose the event that should initiate the trigger
+</p>
+
+<form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post" id="choice_form">
 
 {% if with_urgency %}<input type="hidden" name="with-urgency" value="1" />{% endif %}
 
 <ul class="item-list">
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="new_ticket" checked="checked" /> New Ticket
+		<input type="radio" name="trigger[event_trigger]" value="new_ticket" /> New Ticket
 	</li>
 	<li>
 		<input type="radio" name="trigger[event_trigger]" value="new_reply" /> New Reply
@@ -22,39 +29,77 @@
 	<li>
 		<input type="radio" name="trigger[event_trigger]" value="property_change" /> Ticket Updated
 	</li>
+
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_open" />
+		Ticket has been open for
+		<span class="show-off">...</span>
+		<span class="show-on">
+			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
+			<select name="event_trigger_scale">
+				{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</span>
+	</li>
+
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_user_waiting" /> The user has been waiting for an agent to reply for
+		<span class="show-off">...</span>
+		<span class="show-on">
+			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
+			<select name="event_trigger_scale">
+				{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</span>
+	</li>
+
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_total_user_waiting" /> The user has been waiting for a total of
+		<span class="show-off">...</span>
+		<span class="show-on">
+			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
+			<select name="event_trigger_scale">
+				{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</span>
+	</li>
+
+
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_agent_waiting" /> The agent has been waiting for the user to reply for
+		<span class="show-off">...</span>
+		<span class="show-on">
+			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
+			<select name="event_trigger_scale">
+				{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</span>
+	</li>
+
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_resolved" /> The ticket has been resolved for
+		<span class="show-off">...</span>
+		<span class="show-on">
+			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
+			<select name="event_trigger_scale">
+				{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+					<option value="{{ scale }}">{{ label }}</option>
+				{% endfor %}
+			</select>
+		</span>
+	</li>
 </ul>
 
-{% if trigger_type == 'trigger' %}
-<ul class="item-list">
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="new_ticket" checked="checked" /> New Ticket
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="new_reply" /> New Reply
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="property_change" /> Ticket Updated
-	</li>
-</ul>
-
-{% else %}
-<ul class="item-list">
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_open" checked="checked" /> Time ticket has been open
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_user_waiting" /> Time user has been waiting
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_agent_waiting" /> Time agent has been waiting
-	</li>
-	<li>
-		... for <input type="text" name="trigger[event_trigger_option]" value="" size="10" style="width: 80px" /> minutes
-	</li>
-</ul>
-{% endif %}
-
-<button class="clean-white save-trigger">Continue</button>
+<br />
+<button class="clean-white save-trigger">Continue &rarr;</button>
 
 </form>
 {% endblock %}

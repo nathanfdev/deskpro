@@ -6,8 +6,7 @@
 {% block pagetitle %}
 	<h1>Triggers and Escalations</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_tickettriggers_new_choosetype') }}">Create Trigger</a>
-		<a class="clean-white" href="{{ path('admin_ticketescalations_new_choosetype') }}">Create Escalation</a>
+		<a class="clean-white" href="{{ path('admin_tickettriggers_new_choosetype') }}">Create New Trigger</a>
 	</nav>
 {% endblock %}
 {% block page %}
@@ -21,7 +20,7 @@
 				</li>
 			</ul>
 		</div>
-		<lable>{{trigger.title}}</lable>
+		<lable>{{ trigger.title }}</lable>
 	</li>
 {% endmacro %}
 
@@ -62,7 +61,6 @@
 {% if triggers.time_open %}
 <h2>Escalations based on the time a ticket has been open</h2>
 <ul class="item-list">
-	<li class="trigger-val">
 	{% for trigger in triggers.time_open %}
 		{{ _self.trigger_row(trigger) }}
 	{% endfor %}

@@ -74,9 +74,6 @@ class TicketTriggersController extends AbstractController
 		if (!$trigger_id) {
 			$trigger = new Entity\TicketTrigger();
 			$trigger['event_trigger'] = $this->in->getString('trigger.event_trigger');
-			if ($this->in->getString('trigger.event_trigger_option')) {
-				$trigger['event_trigger_option'] = $this->in->getString('trigger.event_trigger_option');
-			}
 
 			if ($with_urgency) {
 				if (strpos($this->in->getString('trigger.event_trigger'), 'time_') === 0) {
@@ -88,6 +85,10 @@ class TicketTriggersController extends AbstractController
 						array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => 1))
 					);
 				}
+			}
+
+			if ($this->in->getUint('event_trigger_time')) {
+				$trigger->event_trigger_option = $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
 			}
 
 		} else {
@@ -155,8 +156,12 @@ class TicketTriggersController extends AbstractController
 			}
 		}
 
+		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
+
 		return $this->render('AdminBundle:TicketTriggers:edit.html.twig', array(
 			'trigger' => $trigger,
+			'event_trigger_time' => $trigger->getOptionTime(),
+			'event_trigger_scale' => $trigger->getOptionScale(),
 			'form'      => $form->createView(),
 			'term_options' => $ticket_options,
 		));

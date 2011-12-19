@@ -46,8 +46,8 @@
 			</select>
 		</div>
 	</div>
-	{% if term_options.gateway_names %}
-	<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway" data-term-type="GenericMenuTerm" data-term-triggers="gateway,email-account">
+	{% if term_options.email_gateway_addresses %}
+	<div class="type" title="Gateway address" data-rule-type="email_gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,email-account">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -56,7 +56,7 @@
 		</div>
 		<div class="options">
 			<select name="receiving_gateway">
-				{% for id,label in term_options.gateway_names %}
+				{% for id,label in term_options.email_gateway_addresses %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
 			</select>

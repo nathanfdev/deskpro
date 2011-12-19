@@ -18,5 +18,13 @@ use \Doctrine\ORM\EntityRepository;
 
 class EmailGatewayAddress extends EntityRepository
 {
+	public function getOptions()
+	{
+		$opts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+			SELECT id, match_pattern
+			FROM email_gateway_addresses
+		");
 
+		return $opts;
+	}
 }

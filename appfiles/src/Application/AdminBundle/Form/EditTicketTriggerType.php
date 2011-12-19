@@ -33,10 +33,6 @@ class EditTicketTriggerType extends AbstractType
 	{
 		$builder->add('title', 'text');
 		$builder->add('event_trigger', 'hidden');
-
-		if (strpos($this->trigger['event_trigger'], 'time_') === 0) {
-			$builder->add('event_trigger_option', 'hidden');
-		}
 	}
 
 	public function getName()

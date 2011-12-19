@@ -42,6 +42,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_DELETED                   = 'deleted';
 	const TERM_CREATION_SYSTEM           = 'creation_system';
 	const TERM_RECEIVING_GATEWAY         = 'receiving_gateway';
+	const TERM_GATEWAY_ADDRESS           = 'email_gateway_address';
 	const TERM_HOLD                      = 'is_hold';
 	const TERM_FLAGGED                   = 'flagged';
 
@@ -950,6 +951,21 @@ class TicketSearch extends SearcherAbstract
 					));
 					$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
 					break;
+
+				case self::TERM_GATEWAY_ADDRESS:
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.tickets.sent_to_gateway_address'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:EmailGatewayAddress')->getOptions((array)$choice);
+						return $titles;
+					});
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_GATEWAY_ADDRESS;
+					}
+
+					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_address_id", $op, $choice, true);
+
+					break;
+
 				case self::TERM_RECEIVING_GATEWAY:
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent_tickets.receiving_gateway'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
@@ -1192,6 +1208,10 @@ class TicketSearch extends SearcherAbstract
 
 				case self::TERM_CREATION_SYSTEM:
 					if (!$this->_testStringMatch($ticket['creation_system'], $op, $choice, true, true)) return false;
+					break;
+
+				case self::TERM_GATEWAY_ADDRESS:
+					if (!$this->_testChoiceMatch($ticket['email_gateway_address_id'], $op, $choice. true)) return false;
 					break;
 
 				case self::TERM_RECEIVING_GATEWAY:

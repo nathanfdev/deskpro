@@ -28,6 +28,9 @@ function TicketTriggerEditPage_initTerms(handler) {
 	{% else %}
 		<h1>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</h1>
 	{% endif %}
+	<nav>
+		<a class="clean-white" href="{{ path('admin_tickettriggers') }}">&larr; Back to list</a>
+	</nav>
 {% endblock %}
 {% block page %}
 
@@ -40,13 +43,21 @@ function TicketTriggerEditPage_initTerms(handler) {
 			<label>Event</label>
 		</div>
 		<div class="dp-form-input">
+			{% macro time_select(event_trigger_time, event_trigger_scale) %}
+				<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px" class="small" />
+				<select name="event_trigger_scale">
+					{% for scale,label in {'minutes': 'Minutes', 'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+						<option {% if event_trigger_scale == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
+					{% endfor %}
+				</select>
+			{% endmacro %}
 			{% if trigger.event_trigger == 'new_ticket' %}New Ticket
 			{% elseif trigger.event_trigger == 'new_reply' %}New Reply
 			{% elseif trigger.event_trigger == 'property_change' %}Ticket Edited
-			{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for: {{ form_widget(form.event_trigger_option) }}
-			{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for: {{ form_widget(form.event_trigger_option) }}
-			{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for: {{ form_widget(form.event_trigger_option) }}
-			{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds: {{ form_widget(form.event_trigger_option) }}
+			{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
 			{% else %}{{trigger.event_trigger}}
 			{% endif %}
 		</div>

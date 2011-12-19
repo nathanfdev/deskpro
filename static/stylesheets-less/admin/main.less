@@ -2100,6 +2100,16 @@ ul.item-list > li {
 	position: relative;
 }
 
+ul.item-list > li.on {
+	background-color: #EEF5FD;
+	border: 1px solid #5EA3E7;
+}
+
+ul.item-list > li span.show-on { display: none; }
+ul.item-list > li.on span.show-on { display: inline; }
+ul.item-list > li span.show-off { display: inline; }
+ul.item-list > li.on span.show-off { display: none; }
+
 ul.item-list > li .dp-block-controls {
 	top: 3px;
 }

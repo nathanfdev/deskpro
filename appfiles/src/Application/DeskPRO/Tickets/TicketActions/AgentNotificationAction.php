@@ -50,6 +50,11 @@ class AgentNotificationAction implements ActionInterface
 	 */
 	protected $template_name = 'DeskPRO:emails_agent:ticket-notification.html.twig';
 
+	/**
+	 * @var string
+	 */
+	protected $from_address;
+
 	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
@@ -68,6 +73,16 @@ class AgentNotificationAction implements ActionInterface
 				$this->notify_info[$agent_id] = array('filters' => $filters);
 			}
 		}
+	}
+
+	public function setFromAddress($from_address)
+	{
+		$this->from_address = $from_address;
+	}
+
+	public function getFromAddress()
+	{
+		return $this->from_address;
 	}
 
 	/**
@@ -188,6 +203,7 @@ class AgentNotificationAction implements ActionInterface
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
+			$message->setFrom($this->getFromAddress());
 			$message->enableQueueHint();
 
 			App::getMailer()->send($message);

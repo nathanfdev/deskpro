@@ -39,6 +39,8 @@
 	'agent.tickets.creation_system'        => 'Creation system',
 	'agent.tickets.receiving_gateway'      => 'Receiving gateway',
 
+	'agent.tickets.sent_to_gateway_address'      => 'Sent to gateway address',
+
 	'agent.tickets.participants'      => 'Participants',
 
 	'agent.tickets.ticket_is_deleted' => 'Ticket is deleted',
