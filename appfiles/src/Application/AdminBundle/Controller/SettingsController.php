@@ -198,4 +198,21 @@ class SettingsController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => true));
 	}
+
+
+	############################################################################
+	# user-settings
+	############################################################################
+
+	public function userModeAction()
+	{
+		return $this->render('AdminBundle:Settings:user-mode.html.twig');
+	}
+
+	public function saveUserModeAction()
+	{
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.user_mode', $this->in->getString('mode'));
+
+		return $this->createJsonResponse(array('success'=> true));
+	}
 }

@@ -338,6 +338,20 @@ $collection->add('admin_settings_adv_set', new Route(
 	array()
 ));
 
+$collection->add('admin_settings_usermode', new Route(
+	'/settings/user-mode',
+	array('_controller' => 'AdminBundle:Settings:userMode'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_usermode_save', new Route(
+	'/settings/user-mode/save.json',
+	array('_controller' => 'AdminBundle:Settings:saveUserMode'),
+	array(),
+	array()
+));
+
 $collection->add('admin_labels', new Route(
 	'/settings/labels/{label_type}',
 	array('_controller' => 'AdminBundle:Settings:labels'),
@@ -876,9 +890,16 @@ $collection->add('admin_usergroups', new Route(
 ));
 
 $collection->add('admin_usergroups_edit', new Route(
-	'/usergroups/{usergroup_id}',
-	array('_controller' => 'AdminBundle:Usergroups:edit'),
+	'/usergroups/new',
+	array('_controller' => 'AdminBundle:Usergroups:edit', 'id' => 0),
 	array('usergroup_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_usergroups_edit', new Route(
+	'/usergroups/{id}/edit',
+	array('_controller' => 'AdminBundle:Usergroups:edit'),
+	array('id' => '\\d+'),
 	array()
 ));
 

@@ -1,0 +1,57 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.UserModePage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/UserModePage.js') }}"></script>
+{% endblock %}
+{% block pagetitle %}
+	<h1>User Registration</h1>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_settings_usermode_save') }}" method="POST" id="mode_form">
+	<ul class="item-list user-registration">
+		<li {% if not app.getSetting('core.user_mode') or app.getSetting('core.user_mode') == 'open' %}class="on"{% endif %}>
+			<h3>
+				<label>
+					<input type="radio" name="mode" value="open" {% if not app.getSetting('core.user_mode') or app.getSetting('core.user_mode') == 'open' %}checked="checked"{% endif %}> Open Helpdesk
+				</label>
+			</h3>
+			<p>
+				With an open helpdesk, anyone can register a new account and log in.
+			</p>
+		</li>
+
+		<li {% if app.getSetting('core.user_mode') == 'external' %}class="on"{% endif %}>
+			<h3>
+				<label>
+					<input type="radio" name="mode" value="external" {% if app.getSetting('core.user_mode') == 'external' %}checked="checked"{% endif %}> Closed but with External Authentication
+				</label>
+			</h3>
+			<p>
+				This mode closes your helpdesk to registration, but allows users to log in with credentials from an external database, such
+				as your website member base, LDAP or Active Directory.
+			</p>
+		</li>
+
+		<li {% if app.getSetting('core.user_mode') == 'closed' %}class="on"{% endif %}>
+			<h3>
+				<label>
+					<input type="radio" name="mode" value="closed" {% if app.getSetting('core.user_mode') == 'closed' %}checked="checked"{% endif %}> Closed
+				</label>
+			</h3>
+			<p>
+				With a closed helpdesk, there is no way for users to create new accounts. Only
+				agents are allowed to manually create users.
+			</p>
+		</li>
+	</ul>
+
+	<div id="save_btn_wrap" style="display: none; text-align: center; margin-top: 10px;">
+		<div class="is-not-loading">
+			<button class="clean-white large">Switch Registration Modes</button>
+		</div>
+	</div>
+	<div class="is-loading loading-icon">&nbsp;</div>
+</form>
+
+{% endblock %}

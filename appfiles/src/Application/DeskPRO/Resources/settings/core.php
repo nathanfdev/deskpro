@@ -2,6 +2,7 @@
 
 	'core.helpdesk_enabled' => true,
 	'core.emergency_contact' => 'emergency-contact@example.com',
+	'core.user_mode' => 'open',
 
 	'core.deskpro_url' => 'http://localhost/',
 	'core.deskpro_name' => 'DeskPRO',
