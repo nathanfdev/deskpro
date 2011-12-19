@@ -889,7 +889,7 @@ $collection->add('admin_usergroups', new Route(
 	array()
 ));
 
-$collection->add('admin_usergroups_edit', new Route(
+$collection->add('admin_usergroups_new', new Route(
 	'/usergroups/new',
 	array('_controller' => 'AdminBundle:Usergroups:edit', 'id' => 0),
 	array('usergroup_id' => '\\d+'),
@@ -903,6 +903,19 @@ $collection->add('admin_usergroups_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_usergroups_delete', new Route(
+	'/usergroups/{id}/delete/{auth}',
+	array('_controller' => 'AdminBundle:Usergroups:delete'),
+	array('id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_usergroups_browse', new Route(
+	'/usergroups/{id}/browse/{page}',
+	array('_controller' => 'AdminBundle:Usergroups:browse', 'page' => 1),
+	array('id' => '\\d+', 'page' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # Products

@@ -1,42 +1,56 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentGroupEdit.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentGroupEdit({{usergroup.id|default(0)}});
-
-	{% if row_html %}
-		window.DeskPRO_Page.updateParent({{ usergroup.title|json_encode|raw}}, {{ row_html|json_encode|raw }});
-	{% endif %}
-}
-</script>
-{% endblock %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block header %}
 	<h1>{% if usergroup.id %}Edit Usergroup{% else %}New Usergroup{% endif %}</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_usergroups') }}">&larr; Back to usergroups</a>
+	</nav>
 {% endblock %}
-{% block content %}
+{% block page %}
 
-<form action="{{ path('admin_usergroups_edit', {'usergroup_id': usergroup.id|default(0)}) }}" method="post">
+<form action="{{ path('admin_usergroups_edit', {'id': usergroup.id|default(0)}) }}" method="post">
+{{ form_token('edit_usergroup') }}
+
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
-		<label>Title</label>
-		{{ form_widget(form.title) }}
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Title</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
 	</div>
-	<div class="row">
-		<label>Note / Description</label>
-		{{ form_widget(form.note) }}
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Note / Description</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.note, {'attr': {'style': 'height: 50px'}}) }}
+		</div>
 	</div>
+
+	{% if usergroup.id %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Number of members</label>
+			</div>
+			<div class="dp-form-input">
+				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">browse</a>)
+			</div>
+		</div>
+	{% endif %}
 </div>
 
-<br /><br />
+<button class="clean-white">Save</button>
 
 </form>
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+
+{% if usergroup.id %}
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('Are you sure you want to delete this usergroup?');">delete</a>
+</div>
+{% endif %}
 
 {% endblock %}

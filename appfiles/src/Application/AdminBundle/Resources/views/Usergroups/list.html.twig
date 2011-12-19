@@ -1,26 +1,51 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'crm' %}
-{% block sub_section 'usergroups' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/UsergroupsList.js') }}"></script>
+{% block pagetitle %}
+	<h1>Usergroups</h1>
+	<nav>
+		<a class="clean-white" href="{{ path('admin_usergroups_new') }}">Create Usergroup</a>
+	</nav>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.UsergroupsList();
-}
-</script>
-{% endblock %}
-{% block content %}
+{% block page %}
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_usergroups_edit', {'usergroup_id': '0'}) }}">Create New Usergroup</a>
+{% if usergroups|length %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left">&nbsp; Usergroup</th>
+				<th style="text-align:center" width="100">Number of members</th>
+				<th style="text-align:left" width="50">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Everyone</td>
+				<td style="text-align:center">
+					<a href="{{ path('admin_usergroups_browse', {'id': '0'})}}">{{ member_counts[0]|default('0') }}</a>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+		{% for usergroup in usergroups %}
+			<tr>
+				<td>
+					{{ usergroup.title }}
+					{% if usergroup.note %}
+						<div style="font-size: 9px; margin-left: 15px;">{{ usergroup.note }}</div>
+					{% endif %}
+				</td>
+				<td style="text-align:center"><a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">{{ member_counts[usergroup.id]|default('0') }}</a></td>
+				<td style="padding: 3px 3px 0 0; text-align: right;">
+					<a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}"><span class="btn-edit-gear"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
 </div>
-
-<ul class="item-list">
-	{% for usergroup in usergroups %}
-		{% include 'AdminBundle:Usergroups:list-row.html.twig' %}
-	{% endfor %}
-</ul>
+{% else %}
+	<p>
+		You haven't created any usergroups yet.
+	</p>
+{% endif %}
 
 {% endblock %}
