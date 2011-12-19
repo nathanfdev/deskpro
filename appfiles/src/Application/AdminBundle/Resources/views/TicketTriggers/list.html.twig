@@ -10,124 +10,128 @@
 		<a class="clean-white" href="{{ path('admin_ticketescalations_new_choosetype') }}">Create Escalation</a>
 	</nav>
 {% endblock %}
-{% block sidebar_right %}
-<form action="{{ path('admin_ticketurgency_saveoptions') }}" method="post" id="urgency_options_form">
-	<div class="dp-page-box" id="urgency_triggers">
-		<div class="resource-item-list section-items">
-			<header>
-				<div class="controls">
-					<button class="clean-white small save-trigger" style="display: none">Save Changes</button>
-				</div>
-				<h4>Urgency</h4>
-			</header>
-			<article>
-				<ul>
-					<li>
-						Base urgency score of {{ form_widget(urgency_options_form.base_urgency, {'attr': {'class': 'single-num'}}) }}
-					</li>
-					<li>
-						When the last user reply was
-						{{ form_widget(urgency_options_form.time_options.user_reply, {'attr': {'class': 'single-num'}}) }}
-						minutes ago, boost urgency by
-						{{ form_widget(urgency_options_form.time_options.user_reply_num, {'attr': {'class': 'single-num'}}) }}
-					</li>
-					<li>
-						When the ticket has been open for
-						{{ form_widget(urgency_options_form.time_options.open, {'attr': {'class': 'single-num'}}) }}
-						minutes, boost urgency by
-						{{ form_widget(urgency_options_form.time_options.open_num, {'attr': {'class': 'single-num'}}) }}
-					</li>
-					<li>
-						When the total user waiting time is more than
-						{{ form_widget(urgency_options_form.time_options.user_waiting, {'attr': {'class': 'single-num'}}) }}
-						minutes, boost urgency by
-						{{ form_widget(urgency_options_form.time_options.user_waiting_num, {'attr': {'class': 'single-num'}}) }}
-					</li>
-				</ul>
-			</article>
-		</div>
-	</div>
-</form>
-
-<form action="{{ path('admin_ticketautoclose_saveoptions') }}" method="post" id="autoclose_options_form">
-	<div class="dp-page-box">
-		<div class="resource-item-list section-items">
-			<header>
-				<div class="controls">
-					<button class="clean-white small save-trigger" style="display: none">Save Changes</button>
-				</div>
-				<h4>Auto-Closing</h4>
-			</header>
-			<article>
-				<ul>
-					<li>
-						Resolve a ticket with no activity after
-						{{ form_widget(autoclose_options_form.resolve_agent_reply, {'attr': {'class': 'single-num'}}) }} minutes
-						and an agent was last to reply
-					</li>
-					<li>
-						Close a ticket with no activity after
-						{{ form_widget(autoclose_options_form.close_agent_reply, {'attr': {'class': 'single-num'}}) }} minutes
-						and an agent was last to reply
-					</li>
-					<li>
-						Resolve a ticket with no activity after
-						{{ form_widget(autoclose_options_form.resolve_user_reply, {'attr': {'class': 'single-num'}}) }} minutes
-						and the user was last to reply
-					</li>
-					<li>
-						Close a ticket with no activity after
-						{{ form_widget(autoclose_options_form.close_user_reply, {'attr': {'class': 'single-num'}}) }} minutes
-						and the user was last to reply
-					</li>
-				</ul>
-			</article>
-		</div>
-	</div>
-</form>
-{% endblock %}
 {% block page %}
 
-{% if not all_triggers|length and not all_escalations|length %}
-	You have not defined any triggers or escalations yet.
-{% endif %}
+{% macro trigger_row(trigger) %}
+	<li class="item-row">
+		<div class="dp-block-controls">
+			<ul>
+				<li class="dp-edit">
+					<a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a>
+				</li>
+			</ul>
+		</div>
+		<lable>{{trigger.title}}</lable>
+	</li>
+{% endmacro %}
 
-{% if all_triggers|length %}
-<h2>Triggers</h2>
+<h2>New Ticket Triggers</h2>
 <ul class="item-list">
-	{% for trigger in all_triggers %}
-		<li class="item-row">
-			<div class="dp-block-controls">
-				<ul>
-					<li class="dp-edit">
-						<a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a>
-					</li>
-				</ul>
-			</div>
-			<lable>{{trigger.title}}</lable>
-		</li>
+	<li class="trigger-val" data-trigger-name="urgency.base">
+		Set the default urgency on new tickets to <input type="text" name="base_urgency" value="{{ sys_triggers['urgency.base'].actions[0][options][num]|default('0') }}" class="small" style="width: 40px" />
+		<span class="loading-icon-small-inline" style="position: relative; top: 5px; display: none;"></span>
+	</li>
+	{% for trigger in triggers.new_ticket %}
+		{{ _self.trigger_row(trigger) }}
 	{% endfor %}
 </ul>
+<br />
 
+{% if triggers.new_reply %}
+<h2>New Repy Triggers</h2>
+<ul class="item-list">
+	<li class="trigger-val">
+	{% for trigger in triggers.new_reply %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
 <br />
 {% endif %}
 
-{% if all_escalations|length %}
-<h2>Escalations</h2>
+{% if triggers.new_reply %}
+<h2>Ticket Update Triggers</h2>
 <ul class="item-list">
-	{% for trigger in all_escalations %}
-		<li class="item-row">
-			<div class="dp-block-controls">
-				<ul>
-					<li class="dp-edit">
-						<a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a>
-					</li>
-				</ul>
-			</div>
-			<lable>{{trigger.title}}</lable>
-		</li>
+	<li class="trigger-val">
+	{% for trigger in triggers.property_change %}
+		{{ _self.trigger_row(trigger) }}
 	{% endfor %}
 </ul>
+<br />
 {% endif %}
+
+{% if triggers.time_open %}
+<h2>Escalations based on the time a ticket has been open</h2>
+<ul class="item-list">
+	<li class="trigger-val">
+	{% for trigger in triggers.time_open %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
+<br />
+{% endif %}
+
+
+<h2>Escalations based on the time a user has been waiting for a reply</h2>
+<ul class="item-list">
+	<li class="trigger-val" data-trigger-name="auto_close.resolve_user_reply">
+		Resolve a ticket when the agent has not replied for
+		<input type="text" name="time" value="{{ sys_triggers['auto_close.resolve_user_reply'].getOptionTime()|default('0') }}" class="small" style="width: 40px" />
+		<select name="scale">
+			{% for scale,label in {'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+				<option value="{{ scale }}" {% if sys_triggers['auto_close.resolve_user_reply'].getOptionScale() == scale %}selected="selected"{% endif %}>{{ label }}</option>
+			{% endfor %}
+		</select>
+		<span class="loading-icon-small-inline" style="position: relative; top: 5px; display: none;"></span>
+	</li>
+	{% for trigger in triggers.time_user_waiting %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
+<br />
+
+{% if triggers.time_total_user_waiting %}
+<h2>Escalations based on the total time a user has been waiting in a ticket</h2>
+<ul class="item-list">
+	{% for trigger in triggers.time_total_user_waiting %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
+<br />
+{% endif %}
+
+<h2>Escalations based on the total time an agent has been waiting for a user reply</h2>
+<ul class="item-list">
+	<li class="trigger-val" data-trigger-name="auto_close.resolve_agent_reply">
+		Resolve a ticket when the user has not replied for
+		<input type="text" name="time" value="{{ sys_triggers['auto_close.resolve_agent_reply'].getOptionTime()|default('0') }}" class="small" style="width: 40px" />
+		<select name="scale">
+			{% for scale,label in {'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+				<option value="{{ scale }}" {% if sys_triggers['auto_close.resolve_agent_reply'].getOptionScale() == scale %}selected="selected"{% endif %}>{{ label }}</option>
+			{% endfor %}
+		</select>
+		<span class="loading-icon-small-inline" style="position: relative; top: 5px; display: none;"></span>
+	</li>
+	{% for trigger in triggers.time_agent_waiting %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
+<br />
+
+<h2>Escalations based on the time a ticket was resolved</h2>
+<ul class="item-list">
+	<li class="trigger-val" data-trigger-name="auto_close.close_resolved">
+		Close a ticket when it has been resolved for
+		<input type="text" name="time" value="{{ sys_triggers['auto_close.close_resolved'].getOptionTime()|default('0') }}" class="small" style="width: 40px" />
+		<select name="scale">
+			{% for scale,label in {'hours': 'Hours', 'days': 'Days', 'weeks': 'Weeks', 'months': 'Months'} %}
+				<option value="{{ scale }}" {% if sys_triggers['auto_close.close_resolved'].getOptionScale() == scale %}selected="selected"{% endif %}>{{ label }}</option>
+			{% endfor %}
+		</select>
+		<span class="loading-icon-small-inline" style="position: relative; top: 5px; display: none;"></span>
+	</li>
+	{% for trigger in triggers.time_agent_waiting %}
+		{{ _self.trigger_row(trigger) }}
+	{% endfor %}
+</ul>
 
 {% endblock %}

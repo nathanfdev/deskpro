@@ -786,6 +786,13 @@ $collection->add('admin_tickettriggers', new Route(
 	array()
 ));
 
+$collection->add('admin_tickettriggers_savebuiltin', new Route(
+	'/tickets/business-rules/save-built-in.json',
+	array('_controller' => 'AdminBundle:TicketTriggers:saveBuiltIn'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickettriggers_new_choosetype', new Route(
 	'/tickets/business-rules/new-trigger',
 	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'trigger'),

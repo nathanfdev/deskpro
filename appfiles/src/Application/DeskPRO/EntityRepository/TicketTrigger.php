@@ -54,6 +54,33 @@ class TicketTrigger extends EntityRepository
 
 
 	/**
+	 * Get events grouped by their trigger type
+	 *
+	 * @return array
+	 */
+	public function getGroupedTriggers()
+	{
+		$triggers = $this->getEntityManager()->createQuery("
+			SELECT trig
+			FROM DeskPRO:TicketTrigger trig
+			WHERE trig.sys_name IS NULL
+		")->execute();
+
+		$grouped = array();
+
+		foreach ($triggers as $tr) {
+			if (!isset($grouped[$tr->event_trigger])) {
+				$grouped[$tr->event_trigger] = array();
+			}
+
+			$grouped[$tr->event_trigger][] = $tr;
+		}
+
+		return $grouped;
+	}
+
+
+	/**
 	 * Get all time-based triggers (aka escalations)
 	 *
 	 * @param bool $only_enabeld
@@ -110,13 +137,20 @@ class TicketTrigger extends EntityRepository
 	 * @param string $prefix
 	 * @return array
 	 */
-	public function getSystemTriggers($prefix)
+	public function getSystemTriggers($prefix = null)
 	{
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
-			WHERE trig.sys_name LIKE '{$prefix}.%'
-		")->execute();
+		if ($prefix) {
+			$triggers = $this->getEntityManager()->createQuery("
+				SELECT trig
+				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
+				WHERE trig.sys_name LIKE '{$prefix}.%'
+			")->execute();
+		} else {
+			$triggers = $this->getEntityManager()->createQuery("
+				SELECT trig
+				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
+			")->execute();
+		}
 
 		return $triggers;
 	}

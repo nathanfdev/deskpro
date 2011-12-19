@@ -33,23 +33,12 @@ class TicketTriggersController extends AbstractController
 
 	public function listAction()
 	{
-
-		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getEventTriggers(false, false);
-		$all_escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers(false, false);
-
-		$urgency_options = UrgencyOptions::newFromSystemTriggers();
-		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
-
-		$autoclose_options = AutoCloseOptions::newFromSystemTriggers();
-		$autoclose_form = $this->get('form.factory')->create(new TicketAutoCloseOptionsType(), $autoclose_options);
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getGroupedTriggers();
+		$sys_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getSystemTriggers();
 
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
-			'all_triggers' => $all_triggers,
-			'all_escalations' => $all_escalations,
-			'urgency_options' => $urgency_options,
-			'urgency_options_form' => $urgency_form->createView(),
-			'autoclose_options' => $autoclose_options,
-			'autoclose_options_form' => $autoclose_form->createView(),
+			'triggers' => $triggers,
+			'sys_triggers' => $sys_triggers,
 		));
 	}
 
@@ -102,26 +91,22 @@ class TicketTriggersController extends AbstractController
 			}
 
 		} else {
-			$trigger = App::getEntityRepository('DeskPRO:TicketTrigger')->find($trigger_id);
+			$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->find($trigger_id);
 			if ($this->in->getString('trigger.event_trigger_option')) {
 				$trigger['event_trigger_option'] = $this->in->getString('trigger.event_trigger_option');
 			}
 		}
 
-		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$form = $this->get('form.factory')->create(new EditTicketTriggerType($trigger), $trigger);
 
-		$is_edited = false;
-		$row_html = false;
 		if ($this->in->getBool('process')) {
 
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$is_edited = true;
-
-				App::getOrm()->beginTransaction();
+				$this->em->beginTransaction();
 
 				$term_rules = RuleBuilder::newTermsBuilder();
 				$trigger['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
@@ -138,7 +123,7 @@ class TicketTriggersController extends AbstractController
 						if ($template_code) {
 							$tpl = null;
 							if ($template_name) {
-								$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($template_name);
+								$tpl = $this->em->getRepository('DeskPRO:Template')->getTemplateForStyle($template_name);
 							}
 
 							if (!$tpl) {
@@ -151,7 +136,7 @@ class TicketTriggersController extends AbstractController
 
 							$action['options']['custom_template_name'] = $template_name;
 
-							App::getOrm()->persist($tpl);
+							$this->em->persist($tpl);
 						}
 
 						unset($action['options']['custom_template_default']);
@@ -161,67 +146,53 @@ class TicketTriggersController extends AbstractController
 
 				$trigger['actions'] = $actions;
 
-				App::getOrm()->persist($trigger);
-				App::getOrm()->flush();
+				$this->em->persist($trigger);
+				$this->em->flush();
 
-				App::getOrm()->commit();
+				$this->em->commit();
 
-				$row_html = $this->renderView('AdminBundle:TicketTriggers:list-row.html.twig', array('trigger' => $trigger));
+				return $this->redirectRoute('admin_tickettriggers_edit', array('trigger_id' => $trigger->id));
 			}
 		}
 
 		return $this->render('AdminBundle:TicketTriggers:edit.html.twig', array(
 			'trigger' => $trigger,
 			'form'      => $form->createView(),
-			'is_edited' => $is_edited,
-			'row_html'  => $row_html,
-			'term_options' => $term_options,
+			'term_options' => $ticket_options,
 		));
 	}
 
 	############################################################################
-	# save-urgency-options
+	# save-built-in
 	############################################################################
 
-	/**
-	 * Called via ajax to save urgency options
-	 */
-	public function saveUrgencyOptionsAction()
+	public function saveBuiltInAction()
 	{
-		$urgency_options = UrgencyOptions::newFromSystemTriggers();
-		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
+		$name = $this->in->getString('name');
 
-		if ($this->get('request')->getMethod() == 'POST') {
-			$urgency_form->bindRequest($this->get('request'));
+		$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
 
-			if ($urgency_form->isValid()) {
-				$urgency_options->save();
-			}
+		if (!$trigger) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		return $this->createJsonResponse(array('success' => true));
-	}
+		switch ($name) {
+			case 'base_urgency':
+				$actions = $trigger->actions;
+				$actions[0]['options']['num'] = $this->in->getInt('num');
+				$trigger->actions = $actions;
+				break;
 
-	############################################################################
-	# save-autoclose-options
-	############################################################################
-
-	/**
-	 * Called via ajax to save autoclose options
-	 */
-	public function saveAutoCloseOptionsAction()
-	{
-		$autoclose_options = AutoCloseOptions::newFromSystemTriggers();
-		$autoclose_form = $this->get('form.factory')->create(new TicketAutoCloseOptionsType(), $autoclose_options);
-
-		if ($this->get('request')->getMethod() == 'POST') {
-			$autoclose_form->bindRequest($this->get('request'));
-
-			if ($autoclose_form->isValid()) {
-				$autoclose_options->save();
-			}
+			default:
+				$trigger->event_trigger_option = $this->in->getUint('time') . ' ' . $this->in->getString('scale');
+				break;
 		}
 
-		return $this->createJsonResponse(array('success' => true));
+		$this->em->transactional(function($em) use ($trigger) {
+			$em->persist($trigger);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 }

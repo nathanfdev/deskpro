@@ -14,6 +14,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
 use Application\DeskPRO\App;
+use Orb\Util\Dates;
 
 /**
  * Ticket triggers
@@ -31,6 +32,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_TIME_USER_WAITING          = 'time_user_waiting';
 	const EVENT_TIME_TOTAL_USER_WAITING    = 'time_total_user_waiting';
 	const EVENT_TIME_AGENT_WAITING         = 'time_agent_waiting';
+	const EVENT_TIME_RESOLVED              = 'time_resolved';
 
 	/**
 	 * @var int
@@ -52,6 +54,10 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_trigger;
 
 	/**
+	 * This is a number in seconds, or a number<space>scale.
+	 *
+	 * For example: 12 days
+	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="event_trigger_option", type="string", length=255)
 	 */
@@ -238,5 +244,67 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			return 'trigger';
 		}
+	}
+
+
+	public function getOptionTime()
+	{
+		if (!$this->event_trigger_option) {
+			return 0;
+		}
+
+		if (strpos($this->event_trigger_option, ' ') === false) {
+			return $this->event_trigger_option;
+		}
+
+		list ($time, ) = explode(' ', $this->event_trigger_option);
+		return $time;
+	}
+
+	public function getOptionScale()
+	{
+		if (!$this->event_trigger_option) {
+			return 0;
+		}
+
+		if (strpos($this->event_trigger_option, ' ') === false) {
+			return 'secs';
+		}
+
+		list (, $scale) = explode(' ', $this->event_trigger_option);
+		return $scale;
+	}
+
+	public function getOptionSeconds()
+	{
+		$time = $this->getOptionTime();
+		$scale = $this->getOptionScale();
+
+		$secs = 0;
+
+		switch ($scale) {
+
+			case 'hours':
+				$secs = $time * Dates::SECS_HOUR;
+				break;
+
+			case 'days':
+				$secs = $time * Dates::SECS_DAY;
+				break;
+
+			case 'weeks':
+				$secs = $time * Dates::SECS_WEEK;
+				break;
+
+			case 'months':
+				$secs = $time * Dates::SECS_MONTH;
+				break;
+
+			default:
+				$secs = $time;
+				break;
+		}
+
+		return $secs;
 	}
 }

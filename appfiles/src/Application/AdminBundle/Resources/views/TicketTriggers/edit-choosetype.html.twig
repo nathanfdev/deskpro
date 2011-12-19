@@ -12,6 +12,18 @@
 
 {% if with_urgency %}<input type="hidden" name="with-urgency" value="1" />{% endif %}
 
+<ul class="item-list">
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="new_ticket" checked="checked" /> New Ticket
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="new_reply" /> New Reply
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="property_change" /> Ticket Updated
+	</li>
+</ul>
+
 {% if trigger_type == 'trigger' %}
 <ul class="item-list">
 	<li>

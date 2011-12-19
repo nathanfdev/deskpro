@@ -5,25 +5,46 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 
 	init: function() {
 		var self = this;
-		$('input.single-num').autoGrowInput({
-			maxWidth: 120
-		});
 
-		$('#autoclose_options_form input, #urgency_options_form input').on('change, keyup', function() {
-			var form = $(this).closest('form');
-			$('button.save-trigger', form).show();
-		});
+		$('li.trigger-val').each(function() {
+			var li = $(this);
+			var name = $(this).data('trigger-name');
 
-		$('#autoclose_options_form button.save-trigger, #urgency_options_form button.save-trigger').on('click', function() {
-			$(this).hide();
-		});
+			var fnUpdate = function() {
+				var postData = [];
+				postData.push({name: 'name', value: name});
 
-		$('#autoclose_options_form').ajaxForm({
-			dataType: 'json'
-		});
+				if (name == 'base_urgency') {
+					postData.push({ name: 'num', value: $('input[name="base_urgency"]', li).val() });
+				} else {
+					postData.push({ name: 'time', value: $('input[name="time"]', li).val() });
+					postData.push({ name: 'scale', value: $('select[name="scale"]', li).val() });
+				}
 
-		$('#urgency_options_form').ajaxForm({
-			dataType: 'json'
+				$('.loading-icon-small-inline', li).show();
+				$.ajax({
+					url: BASE_URL + '/admin/tickets/business-rules/save-built-in.json',
+					type: 'post',
+					dataType: 'json',
+					data: postData,
+					complete: function() {
+						$('.loading-icon-small-inline', li).hide();
+					},
+					success: function() {
+						DeskPRO_Window.util.showSavePuff($('input', li).first());
+					}
+				});
+			}
+
+			$('select', li).on('change', fnUpdate);
+			$('input', li).on('change', fnUpdate);
+			$('input', li).on('keypress', function(ev) {
+				// Enter
+				if (ev.keyCode == 13) {
+					ev.preventDefault();
+					fnUpdate();
+				}
+			});
 		});
 	}
 });
