@@ -76,7 +76,7 @@ class ReadEmailFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			$gateway['address']
 		));
 
-		/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
+		/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
 		$proc = $gateway->getNewProcessor($reader);
 		$proc->run();
 	}

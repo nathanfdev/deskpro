@@ -48,5 +48,93 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 				}
 			});
 		});
+
+		this._initAddresses();
+	},
+
+	_initAddresses: function() {
+		var self = this;
+
+		var el = $('#gateway_addresses');
+
+		el.on('click', '.default-address-radio', function() {
+			var li = $(this).closest('li');
+			$('li', el).removeClass('is-default');
+			li.addClass('is-default');
+		});
+
+		var rowTpl = $('.row-tpl', el).get(0).innerHTML;
+		var list = $('ul.list', el);
+		var newInput = $('input.new-choice', el);
+		var newInputType = $('select.new-choice-type', el);
+		var addNewBtn = $('.add-trigger', el);
+
+		function handleRemoveClick(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var li = $(this).closest('li.item');
+
+			if (li.data('address-id')) {
+				var rem = $('<input type="hidden" name="remove_address[]" />').val(li.data('address-id'));
+				rem.appendTo('#gateway_addresses');
+			}
+
+			li.fadeOut('fast', function() {
+				li.remove();
+			});
+		}
+
+		function handleAdd() {
+			var label, newId;
+
+			var pattern = newInput.val();
+			newInput.val('');
+
+			var type = newInputType.val();
+			newInputType.val('');
+
+			if (type == 'exact') label = pattern;
+			else if (type == 'domain') label = '*@' + pattern;
+			else if (type == 'regex') label = '<em>' + pattern + '</em>';
+
+			newId = Orb.getUniqueId();
+
+			var newRow = $(rowTpl.replace(/%id%/g, newId));
+			$('.label', newRow).html(label);
+			$('.row-value-type', newRow).val(type);
+			$('.row-value', newRow).val(pattern);
+			$('.default-address-radio', newRow).val(type + ':' + pattern);
+
+			list.append(newRow);
+		}
+
+		function handleAddClick(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			handleAdd();
+		}
+
+		newInput.on('keypress', function(ev) {
+			if (ev.keyCode == 13) {
+				ev.preventDefault();//dont enter enter key
+				handleAdd();
+			}
+		});
+		addNewBtn.on('click', handleAddClick);
+		list.on('click', '.remove', handleRemoveClick);
+
+		$(list).sortable({
+			axis: 'y',
+			handle: '.drag',
+			items: '> li',
+			start: function() {
+				list.addClass('dragging');
+			},
+			stop: function() {
+				list.removeClass('dragging');
+			}
+		});
 	}
 });

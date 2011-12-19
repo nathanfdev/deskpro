@@ -73,6 +73,19 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGatewayAddress", inversedBy="default_address")
+	 * @ORM_Mapping\JoinColumn(name="default_gateway_address_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $default_address;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="EmailGatewayAddress", mappedBy="gateway", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 */
+	protected $addresses;
+
+	/**
 	 * The last time this gateway successfully connected and checked for messages.
 	 *
 	 * @var \DateTime
@@ -84,6 +97,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
 	 */
 	protected $_fetcher = null;
+
+	public function __construct()
+	{
+		$this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 
 
 	/**
@@ -108,13 +126,13 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * Get a new instance of the processor class for an email
 	 *
 	 * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
-	 * @return \Application\DeskPRO\EmailGateway\AbstractGateway
+	 * @return \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor
 	 */
-	public function getNewProcessor(AbstractReader $reader)
+	public function getNewProcessor(AbstractReader $reader, array $options = array())
 	{
 		switch ($this->gateway_type) {
 			case self::GATEWAY_TICKETS:
-				$proc = new \Application\DeskPRO\EmailGateway\TicketGateway($this, $reader);
+				$proc = new \Application\DeskPRO\EmailGateway\TicketGatewayProcessor($this, $reader, $options);
 				break;
 
 			default:

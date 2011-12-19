@@ -27,7 +27,7 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 	{
 		$this->setName('dp:process-email-gateways');
 		$this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED, 'Process this gateway ID only');
-		$this->addOption('force', 'f', InputOption::VALUE_REQUIRED, 'Process the gateway even if its disabled');
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Process the gateway even if its disabled');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -77,6 +77,13 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 			/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
 			$fetcher = $gateway->getFetcher();
 
+			$logger = new \Orb\Log\Logger();
+			if ($verbose) {
+				$writer = new \Orb\Log\Writer\Output();
+				$logger->addWriter($writer);
+			}
+
+
 			while ($source = $fetcher->readNext()) {
 
 				$reader = new EzcReader();
@@ -98,8 +105,8 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 				App::getOrm()->beginTransaction();
 
 				try {
-					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
-					$proc = $gateway->getNewProcessor($reader);
+					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
+					$proc = $gateway->getNewProcessor($reader, array('logger' => $logger));
 					$created_obj = $proc->run();
 
 					$source['status'] = 'complete';

@@ -63,7 +63,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_simple':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p');
+				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
@@ -73,7 +73,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p');
+				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span');
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', true);

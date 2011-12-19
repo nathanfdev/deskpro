@@ -12,7 +12,7 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EmailGateway\AbstractGateway;
+use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
 use Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
@@ -22,7 +22,7 @@ use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
 use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 
-class TicketGateway extends AbstractGateway
+class TicketGatewayProcessor extends AbstractGatewayProcessor
 {
 	const EVENT_EVENT                    = 'DeskPRO_onTicketGatewayInit';
 	const EVENT_BEFORE_RUN_ACTION        = 'DeskPRO_onBeforeTicketGatewayRunAction';
@@ -361,6 +361,9 @@ class TicketGateway extends AbstractGateway
 				$ticket->person_email = $email_rec;
 			}
 		}
+
+		$ticket->gateway = $this->getGateway();
+		$ticket->gateway_address = $this->getGatewayAddress();
 
 		App::getOrm()->persist($ticket);
 		App::getOrm()->persist($message);

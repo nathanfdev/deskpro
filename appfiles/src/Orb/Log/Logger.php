@@ -59,13 +59,13 @@ class Logger
 	protected $_session_name = null;
 
 
-	
+
 	public function __construct()
 	{
 		$this->_writer_chain = new Writer\WriterChain();
 	}
-	
-	
+
+
 	/**
 	 * Add a priroty
 	 *
@@ -86,7 +86,7 @@ class Logger
 	}
 
 
-	
+
 	/**
 	 * Add a filter to be applied to every item.
 	 *
@@ -102,10 +102,10 @@ class Logger
 	}
 
 
-	
+
 	/**
 	 * Add a new writer to this logger.
-	 * 
+	 *
 	 * @param \Orb\Log\Writer\AbstractWriter $writer
 	 */
 	public function addWriter(\Orb\Log\Writer\AbstractWriter $writer)
@@ -113,12 +113,12 @@ class Logger
 		$this->_writer_chain->addWriter($writer);
 	}
 
-	
+
 
 	/**
 	 * Some writers are able to use a sesson name or ID to group a number of related
 	 * log events together. For example, to log the process through a single execution.
-	 * 
+	 *
 	 * @param string $session_name
 	 */
 	public function setSessionName($session_name)
@@ -126,7 +126,7 @@ class Logger
 		$this->_session_name = $session_name;
 	}
 
-	
+
 
 	/**
 	 * Log a new message
@@ -138,7 +138,7 @@ class Logger
 	public function log($message, $priority, array $info = array())
 	{
 		if (is_string($priority)) {
-			$priority = constant('Orb\\Log\\Logger::' . $priority);
+			$priority = constant('Orb\\Log\\Logger::' . strtoupper($priority));
 		}
 
 		$info[LogItem::MESSAGE] = $message;
@@ -149,7 +149,7 @@ class Logger
 		$this->logItem($log_item);
 	}
 
-	
+
 
 	/**
 	 * @param array $info
@@ -161,7 +161,7 @@ class Logger
 		return $log_item;
 	}
 
-	
+
 
 	/**
 	 * Write a log item

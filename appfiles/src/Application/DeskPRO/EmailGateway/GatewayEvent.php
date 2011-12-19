@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\Event;
 class GatewayEvent extends Event
 {
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\AbstractGateway
+	 * @var \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor
 	 */
 	protected $gateway;
 
@@ -25,7 +25,7 @@ class GatewayEvent extends Event
 	 */
 	protected $data = array();
 
-	public function __construct(AbstractGateway $gateway, array $data = array())
+	public function __construct(AbstractGatewayProcessor $gateway, array $data = array())
 	{
 		$this->gateway = $gateway;
 		$this->data = $data;
@@ -33,7 +33,7 @@ class GatewayEvent extends Event
 
 
 	/**
-	 * @var \Application\DeskPRO\EmailGateway\AbstractGateway
+	 * @var \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor
 	 */
 	public function getGateway()
 	{

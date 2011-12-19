@@ -105,7 +105,7 @@ abstract class AbstractReader
 	}
 
 	/**
-	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
+	 * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress[]
 	 */
 	public function getToAddresses()
 	{

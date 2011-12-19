@@ -16,7 +16,7 @@ use Application\DeskPRO\App;
 
 use Orb\Util\Arrays;
 
-abstract class AbstractGateway
+abstract class AbstractGatewayProcessor
 {
 	const EVENT_PROCESS_BLOBS       = 'DeskPRO_onEmailGatewayProcessBlobs';
 
@@ -29,6 +29,11 @@ abstract class AbstractGateway
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 */
 	protected $gateway;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 */
+	protected $gateway_address;
 
 	/**
 	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
@@ -50,9 +55,14 @@ abstract class AbstractGateway
 	 */
 	protected $cleaner;
 
-	public function __construct(Entity\EmailGateway $gateway_info, AbstractReader $reader, array $options = array())
+	/**
+	 * @var \Orb\Log\Writer\Stream
+	 */
+	public $logger;
+
+	public function __construct(Entity\EmailGateway $gateway, AbstractReader $reader, array $options = array())
 	{
-		$this->gateway_info = $gateway_info;
+		$this->gateway      = $gateway;
 		$this->reader       = $reader;
 		$this->options      = $options;
 
@@ -64,7 +74,23 @@ abstract class AbstractGateway
 
 		$this->cleaner = App::get('deskpro.core.input_cleaner');
 
+		$address_matcher = App::getSystemService('gateway_address_matcher');
+		$this->gateway_address = $address_matcher->getMatchingAddressFromReader($reader, $this->gateway);
+
+		if (isset($options['logger'])) {
+			$this->logger = $options['logger'];
+		}
+
+		$this->logMessage(sprintf("Matched address %s (%d)", $this->gateway_address->getTitle(), $this->gateway_address->id));
+
 		$this->init();
+	}
+
+	public function logMessage($message, $pri = 'info')
+	{
+		if ($this->logger) {
+			$this->logger->log($message, $pri);
+		}
 	}
 
 	/**
@@ -98,6 +124,7 @@ abstract class AbstractGateway
 			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
+			$this->logMessage(sprintf("Processed blob %s (%i)", $blob->filename, $blob->id));
 			$this->processed_blobs[] = $blob;
 		}
 
@@ -112,9 +139,18 @@ abstract class AbstractGateway
 	/**
 	 * @return \Application\DeskPRO\Entity\EmailGateway
 	 */
-	public function getGatewayInfo()
+	public function getGateway()
 	{
-		return $this->gateway_info;
+		return $this->gateway;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\EmailGatewayAddress
+	 */
+	public function getGatewayAddress()
+	{
+		return $this->gateway_address;
 	}
 
 

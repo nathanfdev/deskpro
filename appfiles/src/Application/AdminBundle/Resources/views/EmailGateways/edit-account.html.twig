@@ -84,6 +84,44 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
+			<label>Addresses</label>
+			<p>List the addresses you expect this gateway account accept email for.</p>
+		</div>
+		<div class="dp-form-input">
+			<div class="choices-builder" id="gateway_addresses">
+				<header>
+					<select class="new-choice-type">
+						<option value="exact">Email</option>
+						<option value="domain">Domain</option>
+						<option value="regex">Regex</option>
+					</select>
+					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">Add</button>
+				</header>
+				<div style="display: none" id="choice_extra_fields"></div>
+				<ul class="list">
+					{% for adr in gateway.addresses %}
+					<li class="item {% if gateway.default_address.id == adr.id %}is-default{% endif %}" data-address-id="{{ adr.id }}">
+						<div class="default"><label><span>Default</span> <input type="radio" class="default-address-radio" name="default_address" value="{{ adr.match_type }}:{{ adr.match_pattern }}" {% if gateway.default_address.id == adr.id %}checked="checked"{% endif %} /></label></div>
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="label">{{ adr.title }}</div>
+					</li>
+					{% endfor %}
+				</ul>
+				<script type="text/x-deskpro-plain" class="row-tpl">
+					<li class="item new" data-choice-id="new">
+						<div class="default"><label><span>Default</span> <input type="radio" class="default-address-radio" name="default_address" value="" /></label></div>
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="label"></div>
+						<input type="hidden" name="new_address[%id%][match_type]" class="row-value-type" value="" />
+						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
+					</li>
+				</script>
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
 			<label>Enabled</label>
 		</div>
 		<div class="dp-form-input">

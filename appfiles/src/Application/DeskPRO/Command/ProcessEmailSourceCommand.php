@@ -51,6 +51,13 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
 		$time_start = microtime(true);
 
+		$logger = new \Orb\Log\Logger();
+
+		if ($verbose) {
+			$writer = new \Orb\Log\Writer\Output();
+			$logger->addWriter($writer);
+		}
+
 		foreach ($source_ids as $source_id) {
 
 			$source = App::getEntityRepository('DeskPRO:EmailSource')->find($source_id);
@@ -64,8 +71,8 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 			App::getOrm()->beginTransaction();
 
 			try {
-				/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
-				$proc = $gateway->getNewProcessor($reader);
+				/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
+				$proc = $gateway->getNewProcessor($reader, array('logger' => $logger));
 				$created_obj = $proc->run();
 
 				$source['status'] = 'complete';

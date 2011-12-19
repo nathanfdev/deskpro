@@ -30,6 +30,13 @@ class EditEmailGateway
 	 */
 	protected $gateway;
 
+	protected $new_addresses;
+	protected $remove_addresses;
+	protected $set_default_address = null;
+
+	protected $persist_objs = array();
+	protected $remove_objs = array();
+
 	public function __construct(EmailGateway $gateway)
 	{
 		$this->gateway = $gateway;
@@ -49,6 +56,26 @@ class EditEmailGateway
 		$this->is_enabled = $gateway->is_enabled;
 	}
 
+	public function setNewAddresses(array $new_addresses)
+	{
+		$this->new_addresses = $new_addresses;
+	}
+
+	public function setRemoveAddressIds(array $remove_addresses)
+	{
+		$this->remove_addresses = $remove_addresses;
+	}
+
+	/**
+	 * $desc should be a string type:pattern, like exact:test@example.com
+	 *
+	 * @param string $desc
+	 */
+	public function setDefaultAddress($desc)
+	{
+		$this->set_default_address = $desc;
+	}
+
 	public function apply()
 	{
 		$this->gateway->connection_type = $this->connection_type;
@@ -62,12 +89,56 @@ class EditEmailGateway
 
 		$this->gateway->gateway_type = $this->gateway_type;
 		$this->gateway->is_enabled = $this->is_enabled;
+
+		if ($this->remove_addresses) {
+			foreach ($this->remove_addresses as $address_id) {
+				if (!isset($this->gateway->addresses)) {
+					continue;
+				}
+
+				$this->remove_objs[] = $this->gateway->addresses[$address_id];
+
+				$this->gateway->addresses->remove($address_id);
+				if ($this->gateway->default_address && $this->gateway->default_address->id == $address_id) {
+					$this->gateway->default_address = null;
+				}
+			}
+		}
+
+		if ($this->new_addresses) {
+			foreach ($this->new_addresses as $address) {
+				$address->gateway = $this->gateway;
+				$this->gateway->addresses->add($address);
+			}
+		}
+
+		if ($this->set_default_address) {
+			foreach ($this->gateway->addresses as $address) {
+				$str = $address->match_type . ':' . $address->match_pattern;
+				if ($str == $this->set_default_address) {
+					$this->gateway->default_address = $address;
+					break;
+				}
+			}
+		}
 	}
 
 
 	public function save()
 	{
 		$this->apply();
+
+		foreach ($this->remove_objs as $obj) {
+			App::getOrm()->remove($obj);
+		}
+		App::getOrm()->flush();
+
+		if (!$this->gateway->default_address && count($this->gateway->addresses)) {
+			foreach ($this->gateway->addresses as $address) {
+				$this->gateway->default_address = $address;
+				break;
+			}
+		}
 
 		App::getOrm()->persist($this->gateway);
 		App::getOrm()->flush();

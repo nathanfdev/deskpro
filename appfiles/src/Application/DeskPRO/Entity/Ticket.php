@@ -183,6 +183,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $email_gateway = null;
 
 	/**
+	 * The gateway email address the ticket matched
+	 *
+	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
+	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGatewayAddress")
+	 * @ORM_Mapping\JoinColumn(name="email_gateway_address_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $email_gateway_address = null;
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="notify_template", type="string", length=200)
 	 */

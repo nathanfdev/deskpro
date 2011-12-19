@@ -8,6 +8,7 @@ use Orb\Util\Arrays;
 
 use Application\AdminBundle\Form\EditEmailGateway as EditEmailGatewayForm;
 use Application\AdminBundle\FormModel\EditEmailGateway as EditEmailGatewayModel;
+use Application\DeskPRO\Entity\EmailGatewayAddress;
 
 class EmailGatewaysController extends AbstractController
 {
@@ -58,6 +59,26 @@ class EmailGatewaysController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
+				$new_addresses_info = $this->in->getCleanValueArray('new_address', 'array', 'str_simple');
+				$new_addresses = array();
+
+				foreach ($new_addresses_info as $address_info) {
+					$address = new EmailGatewayAddress();
+					$address->match_type    = $address_info['match_type'];
+					$address->match_pattern = $address_info['match_pattern'];
+
+					$new_addresses[] = $address;
+				}
+
+				// Remove addresses
+				$remove_address_ids = $this->in->getCleanValueArray('remove_address', 'uint', 'discard');
+
+				// Default address
+				$default_address = $this->in->getString('default_address');
+
+				$editgateway->setNewAddresses($new_addresses);
+				$editgateway->setRemoveAddressIds($remove_address_ids);
+				$editgateway->setDefaultAddress($default_address);
 
 				$this->em->getConnection()->beginTransaction();
 				try {
