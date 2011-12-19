@@ -182,7 +182,7 @@ class IdeasController extends AbstractController
 					$this->em->flush();
 
 					if ($do_move) {
-						$this->db->update('ideas', array('category_id' => $category->id), array('category_id' => $category->parent-id));
+						$this->db->update('ideas', array('category_id' => $category->id), array('category_id' => $category->parent->id));
 					}
 
 					$this->em->getRepository('DeskPRO:IdeaCategory')->repair();
