@@ -10,12 +10,8 @@
 				<p>Change your helpdesk settings, like your website URL</p>
 			</li>
 			<li class="link-email">
-				<a href="{{ path('admin_emailtrans_list') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">Outgoing Email Accounts</a>
-				<p>Set up how DeskPRO sends email and which accounts to send from, and which email addresses to use</p>
-			</li>
-			<li class="link-email">
-				<a href="{{ path('admin_emailgateways') }}" data-search-keywords="email gateway incoming" data-search-name="Settings &rsaquo; Incoming Email Accounts">Incoming Email Accounts</a>
-				<p>Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets</p>
+				<a href="{{ path('admin_emailtrans_setup') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">Outgoing Email Account</a>
+				<p>Set up how DeskPRO sends emails</p>
 			</li>
 			<li class="link-departments">
 				<a href="{{ path('admin_departments') }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">Departments</a>
@@ -140,6 +136,10 @@
 			<li class="link-ticket-triggers">
 				<a href="{{ path('admin_tickettriggers') }}" data-search-keywords="triggers escalations rules notifications business rules" data-search-name="Tickets &rsaquo; Business Rules">Business Rules</a>
 				<p>Define triggers to change or escalate tickets, send notifications, urgency settings and auto-close times</p>
+			</li>
+			<li class="link-email">
+				<a href="{{ path('admin_emailgateways') }}" data-search-keywords="email gateway incoming" data-search-name="Tickets &rsaquo; Email Gateways">Email Gateways</a>
+				<p>Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets</p>
 			</li>
 			<li class="link-ticket-macros">
 				<a href="" data-search-keywords="macros" data-search-name="Tickets &rsaquo; Macros">Macros</a>

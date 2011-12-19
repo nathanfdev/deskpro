@@ -42,37 +42,22 @@ class EmailTransportsController extends AbstractController
 
 	public function setupAction()
 	{
-		$transport = new \Application\DeskPRO\Entity\EmailTransport();
-		$transport->match_type = 'any';
-		$transport->match_pattern = 'any';
+		$transport = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:EmailTransport t
+			WHERE t.match_type = 'all'
+		")->getOneOrNullResult();
+
+		if (!$transport) {
+			$transport = new \Application\DeskPRO\Entity\EmailTransport();
+			$transport->match_type = 'all';
+			$transport->match_pattern = '*';
+		}
 
 		$edittrans = new EditEmailTransportModel($transport);
-		$edittrans->match_type = 'any';
-		$edittrans->match_pattern = 'any';
+		$edittrans->match_type = 'all';
+		$edittrans->match_pattern = '*';
 		$form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
-
-		if ($this->request->isPost()) {
-			$this->ensureRequestToken('edit_transport');
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-
-				$this->em->getConnection()->beginTransaction();
-				try {
-					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
-					$edittrans->save();
-					$this->em->getConnection()->commit();
-				} catch (\Exception $e) {
-					$this->em->getConnection()->rollback();
-					throw $e;
-				}
-
-				$this->session->setFlash('saved', $transport->title);
-				return $this->redirectRoute('admin_emailtrans_list');
-			} else {
-				die('ere');
-			}
-		}
 
 		return $this->render('AdminBundle:EmailTransports:setup.html.twig', array(
 			'transport' => $transport,
@@ -112,6 +97,10 @@ class EmailTransportsController extends AbstractController
 				} catch (\Exception $e) {
 					$this->em->getConnection()->rollback();
 					throw $e;
+				}
+
+				if ($transport->match_type == 'all') {
+					return $this->redirectRoute('admin_emailtrans_setup');
 				}
 
 				$this->session->setFlash('saved', $transport->title);

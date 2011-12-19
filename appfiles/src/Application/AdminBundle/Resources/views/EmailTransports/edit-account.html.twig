@@ -17,6 +17,9 @@
 <input type="hidden" name="process" value="1" />
 
 <div class="dp-form">
+
+	{% block email_transports_form_top %}{% endblock %}
+
 	{% if transport.match_type == 'all' %}
 		<input type="hidden" name="transport[match_type]" value="all" />
 	{% endif %}

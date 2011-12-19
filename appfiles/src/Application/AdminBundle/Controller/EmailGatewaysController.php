@@ -31,8 +31,11 @@ class EmailGatewaysController extends AbstractController
 			return $this->redirectRoute('admin_emailgateways_new');
 		}
 
+		$all_transports = $this->em->getRepository('DeskPRO:EmailTransport')->findAll();
+
 		return $this->render('AdminBundle:EmailGateways:list.html.twig', array(
-			'all_gateways' => $all_gateways
+			'all_gateways' => $all_gateways,
+			'all_transports' => $all_transports,
 		));
 	}
 

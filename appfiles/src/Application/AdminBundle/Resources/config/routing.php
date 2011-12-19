@@ -1314,7 +1314,7 @@ $collection->add('admin_emailtrans_list', new Route(
 ));
 
 $collection->add('admin_emailtrans_setup', new Route(
-	'/email/outgoing/setup',
+	'/setup/default-smtp',
 	array('_controller' => 'AdminBundle:EmailTransports:setup'),
 	array(),
 	array()

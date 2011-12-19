@@ -1,9 +1,56 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Incoming Email</h1>
+	<h1>Email Gateways</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_emailgateways_new') }}">New Incoming Email Account</a>
+		<a class="clean-white" href="{{ path('admin_emailgateways_new') }}">New Email Gateway</a>
 	</nav>
+{% endblock %}
+{% block sidebar_right %}
+<div class="dp-page-box">
+	<div class="resource-item-list">
+		<header>
+			<div class="controls">
+				<a class="clean-white small" href="{{ path('admin_emailtrans_newaccount') }}">New</a>
+			</div>
+			<h4>Outgoing Email Accounts</h4>
+		</header>
+		<article>
+			{% if all_transports|length > 1 %}{# > 1 because 1 is always the 'all' transport #}
+				<ul class="item-list">
+					{% for transport in all_transports %}{% if transport.match_type != 'all' %}
+						<li>
+							<div class="dp-block-controls">
+								<ul>
+									<li class="dp-edit"><a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}"><span></span></a></li>
+								</ul>
+							</div>
+
+							{% if transport.match_type == 'exact' %}From: {{ transport.match_pattern }}
+							{% elseif transport.match_type == 'domain' %}From: *@{{ transport.match_pattern }}
+							{% elseif transport.match_type == 'regex' %}From: {{ transport.match_pattern }}
+							{% endif %}
+							<br />
+							Send through:<br />
+							&nbsp;&nbsp;&nbsp;<span title="{{ transport.title }}">{{ transport.title|truncate(45) }}</span>
+						</li>
+					{% endif %}{% endfor %}
+				</ul>
+				<p>
+					When none of the above rules match, email will be sent through the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.
+				</p>
+			{% else %}
+				<p>
+					All email is currently being sent through the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.
+				</p>
+				<p>
+					You may <a href="{{ path('admin_emailtrans_newaccount') }}">add a new account</a> to send emails using different servers. For example,
+					if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts
+					for each "From" address you plan to support.
+				</p>
+			{% endif %}
+		</article>
+	</div>
+</div>
 {% endblock %}
 {% block page %}
 

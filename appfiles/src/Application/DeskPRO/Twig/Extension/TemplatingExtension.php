@@ -102,8 +102,18 @@ class TemplatingExtension extends \Twig_Extension
 			'implode' => new \Twig_Filter_Method($this, 'implodeArray'),
 			'crc32' => new \Twig_Filter_Method($this, 'crc32'),
 			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
+			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
         );
     }
+
+	public function strTruncate($str, $width = 80)
+	{
+		if (strlen($str) <= $width) {
+			return $str;
+		}
+
+		return trim(substr($str, 0, $width). '...');
+	}
 
 	public function startCounter($name = 'default', $start = 1)
 	{
