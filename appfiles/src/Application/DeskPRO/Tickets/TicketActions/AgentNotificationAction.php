@@ -144,12 +144,10 @@ class AgentNotificationAction implements ActionInterface
 		if ($this->tracker->isNewTicket()) {
 			$is_new_ticket = true;
 			$subject_phrase = 'agent.tickets_email.subject_ticket_new';
-		}
-		if ($this->tracker->hasNewAgentReply()) {
+		} elseif ($this->tracker->hasNewAgentReply()) {
 			$is_new_agent_reply = true;
 			$subject_phrase = 'agent.tickets_email.subject_new_agent_reply';
-		}
-		if ($this->tracker->hasNewUserReply()) {
+		} elseif ($this->tracker->hasNewUserReply()) {
 			$is_new_user_reply = true;
 			$subject_phrase = 'agent.tickets_email.subject_new_user_reply';
 		}

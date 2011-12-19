@@ -205,7 +205,13 @@ class DetectFilterMatches
 				}
 				$searcher->setPerson($agent);
 
-				$orig_match = $searcher->doesTicketMatch($orig_ticket);
+				if ($this->tracker->isNewTicket()) {
+					// there is no such thing as an original match with a new ticket
+					$orig_match = false;
+				} else {
+					$orig_match = $searcher->doesTicketMatch($orig_ticket);
+				}
+
 				$new_match  = $searcher->doesTicketMatch($new_ticket);
 
 				if ($orig_match) {
@@ -218,7 +224,11 @@ class DetectFilterMatches
 				if ($reset_status) {
 					$searcher = $filter->getSearcher();
 					$searcher->setPerson($agent);
-					$orig_match = $searcher->doesTicketMatch($orig_ticket);
+					if ($this->tracker->isNewTicket()) {
+						$orig_match = false;
+					} else {
+						$orig_match = $searcher->doesTicketMatch($orig_ticket);
+					}
 					$new_match  = $searcher->doesTicketMatch($new_ticket);
 				}
 

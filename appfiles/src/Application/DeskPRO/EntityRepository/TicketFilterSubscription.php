@@ -36,6 +36,24 @@ class TicketFilterSubscription extends EntityRepository
 		return $ret;
 	}
 
+	/**
+	 * Return an array of subscription info for all agents in $people, optionally only for $filters.
+	 *
+	 * Returned array structure:
+	 * <code>
+	 * array(
+	 *     // agend id => TicketFilterSubscription[]
+	 *     123 => array(
+	 *         14 => TicketFilterSubscription['email_new', ...],
+	 *         // filter id => TicketFilterSubscription
+	 *     )
+	 * )
+	 * </code>
+	 *
+	 * @param array $people
+	 * @param array $filters
+	 * @return array
+	 */
 	public function getForAgents(array $people, array $filters = null)
 	{
 		$people_ids = array();
@@ -64,16 +82,16 @@ class TicketFilterSubscription extends EntityRepository
 				FROM DeskPRO:TicketFilterSubscription s
 				LEFT JOIN s.filter f
 				LEFT JOIN s.person a
-				WHERE s.person IN (?1) AND s.filter IN (?2)
-			")->execute(array(1=> $people_ids, 2=> $filter_ids));
+				WHERE s.person IN ($people_ids) AND s.filter IN ($filter_ids)
+			")->execute();
 		} else {
 			$results = $this->getEntityManager()->createQuery("
 				SELECT s
 				FROM DeskPRO:TicketFilterSubscription s
 				LEFT JOIN s.filter f
 				LEFT JOIN s.person a
-				WHERE s.person IN (?1)
-			")->execute(array(1=> $people_ids));
+				WHERE s.person IN ($people_ids)
+			")->execute();
 		}
 
 		$ret = array();
