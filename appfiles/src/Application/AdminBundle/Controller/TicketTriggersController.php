@@ -33,7 +33,6 @@ class TicketTriggersController extends AbstractController
 
 	public function listAction()
 	{
-		$this->rememberLastPage();
 
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getEventTriggers(false, false);
 		$all_escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers(false, false);
@@ -43,8 +42,6 @@ class TicketTriggersController extends AbstractController
 
 		$autoclose_options = AutoCloseOptions::newFromSystemTriggers();
 		$autoclose_form = $this->get('form.factory')->create(new TicketAutoCloseOptionsType(), $autoclose_options);
-
-		$autoclose_page = $this->forward('AdminBundle:TicketAutoClose:list')->getContent();
 
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
 			'all_triggers' => $all_triggers,

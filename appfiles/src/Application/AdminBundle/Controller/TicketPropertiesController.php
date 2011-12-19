@@ -30,8 +30,6 @@ class TicketPropertiesController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$this->rememberLastPage();
-
 		$counts = array();
 		$counts['ticket_category'] = App::getEntityRepository('DeskPRO:TicketCategory')->countAll();
 		$counts['ticket_priority'] = App::getEntityRepository('DeskPRO:TicketPriority')->countAll();

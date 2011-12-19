@@ -31,8 +31,6 @@ class AgentsController extends AbstractController
 
 	public function agentsAction()
 	{
-		$this->rememberLastPage();
-
 		$all_agents = App::getOrm()->createQuery("
 			SELECT p, pic, email
 			FROM DeskPRO:Person p INDEX BY p.id

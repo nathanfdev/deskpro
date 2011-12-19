@@ -47,8 +47,6 @@ abstract class CustomDefAbstractController extends AbstractController
 	 */
 	public function indexAction()
 	{
-		$this->rememberLastPage();
-
 		$existing_fields = $this->getApi()->getEnabledFields();
 
 		return $this->render($this->getTemplateName('index.html.twig'), $this->getTemplateVars(array(

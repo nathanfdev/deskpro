@@ -26,8 +26,6 @@ class PluginsController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$this->rememberLastPage();
-
 		$finder = new PluginFinder();
 		$available_plguins = $finder->findPlugins();
 
@@ -55,8 +53,6 @@ class PluginsController extends AbstractController
 	 */
 	public function installAction($plugin_id, $step = 1)
 	{
-		$this->rememberLastPage();
-
 		$finder = new PluginFinder();
 		$plugin_info = $finder->getPluginInfo($plugin_id);
 		$package_name = $plugin_info['class'];
@@ -96,8 +92,6 @@ class PluginsController extends AbstractController
 	 */
 	public function uninstallAction($plugin_id)
 	{
-		$this->rememberLastPage();
-
 		$plugin = App::findEntity('DeskPRO:Plugin', $plugin_id);
 		$package_class = $plugin['package_class'];
 

@@ -31,8 +31,6 @@ class DepartmentsController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$this->rememberLastPage();
-
 		$all_departments = $this->em->createQuery("
 			SELECT dep
 			FROM DeskPRO:Department dep

@@ -37,8 +37,6 @@ class StylesController extends AbstractController
 	 */
 	public function listStylesAction()
     {
-		$this->rememberLastPage();
-
         return $this->render('AdminBundle:Styles:list-styles.html.twig', array(
 			'style_hierarchy' => $this->style_hierarchy
 		));

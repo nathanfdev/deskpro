@@ -51,14 +51,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		return false;
 	}
 
-	protected function rememberLastPage($url = null)
-	{
-		if (!$url) {
-			$url = App::getRequest()->getRequestUri();
-		}
-		App::getSession()->set('admin_last_page', $url);
-	}
-
 	/**
 	 * Render a standard error message.
 	 *
