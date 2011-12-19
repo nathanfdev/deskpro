@@ -68,9 +68,8 @@ class TicketPropertiesController extends AbstractController
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$custom_people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
-		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
-
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$ticket_options['email_gateway_addresses'] = $this->em->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
 
 		// Existing options
 		$is_default = false;
@@ -87,7 +86,7 @@ class TicketPropertiesController extends AbstractController
 			'department' => $department,
 			'custom_ticket_fields' => $custom_ticket_fields,
 			'custom_people_fields' => $custom_people_fields,
-			'term_options' => $term_options,
+			'term_options' => $ticket_options,
 			'ticket_options' => $ticket_options,
 			'is_default' => $is_default,
 			'page_data' => $page_data,

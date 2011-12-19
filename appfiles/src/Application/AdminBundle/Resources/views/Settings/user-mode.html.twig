@@ -24,12 +24,56 @@
 		<li {% if app.getSetting('core.user_mode') == 'external' %}class="on"{% endif %}>
 			<h3>
 				<label>
-					<input type="radio" name="mode" value="external" {% if app.getSetting('core.user_mode') == 'external' %}checked="checked"{% endif %}> Closed but with External Authentication
+					<input type="radio" name="mode" value="external" {% if app.getSetting('core.user_mode') == 'external' %}checked="checked"{% endif %}> External Authentication
 				</label>
 			</h3>
 			<p>
 				This mode closes your helpdesk to registration, but allows users to log in with credentials from an external database, such
 				as your website member base, LDAP or Active Directory.
+			</p>
+			<div class="show-on">
+				<div class="dp-form">
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>Registration URL</label>
+							<em class="desc">When users want to register, this link will be provided.</em>
+						</div>
+						<div class="dp-form-input">
+							<input type="text" name="" />
+						</div>
+					</div>
+
+					<div class="dp-form-row">
+						<div class="dp-form-label">
+							<label>External Source Configuration</label>
+							<em class="desc">You have not configured an external user source yet.</em>
+						</div>
+						<div class="dp-form-input">
+							<select	name="">
+								<option>Active Directory</option>
+								<option>LDAP</option>
+								<option>XenForo</option>
+								<option>vBulletin</option>
+								<option>phpBB</option>
+								<option>Magento</option>
+								<option>Joomla</option>
+								<option>Drupal</option>
+								<option>WordPress</option>
+							</select> <button class="clean-white small">Configure &rarr;</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+
+		<li {% if app.getSetting('core.user_mode') == 'closed_agent_validation' %}class="on"{% endif %}>
+			<h3>
+				<label>
+					<input type="radio" name="mode" value="closed_agent_validation" {% if app.getSetting('core.user_mode') == 'closed_agent_validation' %}checked="checked"{% endif %}> Closed with agent validation
+				</label>
+			</h3>
+			<p>
+				This mode allows users to register on the helpdesk, but before their accounts become active, an agent must manually validate the account.
 			</p>
 		</li>
 
