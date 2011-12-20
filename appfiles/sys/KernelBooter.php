@@ -89,6 +89,12 @@ class KernelBooter
 				exit;
 			}
 
+		} elseif (preg_match('#^/tech(/|\?|$)#i', $path)) {
+			header('Location: ' . $request->getServerBaseUrl() . '/agent');
+			exit;
+		} elseif (preg_match('#^/admincp(/|\?|$)#i', $path)) {
+			header('Location: ' . $request->getServerBaseUrl() . '/admin');
+			exit;
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'user');
