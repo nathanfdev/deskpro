@@ -6,18 +6,15 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function TicketTriggerEditPage_initTerms(handler) {
-	var count = 0;
 	{% for action in trigger.terms %}
-		var basename = 'terms['+count+']';
-		handler.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
-		count++;
+		var basename = 'terms['+Orb.uuid()+']';
+		handler.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{action.op}}', options: {{action.options|json_encode|raw}} });
 	{% endfor %}
 
 	var count = 0;
 	{% for action in trigger.actions %}
-		var basename = 'actions['+count+']';
+		var basename = 'actions['+Orb.uuid()+']';
 		handler.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
-		count++;
 	{% endfor %}
 }
 </script>

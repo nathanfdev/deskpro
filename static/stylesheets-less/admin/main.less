@@ -2048,6 +2048,7 @@ ul.labels-list li > div:hover .dp-block-controls {
 .dp-block-controls ul li.dp-edit span     {   background-image: url(../../images/admin/icons/portal-edit.png); }
 .dp-block-controls ul li.dp-rename span   {   background-image: url(../../images/admin/icons/textfield_rename.png); }
 .dp-block-controls ul li.dp-remove span   {   background-image: url(../../images/admin/icons/portal-remove.png); }
+.dp-block-controls ul li.dp-move span   {   background-image: url(../../images/agent/icons/move-grip.png); cursor: move; }
 
 
 .new-label {
@@ -2133,13 +2134,30 @@ ul.item-list > li:hover .dp-block-controls {
 	.opacity(100);
 }
 
-ul.item-list > li.trigger-row ul.criteria {
-	padding-right: 40px;
-	background: url(../../images/admin/trigger-action-arrow.png) no-repeat 100% 50%;
+ul.item-list > li .trigger-desc {
+
 }
 
-.edit-phrase-overlay section.phrase-section {
-	margin-bottom: 10px;
+ul.item-list > li .trigger-desc em.op {
+	font-style: normal;
+	font-size: 10px;
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+	background-color: #C7DAF8;
+	.rounded(3px);
+	line-height: 100%;
+	padding: 0px 2px 0px 2px;
+	position: relative;
+	top: -1px;
+	font-variant:small-caps;
+}
+
+ul.item-list > li .trigger-desc em.op.ctrl {
+	background-color: #F5E69F;
+}
+
+ul.item-list > li .trigger-desc .actions {
+	padding-left: 18px;
+	background: url(../../images/agent/icons/right-arrow-light.png) no-repeat 0 50%;
 }
 
 .edit-phrase-overlay section.phrase-section textarea {

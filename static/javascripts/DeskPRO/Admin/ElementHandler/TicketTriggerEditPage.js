@@ -10,11 +10,7 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
 
 		$('.criteria-form .add-term').data('add-count', 0).on('click', function() {
-			var count = parseInt($(this).data('add-count'));
-			var basename = 'terms['+count+']';
-
-			$(this).data('add-count', count+1);
-
+			var basename = 'terms['+Orb.uuid()+']';
 			self.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename);
 		});
 
@@ -40,10 +36,7 @@ DeskPRO.Admin.ElementHandler.TicketTriggerEditPage = new Orb.Class({
 		});
 
 		$('.actions-form .add-term').data('add-count', 0).on('click', function() {
-			var count = parseInt($(this).data('add-count'));
-			var basename = 'actions['+count+']';
-
-			$(this).data('add-count', count+1);
+			var basename = 'actions['+Orb.uuid()+']';
 
 			self.actionsEditor.addNewRow($('.actions-form .search-terms'), basename);
 		});

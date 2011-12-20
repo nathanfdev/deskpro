@@ -462,9 +462,6 @@ class TicketTerms
 
 	public function getTermDescription($term, $op, $choice)
 	{
-		if (is_array($choice) && count($choice) == 1) {
-			$choice = array_pop($choice);
-		}
 		switch ($term) {
 			case 'creation_system':
 				$choice = (array)$choice;
@@ -575,6 +572,7 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_SUBJECT:
+				$choice = $choice['subject'];
 				switch ($op) {
 					case self::OP_IS:
 						return "Subject is: {$choice}";
