@@ -17,17 +17,19 @@
 
 
 {% macro structure_table(options) %}
-	<table
-		{% if options.id %}id="{{ options.id }}"{% endif %}
-		cellspacing="0"
-		cellpadding="0"
-		width="100%"
-		border="0"
-		class="{% if options.save_order_url %}with-reorderable{% endif %} structure-list"
-		{% if options.save_order_url %}data-reorder-save-url="{{ options.save_order_url }}"{% endif %}
-	>
+	<div class="structure-table">
+		<table
+			{% if options.id %}id="{{ options.id }}"{% endif %}
+			cellspacing="0"
+			cellpadding="0"
+			width="100%"
+			border="0"
+			class="{% if options.save_order_url %}with-reorderable{% endif %} structure-list"
+			{% if options.save_order_url %}data-reorder-save-url="{{ options.save_order_url }}"{% endif %}
+		>
 {% endmacro %}
 
 {% macro structure_table_end() %}
-	</table>
+		</table>
+	</div>
 {% endmacro %}

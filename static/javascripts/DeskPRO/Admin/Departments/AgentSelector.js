@@ -10,18 +10,14 @@ DeskPRO.Admin.Departments.AgentSelector = new Orb.Class({
 		var btn = this.el;
 
 		this.optionbox = new DeskPRO.UI.OptionBox({
-			element: $('#optionbox_dep_' + this.department_id),
+			element: $('#optionbox_dep_' + this.department_id + '_' + self.el.data('app')),
 			trigger: this.el,
 			onClose: function(optionbox) {
-				var countTeams  = optionbox.getCount('teams');
 				var countAgents = optionbox.getCount('agents');
 
 				var words = [];
 				if (countAgents > 0) {
 					words.push(countAgents + ' agents');
-				}
-				if (countTeams > 0) {
-					words.push(countTeams + ' teams');
 				}
 
 				if (!words.length) {
@@ -30,7 +26,7 @@ DeskPRO.Admin.Departments.AgentSelector = new Orb.Class({
 
 				btn.text(words.join(', '));
 
-				self.fireEvent('updated', [self.department_id, optionbox.getSelected('agents'), optionbox.getSelected('teams'), self]);
+				self.fireEvent('updated', [self.department_id, self.el.data('app'), optionbox.getSelected('agents'), self]);
 			}
 		});
 	},

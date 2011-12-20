@@ -19,10 +19,10 @@
 	{{ design.structure_table({ 'save_order_url': path('admin_departments_updateorders') }) }}
 		<thead>
 			<td>&nbsp;</td>
-			<th>Enable Tickets</th>
-			<th>Enable Chat</th>
-			<th>User Permissions</th>
-			<th>Agent Permissions</th>
+			<th>Tickets</th>
+			<th>Ticket Permissions</th>
+			<th>Chat</th>
+			<th>Chat Permissions</th>
 		</thead>
 		{% for department in all_departments %}
 			{% include 'AdminBundle:Departments:list-row.html.twig' %}

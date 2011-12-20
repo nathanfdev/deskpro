@@ -1,21 +1,6 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% macro agentteam_selector(for_id, selected_agents, selected_teams, agents, teams) %}
-	<div class="optionbox" id="optionbox_dep_{{ for_id }}">
-		{% if teams|length %}
-		<section data-section-name="teams">
-			<header>
-				<input type="checkbox" class="all-check" />
-				<h3>Teams</h3>
-				<span class="selected-count" style="display: none">(<span class="num"></span>)</span>
-				<input type="text" class="filter-box" placeholder="Filter..." />
-			</header>
-			<ul>
-				{% for team in teams %}
-					<li><input type="checkbox" value="{{ team.id }}" {% if team.id in selected_teams %}checked="checked"{% endif %} /><label>{{ team.name }}</label></li>
-				{% endfor %}
-			</ul>
-		</section>
-		{% endif %}
+{% macro agentteam_selector(for_id, app, selected_agents, agents) %}
+	<div class="optionbox" id="optionbox_dep_{{ for_id }}_{{ app }}">
 		<section data-section-name="agents">
 			<header>
 				<input type="checkbox" class="all-check" />
@@ -31,23 +16,6 @@
 		</section>
 	</div>
 {% endmacro %}
-{% macro ug_selector(for_id, selected_usergroups, usergroups) %}
-	<div class="optionbox" id="optionbox_ug_{{ for_id }}">
-		<section data-section-name="usergroups">
-			<header>
-				<input type="checkbox" class="all-check" />
-				<h3>Usergroups</h3>
-				<span class="selected-count" style="display: none">(<span class="num"></span>)</span>
-				<input type="text" class="filter-box" placeholder="Filter..." />
-			</header>
-			<ul>
-				{% for usergroup in usergroups %}
-					<li><input type="checkbox" value="{{ usergroup.id }}" {% if usergroup.id in selected_usergroups %}checked="checked"{% endif %} /><label>{{ usergroup.title }}</label></li>
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-{% endmacro %}
 
 {% if not depth %}
 <tbody>
@@ -58,36 +26,37 @@
 				{{department.title}}
 			</a>
 		</td>
-		<td width="35" class="controls">
+		<td width="35" class="controls border-left">
 			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
 		</td>
-		<td width="35" class="controls">
+		<td width="50" class="controls">
+				<div class="tickets-enabled" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
+					<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}">
+						{% if not current_options_tickets[department.id] %}
+							No agents
+						{% else %}
+							{{ current_options_tickets[department.id]|length }} agents
+						{% endif %}
+					</button>
+				</div>
+				<div class="disabled-state tickets-disabled" {% if department.is_tickets_enabled %}style="display: none"{% endif %}>disabled</div>
+				{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
+			</td>
+		<td width="35" class="controls border-left">
 			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
 		</td>
 		<td width="50" class="controls">
-			<button class="clean-white ug-selection" data-element-handler="DeskPRO.Admin.Departments.UsergroupSelector" data-register-handler="true" data-department-id="{{ department.id }}">
-				{% if current_options[department.id].usergroup %}
-					{{ current_options[department.id].usergroup|length }} usergroups
-				{% else %}
-					No usergroups
-				{% endif %}
-			</button>
-			{{ _self.ug_selector(department.id, current_options[department.id].usergroup, usergroups) }}
-		</td>
-		<td width="50" class="controls">
-			<button class="clean-white agent-team-selection" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-register-handler="true" data-department-id="{{ department.id }}">
-				{% if not current_options[department.id].person and not current_options[department.id].agent_team %}
-					No agents
-				{% else %}
-					{% if current_options[department.id].person %}
-						{{ current_options[department.id].person|length }} agents{% if current_options[department.id].agent_team|length %},{% endif %}
+			<div class="chat-enabled" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
+				<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}">
+					{% if not current_options_chat[department.id] %}
+						No agents
+					{% else %}
+						{{ current_options_chat[department.id]|length }} agents
 					{% endif %}
-					{% if current_options[department.id].agent_team %}
-						{{ current_options[department.id].agent_team|length }} teams
-					{% endif %}
-				{% endif %}
-			</button>
-			{{ _self.agentteam_selector(department.id, current_options[department.id].person, current_options[department.id].agent_team, agents, teams) }}
+				</button>
+			</div>
+			<div class="disabled-state chat-disabled" {% if department.is_chat_enabled %}style="display: none"{% endif %}>disabled</div>
+			{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}
 		</td>
 	</tr>
 	{% if department.children|length %}

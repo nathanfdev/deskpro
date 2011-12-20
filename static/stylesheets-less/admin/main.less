@@ -639,37 +639,31 @@ background: linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10
 	padding: 15px;
 }
 
-table.structure-list thead td {
-	background: transparent;
-	border: none !important;
+div.structure-table {
+	border: 1px solid #ABAFB5;
 }
 
-table.structure-list thead th:first-of-type {
-	border-radius: 6px 0 0 0;
-	border-left: none;
-}
-
-table.structure-list thead th:last-of-type {
-	border-radius: 0 6px 0 0;
-}
-
-table.structure-list thead th.only {
-    .border-radius(6px,6px,0px,0px);
-}
-
+table.structure-list thead td,
 table.structure-list thead th {
-	background-color: #DDDDDD;
-	border-left: none;
-	font-size: 10px;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: @heading-font;
+	font-weight: bold;
+	font-size: 9px;
+	line-height: 100%;
+
+	.gradient(#F0F1F3, #DADBDE);
+
+	padding: 1px 5px 1px 5px;
 	vertical-align: middle;
-	text-align: center;
 }
 
 table.structure-list td {
-	padding: 8px;
+	padding: 3px 6px 3px 6px;
 	vertical-align: middle;
-	background-color: #F9F9F9;
+	background-color: #E8E8E8;
+}
+
+table.structure-list td.border-left {
+	border-left: 1px solid #C2C6CC;
 }
 
 table.structure-list td.controls {
@@ -682,10 +676,9 @@ table.structure-list tr.depth-1 td.title {
 }
 
 table.structure-list td.title {
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	font-weight: bold;
+    background-color: #fff;
 	color: #000;
-	font-size: 13px;
+	font-size: 11px;
 	padding-left: 8px;
 }
 
@@ -698,11 +691,13 @@ table.structure-list td.title a.edit-title {
 	background: url(../../images/agent/icons/cog.png) no-repeat 100% 50%;
 }
 
-table.structure-list td:first-child { border-left:1px solid #ddd; }
-table.structure-list td:last-child { border-right:1px solid #ddd; }
-table.structure-list tr:last-child td { border-bottom:1px solid #ddd; }
-table.structure-list th+th, table.structure-list td+td{border-left:1px solid #ddd;}
-table.structure-list tr+tr td, table.structure-list tbody tr td {border-top:1px solid #ddd;}
+table.structure-list tr:hover td.prop,
+table.structure-list tr:hover td {
+	background-color: #D0D1D1;
+}
+table.structure-list tr:hover td.title {
+	background-color: #E8EAEA;
+}
 
 table.structure-list tbody.placeholder tbody,
 table.structure-list tbody.placeholder tr,
@@ -2358,4 +2353,12 @@ nav.admin-object-nav li:hover {
 	color: #000;
 	border: 1px solid #78764D;
 	cursor: pointer;
+}
+
+
+.disabled-state {
+	text-align: center;
+	font-variant: small-caps;
+	font-size: 10px;
+	color: #999;
 }

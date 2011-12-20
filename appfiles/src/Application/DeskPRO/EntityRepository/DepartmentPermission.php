@@ -46,67 +46,14 @@ class DepartmentPermission extends EntityRepository
 	}
 
 	/**
-	 * Get an array of id's for `agent_team` and `usergroup` types.
-	 *
-	 * Returns array(
-	 *   1 => array('agent_team' => array(1,2,3), 'usergroup' => array(1,2,3))),
-	 * )
-	 *
-	 * @param \Application\DeskPRO\Entity\Department[] $departments
 	 * @return array
 	 */
-	public function getPermissionsForDepartments(array $departments, $inc_child = true)
+	public function getAllPermissionsForAllDepartments($app)
 	{
-		$ids = array();
-		$fetch_children = array();
-
-		foreach ($departments as $d) {
-			if ($d instanceof DepartmentEntity) {
-				$ids[] = $d->id;
-				if ($inc_child) {
-					$fetch_children[] = $d->id;
-				}
-			} elseif (Numbers::isInteger($d)) {
-				$ids[] = $d;
-				if ($inc_child) {
-					if ($inc_child) {
-						$fetch_children[] = $d;
-					}
-				}
-			}
-		}
-
-		if (!$ids) {
-			return array();
-		}
-
-		if ($fetch_children) {
-			foreach ($fetch_children as $d) {
-				$ids = array_merge(
-					$ids,
-					$this->getEntityManager()->getRepository('DeskPRO:Department')->getIdsInTree($d, false)
-				);
-			}
-		}
-
-		$ids = implode(',', $ids);
-
-		$results = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+		return App::getDb()->fetchAllGrouped("
 			SELECT department_id, person_id
 			FROM department_permissions
-			WHERE department_id IN ($ids)
-		");
-
-		return $results;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getPermissionsForAllDepartments()
-	{
-		$dep_ids = $this->getEntityManager()->getRepository('DeskPRO:Department')->getDepartmentIds();
-		return $this->getPermissionsForDepartments($dep_ids, true);
+			WHERE app = ?
+		", array($app), 'department_id', null, 'person_id');
 	}
 }
