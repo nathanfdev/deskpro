@@ -481,36 +481,44 @@ class TicketTerms
 				break;
 
 			case TicketSearch::TERM_DEPARTMENT:
+				$choice = $choice['department'];
 				$name = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Department is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_CATEGORY:
+				$choice = $choice['category'];
 				$name = App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Category is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_PRODUCT:
+				$choice = $choice['product'];
 				$name = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Product is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_PRIORITY:
+				$choice = $choice['priority'];
 				$name = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Priority is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_ORGANIZATION:
+				$choice = $choice['organization'];
 				$name = App::getEntityRepository('DeskPRO:TicketCategory')->getOrganizationNames($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Organization is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_LANGUAGE:
+				$choice = $choice['language'];
 				$name = App::getEntityRepository('DeskPRO:Language')->getTitles($choice);
 				if (!isset($name[$choice])) return '';
 				return 'Language is ' . $name[$choice];
 				break;
 			case TicketSearch::TERM_AGENT:
+				$choice = $choice['agent'];
+
 				if ($choice == -1) {
 					return 'Agent is currently logged in agent';
 				}
@@ -551,6 +559,7 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_PARTICIPANT:
+				$choice = $choice['product'];
 				if (is_array($choice)) {
 					$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($choice);
 					if (!$name) return '';
