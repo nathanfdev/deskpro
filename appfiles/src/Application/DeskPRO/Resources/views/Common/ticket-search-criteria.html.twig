@@ -14,7 +14,7 @@
 	<div class="type" title="Choose criteria..." data-rule-type="">
 	</div>
 {% endif %}
-	{% if with_change_terms %}
+	{% if event_trigger == 'new_reply' or event_trigger == 'property_change'  %}
 		<div class="type" title="Performer" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
@@ -46,52 +46,50 @@
 			</select>
 		</div>
 	</div>
-	{% if term_options.email_gateway_addresses %}
-	<div class="type" title="Gateway address" data-rule-type="email_gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,email-account">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="is">is</option>
-				<option value="not">is not</option>
-			</select>
-		</div>
-		<div class="options">
-			<select name="receiving_gateway">
-				{% for id,label in term_options.email_gateway_addresses %}
-					<option value="{{id}}">{{label}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-	{% endif %}
 	<div class="type" title="Subject" data-rule-type="subject">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
-				<option value="not">is not</option>
 				<option value="contains">contains</option>
 				<option value="not_contains">does not contain</option>
+				<option value="is">is</option>
+				<option value="not">is not</option>
 			</select>
 		</div>
 		<div class="options">
 			<input type="text" name="subject" value="" />
 		</div>
 	</div>
-	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="is">is</option>
-				<option value="not">is not</option>
-				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to include</option>
-					<option value="changed_from">Changed to remove</option>
-				{% endif %}
-			</select>
+	{% if term_options.departments_hierarchy %}
+		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
+			<div class="op">
+				<select name="op" class="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if with_change_terms %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="department">
+					{% for dep in term_options.departments_hierarchy %}
+						<option value="{{dep.id}}">{{dep.title}}</option>
+						{% if dep.children %}
+							<option value="{{dep.id}}">{{dep.title}}</option>
+							{% for subdep in dep.children %}
+								<option value="{{subdep.id}}">-- {{subdep.title}}</option>
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</select>
+			</div>
 		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
-		</div>
-	</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
 	<div class="type" title="Assigned Agent" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
@@ -116,27 +114,8 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Subscribers" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="is">include</option>
-				<option value="not">does not include</option>
-				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to include</option>
-					<option value="changed_from">Changed to remove</option>
-				{% endif %}
-			</select>
-		</div>
-		<div class="options">
-			<select name="agent">
-				<option value="-1">Current Agent</option>
-				{% for id,label in term_options.agents %}
-					<option value="{{id}}">{{label}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
 	{% if term_options.agent_teams %}
 		<div class="type" title="Agent Team" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
@@ -163,6 +142,48 @@
 			</div>
 		</div>
 	{% endif %}
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
+	<div class="type" title="Followers" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="is">include</option>
+				<option value="not">does not include</option>
+				{% if with_change_terms %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to include</option>
+					<option value="changed_from">Changed to remove</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<select name="agent">
+				<option value="-1">Current Agent</option>
+				{% for id,label in term_options.agents %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
+	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				{% if with_change_terms %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to include</option>
+					<option value="changed_from">Changed to remove</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
+		</div>
+	</div>
+	{% endif  %}
 	<div class="type" title="Status" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
@@ -187,66 +208,6 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="lte">before</option>
-				<option value="gte">after</option>
-				<option value="between">between</option>
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
-	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="lte">before</option>
-				<option value="gte">after</option>
-				<option value="between">between</option>
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
-	<div class="type" title="Date closed" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="lte">before</option>
-				<option value="gte">after</option>
-				<option value="between">between</option>
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
-	<div class="type" title="Date of last agent reply" data-rule-type="date_last_agent_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="lte">before</option>
-				<option value="gte">after</option>
-				<option value="between">between</option>
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
-	<div class="type" title="Date of last user reply" data-rule-type="date_last_user_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
-		<div class="op">
-			<select name="op" class="op">
-				<option value="lte">before</option>
-				<option value="gte">after</option>
-				<option value="between">between</option>
-			</select>
-		</div>
-		<div class="options">
-			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
-		</div>
-	</div>
 	{% if term_options.products %}
 		<div class="type" title="Product" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
@@ -266,36 +227,6 @@
 				<select name="product">
 					{% for id,label in term_options.products %}
 						<option value="{{id}}">{{label}}</option>
-					{% endfor %}
-				</select>
-			</div>
-		</div>
-	{% endif %}
-	{% if term_options.departments_hierarchy %}
-		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
-			<div class="op">
-				<select name="op" class="op">
-					<option value="is">is</option>
-					<option value="not">is not</option>
-					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
-					{% endif %}
-				</select>
-			</div>
-			<div class="options">
-				<select name="department">
-					{% for dep in term_options.departments_hierarchy %}
-						<option value="{{dep.id}}">{{dep.title}}</option>
-						{% if dep.children %}
-							<option value="{{dep.id}}">{{dep.title}}</option>
-							{% for subdep in dep.children %}
-								<option value="{{subdep.id}}">-- {{subdep.title}}</option>
-							{% endfor %}
-						{% endif %}
 					{% endfor %}
 				</select>
 			</div>
@@ -404,6 +335,74 @@
 				</select>
 			</div>
 		</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
+	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+	</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger == 'time_resolved' %}
+	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+	</div>
+	{% endif %}
+	{% if not event_trigger %}
+	<div class="type" title="Date closed" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+	</div>
+	{% endif %}
+	{% if not event_trigger or event_trigger != 'new_ticket' %}
+	<div class="type" title="Date of last agent reply" data-rule-type="date_last_agent_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+	</div>
+	<div class="type" title="Date of last user reply" data-rule-type="date_last_user_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+	</div>
 	{% endif %}
 	{% if term_options.custom_ticket_fields %}
 		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}

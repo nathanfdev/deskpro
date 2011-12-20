@@ -18,6 +18,26 @@
 			<input type="hidden" name="stop_actions" value="1" />
 		</div>
 	</div>
+	<div class="type" title="Set Agent" data-rule-type="agent">
+		<div class="options">
+			<select name="agent">
+				{% for id,title in term_options.agents %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% if term_options.agent_teams %}
+	<div class="type" title="Set Agent Team" data-rule-type="agent_team">
+		<div class="options">
+			<select name="agent_team">
+				{% for id,title in term_options.agent_teams %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
 	<div class="type" title="Set Status" data-rule-type="status">
 		<div class="options">
 			<select name="status">
@@ -47,6 +67,7 @@
 			</div>
 		</div>
 	{% endif %}
+	{% if term_options.products %}
 	<div class="type" title="Set Product" data-rule-type="product">
 		<div class="options">
 			<select name="product">
@@ -56,6 +77,8 @@
 			</select>
 		</div>
 	</div>
+	{% endif %}
+	{% if term_options.priorities %}
 	<div class="type" title="Set Priority" data-rule-type="priority">
 		<div class="options">
 			<select name="priority">
@@ -65,6 +88,8 @@
 			</select>
 		</div>
 	</div>
+	{% endif %}
+	{% if term_options.ticket_workflows%}
 	<div class="type" title="Set Workflow" data-rule-type="workflow">
 		<div class="options">
 			<select name="workflow">
@@ -74,24 +99,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Set Agent" data-rule-type="agent">
-		<div class="options">
-			<select name="agent">
-				{% for id,title in term_options.agents %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
-	<div class="type" title="Set Agent Team" data-rule-type="agent_team">
-		<div class="options">
-			<select name="agent_team">
-				{% for id,title in term_options.agent_teams %}
-					<option value="{{id}}">{{title}}</option>
-				{% endfor %}
-			</select>
-		</div>
-	</div>
+	{% endif %}
 	<div class="type" title="Add Labels" data-rule-type="add_labels">
 		<div class="options">
 			<input type="text" name="labels" />
