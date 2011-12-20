@@ -284,7 +284,7 @@ class Util
 
 		switch (count($args)) {
 			// Most constructors wont take any more than a handful arguments
-			case 0:  $obj = new $classname();
+			case 0:  $obj = new $classname(); break;
 			case 1:  $obj = new $classname($args[0]); break;
 			case 2:  $obj = new $classname($args[0], $args[1]); break;
 			case 3:  $obj = new $classname($args[0], $args[1], $args[2]); break;
