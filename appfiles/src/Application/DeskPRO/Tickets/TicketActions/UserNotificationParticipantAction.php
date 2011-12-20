@@ -45,4 +45,12 @@ class UserNotificationParticipantAction extends AbstractUserNotificationAction
 			$this->doSend('DeskPRO:emails_user:ticket-participant', $vars, $ticket, $person);
 		}
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return '';
+	}
 }

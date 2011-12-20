@@ -73,4 +73,18 @@ class UrgencyAction implements ActionInterface
 	{
 		return new self($this->getNum() + $other_action->getNum());
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if (!$this->num) return '';
+
+		if ($this->num < 0) {
+			return 'Decrease urgency by ' . abs($this->num);
+		} else {
+			return 'Increase urgency by ' . $this->num;
+		}
+	}
 }

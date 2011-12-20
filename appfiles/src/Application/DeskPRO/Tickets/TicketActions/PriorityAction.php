@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -36,7 +37,7 @@ class PriorityAction implements ActionInterface
 		$ticket['priority_id'] = $this->priority_id;
 	}
 
-	
+
 	/**
 	 * Get an array of actions that would be performed on the ticket
 	 *
@@ -52,8 +53,8 @@ class PriorityAction implements ActionInterface
 			array('action' => 'priority', 'priority_id' => $this->priority_id)
 		);
 	}
-	
-	
+
+
 	/**
 	 * Get the priority id
 	 *
@@ -72,5 +73,21 @@ class PriorityAction implements ActionInterface
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if ($this->category_id == 0) {
+			return 'Remove priority';
+		} else {
+			$names = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames();
+			if (!isset($names[$this->priority_id])) return '';
+
+			return 'Set priority to ' . $names[$this->priority_id];
+		}
 	}
 }

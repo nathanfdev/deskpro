@@ -828,6 +828,13 @@ $collection->add('admin_tickettriggers_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_tickettriggers_updateorder', new Route(
+	'/tickets/business-rules/update-orders.json',
+	array('_controller' => 'AdminBundle:TicketTriggers:updateOrder'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketurgency_saveoptions', new Route(
 	'/tickets/urgency/save-options',
 	array('_controller' => 'AdminBundle:TicketTriggers:saveUrgencyOptions'),

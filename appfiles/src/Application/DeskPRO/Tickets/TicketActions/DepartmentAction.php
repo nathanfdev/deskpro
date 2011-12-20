@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -36,7 +37,7 @@ class DepartmentAction implements ActionInterface
 		$ticket['department_id'] = $this->department_id;
 	}
 
-	
+
 	/**
 	 * Get an array of actions that would be performed on the ticket
 	 *
@@ -53,7 +54,7 @@ class DepartmentAction implements ActionInterface
 		);
 	}
 
-	
+
 	/**
 	 * Get the department id
 	 *
@@ -72,5 +73,17 @@ class DepartmentAction implements ActionInterface
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames();
+		if (!isset($names[$this->department_id])) return '';
+
+		return 'Set department to ' . $names[$this->department_id];
 	}
 }

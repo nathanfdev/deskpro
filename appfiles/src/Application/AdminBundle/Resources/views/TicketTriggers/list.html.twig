@@ -2,6 +2,9 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.TicketTriggersPage' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketTriggersPage.js') }}"></script>
+<script type="text/javascript">
+	var UPDATE_ORDER_URL = '{{ path('admin_tickettriggers_updateorder') }}';
+</script>
 {% endblock %}
 {% block pagetitle %}
 	<h1>Triggers and Escalations</h1>
@@ -12,7 +15,7 @@
 {% block page %}
 
 {% macro trigger_row(trigger) %}
-	<li class="item-row">
+	<li class="item-row trigger-row is-trigger" data-trigger-id="{{ trigger.id }}">
 		<div class="dp-block-controls">
 			<ul>
 				<li class="dp-edit">
@@ -20,12 +23,28 @@
 				</li>
 			</ul>
 		</div>
-		<lable>{{ trigger.title }}</lable>
+		{% if trigger.title %}<lable><h3>{{ trigger.title }}</h3></lable>{% endif %}
+		<table cellspacing="0" cellpadding="0"><tr>
+			<td valign="top" style="padding-right:8px;">
+				<ul class="criteria">
+					{% for desc in trigger.getTermDescriptions() %}
+						<li>{{ desc }}</li>
+					{% endfor %}
+				</ul>
+			</td>
+			<td valign="top" style="padding:0;">
+				<ul class="actions">
+					{% for desc in trigger.getActionDescriptions() %}
+						<li>{{ desc }}</li>
+					{% endfor %}
+				</ul>
+			</td>
+		</tr></table>
 	</li>
 {% endmacro %}
 
 <h2>New Ticket Triggers</h2>
-<ul class="item-list">
+<ul class="item-list trigger-set">
 	<li class="trigger-val" data-trigger-name="urgency.base">
 		Set the default urgency on new tickets to <input type="text" name="base_urgency" value="{{ sys_triggers['urgency.base'].actions[0][options][num]|default('0') }}" class="small" style="width: 40px" />
 		<span class="loading-icon-small-inline" style="position: relative; top: 5px; display: none;"></span>
@@ -38,7 +57,7 @@
 
 {% if triggers.new_reply %}
 <h2>New Repy Triggers</h2>
-<ul class="item-list">
+<ul class="item-list trigger-set">
 	<li class="trigger-val">
 	{% for trigger in triggers.new_reply %}
 		{{ _self.trigger_row(trigger) }}
@@ -49,7 +68,7 @@
 
 {% if triggers.new_reply %}
 <h2>Ticket Update Triggers</h2>
-<ul class="item-list">
+<ul class="item-list trigger-set">
 	<li class="trigger-val">
 	{% for trigger in triggers.property_change %}
 		{{ _self.trigger_row(trigger) }}

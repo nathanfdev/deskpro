@@ -146,6 +146,10 @@ class TriggerExecutor
 					}
 				}
 			}
+
+			if ($actions_collection->hasModifierType('StopActions')) {
+				break;
+			}
 		}
 
 		$person = App::getCurrentPerson();

@@ -46,5 +46,26 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 				}
 			});
 		});
+
+		$('ul.trigger-set').sortable({
+			items: '> li:not(.trigger-val)',
+			containment: 'parent',
+			update: function() {
+				var postData = [];
+				$('li.is-trigger').each(function() {
+					var id = $(this).data('trigger-id');
+					if (id) {
+						postData.push({name: 'trigger_ids[]', value: id});
+					}
+				});
+
+				$.ajax({
+					url: UPDATE_ORDER_URL,
+					type: 'POST',
+					dataType: 'json',
+					data: postData
+				});
+			}
+		});
 	}
 });

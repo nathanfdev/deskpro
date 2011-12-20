@@ -43,4 +43,12 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 		$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $change_info);
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return '';
+	}
 }

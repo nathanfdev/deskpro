@@ -126,6 +126,10 @@ class ActionsFactory
 				$options['field_def'] = $field;
 				$options['set_value'] = $value;
 				break;
+
+			case 'set_from_address':
+				$options['email_address'] = $value['email_address'];
+				break;
 		}
 
 		return $this->create($name, $options);
@@ -150,7 +154,7 @@ class ActionsFactory
 		if (class_exists($action_class)) {
 			return $this->createActionObject($action_class, $options);
 		} elseif (class_exists($modifier_class)) {
-			return $this->createModifierObject($action_class, $options);
+			return $this->createModifierObject($modifier_class, $options);
 		}
 
 		return null;

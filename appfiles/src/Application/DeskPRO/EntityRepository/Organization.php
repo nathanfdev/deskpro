@@ -28,7 +28,7 @@ class Organization extends \Doctrine\ORM\EntityRepository
             ->where('o.name = :name')
             ->setParameter('name', $name);
 
-            $query = $qb->getQuery(); 
+            $query = $qb->getQuery();
             return $query->getOneOrNullResult();
 	}
 
@@ -56,7 +56,7 @@ class Organization extends \Doctrine\ORM\EntityRepository
         }
 
         $ret = array();
-        foreach ($for_ids as $id) {
+        foreach ((array)$for_ids as $id) {
 			if (isset($this->_organization_names[$id])) {
             	$ret[$id] = $this->_organization_names[$id];
 			}

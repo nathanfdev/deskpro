@@ -107,6 +107,9 @@ class TicketTriggersController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
+				if (!$trigger->title) {
+					$trigger->title = '';
+				}
 				$this->em->beginTransaction();
 
 				$term_rules = RuleBuilder::newTermsBuilder();
@@ -199,5 +202,32 @@ class TicketTriggersController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array('success' => 1));
+	}
+
+
+	############################################################################
+	# update-order
+	############################################################################
+
+	public function updateOrderAction()
+	{
+		$trigger_ids = $this->in->getCleanValueArray('trigger_ids', 'uint', 'discard');
+
+		$x = 10;
+
+		$this->db->beginTransaction();
+		try {
+			foreach ($trigger_ids as $id) {
+				$this->db->update('ticket_triggers', array('run_order' => $x), array('id' => $id));
+				$x += 10;
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

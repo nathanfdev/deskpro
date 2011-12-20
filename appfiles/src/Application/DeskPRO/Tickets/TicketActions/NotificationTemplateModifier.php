@@ -34,4 +34,12 @@ class NotificationTemplateModifier implements CollectionModifierInterface
 			}
 		}
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return "Use *{$this->template_suffix} email templates";
+	}
 }

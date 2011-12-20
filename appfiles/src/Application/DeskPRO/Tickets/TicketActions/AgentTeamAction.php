@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -116,5 +117,23 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if ($this->agent_team_id == -1) {
+			return 'Assign team to current logged in agents team';
+		} elseif ($this->agent_team_id == 0) {
+			return 'Unassign team';
+		} else {
+			$name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($this->agent_team_id);
+			if (!$name) return '';
+
+			return 'Assign team to ' . $name[0];
+		}
 	}
 }

@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
 
@@ -89,5 +90,14 @@ class StatusAction implements ActionInterface
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return 'Set status to ' . App::getTranslator()->phrase('agent.tickets.status_' . $this->status);
 	}
 }

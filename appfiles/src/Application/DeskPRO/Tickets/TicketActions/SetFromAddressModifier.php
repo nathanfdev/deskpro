@@ -36,4 +36,12 @@ class SetFromAddressModifier implements CollectionModifierInterface
 			}
 		}
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return "Send notifications from {$this->email_address}";
+	}
 }

@@ -31,7 +31,7 @@ class EditTicketTriggerType extends AbstractType
 
 	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('title', 'text');
+		$builder->add('title', 'text', array('required' => false));
 		$builder->add('event_trigger', 'hidden');
 	}
 

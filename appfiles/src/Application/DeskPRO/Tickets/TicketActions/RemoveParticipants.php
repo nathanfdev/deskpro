@@ -87,4 +87,21 @@ class RemoveParticipants implements ActionInterface
 
 		return $ids;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
+		if (!$people) return '';
+
+		$names = array();
+		foreach ($people as $p) {
+			$names[] = $p->getDisplayName();
+		}
+
+		return "Remove participants: " . implode($names, ', ');
+	}
 }

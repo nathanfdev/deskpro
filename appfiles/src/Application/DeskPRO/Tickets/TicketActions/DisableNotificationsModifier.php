@@ -26,4 +26,12 @@ class DisableNotificationsModifier implements CollectionModifierInterface
 			}
 		}
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return 'Disable all notifications';
+	}
 }

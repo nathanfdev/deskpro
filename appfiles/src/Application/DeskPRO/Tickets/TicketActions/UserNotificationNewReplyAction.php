@@ -44,4 +44,12 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return '';
+	}
 }

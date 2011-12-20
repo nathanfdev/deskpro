@@ -17,9 +17,14 @@ interface CollectionModifierInterface
 {
 	/**
 	 * Inspect the collection and modify it
-	 * 
+	 *
 	 * @param ActionsCollection $collection
 	 * @return void
 	 */
 	public function modifyCollection(ActionsCollection $collection);
+
+	/**
+	 * @return string
+	 */
+	public function getDescription();
 }

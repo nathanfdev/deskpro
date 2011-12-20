@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
@@ -29,7 +30,7 @@ class AgentAction implements ActionInterface, PersonContextInterface
 		$this->agent_id = $agent;
 	}
 
-	
+
 	public function setPersonContext(Person $person)
 	{
 		$this->person_context = $person;
@@ -66,7 +67,7 @@ class AgentAction implements ActionInterface, PersonContextInterface
 	public function getApplyActions(Ticket $ticket)
 	{
 		$agent_id = $this->agent_id;
-		
+
 		if ($agent_id == -1) {
 			// Invalid context
 			if (!$this->person_context OR !$this->person_context['is_agent']) {
@@ -88,7 +89,7 @@ class AgentAction implements ActionInterface, PersonContextInterface
 
 	/**
 	 * Get the agent id
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getAgentId()
@@ -104,5 +105,23 @@ class AgentAction implements ActionInterface, PersonContextInterface
 	public function merge(ActionInterface $other_action)
 	{
 		return $other_action;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if ($this->agent_id == -1) {
+			return 'Assign agent to current logged in agent';
+		} elseif ($this->agent_id == 0) {
+			return 'Unassign agent';
+		} else {
+			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($this->agent_id);
+			if (!isset($name[$this->agent_id])) return '';
+
+			return 'Assign agent to ' . $name[$this->agent_id];
+		}
 	}
 }

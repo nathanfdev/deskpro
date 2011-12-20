@@ -47,6 +47,7 @@ class TicketTrigger extends EntityRepository
 				trig.event_trigger NOT LIKE 'time_%'
 				$include_sys
 				$only_enabeld
+			ORDER BY trig.run_order ASC
 		")->execute();
 
 		return $triggers;
@@ -64,6 +65,7 @@ class TicketTrigger extends EntityRepository
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
 			WHERE trig.sys_name IS NULL
+			ORDER BY trig.run_order ASC
 		")->execute();
 
 		$grouped = array();
@@ -108,23 +110,7 @@ class TicketTrigger extends EntityRepository
 				trig.event_trigger LIKE 'time_%'
 				$include_sys
 				$only_enabeld
-		")->execute();
-
-		return $triggers;
-	}
-
-
-	/**
-	 * Get only triggers with urgency terms or actions
-	 *
-	 * @return array
-	 */
-	public function getUrgencyTriggers()
-	{
-		$triggers = $this->getEntityManager()->createQuery("
-			SELECT trig
-			FROM DeskPRO:TicketTrigger trig
-			WHERE trig.sys_name IS NULL AND trig.has_urgency = true
+			ORDER BY trig.run_order ASC
 		")->execute();
 
 		return $triggers;
@@ -144,11 +130,13 @@ class TicketTrigger extends EntityRepository
 				SELECT trig
 				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
 				WHERE trig.sys_name LIKE '{$prefix}.%'
+				ORDER BY trig.run_order ASC
 			")->execute();
 		} else {
 			$triggers = $this->getEntityManager()->createQuery("
 				SELECT trig
 				FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
+				ORDER BY trig.run_order ASC
 			")->execute();
 		}
 
@@ -173,8 +161,10 @@ class TicketTrigger extends EntityRepository
 		$triggers = $this->getEntityManager()->createQuery("
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
-			WHERE trig.event_trigger IN ($events)
-			AND trig.is_enabled = true
+			WHERE
+				trig.event_trigger IN ($events)
+				AND trig.is_enabled = true
+			ORDER BY trig.run_order ASC
 		")->execute();
 
 		return $triggers;

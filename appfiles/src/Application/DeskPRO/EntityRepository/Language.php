@@ -39,7 +39,7 @@ class Language extends EntityRepository
         }
 
         $ret = array();
-        foreach ($for_ids as $id) {
+        foreach ((array)$for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
 

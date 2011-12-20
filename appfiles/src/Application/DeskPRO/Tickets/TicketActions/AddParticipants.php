@@ -87,4 +87,21 @@ class AddParticipants implements ActionInterface
 
 		return $ids;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
+		if (!$people) return '';
+
+		$names = array();
+		foreach ($people as $p) {
+			$names[] = $p->getDisplayName();
+		}
+
+		return "Add participants: " . implode($names, ', ');
+	}
 }

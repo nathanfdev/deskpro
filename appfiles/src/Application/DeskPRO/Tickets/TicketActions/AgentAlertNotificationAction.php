@@ -193,4 +193,13 @@ class AgentAlertNotificationAction implements ActionInterface
 	{
 		return $other_action;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return '';
+	}
 }

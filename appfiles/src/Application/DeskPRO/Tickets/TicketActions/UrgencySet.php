@@ -77,4 +77,13 @@ class UrgencySetAction implements ActionInterface
 	{
 		return $other_action;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return 'Set urgency to ' . $this->num;
+	}
 }

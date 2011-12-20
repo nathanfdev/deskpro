@@ -13,17 +13,22 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Ticket;
 
+/**
+ * Important: Constructors shouldn't do any work or require any transient values like "current user."
+ * The action should always be usable from any context if possible. But at the very least, getDescription()
+ * needs to be able to run and return a suitable string.
+ */
 interface ActionInterface
 {
 	/**
 	 * Apply the action to the ticket
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @return void
 	 */
 	public function apply(Ticket $ticket);
 
-	
+
 	/**
 	 * Merge this action into another, and return the new merged action.
 	 *
@@ -37,4 +42,12 @@ interface ActionInterface
 	 * @return ActionInterface
 	 */
 	public function merge(ActionInterface $other_action);
+
+
+	/**
+	 * Get a text description of the action
+	 *
+	 * @return string
+	 */
+	public function getDescription();
 }

@@ -72,4 +72,12 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 			$this->applyAgentValidating($ticket);
 		}
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return '';
+	}
 }

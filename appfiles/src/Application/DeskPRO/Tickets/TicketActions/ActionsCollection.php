@@ -27,6 +27,19 @@ class ActionsCollection
 	 */
 	protected $actions = array();
 
+	/**
+	 * @var Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface[]
+	 */
+	protected $applied_modifiers = array();
+
+	/**
+	 * Its possible a modifier of a single type to be added multiple times. This is
+	 * an array of unique names.
+	 *
+	 * @var array
+	 */
+	protected $applied_modifier_types = array();
+
 	public function add($action_or_modifier)
 	{
 		if ($action_or_modifier instanceof ActionInterface) {
@@ -62,6 +75,9 @@ class ActionsCollection
 	 */
 	public function applyCollectionModifier(CollectionModifierInterface $modifier)
 	{
+		$name = get_class($modifier);
+		$this->applied_modifier_types[$name] = $name;
+		$this->applied_modifiers[] = $modifier;
 		$modifier->modifyCollection($this);
 	}
 
@@ -78,6 +94,21 @@ class ActionsCollection
 		}
 
 		return isset($this->actions[$name]);
+	}
+
+
+	/**
+	 * Check if a certain action type is set
+	 *
+	 * @return bool
+	 */
+	public function hasModifierType($name)
+	{
+		if (strpos($name, '\\') === false) {
+			$name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name;
+		}
+
+		return isset($this->applied_modifier_types[$name]);
 	}
 
 
@@ -201,5 +232,20 @@ class ActionsCollection
 		}
 
 		return $actions;
+	}
+
+
+	public function getDescriptions()
+	{
+		$desc = array();
+		foreach ($this->actions as $action) {
+			$desc[] = $action->getDescription();
+		}
+
+		foreach ($this->applied_modifiers as $mod) {
+			$desc[] = $mod->getDescription();
+		}
+
+		return $desc;
 	}
 }

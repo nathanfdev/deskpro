@@ -114,4 +114,12 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 	{
 		return $other_action;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return "Add reply";
+	}
 }

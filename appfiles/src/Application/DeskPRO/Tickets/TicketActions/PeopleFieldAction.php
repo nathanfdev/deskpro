@@ -92,4 +92,15 @@ class PeopleFieldAction implements ActionInterface
 	{
 		return $other_action;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$title = $this->field_def->title;
+		$value = $this->value;
+
+		return "Set $title to $value";
+	}
 }

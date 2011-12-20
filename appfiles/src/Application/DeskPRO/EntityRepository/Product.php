@@ -61,7 +61,7 @@ class Product extends AbstractCategoryRepository
 	 */
 	public function getFullProductNames($sep = ' > ', $include_tops = true)
 	{
-		return $this->getFullProductNames($sep = ' > ', $include_tops = true);
+		return $this->getCategoryHelper()->getFullCategoryNames($sep = ' > ', $include_tops = true);
 	}
 
 	/**

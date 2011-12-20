@@ -100,4 +100,13 @@ class RemoveLabelsAction implements ActionInterface
 
 		return new self($labels);
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return "Remove labels: " . implode($this->remove_labels, ', ');
+	}
 }

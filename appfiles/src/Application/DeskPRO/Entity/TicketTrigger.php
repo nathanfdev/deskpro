@@ -45,7 +45,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
-	protected $title;
+	protected $title = '';
 
 	/**
 	 * @var string
@@ -91,13 +91,20 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $sys_name = null;
 
 	/**
-	 * If this trigger has any terms or actions with urgency, means they are
-	 * listed on the urgency page.
-	 *
-	 * @var bool
-	 * @ORM_Mapping\Column(name="has_urgency", type="boolean")
+	 * @var int
+	 * @ORM_Mapping\Column(name="run_order", type="integer")
 	 */
-	protected $has_urgency = false;
+	protected $run_order = 0;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
+	 */
+	protected $_ticket_actions_coll;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketTerms
+	 */
+	protected $_ticket_terms;
 
 	/**
 	 * Go through the actions on this trigger and find $name, and then
@@ -137,6 +144,21 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketTerms
+	 */
+	public function getTicketTerms()
+	{
+		if ($this->_ticket_terms) return $this->_ticket_terms;
+		$this->terms = (array)$this->terms;
+
+		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
+
+		$this->_ticket_terms = $ticket_terms;
+		return $this->_ticket_terms;
+	}
+
 	/**
 	 * Check to see if a ticket matches
 	 *
@@ -145,9 +167,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isTriggerMatch(Ticket $ticket, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker)
 	{
-		$this->terms = (array)$this->terms;
-
-		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
+		$ticket_terms = $this->getTicketTerms();
 		$ticket_terms->setChangeTracker($tracker);
 
 		$match = $ticket_terms->doesTicketMatch($ticket);
@@ -155,6 +175,14 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $match;
 	}
 
+
+	/**
+	 * @return array
+	 */
+	public function getTermDescriptions()
+	{
+		return $this->getTicketTerms()->getDescriptions();
+	}
 
 
 	/**
@@ -171,6 +199,37 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 				));
 			}
 		}
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
+	 */
+	public function getTicketActionsCollection()
+	{
+		if ($this->_ticket_actions_coll) return $this->_ticket_actions_coll;
+
+		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
+		$actions_collection = new \Application\DeskPRO\Tickets\TicketActions\ActionsCollection();
+
+		foreach ($this->actions as $action_info) {
+			$action = $factory->createFromInfo($action_info);
+			if ($action) {
+				$actions_collection->add($action);
+			}
+		}
+
+		$this->_ticket_actions_coll = $actions_collection;
+		return $this->_ticket_actions_coll;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getActionDescriptions()
+	{
+		return $this->getTicketActionsCollection()->getDescriptions();
 	}
 
 

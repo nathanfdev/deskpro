@@ -100,4 +100,13 @@ class AddLabelsAction implements ActionInterface
 
 		return new self($labels);
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return "Add labels: " . implode($this->add_labels, ', ');
+	}
 }

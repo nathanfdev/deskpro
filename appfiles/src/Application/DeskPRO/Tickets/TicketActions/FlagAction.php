@@ -86,4 +86,17 @@ class FlagAction implements ActionInterface, PersonContextInterface
 	{
 		return $other_action;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if (!$this->flag) {
+			return 'Unset flag';
+		} else {
+			return 'Set flag to ' . $this->flag;
+		}
+	}
 }
