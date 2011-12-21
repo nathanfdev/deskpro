@@ -35,6 +35,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	public function __construct(TicketChangeTracker $tracker, $template_suffix = '')
 	{
 		$this->tracker = $tracker;
+		$this->from_address = App::getSetting('core.default_from_email');
 	}
 
 	public function setTemplateSuffix($template_suffix)

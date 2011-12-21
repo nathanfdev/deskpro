@@ -73,6 +73,8 @@ class AgentNotificationAction implements ActionInterface
 				$this->notify_info[$agent_id] = array('filters' => $filters);
 			}
 		}
+
+		$this->from_address = App::getSetting('core.default_from_email');
 	}
 
 	public function setFromAddress($from_address)
