@@ -37,6 +37,7 @@ class Setting extends EntityRepository
 		$setting['value'] = $value;
 
 		App::getOrm()->transactional(function ($em) use ($setting) {
+			$em->getConnection()->delete('settings', array('name' => $setting->name));
 			$em->persist($setting);
 			$em->flush();
 		});

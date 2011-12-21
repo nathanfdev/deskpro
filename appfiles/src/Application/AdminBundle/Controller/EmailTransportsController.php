@@ -100,11 +100,12 @@ class EmailTransportsController extends AbstractController
 				}
 
 				if ($transport->match_type == 'all') {
+					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
 					return $this->redirectRoute('admin_emailtrans_setup');
 				}
 
 				$this->session->setFlash('saved', $transport->title);
-				return $this->redirectRoute('admin_emailtrans_list');
+				return $this->redirectRoute('admin_emailgateways');
 			}
 		}
 
