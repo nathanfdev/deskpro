@@ -86,7 +86,9 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$tpl_suffix .= '-' . $ticket['notify_template'];
 		}
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
+		$from_address = $this->getFromAddress();
+
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 
@@ -99,7 +101,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			}
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
-			$message->setFrom($this->getFromAddress());
+			$message->setFrom($from_address);
 			$message->enableQueueHint();
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 

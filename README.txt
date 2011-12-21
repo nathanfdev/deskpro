@@ -16,6 +16,14 @@ Quick overview:
        For example: http://www.mysite.com/deskpro/index.php
     4. Follow the on-screen instructions.
 
+Email Gateway Tasks
+-------------------
+
+Set up a scheduled task to process email every 1-5 minutes:
+
+	/usr/bin/php /path/to/deskpro/appfiles/bin/console.php dp:process-email-gateways
+
+Where `/usr/bin/php` is the path to the PHP CLI binary.
 
 Support
 -------

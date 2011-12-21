@@ -52,7 +52,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="auth", type="string", length=20)
+	 * @ORM_Mapping\Column(name="auth", type="string", length=50)
 	 */
 	protected $auth;
 

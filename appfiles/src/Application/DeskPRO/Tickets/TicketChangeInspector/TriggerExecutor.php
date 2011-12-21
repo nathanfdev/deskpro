@@ -74,16 +74,21 @@ class TriggerExecutor
 		// If we've just validated, then we'll send off a fake
 		// ticket_created event for the TriggerExecutor
 		if (!$this->tracker->isExtraSet('ticket_created') && $this->ticket->status_code == 'awaiting_agent' && ($status_change['old'] == 'hidden' && $hstatus_change['old'] == 'validating')) {
+			$this->tracker->logMessage('[TriggerExecutor] ticket_created true');
 			$this->tracker->recordExtra('ticket_created', true);
 		}
 
 		// Mark that is a validating ticket created, created triggers
 		// will be ignored in the TriggerExecutor
 		if ($this->ticket->status_code == 'hidden.validating') {
+			$this->tracker->logMessage('[TriggerExecutor] ticket_created_validating true');
 			$this->tracker->recordExtra('ticket_created_validating', true);
 		}
 
 		if ($this->tracker->isExtraSet('ticket_created_validating')) {
+
+			$this->tracker->logMessage('[TriggerExecutor] Normal events not being executed because ticket is validating');
+
 			// Validating means we dont run anything, except this hard-coded one that
 			// sends the notify email :-)
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
@@ -104,28 +109,50 @@ class TriggerExecutor
 				}
 			}
 
+			$this->tracker->logMessage('[TriggerExecutor] Events: ' . implode(', ', $this->event_types));
+
 			$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
+
+			// Note that the "built in" triggers below for notifications,
+			// its important that they're array_unshift'ed onto the BEGINNING
+			// of the $all_triggers array
+			// This is because they can be modified like any other trigger,
+			// so we dont want them added at the end after modifiers
+			// are already run. For example: Template overrides, disabling notifications,
+			// adding more users to notifications, etc.
+
+			#------------------------------
+			# Notify the user of course
+			#------------------------------
+
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'user_notification_new_ticket', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
+
+			#------------------------------
+			# Add built-in agent notifications based off prefs
+			#------------------------------
+
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_alert_notification', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
+
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent_notification', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
 		}
-
-		#------------------------------
-		# Add built-in agent notifications based off prefs
-		#------------------------------
-
-		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-		$trigger->terms = array();
-		$trigger->actions = array(
-			array('type' => 'agent_alert_notification', 'options' => array())
-		);
-
-		array_unshift($all_triggers, $trigger);
-
-		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-		$trigger->terms = array();
-		$trigger->actions = array(
-			array('type' => 'agent_notification', 'options' => array())
-		);
-
-		array_unshift($all_triggers, $trigger);
 
 		#------------------------------
 		# Execute triggers

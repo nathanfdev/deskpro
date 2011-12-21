@@ -83,8 +83,11 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 				$logger->addWriter($writer);
 			}
 
-
 			while ($source = $fetcher->readNext()) {
+
+				if ($verbose) {
+					$output->writeln("Read source ID {$source['id']}");
+				}
 
 				$reader = new EzcReader();
 				$reader->setRawSource($source['raw_source']);

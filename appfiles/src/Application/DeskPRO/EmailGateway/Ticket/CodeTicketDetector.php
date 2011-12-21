@@ -53,18 +53,16 @@ class CodeTicketDetector implements TicketDetectorInterface
 		#------------------------------
 
 		$matches = null;
-		if (!preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
-			return null;
-		}
+		if (preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $m) {
+				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
+				if (!$tac) continue;
 
-		foreach ($matches as $m) {
-			$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
-			if (!$tac) continue;
+				$ticket = $tac->ticket;
 
-			$ticket = $tac->ticket;
-
-			$this->_found_tac = $tac;
-			return $ticket;
+				$this->_found_tac = $tac;
+				return $ticket;
+			}
 		}
 
 		#------------------------------
@@ -72,18 +70,16 @@ class CodeTicketDetector implements TicketDetectorInterface
 		#------------------------------
 
 		$matches = null;
-		if (!preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
-			return null;
-		}
+		if (preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $m) {
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
-		foreach ($matches as $m) {
-			$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
+				if ($ticket) {
 
-			if ($ticket) {
+					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
-				$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
-
-				return $ticket;
+					return $ticket;
+				}
 			}
 		}
 

@@ -58,33 +58,44 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if (App::getSetting('core_tickets.gateway_catchall')) {
 			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
 			$ticket = $detector->findExistingTicket($this->reader);
+
+			$this->logMessage('[TicketGatewayProcessor] ToEmailTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if (!$ticket) {
 			$detector = new CodeTicketDetector();
 			$ticket = $detector->findExistingTicket($this->reader);
+
+			$this->logMessage('[TicketGatewayProcessor] CodeTicketDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if (!$ticket) {
 			// Try to find it from In-Reply-To
 			$detector = new InReplyToDetector();
 			$ticket = $detector->findExistingTicket($this->reader);
+
+			$this->logMessage('[TicketGatewayProcessor] InReplyToDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if (!$ticket) {
 			// Try ref match
 			$detector = new SubjectRefMatchDetector();
 			$ticket = $detector->findExistingTicket($this->reader);
+
+			$this->logMessage('[TicketGatewayProcessor] SubjectRefMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if (!$ticket) {
 			// Finally try subject string match
 			$detector = new SubjectMatchDetector();
 			$ticket = $detector->findExistingTicket($this->reader);
+
+			$this->logMessage('[TicketGatewayProcessor] SubjectMatchDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if ($ticket) {
 			$person = $detector->findExistingPerson($ticket, $this->reader);
+			$this->logMessage('[TicketGatewayProcessor] findExistingPerson detected: ' . ($person ? $person['id'] : 'nothing'));
 		}
 
 		#-------------------------
@@ -98,6 +109,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		// participants
 		if ($ticket AND $person AND !$person['is_agent']) {
 			if ($ticket->person['id'] != $person['id'] AND !$ticket->hasParticipantPerson($person)) {
+				$this->logMessage('[TicketGatewayProcessor] Detected person is not on the ticket. Message will be considered a new ticket.');
 				$person = null;
 			}
 		}
@@ -125,23 +137,30 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			App::setCurrentPerson($person);
 
 			if ($person['is_agent']) {
+				$this->logMessage('[TicketGatewayProcessor] runNewAgentReply');
 				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
+				$this->logMessage('[TicketGatewayProcessor] runNewUserReply');
 				$ret = $this->runNewUserReply($ticket, $person);
 			}
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] Creating new ticket');
 			$person = $person_processor->findPerson($this->reader->getFromAddress());
 			if ($person) {
+				$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
 				$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			} else {
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
+				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 			}
 
 			App::setCurrentPerson($person);
 
 			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+				$this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 				$ret = $this->runNewForwardedTicket($person);
 			} else {
+				$this->logMessage('[TicketGatewayProcessor] runNewTicket');
 				$ret = $this->runNewTicket($person);
 			}
 		}
@@ -298,9 +317,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 			$email_info['body_is_html'] = true;
+			$this->logMessage('[TicketGatewayProcessor] Using text email');
 		} else {
 			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
 			$email_info['body_is_html'] = false;
+			$this->logMessage('[TicketGatewayProcessor] Using HTML email with stripped tags');
 		}
 
 		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
@@ -335,10 +356,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save();
 
+		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
+
 		$message = $newticket->new_message;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
 		foreach ($this->processBlobs() as $blob) {
+			$this->logMessage('[TicketGatewayProcessor] Adding blob ' . $blob->id);
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $person;
@@ -347,6 +371,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($this->reader->getCcAddresses()) {
+			$this->logMessage('[TicketGatewayProcessor] Has CC');
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
 
@@ -368,6 +393,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		App::getOrm()->persist($ticket);
 		App::getOrm()->persist($message);
 		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
 
 		App::getOrm()->commit();
 
