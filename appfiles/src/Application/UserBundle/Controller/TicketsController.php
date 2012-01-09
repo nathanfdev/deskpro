@@ -344,7 +344,8 @@ class TicketsController extends AbstractController
 		// Message must be of the correct ticket,
 		// must not be a note,
 		// must be by an agent
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+		// must not be rating ourself
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
@@ -369,7 +370,8 @@ class TicketsController extends AbstractController
 		// Message must be of the correct ticket,
 		// must not be a note,
 		// must be by an agent
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+		// must not be rating ourself
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
@@ -401,7 +403,8 @@ class TicketsController extends AbstractController
 		// Message must be of the correct ticket,
 		// must not be a note,
 		// must be by an agent
-		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+		// must not be rating ourself
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent'] OR $message->person->id == $this->person->id) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
@@ -431,10 +434,15 @@ class TicketsController extends AbstractController
 		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = App::getEntityRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
 		$exist_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+		$no_feedback = false;
+
+		if ($message->person->id == $this->person->id) {
+			$no_feedback = true;
+		}
 
 		if ($this->in->getBool('process')) {
 			$feedback = false;
-			if ($this->in->getBool('with_feedback')) {
+			if (!$no_feedback and $this->in->getBool('with_feedback')) {
 				if ($exist_feedback) {
 					$feedback = $exist_feedback;
 				} else {
@@ -464,7 +472,8 @@ class TicketsController extends AbstractController
 		return $this->render('UserBundle:Tickets:close.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
-			'exist_feedback' => $exist_feedback
+			'exist_feedback' => $exist_feedback,
+			'no_feedback' => $no_feedback,
 		));
 	}
 

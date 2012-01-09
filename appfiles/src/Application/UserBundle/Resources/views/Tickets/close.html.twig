@@ -22,7 +22,7 @@
 					<center><button class="btn primary">{{ phrase('user.tickets.close_my_ticket_btn') }}</button></center>
 				</div>
 
-				{% if not exist_feedback %}
+				{% if not exist_feedback and not no_feedback %}
 					<div class="dp-box-section">
 						<div class="dp-form">
 							<div class="dp-form-row">
