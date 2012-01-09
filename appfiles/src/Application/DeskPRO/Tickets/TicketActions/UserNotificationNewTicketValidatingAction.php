@@ -29,14 +29,8 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newticket',
-			'emailed' => array(),
-			'cced' => array()
-		);
-
 		if ($ticket->person_email_validating) {
+
 			$vars = array(
 				'email_subject' => new DelegatePhrase('user.emails.subj_newticket_validate', array('ticket_subject' => $ticket['subject'])),
 				'validating_email' => $ticket->person_email_validating,
@@ -50,26 +44,13 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 				'cced' => array()
 			);
 
-			$person = $ticket->person;
-
-			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $ticket, $person) {
-				$email_subject = $tr->phrase($vars['email_subject']);
-				$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket-validate.html.twig', $vars);
-
-				$message = App::getMailer()->createMessage();
-				$message->setTo($ticket->person_email_validating->getEmail(), $person->getDisplayName());
-				$message->setSubject($email_subject);
-				$message->setBody($email_body, 'text/html');
-				$message->enableQueueHint();
-
-				App::getMailer()->send($message);
-			});
+			$this->doSend('DeskPRO:emails_user:new-ticket-validate.html.twig', $vars, $ticket, $change_info);
 
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 
 		} else {
 			// TODO agent validation?
-			$this->applyAgentValidating($ticket);
+			//$this->applyAgentValidating($ticket);
 		}
 	}
 
