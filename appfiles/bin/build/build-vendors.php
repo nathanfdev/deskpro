@@ -293,7 +293,7 @@ function deskpro_build_cleanvendors_elastica($dir)
 
 function deskpro_build_cleanvendors_doctrine($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin tests tools .travis.yml .gitignore .gitmodules composer.json build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin tests tools .travis.yml .gitignore .gitmodules composer.json build.properties build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
 }
 
 function deskpro_build_cleanvendors_doctrine_common($dir)
@@ -348,7 +348,7 @@ function deskpro_build_cleanvendors_swiftmailer($dir)
 
 function deskpro_build_cleanvendors_symfony($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests .gitignore autoload.php.dist CHANGELOG-2.0.md check_cs composer.json CONTRIBUTORS.md phpunit.xml.dist README.md UPDATE.ja.md UPDATE.md vendors.php", $dir);
+	deskpro_build_exec_exit_error("rm -rf tests .gitignore .travis.yml autoload.php.dist CHANGELOG-2.0.md check_cs composer.json CONTRIBUTORS.md phpunit.xml.dist README.md UPDATE.ja.md UPDATE.md vendors.php", $dir);
 }
 
 function deskpro_build_cleanvendors_twig($dir)
