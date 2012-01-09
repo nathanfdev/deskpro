@@ -103,6 +103,10 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.template = html;
 
 				if (callback) {
+					if (!callback.call) {
+						console.error("Not a valid callback: %o", callback);
+						return;
+					}
 					callback.call(this, html);
 				}
 			},
