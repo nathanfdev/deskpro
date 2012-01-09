@@ -658,6 +658,7 @@ class App
 	 * They will likely move to a dedicated DI later. For now, just hard-code
 	 * them in here.
 	 *
+	 * @deprecated All of these should be services, or created as "system services"
 	 * @param string $name Name of the API handler
 	 */
 	public static function getApi($name)
@@ -869,6 +870,32 @@ class App
 	{
 		$logger = self::createNewLogger('error_log.'.$type, null);
 		$logger->log($message, $priority, $data);
+	}
+
+
+	/**
+	 * Gets the time the current codebase was built from /sys/config/build-time.php
+	 *
+	 * Note: In some dev environments when no build constant exists and no build file exists,
+	 * this may return 0.
+	 *
+	 * @return int
+	 */
+	public static function getBuildTime()
+	{
+		if (defined('DP_BUILD_TIME')) {
+			return DP_BUILD_TIME;
+		}
+
+		if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+			require_once DP_ROOT.'/sys/config/build-time.php';
+			if (defined('DP_BUILD_TIME')) {
+				return DP_BUILD_TIME;
+			}
+		}
+
+		define('DP_BUILD_TIME', 0);
+		return 0;
 	}
 
 
