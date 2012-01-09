@@ -622,16 +622,25 @@ class TicketSearchController extends AbstractController
 		# Serve results
 		#------------------------------
 
+		// If we have no searcher, create one now from the result cache
+		// so we have access to the summaries in the template
+		if (!$searcher) {
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
+			$searcher->setTerms($result_cache['criteria']['terms']);
+			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
+		}
+
 		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
 
 		$vars = array(
 			'cache'               => $result_cache,
 			'cache_id'            => $result_cache['id'],
-			'order_by_summary' => $searcher->getOrderBySummary(),
-			'terms_summary' => $searcher->getSummary(),
+			'order_by_summary'    => $searcher->getOrderBySummary(),
+			'terms_summary'       => $searcher->getSummary(),
 			'ticket_ids'          => $results,
 			'view_name'           => $this->in->getString('view_name'),
-			'view_extra'           => $this->in->getString('view_extra')
+			'view_extra'          => $this->in->getString('view_extra')
 		);
 
 		$search_form = array(
