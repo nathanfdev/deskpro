@@ -1252,14 +1252,14 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	font-family: @toolbar-font;
 	height: 35px;
 	overflow: hidden;
-	padding: 6px 0 0 7px;
+	padding: 5px 2px 0 7px;
 	position: relative;
 }
 
 #DP-userControl .drop {
 	float: right;
 	position: relative;
-	top: 9px;
+	top: 10px;
 
 	background-image: url("../../images/agent/dropdown-white.png");
 	background-repeat: no-repeat;
@@ -1285,13 +1285,23 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 .userWrapper a{
 	cursor: pointer;
 	float: left;
-	padding: 2px 3px 0px 5px;
+	padding: 2px 3px 0px 3px;
 	line-height: 100%;
 }
 
-.userWrapper a img {
+.userWrapper a em {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    padding: 2px;
 	position: relative;
 	.rounded(4px);
+	-webkit-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.8);
 }
 
 .currentUserAvatar span{
@@ -1312,10 +1322,10 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	border-right: 1px solid #314559;
 	.border-radius(4px, 4px, 0, 0);
     position: absolute;
-    right: 0px;
-	top: -35px;
+    right: 4px;
+	top: -36px;
 	width: 49px;
-	height: 34px;
+	height: 35px;
 	margin-right: 3px;
 }
 .userProfileDropdownHeader a{
@@ -1323,11 +1333,22 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	float: left;
 	cursor: pointer;
 }
+.userProfileDropdownHeader a em {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    padding: 2px;
+	position: relative;
+	.rounded(4px);
+}
 .userProfileDropdownHeader .drop {
 	.iconbase(7px, 5px);
 	background-image: url(../../images/agent/button-uparrow.png);
 	position: relative;
-	top: 3px;
+	top: 5px;
 	right: -4px;
 }
 
