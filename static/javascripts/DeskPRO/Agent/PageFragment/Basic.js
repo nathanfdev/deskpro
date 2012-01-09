@@ -75,12 +75,14 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.addEvent('destroy', function() {
 			self.wrapper.data('with-page-fragment', null);
 
-			var i;
-			for (i = 0; i < this.destroyObjects.length; i++) {
-				this.destroyObjects[i].destroy();
+			if (self.destroyObjects) {
+				var i;
+				for (i = 0; i < self.destroyObjects.length; i++) {
+					self.destroyObjects[i].destroy();
+				}
+				self.destroyObjects = null;
 			}
-			this.destroyObjects = null;
-		}, this);
+		});
 		this.addEvent('destroy', this.destroy);
 
 		if (this.meta.routeData && this.meta.routeData.routeTriggerEl && this.meta.routeData.toggleOpenClass) {
