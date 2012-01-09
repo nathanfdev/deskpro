@@ -59,15 +59,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}, this);
 				}
 
-				if (data.comment_id) {
-					DeskPRO_Window.getMessageBroker().sendMessage('agent-ui.comment-remove', {
-						comment_id: data.comment_id,
-						comment_type: data.comment_type
-					});
-				}
+				if (data.ticket_id) {
+					if (data.comment_id) {
+						DeskPRO_Window.getMessageBroker().sendMessage('agent-ui.comment-remove', {
+							comment_id: data.comment_id,
+							comment_type: data.comment_type
+						});
+					}
 
-				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-				this.closeSelf();
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+					this.closeSelf();
+				}
 			}
 		});
 	},

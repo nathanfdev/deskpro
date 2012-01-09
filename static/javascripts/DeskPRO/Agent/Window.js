@@ -1563,6 +1563,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var m = routeData.url.match(/tickets\/([0-9]+)/);
 			if (!m || !m[1]) {
 				console.error('Bad page loader call: ' + routeData.url + ' %o', routeData);
+				return;
 			}
 			var ticketId = m[1];
 
