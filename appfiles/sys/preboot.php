@@ -1,8 +1,33 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', true);
-
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+
+
+#------------------------------
+# Attempt to set min memory limit to 128 MB
+#------------------------------
+
+$mem_size = @ini_get('memory_limit');
+if ($mem_size && $mem_size != '-1' && deskpro_install_check_parseinisize($mem_size) < 134217728/* 128 MB */) {
+	@ini_set('memory_limit', 134217728);
+}
+unset($mem_size);
+
+
+#------------------------------
+# Attempt to set max_execution_time to at least 40s
+#------------------------------
+
+$max_time = @ini_get('max_execution_time');
+if (!$max_time || $max_time < 40) {
+	@set_time_limit(40);
+}
+unset($max_time);
+
+#------------------------------
+# Run low-level server checks
+#------------------------------
 
 $errors = array();
 

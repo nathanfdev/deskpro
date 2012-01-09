@@ -39,6 +39,16 @@ function deskpro_install_check_pdo_mysql()
 	return in_array('mysql', PDO::getAvailableDrivers());
 }
 
+function deskpro_install_check_memory_limit()
+{
+	$mem_size = @ini_get('memory_limit');
+	if ($mem_size && $mem_size != '-1' && deskpro_install_check_parseinisize($mem_size) < 134217728/* 128 MB */) {
+		return false;
+	}
+
+	return true;
+}
+
 function deskpro_install_check_writable()
 {
 	if (!is_writable(DP_ROOT.'/sys/cache') || !is_writable(DP_ROOT.'/sys/logs')) {
@@ -87,4 +97,36 @@ function deskpro_install_basic_error($message)
 HTML;
 
 	return $html;
+}
+
+
+/**
+ * This is a copy of Orb\Util\Numbers::parseIniSize() because that class isn't included at the time preboot is called
+ */
+function deskpro_install_check_parseinisize($val)
+{
+	$val = trim($val);
+	$last = strtoupper($val[strlen($val)-1]);
+
+	// Already in bytes
+	if (ctype_digit($last)) {
+		return (int)$val;
+	}
+
+	$val = (int)$val;
+
+	if ($last != 'G' && $last != 'M' && $last != 'K') {
+		return 0;
+	}
+
+	switch($last) {
+		case 'G':
+			$val *= 1024;
+		case 'M':
+			$val *= 1024;
+		case 'K':
+			$val *= 1024;
+	}
+
+	return $val;
 }

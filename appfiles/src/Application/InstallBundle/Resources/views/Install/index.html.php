@@ -121,6 +121,23 @@
 				<?php endif ?>
 			</td>
 		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
+				<?php if (!isset($errors['memory_limit'])): ?>
+					<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+					<span class="label important" style="float:right">FAIL</span>
+				<?php endif ?>
+				PHP Memory Limit
+				<?php if ($failed): ?>
+					<div class="alert-message block-message error">
+						DeskPRO requires PHP's memory_limit option to be at least 128 MB.
+					</div>
+				<?php endif ?>
+			</td>
+		</tr>
 	</tbody>
 </table>
 

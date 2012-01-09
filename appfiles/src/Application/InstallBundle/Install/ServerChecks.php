@@ -291,6 +291,24 @@ class ServerChecks
 		}
 
 		#------------------------------
+		# memory_limit
+		#------------------------------
+
+		if ($type == 'memory_limit' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking memory limit", Logger::DEBUG);
+			if (deskpro_install_check_memory_limit()) {
+				$this->getLogger()->log("[OK] Memory limit is okay", Logger::DEBUG);
+			} else {
+				$msg = "DeskPRO needs PHP's memory_limit option to be at least 128 MB";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['memory_limit'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
 		# cache_write
 		#------------------------------
 

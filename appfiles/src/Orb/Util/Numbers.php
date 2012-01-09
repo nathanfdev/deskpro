@@ -230,9 +230,45 @@ class Numbers
 		$info['first'] = 1;
 		$info['last'] = $num_pages;
 		$info['curpage'] = $page;
-		
+
 		$info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 
 		return $info;
+	}
+
+
+	/**
+	 * Parses a filesize where the size may be expressed in php.ini shorthand notation with suffixes K, M or G.
+	 * The returned size is in bytes.
+	 *
+	 * @param $size_string
+	 * @return int
+	 */
+	public static function parseIniSize($val)
+	{
+		$val = trim($val);
+		$last = strtoupper($val[strlen($val)-1]);
+
+		// Already in bytes
+		if (ctype_digit($last)) {
+			return (int)$val;
+		}
+
+		$val = (int)$val;
+
+		if ($last != 'G' && $last != 'M' && $last != 'K') {
+			throw new \InvalidArgumentException("Invalid size string `$val`");
+		}
+
+		switch($last) {
+			case 'G':
+				$val *= 1024;
+			case 'M':
+				$val *= 1024;
+			case 'K':
+				$val *= 1024;
+		}
+
+		return $val;
 	}
 }
