@@ -1,12 +1,16 @@
 <header class="list-control-bar">
+	<ul class="btn-controls">
+		<li class="display-options display-options-trigger"><a></a></li>
+		<li class="right"><span class="sep"></span></li>
+		<li class="detail-view detail-view-trigger"><a class="setupIcon"></a></li>
+		<li class="right"><span class="sep"></span></li>
+	</ul>
 	<ul>
 		<li>{{ phrase('agent.ordered_by') }} </li>
 		<li class="order-by-menu-trigger"><a class="button"><span class="label">{{ order_by_summary }}</span><em></em></a></li>
 		<li><span class="sep"></span></li>
 		<li>{{ phrase('agent.and_grouped_by') }} </li>
 		<li class="group-by-menu-trigger"><a class="button"><span class="label">{{ grouping_summary|default('None') }}</span><em></em></a></li>
-		<li class="display-options display-options-trigger"><a></a></li>
-		<li class="detail-view detail-view-trigger"><a class="setupIcon"></a></li>
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">

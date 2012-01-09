@@ -228,7 +228,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 		var top = this.listElement.offset().top - 41;
 
 		this.controlRealEl.css({
-			'margin-top': top /* so the sync below doesnt need to worry about where it is */
+			'margin-top': top-1 /* so the sync below doesnt need to worry about where it is */
 		});
 
 		$(this.options.elements, listEl).each((function(i, el) {
