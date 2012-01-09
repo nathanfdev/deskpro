@@ -94,7 +94,11 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 
 			$message = App::getMailer()->createMessage();
-			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+			if (!empty($vars['validating_email'])) {
+				$message->setTo($vars['validating_email']);
+			} else {
+				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+			}
 			foreach ($parts as $part) {
 				if ($only_cc_ids === null OR in_array($part->person['id'], $only_cc_ids)) {
 					$message->addCc($part['email_address'], $part->person->getDisplayName());
