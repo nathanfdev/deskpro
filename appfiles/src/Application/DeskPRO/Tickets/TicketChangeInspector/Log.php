@@ -161,6 +161,24 @@ class Log
 			}
 		}
 
+		if ($this->tracker->getChangedProperty('participants')) {
+			foreach ($this->tracker->getChangedProperty('participants') as $info) {
+				$old_val = null;
+				$new_val = null;
+
+				if (isset($info['old'])) $old_val = $info['old'];
+				if (isset($info['new'])) $new_val = $info['new'];
+
+				if ($old_val) {
+					$action = new LogActions\ParticipantRemoved($old_val);
+				} else {
+					$action = new LogActions\ParticipantAdded($new_val);
+				}
+
+				$actions[] = $action;
+			}
+		}
+
 		// These are manually added log entries from elsewhere,
 		// for example when sending emails.
 		// $new_val contains:

@@ -697,6 +697,7 @@ class TicketController extends AbstractController
 
 		try {
 			$ticket->setAgentParticipants($agents);
+			$ticket->getTicketLogger()->done();
 			$this->em->persist($ticket);
 			$this->em->flush();
 			$this->db->commit();

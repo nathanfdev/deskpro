@@ -752,6 +752,13 @@ class TicketSearch extends SearcherAbstract
 					$joins[] = 'tickets_participants';
 					$field = 'tickets_participants.person_id';
 
+					$choice_info = $this->_normalizeAgentChoice($choice);
+					if (!empty($choice_info['agent_ids'])) {
+						$choice = $choice_info['agent_ids'];
+					} else {
+						continue;
+					}
+
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent_tickets.participants'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 						return $titles;
@@ -1014,7 +1021,7 @@ class TicketSearch extends SearcherAbstract
 				if ($this->getPersonContext()) {
 					$agent_ids[] = $this->getPersonContext()->getId();
 				} else {
-					$agnet_ids[] = -1;
+					$agent_ids[] = -1;
 				}
 			} elseif ($c == -2) {
 				if ($this->getPersonContext()) {
@@ -1163,28 +1170,26 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_PARTICIPANT:
-					if (is_array($choice)) {
-						$participant_ids = $ticket->getParticipantPeopleIds();
-						$any = false;
-						foreach ($choice as $person_id) {
-							$is_in = in_array($person_id, $participant_ids);
 
-							if ($is_in) {
+					$info = $this->_normalizeAgentChoice($choice);
+					$agent_ids = $info['agent_ids'];
+
+					if ($agent_ids) {
+						$participant_ids = array();
+						foreach ($ticket->getRawParticipants() as $part) {
+							$participant_ids[] = $part->person->id;
+						}
+
+						$any = false;
+						foreach ($participant_ids as $pid) {
+							if ($this->_testChoiceMatch($pid, $op, $agent_ids)) {
 								$any = true;
-								if ($op == self::OP_CONTAINS) {
-									break;
-								} else {
-									return false;
-								}
+								break;
 							}
 						}
 
-						if ($op == self::OP_CONTAINS AND !$any) return false;
-					} else {
-						if ($ticket->hasParticipant($choice)) {
-							if ($op == self::OP_NOT) return false;
-						} else {
-							if ($op == self::OP_IS) return false;
+						if (!$any) {
+							return false;
 						}
 					}
 					break;

@@ -105,6 +105,10 @@ class DetectFilterMatches
 				case 'hidden_status':
 					$changed_fields[] = 'ticket.hidden_status';
 					break;
+
+				case 'participants':
+					$changed_fields[] = 'ticket.participants';
+					break;
 			}
 		}
 

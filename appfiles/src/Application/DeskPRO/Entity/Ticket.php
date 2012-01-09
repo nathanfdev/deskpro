@@ -580,6 +580,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $participants;
 	}
 
+	public function getRawParticipants()
+	{
+		return $this->participants;
+	}
+
+	public function setRawParticipants($parts)
+	{
+		$this->participants = $parts;
+	}
+
 
 
 	/**
@@ -632,6 +642,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_part['ticket'] = $this;
 		$this->participants->add($ticket_part);
 
+		if ($this->getTicketLogger()) {
+			$this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $person);
+		}
+
 		if ($this->_user_participants !== null AND !$person['is_agent']) {
 			$this->_user_participants[] = $ticket_part;
 		}
@@ -660,6 +674,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($this->participants as $k => $p) {
 			if ($p['person']['id'] == $person['id']) {
+				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $p['person'], null);
 				$this->participants->remove($k);
 				return $p;
 			}
@@ -712,6 +727,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($remove_ks as $k) {
 			App::getOrm()->remove($participants[$k]);
+			if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', $participants[$k], null);
 		}
 
 		$new_agent_ids = array_diff($set_agent_ids, $got_agent_ids);
@@ -722,6 +738,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$part['person_id'] = $agent_id;
 
 				$this->addParticipant($part);
+				if ($this->getTicketLogger()) $this->getTicketLogger()->recordMultiPropertyChanged('participants', null, $participants[$k]);
 			}
 		}
 	}

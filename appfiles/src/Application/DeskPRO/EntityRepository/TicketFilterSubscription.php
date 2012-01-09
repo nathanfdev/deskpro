@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Orb\Util\Arrays;
 
 class TicketFilterSubscription extends EntityRepository
 {
@@ -71,6 +72,13 @@ class TicketFilterSubscription extends EntityRepository
 			} else {
 				$filter_ids[] = $f->id;
 			}
+		}
+
+		$people_ids = Arrays::removeFalsey($people_ids);
+		$filter_ids = Arrays::removeFalsey($filter_ids);
+
+		if (!$people_ids) {
+			return array();
 		}
 
 		$people_ids = implode(',', $people_ids);

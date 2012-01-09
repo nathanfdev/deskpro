@@ -65,6 +65,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	{
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
+		$this->orig_parts = $ticket->getParticipantPeopleIds();
 
 		$this->person_context = App::getCurrentPerson();
 
@@ -225,6 +226,20 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			}
 		}
 
+		$parts = new \Doctrine\Common\Collections\ArrayCollection();
+
+		foreach ($this->orig_parts as $pid) {
+			$p = App::findEntity('DeskPRO:Person', $pid);
+			if (!$p) continue;
+
+			$ticket_part = new \Application\DeskPRO\Entity\TicketParticipant();
+			$ticket_part['person'] = $p;
+			$ticket_part['ticket'] = $this->original_ticket;
+			$parts->add($ticket_part);
+		}
+
+		$this->original_ticket->setRawParticipants($parts);
+
 		return $this->original_ticket;
 	}
 
@@ -240,6 +255,18 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		} else {
 			$this->recordPropertyChanged($prop, $old_val, $new_val);
 		}
+	}
+
+	public function recordPropertyChanged($prop, $old_val, $new_val)
+	{
+		$this->has_non_ignored = true;
+		return parent::recordPropertyChanged($prop, $old_val, $new_val);
+	}
+
+	public function recordMultiPropertyChanged($prop, $old_val, $new_val)
+	{
+		$this->has_non_ignored = true;
+		return parent::recordMultiPropertyChanged($prop, $old_val, $new_val);
 	}
 
 	/**
