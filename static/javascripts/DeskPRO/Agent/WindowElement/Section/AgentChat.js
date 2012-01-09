@@ -82,7 +82,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var openChatFn = function (ev) {
 			ev.stopPropagation();
 			var agent_id = $(this).data('agent-id');
-			if (agnet_id) {
+			if (agent_id) {
 				self.newChatWindow([agent_id]);
 			}
 		};
