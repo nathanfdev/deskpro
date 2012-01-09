@@ -28,11 +28,13 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 
 			el.text(el.data('none-label'));
 			el.data('agent-id', 0);
+			el.attr('data-agent-id', 0);
 			el.css('background-image', '');
 		} else {
 			var agentInfo = DeskPRO_Window.getAgentInfo(value);
 			el.text(agentInfo.name);
 			el.data('agent-id', agentInfo.id);
+			el.attr('data-agent-id', agentInfo.id);
 			el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
 		}
 

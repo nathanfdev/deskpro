@@ -54,6 +54,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					var span = $('<span />');
 					span.addClass('agent-link');
 					span.data('agent-id', part_id);
+					span.attr('data-agent-id', part_id);
 					span.text(label);
 					span.appendTo(li);
 

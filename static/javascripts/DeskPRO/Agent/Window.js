@@ -2134,10 +2134,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		window.setTimeout(function() {
 			$(context).on('click', '.agent-link', function(ev) {
 				ev.preventDefault();
-
 				var agentId = $(this).data('agent-id');
 				DP.console.log('Agent click %i', agentId);
-				if (!agentId || agentId === '0' || agentId === '') {
+				if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {
 					return;
 				}
 

@@ -89,6 +89,12 @@
 
 		height: 35px;
 	}
+
+	{# Agent links that are us dont appear clickable #}
+	.agent-link[data-agent-id="{{ app.user.id }}"]:hover {
+		text-decoration: none;
+		cursor: text;
+	}
 	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
