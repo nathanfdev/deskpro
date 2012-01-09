@@ -33,7 +33,9 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 
 			if (App::has(App::SERVICE_REQUEST)) {
 				$log['url'] = App::getRequest()->getUri();
-				$log['request_data'] = print_r($_REQUEST);
+				$log['ref_url'] = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
+				$log['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
+				$log['request_data'] = print_r($_REQUEST, 1);
 			}
 
 			if ($log_item->getFlag() !== null) {
