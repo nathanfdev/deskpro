@@ -93,11 +93,15 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this.autoloadTimeout = null;
 		}
 
-		$.ajax({
+		this.loadingAjax = $.ajax({
 			dataType: 'text',
 			url: this.options.pageUrl,
 			type: 'GET',
 			context: this,
+			complete: function() {
+				this.loadingAjax = null;
+				delete this.loadingAjax;
+			},
 			success: function(html) {
 				this._isLoading = false;
 				this.setHtml(html);
@@ -293,6 +297,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	isOpen: function() {
+		if (this.isDestroyed) return false;
+
 		if (this.popover && this.popover.is(':visible')) {
 			return true;
 		}
@@ -301,6 +307,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	open: function() {
+		if (this.isDestroyed) return;
 
 		this._initPopover();
 		this._initFragment();
@@ -342,6 +349,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	close: function() {
 
+		if (this.isDestroyed) return;
+
 		var ev = {pop: this, cancel: false};
 		this.fireEvent('close', ev);
 		if (ev.cancel) {
@@ -352,12 +361,14 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this.options.destroyOnClose) {
 			this.destroy();
-		} else {
+		} else if (this.page) {
 			this.page.fireEvent('popover-closed');
 		}
 	},
 
 	destroy: function() {
+
+		if (this.isDestroyed) return;
 
 		this.isDestroyed = true;
 		if (this.page) {
@@ -375,6 +386,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			this.autoloadTimeout = null;
 		}
 
+		if (this.loadingAjax) {
+			this.loadingAjax.abort();
+			this.loadingAjax = null;
+			delete this.loadingAjax;
+		}
 
 		this.popoverOuter = null;
 		this.popover = null;
