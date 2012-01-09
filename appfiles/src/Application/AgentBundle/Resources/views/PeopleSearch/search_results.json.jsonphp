@@ -4,14 +4,18 @@ $OUTPUT = array();
 foreach ($people_list as $person) {
 
 	$name = '';
-	if ($person['first_name'] AND $person['last_name']) {
+	if (!empty($person['first_name']) AND !empty($person['last_name'])) {
 		$name = $person['first_name'] . ' ' . $person['last_name'];
-	} elseif ($person['name']) {
+	} elseif (!empty($person['name'])) {
 		$name = $person['name'];
-	} elseif ($person['last_name']) {
+	} elseif (!empty($person['last_name'])) {
 		$name = $person['last_name'];
-	} elseif ($person['first_name']) {
+	} elseif (!empty($person['first_name'])) {
 		$name = $person['first_name'];
+	}
+
+	if (!$name) {
+		continue;
 	}
 
 	$OUTPUT[] = array(
