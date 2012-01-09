@@ -88,7 +88,7 @@ class NewTicketController extends AbstractController
 
 				// Its no longer a preticket, so we can delete the record
 				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
-					$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+					$preticket = App::findEntity('DeskPRO:PreticketContent', $preticket_id);
 
 					// Must be same user
 					if ($preticket) {
