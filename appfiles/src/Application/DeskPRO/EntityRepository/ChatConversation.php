@@ -171,7 +171,12 @@ class ChatConversation extends EntityRepository
 		});
 
 		$participant_ids = Arrays::removeFalsey($participant_ids);
+		$participant_ids = array_unique($participant_ids);
 		$count = count($participant_ids);
+
+		if (!$count) {
+			return null;
+		}
 
 		$sql = "
 			SELECT c.id

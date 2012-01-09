@@ -132,6 +132,10 @@ class AgentChat
 			}
 		}
 
+		if (!$conversation || !count($conversation->participants)) {
+			return null;
+		}
+
 		$em->beginTransaction();
 		$em->persist($conversation);
 		$em->flush();

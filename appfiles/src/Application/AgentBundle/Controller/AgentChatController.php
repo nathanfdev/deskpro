@@ -25,6 +25,9 @@ use Orb\Util\Util;
  */
 class AgentChatController extends AbstractController
 {
+	/**
+	 * @var \Application\DeskPRO\Chat\AgentChat
+	 */
 	protected $agent_chat;
 
 	public function init()

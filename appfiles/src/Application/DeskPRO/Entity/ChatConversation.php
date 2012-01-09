@@ -111,7 +111,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"all"})
+	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinTable(name="chat_conversation_to_person", joinColumns={@ORM_Mapping\JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $participants;
