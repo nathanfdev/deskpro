@@ -51,6 +51,16 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 			var form = self.getEl('form');
 			var postData = form.serializeArray();
 
+			if (!$('input[name="filter[title]"]').val().trim().length) {
+				alert('Enter a filter title');
+				return;
+			}
+
+			if (!$('input[name^="terms["]').length) {
+				alert('Choose at least one criteria');
+				return;
+			}
+
 			$.ajax({
 				url: form.attr('action'),
 				type: 'POST',
