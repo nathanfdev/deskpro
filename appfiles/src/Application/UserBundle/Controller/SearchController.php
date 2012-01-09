@@ -182,8 +182,13 @@ class SearchController extends AbstractController
 		$content = $this->request->query->get('content', '');
 
 		$search = App::getSearchAdapter();
-		$result_set = $search->getContentSearcher()->similarContent($content, array($content_type));
-		$results = $search->getResultSetObjects($result_set, true);
+
+		if ($search->isCapable('searcher_content_similar')) {
+			$result_set = $search->getContentSearcher()->similarContent($content, array($content_type));
+			$results = $search->getResultSetObjects($result_set, true);
+		} else {
+			$results = array();
+		}
 
 		return $this->render('UserBundle:Search:similar-to.html.twig', array(
 			'results' => $results,

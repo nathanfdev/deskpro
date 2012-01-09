@@ -29,7 +29,7 @@ class SearchAdapter
 				$adapter = \Application\DeskPRO\Search\Adapter\ElasticAdapter::create($config['host'], $config['port']);
 				break;
 
-			case 'mysql':
+			default:
 				$adapter = new \Application\DeskPRO\Search\Adapter\MysqlAdapter();
 				break;
 		}
