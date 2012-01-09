@@ -62,10 +62,11 @@
 	</header>
 	<article id="custom_filters_wrap">
 		<ul id="tickets_outline_custom_filters" class="source-list">
+			{% set has_any_showing = false %}
 			{% if custom_filters|length %}
 				{% for filter in custom_filters %}
 					<li
-						class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% endif %}"
+						class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %} {% if filter_show_options['agent.ui.filter-visibility.' ~ filter.id] == 'hidden' %}filter-hidden{% else %}{% set has_any_showing = true %}{% endif %}"
 						data-filter-id="{{filter.id}}"
 						data-filter-name="{{filter.sys_name}}"
 					>
@@ -78,7 +79,7 @@
 						</h3>
 					</li>
 				{% endfor %}
-				<li class="no-data launch-customfilters-editor">
+				<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
 					{{ phrase('agent.window.click_icon_to_show_filters') }}
 				</li>
 			{% else %}
