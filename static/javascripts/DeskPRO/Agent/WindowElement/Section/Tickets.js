@@ -5,22 +5,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	init: function() {
 		this.buttonEl = $('#tickets_section');
+		this.filterTicketIds = {};
 
 		this.urlFragmentName = 'tickets';
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
-
-		// Simulate instant switching when clicking nav items
-		var self = this;
-		this.getSectionElement().on('click', '[data-route]', function(ev) {
-			self.highlightNavItem($(this));
-		});
-
-		this.filterTicketIds = {};
-
 		DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
 	},
 
 	_initSection: function(data) {

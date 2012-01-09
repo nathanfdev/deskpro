@@ -2121,8 +2121,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				ev.stopPropagation();
-
 				if ($(this).is('.row-item') && (!$(ev.target).is('.click-through') && $(ev.target).is('input, a, button, textarea'))) {
 					return;
 				}
@@ -2135,7 +2133,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		window.setTimeout(function() {
 			$(context).on('click', '.agent-link', function(ev) {
-				ev.stopPropagation();
 				ev.preventDefault();
 
 				var agentId = $(this).data('agent-id');

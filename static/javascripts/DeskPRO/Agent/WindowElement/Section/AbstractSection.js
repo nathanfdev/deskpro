@@ -48,7 +48,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	highlightNavItem: function(el) {
 
-		if (!el.is('.is-nav-section')) {
+		if (!el.is('.is-nav-item')) {
 			var el = el.closest('.is-nav-item');
 			if (!el) {
 				return;

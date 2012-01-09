@@ -27,7 +27,7 @@
 					{% endif %}
 					{% if filter.sys_name == 'unassigned' %}data-grouping-ignore="agent,agent_team"{% endif %}
 				>
-					<h3 class="title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>
@@ -43,7 +43,7 @@
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
 				>
-					<h3 class="title" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+					<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 						<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
 						{{ filter.title }}
 					</h3>
@@ -71,7 +71,7 @@
 						data-filter-name="{{filter.sys_name}}"
 					>
 						<h3
-							class="title {% if loop.first %}auto-load-route{% endif %}"
+							class="is-nav-item title {% if loop.first %}auto-load-route{% endif %}"
 							data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 						>
 							<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
@@ -107,37 +107,37 @@
 </section>
 <section id="tickets_outline_archive" class="deskpro-tab-item">
 	<ul class="source-list" id="tickets_outline_filters_list" style="margin-top: 4px;">
-		<li class="with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=awaiting_user&amp;view_name=pending">
+		<li class="is-nav-item with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=awaiting_user&amp;view_name=pending">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_pending_count">{{ archive_counts['awaiting_user']|default(0) }}</span>
 				{{ phrase('agent.tickets.status_awaiting_user') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
+		<li class="is-nav-item with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_resolved_count">{{ archive_counts['resolved']|default(0) }}</span>
 				{{ phrase('agent.tickets.status_resolved') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
+		<li class="is-nav-item with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_closed_count">{{ archive_counts['closed']|default(0) }}</span>
 				{{ phrase('agent.tickets.status_closed') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=validating">
+		<li class="is-nav-item with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=validating">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_validating_count">{{ archive_counts['hidden.validating']|default(0) }}</span>
 				{{ phrase('agent.tickets.hidden_status_validating') }}
 			</span>
 		</li>
-		<li class="with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=spam">
+		<li class="is-nav-item with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=spam">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_spam_count">{{ archive_counts['hidden.spam']|default(0) }}</span>
 				{{ phrase('agent.tickets.hidden_status_spam') }}
 			</span>
 		</li>
-		<li class="nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=deleted&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=deleted">
+		<li class="is-nav-item nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=deleted&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=deleted">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_recycle_bin_count">{{ archive_counts['hidden.deleted']|default(0) }}</span>
 				{{ phrase('agent.recycle_bin') }}
