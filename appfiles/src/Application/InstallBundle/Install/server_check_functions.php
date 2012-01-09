@@ -24,6 +24,11 @@ function deskpro_install_check_config()
 	return true;
 }
 
+function deskpro_install_check_mbstring()
+{
+	return function_exists('mb_stripos');
+}
+
 function deskpro_install_check_pdo()
 {
 	return class_exists('PDO', false);

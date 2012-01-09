@@ -40,6 +40,23 @@
 		<tr>
 			<td>
 				<?php $failed = false ?>
+				<?php if (!isset($errors['mbstring_ext']) && !isset($errors['mbstring_ext'])): ?>
+					<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+					<span class="label important" style="float:right">FAIL</span>
+				<?php endif ?>
+				mbstring extension installed
+				<?php if ($failed): ?>
+					<div class="alert-message block-message error">
+						DeskPRO requires the mbstring extension
+					</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
 				<?php if (!isset($errors['json_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
 				<?php else: $failed = true; ?>
