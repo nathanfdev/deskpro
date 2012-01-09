@@ -77,6 +77,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 	_loadPage: function() {
 
+		if (this.isDestroyed) return;
+
 		if (this.options.pageCallback) {
 			return this.options.pageCallback(this.setHtml.bind(this));
 		}
@@ -389,7 +391,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.loadingAjax) {
 			this.loadingAjax.abort();
 			this.loadingAjax = null;
-			delete this.loadingAjax;
 		}
 
 		this.popoverOuter = null;
