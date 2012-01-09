@@ -12,7 +12,7 @@
 	'doctrine' => array(
 		'into' => DP_ROOT.'/vendor/doctrine',
 		'repos' => 'git://github.com/doctrine/doctrine2.git',
-		'version' => '2.1.4',
+		'version' => '2.1.5',
 	),
 	'doctrine_common' => array(
 		'into' => DP_ROOT.'/vendor/doctrine-common',
@@ -62,17 +62,17 @@
 	'swiftmailer' => array(
 		'into' => DP_ROOT.'/vendor/swiftmailer',
 		'repos' => 'git://github.com/swiftmailer/swiftmailer.git',
-		'version' => 'v4.1.3',
+		'version' => 'v4.1.5',
 	),
 	'symfony' => array(
 		'into' => DP_ROOT.'/vendor/symfony',
 		'repos' => 'git://github.com/symfony/symfony.git',
-		'version' => 'v2.0.7',
+		'version' => 'v2.0.9',
 	),
 	'twig' => array(
 		'into' => DP_ROOT.'/vendor/twig',
 		'repos' => 'git://github.com/fabpot/Twig.git',
-		'version' => 'v1.4.0',
+		'version' => 'v1.5.1',
 	),
 	'zend' => array(
 		'into' => DP_ROOT.'/vendor/zend',
