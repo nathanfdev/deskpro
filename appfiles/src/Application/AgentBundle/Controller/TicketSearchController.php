@@ -385,7 +385,7 @@ class TicketSearchController extends AbstractController
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
 			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $per_page);
-			$vars['ticket_ids'] = $results_helper->getGroupTicketIds();
+			$vars['ticket_ids'] = $results_helper->getGroupTicketIds($this->in->getString('grouping_option'));
 		}
 
 		#------------------------------
@@ -425,8 +425,6 @@ class TicketSearchController extends AbstractController
 		$vars['display_fields'] = array_unique($vars['display_fields']);
 
 		$pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
-
-		$order_by = $results_helper;
 
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
