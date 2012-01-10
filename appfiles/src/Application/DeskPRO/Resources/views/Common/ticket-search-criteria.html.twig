@@ -79,9 +79,8 @@
 					{% for dep in term_options.departments_hierarchy %}
 						<option value="{{dep.id}}">{{dep.title}}</option>
 						{% if dep.children %}
-							<option value="{{dep.id}}">{{dep.title}}</option>
 							{% for subdep in dep.children %}
-								<option value="{{subdep.id}}">-- {{subdep.title}}</option>
+								<option data-full-title="{{ dep.title }} &gt; {{ subdep.title }}" value="{{subdep.id}}">-- {{subdep.title}}</option>
 							{% endfor %}
 						{% endif %}
 					{% endfor %}
