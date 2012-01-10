@@ -1515,7 +1515,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div>');
 		} else {
-			this._showAjaxError();
+			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		}
 	},
 
@@ -1523,7 +1523,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#global_ajax_error_info').empty();
 		if (message) {
-			$('#global_ajax_error_info').html(message);
+			$('#global_ajax_error_info').html(message).show();
+		} else {
+			$('#global_ajax_error_info').hide();
 		}
 
 		if (!this.ajaxErrorOverlay) {

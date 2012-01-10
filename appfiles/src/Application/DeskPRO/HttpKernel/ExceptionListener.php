@@ -41,6 +41,11 @@ class ExceptionListener
 
 	protected function _logException(\Exception $exception)
 	{
+		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+			$this->_log404($exception);
+			return;
+		}
+
 		$errno   = $exception->getCode();
 		$errstr  = $exception->getMessage();
 		$errfile = $this->_stripPathPrefix($exception->getFile());
@@ -84,6 +89,30 @@ class ExceptionListener
 				App::getMailer()->send($message);
 			} catch (\Exception $e) {}
 		}
+	}
+
+	public function _log404(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $exception)
+	{
+		$summary = $exception->getMessage();
+
+		$trace = $this->getTraceString($exception->getTrace());
+		$trace = $this->_stripPathPrefix($trace);
+
+		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+
+		// This is fetched from the template
+		$this->last_exception = $exception;
+
+		try {
+			$logger = App::createNewLogger('error_not_found', null);
+			$logger->log($summary, 3, array(
+				'session_name' => $exception->_dp_sn,
+				'trace' => $trace,
+				'class' => get_class($exception),
+				'file' => $exception->getFile(),
+				'line' => $exception->getLine()
+			));
+		} catch (\Exception $e) {}
 	}
 
 	public function _stripPathPrefix($content)
