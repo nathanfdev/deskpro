@@ -370,6 +370,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.cancelHashLoad++;
 		jQuery.history.load(browserHash);
+		this.cancelHashLoad--;
 	},
 
 	windowStateUpdated: function(type) {
