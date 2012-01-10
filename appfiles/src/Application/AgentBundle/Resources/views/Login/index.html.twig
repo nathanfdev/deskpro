@@ -114,7 +114,7 @@
 			{% if return %}
 				<input type="hidden" name="return" value="{{return}}" />
 			{% endif %}
-			{% if app.session.hasFlash('login_failed') %}
+			{% if failed_login_name %}
 				<p class="error">{{ phrase('agent.login.login_failed') }}</p>
 			{% endif %}
 			{% if has_logged_out %}
@@ -124,7 +124,7 @@
 			<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td>{{ phrase('agent.login.label_email') }}:</td>
-					<td><input type="text" value="" name="email" id="email" size="40" tabindex="1" /></td>
+					<td><input type="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></td>
 				</tr>
 				<tr>
 					<td>{{ phrase('agent.login.label_password') }} <small>(<a href="{{ path('user_login_resetpass') }}">{{ phrase('agent.login.lost_link') }}</a>)</small>:</td>

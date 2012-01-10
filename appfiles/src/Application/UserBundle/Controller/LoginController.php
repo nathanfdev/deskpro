@@ -128,8 +128,8 @@ HTML;
 		$return = $this->in->getString('return');
 
 		if (!$result->isValid()) {
-			$this->session->setFlash('login_failed', true);
-
+			$this->session->set('failed_login_name', $this->in->getString('email'));
+			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 

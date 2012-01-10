@@ -29,7 +29,19 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	{
 		$url = $this->generateUrl('agent', array(), true);
 		$has_logged_out = $this->in->checkIsset('o');
-		return $this->render('AgentBundle:Login:index.html.twig', array('return' => $url, 'has_logged_out' => $has_logged_out));
+
+		$failed_login_name = false;
+		if ($this->session->has('failed_login_name')) {
+			$failed_login_name = $this->session->get('failed_login_name');
+			$this->session->remove('failed_login_name');
+			$this->session->save();
+		}
+
+		return $this->render('AgentBundle:Login:index.html.twig', array(
+			'return'             => $url,
+			'has_logged_out'     => $has_logged_out,
+			'failed_login_name'  => $failed_login_name
+		));
 	}
 
 	public function preloadSourcesAction()
