@@ -29,7 +29,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			customClassname: '',
 			classname: '',
 			isModal: true,
-			zIndex: 1000000,
+			zIndex: 10001,
 			escapeClose: true,
 			modalClickClose: true,
 			objectGroup: 'default',

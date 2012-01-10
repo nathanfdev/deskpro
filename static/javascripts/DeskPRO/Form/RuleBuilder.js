@@ -184,7 +184,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 					} else if (typeOf(val) == 'array') {
 						Array.each(val, function(subval) {
 							var el = $('option[value="'+subval+'"]', new_row).first().get(0);
-							el.selected = true;
+							if (el) el.selected = true;
 						}, this);
 					} else {
 						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val).change();

@@ -150,7 +150,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
 						btn.appendTo( buttonPane );
 
-						$(input).datepicker("widget").css('z-index', 9999999);
+						$(input).datepicker("widget").css('z-index', 30001);
 					},1);
 				}
 			}, ev);

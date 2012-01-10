@@ -133,7 +133,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 		this._hasInit = true;
 
 		this.wrapper.detach().appendTo('body');
-		this.wrapper.css('z-index', '1000100');
+		this.wrapper.css('z-index', '21001');
 
 		this.baseId = this.wrapper.data('base-id');
 
@@ -157,7 +157,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 			this.backdropEls = $([back1.get(0), back2.get(0), back3.get(0)]);
 		}
 
-		this.backdropEls.css('z-index', '1000010').hide().appendTo('body');
+		this.backdropEls.css('z-index', '21000').hide().appendTo('body');
 
 		this.backdropEls.on('click', (function(ev) {
 			ev.stopPropagation();
@@ -734,7 +734,7 @@ DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
 
 		this.macroOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlayEl,
-			zIndex: 1100001
+			zIndex: 30001
 		});
 	},
 

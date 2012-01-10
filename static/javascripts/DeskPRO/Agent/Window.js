@@ -655,7 +655,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this._confirmOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#confirm_overlay'),
-			zIndex: '99999999999999999999',
+			zIndex: '50000',
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).on('click', (function() {
 					eventData.overlay.closeOverlay();
@@ -1529,7 +1529,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!this.ajaxErrorOverlay) {
 			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
 				contentElement: $('#global_ajax_error'),
-				zIndex: 999999999 /* this should be bigger than everything */
+				zIndex: 50000 /* this should be bigger than everything */
 			});
 		}
 
@@ -2405,13 +2405,13 @@ function toggle_visibility(elId, parentId) {
 					'left': pos.left,
 					'width': 200,
 					'height': 'auto',
-					'z-index': 10001
+					'z-index': 101
 				});
 			}
 		}
 
 		var back = $('<div class="backdrop" />');
-		back.css('z-index', 10000);
+		back.css('z-index', 100);
 		back.appendTo('body');
 
 		back.on('click', function() {

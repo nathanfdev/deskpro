@@ -15,7 +15,7 @@
 	bottom: 0;
 	right: 0;
 	background: url("../../../images/bg-overlay-light.png") repeat;
-	z-index: 100000;
+	z-index: 10001;
 }
 
 .deskpro-overlay-overlay.error {
@@ -25,7 +25,7 @@
 /* Main overlay wrapper */
 .deskpro-overlay-outer {
 	position: absolute;
-	z-index: 100001;
+	z-index: 10002;
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;

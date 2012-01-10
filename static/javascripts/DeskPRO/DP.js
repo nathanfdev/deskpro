@@ -10,7 +10,7 @@ var DP = {
 	},
 
 	init: function() {
-		if (DP_DEBUG) {
+		if (!DP_DEBUG) {
 			['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
 				if (window.console[v] && typeof window.console[v] == 'function') {
 					var fn = window.console[v];
@@ -28,8 +28,6 @@ var DP = {
 
 	rteTextarea: function(field, options) {
 		field = $(field);
-
-		options = options || {};
 
 		defaultOptions = {
 			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',

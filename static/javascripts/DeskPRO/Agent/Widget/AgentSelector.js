@@ -11,7 +11,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			multipleChoice: false,
 			showNone: false,
 			noneLabel: 'Unassigned',
-			zIndex: 1000001,
+			zIndex: 30001,
 			startWith: []
 		};
 

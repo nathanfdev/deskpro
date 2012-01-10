@@ -45,7 +45,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			}
 		});
 
-		this.backdrop = $('<div class="backdrop fade" />').hide().appendTo('body').css('z-index', 99999998);
+		this.backdrop = $('<div class="backdrop fade" />').hide().appendTo('body').css('z-index', 32000);
 		this.backdrop.click(this.close.bind(this));
 	},
 

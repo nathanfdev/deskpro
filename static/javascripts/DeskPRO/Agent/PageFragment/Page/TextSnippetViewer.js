@@ -128,7 +128,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			self.saveNewCat();
 		});
 
-		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});
+		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 20000});
 		this.newCatBackdrop.on('click', function() {
 			self.newCatOverlay.slideUp();
 			self.newCatBackdrop.hide();
@@ -202,7 +202,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			context: this,
 			success: function(html) {
 				var overlay = $(html).hide().appendTo('body');
-				var backdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 999998});;
+				var backdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 20000});
 
 				var pos = catRow.offset();
 				overlay.css({

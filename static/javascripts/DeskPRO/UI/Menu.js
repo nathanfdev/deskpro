@@ -31,7 +31,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.options = {
 			triggerElement: null,
 			customClassname: '',
-			zIndex: 99999999999999,
+			zIndex: 0,
 			menuElement: null,
 			objectGroup: 'default',
 			subMenuConfig: null,
@@ -613,7 +613,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 				subMenuConfig.subMenuId = subMenuId;
 				subMenuConfig.parentMenuItem = el;
 				subMenuConfig.menuElement = subMenuEl;
-				subMenuConfig.zIndex = this.options.zIndex+1;
+				if (this.options.zIndex) {
+					subMenuConfig.zIndex = this.options.zIndex+10;
+				}
 				var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
 				this.subMenus.push(subMenu);
 

@@ -9,7 +9,7 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 	initialize: function(options) {
 		this.options = {
 			routeData: {},
-			positionAbove: null
+			positionAbove: true
 		};
 
 		this.setOptions(options);
@@ -123,12 +123,11 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 			'left': leftForCenter
 		});
 
-		if (0 && this.options.positionAbove) {
-			var zindex = parseInt($(this.options.positionAbove).css('z-index'));
-			zindex += 10;
+		if (this.options.positionAbove) {
+			var zIndex = Orb.findHighestZindex() + 10;
 
-			this.wrapper.css('z-index', zindex+1);
-			this.backdropEl.css('z-index', zindex);
+			this.wrapper.css('z-index', zIndex+1);
+			this.backdropEl.css('z-index', zIndex);
 		}
 
 		if ($('section > header', this.wrapper).length) {

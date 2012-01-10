@@ -121,7 +121,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 			height: calcH
 		});
 
-		DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
+		DP.rteTextarea(this.getEl('content'), {
 			setup: function(ed) {
 				ed.onClick.add(function() {
 					self.getEl('content_section').addClass('done');

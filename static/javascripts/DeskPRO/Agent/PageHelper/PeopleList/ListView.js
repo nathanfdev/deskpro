@@ -39,7 +39,7 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 				this.wrapper.html(html);
 
 				this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
-				this.backdropEl.css('z-index', '1000010').hide().appendTo('body');
+				this.backdropEl.css('z-index', '10000').hide().appendTo('body');
 
 				this.backdropEl.on('click', (function(ev) {
 					ev.stopPropagation();

@@ -12,7 +12,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
 
-		this.zIndex = 999999;
+		this.zIndex = 30001;
 
 		var self = this;
 

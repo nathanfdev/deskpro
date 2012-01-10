@@ -8,7 +8,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 		contentEl: 'div.new-user-overlay',
 		context: document,
 		saveUrl: null,
-		zIndex: 1000000
+		zIndex: 30001
 	},
 
 	contentEl: null,
