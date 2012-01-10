@@ -722,8 +722,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$hash = $this->hashPassword($plain_password);
 
-		$this->password = $hash;
+		$pass = $hash;
 		$this->_set_plain_password = $plain_password;
+
+		$this->setModelField('password', $pass);
 
 		return $this->password;
 	}

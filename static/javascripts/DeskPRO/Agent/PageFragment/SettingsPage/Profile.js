@@ -82,7 +82,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			if (passCode) {
 				data.push({
 					name: 'authcode',
-					name: passCode
+					value: passCode
 				});
 			}
 			$.ajax({

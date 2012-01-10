@@ -443,7 +443,7 @@ class MiscController extends AbstractController
 			return $this->createJsonResponse(array('invalid' => true));
 		}
 
-		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->password);
+		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->secret_string);
 		return $this->createJsonResponse(array('code' => $code));
 	}
 }
