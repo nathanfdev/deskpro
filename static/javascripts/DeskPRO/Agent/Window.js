@@ -2113,6 +2113,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	initInterfaceLayerEvents: function(context) {
 		var self = this;
+		if ($(context).is('.dp-interface-layer')) {
+			return;
+		}
+
+		$(context).addClass('dp-interface-layer');
 
 		window.setTimeout(function() {
 			// Accept clicks on routes
@@ -2126,6 +2131,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				ev.preventDefault();
+				ev.stopPropagation();
 
 				self.runPageRouteFromElement($(this));
 			});
@@ -2134,6 +2140,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		window.setTimeout(function() {
 			$(context).on('click', '.agent-link', function(ev) {
 				ev.preventDefault();
+				ev.stopPropagation();
+
 				var agentId = $(this).data('agent-id');
 				DP.console.log('Agent click %i', agentId);
 				if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {

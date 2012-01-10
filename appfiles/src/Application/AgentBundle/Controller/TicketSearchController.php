@@ -286,7 +286,12 @@ class TicketSearchController extends AbstractController
 
 			$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
 			if ($term) {
-				$searcher->addTerm($term['type'], $term['op'], $term);
+				$type = $term['type'];
+				$op = $term['op'];
+				$choice = $term;
+				unset($choice['type'], $choice['op']);
+
+				$searcher->addTerm($type, $op, $choice);
 			}
 		}
 

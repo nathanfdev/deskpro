@@ -137,8 +137,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			$('#settingswin').trigger('dp_open', 'filters');
 		});
 
-		DeskPRO_Window.initInterfaceLayerEvents(this.contentEl);
-
 		this.fireEvent('sectionInit');
 	},
 
@@ -286,7 +284,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
-				total -= this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
 			} else {
 				this.setFilterCount(filterId, 0);
@@ -370,10 +367,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var grouping = this.getGroupingVar(filterId);
 
 			if (!grouping || !grouping.length) {
-				this.setFilterGroupingContent(filterId, '');
+				this.setFilterGroupingContent(filterId, '', grouping);
 
 				if (boundFilterId) {
-					this.setFilterGroupingContent(boundFilterId, '');
+					this.setFilterGroupingContent(boundFilterId, '', grouping);
 				}
 				return;
 			}
@@ -402,7 +399,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						});
 					});
 				} else {
-					this.setFilterGroupingContent(boundFilterId, '');
+					this.setFilterGroupingContent(boundFilterId, '', grouping);
 				}
 			}
 		}, this);
@@ -426,7 +423,19 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			},
 			success: function(batches) {
 				Object.each(batches, function(html,filterId) {
-					this.setFilterGroupingContent(filterId, html);
+
+					var filterEl = $('.filter-' + filterId, this.sectionEl);
+					var name = filterEl.data('filter-name');
+					if (name.indexOf('_w_hold') !== -1) {
+						name = name.replace(/_w_hold$/, '');
+						parentFilterEl = $('.filter-' + name, this.sectionEl);
+						parentFilterId = parseInt(parentFilterEl.data('filter-id'));
+						var grouping = this.getGroupingVar(parentFilterId);
+					} else {
+						var grouping = this.getGroupingVar(filterId);
+					}
+
+					this.setFilterGroupingContent(filterId, html, grouping);
 				}, this);
 			}
 		});
@@ -436,11 +445,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		return $('#ticket_filter_group_editor .filter-' + filterId + ' .field-option').val();
 	},
 
-	setFilterGroupingContent: function(filterId, html) {
+	setFilterGroupingContent: function(filterId, html, grouping) {
 		var filterEl = $('.filter-' + filterId, this.sectionEl);
 		var subgroupEl = $('ul.sub-group', filterEl);
 
-		var groupingVar = this.getGroupingVar(filterId);
 		var baseRoute = $('.title', filterEl).first().data('route');
 
 		subgroupEl.empty();
@@ -454,7 +462,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			// Add the proper route to each row
 			lis.each(function() {
-				var setRoute = Orb.appendQueryData(baseRoute, 'set_group_term', groupingVar);
+				var setRoute = Orb.appendQueryData(baseRoute, 'set_group_term', grouping);
 				setRoute = Orb.appendQueryData(setRoute, 'set_group_option', $(this).data('grouping-option'));
 				$('.title', this).first().data('route', setRoute);
 				$('.title', this).first().attr('data-route', setRoute);

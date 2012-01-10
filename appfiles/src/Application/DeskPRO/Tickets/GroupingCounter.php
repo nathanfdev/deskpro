@@ -423,6 +423,14 @@ class GroupingCounter
 					$group_structure[$id] = array('id' => $id, 'title' => $t);
 				}
 
+				// Make note of unknown items (should never happen, but better to include than not!)
+				foreach ($ids as $id) {
+					if (!isset($group_structure[$id])) {
+						$group_structure[$id] = array('id' => $id, 'title' => "Unknow $id");
+					}
+				}
+
+
 				// But remove the -1 rollups
 				unset($group_structure[-1]);
 				break;
@@ -611,7 +619,7 @@ class GroupingCounter
 	 *
 	 * @param $groupvar
 	 * @param $groupchoice
-	 * @return void
+	 * @return array
 	 */
 	public static function getSearchTerm($groupvar, $groupchoice)
 	{

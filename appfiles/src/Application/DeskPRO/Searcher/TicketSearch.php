@@ -745,7 +745,7 @@ class TicketSearch extends SearcherAbstract
 						$this->specific_fields[] = self::TERM_ORGANIZATION;
 					}
 
-					$wheres[] = $this->_choiceMatch("$tickets_table.organization", $op, $choice, true);
+					$wheres[] = $this->_choiceMatch("$tickets_table.organization_id", $op, $choice, true);
 					break;
 				case self::TERM_PARTICIPANT:
 					$this->affected_fields[] = 'ticket.participants';

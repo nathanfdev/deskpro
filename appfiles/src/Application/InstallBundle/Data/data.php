@@ -186,6 +186,11 @@ $q['terms']      = array(array(
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
 	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '1')
+	),
 );
 $em->persist($q);
 $em->flush();
@@ -209,6 +214,11 @@ $q['terms']      = array(array(
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
 	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '1')
+	),
 );
 $em->persist($q);
 $em->flush();
@@ -231,6 +241,11 @@ $q['terms']      = array(array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '1')
 	),
 );
 $em->persist($q);
@@ -256,6 +271,11 @@ $q['terms']      = array(array(
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
 	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '1')
+	),
 );
 $em->persist($q);
 $em->flush();
@@ -274,6 +294,11 @@ $q['terms']      = array(
 		'type'      => 'status',
 		'op'        => 'is',
 		'options'   => array('status'    => 'awaiting_agent',)
+	),
+	array(
+		'type'      => 'is_hold',
+		'op'        => 'is',
+		'options'   => array('is_hold'   => '1')
 	),
 );
 $em->persist($q);
