@@ -6,6 +6,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 	initialize: function(options) {
 		var self = this;
+		var selectEl;
 
 		var tpl = [];
 		tpl.push('<div class="optionbox">');
@@ -37,7 +38,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		if (options.values.is && options.values.is('select')) {
 			options.selectType = 'radio';
 
-			var selectEl = options.values;
+			selectEl = options.values;
 			options.values = [];
 
 			var selected_text = '';
@@ -119,7 +120,10 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			});
 		}
 
-		var name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
+		var name = Orb.uuid();
+		if (selectEl && selectEl) {
+			name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
+		}
 		Array.each(options.values, function(opt) {
 			if (options.selectType == 'radio') {
 				var li = $('<li><input type="radio" name="'+name+'" /><label></label></li>');

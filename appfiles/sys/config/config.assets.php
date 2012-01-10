@@ -571,6 +571,14 @@ $CONFIG['agent_interface_css'] = array(
 	)
 );
 
+$CONFIG['agent_interface_ie_css'] = array(
+	'out' => 'css/agent-interface-ie.css',
+	'filters' => array('less'),
+	'files' => array(
+		'stylesheets-less/agent/agent-ie.less',
+	)
+);
+
 
 $CONFIG['agent_interface_print_css'] = array(
 	'out' => 'css/agent-interface-print.css',
