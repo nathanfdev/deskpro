@@ -236,12 +236,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		var scrollContent = $('.scroll-content', this.popoverOuter).first();
 		var contentH = false;
+		var hasHeader = !!($('> section > header', this.popoverOuter).length);
+		var hasFooter = !!($('> section > footer', this.popoverOuter).length);
+
 		if (scrollContent.length) {
 			contentH = scrollContent.height();
-
-			var hasHeader = !!($('> section > header', this.popoverOuter).length);
-			var hasFooter = !!($('> section > footer', this.popoverOuter).length);
-
 			if (hasHeader) {
 				contentH += 36;
 			}
@@ -251,6 +250,12 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 			contentH += 31;
 		}
+
+		if (hasHeader) $('> section > article', this.popoverOuter).removeClass('no-header');
+		else $('> section > article', this.popoverOuter).addClass('no-header');
+
+		if (hasFooter) $('> section > article', this.popoverOuter).removeClass('no-footer');
+		else $('> section > article', this.popoverOuter).addClass('no-footer');
 
 		if (contentH < 350) {
 			contentH = 350;

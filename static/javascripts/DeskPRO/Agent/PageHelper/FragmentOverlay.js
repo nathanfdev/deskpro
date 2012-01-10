@@ -131,13 +131,13 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 			this.backdropEl.css('z-index', zindex);
 		}
 
-		if ($('section.dp-overlay > header').length) {
+		if ($('section > header', this.wrapper).length) {
 			this.wrapper.removeClass('no-header');
 		} else {
 			this.wrapper.addClass('no-header');
 		}
 
-		if ($('section.dp-overlay > footer').length) {
+		if ($('section > footer', this.wrapper).length) {
 			this.wrapper.removeClass('no-footer');
 		} else {
 			this.wrapper.addClass('no-footer');
