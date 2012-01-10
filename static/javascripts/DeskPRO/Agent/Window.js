@@ -219,6 +219,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (browserHash.indexOf('%') !== -1) {
+			browserHash = decodeURIComponent(browserHash);
+		}
+
 		// Hashes are #keyword.tabid:arg1:arg2
 		// tabid part is for non-unique pages (ie newticket) and
 		// a user is clicking between tabs. It is optional,
