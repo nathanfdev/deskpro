@@ -1,5 +1,3 @@
-Orb.createNamespace('DeskPRO.UI');
-
 /**
  * Optionbox but this helps build the markup required for it.
  */
@@ -106,7 +104,11 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 			selectEl.on('change', function() {
 				var opt = $('option:selected', this);
-				var text = opt.text().trim();
+				if (opt.data('full-title')) {
+					var text = opt.data('full-title').trim();
+				} else {
+					var text = opt.text().trim();
+				}
 				if (!text.length) text = options.noValText || 'Choose...';
 				else {
 					var prefix = $(this).data('prefix');
@@ -117,9 +119,10 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			});
 		}
 
+		var name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
 		Array.each(options.values, function(opt) {
 			if (options.selectType == 'radio') {
-				var li = $('<li><input type="radio" /><label></label></li>');
+				var li = $('<li><input type="radio" name="'+name+'" /><label></label></li>');
 			} else {
 				var li = $('<li><input type="checkbox" /><label></label></li>');
 			}
@@ -157,3 +160,5 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		this.parent(options);
 	}
 });
+
+Orb.createNamespace('DeskPRO.UI');
