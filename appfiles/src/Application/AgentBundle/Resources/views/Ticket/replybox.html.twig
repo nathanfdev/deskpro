@@ -186,7 +186,12 @@
 					</li>
 				</ul>
 				<div class="input-wrap">
-					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message"></textarea>
+					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message">{% if agent_signature %}
+
+
+
+{{ agent_signature }}{% endif %}</textarea>
+					<textarea id="{{replyBaseId}}_signature_value" style="display: none;">{{ agent_signature }}</textarea>
 				</div>
 			</section>
 		</article>

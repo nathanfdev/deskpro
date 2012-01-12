@@ -106,11 +106,22 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			viewUrl: this.el.data('snippet-viewer-url'),
 			triggerElement: this.getElById('text_snippets_btn'),
 			onSnippetClick: function(info) {
+
+				var sig = self.getElById('signature_value').val();
 				var val = self.getElById('replybox_txt').val();
-				if (val.length) {
-					val += " ";
+				if (val.trim().length) {
+
+					// Always put it before the signature
+					// (if have sig and val ends with sig)
+					if (sig.length && val.indexOf(sig, val.length - sig.length) !== -1) {
+						val = info.snippet + val;
+					} else {
+						val += " ";
+						val += info.snippet;
+					}
+				} else {
+					val = info.snippet;
 				}
-				val += info.snippet;
 				self.getElById('replybox_txt').val(val);
 			}
 		});

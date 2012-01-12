@@ -953,6 +953,7 @@ class TicketController extends AbstractController
 			'participant_ids' => $participant_ids,
 			'agent_parts' => $agent_parts,
 			'user_parts' => $user_parts,
+			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
 
 		$data = array_merge($data, array(
