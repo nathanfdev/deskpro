@@ -751,17 +751,15 @@ class TicketController extends AbstractController
 			$message['is_agent_note'] = true;
 		}
 
-		if (!$message['is_agent_note']) {
-			foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
+		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 
-				$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-				$attach = new Entity\TicketAttachment();
-				$attach['blob'] = $blob;
-				$attach['person'] = $this->person;
+			$attach = new Entity\TicketAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->person;
 
-				$message->addAttachment($attach);
-			}
+			$message->addAttachment($attach);
 		}
 
 		if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
