@@ -1,8 +1,5 @@
 <?php
 
-$DP_CONFIG = array();			// please do not edit this line
-$DP_CONFIG['db'] = array();		// please do not edit this line
-
 ################################################################################
 # Your mySQL Database Configuration
 #
@@ -13,19 +10,19 @@ $DP_CONFIG['db'] = array();		// please do not edit this line
 /**
  * The database server, usually localhost
  */
-$DP_CONFIG['db']['host'] = 'localhost';
+define('DP_DATABASE_HOST', 'localhost');
 
 /**
  * The database user
  */
-$DP_CONFIG['db']['user'] = 'YOUR_DATABASE_USER';
+define('DP_DATABASE_USER', 'YOUR_DATABASE_USER');
 
 /**
  * The password for the database user
  */
-$DP_CONFIG['db']['password'] = 'YOUR_DATABASE_PASS';
+define('DP_DATABASE_PASSWORD', 'YOUR_DATABASE_PASS');
 
 /**
  * The name of the database
  */
-$DP_CONFIG['db']['dbname'] = 'YOUR_DATABASE_NAME';
+define('DP_DATABASE_NAME', 'YOUR_DATABASE_NAME');
