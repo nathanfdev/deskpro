@@ -74,5 +74,6 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 	listRemove: function(el) {
 		DeskPRO_Window.util.modCountEl($('#publish_validating_count'), '-');
 		DeskPRO_Window.sections.publish_section.recountBadge();
+		this.selectionBar.checkNone();
 	}
 });

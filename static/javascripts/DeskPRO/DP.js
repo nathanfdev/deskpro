@@ -10,6 +10,7 @@ var DP = {
 	},
 
 	init: function() {
+		return;
 		if (!DP_DEBUG) {
 			['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
 				if (window.console[v] && typeof window.console[v] == 'function') {

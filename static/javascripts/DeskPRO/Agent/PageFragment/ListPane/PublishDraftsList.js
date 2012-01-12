@@ -41,6 +41,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Orb.Class({
 					dataType: 'json',
 					context: this,
 					success: function(data) {
+						self.selectionBar.checkNone();
 						if (data.affected) {
 							Array.each(data.affected, function(info) {
 								DeskPRO_Window.getMessageBroker().sendMessage('publish.drafts.list-remove', info);
