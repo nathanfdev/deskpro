@@ -88,6 +88,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			opt.resultRowSelector = 'tr.row-item';
 			opt.resultsContainer = $('.table-result-list table', el);
 			opt.navEl = $('.bottom-action-bar', el);
+		} else {
+			opt.resultsContainer = $('> .list-listing', this.getEl('is_results'));
 		}
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
