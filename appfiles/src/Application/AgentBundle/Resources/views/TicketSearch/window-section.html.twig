@@ -16,6 +16,7 @@
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
 					data-filter-name="{{filter.sys_name}}"
+					{% if initial_inbox_grouping[filter.id] %}data-initial-grouping="{{ initial_inbox_grouping[filter.id] }}"{% endif %}
 					{% if filter.sys_name == 'agent' %}data-grouping-ignore="agent,agent_team"{% endif %}
 					{% if filter.sys_name == 'agent_team' %}
 						{#{% if app.user.agent.is_single_team %}

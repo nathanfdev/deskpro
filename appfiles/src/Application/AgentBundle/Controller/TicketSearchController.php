@@ -78,6 +78,7 @@ class TicketSearchController extends AbstractController
 		$cloud = $cloud_gen->getCloud();
 
 		$archive_counts = $this->em->getRepository('DeskPRO:Ticket')->getArchiveCounts();
+		$initial_inbox_grouping = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.ticket-source-grouping', $this->person->id);
 
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
@@ -91,6 +92,7 @@ class TicketSearchController extends AbstractController
 			'filter_show_options' => $filter_show_options,
 			'labels_index' => $index,
 			'labels_cloud' => $cloud,
+			'initial_inbox_grouping' => $initial_inbox_grouping
 		));
 
 		$data['filter_id_matches'] = $filter_id_matches;
@@ -232,7 +234,16 @@ class TicketSearchController extends AbstractController
 		$ticket_batches = $this->in->getArrayValue('batches');
 		$batches = array();
 
+		$save_pref = $this->in->getBool('save_pref');
+		$prefs = array();
+
 		foreach ($ticket_batches as $batch_id => $ticket_batch) {
+
+			if ($save_pref) {
+				// note $batch_id is a filter ID
+				$prefs['agent.ui.ticket-source-grouping.' . $batch_id] = $ticket_batch['grouping'];
+			}
+
 			if (!$ticket_batch || empty($ticket_batch['ticket_ids'])) {
 				$batches[$batch_id] = '';
 				continue;
@@ -246,6 +257,23 @@ class TicketSearchController extends AbstractController
 			$batches[$batch_id] = $this->renderView('AgentBundle:TicketSearch:window-filter-groupresult.html.twig', array(
 				'grouped_info' => $grouped_info,
 			));
+		}
+
+		if ($prefs) {
+			$this->em->getConnection()->beginTransaction();
+
+			try {
+				foreach ($prefs as $k => $v) {
+					$p = $this->person->setPreference($k, $v);
+					$this->em->persist($p);
+				}
+
+				$this->em->flush();
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
 		}
 
 		return $this->createJsonResponse($batches);

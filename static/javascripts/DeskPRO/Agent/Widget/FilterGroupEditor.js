@@ -117,6 +117,10 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 				});
 			}
 
+			if (el.data('initial-grouping')) {
+				field.val(el.data('initial-grouping'));
+			}
+
 			var self = this;
 			field.on('change', function() {
 				self.fireEvent('groupingChanged', [parseInt(id), field.val(), field, self]);

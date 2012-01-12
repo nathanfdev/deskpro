@@ -59,9 +59,20 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			boundListElement: '#tickets_outline_sys_hold_filters',
 			triggerElement: '#ticket_filter_launch_editor',
 			onGroupingChanged: function(filterId) {
-				self.refreshFilterGrouping([filterId]);
+				self.refreshFilterGrouping([filterId], true);
 			}
 		});
+
+		var initialGrouped = $('#tickets_outline_sys_filters .filter[data-initial-grouping]');
+		if (initialGrouped.length) {
+			var fids = [];
+			initialGrouped.each(function() {
+				fids.push($(this).data('filter-id'));
+			});
+
+			self.filterGroupEditor._initControl();
+			self.refreshFilterGrouping(fids);
+		}
 
 		if ($('#tickets_outline_custom_filters .filter').not('.filter-hidden').length) {
 			$('#tickets_outline_custom_filters .no-data').hide();
@@ -346,7 +357,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.refreshFilterGrouping([filterId]);
 	},
 
-	refreshFilterGrouping: function(filterIds) {
+	refreshFilterGrouping: function(filterIds, doSave) {
 		var postData = [];
 
 		var els = [];
@@ -406,6 +417,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 			}
 		}, this);
+
+		if (doSave) {
+			postData.push({
+				name: 'save_pref',
+				value: 1
+			});
+		}
 
 		// Nothing to do
 		if (!postData.length) {
