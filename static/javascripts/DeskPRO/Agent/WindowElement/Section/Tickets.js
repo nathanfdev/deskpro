@@ -381,24 +381,29 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var grouping = this.getGroupingVar(filterId);
 
 			if (!grouping || !grouping.length) {
-				this.setFilterGroupingContent(filterId, '', grouping);
+				if (!doSave) {
+					this.setFilterGroupingContent(filterId, '', grouping);
 
-				if (boundFilterId) {
-					this.setFilterGroupingContent(boundFilterId, '', grouping);
+					if (boundFilterId) {
+						this.setFilterGroupingContent(boundFilterId, '', grouping);
+					}
+					return;
 				}
-				return;
 			}
 
 			postData.push({
 				name: 'batches['+filterId+'][grouping]',
 				value: grouping
 			});
-			Array.each(this.filterTicketIds[filterId], function(tid) {
-				postData.push({
-					name: 'batches['+filterId+'][ticket_ids][]',
-					value: tid
+
+			if (grouping) {
+				Array.each(this.filterTicketIds[filterId], function(tid) {
+					postData.push({
+						name: 'batches['+filterId+'][ticket_ids][]',
+						value: tid
+					});
 				});
-			});
+			}
 
 			if (boundFilterId) {
 				if (this.filterTicketIds[boundFilterId]) {
@@ -406,12 +411,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						name: 'batches['+boundFilterId+'][grouping]',
 						value: grouping
 					});
-					Array.each(this.filterTicketIds[boundFilterId], function(tid) {
-						postData.push({
-							name: 'batches['+boundFilterId+'][ticket_ids][]',
-							value: tid
+
+					if (grouping) {
+						Array.each(this.filterTicketIds[boundFilterId], function(tid) {
+							postData.push({
+								name: 'batches['+boundFilterId+'][ticket_ids][]',
+								value: tid
+							});
 						});
-					});
+					}
 				} else {
 					this.setFilterGroupingContent(boundFilterId, '', grouping);
 				}
