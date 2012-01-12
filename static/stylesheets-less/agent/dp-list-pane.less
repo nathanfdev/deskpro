@@ -1290,19 +1290,31 @@ section.dp-overlay > article.no-footer {
 }
 
 .dp-overlay-container.display-options ul {
-	padding: 8px 10px 8px 10px;
+
 }
 
 .dp-overlay-container.display-options ul li {
-	padding-top: 2px;
-	padding-bottom: 2px;
+	padding: 6px;
 }
 
 .dp-overlay-container.display-options ul li input {
 	margin-right: 3px;
 }
 
+.dp-overlay-container.display-options ul li {
+    background-color: #fff;
+	border-bottom: 1px solid #EAE9EF;
+}
 
+.dp-overlay-container.display-options ul li.ui-sortable-helper {
+	border-top: 1px solid #DBDBE1;
+	border-bottom: 1px solid #DBDBE1;
+}
+
+.dp-overlay-container.display-options ul li:hover {
+	cursor: move;
+	background: #fff url(../../images/agent/icons/move-grip.png) no-repeat 98% 50%;
+}
 
 .dp-overlay-container.ticketlist {
 	z-index: 10001;

@@ -2,7 +2,7 @@
 	<section class="dp-overlay">
 		<header>
 			<span class="close close-trigger"></span>
-			<h1>{{ phrase('agent.display_options') }}</h1>
+			<h1>{% block title %}{{ phrase('agent.display_options') }}{% endblock %}</h1>
 		</header>
 		<article>
 			<ul class="sortable-list">

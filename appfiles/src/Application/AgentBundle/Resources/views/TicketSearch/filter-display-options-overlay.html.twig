@@ -1,4 +1,12 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block title %}
+	Display Options For
+	{% if filter %}
+		{{ filter.title }}
+	{% else %}
+		Results
+	{% endif %}
+{% endblock %}
 {% block other_options %}
 	<div style="display: none">
 		Order By: <select name="order_by" class="sel-order-by">
@@ -12,16 +20,13 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	{% if show_deleted_reason %}
-		<li data-field="deleted_reason"><label><input type="checkbox" name="deleted_reason" /> {{ phrase('agent.deleted_reason') }}</label></li>
-	{% endif %}
 	{% set types = ['department','agent','agent_team','category','product','organization','date_user_waiting'] %}
 	{% for t in types %}
 		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.' ~ t) }}</label></li>
 	{% endfor %}
 	{% for f in ticket_field_defs %}
 		{% set t = 'ticket_fields[' ~ f.id ~ ']' %}
-		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.ticket_field') }}: {{f.title}}</label></li>
+		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} />{{f.title}}</label></li>
 	{% endfor %}
 	{% for f in person_field_defs %}
 		{% set t = 'person_fields[' ~ f.id ~ ']' %}
