@@ -33,7 +33,7 @@ class KernelBooter
 		global $DP_CONFIG;
 		require DP_CONFIG_FILE;
 
-		if (!isset($DP_CONFIG) || !is_array(!isset($DP_CONFIG))) {
+		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
 			$DP_CONFIG = array();
 		}
 

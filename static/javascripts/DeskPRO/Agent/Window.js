@@ -1919,10 +1919,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initSections: function() {
 
-		$('#twitter_section, #deals_section').on('click', function() {
-			DeskPRO_Window.showAlert('Coming soon!');
-		});
-
 		var self = this;
 		var count = -1;
 
