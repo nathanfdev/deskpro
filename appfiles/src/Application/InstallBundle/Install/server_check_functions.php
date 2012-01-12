@@ -39,6 +39,14 @@ function deskpro_install_check_pdo_mysql()
 	return in_array('mysql', PDO::getAvailableDrivers());
 }
 
+function deskpro_install_check_image_manip()
+{
+	if (class_exists('Imagick', false) || class_exists('Gmagick', false) || function_exists('gd_info')) {
+		return true;
+	}
+	return false;
+}
+
 function deskpro_install_check_memory_limit()
 {
 	$mem_size = @ini_get('memory_limit');

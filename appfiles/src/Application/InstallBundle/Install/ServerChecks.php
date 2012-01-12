@@ -159,11 +159,29 @@ class ServerChecks
 		if ($type == 'session_ext' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking for session extension", Logger::DEBUG);
 			if (function_exists('session_start')) {
-				$this->getLogger()->log("[OK] json session installed", Logger::DEBUG);
+				$this->getLogger()->log("[OK] session extension installed", Logger::DEBUG);
 			} else {
 				$msg = "Install and enable the session extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['session_ext'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# session_ext
+		#------------------------------
+
+		if ($type == 'image_manip' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking for an image manipulation extension", Logger::DEBUG);
+			if (deskpro_install_check_image_manip()) {
+				$this->getLogger()->log("[OK] An image manipulation extension is installed", Logger::DEBUG);
+			} else {
+				$msg = "Install and enable the Imagick, Gmagick or GD extension";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['image_manip'] = array(
 					'message' => $msg,
 					'level' => 'fatal'
 				);
