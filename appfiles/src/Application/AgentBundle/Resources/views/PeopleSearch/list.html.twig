@@ -29,12 +29,16 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 
 	<footer class="results-nav">
 		<div class="cursor">
-			{{ phrase('agent.people.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': person_ids|length })|raw }}
+			Showing results
+			<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+			of
+			<span class="results-total-count" id="{{baseId}}_total_count">{{ person_ids|length }}</span>
 		</div>
-		{% if person_ids|length > 50 %}
-		<div class="more">
-			<button class="show-more">Load More</button>
-		</div>
+		{% if person_ids|length > per_page %}
+			<ul class="pagenav no-prev">
+				<li class="prev"></li>
+				<li class="next"></li>
+			</ul>
 		{% endif %}
 		<div class="loading">
 

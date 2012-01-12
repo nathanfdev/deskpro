@@ -25,14 +25,20 @@ pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
 
 	<footer class="results-nav">
 		<div class="cursor">
-			{{ phrase('agent.people.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': org_ids|length })|raw }}
+			Showing results
+			<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+			of
+			<span class="results-total-count" id="{{baseId}}_total_count">{{ org_ids|length }}</span>
 		</div>
 		{% if org_ids|length > per_page %}
-		<div class="more">
-			<button class="show-more">Load More</button>
-		</div>
+			<ul class="pagenav no-prev">
+				<li class="prev"></li>
+				<li class="next"></li>
+			</ul>
 		{% endif %}
-		<div class="loading"></div>
+		<div class="loading">
+
+		</div>
 	</footer>
 {% else %}
 	<section class="list-listing no-results">

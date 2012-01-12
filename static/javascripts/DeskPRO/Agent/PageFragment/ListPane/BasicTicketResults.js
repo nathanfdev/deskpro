@@ -30,6 +30,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			var sels = [];
 			Array.each(ticket_ids, function(val) {
+				this.resultsHelper.removeResultId(val);
 				sels.push('.ticket-' + val);
 				this.countTotal--;
 			});
@@ -40,7 +41,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				$(this).remove();
 				self.updateTicketCountLabels();
 			});
-		}).bind(this));
+		}).bind(this))
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
@@ -91,6 +92,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		} else {
 			opt.resultsContainer = $('> .list-listing', this.getEl('is_results'));
 		}
+
+		opt.onPostSetNewResults = function() {
+			self.selectionBar.resetCountLabel();
+		};
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
 
@@ -131,25 +136,29 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			return;
 		}
 
-		var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
+		this.resultsHelper.prependResultId(ticket_id);
 
-		$.ajax({
-			url: url,
-			dataType: 'html',
-			context: this,
-			success: function(html) {
-				var el = $(html);
-				el.hide();
+		if (this.resultsHelper.getCurrentPage() == 1) {
+			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
 
-				$('.timeago', el).timeago();
+			$.ajax({
+				url: url,
+				dataType: 'html',
+				context: this,
+				success: function(html) {
+					var el = $(html);
+					el.hide();
 
-				$('.deskpro-results-list', this.wrapper).prepend(el);
-				el.slideDown();
+					$('.timeago', el).timeago();
 
-				this.countTotal++;
-				this.updateTicketCountLabels();
-			}
-		});
+					$('.deskpro-results-list', this.wrapper).prepend(el);
+					el.slideDown();
+
+					this.countTotal++;
+					this.updateTicketCountLabels();
+				}
+			});
+		}
 	},
 
 	delTicket: function(ticket_id) {
@@ -157,6 +166,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
 
 		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
+			this.resultsHelper.removeResultId(ticket_id);
 			el.remove();
 			self.countTotal--;
 			self.updateTicketCountLabels();

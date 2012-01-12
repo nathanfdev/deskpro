@@ -61,26 +61,26 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.displayOptions    = this.options.displayOptions || page.displayOptions;
 		this.resultsContainer  = this.options.resultsContainer || $('.list-listing', this.wrapper);
 		this.navEl             = this.options.navEl || $('footer.results-nav', this.wrapper);
-		this.moreButton        = $('button.show-more', this.navEl);
 		this.showingCountEl    = this.options.showingCountEl || $('.results-showing-count', this.wrapper);
+
+		this.pageNav           = $('ul.pagenav', this.navEl);
+		this.prevBtn           = $('> li.prev', this.pageNav);
+		this.nextBtn           = $('> li.next', this.pageNav);
 
 		this.resultCount   = this.options.resultIds.length;
 
-		// Chunk into pagesets
-		this.resultPages = Orb.arrayChunk(this.options.resultIds, this.options.perPage);
+		this.scrollableEl = this.resultsContainer.closest('.with-scrollbar');
 
-		// could be a big array, we should release the old one if we can
+		this.resultIds = this.options.resultIds;
 		delete this.options.resultIds;
 
-		this.numPages = this.resultPages.length;
+		this.numPages = Math.ceil(this.resultIds.length / this.options.perPage);
 		this.currentPage = 1;
 
 		this.updateShowingCount();
-		if (this.getCurrentPage() == this.getNumPages()) {
-			this.showNoMore();
-		}
 
-		this.moreButton.on('click', this.loadNextPage.bind(this));
+		this.pageNav.on('click', '.prev', this.loadPrevPage.bind(this));
+		this.pageNav.on('click', '.next', this.loadNextPage.bind(this));
 	},
 
 
@@ -110,13 +110,12 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * @param {Integer} pageNum
 	 */
 	getPageIds: function(pageNum) {
-		pageNum--;
-
-		if (!this.resultPages[pageNum]) {
+		if (pageNum < 1 || pageNum > this.numPages) {
+			console.warn("Requesting page " + pageNum + " when there are only " + this.numPages);
 			return [];
 		}
 
-		return this.resultPages[pageNum];
+		return this.resultIds.slice((pageNum-1) * this.options.perPage, pageNum * this.options.perPage);
 	},
 
 
@@ -125,11 +124,23 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 */
 	loadNextPage: function() {
 		var nextPage = this.getCurrentPage() + 1;
-		if (nextPage > this.getNumPages) {
+		if (nextPage > this.getNumPages()) {
 			return;
 		}
 
 		return this.loadNewPage(nextPage);
+	},
+
+	/**
+	 * Load the next page in the results
+	 */
+	loadPrevPage: function() {
+		var prevPage = this.getCurrentPage() - 1;
+		if (prevPage < 1) {
+			return;
+		}
+
+		return this.loadNewPage(prevPage);
 	},
 
 	/**
@@ -146,11 +157,20 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 		var evData = {html: null}, html = null;
 
+		this.currentPage = pageNum;
+
+		this.pageNav.removeClass('no-prev no-next');
+		if (pageNum == 1) {
+			this.pageNav.addClass('no-prev');
+		} else if (pageNum == this.numPages) {
+			this.pageNav.addClass('no-next');
+		}
+
 		this.fireEvent('loadResultPage', [evData]);
 
 		if (evData.html !== null) {
 			html = evData.html;
-			this.appendNewResults(html);
+			this.setNewResults(html);
 		} else {
 			this.showLoading();
 
@@ -169,7 +189,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 					this.hideLoading();
 				},
 				success: function(html) {
-					this.appendNewResults(html);
+					this.setNewResults(html);
 				}
 			});
 		}
@@ -181,19 +201,17 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 *
 	 * @param html
 	 */
-	appendNewResults: function(html) {
-		var results = $(html), count;
+	setNewResults: function(html) {
+		this.resultsContainer.empty().html(html);
 
-		this.resultsContainer.append(results);
-		this.fireEvent('appendNewResults', [results, this]);
-
-		this.currentPage++;
-
-		if (this.getNumPages() == this.currentPage) {
-			this.showNoMore();
+		if (this.scrollableEl.length) {
+			$('> .scrollbar > .track > .thumb', this.scrollableEl).css('top', '0');
+			$('> .scroll-viewport > .scroll-content', this.scrollableEl).css('top', '0');
 		}
 
 		this.updateShowingCount();
+
+		this.fireEvent('postSetNewResults', [this, this.resultsContainer]);
 	},
 
 
@@ -226,10 +244,38 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * Update the showing xxx of xxx line by counting the rows currently displayed
 	 */
 	updateShowingCount: function() {
-		this.showingCount = $(this.options.resultRowSelector, this.resultsContainer).length;
-		this.showingCountEl.empty().text(this.showingCount + '');
 
-		this.fireEvent('showingCountUpdated', [this.showingCount, this.showingCountEl, this]);
+		var showingCount = $(this.options.resultRowSelector, this.resultsContainer).length || 0;
+
+		var start = ((this.currentPage-1) * this.options.perPage);
+		var end = start + showingCount;
+		start++;
+
+		if (end > this.resultIds.length) {
+			end = this.resultIds.length;
+		}
+
+		this.showingCountEl.empty().text(start + '-' + end);
+	},
+
+
+	/**
+	 * Add a result ID to the beginning of the array
+	 *
+	 * @param resultId
+	 */
+	prependResultId: function(resultId) {
+		this.resultIds.unshift(resultId);
+	},
+
+
+	/**
+	 * Remove an ID from the result set
+	 *
+	 * @param resultId
+	 */
+	removeResultId: function(resultId) {
+		this.resultIds.erase(resultId);
 	},
 
 	destroy: function() {
