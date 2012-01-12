@@ -31,6 +31,11 @@ pageMeta.ticketResultIds = {{ ticket_ids|json_encode|raw }};
 
 pageMeta.view_name = '{{ view_name }}';
 
+{% if set_group_term  %}
+	pageMeta.topGroupingTerm = '{{ set_group_term }}';
+	pageMeta.topGroupingOption = '{{ set_group_option }}';
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -41,36 +46,38 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 	{% if ticket_ids|length %}
-		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+		<div id="{{baseId}}_is_results">
+			{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
 
-		{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:filter-control-bar.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:filter-massactions-bar.html.twig' %}
 
-		<section class="list-listing">
-			{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
-		</section>
+			<section class="list-listing">
+				{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
+			</section>
 
-		<footer class="results-nav">
-			<div class="cursor">
-				{{ phrase('agent.tickets.results_num_summary', {'current': '<span class="results-showing-count"></span>', 'count': ticket_ids|length })|raw }}
-			</div>
-			{% if ticket_ids|length > per_page %}
-			<div class="more">
-				<button class="show-more">Load More</button>
-			</div>
-			{% endif %}
-			<div class="loading">
+			<footer class="results-nav">
+				<div class="cursor">
+					Showing <span class="results-showing-count" id="{{baseId}}_showing_count"></span> of <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span> tickets
+				</div>
+				{% if ticket_ids|length > per_page %}
+				<div class="more">
+					<button class="show-more">Load More</button>
+				</div>
+				{% endif %}
+				<div class="loading">
 
-			</div>
-		</footer>
-	{% else %}
-		<section class="list-listing">
-			<article class="row-item no-results">
-	    		<p style="padding: 15px;">There are no tickets to show.</p>
-    		</article>
-    	</section>
+				</div>
+			</footer>
+		</div>
 	{% endif %}
+
+	<section class="list-listing" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
+		<article class="row-item no-results">
+			<p style="padding: 15px;">There are no tickets to show.</p>
+		</article>
+	</section>
 
 {# scroll containers #}
 </div></div></div></div>

@@ -522,6 +522,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 				this.close();
 				this.resetForm();
+
+				this.fireEvent('postApply', [this, html, formDataInfo]);
 			}
 		});
 

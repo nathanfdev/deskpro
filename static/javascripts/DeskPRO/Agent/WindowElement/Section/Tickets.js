@@ -14,7 +14,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', this.filterUpdated, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('ticket-section.list-activated', function (info) {
-			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()));
+			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
 		}, this);
 	},
 
@@ -171,10 +171,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 	},
 
-	highlightNavItem: function(el) {
+	highlightNavItem: function(el, topGroupingOption) {
 
 		if (!el.is('li')) {
 			el = el.closest('li');
+		}
+
+		if (topGroupingOption) {
+			el = $('.grouping-' + topGroupingOption, el);
 		}
 
 		$('.nav-selected', this.getSectionElement()).removeClass('nav-selected');

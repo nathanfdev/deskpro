@@ -12,7 +12,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Orb.Class({
 
 	initPage: function(el) {
 
-		DeskPRO_Window.getMessageBroker().sendMessage('ticket-section.list-activated', { listType: 'filter', id: this.getMetaData('filter_id') });
+		DeskPRO_Window.getMessageBroker().sendMessage('ticket-section.list-activated', { listType: 'filter', id: this.getMetaData('filter_id'), topGroupingOption: this.meta.topGroupingOption || null });
 
 		this.resultTypeId = this.getMetaData('filter_id');
 		this.parent(el);

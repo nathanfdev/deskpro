@@ -94,7 +94,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</button>
 			</div>
 			<div class="results-count">
-				Showing <span class="results-showing-count"></span> of {{ ticket_ids|length }} tickets
+				Showing <span class="results-showing-count" id="{{baseId}}_showing_count"></span> of <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span> tickets
 			</div>
 			<div class="more-btn">
 				<button class="clean-white show-more is-not-loading">{{ phrase('agent.more') }}</button>

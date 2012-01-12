@@ -136,5 +136,10 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		}
 
 		this.fireEvent('checkChange', [el, is_checked, count]);
+	},
+
+	resetCountLabel: function() {
+		var count = this.getCount();
+		this.selectedCount.text(count);
 	}
 });

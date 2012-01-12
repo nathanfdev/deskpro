@@ -1,5 +1,5 @@
 {% if grouped_info.counts[0].total > 0 and not grouped_info.group1_structure[0] %}
-	<li data-grouping-option="0">
+	<li data-grouping-option="0" class="grouping-0">
 		<span class="title is-nav-item">
 			<span class="list-counter">{{ grouped_info.counts[0].total }}</span>
 			{{ phrase('agent.none') }}
@@ -15,7 +15,7 @@
 		{% endfor %}
 	{% endif %}
 	{% if count > 0 %}
-		<li data-grouping-option="{{ cat.id }}">
+		<li data-grouping-option="{{ cat.id }}" class="grouping-{{ cat.id }}">
 			<span class="title is-nav-item">
 				<span class="list-counter">{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
 				{{ cat.title }}
@@ -25,7 +25,7 @@
 			{% for subcat in cat.children %}
 				{% set subcount = grouped_info.counts[subcat.id].total %}
 				{% if subcount > 0 %}
-					<li data-grouping-option="{{ subcat.id }}" class="sub-item with-elbow is-nav-item">
+					<li data-grouping-option="{{ subcat.id }}" class="sub-item with-elbow is-nav-item grouping-{{ subcat.id }}">
 						<span class="elbow">|</span>
 						<span class="title">
 							<span class="list-counter">{{ subcount }}</span>

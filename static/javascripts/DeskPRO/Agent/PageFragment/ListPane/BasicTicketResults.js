@@ -31,12 +31,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			var sels = [];
 			Array.each(ticket_ids, function(val) {
 				sels.push('.ticket-' + val);
+				this.countTotal--;
 			});
 
 			sels = sels.join(', ');
 
 			$(sels, this.contentWrapper).fadeOut(400, function() {
 				$(this).remove();
+				self.updateTicketCountLabels();
 			});
 		}).bind(this));
 
@@ -96,7 +98,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		delete this.meta.ticketResultIds;
 
 		this.massActions = new DeskPRO.Agent.TicketList.MassActions(this, {
-			isListView: (this.meta.viewType == 'list' ? true : false)
+			isListView: (this.meta.viewType == 'list' ? true : false),
+			onPostApply: function() {
+				self.selectionBar.checkNone();
+			}
 		});
 		this.ownObject(this.massActions);
 
@@ -111,6 +116,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		}
 
 		this.enableHighlightOpenRows('ticket', 'ticket_id', '.row-item.ticket-');
+		this.countTotal = parseInt(this.getEl('total_count').text().trim()) || 0;
 	},
 
 	_handleResize: function() {
@@ -137,16 +143,52 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 				$('.deskpro-results-list', this.wrapper).prepend(el);
 				el.slideDown();
+
+				this.countTotal++;
+				this.updateTicketCountLabels();
 			}
 		});
 	},
 
 	delTicket: function(ticket_id) {
+		var self = this;
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
 
 		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
 			el.remove();
+			self.countTotal--;
+			self.updateTicketCountLabels();
 		});
+	},
+
+	updateTicketCountLabels: function() {
+		var showing = $('article.row-item', this.wrapper).length || 0;
+
+		if (this.countTotal < 0) {
+			this.countTotal = 0;
+		}
+
+		if (this.countTotal < 1) {
+			this.getEl('is_results').hide();
+			this.getEl('no_results').show();
+		} else {
+
+			// If there is no results element, it means the list was loaded with no results
+			// and the various control elements havent been rendered.
+			// So we need to refresh the view
+			if (!this.getEl('is_results').length) {
+				DeskPRO_Window.loadListPane(this.meta.refreshUrl);
+				return;
+			}
+
+			this.getEl('no_results').hide();
+			this.getEl('is_results').show();
+
+			this.getEl('showing_count').text(showing);
+			this.getEl('total_count').text(this.countTotal);
+			this.getEl('total_grouped_count').text(this.countTotal);
+			this.selectionBar.resetCountLabel();
+		}
 	},
 
 	//#########################################################################
