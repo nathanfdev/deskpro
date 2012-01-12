@@ -95,7 +95,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		// since it could be large we can delete it from memory
 		delete this.meta.ticketResultIds;
 
-		this.massActions = new DeskPRO.Agent.TicketList.MassActions.Widget(this, {
+		this.massActions = new DeskPRO.Agent.TicketList.MassActions(this, {
 			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
 		this.ownObject(this.massActions);

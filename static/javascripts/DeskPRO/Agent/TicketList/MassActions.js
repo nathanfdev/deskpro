@@ -1,6 +1,6 @@
-Orb.createNamespace('DeskPRO.Agent.TicketList.MassActions');
+Orb.createNamespace('DeskPRO.Agent.TicketList');
 
-DeskPRO.Agent.TicketList.MassActions.Widget = new Orb.Class({
+DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(page, options)  {
