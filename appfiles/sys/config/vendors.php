@@ -34,6 +34,11 @@
 		'repos' => 'git://github.com/ezyang/htmlpurifier.git',
 		'version' => 'v4.3.0',
 	),
+	'imagine' => array(
+		'into' => DP_ROOT.'/vendor/imagine',
+		'repos' => 'git://github.com/avalanche123/Imagine.git',
+		'version' => 'v0.2.8'
+	),
 	'metadata' => array(
 		'into' => DP_ROOT.'/vendor/metadata',
 		'repos' => 'git://github.com/schmittjoh/metadata.git',

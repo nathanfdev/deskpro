@@ -22,6 +22,7 @@ $loader->registerNamespaces(array(
 	'Zend'                           => DP_ROOT.'/vendor/zend/library',
 	'Elao'                           => DP_ROOT.'/vendor/profiler',
 	'Profiler'                       => DP_ROOT.'/vendor/profiler',
+	'Imagine'                        => DP_ROOT.'/vendor/imagine/lib',
 ));
 
 $loader->registerPrefixes(array(
