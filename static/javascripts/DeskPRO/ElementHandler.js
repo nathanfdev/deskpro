@@ -6,7 +6,7 @@ Orb.createNamespace('DeskPRO');
  * @param jQuery context Context. Defaults to the entire document.
  */
 DeskPRO.ElementHandler_Exec = function(context) {
-	$('[data-element-handler]:not(.with-handler)', context || document).each(function() {
+	$('[data-element-handler]', context || document).not('.with-handler').each(function() {
 		var el = $(this);
 		var className = el.data('element-handler');
 		var classObj = Orb.getNamespacedObject(className);
