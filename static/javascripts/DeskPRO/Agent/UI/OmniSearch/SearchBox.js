@@ -39,15 +39,6 @@ DeskPRO.Agent.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		var orgContext = new DeskPRO.Agent.UI.OmniSearch.Context.OrganizationsContext();
 		this.addContext('organizations', orgContext);
-
-		// TODO dev message
-		$('#dp_omnibox, #dp_omniinput, #dp_omnibox_type, #dp_omnibox_addterm').off('click focus').on('click focus', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-			ev.stopImmediatePropagation();
-			DeskPRO_Window.showAlert('The omni-search bar is coming soon');
-			$(this).blur();
-		});
 	},
 
 	_initTypeSwitcher: function() {

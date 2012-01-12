@@ -215,6 +215,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/OmniSearchSheet.js',
 	)
 );
 

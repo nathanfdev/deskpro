@@ -27,20 +27,14 @@
 	<div id="dp_omnibox_wrap">
 		<div id="dp_omnibox">
 			<div class="searchBoxWrap">
-				<div class="type-icon" id="dp_omnibox_type" data-type="everything">
+				<div class="type-icon">
 					<span class="icon"></span>
-					<span class="drop"></span>
-					<ul class="type-switcher" style="display: none">
-						<li data-type="everything">Everything</li>
-						<li data-type="tickets">Tickets</li>
-						<li data-type="people">People</li>
-						<li data-type="organizations">Organization</li>
-						<li data-type="content">Published Content</li>
-					</ul>
 				</div>
-				<span class="addterm-icon tipped" id="dp_omnibox_addterm" title="Add search term"></span>
-				<input type="input" id="dp_omniinput" size="4" />
+				<input type="input" id="dp_omniinput" size="4" placeholder="Quick Search: Enter an ID, label, name or email address" />
 			</div>
+		</div>
+		<div id="dp_omnibox_adv">
+			<a><span class="plusIcon">Advanced</span></a>
 		</div>
 	<!-- END SEARCH SECTION -->
 	</div>
@@ -153,4 +147,112 @@
 	</div>
 	<!-- END STATUS SECTION -->
 <!-- END HEADER BAR -->
+</div>
+
+<div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
+	<header>
+		<span class="close close-search-sheet"></span>
+		<em>Search:</em>
+		<ul>
+			<li data-tab-for="#dp_searchsheet_tickets">Tickets</li>
+			<li data-tab-for="#dp_searchsheet_people">People</li>
+			<li data-tab-for="#dp_searchsheet_orgs">Organizations</li>
+			<li data-tab-for="#dp_searchsheet_content">Content</li>
+		</ul>
+	</header>
+
+	{# Ticket Search Form #}
+	<article id="dp_searchsheet_tickets">
+		<ul class="property-list">
+			<li>
+				<label>Department</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-department.html.twig' with {
+						'name': 'actions[department]',
+						'with_blank': true,
+						'with_blank2': true,
+						'blank_title': phrase('agent.department'),
+						'departments': ticket_options.departments_hierarchy,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+			<li>
+				<label>Category</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-category.html.twig' with {
+						'name': 'actions[category]',
+						'with_blank': true,
+						'with_blank2': true,
+						'blank_title': phrase('agent.category'),
+						'categories': ticket_options.ticket_categories_hierarchy,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+			<li>
+				<label>Product</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-product.html.twig' with {
+						'name': 'actions[product]',
+						'with_blank': true,
+						'with_blank2': true,
+						'blank_title': phrase('agent.product'),
+						'products': ticket_options.products_hierarchy,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+			<li>
+				<label>Priority</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-priority.html.twig' with {
+						'name': 'actions[priority]',
+						'with_blank': true,
+						'with_blank2': true,
+						'blank_title': phrase('agent.priority'),
+						'priorities': ticket_options.ticket_priorities,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+			<li>
+				<label>Workflow</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+						'name': 'actions[workflow]',
+						'with_blank': true,
+						'with_blank2': true,
+						'blank_title': phrase('agent.workflow'),
+						'workflows': ticket_options.ticket_workflows,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+		</ul>
+		<br class="clear" />
+	</article>
+	{# /Ticket Search Form #}
+
+	{# People Search Form #}
+	<article id="dp_searchsheet_people">
+		People
+	</article>
+	{# /People Search Form #}
+
+	{# Orgs Search Form #}
+	<article id="dp_searchsheet_orgs">
+		Orgs
+	</article>
+	{# /Orgs Search Form #}
+
+	{# Content Search Form #}
+	<article id="dp_searchsheet_content">
+		Content
+	</article>
+	{# /Content Search Form #}
+
+	<footer>
+		<button>Search</button>
+	</footer>
 </div>

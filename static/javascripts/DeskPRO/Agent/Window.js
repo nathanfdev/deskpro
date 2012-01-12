@@ -1778,9 +1778,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			DeskPRO_Window.newDealLoader.toggle();
 		});
 
-
-		this.omnisearch = new DeskPRO.Agent.UI.OmniSearch.SearchBox();
-
 		// Create toggle
 		$('#createContentTrigger').on('click', function(ev) {
 			ev.preventDefault();

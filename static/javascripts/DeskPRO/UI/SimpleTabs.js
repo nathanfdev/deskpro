@@ -108,9 +108,11 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			event: event || null,
 			tabEl: tabEl,
 			lastTabEl: this.lastActiveTab,
+			tabContent: this.getContentElFromTab(tabEl),
 			manager: this,
 			cancel: false
 		};
+
 		this.fireEvent('beforeTabSwitch', eventData);
 
 		if (eventData.cancel) {
@@ -128,7 +130,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		this.lastActiveTab = tabEl;
 		this.lastActiveTab.addClass(this.options.activeClassname);
-		eventData.tabContent = this.getContentElFromTab(this.lastActiveTab).addClass(this.options.activeClassname).show();
+		eventData.tabContent.addClass(this.options.activeClassname).show();
 
 		this.fireEvent('tabSwitch', eventData);
 	},
