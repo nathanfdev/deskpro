@@ -284,6 +284,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Imagine\Image\ImagineInterface
+	 */
+	public function getImagine()
+	{
+		return $this->getSystemService('imagine');
+	}
+
+
+	/**
 	 * Get the person activity logger
 	 *
 	 * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger

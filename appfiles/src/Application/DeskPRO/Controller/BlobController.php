@@ -33,8 +33,46 @@ class BlobController extends AbstractController
 	{
 		$response = $this->container->get('response');
 
+		if (!empty($options['size']) AND $blob->isImage()) {
+
+			$cached_blob = null;
+			$name = 'blob-' . $blob['id'] . '-' . $options['size'];
+
+			if (isset($options['cache']) && $options['cache']) {
+
+				//cache_date_cleanup
+				$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+			}
+
+			if ($cached_blob) {
+				$desc = App::getApi('filestorage')->getFileDescriptor($cached_blob['id']);
+				$file = $desc->get();
+				unset($desc);
+			} else {
+				$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
+				$file = $desc->get();
+				unset($desc);
+
+				$image = $this->container->getImagine()->load($file);
+				$image->resize(new \Imagine\Image\Box($options['size'], $options['size']));
+				$file = $image->get($blob->getImageType());
+
+				$desc = App::getApi('filestorage')->createRandomPath();
+				$desc->write($file, array(
+					'content_type' => $blob->content_type,
+					'filename' => $blob->filename,
+					'sys_name' => $name,
+					'date_cleanup' => isset($options['cache_date_cleanup']) ? $options['cache_date_cleanup'] : null
+				));
+			}
+		} else {
+			$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
+			$file = $desc->get();
+			unset($desc);
+		}
+
 		$response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
-		$response->headers->set('Content-Length', $blob['filesize']);
+		$response->headers->set('Content-Length', strlen($file));
 
 		if ($blob->isImage()) {
 			$response->headers->set('Content-Disposition', 'inline; filename=' . $blob['filename']);
@@ -49,28 +87,6 @@ class BlobController extends AbstractController
 		$response->setMaxAge(31556926);
 		$response->setSharedMaxAge(31556926);
 		$response->setPublic();
-
-		$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
-
-		$file = $desc->get();
-		unset($desc);
-
-		if (!empty($options['size']) AND $blob->isImage()) {
-			$im = new \Imagick();
-			$im->readImageBlob($file, $blob['filename']);
-
-			if (empty($options['size-fit']) OR (!empty($options['size-fit']) AND $options['size-fit'])) {
-				$im->scaleImage($options['size'], $options['size'], true);
-			} else {
-				$im->scaleImage($options['size'], $options['size'], false);
-			}
-
-			$file = $im->getImageBlob();
-			$size = strlen($file);
-
-			$response->headers->set('Content-Length', $size);
-		}
-
 		$response->setContent($file);
 
 		return $response;
@@ -90,7 +106,9 @@ class BlobController extends AbstractController
 		if ($person->hasPicture()) {
 			if ($person['picture_blob']) {
 				$response = $this->getDownloadResponse($person['picture_blob'], array(
-					'size' => $size
+					'size' => $size,
+					'cache' => true,
+					'cache_date_cleanup' => new \DateTime('+2 weeks')
 				));
 			} elseif ($person['gravatar_url']) {
 				$gravatar_url = $person['gravatar_url'];
@@ -99,7 +117,7 @@ class BlobController extends AbstractController
 				}
 				$gravatar_url .= '&s=' . $size;
 				$response = new \Symfony\Component\HttpFoundation\RedirectResponse($gravatar_url);
-				$response->setExpires(date_create("+1 days"));
+				$response->setExpires(date_create("+2 days"));
 				$response->setMaxAge(86400);
 				$response->setSharedMaxAge(86400);
 			}
@@ -155,25 +173,52 @@ class BlobController extends AbstractController
 			$size = 80;
 		}
 
-		$response = $this->container->get('response');
+		if ($is_agent) {
+			$img_path = DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default-agent.jpeg';
+			$sys_name = 'dp.picture-default-agent';
+		} else {
+			$img_path = DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg';
+			$sys_name = 'dp.picture-default';
+		}
 
-		$response->setExpires(date_create("+2 years"));
+		if ($size == 200) {
+			$file = file_get_contents($img_path);
+		} else {
+
+			$name = $sys_name . '-' . $size;
+			$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+
+			if (!$cached_blob) {
+				$desc = App::getApi('filestorage')->createRandomPath();
+
+				$image = $this->container->getImagine()->open($img_path);
+				$image->resize(new \Imagine\Image\Box($size, $size));
+
+				$file = $image->get('jpeg');
+
+				$desc->write($file, array(
+					'content_type' => 'image/jpeg',
+					'filename' => basename($img_path),
+					'sys_name' => $name,
+				));
+			} else {
+				$desc = App::getApi('filestorage')->getFileDescriptor($cached_blob['id']);
+				$file = $desc->get();
+				unset($desc);
+			}
+		}
+
+		$size = strlen($file);
+
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', 'image/jpeg; filename=' . basename($img_path));
+		$response->headers->set('Content-Disposition', 'inline; filename=' . basename($img_path));
+		$response->headers->set('Content-Length', $size);
+		$response->setLastModified(date_create("-6 months"));
+		$response->setExpires(date_create("+6 months"));
 		$response->setMaxAge(31556926);
 		$response->setSharedMaxAge(31556926);
 		$response->setPublic();
-
-		$im = new \Imagick();
-		if ($is_agent) {
-			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default-agent.jpeg');
-		} else {
-			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
-		}
-		$im->resizeImage($size, $size, \Imagick::FILTER_LANCZOS, true);
-
-		$file = $im->getImageBlob();
-		$size = strlen($file);
-
-		$response->headers->set('Content-Length', $size);
 		$response->setContent($file);
 
 		return $response;

@@ -125,6 +125,24 @@
 		<tr>
 			<td>
 				<?php $failed = false ?>
+				<?php if (!isset($errors['image_manip'])): ?>
+					<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+					<span class="label important" style="float:right">FAIL</span>
+				<?php endif ?>
+				An image manipulation extension is installed
+				<?php if ($failed): ?>
+					<div class="alert-message block-message error">
+						DeskPRO requires one of the following extensions: Imagick, Gmagick or GD
+					</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
 				<?php if (!isset($errors['memory_limit'])): ?>
 					<span class="label success" style="float:right">OK</span>
 				<?php else: $failed = true; ?>

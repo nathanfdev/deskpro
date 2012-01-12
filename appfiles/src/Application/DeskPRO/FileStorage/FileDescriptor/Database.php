@@ -133,6 +133,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
 			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
 			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']    = $meta[self::METADATA_FILEHASH];
+			if (!empty($meta['sys_name']))                  $metadata['sys_name']     = $meta['sys_name'];
 
 			if (!empty($meta['is_temp']) && $meta['is_temp']) {
 				$metadata['is_temp'] = 1;

@@ -57,8 +57,28 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $message = null;
 
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_agent_note", type="boolean")
+	 */
+	protected $is_agent_note = false;
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
+	}
+
+
+	/**
+	 * @param $message
+	 */
+	public function setMessage($message)
+	{
+		$this->setModelField('message', $message);
+
+		// Automatically set the is_agent_note field
+		if ($message->is_agent_note) {
+			$this->is_agent_note = true;
+		}
 	}
 }

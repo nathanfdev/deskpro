@@ -36,4 +36,10 @@ class Blob extends EntityRepository
 
 		return $blob;
 	}
+
+
+	public function getSystemBlob($sys_name)
+	{
+		return $this->findOneBy(array('sys_name' => $sys_name));
+	}
 }

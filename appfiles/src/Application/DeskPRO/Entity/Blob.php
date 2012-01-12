@@ -34,6 +34,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * A unique system name for the blob.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length=100, nullable=true)
+	 */
+	protected $sys_name = null;
+
+	/**
 	 * Sometimes we might have multiple versions of a file. For example, if a file has been
 	 * cropped then the cropped file is saved as its own blob, but the original
 	 * is linked here.
@@ -132,6 +140,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_temp = false;
 
 	/**
+	 * The date this blob should be automatically cleaned
+	 * @ORM_Mapping\Column(name="date_cleanup",type="datetime", nullable=true)
+	 */
+	protected $date_cleanup;
+
+	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelBlob", mappedBy="blob", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -194,6 +208,27 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * Get the type of image this is, or null if its not an image.
+	 *
+	 * @return string
+	 */
+	public function getImageType()
+	{
+		switch ($this->content_type) {
+			case 'image/jpg':
+			case 'image/jpeg':
+				return 'jpeg';
+			case 'image/gif':
+				return 'gif';
+			case 'image/png':
+				return 'png';
+		}
+
+		return null;
 	}
 
 

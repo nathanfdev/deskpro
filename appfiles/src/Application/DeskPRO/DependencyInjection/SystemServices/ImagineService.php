@@ -17,12 +17,12 @@ class ImagineService
 {
 	public static function create(DeskproContainer $container)
 	{
-		if (class_exists('Imagick', false)) {
+		if (function_exists('gd_info')) {
+				$im = new \Imagine\Gd\Imagine();
+		} elseif (class_exists('Imagick', false)) {
 			$im = new \Imagine\Imagick\Imagine();
 		} elseif (class_exists('Gmagick', false)) {
 			$im = new \Imagine\Gmagick\Imagine();
-		} elseif (function_exists('gd_info')) {
-			$im = new \Imagine\Gd\Imagine();
 		} else {
 			throw new \RuntimeException("Cannot create Imagine instance: No image manipulation extensions installed in PHP");
 		}

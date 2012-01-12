@@ -23,13 +23,14 @@ class CleanupTmpAttach extends AbstractJob
 
 	public function run()
 	{
+		$now = date('Y-m-d H:i:s');
 		$datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
 
 		$blob_ids = App::getDb()->fetchAllCol("
 			SELECT id
 			FROM blobs
-			WHERE is_temp = 1 AND date_created < ?
-		", array($datetime));
+			WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
+		", array($datetime, $now));
 
 		$num = 0;
 		foreach ($blob_ids as $blob_id) {
