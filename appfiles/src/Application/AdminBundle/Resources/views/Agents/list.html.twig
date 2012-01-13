@@ -96,10 +96,10 @@
 					</section>
 					<section class="zones">
 						<ul>
-							<li class="agent">agent</li>
-							<li class="admin">admin</li>
-							<li class="reports">reports</li>
-							<li class="billing">billing</li>
+							{% if person.can_agent %}<li class="agent" title="Can use the agent interface">agent</li>{% endif %}
+							{% if person.can_admin %}<li class="admin" title="Can use the admin interface">admin</li>{% endif %}
+							{% if person.can_reports %}<li class="reports" title="Can use the reporting interface">reports</li>{% endif %}
+							{% if person.can_billing %}<li class="billing" title="Can use the billing interface">billing</li>{% endif %}
 						</ul>
 					</section>
 					<section class="info">

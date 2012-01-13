@@ -34,13 +34,31 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Administrator</label>
+			<label>Zone Access</label>
 		</div>
 		<div class="dp-form-input">
+			{#
 			<label>
-				<input type="checkbox" name="permissions[admin][override][use]" value="1" {% if usergroup_values['override']['admin.use'] %}checked="checked"{% endif %} />
-				The agent is an administrator and can access the Admin Interface
-			</label>
+				<input type="checkbox" name="agent[can_agent]" value="1" {% if agent.can_agent %}checked="checked"{% endif %} />
+				Can use the full agent web interface
+			</label><br />
+			#}
+			<input type="hidden" name="agent[can_agent]" value="1" />
+
+			<label>
+				<input type="checkbox" name="agent[can_admin]" value="1" {% if agent.can_admin %}checked="checked"{% endif %} />
+				Can access the admin web interface and change the helpdesk configuration
+			</label><br />
+
+			<label>
+				<input type="checkbox" name="agent[can_reports]" value="1" {% if agent.can_reports %}checked="checked"{% endif %} />
+				Can access the reporting system
+			</label><br />
+
+			<label>
+				<input type="checkbox" name="agent[can_billing]" value="1" {% if agent.can_billing %}checked="checked"{% endif %} />
+				Can access the billing and licensing system
+			</label><br />
 		</div>
 	</div>
 

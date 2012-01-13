@@ -80,12 +80,34 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_user = false;
 
 	/**
-	 * Is this person a tech?
-	 *
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = 0;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="can_agent", type="boolean")
+	 */
+	protected $can_agent = 0;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="can_admin", type="boolean")
+	 */
+	protected $can_admin = 0;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="can_billing", type="boolean")
+	 */
+	protected $can_billing = 0;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="can_reports", type="boolean")
+	 */
+	protected $can_reports = 0;
 
 	/**
 	 * Autoresponds

@@ -259,6 +259,10 @@ class AgentsController extends AbstractController
 			$errors[] = 'You did not enter a last name';
 		}
 
+		foreach (array('can_agent', 'can_admin', 'can_billing', 'can_reports') as $prop) {
+			$agent->$prop = $this->in->getBool('agent.' . $prop);
+		}
+
 		$set_email = $this->in->getString('agent.email');
 		if (!$agent->findEmailAddress($set_email)) {
 			if (!\Orb\Validator\StringEmail::isValueValid($set_email)) {
