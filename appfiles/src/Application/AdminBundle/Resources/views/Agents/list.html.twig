@@ -11,7 +11,7 @@
 	</ul>
 {% endblock %}
 {% block prepage %}
-	<div style="padding: 10px;">
+	<div style="padding: 10px 10px 0 10px;">
 		{{ design.helpbox() }}
 			<p>Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation.</p>
 			<p>Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions.</p>
@@ -87,7 +87,38 @@
 {% block content %}
 <div class="dp-page-box">
 
-<div class="page-content agent-listing">
+<div class="page-content agent-listing" style="padding-top: 0;">
+
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">Agent</th>
+					<th class="r-col" width="16"><img title="Can access the agent interface" src="{{ asset('images/admin/icons/zone-agent.png') }}" /></th>
+					<th class="r-col" width="16"><img title="Can access the admin interface" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
+					<th class="r-col" width="16"><img title="Can access the reporting interface" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
+					<th class="r-col" width="16"><img title="Can access the billing interface" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for person in all_agents %}
+					<tr>
+						<td class="title">
+							<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
+							<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
+							<address>{{person.primary_email_address}}</address>
+						</td>
+						<td class="prop r-col">{% if person.can_agent %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+						<td class="prop r-col">{% if person.can_admin %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+						<td class="prop r-col">{% if person.can_reports %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+						<td class="prop r-col">{% if person.can_billing %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	{#
 	<ul>
 		{% for person in all_agents %}
 			<li class="agent">
@@ -146,6 +177,7 @@
 			</li>
 		{% endfor %}
 	</ul>
+	#}
 <div>
 
 </div>

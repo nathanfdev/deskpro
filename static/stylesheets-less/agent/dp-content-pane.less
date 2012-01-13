@@ -4483,3 +4483,49 @@ article.task .new-comment .comment-input span {
 	right: 10px;
 	top: 10px;
 }
+
+.content-table {
+	border: 1px solid #D9DBDB;
+	.rounded(4px);
+	overflow: hidden;
+}
+
+.content-table > table thead th {
+	font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+	font-size: 15px;
+	border-bottom: 1px solid #D9DBDB;
+	padding: 5px 4px 6px 4px;
+	background-color: darken(#FDFDFD, 3%);
+}
+
+.content-table > table thead th.single-title {
+	text-align: left;
+}
+
+.content-table > table tbody td {
+	border-bottom: 1px solid #D9DBDB;
+	padding: 10px;
+}
+
+.content-table > table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.content-table > table tbody td h4 {
+	color: #000;
+	font-family: @heading-font;
+	font-size: 13px;
+	font-weight: bold;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.content-table > table tbody td address {
+	font-style: normal;
+	font-size: 11px;
+	color: #868889;
+}
+
+.content-table > table tbody td.prop {
+	background-color: #F8F8F8;
+}

@@ -200,10 +200,10 @@
 	{% block prepage %}{% endblock %}
 	<div id="dp_admin_page_inner">
 		{% if sidebar|trim|length %}
-			<div id="dp_admin_page_sidebar">{{ sidebar|raw }}</div>
+			<div id="dp_admin_page_sidebar" class="dp-sidebar">{{ sidebar|raw }}</div>
 		{% endif %}
 		{% if sidebar_right|trim|length %}
-			<div id="dp_admin_page_sidebar_right">{{ sidebar_right|raw }}</div>
+			<div id="dp_admin_page_sidebar_right" class="dp-sidebar">{{ sidebar_right|raw }}</div>
 		{% endif %}
 		{% block content %}
 			<div class="dp-page-box">

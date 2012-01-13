@@ -316,6 +316,7 @@ a.delete-link:hover {
     right: 0;
 	width: 280px;
 	z-index: 2;
+	padding-right: 10px;
 }
 
 #dp_admin_page_sidebar_right {
@@ -324,13 +325,7 @@ a.delete-link:hover {
 	right: 0;
 	width: 280px;
 	z-index: 2;
-}
-
-#dp_admin_page_sidebar, #dp_admin_page_sidebar_right {
-	.dp-page-box {
-		.rounded(0);
-		margin-bottom: 0;
-	}
+	padding-right: 10px;
 }
 
 #dp_admin_page.with-sidebar > #dp_admin_page_inner > .dp-page-box {
@@ -341,6 +336,12 @@ a.delete-link:hover {
 	padding-right: 290px
 }
 
+.dp-sidebar .dp-page-box {
+	border: 1px solid #D9DBDB;
+	background-color: #F1F7FE;
+	margin-bottom: 8px;
+	.rounded(4px);
+}
 
 
 
@@ -765,6 +766,10 @@ table.structure-list span.priority {
 	border-bottom: 1px solid #D9DBDB;
 	padding-bottom: 5px;
 	margin-bottom: 5px;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin-left: -6px;
+	margin-right: -6px;
 }
 
 .resource-item-list header .controls {
