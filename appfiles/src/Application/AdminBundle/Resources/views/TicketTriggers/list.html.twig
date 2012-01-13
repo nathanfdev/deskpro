@@ -6,11 +6,15 @@
 	var UPDATE_ORDER_URL = '{{ path('admin_tickettriggers_updateorder') }}';
 </script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>Triggers and Escalations</h1>
+{% block pagebar %}
 	<nav>
-		<a class="clean-white" href="{{ path('admin_tickettriggers_new_choosetype') }}">Create New Trigger</a>
+		<ul>
+			<li><a href="{{ path('admin_tickettriggers_new_choosetype') }}">Add Trigger</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li>Triggers</li>
+	</ul>
 {% endblock %}
 {% block page %}
 

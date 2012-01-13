@@ -19,15 +19,15 @@ function TicketTriggerEditPage_initTerms(handler) {
 }
 </script>
 {% endblock %}
-{% block pagetitle %}
-	{% if trigger.trigger_type == 'trigger' %}
-		<h1>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</h1>
-	{% else %}
-		<h1>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</h1>
-	{% endif %}
-	<nav>
-		<a class="clean-white" href="{{ path('admin_tickettriggers') }}">&larr; Back to list</a>
-	</nav>
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_tickettriggers') }}">Triggers</a></li>
+		{% if trigger.trigger_type == 'trigger' %}
+			<li>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</li>
+		{% else %}
+			<li>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</li>
+		{% endif %}
+	</ul>
 {% endblock %}
 {% block page %}
 
