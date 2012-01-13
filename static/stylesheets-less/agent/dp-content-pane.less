@@ -4529,3 +4529,48 @@ article.task .new-comment .comment-input span {
 .content-table > table tbody td.prop {
 	background-color: #F8F8F8;
 }
+
+
+
+
+
+.content-tabs {
+	border: 1px solid #D9DBDB;
+	.rounded(4px);
+	overflow: hidden;
+	margin: 10px;
+}
+
+.content-tabs > nav {
+	font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+	font-size: 13px;
+	border-bottom: 1px solid #D9DBDB;
+	background-color: darken(#FDFDFD, 3%);
+	height: 30px;
+
+	> ul > li {
+		float: left;
+		padding: 0 10px 0 10px;
+		background-color: darken(#F5F5F5, 4%);
+		border-right: 1px solid	#D9DBDB;
+		height: 30px;
+		line-height: 32px;
+
+		color: #000;
+		text-shadow: 1px 0px 0px #ffffff;
+		filter: dropshadow(color=#ffffff, offx=1, offy=0);
+
+		> a {
+			color: #000;
+		}
+
+		.inner-shadow-color();
+		&.on {
+		    background-color: darken(#F5F5F5, 12%);
+		}
+
+		&:hover {
+			background-color: darken(#F5F5F5, 8%);
+		}
+	}
+}

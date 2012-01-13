@@ -15,9 +15,10 @@ a.delete-link:hover {
 }
 
 #dp_header {
-	padding-left: 15px;
+	//padding-left: 15px;
+	//max-width: 939px;
+ 	max-width: 954px;
 	padding-right: 15px;
-	max-width: 939px;
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
@@ -30,8 +31,15 @@ a.delete-link:hover {
 	left: 0; top: 0; right: 0; bottom: 0;
 }
 
+.searchBoxWrap {
+	padding: 0;
+}
 #dpsearchbox {
 	border: none;
+	outline: none;
+	box-shadow: none;
+	margin: 0;
+	padding: 0;
 }
 
 .admin-fixed-width {
@@ -64,6 +72,7 @@ a.delete-link:hover {
 
 #dp_omnibox_wrap {
 	width: 300px;
+	box-shadow: none;
 }
 
 
@@ -2587,4 +2596,32 @@ nav.admin-object-nav li:hover {
 	width: 71%;
 	.rounded(4px);
 	-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.pagetop-option {
+	background-color: #E8EEFC;
+	margin: 0 10px 0 10px;
+	.rounded(4px);
+	padding: 6px;
+
+	.sub {
+		padding: 4px 6px 0 20px;
+		background: url(../../images/agent/elbow-end.gif) no-repeat 0 5px;
+
+		.switcher {
+			.gradient(#ffffff, #DCE2F0);
+			.inner-shadow-color();
+			border: 1px solid darken(#D7DDEB, 10%);
+			padding: 0 6px 0 6px;
+			.rounded(3px);
+			cursor: pointer;
+
+			span {
+				background: url(../../images/agent/button-downarrow.png) no-repeat 100% 50%;
+				padding-right: 11px;
+			}
+		}
+	}
 }

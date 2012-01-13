@@ -1,5 +1,6 @@
 {% set this_page = 'ticket_editor' %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketEditor.js') }}"></script>
 <script type="text/javascript">
@@ -33,21 +34,48 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</ul>
 		</article>
 	</section>
+
+	<section class="top">
+		<div class="disable-overlay" {% if not is_default %}style="display: none"{% endif %}></div>
+		<header>
+			<h4>Add to your website</h4>
+		</header>
+		<article id="ticket_elements">
+			<ul>
+				<li><label>Direct Link</label></li>
+				<li><label>Popup Window Link</label></li>
+				<li><label>Embed Widget</label></li>
+			</ul>
+		</article>
+	</section>
 </div>
 {% endblock %}
-{% block pagetitle %}
-	<h1>
-		Ticket Form	Editor
-	</h1>
+{% block pagebar %}
+	<ul>
+		<li>Ticket Form Editor</li>
+	</ul>
+{% endblock %}
+{% block content %}
 
-	<nav class="admin-object-nav">
+<div style="padding: 10px 10px 0 10px">
+{{ design.helpbox() }}
+	<p>
+		You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below
+		to enable more fields.
+	</p>
+{{ design.helpbox_end() }}
+</div>
+
+<div class="pagetop-option">
+	<input type="checkbox" class="onoff-slider" /> Enable custom layouts for each department
+	<div class="sub">
+		Editing the layout for: <span id="department_switcher" class="switcher"><span>{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}</span></span>
+	</div>
+</div>
+
+<div class="content-tabs">
+	<nav>
 		<ul>
-			<li class="master">
-				<h3 id="department_switcher">
-					{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}
-					<span class="drop-icon"></span>
-				</h3>
-			</li>
 			<li {% if section == 'create' %}class="on"{% endif %}>
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">New Ticket Form</a>
 			</li>
@@ -57,44 +85,37 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			<li class="{% if section == 'modify' %}on{% endif %}">
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
 			</li>
-			<li class="last">
-				<a href="{{ path('admin_tickets_editor_form_embed', {'department_id': department.id|default('0')}) }}">Website Widget</a>
+		</ul>
+		<br />
+	</nav>
+
+	<section>
+		<form
+			action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0), 'section': section }) }}"
+			method="post"
+			class="dp-page-box"
+			id="admin_ticket_editor"
+			data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
+		>
+		<div class="disable-overlay" {% if not is_default %}style="display: none"{% endif %}></div>
+
+		<ul id="admin_ticket_editor_items" class="dp-form">
+			<li class="no-items-notice">
+				Drag and drop fields from the left onto this area to start designing your form.
 			</li>
 		</ul>
-		<br class="clear" />
-	</nav>
-	<br class="clear" />
 
-	{% if department%}
-	<div class="note-top">
-		{% if is_default %}
-			This department is currently using the <em>default layout</em>. You can turn on customizations
-			to make changes. Customizations are currently
-			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_copydefault', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').hide();" class="onoff-slider" />
-		{% else %}
-			This department is using a <em>custom layout</em>. You can revert back to the default by disabling
-			customizations. Customizations are currently
-			<input type="checkbox" data-url="{{ path('admin_tickets_editor_dep_revert', {'department_id': department.id}) }}" onchange="window.location=$(this).data('url'); $('.disable-overlay').show();" class="click-go onoff-slider" checked="checked" />
-		{% endif %}
-	</div>
-	{% endif %}
-
-{% endblock %}
-{% block content %}
-<form
-	action="{{ path('admin_tickets_editor_dep_save', {'department_id': department.id|default(0), 'section': section }) }}"
-	method="post"
-	class="dp-page-box"
-	id="admin_ticket_editor"
-	data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
->
-<div class="disable-overlay" {% if not is_default %}style="display: none"{% endif %}></div>
-
-<ul id="admin_ticket_editor_items" class="dp-form">
-	<li class="no-items-notice">
-		Drag and drop fields from the left onto this area to start designing your form.
-	</li>
-</ul>
+		<div class="save-row">
+			<div class="is-not-loading">
+				<button class="clean-white save-trigger">Save Form</button>
+			</div>
+			<div class="is-loading" style="padding-top: 7px">
+				<div class="loading-icon-flat">&nbsp;</div>
+			</div>
+		</div>
+		</form>
+	</section>
+</div>
 
 {############################
  # Main row template
@@ -341,16 +362,6 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 </div>
-
-<div class="save-row">
-	<div class="is-not-loading">
-		<button class="clean-white save-trigger">Save Form</button>
-	</div>
-	<div class="is-loading" style="padding-top: 7px">
-		<div class="loading-icon-flat">&nbsp;</div>
-	</div>
-</div>
-</form>
 
 <div class="optionbox" id="department_ob">
 	<section data-section-name="department">
