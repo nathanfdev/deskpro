@@ -1,8 +1,5 @@
 {% set is_setup = true %}
 {% extends 'AdminBundle:EmailTransports:edit-account.html.twig' %}
-{% block pagetitle %}
-	<h1>Setup Outgoing Email</h1>
-{% endblock %}
 {% block email_transports_form_top %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
@@ -10,8 +7,6 @@
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="default_from_email" value="{{ app.getSetting('core.default_from_email') }}" /><br />
-			<small>This email address is used by default when the system needs to email user. For example, registration confirmations, reset password links, etc.</small>
-			<small>This email address is used by default when the system needs to email user. For example, registration confirmations, reset password links, etc.</small>
 		</div>
 	</div>
 {% endblock %}

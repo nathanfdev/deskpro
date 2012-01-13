@@ -94,6 +94,9 @@ class EditEmailTransport
 				$this->transport->backup_transport_options = $this->backup_smtp_options;
 			} elseif ($this->backup_transport_type == 'gmail') {
 				$this->transport->backup_transport_options = $this->backup_gmail_options;
+			} else {
+				$this->transport->backup_transport_type = '';
+				$this->transport->backup_transport_options = array();
 			}
 		}
 

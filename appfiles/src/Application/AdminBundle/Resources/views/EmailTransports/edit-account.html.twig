@@ -3,13 +3,36 @@
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>{% if transport.id %}Edit Outgoing Email Account{% else %}New Outgoing Email Account{% endif %}</h1>
+{% block pagebar %}
 	<nav>
-		<a class="clean-white" href="{{ path('admin_emailtrans_list') }}">&larr; Back to the list</a>
+		<ul>
+			<li><a>Add Account</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li><a href="{{ path('admin_emailtrans_list') }}">Outgoing Email</a></li>
+		<li>Setup</li>
+	</ul>
 {% endblock %}
 {% block page %}
+
+<div id="dp_pagehelp">
+	<span></span>
+	<section>
+		<article>
+			<p>
+				This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
+				You might also have email gateways and rules set up to send notifications from different email addresses.
+			</p>
+
+			<p>
+				If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
+				the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.
+			</p>
+		</article>
+		<br class="clear" />
+	</section>
+</div>
 
 <form id="transport_form" action="{{ path('admin_emailtrans_editaccount', {'id': transport.id|default(0)}) }}" method="post">
 {{ form_token('edit_transport') }}
@@ -67,8 +90,7 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Account Information</label>
-				<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+				<label>Mail Server</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
@@ -76,6 +98,10 @@
 						<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
 						PHP mail()
 					</label>
+
+					<div class="dp-group-options" style="display: none">
+						<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+					</div>
 				</div>
 
 				<div class="dp-input-group">
@@ -86,21 +112,21 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="100">Host:</td>
+								<td class="title" width="100">Host:</td>
 								<td>
 									{{ form_widget(form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
 							</tr>
 							<tr>
-								<td>Secure:</td>
+								<td class="title">Secure:</td>
 								<td>{{ form_widget(form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Port:</td>
+								<td class="title">Port:</td>
 								<td>{{ form_widget(form.smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Requires Auth:</td>
+								<td class="title">Requires Auth:</td>
 								<td>
 									<input
 										type="checkbox"
@@ -111,14 +137,18 @@
 								</td>
 							</tr>
 							<tr id="smtp_auth_username">
-								<td>Username:</td>
+								<td class="title">Username:</td>
 								<td>{{ form_widget(form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="smtp_auth_password">
-								<td>Password:</td>
+								<td class="title">Password:</td>
 								<td>{{ form_widget(form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
+
+						<div class="test-row">
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 
@@ -147,22 +177,21 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Backup Account</label>
-				<span class="test-button test-account-settings backup" {% if not transport.backup_transport_type %}style="display: none"{% endif %}><span class="lightning-small-icon"></span> Test Settings</span>
+				<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
+				<label>
+					<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
+					Backup Mail Server
+				</label>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger transport-type-backup none" name="transport[backup_transport_type]" value="mail" {% if not transport.backup_transport_type %}checked="checked"{% endif %} />
-						Do not use a backup account
-					</label>
-				</div>
-
-				<div class="dp-input-group">
-					<label>
-						<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
+						<input type="radio" id="backup_form_none_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
 						PHP mail()
 					</label>
+					<div class="dp-group-options" style="display: none">
+						<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+					</div>
 				</div>
 
 				<div class="dp-input-group">
@@ -206,6 +235,10 @@
 								<td>{{ form_widget(form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
+
+						<div class="test-row">
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 
@@ -225,6 +258,9 @@
 								<td>{{ form_widget(form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
+						<div class="test-row">
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -263,7 +299,7 @@
 	</div>
 </div>
 
-{% if transport.id %}
+{% if transport.id and transport.match_type != 'all' %}
 	<div class="delete-link-wrap">
 		<a href="{{ path('admin_emailtrans_del', {id: transport.id, security_token: security_token('delete_transport') }) }}" onclick="return confirm('Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account.');">delete</a>
 	</div>

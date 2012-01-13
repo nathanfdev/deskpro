@@ -184,6 +184,11 @@
 	<div id="dp_admin_pagetitle">{{ pagetitle|raw }}</div>
 {% endif %}
 
+{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
+{% if pagebar|trim|length %}
+	<div id="dp_admin_pagebar">{{ pagebar|raw }}</div>
+{% endif %}
+
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
 {% if sidebar|trim|length %}

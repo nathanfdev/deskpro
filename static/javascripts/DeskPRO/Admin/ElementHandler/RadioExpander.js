@@ -12,22 +12,32 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 
 		var currentGroup = null;
 
-		$(':radio.option-trigger:checked', this.el).each(function() {
-			var group = $(this).closest('.' + groupClass);
-			$('.' + expandClass, group).show();
-
-			currentGroup = group;
-		});
-
-		this.el.on('click', ':radio', function() {
+		function switchtoradio(radio) {
+			self.el.find('.' + groupClass + '.on').removeClass('on');
 
 			if (currentGroup) {
 				$('.' + expandClass, currentGroup).hide();
 			}
 
-			var group = $(this).closest('.' + groupClass);
+			var group = radio.closest('.' + groupClass).addClass('on');
 			$('.' + expandClass, group).show();
 			currentGroup = group;
+		}
+
+		$(':radio.option-trigger:checked', this.el).each(function() {
+			switchtoradio($(this));
+		});
+
+		this.el.on('click', ':radio', function() {
+			switchtoradio($(this));
+		});
+
+		this.el.on('click', '.' + groupClass, function() {
+			var radio = $(this).find('.option-trigger');
+			if (radio.length) {
+				radio.prop('checked', 'checked');
+				switchtoradio(radio);
+			}
 		});
 	}
 });

@@ -177,6 +177,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 			}
 			window.location = a.attr('href');
 		});
+
+		this._initHelp();
 	},
 
 	updatePageNavPos: function() {
@@ -254,6 +256,24 @@ DeskPRO.Admin.Window = new Orb.Class({
 			dataType: 'json',
 			url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
 			type: 'GET'
+		});
+	},
+
+
+	_initHelp: function() {
+		this.helpBtn = $('#dp_pagehelp_btn');
+		this.helpBox = $('#dp_pagehelp');
+
+		if (!this.helpBox.length) {
+			return;
+		}
+
+		if (this.helpBox.is(':visible')) {
+			this.helpBtn.addClass('on');
+		}
+
+		this.helpBtn.on('click', function() {
+
 		});
 	}
 });

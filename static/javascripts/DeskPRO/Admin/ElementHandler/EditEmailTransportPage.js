@@ -79,5 +79,17 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				}
 			});
 		});
+
+		$('#backup_toggle').on('change', function() {
+			var on = $(this).is(':checked');
+
+			if (on) {
+				$('#backup_form_none_php').attr('checked', 'checked');
+				$('#backup_form').slideDown();
+			} else {
+				$('#backup_form_none_radio').attr('checked', 'checked');
+				$('#backup_form').slideUp();
+			}
+		});
 	}
 });
