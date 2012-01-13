@@ -1,3 +1,5 @@
+Orb.createNamespace('DeskPRO.UI');
+
 /**
  * Optionbox but this helps build the markup required for it.
  */
@@ -36,7 +38,11 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 		var bindEl = null;
 		if (options.values.is && options.values.is('select')) {
-			options.selectType = 'radio';
+			if (options.values.attr('multiple')) {
+				options.selectType = 'checkbox';
+			} else {
+				options.selectType = 'radio';
+			}
 
 			selectEl = options.values;
 			options.values = [];
@@ -90,20 +96,35 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 			var text = selected_text;
 			if (!text.length) text = options.noValText || 'Choose...';
-			var spanEl = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(selectEl);
-			spanEl.on('click', self.open.bind(self));
+			if (options.spanEl) {
+				var spanEl = options.spanEl;
+			} else {
+				var spanEl = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(selectEl);
+				spanEl.on('click', self.open.bind(self));
+			}
 			selectEl.hide();
 
 			this.addEvent('checked', function(el) {
 				var value = el.val();
 
-				if (value != selectEl.val()) {
-					selectEl.val(value);
-					selectEl.change();
-				}
+				$('option', selectEl).each(function() {
+					if ($(this).val() == value) {
+						if ($(this).prop('selected')) {
+							$(this).prop('selected', false);
+						} else {
+							$(this).prop('selected', 'selected');
+						}
+					}
+				});
+
+				selectEl.change();
 			});
 
 			selectEl.on('change', function() {
+				var evData = {select: this, stopDefault: false};
+				self.fireEvent('selectChange', evData);
+				if (evData.stopDefault) return;
+
 				var opt = $('option:selected', this);
 				if (opt.data('full-title')) {
 					var text = opt.data('full-title').trim();
@@ -137,7 +158,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			}
 
 			$('label', li).text(opt.label);
-			$(':checkbox, :radio', li).first().val(opt.value);
+			$(':checkbox, :radio', li).first().val(opt.value).data('connected-to', opt);
 
 			if (opt.value == options.selected_value) {
 				$(':checkbox, :radio', li).first().prop('checked', true);
@@ -164,5 +185,3 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		this.parent(options);
 	}
 });
-
-Orb.createNamespace('DeskPRO.UI');

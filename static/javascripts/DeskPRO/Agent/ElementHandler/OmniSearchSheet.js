@@ -1,5 +1,8 @@
 Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
+/**
+ * This is the sheet that appears when you click "advanced" in the header and lets you run an advanced search.
+ */
 DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
@@ -30,10 +33,10 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 				var id = info.tabContent.attr('id');
 
 				switch (id) {
-					case '#dp_searchsheet_tickets': this._initTicketSearch(info.tabContent); break;
-					case '#dp_searchsheet_people': this._initPeopleSearch(info.tabContent); break;
-					case '#dp_searchsheet_orgs': this._initOrgsSearch(info.tabContent); break;
-					case '#dp_searchsheet_content': this._initContentSearch(info.tabContent); break;
+					case 'dp_searchsheet_tickets': self._initTicketSearch(info.tabContent); break;
+					case 'dp_searchsheet_people':  self._initPeopleSearch(info.tabContent); break;
+					case 'dp_searchsheet_orgs':    self._initOrgsSearch(info.tabContent); break;
+					case 'dp_searchsheet_content': self._initContentSearch(info.tabContent); break;
 				}
 			}
 		});
@@ -86,10 +89,48 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		if (this._hasInitTicketSearch) return;
 		this._hasInitTicketSearch = true;
 
-		$('ul.property-list > li > .values > select', tab).each(function() {
+		$('ul.property-list > li', tab).each(function() {
+			var values = $('> .values', this);
+			var select = $('> select', values);
+			var label = $('> label', this);
+
 			var ob = new DeskPRO.UI.OptionBoxBuilder({
-				values: $(this)
+				values: select,
+				spanEl: $([]),
+				onSelectChange: function(evData) {
+					evData.stopDefault = true;
+					var options = $('option:selected', select);
+
+					var ul = $('> ul', values);
+
+					if (!options.length) {
+						if (ul.length) {
+							ul.remove();
+						}
+						return;
+					}
+
+					if (!ul.length) {
+						ul = $('<ul></ul>').appendTo(values);
+					} else {
+						ul.empty();
+					}
+
+					options.each(function() {
+						var opt = $(this);
+						var li = $('<li></li>');
+						if (opt.data('full-title')) {
+							li.text(opt.data('full-title'));
+						} else {
+							li.text(opt.text());
+						}
+
+						li.appendTo(ul);
+					});
+				}
 			});
+
+			$(this).on('click', function(ev) { ob.open(ev); });
 		});
 	},
 
