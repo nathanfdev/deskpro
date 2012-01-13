@@ -313,6 +313,14 @@ a.delete-link:hover {
 #dp_admin_page_sidebar_right {
 	float: right;
 	width: 280px;
+
+}
+
+#dp_admin_page_sidebar, #dp_admin_page_sidebar_right {
+	.dp-page-box {
+		.rounded(0);
+		margin-bottom: 0;
+	}
 }
 
 #dp_admin_page.with-sidebar {
@@ -562,6 +570,11 @@ background: linear-gradient(top, rgba(255,241,178,0) 0%,rgba(255,241,178,0.1) 10
 
 .block-sections {
 	margin: 10px;
+
+	&:first-child {
+		margin-top: 0;
+		padding-top: 10px;
+	}
 }
 
 .block-sections > ul {
@@ -735,8 +748,7 @@ table.structure-list span.priority {
 
 
 .resource-item-list {
-	margin: 6px;
-	margin-bottom: 15px;
+	padding: 6px;
 }
 
 .resource-item-list header {
@@ -1861,18 +1873,18 @@ footer.setting_field_row {
 }
 
 nav.page-top-hugnav {
-	position: absolute;
-	top: -21px;
-	right: 10px;
-
-	background-color: #fff;
-	border: 1px solid #CACFD6;
-	border-bottom: none;
-	height: 16px;
-	padding: 2px 4px 2px 4px;
-
-	.border-radius(4px, 4px, 0, 0);
+	position: relative;
+	top: -15px;
 	line-height: 100%;
+}
+
+nav.page-top-hugnav ul {
+    background-color: #fff;
+	border: 1px solid #CACFD6;
+	border-top: none;
+	float: right;
+	padding: 2px 4px 2px 4px;
+	.border-radius(0, 0, 4px, 4px);
 }
 
 nav.page-top-hugnav ul li {
@@ -2488,20 +2500,20 @@ nav.admin-object-nav li:hover {
 	}
 }
 
-#dp_pagehelp {
+.dp-pagehelp {
 	margin-left: 0px;
     margin-right: 20px;
 	margin-bottom: 15px;
 }
 
-#dp_pagehelp > span {
+.dp-pagehelp > span {
 	.iconbase(32px, 32px);
 	float: left;
 	margin-top: 8px;
 	background-image: url(../../images/admin/icons/question.png);
 }
 
-#dp_pagehelp > section {
+.dp-pagehelp > section {
     margin-left: 45px;
 	.gradient(darken(#eff3f6, 3%), darken(#e0e5e9, 3%));
 	border: 1px solid #C0C6CD;
@@ -2520,7 +2532,7 @@ nav.admin-object-nav li:hover {
 	}
 }
 
-#dp_pagehelp > section > nav {
+.dp-pagehelp > section > nav {
     float: right;
 	> ul {
 		.gradient(darken(#eff3f6, 3%), darken(#e0e5e9, 3%));

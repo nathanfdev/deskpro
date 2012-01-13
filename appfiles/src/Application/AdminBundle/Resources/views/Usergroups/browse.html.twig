@@ -1,13 +1,13 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	{% if usergroup %}
-		<h1>Browsing {{ usergroup.title }} Members</h1>
-	{% else %}
-		<h1>Browsing All Members</h1>
-	{% endif %}
-	<nav>
-		<a class="clean-white" href="{{ path('admin_usergroups') }}">&larr; Back to usergroups</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <ul>
+         <li><a href="{{ path('admin_usergroups') }}">Usergroups</a></li>
+		 {% if usergroup.id %}
+         	<li><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></li>
+		 {% endif %}
+         <li>Browse Members</li>
+     </ul>
 {% endblock %}
 {% block page %}
 

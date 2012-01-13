@@ -1,6 +1,13 @@
 {% extends 'AdminBundle:Languages:lang-layout.html.twig' %}
-{% block pagetitle %}
-	<h1>{{ language.title }}</h1>
+{% block pagebar %}
+     <ul>
+		<li><a href="{{ path('admin_langs') }}">Languages</a></li>
+		{% if language.id %}
+			<li>Edit Language</li>
+		{% else %}
+			<li>New Language</li>
+		{% endif %}
+     </ul>
 {% endblock %}
 {% block page %}
 

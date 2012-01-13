@@ -1,13 +1,14 @@
-{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block prepage %}
-	This page lets you customize the options displayed on the ticket form.
-{% endblock %}
-{% block pagetitle %}
-	<h1>Ticket Fields</h1>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
 	<nav>
-		<button class="clean-white">Create Ticket Field</button>
+		<ul>
+			<li><a href="{{ path('admin_customdeftickets_new_choosetype') }}">Add New Field</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li>Ticket Fields</li>
+	</ul>
 {% endblock %}
 {% block content %}
 <div

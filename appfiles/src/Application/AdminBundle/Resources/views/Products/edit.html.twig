@@ -1,9 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>{% if product.id %}Edit Product{% else %}New Product{% endif %}</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_products') }}">&larr; Back to products</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_products') }}">Products</a></li>
+		{% if product.id %}
+			<li>Edit Product</li>
+		{% else %}
+			<li>New Product</li>
+		{% endif %}
+	</ul>
 {% endblock %}
 {% block page %}
 
@@ -37,7 +42,9 @@
 <button class="btn primary save-trigger">Save</button>
 </form>
 
+{% if product.id %}
 <div class="delete-link-wrap">
 	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">delete</a>
 </div>
+{% endif %}
 {% endblock %}

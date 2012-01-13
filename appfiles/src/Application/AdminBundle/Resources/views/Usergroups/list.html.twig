@@ -1,10 +1,16 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Usergroups</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_usergroups_new') }}">Create Usergroup</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <nav>
+          <ul>
+               <li><a href="{{ path('admin_usergroups_new') }}">Add Usergroup</a></li>
+          </ul>
+     </nav>
+     <ul>
+          <li>Usergroups</li>
+     </ul>
 {% endblock %}
+
 {% block page %}
 
 {% if usergroups|length %}

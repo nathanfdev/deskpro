@@ -1,13 +1,18 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.EditEmailGatewayPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailGatewayPage.js') }}"></script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>{% if gateway.id %}Edit Incoming Email Account{% else %}New Incoming Email Account{% endif %}</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_emailgateways') }}">&larr; Back to the list</a>
-	</nav>
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_emailgateways') }}">Email Gateways</a></li>
+		{% if gateway.id %}
+			<li>Edit Gateway</li>
+		{% else %}
+			<li>New Gateway</li>
+		{% endif %}
+	</ul>
 {% endblock %}
 {% block page %}
 
@@ -24,7 +29,6 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>Account Information</label>
-				<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
@@ -57,6 +61,9 @@
 								<td>{{ form_widget(form.pop3_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
+						<div class="test-row">
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 
@@ -87,6 +94,9 @@
 								</tr>
 							{% endif %}
 						</table>
+						<div class="test-row">
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 			</div>

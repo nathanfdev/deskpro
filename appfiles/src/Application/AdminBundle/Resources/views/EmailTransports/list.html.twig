@@ -1,11 +1,24 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Outgoing Email</h1>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
 	<nav>
-		<a class="clean-white" href="{{ path('admin_emailtrans_newaccount') }}">New Outgoing Email Account</a>
+		<ul>
+			<li><a href="{{ path('admin_emailtrans_newaccount') }}">Add Account</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li><a href="{{ path('admin_emailtrans_list') }}">Outgoing Email</a></li>
+	</ul>
 {% endblock %}
 {% block page %}
+
+{{ design.helpbox() }}
+	<p>
+		You need to define a mail server for every address DeskPRO might send email "From." Sometimes a single mail server
+		might let you send email from any "From" address, but sometimes (such as with Google Apps), the server will
+		only let you send email from a single address.
+	</p>
+{{ design.helpbox_end() }}
 
 <div class="top-option">
 	<h3>Default "From" Address</h3>
@@ -48,7 +61,11 @@
 						{% endif %}
 					</td>
 					<td style="padding: 3px 3px 0 0">
-						<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}"><span class="btn-edit-gear"></span></a>
+						{% if transport.match_type == 'all' %}
+							<a href="{{ path('admin_emailtrans_setup') }}"><span class="btn-edit-gear"></span></a>
+						{% else %}
+							<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}"><span class="btn-edit-gear"></span></a>
+						{% endif %}
 					</td>
 				</tr>
 			{% endfor %}

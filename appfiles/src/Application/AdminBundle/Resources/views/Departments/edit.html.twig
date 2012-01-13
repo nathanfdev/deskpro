@@ -1,9 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>{% if department.id %}Edit Department{% else %}New Department{% endif %}</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_departments') }}">&larr; Back to Departments</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_departments') }}">Departments</a></li>
+		{% if department.id %}
+			<li>New Department</li>
+		{% else %}
+			<li>Edit Department</li>
+		{% endif %}
+	</ul>
 {% endblock %}
 {% block page %}
 

@@ -1,7 +1,12 @@
 {% extends 'AdminBundle:CustomDefAbstract:index.html.twig' %}
-{% block pagetitle %}
-	<h1>Ticket Fields</h1>
-	<nav>
-		<a class="clean-white" href="{{ path(route_basename~'new_choosetype') }}">Create Field</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <nav>
+          <ul>
+               <li><a href="{{ path(route_basename~'new_choosetype') }}">Add Field</a></li>
+          </ul>
+     </nav>
+     <ul>
+          <li>Ticket Fields</li>
+     </ul>
 {% endblock %}

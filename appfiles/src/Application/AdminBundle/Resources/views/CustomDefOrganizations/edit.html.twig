@@ -1,13 +1,12 @@
 {% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
-{% block pagetitle %}
-	<h1>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <ul>
+		<li><a href="{{ path('admin_customdeforganizations') }}">Organization Fields</a></li>
 		{% if field.id %}
-			Edit Field: {{ field.title }}
+			<li>Edit Field</li>
 		{% else %}
-			New Field: {{ phrase(field.getHandlerClassPhrase()) }}
+			<li>New Field</li>
 		{% endif %}
-	</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_customdeforganizations') }}">Back to list</a>
-	</nav>
+     </ul>
 {% endblock %}

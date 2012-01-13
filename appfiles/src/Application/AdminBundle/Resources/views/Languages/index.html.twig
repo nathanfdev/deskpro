@@ -3,11 +3,15 @@
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/LangEditSettings.js') }}"></script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>Languages</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_langs_newlang') }}">Create New Language</a>
-	</nav>
+{% block pagebar %}
+     <nav>
+          <ul>
+               <li><a href="{{ path('admin_langs_newlang') }}">Add Language</a></li>
+          </ul>
+     </nav>
+     <ul>
+          <li>Languages</li>
+     </ul>
 {% endblock %}
 {% block sidebar_right %}
 <div

@@ -1,38 +1,38 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.EditEmailTransportPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
 {% endblock %}
 {% block pagebar %}
-	<nav>
-		<ul>
-			<li><a>Add Account</a></li>
-		</ul>
-	</nav>
 	<ul>
 		<li><a href="{{ path('admin_emailtrans_list') }}">Outgoing Email</a></li>
-		<li>Setup</li>
+		{% if is_setup %}
+			<li>Setup Default Mail Server</li>
+		{% else %}
+			{% if transport.id %}
+				<li>Edit Server</li>
+			{% else %}
+				<li>New Server</li>
+			{% endif %}
+		{% endif %}
 	</ul>
 {% endblock %}
 {% block page %}
 
-<div id="dp_pagehelp">
-	<span></span>
-	<section>
-		<article>
-			<p>
-				This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
-				You might also have email gateways and rules set up to send notifications from different email addresses.
-			</p>
+{% if is_setup %}
+	{{ design.helpbox() }}
+		<p>
+			This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
+			You might also have email gateways and rules set up to send notifications from different email addresses.
+		</p>
 
-			<p>
-				If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
-				the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.
-			</p>
-		</article>
-		<br class="clear" />
-	</section>
-</div>
+		<p>
+			If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
+			the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.
+		</p>
+	{{ design.helpbox_end() }}
+{% endif %}
 
 <form id="transport_form" action="{{ path('admin_emailtrans_editaccount', {'id': transport.id|default(0)}) }}" method="post">
 {{ form_token('edit_transport') }}

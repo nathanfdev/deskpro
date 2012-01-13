@@ -169,20 +169,6 @@
 <div id="dp_page_wrap">
 
 {% set prepage %}{% block prepage %}{% endblock %}{% endset %}
-{% if prepage|trim|length %}
-	<div id="dp_admin_prepage" class="admin-help-header">
-		<div class="open-btn">
-			<span>&darr;</span>
-		</div>
-		<div class="bound-fade"></div>
-		<div class="content">{{ prepage|raw }}</div>
-	</div>
-{% endif %}
-
-{% set pagetitle %}{% block pagetitle %}{% endblock %}{% endset %}
-{% if pagetitle|trim|length %}
-	<div id="dp_admin_pagetitle">{{ pagetitle|raw }}</div>
-{% endif %}
 
 {% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
 {% if pagebar|trim|length %}

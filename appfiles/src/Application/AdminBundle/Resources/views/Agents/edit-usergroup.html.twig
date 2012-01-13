@@ -1,13 +1,18 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.AgentGroupEditPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
+		{% if usergroup.id %}
+			<li>Edit Agent Group</li>
+		{% else %}
+			<li>New Agent Group</li>
+		{% endif %}
+	</ul>
+{% endblock %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentGroupEditPage.js') }}"></script>
-{% endblock %}
-{% block pagetitle %}
-	<h1>{% if usergroup.id %}Edit Permission Group{% else %}New Permission Group{% endif %}</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_agents') }}">&larr; Back to Agents</a>
-	</nav>
 {% endblock %}
 {% block page %}
 

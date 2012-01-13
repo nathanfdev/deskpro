@@ -1,13 +1,18 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.IpBanningPage' %}
 {% extends 'AdminBundle:Banning:layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/IpBanningPage.js') }}"></script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>Banned IP Addresses</h1>
+{% block pagebar %}
 	<nav>
-		<button class="clean-white" id="new_ip_ban_btn">New IP Ban</button>
+		<ul>
+			<li><a id="new_ip_ban_btn">Add IP Ban</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li>Banning IP Addresses</li>
+	</ul>
 {% endblock %}
 {% block page %}
 

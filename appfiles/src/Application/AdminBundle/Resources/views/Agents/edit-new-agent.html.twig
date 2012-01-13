@@ -1,9 +1,10 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>New Agent</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_agents') }}">&larr; Back to Agents</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
+		<li>New Agent</li>
+	</ul>
 {% endblock %}
 {% block page %}
 

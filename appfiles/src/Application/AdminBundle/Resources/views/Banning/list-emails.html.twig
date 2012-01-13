@@ -1,13 +1,18 @@
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.EmailBanningPage' %}
 {% extends 'AdminBundle:Banning:layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EmailBanningPage.js') }}"></script>
 {% endblock %}
-{% block pagetitle %}
-	<h1>Banned Email Addresses</h1>
+{% block pagebar %}
 	<nav>
-		<button class="clean-white" id="new_email_ban_btn">New Email Ban</button>
+		<ul>
+			<li><a id="new_email_ban_btn">Add Email Ban</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li>Banning IP Addresses</li>
+	</ul>
 {% endblock %}
 {% block page %}
 

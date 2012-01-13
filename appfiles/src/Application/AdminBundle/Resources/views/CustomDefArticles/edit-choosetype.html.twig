@@ -1,9 +1,10 @@
 {% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
 {% set this_page = 'kb_fields' %}
 {% extends 'AdminBundle:CustomDefAbstract:edit-choosetype.html.twig' %}
-{% block pagetitle %}
-	<h1>New Article Field: Choose Type</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_customdeftickets') }}">Back to list</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <ul>
+		<li><a href="{{ path('admin_customdefarticles') }}">Article Fields</a></li>
+		<li>Choose Field Type</li>
+     </ul>
 {% endblock %}

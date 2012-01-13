@@ -1,15 +1,14 @@
 {% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
 {% set this_page = 'kb_fields' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
-{% block pagetitle %}
-	<h1>
+{% block pagebar %}
+     <ul>
+		<li><a href="{{ path('admin_customdefarticles') }}">Article Fields</a></li>
 		{% if field.id %}
-			Edit Field: {{ field.title }}
+			<li>Edit Field</li>
 		{% else %}
-			New Field: {{ phrase(field.getHandlerClassPhrase()) }}
+			<li>New Field</li>
 		{% endif %}
-	</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_customdefarticles') }}">Back to list</a>
-	</nav>
+     </ul>
 {% endblock %}

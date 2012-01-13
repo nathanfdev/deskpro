@@ -1,9 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Email Gateways</h1>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
 	<nav>
-		<a class="clean-white" href="{{ path('admin_emailgateways_new') }}">New Email Gateway</a>
+		<ul>
+			<li><a href="{{ path('admin_emailgateways_new') }}">Add Email Gateway</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li><a href="{{ path('admin_emailgateways') }}">Email Gateways</a></li>
+	</ul>
 {% endblock %}
 {% block sidebar_right %}
 <div class="dp-page-box">
@@ -53,6 +58,13 @@
 </div>
 {% endblock %}
 {% block page %}
+
+{{ design.helpbox() }}
+	<p>
+		An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your
+		agents to read and respond to. This allows you to communicate seamlessly with users via normal email.
+	</p>
+{{ design.helpbox_end() }}
 
 <div class="check-grid item-list">
 	<table width="100%">
