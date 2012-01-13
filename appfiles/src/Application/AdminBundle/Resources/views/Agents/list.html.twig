@@ -10,6 +10,14 @@
 		<li>Agents</li>
 	</ul>
 {% endblock %}
+{% block prepage %}
+	<div style="padding: 10px;">
+		{{ design.helpbox() }}
+			<p>Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation.</p>
+			<p>Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions.</p>
+		{{ design.helpbox_end() }}
+	</div>
+{% endblock %}
 {% block sidebar_right %}
 	<div class="dp-page-box">
 		<div class="resource-item-list icon-group">
@@ -78,13 +86,6 @@
 
 {% block content %}
 <div class="dp-page-box">
-
-<div style="padding: 10px;">
-{{ design.helpbox() }}
-    <p>Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation.</p>
-    <p>Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions.</p>
-{{ design.helpbox_end() }}
-</div>
 
 <div class="page-content agent-listing">
 	<ul>

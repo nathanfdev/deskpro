@@ -292,28 +292,38 @@ a.delete-link:hover {
 	position: relative;
 }
 
+#dp_admin_page_inner {
+	position: relative;
+}
 #dp_admin_page {
 	color: #404040;
-}
+	background-color: #fff;
 
-.dp-page-box {
 	border: 1px solid #CACFD6;
 	border-top: none;
 	.border-radius(0, 0, 6px, 6px);
 	background-color: #fff;
 
-	margin-bottom: 10px;
+	z-index: 1;
+}
+
+.dp-page-box {
 }
 
 #dp_admin_page_sidebar {
-	float: left;
+    position: absolute;
+	top: 0;
+    right: 0;
 	width: 280px;
+	z-index: 2;
 }
 
 #dp_admin_page_sidebar_right {
-	float: right;
+	position: absolute;
+	top: 0;
+	right: 0;
 	width: 280px;
-
+	z-index: 2;
 }
 
 #dp_admin_page_sidebar, #dp_admin_page_sidebar_right {
@@ -323,12 +333,12 @@ a.delete-link:hover {
 	}
 }
 
-#dp_admin_page.with-sidebar {
-	margin-left: 290px;
+#dp_admin_page.with-sidebar > #dp_admin_page_inner > .dp-page-box {
+	padding-left: 290px;
 }
 
-#dp_admin_page.with-sidebar-right {
-	margin-right: 290px;
+#dp_admin_page.with-sidebar-right > #dp_admin_page_inner > .dp-page-box {
+	padding-right: 290px
 }
 
 
