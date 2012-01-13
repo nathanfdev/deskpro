@@ -114,7 +114,7 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td class="title" width="100">Host:</td>
+								<td class="title" width="120">Host:</td>
 								<td>
 									{{ form_widget(form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
@@ -162,11 +162,11 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="120">Full Email Address:</td>
+								<td class="title" width="120">Full Email Address:</td>
 								<td>{{ form_widget(form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Password:</td>
+								<td class="title">Password:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -206,21 +206,21 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="80">Host:</td>
+								<td  class="title" width="120">Host:</td>
 								<td>
 									{{ form_widget(form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
 							</tr>
 							<tr>
-								<td>Secure:</td>
+								<td class="title">Secure:</td>
 								<td>{{ form_widget(form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Port:</td>
+								<td class="title">Port:</td>
 								<td>{{ form_widget(form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Requires Auth:</td>
+								<td class="title">Requires Auth:</td>
 								<td>
 									<input
 										type="checkbox"
@@ -231,11 +231,11 @@
 								</td>
 							</tr>
 							<tr id="backup_smtp_auth_username">
-								<td>Username:</td>
+								<td class="title">Username:</td>
 								<td>{{ form_widget(form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="backup_smtp_auth_password">
-								<td>Password:</td>
+								<td class="title">Password:</td>
 								<td>{{ form_widget(form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -254,11 +254,11 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="120">Full Email Address:</td>
+								<td class="title" width="120">Full Email Address:</td>
 								<td>{{ form_widget(form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Password:</td>
+								<td class="title">Password:</td>
 								<td>{{ form_widget(form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>

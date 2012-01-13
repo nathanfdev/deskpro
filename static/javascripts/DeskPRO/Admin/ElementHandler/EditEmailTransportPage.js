@@ -43,6 +43,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 					setmail = $('.email-address-pattern').val();
 				} else if (type == 'domain') {
 					setmail = 'test@' + $('.email-domain-pattern').val();
+				} else if ($('#default_from_email').length) {
+					setmail = $('#default_from_email').val();
 				}
 
 				if (setmail) {
@@ -86,8 +88,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 			if (on) {
 				$('#backup_form_php').attr('checked', 'checked').click();
 				var group = $('#backup_form_php').closest('.dp-input-group');
-				group.closest('.dp-form-row-group').find('.on.dp-input-group').removeClass('.on');
-				group.addClass('.on');
+				group.closest('.dp-form-row-group').find('.on.dp-input-group').removeClass('on').find('.dp-group-options').hide();
+				group.addClass('on').find('.dp-group-options').show();
 
 				$('#backup_form').slideDown();
 			} else {
