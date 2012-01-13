@@ -3,7 +3,7 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li><a href="{{ path('admin_agents_new') }}">Add Agent</a></li>
+			<li class="add"><a href="{{ path('admin_agents_new') }}">Add Agent</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -117,67 +117,6 @@
 			</tbody>
 		</table>
 	</div>
-
-	{#
-	<ul>
-		{% for person in all_agents %}
-			<li class="agent">
-				<div class="inner">
-					<section class="name">
-						<img src="{{ person.getPictureUrl(38) }}" />
-						<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
-						<address>{{person.primary_email_address}}</address>
-					</section>
-					<section class="zones">
-						<ul>
-							{% if person.can_agent %}<li class="agent" title="Can use the agent interface">agent</li>{% endif %}
-							{% if person.can_admin %}<li class="admin" title="Can use the admin interface">admin</li>{% endif %}
-							{% if person.can_reports %}<li class="reports" title="Can use the reporting interface">reports</li>{% endif %}
-							{% if person.can_billing %}<li class="billing" title="Can use the billing interface">billing</li>{% endif %}
-						</ul>
-					</section>
-					<section class="info">
-						<ul>
-							<li>
-								<label>Departments:</label>
-								<div class="items">
-									{% for dep_id in agents_to_deps[person.id] %}{% set dep = all_departments[dep_id] %}{{ dep.full_title }}{% if not loop.last %},{% endif %}
-									{% else %}
-										<em>None</em>
-									{% endfor %}
-								</div>
-							</li>
-							<li>
-								<label>Teams:</label>
-								<div class="items">
-									{% for team_id in agent_to_teams[person.id] %}{% set team = all_teams[team_id] %}{{ team.name }}{% if not loop.last %},{% endif %}
-									{% else %}
-										<em>None</em>
-									{% endfor %}
-								</div>
-							</li>
-							<li>
-								<label>Groups:</label>
-								<div class="items">
-									{% if agent_to_groups[person.id] %}
-										{% for usergroup_id in agent_to_groups[person.id]  %}{% set usergroup = all_usergroups[usergroup_id] %}{{ usergroup.title }}{% if not loop.last %}, {% endif %}{% endfor %}{% if overrides_counts[person.id] %}, +{{ overrides_counts[person.id] }} overrides{% endif %}
-									{% else %}
-										{% if overrides_counts[person.id] %}
-											{{ overrides_counts[person.id] }} specific permissions
-										{% else %}
-											<em>No permissions</em>
-										{% endif %}
-									{% endif %}
-								</div>
-							</li>
-						</ul>
-					</section>
-					<br class="clear" />
-				</div>
-			</li>
-		{% endfor %}
-	</ul>
-	#}
 <div>
 
 </div>
