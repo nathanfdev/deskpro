@@ -100,7 +100,9 @@
 					</label>
 
 					<div class="dp-group-options" style="display: none">
-						<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+						<div class="test-row">
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 
@@ -186,11 +188,13 @@
 			<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" id="backup_form_none_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
+						<input type="radio" id="backup_form_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
 						PHP mail()
 					</label>
 					<div class="dp-group-options" style="display: none">
-						<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+						<div class="test-row">
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+						</div>
 					</div>
 				</div>
 

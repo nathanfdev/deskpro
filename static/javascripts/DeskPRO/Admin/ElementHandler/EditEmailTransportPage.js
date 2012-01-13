@@ -84,10 +84,14 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 			var on = $(this).is(':checked');
 
 			if (on) {
-				$('#backup_form_none_php').attr('checked', 'checked');
+				$('#backup_form_php').attr('checked', 'checked').click();
+				var group = $('#backup_form_php').closest('.dp-input-group');
+				group.closest('.dp-form-row-group').find('.on.dp-input-group').removeClass('.on');
+				group.addClass('.on');
+
 				$('#backup_form').slideDown();
 			} else {
-				$('#backup_form_none_radio').attr('checked', 'checked');
+				$('#backup_form_none_radio').attr('checked', 'checked').click();
 				$('#backup_form').slideUp();
 			}
 		});

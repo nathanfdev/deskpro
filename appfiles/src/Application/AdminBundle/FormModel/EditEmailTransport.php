@@ -58,7 +58,7 @@ class EditEmailTransport
 		if ($transport->backup_transport_type == 'smtp') {
 			$this->backup_smtp_options = $transport->backup_transport_options;
 		} elseif ($transport->backup_transport_type == 'gmail') {
-			$this->backup_gmail_options = $transport->backup_gmail_options;
+			$this->backup_gmail_options = $transport->backup_transport_options;
 		}
 
 		if (!isset($this->smtp_options['port'])) $this->smtp_options['port'] = 25;
