@@ -47,7 +47,7 @@ class EmailGatewaysController extends AbstractController
 	{
 		if ($id) {
 			$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
-			if (!$id) {
+			if (!$gateway) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
 		} else {
@@ -83,9 +83,24 @@ class EmailGatewaysController extends AbstractController
 				$editgateway->setRemoveAddressIds($remove_address_ids);
 				$editgateway->setDefaultAddress($default_address);
 
+				$emailtrans = false;
+				if (!$gateway->id && $editgateway->connection_type == 'gmail' && $this->in->getBool('gmail_create_smtp')) {
+					$emailtrans = new \Application\DeskPRO\Entity\EmailTransport();
+					$emailtrans->title = 'Google Apps: ' . $editgateway->gmail_options['username'];
+					$emailtrans->transport_type = 'gmail';
+					$emailtrans->transport_options = $editgateway->gmail_options;
+					$emailtrans->match_pattern = $editgateway->gmail_options['username'];
+				}
+
 				$this->em->getConnection()->beginTransaction();
 				try {
 					$editgateway->save();
+
+					if ($emailtrans) {
+						$this->em->persist($emailtrans);
+						$this->em->flush();
+					}
+
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
 					$this->em->getConnection()->rollback();
@@ -142,5 +157,33 @@ class EmailGatewaysController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($id, $security_token)
+	{
+		$gateway = $this->em->find('DeskPRO:EmailGateway', $id);
+		if (!$gateway || !$this->session->checkSecurityToken('delete_gateway', $security_token)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->remove($gateway);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		$this->session->setFlash('deleted', $gateway->title);
+
+		return $this->redirectRoute('admin_emailgateways');
 	}
 }

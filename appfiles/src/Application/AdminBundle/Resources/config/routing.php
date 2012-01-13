@@ -1336,6 +1336,13 @@ $collection->add('admin_emailgateways_quicktoggle', new Route(
 	array()
 ));
 
+$collection->add('admin_emailgateways_del', new Route(
+	'/email/incoming/accounts/{id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:EmailGateways:delete'),
+	array('id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_emailgateways_testaccount', new Route(
 	'/email/incoming/accounts/test-account.json',
 	array('_controller' => 'AdminBundle:EmailGateways:ajaxTest'),
@@ -1379,6 +1386,13 @@ $collection->add('admin_emailtrans_editaccount', new Route(
 	'/email/outgoing/accounts/{id}/edit',
 	array('_controller' => 'AdminBundle:EmailTransports:editAccount'),
 	array(),
+	array()
+));
+
+$collection->add('admin_emailtrans_del', new Route(
+	'/email/outgoing/accounts/{id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:EmailTransports:delete'),
+	array('id' => '\\d+'),
 	array()
 ));
 

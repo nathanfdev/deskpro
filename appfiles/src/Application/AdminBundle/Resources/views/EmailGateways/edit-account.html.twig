@@ -75,6 +75,17 @@
 								<td>Password:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
+							{% if not gateway.id %}
+								<tr>
+									<td>Create SMTP Account</td>
+									<td>
+										<label>
+											<input type="checkbox" name="gmail_create_smtp" value="1" checked="checked" />
+											Also create an SMTP account for outgoing email using the same credentials
+										</label>
+									</td>
+								</tr>
+							{% endif %}
 						</table>
 					</div>
 				</div>
@@ -163,4 +174,9 @@
 	</div>
 </div>
 
+{% if gateway.id %}
+	<div class="delete-link-wrap">
+		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed.');">delete</a>
+	</div>
+{% endif %}
 {% endblock %}

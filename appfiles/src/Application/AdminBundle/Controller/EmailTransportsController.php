@@ -74,7 +74,7 @@ class EmailTransportsController extends AbstractController
 	{
 		if ($id) {
 			$transport = $this->em->find('DeskPRO:EmailTransport', $id);
-			if (!$id) {
+			if (!$transport) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
 		} else {
@@ -154,5 +154,33 @@ class EmailTransportsController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($id, $security_token)
+	{
+		$transport = $this->em->find('DeskPRO:EmailTransport', $id);
+		if (!$transport || !$this->session->checkSecurityToken('delete_transport', $security_token)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->remove($transport);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		$this->session->setFlash('deleted', "SMTP Account");
+
+		return $this->redirectRoute('admin_emailgateways');
 	}
 }
