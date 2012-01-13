@@ -70,6 +70,13 @@ $collection->add('admin_tickets_editor', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_editor_toggleper', new Route(
+	'/tickets/editor/toggle-per-department',
+	array('_controller' => 'AdminBundle:TicketProperties:togglePerDepartment'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_editor_dep_copydefault', new Route(
 	'/tickets/editor/{department_id}/copy-default',
 	array('_controller' => 'AdminBundle:TicketProperties:copyDefaultEditor'),

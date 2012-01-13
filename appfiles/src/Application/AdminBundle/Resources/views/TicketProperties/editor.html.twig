@@ -67,10 +67,12 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </div>
 
 <div class="pagetop-option">
-	<input type="checkbox" class="onoff-slider" /> Enable custom layouts for each department
-	<div class="sub">
-		Editing the layout for: <span id="department_switcher" class="switcher"><span>{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}</span></span>
-	</div>
+	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> Enable custom layouts for each department
+	{% if app.getSetting('core_tickets.per_department_form') %}
+		<div class="sub">
+			Editing the layout for: <span id="department_switcher" class="switcher"><span>{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}</span></span>
+		</div>
+	{% endif %}
 </div>
 
 <div class="content-tabs">

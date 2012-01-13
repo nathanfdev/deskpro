@@ -154,6 +154,13 @@ class TicketPropertiesController extends AbstractController
 		return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id));
 	}
 
+	public function togglePerDepartmentAction()
+	{
+		$enable = $this->in->getBool('enable');
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', $enable);
+
+		return $this->redirectRoute('admin_tickets_editor');
+	}
 
 	############################################################################
 	# form-embed

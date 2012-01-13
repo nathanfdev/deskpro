@@ -25,6 +25,15 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			self.save();
 		});
 
+		$('#per_department_check').on('change', function() {
+			var val = 0;
+			if ($(this).is(':checked')) {
+				var val = 0;
+			}
+
+			window.location = $(this).data('update-url') + '?enable=' + val;
+		});
+
 		//------------------------------
 		// Handle dragging/dropping between the two lists
 		//------------------------------
