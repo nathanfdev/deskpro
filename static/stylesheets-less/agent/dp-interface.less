@@ -2104,6 +2104,12 @@ a.clean-white {
 		padding: 6px 8px 6px 8px;
 	}
 
+	.icon-only .inner-wrap2 {
+		padding: 0 0 6px 0;
+		background-color: #fff !important;
+		border: none !important;
+	}
+
 	&:last-child .inner-wrap2 {
 		border-bottom: none;
 	}
@@ -2169,4 +2175,16 @@ a.clean-white {
 
 .dp-grid.dep-list .col:hover .grab-handle {
     display: block;
+}
+
+.dp-grid.dep-list a.delete {
+	.iconbase(16px, 16px);
+	background: url(../../images/agent/icons/cross.png);
+	position: relative;
+	top: 9px;
+	.opacity(25);
+}
+
+.dp-grid.dep-list article:hover a.delete {
+	.opacity(100);
 }

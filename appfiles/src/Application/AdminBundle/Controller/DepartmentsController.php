@@ -176,19 +176,24 @@ class DepartmentsController extends AbstractController
 	{
 		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 
-		// Count tickets in this department
-		$searcher = new TicketSearch();
-		$searcher->addTerm(TicketSearch::TERM_DEPARTMENT, TicketSearch::OP_IS, $department->id);
+		$tree_ids = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
+		$tree_ids = implode(',', $tree_ids);
 
-		$tids = $searcher->getMatches(array('offset' => 0, 'limit' => 1001));
-		$ticket_count = count($tids);
-		unset($tids);
+		$ticket_count = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM tickets
+			WHERE department_id IN ($tree_ids)
+		");
+		$chat_count = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM chat_conversations
+			WHERE department_id IN ($tree_ids)
+		");
 
 		$departments = App::getEntityRepository('DeskPRO:Department')->getAll();
 
 		return $this->render('AdminBundle:Departments:delete.html.twig', array(
 			'department'  => $department,
 			'ticket_count' => $ticket_count,
+			'chat_count' => $chat_count,
 			'departments' => $departments
 		));
 	}
@@ -198,16 +203,23 @@ class DepartmentsController extends AbstractController
 		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 		$move_department = null;
 
-		$searcher = new TicketSearch();
-		$searcher->addTerm(TicketSearch::TERM_DEPARTMENT, TicketSearch::OP_IS, $department->id);
+		$tree_ids = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
+		$tree_ids = implode(',', $tree_ids);
 
-		$tids = $searcher->getMatches(array('offset' => 0, 'limit' => 1));
-		$has_tickets = false;
-		if (count($tids)) {
-			$has_tickets = true;
-		}
+		$ticket_count = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM tickets
+			WHERE department_id IN ($tree_ids)
+			LIMIT 1
+		");
+		$chat_count = App::getDb()->fetchColumn("
+			SELECT COUNT(*) FROM chat_conversations
+			WHERE department_id IN ($tree_ids)
+			LIMIT 1
+		");
 
-		if ($has_tickets) {
+		$has_tickets = ($ticket_count || $chat_count);
+
+		if ($has_data) {
 			$move_department = App::getEntityRepository('DeskPRO:Department')->find($this->in->getUint('move_to_department'));
 			if (!$move_department || count($move_department->children)) {
 				// TODO err
@@ -223,11 +235,14 @@ class DepartmentsController extends AbstractController
 		$this->em->beginTransaction();
 
 		if ($has_tickets) {
-			$tree_ids = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($department->id, true);
-			$tree_ids = implode(',', $tree_ids);
-
 			App::getDb()->executeUpdate("
 				UPDATE tickets
+				SET department_id = ?
+				WHERE department_id IN ($tree_ids)
+			", array($move_department->id));
+
+			App::getDb()->executeUpdate("
+				UPDATE chat_conversations
 				SET department_id = ?
 				WHERE department_id IN ($tree_ids)
 			", array($move_department->id));

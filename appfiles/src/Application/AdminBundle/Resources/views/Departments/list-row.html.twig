@@ -54,7 +54,7 @@
 		{% endif %}
 	{{ design.dpgrid_col_end() }}
 
-	{{ design.dpgrid_col({ class: 'l r alt', style: "width: 140px"}) }}
+	{{ design.dpgrid_col({ class: 'l r alt r-margin', style: "width: 140px;"}) }}
 		{% if is_sub or not department.children|length %}
 			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
 			<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
@@ -70,6 +70,9 @@
 		{% endif %}
 	{{ design.dpgrid_col_end() }}
 
+	{{ design.dpgrid_col({ class: 'l r alt icon-only', style: "width: 16px"}) }}
+		<a href="{{ path('admin_departments_del', {'department_id': department.id}) }}" class="delete"></a>
+	{{ design.dpgrid_col_end() }}
 {{ design.dpgrid_content_end() }}
 
 {% if department.children|length %}

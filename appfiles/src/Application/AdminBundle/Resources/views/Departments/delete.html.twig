@@ -1,13 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Delete Department</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_departments') }}">&larr; Back to departments</a>
-	</nav>
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_departments') }}">Departments</a></li>
+		<li>Delete Department</li>
+	</ul>
 {% endblock %}
 {% block page %}
 
-{% if category.children|length %}
+{% if department.children|length %}
 	<p>Are you sure you want to delete the department "<strong>{{ department.title }}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:</p>
 
 	<ul class="bullet-list">
@@ -22,38 +23,38 @@
 <form action="{{ path('admin_departments_dodel', {'department_id': department.id, 'security_token': security_token('delete_department')}) }}" method="post">
 
 {% if ticket_count > 0 %}
-	<p>There are <strong>{% if ticket_count > 1000 %}over 1000{% else %}{{ ticket_count }}{% endif %}</strong> tickets using this department.</p>
-	<p>Please choose a sub-department to move these tickets into:</p>
+	<p>
+		There are <strong>{% if ticket_count > 1000 %}over 1000{% else %}{{ ticket_count }}{% endif %}</strong> tickets
+		{% if chat_count > 0 %}and <strong>{% if chat_count > 1000 %}over 1000{% else %}{{ chat_count }}{% endif %}</strong> chats{% endif %}
+		using this department.</p>
 
-	<div class="dp-form">
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>Move tickets into:</label>
-			</div>
-			<div class="dp-form-input">
-				<select name="move_to_department">
-				{% for d in departments %}
-					{% if d.id != department.id %}
-						{% if d.children|length %}
-							<optgroup label="{{ d.title }}" class="dep-{{ d.id }}">
-							{% for sd in d.children %}
-								{% if sd.id != department.id %}
-									<option value="{{ sd.id }}">{{ sd.title }}</option>
-								{% endif %}
-							{% endfor %}
-							</optgroup>
-						{% else %}
-							<option value="{{ d.id }}">{{ department.title }}</option>
-						{% endif %}
+	<p>
+		Please choose a sub-department to move them into:
+		<select name="move_to_department">
+			{% for d in departments %}
+				{% if d.id != department.id %}
+					{% if d.children|length %}
+						<optgroup label="{{ d.title }}" class="dep-{{ d.id }}">
+						{% for sd in d.children %}
+							{% if sd.id != department.id %}
+								<option value="{{ sd.id }}">{{ sd.title }}</option>
+							{% endif %}
+						{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{ d.id }}">{{ d.title }}</option>
 					{% endif %}
-				{% endfor %}
-				</select>
-			</div>
-		</div>
-	</div>
+				{% endif %}
+			{% endfor %}
+		</select>
+	</p>
 {% endif %}
 
-<button class="btn">Delete department</button>
+{% if department.children|length %}
+	<button class="btn">Yes, delete this department and all sub-departments</button>
+{% else %}
+	<button class="btn">Yes, delete this department</button>
+{% endif %}
 
 </form>
 
