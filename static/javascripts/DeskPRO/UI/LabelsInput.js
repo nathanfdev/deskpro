@@ -71,7 +71,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		// Otherwise, we're using AJAX (slow) autocomplete
 		} else {
 			tagitOptions.autocompleteOptions = {
-				source: BASE_URL + '/misc/ajax-labels/' + this.options.type
+				source: BASE_URL + '/agent/misc/ajax-labels/' + this.options.type
 			}
 		}
 
