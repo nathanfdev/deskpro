@@ -78,19 +78,6 @@ class Ticket extends AbstractEntityRepository
 		return $tickets;
 	}
 
-
-	/**
-	 * Get tickets by IDs
-	 *
-	 * @param array $ids
-	 * @return void
-	 */
-	public function getByIds(array $ids)
-	{
-		return $this->getTicketsFromIds($ids);
-	}
-
-
 	/**
 	 * Get all tickets a person owns, or is a participant in.
 	 * This is usually used to fetch a list of tickets for an end-user.
