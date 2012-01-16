@@ -76,6 +76,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 
 <div class="content-tabs">
 	<nav>
+		<span class="saving-text" id="saving_text" style="display: none">Saving</span>
 		<ul>
 			<li {% if section == 'create' %}class="on"{% endif %}>
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">New Ticket Form</a>
@@ -120,15 +121,6 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 				Drag and drop fields from the left onto this area to start designing your form.
 			</li>
 		</ul>
-
-		<div class="save-row">
-			<div class="is-not-loading">
-				<button class="clean-white save-trigger">Save Form</button>
-			</div>
-			<div class="is-loading" style="padding-top: 7px">
-				<div class="loading-icon-flat">&nbsp;</div>
-			</div>
-		</div>
 		</form>
 	</section>
 </div>

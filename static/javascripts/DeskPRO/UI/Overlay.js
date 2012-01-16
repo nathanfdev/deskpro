@@ -239,6 +239,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		this.elements.wrapperOuter.fadeOut(200);
 
 		this.fireEvent('overlayClosed', { overlay: this });
+		this.fireEvent('close', { overlay: this });
 
 		if (this.options.destroyOnClose) {
 			this.destroy();

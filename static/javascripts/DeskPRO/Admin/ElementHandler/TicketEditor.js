@@ -22,11 +22,6 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			ev.preventDefault();
 		});
 
-		$('button.save-trigger', this.el).click(function(ev) {
-			ev.preventDefault();
-			self.save();
-		});
-
 		$('#per_department_check').on('change', function() {
 			var val = 0;
 			if ($(this).is(':checked')) {
@@ -87,6 +82,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			},
 			stop: function() {
 				$('#admin_ticket_editor').removeClass('is-dragging');
+				self.save();
 			},
 			helper: function(event, el) {
 				var helper = $('<div class="admin-ticket-editor-dragging"><label></label></div>');
@@ -154,6 +150,8 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				if (!$('#admin_ticket_editor_items .form-item').length) {
 					$('#admin_ticket_editor_items .no-items-notice').show();
 				}
+
+				self.save();
 			});
 
 			$('#admin_ticket_editor').addClass('changed');
@@ -204,7 +202,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				}
 
 				overlay = new DeskPRO.UI.Overlay({
-					contentElement: overlayEl
+					contentElement: overlayEl,
+					onClose: function() {
+						self.save();
+					}
 				});
 				el.data('options-overlay', overlay);
 
@@ -242,19 +243,25 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 	},
 
 	save: function() {
+
+		if (this.currentSave) {
+			this.currentSave.abort();
+			this.currentSave = null;
+		}
+
 		$('#admin_ticket_editor').removeClass('changed');
 
 		var postData = this.encode();
 		var saveUrl = this.el.attr('action');
 
-		this.el.addClass('loading');
-		$.ajax({
+		$('#saving_text').fadeIn('fast');
+		this.currentSave = $.ajax({
 			url: saveUrl,
 			type: 'POST',
 			data: postData,
 			context: this,
 			complete: function() {
-				this.el.removeClass('loading');
+				$('#saving_text').fadeOut('slow');
 			}
 		});
 	},
