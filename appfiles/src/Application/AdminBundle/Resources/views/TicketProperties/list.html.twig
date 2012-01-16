@@ -18,88 +18,88 @@
 	data-set-field-url="{{ path('admin_customdeftickets_setenabled', {'field_id': '00000'})|replace({'00000': '_FIELD_ID_'}) }}"
 >
 
-{{ design.block_sections() }}
-
-	{{ design.block_sections_item() }}
+<ul class="field-dual-list">
+	<li>
 		<header>
 			<h3><a href="{{ path('admin_departments') }}">Departments</a></h3>
-			<span class="count">{{counts.department}}</span>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_departments') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_departments" />
 			</div>
+			<br class="clear" />
 		</header>
 		<p>
-			Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support.
+			Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support. You have {{counts.department}} departments.
 		</p>
-	{{ design.block_sections_item_end() }}
+	</li>
 
-	{{ design.block_sections_item() }}
+	<li>
 		<header>
 			<h3><a href="{{ path('admin_products') }}">Products</a></h3>
-			<span class="count">{{counts.product}}</span>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_products') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_products" />
 			</div>
+			<br class="clear" />
 		</header>
 		<p>
-			Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
-			is usually a real product or service your company offers, and use it categorize all kinds of content
-			like tickets, ideas and articles.
+			Products are usually a real product or service your company offers. You can use it categorize all kinds of content
+			like tickets, ideas and articles. You have {{counts.product}} products.
 		</p>
-	{{ design.block_sections_item_end() }}
+	</li>
 
-	{{ design.block_sections_item() }}
+	<li>
 		<header>
 			<h3><a href="{{ path('admin_ticketcats') }}">Ticket Categories</a></h3>
-			<span class="count">{{counts.ticket_category}}</span>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_ticket_categories') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_categories" />
 			</div>
+			<br class="clear" />
 		</header>
 		<p>
-			Categories are a general organization field usually used to handle grouping tickets within a department.
+			Categories are a general organization field usually used to handle grouping tickets within a department. You have {{counts.ticket_category}} categories.
 		</p>
-	{{ design.block_sections_item_end() }}
+	</li>
 
-	{{ design.block_sections_item() }}
+	<li>
 		<header>
 			<h3><a href="{{ path('admin_ticketpris') }}">Ticket Priorities</a></h3>
-			<span class="count">{{counts.ticket_priority}}</span>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_ticket_priorities') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_priorities" />
 			</div>
+			<br class="clear" />
 		</header>
 		<p>
-			Priorities rate how important a ticket is.
+			Priorities rate how important a ticket is. You have {{counts.ticket_priority}} priorities.
 		</p>
-	{{ design.block_sections_item_end() }}
+	</li>
 
-	{{ design.block_sections_item() }}
+	<li>
 		<header>
 			<h3><a href="{{ path('admin_ticketworks') }}">Ticket Workflows</a></h3>
-			<span class="count">{{counts.ticket_workflow}}</span>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_ticket_workflows') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_workflows" />
 			</div>
+			<br class="clear" />
 		</header>
 		<p>
-			Workflows can be used to record where in the lifetime a ticket currently is.
+			Workflows can be used to record where in the lifetime a ticket currently is. You have {{counts.ticket_workflow}} workflows.
 		</p>
-	{{ design.block_sections_item_end() }}
+	</li>
 
 	{% for field in fields %}
-		{{ design.block_sections_item() }}
+		<li class="short" {% if loop.index == 2 %}style="clear:left"{% endif %}>
 			<header>
 				<h3><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">{{ field.title }}</a></h3>
 				<div class="check-control">
 					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />
 				</div>
+				<br class="clear" />
 			</header>
 			<p>Custom field: {{ phrase(field.handler_class_phrase) }}</p>
-		{{ design.block_sections_item_end() }}
+		</li>
 	{% endfor %}
 
-{{ design.block_sections_end() }}
+</ul>
+<br class="clear" />
 
 </div>
 {% endblock %}

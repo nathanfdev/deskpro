@@ -2642,3 +2642,53 @@ nav.admin-object-nav li:hover {
 	padding: 4px 0 4px 6px;
 	margin-bottom: 8px;
 }
+
+
+.field-dual-list li {
+	margin: 8px;
+	background-color: #F1F7FE;
+	border: 1px solid #D9DBDB;
+
+	width: 460px;
+	height: 100px;
+	overflow: hidden;
+
+	float: left;
+
+	&.short {
+		height: 70px;
+	}
+
+	.rounded(8px);
+
+	header {
+		h3 {
+			font-size: 13px;
+			font-family: @heading-font;
+			float: left;
+
+			a {
+				color: #000;
+				background: url(../../images/agent/icons/gear.png) no-repeat 100% 3px;
+				padding-right: 14px;
+			}
+		}
+
+		.check-control {
+			float: right;
+		}
+
+		border-bottom: 1px solid #D9DBDB;
+		padding-bottom: 5px;
+		margin-bottom: 5px;
+		padding-left: 14px;
+		padding-top: 4px;
+		padding-right: 12px;
+		margin-left: -6px;
+		margin-right: -6px;
+	}
+
+	p {
+		padding: 8px;
+	}
+}

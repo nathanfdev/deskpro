@@ -7,29 +7,29 @@
 	data-set-field-url="{{ path(route_basename~'setenabled', {'field_id': '00000'})|replace({'00000': '_FIELD_ID_'}) }}"
 >
 
-{{ design.block_sections() }}
-
+<ul class="field-dual-list">
 	{% for field in fields %}
-		{{ design.block_sections_item() }}
+		<li class="short">
 			<header>
 				<h3><a href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">{{field.title}}</a></h3>
 				<div class="check-control">
 					<input type="checkbox" {% if field.is_enabled %}checked="checked"{% endif %} class="onoff-slider" data-field-id="{{ field.id }}" />
 				</div>
+				<br class="clear" />
 			</header>
 			<p>
 				Field type: {{ phrase(field.getHandlerClassPhrase()) }}
 			</p>
-		{{ design.block_sections_item_end() }}
+		</li>
 	{% else %}
-		{{ design.block_sections_item() }}
-		<p>
-			You have not created any fields yet.
-		</p>
-		{{ design.block_sections_item_end() }}
+		<li>
+			<p>
+				You have not created any fields yet.
+			</p>
+		</li>
 	{% endfor %}
+</ul>
 
-{{ design.block_sections_end() }}
-
+<br class="clear" />
 </div>
 {% endblock %}
