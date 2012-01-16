@@ -121,6 +121,13 @@ $collection->add('agent_password_confirm_code', new Route(
 	array()
 ));
 
+$collection->add('agent_quicksearch', new Route(
+	'/quick-search.json',
+	array('_controller' => 'AgentBundle:Main:quickSearch'),
+	array(),
+	array()
+));
+
 
 ################################################################################
 # Snippets

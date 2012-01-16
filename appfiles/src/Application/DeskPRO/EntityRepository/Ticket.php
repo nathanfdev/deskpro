@@ -13,11 +13,11 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use \Doctrine\ORM\EntityRepository;
 
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-class Ticket extends EntityRepository
+class Ticket extends AbstractEntityRepository
 {
 	/**
 	 * Find a ticket by its TAC
@@ -106,6 +106,43 @@ class Ticket extends EntityRepository
 			WHERE t.person = ?1 OR p.person = ?2
 			ORDER BY t.id DESC
 		")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
+
+		return $tickets;
+	}
+
+
+	/**
+	 * Get tickets for any of an array of people
+	 *
+	 * @param array $people
+	 * @param null $limit
+	 * @return array
+	 */
+	public function getTicketsForPeople(array $people, $limit = null)
+	{
+		$ids = array();
+		foreach ($people as $p) {
+			if (is_object($p)) {
+				$ids[] = $p->id;
+			} else {
+				$ids[] = $p;
+			}
+		}
+
+		$ids = array_unique($ids);
+		$ids = Arrays::removeFalsey($ids);
+
+		if (!$ids) {
+			return array();
+		}
+
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t INDEX BY t.id
+			LEFT JOIN t.participants p
+			WHERE t.person IN (".implode(',', $ids).") OR p.person IN (".implode(',', $ids).")
+			ORDER BY t.id DESC
+		")->setMaxResults($limit)->execute();
 
 		return $tickets;
 	}

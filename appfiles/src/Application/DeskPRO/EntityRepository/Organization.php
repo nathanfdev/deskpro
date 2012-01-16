@@ -16,7 +16,7 @@ use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
 use Orb\Util\Numbers;
 
-class Organization extends \Doctrine\ORM\EntityRepository
+class Organization extends AbstractEntityRepository
 {
 	protected $_organization_names = null;
 

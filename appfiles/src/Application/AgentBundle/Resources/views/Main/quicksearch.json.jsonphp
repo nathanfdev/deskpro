@@ -1,0 +1,85 @@
+<?php
+$OUTPUT = array();
+
+if ($results['ticket']) {
+	$OUTPUT['ticket'] = array();
+	foreach ($results['ticket'] as $r) {
+		$OUTPUT['tickets'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'subject' => $r->subject,
+		);
+	}
+}
+
+if ($results['person']) {
+	$OUTPUT['person'] = array();
+	foreach ($results['person'] as $r) {
+		$OUTPUT['person'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->id,
+			'person' => $r->getDisplayName(),
+			'email' => $r->getPrimaryEmailAddress(),
+			'organization' => $r->organization ? $r->organization->name : null
+		);
+	}
+}
+
+if ($results['organization']) {
+	$OUTPUT['organization'] = array();
+	foreach ($results['organization'] as $r) {
+		$OUTPUT['person'][] = array(
+			'id' => $r->id,
+			'name' => $r->name
+		);
+	}
+}
+
+if ($results['article']) {
+	$OUTPUT['article'] = array();
+	foreach ($results['article'] as $r) {
+		$OUTPUT['article'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+            'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+		);
+	}
+}
+
+if ($results['idea']) {
+	$OUTPUT['idea'] = array();
+	foreach ($results['idea'] as $r) {
+		$OUTPUT['idea'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+		);
+	}
+}
+
+if ($results['download']) {
+	$OUTPUT['download'] = array();
+	foreach ($results['download'] as $r) {
+		$OUTPUT['idea'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+		);
+	}
+}
+
+if ($results['news']) {
+	$OUTPUT['news'] = array();
+	foreach ($results['news'] as $r) {
+		$OUTPUT['idea'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+		);
+	}
+}

@@ -147,6 +147,19 @@ class Person extends \Doctrine\ORM\EntityRepository
 		return $person;
 	}
 
+	public function searchByEmailStartingWith($email, $limit = null)
+	{
+		$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			LEFT JOIN p.emails e
+			WHERE e.email LIKE ?1
+			ORDER BY p.id ASC
+		")->setParameter(1, $email)->setMaxResults($limit)->execute();
+	}
+
 
 	public function getPeopleFromIds(array $ids)
 	{

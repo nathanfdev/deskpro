@@ -13,13 +13,12 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
 
-class Idea extends EntityRepository
+class Idea extends AbstractEntityRepository
 {
 	############################################################################
 	# Counters

@@ -19,6 +19,11 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		this.el.on('click', function(ev) {
 			ev.stopPropagation();
 		});
+
+		$(window).on('resize', function() {
+			if (!self._isOpen) return;
+			self.updatePositions();
+		});
 	},
 
 	_initSheet: function() {
@@ -47,8 +52,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	},
 
 	updatePositions: function() {
-		var left = $('#dp_list').offset().left - 13;
-		var width = ($('#dp_content').offset().left + 13) - left;
+		var left = $('#dp_list').offset().left - 40;
+		var width = ($('#dp_content').offset().left + 40) - left;
 
 		this.el.css({
 			left: left,

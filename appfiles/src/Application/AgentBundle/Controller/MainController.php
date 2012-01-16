@@ -1,8 +1,17 @@
 <?php
-
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage AgentBundle
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Orb\Util\Numbers;
 
 class MainController extends AbstractController
 {
@@ -147,5 +156,84 @@ class MainController extends AbstractController
 		}
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function quickSearchAction()
+	{
+		$q = $this->in->getString('q');
+
+		$type_to_ent = array(
+			'article'  => 'DeskPRO:Article',
+			'download' => 'DeskPRO:Download',
+			'idea'     => 'DeskPRO:Idea',
+			'news'     => 'DeskPRO:News',
+			'ticket'   => 'DeskPRO:Ticket',
+			'person'   => 'DeskPRO:Person',
+			'organization' => 'DeskPRO:Organization'
+		);
+
+		$results = array(
+			'article' => array(),
+			'download' => array(),
+			'idea' => array(),
+			'news' => array(),
+			'ticket' => array(),
+			'person' => array(),
+			'organization' => array()
+		);
+
+		#------------------------------
+		# ID based
+		#------------------------------
+
+		if (Numbers::isInteger($q)) {
+			foreach ($type_to_ent as $type => $ent) {
+				$obj = $this->em->find($ent, $q);
+				if ($obj) {
+					$results[$type][] = $obj;
+				}
+			}
+
+		#------------------------------
+		# Email address: Full or partial
+		#------------------------------
+
+		} else if (preg_match('#^[a-zA-Z0-9\-_.]+@#', $q)) {
+
+			if (\Orb\Validator\StringEmail::isValueValid($q)) {
+				$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
+				$people = array();
+				if ($p) {
+					$people[] = $p;
+				}
+			} else {
+				$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+			}
+
+			foreach ($people as $p) {
+				$results['person'][] = $p;
+
+				if ($p->organization) {
+					$results['organization'][] = $p;
+				}
+			}
+
+			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($people, 15);
+			foreach ($tickets as $t) {
+				$results['ticket'][] = $t;
+			}
+
+		#------------------------------
+		# Labels
+		#------------------------------
+
+		} else {
+			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
+			$results = $label_search->search($q);
+		}
+
+		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+			'results' => $results
+		));
 	}
 }
