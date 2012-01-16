@@ -1,19 +1,38 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% if not depth %}
-<tbody>
+
+{% if not is_sub %}
+	<div class="department-group">
 {% endif %}
-	<tr data-item-id="{{ category.id }}" class="depth-{{ depth|default(0) }} product product-{{category.id}} {% if category.parent %}is-sub parent-{{ category.parent.id }}{% endif %} {% if category.children|length %}has-children{% endif %}" data-product-id="{{category.id}}">
-		<td class="title">
-			<a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="edit-title">
-				{{category.title}}
-			</a>
-		</td>
-	</tr>
-	{% if category.children|length %}
-		{% for sub_cat in category.children %}
-			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
-		{% endfor %}
+
+{% if category.children|length %}
+	{{ design.dpgrid_content({class: 'top parent' ~ ' category-' ~ category.id, extra: "data-category-id='#{category.id}'"}) }}
+{% elseif is_sub %}
+	{% if is_last %}
+		{{ design.dpgrid_content({class: 'child last' ~ ' category-' ~ category.id, extra: "data-category-id='#{category.id}'"}) }}
+	{% else %}
+{{ design.dpgrid_content({class: 'child' ~ ' category-' ~ category.id, extra: "data-category-id='#{category.id}'"}) }}
 	{% endif %}
-{% if not depth %}
-</tbody>
+{% else%}
+	{{ design.dpgrid_content({class: 'top' ~ ' category-' ~ category.id, extra: "data-category-id='#{category.id}'"}) }}
+{% endif %}
+
+{{ design.dpgrid_col({ class: 'l r', style: "width: 890px;"}) }}
+	<span class="grab-handle"></span>
+	<h2><a class="edit-trigger">{{category.title}}</a></h2>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_col({ class: 'l r alt icon-only', style: "width: 16px"}) }}
+	<a href="{{ path('admin_ticketcats_del', {'category_id': category.id}) }}" class="delete"></a>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_content_end() }}
+
+{% if category.children|length %}
+	{% for sub_cat in category.children %}
+		{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1, is_last: loop.last } %}
+	{% endfor %}
+{% endif %}
+
+{% if not is_sub %}
+	</div>
 {% endif %}

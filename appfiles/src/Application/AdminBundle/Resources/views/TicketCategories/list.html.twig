@@ -1,27 +1,98 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
-{% block pagetitle %}
-	<h1>Ticket Categories</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
-	</nav>
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TicketCategoryList.js') }}"></script>
 {% endblock %}
-{% block prepage %}
-    <p>The primary grouping concept in DeskPRO is the department (and sub-departments). The second grouping concept is the category field. You only need to enable the category field if you require this further categorization of tickets.</p>
-
-    <p>Category choices can apply to all tickets or can be linked to tickets in specific departments. The category field is recommended when either all or some departments use the same choices. If you need a field that is only relevant to tickets of a certain department you will find it easier to manage by creating a custom field and linking that to the department in the editor.</p>
+{% block pagebar %}
+	<nav>
+		<ul>
+			<li class="add"><a id="newcat_open">Add New Category</a></li>
+		</ul>
+	</nav>
+	<ul>
+		<li>Ticket Categories</li>
+	</ul>
 {% endblock %}
 {% block content %}
 <div class="dp-page-box">
+<div
+	class="page-content"
+	data-element-handler="DeskPRO.Admin.ElementHandler.TicketCategoryList"
+	data-reorder-url="{{ path('admin_ticketcats_updateorders') }}"
+>
 
-<div class="page-content">
-	{{ design.structure_table({ 'save_order_url': path('admin_ticketcats_updateorders') }) }}
+	{{ design.dpgrid({class: 'dep-list'}) }}
+		{{ design.dpgrid_headerrow() }}
+			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
+				<h1>Category</h1>
+			{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headerrow_end() }}
+
 		{% for category in all_categories %}
 			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% endfor %}
-	{{ design.structure_table_end() }}
-</div>
+	{{ design.dpgrid_end() }}
 
+	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay"></span>
+			<h4>Edit Category Title</h4>
+		</div>
+		<div class="overlay-content">
+			<form class="dp-form" method="POST" action="{{ path('admin_ticketcats_savetitle') }}">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Title</label>
+					</div>
+					<div class="dp-form-input">
+						<input type="hidden" name="category_id" id="editcat_catid" value="" />
+						<input type="text" name="title" id="editcat_title" value="" />
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white" id="editcat_savebtn">Save</button>
+		</div>
+	</div>
+
+	<div id="newcat_overlay" style="width: 400px; height: 230px; display: none;">
+		<div class="overlay-title">
+			<span class="close-overlay"></span>
+			<h4>New Category</h4>
+		</div>
+		<div class="overlay-content">
+			<form class="dp-form" method="POST" action="{{ path('admin_ticketcats_savenew') }}">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Title</label>
+					</div>
+					<div class="dp-form-input">
+						<input type="text" name="title" id="newcat_title" value="" />
+					</div>
+				</div>
+
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>Parent</label>
+					</div>
+					<div class="dp-form-input">
+						<select name="parent_id" id="newcat_parent_id">
+							<option value="0">No Parent</option>
+							{% for category in all_categories %}
+								<option value="{{ category.id }}">{{ category.title }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="overlay-footer">
+			<button class="clean-white" id="newcat_savebtn">Add</button>
+		</div>
+	</div>
+
+</div>
 </div>
 {% endblock %}

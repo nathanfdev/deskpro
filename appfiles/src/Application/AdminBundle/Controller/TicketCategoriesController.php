@@ -48,37 +48,65 @@ class TicketCategoriesController extends AbstractController
 	# edit
 	############################################################################
 
-	/**
-	 * Edit a department
-	 */
-	public function editAction($category_id)
+	public function saveTitleAction()
 	{
-		if (!$category_id) {
-			$category = new Entity\TicketCategory();
-		} else {
-			$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
+		$category_id = $this->in->getUint('category_id');
+		$category = App::findEntity('DeskPRO:TicketCategory', $category_id);
+
+		if (!$category) {
+			throw $this->createNotFoundException();
 		}
 
-		$form = $this->get('form.factory')->create(new EditTicketCategoryType($category->id ? false : true), $category);
-
-		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				App::getOrm()->persist($category);
-				App::getOrm()->flush();
-
-				$this->session->setFlash('saved', $category->title);
-				return $this->redirectRoute('admin_ticketcats');
-			}
+		if ($this->in->getString('title')) {
+			$category->title = $this->in->getString('title');
 		}
 
-		return $this->render('AdminBundle:TicketCategories:edit.html.twig', array(
-			'category' => $category,
-			'form'      => $form->createView(),
-		));
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($category);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketcats');
 	}
 
+	public function saveNewAction()
+	{
+		$category = new \Application\DeskPRO\Entity\Department();
+		$category->title = $this->in->getString('title');
+
+		if (!$category->title) {
+			$category->title = 'Untitled';
+		}
+
+		if ($this->in->getUint('parent_id')) {
+			$parent = App::findEntity('DeskPRO:TicketCategory', $this->in->getUint('parent_id'));
+		}
+
+		if ($parent and !$parent->parent) {
+			$category->parent = $parent;
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($category);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketcats');
+	}
 	############################################################################
 	# delete
 	############################################################################
