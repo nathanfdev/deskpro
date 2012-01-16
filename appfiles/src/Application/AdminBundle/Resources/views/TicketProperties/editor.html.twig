@@ -120,6 +120,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			class="dp-page-box"
 			id="admin_ticket_editor"
 			data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
+			data-section="{{section}}"
 		>
 			{% if is_default and section != 'create' %}<div class="disable-overlay"></div>{% endif %}
 
