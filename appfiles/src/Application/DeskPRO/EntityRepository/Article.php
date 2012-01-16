@@ -104,7 +104,7 @@ class Article extends AbstractEntityRepository
 	 *
 	 * @return array
 	 */
-	public function getByIds(array $ids, PersonEntity $person_context = null)
+	public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
 	{
 		if (!$ids) return array();
 
