@@ -49,7 +49,44 @@ class TicketPageDisplay extends EntityRepository
 		}
 	}
 
-	public function getSectionData($department, $zone, $section)
+	/**
+	 * Just like getSectionData except it resolves to the best default match when a custom layout doesnt exist.
+	 *
+	 * @param $department
+	 * @param $zone
+	 * @param string $section
+	 */
+	public function getSectionDataResolve($department, $zone, $section = 'default', &$is_resolved = null)
+	{
+		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, $zone, $section);
+
+		if ($page_data === null) {
+			$is_resolved = true;
+			if ($zone == 'create') {
+				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, $zone, $section);
+			} else {
+				// Default for view/modify is the create form from the same department,
+				// or the default form from the default, or the default create if even that doesnt exist
+
+				if ($department) {
+					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'create', $section);
+				}
+				if (!$page_data) {
+					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, $zone, $section);
+
+
+					// If theres no $zone for the default (ie no 'modify' was ever made), we fall back again to the 'create' form on default
+					if (!$page_data) {
+						$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'create', $section);
+					}
+				}
+			}
+		}
+
+		return $page_data;
+	}
+
+	public function getSectionData($department, $zone, $section = 'default')
 	{
 		if ($department === null) {
 			$data = App::getDb()->fetchColumn("

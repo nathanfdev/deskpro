@@ -78,22 +78,7 @@ class TicketPropertiesController extends AbstractController
 
 		// Existing options
 		$is_default = false;
-		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, $section, 'default');
-		if ($page_data === null && $department_id) {
-			$is_default = true;
-
-			if ($section == 'create') {
-				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, $section, 'default');
-			} else {
-				// Default for view/modify is the create form from the same department,
-				// or the create form from the default
-
-				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'create', 'default');
-				if (!$page_data) {
-					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'create', 'default');
-				}
-			}
-		}
+		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default', $is_default);
 
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
@@ -131,21 +116,13 @@ class TicketPropertiesController extends AbstractController
 
 	public function initEditorAction($department_id, $section)
 	{
-		$department = App::findEntity('DeskPRO:Department', $department_id);
+		$department = null;
 
-		if (!$department) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		if ($department_id) {
+			$department = App::findEntity('DeskPRO:Department', $department_id);
 		}
 
-		if ($section == 'create') {
-			$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, $section, 'default');
-		} else {
-			$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'create', 'default');
-			if (!$page_display_default === null) {
-				$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'create', 'default');
-			}
-		}
-
+		$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default');
 		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
 		$page_display->data = $page_display_default;
 
@@ -163,11 +140,13 @@ class TicketPropertiesController extends AbstractController
 
 	public function revertEditorAction($department_id, $section)
 	{
-		if (!$department_id) {
-			return $this->redirectRoute('admin_tickets_editor');
+		$department = null;
+
+		if ($department_id) {
+			$department = App::findEntity('DeskPRO:Department', $department_id);
 		}
 
-		$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id, 'zone' => $section, 'section' => 'default'));
+		$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id ? $department_id : null, 'zone' => $section, 'section' => 'default'));
 		if ($d) {
 			App::getOrm()->transactional(function($em) use ($d) {
 				$em->remove($d);
@@ -178,7 +157,7 @@ class TicketPropertiesController extends AbstractController
 		if ($department_id) {
 			return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => $department_id, 'section' => $section));
 		} else {
-			return $this->redirectRoute('admin_tickets_editor', array('section' => $section));
+			return $this->redirectRoute('admin_tickets_editor_dep', array('department_id' => '0', 'section' => $section));
 		}
 	}
 
