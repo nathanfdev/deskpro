@@ -45,3 +45,48 @@
 	</section>
 </div>
 {% endmacro %}
+
+{% macro dpgrid(options) %}
+	<div class="dp-grid {{ options.class }}" {{ options.extra|raw }}>
+{% endmacro %}
+
+	{% macro dpgrid_headerrow(options) %}
+		<header class="dp-grid-headerrow {{ options.class }}" {{ options.extra|raw }}>
+	{% endmacro %}
+
+			{% macro dpgrid_headercol(options) %}
+				<div class="header-col"><div class="inner-wrap {{ options.class }}" style="{{ options.style }}"><div class="inner-wrap2"><table cellpadding="0" cellspacing="0" width="100%" height="100%" border="0"><tr><td valign="top" width="100%" height="100%">
+			{% endmacro %}
+
+			{% macro dpgrid_headercol_end() %}
+				</td></tr></table></div></div></div>
+			{% endmacro %}
+
+	{% macro dpgrid_headerrow_end() %}
+		<br class="clear" />
+		</header>
+	{% endmacro %}
+
+
+	{% macro dpgrid_content(options) %}
+		<article class="dp-grid-row {{ options.class }}" {{ options.extra|raw }}>
+	{% endmacro %}
+
+			{% macro dpgrid_col(options) %}
+				<div class="col"><div class="inner-wrap {{ options.class }}" style="{{ options.style }}"><div class="inner-wrap2"><table cellpadding="0" cellspacing="0" width="100%" height="100%" border="0"><tr><td valign="top" width="100%" height="100%">
+			{% endmacro %}
+
+			{% macro dpgrid_col_end() %}
+				</td></tr></table></div></div></div>
+			{% endmacro %}
+
+	{% macro dpgrid_content_end() %}
+		<br class="clear" />
+		</article>
+	{% endmacro %}
+
+
+{% macro dpgrid_end() %}
+	<br  class="clear" />
+	</div>
+{% endmacro %}

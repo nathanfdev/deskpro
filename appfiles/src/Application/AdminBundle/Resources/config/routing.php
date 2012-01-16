@@ -1003,10 +1003,17 @@ $collection->add('admin_departments_savefeaturestate', new Route(
 	array()
 ));
 
-$collection->add('admin_departments_edit', new Route(
-	'/departments/{department_id}',
-	array('_controller' => 'AdminBundle:Departments:edit'),
-	array('department_id' => '\\d+'),
+$collection->add('admin_departments_savenew', new Route(
+	'/departments/save-new',
+	array('_controller' => 'AdminBundle:Departments:saveNew'),
+	array(),
+	array()
+));
+
+$collection->add('admin_departments_savetitle', new Route(
+	'/departments/save-title',
+	array('_controller' => 'AdminBundle:Departments:saveTitle'),
+	array(),
 	array()
 ));
 

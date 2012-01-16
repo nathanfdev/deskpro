@@ -2027,3 +2027,129 @@ a.clean-white {
 	min-height: 11px;
 	background: url(../../images/spinners/loading-small-flat.gif) 50% 0 no-repeat;
 }
+
+
+
+
+.dp-grid {
+    width: 100%;
+
+	.tl .inner-wrap2 {
+		-webkit-border-top-left-radius: 5px;
+		-moz-border-radius-topleft: 5px;
+		border-top-left-radius: 5px;
+	}
+	.tr .inner-wrap2 {
+		-webkit-border-top-right-radius: 5px;
+		-moz-border-radius-topright: 5px;
+		border-top-right-radius: 5px;
+	}
+
+	.l-margin {
+		padding-left: 8px;
+	}
+	.r-margin {
+		padding-right: 8px;
+	}
+}
+
+.dp-grid > header > .header-col {
+	float: left;
+
+	.inner-wrap2 {
+ 		background-color: darken(#FDFDFD, 3%);
+ 		border-bottom: 1px solid #D9DBDB;
+ 		border-top: 1px solid #D9DBDB;
+ 	}
+
+ 	div.inner-wrap2 {
+ 		padding: 5px 8px 5px 8px;
+ 	}
+
+ 	h1 {
+		font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+        font-size: 15px;
+        display: block;
+        line-height: 19px;
+        margin-top: 1px;
+ 	}
+
+ 	.l > .inner-wrap2 {
+ 		border-left: 1px solid #D9DBDB;
+ 	}
+ 	.r > .inner-wrap2 {
+   		border-right: 1px solid #D9DBDB;
+   	}
+}
+
+.dp-grid article.dp-grid-row:hover .col .inner-wrap2 {
+   background-color: #DBE3EE !important;
+}
+
+.dp-grid article.dp-grid-row .col {
+    background-color: #fff;
+    float: left;
+    line-height: 19px;
+
+    h2 {
+		line-height: 19px;
+    }
+
+   .alt .inner-wrap2 {
+		background-color: #F8F8F8;
+    }
+
+    .inner-wrap2 {
+		border-bottom: 1px solid #D9DBDB;
+		padding: 6px 8px 6px 8px;
+	}
+
+	&:last-child .inner-wrap2 {
+		border-bottom: none;
+	}
+
+	.l .inner-wrap2 {
+		border-left: 1px solid #D9DBDB;
+	}
+	.r .inner-wrap2 {
+			border-right: 1px solid #D9DBDB;
+	}
+}
+
+.dp-grid article.dp-grid-row.parent .col {
+	.inner-wrap2 {
+		border-bottom: none;
+	}
+}
+
+.dp-grid article.dp-grid-row.child .col {
+    h2 {
+		margin-left: 5px;
+    }
+	.inner-wrap2 {
+		border-bottom: none;
+	}
+}
+
+.dp-grid article.dp-grid-row.child.last {
+	.inner-wrap2 {
+		border-bottom: 1px solid #D9DBDB;
+	}
+}
+
+
+.dp-grid.dep-list .top a,
+.dp-grid.dep-list .parent a {
+	background: url(../../images/admin/icons/dep-icon.png) no-repeat 0 0;
+	padding: 0 0 0 21px;
+	line-height: 19px;
+	display: block;
+}
+
+.dp-grid.dep-list .child a {
+	background: url(../../images/agent/elbow-end.gif) no-repeat 0 -2px;
+	padding: 0 0 0 21px;
+	position: relative;
+	line-height: 19px;
+	display: block;
+}

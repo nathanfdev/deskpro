@@ -17,53 +17,66 @@
 	</div>
 {% endmacro %}
 
-{% if not depth %}
-<tbody>
+{% if not is_sub %}
+	<div class="department-group">
 {% endif %}
-	<tr data-item-id="{{ department.id }}" class="depth-{{ depth|default(0) }} department department-{{department.id}} {% if department.parent %}is-sub parent-{{ department.parent.id }}{% endif %} {% if department.children|length %}has-children{% endif %}" data-department-id="{{department.id}}">
-		<td class="title">
-			<a href="{{ path('admin_departments_edit', {'department_id': department.id}) }}" class="popout-trigger" data-height="300">
-				{{department.title}}
-			</a>
-		</td>
-		<td width="35" class="controls border-left">
-			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
-		</td>
-		<td width="50" class="controls">
-				<div class="tickets-enabled" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
-					<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}">
-						{% if not current_options_tickets[department.id] %}
-							No agents
-						{% else %}
-							{{ current_options_tickets[department.id]|length }} agents
-						{% endif %}
-					</button>
-				</div>
-				<div class="disabled-state tickets-disabled" {% if department.is_tickets_enabled %}style="display: none"{% endif %}>disabled</div>
-				{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
-			</td>
-		<td width="35" class="controls border-left">
-			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
-		</td>
-		<td width="50" class="controls">
-			<div class="chat-enabled" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
-				<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}">
-					{% if not current_options_chat[department.id] %}
-						No agents
-					{% else %}
-						{{ current_options_chat[department.id]|length }} agents
-					{% endif %}
-				</button>
-			</div>
-			<div class="disabled-state chat-disabled" {% if department.is_chat_enabled %}style="display: none"{% endif %}>disabled</div>
-			{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}
-		</td>
-	</tr>
-	{% if department.children|length %}
-		{% for sub_dep in department.children %}
-			{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
-		{% endfor %}
+
+{% if department.children|length %}
+	{{ design.dpgrid_content({class: 'top parent' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
+{% elseif is_sub %}
+	{% if is_last %}
+		{{ design.dpgrid_content({class: 'child last' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
+	{% else %}
+{{ design.dpgrid_content({class: 'child' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
 	{% endif %}
-{% if not depth %}
-</tbody>
+{% else%}
+	{{ design.dpgrid_content({class: 'top' ~ ' department-' ~ department.id, extra: "data-department-id='#{department.id}'"}) }}
+{% endif %}
+
+	{{ design.dpgrid_col({ class: 'l r', style: "width: 580px;"}) }}
+		<h2><a class="edit-trigger">{{department.title}}</a></h2>
+	{{ design.dpgrid_col_end() }}
+
+	{{ design.dpgrid_col({ class: 'l r l-margin r-margin alt', style: "width: 140px"}) }}
+		{% if is_sub or not department.children|length %}
+			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
+			<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
+				{% if not current_options_tickets[department.id] %}
+					No agents
+				{% else %}
+					{{ current_options_tickets[department.id]|length }} agents
+				{% endif %}
+			</button>
+			{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
+		{% else %}
+			&nbsp;
+		{% endif %}
+	{{ design.dpgrid_col_end() }}
+
+	{{ design.dpgrid_col({ class: 'l r alt', style: "width: 140px"}) }}
+		{% if is_sub or not department.children|length %}
+			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
+			<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
+				{% if not current_options_chat[department.id] %}
+					No agents
+				{% else %}
+					{{ current_options_chat[department.id]|length }} agents
+				{% endif %}
+			</button>
+			{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}
+		{% else %}
+			&nbsp;
+		{% endif %}
+	{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_content_end() }}
+
+{% if department.children|length %}
+	{% for sub_dep in department.children %}
+		{% include 'AdminBundle:Departments:list-row.html.twig' with {'department': sub_dep, 'is_sub': true, 'depth': depth|default(0) + 1, is_last: loop.last } %}
+	{% endfor %}
+{% endif %}
+
+{% if not is_sub %}
+	</div>
 {% endif %}

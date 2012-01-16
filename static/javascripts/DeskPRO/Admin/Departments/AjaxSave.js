@@ -6,8 +6,39 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.el.on('change', '.set-tickets-state, .set-chat-state', function(ev) {
-			var tr = $(this).closest('tr');
+			var tr = $(this).closest('.dp-grid-row');
 			self.saveFeatureState(tr.data('department-id'));
+		});
+
+		this.el.on('click', 'a.edit-trigger', function(ev) {
+			ev.preventDefault();
+
+			var row = $(this).closest('article.dp-grid-row');
+			self.showEditDep(row);
+		});
+
+		$('#newdep_open').on('click', function(ev) {
+			ev.preventDefault();
+			self.showNewDep();
+		});
+
+		// Reordering parents
+		var list = $('.dep-list');
+		list.sortable({
+			items: '.department-group',
+			handle: 'article.top',
+			update: function() {
+				self.updateOrders();
+			}
+		});
+		$('.department-group', list).each(function() {
+			var group = $(this);
+			group.sortable({
+				items: 'article.child',
+				update: function() {
+					self.updateOrders();
+				}
+			});
 		});
 	},
 
@@ -20,25 +51,21 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 	},
 
 	saveFeatureState: function(department_id) {
-		var tr = $('tr.department-' + department_id, this.el);
+		var tr = $('article.department-' + department_id, this.el);
 
 		var chat = $(':checkbox.set-chat-state', tr).is(':checked') ? 1 : 0;
 		var tickets = $(':checkbox.set-tickets-state', tr).is(':checked') ? 1 : 0;
 
 		if (chat) {
-			$('.chat-enabled', tr).show();
-			$('.chat-disabled', tr).hide();
+			$('button.label-chat-perms', tr).show();
 		} else {
-			$('.chat-enabled', tr).hide();
-			$('.chat-disabled', tr).show();
+			$('button.label-chat-perms', tr).hide();
 		}
 
 		if (tickets) {
-			$('.tickets-enabled', tr).show();
-			$('.tickets-disabled', tr).hide();
+			$('button.label-tickets-perms', tr).show();
 		} else {
-			$('.tickets-enabled', tr).hide();
-			$('.tickets-disabled', tr).show();
+			$('button.label-tickets-perms', tr).hide();
 		}
 
 		var postData = [];
@@ -77,6 +104,62 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 			url: url,
 			type: 'POST',
 			dataType: 'json',
+			data: postData
+		});
+	},
+
+	showEditDep: function(row) {
+		var self = this;
+		var depId = row.data('department-id');
+		var currentTitle = row.find('a.edit-trigger').text().trim();
+
+		this.currentEditDep = depId;
+		$('#editdep_title').val(currentTitle);
+		$('#editdep_depid').val(depId);
+
+		if (!this.editOverlay) {
+			this.editOverlay = new DeskPRO.UI.Overlay({
+				contentElement: $('#editdep_overlay')
+			});
+			$('#editdep_savebtn').on('click', function(ev) {
+				ev.preventDefault();
+				$('#editdep_overlay form').submit();
+			});
+		}
+
+		this.editOverlay.open();
+	},
+
+	showNewDep: function() {
+		var self = this;
+
+		if (!this.newOverlay) {
+			this.newOverlay = new DeskPRO.UI.Overlay({
+				contentElement: $('#newdep_overlay')
+			});
+			$('#newdep_savebtn').on('click', function(ev) {
+				ev.preventDefault();
+				$('#newdep_overlay form').submit();
+			});
+		}
+
+		this.newOverlay.open();
+	},
+
+	updateOrders: function() {
+		var postData = [];
+		$('article.dp-grid-row[data-department-id]', this.el).each(function() {
+			if ($(this).data('department-id')) {
+				postData.push({
+					name: 'display_order[]',
+					value: $(this).data('department-id')
+				});
+			}
+		});
+
+		$.ajax({
+			url: this.el.data('reorder-url'),
+			type: 'POST',
 			data: postData
 		});
 	}

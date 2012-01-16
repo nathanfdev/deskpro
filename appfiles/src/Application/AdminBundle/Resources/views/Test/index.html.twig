@@ -4,6 +4,38 @@
 	<h1>Test Page</h1>
 {% endblock %}
 {% block page %}
+
+{{ design.dpgrid() }}
+	{{ design.dpgrid_headerrow() }}
+		{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 700px;"}) }}
+			<h1>Department</h1>
+		{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 85px"}) }}
+			<h1>Tickets</h1>
+		{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 85px"}) }}
+			<h1>Chat</h1>
+		{{ design.dpgrid_headercol_end() }}
+	{{ design.dpgrid_headerrow_end() }}
+
+	{{ design.dpgrid_content() }}
+		{{ design.dpgrid_col({ class: 'l r', style: "width: 700px;"}) }}
+			Department
+		{{ design.dpgrid_col_end() }}
+
+		{{ design.dpgrid_col({ class: 'l r l-margin r-margin alt', style: "width: 85px"}) }}
+			Tickets
+		{{ design.dpgrid_col_end() }}
+
+		{{ design.dpgrid_col({ class: 'l r alt', style: "width: 85px"}) }}
+			Chat
+		{{ design.dpgrid_col_end() }}
+	{{ design.dpgrid_content() }}
+{{ design.dpgrid_end() }}
+
+
+<Br />
+<Br /><Br /><Br /><Br /><Br /><Br /><Br /><Br />
 <button class="clean-white" id="open_overlay_btn">Open Overlay</button>
 
 {#
