@@ -257,7 +257,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		if (data.updated_agent_parts_html) {
-			this.getEL('agent_part_list').html(data.updated_agent_parts_html);
+			this.getEl('agent_part_list').html(data.updated_agent_parts_html);
 			$('.agent-part-count', this.wrapper).text(data.updated_agent_parts_count);
 		}
 
