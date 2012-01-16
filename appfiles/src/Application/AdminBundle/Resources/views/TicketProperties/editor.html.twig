@@ -7,8 +7,9 @@
 var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </script>
 {% endblock %}
-{% block page_nav %}
-<div>
+{% block page_nav_inner %}
+<div class="page-nav-block">
+	<div class="inner-shadow"></div>
 	<section class="top">
 		{% if is_default and not (not department and section == 'create') %}<div class="disable-overlay"></div>{% endif %}
 		<header>
@@ -34,17 +35,15 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			</ul>
 		</article>
 	</section>
-
+</div>
+<div class="page-nav-block">
+	<div class="inner-shadow"></div>
 	<section class="top">
 		<header>
-			<h4>Add to your website</h4>
+			<h4>Embed into your website</h4>
 		</header>
-		<article id="ticket_elements">
-			<ul>
-				<li><label>Direct Link</label></li>
-				<li><label>Popup Window Link</label></li>
-				<li><label>Embed Widget</label></li>
-			</ul>
+		<article class="with-single-button">
+			<button class="clean-white small" id="embed_form_overlay_trigger" data-load-url="{{ path('admin_tickets_editor_form_embed', {department_id: department.id|default(0)}) }}">Integration Options</button>
 		</article>
 	</section>
 </div>
@@ -431,4 +430,15 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</ul>
 	</section>
 </div>
+
+<div id="embed_form_overlay" style="width: 785px; height: 555px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Embed into your website</h4>
+	</div>
+	<div class="overlay-content">
+		<div class="loading-icon-big" style="padding-top: 20px;"></div>
+	</div>
+</div>
+
 {% endblock %}

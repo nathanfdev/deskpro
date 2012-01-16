@@ -234,6 +234,33 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			overlay.open();
 		});
 
+		var embedOverlay = false;
+		$('#embed_form_overlay_trigger').click(function(ev) {
+			ev.preventDefault();
+
+			if (!embedOverlay) {
+				embedOverlay = new DeskPRO.UI.Overlay({
+					contentMethod:'element',
+					contentElement: $('#embed_form_overlay'),
+					destroyOnClose: false
+				});
+
+				var url = $(this).data('load-url');
+				hasLoadedEmbed = true;
+
+				$.ajax({
+					url: url,
+					type: 'GET',
+					dataType: 'html',
+					success: function(html) {
+						$('#embed_form_overlay').find('.overlay-content').html(html);
+					}
+				});
+			}
+
+			embedOverlay.open();
+		});
+
 
 		this.redraw();
 	},

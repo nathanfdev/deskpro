@@ -216,10 +216,17 @@
 </div>
 
 {% set page_nav %}{% block page_nav %}{% endblock %}{% endset %}
-{% if page_nav|trim|length %}
+{% set page_nav_inner %}{% block page_nav_inner %}{% endblock %}{% endset %}
+{% if page_nav|trim|length or page_nav_inner|trim|length %}
 	<div id="dp_page_nav">
-		<div class="inner-shadow"></div>
-		{{ page_nav|raw }}
+		{% if page_nav_inner|trim|length %}
+			{{ page_nav_inner|raw }}
+		{% else %}
+			<div class="page-nav-block">
+				<div class="inner-shadow"></div>
+				{{ page_nav|raw }}
+			</div>
+		{% endif %}
 	</div>
 {% endif %}
 

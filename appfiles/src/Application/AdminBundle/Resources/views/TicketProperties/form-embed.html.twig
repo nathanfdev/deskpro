@@ -1,58 +1,12 @@
-{% set this_page = 'ticket_editor' %}
-{% extends 'AdminBundle::layout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript">
-$(document).ready(function() {
-	var ob = new DeskPRO.UI.OptionBox({
-		element: $('#department_ob'),
-		trigger: $('#department_switcher'),
-		onChecked: function(check, ob) {
-			var url = check.data('refresh-url');
-			window.location = url;
-		}
-	});
-});
-</script>
-{% endblock %}
-{% block pagetitle %}
-	<h1>
-		Ticket Form	Editor
-	</h1>
-
-	<nav class="admin-object-nav">
-		<ul>
-			<li class="master">
-				<h3 id="department_switcher">
-					{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}
-					<span class="drop-icon"></span>
-				</h3>
-			</li>
-			<li {% if section == 'create' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">New Ticket Form</a>
-			</li>
-			<li {% if section == 'view' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
-			</li>
-			<li class="{% if section == 'modify' %}on{% endif %}">
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
-			</li>
-			<li class="on last">
-				<a href="{{ path('admin_tickets_editor_form_embed', {'department_id': department.id|default('0')}) }}">Website Widget</a>
-			</li>
-		</ul>
-		<br class="clear" />
-	</nav>
-<br class="clear" />
-{% endblock %}
-{% block content %}
-<div class="dp-page-box">
-	<div class="page-content">
+<div>
+	<div class="overlay-section">
 		<h3>Direct Link</h3>
 		Link directly to the new ticket form:
 		<br />
 		<input type="text" value="{{ app.request.getUriForPath('') }}/new-ticket{% if department %}/{{ department.id }}{% endif %}" style="width: 80%;" />
 	</div>
-	<div class="page-content">
+
+	<div class="overlay-section">
 		<h3>Popup Window</h3>
 		Add a link to your website that opens the form in a popup window.
 		<br />
@@ -65,7 +19,9 @@ $(document).ready(function() {
 {% endset %}
 		<textarea style="height: 80px; width: 80%;">{{ code|e }}</textarea>
 	</div>
-	<div class="page-content">
+
+
+	<div class="overlay-section">
 		<h3>Website Widget</h3>
 		Embed the new ticket form directly into any webpage. Copy and paste the code into the spot you want the form to appear:
 		<br />
@@ -74,79 +30,18 @@ $(document).ready(function() {
 <div id="dp_newticket_form" style="display: none"></div>
 <script type="text/javascript">
 var DpNewTicket_Options = DpNewTicket_Options || {};
-DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
 DpNewTicket_Options.autoResize = true;
 DpNewTicket_Options.initialHeight = 700;
 DpNewTicket_Options.intoElement = 'dp_newticket_form';
 (function() {
 	var scr = document.createElement('script');
-	scr.src = '{{ app.request.getUriForPath('') }}/tickets/new-js/{{ department.id|default('0') }}.js';
+	scr.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://{{ app.request.getUriForPath('')|replace({'http://': '', 'https://': ''}) }}/tickets/new-js/{{ department.id|default('0') }}.js';
 	scr.setAttribute('async', 'true');
 	document.documentElement.firstChild.appendChild(scr);
 })();
 </script>
 <!-- /DeskPRO New Ticket -->
 {% endset %}
-		<textarea style="height: 200px; width: 80%;">{{ code|e }}</textarea>
+		<textarea style="height: 200px; width: 80%;" wrap="off">{{ code|e }}</textarea>
 	</div>
 </div>
-
-<div class="optionbox" id="department_ob">
-	<section data-section-name="department">
-		<header>
-			<h3>Switch to department</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
-		</header>
-		<ul>
-			<li class="top first emphasis">
-				<input
-					type="radio"
-					name="dep_radio"
-					value="0"
-					{% if not department %}checked="checked"{% endif %}
-					data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': 'website-widget'}) }}"
-				/>
-				<label>Default Layout</label>
-			</li>
-			{% for dep in department_hierarchy %}
-				<li
-					class="top {% if dep.children %}group-title{% endif %} item-{{ dep.id }}"
-					data-item-id="{{ dep.id }}"
-					data-full-title="{{ dep.title }}"
-				>
-					{% if not dep.children %}
-					<input
-						type="radio"
-						name="dep_radio"
-						value="{{ dep.id }}"
-						{% if department.id == dep.id %}checked="checked"{% endif %}
-						data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': dep.id, 'section': 'website-widget'}) }}"
-					/>
-					{% endif %}
-					<label>{{ dep.title }}</label>
-				</li>
-				{% if dep.children %}
-					{% for subdep in dep.children %}
-						<li
-							class="child item-{{ subdep.id }} child-of-{{ dep.id }}"
-							data-item-id="{{ dep.id }}"
-							data-parent-id="{{ dep.id }}"
-							data-full-title="{{ dep.title }} &gt; {{ subdep.title }}"
-						>
-							<span class="elbow-end"></span>
-							<input
-								type="radio"
-								name="dep_radio"
-								value="{{ subdep.id }}"
-								{% if department.id == dep.id %}checked="checked"{% endif %}
-								data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': subdep.id, 'section': 'website-widget'}) }}"
-							/>
-							<label>{{subdep.title}}</label>
-						</li>
-					{% endfor %}
-				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-</div>
-{% endblock %}
