@@ -48,35 +48,64 @@ class ProductsController extends AbstractController
 	# edit
 	############################################################################
 
-	/**
-	 * Edit a department
-	 */
-	public function editAction($product_id)
+	public function saveTitleAction()
 	{
-		if (!$product_id) {
-			$product = new Entity\Product();
-		} else {
-			$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
+		$product_id = $this->in->getUint('product_id');
+		$product = App::findEntity('DeskPRO:Product', $product_id);
+
+		if (!$product) {
+			throw $this->createNotFoundException();
 		}
 
-		$form = $this->get('form.factory')->create(new EditProductType($product->id ? false : true), $product);
-
-		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				App::getOrm()->persist($product);
-				App::getOrm()->flush();
-
-				$this->session->setFlash('saved', $product->title);
-				return $this->redirectRoute('admin_products');
-			}
+		if ($this->in->getString('title')) {
+			$product->title = $this->in->getString('title');
 		}
 
-		return $this->render('AdminBundle:Products:edit.html.twig', array(
-			'product'   => $product,
-			'form'      => $form->createView(),
-		));
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($product);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_products');
+	}
+
+	public function saveNewAction()
+	{
+		$product = new \Application\DeskPRO\Entity\Department();
+		$product->title = $this->in->getString('title');
+
+		if (!$product->title) {
+			$product->title = 'Untitled';
+		}
+
+		if ($this->in->getUint('parent_id')) {
+			$parent = App::findEntity('DeskPRO:Product', $this->in->getUint('parent_id'));
+		}
+
+		if ($parent and !$parent->parent) {
+			$product->parent = $parent;
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($product);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_products');
 	}
 
 	############################################################################

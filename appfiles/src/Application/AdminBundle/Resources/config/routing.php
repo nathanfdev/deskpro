@@ -161,10 +161,17 @@ $collection->add('admin_ticketcats', new Route(
 	array()
 ));
 
-$collection->add('admin_ticketcats_edit', new Route(
-	'/tickets/categories/{category_id}',
-	array('_controller' => 'AdminBundle:TicketCategories:edit'),
-	array('category_id' => '\\d+'),
+$collection->add('admin_ticketcats_savenew', new Route(
+	'/tickets/categories/save-new',
+	array('_controller' => 'AdminBundle:TicketCategories:saveNew'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketcats_savetitle', new Route(
+	'/tickets/categories/save-title',
+	array('_controller' => 'AdminBundle:TicketCategories:saveTitle'),
+	array(),
 	array()
 ));
 
@@ -196,10 +203,17 @@ $collection->add('admin_ticketpris', new Route(
 	array()
 ));
 
-$collection->add('admin_ticketpris_edit', new Route(
-	'/tickets/priorities/{priority_id}',
-	array('_controller' => 'AdminBundle:TicketPriorities:edit'),
-	array('priority_id' => '\\d+'),
+$collection->add('admin_ticketpris_savenew', new Route(
+	'/tickets/priorities/save-new',
+	array('_controller' => 'AdminBundle:TicketPriorities:saveNew'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketpris_savetitle', new Route(
+	'/tickets/priorities/save-title',
+	array('_controller' => 'AdminBundle:TicketPriorities:saveTitle'),
+	array(),
 	array()
 ));
 
@@ -224,10 +238,17 @@ $collection->add('admin_ticketworks', new Route(
 	array()
 ));
 
-$collection->add('admin_ticketworks_edit', new Route(
-	'/tickets/workflows/{workflow_id}',
-	array('_controller' => 'AdminBundle:TicketWorkflows:edit'),
-	array('workflow_id' => '\\d+'),
+$collection->add('admin_ticketworks_savenew', new Route(
+	'/tickets/workflows/save-new',
+	array('_controller' => 'AdminBundle:TicketWorkflows:saveNew'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketworks_savetitle', new Route(
+	'/tickets/workflows/save-title',
+	array('_controller' => 'AdminBundle:TicketWorkflows:saveTitle'),
+	array(),
 	array()
 ));
 
@@ -942,10 +963,17 @@ $collection->add('admin_products', new Route(
 	array()
 ));
 
-$collection->add('admin_products_edit', new Route(
-	'/products/{product_id}',
-	array('_controller' => 'AdminBundle:Products:edit'),
-	array('product_id' => '\\d+'),
+$collection->add('admin_products_savenew', new Route(
+	'/products/save-new',
+	array('_controller' => 'AdminBundle:Products:saveNew'),
+	array(),
+	array()
+));
+
+$collection->add('admin_products_savetitle', new Route(
+	'/products/save-title',
+	array('_controller' => 'AdminBundle:Products:saveTitle'),
+	array(),
 	array()
 ));
 
