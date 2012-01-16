@@ -198,6 +198,9 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		 // Lazyload exception listener for the generic handler
 		set_error_handler(function($errno, $errstr, $errfile, $errline) {
+
+			error_log("[$errno] $errstr ($errfile, line $errline)", 0);
+
 			if (!App::has('deskpro.exception_logger')) {
 				return;
 			}
