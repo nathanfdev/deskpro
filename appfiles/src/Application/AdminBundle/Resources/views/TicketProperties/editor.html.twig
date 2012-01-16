@@ -51,7 +51,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>Ticket Form Editor</li>
+		<li>Ticket Layout Editor: {% if department %}{{ department.full_title }}{% else %}Default{% endif %}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -69,7 +69,8 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> Enable custom layouts for each department
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
-			Editing the layout for: <span id="department_switcher" class="switcher"><span>{% if department %}{{ department.full_title }}{% else %}Default Layout{% endif %}</span></span>
+			Edit the <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">Default Layout</a>
+			or select a specific <span id="department_switcher" class="switcher"><span>Department</span></span>
 		</div>
 	{% endif %}
 </div>
