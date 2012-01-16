@@ -233,6 +233,17 @@ Orb.strRepeat = function(str, count) {
 
 
 /**
+ * Takes a regular expression string and escapes special characters
+ *
+ * @param strRegex
+ * @return string
+ */
+Orb.regexQuote = function(strRegex) {
+	return strRegex.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1");
+};
+
+
+/**
  * Take elements of array and chunk them into subarrays of size
  *
  * @param {Array}   array

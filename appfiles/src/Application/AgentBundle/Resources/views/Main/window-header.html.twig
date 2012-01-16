@@ -26,11 +26,11 @@
 	<!-- BEGIN SEARCH SECTION -->
 	<div id="dp_omnibox_wrap">
 		<div id="dp_omnibox">
-			<div class="searchBoxWrap">
+			<div class="searchBoxWrap" id="dp_omniinput_wrap">
 				<div class="type-icon">
 					<span class="icon"></span>
 				</div>
-				<input type="input" id="dp_omniinput" size="4" placeholder="Quick Search: Enter an ID, label, name or email address" />
+				<input type="input" id="dp_omniinput" size="4" placeholder="Quick Search: Enter an ID, label, name or email address" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
 			</div>
 		</div>
 		<div id="dp_omnibox_adv">
@@ -147,6 +147,20 @@
 	</div>
 	<!-- END STATUS SECTION -->
 <!-- END HEADER BAR -->
+</div>
+
+<div id="dp_omniresults" style="display: none">
+	<script type="text/x-deskpro-plain" id="dp_omniresults_section">
+		<section class="section {TYPE}">
+			<header>{TITLE}</header>
+			<article>
+				<ul class="result-list"></ul>
+			</article>
+		</section>
+	</script>
+	<script type="text/x-deskpro-plain" id="dp_omniresults_result_row">
+		<li class="result-item {TYPE}-{ID}"><span class="prop-id">{ID}</span> {TITLE}</li>
+	</script>
 </div>
 
 <div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">

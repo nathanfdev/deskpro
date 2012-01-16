@@ -233,6 +233,7 @@ class MainController extends AbstractController
 		}
 
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+			'router' => App::getRouter(), //TODO figure out why jsonphp engine doesnt have helpers
 			'results' => $results
 		));
 	}
