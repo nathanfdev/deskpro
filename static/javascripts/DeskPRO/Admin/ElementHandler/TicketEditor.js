@@ -115,10 +115,14 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 
 				formItem.data('sidebar-item', draggingSidebarEl);
 
-				var tplEl = $('#rendered_field_' + formItem.data('item-id').replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/_$/, ''));
-				if (tplEl.length) {
-					var renderedField = $(DeskPRO_Window.util.getPlainTpl(tplEl));
-					$('article', formItem).append(renderedField);
+				if (drawRendered) {
+					var tplEl = $('#rendered_field_' + formItem.data('item-id').replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/_$/, ''));
+					if (tplEl.length) {
+						var renderedField = $(DeskPRO_Window.util.getPlainTpl(tplEl));
+						$('article', formItem).append(renderedField);
+					}
+				} else {
+					$('.edit-field-trigger', formItem).hide();
 				}
 
 				if (draggingSidebarEl.is('.irremovable')) {
