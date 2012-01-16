@@ -2137,6 +2137,9 @@ a.clean-white {
 	}
 }
 
+.dp-grid.dep-list a {
+	margin-right: 16px;
+}
 
 .dp-grid.dep-list .top a,
 .dp-grid.dep-list .parent a {
@@ -2152,4 +2155,18 @@ a.clean-white {
 	position: relative;
 	line-height: 19px;
 	display: block;
+}
+
+.dp-grid.dep-list .col:hover .grab-handle {
+    display: none;
+	float: right;
+	.iconbase(13px, 9px);
+	background: url(../../images/agent/icons/move-grip.png);
+	cursor: move !important;
+	position: relative;
+	top: 5px;
+}
+
+.dp-grid.dep-list .col:hover .grab-handle {
+    display: block;
 }
