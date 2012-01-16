@@ -4548,6 +4548,30 @@ article.task .new-comment .comment-input span {
 	background-color: darken(#FDFDFD, 3%);
 	height: 30px;
 
+	.alt-link {
+		float: right;
+		color: darken(#9099A4, 30%);
+		font-size: 11px;
+		display: block;
+
+		background-color: darken(#D9DBDB, 3%);
+		.rounded(3px);
+		margin-top: 5px;
+		margin-right: 5px;
+
+		border: 1px solid transparent;
+
+		line-height: 100%;
+		padding: 3px 5px 3px 5px;
+
+		text-shadow: 1px 1px 1px #ffffff;
+  		filter: ~"dropshadow(color=#ffffff, offx=1, offy=0)";
+
+  		&:hover {
+			border: 1px solid darken(#D9DBDB, 20%);
+  		}
+	}
+
 	> ul > li {
 		float: left;
 		padding: 0 10px 0 10px;

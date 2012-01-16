@@ -68,6 +68,10 @@ class TicketPageDisplay extends EntityRepository
 			", array($department, $zone, $section));
 		}
 
+		if (!$data) {
+			return null;
+		}
+
 		if ($data) {
 			$data = unserialize($data);
 		}

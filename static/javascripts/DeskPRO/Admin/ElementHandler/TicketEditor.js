@@ -28,10 +28,22 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 		$('#per_department_check').on('change', function() {
 			var val = 0;
 			if ($(this).is(':checked')) {
-				var val = 0;
+				val = 1;
 			}
 
 			window.location = $(this).data('update-url') + '?enable=' + val;
+		});
+
+		$('#alternative_view_toggle').on('change', function() {
+			if ($(this).is(':checked')) {
+				console.log('enable');
+				var url = $(this).data('enable');
+			} else {
+				console.log('enable');
+				var url = $(this).data('disable');
+			}
+
+			window.location = url;
 		});
 
 		//------------------------------
@@ -246,6 +258,9 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			$('#admin_ticket_editor_items .no-items-notice').hide();
 
 			var draggingSidebarEl = $('li[data-item-id="' + item.id + '"]', '#ticket_elements');
+			if (!draggingSidebarEl.length) {
+				return;
+			}
 
 			var formItem = $(DeskPRO_Window.util.getPlainTpl($('#editor_row_tpl')));
 			formItem.data('item-id', draggingSidebarEl.data('item-id'));

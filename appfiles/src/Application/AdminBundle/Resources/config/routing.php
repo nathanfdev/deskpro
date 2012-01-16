@@ -77,16 +77,16 @@ $collection->add('admin_tickets_editor_toggleper', new Route(
 	array()
 ));
 
-$collection->add('admin_tickets_editor_dep_copydefault', new Route(
-	'/tickets/editor/{department_id}/copy-default',
-	array('_controller' => 'AdminBundle:TicketProperties:copyDefaultEditor'),
+$collection->add('admin_tickets_editor_dep_init', new Route(
+	'/tickets/editor/{department_id}/{section}/init',
+	array('_controller' => 'AdminBundle:TicketProperties:initEditor', 'section' => 'create'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickets_editor_dep_revert', new Route(
-	'/tickets/editor/{department_id}/revert',
-	array('_controller' => 'AdminBundle:TicketProperties:revertEditor'),
+	'/tickets/editor/{department_id}/{section}/revert',
+	array('_controller' => 'AdminBundle:TicketProperties:revertEditor', 'section' => 'create'),
 	array(),
 	array()
 ));
