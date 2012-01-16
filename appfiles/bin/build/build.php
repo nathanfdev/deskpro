@@ -2,6 +2,14 @@
 <?php
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 
+$htaccess_path = realpath(DP_ROOT . '/../.htaccess');
+if ($htaccess_path && is_writable($htaccess_path)) {
+	$htaccess_contents = file_get_contents($htaccess_path);
+	file_put_contents($htaccess_path, "Order allow,deny\nAllow from none\nDeny from all\n");
+} else {
+	$htaccess_path = false;
+}
+
 require DP_ROOT . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
@@ -165,3 +173,7 @@ if (!$proc->isSuccessful()) {
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
 echo "\n";
+
+if ($htaccess_path && $htaccess_contents) {
+	file_put_contents($htaccess_path, $htaccess_contents);
+}
