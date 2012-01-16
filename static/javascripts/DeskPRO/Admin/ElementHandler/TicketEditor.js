@@ -126,7 +126,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				}
 
 				if (draggingSidebarEl.is('.irremovable')) {
-					$('.dp-block-controls', formItem).remove();
+					$('.dp-block-controls li', formItem).not('.dp-move').remove();
 				}
 
 				formItem.insertAfter(el);
@@ -287,7 +287,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			}
 
 			if (draggingSidebarEl.is('.irremovable')) {
-				$('.dp-block-controls', formItem).remove();
+				$('.dp-block-controls li', formItem).not('.dp-move').remove();
 			}
 
 			$('#admin_ticket_editor_items').append(formItem);
