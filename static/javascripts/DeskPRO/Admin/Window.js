@@ -182,8 +182,30 @@ DeskPRO.Admin.Window = new Orb.Class({
 	},
 
 	updatePageNavPos: function() {
+
 		var page = $('#dp_admin_page');
 		var nav  = $('#dp_page_nav');
+
+		var winWidth = $(window).width();
+		var navWidth = 175; // width of the nav, minus the few pixels of overlap
+		var pageWidth = 971;
+		var totalWidth = pageWidth+navWidth; // 971 is width of page, aka $('#dp_header').outerWidth();
+
+		var workingWidth = winWidth;
+
+		// If its over, force a scroll
+		if (totalWidth > winWidth) {
+			$('body').css({'padding-left': navWidth, 'min-width': 971});
+		} else {
+			$('body').css({width: 'auto'});
+			// The space naturally available to the left
+			var spaceAvail = (workingWidth - pageWidth) / 2;
+			if (spaceAvail < navWidth) {
+				$('body').css('padding-left', navWidth);
+			} else {
+				$('body').css('padding-left', 0);
+			}
+		}
 
 		var top = page.offset().top + 15;
 		top += $(window).scrollTop();
