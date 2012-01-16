@@ -73,13 +73,12 @@ $(document).ready(function() {
 <!-- DeskPRO New Ticket -->
 <div id="dp_newticket_form" style="display: none"></div>
 <script type="text/javascript">
+var DpNewTicket_Options = DpNewTicket_Options || {};
+DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+DpNewTicket_Options.autoResize = true;
+DpNewTicket_Options.initialHeight = 700;
+DpNewTicket_Options.intoElement = 'dp_newticket_form';
 (function() {
-	var DpNewTicket_Options = DpNewTicket_Options || {};
-	DpNewTicket_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	DpNewTicket_Options.autoResize = true;
-	DpNewTicket_Options.initialHeight = 700;
-	DpNewTicket_Options.intoElement = 'dp_newticket_form';
-
 	var scr = document.createElement('script');
 	scr.src = '{{ app.request.getUriForPath('') }}/tickets/new-js/{{ department.id|default('0') }}.js';
 	scr.setAttribute('async', 'true');

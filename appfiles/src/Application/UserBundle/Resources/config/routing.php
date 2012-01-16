@@ -300,6 +300,13 @@ $collection->add('user_tickets_new_thanks', new Route(
 	array()
 ));
 
+$collection->add('user_tickets_new_thanks_simple', new Route(
+	'/tickets/new/thanks-simple/{ticket_ref}',
+	array('_controller' => 'UserBundle:NewTicket:simpleThanks'),
+	array(),
+	array()
+));
+
 $collection->add('user_tickets_view', new Route(
 	'/ticket/{ticket_ref}',
 	array('_controller' => 'UserBundle:TicketView:load'),

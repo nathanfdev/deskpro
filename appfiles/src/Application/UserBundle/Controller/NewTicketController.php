@@ -121,17 +121,23 @@ class NewTicketController extends AbstractController
 					}
 				}
 
-				if ($go == 'front') {
-					if ($ticket->person_email_validating) {
-						$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
-					} else {
-						$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
-					}
-					$this->session->setFlash('new_ticket', $ticket->getPublicId());
-
-					return $this->redirectRoute('user');
+				if ($this->in->getString('redirect_after') and 0) {
+					return $this->redirect($this->in->getString('redirect_after'));
+				} elseif ($format == 'iframe') {
+					return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $ticket['public_id']));
 				} else {
-					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
+					if ($go == 'front') {
+						if ($ticket->person_email_validating) {
+							$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
+						} else {
+							$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
+						}
+						$this->session->setFlash('new_ticket', $ticket->getPublicId());
+
+						return $this->redirectRoute('user');
+					} else {
+						return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['public_id']));
+					}
 				}
 			} else {
 				$errors = $validator->getErrors(true);
@@ -155,10 +161,13 @@ class NewTicketController extends AbstractController
 		}
 
 		$tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
+		$redirect_after = '';
 		if ($format == 'iframe') {
 			$tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
+			$redirect_after = $this->in->getString('redirect_after');
 		} elseif ($format == 'script') {
 			$tpl = 'UserBundle:NewTicket:new-ticket-jsloader.js.twig';
+			$redirect_after = $this->in->getString('redirect_after');
 		}
 
 		return $this->render($tpl, array(
@@ -179,6 +188,8 @@ class NewTicketController extends AbstractController
 
 			'default_page_data' => $default_page_data,
 			'page_data_field_ids' => $page_data_field_ids,
+
+			'redirect_after' => $redirect_after,
 		));
     }
 
@@ -339,6 +350,21 @@ class NewTicketController extends AbstractController
 
 		return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
 			'ticket' => $ticket
+		));
+	}
+
+	/**
+	 * Standard thanks page after a user submits a tikcet from an embedded iframe,
+	 * and the webmaster didnt supply an after-redirection URL
+	 *
+	 * @param $ticket_ref
+	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function simpleThanksAction()
+	{
+		return $this->render('UserBundle:NewTicket:thanks-simple.html.twig', array(
+
 		));
 	}
 }

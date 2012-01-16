@@ -44,7 +44,7 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 				'cced' => array()
 			);
 
-			$this->doSend('DeskPRO:emails_user:new-ticket-validate.html.twig', $vars, $ticket, $change_info);
+			$this->doSend('DeskPRO:emails_user:new-ticket-validate', $vars, $ticket, $change_info);
 
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 

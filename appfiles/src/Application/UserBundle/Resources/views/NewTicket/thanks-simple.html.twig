@@ -1,0 +1,43 @@
+{% extends 'UserBundle::layout-simple-iframe.html.twig' %}
+{% block head %}
+<script type="text/javascript">
+var DpFrameController = {
+	init: function() {
+		this.sendMessage('ready');
+		window.setInterval(this.checkHeight.bind(this), 200);
+	},
+	checkHeight: function() {
+		var h = $('#deskpro').outerHeight();
+		if (!this.lastH || this.lastH != h) {
+			this.lastH = h;
+			this.sendMessage('height', h);
+		}
+	},
+	sendMessage: function(id,data) {
+		if (window.parent && window.parent != window && window.parent.DpNewTicket_Controller) {
+			window.parent.DpNewTicket_Controller.acceptMessage(id, data);
+		}
+	},
+	getHeight: function() {
+		return $(document).height();
+	}
+};
+$(document).ready(function() {
+	DpFrameController.init();
+});
+</script>
+{% endblock %}
+{% block content %}
+
+		<h1 style="font-size: 18px">Thank you</h1>
+		<p>
+			Thank you for submitting your ticket! You should get a confirmation email shortly.
+		</p>
+
+		{% if ticket.hidden_status == 'validating' %}
+			<p>
+				<strong style="color:#B31010">Important</strong>! Before your ticket will be read by
+				our agents, you need to validate your email address. Check your email for our confirmation link.
+			</p>
+		{% endif %}
+{% endblock %}

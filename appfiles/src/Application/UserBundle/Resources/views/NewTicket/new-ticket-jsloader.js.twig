@@ -17,10 +17,13 @@ var DpNewTicket_Controller = {
 			case 'height':
 				this.setHeight(data);
 				break;
+			case 'getRedirectUrl':
+				return DpNewTicket_Options.redirectUrl || '';
+				break;
 		}
 	},
 	setHeight: function(h) {
 		this.iframe.style.height = h + 'px';
-	},
+	}
 };
 DpNewTicket_Controller.init();

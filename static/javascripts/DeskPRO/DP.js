@@ -50,6 +50,27 @@ var DP = {
 		options = Object.merge(defaultOptions, options || {});
 
 		return field.tinymce(options);
+	},
+
+	drawBox: function(w, h) {
+		if (this.lastBox) {
+			this.lastBox.remove();
+			this.lastBox = null;
+		}
+		this.lastBox = $('<div style="background-color: #263343; position: absolute; width: '+w+'px; height: '+h+'px; z-index: 99999999;"></div>');
+
+		var left = ($(window).width() / 2) - (w/2);
+		var top  = ($(window).height() / 2) - (h/2);
+
+		this.lastBox.css({left: left, top: top}).appendTo('body').show();
+		return this.lastBox;
+	},
+
+	removeDrawnBox: function() {
+		if (this.lastBox) {
+			this.lastBox.remove();
+			this.lastBox = null;
+		}
 	}
 };
 DP.init();

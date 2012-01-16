@@ -5,6 +5,7 @@ var DpFrameController = {
 	init: function() {
 		this.sendMessage('ready');
 		window.setInterval(this.checkHeight.bind(this), 200);
+		$('#dp_newticket_redirect_after').val(window.parent.DpNewTicket_Controller.acceptMessage('getRedirectUrl'));
 	},
 	checkHeight: function() {
 		var h = $('#deskpro').outerHeight();
@@ -93,15 +94,27 @@ var ticketReader = {
 		-->
 	</div>
 {% endif %}
-<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+<form action="{{ path('user_tickets_new_simple') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator dp-form">
 <input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
 <input type="hidden" name="process" value="1" />
+<input type="hidden" name="is_iframe" value="1" />
+<input type="hidden" name="redirect_after" id="dp_newticket_redirect_after" value="{{ redirect_after }}" />
 
 {###############
  # Email
  ###############}
 
-{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
+<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+	<div class="dp-form-label">
+		<label>{{ phrase('user.label_your_email') }} *</label>
+	</div>
+	<div class="dp-form-input">
+		<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+		<div class="dp-error-explain">
+			{{ phrase('user.form_fix_email') }}
+		</div>
+	</div>
+</div>
 
 
 {###############
