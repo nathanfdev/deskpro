@@ -162,5 +162,10 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 			type: 'POST',
 			data: postData
 		});
+
+		// Reset last class, its needed for proper borders
+		$('.department-group').each(function() {
+			$(this).find('article.dp-grid-row').removeClass('last').last().addClass('last');
+		});
 	}
 });

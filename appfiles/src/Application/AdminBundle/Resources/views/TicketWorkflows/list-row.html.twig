@@ -1,14 +1,12 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% if not depth %}
-<tbody>
-{% endif %}
-	<tr data-item-id="{{ workflow.id }}" class="depth-{{ depth|default(0) }} product product-{{workflow.id}}" data-product-id="{{workflow.id}}">
-		<td class="title">
-			<a href="{{ path('admin_ticketworks_edit', {'workflow_id': workflow.id}) }}" class="edit-title">
-				{{workflow.title}}
-			</a>
-		</td>
-	</tr>
-{% if not depth %}
-</tbody>
-{% endif %}
+{{ design.dpgrid_content({class: 'top category-row ' ~ ' category-' ~ workflow.id, extra: "data-category-id='#{workflow.id}'"}) }}
+{{ design.dpgrid_col({ class: 'l r', style: "width: 890px;"}) }}
+	<span class="grab-handle"></span>
+	<h2><a class="edit-trigger">{{workflow.title}}</a></h2>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_col({ class: 'l r l-margin icon-only', style: "width: 16px"}) }}
+	<a href="{{ path('admin_ticketworks_del', {'workflow_id': workflow.id}) }}" class="delete"></a>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_content_end() }}

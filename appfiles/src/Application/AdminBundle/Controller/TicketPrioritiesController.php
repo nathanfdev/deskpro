@@ -47,35 +47,64 @@ class TicketPrioritiesController extends AbstractController
 	# edit
 	############################################################################
 
-	/**
-	 * Edit a priority
-	 */
-	public function editAction($priority_id)
+	public function saveTitleAction()
 	{
-		if (!$priority_id) {
-			$priority = new Entity\TicketPriority();
-		} else {
-			$priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($priority_id);
+		$priority_id = $this->in->getUint('priority_id');
+		$priority = App::findEntity('DeskPRO:TicketPriority', $priority_id);
+
+		if (!$priority) {
+			throw $this->createNotFoundException();
 		}
 
-		$form = $this->get('form.factory')->create(new EditTicketPriorityType(), $priority);
-
-		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				App::getOrm()->persist($priority);
-				App::getOrm()->flush();
-
-				$this->session->setFlash('saved', $priority->title);
-				return $this->redirectRoute('admin_ticketpris');
-			}
+		if ($this->in->getString('title')) {
+			$priority->title = $this->in->getString('title');
 		}
 
-		return $this->render('AdminBundle:TicketPriorities:edit.html.twig', array(
-			'priority'  => $priority,
-			'form'      => $form->createView(),
-		));
+		$priority->priority = $this->in->getUint('priority');
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($priority);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketpris');
+	}
+
+	public function saveNewAction()
+	{
+		$priority = new \Application\DeskPRO\Entity\TicketPriority();
+		$priority->title = $this->in->getString('title');
+
+		if (!$priority->title) {
+			$priority->title = 'Untitled';
+		}
+
+		$priority->priority = $this->in->getUint('priority');
+
+		if ($parent and !$parent->parent) {
+			$priority->parent = $parent;
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($priority);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketpris');
 	}
 
 	############################################################################

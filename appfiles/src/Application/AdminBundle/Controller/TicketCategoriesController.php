@@ -78,7 +78,7 @@ class TicketCategoriesController extends AbstractController
 
 	public function saveNewAction()
 	{
-		$category = new \Application\DeskPRO\Entity\Department();
+		$category = new \Application\DeskPRO\Entity\TicketCategory();
 		$category->title = $this->in->getString('title');
 
 		if (!$category->title) {
@@ -107,6 +107,7 @@ class TicketCategoriesController extends AbstractController
 
 		return $this->redirectRoute('admin_ticketcats');
 	}
+
 	############################################################################
 	# delete
 	############################################################################

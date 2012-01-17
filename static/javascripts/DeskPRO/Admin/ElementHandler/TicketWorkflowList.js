@@ -1,6 +1,6 @@
-Orb.createNamespace('DeskPRO.Admin.Departments');
+Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
-DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
+DeskPRO.Admin.ElementHandler.TicketWorkflowList = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {
@@ -20,20 +20,10 @@ DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
 		// Reordering parents
 		var list = $('.dep-list');
 		list.sortable({
-			items: '.department-group',
-			handle: 'article.top',
+			items: '.category-row',
 			update: function() {
 				self.updateOrders();
 			}
-		});
-		$('.department-group', list).each(function() {
-			var group = $(this);
-			group.sortable({
-				items: 'article.child',
-				update: function() {
-					self.updateOrders();
-				}
-			});
 		});
 	},
 
@@ -84,11 +74,6 @@ DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
 					value: $(this).data('category-id')
 				});
 			}
-		});
-
-		// Reset last class, its needed for proper borders
-		$('.department-group').each(function() {
-			$(this).find('article.dp-grid-row').removeClass('last').last().addClass('last');
 		});
 
 		$.ajax({

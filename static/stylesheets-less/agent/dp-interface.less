@@ -2147,12 +2147,31 @@ a.clean-white {
 	margin-right: 16px;
 }
 
-.dp-grid.dep-list .top a,
-.dp-grid.dep-list .parent a {
+.dp-grid.dep-list .top h2 a,
+.dp-grid.dep-list .parent h2 a {
 	background: url(../../images/admin/icons/dep-icon.png) no-repeat 0 0;
 	padding: 0 0 0 21px;
 	line-height: 19px;
 	display: block;
+}
+
+.dp-grid.dep-list.pri-list .top h2 a,
+.dp-grid.dep-list.pri-list .parent h2 a {
+	background: url(../../images/admin/icons/note.png) no-repeat 0 0;
+	padding: 0 0 0 21px;
+	line-height: 19px;
+	display: block;
+}
+
+.dp-grid.dep-list.pri-list .priority-col {
+	text-align: center;
+
+	em {
+	    font-style: normal;
+		background-color: #CBD8E5;
+		.rounded(5px);
+		padding: 0 5px 0 5px;
+	}
 }
 
 .dp-grid.dep-list .child a {

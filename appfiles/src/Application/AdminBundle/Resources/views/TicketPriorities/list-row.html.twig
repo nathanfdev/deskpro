@@ -1,15 +1,15 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
-{% if not depth %}
-<tbody>
-{% endif %}
-	<tr data-item-id="{{ priority.id }}" class="depth-{{ depth|default(0) }} product product-{{priority.id}}" data-product-id="{{priority.id}}">
-		<td class="title">
-			<span class="priority">{{ priority.priority }}</span>
-			<a href="{{ path('admin_ticketpris_edit', {'priority_id': priority.id}) }}" class="edit-title">
-				{{priority.title}}
-			</a>
-		</td>
-	</tr>
-{% if not depth %}
-</tbody>
-{% endif %}
+{{ design.dpgrid_content({class: 'top' ~ ' category-' ~ category.id, extra: "data-category-id='#{priority.id}' data-priority='#{priority.priority}'"}) }}
+{{ design.dpgrid_col({ class: 'l r', style: "width: 810px;"}) }}
+	<h2><a class="edit-trigger">{{priority.title}}</a></h2>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_col({ class: 'l r alt l-margin priority-col', style: "width: 80px;"}) }}
+	<em>{{priority.priority}}</em>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_col({ class: 'l r l-margin icon-only', style: "width: 16px"}) }}
+	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}" class="delete"></a>
+{{ design.dpgrid_col_end() }}
+
+{{ design.dpgrid_content_end() }}

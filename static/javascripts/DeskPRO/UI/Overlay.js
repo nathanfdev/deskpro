@@ -388,11 +388,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			insideEl.wrap(el);
 		}
 
-		if (this.options.addClose && !$('.close-trigger', this.elements.wrapper).length) {
+		if (this.options.addClose && !$('.close-trigger, .close-overlay', this.elements.wrapper).length) {
 			$('.overlay-title:first', this.elements.wrapper).prepend('<a class="close close-trigger close-overlay">Close</a>');
 		}
 
-		$('.overlay-close-trigger, .close-trigger', this.elements.outerWrapper).on('click', (function (ev) {
+		$('.overlay-close-trigger, .close-trigger, .close-overlay', this.elements.outerWrapper).on('click', (function (ev) {
 			ev.preventDefault();
 			this.closeOverlay();
 		}).bind(this));

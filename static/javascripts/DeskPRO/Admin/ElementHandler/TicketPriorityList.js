@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Admin.Departments');
 
-DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
+DeskPRO.Admin.ElementHandler.TicketPriorityList = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {
@@ -16,35 +16,18 @@ DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
 			ev.preventDefault();
 			self.showNewCat();
 		});
-
-		// Reordering parents
-		var list = $('.dep-list');
-		list.sortable({
-			items: '.department-group',
-			handle: 'article.top',
-			update: function() {
-				self.updateOrders();
-			}
-		});
-		$('.department-group', list).each(function() {
-			var group = $(this);
-			group.sortable({
-				items: 'article.child',
-				update: function() {
-					self.updateOrders();
-				}
-			});
-		});
 	},
 
 	showEditCat: function(row) {
 		var self = this;
 		var catId = row.data('category-id');
 		var currentTitle = row.find('a.edit-trigger').text().trim();
+		var currentPriority = row.data('priority');
 
 		this.currentEditCat = catId;
 		$('#editcat_title').val(currentTitle);
 		$('#editcat_catid').val(catId);
+		$('#editcat_pri').val(currentPriority);
 
 		if (!this.editOverlay) {
 			this.editOverlay = new DeskPRO.UI.Overlay({
@@ -73,28 +56,5 @@ DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
 		}
 
 		this.newOverlay.open();
-	},
-
-	updateOrders: function() {
-		var postData = [];
-		$('article.dp-grid-row[data-category-id]', this.el).each(function() {
-			if ($(this).data('category-id')) {
-				postData.push({
-					name: 'display_order[]',
-					value: $(this).data('category-id')
-				});
-			}
-		});
-
-		// Reset last class, its needed for proper borders
-		$('.department-group').each(function() {
-			$(this).find('article.dp-grid-row').removeClass('last').last().addClass('last');
-		});
-
-		$.ajax({
-			url: this.el.data('reorder-url'),
-			type: 'POST',
-			data: postData
-		});
 	}
 });

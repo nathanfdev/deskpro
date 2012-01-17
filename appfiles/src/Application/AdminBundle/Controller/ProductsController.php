@@ -26,7 +26,7 @@ class ProductsController extends AbstractController
 	############################################################################
 
 	/**
-	 * Shows the main listing of departments
+	 * Shows the main listing of products
 	 */
 	public function listAction()
 	{
@@ -78,7 +78,7 @@ class ProductsController extends AbstractController
 
 	public function saveNewAction()
 	{
-		$product = new \Application\DeskPRO\Entity\Department();
+		$product = new \Application\DeskPRO\Entity\Product();
 		$product->title = $this->in->getString('title');
 
 		if (!$product->title) {

@@ -47,35 +47,56 @@ class TicketWorkflowsController extends AbstractController
 	# edit
 	############################################################################
 
-	/**
-	 * Edit a workflow
-	 */
-	public function editAction($workflow_id)
+	public function saveTitleAction()
 	{
-		if (!$workflow_id) {
-			$workflow = new Entity\TicketWorkflow();
-		} else {
-			$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
+		$workflow_id = $this->in->getUint('workflow_id');
+		$workflow = App::findEntity('DeskPRO:TicketWorkflow', $workflow_id);
+
+		if (!$workflow) {
+			throw $this->createNotFoundException();
 		}
 
-		$form = $this->get('form.factory')->create(new EditTicketWorkflowType(), $workflow);
-
-		if ($this->in->getBool('process')) {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				App::getOrm()->persist($workflow);
-				App::getOrm()->flush();
-
-				$this->session->setFlash('saved', $workflow->title);
-				return $this->redirectRoute('admin_ticketworks');
-			}
+		if ($this->in->getString('title')) {
+			$workflow->title = $this->in->getString('title');
 		}
 
-		return $this->render('AdminBundle:TicketWorkflows:edit.html.twig', array(
-			'workflow'  => $workflow,
-			'form'      => $form->createView(),
-		));
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($workflow);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketworks');
+	}
+
+	public function saveNewAction()
+	{
+		$workflow = new \Application\DeskPRO\Entity\TicketWorkflow();
+		$workflow->title = $this->in->getString('title');
+
+		if (!$workflow->title) {
+			$workflow->title = 'Untitled';
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($workflow);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_ticketworks');
 	}
 
 	############################################################################
