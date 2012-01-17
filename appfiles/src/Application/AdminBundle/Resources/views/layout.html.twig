@@ -194,6 +194,7 @@
 
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
+{% block dp_full_page %}
 <div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }}">
 	{% block prepage %}{% endblock %}
 	<div id="dp_admin_page_inner">
@@ -212,6 +213,7 @@
 		{% endblock %}
 	</div>
 </div>
+{% endblock %}
 
 {% include 'AdminBundle:Main:layout-menus.html.twig' %}
 

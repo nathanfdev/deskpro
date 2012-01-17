@@ -28,6 +28,7 @@
 			<ul>
 				{#<li class="{% if this_page == 'kb_settings' %}on{% endif %}"><a>Settings</a></li>#}
 				<li class="{% if this_page == 'kb_fields' %}on{% endif %}"><a href="{{ path('admin_customdefarticles') }}">Custom Fields</a></li>
+				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">Manage Articles</a></li>
 			</ul>
 		</article>
 	</section>
@@ -45,6 +46,7 @@
 				<li class="{% if this_page == 'idea_statuses' %}on{% endif %}"><a href="{{ path('admin_ideas_statuses') }}">Statuses</a></li>
 				<li class="{% if this_page == 'idea_cats' %}on{% endif %}"><a href="{{ path('admin_ideas_cats') }}">Categories</a></li>
 				<li class="{% if this_page == 'idea_fields' %}on{% endif %}"><a href="{{ path('admin_customdefideas') }}">Custom Fields</a></li>
+				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.ideas" target="_blank">Manage Ideas</a></li>
 			</ul>
 		</article>
 	</section>
@@ -54,12 +56,13 @@
 			<div class="onoff">
 				<input type="checkbox" name="downloads" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>Files</h4>
+			<h4>Downloads</h4>
 		</header>
 		<article>
 			<ul>
 				{#<li><a>Settings</a></li>#}
 				<li><a>Custom Fields</a></li>
+				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">Manage Downloads</a></li>
 			</ul>
 		</article>
 	</section>
@@ -75,23 +78,26 @@
 				<ul>
 					{#<li><a>Settings</a></li>#}
 					<li><a>Custom Fields</a></li>
+					<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">Manage News</a></li>
 				</ul>
 			</article>
 		</section>
 
-	<section>
-		<header>
-			<div class="onoff">
-				<input type="checkbox" name="troubles" value="1" checked="checked" class="onoff-slider section-toggle" />
-			</div>
-			<h4>Troubleshooters</h4>
-		</header>
-		<article>
-			<ul>
-				<li><a>Settings</a></li>
-				<li><a>Custom Fields</a></li>
-			</ul>
-		</article>
-	</section>
+	{#
+		<section>
+			<header>
+				<div class="onoff">
+					<input type="checkbox" name="troubles" value="1" checked="checked" class="onoff-slider section-toggle" />
+				</div>
+				<h4>Troubleshooters</h4>
+			</header>
+			<article>
+				<ul>
+					<li><a>Settings</a></li>
+					<li><a>Custom Fields</a></li>
+				</ul>
+			</article>
+		</section>
+	#}
 </div>
 {% endblock %}

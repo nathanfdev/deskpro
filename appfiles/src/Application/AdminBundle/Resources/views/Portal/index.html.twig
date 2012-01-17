@@ -35,12 +35,13 @@
 		will be removed.</p>
 	</div>
 {% endblock %}
-{% block content %}
+{% block dp_full_page %}
+<div id="dp_fauxbrowser"><em class="address">{{ app.getSetting('core.deskpro_url') }}</em><div><div><div>
+
 {% include 'AdminBundle:Portal:portal-color-editor.html.twig' %}
 
 	{% if app.getSetting('user.portal_enabled') %}
 		<div
-			class="dp-page-box"
 			id="admin_portal_editor"
 			data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
 			data-portal-url="{{ app.request.getBaseUrl() }}/?admin_portal_controls=1"
@@ -79,4 +80,6 @@
 			</div>
 		</div>
 	{% endif %}
+
+</div></div></div></div>
 {% endblock %}

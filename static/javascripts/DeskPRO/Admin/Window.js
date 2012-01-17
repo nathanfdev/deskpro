@@ -183,11 +183,19 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 	updatePageNavPos: function() {
 
-		var page = $('#dp_admin_page');
 		var nav  = $('#dp_page_nav');
 
+		var page = $('#dp_admin_page');
+		var mode = 'normal';
+
+		if (!page.length) {
+			page = $('#dp_fauxbrowser');
+			nav.addClass('fauxbrowser');
+			var mode = 'alt';
+		}
+
 		var winWidth = $(window).width();
-		var navWidth = 175; // width of the nav, minus the few pixels of overlap
+		var navWidth = 175 + (mode=='alt' ? 35 : 0); // width of the nav, minus the few pixels of overlap
 		var pageWidth = 971;
 		var totalWidth = pageWidth+navWidth; // 971 is width of page, aka $('#dp_header').outerWidth();
 
@@ -207,14 +215,14 @@ DeskPRO.Admin.Window = new Orb.Class({
 			}
 		}
 
-		var top = page.offset().top + 15;
+		var top = page.offset().top + 15 + (mode=='alt' ? 35 : 0);
 		top += $(window).scrollTop();
 
 		var left = page.offset().left;
 
 		nav.css({
 			top: top,
-			left: left - nav.outerWidth() + 5
+			left: left - nav.outerWidth() + 5 - (mode=='alt' ? 35 : 0)
 		});
 
 		if (nav.height() > page.height()) {
