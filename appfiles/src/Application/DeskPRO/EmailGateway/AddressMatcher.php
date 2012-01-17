@@ -119,6 +119,8 @@ class AddressMatcher
 			}
 		}
 
+
+
 		if (!$match_address_id) {
 			if ($gateway && $gateway->default_address) {
 				return $gateway->default_address;

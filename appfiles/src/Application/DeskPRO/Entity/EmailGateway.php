@@ -73,13 +73,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
-	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGatewayAddress", inversedBy="default_address")
-	 * @ORM_Mapping\JoinColumn(name="default_gateway_address_id", referencedColumnName="id", onDelete="cascade")
-	 */
-	protected $default_address;
-
-	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="EmailGatewayAddress", mappedBy="gateway", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
@@ -92,6 +85,13 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="date_last_check", type="datetime", nullable=true)
 	 */
 	protected $date_last_check = null;
+
+	/**
+	 * @var Application\DeskPRO\Entity\EmailTransport
+	 * @ORM_Mapping\ManyToOne(targetEntity="EmailTransport")
+	 * @ORM_Mapping\JoinColumn(name="linked_transport_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $linked_transport;
 
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher

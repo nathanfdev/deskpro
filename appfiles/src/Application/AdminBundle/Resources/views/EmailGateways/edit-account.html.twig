@@ -3,6 +3,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailGatewayPage.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
 {% endblock %}
 {% block pagebar %}
 	<ul>
@@ -24,6 +25,43 @@
 <div class="dp-form">
 	<input type="hidden" name="gateway[connection_type]" value="pop3" />
 	<input type="hidden" name="gateway[gateway_type]" value="tickets" />
+	<input type="hidden" id="define_transport" name="gateway[define_transport]" value="{% if not editgateway.define_transport %}0{% else %}1{% endif %}" />
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Email Address</label> <em class="desc">The address that this gateway account is for</em>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}<br />
+			<div id="add_addr_link" style="padding-top: 4px; width: 70%; text-align: right; {% if gateway.addresses|length > 1 %}display: none;{% endif %}">
+				Will this account recieve mail for more than one address? <button class="clean-white small">Click here to add more.</button>
+			</div>
+
+			<div class="choices-builder" id="gateway_addresses" style="margin-top:5px; {% if gateway.addresses|length < 2 %}display: none;{% endif %}">
+				<header>
+					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">Add</button>
+				</header>
+				<div style="display: none" id="choice_extra_fields"></div>
+				<ul class="list">
+					{% for adr in gateway.addresses %}
+						{% if loop.index != 1 %}
+						<li data-address-id="{{ adr.id }}">
+							<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+							<div class="label">{{ adr.title }}</div>
+						</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+				<script type="text/x-deskpro-plain" class="row-tpl">
+					<li class="item new" data-choice-id="new">
+						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="label"></div>
+						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
+					</li>
+				</script>
+			</div>
+		</div>
+	</div>
 
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
@@ -33,7 +71,7 @@
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} />
+						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
 						POP3 Account
 					</label>
 					<div class="dp-group-options" style="display: none">
@@ -62,14 +100,14 @@
 							</tr>
 						</table>
 						<div class="test-row">
-							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
 						</div>
 					</div>
 				</div>
 
 				<div class="dp-input-group">
 					<label>
-						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} />
+						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
 						Google Apps
 					</label>
 					<div class="dp-group-options" style="display: none">
@@ -82,20 +120,9 @@
 								<td>Password:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
-							{% if not gateway.id %}
-								<tr>
-									<td>Create SMTP Account</td>
-									<td>
-										<label>
-											<input type="checkbox" name="gmail_create_smtp" value="1" checked="checked" />
-											Also create an SMTP account for outgoing email using the same credentials
-										</label>
-									</td>
-								</tr>
-							{% endif %}
 						</table>
 						<div class="test-row">
-							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
 						</div>
 					</div>
 				</div>
@@ -103,40 +130,204 @@
 		</div>
 	</div>
 
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>Addresses</label>
-			<p>List the addresses you expect this gateway account accept email for.</p>
+	<div id="smtp_options_default" {% if editgateway.define_transport %}style="display: none"{% endif %}>
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Outgoing Mail Account</label>
+			</div>
+			<div class="dp-form-input">
+				<span class="show-non-gapps" {% if gateway.connection_type == 'gmail' %}style="display: none"{% endif %}>Using the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.</span>
+				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>Use the Google Apps account defined above for outgoing mail</span>
+				<button class="clean-white small toggle-custom-smtp">Use a different outgoing account</button>
+			</div>
 		</div>
-		<div class="dp-form-input">
-			<div class="choices-builder" id="gateway_addresses">
-				<header>
-					<select class="new-choice-type">
-						<option value="exact">Email</option>
-						<option value="domain">Domain</option>
-						<option value="regex">Regex</option>
-					</select>
-					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">Add</button>
-				</header>
-				<div style="display: none" id="choice_extra_fields"></div>
-				<ul class="list">
-					{% for adr in gateway.addresses %}
-					<li class="item {% if gateway.default_address.id == adr.id %}is-default{% endif %}" data-address-id="{{ adr.id }}">
-						<div class="default"><label><span>Default</span> <input type="radio" class="default-address-radio" name="default_address" value="{{ adr.match_type }}:{{ adr.match_pattern }}" {% if gateway.default_address.id == adr.id %}checked="checked"{% endif %} /></label></div>
-						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
-						<div class="label">{{ adr.title }}</div>
-					</li>
-					{% endfor %}
-				</ul>
-				<script type="text/x-deskpro-plain" class="row-tpl">
-					<li class="item new" data-choice-id="new">
-						<div class="default"><label><span>Default</span> <input type="radio" class="default-address-radio" name="default_address" value="" /></label></div>
-						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
-						<div class="label"></div>
-						<input type="hidden" name="new_address[%id%][match_type]" class="row-value-type" value="" />
-						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
-					</li>
-				</script>
+	</div>
+
+	<div id="smtp_options" {% if not editgateway.define_transport %}style="display: none;"{% endif %} data-element-handler="DeskPRO.Admin.ElementHandler.EditEmailTransportPage">
+		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Outgoing Mail Account</label> <button class="clean-white small toggle-custom-smtp">Go back to using the default outgoing account</button>
+				</div>
+				<div class="dp-form-input">
+					<div class="dp-input-group">
+						<label>
+							<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
+							PHP mail()
+						</label>
+
+						<div class="dp-group-options" style="display: none">
+							<div class="test-row">
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="dp-input-group">
+						<label>
+							<input type="radio" class="option-trigger" name="transport[transport_type]" value="smtp" {% if not transport.transport_type or transport.transport_type == 'smtp' %}checked="checked"{% endif %} />
+							SMTP Account
+						</label>
+						<div class="dp-group-options" style="display: none">
+							<table cellspacing="0" cellpadding="0" width="100%">
+								<tr>
+									<td class="title" width="120">Host:</td>
+									<td>
+										{{ form_widget(trans_form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
+									</td>
+								</tr>
+								<tr>
+									<td class="title">Secure:</td>
+									<td>{{ form_widget(trans_form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+								</tr>
+								<tr>
+									<td class="title">Port:</td>
+									<td>{{ form_widget(trans_form.smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
+								</tr>
+								<tr>
+									<td class="title">Requires Auth:</td>
+									<td>
+										<input
+											type="checkbox"
+											{% if edittrans.smtp_options.username or edittrans.smtp_options.password %}checked="checked"{% endif %}
+											data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
+											data-targets="#smtp_auth_username, #smtp_auth_password"
+										/> Yes
+									</td>
+								</tr>
+								<tr id="smtp_auth_username">
+									<td class="title">Username:</td>
+									<td>{{ form_widget(trans_form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
+								</tr>
+								<tr id="smtp_auth_password">
+									<td class="title">Password:</td>
+									<td>{{ form_widget(trans_form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
+								</tr>
+							</table>
+
+							<div class="test-row">
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="dp-input-group">
+						<label>
+							<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
+							Google Apps
+						</label>
+						<div class="dp-group-options" style="display: none">
+							<table cellspacing="0" cellpadding="0" width="100%">
+								<tr>
+									<td class="title" width="120">Full Email Address:</td>
+									<td>{{ form_widget(trans_form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
+								</tr>
+								<tr>
+									<td class="title">Password:</td>
+									<td>{{ form_widget(trans_form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
+								</tr>
+							</table>
+							<div class="test-row">
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
+						<label>
+							<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
+							Backup Outgoing Mail Account
+						</label>
+					</div>
+					<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" id="backup_form_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
+								PHP mail()
+							</label>
+							<div class="dp-group-options" style="display: none">
+								<div class="test-row">
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="smtp" {% if transport.backup_transport_type == 'smtp' %}checked="checked"{% endif %} />
+								SMTP Account
+							</label>
+							<div class="dp-group-options" style="display: none">
+								<table cellspacing="0" cellpadding="0" width="100%">
+									<tr>
+										<td  class="title" width="120">Host:</td>
+										<td>
+											{{ form_widget(trans_form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
+										</td>
+									</tr>
+									<tr>
+										<td class="title">Secure:</td>
+										<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+									</tr>
+									<tr>
+										<td class="title">Port:</td>
+										<td>{{ form_widget(trans_form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
+									</tr>
+									<tr>
+										<td class="title">Requires Auth:</td>
+										<td>
+											<input
+												type="checkbox"
+												{% if edittrans.backup_smtp_options.username or edittrans.backup_smtp_options.password %}checked="checked"{% endif %}
+												data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
+												data-targets="#backup_smtp_auth_username, #backup_smtp_auth_password"
+											/> Yes
+										</td>
+									</tr>
+									<tr id="backup_smtp_auth_username">
+										<td class="title">Username:</td>
+										<td>{{ form_widget(trans_form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
+									</tr>
+									<tr id="backup_smtp_auth_password">
+										<td class="title">Password:</td>
+										<td>{{ form_widget(trans_form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
+									</tr>
+								</table>
+
+								<div class="test-row">
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="gmail" {% if transport.backup_transport_type == 'gmail' %}checked="checked"{% endif %} />
+								Google Apps
+							</label>
+							<div class="dp-group-options" style="display: none">
+								<table cellspacing="0" cellpadding="0" width="100%">
+									<tr>
+										<td class="title" width="120">Full Email Address:</td>
+										<td>{{ form_widget(trans_form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
+									</tr>
+									<tr>
+										<td class="title">Password:</td>
+										<td>{{ form_widget(trans_form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
+									</tr>
+								</table>
+								<div class="test-row">
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -157,7 +348,7 @@
 <button class="clean-white">Save</button>
 </form>
 
-<div id="test_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
+<div id="test_gateway_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
 		<h4>Test Incoming Email Account</h4>
@@ -180,6 +371,34 @@
 		<button
 			class="clean-white test-trigger"
 			data-url="{{ path('admin_emailgateways_testaccount') }}"
+		>Test Now</button>
+	</div>
+</div>
+
+<div id="test_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay close-trigger"></span>
+		<h4>Test Outgoing Email</h4>
+	</div>
+	<div class="overlay-content">
+		<div style="margin-bottom: 3px;">Send a test email to: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
+		From email address: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
+		<div class="result">
+			<div class="is-loading loading-icon-big"><br /><br /></div>
+			<div class="is-not-loading">
+				<div class="success">
+					No errors were reported, but you should confirm that you recieved the test email.
+				</div>
+				<div class="error">
+					There was an error while trying to send the test email: <span class="error-msg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="overlay-footer">
+		<button
+			class="clean-white test-trigger"
+			data-url="{{ path('admin_emailtrans_testaccount') }}"
 		>Test Now</button>
 	</div>
 </div>

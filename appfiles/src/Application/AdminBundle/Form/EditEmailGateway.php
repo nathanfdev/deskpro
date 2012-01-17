@@ -31,6 +31,8 @@ class EditEmailGateway extends AbstractType
 		$builder->add('connection_type', 'text');
 		$builder->add('gateway_type', 'text');
 		$builder->add('is_enabled', 'checkbox', array('required' => false));
+		$builder->add('define_transport', 'checkbox', array('required' => false));
+		$builder->add('address', 'text', array('required' => true));
 
 		$options_form = $builder->create('pop3_options', 'form');
 		$options_form->add('host', 'text', array('required' => false));

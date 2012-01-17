@@ -6,12 +6,12 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 	init: function() {
 		var self = this;
 
-		$(document).on('click', '.test-account-settings', function() {
+		$(document).on('click', '.test-gateway-account-settings', function() {
 			self.overlay.open();
 		});
 
 		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: $('#test_settings_overlay'),
+			contentElement: $('#test_gateway_settings_overlay'),
 			onBeforeOverlayOpened: function() {
 				var el = self.overlay.getElement();
 
@@ -24,8 +24,8 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			}
 		});
 
-		$('button.test-trigger', '#test_settings_overlay').on('click', function() {
-			var el = $('#test_settings_overlay');
+		$('button.test-trigger', '#test_gateway_settings_overlay').on('click', function() {
+			var el = $('#test_gateway_settings_overlay');
 			$('.result', el).show().addClass('loading');
 
 			var postData = self.testPostData;
@@ -49,19 +49,43 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			});
 		});
 
+		$('#add_addr_link').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			$(this).hide();
+			$('#gateway_addresses').slideDown();
+		});
 		this._initAddresses();
+
+		$('.toggle-custom-smtp').click(function(ev) {
+			ev.preventDefault();
+
+			if ($('#smtp_options_default').is(':visible')) {
+				$('#smtp_options_default').slideUp('fast', function() {
+					$('#smtp_options').slideDown();
+				});
+			} else {
+				$('#smtp_options').slideUp('fast', function() {
+					$('#smtp_options_default').slideDown();
+				});
+			}
+		});
+
+		$('#gapps_btn, #pop3_btn').on('click', function() {
+			if ($(this).is('#gapps_btn')) {
+				$('.show-non-gapps').hide();
+				$('.show-gapps').show();
+			} else {
+				$('.show-non-gapps').show();
+				$('.show-gapps').hide();
+			}
+		});
 	},
 
 	_initAddresses: function() {
 		var self = this;
 
 		var el = $('#gateway_addresses');
-
-		el.on('click', '.default-address-radio', function() {
-			var li = $(this).closest('li');
-			$('li', el).removeClass('is-default');
-			li.addClass('is-default');
-		});
 
 		var rowTpl = $('.row-tpl', el).get(0).innerHTML;
 		var list = $('ul.list', el);
@@ -82,6 +106,12 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 
 			li.fadeOut('fast', function() {
 				li.remove();
+
+				if (!list.find('li').length) {
+					$('#gateway_addresses').slideUp('fast', function() {
+						$('#add_addr_link').show();
+					});
+				}
 			});
 		}
 
@@ -94,9 +124,7 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			var type = newInputType.val();
 			newInputType.val('');
 
-			if (type == 'exact') label = pattern;
-			else if (type == 'domain') label = '*@' + pattern;
-			else if (type == 'regex') label = '<em>' + pattern + '</em>';
+			label = pattern
 
 			newId = Orb.getUniqueId();
 
@@ -104,7 +132,6 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			$('.label', newRow).html(label);
 			$('.row-value-type', newRow).val(type);
 			$('.row-value', newRow).val(pattern);
-			$('.default-address-radio', newRow).val(type + ':' + pattern);
 
 			list.append(newRow);
 		}

@@ -32,7 +32,11 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				$('.success', el).hide();
 				$('.error', el).hide();
 
-				var postData = $('#transport_form').serializeArray();
+				if ($('#transport_form').length) {
+					var postData = $('#transport_form').serializeArray();
+				} else {
+					var postData = self.el.find('input, select, textarea').serializeArray();
+				}
 				if (self.mode == 'backup') {
 					postData.push({name: 'backup', value: 1});
 				}
@@ -45,6 +49,10 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 					setmail = 'test@' + $('.email-domain-pattern').val();
 				} else if ($('#default_from_email').length) {
 					setmail = $('#default_from_email').val();
+				}
+
+				if ($('#gateway_address').length) {
+					setmail = $('#gateway_address').val();
 				}
 
 				if (setmail) {

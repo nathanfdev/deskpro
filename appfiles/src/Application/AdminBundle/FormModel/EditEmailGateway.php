@@ -19,11 +19,13 @@ use Orb\Util\Arrays;
 class EditEmailGateway
 {
 	public $connection_type = 'pop3';
+	public $define_transport = false;
 	public $pop3_options = array();
 	public $gmail_options = array();
 
 	public $gateway_type = 'tickets';
 	public $is_enabled = true;
+	public $address = '';
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
@@ -54,6 +56,20 @@ class EditEmailGateway
 
 		$this->gateway_type = $gateway->gateway_type;
 		$this->is_enabled = $gateway->is_enabled;
+
+		if ($gateway->linked_transport) {
+			$this->define_transport = true;
+			if ($this->gateway_type == 'gmail' && $gateway->linked_transport->transport_type == 'gmail') {
+				if ($this->gmail_options['username'] == $gateway->linked_transport->transport_options['username'] && $this->gmail_options['password'] == $gateway->linked_transport->transport_options['password']) {
+					$this->define_transport = false;
+				}
+			}
+		}
+
+		foreach ($gateway->addresses as $adr) {
+			$this->address = $adr->match_pattern;
+			break;
+		}
 	}
 
 	public function setNewAddresses(array $new_addresses)
@@ -111,16 +127,6 @@ class EditEmailGateway
 				$this->gateway->addresses->add($address);
 			}
 		}
-
-		if ($this->set_default_address) {
-			foreach ($this->gateway->addresses as $address) {
-				$str = $address->match_type . ':' . $address->match_pattern;
-				if ($str == $this->set_default_address) {
-					$this->gateway->default_address = $address;
-					break;
-				}
-			}
-		}
 	}
 
 
@@ -130,14 +136,6 @@ class EditEmailGateway
 
 		foreach ($this->remove_objs as $obj) {
 			App::getOrm()->remove($obj);
-		}
-		App::getOrm()->flush();
-
-		if (!$this->gateway->default_address && count($this->gateway->addresses)) {
-			foreach ($this->gateway->addresses as $address) {
-				$this->gateway->default_address = $address;
-				break;
-			}
 		}
 
 		App::getOrm()->persist($this->gateway);

@@ -8,6 +8,9 @@ use Orb\Util\Arrays;
 
 use Application\AdminBundle\Form\EditEmailGateway as EditEmailGatewayForm;
 use Application\AdminBundle\FormModel\EditEmailGateway as EditEmailGatewayModel;
+use Application\AdminBundle\Form\EditEmailTransport as EditEmailTransportForm;
+use Application\AdminBundle\FormModel\EditEmailTransport as EditEmailTransportModel;
+
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 
 class EmailGatewaysController extends AbstractController
@@ -50,16 +53,27 @@ class EmailGatewaysController extends AbstractController
 			if (!$gateway) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
+
+			if ($gateway->linked_transport) {
+				$transport = $gateway->linked_transport;
+			} else {
+				$transport = new \Application\DeskPRO\Entity\EmailTransport();
+			}
 		} else {
 			$gateway = new \Application\DeskPRO\Entity\EmailGateway();
+			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
 
 		$editgateway = new EditEmailGatewayModel($gateway);
 		$form = $this->get('form.factory')->create(new EditEmailGatewayForm(), $editgateway);
 
+		$edittrans = new EditEmailTransportModel($transport);
+		$trans_form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+
 		if ($this->request->isPost()) {
 			$this->ensureRequestToken('edit_gateway');
 			$form->bindRequest($this->get('request'));
+			$trans_form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
 				$new_addresses_info = $this->in->getCleanValueArray('new_address', 'array', 'str_simple');
@@ -76,31 +90,27 @@ class EmailGatewaysController extends AbstractController
 				// Remove addresses
 				$remove_address_ids = $this->in->getCleanValueArray('remove_address', 'uint', 'discard');
 
-				// Default address
-				$default_address = $this->in->getString('default_address');
-
 				$editgateway->setNewAddresses($new_addresses);
 				$editgateway->setRemoveAddressIds($remove_address_ids);
-				$editgateway->setDefaultAddress($default_address);
 
-				$emailtrans = false;
-				if (!$gateway->id && $editgateway->connection_type == 'gmail' && $this->in->getBool('gmail_create_smtp')) {
-					$emailtrans = new \Application\DeskPRO\Entity\EmailTransport();
-					$emailtrans->title = 'Google Apps: ' . $editgateway->gmail_options['username'];
-					$emailtrans->transport_type = 'gmail';
-					$emailtrans->transport_options = $editgateway->gmail_options;
-					$emailtrans->match_pattern = $editgateway->gmail_options['username'];
-				}
+				$edittrans->match_type = 'exact';
+				$edittrans->match_email = $editgateway->address;
 
 				$this->em->getConnection()->beginTransaction();
 				try {
-					$editgateway->save();
-
-					if ($emailtrans) {
-						$this->em->persist($emailtrans);
-						$this->em->flush();
+					if ($editgateway->define_transport) {
+						$edittrans->save();
+						$gateway->linked_transport = $transport;
+					} else {
+						if ($gateway->linked_transport) {
+							$this->em->remove($gateway->linked_transport);
+							$gateway->linked_transport = null;
+							$this->em->flush();
+						}
 					}
 
+					$editgateway->save();
+					$this->em->flush();
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
 					$this->em->getConnection()->rollback();
@@ -115,6 +125,7 @@ class EmailGatewaysController extends AbstractController
 		return $this->render('AdminBundle:EmailGateways:edit-account.html.twig', array(
 			'gateway' => $gateway,
 			'form' => $form->createView(),
+			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
 		));
 	}

@@ -51,6 +51,12 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $match_pattern = '';
 
+	/**
+	 * @var int
+	 * @ORM_Mapping\Column(name="run_order", type="integer")
+	 */
+	protected $run_order = 0;
+
 	public function getTitle()
 	{
 		switch ($this->match_type) {
