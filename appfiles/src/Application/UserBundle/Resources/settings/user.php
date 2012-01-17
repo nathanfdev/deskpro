@@ -1,5 +1,6 @@
 <?php return array(
 
+	'user.portal_enabled' => true,
 	'user.disable_chat_element' => false,
 
 	'user.show_ratings' => true,

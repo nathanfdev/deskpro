@@ -13,6 +13,8 @@
 				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">Global Settings</a></li>
 			</ul>
 		</article>
+
+		{% block page_nav_portal %}{% endblock %}
 	</section>
 
 	<section>

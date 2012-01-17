@@ -6,10 +6,6 @@ var PortalAdmin = {
     init: function() {
 
 		var self = this;
-		var h = $('body').outerHeight();
-		this.tellAdmin('loaded', {
-			height: h
-		});
 
 		//----------------------------------------
 		// Logo
@@ -37,6 +33,15 @@ var PortalAdmin = {
 
 		this.initBlocks(this.contentCol, '.dp-content-block');
 		this.initBlocks(this.sideCol, '.dp-sidebar-block');
+
+		//----------------------------------------
+		// Alert admin that we're ready
+		//----------------------------------------
+
+		var h = $('body').outerHeight();
+		this.tellAdmin('loaded', {
+			height: h
+		});
     },
 
 

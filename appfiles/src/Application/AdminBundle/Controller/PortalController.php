@@ -79,6 +79,14 @@ class PortalController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	public function togglePortalAction()
+	{
+		$enable = $this->in->getBoolInt('enable');
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('user.portal_enabled', $enable);
+
+		return $this->redirectRoute('admin_portal');
+	}
+
 
 	############################################################################
 	# Portal Sections

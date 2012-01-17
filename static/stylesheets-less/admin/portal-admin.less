@@ -1,5 +1,11 @@
 @import "../agent/lib.less";
 
+#deskpro #dp_page, #deskpro #dp_header {
+	width: 890px;
+	min-width: 890px;
+	max-width: 890px;
+}
+
 .dp-block-controls,
 #deskpro .dp-block-controls {
     position: absolute;
@@ -66,7 +72,7 @@
 }
 
 .dp-block-controls ul li.dp-edit span           {   background-image: url(../../images/admin/icons/portal-edit.png); }
-.dp-block-controls ul li.dp-remove-block span   {   background-image: url(../../images/admin/icons/block-disable.png); }
+.dp-block-controls ul li.dp-remove-block span   {   background-image: url(../../images/admin/icons/block-off.png); }
 .dp-block-controls ul li.dp-edit-html span   {   background-image: url(../../images/admin/icons/portal-edit-html.png); }
 
 #deskpro  {
@@ -80,7 +86,7 @@
 	}
 
 	.dp-block-controls ul li.dp-toggle-block span.lbloff { display: none !important; }
-	.disabled .dp-block-controls ul li.dp-toggle-block span   {   background-image: url(../../images/admin/icons/block-enable.png); }
+	.disabled .dp-block-controls ul li.dp-toggle-block span   {   background-image: url(../../images/admin/icons/block-off.png); }
 	.disabled .dp-block-controls ul li.dp-toggle-block span.lblon { display: none !important; }
 	.disabled .dp-block-controls ul li.dp-toggle-block span.lbloff { display: inline-block !important; }
 }
@@ -355,3 +361,4 @@ em.dp-collapse-block { display: none; }
 #deskpro #dp_header.disabled #dp_header_portal_off {
 	display: block;
 }
+

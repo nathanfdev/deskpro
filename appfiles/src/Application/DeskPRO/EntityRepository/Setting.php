@@ -34,7 +34,11 @@ class Setting extends EntityRepository
 			$setting['name'] = $name;
 		}
 
-		$setting['value'] = $value;
+		if (!is_array($value)) {
+			$setting['value'] = (string)$value; // needs to be cast to a str or else 0 is ignored
+		} else {
+			$setting['value'] = $value;
+		}
 
 		App::getOrm()->transactional(function ($em) use ($setting) {
 			$em->getConnection()->delete('settings', array('name' => $setting->name));

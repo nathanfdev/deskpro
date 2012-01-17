@@ -316,6 +316,11 @@ a.delete-link:hover {
 	z-index: 1;
 }
 
+#dp_admin_page.with-top {
+	border-top: 1px solid #CACFD6;
+	.rounded(6px);
+}
+
 .dp-page-box {
 }
 
@@ -1847,7 +1852,7 @@ footer.setting_field_row {
 
 #portal_iframe_loading {
 
-    margin: 10px;
+    margin: 25px;
 
 	position: absolute;
 	z-index: 999999999999;
@@ -2560,20 +2565,19 @@ nav.admin-object-nav li:hover {
 			background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px; sprite-margin-bottom: 10px; */;
 			padding-left: 15px;
 		}
-
-		&.color-wheel {
-			padding: 0 4px 2px;
-		}
-		&.color-wheel a {
-		    position: relative;
-			top: 3px;
-		    .iconbase(16px, 16px);
-			background-repeat: no-repeat;
-			background-position: 0 0;
-			background-image: url(../../images/agent/icons/color_wheel.png);
-			cursor: pointer;
-		}
 	}
+}
+
+#portal_colors_trigger {
+
+}
+#portal_colors_trigger span {
+	position: relative;
+	background-repeat: no-repeat;
+	background-position: 0 50%;
+	background-image: url(../../images/agent/icons/color_wheel.png);
+	cursor: pointer;
+	padding: 3px 0 3px 19px;
 }
 
 .dp-pagehelp {
@@ -2754,4 +2758,64 @@ nav.admin-object-nav li:hover {
 .namelistbox ul li {
 	float: left;
 	margin-left: 3px;
+}
+
+
+
+.portal-toggle {
+	.inner-shadow(0, 0, 4px, 0.5);
+	background-color: #D9DFE4;
+
+	font-size: 12px;
+	margin: 0 1px 10px 1px;
+	.border-radius(0, 0, 6px, 6px);
+
+	p {
+		padding: 8px;
+		margin: 0 15px 0 115px;
+	}
+
+	.toggle-btn {
+		float: left;
+		background: url(../../images/admin/portal-on.png) no-repeat 50% 0;
+		padding-top: 45px;
+		display: block;
+
+		width: 100px;
+		text-align: center;
+
+		line-height: 100%;
+
+		margin: 4px 4px 0 0;
+
+		cursor: pointer;
+
+		&:hover em {
+			color: darken(#A6ACB1, 20%);
+		}
+
+		em {
+			font-size: 10px;
+			color: #A6ACB1;
+			text-shadow: 1px 1px 0px darken(#ffffff, 5%);
+		}
+
+		&.disabled {
+			background: url(../../images/admin/portal-off.png) no-repeat 50% 0;
+		}
+	}
+}
+
+
+#admin_portal_editor {
+	margin: 15px;
+	border: 2px outset #000;
+}
+
+.editor-disabled {
+	margin: 15px;
+   	border: 2px outset #000;
+   	padding: 35px 15px 35px 15px;
+   	font-size: 13px;
+   	text-align: center;
 }

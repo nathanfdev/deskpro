@@ -227,7 +227,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			var triggerPos = trigger.offset();
 
 			var top  = triggerPos.top  + trigger.height();
-			var left = (triggerPos.left + trigger.width() + 8) - panel.width();
+			var left = (triggerPos.left + trigger.width() - 20);
 
 			panel.css({
 				top: top ,

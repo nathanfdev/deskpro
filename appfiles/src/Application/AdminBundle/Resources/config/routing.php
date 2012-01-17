@@ -291,6 +291,13 @@ $collection->add('admin_portal', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_toggle', new Route(
+	'/portal/toggle-portal',
+	array('_controller' => 'AdminBundle:Portal:togglePortal'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_get_editor', new Route(
 	'/portal/get-editor/{type}',
 	array('_controller' => 'AdminBundle:Portal:getEditor'),
