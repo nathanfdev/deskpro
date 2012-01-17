@@ -92,7 +92,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 						url: BASE_URL + 'admin/portal/get-editor/logo'
 					},
 					onContentSet: function(ev) {
-						var wrapper = ev.overlay.getElement();
+						var wrapper = ev.wrapperEl;
 
 						wrapper.fileupload({
 							url: BASE_URL + 'admin/misc/accept-upload',

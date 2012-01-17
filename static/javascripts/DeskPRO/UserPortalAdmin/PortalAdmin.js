@@ -50,7 +50,7 @@ var PortalAdmin = {
 		var contentBlocks = $(blockSelector, wrapper);
 
 		contentBlocks.each(function() {
-			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
+			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li><li class="dp-edit"><span>edit</span></li></div>');
 			$(this).prepend(controls);
 			$(this).append('<div class="dp-drag-overlay" />');
 
@@ -61,12 +61,12 @@ var PortalAdmin = {
 		});
 
 		wrapper.on('click', '.dp-toggle-block', function() {
-			var block = $(this).closest('.dp-content-block');
+			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
 			block.toggleClass('disabled');
 		});
 
 		wrapper.on('click', '.dp-expand-block, .dp-collapse-block', function() {
-			var block = $(this).closest('.dp-content-block');
+			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
 			block.toggleClass('expanded');
 		});
 
@@ -182,7 +182,7 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 
 		this.header = $(header);
 
-		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span>toggle</span></li><li class="dp-edit"><span>edit</span></li></div>');
+		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li><li class="dp-edit"><span>edit</span></li></div>');
 		this.header.prepend(controls);
 		this.header.append('<div class="dp-drag-overlay" />');
 
