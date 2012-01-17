@@ -16,6 +16,16 @@
 	</div>
 	<h1>Portal</h1>
 {% endblock %}
+{% block pagebar %}
+	<nav>
+		<ul>
+			<li class="color-wheel"><a id="portal_colors_trigger"></a></li>
+		</ul>
+	</nav>
+	<ul>
+		<li>Portal</li>
+	</ul>
+{% endblock %}
 {% block content %}
 	<section id="portal_colors" style="display: none">
 		<article>
@@ -218,18 +228,13 @@
 			<button class="clean-white apply-trigger">Apply</button>
 		</footer>
 	</section>
-	<nav class="page-top-hugnav">
-		<ul>
-			<li id="portal_colors_trigger"><span class="color-wheel-icon tipped" title="Change color scheme"></span></li>
-		</ul>
-		<br class="clear" />
-	</nav>
     <div
 		class="dp-page-box"
 		id="admin_portal_editor"
 		data-element-handler="DeskPRO.Admin.ElementHandler.PortalEditor"
 		data-portal-url="{{ app.request.getBaseUrl() }}/?admin_portal_controls=1"
 	>
+		<div id="portal_iframe_loading"><h1>Loading Editor</h1></div>
 		<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
 
 		<script type="text/x-deskpro-tmpl" id="admin_portal_block_html_edit_tpl">

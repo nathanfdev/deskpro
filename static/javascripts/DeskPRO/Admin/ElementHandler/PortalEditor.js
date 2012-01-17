@@ -36,6 +36,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		});
 
 		this._initColorPicker();
+		$('#portal_iframe').css('opacity', '0');
 	},
 
 	/**
@@ -184,6 +185,11 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		$('#portal_iframe').height(height + 25);
 		this.iframeQuery('html').css('overflow', 'hidden');
 		this.iframeQuery('body').css('overflow', 'hidden');
+
+		// Show the frame now
+		$('#portal_iframe_loading').fadeOut(300, function() {
+			$('#portal_iframe').css('opacity', '1');
+		});
 	},
 
 

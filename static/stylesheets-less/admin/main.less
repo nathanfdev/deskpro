@@ -1845,6 +1845,36 @@ footer.setting_field_row {
 	margin-left: -10px;
 }
 
+#portal_iframe_loading {
+
+    margin: 10px;
+
+	position: absolute;
+	z-index: 999999999999;
+	background-color: #fff;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	padding: 0;
+	text-align: center;
+
+	h1{
+		background: url(../../images/spinners/editor-loading.gif) no-repeat 0 50%;
+		padding-left: 100px;
+		margin-top: 150px;
+		font-family: @heading-font;
+  		font-size: 21px;
+  		font-weight: normal;
+
+  		line-height: 90px;
+  		margin-left: auto;
+  		margin-right: auto;
+  		width: 160px;
+  		text-align: left;
+	}
+}
+
 #portal_iframe {
 	width: 100%;
 }
@@ -2529,6 +2559,19 @@ nav.admin-object-nav li:hover {
 			background-position: 0 7px;
 			background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px; sprite-margin-bottom: 10px; */;
 			padding-left: 15px;
+		}
+
+		&.color-wheel {
+			padding: 0 4px 2px;
+		}
+		&.color-wheel a {
+		    position: relative;
+			top: 3px;
+		    .iconbase(16px, 16px);
+			background-repeat: no-repeat;
+			background-position: 0 0;
+			background-image: url(../../images/agent/icons/color_wheel.png);
+			cursor: pointer;
 		}
 	}
 }
