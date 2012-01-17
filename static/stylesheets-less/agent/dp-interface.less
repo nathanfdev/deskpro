@@ -2095,6 +2095,10 @@ a.clean-white {
 		line-height: 19px;
     }
 
+    p {
+    	margin-bottom: 0 !important;
+    }
+
    .alt .inner-wrap2 {
 		background-color: #F8F8F8;
     }
@@ -2206,4 +2210,43 @@ a.clean-white {
 
 .dp-grid.dep-list article:hover a.delete {
 	.opacity(100);
+}
+
+.dp-grid .dp-grid-sectionrow {
+	.inner-wrap2 {
+	   .gradient(#ffffff, darken(#FDFDFD, 8%));
+		border-bottom: 1px solid #D9DBDB;
+		border-left: 1px solid #D9DBDB;
+		border-right: 1px solid #D9DBDB;
+	}
+
+	div.inner-wrap2 {
+		padding: 3px 8px 3px 8px;
+	}
+
+	h1 {
+		font-family: @heading-font-alt;
+		font-size: 12px;
+		display: block;
+		line-height: 100%;
+		margin-top: 1px;
+	}
+}
+
+.icon-list-box {
+	max-height: 200px;
+	overflow: auto;
+	border: 1px solid #CCCCCC;
+	width: 70%;
+	padding: 4px;
+	.rounded(4px);
+	-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.icon-list-box ul li {
+    .list-icon {
+    	float: left;
+    	margin: 0 6px 0 0;
+    }
+	clear: left;
+	line-height: 28px;
 }

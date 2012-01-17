@@ -22,43 +22,21 @@ class TicketFiltersController extends AbstractController
 
 	public function indexAction()
 	{
-		$sections = array();
-		$sections['global'] = $this->forward('AdminBundle:TicketFilters:getGlobalList')->getContent();
-		$sections['team']   = $this->forward('AdminBundle:TicketFilters:getTeamList')->getContent();
-		$sections['agent']  = $this->forward('AdminBundle:TicketFilters:getAgentList')->getContent();
+		$global_filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllGlobalFilters();
+		$team_filters   = App::getEntityRepository('DeskPRO:TicketFilter')->getAllTeamFilters();
+		$agent_filters  = App::getEntityRepository('DeskPRO:TicketFilter')->getAllAgentFilters();
+
+		$access_tester = new \Application\DeskPRO\Tickets\FilterAccessResolver($this->em);
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
  		return $this->render('AdminBundle:TicketFilters:index.html.twig', array(
-			'sections' => $sections
+			'global_filters' => $global_filters,
+			'team_filters'   => $team_filters,
+			'agent_filters'  => $agent_filters,
+			'agents'         => $agents,
+			'access_tester'  => $access_tester,
 		));
 	}
-
-	public function getGlobalListAction()
-	{
-		$filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllGlobalFilters();
-
- 		return $this->render('AdminBundle:TicketFilters:list-global.html.twig', array(
-			'filters' => $filters,
-		));
-	}
-
-	public function getTeamListAction()
-	{
-		$filters_grouped = App::getEntityRepository('DeskPRO:TicketFilter')->getAllTeamFilters();
-
- 		return $this->render('AdminBundle:TicketFilters:list-team.html.twig', array(
-			'filters_grouped' => $filters_grouped,
-		));
-	}
-
-	public function getAgentListAction()
-	{
-		$filters_grouped = App::getEntityRepository('DeskPRO:TicketFilter')->getAllAgentFilters();
-
- 		return $this->render('AdminBundle:TicketFilters:list-agent.html.twig', array(
-			'filters_grouped' => $filters_grouped,
-		));
-	}
-
 	############################################################################
 	# edit
 	############################################################################
@@ -97,14 +75,18 @@ class TicketFiltersController extends AbstractController
 				$filter['agent_team_id'] = $this->in->getUint('filter.agent_team_id');
 				$filter['person_id'] = $this->in->getUint('filter.person_id');
 			}
+
+			$filter_users = null;
 		} else {
 			$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
 			if (!$filter) {
 				return $this->createNotFoundException();
 			}
+
+			$access_tester = new \Application\DeskPRO\Tickets\FilterAccessResolver($this->em);
+			$filter_users = $access_tester->getUsers($filter);
 		}
 
-		$is_saved = false;
 		if ($this->in->getBool('process')) {
 			$filter['title'] = $this->in->getString('filter.title');
 			$term_rules = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
@@ -114,8 +96,6 @@ class TicketFiltersController extends AbstractController
 				$em->persist($filter);
 				$em->flush();
 			});
-
-			$is_saved = true;
 		}
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
@@ -123,7 +103,7 @@ class TicketFiltersController extends AbstractController
 		return $this->render('AdminBundle:TicketFilters:edit.html.twig', array(
 			'filter' => $filter,
 			'term_options' => $term_options,
-			'is_saved' => false
+			'filter_users' => $filter_users,
 		));
 	}
 }

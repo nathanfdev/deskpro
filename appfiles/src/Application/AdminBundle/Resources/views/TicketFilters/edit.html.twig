@@ -1,45 +1,44 @@
-{% extends 'AdminBundle::layout_popout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketFilterEdit.js') }}"></script>
-{% endblock %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketFilterEdit({{filter.id|default(0)}});
+$(document).ready(function() {
+	var criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
 
-	window.DeskPRO_Page.init_options_callback = function() {
-		var count = 0;
-		var terms = {{filter.terms|json_encode|raw}};
-		if (terms) {
-			Array.each(terms, function(info, x) {
-				var basename = 'terms[initial_' + x + ']';
-				window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, {
-					type: info.type,
-					op: info.op,
-					options: info.options
-				});
-			});
-		}
-	};
+	$('.criteria-form .add-term').on('click', function() {
+		var basename = 'terms['+Orb.uuid()+']';
+		criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename);
+	});
 
-	{% if is_saved %}
-	DeskPRO_Window.getMessageBroker().sendMessage('agent.ticket-filters-updated');
+	{% if filter.terms %}
+	var terms = {{filter.terms|json_encode|raw}};
+	Array.each(terms, function(info, x) {
+		var basename = 'terms[' + Orb.uuid() + ']';
+		criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, {
+			type: info.type,
+			op: info.op,
+			options: info.options
+		});
+	});
 	{% endif %}
-}
+});
 </script>
 {% endblock %}
-{% block page_id "ticket_filters" %}
-{% block header %}
-	<h1>{% if filter.id %}Edit Filter{% else %}New Filter{% endif %}</h1>
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_tickets_filters') }}">Ticket Filters</a></li>
+		<li>{% if filter.id %}Edit Filter{% else %}New Filter{% endif %}</li>
+	</ul>
 {% endblock %}
-{% block content %}
+{% block page %}
 
-<form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post">
+<form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post" class="dp-form">
 <input type="hidden" name="process" value="1" />
 
-<div class="form-panel">
-	<div class="row">
+<div class="dp-form-row">
+	<div class="dp-form-label">
 		<label>Title</label>
+	</div>
+	<div class="dp-form-input">
 		<input type="text" name="filter[title]" value="{{filter.title}}" />
 
 		{% if not filter.id %}
@@ -48,8 +47,13 @@ function _page_exec() {
 		<input type="hidden" name="filter[is_global]" value="{{ filter.is_global + 0 }}" />
 		{% endif %}
 	</div>
-	<div class="row">
-		<label>Criteria</label>
+</div>
+<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Criteria</label>
+		</div>
+
+	<div class="dp-form-input">
 		<div class="criteria-form search-form">
 			<div class="search-terms"></div>
 			<div class="term"><span class="add-term">+</span> Add a new criteria</div>
@@ -57,12 +61,56 @@ function _page_exec() {
 	</div>
 </div>
 
+{% if filter.id %}
+	{% if filter.is_global or filter.agent_team %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>
+					{% if filter.is_global  %}
+						This global filter is in use by
+					{% elseif filter.agent_team %}
+						This team filter for {{ filter.agent_team.name }} is in use by these members
+					{% endif %}
+				</label>
+			</div>
+
+			<div class="dp-form-input">
+				<div class="icon-list-box">
+					<ul>
+						{% for agent in filter_users %}
+							<li>
+								<img src="{{ agent.getPictureUrl(20) }}" class="list-icon" />
+								{{ agent.display_name }}
+							</li>
+						{% else %}
+							<li>No agent are using this filter.</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>
+					Only {{ filter.person.name }} has access to this filter
+				</label>
+			</div>
+			<div class="dp-form-input">
+				{% if not filter_users %}
+					{{ filter.person.name }} currently has this filter disabled in their settings
+				{% else %}
+					{{ filter.person.name }} currently has this filter enabled in their settings
+				{% endif %}
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
+
+<button class="clean-white save-trigger">Save</button>
+
 </form>
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options, 'search_context': 'filter' } %}
-
-{% endblock %}
-{% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
 
 {% endblock %}

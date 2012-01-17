@@ -164,6 +164,8 @@
 	'agent.is_not_x'                => 'is not {{field}}',
 	'agent.x_is_y'                  => '{{field}} is {{value}}',
 	'agent.x_is_not_y'              => '{{field}} is not {{value}}',
+	'agent.x_include_y'             => '{{field}} include {{value}}',
+	'agent.x_not_include_ y'        => '{{field}} do not include {{value}}',
 	'agent.x_is_between_y_and_z'    => '{{field}} is between {{value1}} and {{value2}}',
 	'agent.x_is_greater_than_y'     => '{{field}} is great than {{value}}',
 	'agent.x_is_less_than_y'        => '{{field}} is less than {{value}}',

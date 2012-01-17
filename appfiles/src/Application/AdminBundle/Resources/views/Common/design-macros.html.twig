@@ -68,6 +68,17 @@
 	{% endmacro %}
 
 
+	{% macro dpgrid_section(options) %}
+		<div class="dp-grid-sectionrow {{ options.rowclass }}" {{ options.rowextra|raw }}>
+			<div class="section-col"><div class="inner-wrap {{ options.class }}" style="{{ options.style }}"><div class="inner-wrap2"><table cellpadding="0" cellspacing="0" width="100%" height="100%" border="0"><tr><td valign="top" width="100%" height="100%">
+	{% endmacro %}
+
+	{% macro dpgrid_section_end(options) %}
+			</td></tr></table></div></div></div>
+			<br class="clear" />
+		</div>
+	{% endmacro %}
+
 	{% macro dpgrid_content(options) %}
 		<article class="dp-grid-row {{ options.class }}" {{ options.extra|raw }}>
 	{% endmacro %}

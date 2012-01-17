@@ -41,7 +41,7 @@
 
 	'agent.tickets.sent_to_gateway_address'      => 'Sent to gateway address',
 
-	'agent.tickets.participants'      => 'Participants',
+	'agent.tickets.participants'      => 'Followers',
 
 	'agent.tickets.ticket_is_deleted' => 'Ticket is deleted',
 

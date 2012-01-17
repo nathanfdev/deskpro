@@ -1,40 +1,123 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketFiltersList.js') }}"></script>
-{% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page_TicketFilters = new DeskPRO.Admin.PageHandler.TicketFiltersList('#ticket_filters');
-};
-</script>
-{% endblock %}
-{% block page_id "ticket_filters" %}
-{% block content %}
-
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_tickets_filters_new') }}">Create New Filter</a>
-</div>
-
-<div class="pane">
-	<div id="ticket_filter_types_tabs" class="pane-tabs nosel">
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
+{% block pagebar %}
+	<nav>
 		<ul>
-			<li class="tab-trigger filters-global on" data-tab-for=".tab-content.filters-global"><a>Global Filters</a></li>
-			<li class="tab-trigger filters-team" data-tab-for=".tab-content.filters-team"><a>Team Filters</a></li>
-			<li class="tab-trigger filters-agent" data-tab-for=".tab-content.filters-agent"><a>Agent Filters</a></li>
+			<li class="add"><a href="{{ path('admin_tickets_filters_new') }}">Add New Filter</a></li>
 		</ul>
-	</div>
-	<div class="tab-box-content pane-content">
-		<div class="tab-content filters-global" data-tab-trigger=".tab-trigger.filters-global">
-			{{sections.global|raw}}
-		</div>
-		<div class="tab-content filters-team" data-tab-trigger=".tab-trigger.filters-team">
-			{{sections.team|raw}}
-		</div>
-		<div class="tab-content filters-agent" data-tab-trigger=".tab-trigger.filters-agent">
-			{{sections.agent|raw}}
-		</div>
-	</div>
-</div>
+	</nav>
+	<ul>
+		<li>Ticket Filters</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+{% macro filterrow(filter, access_tester, agents) %}
+	{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+	{{ design.dpgrid_content() }}
+		{{ design.dpgrid_col({ class: 'l r', style: "width: 935px;"}) }}
+			<div class="namelistbox">
+				{% set in_use_by = false %}
+				{% set use_by_list %}
+					<h4>Used by:</h4>
+					<ul>
+						{% for agent in agents %}
+							{% if not access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
+								{% set in_use_by = true %}
+								<li><img src="{{ agent.getPictureUrl(20) }}" title="{{ agent.display_name }}" class="tipped" /></li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				{% endset %}
+				{% if in_use_by %}
+					{{ use_by_list }}
+				{% else %}
+					{% if filter.is_global %}
+						<h4>No agents use this filter</h4>
+					{% elseif filter.agent_team %}
+						<h4>All {{ filter.agent_team.name }} members have disabled this filter</h4>
+					{% else %}
+						<h4>{{ filter.person.display_name }} has disabled this filter</h4>
+					{% endif %}
+				{% endif %}
+			</div>
+
+			<h2><a href="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id}) }}">{{ filter.title }}</a></h2>
+			<p>{{ filter.summary_phrase }}</p>
+			<br class="clear" />
+		{{ design.dpgrid_col_end() }}
+	{{ design.dpgrid_content_end() }}
+{% endmacro %}
+
+{############################
+# Global Filters
+#############################}
+
+{% if global_filters %}
+	{{ design.dpgrid() }}
+		{{ design.dpgrid_headerrow() }}
+			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
+				<h1>Global Filters</h1>
+			{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headerrow_end() }}
+
+		{% for filter in global_filters %}
+			{{ _self.filterrow(filter, access_tester, agents) }}
+		{% endfor %}
+	{{ design.dpgrid_end() }}
+
+	<br />
+{% endif %}
+
+{############################
+# Team Filters
+#############################}
+
+{% if team_filters %}
+	{{ design.dpgrid() }}
+		{{ design.dpgrid_headerrow() }}
+			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
+				<h1>Team Filters</h1>
+			{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headerrow_end() }}
+
+		{% for group in team_filters %}
+			{{ design.dpgrid_section({style: "width: 935px;"}) }}
+				<h1>{{ group.team.name }}</h1>
+			{{ design.dpgrid_section_end() }}
+			{% for filter in group.filters %}
+				{{ _self.filterrow(filter, access_tester, agents) }}
+			{% endfor %}
+		{% endfor %}
+	{{ design.dpgrid_end() }}
+
+	<br />
+{% endif %}
+
+{############################
+# Agent Filters
+#############################}
+
+{% if agent_filters %}
+	{{ design.dpgrid() }}
+		{{ design.dpgrid_headerrow() }}
+			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
+				<h1>Agent Filters</h1>
+			{{ design.dpgrid_headercol_end() }}
+		{{ design.dpgrid_headerrow_end() }}
+
+		{% for group in agent_filters %}
+			{{ design.dpgrid_section({style: "width: 935px;"}) }}
+				<h1>{{ group.person.display_name }}</h1>
+			{{ design.dpgrid_section_end() }}
+			{% for filter in group.filters %}
+				{{ _self.filterrow(filter, access_tester, agents) }}
+			{% endfor %}
+		{% endfor %}
+	{{ design.dpgrid_end() }}
+
+	<br />
+{% endif %}
 
 {% endblock %}
