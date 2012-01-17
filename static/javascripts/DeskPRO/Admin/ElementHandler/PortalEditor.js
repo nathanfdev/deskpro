@@ -120,7 +120,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 						});
 
 						$('.save-text-trigger').on('click', function() {
-							controller.setLogoText($('input[name="title"]').val(), $('input[name="tagline"]').val());
+							controller.setLogoText($('input[name="title"]', wrapper).val(), $('input[name="tagline"]', wrapper).val());
 							ev.overlay.close();
 						});
 					}
