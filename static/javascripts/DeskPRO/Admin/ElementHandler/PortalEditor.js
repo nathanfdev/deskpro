@@ -83,6 +83,40 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					controller.setContent(html);
 				});
 				break;
+			case 'update_orders':
+				var ids = data.orderedIds;
+
+				var postData = [];
+				for (var i = 0; i < ids.length; i++) {
+					postData.push({
+						name: 'display_order[]',
+						value: ids[i]
+					});
+				}
+
+				$.ajax({
+					url: this.el.data('url-update-orders'),
+					type: 'POST',
+					dataType: 'json',
+					data: postData
+				});
+
+				break;
+			case 'block_toggled':
+
+				var url = this.el.data('url-block-toggle').replace(/_PID_/g, data.pid);
+				var postData = {
+					enabled: data.enabled ? 1 : 0
+				};
+
+				$.ajax({
+					url: url,
+					type: 'POST',
+					dataType: 'json',
+					data: postData
+				});
+
+				break;
 			case 'open_logo_editor':
 				var controller = data.controller;
 				var overlay = new DeskPRO.UI.Overlay({

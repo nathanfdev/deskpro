@@ -52,6 +52,7 @@ var PortalAdmin = {
 	 * @param blockSelector
 	 */
 	initBlocks: function(wrapper, blockSelector) {
+		var self = this;
 		var contentBlocks = $(blockSelector, wrapper);
 
 		contentBlocks.each(function() {
@@ -68,15 +69,31 @@ var PortalAdmin = {
 		wrapper.on('click', '.dp-toggle-block', function() {
 			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
 			block.toggleClass('disabled');
+
+			var pid = $(this).closest('.dp-p').data('dp-pid');
+			if (pid) {
+				self.tellAdmin('block_toggled', { pid: pid, enabled: !block.hasClass('disabled') });
+			}
 		});
 
 		wrapper.on('click', '.dp-expand-block, .dp-collapse-block', function() {
 			var block = $(this).closest('.dp-content-block, .dp-sidebar-block');
 			block.toggleClass('expanded');
+
+			var pid = $(this).closest('.dp-p').data('dp-pid');
+			if (pid) {
+				self.tellAdmin('block_toggled', { pid: pid, enabled: !block.hasClass('disabled') });
+			}
+		});
+
+		// Init to current state
+		$('.dp-p-disabled', wrapper).each(function() {
+			var block = $(this).find('.dp-content-block, .dp-sidebar-block');
+			block.toggleClass('disabled');
 		});
 
 		wrapper.sortable({
-			items: '> ' + blockSelector,
+			items: '> .dp-p',
 			handle: '.dp-drag-overlay',
 			opacity: 0.7,
 			zIndex: 1000,
@@ -91,6 +108,17 @@ var PortalAdmin = {
 			},
 			create: function() {
 				$(this).height($(this).height());
+			},
+			update: function() {
+				var ids = [];
+				$('div.dp-p').each(function() {
+					var pid = $(this).data('dp-pid');
+					if (pid) {
+						ids.push(pid);
+					}
+				});
+
+				self.tellAdmin('update_orders', {orderedIds: ids});
 			}
 		});
 	},

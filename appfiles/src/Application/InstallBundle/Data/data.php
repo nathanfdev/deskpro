@@ -478,3 +478,94 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\HardDeleteTickets';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
+
+
+
+##BEGIN:create_portal_block.news##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'News';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.kb##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'Kb';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.ideas##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'Ideas';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.downloads##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'portal';
+$b->type = 'Downloads';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.contact_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Contact';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.nav_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Nav';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.staff_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Staff';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.news_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'News';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.downloads_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Downloads';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.ideas_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Ideas';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.labels_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Labels';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.twitter_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'Twitter';
+$em->persist($b);
+$em->flush();

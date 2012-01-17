@@ -26,14 +26,10 @@ use Orb\Util\Arrays;
  * <pre>
  * array(
  *     array(
- *         'type' => 'some_type',
  *         'xxx' => 'xxx
  *     )
  * );
  * </pre>
- *
- * The data format is mostly open except that the first level must have a 'type' which defines
- * the class handler for the item. The whole sub-array is passed to the handler as its "options"
  *
  * The type can be a short name in which case the full PHP namespace for DeskPRO's types
  * will be prepended (Application\DeskPRO\PageDisplay\Item\Portal\XXX). You may also use underscore
@@ -69,5 +65,25 @@ class PortalPageDisplay extends PageDisplayAbstract
 	/**
 	 * The footer content. Usually just one item thats rendered into the footer.
 	 */
-	const SECTION_FOOTER = 'header';
+	const SECTION_FOOTER = 'footer';
+
+	/**
+	 * The class handler
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="type", type="string", length=255)
+	 */
+	protected $type;
+
+	/**
+	 * @var int
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
+
+	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
+	 */
+	protected $is_enabled = 0;
 }

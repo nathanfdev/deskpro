@@ -19,6 +19,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
 use Application\DeskPRO\PageDisplay\Item\Portal\CacheableItem;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -34,7 +35,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	/**
 	 * The controller requesting the portal item
 	 *
-	 * @var Symfony\Component\DependencyInjection\ContainerInterface
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
 	 */
 	protected $container;
 
@@ -52,77 +53,47 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 */
 	protected $lazy_loader = null;
 
-	public function __construct(ContainerInterface $container, Person $person_context)
+	/**
+	 * @var bool
+	 */
+	protected $is_admin_mode = false;
+
+	public function __construct(DeskproContainer $container, Person $person_context)
 	{
 		$this->container = $container;
 		$this->person_context = $person_context;
 
-		// TODO: Hard-coded until we get editor working
-		$pagetop_pagedisplay = new PortalPageDisplay();
-		$pagetop_pagedisplay['section'] = PortalPageDisplay::SECTION_PAGETOP;
-		$pagetop_pagedisplay['data'] = array(
-			array(
-				'type' => 'omni_search',
-			),
-			array(
-				'type' => 'notifications',
-			),
-		);
+		if (isset($_GET['admin_portal_controls']) && $person_context->can_admin) {
+			$portal_items = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getAllBlocks();
+			$this->is_admin_mode = true;
+		} else {
+			$portal_items = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getEnabledBlocks();
+		}
 
-		$content_pagedisplay = new PortalPageDisplay();
-		$content_pagedisplay['section'] = PortalPageDisplay::SECTION_PORTAL;
-		$content_pagedisplay['data'] = array(
-			array(
-				'type' => 'news'
-			),
-			array(
-				'type' => 'kb'
-			),
-			array(
-				'type' => 'ideas'
-			),
-			array(
-				'type' => 'downloads'
-			),
-		);
+		/*
+		 * The details for each portal block is in its own PortalPageDisplay entity. The PortalPage system works
+		 * with a single page display for each section, so we're creating a wrapper page display that just contains
+		 * all the info for the others. The actual items are initiated later.
+		 */
 
-		$sidebar_pagedisplay = new PortalPageDisplay();
-		$sidebar_pagedisplay['section'] = PortalPageDisplay::SECTION_SIDEBAR;
-		$sidebar_pagedisplay['data'] = array(
-			array(
-				'type' => 'contact',
-			),
-			array(
-				'type' => 'nav',
-			),
-			//array(
-			//	'type' => 'userinfo',
-			//),
-			array(
-				'type' => 'news'
-			),
-			array(
-				'type' => 'downloads'
-			),
-			array(
-				'type' => 'ideas'
-			),
-			array(
-				'type' => 'staff',
-				//'online' => 1
-			),
-			array(
-				'type' => 'labels'
-			),
-			array(
-				'type' => 'twitter',
-				'twitter_name' => 'deskpro',
-			),
-		);
+		$group_displays = array();
 
-		$this->addPageDisplay($pagetop_pagedisplay);
-		$this->addPageDisplay($content_pagedisplay);
-		$this->addPageDisplay($sidebar_pagedisplay);
+		foreach ($portal_items as $item) {
+			if (!isset($group_displays[$item->section])) {
+				$group_displays[$item->section] =  new PortalPageDisplay();
+				$group_displays[$item->section]->section = $item->section;
+				$group_displays[$item->section]->data = array();
+			}
+
+			$data = $group_displays[$item->section]->data;
+			$data[] = $item;
+
+			$group_displays[$item->section]->data = $data;
+		}
+
+		foreach ($group_displays as $d) {
+			$this->addPageDisplay($d);
+		}
 	}
 
 
@@ -184,9 +155,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
 		$data = $page_display['data'];
 
-		foreach ($data as $item_info) {
-			$this->page_display_items[$section][] = $this->_createPortalItem($section, $item_info);
+		foreach ($data as $item) {
+			$this->page_display_items[$section][] = $this->_createPortalItem($section, $item);
 		}
+
 	}
 
 
@@ -194,12 +166,12 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 * Creates a PortalItem object given the item info array
 	 *
 	 * @param $section
-	 * @param array $item_info
+	 * @param $item
 	 * @return \Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract
 	 */
-	public function _createPortalItem($section, array $item_info)
+	public function _createPortalItem($section, $item)
 	{
-		$type = $item_info['type'];
+		$type = $item->type;
 		if (strpos($type, '\\') === false) {
 			$type_class = ucfirst(Strings::underscoreToCamelCase($type));
 			$type_class = "Application\\DeskPRO\\PageDisplay\\Item\\Portal\\$type_class";
@@ -207,7 +179,12 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			$type_class = $type;
 		}
 
-		$obj = new $type_class($section, $item_info, $this->container, $this->person_context);
+		$data = $item->data;
+		$data['pid'] = $item->id;
+		$data['is_enabled'] = $item->is_enabled;
+		$data['display_order'] = $item->display_order;
+
+		$obj = new $type_class($section, $data, $this->container, $this->person_context);
 
 		return $obj;
 	}
@@ -320,6 +297,8 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			}
 
 			if ($block_html) {
+				$pid = $item->getOption('pid');
+				$block_html = "<div class=\"dp-p dp-pid-{$pid}" . ($item->getOption('is_enabled') ? '' : ' dp-p-disabled') . "\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
 				$html[] = $block_html;
 			}
 		}

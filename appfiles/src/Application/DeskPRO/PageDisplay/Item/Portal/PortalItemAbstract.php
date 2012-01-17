@@ -22,21 +22,21 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 	/**
 	 * The section context. Many items can live either in the content column
 	 * or the sidebar column, and they behave differently depending on where.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $section;
 
 	/**
 	 * The controller requesting the portal item
-	 * 
+	 *
 	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
 	 */
 	protected $container;
 
 	/**
 	 * The user who is viewing the item
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person_context;
@@ -59,14 +59,14 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 
 	/**
 	 * Hook method called from constructor
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function init()
 	{
 
 	}
-	
+
 	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return void
@@ -76,10 +76,10 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 		$this->person_context = $person;
 	}
 
-	
+
 	/**
 	 * Get the HTML for this item that'll be outputted into the page
-	 * 
+	 *
 	 * @return string
 	 */
 	abstract public function getHtml();
@@ -87,7 +87,7 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 
 	/**
 	 * Get an array of CSS assets that this item requires
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getCssAssets()
@@ -118,11 +118,11 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 	{
 		return $this->container->get('templating')->render($view, $parameters);
 	}
-	
+
 
 	/**
 	 * Execute a sub-request and then get the string result.
-	 * 
+	 *
 	 * @param string $controller
 	 * @param array $path
 	 * @param array $query
@@ -136,7 +136,7 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 		return $response->getContent();
 	}
 
-	
+
 	public function getOption($name, $default = null)
 	{
 		return isset($this->options[$name]) ? $this->options[$name] : $default;
@@ -144,7 +144,7 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 
 	/**
 	 * Gets an option but makes sure its not empty ('', 0, false etc), otherwise returns default.
-	 * 
+	 *
 	 * @param $name
 	 * @param mixed $default
 	 * @return mixed

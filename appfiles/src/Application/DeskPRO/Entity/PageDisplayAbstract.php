@@ -49,5 +49,5 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * @var array
 	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
-	protected $data;
+	protected $data = array();
 }

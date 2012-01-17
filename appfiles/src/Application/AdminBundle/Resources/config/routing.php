@@ -291,6 +291,20 @@ $collection->add('admin_portal', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_updateblockorder', new Route(
+	'/portal/update-block-orders.json',
+	array('_controller' => 'AdminBundle:Portal:updateBlockOrders'),
+	array(),
+	array()
+));
+
+$collection->add('admin_portal_blocktoggle', new Route(
+	'/portal/blocks/{pid}/toggle.json',
+	array('_controller' => 'AdminBundle:Portal:blockToggle'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_toggle', new Route(
 	'/portal/toggle-portal',
 	array('_controller' => 'AdminBundle:Portal:togglePortal'),

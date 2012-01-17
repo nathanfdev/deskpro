@@ -87,6 +87,35 @@ class PortalController extends AbstractController
 		return $this->redirectRoute('admin_portal');
 	}
 
+	public function updateBlockOrdersAction()
+	{
+		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
+		return $helper->doUpdate('portal_page_display');
+	}
+
+	public function blockToggleAction($pid)
+	{
+		$pd = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+		if (!$pd) {
+			return $this->createNotFoundException();
+		}
+
+		$pd->is_enabled = $this->in->getBool('enabled');
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($pd);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success'=>1));
+	}
 
 	############################################################################
 	# Portal Sections

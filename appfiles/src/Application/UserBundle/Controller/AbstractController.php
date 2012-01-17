@@ -11,7 +11,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * The currently logged in person.
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $person;
+	public $person;
 
 	protected $search_query = '';
 
@@ -38,6 +38,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function preAction($action, $arguments = null)
 	{
 		$this->person = $this->session->getPerson();
+
+		if (!$this->person->id) {
+			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			$cas->process();
+		}
+
 		$this->person->loadHelper('IdeaVotes', array(
 			'visitor' => $this->session->getVisitor()
 		));
