@@ -36,6 +36,20 @@ $(document).ready(function() {
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
+		<label>Type</label>
+	</div>
+	<div class="dp-form-input">
+		{% if filter.is_global %}
+			Global filter
+		{% elseif filter.agent_team %}
+			Team filter for {{ filter.agent_team.name }}
+		{% else %}
+			Custom filter for {{ filter.person.display_name }}
+		{% endif %}
+	</div>
+</div>
+<div class="dp-form-row">
+	<div class="dp-form-label">
 		<label>Title</label>
 	</div>
 	<div class="dp-form-input">
@@ -63,32 +77,55 @@ $(document).ready(function() {
 
 {% if filter.id %}
 	{% if filter.is_global or filter.agent_team %}
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>
-					{% if filter.is_global  %}
-						This global filter is in use by
-					{% elseif filter.agent_team %}
-						This team filter for {{ filter.agent_team.name }} is in use by these members
-					{% endif %}
-				</label>
-			</div>
+		{% if filter_users %}
+			<div style="float: left; width: 45%; margin-right: 20px">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>
+							In use by:
+						</label>
+					</div>
 
-			<div class="dp-form-input">
-				<div class="icon-list-box">
-					<ul>
-						{% for agent in filter_users %}
-							<li>
-								<img src="{{ agent.getPictureUrl(20) }}" class="list-icon" />
-								{{ agent.display_name }}
-							</li>
-						{% else %}
-							<li>No agent are using this filter.</li>
-						{% endfor %}
-					</ul>
+					<div class="dp-form-input">
+						<div class="icon-list-box" style="width: 98%">
+							<ul>
+								{% for agent in filter_users %}
+									<li>
+										<img src="{{ agent.getPictureUrl(20) }}" class="list-icon" />
+										{{ agent.display_name }}
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		{% endif %}
+		{% if filter_users_ignore %}
+			<div style="float: left; width: 45%; margin-right: 8px">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>
+							Disabled by:
+						</label>
+					</div>
+
+					<div class="dp-form-input">
+						<div class="icon-list-box" style="width: 98%">
+							<ul>
+								{% for agent in filter_users_ignore %}
+									<li>
+										<img src="{{ agent.getPictureUrl(20) }}" class="list-icon" />
+										{{ agent.display_name }}
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+		<br class="clear" />
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">

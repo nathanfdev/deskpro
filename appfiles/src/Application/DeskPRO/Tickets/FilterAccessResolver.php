@@ -88,10 +88,10 @@ class FilterAccessResolver
 		}
 
 		if ($filter->agent_team) {
-			if (!isset($this->team_members[$filter->agent_team])) {
+			if (!isset($this->team_members[$filter->agent_team->id])) {
 				return false;
 			}
-			return in_array($person->id, $this->team_members[$filter->agent_team]);
+			return in_array($person->id, $this->team_members[$filter->agent_team->id]);
 		}
 
 		if ($filter->person && $filter->person->id == $person->id) {
@@ -131,6 +131,30 @@ class FilterAccessResolver
 
 		foreach ($available_agents as $agent) {
 			if (!$this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
+				$agents[] = $agent;
+			}
+		}
+
+		return $agents;
+	}
+
+
+	/**
+	 * Get all users who use ignore filter
+	 *
+	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
+	 * @return array
+	 */
+	public function getIgnoreUsers(TicketFilter $filter, array $available_agents = null)
+	{
+		if ($available_agents === null) {
+			$available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		}
+
+		$agents = array();
+
+		foreach ($available_agents as $agent) {
+			if ($this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
 				$agents[] = $agent;
 			}
 		}

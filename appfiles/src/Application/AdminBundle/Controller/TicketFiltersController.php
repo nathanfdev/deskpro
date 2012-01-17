@@ -77,6 +77,7 @@ class TicketFiltersController extends AbstractController
 			}
 
 			$filter_users = null;
+			$filter_users_ignore = null;
 		} else {
 			$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
 			if (!$filter) {
@@ -84,7 +85,10 @@ class TicketFiltersController extends AbstractController
 			}
 
 			$access_tester = new \Application\DeskPRO\Tickets\FilterAccessResolver($this->em);
-			$filter_users = $access_tester->getUsers($filter);
+
+			$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+			$filter_users = $access_tester->getUsers($filter, $agents);
+			$filter_users_ignore = $access_tester->getIgnoreUsers($filter, $agents);
 		}
 
 		if ($this->in->getBool('process')) {
@@ -104,6 +108,7 @@ class TicketFiltersController extends AbstractController
 			'filter' => $filter,
 			'term_options' => $term_options,
 			'filter_users' => $filter_users,
+			'filter_users_ignore' => $filter_users_ignore,
 		));
 	}
 }

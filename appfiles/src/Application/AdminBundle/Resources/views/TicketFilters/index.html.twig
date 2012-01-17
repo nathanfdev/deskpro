@@ -17,34 +17,60 @@
 	{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 	{{ design.dpgrid_content() }}
 		{{ design.dpgrid_col({ class: 'l r', style: "width: 935px;"}) }}
-			<div class="namelistbox">
-				{% set in_use_by = false %}
-				{% set use_by_list %}
-					<h4>Used by:</h4>
-					<ul>
-						{% for agent in agents %}
-							{% if not access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
-								{% set in_use_by = true %}
-								<li><img src="{{ agent.getPictureUrl(20) }}" title="{{ agent.display_name }}" class="tipped" /></li>
-							{% endif %}
-						{% endfor %}
-					</ul>
-				{% endset %}
-				{% if in_use_by %}
-					{{ use_by_list }}
-				{% else %}
-					{% if filter.is_global %}
-						<h4>No agents use this filter</h4>
-					{% elseif filter.agent_team %}
-						<h4>All {{ filter.agent_team.name }} members have disabled this filter</h4>
-					{% else %}
-						<h4>{{ filter.person.display_name }} has disabled this filter</h4>
+
+			<div style="float:right;">
+				{% if filter.is_global or filter.agent_team %}
+					{% set is_use_by = false %}
+					{% set use_by_list %}
+						<h4>Used by:</h4>
+						<ul>
+							{% for agent in agents %}
+								{% if not access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
+									{% set is_use_by = true %}
+									<li><img src="{{ agent.getPictureUrl(20) }}" title="{{ agent.display_name }}" class="tipped" /></li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+					{% endset %}
+					{% set is_ignored_by = false %}
+					{% set ignored_by_list %}
+						<h4>Disabled by:</h4>
+						<ul>
+							{% for agent in agents %}
+								{% if access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
+									{% set is_ignored_by = true %}
+									<li><img src="{{ agent.getPictureUrl(20) }}" title="{{ agent.display_name }}" class="tipped" /></li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+					{% endset %}
+
+					{% if is_use_by %}
+						<div class="namelistbox">
+							{{use_by_list}}
+						</div>
+					{% endif %}
+					{% if is_ignored_by %}
+						<div class="namelistbox">
+							{{ignored_by_list}}
+						</div>
+					{% endif %}
+					{% if not is_use_by and not is_ignored_by %}
+						<div class="namelistbox">
+							{{ filter.agent_team.name }} has no members. No one uses this filter.
+						</div>
 					{% endif %}
 				{% endif %}
 			</div>
 
 			<h2><a href="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id}) }}">{{ filter.title }}</a></h2>
-			<p>{{ filter.summary_phrase }}</p>
+			<ul class="search-summary">
+				{% for term in filter.getSummaryParts() %}
+					<li>{{ term }}</li>
+				{% else %}
+					<li>No terms. All tickets match.</li>
+				{% endfor %}
+			</ul>
 			<br class="clear" />
 		{{ design.dpgrid_col_end() }}
 	{{ design.dpgrid_content_end() }}
@@ -112,7 +138,9 @@
 				<h1>{{ group.person.display_name }}</h1>
 			{{ design.dpgrid_section_end() }}
 			{% for filter in group.filters %}
-				{{ _self.filterrow(filter, access_tester, agents) }}
+				{% if not access_tester.isIgnored(filter.person, filter) %}
+					{{ _self.filterrow(filter, access_tester, agents) }}
+				{% endif %}
 			{% endfor %}
 		{% endfor %}
 	{{ design.dpgrid_end() }}
