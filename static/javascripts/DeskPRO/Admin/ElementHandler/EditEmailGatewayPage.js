@@ -63,10 +63,12 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 			if ($('#smtp_options_default').is(':visible')) {
 				$('#smtp_options_default').slideUp('fast', function() {
 					$('#smtp_options').slideDown();
+					$('#define_transport').val('1');
 				});
 			} else {
 				$('#smtp_options').slideUp('fast', function() {
 					$('#smtp_options_default').slideDown();
+					$('#define_transport').val('0');
 				});
 			}
 		});

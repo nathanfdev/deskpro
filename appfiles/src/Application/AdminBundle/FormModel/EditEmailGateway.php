@@ -59,7 +59,7 @@ class EditEmailGateway
 
 		if ($gateway->linked_transport) {
 			$this->define_transport = true;
-			if ($this->gateway_type == 'gmail' && $gateway->linked_transport->transport_type == 'gmail') {
+			if ($this->connection_type == 'gmail' && $gateway->linked_transport->transport_type == 'gmail') {
 				if ($this->gmail_options['username'] == $gateway->linked_transport->transport_options['username'] && $this->gmail_options['password'] == $gateway->linked_transport->transport_options['password']) {
 					$this->define_transport = false;
 				}

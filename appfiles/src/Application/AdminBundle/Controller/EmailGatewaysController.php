@@ -76,13 +76,32 @@ class EmailGatewaysController extends AbstractController
 			$trans_form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
+
+				$editgateway->define_transport = $this->in->getBool('gateway.define_transport');
+
 				$new_addresses_info = $this->in->getCleanValueArray('new_address', 'array', 'str_simple');
 				$new_addresses = array();
 
 				foreach ($new_addresses_info as $address_info) {
 					$address = new EmailGatewayAddress();
-					$address->match_type    = $address_info['match_type'];
+					$address->match_type    = 'exact';
 					$address->match_pattern = $address_info['match_pattern'];
+
+					$new_addresses[] = $address;
+				}
+
+				$found = false;
+				foreach ($gateway->addresses as $a) {
+					if ($a->match_pattern == $editgateway->address) {
+						$found = $a;
+						break;
+					}
+				}
+
+				if (!$found) {
+					$address = new EmailGatewayAddress();
+					$address->match_type    = 'exact';
+					$address->match_pattern = $editgateway->address;
 
 					$new_addresses[] = $address;
 				}
@@ -98,18 +117,32 @@ class EmailGatewaysController extends AbstractController
 
 				$this->em->getConnection()->beginTransaction();
 				try {
+					$editgateway->save();
+					$this->em->flush();
+
 					if ($editgateway->define_transport) {
 						$edittrans->save();
 						$gateway->linked_transport = $transport;
 					} else {
-						if ($gateway->linked_transport) {
+						if ($editgateway->connection_type == 'gmail') {
+							if (!$gateway->linked_transport) {
+								$gateway->linked_transport = new \Application\DeskPRO\Entity\EmailTransport();
+							}
+
+							$gateway->linked_transport->title = 'Google Apps: ' . $editgateway->address;
+							$gateway->linked_transport->match_type = 'exact';
+							$gateway->linked_transport->match_pattern = $editgateway->address;
+							$gateway->linked_transport->transport_type = 'gmail';
+							$gateway->linked_transport->transport_options = $editgateway->gmail_options;
+
+							$this->em->persist($gateway->linked_transport);
+
+						} elseif ($gateway->linked_transport) {
 							$this->em->remove($gateway->linked_transport);
 							$gateway->linked_transport = null;
-							$this->em->flush();
 						}
 					}
 
-					$editgateway->save();
 					$this->em->flush();
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
@@ -124,6 +157,7 @@ class EmailGatewaysController extends AbstractController
 
 		return $this->render('AdminBundle:EmailGateways:edit-account.html.twig', array(
 			'gateway' => $gateway,
+			'transport' => $transport,
 			'form' => $form->createView(),
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
