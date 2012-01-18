@@ -133,69 +133,6 @@ class AgentsController extends AbstractController
 		));
 	}
 
-	############################################################################
-	# new-agent
-	############################################################################
-
-	public function newAgentAction()
-	{
-		$errors = array();
-
-		if ($this->in->getBool('process')) {
-
-			$email_address = $this->in->getString('agent.email');
-			$first_name    = $this->in->getString('agent.first_name');
-			$last_name     = $this->in->getString('agent.last_name');
-			$password      = $this->in->getString('agent.password');
-			$password2      = $this->in->getString('agent.password2');
-
-			if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
-				$errors['email'] = true;
-			}
-			if (!$first_name || !$last_name) {
-				$errors['name'] = true;
-			}
-
-			if (!$password) {
-				$errors['password'] = true;
-			}
-			if ($password != $password2) {
-				$errors['password2'] = true;
-			}
-
-			if (!$errors) {
-				$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email_address);
-				if (!$person) {
-					$person = new \Application\DeskPRO\Entity\Person();
-					$person->setEmail($email_address, true);
-				}
-
-				$person->setPassword($password);
-				$person->first_name = $first_name;
-				$person->last_name  = $last_name;
-				$person->is_user = true;
-				$person->is_confirmed = true;
-				$person->is_agent = true;
-
-				$this->em->getConnection()->beginTransaction();
-
-				try {
-					$this->em->persist($person);
-					$this->em->flush();
-					$this->em->getConnection()->commit();
-				} catch (\Exception $e) {
-					$this->em->getConnection()->rollback();
-					throw $e;
-				}
-
-				return $this->redirectRoute('admin_agents_edit', array('person_id' => $person['id']));
-			}
-		}
-
-		return $this->render('AdminBundle:Agents:edit-new-agent.html.twig', array(
-			'errors' => $errors
-		));
-	}
 
 	############################################################################
 	# edit-agent
@@ -203,7 +140,11 @@ class AgentsController extends AbstractController
 
 	public function editAgentAction($person_id)
 	{
-		$agent = $this->getAgentOr404($person_id);
+		if ($person_id) {
+			$agent = $this->getAgentOr404($person_id);
+		} else {
+			$agent = new \Application\DeskPRO\Entity\Person();
+		}
 
 		$all_teams = App::getOrm()->createQuery("
 			SELECT t
@@ -264,13 +205,55 @@ class AgentsController extends AbstractController
 			'override_perms' => $override_perms,
 			'departments' => $departments,
 			'agent_deps' => $agent_deps,
+			'random_password' => Strings::randomPronounceable(10)
 		));
 	}
 
+	public function quickEditFormValidateAction($person_id)
+	{
+		$agent = null;
+		if ($person_id) {
+			$agent = $this->getAgentOr404($person_id);
+		}
+
+		$errors = array();
+
+		$email = $this->in->getString('agent.email');
+		if (!$email or !\Orb\Validator\StringEmail::isValueValid($email)) {
+			$errors[] = 'The email address you entered is not valid.';
+		} elseif (!$agent or !$agent->findEmailAddress($email)) {
+			$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if ($exist_check && $exist_check) {
+				$errors[] = 'The new email address you entered already belongs to an existing user.';
+			}
+		}
+
+		if (!$this->in->getString('agent.first_name')) {
+			$errors[] = 'You did not enter a first name';
+		}
+		if (!$this->in->getString('agent.last_name')) {
+			$errors[] = 'You did not enter a last name';
+		}
+
+		if ($errors) {
+			return $this->createJsonResponse(array('error' => true, 'error_messages' => $errors));
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 
 	public function editAgentSaveAction($person_id)
 	{
-		$agent = $this->getAgentOr404($person_id);
+		if ($person_id) {
+			$agent = $this->getAgentOr404($person_id);
+		} else {
+			$agent = new \Application\DeskPRO\Entity\Person();
+
+			$agent->setPassword(Strings::random(20));
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
+			$agent->is_agent = true;
+		}
 		$agent->first_name = $this->in->getString('agent.first_name');
 		$agent->last_name = $this->in->getString('agent.last_name');
 
@@ -310,6 +293,10 @@ class AgentsController extends AbstractController
 				200,
 				array('error_list' => $errors)
 			);
+		}
+
+		if ($this->in->getString('agent.password')) {
+			$agent->setPassword($this->in->getString('agent.password'));
 		}
 
 		$this->em->getConnection()->beginTransaction();

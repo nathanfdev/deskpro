@@ -1,18 +1,25 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
+	{% if agent.id %}
 	<nav>
 		<ul>
 			<li class="tools" id="tools_menu_trigger"><a></a><em></em></li>
 		</ul>
 	</nav>
-	<ul>
-		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
-		<li>Edit Agent</li>
-	</ul>
 	<ul id="tools_menu" style="display: none">
 		{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">Vacation Mode</li>{% endif %}
 		<li id="delete_overlay_trigger">Delete Agent</li>
+	</ul>
+	{% endif %}
+
+	<ul>
+		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
+		{% if agent.id %}
+			<li>Edit Agent</li>
+		{% else %}
+			<li>New Agent</li>
+		{% endif %}
 	</ul>
 {% endblock %}
 {% block html_head %}
@@ -33,9 +40,10 @@
 {% endif %}
 
 <form
-	action="{{ path('admin_agents_edit_save', {'person_id': agent.id}) }}"
+	action="{{ path('admin_agents_edit_save', {'person_id': agent.id|default('0')}) }}"
 	method="POST"
 	data-element-handler="DeskPRO.Admin.ElementHandler.AgentEditPage"
+	data-validate-url="{{ path('admin_agents_edit_formvalidate', {person_id: agent.id|default('0')}) }}"
 >
 
 <div class="dp-form">
@@ -58,6 +66,17 @@
 				<input style="width:422px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
 			</div>
 		</div>
+
+		{% if not agent.id %}
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>Initial Password</label>
+				</div>
+				<div class="dp-form-input">
+					<input style="width:422px;" type="text" name="agent[password]" value="{{ random_password }}" />
+				</div>
+			</div>
+		{% endif %}
 
 		{% if all_teams %}
 			<div class="dp-form-row">
@@ -133,16 +152,16 @@
 												<td class="prop">&nbsp;</td>
 											{% else %}
 												<td class="title">{{ dep.title }}</td>
-												<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" /></td>
-												<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" /></td>
+												<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][tickets]" value="1" /></td>
+												<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ dep.id }}][chat]" value="1" /></td>
 											{% endif %}
 										</tr>
 										{% if dep.children %}
 											{% for subdep in dep.children %}
 												<tr>
 													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
-													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
+													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
+													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
 												</tr>
 											{% endfor %}
 										{% endif %}
@@ -173,7 +192,7 @@
 									{% for usergroup in all_usergroups %}
 									<li>
 										<label>
-											<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if usergroup.id in agent_usergroups %}checked="checked"{% endif %} />
+											<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if (not agent.id and usergroup.id == 1) or usergroup.id in agent_usergroups %}checked="checked"{% endif %} />
 											{{ usergroup.title }}
 										</label>
 									</li>
@@ -199,7 +218,12 @@
 </div>
 
 <footer class="controls">
-	<button class="clean-white">Save Agent</button>
+	<div class="is-not-loading">
+		<button class="clean-white">Save Agent</button>
+	</div>
+	<div class="is-loading">
+		<div class="loading-icon-flat">&nbsp;</div>
+	</div>
 </footer>
 
 <br class="clear" />

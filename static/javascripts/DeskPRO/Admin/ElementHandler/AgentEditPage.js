@@ -7,6 +7,11 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		var self = this;
 
 		this.el.on('submit', function(ev) {
+			if (self.okSubmit) {
+				return;
+			}
+			ev.preventDefault();
+
 			var errors = [];
 
 			var f_name = $('input[name="agent[first_name]"]').val().trim();
@@ -23,8 +28,28 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 			if (errors.length) {
 				alert("Please correct the following errors and try again:\n - " + errors.join("\n - "));
-				ev.preventDefault();
+				return;
 			}
+
+			self.el.addClass('loading');
+
+			// We also need to send the ajax verify too
+			var postData = self.el.serializeArray();
+			$.ajax({
+				url: self.el.data('validate-url'),
+				type: 'POST',
+				dataType: 'json',
+				data: postData
+			}).always(function() {
+				self.el.removeClass('loading');
+			}).done(function(data) {
+				if (data.success) {
+					self.okSubmit = true;
+					self.el.submit();
+				} else {
+					alert("Please correct the following errors and try again:\n - " + data.error_messages.join("\n - "));
+				}
+			});
 		});
 
 

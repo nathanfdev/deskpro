@@ -496,7 +496,7 @@ $collection->add('admin_agents_deleted', new Route(
 
 $collection->add('admin_agents_new', new Route(
 	'/agents/new',
-	array('_controller' => 'AdminBundle:Agents:newAgent'),
+	array('_controller' => 'AdminBundle:Agents:editAgent', 'person_id' => '0'),
 	array(),
 	array()
 ));
@@ -504,6 +504,13 @@ $collection->add('admin_agents_new', new Route(
 $collection->add('admin_agents_edit', new Route(
 	'/agents/{person_id}/edit',
 	array('_controller' => 'AdminBundle:Agents:editAgent'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_edit_formvalidate', new Route(
+	'/agents/{person_id}/edit/validate-form.json',
+	array('_controller' => 'AdminBundle:Agents:quickEditFormValidate'),
 	array('person_id' => '\\d+'),
 	array()
 ));
