@@ -32,6 +32,7 @@
 				<h4>Permission Groups</h4>
 			</header>
 			<article>
+				<article class="box-hint">A permission group is a set of system permissions that you can easily re-use by adding agents to the group.</article>
 				<ul>
 					{% for usergroup in all_usergroups %}
 						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
@@ -63,6 +64,7 @@
 				<h4>Teams</h4>
 			</header>
 			<article>
+				<article class="box-hint">Teams are an a way to organize agents into work groups.</article>
 				<ul>
 					{% for team in all_teams %}
 						<li class="agent-team team-{{team.id}}" data-team-id="{{team.id}}">
