@@ -27,6 +27,15 @@ class SetupGuide
 	 */
 	protected $controller;
 
+	protected $tasks = array(
+		'incoming_email' => array('admin_emailgateways'),
+		'add_agents' => array('admin_agents_new'),
+		'custom_header' => array('admin_portal'),
+		'add_ticketcategory' => array('admin_ticketcats'),
+		'add_ticketpriority' => array('admin_ticketpris'),
+		'add_ticketfield' => array('admin_customdeftickets')
+	);
+
 	public function __construct(DeskproContainer $container, $controller)
 	{
 		$this->container  = $container;
@@ -84,6 +93,17 @@ class SetupGuide
 		} elseif ($step < 30) {
 			if (!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController) || $action != 'cronAction') {
 				return $this->controller->redirectRoute('admin_settings_cron');
+			}
+		}
+
+		return null;
+	}
+
+	public function getNextTask()
+	{
+		foreach ($this->tasks as $t => $info) {
+			if (!$this->container->getSetting('core.task_completed_' . $t)) {
+				return $info;
 			}
 		}
 

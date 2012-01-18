@@ -128,6 +128,21 @@
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
 	<div id="dp_admin_nav_sections" class="deskproPane">
+		<div id="dp_admin_steps">
+			<div class="view-all">
+				view all
+			</div>
+			<div class="next">
+				Next step: <a href="{{ path('admin_emailgateways') }}" class="step">Setup Incoming Email</a>
+				<em class="skip">or skip</em>
+			</div>
+			<div class="ui-progress-bar ui-container blue">
+				<div class="ui-progress" style="width: 60%;">
+					<span class="ui-label"><b class="value">60%</b></span>
+				</div>
+			</div>
+		</div>
+
 		<ul>
 			<li data-menu="#setup_menu">
 				<a><span class="setup">Setup</span></a>
