@@ -487,6 +487,13 @@ $collection->add('admin_agents', new Route(
 	array()
 ));
 
+$collection->add('admin_agents_deleted', new Route(
+	'/agents/deleted',
+	array('_controller' => 'AdminBundle:Agents:deletedAgents'),
+	array(),
+	array()
+));
+
 $collection->add('admin_agents_new', new Route(
 	'/agents/new',
 	array('_controller' => 'AdminBundle:Agents:newAgent'),
@@ -498,6 +505,20 @@ $collection->add('admin_agents_edit', new Route(
 	'/agents/{person_id}/edit',
 	array('_controller' => 'AdminBundle:Agents:editAgent'),
 	array('person_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_agents_setvacation', new Route(
+	'/agents/{person_id}/set-vacation-mode/{set_to}',
+	array('_controller' => 'AdminBundle:Agents:setVacationMode', 'set_to' => '0'),
+	array('person_id' => '\\d+', 'set_to' => '(1|0)'),
+	array()
+));
+
+$collection->add('admin_agents_setdeleted', new Route(
+	'/agents/{person_id}/set-deleted/{set_to}',
+	array('_controller' => 'AdminBundle:Agents:setDeleted', 'set_to' => '0'),
+	array('person_id' => '\\d+', 'set_to' => '(1|0)'),
 	array()
 ));
 

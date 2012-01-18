@@ -20,6 +20,37 @@
 {% endblock %}
 {% block sidebar_right %}
 	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<div class="controls">
+					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">New</a>
+				</div>
+				<h4>Permission Groups</h4>
+			</header>
+			<article>
+				<ul>
+					{% for usergroup in all_usergroups %}
+						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
+							<a class="title" href="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id}) }}">{{usergroup.title}}</a>
+							<div class="icon-list">
+								<ul>
+									{% for id in usergroup_member_ids[usergroup.id] %}
+										{% set agent = all_agents[id] %}
+										<li><img src="{{ agent.getPictureUrl(30) }}" class="tipped" title="{{ agent.display_name }}" /></li>
+									{% endfor %}
+								</ul>
+								<br class="clear" />
+							</div>
+						</li>
+					{% else %}
+						You have not created any permission groups. <a href="{{ path('admin_agents_groups_new') }}">Click here</a> to create one now.
+					{% endfor %}
+				</ul>
+			</article>
+		</div>
+	</div>
+
+	<div class="dp-page-box">
 		<div class="resource-item-list icon-group">
 			<header>
 				<div class="controls">
@@ -51,37 +82,6 @@
 			</article>
 		</div>
 	</div>
-
-	<div class="dp-page-box">
-		<div class="resource-item-list">
-			<header>
-				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">New</a>
-				</div>
-				<h4>Permission Groups</h4>
-			</header>
-			<article>
-				<ul>
-					{% for usergroup in all_usergroups %}
-						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
-							<a class="title" href="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id}) }}">{{usergroup.title}}</a>
-							<div class="icon-list">
-								<ul>
-									{% for id in usergroup_member_ids[usergroup.id] %}
-										{% set agent = all_agents[id] %}
-										<li><img src="{{ agent.getPictureUrl(30) }}" class="tipped" title="{{ agent.display_name }}" /></li>
-									{% endfor %}
-								</ul>
-								<br class="clear" />
-							</div>
-						</li>
-					{% else %}
-						You have not created any permission groups. <a href="{{ path('admin_agents_groups_new') }}">Click here</a> to create one now.
-					{% endfor %}
-				</ul>
-			</article>
-		</div>
-	</div>
 {% endblock %}
 
 {% block content %}
@@ -94,7 +94,6 @@
 			<thead>
 				<tr>
 					<th class="single-title">Agent</th>
-					<th class="r-col" width="16"><img title="Can access the agent interface" src="{{ asset('images/admin/icons/zone-agent.png') }}" /></th>
 					<th class="r-col" width="16"><img title="Can access the admin interface" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
 					<th class="r-col" width="16"><img title="Can access the reporting interface" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
 					<th class="r-col" width="16"><img title="Can access the billing interface" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>
@@ -102,22 +101,40 @@
 			</thead>
 			<tbody>
 				{% for person in all_agents %}
-					<tr>
-						<td class="title">
+					{% if person.is_vacation_mode %}
+					<tr class="vacation-mode">
+						<td class="title" colspan="4">
+							<div class="vacation-mode-desc">
+								vacation mode
+							</div>
 							<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
 							<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
 							<address>{{person.primary_email_address}}</address>
 						</td>
-						<td class="prop r-col">{% if person.can_agent %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
-						<td class="prop r-col">{% if person.can_admin %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
-						<td class="prop r-col">{% if person.can_reports %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
-						<td class="prop r-col">{% if person.can_billing %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
 					</tr>
+					{% else %}
+						<tr>
+							<td class="title">
+								<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
+								<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
+								<address>{{person.primary_email_address}}</address>
+							</td>
+							<td class="prop r-col">{% if person.can_admin %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+							<td class="prop r-col">{% if person.can_reports %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+							<td class="prop r-col">{% if person.can_billing %}<img src="{{ asset('images/agent/icons/check.png') }}" />{% else %}&nbsp;{% endif %}</td>
+						</tr>
+					{% endif %}
 				{% endfor %}
 			</tbody>
 		</table>
 	</div>
 <div>
+
+{% if count_deleted %}
+	<div class="deleted-text">
+		There are <a href="{{ path('admin_agents_deleted') }}">{{ count_deleted }} deleted agents</a>.
+	</div>
+{% endif %}
 
 </div>
 {% endblock %}

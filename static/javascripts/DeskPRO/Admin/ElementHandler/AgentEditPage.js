@@ -54,6 +54,19 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		});
 
 		this.updatePermissionsGrid();
+
+		this.toolsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('#tools_menu_trigger'),
+			menuElement: $('#tools_menu')
+		});
+		this.vacationOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '#vacation_overlay_trigger',
+			contentElement: '#vacation_overlay'
+		});
+		this.deleteOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '#delete_overlay_trigger',
+			contentElement: '#delete_overlay'
+		});
 	},
 
 	getUsergroupIds: function() {

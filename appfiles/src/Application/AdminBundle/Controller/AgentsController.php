@@ -36,9 +36,11 @@ class AgentsController extends AbstractController
 			FROM DeskPRO:Person p INDEX BY p.id
 			LEFT JOIN p.primary_email email
 			LEFT JOIN p.picture_blob pic
-			WHERE p.is_agent = true
+			WHERE p.is_agent = true AND p.is_deleted = false
 			ORDER BY p.first_name, p.last_name
 		")->execute();
+
+		$count_deleted = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 1");
 
 		foreach ($all_agents as $agent) {
 			$agent->loadHelper('Agent');
@@ -106,6 +108,28 @@ class AgentsController extends AbstractController
 			'team_member_ids'      => $team_member_ids,
 			'usergroup_member_ids' => $usergroup_member_ids,
 			'overrides_counts' => $overrides_counts,
+
+			'count_deleted' => $count_deleted,
+		));
+	}
+
+	public function deletedAgentsAction()
+	{
+		$all_agents = App::getOrm()->createQuery("
+			SELECT p, pic, email
+			FROM DeskPRO:Person p INDEX BY p.id
+			LEFT JOIN p.primary_email email
+			LEFT JOIN p.picture_blob pic
+			WHERE p.is_agent = true AND p.is_deleted = true
+			ORDER BY p.first_name, p.last_name
+		")->execute();
+
+		if (!$all_agents) {
+			return $this->redirectRoute('admin_agents');
+		}
+
+		return $this->render('AdminBundle:Agents:list-deleted.html.twig', array(
+			'all_agents'     => $all_agents,
 		));
 	}
 
@@ -427,6 +451,54 @@ class AgentsController extends AbstractController
 		$perms = $agent->getPermissionsManager()->get('Usergroups')->getAllPermissions();
 
 		return $this->createJsonResponse($perms);
+	}
+
+	public function setVacationModeAction($person_id, $set_to = 0)
+	{
+		$this->ensureRequestToken();
+
+		$agent = $this->getAgentOr404($person_id);
+		$agent->is_vacation_mode = $set_to;
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($agent);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
+	}
+
+	public function setDeletedAction($person_id, $set_to = 0)
+	{
+		$this->ensureRequestToken();
+
+		$agent = $this->getAgentOr404($person_id);
+		$agent->is_deleted = $set_to;
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($agent);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		if ($set_to) {
+			return $this->redirectRoute('admin_agents');
+		} else {
+			return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
+		}
 	}
 
 	############################################################################

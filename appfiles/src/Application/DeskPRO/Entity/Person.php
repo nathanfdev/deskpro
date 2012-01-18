@@ -110,6 +110,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $can_reports = 0;
 
 	/**
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_vacation_mode", type="boolean")
+	 */
+	protected $is_vacation_mode = 0;
+
+	/**
 	 * Autoresponds
 	 *
 	 * @var bool
@@ -134,6 +140,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="is_agent_confirmed", type="boolean")
 	 */
 	protected $is_agent_confirmed = false;
+
+	/**
+	 * Is the user deleted?
+	 *
+	 * @var bool
+	 * @ORM_Mapping\Column(name="is_deleted", type="boolean")
+	 */
+	protected $is_deleted = false;
 
 	/**
 	 * The user importance, 0-5
