@@ -1,6 +1,17 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.AgentTeamEditPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
+	{% if team.id %}
+	<nav>
+		<ul>
+			<li class="tools" id="tools_menu_trigger"><a></a><em></em></li>
+		</ul>
+	</nav>
+	<ul id="tools_menu" style="display: none">
+		<li id="delete_overlay_trigger">Delete Team</li>
+	</ul>
+	{% endif %}
 	<ul>
 		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
 		{% if team.id %}
@@ -9,6 +20,9 @@
 			<li>New Team</li>
 		{% endif %}
 	</ul>
+{% endblock %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentTeamEditPage.js') }}"></script>
 {% endblock %}
 {% block page %}
 
@@ -48,8 +62,20 @@
 <button class="btn primary save-trigger">Save</button>
 </form>
 
-<div class="delete-link-wrap">
-	<a href="{{ path('admin_agents_teams_del', {'team_id': team.id, 'security_token': security_token('delete_team')}) }}" onclick="return confirm('Are you sure you want to delete this team?');">delete team</a>
+{% if team.id %}
+<div id="delete_overlay" style="width: 400px; height: 150px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Delete Agent</h4>
+	</div>
+	<div class="overlay-content">
+		<p>Deleting this team will also cause any tickets assigned to the team to be unassigned.</p>
+	</div>
+	<div class="overlay-footer">
+		<form action="{{ path('admin_agents_teams_del', {'team_id': team.id, 'security_token': security_token('delete_team')}) }}" method="get">
+			<button class="clean-white">Delete <span class="agent-name">{{ team.name }}</span></button>
+		</form>
+	</div>
 </div>
-
+{% endif %}
 {% endblock %}

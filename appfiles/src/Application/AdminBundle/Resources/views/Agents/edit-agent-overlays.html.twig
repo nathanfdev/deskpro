@@ -1,0 +1,31 @@
+<div id="vacation_overlay" style="width: 400px; height: 200px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Vacation Mode</h4>
+	</div>
+	<div class="overlay-content">
+		<p>When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user.</p>
+	</div>
+	<div class="overlay-footer">
+		<form action="{{ path('admin_agents_setvacation', {person_id: agent.id|default('00000'), set_to: '1'}) }}" method="post">
+			{{ form_token() }}
+			<button class="clean-white">Enable vacation mode for <span class="agent-name">{{ agent.display_name }}</span></button>
+		</form>
+	</div>
+</div>
+
+<div id="delete_overlay" style="width: 400px; height: 150px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Delete Agent</h4>
+	</div>
+	<div class="overlay-content">
+		<p>When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.</p>
+	</div>
+	<div class="overlay-footer">
+		<form action="{{ path('admin_agents_setdeleted', {person_id: agent.id|default('00000'), set_to: '1'}) }}" method="post">
+			{{ form_token() }}
+			<button class="clean-white">Delete <span class="agent-name">{{ agent.display_name }}</span></button>
+		</form>
+	</div>
+</div>

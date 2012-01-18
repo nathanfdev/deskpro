@@ -3300,7 +3300,7 @@ body.popup section.body textarea.fill {
 }
 
 .check-grid {
-	border: 1px solid #ABAFB5;
+	border: 1px solid #D9DBDB;
 }
 
 .check-grid.item-list > table thead th {
@@ -3308,14 +3308,12 @@ body.popup section.body textarea.fill {
 }
 .check-grid > table thead th {
 	font-family: @heading-font;
-	font-weight: bold;
-	font-size: 9px;
-	line-height: 100%;
+	font-size: 12px;
 
-	.gradient(#F0F1F3, #DADBDE);
-	border-bottom: 1px solid #c2c6cc;
+	.gradient(#ffffff, darken(#FDFDFD, 8%));
+	border-bottom: 1px solid #D9DBDB;
 
-	padding: 1px 0 1px 0;
+	padding: 3px 8px 2px 8px;
 	vertical-align: middle;
 }
 
@@ -3324,7 +3322,7 @@ body.popup section.body textarea.fill {
 }
 
 .check-grid.item-list > table td {
-	border-top: 1px solid #DCE2E9;
+	border-top: 1px solid #D9DBDB;
 }
 
 .check-grid.item-list > table td {
@@ -3344,13 +3342,18 @@ body.popup section.body textarea.fill {
 
 .check-grid > table td.prop {
 	text-align: center;
-	background-color: #E8E8E8;
+	background-color: #F8F8F8;
 }
 
 .check-grid > table td.prop.new, .check-grid > table td.prop.highlight {
-    background-color: #DADBDE;
-	border-left: 1px solid #C2C6CC;
-	border-right: 1px solid #C2C6CC;
+    background-color: darken(#F8F8F8, 5%);
+	border-left: 1px solid #D9DBDB;
+	border-right: 1px solid #D9DBDB;
+
+	&.no-border {
+		border-left: none;
+        border-right: none;
+	}
 }
 
 .check-grid > table tr:hover td.prop {
@@ -3361,7 +3364,7 @@ body.popup section.body textarea.fill {
 }
 
 .check-grid > table > tbody {
-	border-top: 1px solid #C2C6CC;
+	border-top: 1px solid #D9DBDB;
 }
 .check-grid > table > tbody:first-of-type {
 	border-top: none;
@@ -3388,14 +3391,14 @@ nav.check-grid-tabs {
 
 }
 
-nav.check-grid-tabs ul { margin: 0; padding: 0; height: 18px;}
+nav.check-grid-tabs ul { margin: 0; padding: 0; height: 19px;}
 nav.check-grid-tabs ul li {
 	margin-left: 6px;
 	line-height: 100%;
 	padding: 3px 8px 3px 8px;
-	font-size: 11px;
-	background-color: #E7E8EB;
-	border: 1px solid #ABAFB5;
+	font-size: 12px;
+	background-color: #fff;
+	border: 1px solid #D9DBDB;
 	border-bottom: none;
 	cursor: pointer;
 	.border-radius(4px, 4px, 0, 0);
@@ -3404,6 +3407,8 @@ nav.check-grid-tabs ul li {
 
 nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	background-color: #fff;
+	position: relative;
+	top: 1px;
 }
 
 
@@ -4546,6 +4551,21 @@ article.task .new-comment .comment-input span {
 	font-variant: small-caps;
 	font-size: 14px;
 	color: 	#909292;
+}
+
+.tools-menu-icon {
+	.iconbase(12px, 12px);
+	background: url(../../images/agent/source-title-gear.png);
+	cursor: pointer;
+}
+
+.content-table .tools-menu-icon {
+	float: right;
+	display: none;
+}
+.content-table tr:hover .tools-menu-icon,
+.content-table tr:hover .tools-menu-icon.show {
+	display: inline-block;
 }
 
 

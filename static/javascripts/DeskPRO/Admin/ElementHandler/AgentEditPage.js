@@ -31,27 +31,11 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		this.usergroupChecks = $('#usergroup_checks :checkbox');
 
 		$('#usergroup_checks').on('click', ':checkbox', this.updatePermissionsGrid.bind(this));
-		$('#permgroups').on('change', ':checkbox', function(ev) {
-			var check = $(this);
-			var cell = check.closest('td');
-			var row = cell.closest('tr');
-
-			if (cell.is('.ugcol') && !check.is('.ignore-event')) {
-				if (!confirm('You clicked a permission group button. Changing this permission will update the permission group, and will affect any other agents that are part of that group. Do you want to continue?')) {
-					check.addClass('ignore-event');
-					check.prop('checked', !check.prop('checked'));
-					check.removeClass('ignore-event');
-				}
-
-				self.updatePermrowEnabled(row, true);
-
-			} else if (cell.is('.ug-override')) {
-				if (self.isPermrowEnabled(row)) {
-					alert('You cannot remove this permission because the agent is part of a group that enables it. Disable the permission on the group, or remove the agent from the group.');
-					check.prop('checked', true);
-				}
+		$('#permgroup_table').find(':checkbox').on('change', (function() {
+			if (!this.suppressChange) {
+				this.updatePermissionsGrid();
 			}
-		});
+		}).bind(this));
 
 		this.updatePermissionsGrid();
 
@@ -67,6 +51,8 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			triggerElement: '#delete_overlay_trigger',
 			contentElement: '#delete_overlay'
 		});
+
+		this._pageLoaded = true;
 	},
 
 	getUsergroupIds: function() {
@@ -79,19 +65,42 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		return ids;
 	},
 
-	isPermrowEnabled: function(row) {
-		return $('td.ugcol :checkbox:checked', row).filter(':visible').length;
-	},
+	updatePermrowEnabled: function(row, isVis) {
+		var has = false;
 
-	updatePermrowEnabled: function(row, toggleWithNo) {
-		var overrideCell = $('td.ug-override', row);
-		if (this.isPermrowEnabled(row)) {
-			$(':checkbox', overrideCell).prop('checked', true);
+		if ($('input.override-perm', row).is(':checked')) {
+			has = true;
+		}
+
+		if (!has) {
+			$('input.in-use', row).each(function() {
+				if ($(this).val() == '1') {
+					has = true;
+				}
+			});
+		}
+
+		if (has) {
+			row.addClass('on');
+
+			var ef = row.find('.effective');
+
+			if (!ef.hasClass('effective-on')) {
+				ef.addClass('effective-on');
+				if (this._pageLoaded && isVis) {
+					this.effectiveChanged.push(ef);
+				}
+			}
 		} else {
-			if (toggleWithNo) {
-				$(':checkbox', overrideCell).prop('checked', false);
-			} else {
-				// no change usually because off doesnt matter
+			row.removeClass('on');
+
+			var ef = row.find('.effective');
+
+			if (ef.hasClass('effective-on')) {
+				ef.removeClass('effective-on');
+				if (this._pageLoaded && isVis) {
+					ef.stop().css("background-color", '#FFF97E').animate({backgroundColor: '#EBEBEB'}, 350);
+				}
 			}
 		}
 	},
@@ -100,17 +109,75 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		var self = this;
 		var ug_ids = this.getUsergroupIds();
 
-		$('#permgroups th.ugcol, #permgroups td.ugcol').each(function() {
+		$('#permgroup_table').find('.ug-perm-val').each(function() {
 			var ug_id = parseInt($(this).data('ug-id'));
 			if (ug_ids.indexOf(ug_id) === -1) {
-				$(this).hide();
+				$(this).removeClass('in-use');
 			} else {
-				$(this).show();
+				$(this).addClass('in-use');
 			}
 		});
 
-		$('#permgroups tr.permrow').each(function() {
-			self.updatePermrowEnabled(this);
+		$('#permgroup_table tr.permrow').each(function() {
+			var vis = $(this).is(':visible');
+			self.updatePermrowEnabled($(this), vis);
 		});
+
+		this.suppressChange = true;
+		this.processDependencies();
+		this.suppressChange = false;
+
+		if (this.effectiveChanged && this.effectiveChanged.length) {
+			for (var i = 0; i < this.effectiveChanged.length; i++) {
+				if (this.effectiveChanged[i].closest('tr').hasClass('on')) {
+					this.effectiveChanged[i].stop().css("background-color", '#FFF97E').animate({backgroundColor: '#EBEBEB'}, 350);
+				}
+			}
+		}
+		this.effectiveChanged = [];
+	},
+
+	/**
+	 * Goes through all permissions who show "yes" and make sure they meet dependencies
+	 * that affect them.
+	 */
+	processDependencies: function() {
+		var self = this;
+		var ons = $('#permgroup_table tr.on.permrow');
+		ons.each(function() {
+			var deps = self.traceDependencies($(this));
+
+			var pass = true;
+			for (var i = 0; i < deps.length; i++) {
+				row = $('tr.perm-' + deps[i] + '.on');
+				if (!row.length) {
+					pass = false;
+					break;
+				}
+			}
+
+			if (!pass) {
+				var row = $(this);
+				row.removeClass('on');
+				row.find('.effective').removeClass('effective-on');
+				row.find('.jquery-checkbox-checked').removeClass('jquery-checkbox-checked')
+				row.find('.onoff-slider').prop('checked', false);
+			}
+		});
+	},
+
+	traceDependencies: function(row) {
+		var all = [];
+		while (1) {
+			var depends_on = row.data('depends-on');
+			if (!depends_on) {
+				break;
+			}
+
+			all.push(depends_on);
+			row = $('tr.perm-' + depends_on);
+		}
+
+		return all;
 	}
 });

@@ -9,6 +9,15 @@ DeskPRO.Admin.ElementHandler.AgentGroupEditPage = new Orb.Class({
 			ev.preventDefault();
 			self.showLoadAgentPermsOb(ev);
 		});
+
+		this.toolsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('#tools_menu_trigger'),
+			menuElement: $('#tools_menu')
+		});
+		this.deleteOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '#delete_overlay_trigger',
+			contentElement: '#delete_overlay'
+		});
 	},
 
 	showLoadAgentPermsOb: function(ev) {

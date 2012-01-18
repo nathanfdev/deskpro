@@ -1,5 +1,9 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.AgentListPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentListPage.js') }}"></script>
+{% endblock %}
 {% block pagebar %}
 	<nav>
 		<ul>
@@ -102,7 +106,7 @@
 			<tbody>
 				{% for person in all_agents %}
 					{% if person.is_vacation_mode %}
-					<tr class="vacation-mode">
+					<tr class="vacation-mode" data-agent-id="{{ person.id }}">
 						<td class="title" colspan="4">
 							<div class="vacation-mode-desc">
 								vacation mode
@@ -113,8 +117,9 @@
 						</td>
 					</tr>
 					{% else %}
-						<tr>
+						<tr data-agent-id="{{ person.id }}">
 							<td class="title">
+								<span class="tools-menu-icon agent"></span>
 								<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
 								<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
 								<address>{{person.primary_email_address}}</address>
@@ -135,6 +140,12 @@
 		There are <a href="{{ path('admin_agents_deleted') }}">{{ count_deleted }} deleted agents</a>.
 	</div>
 {% endif %}
+
+<ul id="agent_tools_menu" style="display: none">
+	<li class="vacation">Vacation Mode</li>
+	<li class="delete">Delete Agent</li>
+</ul>
+{% include 'AdminBundle:Agents:edit-agent-overlays.html.twig' %}
 
 </div>
 {% endblock %}
