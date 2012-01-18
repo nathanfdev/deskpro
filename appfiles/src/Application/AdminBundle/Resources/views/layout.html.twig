@@ -57,6 +57,7 @@
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 
+{% if app.getSetting('core.setup_initial') > 30 %}
 {% block header %}
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
@@ -164,6 +165,7 @@
 </div>
 
 {% endblock %}
+{% endif %}
 
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">

@@ -40,6 +40,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if (!$this->_userHasPermissions()) {
 			return $this->redirect($this->get('router')->generate('admin_login', array('return' => $return)));
 		}
+
+		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
+		return $setup_guide->preActionHelper($action, $arguments);
 	}
 
 	protected function _userHasPermissions()

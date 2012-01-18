@@ -361,4 +361,17 @@ class DeskproContainer extends Container
 
 		return null;
 	}
+
+
+	/**
+	 * Get the value of a setting.
+	 *
+	 * @param string $name The name of the setting to get
+	 * @return string
+	 */
+	public function getSetting($name)
+	{
+		$settings = $this->get(self::SERVICE_SETTINGS);
+		return $settings->get($name);
+	}
 }

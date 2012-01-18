@@ -223,6 +223,12 @@ class LicenseController extends AbstractController
 			throw $e;
 		}
 
+		$setup_initial = $this->container->getSetting('core.setup_initial');
+		if ($setup_initial < 20) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '21');
+			return $this->redirectRoute('admin');
+		}
+
 		$this->session->setFlash('saved', "License code");
 		return $this->redirectRoute('admin_license');
 	}

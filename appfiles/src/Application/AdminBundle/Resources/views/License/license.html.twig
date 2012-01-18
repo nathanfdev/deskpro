@@ -1,9 +1,13 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Your License</h1>
+{% block pagebar %}
 	<nav>
-		<a class="clean-white" href="{{ path('admin_license_input') }}">Change License Code</a>
+		<ul>
+			<li><a href="{{ path('admin_license_input') }}">Change License Code</a></li>
+		</ul>
 	</nav>
+	<ul>
+		<li>Your License</li>
+	</ul>
 {% endblock %}
 {% block page %}
 

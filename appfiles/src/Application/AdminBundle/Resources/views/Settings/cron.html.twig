@@ -1,0 +1,44 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>Configure Scheduled Tasks</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Configuring Scheduled Tasks</label>
+		</div>
+		<div class="dp-form-input">
+			How you configure scheduled tasks depends on your server set up. Here are guides for common servers:
+			<ul>
+				<li><a href="">Linux</a></li>
+				<li><a href="">Windows</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="dp-form">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Command to run every minute</label>
+			</div>
+			<div class="dp-form-input">
+				Configure this command to be executed every minute:
+<pre class="codebox">
+{{ php_path }} -q {{ path }}/cron.php
+</pre>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% if show_complete_form %}
+	<footer class="controls">
+		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">I have configured scheduled tasks</a>
+	</footer>
+{% endif %}
+
+{% endblock %}

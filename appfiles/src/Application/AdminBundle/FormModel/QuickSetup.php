@@ -76,6 +76,8 @@ class QuickSetup
 				App::getEntityRepository('DeskPRO:Setting')->updateSetting($k, $this->$prop);
 			}
 
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
+
 			$em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$em->getConnection()->rollback();

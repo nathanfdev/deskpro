@@ -288,4 +288,42 @@ class SettingsController extends AbstractController
 			'is_connected' => $is_connected
 		));
 	}
+
+	############################################################################
+	# cron-info
+	############################################################################
+
+	public function cronAction()
+	{
+		$setup_initial = $this->container->getSetting('core.setup_initial');
+
+		if ($this->in->getBool('complete')) {
+			if ($setup_initial < 30) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
+				return $this->redirectRoute('admin');
+			}
+		}
+
+		$try = array('/usr/bin/php', '/usr/local/bin/php', 'C:\\php5\\bin\\php.exe');
+		$got = null;
+		foreach ($try as $p) {
+			if (is_executable($p)) {
+				$got = $p;
+				break;
+			}
+		}
+		if (!$got) {
+			$got = '/path/to/php';
+		}
+
+		$last_run = $this->container->getSetting('core.cron_last_run');
+		$path = realpath(DP_ROOT.'/../');
+
+		return $this->render('AdminBundle:Settings:cron.html.twig', array(
+			'last_run' => $last_run,
+			'path' => $path,
+			'php_path' => $got,
+			'show_complete_form' => ($setup_initial < 30)
+		));
+	}
 }

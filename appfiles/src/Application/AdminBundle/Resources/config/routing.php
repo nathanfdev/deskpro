@@ -27,8 +27,8 @@ $collection->add('admin_welcome', new Route(
 ));
 
 $collection->add('admin_networkcheck', new Route(
-	'/misc/network-check.json',
-	array('_controller' => 'AdminBundle:Settings:checkInternetAccess'),
+	'/misc/network',
+	array('_controller' => 'AdminBundle:Settings:quickSetup'),
 	array(),
 	array()
 ));
@@ -376,6 +376,13 @@ $collection->add('admin_login_authenticate_local', new Route(
 $collection->add('admin_settings', new Route(
 	'/settings',
 	array('_controller' => 'AdminBundle:Settings:settings'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_cron', new Route(
+	'/settings/cron',
+	array('_controller' => 'AdminBundle:Settings:cron'),
 	array(),
 	array()
 ));

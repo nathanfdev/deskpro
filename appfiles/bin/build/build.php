@@ -3,7 +3,7 @@
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 
 $htaccess_path = realpath(DP_ROOT . '/../.htaccess');
-if ($htaccess_path && is_writable($htaccess_path)) {
+if (is_file($htaccess_path) && is_writable($htaccess_path)) {
 	$htaccess_contents = file_get_contents($htaccess_path);
 	file_put_contents($htaccess_path, "Order allow,deny\nAllow from none\nDeny from all\n");
 } else {
