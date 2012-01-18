@@ -1,0 +1,99 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.QuickSetup' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block header %}{% endblock %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/QuickSetup.js') }}"></script>
+{% endblock %}
+{% block pagebar %}
+	<ul>
+		<li>Welcome to DeskPRO</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<form class="dp-form" method="post" action="{{ path('admin_welcome') }}" id="quick_setup_form">
+	<input type="hidden" name="process" value="1" />
+	{{ form_token() }}
+
+	<div class="dp-form-section">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Default Email "From" Address</label> <em class="desc">Enter the email address DeskPRO should use by default when sending emails</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.default_from_email) }}
+				{% if errors.invalid_default_from_email %}<div class="dp-error">Please enter a valid email address</div>{% endif %}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>DeskPRO URL</label> <em class="desc">This is the URL to DeskPRO itself with a trailing slash</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.deskpro_url) }}
+				{% if errors.default_from_email %}<div class="dp-error">Please enter a valid URL</div>{% endif %}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>DeskPRO Name</label> <em class="desc">The name of your helpdesk</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.deskpro_name) }}
+				{% if errors.default_from_email %}<div class="dp-error">Please enter a name for the helpdesk</div>{% endif %}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Your Site Name</label> <em class="desc">Your main website name</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.site_name) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Your Site URL</label> <em class="desc">Your main website URL</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.site_url) }}
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>Default Timezone</label> <em class="desc">The default timezone used when expressing dates to users who do not have a preference set</em>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.timezone) }}
+				{% if errors.default_from_email %}<div class="dp-error">Please select a timezone</div>{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<div class="dp-form-section">
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>{{ form_widget(form.portal_enabled) }} Enable Portal</label><br />
+			</div>
+			<div class="dp-form-input">
+				<p>
+					DeskPRO includes a user front-end where your users can submit tickets and ideas and read knowledgebase articles and news, and download files.
+					You can configure all the options later. If you don't want a portal and you are using DeskPRO just to manage email, you can turn this off.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<footer class="controls">
+		<button class="clean-white">Continue</button>
+	</footeR>
+</form>
+
+{% endblock %}

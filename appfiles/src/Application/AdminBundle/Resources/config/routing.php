@@ -19,6 +19,20 @@ $collection->add('admin_test', new Route(
 	array()
 ));
 
+$collection->add('admin_welcome', new Route(
+	'/welcome',
+	array('_controller' => 'AdminBundle:Settings:quickSetup'),
+	array(),
+	array()
+));
+
+$collection->add('admin_networkcheck', new Route(
+	'/misc/network-check.json',
+	array('_controller' => 'AdminBundle:Settings:checkInternetAccess'),
+	array(),
+	array()
+));
+
 ################################################################################
 # License
 ################################################################################

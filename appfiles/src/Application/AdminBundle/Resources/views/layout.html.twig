@@ -57,6 +57,7 @@
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 
+{% block header %}
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
 	<!-- BEGIN SEARCH SECTION -->
@@ -161,6 +162,9 @@
 		</ul>
 	</div>
 </div>
+
+{% endblock %}
+
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
 

@@ -215,4 +215,77 @@ class SettingsController extends AbstractController
 
 		return $this->createJsonResponse(array('success'=> true));
 	}
+
+
+	############################################################################
+	# quick-setup
+	############################################################################
+
+	public function quickSetupAction()
+	{
+		$setup = new \Application\AdminBundle\FormModel\QuickSetup();
+		$form = $this->get('form.factory')->create(new \Application\AdminBundle\Form\QuickSetupType(), $setup);
+
+		$errors = false;
+		if ($this->in->getBool('process')) {
+			$this->ensureRequestToken();
+			$form->bindRequest($this->get('request'));
+
+			$errors = $setup->getErrors();
+			if (!$errors) {
+				$setup->save();
+				return $this->redirectRoute('admin');
+			}
+		}
+
+		$network_checked = App::getSetting('core.network_check');
+		$network_checked_time = App::getSetting('core.network_check');
+
+		if (!$network_checked_time || time()-$network_checked_time > 3600) {
+			$network_checked = $network_checked;
+		}
+
+		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
+			'setup' => $setup,
+			'form' => $form->createView(),
+			'network_check' => $network_checked,
+			'errors' => $errors
+		));
+	}
+
+	public function checkInternetAccessAction()
+	{
+		$time = App::getSetting('core.last_network_check');
+		$checked = App::getSetting('core.network_check');
+
+		$is_connected = false;
+
+		// If we've never done it, or the check is an hour old
+		if ((!$time || time()-$time > 3600) || !$checked) {
+			\DeskPRO\Kernel\License::getLicense();// loads DP_LIC_SERVER
+
+			$client = new \Zend\Http\Client(null, array('timeout' => 15));
+			$client->setMethod(\Zend\Http\Request::METHOD_GET);
+			$client->setUri(DP_LIC_SERVER . '/ping.json');
+			try {
+				$result = $client->send();
+				$is_connected = true;
+			} catch (\Exception $e) {
+				$is_connected = false;
+			}
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.last_network_check', time());
+			if ($is_connected) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.network_check', '1');
+			} else {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.network_check', '0');
+			}
+		} else {
+			$is_connected = true;
+		}
+
+		return $this->createJsonResponse(array(
+			'is_connected' => $is_connected
+		));
+	}
 }

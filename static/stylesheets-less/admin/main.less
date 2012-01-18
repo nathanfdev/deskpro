@@ -109,6 +109,13 @@ a.delete-link:hover {
 	border: 1px solid #242526;
 	border-top:  none;
 }
+
+#dp_admin_nav.disabled {
+	#dp_admin_nav_sections {
+		.opacity(50);
+	}
+}
+
 #dp_admin_nav_sections{
 
 	font-size: 10px;
@@ -1166,6 +1173,10 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 .dp-form .dp-form-label em.required {
 	padding-left: 8px;
 	color: #888;
+}
+
+.dp-form .dp-error {
+	color: #D1201C;
 }
 
 .dp-form .dp-input-group {
@@ -2979,3 +2990,28 @@ footer.controls {
 .with-icon.zone-admin   { background-image: url(../../images/admin/icons/zone-admin.png); }
 .with-icon.zone-reports { background-image: url(../../images/admin/icons/zone-reports.png); }
 .with-icon.zone-billing { background-image: url(../../images/admin/icons/zone-billing.png); }
+
+#quick_setup_form .okay p,
+#quick_setup_form .error p {
+	margin-left: 50px;
+	margin-bottom: 4px;
+}
+#quick_setup_form .success-msg {
+	background-color: #B5FAA4;
+	float: left;
+	padding: 1px 5px 1px 5px;
+	.rounded(5px);
+	font-size: 13px;
+	font-style: normal;
+	margin-right: 10px;
+}
+
+#quick_setup_form .error-msg {
+	background-color: #FCB5AE;
+	float: left;
+	padding: 1px 5px 1px 5px;
+	.rounded(5px);
+	font-size: 13px;
+	font-style: normal;
+	margin-right: 10px;
+}
