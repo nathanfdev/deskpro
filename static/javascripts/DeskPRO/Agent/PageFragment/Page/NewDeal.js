@@ -125,7 +125,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 			userfields.empty();
 			userfields.hide();
 			searchbox.show();
-			rechooseBtn.hide();			
+			rechooseBtn.hide();
 		};
 
 		var placeUserRow = function(html) {
@@ -140,7 +140,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 				context: this,
 				success: function(html) {
 					$('input.person-id', searchbox).val(personId);
-					placeUserRow(html);					
+					placeUserRow(html);
 				}
 			});
 			sb.close();
@@ -207,7 +207,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
                 var placeOrganizationRow = function(html) {
 			self.placeOrganizationRow(html);
 		};
-                
+
 		var orgEdit    = this.getEl('org_edit_wrap');
 
 		//orgEnableBtn
@@ -218,7 +218,7 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 
                         $.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/deals/new/get-organization-row/0',				
+				url: BASE_URL + 'agent/deals/new/get-organization-row/0',
 				dataType: 'html',
 				context: this,
 				success: function(html) {
@@ -263,10 +263,10 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 				// or re-clicking a tab
 				if (!$('.on', navWrap).length || tab.is('.on')) {
 					if (contentWrap.is(':visible')) {
-						contentWrap.slideUp();
+						contentWrap.hide();
 						navWrap.removeClass('on');
 					} else {
-						window.setTimeout(function() { contentWrap.slideDown() }, 20);
+						contentWrap.show();
 						navWrap.addClass('on');
 					}
 				}

@@ -189,10 +189,10 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 				// or re-clicking a tab
 				if (!$('.on', navWrap).length || tab.is('.on')) {
 					if (contentWrap.is(':visible')) {
-						contentWrap.slideUp();
+						contentWrap.hide();
 						navWrap.removeClass('on');
 					} else {
-						window.setTimeout(function() { contentWrap.slideDown() }, 20);
+						contentWrap.show();
 						navWrap.addClass('on');
 					}
 				}
