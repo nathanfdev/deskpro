@@ -392,7 +392,7 @@ class TicketSearchController extends AbstractController
 
 		$per_page = 50;
 		if ($view_type == 'list') {
-			$per_page = 20;
+			$per_page = 50;
 		}
 
 		#------------------------------

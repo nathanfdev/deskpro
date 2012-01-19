@@ -77,7 +77,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="table-result-list">
 			<table cellspacing="0" width="100%">
-				{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
 				{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
 			</table>
 		</div>
@@ -93,12 +92,19 @@ pageMeta.baseId = '{{ baseId }}';
 					<span>{{ phrase('agent.perform_actions') }}</span>
 				</button>
 			</div>
-			<div class="results-count">
-				Showing <span class="results-showing-count" id="{{baseId}}_showing_count"></span> of <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span> tickets
-			</div>
-			<div class="more-btn">
-				<button class="clean-white show-more is-not-loading">{{ phrase('agent.more') }}</button>
-				<div class="is-loading"></div>
+			<div class="pagecontrols results-nav">
+				<div class="cursor">
+					Showing results
+					<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+					of
+					<span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
+				</div>
+				{% if ticket_ids|length > per_page %}
+					<ul class="pagenav no-prev">
+						<li class="prev"></li>
+						<li class="next"></li>
+					</ul>
+				{% endif %}
 			</div>
 
         	{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}

@@ -219,6 +219,9 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 * Show the 'loading' message
 	 */
 	showLoading: function() {
+		if (this.page.meta.viewType == 'list') {
+			return;
+		}
 		this.navEl.addClass('loading');
 	},
 
