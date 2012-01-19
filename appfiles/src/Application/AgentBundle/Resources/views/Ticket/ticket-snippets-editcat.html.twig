@@ -8,7 +8,7 @@
 		<dt>{{ phrase('agent.label_perms') }}:</dt>
 		<dd>
 			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.label_perms_just_me') }}</label><br />
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.label_teams') }}</label><br />
+			{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.label_teams') }}</label><br />{% endif %}
 			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.label_everyone') }}</label><br />
 		</dd>
 

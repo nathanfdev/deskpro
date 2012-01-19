@@ -80,22 +80,24 @@ pageMeta.baseId = '{{ baseId }}';
 				</ul>
 			</dd>
 
-			<dt class="">{{ phrase('agent.products') }}</dt>
-			<dd>
-				<ul id="{{baseId}}_products" class="add-remove-list">
-					{% for prod in article.products %}
-						<li>
-							<span class="remove">remove</span>
-							{{ prod.full_title }}
-							<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+			{% if app.getSetting('core.use_product') %}
+				<dt class="">{{ phrase('agent.products') }}</dt>
+				<dd>
+					<ul id="{{baseId}}_products" class="add-remove-list">
+						{% for prod in article.products %}
+							<li>
+								<span class="remove">remove</span>
+								{{ prod.full_title }}
+								<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+							</li>
+						{% endfor %}
+						<li class="add">
+							<span class="add"></span>
+							{{ phrase('agent.add_product') }}
 						</li>
-					{% endfor %}
-					<li class="add">
-						<span class="add"></span>
-						{{ phrase('agent.add_product') }}
-					</li>
-				</ul>
-			</dd>
+					</ul>
+				</dd>
+			{% endif %}
 
 			<dt>{{ phrase('agent.label_rating') }}</dt>
 			<dd>

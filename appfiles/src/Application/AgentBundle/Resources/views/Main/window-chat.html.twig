@@ -3,7 +3,7 @@
 		<div>
 			<ul id="agent_chat_panel_listviews">
 				<li data-tab-for="#agent_chat_panel .agents-list" class="active agents"><a><span class="user-icon">{{ phrase('agent.agents') }}</span></a></li>
-				{% if agent_teams|length %}<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">{{ phrase('agent.teams') }}</span></a></li>{% endif %}
+				{% if app.getSetting('core.use_agent_team') %}{% if agent_teams|length %}<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">{{ phrase('agent.teams') }}</span></a></li>{% endif %}{% endif %}
 			</ul>
 		</div>
 		<span class="close-btn close-trigger"></span>
@@ -40,6 +40,7 @@
 				</ul>
 			</div>
 		</div>
+		{% if app.getSetting('core.use_agent_team') %}
 		<div class="teams-list" style="display: none;">
 			<ul id="agent_team_list" class="list">
 				{% for team in agent_teams %}
@@ -57,6 +58,7 @@
 				{% endfor %}
 			</ul>
 		</div>
+		{% endif %}
 	</section>
 	<footer>
 		<button class="view-history view-history-trigger">{{ phrase('agent.chat.chat_history') }}</button>

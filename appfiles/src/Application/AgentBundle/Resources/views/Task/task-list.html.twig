@@ -75,6 +75,7 @@
 			</ul>
 		</section>
 	</div>
+	{% if app.getSetting('core.use_agent_team') %}
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
@@ -102,6 +103,7 @@
 			</ul>
 		</section>
 	</div>
+	{% endif %}
 	<br class="clear" />
 </div>
 

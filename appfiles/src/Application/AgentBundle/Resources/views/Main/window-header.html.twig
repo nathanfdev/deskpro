@@ -191,6 +191,7 @@
 					} %}
 				</div>
 			</li>
+			{% if app.getSetting('core.use_ticket_category') %}
 			<li>
 				<label>Category</label>
 				<div class="values">
@@ -204,6 +205,8 @@
 					} %}
 				</div>
 			</li>
+			{% endif %}
+			{% if app.getSetting('core.use_product') %}
 			<li>
 				<label>Product</label>
 				<div class="values">
@@ -217,6 +220,8 @@
 					} %}
 				</div>
 			</li>
+			{% endif %}
+			{% if app.getSetting('core.use_ticket_priority') %}
 			<li>
 				<label>Priority</label>
 				<div class="values">
@@ -230,6 +235,8 @@
 					} %}
 				</div>
 			</li>
+			{% endif %}
+			{% if app.getSetting('core.use_ticket_workflow') %}
 			<li>
 				<label>Workflow</label>
 				<div class="values">
@@ -243,6 +250,7 @@
 					} %}
 				</div>
 			</li>
+			{% endif %}
 		</ul>
 		<br class="clear" />
 	</article>

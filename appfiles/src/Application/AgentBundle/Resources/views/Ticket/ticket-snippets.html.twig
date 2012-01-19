@@ -44,7 +44,7 @@ pageMeta.ticket_id = {{ ticket.id|default(0) }};
 			<dt>Permissions:</dt>
 			<dd>
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> Just me</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> My Team</label><br />
+				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> My Team</label><br />{% endif %}
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> Everyone</label><br />
 			</dd>
 

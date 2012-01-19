@@ -9,6 +9,7 @@
 {% endmacro %}
 
 {% macro team_name_or_me(team, noval) %}
+	{% if not app.getSetting('core.use_agent_team') %}{{ noval }}{% endif %}
 	{% if app.user.getAgent().isTeamMember(team.id) and app.user.getAgent().isSingleTeams() %}
 		{{ phrase('agent.my_team') }}
 	{% elseif not team %}

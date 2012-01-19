@@ -9,6 +9,13 @@
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}
 
+	var DP_SETTINGS = {
+		{% for x in ['core.use_agent_team', 'core.use_product', 'core.use_ticket_category', 'core.use_ticket_priority', 'core.use_ticket_workflow'] %}
+			'{{ x }}': {% if app.getSetting(x) %}true{% else %}false{% endif %},
+		{% endfor %}
+		'rand': {{ rand() }}
+	};
+
 	$(document).ready(function() {
 
 		DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';

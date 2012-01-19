@@ -51,7 +51,7 @@
 					<ul id="{{baseId}}_assign_btn">
 						<li class="no-changes"><em>Set assignments</em></li>
 						<li style="display:none" class="assign-agent"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>
-						<li style="display:none" class="assign-team"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>
+						{% if app.getSetting('core.use_agent_team') %}<li style="display:none" class="assign-team"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>{% endif %}
 						<li style="display:none" class="add-followers"><em>{{ phrase('agent.add_followers') }}</em>: <span class="label"></span></li>
 					</ul>
 				</dd>
@@ -66,37 +66,45 @@
 						'departments': ticket_options.departments_hierarchy
 					} %}
 
-					{% include 'AgentBundle:Common:select-category.html.twig' with {
-						'name': 'actions[category]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.category'),
-						'categories': ticket_options.ticket_categories_hierarchy
-					} %}
+					{% if app.getSetting('core.use_ticket_category') %}
+						{% include 'AgentBundle:Common:select-category.html.twig' with {
+							'name': 'actions[category]',
+							'with_blank': true,
+							'with_blank2': true,
+							'blank_title': phrase('agent.category'),
+							'categories': ticket_options.ticket_categories_hierarchy
+						} %}
+					{% endif %}
 
-					{% include 'AgentBundle:Common:select-product.html.twig' with {
-						'name': 'actions[product]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.product'),
-						'products': ticket_options.products_hierarchy
-					} %}
+					{% if app.getSetting('core.use_product') %}
+						{% include 'AgentBundle:Common:select-product.html.twig' with {
+							'name': 'actions[product]',
+							'with_blank': true,
+							'with_blank2': true,
+							'blank_title': phrase('agent.product'),
+							'products': ticket_options.products_hierarchy
+						} %}
+					{% endif %}
 
-					{% include 'AgentBundle:Common:select-priority.html.twig' with {
-						'name': 'actions[priority]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.priority'),
-						'priorities': ticket_options.ticket_priorities
-					} %}
+					{% if app.getSetting('core.use_ticket_priority') %}
+						{% include 'AgentBundle:Common:select-priority.html.twig' with {
+							'name': 'actions[priority]',
+							'with_blank': true,
+							'with_blank2': true,
+							'blank_title': phrase('agent.priority'),
+							'priorities': ticket_options.ticket_priorities
+						} %}
+					{% endif %}
 
-					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-						'name': 'actions[workflow]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.workflow'),
-						'workflows': ticket_options.ticket_workflows
-					} %}
+					{% if app.getSetting('core.use_ticket_workflow') %}
+						{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+							'name': 'actions[workflow]',
+							'with_blank': true,
+							'with_blank2': true,
+							'blank_title': phrase('agent.workflow'),
+							'workflows': ticket_options.ticket_workflows
+						} %}
+					{% endif %}
 				</dd>
 			</dl>
 			<div class="profile-box-container reply-box-wrap">

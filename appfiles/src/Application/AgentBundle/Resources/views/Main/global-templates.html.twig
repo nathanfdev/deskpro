@@ -63,17 +63,19 @@
 			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 		</header>
 		<ul>
-			{% if app.user.teams %}
-				<li class="group-title"><strong>{{ phrase('agent.my_teams') }}</strong></li>
-				{% for team in app.user.teams %}
+			{% if app.getSetting('core.use_agent_team') %}
+				{% if app.user.teams %}
+					<li class="group-title"><strong>{{ phrase('agent.my_teams') }}</strong></li>
+					{% for team in app.user.teams %}
+						<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
+					{% endfor %}
+					<li class="group-title"><strong>{{ phrase('agent.all_teams') }}</strong></li>
+				{% endif %}
+
+				{% for team in agent_teams %}
 					<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
 				{% endfor %}
-				<li class="group-title"><strong>{{ phrase('agent.all_teams') }}</strong></li>
 			{% endif %}
-
-			{% for team in agent_teams %}
-				<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
-			{% endfor %}
 		</ul>
 	</section>
 </div>
@@ -133,47 +135,51 @@
 
 {# Products #}
 <ul id="products_menu" data-menu-flag="copy-menu">
-	{% for cat in ticket_options.products_hierarchy %}
-		{% if cat.children %}
-			<li data-product-id="{{cat.id}}" class="section-title prod-{{ cat.id }}">{{cat.title}}</li>
-			{% for subcat in cat.children %}
-				<li data-product-id="{{subcat.id}}" data-parent-id="{{ cat.id }}" class="prod-{{ subcat.id }}">{{subcat.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-product-id="{{cat.id}}" class="prod-{{ cat.id }}">{{cat.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
-	{% endfor %}
+	{% if app.getSetting('core.use_product') %}
+		{% for cat in ticket_options.products_hierarchy %}
+			{% if cat.children %}
+				<li data-product-id="{{cat.id}}" class="section-title prod-{{ cat.id }}">{{cat.title}}</li>
+				{% for subcat in cat.children %}
+					<li data-product-id="{{subcat.id}}" data-parent-id="{{ cat.id }}" class="prod-{{ subcat.id }}">{{subcat.title}}</li>
+				{% endfor %}
+				{% set last_with_child = true %}
+			{% else %}
+				<li data-product-id="{{cat.id}}" class="prod-{{ cat.id }}">{{cat.title}}</li>
+				{% set last_with_child = false %}
+			{% endif %}
+		{% endfor %}
+	{% endif %}
 </ul>
 
 <script type="text/x-deskpro-plain" id="products_ob_tpl">
 	{{ optionbox.start('Products') }}
 		{{ optionbox.section_start('', 'product') }}
-			{% for cat in ticket_options.products_hierarchy %}
-				<li
-					class="top {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
-					data-item-id="{{ cat.id }}"
-					data-full-title="{{ cat.title }}"
-				>
-					<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
-					<label>{{ cat.title }}</label>
-				</li>
-				{% if cat.children %}
-					{% for subcat in cat.children %}
-						<li
-							class="child item-{{ cat.id }} child-of-{{ dep.id }}"
-							data-item-id="{{ cat.id }}"
-							data-parent-id="{{ cat.id }}"
-							data-full-title="{{ cat.title }} &gt; {{ cat.title }}"
-						>
-							<span class="elbow-end"></span>
-							<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
-							<label>{{cat.title}}</label>
-						</li>
-					{% endfor %}
-				{% endif %}
-			{% endfor %}
+			{% if app.getSetting('core.use_product') %}
+				{% for cat in ticket_options.products_hierarchy %}
+					<li
+						class="top {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
+						data-item-id="{{ cat.id }}"
+						data-full-title="{{ cat.title }}"
+					>
+						<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
+						<label>{{ cat.title }}</label>
+					</li>
+					{% if cat.children %}
+						{% for subcat in cat.children %}
+							<li
+								class="child item-{{ cat.id }} child-of-{{ dep.id }}"
+								data-item-id="{{ cat.id }}"
+								data-parent-id="{{ cat.id }}"
+								data-full-title="{{ cat.title }} &gt; {{ cat.title }}"
+							>
+								<span class="elbow-end"></span>
+								<input type="radio" name="%baseId%_dep_radio" value="{{ cat.id }}" />
+								<label>{{cat.title}}</label>
+							</li>
+						{% endfor %}
+					{% endif %}
+				{% endfor %}
+			{% endif %}
 		{{ optionbox.section_end() }}
 	{{ optionbox.end('Apply') }}
 </script>

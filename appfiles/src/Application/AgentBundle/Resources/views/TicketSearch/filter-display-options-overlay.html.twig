@@ -14,13 +14,23 @@
 			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
 			<option class="date_created" value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
 			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
-			<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-			<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+			{% if app.getSetting('core.use_ticket_priority') %}
+				<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+				<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+			{% endif %}
 		</select>
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	{% set types = ['department','agent','agent_team','category','product','organization','date_user_waiting'] %}
+	<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.department') }}</label></li>
+	<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.agent') }}</label></li>
+	{% if app.getSetting('core.use_agent_team') %}<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.agent_team') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_category') %}<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.category') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_priority') %}<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.priority') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_workflow') %}<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.workflow') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_product') %}<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.product') }}</label></li>{% endif %}
+	<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.organization') }}</label></li>
+	<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.date_user_waiting') }}</label></li>
 	{% for t in types %}
 		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.' ~ t) }}</label></li>
 	{% endfor %}

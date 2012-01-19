@@ -79,6 +79,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 		</section>
 	</div>
+	{% if app.getSetting('core.use_agent_team') %}
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
@@ -106,6 +107,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 		</section>
 	</div>
+	{% endif %}
 	<br class="clear" />
 </div>
 

@@ -46,25 +46,49 @@ class Tickets
 		$options = array();
 
 		if ($person['is_agent']) {
-			$options['agents']      = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
-			$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+
+			if (App::getSetting('core.use_agent_team')) {
+				$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+			} else {
+				$options['agent_teams'] = array();
+			}
 		}
 
 		$options['departments_hierarchy'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$options['departments_full'] = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
 		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames(null, false);
 
-		$options['ticket_categories_hierarchy'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
-		$options['ticket_categories_full'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, false);
-		$options['ticket_categories'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames(null, false);
+		if (App::getSetting('core.use_ticket_category')) {
+			$options['ticket_categories_hierarchy'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
+			$options['ticket_categories_full'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, false);
+			$options['ticket_categories'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames(null, false);
+		} else {
+			$options['ticket_categories_hierarchy'] = array();
+			$options['ticket_categories_full'] = array();
+			$options['ticket_categories'] = array();
+		}
 
-		$options['ticket_workflows'] = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
+		if (App::getSetting('core.use_ticket_workflow')) {
+			$options['ticket_workflows'] = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
+		} else {
+			$options['ticket_workflows'] = array();
+		}
 
-		$options['products']            = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-		//$options['products_full']       = App::getOrm()->getRepository('DeskPRO:Product')->getFullProductNames(null, false);
-		$options['products_hierarchy']  = App::getOrm()->getRepository('DeskPRO:Product')->getProductsInHierarchy();
+		if (App::getSetting('core.use_product')) {
+			$options['products'] = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+			//$options['products_full']       = App::getOrm()->getRepository('DeskPRO:Product')->getFullProductNames(null, false);
+			$options['products_hierarchy']  = App::getOrm()->getRepository('DeskPRO:Product')->getProductsInHierarchy();
+		} else {
+			$options['products'] = array();
+			$options['products_hierarchy']  = array();
+		}
 
-		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+		if (App::getSetting('core.use_ticket_priority')) {
+			$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+		} else {
+			$options['priorities'] = array();
+		}
 		$options['ticket_priorities']  = $options['priorities'];
 
 		return $options;

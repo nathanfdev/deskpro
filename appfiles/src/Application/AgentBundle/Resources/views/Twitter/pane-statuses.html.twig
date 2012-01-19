@@ -2,6 +2,6 @@
 	<ol>
 		<li data-route="">Starred Tweets<span class="status-counter" id="twitter_starred_statuses_count">{{ statuses.starred }}</span></li>
 		<li data-route="">My Tweets<span class="status-counter" id="twitter_my_statuses_count">{{ statuses.account }}</span></li>
-		<li data-route="">Team Tweets<span class="status-counter" id="twitter_team_statuses_count">{{ statuses.team }}</span></li>
+		{% if app.getSetting('core.use_agent_team') %}<li data-route="">Team Tweets<span class="status-counter" id="twitter_team_statuses_count">{{ statuses.team }}</span></li>{% endif %}
 	</ol>
 {% endblock %}

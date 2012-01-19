@@ -4,6 +4,12 @@
 	'core.emergency_contact' => 'emergency-contact@example.com',
 	'core.user_mode' => 'open',
 
+	'core.use_ticket_category' => false,
+	'core.use_ticket_priority' => false,
+	'core.use_ticket_workflow' => false,
+	'core.use_agent_team' => false,
+	'core.use_product' => false,
+
 	'core.deskpro_url' => 'http://localhost/',
 	'core.deskpro_name' => 'DeskPRO',
 	'core.deskpro_tagline' => 'Support',

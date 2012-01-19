@@ -375,6 +375,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</ul>
 		</section>
 	</div>
+	{% if app.getSetting('core.use_agent_team') %}
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
@@ -407,6 +408,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</ul>
 		</section>
 	</div>
+	{% endif %}
 	<div class="col">
 		<section data-section-name="followers">
 			<header>

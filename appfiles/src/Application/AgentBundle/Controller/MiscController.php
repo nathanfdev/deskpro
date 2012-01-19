@@ -20,15 +20,37 @@ class MiscController extends AbstractController
 		// Common names
 		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode(App::getEntityRepository('DeskPRO:Person')->getAgentNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
+		if ($this->container->getSetting('core.use_agent_team')) {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
+		} else {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = {};';
+		}
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getDepartmentNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_hierarchy = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy(null, true)) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, true)) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode(App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames()) . ';';
+		if ($this->container->getSetting('core.use_product')) {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
+		} else {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.product = {};';
+		}
+		if ($this->container->getSetting('core.use_ticket_category')) {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, true)) . ';';
+		} else {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = {};';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = {};';
+		}
+		if ($this->container->getSetting('core.use_ticket_category')) {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
+		} else {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = {};';
+		}
+		if ($this->container->getSetting('core.use_ticket_workflow')) {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode(App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames()) . ';';
+		} else {
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = {};';
+		}
+
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
 			'awaiting_agent' => App::getTranslator()->phrase('core_tickets.status_awaiting_agent'),
 			'awaiting_user' => App::getTranslator()->phrase('core_tickets.status_awaiting_user'),

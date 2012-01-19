@@ -16,21 +16,21 @@
 	<ul style="display: none" class="order-by-menu">
 		<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
 		<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
-		<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
+		{% if app.getSetting('core.use_ticket_priority') %}<li data-order-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
 	</ul>
 	<ul style="display: none" class="group-by-menu">
 		<li data-group-by="">{{ phrase('agent.none') }}</li>
 		<li class="sep">-</li>
 		<li data-group-by="department">{{ phrase('agent.department') }}</li>
-		<li data-group-by="category">{{ phrase('agent.category') }}</li>
-		<li data-group-by="priority">{{ phrase('agent.priority') }}</li>
-		<li data-group-by="product">{{ phrase('agent.product') }}</li>
-		<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>
+		{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
+		{% if app.getSetting('core.use_ticket_priority') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
+		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.product') }}</li>{% endif %}
+		{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>{% endif %}
 		<li data-group-by="organization">{{ phrase('agent.organization') }}</li>
 		<li data-group-by="language">{{ phrase('agent.language') }}</li>
 		<li data-group-by="urgency">{{ phrase('agent.urgency') }}</li>
 		<li data-group-by="agent">{{ phrase('agent.agent') }}</li>
-		<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>
+		{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>{% endif %}
 		<li data-group-by="time_waiting">{{ phrase('agent.time_waiting') }}</li>
 		<li data-group-by="total_user_waiting">{{ phrase('agent.total_time_waiting') }}</li>
 		<li data-group-by="date_created">{{ phrase('agent.date_opened') }}</li>
