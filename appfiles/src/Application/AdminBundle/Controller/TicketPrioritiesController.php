@@ -104,6 +104,8 @@ class TicketPrioritiesController extends AbstractController
 			throw $e;
 		}
 
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketpriority', time());
+
 		return $this->redirectRoute('admin_ticketpris');
 	}
 

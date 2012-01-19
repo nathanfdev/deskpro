@@ -105,6 +105,8 @@ class TicketCategoriesController extends AbstractController
 			throw $e;
 		}
 
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketcategory', time());
+
 		return $this->redirectRoute('admin_ticketcats');
 	}
 

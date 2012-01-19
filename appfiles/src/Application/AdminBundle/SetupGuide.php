@@ -27,23 +27,37 @@ class SetupGuide
 	 */
 	protected $controller;
 
+	/**
+	 * This is an array of id=>array(info)
+	 *
+	 * The ID is used in settings to store when something has been completed,
+	 * and also used as a phrase ID in the templates to fetch the title of a step.
+	 *
+	 * @var array
+	 */
 	protected $tasks = array(
-		'incoming_email' => array('admin_emailgateways'),
-		'add_agents' => array('admin_agents_new'),
-		'custom_header' => array('admin_portal'),
-		'add_ticketcategory' => array('admin_ticketcats'),
-		'add_ticketpriority' => array('admin_ticketpris'),
-		'add_ticketfield' => array('admin_customdeftickets')
+		'incoming_email'     => array('route' => 'admin_emailgateways'),
+		'add_agents'         => array('route' => 'admin_agents_new'),
+		//'custom_header'      => array('route' => 'admin_portal'),
+		'add_ticketcategory' => array('route' => 'admin_ticketcats'),
+		'add_ticketpriority' => array('route' => 'admin_ticketpris'),
+		'add_ticketfield'    => array('route' => 'admin_customdeftickets')
 	);
 
 	public function __construct(DeskproContainer $container, $controller)
 	{
 		$this->container  = $container;
 		$this->controller = $controller;
+
+		foreach ($this->tasks as $id => &$task) {
+			$task['id'] = $id;
+		}
 	}
 
+
 	/**
-	 * Check vars etc to see if we need to force-redirect a user somewhere
+	 * In the AbstractController the preaction calls this to see if we need to redirect the user
+	 * forcefully based on install step.
 	 */
 	public function preActionHelper($action)
 	{
@@ -99,6 +113,12 @@ class SetupGuide
 		return null;
 	}
 
+
+	/**
+	 * This goes through the tasks and returns its info. If no more tasks are left to complete, then null is returned.
+	 *
+	 * @return null
+	 */
 	public function getNextTask()
 	{
 		foreach ($this->tasks as $t => $info) {
@@ -108,5 +128,55 @@ class SetupGuide
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Percentage finished
+	 *
+	 * @return int
+	 */
+	public function getPercentComplete($skew = 6)
+	{
+		$done = 0;
+		foreach ($this->tasks as $t => $info) {
+			if ($this->container->getSetting('core.task_completed_' . $t)) {
+				$done++;
+			}
+		}
+
+		$total = count($this->tasks) + $skew;
+		$done += $skew;
+
+		return ceil(($done / $total)*100);
+	}
+
+
+	/**
+	 * Check if a task is complete. If it is complete, then whatever status value
+	 * set by that tasks controller will be returned (usually a timestamp).
+	 *
+	 * @param $id
+	 * @return bool
+	 */
+	public function isTaskComplete($id)
+	{
+		$s = $this->container->getSetting('core.task_completed_' . $id);
+		if ($s) {
+			return $s;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Gets full array of tasks
+	 *
+	 * @return
+	 */
+	public function getTasks()
+	{
+		return $this->tasks;
 	}
 }

@@ -246,6 +246,7 @@ class AgentsController extends AbstractController
 	{
 		if ($person_id) {
 			$agent = $this->getAgentOr404($person_id);
+			$is_new = false;
 		} else {
 			$agent = new \Application\DeskPRO\Entity\Person();
 
@@ -253,6 +254,8 @@ class AgentsController extends AbstractController
 			$agent->is_user = true;
 			$agent->is_confirmed = true;
 			$agent->is_agent = true;
+
+			$is_new = true;
 		}
 		$agent->first_name = $this->in->getString('agent.first_name');
 		$agent->last_name = $this->in->getString('agent.last_name');
@@ -423,6 +426,10 @@ class AgentsController extends AbstractController
 
 			$this->em->flush();
 			$this->em->getConnection()->commit();
+
+			if ($is_new) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
+			}
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;

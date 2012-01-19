@@ -76,9 +76,11 @@ abstract class CustomDefAbstractController extends AbstractController
 	{
 		if ($field_id) {
 			$field = $this->getFieldOr404($field_id);
+			$is_new = false;
 		} else {
 			$field = $this->createNewField();
 			$field['handler_class'] = $this->in->getString('fielddef.handler_class');
+			$is_new = false;
 		}
 
 		$basetype    = Util::getBaseClassname($field['handler_class']);
@@ -126,6 +128,10 @@ abstract class CustomDefAbstractController extends AbstractController
 					throw $e;
 				}
 
+
+				if ($is_new && static::API_NAME	== 'custom_fields.tickets') {
+					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketfield', time());
+				}
 
 				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));

@@ -1,7 +1,23 @@
 <?php
 /**
- * This file is a set of asset bundles.
- * The key in this array is the bundle ID, and t
+ * This file is a set of asset bundles. The files and bundles
+ * listed here declare how the 'assetic' build works.
+ *
+ * In templates, you can the template function dp_asset_html() to include the HTML
+ * to add an asset to the page. For example, to include vendors (jquery, mootools etc):
+ *
+ *     {{ dp_asset_html('agent_vendors') }}
+ *
+ * You can of course use any asset in the templates, they dont need to be defined here:
+ *
+ *    <script src="{{ asset('javascripts/something.js') }}"></script>
+ *
+ * ... it just wont be compiled/minified etc.
+ *
+ *
+ * == Syntax ==
+ *
+ * Eac
  */
 
 $CONFIG = array();
@@ -373,6 +389,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
 		'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
 		'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/HeaderSetupGuide.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/ChoiceBuilder.js',

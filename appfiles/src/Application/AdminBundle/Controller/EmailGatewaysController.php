@@ -150,6 +150,8 @@ class EmailGatewaysController extends AbstractController
 					throw $e;
 				}
 
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_incoming_email', time());
+
 				$this->session->setFlash('saved', $gateway->title);
 				return $this->redirectRoute('admin_emailgateways');
 			}
