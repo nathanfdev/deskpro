@@ -232,7 +232,7 @@ class NewsController extends AbstractController
 		$results = $result_helper->getNewsForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
-		$display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.' . $result_cache['id']);
+		$display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
 		}

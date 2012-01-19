@@ -439,7 +439,7 @@ class KbController extends AbstractController
 		$results = $result_helper->getArticlesForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
-		$display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.' . $result_cache['id']);
+		$display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
 		}
@@ -455,6 +455,7 @@ class KbController extends AbstractController
 			'display_fields'     => $display_fields,
 
 			'search_form'        => array('terms' => $result_cache['criteria']['terms']),
+			'cache'              => $result_cache,
 			'terms_summary'      => $result_cache['extra']['summary'],
 			'category'           => $category,
 		));

@@ -3,10 +3,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
 pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 {% if list_type == 'category' %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_category', {'category_id': category_id}) }}';
-	{% set subgroup_url = path('agent_ideas_category', {'category_id': category_id, 'subgroup': 'SUBGROUP_ID'}) %}
+	{% set subgroup_url = path('agent_ideas_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID' %}
 {% elseif list_type == 'status' %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_status', {'status': status}) }}?';
-	{% set subgroup_url = path('agent_ideas_status', {'status': status, 'subgroup': 'SUBGROUP_ID'}) %}
+	{% set subgroup_url = path('agent_ideas_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID' %}
 {% elseif list_type == 'label' %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_label', {'label': label}) }}?';
 {% elseif list_type == 'validating' %}
@@ -20,6 +20,9 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 {% if not ideas %}
 	pageMeta.noResults = true;
 {% endif %}
+
+pageMeta.perPage = 50;
+pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 </script>
 {# scroll containers #}
 <div class="layout-content with-scrollbar page-listing page-validating-comments">
@@ -40,6 +43,26 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 		<section class="list-listing no-results">
 			<p>{{ phrase('agent.there_are_no_results') }}</p>
 		</section>
+	{% endif %}
+
+	{% if ideas|length %}
+		<footer class="results-nav">
+			<div class="cursor">
+				Showing results
+				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+				of
+				<span class="results-total-count" id="{{baseId}}_total_count">{{ result_ids|length }}</span>
+			</div>
+			{% if result_ids|length > per_page %}
+				<ul class="pagenav no-prev">
+					<li class="prev"></li>
+					<li class="next"></li>
+				</ul>
+			{% endif %}
+			<div class="loading">
+
+			</div>
+		</footer>
 	{% endif %}
 
 {# scroll containers #}

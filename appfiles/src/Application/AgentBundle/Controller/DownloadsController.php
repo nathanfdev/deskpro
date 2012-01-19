@@ -266,7 +266,7 @@ class DownloadsController extends AbstractController
 		$results = $result_helper->getDownloadsForPage($page);
 		$result_cache = $result_helper->getResultCache();
 
-		$display_fields = $this->person->getPref('agent.ui.download-filter-display-fields.' . $result_cache['id']);
+		$display_fields = $this->person->getPref('agent.ui.download-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = array('author', 'date_created');
 		}
@@ -279,6 +279,7 @@ class DownloadsController extends AbstractController
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'result_id'          => $result_cache['id'],
+			'cache'              => $result_cache,
 			'display_fields'     => $display_fields,
 			'category'           => $category,
 		));

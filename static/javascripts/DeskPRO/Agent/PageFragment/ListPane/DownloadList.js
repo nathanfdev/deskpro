@@ -41,6 +41,30 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		});
 		this.ownObject(this.relatedContentList);
 
+		// Sorting options
+		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
+		this.sortingMenu = new DeskPRO.UI.Menu({
+			triggerElement: sortMenuBtn,
+			menuElement: $('.order-by-menu', this.wrapper).first(),
+			onItemClicked: function(info) {
+				var item = $(info.itemEl);
+
+				var prop = item.data('order-by')
+				var label = item.text().trim();
+
+				// Change the displayed label for some visual feedback
+				$('.label', sortMenuBtn).text(label);
+
+				var disOptWrap = self.displayOptions.getWrapperElement();
+				var sel = $('select.sel-order-by', disOptWrap);
+				$('option', sel).prop('selected', false);
+				$('option.' + prop, sel).prop('selected', true);
+
+				self.displayOptions.saveAndRefresh();
+			}
+		});
+		this.ownObject(this.sortingMenu);
+
 		this.enableHighlightOpenRows('download', 'download_id', 'article.download-');
 	},
 

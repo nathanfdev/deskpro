@@ -1,4 +1,8 @@
 <header class="list-control-bar">
+	<ul class="btn-controls">
+		<li class="display-options display-options-trigger"><a></a></li>
+		<li class="right"><span class="sep"></span></li>
+	</ul>
 	<ul>
 		<li>{{ phrase('agent.ordered_by') }}  </li>
 		<li class="order-by-menu-trigger"><a class="button">
@@ -11,13 +15,13 @@
 					{{ phrase('agent.date_created') }}
 				{% endif %}
 			</span>
+			<em></em>
 		</a></li>
-		<li><span class="sep"></span></li>
-		<li class="display-options display-options-trigger"><a>{{ phrase('agent.display_options') }}</a></li>
+		<li ><span class="sep"></span></li>
 	</ul>
 	<ul class="order-by-menu" style="display: none">
-		<li data-field="popularity">{{ phrase('agent.ideas.popularity') }}</li>
-		<li data-field="votes">{{ phrase('agent.publish.votes') }}</li>
-		<li data-field="date">{{ phrase('agent.date_created') }}</li>
+		<li data-order-by="popularity">{{ phrase('agent.ideas.popularity') }}</li>
+		<li data-order-by="votes">{{ phrase('agent.publish.votes') }}</li>
+		<li data-order-by="date">{{ phrase('agent.date_created') }}</li>
 	</ul>
 </header>

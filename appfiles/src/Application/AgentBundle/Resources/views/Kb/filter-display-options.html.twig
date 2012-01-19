@@ -1,10 +1,10 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
 	<div style="display: none">
-		<select name="order_by">
-			<option value="article.date_created:desc">Date Created (Newest-Oldest)</option>
+		<select name="order_by" class="sel-order-by">
+			<option class="date" value="article.date_created:desc">Date Created (Newest-Oldest)</option>
 			<option value="article.date_created:asc">Date Created (Oldest-Newest)</option>
-			<option value="article.view_count:desc">View Count (Highest-Lowest)</option>
+			<option class="views" value="article.view_count:desc">View Count (Highest-Lowest)</option>
 			<option value="article.view_count:asc">View Count (Lowest-Highest)</option>
 		</select>
 	</div>

@@ -25,28 +25,29 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 		});
 		this.ownObject(this.selectionBar);
 
-		var menuBtn = $('button.order-by-trigger:first', this.wrapper);
-		this.orderByMenu = new DeskPRO.UI.Menu({
-			triggerElement: menuBtn,
-			menuElement: $('ul.order-by-menu:first', this.wrapper),
-			onItemClicked: (function(info) {
+		// Sorting options
+		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
+		this.sortingMenu = new DeskPRO.UI.Menu({
+			triggerElement: sortMenuBtn,
+			menuElement: $('.order-by-menu', this.wrapper).first(),
+			onItemClicked: function(info) {
 				var item = $(info.itemEl);
 
-				var prop = item.data('field')
+				var prop = item.data('order-by')
 				var label = item.text().trim();
 
-				$('.label', menuBtn).text(label);
+				// Change the displayed label for some visual feedback
+				$('.label', sortMenuBtn).text(label);
 
-				var disOptWrap = this.displayOptions.getWrapperElement();
+				var disOptWrap = self.displayOptions.getWrapperElement();
 				var sel = $('select.sel-order-by', disOptWrap);
 				$('option', sel).prop('selected', false);
 				$('option.' + prop, sel).prop('selected', true);
 
-				this.displayOptions.saveAndRefresh();
-
-			}).bind(this)
+				self.displayOptions.saveAndRefresh();
+			}
 		});
-		this.ownObject(this.orderByMenu);
+		this.ownObject(this.sortingMenu);
 
 		this.listWrapper = $('section.idea-simple-list', this.wrapper);
 
@@ -138,6 +139,13 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 			}
 		});
 		this.ownObject(this.massActionsMenu);
+
+		var opt = {
+			resultIds: this.meta.resultIds,
+			perPage: this.meta.perPage || 50
+		};
+		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
+		this.ownObject(this.resultsHelper);
 
 		this.enableHighlightOpenRows('idea', 'idea_id', 'article.idea-');
 	}

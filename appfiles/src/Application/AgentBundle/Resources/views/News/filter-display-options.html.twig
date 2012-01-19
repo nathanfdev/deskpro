@@ -1,9 +1,9 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
-	Order By: <select name="order_by">
+	<div style="display:none">Order By: <select name="order_by">
 		<option value="news.date_created:desc">Date Created (Newest-Oldest)</option>
 		<option value="news.date_created:asc">Date Created (Oldest-Newest)</option>
-	</select>
+	</select></div>
 {% endblock %}
 {% block display_elements_list %}
 	<li data-field="author"><input type="checkbox" name="author" /> Author</li>

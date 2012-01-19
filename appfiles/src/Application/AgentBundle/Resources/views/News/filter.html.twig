@@ -1,6 +1,5 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.NewsList';
-pageMeta.resultId = {{ result_id }};
 pageMeta.refreshUrl = '{{ path('agent_news_list', {'cache_id': result_id}) }}';
 
 {% set baseId = el_uid() %}
@@ -25,6 +24,13 @@ pageMeta.baseId = '{{ baseId }}';
 		</section>
 	{% endif %}
 
+	{% if results|length %}
+		<footer class="results-nav">
+			<div class="cursor">
+				Showing <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span> news posts
+			</div>
+		</footer>
+	{% endif %}
 {# scroll containers #}
 </div></div></div></div>
 {# /scroll containers #}

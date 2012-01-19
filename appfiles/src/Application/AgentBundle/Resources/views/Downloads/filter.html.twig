@@ -1,6 +1,5 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DownloadList';
-pageMeta.resultId = {{ result_id }};
 pageMeta.refreshUrl = '{{ path('agent_downloads_list', {'cache_id': result_id}) }}';
 
 {% set baseId = el_uid() %}
@@ -23,6 +22,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<section class="list-listing no-results">
 			<p>{{ phrase('agent.there_are_no_results') }}</p>
 		</section>
+	{% endif %}
+
+	{% if results|length %}
+		<footer class="results-nav">
+			<div class="cursor">
+				Showing <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span> downloads
+			</div>
+		</footer>
 	{% endif %}
 </div>
 

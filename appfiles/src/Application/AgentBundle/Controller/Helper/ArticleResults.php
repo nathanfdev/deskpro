@@ -97,6 +97,10 @@ class ArticleResults
 
 			$order_by = $controller->in->getString('order_by');
 
+			if (!$order_by) {
+				$order_by = 'article.date_created:desc';
+			}
+
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}

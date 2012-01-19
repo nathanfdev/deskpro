@@ -488,26 +488,26 @@ class IdeasController extends AbstractController
 
 		if (!$cat->parent) {
 			$grouped_key = $cat->getId();
-			$group_data = array();
+			$grouped_info = array();
 			$t = 0;
 			if (isset($grouped['items'][$grouped_key])) {
-				$group_data = Arrays::mergeAssoc($group_data, array($grouped_key => $grouped['items'][$grouped_key]));
+				$grouped_info = Arrays::mergeAssoc($grouped_info, array($grouped_key => $grouped['items'][$grouped_key]));
 				$t = $grouped['items'][$grouped_key]['total'];
 			}
 
-			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		} else {
 			$grouped_key = $cat->getId();
 			$t = 0;
 			foreach ($cat->children as $c) {
 				$k = $c['id'];
 				if (isset($grouped['items'][$k])) {
-					$group_data = Arrays::mergeAssoc($group_data, array($k => $grouped['items'][$k]));
+					$grouped_info = Arrays::mergeAssoc($grouped_info, array($k => $grouped['items'][$k]));
 					$t += $grouped['items'][$k]['total'];
 				}
 			}
 
-			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		}
 
 		return $this->renderList(
@@ -518,7 +518,7 @@ class IdeasController extends AbstractController
 				'category_id' => $category_id,
 				'page_title' => $cat->getFullTitle(),
 				'grouped' => $grouped,
-				'group_data' => $group_data,
+				'grouped_info' => $grouped_info,
 				'grouped_key' => $grouped_key,
 				'subgroup' => $this->in->getString('subgroup'),
 			)
@@ -591,18 +591,18 @@ class IdeasController extends AbstractController
 			$status_name = $status_cat['title'];
 			$grouped_key = $status_cat['status_type'] . '.' . $status_cat['id'];
 
-			$group_data = array();
+			$grouped_info = array();
 			$t = 0;
 			if (isset($grouped['items'][$grouped_key])) {
-				$group_data = Arrays::mergeAssoc($group_data, array($grouped_key => $grouped['items'][$grouped_key]));
+				$grouped_info = Arrays::mergeAssoc($grouped_info, array($grouped_key => $grouped['items'][$grouped_key]));
 				$t = $grouped['items'][$grouped_key]['total'];
 			}
 
-			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		} else {
 			$status_name = App::getTranslator()->phrase('core_ideas.status_' . $status);
 			$grouped_key = $status;
-			$group_data = array();
+			$grouped_info = array();
 
 			if ($status == 'active') {
 				$status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
@@ -614,12 +614,12 @@ class IdeasController extends AbstractController
 			foreach ($status_cats as $c) {
 				$k = $status . '.' . $c['id'];
 				if (isset($grouped['items'][$k])) {
-					$group_data = Arrays::mergeAssoc($group_data, array($k => $grouped['items'][$k]));
+					$grouped_info = Arrays::mergeAssoc($grouped_info, array($k => $grouped['items'][$k]));
 					$t += $grouped['items'][$k]['total'];
 				}
 			}
 
-			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		}
 
 		return $this->renderList(
@@ -630,7 +630,7 @@ class IdeasController extends AbstractController
 				'status' => $status,
 				'grouped' => $grouped,
 				'grouped_key' => $grouped_key,
-				'group_data' => $group_data,
+				'grouped_info' => $grouped_info,
 				'page_title' => $status_name,
 				'subgroup' => $this->in->getString('subgroup'),
 			)
@@ -668,7 +668,7 @@ class IdeasController extends AbstractController
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
-		$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.' . $result_cache['id']);
+		$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.0');
 		if (!$display_fields) {
 			$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.0');
 		}
@@ -679,13 +679,17 @@ class IdeasController extends AbstractController
 		return $this->render($template, array_merge(array(
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
+			'result_ids'   => $result_cache['results'],
 			'ideas'        => $ideas,
+			'num_results'  => $result_cache['num_results'],
+			'per_page'     => 50,
+			'criteria'     => $result_cache['criteria'],
 
-			 'idea_cats'          => $idea_cats,
-			 'active_status_cats' => $active_status_cats,
-			 'closed_status_cats' => $closed_status_cats,
+			'idea_cats'          => $idea_cats,
+			'active_status_cats' => $active_status_cats,
+			'closed_status_cats' => $closed_status_cats,
 
-			 'display_fields' => $display_fields,
+			'display_fields' => $display_fields,
 		), $template_vars));
 	}
 
