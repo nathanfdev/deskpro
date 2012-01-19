@@ -240,6 +240,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 			// Perform count calcs now
 			this.recountChildCounts(listEl);
+
+			// Expand if there are less than 10 cats
+			var catcount = $('#publish_outline_'+type+'cat_list').find('li').length;
+			if (catcount <= 10) {
+				$('#publish_outline_'+type+'cat_list').find('li.has-children').addClass('sub-expanded');
+			}
 		}, this);
 
 
