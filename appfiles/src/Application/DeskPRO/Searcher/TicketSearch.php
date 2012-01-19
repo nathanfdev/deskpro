@@ -502,7 +502,7 @@ class TicketSearch extends SearcherAbstract
 						return $titles;
 					});
 
-					if ($choice != 0) {
+					if ($choice && !in_array('0', $choice)) {
 						$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 					}
 
