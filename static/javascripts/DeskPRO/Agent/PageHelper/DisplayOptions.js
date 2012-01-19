@@ -65,7 +65,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 		this.wrapper = $('.display-options', this.page.wrapper).first();
 		this.optionsList = $('ul.sortable-list', this.wrapper).sortable({
-			'axis': 'y'
+			forceHelperSize:true,
+			opacity: 0.6
 		});;
 
 		this.wrapper.detach().appendTo('body');

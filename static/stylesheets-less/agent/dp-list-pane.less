@@ -932,6 +932,7 @@ footer.results-nav .more button {
     	float: left;
     	padding: 3px 8px 0 0;
     }
+
     ul.pagenav {
     	.gradient(#fafcfd, #f0f2f3);
     	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
@@ -1388,6 +1389,25 @@ section.dp-overlay > article.no-footer {
 
 }
 
+.dp-overlay-container.display-options ul.sortable-list {
+	padding: 10px;
+	text-align: center;
+}
+.dp-overlay-container.display-options ul.sortable-list li,
+.dp-overlay-container.display-options ul.sortable-list li.ui-sortable-helper {
+	line-height: 100%;
+	display: inline-block;
+	margin: 0 6px 6px 0;
+	padding: 3px 16px 3px 6px;
+	cursor: move;
+	border-bottom: 1px dotted #ACB2B9;
+	border-right: 4px solid #EEF0F1;
+	line-height: 15px;
+	overflow: hidden;
+	height: 15px;
+	background: #EEF0F1 url(../../images/agent/icons/move-grip.png) no-repeat 100% 50%;
+}
+
 .dp-overlay-container.display-options ul li {
 	padding: 6px;
 }
@@ -1404,11 +1424,10 @@ section.dp-overlay > article.no-footer {
 .dp-overlay-container.display-options ul li.ui-sortable-helper {
 	border-top: 1px solid #DBDBE1;
 	border-bottom: 1px solid #DBDBE1;
-}
-
-.dp-overlay-container.display-options ul li:hover {
-	cursor: move;
-	background: #fff url(../../images/agent/icons/move-grip.png) no-repeat 98% 50%;
+	white-space: nowrap;
+	display: block;
+	margin: 0 6px 6px 0;
+    padding: 3px 6px 3px 6px;
 }
 
 .dp-overlay-container.ticketlist {
