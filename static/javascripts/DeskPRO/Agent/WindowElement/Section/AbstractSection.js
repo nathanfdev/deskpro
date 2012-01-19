@@ -332,8 +332,17 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		var el = $('.auto-load-route', this.sectionEl).first();
-		if (!el.length || !el.data('route')) {
+		if (!el.length) {
 			return;
+		}
+
+
+		// Find the first route
+		if (!el.data('route')) {
+			el = el.find('[data-route]').first();
+			if (!el.length) {
+				return;
+			}
 		}
 
 		if (isBackgroundLoad) {
@@ -341,6 +350,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		} else {
 			DeskPRO_Window.runPageRoute(el.data('route'));
 		}
+
+		this.highlightNavItem(el);
 	},
 
 	_onShowActivateList: function() {
