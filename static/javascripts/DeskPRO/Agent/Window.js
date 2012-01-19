@@ -1122,12 +1122,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (routeData.tabPlaceholderId) {
 					self.pageTabStrip.removeTabById(routeData.tabPlaceholderId);
 				}
-				if (typeof e == 'string') {
-					DeskPRO_Window.showAlert('There was a problem loading the tab: ' + e);
-				} else {
-					DeskPRO_Window.showAlert('There was a problem loading the tab');
-					DpErrorLog.logError(printStackTrace().join("\n\n"));
-				}
+				this._showAjaxError('<div class="error-details">There was a problem loading the tab. Here is the raw page output: <textarea class="raw">' + Orb.escapeHtml(data) + '</textarea></div>');
+				return;
 			}
 
 			page.setMetaData('routeUrl', url);
