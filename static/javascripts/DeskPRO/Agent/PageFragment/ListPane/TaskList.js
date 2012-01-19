@@ -43,7 +43,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			});
 		};
 
-		var sendUpdate = function(rowEl, prop, val) {
+		var sendUpdate = function(rowEl, prop, val, callback) {
 			var taskId = rowEl.data('task-id');
 			var url = BASE_URL + 'agent/tasks/'+taskId+'/ajax-save';
 
@@ -61,7 +61,8 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				url: url,
 				type: 'POST',
 				data: postData,
-				dataType: 'json'
+				dataType: 'json',
+				success: callback || function() {}
 			});
 		};
 
@@ -85,7 +86,9 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 					var text = 'Me';
 				}
 
-				sendUpdate(openForEl, 'assigned', val);
+				sendUpdate(openForEl, 'assigned', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
 				$('.opt-trigger.assigned_agent label', openForEl).text(text);
 			}
 		});

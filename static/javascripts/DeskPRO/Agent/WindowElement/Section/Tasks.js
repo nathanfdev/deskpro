@@ -10,6 +10,10 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 
 		this.setSectionElement($('<section id="task_outline"></section>'));
 		this.refresh();
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.tasks.refresh-task-list', function() {
+			this.refresh();
+		}, this);
 	},
 
 	refresh: function() {
