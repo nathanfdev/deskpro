@@ -149,14 +149,13 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 		var self = this;
 
-		var top = this.getEl('content').offset().top;
-		var bottom = this.wrapper.offset().top + this.wrapper.height();
-		var calcH = bottom - top - 100;
-
 		this.getEl('content').css({
-			width: this.wrapper.width() - 80,
-			height: calcH
+			width: this.wrapper.width() - 80
 		});
+
+		// Make the size of the message box based off of the height of the window
+		var h = $(window).height();
+		this.getEl('content').css('height', Math.max(h - 500, 200));
 
 		DP.rteTextarea(this.getEl('content'), {
 			setup: function(ed) {

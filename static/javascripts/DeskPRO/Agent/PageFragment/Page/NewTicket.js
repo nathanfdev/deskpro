@@ -360,6 +360,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			list: this.labelsList
 		});
 		this.ownObject(this.labelsInput);
+
+		// Make the size of the message box based off of the height of the window
+		var h = $(window).height();
+		this.getEl('message').css('height', Math.max(h - 500, 200));
 	},
 
 	loadSnippetsViewer: function() {
