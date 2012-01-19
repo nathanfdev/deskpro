@@ -151,14 +151,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 		var count = 0;
 
-		var types = ['ticket', 'person', 'organization', 'idea', 'article', 'download', 'news'];
-		for (var i = 0; i < types.length; i++) {
-			var type = types[i], sectionEl, resultEl, listEl, resultElHtml, res;
-
-			if (!results[type] || !results[type].length) {
-				continue;
-			}
-
+		Object.each(results, function(typeResults, type) {
 			sectionEl = this.resultWrap.find('section.' + type);
 			if (!sectionEl.length) {
 				sectionEl = $(this.tplResultSection.replace(/\{TITLE\}/g, type).replace(/\{TYPE\}/g, type));
@@ -167,9 +160,9 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 			listEl = $('ul.result-list', sectionEl);
 
-			for (var ri = 0; ri < results[type].length; ri++) {
+			for (var ri = 0; ri < typeResults.length; ri++) {
 				count++;
-				res = results[type][ri];
+				res = typeResults[ri];
 
 				resultEl = $('li.' + type + '-' + res.id, sectionEl);
 				if (!resultEl.length) {
@@ -186,7 +179,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 					resultEl.appendTo(listEl);
 				}
 			}
-		}
+		}, this);
 
 		if (count) {
 			this.open();

@@ -182,6 +182,8 @@ class MainController extends AbstractController
 			'organization' => array()
 		);
 
+		$people_top = false;
+
 		#------------------------------
 		# ID based
 		#------------------------------
@@ -198,8 +200,11 @@ class MainController extends AbstractController
 		# Email address: Full or partial
 		#------------------------------
 
-		} else if (preg_match('#^[a-zA-Z0-9\-_.]+@#', $q)) {
+		} else if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
 
+			$people_top = true;
+
+			// Complete email address
 			if (\Orb\Validator\StringEmail::isValueValid($q)) {
 				$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
 				$people = array();
@@ -207,7 +212,22 @@ class MainController extends AbstractController
 					$people[] = $p;
 				}
 			} else {
-				$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+				if (strpos($q, '@') === 0) {
+					$email = substr($q, 1);
+					$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+
+					$people = $this->em->createQuery("
+						SELECT p
+						FROM DeskPRO:Person p
+						LEFT JOIN p.emails e
+						WHERE e.email_domain LIKE ?1
+						ORDER BY p.id ASC
+					")->setParameter(1, $email)->setMaxResults(15)->execute();
+
+				} else {
+					// Search an email address
+					$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+				}
 			}
 
 			foreach ($people as $p) {
@@ -234,7 +254,8 @@ class MainController extends AbstractController
 
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
 			'router' => App::getRouter(), //TODO figure out why jsonphp engine doesnt have helpers
-			'results' => $results
+			'results' => $results,
+			'people_top' => $people_top,
 		));
 	}
 }

@@ -33,7 +33,7 @@ if ($results['person']) {
 if ($results['organization']) {
 	$OUTPUT['organization'] = array();
 	foreach ($results['organization'] as $r) {
-		$OUTPUT['person'][] = array(
+		$OUTPUT['organization'][] = array(
 			'id' => $r->id,
 			'name' => $r->name,
 			'title' => $r->name,
@@ -92,4 +92,12 @@ if ($results['news']) {
 			'route' => 'page:' . $router->generate('agent_news_view', array('news_id' => $r->id))
 		);
 	}
+}
+
+if ($people_top) {
+	$people = $OUTPUT['person'];
+	unset($OUTPUT['person']);
+
+	\Orb\Util\Arrays::unshiftAssoc($OUTPUT, 'person', $people);
+	unset($people);
 }
