@@ -61,6 +61,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 	},
 
 	_initControl: function() {
+		var self = this;
 		if (this._hasInit) return;
 		this._hasInit = true;
 
@@ -80,6 +81,15 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 		this.controlEl.on('click', this.close.bind(this));
 
 		this.controlRealEl = $('.filter-group-editor', this.controlEl);
+
+		this.controlRealEl.on('click', '.edit', function(ev) {
+			ev.stopPropagation();
+			var field = $(this).closest('.filter-row');
+			var id = field.data('filter-id');
+
+			self.close();
+			DeskPRO_Window.runPageRoute('poppage:' + BASE_URL + 'agent/settings/ticket-filters/'+id+'/edit');
+		});
 
 		// Dont bubble clicks in the el to the underlaying control el,
 		// that would close the overlay

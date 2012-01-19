@@ -102,7 +102,8 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		});
 	},
 
-	open: function(ev, tabName) {
+	open: function(ev, tabName, activateView) {
+		this.el.data('activateView', activateView);
 		if (tabName) {
 			var tabEl = $('#settingswin_nav > li.tab-' + tabName);
 		}

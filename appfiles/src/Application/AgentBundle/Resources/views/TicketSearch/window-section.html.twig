@@ -177,7 +177,7 @@
 </section>
 
 <section id="ticket_customfilter_group_editor">
-	<section class="filter-group-editor">
+	<section class="filter-group-editor filter-showhide-editor">
 		<span class="close"></span>
 		<script type="text/x-deskpro-plain" class="editor-row-tpl">
 			<div class="filter-row">
@@ -185,7 +185,10 @@
 			</div>
 		</script>
 		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
-			<label><input type="checkbox" checked="checked" /> {{ phrase('agent.show') }}</label>
+			<div>
+				<span class="edit"></span>
+				<label><input type="checkbox" checked="checked" /> {{ phrase('agent.show') }}</label>
+			</div>
 		</script>
 	</section>
 </section>

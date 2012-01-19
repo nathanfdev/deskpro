@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		window.settings_filters_page = this;
 		this.el = el;
 		var self = this;
 
@@ -33,5 +34,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 				});
 			});
 		});
+
+		var activateView = $('#settingswin').data('activateView');
+		if (activateView) {
+			this.activateView(activateView);
+		}
 	}
 });
