@@ -1,4 +1,4 @@
-if (!DP_DEBUG) DP_DEBUG = false;
+if (typeof DP_DEBUG == 'undefined' || !DP_DEBUG) DP_DEBUG = false;
 
 var DP = {
 	console: {

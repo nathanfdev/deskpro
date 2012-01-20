@@ -131,8 +131,8 @@
 				<a><span>Report Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ path('admin') }}"><span class="check">Admin Interface</span></a></li>
-				<li><a class="admin" href="{{ path('agent') }}"><span class="check">Agent Interface</span></a></li>
+				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin"><span class="check">Admin Interface</span></a></li>
+				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent"><span class="check">Agent Interface</span></a></li>
 				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
 				<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>
 			</ul>
