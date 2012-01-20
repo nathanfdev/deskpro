@@ -175,6 +175,13 @@ $collection->add('admin_ticketcats', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketcats_toggle', new Route(
+	'/tickets/categories/toggle-feature/{enable}',
+	array('_controller' => 'AdminBundle:TicketCategories:toggleFeature'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketcats_savenew', new Route(
 	'/tickets/categories/save-new',
 	array('_controller' => 'AdminBundle:TicketCategories:saveNew'),
@@ -217,6 +224,13 @@ $collection->add('admin_ticketpris', new Route(
 	array()
 ));
 
+$collection->add('admin_ticketpris_toggle', new Route(
+	'/tickets/priorities/toggle-feature/{enable}',
+	array('_controller' => 'AdminBundle:TicketPriorities:toggleFeature'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketpris_savenew', new Route(
 	'/tickets/priorities/save-new',
 	array('_controller' => 'AdminBundle:TicketPriorities:saveNew'),
@@ -248,6 +262,13 @@ $collection->add('admin_ticketpris_dodel', new Route(
 $collection->add('admin_ticketworks', new Route(
 	'/tickets/workflows',
 	array('_controller' => 'AdminBundle:TicketWorkflows:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_ticketworks_toggle', new Route(
+	'/tickets/workflows/toggle-feature/{enable}',
+	array('_controller' => 'AdminBundle:TicketWorkflows:toggleFeature'),
 	array(),
 	array()
 ));
@@ -1029,6 +1050,13 @@ $collection->add('admin_usergroups_browse', new Route(
 $collection->add('admin_products', new Route(
 	'/products',
 	array('_controller' => 'AdminBundle:Products:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_products_toggle', new Route(
+	'/products/toggle-feature/{enable}',
+	array('_controller' => 'AdminBundle:Products:toggleFeature'),
 	array(),
 	array()
 ));

@@ -21,20 +21,26 @@
 	data-element-handler="DeskPRO.Admin.ElementHandler.TicketPriorityList"
 >
 
-	{{ design.dpgrid({class: 'dep-list pri-list'}) }}
-		{{ design.dpgrid_headerrow() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 810px;"}) }}
-				<h1>Title</h1>
-			{{ design.dpgrid_headercol_end() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 80px"}) }}
-				<h1>Priority</h1>
-			{{ design.dpgrid_headercol_end() }}
-		{{ design.dpgrid_headerrow_end() }}
+	{% if all_priorities|length %}
+		{{ design.dpgrid({class: 'dep-list pri-list'}) }}
+			{{ design.dpgrid_headerrow() }}
+				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 810px;"}) }}
+					<h1>Title</h1>
+				{{ design.dpgrid_headercol_end() }}
+				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 80px"}) }}
+					<h1>Priority</h1>
+				{{ design.dpgrid_headercol_end() }}
+			{{ design.dpgrid_headerrow_end() }}
 
-		{% for priority in all_priorities %}
-			{% include 'AdminBundle:TicketPriorities:list-row.html.twig' %}
-		{% endfor %}
-	{{ design.dpgrid_end() }}
+			{% for priority in all_priorities %}
+				{% include 'AdminBundle:TicketPriorities:list-row.html.twig' %}
+			{% endfor %}
+		{{ design.dpgrid_end() }}
+	{% else %}
+		<div class="note-box">
+			You have not created any ticket priorities yet.
+		</div>
+	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 250px; display: none;">
 		<div class="overlay-title">

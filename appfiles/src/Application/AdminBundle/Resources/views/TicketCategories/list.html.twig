@@ -22,17 +22,23 @@
 	data-reorder-url="{{ path('admin_ticketcats_updateorders') }}"
 >
 
-	{{ design.dpgrid({class: 'dep-list'}) }}
-		{{ design.dpgrid_headerrow() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-				<h1>Category</h1>
-			{{ design.dpgrid_headercol_end() }}
-		{{ design.dpgrid_headerrow_end() }}
+	{% if all_categories|length %}
+		{{ design.dpgrid({class: 'dep-list'}) }}
+			{{ design.dpgrid_headerrow() }}
+				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
+					<h1>Category</h1>
+				{{ design.dpgrid_headercol_end() }}
+			{{ design.dpgrid_headerrow_end() }}
 
-		{% for category in all_categories %}
-			{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
-		{% endfor %}
-	{{ design.dpgrid_end() }}
+			{% for category in all_categories %}
+				{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
+			{% endfor %}
+		{{ design.dpgrid_end() }}
+	{% else %}
+		<div class="note-box">
+			You have not created any ticket categories yet.
+		</div>
+	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">

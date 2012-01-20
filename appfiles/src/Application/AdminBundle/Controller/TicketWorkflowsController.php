@@ -90,6 +90,12 @@ class TicketWorkflowsController extends AbstractController
 			$this->em->persist($workflow);
 			$this->em->flush();
 
+			// First workflow: enable the feature
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflow");
+			if ($count == 1) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
@@ -144,5 +150,31 @@ class TicketWorkflowsController extends AbstractController
 	{
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
 		return $helper->doUpdate('ticket_workflows');
+	}
+
+
+	############################################################################
+	# toggle-feature
+	############################################################################
+
+	public function toggleFeatureAction($enable)
+	{
+		if ($enable) {
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+			if (!$count) {
+				return $this->redirectRoute('admin_ticketworks');
+			}
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '1');
+		} else {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+		}
+
+		$url = $this->generateUrl('admin_ticketworks');
+		if ($this->in->getString('return')) {
+			$url = $this->in->getString('return');
+		}
+
+		return $this->redirect($url);
 	}
 }

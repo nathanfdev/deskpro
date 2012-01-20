@@ -99,6 +99,12 @@ class TicketCategoriesController extends AbstractController
 			$this->em->persist($category);
 			$this->em->flush();
 
+			// First category: enable the feature
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+			if ($count == 1) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
@@ -158,5 +164,31 @@ class TicketCategoriesController extends AbstractController
 	{
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
 		return $helper->doUpdate('ticket_categories');
+	}
+
+
+	############################################################################
+	# toggle-feature
+	############################################################################
+
+	public function toggleFeatureAction($enable)
+	{
+		if ($enable) {
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+			if (!$count) {
+				return $this->redirectRoute('admin_ticketcats');
+			}
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '1');
+		} else {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+		}
+
+		$url = $this->generateUrl('admin_ticketcats');
+		if ($this->in->getString('return')) {
+			$url = $this->in->getString('return');
+		}
+
+		return $this->redirect($url);
 	}
 }

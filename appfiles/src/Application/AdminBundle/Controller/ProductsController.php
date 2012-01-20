@@ -99,6 +99,12 @@ class ProductsController extends AbstractController
 			$this->em->persist($product);
 			$this->em->flush();
 
+			// Created first prod, enable the product feature
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+			if ($count == 1) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
@@ -126,11 +132,6 @@ class ProductsController extends AbstractController
 	{
 		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
-		if (!$count) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
-		}
-
 		return $this->render('AdminBundle:Products:delete.html.twig', array(
 			'product'  => $product,
 		));
@@ -151,9 +152,40 @@ class ProductsController extends AbstractController
 		}
 		$this->em->remove($product);
 		$this->em->flush();
+
+		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+		if (!$count) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
+		}
+
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $product->title);
 		return $this->redirectRoute('admin_products');
+	}
+
+	############################################################################
+	# toggle-feature
+	############################################################################
+
+	public function toggleFeatureAction($enable)
+	{
+		if ($enable) {
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+			if (!$count) {
+				return $this->redirectRoute('admin_products');
+			}
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
+		} else {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
+		}
+
+		$url = $this->generateUrl('admin_products');
+		if ($this->in->getString('return')) {
+			$url = $this->in->getString('return');
+		}
+
+		return $this->redirect($url);
 	}
 }

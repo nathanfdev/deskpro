@@ -21,18 +21,23 @@
 	data-element-handler="DeskPRO.Admin.ElementHandler.TicketWorkflowList"
 	data-reorder-url="{{ path('admin_ticketworks_updateorders') }}"
 >
+	{% if all_workflows|length %}
+		{{ design.dpgrid({class: 'dep-list'}) }}
+			{{ design.dpgrid_headerrow() }}
+				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
+					<h1>Workflow</h1>
+				{{ design.dpgrid_headercol_end() }}
+			{{ design.dpgrid_headerrow_end() }}
 
-	{{ design.dpgrid({class: 'dep-list'}) }}
-		{{ design.dpgrid_headerrow() }}
-			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-				<h1>Workflow</h1>
-			{{ design.dpgrid_headercol_end() }}
-		{{ design.dpgrid_headerrow_end() }}
-
-		{% for workflow in all_workflows %}
-			{% include 'AdminBundle:TicketWorkflows:list-row.html.twig' %}
-		{% endfor %}
-	{{ design.dpgrid_end() }}
+			{% for workflow in all_workflows %}
+				{% include 'AdminBundle:TicketWorkflows:list-row.html.twig' %}
+			{% endfor %}
+		{{ design.dpgrid_end() }}
+	{% else %}
+		<div class="note-box">
+			You have not created any ticket workflows yet.
+		</div>
+	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">

@@ -87,6 +87,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		var side = $('#dp_admin_page_sidebar, #dp_admin_page_sidebar_right').first();
+		if (side.length) {
+			$('#dp_admin_page_inner').css('min-height', side.height() + 8);
+		}
+
 		this.menuEls = $('#menus_container > div').addClass('header-menu').each(function() {
 			$(this).detach().appendTo('body');
 		});

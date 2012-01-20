@@ -22,9 +22,9 @@
 	<li>
 		<header>
 			<h3><a href="{{ path('admin_departments') }}">Departments</a></h3>
-			<div class="check-control">
+			{#<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_departments') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_departments" />
-			</div>
+			</div>#}
 			<br class="clear" />
 		</header>
 		<p>
@@ -36,7 +36,7 @@
 		<header>
 			<h3><a href="{{ path('admin_products') }}">Products</a></h3>
 			<div class="check-control">
-				<input type="checkbox" {% if app.getSetting('core.enable_products') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_products" />
+				<input type="checkbox" {% if app.getSetting('core.use_product') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_products_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_products_toggle', {enable: '0'}) }}" />
 			</div>
 			<br class="clear" />
 		</header>
@@ -50,7 +50,7 @@
 		<header>
 			<h3><a href="{{ path('admin_ticketcats') }}">Ticket Categories</a></h3>
 			<div class="check-control">
-				<input type="checkbox" {% if app.getSetting('core.enable_ticket_categories') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_categories" />
+				<input type="checkbox" {% if app.getSetting('core.use_ticket_category') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketcats_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketcats_toggle', {enable: '0'}) }}" />
 			</div>
 			<br class="clear" />
 		</header>
@@ -63,7 +63,7 @@
 		<header>
 			<h3><a href="{{ path('admin_ticketpris') }}">Ticket Priorities</a></h3>
 			<div class="check-control">
-				<input type="checkbox" {% if app.getSetting('core.enable_ticket_priorities') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_priorities" />
+				<input type="checkbox" {% if app.getSetting('core.use_ticket_priority') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketpris_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketpris_toggle', {enable: '0'}) }}" />
 			</div>
 			<br class="clear" />
 		</header>
@@ -76,7 +76,7 @@
 		<header>
 			<h3><a href="{{ path('admin_ticketworks') }}">Ticket Workflows</a></h3>
 			<div class="check-control">
-				<input type="checkbox" {% if app.getSetting('core.enable_ticket_workflows') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_ticket_workflows" />
+				<input type="checkbox" {% if app.getSetting('core.use_ticket_workflow') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketworks_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketworks_toggle', {enable: '0'}) }}" />
 			</div>
 			<br class="clear" />
 		</header>

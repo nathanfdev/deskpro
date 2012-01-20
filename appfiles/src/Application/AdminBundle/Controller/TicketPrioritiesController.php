@@ -98,6 +98,12 @@ class TicketPrioritiesController extends AbstractController
 			$this->em->persist($priority);
 			$this->em->flush();
 
+			// First priority: enable the feature
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+			if ($count == 1) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
@@ -144,5 +150,31 @@ class TicketPrioritiesController extends AbstractController
 
 		$this->session->setFlash('deleted', $priority->title);
 		return $this->redirectRoute('admin_ticketpris');
+	}
+
+
+	############################################################################
+	# toggle-feature
+	############################################################################
+
+	public function toggleFeatureAction($enable)
+	{
+		if ($enable) {
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+			if (!$count) {
+				return $this->redirectRoute('admin_ticketpris');
+			}
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '1');
+		} else {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+		}
+
+		$url = $this->generateUrl('admin_ticketpris');
+		if ($this->in->getString('return')) {
+			$url = $this->in->getString('return');
+		}
+
+		return $this->redirect($url);
 	}
 }
