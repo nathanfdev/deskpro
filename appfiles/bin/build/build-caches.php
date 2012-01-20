@@ -18,6 +18,7 @@ if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
 }
 
 $kernel_classes = array(
+	'DeskPRO\\Kernel\\AdminKernel',
 	'DeskPRO\\Kernel\\AgentKernel',
 	'DeskPRO\\Kernel\\CliKernel',
 	'DeskPRO\\Kernel\\ReportKernel',
