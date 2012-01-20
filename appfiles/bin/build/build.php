@@ -144,7 +144,7 @@ echo "\n";
 // must do before checksum file is built
 
 $build_time = time();
-echo "echoing build time of ... ";
+echo "echoing build time of ... $build_time ";
 
 $proc = new \Symfony\Component\Process\Process("echo '<?php define(\"DP_BUILD_TIME\", $build_time); ' > build-time.php", DP_ROOT.'/sys/config');
 $proc->setTimeout(600);
