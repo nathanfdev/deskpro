@@ -71,7 +71,7 @@ if ($results['idea']) {
 if ($results['download']) {
 	$OUTPUT['download'] = array();
 	foreach ($results['download'] as $r) {
-		$OUTPUT['idea'][] = array(
+		$OUTPUT['download'][] = array(
 			'id' => $r->id,
 			'person_id' => $r->person->id,
 			'person' => $r->person->getDisplayName(),
@@ -84,7 +84,7 @@ if ($results['download']) {
 if ($results['news']) {
 	$OUTPUT['news'] = array();
 	foreach ($results['news'] as $r) {
-		$OUTPUT['idea'][] = array(
+		$OUTPUT['news'][] = array(
 			'id' => $r->id,
 			'person_id' => $r->person->id,
 			'person' => $r->person->getDisplayName(),
