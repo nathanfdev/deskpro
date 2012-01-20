@@ -39,6 +39,12 @@
 		}
 
 		oWrapper.addClass('scroll-setup');
+		oWrapper.on('goscrolltop', function() {
+			oThumb.obj.css(sDirection, 0);
+			oContent.obj.css(sDirection, 0);
+			iScroll = 0;
+			iMouse['start'] = oThumb.obj.offset()[sDirection];
+		});
 
 		var oViewport = { obj: $('.scroll-viewport:first', this) };
 		var oContent = { obj: $('.scroll-content:first', this) };
@@ -92,9 +98,6 @@
 
 			setSize();
 		};
-		this.tinyscrollbar_scrolltop = function(x) {
-			scrollTop(x);
-		}
 		function setSize(){
 			oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 			oContent.obj.css(sDirection, -iScroll);
@@ -155,14 +158,6 @@
 					oEvent.stopPropagation();
 				}
 			};
-		};
-
-		function scrollTop(x) {
-			if (x < 0) x = 0;
-			if (x > iScroll) x = iScroll;
-
-			oThumb.obj.css('top', iScroll / oScrollbar.ratio);
-			oContent.obj.css('top', -iScroll);
 		};
 
 		function end(oEvent){

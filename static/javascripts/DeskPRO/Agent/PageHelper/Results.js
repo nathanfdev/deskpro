@@ -205,8 +205,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		this.resultsContainer.empty().html(html);
 
 		if (this.scrollableEl.length) {
-			$('> .scrollbar > .track > .thumb', this.scrollableEl).css('top', '0');
-			$('> .scroll-viewport > .scroll-content', this.scrollableEl).css('top', '0');
+			this.scrollableEl.trigger('goscrolltop');
 		}
 
 		this.updateShowingCount();
