@@ -947,7 +947,7 @@ class TicketSearch extends SearcherAbstract
 
 				case self::TERM_TOTAL_USER_WAITING:
 					$this->affected_fields[] = 'ticket.total_user_waiting';
-					$wheres[] = $this->_rangeMatch("$tickets_table.total_user_waiting", $op, $choice);
+					$wheres[] = $this->_dateMatch("$tickets_table.total_user_waiting", $op, $choice);
 					break;
 
 				case self::TERM_CREATION_SYSTEM:
