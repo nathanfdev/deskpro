@@ -19,6 +19,7 @@
 			{% if field == 'email_address' %}
 				<td class="{{field}}">
 					{{ person.primaryEmailAddress }}
+
 				</td>
 			{% elseif field == 'organization' %}
 				<td class="{{field}}">
@@ -30,12 +31,12 @@
 					{{ticket.language.title}}
 				</td>
 			{% else %}
-				{% for f in person_field_defs %}
+				{% for f in user_all_custom_fields[ticket.person.id] %}
 					{% if field == 'person_fields['~f.id~']' %}
 						<td class="person-field">
 							<div class="prop-val person_fields_{{f.id}}">
 								{% if person.hasCustomField(f.id) %}
-									{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+									{{ render_custom_field(f) }}
 								{% endif %}
 							</div>
 						</td>

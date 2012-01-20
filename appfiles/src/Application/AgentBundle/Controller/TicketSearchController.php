@@ -155,12 +155,40 @@ class TicketSearchController extends AbstractController
 		$ticket_ids = Arrays::removeFalsey($ticket_ids);
 		$ticket_ids = array_unique($ticket_ids);
 
-		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids, $this->person);
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids, $this->person);
 		$tickets = Arrays::orderIdArray($ticket_ids, $tickets);
 
 		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
 		if (!$display_fields) {
 			$display_fields = array('department', 'agent', 'agent_team');
+		}
+
+		$has_t_fields = false;
+		$has_u_fields = false;
+
+		foreach ($display_fields as $f) {
+			if (strpos($f, 'ticket_fields[') === 0) $has_t_fields = true;
+			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
+		}
+
+
+		$all_custom_fields = array();
+		$user_all_custom_fields = array();
+
+		if ($has_t_fields || $has_u_fields) {
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+
+			foreach ($tickets as $t) {
+				if ($has_t_fields) {
+					$all_custom_fields[$t->id] = $field_manager->getDisplayArrayForObject($t);
+				}
+
+				if ($has_u_fields) {
+					$p = $t->person;
+					$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+				}
+			}
 		}
 
 		// Accept changes to apply for previewing
@@ -210,6 +238,7 @@ class TicketSearchController extends AbstractController
 			'ticket_field_defs' => $ticket_field_defs,
 			'person_field_defs' => $person_field_defs,
 			'changed_fields'    => $changed_fields,
+			'all_custom_fields' => $all_custom_fields,
 		));
 	}
 
@@ -461,6 +490,33 @@ class TicketSearchController extends AbstractController
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
 
+		$has_t_fields = false;
+		$has_u_fields = false;
+
+		foreach ($vars['display_fields'] as $f) {
+			if (strpos($f, 'ticket_fields[') === 0) $has_t_fields = true;
+			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
+		}
+
+		$all_custom_fields = array();
+		$user_all_custom_fields = array();
+
+		if ($has_t_fields || $has_u_fields) {
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+
+			foreach ($tickets as $t) {
+				if ($has_t_fields) {
+					$all_custom_fields[$t->id] = $field_manager->getDisplayArrayForObject($t);
+				}
+
+				if ($has_u_fields) {
+					$p = $t->person;
+					$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+				}
+			}
+		}
+
 		$vars = array_merge($vars, array(
 			'agents'             => $agents,
 			'agent_teams'        => $agent_teams,
@@ -482,7 +538,9 @@ class TicketSearchController extends AbstractController
 			'is_grouped_result'  => $is_grouping,
 			'ticket_field_defs'  => $ticket_field_defs,
 			'person_field_defs'  => $person_field_defs,
-			'load_first'         => $this->in->getBool('load_first')
+			'load_first'         => $this->in->getBool('load_first'),
+			'all_custom_fields'  => $all_custom_fields,
+			'user_all_custom_fields'  => $user_all_custom_fields
 		));
 
 		$html = $this->renderView($tpl, $vars);

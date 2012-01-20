@@ -142,13 +142,29 @@ class PeopleSearchController extends AbstractController
 		// person defs for columns
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
+		$has_u_fields = false;
+		foreach ($vars['display_fields'] as $f) {
+			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
+		}
+
+		$user_all_custom_fields = array();
+
+		if ($has_u_fields) {
+			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+
+			foreach ($people as $p) {
+				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+			}
+		}
+
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'people'             => $people,
 			'page'               => $page,
 			'person_field_defs'  => $person_field_defs,
-			'load_first'         => $this->in->getBool('load_first')
+			'load_first'         => $this->in->getBool('load_first'),
+			'user_all_custom_fields' => $user_all_custom_fields
 		));
 
 		$html = $this->renderView($tpl, $vars);
@@ -173,10 +189,25 @@ class PeopleSearchController extends AbstractController
 		$person_ids = Arrays::removeFalsey($person_ids);
 		$person_ids = array_unique($person_ids);
 
-		$people = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($person_ids);
+		$people = $this->em->getRepository('DeskPRO:Person')->getPeopleResultsFromIds($person_ids);
 		$people = Arrays::orderIdArray($person_ids, $people);
 
 		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+
+		$has_u_fields = false;
+		foreach ($display_fields as $f) {
+			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
+		}
+
+		$user_all_custom_fields = array();
+
+		if ($has_u_fields) {
+			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+
+			foreach ($people as $p) {
+				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+			}
+		}
 
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
@@ -189,6 +220,7 @@ class PeopleSearchController extends AbstractController
 			'people'           => $people,
 			'display_fields'    => $display_fields,
 			'person_field_defs' => $person_field_defs,
+			'user_all_custom_fields' => $user_all_custom_fields,
 		));
 	}
 

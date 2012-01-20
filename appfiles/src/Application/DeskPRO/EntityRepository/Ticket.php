@@ -79,6 +79,32 @@ class Ticket extends AbstractEntityRepository
 	}
 
 	/**
+	 * Fetches full ticket object graphs for ticket listing results
+	 *
+	 * @param array $ids
+	 * @return array|mixed
+	 */
+	public function getTicketsResultsFromIds(array $ids)
+	{
+		if (!$ids) return array();
+
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t INDEX BY t.id
+			WHERE t.id IN(?1)
+			ORDER BY t.id ASC
+		")->setParameter(1, $ids)
+		  ->setFetchMode('DeskPRO:Ticket', 'custom_data', 'EAGER')
+		  ->setFetchMode('DeskPRO:Ticket', 'person', 'EAGER')
+		  ->setFetchMode('DeskPRO:Person', 'custom_data', 'EAGER')
+		  ->setFetchMode('DeskPRO:Person', 'emails', 'EAGER')
+		  ->setFetchMode('DeskPRO:Person', 'primary_email', 'EAGER')
+		  ->execute();
+
+		return $tickets;
+	}
+
+	/**
 	 * Get all tickets a person owns, or is a participant in.
 	 * This is usually used to fetch a list of tickets for an end-user.
 	 *

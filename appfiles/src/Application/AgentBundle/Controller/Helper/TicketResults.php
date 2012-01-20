@@ -207,7 +207,7 @@ class TicketResults
 	protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
 	{
 		$page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, $per_page);
-		$tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
+		$tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.

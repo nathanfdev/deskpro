@@ -204,12 +204,41 @@ class FieldManager
 	 *
 	 * @param $object
 	 * @param null $field_group
-	 * @return void
+	 * @return array
 	 */
 	public function getDisplayArrayForObject($object, $field_group = null)
 	{
 		$field_data = $this->getFieldDataForObject($object);
 		return $this->getDisplayArray($field_data, $field_group);
+	}
+
+
+	/**
+	 * Create field display arrays for a collection of objects and their field object (raw values for their fields)
+	 *
+	 * $objects are the actual objects you want to process. For example $tickets of types Ticket
+	 * $field_objects are all those records custom field objects. For example, $ticket_custom_data of types CustomDataTicket
+	 *
+	 * You get back an array of display arrays, the same as youd get from getDisplayArrayForObject()
+	 *
+	 * @param $object
+	 * @param $field_group
+	 * @return array
+	 */
+	public function getDisplayArraysForObjectCollection(array $objects, array $field_objects)
+	{
+		$data = array();
+
+		foreach ($objects as $object) {
+			if (!isset($field_objects[$object->id])) {
+				continue;
+			}
+
+			$field_data = $this->createFieldDataFromArray($object, $field_objects[$object->id]);
+			$data[$object->id] = $this->getDisplayArray($field_data, null);
+		}
+
+		return $data;
 	}
 
 

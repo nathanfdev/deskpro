@@ -185,6 +185,25 @@ class Person extends \Doctrine\ORM\EntityRepository
 		return $people;
 	}
 
+	public function getPeopleResultsFromIds(array $ids)
+	{
+		if (!$ids) return array();
+
+		$people = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			WHERE p.id IN(?1)
+			ORDER BY p.id ASC
+		")->setParameter(1, $ids)
+		  ->setFetchMode('DeskPRO:Person', 'emails', 'EAGER')
+		  ->setFetchMode('DeskPRO:Person', 'primary_email', 'EAGER')
+		  ->setFetchMode('DeskPRO:Person', 'custom_data', 'EAGER')
+		  ->execute();
+
+		return $people;
+	}
+
+
 	public function getOrganizationMembers(OrganizationEntity $org)
 	{
 		return $this->getEntityManager()->createQuery("

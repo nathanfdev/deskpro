@@ -96,7 +96,7 @@ class PeopleResults
 	protected function _getPageFromPeopleIds(array $people_ids, $page, $per_page)
 	{
 		$page_people_ids = Arrays::getPageChunk($people_ids, $page, $per_page);
-		$people_raw = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($page_people_ids);
+		$people_raw = App::getEntityRepository('DeskPRO:Person')->getPeopleResultsFromIds($page_people_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.

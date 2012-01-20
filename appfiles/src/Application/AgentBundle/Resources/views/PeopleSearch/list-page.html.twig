@@ -33,11 +33,12 @@
 								{% set has_set = true %}
 								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
 							{% else %}
-								{% for f in person_field_defs %}
+								{% for f in user_all_custom_fields[person.id] %}
 									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
 									{% set has_set = true %}
 									<li>
-										{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+										<span class="prop-title">{{ f.title }}:</span>
+										<span class="prop-val">{{ render_custom_field(f) }}</span>
 									</li>
 									{% endif %}
 								{% endfor %}
