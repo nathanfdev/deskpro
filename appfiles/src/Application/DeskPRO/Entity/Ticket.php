@@ -827,10 +827,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			if (!$this->date_first_agent_reply) {
 				$this['date_first_agent_reply'] = $now;
 			}
-
-			if (!$message->is_agent_note) {
-				$this->setDateUserWaiting(null);
-			}
 		} else {
 			if (!($this->date_last_user_reply || $this->date_last_user_reply < $now)) {
 				$this['date_last_user_reply'] = $now;
@@ -840,21 +836,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->_onPropertyChanged('messages', null, $message);
-	}
-
-
-	public function setDateUserWaiting($date)
-	{
-		if ($this->date_user_waiting) {
-			$time = time() - $this->date_user_waiting->getTimestamp();
-			$this->setModelField('total_user_waiting', $this->total_user_waiting += $time);
-
-			if (!$this->total_to_first_reply) {
-				$this->setModelField('total_to_first_reply', $this->total_user_waiting);
-			}
-		}
-
-		$this->setModelField('date_user_waiting', $date);
 	}
 
 
@@ -1473,10 +1454,32 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function getRealTotalUserWaiting()
+	{
+		$secs = $this->total_user_waiting;
+
+		if ($this->date_user_waiting) {
+			$secs += time() - $this->date_user_waiting->getTimestamp();
+		}
+
+		return $secs;
+	}
+
 
 	public function setStatus($status)
 	{
 		$old_status  = $this->status;
+
+		if ($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
+			$this->total_user_waiting += time() - $this->date_user_waiting->getTimestamp();
+			$this->date_user_waiting = null;
+		} else if ($status == 'closed' && $old_status == 'awaiting_user' && $this->date_user_waiting) {
+			$this->total_user_waiting += time() - $this->date_user_waiting->getTimestamp();
+			$this->date_user_waiting = null;
+		} else if ($status == 'awaiting_agent') {
+			$this->date_user_waiting = new \DateTime();
+		}
+
 		$old_hstatus = $this->hidden_status;
 		$old_status_code = "$old_status.$old_hstatus";
 

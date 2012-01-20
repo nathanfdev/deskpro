@@ -17,6 +17,7 @@ use Application\DeskPRO\App;
 
 use Orb\Util\Util;
 use Orb\Util\Strings;
+use Orb\Util\Dates;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -77,6 +78,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_counter' => new \Twig_Function_Method($this, 'getCounter'),
 			'inc_counter' => new \Twig_Function_Method($this, 'incCounter'),
 			'form_token' => new \Twig_Function_Method($this, 'formToken', array('is_safe' => array('html'))),
+			'relative_time' => new \Twig_Function_Method($this, 'relativeTime', array('is_safe' => array('html'))),
         );
     }
 
@@ -105,6 +107,11 @@ class TemplatingExtension extends \Twig_Extension
 			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
         );
     }
+
+	public function relativeTime($secs)
+	{
+		return Dates::secsToReadable($secs);
+	}
 
 	public function strTruncate($str, $width = 80)
 	{

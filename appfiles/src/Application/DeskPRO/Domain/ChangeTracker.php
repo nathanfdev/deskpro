@@ -61,6 +61,11 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 	 */
 	public function recordPropertyChanged($prop, $old_val, $new_val)
 	{
+		// It may have been reset more than once before being saved
+		if (isset($this->changes[$prop])) {
+			$old_val = $this->changes[$prop]['old'];
+		}
+
 		$this->changes[$prop] = array('old' => $old_val, 'new' => $new_val);
 	}
 
