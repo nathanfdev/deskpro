@@ -88,10 +88,6 @@ class TicketPrioritiesController extends AbstractController
 
 		$priority->priority = $this->in->getUint('priority');
 
-		if ($parent and !$parent->parent) {
-			$priority->parent = $parent;
-		}
-
 		$this->em->getConnection()->beginTransaction();
 
 		try {

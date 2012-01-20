@@ -85,6 +85,7 @@ class TicketCategoriesController extends AbstractController
 			$category->title = 'Untitled';
 		}
 
+		$parent = null;
 		if ($this->in->getUint('parent_id')) {
 			$parent = App::findEntity('DeskPRO:TicketCategory', $this->in->getUint('parent_id'));
 		}

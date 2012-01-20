@@ -312,9 +312,10 @@ class AgentsController extends AbstractController
 
 			if ($set_email) {
 				$old_email = $agent->getPrimaryEmail();
-				$agent->removeEmailAddressId($old_email->id);
-
-				$agent->setEmail($set_email, true);
+				if ($old_email) {
+					$agent->removeEmailAddressId($old_email->id);
+					$agent->setEmail($set_email, true);
+				}
 			}
 
 			$this->em->persist($agent);
