@@ -253,10 +253,25 @@ class AsseticManager
 	{
 		$info = $this->getBundleConfig($name);
 
+		if (!$info) {
+			throw new \InvalidArgumentException("Unknown bundle config `$name`");
+		}
+
 		$urls = array();
 
-		foreach ($info['files'] as $f) {
-			$urls[] = $this->asset_helper->getUrl($f);
+		if (isset($info['references'])) {
+			foreach ($info['references'] as $r) {
+				$r_urls = $this->getRawUrls($r);
+				if ($r_urls) {
+					$urls = array_merge($urls, $r_urls);
+				}
+			}
+		}
+
+		if (isset($info['files'])) {
+			foreach ($info['files'] as $f) {
+				$urls[] = $this->asset_helper->getUrl($f);
+			}
 		}
 
 		return $urls;
