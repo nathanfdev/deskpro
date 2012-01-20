@@ -232,7 +232,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
 		#------------------------------
-		# License checksc
+		# License checks
 		#------------------------------
 
 		if ($response->headers->get('content-type') == 'text/html' && $type == HttpKernelInterface::MASTER_REQUEST) {
@@ -242,7 +242,19 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			# No license
 			#------------------------------
 
-			if (!License::getLicense()->hasLicense() && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
+			// If we dont have a license, then we are allowed to view exactly four sections:
+			// 1) /admin/login               Logging in
+			// 2) /admin/welcome             Initial config
+			// 3) /admin/setup/default-smtp  Setting up outgoing email
+			// 4) /admin/license             Setting up the license
+
+			if (
+				!License::getLicense()->hasLicense()
+				&& !preg_match('#^/admin/login#', $path)
+				&& !preg_match('#^/admin/welcome#', $path)
+				&& !preg_match('#^/admin/setup/default-smtp#', $path)
+				&& !preg_match('#^/admin/license#', $path)
+			) {
 				$response = new RedirectResponse($request->getServerBaseUrl() . '/admin/license');
 				return $response;
 			}

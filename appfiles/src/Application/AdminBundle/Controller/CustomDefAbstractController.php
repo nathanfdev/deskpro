@@ -80,7 +80,7 @@ abstract class CustomDefAbstractController extends AbstractController
 		} else {
 			$field = $this->createNewField();
 			$field['handler_class'] = $this->in->getString('fielddef.handler_class');
-			$is_new = false;
+			$is_new = true;
 		}
 
 		$basetype    = Util::getBaseClassname($field['handler_class']);

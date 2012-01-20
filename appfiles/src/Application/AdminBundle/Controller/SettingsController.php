@@ -238,17 +238,9 @@ class SettingsController extends AbstractController
 			}
 		}
 
-		$network_checked = App::getSetting('core.network_check');
-		$network_checked_time = App::getSetting('core.network_check');
-
-		if (!$network_checked_time || time()-$network_checked_time > 3600) {
-			$network_checked = $network_checked;
-		}
-
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'setup' => $setup,
 			'form' => $form->createView(),
-			'network_check' => $network_checked,
 			'errors' => $errors
 		));
 	}

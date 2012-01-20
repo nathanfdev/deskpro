@@ -7,14 +7,6 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var self = this;
 		this._autoTimezone();
 		this._autoDeskproUrl();
-
-		this._doNetworkCheck();
-		$('#recheck_network').on('click', function(ev) {
-			ev.preventDefault();
-			self._doNetworkCheck();
-		});
-
-		$('#dp_admin_nav').addClass('disabled');
 	},
 
 	_autoDeskproUrl: function() {
@@ -31,7 +23,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 
 	_autoTimezone: function() {
 		var tz = $('#setup_timezone');
-		if (tz.val()) {
+		if (tz.val() && tz.val() != 'UTC') {
 			return;//already have a value
 		}
 
@@ -45,13 +37,5 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				}
 			})
 		}
-	},
-
-	_doNetworkCheck: function() {
-		$.ajax({
-			url: BASE_URL + 'admin/misc/network-check.json',
-			type: 'GET',
-			dataType: 'json'
-		});
 	}
 });

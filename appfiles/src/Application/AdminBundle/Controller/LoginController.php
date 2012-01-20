@@ -41,6 +41,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			$url = $this->in->getString('return');
 		}
 
+		// Makes the initial login after install cleaner without auto-redirect to license, then back to welcome
+		if ($url) {
+			if (preg_match('#/admin/license#', $url) && !$this->container->getCache('core.setup_initial')) {
+				$url = $this->generateUrl('admin', array(), true);
+			}
+		}
+
 		$has_logged_out = $this->in->checkIsset('o');
 		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session, 'has_logged_out' => $has_logged_out));
 	}

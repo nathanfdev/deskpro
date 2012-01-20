@@ -24,7 +24,8 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
 			->notName('config.new.php')
 			->notName('classes.map')
 			->ignoreVCS(true)
-			->exclude('sys/cache/dev');
+			->exclude('sys/cache/dev')
+			->exclude('.idea');
 	}
 
 	/**
