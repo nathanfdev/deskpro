@@ -4,7 +4,35 @@ namespace DeskPRO\Kernel;
 
 class KernelBooter
 {
-	protected static function bootstrap($debug)
+	public static function bootstrapConfig()
+	{
+		#------------------------------
+		# Load main config now
+		#------------------------------
+
+		global $DP_CONFIG;
+		require DP_CONFIG_FILE;
+
+		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
+			$DP_CONFIG = array();
+		}
+
+		if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
+		if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
+		if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
+		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
+		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+
+		if (!defined('DP_BUILD_TIME')) {
+			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+				require(DP_ROOT.'/sys/config/build-time.php');
+			} else {
+				define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
+			}
+		}
+	}
+
+	public static function bootstrapLib($debug)
 	{
 		if ($debug) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
@@ -23,44 +51,19 @@ class KernelBooter
 
 	public static function bootWeb()
 	{
+		global $DP_CONFIG;
+
+		self::bootstrapConfig();
+
 		$env = 'prod';
 		$debug = false;
-
-		#------------------------------
-		# Load main config now
-		#------------------------------
-
-		global $DP_CONFIG;
-		require DP_CONFIG_FILE;
-
-		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-			$DP_CONFIG = array();
-		}
-
-		if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-		if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
-		if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
-		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
-		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
 
 		if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
 			$env = 'dev';
 			$debug = true;
 		}
 
-		if (!defined('DP_BUILD_TIME')) {
-			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-				require(DP_ROOT.'/sys/config/build-time.php');
-			} else {
-				define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
-			}
-		}
-
-		#------------------------------
-		# Boot up
-		#------------------------------
-
-		self::bootstrap($debug);
+		self::bootstrapLib($debug);
 
 		$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
 		$path = $request->getPathInfo();
@@ -148,21 +151,17 @@ class KernelBooter
 		$app->run($input);
 	}
 
-	protected static function getCliApp($env, $debug)
+	protected static function getCliApp($env = 'prod', $debug = false)
 	{
-		#------------------------------
-		# Load main config now
-		#------------------------------
-
 		global $DP_CONFIG;
-		require DP_CONFIG_FILE;
+		self::bootstrapConfig();
 
 		if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
 			$env = 'dev';
 			$debug = true;
 		}
 
-		self::bootstrap(true);
+		self::bootstrapLib($debug);
 
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 
