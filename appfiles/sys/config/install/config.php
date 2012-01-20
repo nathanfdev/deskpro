@@ -13,6 +13,7 @@ use Symfony\Component\Config\Resource\FileResource;
 
 $container->setParameter('kernel.include_core_classes', false);
 $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
+$container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
 
 
 ############################################################################
