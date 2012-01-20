@@ -132,7 +132,12 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			if (isset($DP_CONFIG['cache_dir'])) {
 				$cache_dir = $DP_CONFIG['cache_dir'];
 			} else {
-				$cache_dir = DP_ROOT . '/sys/cache/%env%';
+				$name = explode('\\', get_class($this));
+				$name = array_pop($name);
+				$name = strtolower($name);
+				$name = str_replace('kernel', '', $name);
+
+				$cache_dir = DP_ROOT . '/sys/cache/%env%/' . $name;
 			}
 			$cache_dir = str_replace('%env%', $this->environment, $cache_dir);
 		}
