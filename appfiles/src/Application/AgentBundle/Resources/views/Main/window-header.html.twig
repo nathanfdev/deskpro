@@ -101,20 +101,20 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a>Agent Interface<span class="dropdownIcon"></span></a>
+				<a class="agent">Agent Interface<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap" >
 			<div class="switcherHeader">
-				<a><span>{{ phrase('agent.window.agent_interface') }}</span></a>
+				<a class="agent"><span>{{ phrase('agent.window.agent_interface') }}</span></a>
 			</div>
 			<ul>
 				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.window.admin_interface') }}</span></a></li>{% endif %}
 				{% if app.user.can_billing %}<li><a class="billing" href=""><span>{{ phrase('agent.window.billing_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.window.reports_interface') }}</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.window.user_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.window.reports_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.window.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>

@@ -898,8 +898,6 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 
 .adminSwitcher a{
 	background-repeat: no-repeat;
-	background-position: 0 5px;
-    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	color: #F2F9FF;
 	font-size: 11px;
 	font-weight: normal;
@@ -909,15 +907,80 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	padding: 0 4px 0 23px;
 	width: 110px;
 	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	background-position: 0 3px;
 }
+.switcherHeader a.admin {
+	background-position: 0 0px;
+}
+
+.dropdownSwitcherWrap a span {
+	background-repeat: no-repeat;
+	background-position: 0 0;
+}
+
+.adminSwitcher a.admin {
+	background-image: url(../../images/agent/header/interface-admin-dark.png);
+}
+.switcherHeader a.admin {
+	background-image: url(../../images/agent/header/interface-admin-dark.png);
+    background-position: 0 0;
+}
+.dropdownSwitcherWrap a.admin span {
+	background-image: url(../../images/agent/header/interface-admin-dark.png);
+}
+
+.adminSwitcher a.agent {
+	background-image: url(../../images/agent/header/interface-agent-dark.png);
+}
+.switcherHeader a.agent {
+	background-image: url(../../images/agent/header/interface-agent-dark.png);
+    background-position: 0 0;
+}
+.dropdownSwitcherWrap a.agent span {
+	background-image: url(../../images/agent/header/interface-agent-dark.png);
+}
+
+.adminSwitcher a.billing {
+	background-image: url(../../images/agent/header/interface-billing-dark.png);
+}
+.switcherHeader a.billing {
+	background-image: url(../../images/agent/header/interface-billing-dark.png);
+    background-position: 0 0;
+}
+.dropdownSwitcherWrap a.billing span {
+	background-image: url(../../images/agent/header/interface-billing-dark.png);
+}
+
+.adminSwitcher a.reports {
+	background-image: url(../../images/agent/header/interface-reports-dark.png);
+}
+.switcherHeader a.reports {
+	background-image: url(../../images/agent/header/interface-reports-dark.png);
+    background-position: 0 0;
+}
+.dropdownSwitcherWrap a.reports span {
+	background-image: url(../../images/agent/header/interface-reports-dark.png);
+}
+
+.adminSwitcher a.user {
+	background-image: url(../../images/agent/header/interface-user-dark.png);
+}
+.switcherHeader a.user {
+	background-image: url(../../images/agent/header/interface-user-dark.png);
+    background-position: 0 0;
+}
+.dropdownSwitcherWrap a.user span {
+	background-image: url(../../images/agent/header/interface-user-dark.png);
+}
+
 .adminSwitcher a span{
     background-repeat: no-repeat;
-    background-position: 0 10px;
-    background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px; sprite-margin-bottom: 10px; */;
 	float: right;
 	height: 20px;
 	padding: 5px 12px 0 0;
 	position: relative;
+    background-position: 0 10px;
+    background-image: url(../../images/agent/dropdown-white.png) /** sprite-ref: ui-v; sprite-alignment: right; sprite-margin-top: 10px;*/
 }
 .adminSwitcher:hover{
 	.gradient(#5c93ba, #4670aa);
@@ -926,16 +989,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 
 .dropdownSwitcherWrap ul li a span {
     margin-left: 2px;
-	background-repeat: no-repeat;
-	background-position: 0 2px;
-    background-image: url(../../images/agent/header/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
     padding-left: 23px;
-}
-
-.dropdownSwitcherWrap ul li:hover a span {
-	background-repeat: no-repeat;
-	background-position: 0 2px;
-    background-image: url(../../images/agent/header/interface-switcher.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 2px; sprite-margin-bottom: 10px; */;
 }
 
 .createDropdown ul.createBtnPopups li a span.createTicket:hover{
@@ -1000,8 +1054,6 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 .switcherHeader span {
 	background-repeat: no-repeat;
-	background-position: 0 3px;
-    background-image: url(../../images/agent/header/interface-switcher-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
 	padding: 0 0 0 20px !important;
 }
 .firefox .windows .switcherHeader a, .safari .windows .switcherHeader a{

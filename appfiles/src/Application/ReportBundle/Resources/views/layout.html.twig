@@ -122,21 +122,21 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a>Report Interface<span class="dropdownIcon"></span></a>
+				<a class="reports">Report Interface<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a><span>Report Interface</span></a>
+				<a class="reports"><span>Report Interface</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">Admin Interface</span></a></li>{% endif %}
+				{% if app.user.can_admin %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">Admin Interface</span></a></li>{% endif %}
 				{% if app.user.can_agent %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
 				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
