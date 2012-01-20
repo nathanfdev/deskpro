@@ -21,7 +21,7 @@ if (file_exists($cachefile)) {
 # Files that symfony thinks we should preload
 ######################################################################
 
-$files = require DP_ROOT.'/sys/cache/prod/classes.map';
+$files = require DP_ROOT.'/sys/cache/prod/agent/classes.map';
 
 ######################################################################
 # Our files
