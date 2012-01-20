@@ -115,6 +115,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 
 			this.fireEvent('initRow', [row, id, this]);
 
+			DeskPRO_Window.util.dpCheckbox($('input.dp-checkbox', row));
 			row.appendTo(this.controlRealEl);
 
 		}).bind(this));
