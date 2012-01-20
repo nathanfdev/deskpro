@@ -5,38 +5,27 @@
 {% endblock %}
 {% block page %}
 
-{{ design.dpgrid() }}
-	{{ design.dpgrid_headerrow() }}
-		{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 700px;"}) }}
-			<h1>Department</h1>
-		{{ design.dpgrid_headercol_end() }}
-		{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 85px"}) }}
-			<h1>Tickets</h1>
-		{{ design.dpgrid_headercol_end() }}
-		{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 85px"}) }}
-			<h1>Chat</h1>
-		{{ design.dpgrid_headercol_end() }}
-	{{ design.dpgrid_headerrow_end() }}
+<div class="layout-content with-scrollbar" id="testscroll" style="width: 500px; height: 500px; position: relative;">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+	<div style="background-color: #555"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #ccc"><br /><br /><br /><br /></div>
+	<div style="background-color: #fff"><br /><br /><br /><br /></div>
+	<div style="background-color: #555"><br /><br /><br /><br /></div>
+</div></div></div>
 
-	{{ design.dpgrid_content() }}
-		{{ design.dpgrid_col({ class: 'l r', style: "width: 700px;"}) }}
-			Department
-		{{ design.dpgrid_col_end() }}
-
-		{{ design.dpgrid_col({ class: 'l r l-margin r-margin alt', style: "width: 85px"}) }}
-			Tickets
-		{{ design.dpgrid_col_end() }}
-
-		{{ design.dpgrid_col({ class: 'l r alt', style: "width: 85px"}) }}
-			Chat
-		{{ design.dpgrid_col_end() }}
-	{{ design.dpgrid_content() }}
-{{ design.dpgrid_end() }}
-
-
-<Br />
-<Br /><Br /><Br /><Br /><Br /><Br /><Br /><Br />
-<button class="clean-white" id="open_overlay_btn">Open Overlay</button>
 
 {#
 	- overlay-title and overlay-footer are optional
@@ -64,6 +53,12 @@
 			triggerElement: $('#open_overlay_btn'),
 			contentElement: $('#overlay_wrapper')
 		});
+
+		$('#testscroll').tinyscrollbar();
+
+		window.gototop = function() {
+			$('#testscroll').trigger('goscrolltop');
+		}
 	});
 </script>
 {% endblock %}
