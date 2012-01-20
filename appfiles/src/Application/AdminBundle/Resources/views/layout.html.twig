@@ -113,10 +113,10 @@
 				<a><span>Admin Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>
-				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
-				<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>
-				<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>
+				{% if app.user.can_agent %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>

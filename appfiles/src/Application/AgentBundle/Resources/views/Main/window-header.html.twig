@@ -97,6 +97,7 @@
 	</div>
 
 	<!-- BEGIN INTERFACE SECTION -->
+	{% if app.user.can_admin or app.user.can_billing or app.user.can_reports or app.getSetting('user.portal_enabled') %}
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
@@ -110,14 +111,15 @@
 				<a><span>{{ phrase('agent.window.agent_interface') }}</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.window.admin_interface') }}</span></a></li>
-				<li><a class="billing" href=""><span>{{ phrase('agent.window.billing_interface') }}</span></a></li>
-				<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.window.reports_interface') }}</span></a></li>
-				<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.window.user_interface') }}</span></a></li>
+				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.window.admin_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href=""><span>{{ phrase('agent.window.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.window.reports_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.window.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
 	</div>
+	{% endif %}
 	<!-- END INTERFACE SECTION -->
 
 	<!-- BEGIN STATUS SECTION -->

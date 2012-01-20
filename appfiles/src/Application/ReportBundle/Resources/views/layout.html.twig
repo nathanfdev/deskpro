@@ -117,6 +117,7 @@
 	<!-- END USER SECTION -->
 	</div>
 
+	{% if app.user.can_admin or app.user.can_agent or app.user.can_billing or app.getSetting('user.portal_enabled') %}
 	<!-- BEGIN INTERFACE SECTION -->
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
@@ -131,15 +132,17 @@
 				<a><span>Report Interface</span></a>
 			</div>
 			<ul>
-				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin"><span class="check">Admin Interface</span></a></li>
-				<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent"><span class="check">Agent Interface</span></a></li>
-				<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>
-				<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>
+				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">Admin Interface</span></a></li>{% endif %}
+				{% if app.user.can_agent %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="report" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="portal" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
 	</div>
 	<!-- END INTERFACE SECTION -->
+	{% endif %}
 </div>
 <!-- /BEGIN HEADER BAR -->
 
