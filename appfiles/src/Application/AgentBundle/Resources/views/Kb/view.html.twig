@@ -303,7 +303,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 {% macro category_row(cat, depth) %}
 	<li
-		class="{% if not depth %}top{% else %}child{% endif %} {% if cat.children %}parent-option{% endif %} item-{{ cat.id }}"
+		class="{% if not depth %}top{% else %}child{% endif %} {% if cat.children %}parent-option{% endif %} item-{{ cat.id }} depth-{{ depth }}"
 		{% if cat.parent_id %}data-parent-id="{{ cat.parent_id }}"{% endif %}
 		data-item-id="{{ cat.id }}"
 		data-full-title="{{ cat.title }}"
