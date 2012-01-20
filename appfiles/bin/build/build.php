@@ -1,5 +1,11 @@
 #!/usr/bin/env php
 <?php
+if (php_sapi_name() != 'cli') {
+	echo "This script must only be run from the CLI.\n";
+	echo "Contact support@deskpro.com if you require assistance.\n";
+	exit(1);
+}
+
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 
 $htaccess_path = realpath(DP_ROOT . '/../.htaccess');
