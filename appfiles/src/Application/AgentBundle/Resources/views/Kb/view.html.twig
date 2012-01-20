@@ -199,9 +199,9 @@ pageMeta.baseId = '{{ baseId }}';
 </nav>
 
 {# Tab Contents #}
-<div id="{{baseId}}_tab_contents" class="tabbed-page-contents">
+<div id="{{baseId}}_tab_contents">
 	{# Tab: Content #}
-	<div class="deskpro-tab-item kb-content on" style="display: block">
+	<div class="deskpro-tab-item content-tab-item kb-content on" style="display: block">
 		<div id="{{baseId}}_content_ed">
 		{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 		</div>
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# /Tab: Content #}
 
 	{# Tab: Comments #}
-	<div class="deskpro-tab-item comments-tab">
+	<div class="deskpro-tab-item content-tab-item comments-tab">
 		<div class="article-comments">
 			<div class="full-deskpro-tab-item">
 				<div class="messages-wrap" id="{{baseId}}_comments_wrap">

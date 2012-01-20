@@ -369,6 +369,16 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
 
+			var txt = $('.edit-content-field', this.getEl('content_ed'));
+			var w = $(txt.closest('.content-tab-item')).width() - 30;
+
+			// Means the whole thign is visible at once, lets try and max out the viewport
+			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
+				var h = $(window).height() - 90 - txt.offset().top;
+			} else {
+				h = 425;
+			}
+
 			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
 				setup: function(ed) {
 					ed.onKeyPress.add(function() {
