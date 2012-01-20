@@ -1,3 +1,0 @@
-sys:
-  prefix: /dp
-  resource: "%DP_ROOT%/src/Application/SysBundle/Resources/config/routing.php"

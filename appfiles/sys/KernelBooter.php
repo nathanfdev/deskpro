@@ -80,9 +80,9 @@ class KernelBooter
 		} elseif (preg_match('#^/admin(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AdminKernel';
 			define('DP_INTERFACE', 'admin');
-		} elseif (preg_match('#^/report(/|\?|$)#', $path)) {
+		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\ReportKernel';
-			define('DP_INTERFACE', 'report');
+			define('DP_INTERFACE', 'reports');
 		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'api');
@@ -97,7 +97,7 @@ class KernelBooter
 			define('DP_INTERFACE', 'install');
 
 			// Always force full URL with trailing slash
-			if (strpos($request->getRequestUri(), '/index.php/install/') === false) {
+			if (strpos($request->getRequestUri(), '/index.php/install') === false) {
 				header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
 				exit;
 			}

@@ -328,74 +328,6 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	}
 
 	abstract protected function registerAdditionalBundles();
-
-	/**
-     * Returns the file path for a given resource.
-     *
-     * A Resource can be a file or a directory.
-     *
-     * The resource name must follow the following pattern:
-     *
-     *     @<BundleName>/path/to/a/file.something
-     *
-     * where BundleName is the name of the bundle
-     * and the remaining part is the relative path in the bundle.
-     *
-     * If $dir is passed, and the first segment of the path is "Resources",
-     * this method will look for a file named:
-     *
-     *     $dir/<BundleName>/path/without/Resources
-     *
-     * before looking in the bundle resource folder.
-     *
-     * @param string  $name  A resource name to locate
-     * @param string  $dir   A directory where to look for the resource first
-     * @param Boolean $first Whether to return the first path or paths for all matching bundles
-     *
-     * @return string|array The absolute path of the resource or an array if $first is false
-     *
-     * @throws \InvalidArgumentException if the file cannot be found or the name is not valid
-     * @throws \RuntimeException         if the name contains invalid/unsafe
-     * @throws \RuntimeException         if a custom resource is hidden by a resource in a derived bundle
-     */
-    public function locateResource($name, $dir = null, $first = true)
-    {
-		$files = $this->locatePluginResource($name, $dir, $first);
-		if ($files) {
-			return $files;
-		}
-
-		return parent::locateResource($name, $dir, $first);
-    }
-
-	public function locatePluginResource($name, $dir = null, $first = true)
-	{
-		$name = substr($name, 1);
-        list($bundleName, $path) = explode('/', $name, 2);
-		$files = array();
-
-		if (isset($this->bundleMap[$bundleName])) {
-			return false;
-		}
-
-		// Plugin resources come from wherever the plugin says is the path to the resources dir
-		if (strpos($path, '/Resources/') !== null AND $this->container->has('deskpro.plugin_manager')) {
-			$plugin_manager = $this->container->get('deskpro.plugin_manager');
-			if ($plugin_manager->hasPlugin($bundleName)) {
-				$path = str_replace('Resources/', DP_ROOT . '/plugins' . $plugin_manager->getResourcesPath($bundleName), $path);
-
-				if ($first) {
-					return $path;
-				}
-
-				$files[] = $path;
-			}
-
-			return $files;
-		}
-
-		return null;
-	}
 }
 
 
@@ -416,7 +348,7 @@ class AdminKernel extends AbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/admin/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/admin/config_'.$this->getEnvironment().'.php');
 	}
 }
 
@@ -438,7 +370,7 @@ class AgentKernel extends AbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/agent/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/agent/config_'.$this->getEnvironment().'.php');
 	}
 }
 
@@ -473,7 +405,7 @@ class InstallKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/install/config.yml');
+		$loader->load(DP_ROOT.'/sys/config/install/config.php');
 	}
 }
 
@@ -495,7 +427,7 @@ class ReportKernel extends AbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/report/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/report/config_'.$this->getEnvironment().'.php');
 	}
 }
 
@@ -529,7 +461,7 @@ class SysKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/sys/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/sys/config_'.$this->getEnvironment().'.php');
 	}
 }
 
@@ -551,7 +483,7 @@ class UserKernel extends AbstractKernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$loader->load(DP_ROOT.'/sys/config/user/config_'.$this->getEnvironment().'.yml');
+		$loader->load(DP_ROOT.'/sys/config/user/config_'.$this->getEnvironment().'.php');
 	}
 }
 

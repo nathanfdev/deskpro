@@ -1,3 +1,0 @@
-install:
-  prefix: /install
-  resource: "@InstallBundle/Resources/config/routing.php"
