@@ -45,7 +45,11 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			$key = $m[1];
 			unset($params['host']);
 
-			$params = array_merge($params, App::getConfig($key));
+			$conf = App::getConfig($key);
+			if (!$conf) {
+				throw new \Exception("Invalid database key $key");
+			}
+			$params = array_merge($params, $conf);
 			if (empty($params['driver'])) {
 				$params['driver'] = 'pdo_mysql';
 			}
