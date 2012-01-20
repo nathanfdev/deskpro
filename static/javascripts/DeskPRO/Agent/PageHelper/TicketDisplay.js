@@ -43,9 +43,9 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
  * = Display Data Structure =
  * DESKPRO_TICKET_DISPLAY = {
  *     department_id: [
- *         { section: 'default',     item_type: 'ticket_field',     initial_display: 'hidden',  check: function(t){...},  item_id: 4 },
- *         { section: 'default',     item_type: 'ticket_category',  initial_display: 'visible', check: function(t){...}, ticket_categories: [ids to show] },
- *         { section: 'bodytabs',  item_type: 'group',            title: 'Some Title', items: [...] }
+ *         { section: 'default',     field_type: 'ticket_field',     initial_display: 'hidden',  check: function(t){...},  item_id: 4 },
+ *         { section: 'default',     field_type: 'ticket_category',  initial_display: 'visible', check: function(t){...}, ticket_categories: [ids to show] },
+ *         { section: 'bodytabs',    field_type: 'group',            title: 'Some Title', items: [...] }
  *     ]
  * }
  *
@@ -213,14 +213,14 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.departmentId = department_id;
 
-		if (!window.DESKPRO_TICKET_DISPLAY || !window.DESKPRO_TICKET_DISPLAY[department_id]) {
+		if (!window.DESKPRO_TICKET_DISPLAY || (!window.DESKPRO_TICKET_DISPLAY[department_id] && !window.DESKPRO_TICKET_DISPLAY[0])) {
 			// The department is empty of fields
 			// (Rare, because we'll at least have category and such usually)
 			this.updateSectionDisplay();
 			return;
 		}
 
-		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
+		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id] || window.DESKPRO_TICKET_DISPLAY[0];
 		DP.console.log('depItems %o', depItems);
 
 		//------------------------------
@@ -233,6 +233,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 					var itemEls = this.getItemHolderEls(item);
 					if (!itemEls) {
+						DP.console.log("No items for %o", item);
 						return;
 					}
 
@@ -472,7 +473,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		var sectionBodyTabContents = this.sectionBodyTabContents;
 		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
 
-		DP.console.log($('.fields-edit-rows > *', this.sectionProperties).length);
 		if ($('.fields-edit-rows > *', this.sectionProperties).length) {
 			$('.properties-edit-trigger', this.wrapper).show();
 		} else {
@@ -527,6 +527,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		var itemId = this.getItemId(item);
 
 		var itemHolder  = $('> .' + itemId + ':first', this.holders);
+
 		if (!itemHolder || !itemHolder.length) {
 			return;
 		}
@@ -549,9 +550,9 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 */
 	getItemId: function(item) {
 
-		var itemId = item.item_type;
-		if (item.item_id) {
-			itemId += '_' + item.item_id;
+		var itemId = item.field_type;
+		if (item.field_id) {
+			itemId += '_' + item.field_id;
 		}
 
 		return itemId;

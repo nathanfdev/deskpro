@@ -1,6 +1,5 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};

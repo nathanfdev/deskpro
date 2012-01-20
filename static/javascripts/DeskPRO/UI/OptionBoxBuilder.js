@@ -142,7 +142,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		}
 
 		var name = Orb.uuid();
-		if (selectEl && selectEl) {
+		if (selectEl && selectEl.attr('name')) {
 			name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
 		}
 		Array.each(options.values, function(opt) {

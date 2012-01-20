@@ -68,6 +68,11 @@ class TicketPageZoneCollection implements PersonContextInterface
 	 */
 	public function addPagesFromDb()
 	{
+		if ($this->zone == 'agent') {
+			$this->generateAgentZone();
+			return;
+
+		}
 		$dep_page_displays = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getFromZone($this->zone);
 		$dep_page_displays = Arrays::groupItems($dep_page_displays, 'department_id');
 
@@ -86,6 +91,35 @@ class TicketPageZoneCollection implements PersonContextInterface
 			$ticket_page_zone->addPageDisplays($page_displays);
 			$this->addPage($ticket_page_zone);
 		}
+	}
+
+
+	/**
+	 * The agent zone isnt configurable yet. Lets generate it on the fly using data from the database.
+	 */
+	public function generateAgentZone()
+	{
+		$page_display = new TicketPageDisplay();
+		$page_display->zone = 'agent';
+
+		$options = array();
+
+		// Standard fields
+		$options[] = array('id' => 'product');
+		$options[] = array('id' => 'ticket_category');
+		$options[] = array('id' => 'ticket_workflow');
+		$options[] = array('id' => 'ticket_priority');
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		foreach ($ticket_field_defs as $def) {
+			$options[] = array('id' => "ticket_field[{$def->id}]");
+		}
+
+		$page_display->setData($options);
+
+		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		$ticket_page_zone->addPageDisplays(array($page_display));
+		$this->addPage($ticket_page_zone);
 	}
 
 

@@ -321,32 +321,32 @@ class FieldManager
 	 */
 	public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
 	{
+		list($set_field_id, $value_type, $value) = $in_data;
+
+		// The field we're actually saving under
+		// Usually the same as $field_def, but not always
+		// Ex: Choice fields we save under the actual choice option
+		$set_field = null;
+
+		if ($field_def->id == $set_field_id) {
+			$set_field = $field_def;
+		} else {
+			foreach ($field_def->children as $c) {
+				if ($c->id == $set_field_id) {
+					$set_field = $c;
+					break;
+				}
+			}
+		}
+
+		// No value
+		if ($value === null || $set_field === null) {
+			return null;
+		}
+
 		$this->em->beginTransaction();
 
 		try {
-			list($set_field_id, $value_type, $value) = $in_data;
-
-			// The field we're actually saving under
-			// Usually the same as $field_def, but not always
-			// Ex: Choice fields we save under the actual choice option
-			$set_field = null;
-
-			if ($field_def->id == $set_field_id) {
-				$set_field = $field_def;
-			} else {
-				foreach ($field_def->children as $c) {
-					if ($c->id == $set_field_id) {
-						$set_field = $c;
-						break;
-					}
-				}
-			}
-
-			// No value
-			if ($value === null || $set_field === null) {
-				return null;
-			}
-
 			$custom_data = $this->createDataClass();
 			$custom_data['field'] = $set_field;
 			$custom_data[$value_type] = $value;
