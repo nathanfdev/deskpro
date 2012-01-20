@@ -124,6 +124,12 @@ class TicketWorkflowsController extends AbstractController
 		$this->em->beginTransaction();
 		$this->em->remove($workflow);
 		$this->em->flush();
+
+		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+		if (!$count) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+		}
+
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $workflow->title);

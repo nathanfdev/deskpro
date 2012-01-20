@@ -529,6 +529,8 @@ class AgentsController extends AbstractController
 					$this->db->insert('agent_team_members', array('team_id' => $team->id, 'person_id' => $pid));
 				}
 
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_team', '1');
+
 				$this->em->getConnection()->commit();
 			} catch (\Exception $e) {
 				$this->em->getConnection()->rollback();
@@ -559,6 +561,12 @@ class AgentsController extends AbstractController
 		try {
 			$this->em->remove($team);
 			$this->em->flush();
+
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM agent_teams");
+			if (!$count) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_agent_team', '0');
+			}
+
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();

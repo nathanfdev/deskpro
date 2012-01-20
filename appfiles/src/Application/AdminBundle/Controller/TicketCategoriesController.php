@@ -138,6 +138,12 @@ class TicketCategoriesController extends AbstractController
 		}
 		$this->em->remove($category);
 		$this->em->flush();
+
+		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+		if (!$count) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+		}
+
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $category->title);

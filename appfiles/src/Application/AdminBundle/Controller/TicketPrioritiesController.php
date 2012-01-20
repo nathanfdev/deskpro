@@ -134,6 +134,12 @@ class TicketPrioritiesController extends AbstractController
 		$this->em->beginTransaction();
 		$this->em->remove($priority);
 		$this->em->flush();
+
+		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+		if (!$count) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+		}
+
 		$this->em->commit();
 
 		$this->session->setFlash('deleted', $priority->title);

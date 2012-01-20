@@ -126,6 +126,11 @@ class ProductsController extends AbstractController
 	{
 		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 
+		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+		if (!$count) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
+		}
+
 		return $this->render('AdminBundle:Products:delete.html.twig', array(
 			'product'  => $product,
 		));
