@@ -1,4 +1,5 @@
 <?php
+
 ##BEGIN:locale.language##
 $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = 'Default Engligh';
@@ -568,4 +569,60 @@ $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'Twitter';
 $em->persist($b);
+$em->flush();
+
+
+
+##BEGIN:agent_teams.default1##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = 'Support Managers';
+$em->persist($t);
+$em->flush();
+
+##BEGIN:agent_teams.default2##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = '1st Level Support';
+$em->persist($t);
+$em->flush();
+
+##BEGIN:agent_teams.default3##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = '2nd Level Support';
+$em->persist($t);
+$em->flush();
+
+
+##BEGIN:agent_group.default1##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = 'Support Managers';
+$em->persist($t);
+$em->flush();
+
+##BEGIN:agent_teams.default2##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = '1st Level Support';
+$em->persist($t);
+$em->flush();
+
+##BEGIN:agent_teams.default3##
+$t = new \Application\DeskPRO\Entity\AgentTeam();
+$t['title'] = '2nd Level Support';
+$em->persist($t);
+$em->flush();
+
+
+
+##BEGIN:usergroups.everyone##
+$g = new \Application\DeskPRO\Entity\Usergroup();
+$g['title'] = 'Everyone';
+$g['note'] = '(system group)';
+$em->persist($g);
+$em->flush();
+
+##BEGIN:usergroups.agent_all##
+$AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();
+$AGENTGROUP_ALL['title'] = 'All Permissions';
+$AGENTGROUP_ALL['note'] = 'Agent has full permissions';
+$AGENTGROUP_ALL['is_agent_group'] = true;
+$em->persist($AGENTGROUP_ALL);
 $em->flush();

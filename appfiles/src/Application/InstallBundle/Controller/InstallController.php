@@ -210,6 +210,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
 			// Install data stuff
+			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
 			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 			$em = $this->getOrm();
 			foreach ($install_data as $php) {
@@ -217,6 +218,20 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 
 			$this->getOrm()->flush();
+
+			// For the all agent group, fetch permissions from the template
+			if ($AGENTGROUP_ALL) {
+				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
+				foreach ($scanner->getNames() as $p_name) {
+					$p = new \Application\DeskPRO\Entity\Permission();
+					$p->usergroup = $AGENTGROUP_ALL;
+					$p->name = $p_name;
+					$p->value = 1;
+					$this->getOrm()->persist($p);
+				}
+				$this->getOrm()->flush();
+			}
+
 			$this->getOrm()->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->getOrm()->getConnection()->rollback();
