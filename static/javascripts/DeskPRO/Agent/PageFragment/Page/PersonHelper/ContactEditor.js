@@ -102,6 +102,21 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 					DeskPRO_Window.initInterfaceServices(outsideEl);
 
 					self.replaceEditorOverlay(data.editor_overlay_html);
+
+					if (data.errors) {
+						var div = $('<div>There were errors with the following changes:</div>');
+						var ul = $('<ul></ul>');
+
+						Array.each(data.errors, function(e) {
+							var li = $('<li />');
+							li.text(e);
+							li.appendTo(ul);
+						});
+
+						ul.appendTo(div);
+
+						DeskPRO_Window.showAlert(div);
+					}
 				}
 			});
 		});

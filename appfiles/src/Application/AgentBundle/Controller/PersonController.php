@@ -420,7 +420,10 @@ class PersonController extends AbstractController
 
 		$this->em->beginTransaction();
 
+		$errors = array();
+
 		try {
+
 			// Editing emails
 			if ($this->person->hasPerm('users.add-emails')) {
 				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
@@ -438,6 +441,17 @@ class PersonController extends AbstractController
 				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
 
 					if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+						$errors[] = "\"$email\" was not saved because it is an invalid email address";
+						continue;
+					}
+
+					$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
+					if ($check) {
+						if ($check->person->id == $person->id) {
+							// silent discard
+						} else {
+							$errors[] = "\"$email\" was not saved because it is already added to another user";
+						}
 						continue;
 					}
 
@@ -516,7 +530,8 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => 1,
 			'display_html' => $display_html,
-			'editor_overlay_html' => $editor_overlay_html
+			'editor_overlay_html' => $editor_overlay_html,
+			'errors' => $errors ? $errors : false,
 		));
 	}
 

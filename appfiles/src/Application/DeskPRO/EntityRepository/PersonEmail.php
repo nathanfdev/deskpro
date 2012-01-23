@@ -13,6 +13,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\Person as PersonEntity;
+
 class PersonEmail extends \Doctrine\ORM\EntityRepository
 {
 	public function getEmail($email_address)
@@ -22,7 +24,9 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 			FROM DeskPRO:PersonEmail e
 			WHERE e.email = ?1
 		")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+
 	}
+
 
 	/**
 	 * Count the number of email addresses at one or more arrays.
@@ -128,7 +132,7 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 				return array();
 			}
 		}
-		
+
 		$single = false;
 		if (!is_array($domains)) {
 			$domains = array($domains);
