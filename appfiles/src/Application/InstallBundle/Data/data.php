@@ -680,19 +680,19 @@ $em->flush();
 
 ##BEGIN:agent_teams.default1##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = 'Support Managers';
+$t['name'] = 'Support Managers';
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default2##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = '1st Level Support';
+$t['name'] = '1st Level Support';
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default3##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = '2nd Level Support';
+$t['name'] = '2nd Level Support';
 $em->persist($t);
 $em->flush();
 
