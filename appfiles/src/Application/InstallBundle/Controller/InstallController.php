@@ -211,6 +211,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			// Install data stuff
 			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
+			$AGENT = $agent; // can be used in data.php
+
 			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 			$em = $this->getOrm();
 			foreach ($install_data as $php) {
@@ -230,6 +232,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 					$this->getOrm()->persist($p);
 				}
 				$this->getOrm()->flush();
+
+				$ch = new \Application\DeskPRO\ORM\CollectionHelper($this->getOrm(), $agent, 'usergroups');
+				$ch->setCollection(array($AGENTGROUP_ALL));
 			}
 
 			$this->getOrm()->getConnection()->commit();

@@ -1,5 +1,9 @@
 <?php
 
+################################################################################
+# Language
+################################################################################
+
 ##BEGIN:locale.language##
 $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = 'Default Engligh';
@@ -8,19 +12,51 @@ $l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 $em->persist($l);
 $em->flush();
 
-##BEGIN:create_department.default##
+
+################################################################################
+# Departments
+################################################################################
+
+##BEGIN:create_department.department##
 $q = new \Application\DeskPRO\Entity\Department();
-$q['title'] = 'General';
+$q['title'] = 'Sales';
 $q['is_tickets_enabled'] = true;
 $q['is_chat_enabled'] = true;
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_article_cat.default##
-$q = new \Application\DeskPRO\Entity\ArticleCategory();
-$q['title'] = 'General';
+##BEGIN:create_department.department##
+$q = new \Application\DeskPRO\Entity\Department();
+$q['title'] = 'Support';
+$q['is_tickets_enabled'] = true;
+$q['is_chat_enabled'] = true;
 $em->persist($q);
 $em->flush();
+
+
+################################################################################
+# KB
+################################################################################
+
+##BEGIN:create_article.default##
+$DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
+$DEFAULT_ARTICLE_CAT['title'] = 'General';
+$em->persist($DEFAULT_ARTICLE_CAT);
+$em->flush();
+
+$DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
+$DEFAULT_ARTICLE->person = $AGENT;
+$DEFAULT_ARTICLE->title = 'Example Article';
+$DEFAULT_ARTICLE->content = 'This is an example knowledgebase article. Feel free to edit or delete it.';
+$DEFAULT_ARTICLE->status = 'published';
+$DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
+$em->persist($DEFAULT_ARTICLE);
+$em->flush();
+
+
+################################################################################
+# Downloads
+################################################################################
 
 ##BEGIN:create_download_cat.default##
 $q = new \Application\DeskPRO\Entity\DownloadCategory();
@@ -28,11 +64,64 @@ $q['title'] = 'General';
 $em->persist($q);
 $em->flush();
 
-##BEGIN:create_news_cat.default##
-$q = new \Application\DeskPRO\Entity\NewsCategory();
-$q['title'] = 'General';
-$em->persist($q);
+
+################################################################################
+# News
+################################################################################
+
+##BEGIN:create_news.default##
+$DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
+$DEFAULT_NEWS_CAT['title'] = 'General';
+$em->persist($DEFAULT_NEWS_CAT);
 $em->flush();
+
+$DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
+$DEFAULT_NEWS->person = $AGENT;
+$DEFAULT_NEWS->title = 'Example News Post';
+$DEFAULT_NEWS->content = 'This is an example news post. Feel free to edit or delete it.';
+$DEFAULT_NEWS->status = 'published';
+$DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
+$em->persist($DEFAULT_NEWS);
+$em->flush();
+
+
+################################################################################
+# Ideas
+################################################################################
+
+##BEGIN:create_ideas.default##
+$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\IdeaCategory();
+$DEFAULT_IDEA_CAT['title'] = 'General';
+$em->persist($DEFAULT_IDEA_CAT);
+$em->flush();
+
+foreach (array('Planning', 'Started') as $t) {
+	$s = new \Application\DeskPRO\Entity\IdeaStatusCategory();
+	$s->status_type = 'active';
+	$s->title = $t;
+	$em->persist($s);
+}
+
+foreach (array('Completed', 'Duplicate', 'Already Exists', 'Declined') as $t) {
+	$s = new \Application\DeskPRO\Entity\IdeaStatusCategory();
+	$s->status_type = 'closed';
+	$s->title = $t;
+	$em->persist($s);
+}
+$em->flush();
+
+$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Idea();
+$DEFAULT_IDEA->person = $AGENT;
+$DEFAULT_IDEA->title = 'Example Idea';
+$DEFAULT_IDEA->content = 'This is an example idea. Feel free to edit or delete it.';
+$DEFAULT_IDEA->status = 'new';
+$DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
+$em->persist($DEFAULT_IDEA);
+$em->flush();
+
+################################################################################
+# Filters
+################################################################################
 
 ##BEGIN:create_filter.agent##
 $q = new \Application\DeskPRO\Entity\TicketFilter();
@@ -305,6 +394,11 @@ $q['terms']      = array(
 $em->persist($q);
 $em->flush();
 
+
+################################################################################
+# Triggers
+################################################################################
+
 ##BEGIN:create_trigger.urgency_base##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'urgency.base';
@@ -421,6 +515,10 @@ $em->persist($s);
 $em->flush();
 
 
+################################################################################
+# Cron Jobs
+################################################################################
+
 ##BEGIN:create_jobs.cleanup_client_messages##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_client_messages';
@@ -481,6 +579,9 @@ $em->persist($j);
 $em->flush();
 
 
+################################################################################
+# Portal Blocks
+################################################################################
 
 ##BEGIN:create_portal_block.news##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
@@ -573,6 +674,9 @@ $em->persist($b);
 $em->flush();
 
 
+################################################################################
+# Agent Teams
+################################################################################
 
 ##BEGIN:agent_teams.default1##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
@@ -593,25 +697,9 @@ $em->persist($t);
 $em->flush();
 
 
-##BEGIN:agent_group.default1##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = 'Support Managers';
-$em->persist($t);
-$em->flush();
-
-##BEGIN:agent_teams.default2##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = '1st Level Support';
-$em->persist($t);
-$em->flush();
-
-##BEGIN:agent_teams.default3##
-$t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['title'] = '2nd Level Support';
-$em->persist($t);
-$em->flush();
-
-
+################################################################################
+# Usergroups
+################################################################################
 
 ##BEGIN:usergroups.everyone##
 $g = new \Application\DeskPRO\Entity\Usergroup();
