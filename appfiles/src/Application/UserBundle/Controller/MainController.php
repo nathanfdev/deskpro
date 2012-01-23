@@ -46,17 +46,23 @@ class MainController extends AbstractController
 			), 403);
 		}
 
-		$file = $this->request->files->get('attach');
-		$desc = App::getApi('filestorage')->createRandomPath();
+		try {
+			$file = $this->request->files->get('attach');
+			$desc = App::getApi('filestorage')->createRandomPath();
 
-		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $file->getMimeType(),
-			'filename' => $file->getClientOriginalName(),
-			'is_temp' => true
-		));
+			$desc->write(file_get_contents($file->getRealPath()), array(
+				'content_type' => $file->getMimeType(),
+				'filename' => $file->getClientOriginalName(),
+				'is_temp' => true
+			));
 
-		$blob_id = $desc->getPath();
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		} catch (\Exception $e) {
+			return $this->createJsonResponse(array(
+				'error' => 'general',
+			));
+		}
 
 		return $this->createJsonResponse(array(array(
 			'blob_id' => $blob->getId(),

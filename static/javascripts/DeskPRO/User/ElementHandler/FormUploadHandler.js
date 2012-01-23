@@ -5,6 +5,7 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 
 	init: function() {
 
+		var self = this;
 		var dropZone = this.el;
 		if (this.el.data('drop-document') == '1') {
 			dropZone = $(document);
@@ -16,6 +17,9 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 			autoUpload: true,
 			formData: {
 				security_token: this.el.data('security-token')
+			},
+			start: function() {
+				self.el.find('li.error').remove();
 			},
 			uploadTemplate: $('.dptpl-attach-upload', this.el),
 			downloadTemplate: $('.dptpl-attach-download', this.el)
