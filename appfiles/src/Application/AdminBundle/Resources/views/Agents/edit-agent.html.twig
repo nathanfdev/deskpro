@@ -192,7 +192,7 @@
 									{% for usergroup in all_usergroups %}
 									<li>
 										<label>
-											<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if (not agent.id and usergroup.id == 1) or usergroup.id in agent_usergroups %}checked="checked"{% endif %} />
+											<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if (not agent.id and usergroup.id == 2) or (usergroup.id in agent_usergroups) %}checked="checked"{% endif %} />
 											{{ usergroup.title }}
 										</label>
 									</li>
