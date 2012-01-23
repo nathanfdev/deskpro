@@ -279,7 +279,7 @@ class AgentsController extends AbstractController
 				$errors[] = 'The email address you entered is invalid';
 			} else {
 				$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
-				if ($exist_check) {
+				if ($exist_check && $exist_check->person->id != $agent->id) {
 					$errors[] = 'The new email address you entered already belongs to a different user.';
 				}
 			}
@@ -312,8 +312,9 @@ class AgentsController extends AbstractController
 
 			if ($set_email) {
 				$old_email = $agent->getPrimaryEmail();
-				if ($old_email) {
+				if ($old_email && $old_email->email != $set_email) {
 					$agent->removeEmailAddressId($old_email->id);
+				} else {
 					$agent->setEmail($set_email, true);
 				}
 			}
@@ -428,13 +429,23 @@ class AgentsController extends AbstractController
 			$this->em->flush();
 			$this->em->getConnection()->commit();
 
-			if ($is_new) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
-			}
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
 			throw $e;
 		}
+
+		if ($is_new) {
+
+				// Send welcome email
+				$email_body = App::get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+				$message = App::getMailer()->createMessage();
+				$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
+				$message->setSubject('Your new agent account');
+				$message->setBody($email_body, 'text/html');
+				App::getMailer()->send($message);
+
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
+			}
 
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
