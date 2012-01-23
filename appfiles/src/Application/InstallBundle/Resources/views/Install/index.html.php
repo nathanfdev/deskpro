@@ -148,7 +148,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				PHP Memory Limit
+				PHP Memory Limit (at least 128 MB)
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires PHP's memory_limit option to be at least 128 MB.
