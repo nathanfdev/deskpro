@@ -17,13 +17,36 @@
 		background: #fff !important;
 	}
 
+	#dp_logo {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 99999;
+		display: block;
+
+		height: 59px;
+		text-indent: -10000px;
+		overflow: hidden;
+
+		background: url({{ asset('images/dp-logo-faded.png') }}) 50% 50% no-repeat;
+
+		padding: 15px 0 15px 0;
+	}
+
+	#dp_logo:hover {
+		text-decoration: none;
+		background-image: url({{ asset('images/dp-logo-color.png') }});
+	}
+
 	#dp_login {
 		position: absolute;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
-		z-index: 1000000000;
+		z-index: 99998;
 
 		background-color: #DFE5EB;
 		background: rgb(158,166,175); /* Old browsers */
@@ -272,6 +295,8 @@
 		<div id="dp-logo"></div>
 	</div>
 </form>
+
+<a href="http://www.deskpro.com/" id="dp_logo">DeskPRO</a>
 
 <script type="text/javascript">
 document.getElementById('email').focus();
