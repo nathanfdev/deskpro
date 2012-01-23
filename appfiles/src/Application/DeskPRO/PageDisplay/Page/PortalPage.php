@@ -66,8 +66,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		if (isset($_GET['admin_portal_controls']) && $person_context->can_admin) {
 			$portal_items = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getAllBlocks();
 			$this->is_admin_mode = true;
+			App::get('templating.globals')->setVariable('admin_mode', true);
 		} else {
 			$portal_items = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getEnabledBlocks();
+			App::get('templating.globals')->setVariable('admin_mode', false);
 		}
 
 		/*
@@ -183,6 +185,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		$data['pid'] = $item->id;
 		$data['is_enabled'] = $item->is_enabled;
 		$data['display_order'] = $item->display_order;
+		$data['admin_mode'] = $this->is_admin_mode;
 
 		$obj = new $type_class($section, $data, $this->container, $this->person_context);
 
@@ -267,7 +270,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			$block_html = null;
 			$cache_info = false;
 
-			if ($item instanceof CacheableItem) {
+			if (!$this->is_admin_mode && $item instanceof CacheableItem) {
 				$cache_info = $item->getCacheOptions();
 			}
 

@@ -76,6 +76,9 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'loaded':
 				this.iframeLoaded(data.height);
 				break;
+			case 'update_height':
+				this.updateHeight(data.height);
+				break;
 			case 'open_placeholder_editor':
 				var controller = data.controller;
 
@@ -224,6 +227,10 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 		$('#portal_iframe_loading').fadeOut(300, function() {
 			$('#portal_iframe').css('opacity', '1');
 		});
+	},
+
+	updateHeight: function(height) {
+		$('#portal_iframe').height(height + 25);
 	},
 
 

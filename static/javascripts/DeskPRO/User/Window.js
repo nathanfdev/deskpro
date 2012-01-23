@@ -14,6 +14,7 @@ DeskPRO.User.Window = new Orb.Class({
 	initPage: function() {
 
 		var calcHeights = function() {
+			console.log("SIDZED");
 			var sidebar = $('#dp_sidebar');
 			var content = $('#dp_content');
 			var blocks  = $('#dp_content .dp-content-block');
@@ -55,7 +56,9 @@ DeskPRO.User.Window = new Orb.Class({
 			});
 		};
 
-		calcHeights();
+		if (!IS_ADMIN_CONTROLS) {
+			calcHeights();
+		}
 
 		if (this.PAGE) {
 			this.PAGE.initPage();

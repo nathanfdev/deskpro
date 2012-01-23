@@ -38,10 +38,20 @@ var PortalAdmin = {
 		// Alert admin that we're ready
 		//----------------------------------------
 
-		var h = $('body').outerHeight();
+		var oldHeight = $('body').outerHeight();
 		this.tellAdmin('loaded', {
-			height: h
+			height: oldHeight
 		});
+
+		window.setInterval(function() {
+			var h = $('body').outerHeight();
+			if (h != oldHeight) {
+				self.tellAdmin('update_height', {
+					height: h
+				});
+				oldHeight = h;
+			}
+		}, 300);
     },
 
 
@@ -107,7 +117,7 @@ var PortalAdmin = {
 				return helper;
 			},
 			create: function() {
-				$(this).height($(this).height());
+				//$(this).height($(this).height());
 			},
 			update: function() {
 				var ids = [];
