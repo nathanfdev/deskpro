@@ -52,7 +52,7 @@
 						data-picture-url-sizable=""
 						data-member-ids="{% for m in team.members %}{{ m.id }}{% if not loop.last %},{% endif %}{% endfor %}"
 					>
-						<div class="avatar" style="background-image: url({{ asset('images/icons.png') }});"></div>
+						{#<div class="avatar" style="background-image: url({{ asset('images/icons.png') }});"></div>#}
 						{{ team.name }}
 					</li>
 				{% endfor %}
