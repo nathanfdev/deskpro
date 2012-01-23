@@ -287,6 +287,10 @@ class SettingsController extends AbstractController
 
 	public function cronAction()
 	{
+		// TODO when have proper cron page with help etc, put this step back
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
+		return $this->redirectRoute('admin');
+
 		$setup_initial = $this->container->getSetting('core.setup_initial');
 
 		if ($this->in->getBool('complete')) {
