@@ -379,16 +379,18 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			<input type="text" class="filter-box" placeholder="Filter..." />
 		</header>
 		<ul>
-			<li class="top first emphasis">
-				<input
-					type="radio"
-					name="dep_radio"
-					value="0"
-					{% if not department %}checked="checked"{% endif %}
-					data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}"
-				/>
-				<label>Default Layout</label>
-			</li>
+			{% if department.id %}
+				<li class="top first emphasis">
+					<input
+						type="radio"
+						name="dep_radio"
+						value="0"
+						{% if not department %}checked="checked"{% endif %}
+						data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}"
+					/>
+					<label>Default Layout</label>
+				</li>
+			{% endif %}
 			{% for dep in department_hierarchy %}
 				<li
 					class="top {% if dep.children %}group-title{% endif %} item-{{ dep.id }}"
