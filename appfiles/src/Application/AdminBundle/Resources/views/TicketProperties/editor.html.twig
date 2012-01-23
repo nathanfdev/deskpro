@@ -101,7 +101,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			data-disable="{{ path('admin_tickets_editor_dep_revert', {department_id: department.id|default(0), section: section}) }}"
 			{% if not is_default %}checked="checked"{% endif %}
 		/>
-		Enable alternative layout for {% if section == 'view' %}View Ticket Page{% else %}Modify Ticket Form{% endif %}
+		Enable alternative layout for {% if section == 'view' %}View Ticket Page{% elseif section == 'create' %}New Ticket Form{% else %}Modify Ticket Form{% endif %}
 	</div>
 	{% endif %}
 
