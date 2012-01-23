@@ -122,6 +122,21 @@ class KernelBooter
 			$kernel->handle($request)->send();
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '1049') {
+
+				// Attempt to create an empty database
+				try {
+					$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+					$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+					$success = true;
+				} catch (\Exception $e) {
+					$success = false;
+				}
+
+				if ($success) {
+					header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
+					exit;
+				}
+
 				echo deskpro_install_basic_error('<ul><li>The database name you have set in <code>/config.php</code> does not exist</li></ul>');
 			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
 				echo deskpro_install_basic_error('<ul><li>The database user you have set in <code>/config.php</code> does not exist or does not have permission to use the database</li></ul>');
