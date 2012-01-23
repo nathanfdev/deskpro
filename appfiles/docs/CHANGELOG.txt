@@ -1,3 +1,578 @@
+################################################################################
+# Alpha 3
+################################################################################
+
+* User order by
+
+* Cron step
+
+* Changes to custom fields logged in ticket log
+
+* Handle attachment upload errors in userland
+
+* Fix empty team icons (until we have ui for uploading)
+
+* Fix JS error
+
+* Add config override for a user password (ie way to reset admin password)
+
+* Add dp logo to login screen
+
+* Fix label
+
+* Dont show "default" if currently editing default
+
+* Dont show message types notes/attach when no messages of that type
+
+* Show error on invalid email, catch duplicate emails
+
+* Revert that, was something else
+
+* Fix style of reset link pos
+
+* Remove old field handlers, fix reordering of choice options
+
+* Fix setting initial email address on agent, email them welcome email
+
+* Fix preselected usergroup
+
+* Few fixes of installer
+
+* Fix z-index of menu so it overlaps the disabled screen overlay
+
+* Tabindex so tabbing from pass field doesnt select reset link
+
+* Attempt to create empty database if error
+
+* Explain memory limit check
+
+* Better log messages in verify files list
+
+* Fix cache paths in install kernel
+
+* Remove new deal related things
+
+* Make obvious how to add new things
+
+* Default install data
+
+* Attach sidebar to side of faux browser window again
+
+* Fix sizing/scrolling bugs with editor while you enable and disable stuff
+
+* Ideas on by default
+
+* Add home button to admin nav
+
+* Install default agent teams, and the 'all permissions' agent group
+
+* Have each kernel share a common annotations, doctrine proxies and twig compiled directory
+
+* Redirect back to field listing after editing custom field
+
+* Fix sql error
+
+* Fix a few couple php notices
+
+* AdminKernel is separate now too
+
+* Install kernel needs to use the custom cache warmer too
+
+* Update path
+
+* Changes to prod build for some changes in updated symfony
+
+* Interface switcher icons
+
+* Use dpcheckbox in filter show slideout, easier to align than native checkbox
+
+* Fix extra </div> in scroll container macro
+
+* Get scrolltop working with the custom scrollbar
+
+* Dont show interfaces list in the interface switcher if you dont have permission to see it or if its disabled
+
+* Auto-size rte when editing articles, fix weird padding on content
+
+* Fix tree indentation past two levels in optionbox
+
+* Keep track of total user waiting time
+
+* Fix position of arrow on button
+
+* Fix news and downloads results in quicksearch
+
+* Fix url to reports interface
+
+* Fix some style issues with borders on control bars
+
+* Work around custom fields and collections, and rendering custom field values on filter results
+
+* Show all fields with a value on viewticket, and all form fields when editing
+
+* Build time sholudnt be included in sources
+
+* Fix status message
+
+* More minor fixes to reporting
+
+* Get rid of YAML, use PHP configuration files
+
+* Add simple one-line note to listing pages when you haven't defiend any of that particular thing yet (instead of an empty table)
+
+* When adding the first of something, make sure to toggle on the feature too
+
+* Make sure the feature togglers work to turn on/off stuff
+
+* Make sure the use_xxx settings that are used to determine which features are enabled are set properly when deleting objects. For example, when the last agent team is used, then the use_agent_team setting should be turned off.
+
+* Fix auto-redirection to license page after install, sholud go to admin welcome first
+
+* Exception when no config for a database in ConnectionFactory
+
+* Fix using raw assets when not in debug mode
+
+* Fix CLI with new config structure
+
+* Fix full build scripts with new config structure
+
+* Inline sortable for display options
+
+* Sync counts in tasks if you reassign
+
+* Show details on the 'problem loading the tab' error message
+
+* Prettier login screens
+
+* Fix pager not carrying over display fields, add new pager to the fullscreen ticket listing overlay
+
+* Fix php warning
+
+* Search on email domains, put people results first when doing an email search
+
+* Dont show new comment button either
+
+* Dont show new comment on completed tasks
+
+* Arrow placement
+
+* Fix department search on '0'
+
+* Some cleanup to the publish section listings
+
+* Fix slowness of expanding "other" section in New* overlays
+
+* Fix autoloading routes on lists sometimes, properly load the 'new' list on Ideas
+
+* Make size of message boxes based on the height of the window
+
+* Add setting to control if using agent teams, products, ticket categories, ticket priorities and ticket workflows. In templates, hide relevant sections if the field is disabled
+
+* Fixes and tweaks to filter preferences slideout
+
+* Fix space between border on selected
+
+* Improvements to publish layout
+
+* Save status of admin setup tasks and update the progress bar
+
+* Header tasks thing
+
+* Get redirects and step storing in place
+
+* Quick setup page
+
+* Filters causing assetic less compile to fail
+
+* Simple hint boxe style to team/agents
+
+* Show full form for create agent
+
+* Permission dependency processing
+
+* Get rid of icon for agent zone in listing
+
+* Fixes to handling default gmail transport
+
+* Changes to add gateway account
+
+* New layout for portal editor
+
+* Implement system of storing blocks and their data, display order, state
+
+* More portal fixes and design tweaks
+
+* Fix few more portal bugs
+
+* Some tweaks and fixes to portal
+
+* Editor preloader, add new standard header, move colorwheel icon
+
+* Filter display tweaks
+
+* Getting filter pages up to date
+
+* Rest of updates
+
+* Similar to ticket cats
+
+* Move fields menu item above editor
+
+* Similar changes to products
+
+* Update listing of fields, and ticket properties
+
+* Delete icon, proper delete counts, when deleting tree warn that it deletes children too, move chats when deleting too
+
+* Drag handles on rows on mouse over
+
+* New listing layout, update drag+drop to work with new layout, new and edit as overlays
+
+* Change pagenav position calculations to handle when the screen is smaller
+
+* Update embed code snippet, move embed code into overlay, allow multiple 'pagenav' blocks to exist on a page
+
+* Some updates to get iframe working, some fixes to newticket email with validation enabled
+
+* Tweak nav/title
+
+* Auto-save
+
+* Add drag lines
+
+* Add toggle for new ticket layout too, sort out order of fallback layouts for when custom layouts dont exist
+
+* Fix rendering form fields on 'view' layout when items are drawn from dragging
+
+* Dont show form fields on view list since its not a form
+
+* Implement toggle for custom dep layouts, add button to revert to default, add on/off toggle for view/modify zones
+
+* Invalid page handler
+
+* Some getByIds collisions
+
+* Shouldnt be suppressing errors here
+
+* Always send errors to error_log so server can log errors
+
+* Remove getByIds in Ticket repos, it's defined in the asbtract repos now
+
+* When building, attempt to deny access to web interface so cache files arent written simultaneously
+
+* Fix label autocomplete url error
+
+* Fix typo in getEl
+
+* Implement search bar with first 'quick search' results, keyboard navigation, styling and key behavior, hooks ready for second more intensive searchengine search
+
+* Work around quick search
+
+* Toggle for per-department fields
+
+* Another filter problem
+
+* Fix less error to do with filter:
+
+* Update to the ticket editor layout
+
+* Fix padding around agent list sidebar, add '+' icon to add buttons
+
+* Changes to the agent layout / sidebar boxes
+
+* Modify sidebar'd layout to be in a center white area
+
+* Fix text alignment of options, autofill test dialog with default from, fix toggling backup not hiding a previously selected option when re-enabling.
+
+* Fix PHP error to do with gmail options, fix misplaced 'test' button, fix toggling backup on/off not properly showing row highlight on backup form group
+
+* Layout to triggers page
+
+* Layout to other pages
+
+* New style changes, fix turning off backup mail server
+
+* Save zone access properly, add simple icons for them (agent/admin/reports/billing)
+
+* Add delete for gateway accounts and transports, when adding gmail account automatically add smtp for it too
+
+* Some more on the search bar ui. The option box builder converts a normal select box into an option box widget, and then displays the values neatly
+
+* Get structure of search
+
+* Change loader into pagination
+
+* Fix going over 1000 pagination / incorrect pagination count
+
+* Work around image/attachment storing:
+
+* Add install check for GD or some other image manip extension, add service for Imagine
+
+* Add Imagine sources
+
+* Add Imagine to vendor tracking
+
+* Attachment uploading to notes
+
+* Change title of display options, tweak style a bit
+
+* Add signature to replybox, handle inserting snippets properly around the signature
+
+* Fix cloud tab not working on ticket section
+
+* Keep list counters up to date with publish and ideas section too
+
+* Keep UI counts/elements updated as lists change and filters are updated in real time
+
+* Fix setting "none" group not saving preference
+
+* Rename massactions 'widget' to just MassActions
+
+* Save selected grouping preferences
+
+* Remove icons for twitter/deals
+
+* Use defines for config values
+
+* Fix a few issues in IE
+
+* Log 404's in a separate log, add basic error pages with SN codes for production mode, if a SN code isn't provided (ie some fatals), then the error popup in agent shows the raw output from the server in a box
+
+* Normalize zIndex and use saner values
+
+* Move tinymce stuff into a central DP helper method, and change fullscreen mode to within the window to fix browser issues
+
+* Fix dupe department names
+
+* Fix some issues with popovers and scrollable inner areas due to footers
+
+* Remember email when failed login, and show error message
+
+* Fix updating password and auth check
+
+* Fix selection issue on newticket department, selecting a child enters full name in rendered text spot
+
+* Fix browser hashes that have been URL encoded
+
+* Fix a sticky nav color with hash loading
+
+* Fix grouping issues, fix on hold issues, fix filter criteria for hold items, fix selected nav item color
+
+* Tweak display of avatar so it sits on white background
+
+* Fix close icon bleeding on agent chat window
+
+* Fix opening new agent chat
+
+* Dont allow saving of empty filters
+
+* Dont make your own agent name clickable to chat
+
+* Fix bug with hydration and order of operations from last commit
+
+* Ticket log for adding and removing participants, work in the filter detector and list updater to properly handle filters that are based on participants
+
+* Fix php warningsin quick user search dropdown
+
+* Stick selected nav item when clicking it in ticket section
+
+* Fix showing both "none" and "unassigned" nav rows for agent and agent team
+
+* Fix initial display of 'click to show filters' text
+
+* Test for valid callback and report if its invalid
+
+* Fix for when a popover load is in the background via a timer, but is destroyed before the load happens
+
+* Double destroy fix
+
+* Fix routing error when trying to load a ticket that wasnt created
+
+* Fix some bugs with destroying popovers, and destroying them before the page is loaded
+
+* Fix missing search adapter error
+
+* Dont allow rating of your own messages (ie agent using user interface)
+
+* Number of CSS/positioning fixes
+
+* Fix issue with updating views and sometimes $searcher not being defined but its needed for generating summary used in templates
+
+* Fix hidden error when grouping ticket list results
+
+* Disable filesystem refreshing of compiled templates when in prod mode
+
+* Fix version check on old PHP versions due to __DIR__ being new in PHP 5.3, and syntax errors in boot_* files due to use of namespace separator '\'
+
+* Fix email address of notificaiton
+
+* Fix error with validate email notification
+
+* Fix unknown variable error
+
+* Add placeholder favicon, fix 404 on css image
+
+* Fix bug with agent chat sometimes causing error with detecting existing recent conversations
+
+* Fix references to some user routes in reporting
+
+* Error reporting to us: add referral url, add user agent, fix request data in
+
+* Check memory limit on install, attempt to set min memory limit and max exec time on preboot
+
+* When reporting errors, submit the build time of the package too
+
+* Check for mbstring in installer
+
+* Add some more files to be removed in build vendors
+
+* Update vendor files
+
+* Update vendors:
+
+* Set default from address in actions
+
+* Fix updating of default email address
+
+* Few tweaks with the gateway reading to add debug lines, fix missing user notification, and order of operations on trigger executions
+
+* Update department page with new permission schemes
+
+* Fix ticket terms not using proper option var in description for category types
+
+* Move around and remove nonsense options depending on trigger, add some missing people options
+
+* Fix bug in Util::callUserConstructorArray
+
+* Updated layout of rules, add drag handle, fix some rules, add stop processing rule
+
+* Add order to triggers, add collection modifier that stops further triggers from running, give actions and terms a "description" so they can be rendered to text, add drag and drop to listing
+
+* Redirect /tech/ to /agent/ and /admincp/ to /admin/
+
+* Tweaks to user reg settings page, fix bug in ticket editor that caused error
+
+* Update usergroup editing and listing
+
+* Simple page to switch from open/closed auth/closed
+
+* Remove 'settings' link for ideas and others which don't have anything yet
+
+* Fix undefined constant 'id' error
+
+* Few changes to new trigger ui, add criteria for gateway address, add action rule to set "from" address on notifications
+
+* Simplified trigger listing ui
+
+* Separate default outgoing email into Setup, add single 'email gateways' under Tickets, show section for outgoing email accounts in sidebar on gateways page
+
+* Typo
+
+* Cleanup of an old method call
+
+* Fix agent notifications for new tickets
+
+* Update/fix a number of gateway related tasks, add gateway addresses and address matching
+
+* Get console command working through index.php loader
+
+* Add toggler button to accounts
+
+* Merge branch 'master' of https://github.com/DeskPRO/DeskPRO
+
+* Fixes to upgrader
+
+* Managing of gateway connections
+
+* Save a log of messages even when they reportedly send properly, add cleanup cron job, if a send fails then keep trying but increase time between attempts each time
+
+* Tweak form a bit for better input handling
+
+* Fix maxlength on pattern field
+
+* Fix DelegatingTransport to start connections if they need to be since our mailer overrides that bit from swiftmailer
+
+* Add gmail type, add ability to force a specific transport on specific messages, add ability to test email settings
+
+* Add new email transport handling / rules
+
+* remove exit() debug
+
+* Merge branch 'master' of https://github.com/DeskPRO/DeskPRO
+
+* lots of fixes to old upgrader
+
+* Make iframe background transparent so page bg comes through
+
+* Some embedding options, script that embeds into any html page
+
+* Dupe validation options for agents
+
+* Update display of validation options, add option to add css classname
+
+* Add old upgrader to sources
+
+* Get ready for different formats
+
+* Add subject and department as field items, make subject, department and message irremovable
+
+* Use optiobox for department switcher
+
+* More prominent message about
+
+* Add loading icon to saving editor form
+
+* Fix width of subject/message field
+
+* Fix navigating to different sections and the department switcher
+
+* Fix implode warning on summary
+
+* Show department before form if you dont have JS enabled
+
+* Split up templates, cleaner wrapper elements
+
+* Save per-field rules on ticket editor and handle redrawing them, implement those rules in user interface
+
+* Ticket layouts in userland
+
+* Add message and attachment draggables, fix on/off switch for department layouts
+
+* Updated ticket editor to add on/off switcher, different forms for new/view/modify
+
+* Make sure to build InstallKernel caches as well
+
+* Fix invalid template names in reset password form
+
+* Fix ticket editor choice field
+
+* Fix other jumping tabs problem
+
+* Revert to default
+
+* Saving ticket editor, redrawing it when coming back
+
+* Streamline cli/cron booting
+
+* Fix JS error in Popovers when they're destroyed but their reload timer is still active
+
+* Update changelog
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+# Alpha 2
+################################################################################
+
 * Fix preselected values in form
 
 * Fix setting choice fields
