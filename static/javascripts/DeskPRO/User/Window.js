@@ -56,7 +56,7 @@ DeskPRO.User.Window = new Orb.Class({
 			});
 		};
 
-		if (!IS_ADMIN_CONTROLS) {
+		if (!window.IS_ADMIN_CONTROLS) {
 			calcHeights();
 		}
 
