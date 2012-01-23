@@ -211,7 +211,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					statusProp.setIncomingValue(result.status);
 				}
 
-				this.this.rescanMessageTypes();
+				this.rescanMessageTypes();
 			},
 			complete: function(xhr, textStatus) {
 				reply_form.removeClass('loading');
