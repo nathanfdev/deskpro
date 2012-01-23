@@ -97,7 +97,6 @@ abstract class CustomDefAbstractController extends AbstractController
 		$formtype  = new $type_class();
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
 
-		die('ere');
 		if ($this->request->isPost()) {
 			if (1 /*$form->isValid()*/) {
 

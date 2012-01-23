@@ -129,14 +129,12 @@ class ChoiceField extends CustomFieldAbstract
 		// Parse choices array
 		$new_choices = array();
 		$exist_choices = array();
-		$order = 0;
-
 		foreach ($this->choices as $c) {
 			$match = null;
-			if (preg_match('#^new:(?P<label>.*?)$#', $c, $match)) {
-				$new_choices[] = array($match['label'], $order += 10);
-			} elseif (preg_match('#^exist:(?P<id>[0-9]+):(?P<label>.*?)$#', $c, $match)) {
-				$exist_choices[$match['id']] = array($match['label'], $order += 10);
+			if (preg_match('#^new\.(?P<order>[0-9]+):(?P<label>.*?)$#', $c, $match)) {
+				$new_choices[] = array($match['label'], $match['order']);
+			} elseif (preg_match('#^exist\.(?P<order>[0-9]+):(?P<id>[0-9]+):(?P<label>.*?)$#', $c, $match)) {
+				$exist_choices[$match['id']] = array($match['label'], $match['order']);
 			}
 		}
 

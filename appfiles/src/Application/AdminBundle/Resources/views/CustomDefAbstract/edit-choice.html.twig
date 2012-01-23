@@ -25,7 +25,7 @@
 						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
 						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
 						<div class="label">{{ choice }}</div>
-						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist:{{ id }}:{{ choice }}" />
+						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist.{{ loop.index0 }}:{{ id }}:{{ choice }}" />
 					</li>
 					{% endfor %}
 				</ul>

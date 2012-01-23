@@ -85,7 +85,8 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 
 			var newRow = $(rowTpl);
 			$('.label', newRow).text(label);
-			$('.row-value', newRow).val('new:' + label);
+			var i = list.find('li').length;
+			$('.row-value', newRow).val('new.'+i+ ':' + label).data('order', i);
 
 			list.append(newRow);
 		}
@@ -116,9 +117,9 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 			input.on('blur', function() {
 				label.text(input.val());
 				if (row.is('.new')) {
-					rowValue.val('new:' + input.val().trim());
+					rowValue.val('new.' + rowValue.data('order') + ':' + input.val().trim());
 				} else {
-					rowValue.val('exist:' + row.data('choice-id') + ':' + input.val().trim());
+					rowValue.val('exist.' + rowValue.data('order') + ':' + row.data('choice-id') + ':' + input.val().trim());
 				}
 
 				input.fadeOut('fast', function() {
@@ -147,6 +148,11 @@ DeskPRO.Admin.ElementHandler.ChoiceBuilder = new Orb.Class({
 			},
 			stop: function() {
 				list.removeClass('dragging');
+			},
+			update: function() {
+				list.find('input.row-value').each(function(i) {
+					$(this).data('order', i).val($(this).val().replace(/^(new|exist)\.([0-9]+):/, "$1." + i + ":"));
+				});
 			}
 		});
 	}
