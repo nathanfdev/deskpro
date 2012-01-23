@@ -267,11 +267,7 @@ class PeopleSearchController extends AbstractController
 				$searcher->addTerm($term['rule_type'], $term['op'], $data);
 			}
 
-			$order_by = $this->in->getString('filter.order_by');
-
-			if ($old_result_cache AND isset($result_cache['extra']['order_by'])) {
-				$order_by = $result_cache['extra']['order_by'];
-			}
+			$order_by = $this->person->getPref('agent.ui.people-filter-order-by.0');
 
 			if (!$order_by) {
 				$order_by = 'people.id:asc';
@@ -306,7 +302,7 @@ class PeopleSearchController extends AbstractController
 		// the order_by in criteria, that means the user changed it
 		// and we have to re-do the search
 
-		$order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . $result_cache['id']);
+		$order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . 0);
 
 		if ($order_pref && $order_pref != $result_cache['criteria']['order_by']) {
 			$criteria = $result_cache['criteria'];

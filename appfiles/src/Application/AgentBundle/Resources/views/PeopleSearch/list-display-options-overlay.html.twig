@@ -2,10 +2,12 @@
 {% block other_options %}
 	<div style="display: none">
 		Order By: <select name="order_by" class="sel-order-by">
-			<option value="person.id:desc" class="people_id">Date Craeted (Newest-Oldest)</option>
+			<option value="person.id:desc" class="date_created">Date Craeted (Newest-Oldest)</option>
 			<option value="person.id:asc">Date Craeted (Oldest-Newest)</option>
 			<option value="person.name:asc" class="people_name">Name (A-Z)</option>
 			<option value="person.name:desc">Name (Z-A)</option>
+			<option value="people.date_last_login:desc" class="last_login">Last Login Time</option>
+			<option value="people.organization:asc" class="org">Organization</option>
 		</select>
 	</div>
 {% endblock %}

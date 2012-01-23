@@ -168,6 +168,10 @@ class PersonSearch extends SearcherAbstract
 				);
 				break;
 
+			case 'people.date_last_login':
+				$order_by = "ORDER BY people.date_last_login $dir, people.id $dir";
+				break;
+
 			case 'people.people_field':
 				$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
 				if (!$field) break;

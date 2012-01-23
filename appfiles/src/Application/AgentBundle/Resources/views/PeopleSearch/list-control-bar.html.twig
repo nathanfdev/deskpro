@@ -10,7 +10,11 @@
 		<li class="order-by-menu-trigger"><a class="button">
 			<span class="label">
 				{% if 'name' in cache.criteria.order_by %}
-					{{ phrase('agent.alphabetical') }}
+					Name
+				{% elseif 'date_last_login' in cache.criteria.order_by %}
+					Last Login Time
+				{% elseif 'organization' in cache.criteria.order_by %}
+					Last Login Time
 				{% else %}
 					{{ phrase('agent.date_created') }}
 				{% endif %}
@@ -21,8 +25,10 @@
 	</ul>
 
 	<ul class="order-by-menu" style="display: none">
-		<li data-field="people.name">{{ phrase('agent.alphabetical') }}</li>
-		<li data-field="people.date">{{ phrase('agent.date_created') }}</li>
+		<li data-order-by="people_name">Name</li>
+		<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
+		<li data-order-by="last_login">Last Login Time</li>
+		<li data-order-by="org">Organization</li>
 	</ul>
 
 	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
