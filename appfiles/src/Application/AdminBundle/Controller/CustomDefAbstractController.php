@@ -37,6 +37,12 @@ abstract class CustomDefAbstractController extends AbstractController
 		$this->route_basename = 'admin_' . strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
 	}
 
+	protected function getListingRoute()
+	{
+		return rtrim($this->route_basename, '_');
+	}
+
+
 
 	############################################################################
 	# index
@@ -91,6 +97,7 @@ abstract class CustomDefAbstractController extends AbstractController
 		$formtype  = new $type_class();
 		$form      = $this->get('form.factory')->create($formtype, $editfield);
 
+		die('ere');
 		if ($this->request->isPost()) {
 			if (1 /*$form->isValid()*/) {
 
@@ -134,7 +141,7 @@ abstract class CustomDefAbstractController extends AbstractController
 				}
 
 				$this->getTemplateVars(); // to get routebasename
-				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));
+				return $this->redirectRoute($this->getListingRoute());
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());

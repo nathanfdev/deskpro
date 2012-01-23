@@ -21,4 +21,9 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 class CustomDefTicketsController extends CustomDefAbstractController
 {
 	const API_NAME = 'custom_fields.tickets';
+
+	protected function getListingRoute()
+	{
+		return 'admin_tickets_fields';
+	}
 }
