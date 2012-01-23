@@ -502,6 +502,7 @@ $em->flush();
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'portal';
 $b->type = 'Ideas';
+$b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
