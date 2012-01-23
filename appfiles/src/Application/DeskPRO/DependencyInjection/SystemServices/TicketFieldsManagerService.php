@@ -12,13 +12,13 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\CustomFields\TicketFieldManager;
 
 class TicketFieldsManagerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$m = new FieldManager(
+		$m = new TicketFieldManager(
 			$container->get('doctrine.orm.entity_manager'),
 			array(
 				'entity_class'       => 'Application\\DeskPRO\\Entity\\CustomDefTicket',

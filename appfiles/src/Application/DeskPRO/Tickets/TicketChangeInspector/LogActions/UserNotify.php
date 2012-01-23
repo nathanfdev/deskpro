@@ -46,7 +46,8 @@ class UserNotify implements LogActionInterface
 				'person_email' => $person['primary_email_address']
 			);
 		}
-		foreach ($this->who_cced as $person) {
+		foreach ($this->who_cced as $part) {
+			$person = $part->person;
 			$details['who_cced'][] = array(
 				'person_id'    => $person['id'],
 				'person_name'  => $person['display_name'],

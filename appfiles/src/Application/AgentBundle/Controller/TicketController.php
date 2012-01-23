@@ -1036,10 +1036,13 @@ class TicketController extends AbstractController
 				$post_custom_fields = $this->request->request->get('custom_fields', array());
 				if (!empty($post_custom_fields)) {
 					$field_manager->saveFormToObject($post_custom_fields, $ticket);
+					$this->em->persist($ticket);
 				}
 
 				$this->em->flush();
 			}
+
+			$ticket->getTicketLogger()->done();
 
 			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 

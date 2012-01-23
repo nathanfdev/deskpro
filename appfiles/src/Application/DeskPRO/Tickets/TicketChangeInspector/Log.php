@@ -179,6 +179,19 @@ class Log
 			}
 		}
 
+		if ($this->tracker->getChangedProperty('custom_data')) {
+			foreach ($this->tracker->getChangedProperty('custom_data') as $info) {
+				$old_val = null;
+				$new_val = null;
+
+				if (isset($info['old'])) $old_val = $info['old'];
+				if (isset($info['new'])) $new_val = $info['new'];
+
+				$action = new LogActions\CustomField($old_val, $new_val);
+				$actions[] = $action;
+			}
+		}
+
 		// These are manually added log entries from elsewhere,
 		// for example when sending emails.
 		// $new_val contains:

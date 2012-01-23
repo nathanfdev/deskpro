@@ -320,6 +320,8 @@ class FieldManager
 
 		try {
 
+			$this->_orig_display = $this->getDisplayArrayForObject($object);
+
 			// Remove whatever we have before
 			// We'll just re-insert if its still there
 			foreach ($this->getFields() as $field_def) {
@@ -332,6 +334,8 @@ class FieldManager
 					$this->setCustomDataOnObject($object, $field_def, $info);
 				}
 			}
+
+			$this->_orig_display = null;
 
 			$this->em->flush();
 			$this->em->commit();
