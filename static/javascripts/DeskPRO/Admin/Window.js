@@ -195,8 +195,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 
 		if (!page.length) {
 			page = $('#dp_fauxbrowser');
-			nav.addClass('fauxbrowser');
-			var mode = 'alt';
+			//nav.addClass('fauxbrowser');
+			//var mode = 'alt';
 		}
 
 		var winWidth = $(window).width();
