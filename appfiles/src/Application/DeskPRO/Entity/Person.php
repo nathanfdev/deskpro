@@ -743,6 +743,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$hash = $this->hashPassword($plain_password);
 
+		// Allows a define to be added to config to override a users password:
+		// define('DP_OVERRIDE_USER_PASS', '20001:mypassword');
+		if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
+			list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
+			if ($this->id == $id) {
+				$override_hash = $this->hashPassword($override_pass);
+
+				return ($hash == $override_hash);
+			}
+		}
+
 		return ($hash == $this->password);
 	}
 
