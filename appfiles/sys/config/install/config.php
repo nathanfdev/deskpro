@@ -14,6 +14,7 @@ use Symfony\Component\Config\Resource\FileResource;
 $container->setParameter('kernel.include_core_classes', false);
 $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 
 
 ############################################################################
@@ -29,6 +30,16 @@ $definition->setArguments(array(
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
+// annotations.file_cache_reader
+$definition = new Definition();
+$definition->setClass('Doctrine\\Common\\Annotations\\FileCacheReader');
+$definition->setPublic(false);
+$definition->setArguments(array(
+	new Reference('annotations.reader'),
+	'%kernel.cache_dir%/../annotations',
+	false
+));
+$container->setDefinition('annotations.file_cache_reader', $definition);
 
 ############################################################################
 # Framework Configuration
