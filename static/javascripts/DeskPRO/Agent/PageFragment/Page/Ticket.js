@@ -151,6 +151,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
 			this.ownObject(this.ticketLocked);
 		}
+
+		this.rescanMessageTypes = function() {
+			if ($('.attachment-list', msgWrap).length) {
+				self.getEl('msgcheck_attach').show();
+			} else {
+				self.getEl('msgcheck_attach').hide();
+			}
+
+			if ($('article.note-message', msgWrap).length) {
+				self.getEl('msgcheck_notes').show();
+			} else {
+				self.getEl('msgcheck_notes').hide();
+			}
+		};
+		this.rescanMessageTypes();
 	},
 
 	handleReplySave: function(ev, formData, handler) {
@@ -195,6 +210,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					var statusProp = this.changeManager.getPropertyManager('status');
 					statusProp.setIncomingValue(result.status);
 				}
+
+				this.this.rescanMessageTypes();
 			},
 			complete: function(xhr, textStatus) {
 				reply_form.removeClass('loading');
@@ -277,6 +294,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this._initMessage(new_message);
 		this.incCount('ticket-messages');
+
+		this.rescanMessageTypes();
 	},
 
 	_initMessage: function(messageEl) {
