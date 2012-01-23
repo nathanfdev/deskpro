@@ -1777,10 +1777,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/tasks/new'
 		});
 
+		/*
         this.newDealLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/deals/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/deals/new'
 		});
+		*/
 
 		$('#create_ticket_btn').on('click', function() {
 			DeskPRO_Window.newTicketLoader.toggle();
