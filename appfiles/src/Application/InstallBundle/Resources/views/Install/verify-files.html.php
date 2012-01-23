@@ -6,25 +6,25 @@ window.DpStatus = {
 	allCount: <?php echo $count ?>,
 	currentCount: 0,
 	hasErrors: false,
-	update: function(info) {
+	update: function(info, batch) {
 		var tr = $('<tr><td></td></tr>');
 
 		if (info.okay) {
 			var tr = $('<tr><td></td></tr>');
-			$('td', tr).text(info.okay.length + ' files check okay');
+			$('td', tr).text('Batch ' + (batch+1) + ' of ' + DpStatus.allCount + ': ' + info.okay.length + ' files verified');
 			$('#log tbody').append(tr);
 		}
 		if (info.added) {
 			for (var i = 0; i < info.added.length; i++) { var f = info.added[i];
 				var tr = $('<tr><td></td></tr>');
-				$('td', tr).text('ADDED: ' + f);
+				$('td', tr).text('Batch ' + (batch+1) + ' of ' + DpStatus.allCount + ': ' + ' File added: ' + f);
 				$('#log tbody').append(tr);
 			};
 		}
 		if (info.changed && info.changed.length) {
 			for (var i = 0; i < info.changed.length; i++) { var f = info.changed[i];
 				var tr = $('<tr><td></td></tr>');
-				$('td', tr).text('CHANGED: ' + f);
+				$('td', tr).text('Batch ' + (batch+1) + ' of ' + DpStatus.allCount + ': ' + ' File changed: ' + f);
 
 				tr.appendTo();
 				$('#log tbody').append(tr);
@@ -43,7 +43,7 @@ window.DpStatus = {
 		if (info.removed && info.removed.length) {
 			for (var i = 0; i < info.removed.length; i++) { var f = info.removed[i];
 				var tr = $('<tr><td></td></tr>');
-				$('td', tr).text('MISSING: ' + f);
+				$('td', tr).text('Batch ' + (batch+1) + ' of ' + DpStatus.allCount + ': ' + ' Missing: ' + f);
 				$('#log tbody').append(tr);
 
 				var li = $('<li />');
