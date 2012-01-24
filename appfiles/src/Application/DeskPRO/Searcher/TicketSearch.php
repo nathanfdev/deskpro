@@ -461,6 +461,9 @@ class TicketSearch extends SearcherAbstract
 		$set_status = false;
 
 		foreach ($this->terms as $term => $info) {
+
+			if (!$info || !is_array($info)) continue;
+
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
 
