@@ -248,6 +248,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $password = null;
 
 	/**
+	 * The hashing scheme used with checkPassword(). NULL means default, the built in scheme.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="password_scheme", type="string", length=20, nullable=true)
+	 */
+	protected $password_scheme = null;
+
+	/**
 	 * A salt used to hash the password with.
 	 *
 	 * @var string
@@ -800,7 +808,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hashPassword($plain_password)
 	{
-		return sha1($this->salt . $plain_password);
+		if ($this->password_scheme === null) {
+			return sha1($this->salt . $plain_password);
+		}
+
+		return App::getSystemObject('password_scheme', array('scheme' => $this->password_scheme))->hashPassword($this, $plain_password);
 	}
 
 

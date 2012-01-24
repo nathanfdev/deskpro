@@ -122,6 +122,6 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate
 
 	public function getIterator()
 	{
-		return new ArrayIterator($this->options);
+		return new \ArrayIterator($this->options);
 	}
 }

@@ -10,7 +10,7 @@
 namespace Orb\Log\Writer;
 
 use Orb\Log\LogItem;
-use Symfony\Component\Console\Output\Output;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Writes to the symfony Output object
@@ -18,14 +18,14 @@ use Symfony\Component\Console\Output\Output;
 class ConsoleOutputWriter extends AbstractWriter
 {
 	/**
-	 * @var Symfony\Component\Console\Output\Output
+	 * @var Symfony\Component\Console\Output\OutputInterface
 	 */
 	protected $output = null;
 
 	/**
-	 * @var Symfony\Component\Console\Output\Output
+	 * @var Symfony\Component\Console\Output\OutputInterface
 	 */
-	public function __construct(Output $output)
+	public function __construct(OutputInterface $output)
 	{
 		$this->output = $output;
 
