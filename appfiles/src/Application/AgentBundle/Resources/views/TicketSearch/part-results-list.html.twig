@@ -99,7 +99,7 @@
 						<td class="ticket-field">
 							<div class="prop-val ticket_fields_{{f.id}}">
 								{% if ticket.hasCustomField(f.id) %}
-									{{ render_custom_field(f)) }}
+									{{ render_custom_field(f) }}
 								{% endif %}
 							</div>
 						</td>
@@ -110,7 +110,7 @@
 						<td class="person-field">
 							<div class="prop-val person_fields_{{f.id}}">
 								{% if person.hasCustomField(f.id) %}
-									{{ render_custom_field(f)) }}
+									{{ render_custom_field(f) }}
 								{% endif %}
 							</div>
 						</td>
