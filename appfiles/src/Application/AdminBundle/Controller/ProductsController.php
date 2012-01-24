@@ -85,6 +85,7 @@ class ProductsController extends AbstractController
 			$product->title = 'Untitled';
 		}
 
+		$parent = null;
 		if ($this->in->getUint('parent_id')) {
 			$parent = App::findEntity('DeskPRO:Product', $this->in->getUint('parent_id'));
 		}
