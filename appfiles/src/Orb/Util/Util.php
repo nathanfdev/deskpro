@@ -452,7 +452,7 @@ class Util
 	 * Get the base name of a class. That is, the classname itself without the full
 	 * namespace path.
 	 *
-	 * @param obj $obj
+	 * @param mixed $obj
 	 * @return string
 	 */
 	public static function getBaseClassname($obj)

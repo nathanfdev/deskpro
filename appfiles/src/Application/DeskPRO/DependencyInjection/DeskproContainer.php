@@ -147,7 +147,7 @@ class DeskproContainer extends Container
 	 */
 	public function getDb()
 	{
-		return $this->get(self::SERVICE_DB, self::DEFAULT_NAME);
+		return $this->get(self::SERVICE_DB);
 	}
 
 

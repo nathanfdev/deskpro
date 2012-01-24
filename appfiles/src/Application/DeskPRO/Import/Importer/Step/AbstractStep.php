@@ -50,7 +50,7 @@ abstract class AbstractStep
 	public function getId()
 	{
 		$basename = \Orb\Util\Util::getBaseClassname($this);
-		$name = strtolower($basename);
+		$name = strtolower(str_replace('Step', '', $basename));
 
 		return $this->importer->getId() . '_' . $name;
 	}

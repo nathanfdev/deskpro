@@ -15,27 +15,36 @@ use Orb\Log\Logger;
 
 class Deskpro3Importer extends AbstractImporter
 {
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
 	protected $db;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
 	protected $old_db;
 
 	protected $steps = array(
 		'Settings',
-		'EmailAccounts',
 		'Banning',
-		'QuickReplies',
+		'Techs',
+		'Users',
+		'PopAccounts',
 		'TechPms',
-		'SelfHelp',
-		'News',
+		'PublicContent',
 		'Tasks',
 		'Chat',
-		'Users',
 		'Tickets',
 		'Attachments',
+		'Misc',
 	);
 
 	public function validateOptions()
 	{
 		$errors = array();
+
+		$this->logMessage("Checking for required configuration");
 
 		foreach (array('db_host', 'db_user', 'db_password', 'db_name') as $k) {
 			if (!$this->config->has($k)) {
@@ -43,6 +52,9 @@ class Deskpro3Importer extends AbstractImporter
 			}
 		}
 
+		$this->logMessage("-- OK");
+
+		$this->logMessage("Checking for database connection");
 		try {
 			$this->old_db = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
 				'driver' => 'pdo_mysql',
@@ -51,7 +63,9 @@ class Deskpro3Importer extends AbstractImporter
 				'password' => $this->config->db_password,
 				'dbname' => $this->config->db_name
 			));
+			$this->logMessage("-- OK");
 		} catch (\Exception $e) {
+			$this->logMessage("-- FAILED");
 			$errors[] = "Failed connecting to DeskPRO v3 database: {$e->getMessage()}";
 		}
 
@@ -78,9 +92,26 @@ class Deskpro3Importer extends AbstractImporter
 
 	public function getStep($step)
 	{
-		$class = $this->steps[$step];
+		$class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Deskpro3\\' . $this->steps[$step-1] . 'Step';
 		$step = new $class($this);
 
 		return $step;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->db;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getOldDb()
+	{
+		return $this->old_db;
 	}
 }

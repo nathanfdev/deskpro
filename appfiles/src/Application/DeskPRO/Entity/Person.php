@@ -786,6 +786,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Set the raw password field (ie already hashed)
+	 *
+	 * @param $password
+	 */
+	public function setRawPassword($password)
+	{
+		$this->setModelField('password', $password);
+	}
+
 
 	/**
 	 * If you have set a password, the plaintext version will be returned.

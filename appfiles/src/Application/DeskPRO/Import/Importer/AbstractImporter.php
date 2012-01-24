@@ -164,6 +164,57 @@ abstract class AbstractImporter
 	public function getId()
 	{
 		$basename = \Orb\Util\Util::getBaseClassname($this);
-		return strtolower($basename);
+		return strtolower(str_replace('Importer', '', $basename));
+	}
+
+
+	/**
+	 * Save an ID mapping
+	 *
+	 * @param $type
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	public function saveMappedId($type, $old_id, $new_id)
+	{
+		$this->container->getDb()->insert('import_map', array(
+			'typename' => $type,
+			'old_id' => $old_id,
+			'new_ip' => $new_id
+		));
+	}
+
+
+	/**
+	 * Get the new Id by looking up the old one
+	 *
+	 * @param $type
+	 * @param $old_id
+	 * @return mixed
+	 */
+	public function getMappedNewId($type, $old_id)
+	{
+		return $this->container->getDb()->fetchColumn("
+			SELECT new_id
+			FROM import_map
+			WHERE typename = ? AND old_id = ?
+		", array($type, $old_id));
+	}
+
+
+	/**
+	 * Get the old Id by looking up the new one
+	 *
+	 * @param $type
+	 * @param $old_id
+	 * @return mixed
+	 */
+	public function getMappedOldId($type, $new_id)
+	{
+		return $this->container->getDb()->fetchColumn("
+			SELECT old_id
+			FROM import_map
+			WHERE typename = ? AND new_id = ?
+		", array($type, $new_id));
 	}
 }

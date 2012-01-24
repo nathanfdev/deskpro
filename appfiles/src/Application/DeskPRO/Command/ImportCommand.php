@@ -42,7 +42,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 2;
 		}
 
-		$importer_class = 'Application\\DeskPRO\\Import\\' . $config['importer'];
+		$importer_class = 'Application\\DeskPRO\\Import\\Importer\\' . $config['importer'] . 'Importer';
 		if (!class_exists($importer_class)) {
 			$output->writeln("<error>The `import.importer` class of {$config['importer']} does not exist.</error>");
 			return 3;
@@ -69,7 +69,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		/** @var $importer \Application\DeskPRO\Import\Importer\AbstractImporter */
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
 
-		$logger->log(sprintf("Starting importer %s (%s)", $importer->getId(), $start_time), 'INFO');
+		$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
 
 		if ($errors = $importer->validateOptions()) {
 			$logger->log(sprintf("There were %i errors detected before importing could begin", count($errors)), 'INFO');
@@ -80,24 +80,26 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		$importer->setupImport();
-		$logger->log(sprintf("There are %d steps.", $importer->countSteps()), 'INFO');
+		$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
+		echo "\n";
 
 		for ($i = 1; $i <= $importer->countSteps(); $i++) {
 			$step = $importer->getStep($i);
 
 			$start_step_time = microtime(true);
-			$logger->log(sprintf("Beginning step #%d: %s (%s)", $i, $step->getTitle(), $start_step_time), 'INFO');
+			$logger->log(sprintf("### Step %d: %s ###", $i, $step->getTitle(), $start_step_time), 'INFO');
 
 			$step->run();
 
 			$end_step_time = microtime(true);
-			$logger->log(sprintf("Step #%d complete (%s). Took %0.3f seconds.", $end_step_time, $end_step_time-$start_step_time), 'INFO');
+			$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
+			echo "\n";
 		}
 
 		$importer->cleanupImport();
 
 		$end_time = microtime(true);
-		$logger->log(sprintf("Importer complete (%s). Took %0.3f seconds.", $end_time, $end_time-$start_time), 'INFO');
+		$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 		return 0;
 	}
 }
