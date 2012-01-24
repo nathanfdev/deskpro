@@ -728,7 +728,7 @@ class TicketSearchController extends AbstractController
 			'cache_id'            => $result_cache['id'],
 			'order_by_summary'    => $searcher->getOrderBySummary(),
 			'terms_summary'       => $searcher->getSummary(),
-			'ticket_ids'          => $results,
+			'ticket_ids'          => $result_cache['results'],
 			'view_name'           => $this->in->getString('view_name'),
 			'view_extra'          => $this->in->getString('view_extra')
 		);
