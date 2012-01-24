@@ -714,7 +714,7 @@ class TicketSearchController extends AbstractController
 
 		// If we have no searcher, create one now from the result cache
 		// so we have access to the summaries in the template
-		if (!$searcher) {
+		if (!isset($searcher) || !$searcher) {
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			$searcher->setPerson($this->person);
 			$searcher->setTerms($result_cache['criteria']['terms']);
