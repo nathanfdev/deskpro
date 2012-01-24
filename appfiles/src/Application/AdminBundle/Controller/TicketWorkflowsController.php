@@ -91,7 +91,7 @@ class TicketWorkflowsController extends AbstractController
 			$this->em->flush();
 
 			// First workflow: enable the feature
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflow");
+			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 			if ($count == 1) {
 				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
 			}
