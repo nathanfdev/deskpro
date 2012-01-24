@@ -145,6 +145,7 @@ class DepartmentsController extends AbstractController
 			$department->title = 'Untitled';
 		}
 
+		$parent = null;
 		if ($this->in->getUint('parent_id')) {
 			$parent = App::findEntity('DeskPRO:Department', $this->in->getUint('parent_id'));
 		}
