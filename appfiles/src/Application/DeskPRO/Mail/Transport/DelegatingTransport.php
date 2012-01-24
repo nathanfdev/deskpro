@@ -146,9 +146,9 @@ class DelegatingTransport implements \Swift_Transport
 				$success = $tr->send($message, $failedRecipients);
 			} catch (\Swift_TransportException $e) {
 				$backup_tr = $this->getTransportForMessage($message, true);
-				if (!$backup_tr->isStarted()) $backup_tr->start();
 
 				if ($backup_tr) {
+					if (!$backup_tr->isStarted()) $backup_tr->start();
 					$success = $backup_tr->send($message, $failedRecipients);
 				}
 			}
