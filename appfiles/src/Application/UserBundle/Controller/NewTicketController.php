@@ -149,15 +149,14 @@ class NewTicketController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
-		$default_dep = null;
-		if ($newticket->ticket->department_id) {
-			$default_page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($newticket->ticket->department_id, 'create', 'default');
-		} else {
-			$default_page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData(null, 'create', 'default');
-		}
-		$page_data_field_ids = array();
-		foreach ($default_page_data as $info) {
-			$page_data_field_ids[] = $info['id'];
+		$default_page = $ticket_display->getDepartmentPage($newticket->ticket->department_id);
+
+		if ($default_page) {
+			$default_page_data = $default_page->getPageDisplay('default')->data;
+			$page_data_field_ids = array();
+			foreach ($default_page->getPageDisplay('default')->data as $info) {
+				$page_data_field_ids[] = $info['id'];
+			}
 		}
 
 		$tpl = 'UserBundle:NewTicket:new-ticket.html.twig';

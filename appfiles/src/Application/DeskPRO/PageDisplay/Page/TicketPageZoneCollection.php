@@ -74,6 +74,12 @@ class TicketPageZoneCollection implements PersonContextInterface
 
 		}
 		$dep_page_displays = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getFromZone($this->zone);
+
+		if (!$dep_page_displays) {
+			$this->generateUserZone();
+			return;
+		}
+
 		$dep_page_displays = Arrays::groupItems($dep_page_displays, 'department_id');
 
 		$default_page = null;
@@ -120,6 +126,54 @@ class TicketPageZoneCollection implements PersonContextInterface
 		$ticket_page_zone = new TicketPageZone($this->zone, null);
 		$ticket_page_zone->addPageDisplays(array($page_display));
 		$this->addPage($ticket_page_zone);
+	}
+
+
+	public function generateUserZone()
+	{
+		$page_display = new TicketPageDisplay();
+		$page_display->zone = 'create';
+
+		// Standard fields
+		$options[] = array('id' => 'product');
+		$options[] = array('id' => 'ticket_category');
+		$options[] = array('id' => 'ticket_workflow');
+		$options[] = array('id' => 'ticket_priority');
+		$options[] = array('id' => 'ticket_department');
+		$options[] = array('id' => 'ticket_subject');
+		$options[] = array('id' => 'message');
+		$options[] = array('id' => 'attachments');
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		foreach ($ticket_field_defs as $def) {
+			$options[] = array('id' => "ticket_field[{$def->id}]");
+		}
+
+		$page_display->setData($options);
+
+		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		$ticket_page_zone->addPageDisplays(array($page_display));
+		$this->addPage($ticket_page_zone);
+	}
+
+
+	public function getDefaultPage()
+	{
+		if (isset($this->department_pages[0])) {
+			return $this->department_pages[0];
+		}
+
+		return null;
+	}
+
+
+	public function getDepartmentPage($dep_id)
+	{
+		if (isset($this->department_pages[$dep_id])) {
+			return $this->department_pages[$dep_id];
+		}
+
+		return $this->getDefaultPage();
 	}
 
 

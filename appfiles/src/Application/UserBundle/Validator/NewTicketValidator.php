@@ -54,7 +54,7 @@ class NewTicketValidator extends AbstractValidator
 		if (!$department_validator->isValid($department_id)) {
 			$this->addError('ticket.department_id.invalid');
 		} else {
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
+			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
 			$ticket_display->addPagesFromDb();
 
 			$ticket_page = $ticket_display->getPage($department_id);
