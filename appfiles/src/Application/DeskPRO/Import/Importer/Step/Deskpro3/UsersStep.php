@@ -181,6 +181,8 @@ class UsersStep extends AbstractDeskpro3Step
 			$this->getDb()->rollback();
 			throw $e;
 		}
+
+		$this->getEm()->clear();
 	}
 
 

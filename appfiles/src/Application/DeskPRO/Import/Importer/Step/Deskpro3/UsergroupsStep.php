@@ -54,7 +54,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		# Make sure we havent already done them
 		#------------------------------
 
-		$check_exist = $this->getMappedNewId('usergorup', $group_info['id']);
+		$check_exist = $this->getMappedNewId('usergroup', $group_info['id']);
 		if ($check_exist) {
 			$this->getLogger()->log("{$group_info['id']} already mapped, skipping", 'DEBUG');
 			return;
