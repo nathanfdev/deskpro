@@ -11,15 +11,8 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Import\Importer\Step\AbstractStep;
-
-class TechsStep extends AbstractStep
+class TechsStep extends AbstractDeskpro3Step
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	protected $importer;
-
 	public function getTitle()
 	{
 		return 'Import Techs';
@@ -27,12 +20,12 @@ class TechsStep extends AbstractStep
 
 	public function run()
 	{
-		$techs = $this->importer->getOldDb()->fetchAllKeyed("SELECT * FROM tech");
-		$this->importer->logMessage(sprintf("Importing %d techs", count($techs)));
+		$techs = $this->getOldDb()->fetchAllKeyed("SELECT * FROM tech");
+		$this->logMessage(sprintf("Importing %d techs", count($techs)));
 
 		$start_time = microtime(true);
 
-		$this->importer->getDb()->beginTransaction();
+		$this->getDb()->beginTransaction();
 
 		try {
 			foreach ($techs as $tech) {
@@ -51,20 +44,20 @@ class TechsStep extends AbstractStep
 				$agent->can_billing = (bool)$tech['is_admin'];
 				$agent->can_reports = (bool)$tech['is_admin'];
 
-				$this->getOrm()->persist($agent);
-				$this->getOrm()->flush();
+				$this->getEm()->persist($agent);
+				$this->getEm()->flush();
 
-				$this->importer->saveMappedId('tech', $tech['id'], $agent->id);
+				$this->saveMappedId('tech', $tech['id'], $agent->id);
 			}
 
-			$this->importer->getEm()->flush();
-			$this->importer->getDb()->commit();
+			$this->getEm()->flush();
+			$this->getDb()->commit();
 		} catch (\Exception $e) {
-			$this->importer->getDb()->rollback();
+			$this->getDb()->rollback();
 			throw $e;
 		}
 
 		$end_time = microtime(true);
-		$this->importer->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
 	}
 }

@@ -54,4 +54,82 @@ abstract class AbstractStep
 
 		return $this->importer->getId() . '_' . $name;
 	}
+
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		return $this->importer->getLogger();
+	}
+
+
+	/**
+	 * @param $message
+	 */
+	public function logMessage($message)
+	{
+		return $this->importer->logMessage($message);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	public function getContainer()
+	{
+		return $this->importer->getContainer();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->importer->getContainer()->getDb();
+	}
+
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->importer->getContainer()->getEm();
+	}
+
+
+	/**
+	 * @param $type
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	public function saveMappedId($type, $old_id, $new_id)
+	{
+		$this->importer->saveMappedId($type, $old_id, $new_id);
+	}
+
+
+	/**
+	 * @param $type
+	 * @param $old_id
+	 * @return mixed
+	 */
+	public function getMappedNewId($type, $old_id)
+	{
+		return $this->importer->getMappedNewId($type, $old_id);
+	}
+
+
+	/**
+	 * @param $type
+	 * @param $old_id
+	 * @return mixed
+	 */
+	public function getMappedOldId($type, $new_id)
+	{
+		return $this->importer->getMappedOldId($type, $new_id);
+	}
 }

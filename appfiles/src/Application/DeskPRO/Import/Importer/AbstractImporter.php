@@ -169,6 +169,24 @@ abstract class AbstractImporter
 
 
 	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		return $this->getContainer()->getDb();
+	}
+
+
+	/**
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEm()
+	{
+		return $this->getContainer()->getEm();
+	}
+
+
+	/**
 	 * Save an ID mapping
 	 *
 	 * @param $type
@@ -180,7 +198,7 @@ abstract class AbstractImporter
 		$this->container->getDb()->insert('import_map', array(
 			'typename' => $type,
 			'old_id' => $old_id,
-			'new_ip' => $new_id
+			'new_id' => $new_id
 		));
 	}
 

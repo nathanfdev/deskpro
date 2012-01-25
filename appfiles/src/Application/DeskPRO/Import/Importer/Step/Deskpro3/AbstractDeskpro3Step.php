@@ -11,15 +11,20 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class TicketsStep extends AbstractDeskpro3Step
+use Application\DeskPRO\Import\Importer\Step\AbstractStep;
+
+abstract class AbstractDeskpro3Step extends AbstractStep
 {
-	public function getTitle()
-	{
-		return 'Import Tickets';
-	}
+	/**
+	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
+	 */
+	protected $importer;
 
-	public function run()
+	/**
+	 * @return \Application\DeskPRO\DBAL\Connection
+	 */
+	public function getOldDb()
 	{
-
+		return $this->importer->getOldDb();
 	}
 }

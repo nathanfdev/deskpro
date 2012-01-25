@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class TicketsStep extends AbstractDeskpro3Step
+class FieldsStep extends AbstractDeskpro3Step
 {
 	public function getTitle()
 	{
-		return 'Import Tickets';
+		return 'Import Fields';
 	}
 
 	public function run()

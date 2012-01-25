@@ -11,15 +11,8 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Import\Importer\Step\AbstractStep;
-
-class TechPmsStep extends AbstractStep
+class TechPmsStep extends AbstractDeskpro3Step
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	protected $importer;
-
 	public function getTitle()
 	{
 		return 'Import Tech Private Messages';
@@ -27,57 +20,61 @@ class TechPmsStep extends AbstractStep
 
 	public function run()
 	{
-		$tech_ids = $this->importer->getOldDb()->fetchAllCol("SELECT id FROM tech");
+		$tech_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM tech");
 
-		$this->importer->getDb()->beginTransaction();
+		$this->getDb()->beginTransaction();
 
 		try {
 			foreach ($tech_ids as $tech_id) {
 				$this->importTechMessages($tech_id);
 			}
 
-			$this->importer->getDb()->commit();
+			$this->getDb()->commit();
 		} catch (\Exception $e) {
-			$this->importer->getDb()->rollback();
+			$this->getDb()->rollback();
 			throw $e;
 		}
 	}
 
 	protected function importTechMessages($tech_id)
 	{
-		$agent_id = $this->importer->getMappedNewId('tech', $tech_id);
+		$agent_id = $this->getMappedNewId('tech', $tech_id);
 		if (!$agent_id) {
 			return;
 		}
 
-		$agent = $this->importer->getContainer()->getEm()->find('DeskPRO:Person', $agent_id);
+		$agent = $this->getEm()->find('DeskPRO:Person', $agent_id);
 
-		$messages = $this->importer->getOldDb()->fetchAll("
+		$messages = $this->getOldDb()->fetchAll("
 			SELECT *
 			FROM tech_pms
 			WHERE fromid = ?
 		", array($tech_id));
 
-		$this->importer->logMessage(sprintf("-- Importing %d messages for tech %d (agent %d)", count($message), $tech_id, $agent_id));
+		if (!$messages) {
+			return;
+		}
+
+		$this->logMessage(sprintf("-- Importing %d messages for tech %d (agent %d)", count($messages), $tech_id, $agent_id));
 
 		$start_time = microtime(true);
 
 		foreach ($messages as $message) {
-			$other_agent_id = $this->importer->getMappedNewId('tech', $message['toid']);
+			$other_agent_id = $this->getMappedNewId('tech', $message['toid']);
 			if (!$other_agent_id) {
 				continue;
 			}
 
-			$other_agent = $this->importer->getContainer()->getEm()->find('DeskPRO:Person', $other_agent_id);
+			$other_agent = $this->getEm()->find('DeskPRO:Person', $other_agent_id);
 
-			$convo = $this->importer->getContainer()->getEm()->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array($agent_id, $other_agent_id));
+			$convo = $this->getEm()->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array($agent_id, $other_agent_id));
 			if (!$convo) {
 				$convo = new \Application\DeskPRO\Entity\ChatConversation();
 				$convo->is_agent = true;
 				$convo->addParticipant($agent);
 				$convo->addParticipant($other_agent);
-				$this->importer->getContainer()->getEm()->persist($convo);
-				$this->importer->getContainer()->getEm()->flush();
+				$this->getEm()->persist($convo);
+				$this->getEm()->flush();
 			}
 
 			$chat_message = $conversation->addNewMessage(
@@ -85,11 +82,11 @@ class TechPmsStep extends AbstractStep
 				$agent
 			);
 
-			$this->importer->getContainer()->getEm()->persist($chat_message);
-			$this->importer->getContainer()->getEm()->flush();
+			$this->getEm()->persist($chat_message);
+			$this->getEm()->flush();
 		}
 
 		$end_time = microtime(true);
-		$this->importer->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
 	}
 }

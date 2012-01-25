@@ -11,15 +11,8 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Import\Importer\Step\AbstractStep;
-
-class BanningStep extends AbstractStep
+class BanningStep extends AbstractDeskpro3Step
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	protected $importer;
-
 	public function getTitle()
 	{
 		return 'Import Banned Emails and IPs';
@@ -27,16 +20,16 @@ class BanningStep extends AbstractStep
 
 	public function run()
 	{
-		$this->importer->getDb()->beginTransaction();
+		$this->getDb()->beginTransaction();
 
 		try {
 			$this->importIpBans();
 			$this->importEmailBans();
 			$this->importEmailGroupBans();
 
-			$this->importer->getDb()->commit();
+			$this->getDb()->commit();
 		} catch (\Exception $e) {
-			$this->importer->getDb()->rollback();
+			$this->getDb()->rollback();
 			throw $e;
 		}
 	}
@@ -47,32 +40,32 @@ class BanningStep extends AbstractStep
 	 */
 	protected function importIpBans()
 	{
-		$this->importer->logMessage("Processing IP bans");
-		$ip_bans = $this->importer->getOldDb()->fetchColumn("SELECT data FROM data WHERE name = 'ip_ban'");
+		$this->logMessage("Processing IP bans");
+		$ip_bans = $this->getOldDb()->fetchColumn("SELECT data FROM data WHERE name = 'ip_ban'");
 		if (!$ip_bans) {
-			$this->importer->logMessage("-- None (no data record)");
+			$this->logMessage("-- None (no data record)");
 			return;
 		}
 
 		$ip_bans = @unserialize($ip_bans);
 		if (!$ip_bans) {
-			$this->importer->logMessage("-- None (empty or invalid)");
+			$this->logMessage("-- None (empty or invalid)");
 			return;
 		}
 
-		$this->importer->logMessage(sprintf("-- Importing %d bans", count($ip_bans)));
+		$this->logMessage(sprintf("-- Importing %d bans", count($ip_bans)));
 
 		$start_time = microtime(true);
 
 		foreach ($ip_bans as $ip) {
 			$banip = new \Application\DeskPRO\Entity\BanIp();
 			$banip->setBannedIp($ip);
-			$this->importer->getContainer()->getEm()->persist($banip);
+			$this->getEm()->persist($banip);
 		}
-		$this->importer->getContainer()->getEm()->flush();
+		$this->getEm()->flush();
 
 		$end_time = microtime(true);
-		$this->importer->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
 	}
 
 
@@ -81,23 +74,24 @@ class BanningStep extends AbstractStep
 	 */
 	public function importEmailBans()
 	{
-		$this->importer->logMessage("Processing banned email addresses");
-		$email_bans = $this->importer->getOldDb()->fetchAllCol("SELECT email FROM ban_email");
+		$this->logMessage("Processing banned email addresses");
+		$email_bans = $this->getOldDb()->fetchAllCol("SELECT email FROM ban_email");
 
 		if (!$email_bans) {
-			$this->importer->logMessage("-- None");
+			$this->logMessage("-- None");
+			return;
 		}
 
-		$this->importer->logMessage(sprintf("-- Importing %d addresses", count($email_bans)));
+		$this->logMessage(sprintf("-- Importing %d addresses", count($email_bans)));
 
 		$start_time = microtime(true);
 
 		foreach ($email_bans as $email) {
-			$this->importer->getDb()->insert('ban_emails', array('banned_email' => $email));
+			$this->getDb()->insert('ban_emails', array('banned_email' => $email));
 		}
 
 		$end_time = microtime(true);
-		$this->importer->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
 	}
 
 
@@ -106,28 +100,28 @@ class BanningStep extends AbstractStep
 	 */
 	public function importEmailGroupBans()
 	{
-		$this->importer->logMessage("Processing banned email addresses with wildcards");
-		$email_bans = $this->importer->getOldDb()->fetchColumn("SELECT data FROM data WHERE name = 'ip_ban'");
+		$this->logMessage("Processing banned email addresses with wildcards");
+		$email_bans = $this->getOldDb()->fetchColumn("SELECT data FROM data WHERE name = 'ip_ban'");
 		if (!$email_bans) {
-			$this->importer->logMessage("-- None (no data record)");
+			$this->logMessage("-- None (no data record)");
 			return;
 		}
 
 		$email_bans = @unserialize($email_bans);
 		if (!$email_bans) {
-			$this->importer->logMessage("-- None (empty or invalid)");
+			$this->logMessage("-- None (empty or invalid)");
 			return;
 		}
 
-		$this->importer->logMessage(sprintf("-- Importing %d bans", count($email_bans)));
+		$this->logMessage(sprintf("-- Importing %d bans", count($email_bans)));
 
 		$start_time = microtime(true);
 
 		foreach ($email_bans as $email) {
-			$this->importer->getDb()->insert('ban_emails', array('banned_email' => $email));
+			$this->getDb()->insert('ban_emails', array('banned_email' => $email));
 		}
 
 		$end_time = microtime(true);
-		$this->importer->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $end_time-$start_time));
 	}
 }

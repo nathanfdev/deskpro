@@ -11,9 +11,7 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Import\Importer\Step\AbstractStep;
-
-class TasksStep extends AbstractStep
+class TasksStep extends AbstractDeskpro3Step
 {
 	public function getTitle()
 	{

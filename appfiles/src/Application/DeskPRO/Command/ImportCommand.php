@@ -12,8 +12,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
 
-use Application\DeskPRO\EmailGateway\Reader\EzcReader;
-
 use Orb\Util\Util;
 use Orb\Util\Numbers;
 
@@ -22,11 +20,26 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function configure()
 	{
 		$this->setName('dp:import');
+		$this->addOption('info', null, InputOption::VALUE_NONE, 'Show information about the importer and config');
+		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
+		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'Start from this step');
+		$this->addOption('exec-step', null, InputOption::VALUE_REQUIRED, 'Execute only this step');
 		$this->setHelp("This imports data from another platform into the currently installed helpdesk. Please read http://support.deskpro.com/ for more information.");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$mode = null;
+		if ($input->getOption('info')) $mode = 'info';
+		if ($input->getOption('run')) $mode = 'run';
+		if ($input->getOption('step') !== null) $mode = 'step';
+		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
+
+		if (!$mode) {
+			$output->writeln("<error>Choose one of the run modes: --info, --run, --step or --exec-step</error>");
+			return 1;
+		}
+
 		#----------------------------------------
 		# Get importer config
 		#----------------------------------------
@@ -57,10 +70,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		@ini_set('memory_limit', -1);
 		@set_time_limit(0);
 
-		#----------------------------------------
-		# Run importer
-		#----------------------------------------
-
 		$logger = new Logger();
 		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
 
@@ -68,6 +77,29 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		/** @var $importer \Application\DeskPRO\Import\Importer\AbstractImporter */
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
+
+		#----------------------------------------
+		# Run the --info command
+		#----------------------------------------
+
+		if ($input->getOption('info')) {
+			$output->writeln("Importer: {$importer_class}");
+			$output->writeln("Importer ID: {$importer->getId()}");
+			$output->writeln("Number of steps: {$importer->countSteps()}");
+
+			if ($errors = $importer->validateOptions()) {
+				$output->writeln("Config errors:");
+				foreach ($errors as $e) {
+					$output->writeln("<error>\t{$e}</error>");
+				}
+			}
+
+			return 0;
+		}
+
+		#----------------------------------------
+		# Run importer
+		#----------------------------------------
 
 		$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
 
@@ -83,7 +115,24 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
 		echo "\n";
 
-		for ($i = 1; $i <= $importer->countSteps(); $i++) {
+		$this->getContainer()->getDb()->beginTransaction();
+
+		$i = 1;
+		$num = $importer->countSteps();
+
+		if ($mode == 'step') {
+			$i = $input->getOption('step');
+		} else if ($mode == 'exec-step') {
+			$i = $input->getOption('exec-step');
+			$num = $input->getOption('exec-step');
+		}
+
+		if ($i < 1 || $i > $importer->countSteps()) {
+			$output->writeln("<error>`step` must be between 1 and {$importer->countSteps()}</error>");
+			return 1;
+		}
+
+		for (; $i <= $num; $i++) {
 			$step = $importer->getStep($i);
 
 			$start_step_time = microtime(true);
@@ -95,6 +144,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
 			echo "\n";
 		}
+
+		$this->getContainer()->getDb()->rollback();
 
 		$importer->cleanupImport();
 

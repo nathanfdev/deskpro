@@ -26,18 +26,21 @@ class Deskpro3Importer extends AbstractImporter
 	protected $old_db;
 
 	protected $steps = array(
-		'Settings',
-		'Banning',
-		'Techs',
-		'Users',
-		'PopAccounts',
-		'TechPms',
-		'PublicContent',
-		'Tasks',
-		'Chat',
-		'Tickets',
-		'Attachments',
-		'Misc',
+		'Settings',           // 1
+		'Banning',            // 2
+		'Techs',              // 3
+		'Users',              // 4
+		'Usergroups',         // 5
+		'Companies',          // 6
+		'Fields',             // 7
+		'PopAccounts',        // 8
+		'TechPms',            // 9
+		'PublicContent',      // 10
+		'Tasks',              // 11
+		'Chat',               // 12
+		'Tickets',            // 13
+		'Attachments',        // 14
+		'Misc',               // 15
 	);
 
 	public function validateOptions()
@@ -98,14 +101,6 @@ class Deskpro3Importer extends AbstractImporter
 		return $step;
 	}
 
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	public function getDb()
-	{
-		return $this->db;
-	}
 
 	/**
 	 * @return \Application\DeskPRO\DBAL\Connection
