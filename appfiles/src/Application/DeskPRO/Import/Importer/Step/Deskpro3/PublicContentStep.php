@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 class PublicContentStep extends AbstractDeskpro3Step
 {
-	public function getTitle()
+	public static function getTitle()
 	{
 		return 'Import Self Help';
 	}

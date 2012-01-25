@@ -87,6 +87,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$output->writeln("Importer ID: {$importer->getId()}");
 			$output->writeln("Number of steps: {$importer->countSteps()}");
 
+			for ($i = 1; $i <= $importer->countSteps(); $i++) {
+				$output->writeln(sprintf("\t%2s. %s", $i, $importer->getStepTitle($i)));
+			}
+
+			$output->writeln('');
+
 			if ($errors = $importer->validateOptions()) {
 				$output->writeln("Config errors:");
 				foreach ($errors as $e) {
@@ -136,9 +142,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$step = $importer->getStep($i);
 
 			$start_step_time = microtime(true);
-			$logger->log(sprintf("### Step %d: %s ###", $i, $step->getTitle(), $start_step_time), 'INFO');
+			$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
 
-			$step->run();
+			//$step->run();
 
 			$end_step_time = microtime(true);
 			$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');

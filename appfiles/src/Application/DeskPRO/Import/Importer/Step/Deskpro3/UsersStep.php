@@ -16,7 +16,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 
 class UsersStep extends AbstractDeskpro3Step
 {
-	public function getTitle()
+	public static function getTitle()
 	{
 		return 'Import Users';
 	}

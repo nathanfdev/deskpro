@@ -33,7 +33,10 @@ abstract class AbstractStep
 	 * Get a short title for the step
 	 * @return string
 	 */
-	abstract public function getTitle();
+	public static function getTitle()
+	{
+		return get_called_class();
+	}
 
 
 	/**

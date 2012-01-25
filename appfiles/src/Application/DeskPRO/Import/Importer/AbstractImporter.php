@@ -92,6 +92,14 @@ abstract class AbstractImporter
 	 */
 	abstract public function getStep($step);
 
+	/**
+	 * Get a step title
+	 *
+	 * @param int $step
+	 * @return string
+	 */
+	abstract public function getStepTitle($step);
+
 
 	/**
 	 * Run a step

@@ -18,7 +18,7 @@ class SettingsStep extends AbstractDeskpro3Step
 	 */
 	protected $importer;
 
-	public function getTitle()
+	public static function getTitle()
 	{
 		return 'Import Settings';
 	}

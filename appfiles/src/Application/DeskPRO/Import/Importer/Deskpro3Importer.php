@@ -26,21 +26,25 @@ class Deskpro3Importer extends AbstractImporter
 	protected $old_db;
 
 	protected $steps = array(
-		'Settings',           // 1
-		'Banning',            // 2
-		'Techs',              // 3
-		'Users',              // 4
-		'Usergroups',         // 5
-		'Companies',          // 6
-		'Fields',             // 7
-		'PopAccounts',        // 8
-		'TechPms',            // 9
-		'PublicContent',      // 10
-		'Tasks',              // 11
-		'Chat',               // 12
-		'Tickets',            // 13
-		'Attachments',        // 14
-		'Misc',               // 15
+		'Settings',
+		'Banning',
+		'Techs',
+		'Users',
+		'Usergroups',
+		'Companies',
+		'TicketCategories',
+		'TicketPriorities',
+		'TicketWorkflows',
+		'CustomTicketFields',
+		'CustomUserFields',
+		'PopAccounts',
+		'TechPms',
+		'PublicContent',
+		'Tasks',
+		'Chat',
+		'Tickets',
+		'Attachments',
+		'Misc',
 	);
 
 	public function validateOptions()
@@ -101,6 +105,12 @@ class Deskpro3Importer extends AbstractImporter
 		return $step;
 	}
 
+
+	public function getStepTitle($step)
+	{
+		$class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Deskpro3\\' . $this->steps[$step-1] . 'Step';
+		return $class::getTitle();
+	}
 
 	/**
 	 * @return \Application\DeskPRO\DBAL\Connection

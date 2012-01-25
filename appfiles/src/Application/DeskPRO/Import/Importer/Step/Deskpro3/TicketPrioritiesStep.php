@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class TasksStep extends AbstractDeskpro3Step
+class TicketPrioritiesStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()
 	{
-		return 'Import Calendar Tasks';
+		return 'Import Ticket Priorities';
 	}
 
 	public function run()

@@ -15,7 +15,7 @@ use Application\DeskPRO\Entity\Usergroup;
 
 class UsergroupsStep extends AbstractDeskpro3Step
 {
-	public function getTitle()
+	public static function getTitle()
 	{
 		return 'Import Usergroups';
 	}

@@ -16,7 +16,7 @@ use Application\DeskPRO\Entity\OrganizationEmailDomain;
 
 class CompaniesStep extends AbstractDeskpro3Step
 {
-	public function getTitle()
+	public static function getTitle()
 	{
 		return 'Import Companies';
 	}
