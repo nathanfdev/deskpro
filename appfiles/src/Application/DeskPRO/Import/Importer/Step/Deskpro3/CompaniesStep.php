@@ -109,7 +109,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = ($page-1) * 1000;
+		$start = $page * 1000;
 		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM company ORDER BY id ASC LIMIT $start, 1000");
 
 		return $ids;

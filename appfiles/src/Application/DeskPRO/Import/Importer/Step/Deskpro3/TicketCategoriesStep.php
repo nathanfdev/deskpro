@@ -36,9 +36,13 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 		$this->getDb()->beginTransaction();
 
 		try {
+			// First do the parents ....
 			foreach ($categories_top as $cat) {
 				$this->processCategory($cat);
 			}
+
+			// Then the children after. Easiest way to make sure a parent exists before the child
+			// is to just do them separately like this.
 			foreach ($categories_sub as $cat) {
 				$this->processCategory($cat);
 			}

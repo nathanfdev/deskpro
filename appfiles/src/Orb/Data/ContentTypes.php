@@ -127,6 +127,7 @@ class ContentTypes
 		'pml' => 'application/x-perfmon',
 		'pmr' => 'application/x-perfmon',
 		'pmw' => 'application/x-perfmon',
+		'png' => 'image/png',
 		'pnm' => 'image/x-portable-anymap',
 		'pot' => 'application/vnd.ms-powerpoint',
 		'ppm' => 'image/x-portable-pixmap',
@@ -291,6 +292,22 @@ class ContentTypes
 		}
 
 		return Arrays::searchAll(self::$ext_to_contenttype, $content_type, false);
+	}
+
+
+	/**
+	 * Get an array of image types
+	 *
+	 * @return array
+	 */
+	public static function getImageContentTypes()
+	{
+		return array(
+			'image/png',
+			'image/gif',
+			'image/jpg',
+			'image/jpeg',
+		);
 	}
 
 
