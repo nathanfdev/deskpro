@@ -139,16 +139,20 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		for (; $i <= $num; $i++) {
-			$step = $importer->getStep($i);
 
 			$start_step_time = microtime(true);
 			$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
 
-			//$step->run();
+			$importer->preRunStep($i);
+			$step = $importer->getStep($i);
+			$step->run();
+			$importer->postRunStep($i);
 
 			$end_step_time = microtime(true);
 			$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
 			echo "\n";
+
+
 		}
 
 		$this->getContainer()->getDb()->rollback();

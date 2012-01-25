@@ -102,14 +102,24 @@ abstract class AbstractImporter
 
 
 	/**
-	 * Run a step
+	 * Called before a step is run
 	 *
 	 * @param $step
 	 */
-	public function runStep($step)
+	public function preRunStep($step)
 	{
-		$step = $this->getStep($step);
-		$step->run();
+
+	}
+
+
+	/**
+	 * Called after a step is run
+	 *
+	 * @param $step
+	 */
+	public function postRunStep($step)
+	{
+
 	}
 
 
