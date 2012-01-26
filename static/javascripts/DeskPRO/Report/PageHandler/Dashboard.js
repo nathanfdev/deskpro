@@ -25,7 +25,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		this.is_edit_state = false;
 
 		// Number of columns in the dashboard grid
-		this.number_columns = options.number_columns || 4;
+		this.number_columns = options.number_columns || 6;
 
 		// The width of 1 columns
 		this.column_width = null;
@@ -99,7 +99,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		$("#report-dashboard-options-num-columns-slider").slider({
 			range: "max",
 			min: 1,
-			max: 4,
+			max: 6,
 			value: this.number_columns,
 			slide: function(event, ui) {
 				self.number_columns = ui.value;
@@ -285,7 +285,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 				else {
 					self.addDashboardEmptyNotice();
 				}
-				self.setEditable(true);
 			}
 		});
 	},
@@ -415,7 +414,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Set dashboard state, can be editable or viewable
 	setEditable: function(editable) {
-
 		if (editable) {
 			this.removeDashboardEmptyNotice();
 
@@ -423,8 +421,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			this.updateToEditable();
 		}
 		else {
-			// Disabled view mode for now
-			return;
 			// Switch dashbaord to view stat
 			this.updateToViewable();
 
@@ -440,7 +436,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
-		//$("#report-dashboard-options").css('display', 'block');
+		$("#report-dashboard-options").css('display', 'block');
 
 		// Create the 'Add Widget' placeholder
 		this.showAddChartPlaceholder();

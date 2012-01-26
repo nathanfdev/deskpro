@@ -25,7 +25,6 @@ class TrendController extends AbstractController
 	public function indexAction()
 	{
 		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
-		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
 
 		foreach ($stats as $stat) {
 			$end_date = new \DateTime();
@@ -34,7 +33,6 @@ class TrendController extends AbstractController
 			// Get the Stat Data
 			$data = $stat->getData($end_date, $points);
 
-			$display_unit = '';
 			if (false === is_null($stat->getFormatter())) {
 				// If there is a formatter, it may want to normalize the data
 				$normalized_result = $stat->getFormatter()->normalizeData($data);
@@ -48,7 +46,6 @@ class TrendController extends AbstractController
 
 		return $this->render('ReportBundle:Trend:index.html.twig', array(
 			'stats' 	=> $stats,
-			'dashboards'	=> $dashboards
 		));
 	}
 

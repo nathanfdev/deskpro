@@ -50,14 +50,6 @@
 					window[i].initPage();
 				}
 			}
-
-			$('.admin-footer .licensed-to').click(function() {
-				$('#license_info').fadeIn();
-			});
-
-			$('#license_info .close').click(function() {
-				$('#license_info').fadeOut();
-			});
 		}
 
 		{% block html_headjs_load %}{% endblock %}
@@ -75,20 +67,6 @@
 
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
-
-	<div id="dp_header_logo">
-		<h1>Reports</h1>
-	</div>
-	<!-- BEGIN SEARCH SECTION -->
-	<div id="dp_omnibox_wrap">
-		<div id="dp_omnibox">
-			<div class="searchBoxWrap">
-				<input id="dpsearchbox" type="text" value="" name="search" autocomplete="off" />
-			</div>
-		</div>
-	</div>
-	<!-- END SEARCH SECTION -->
-
 	<!-- BEGIN USER SECTION -->
 	<div id="DP-UserSection">
 		<div id="DP-userControl">
@@ -110,30 +88,28 @@
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
 					<li class="setting" id="user_settings_link"><a>Settings</a></li>
 					<li class="help"><a>Help</a></li>
-					<li class="logout"><a href="{{ path('report_logout', {'auth': security_token('user_logout')}) }}">Log out</a></li>
+					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout') }}?to=admin">{{ phrase('agent.window.logout') }}</a></li>
 				</ul>
 			</div>
 		</div>
 	<!-- END USER SECTION -->
 	</div>
 
-	{% if app.user.can_admin or app.user.can_agent or app.user.can_billing or app.getSetting('user.portal_enabled') %}
 	<!-- BEGIN INTERFACE SECTION -->
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="reports">Report Interface<span class="dropdownIcon"></span></a>
+				<a class="reports">Reports Interface<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a class="reports"><span>Report Interface</span></a>
+				<a class="reports"><span>Reports Interface</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_admin %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/admin/"><span class="check">Admin Interface</span></a></li>{% endif %}
-				{% if app.user.can_agent %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
+				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
 				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">Billing Interface</span></a></li>{% endif %}
 				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
 				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
@@ -142,30 +118,31 @@
 		</div>
 	</div>
 	<!-- END INTERFACE SECTION -->
-	{% endif %}
 </div>
 <!-- /BEGIN HEADER BAR -->
 
+<!-- BEGIN NAV BAR -->
+<div id="dp_admin_nav">
+	<nav>
+		<ul>
+			<li class="{% if this_page == 'trends_index' %}on{% endif %}"><a href="{{ path('report_trend_index') }}">Trends</a></li>
+
+			{% for dashboard in app.dashboards %}
+				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
+			{% endfor %}
+			<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">New Dashboard</a></li>
+		</ul>
+	</nav>
+</div>
+
 <div id="dp_page_wrap">
 
-	{% block reportnav %}
-		<nav class="reports-nav">
-			<a class="clean-white" href="{{ path('report_trend_index') }}">Trends</a>
-		</nav>
-	{% endblock %}
-
-	{% if app.session.hasFlash('saved') %}
-		<div class="alert-message success">
-			"{{ app.session.getFlash('saved') }}" was saved successfully
-		</div>
-	{% endif %}
-	{% if app.session.hasFlash('deleted') %}
-		<div class="alert-message success">
-			"{{ app.session.getFlash('deleted') }}" was deleted successfully
-		</div>
+	{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
+	{% if pagebar|trim|length %}
+		<div id="dp_admin_pagebar">{{ pagebar|raw }}</div>
 	{% endif %}
 
-	<div id="dp_admin_page">
+	<div id="dp_admin_page" {% if not pagebar|trim|length %}class="no-header"{% endif %}>
 		{% block content %}
 			<div class="dp-page-box">
 				<div class="page-content">
@@ -176,6 +153,5 @@
 	</div>
 </div>
 
-</div>
 </body>
 </html>

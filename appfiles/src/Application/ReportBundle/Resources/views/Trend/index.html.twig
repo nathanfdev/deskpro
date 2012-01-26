@@ -1,7 +1,6 @@
+{% set this_page = 'trends_index' %}
 {% extends 'ReportBundle::layout.html.twig' %}
-
 {% import "ReportBundle:Common:macros.html.twig" as stat_macros %}
-
 {% block html_head %}
 {{ dp_asset_html('report_dashboard') }}
 {% endblock %}
@@ -12,6 +11,11 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
+{% block pagebar %}
+	<ul>
+		<li>Trends</li>
+	</ul>
+{% endblock %}
 {% block page %}
 
 <script type="text/javascript">
@@ -19,15 +23,6 @@ function _page_exec() {
 		$('.sparkline').sparkline('html', { width: '100%', height: '25px'});
 	});
 </script>
-
-<ul class="tabs">
-	<li><a href="{{ path('report_trend_index') }}">Trends</a></li>
-
-	{% for dashboard in dashboards %}
-		<li class="{{ (loop.index0 == 0) ? 'margin-left' : '' }}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
-	{% endfor %}
-	<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">New Dashboard</a></li>
-</ul>
 
 <div class="table-list-wrap">
 

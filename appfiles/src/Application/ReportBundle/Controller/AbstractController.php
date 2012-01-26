@@ -24,6 +24,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
 			$cas->process();
 		}
+
+		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
+		$this->get('templating.globals')->setVariable('dashboards', $dashboards);
 	}
 
 

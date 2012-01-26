@@ -3,6 +3,33 @@ Orb.createNamespace('DeskPRO.Report');
 DeskPRO.Report.Window = new Orb.Class({
 	Extends: DeskPRO.Admin.Window,
 
+	initPage: function() {
+		this.parent();
+		$('#dp_admin_nav ul').sortable({
+			axis: 'x',
+			forceHelperSize: true,
+			appendTo: 'body',
+			items: 'li.dashboard',
+			update: function() {
+				var postData = [];
+				$('#dp_admin_nav').find('li.dashboard').each(function() {
+					postData.push({
+						name: 'dashboard[]',
+						value: $(this).data('dashboard-id')
+					});
+				});
+
+				console.log(postData);
+			},
+			helper: function(ev, el) {
+				var helper = $('<div class="dashboard-drag-helper"><span></span></div>');
+				helper.find('span').text(el.text().trim());
+
+				return helper;
+			}
+		});
+	},
+
 	/**
 	 * Get a URL pattern
 	 */

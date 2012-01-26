@@ -1,3 +1,4 @@
+{% set this_page = 'dashboard_' ~ dashboard.id %}
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block html_head %}
 {{ dp_asset_html('report_dashboard') }}
@@ -18,15 +19,17 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
+{% block pagebar %}
+	<nav>
+		<ul>
+			<li class="edit"><a id="report-dashboard-set-editable" href="#">Edit</a></li>
+		</ul>
+	</nav>
+	<ul>
+		<li>{{ dashboard.title }}</li>
+	</ul>
+{% endblock %}
 {% block page %}
-
-	<h2>
-		<span class="dashboard-title">{{ dashboard.title }}</span>
-		<span class="dashboard-state">
-			<a id="report-dashboard-set-editable" href="#" class="clean-white" style="display: none">Edit</a>
-		</span>
-	</h2>
-
 	<div id="report-dashboard-options">
 		<form id="dashboard_edit_form" action="{{ path('report_trend_dashboard_edit', {'dashboard_id': dashboard.id}) }}" method="post">
 			<input type="hidden" name="process" value="1" />
