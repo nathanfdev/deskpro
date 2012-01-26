@@ -253,7 +253,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_resolved",type="datetime",nullable=true)
+	 * @ORM_Mapping\Column(name="c",type="datetime",nullable=true)
 	 */
 	protected $date_resolved = null;
 
@@ -355,6 +355,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_ticket_logger;
 
+	/**
+	 * When true the ticket log doesnt run in the post event
+	 * @var bool
+	 */
+	protected $_no_log = false;
+
 	protected $_label_manager = null;
 
 	public function __construct($tracker = true)
@@ -374,6 +380,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->_initTicketLogger();
 			$this->_ticket_logger->recordExtra('ticket_created', true);
 		}
+	}
+
+	public function setNoLog()
+	{
+		$this->_no_log = true;
 	}
 
 	/**
@@ -1156,7 +1167,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getWorkflowId()
 	{
-		if (!$this->priority) {
+		if (!$this->workflow) {
 			return 0;
 		}
 
@@ -1804,7 +1815,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
 		}
 
-		if ($this->_ticket_logger) {
+		if (!$this->_no_log && $this->_ticket_logger) {
 			$this->getTicketLogger()->recordExtra('created', true);
 		}
 	}
@@ -1815,7 +1826,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function _presaveTicketLogs()
 	{
-		if ($this->_ticket_logger) {
+		if (!$this->_no_log && $this->_ticket_logger) {
 			$this->_ticket_logger->preDone();
 		}
 	}
@@ -1836,7 +1847,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function _saveTicketLogs()
 	{
-		if ($this->_ticket_logger) {
+		if (!$this->_no_log && $this->_ticket_logger) {
 			$this->_ticket_logger->done();
 			$this->resetTicketLogger();
 		}
