@@ -898,6 +898,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (this.is_edit_state === true) {
 			this.resizePlacerHolderWidgets()
 		}
+
+		this.resizeDashboardHeightToGrid();
 	},
 
 	// Resize a widget to fit into number_columns
