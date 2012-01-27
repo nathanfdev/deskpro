@@ -106,6 +106,36 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 				self.calculateColumnWidth();
 				self.resizeAllWidgets();
+
+				var countTrails = self.countTrailingEmptyCells();
+
+				console.log("Before: %o", self.grid);
+				console.log('Trailing %d', countTrails);
+
+				if (countTrails < self.number_columns) {
+
+					var numOnLastRow = self.grid.length % self.number_columns;
+					if (numOnLastRow) {
+						var add = self.number_columns - numOnLastRow;
+						self.addTrailingGridCell(add);
+					}
+
+				} else if (countTrails != self.number_columns) {
+
+					var rem = self.grid.length % self.number_columns;
+					if (rem) {
+						var add = self.number_columns - rem;
+						self.addTrailingGridCell(add);
+					}
+
+					var countTrails = self.countFullTrailingEmptyCells();
+					console.log("Consec trailing: %d", countTrails);
+
+					var remove = countTrails - self.number_columns;
+					self.removeTrailingGridCells(remove);
+				}
+
+				console.log("After: %o", self.grid);
 			},
 			stop: function(event, ui) {
 				// Need to re render the widgets - Flash charts will do
@@ -1335,5 +1365,75 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
     		DP.console.log(debug);
     	}
     	DP.console.log("----");
-    }
+    },
+
+	addTrailingGridCell: function(count) {
+		var size = this.grid.length + count;
+		for (var i = this.grid.length; i < size; i++) {
+			this.grid.push(null);
+
+            var height = this.caclHeight(1);
+            var width  = this.caclWidth(1);
+
+            var top  = this.caclTop(i);
+            var left = this.caclLeft(i);
+
+            var html = '\
+<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
+<span class="inner"> \
+	<a href="#" class="dashboard-new-placeholder-link">Click to Add a Chart<br />Or<br />Drop an Existing Chart</a>\
+</span>\
+</div>';
+            this.$dashboard.append(html);
+        }
+
+		this.resizeDashboardHeightToGrid();
+	},
+
+	removeTrailingGridCells: function(count) {
+		for (var i = 0; i < count; i++) {
+			this.grid.pop();
+		}
+
+		$(this.$dashboard.find('.cell').toArray().reverse()).each(function() {
+			if (count--) {
+				$(this).remove();
+			} else {
+				return false;
+			}
+		});
+	},
+
+	countTrailingEmptyCells: function() {
+		var countTrails = 0, self = this;
+		var reversed = self.grid.clone().reverse();
+		for (var i = 0; i < reversed.length; i++) {
+			if (reversed[i] === null) {
+				countTrails++;
+			} else {
+				break;
+			}
+		};
+
+		return countTrails;
+	},
+
+	countFullTrailingEmptyCells: function() {
+		var rowCounter = 0;
+		var countTrails = 0, self = this;
+		var reversed = self.grid.clone().reverse();
+		for (var i = 0; i < reversed.length; i++) {
+			if (reversed[i] === null) {
+				rowCounter++;
+				if (rowCounter == self.number_columns) {
+					countTrails += rowCounter;
+					rowCounter = 0;
+				}
+			} else {
+				break;
+			}
+		};
+
+		return countTrails;
+	}
 });

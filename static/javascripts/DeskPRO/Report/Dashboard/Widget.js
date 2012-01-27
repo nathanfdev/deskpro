@@ -222,6 +222,6 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 
         $('#' + this.element_id).css('left').replace('px', '');
 
-    },
+    }
 
 });
