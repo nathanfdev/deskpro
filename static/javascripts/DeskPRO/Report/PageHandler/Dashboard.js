@@ -494,6 +494,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             drop: function(event, ui) {
                 self.doDrop($(this), ui.draggable);
 
+				self.showAddChartPlaceholder();
+
                 // Save the new state of the dashboard
 				self.saveDashboardState();
 
@@ -512,7 +514,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             out: function(event, ui) {
                 $(this).removeClass("drop-allowed");
                 $(this).removeClass("drop-denied");
-            },
+            }
         });
     },
 
@@ -558,6 +560,14 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			helper: "ui-resizable-helper",
 			minWidth: this.column_width,
 			minHeight: this.row_height,
+			resize: function(event, ui) {
+				self.checkNewPlacerholderRowRequired(
+					parseInt($(ui.helper).css('top')) +
+					parseInt($(ui.helper).css('height')) -
+					(parseInt(self.row_height)) -
+					(parseInt(self.row_height) / 4)
+				);
+			},
 			stop: function(event, ui) {
 				$(this).removeClass('dragging');
 				// Remove the resize overlay
@@ -594,7 +604,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
                         width: widget.widget.width,
                         height: widget.widget.height
                     }, 1000, function() {
-
+						self.showAddChartPlaceholder();
                     });
 				}
 
@@ -707,6 +717,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 					self.applyResizeToWidgets('#' + widget.element_id);
 					self.applyDraggableToWidgets('#' + widget.element_id);
 
+					self.showAddChartPlaceholder();
 					self.saveDashboardState();
 				}
 			});
@@ -766,6 +777,23 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 		// Ensure the widget is the correct size
 		this.resizePlacerHolderWidgets();
+
+		// Always make sure theres one full empty row
+		var highest = 0;
+		this.$dashboard.find('.widget').each(function() {
+			var h = $(this).height() + parseInt($(this).css('top'));
+			if (h > highest) {
+				highest = h;
+			}
+		});
+
+		var rows = Math.ceil(this.grid.length / this.number_columns);
+    	var boundary = this.caclHeight(rows);
+
+		if (highest >= boundary) {
+			this.addCellGrids(1);
+		}
+
 
 		this.$dashboard.find('.cell').css('display', 'block');
 	},
@@ -875,6 +903,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Resize a widget to fit into number_columns
 	resizeWidgetToColumn: function(widget_index, number_columns, animate) {
 
+		var self = this;
+
 		// We need to shrink widgets that maybe to big if the column count
 		// in the dashboard has been reduced
 		if (number_columns > this.number_columns) {
@@ -895,15 +925,18 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (animate) {
 			$('#' + this.widgets[widget_index].widget.element_id).animate({
 				width: new_width + 'px'
-			}, this.animation_duration);
+			}, this.animation_duration, function() {
+				self.showAddChartPlaceholder();
+			});
 		} else {
 			$('#' + this.widgets[widget_index].widget.element_id).css('width', new_width + 'px');
+			self.showAddChartPlaceholder();
 		}
 	},
 
 	// Resize a widget to fit into number_rows
 	resizeWidgetToRow: function(widget_index, number_rows, animate) {
-
+		var self = this;
 		// Update the row size for this widget
 		//this.widgets[widget_index].num_slots = number_rows;
 
@@ -915,9 +948,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		if (animate) {
 			$('#' + this.widgets[widget_index].widget.element_id).animate({
 				height: new_height + 'px'
-			}, this.animation_duration);
+			}, this.animation_duration, function() {
+				self.showAddChartPlaceholder();
+			});
 		} else {
 			$('#' + this.widgets[widget_index].widget.element_id).css('height', new_height + 'px');
+			self.showAddChartPlaceholder();
 		}
 	},
 
