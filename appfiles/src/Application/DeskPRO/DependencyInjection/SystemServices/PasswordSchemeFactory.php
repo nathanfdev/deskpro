@@ -13,7 +13,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class PasswordSchemeService
+class PasswordSchemeFactory
 {
 	public static function create(DeskproContainer $container, $options = array())
 	{

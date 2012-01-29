@@ -22,9 +22,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$this->setName('dp:import');
 		$this->addOption('info', null, InputOption::VALUE_NONE, 'Show information about the importer and config');
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
-		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'Start from this step');
+		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'With --run, Start from this step');
 		$this->addOption('exec-step', null, InputOption::VALUE_REQUIRED, 'Execute only this step');
-		$this->addOption('exec-step-page', null, InputOption::VALUE_REQUIRED, 'With exec-step, runs a page of the step. If not specified, page 1 is run.');
+		$this->addOption('exec-step-page', null, InputOption::VALUE_REQUIRED, 'With --exec-step, runs a page of the step. If not specified, page 1 is run.');
 		$this->setHelp("This imports data from another platform into the currently installed helpdesk. Please read http://support.deskpro.com/ for more information.");
 	}
 
@@ -32,7 +32,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	{
 		$mode = null;
 		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
-		elseif ($input->getOption('step') !== null) $mode = 'step';
 		elseif ($input->getOption('info')) $mode = 'info';
 		elseif ($input->getOption('run')) $mode = 'run';
 
@@ -183,7 +182,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$i = 1;
 			$num = $importer->countSteps();
 
-			if ($mode == 'step') {
+			if ($input->getOption('step')) {
 				$i = $input->getOption('step');
 			}
 
@@ -207,10 +206,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 					$cmd = $php_path . ' console.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
 					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin');
+					$proc->setTimeout(600);
 					$proc->run();
+
+					echo $proc->getOutput();
 
 					if (!$proc->isSuccessful()) {
 						echo $proc->getErrorOutput();
+						$logger->log("Error detected, stopping.", 'ERROR');
+						return 1;
 					}
 				}
 

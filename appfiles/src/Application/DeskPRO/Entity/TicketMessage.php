@@ -255,7 +255,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$hashes = array();
-		$hashes[] = sha1($this->message . $this->person->id);
+		$hashes[] = sha1($this->message . ($this->person ? $this->person->id : 'noperson'));
 
 		foreach ($this->attachments as $a) {
 			$hashes[] = $a->blob['blob_hash'];

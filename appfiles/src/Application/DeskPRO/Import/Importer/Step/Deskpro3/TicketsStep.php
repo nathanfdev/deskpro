@@ -88,6 +88,10 @@ class TicketsStep extends AbstractDeskpro3Step
 			$new_agent = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $ticket_info['tech']));
 		}
 
+		if (!$new_person) {
+			return;
+		}
+
 		$new_department = null;
 		if ($ticket_info['category']) {
 			$new_department = $this->getEm()->find('DeskPRO:Department', $this->getMappedNewId('ticket_category', $ticket_info['category']));
@@ -141,7 +145,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			$ticket->total_user_waiting = $ticket_info['total_user_waiting'];
 		}
 		if ($ticket_info['timestamp_tech_waiting']) {
-			$ticket->date_agent_waiting = $ticket_info['timestamp_tech_waiting'];
+			$ticket->date_agent_waiting = new \DateTime('@' . $ticket_info['timestamp_tech_waiting']);
 		}
 
 		switch ($ticket_info['status']) {
@@ -182,7 +186,12 @@ class TicketsStep extends AbstractDeskpro3Step
 		$ticket_notes = $this->getOldDb()->fetchAll("SELECT * FROM ticket_notes WHERE ticketid = ?", array($ticket_info['id']));
 		foreach ($ticket_notes as $note_info) {
 			$message = new TicketMessage();
-			$message->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $note_info['techid']));
+			$message->message_hash = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
+			$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $note_info['techid']));
+			if (!$p) {
+				continue;
+			}
+			$message->person = $p;
 			$message->message = $note_info['note'];
 			$message->ticket = $ticket;
 			$message->is_agent_note = true;
@@ -200,19 +209,28 @@ class TicketsStep extends AbstractDeskpro3Step
 		$ticket_messages = $this->getOldDb()->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ?", array($ticket_info['id']));
 		foreach ($ticket_messages as $message_info) {
 			$message = new TicketMessage();
+			$message->message_hash = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
+			$message->message = $message_info['message'];
+			$message->ticket = $ticket;
+
 			if ($message_info['techid']) {
 				$message->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $message_info['techid']));
 			} else {
 				$message->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $message_info['userid']));
 			}
+
+			if (!$message->person) {
+				continue;
+			}
+
 			$message->ip_address = $message_info['ipaddress'];
 
 			if ($message_info['charset'] && $message_info['charset'] != 'utf8') {
-				$message_info['message'] = iconv($message_info['charset'], 'UTF-8//TRANSLIT', $message_info['message']);
+				$new_msg = @iconv($message_info['charset'], 'UTF-8//TRANSLIT', $message_info['message']);
+				if ($new_msg) {
+					$message_info['message'] = $new_msg;
+				}
 			}
-
-			$message->message = $message_info['message'];
-			$message->ticket = $ticket;
 
 			$this->getEm()->persist($message);
 			$this->getEm()->flush();
@@ -255,6 +273,10 @@ class TicketsStep extends AbstractDeskpro3Step
 				$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $part_info['user']));
 			} else {
 				$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $part_info['user']));
+			}
+
+			if (!$p) {
+				continue;
 			}
 
 			$part = new TicketParticipant();

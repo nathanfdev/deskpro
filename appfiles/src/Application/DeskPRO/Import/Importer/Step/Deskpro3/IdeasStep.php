@@ -119,7 +119,7 @@ class IdeasStep extends AbstractDeskpro3Step
 	 */
 	protected function processIdea($idea_id)
 	{
-		$idea = $this->getOldDb()->fetchAssoc("SELECT * FROM use_ideas WHERE id = ?", array($idea_id));
+		$idea = $this->getOldDb()->fetchAssoc("SELECT * FROM user_ideas WHERE id = ?", array($idea_id));
 
 		#------------------------------
 		# Make sure we havent already done them
@@ -135,7 +135,7 @@ class IdeasStep extends AbstractDeskpro3Step
 		# Create it
 		#------------------------------
 
-		$new_category = $this->getEm()->find('DeskPRO:IdeaCategory', $this->getMappedNewId('idea_cat', $idea['category']));
+		$new_category = $this->getEm()->find('DeskPRO:IdeaCategory', $this->getMappedNewId('idea_cat', $idea['category_id']));
 		if (!$new_category) {
 			$this->logMessage("{$idea['id']} has an invalid category, skipping");
 			return;

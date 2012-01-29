@@ -35,7 +35,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		$pages = ceil($count / 1000);
+		$pages = ceil($count / 500);
 		return $pages;
 	}
 
@@ -124,8 +124,8 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($table, $page)
 	{
-		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC LIMIT $start, 1000");
+		$start = $page * 500;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC LIMIT $start, 500");
 
 		return $ids;
 	}

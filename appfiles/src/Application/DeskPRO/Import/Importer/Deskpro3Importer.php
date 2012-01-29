@@ -54,24 +54,19 @@ class Deskpro3Importer extends AbstractImporter
 	{
 		$errors = array();
 
-		$this->logMessage("Checking for required configuration");
-
 		foreach (array('db_host', 'db_user', 'db_password', 'db_name') as $k) {
 			if (!$this->config->has($k)) {
 				$errors[] = "Missing configuration value: import.$k";
 			}
 		}
 
-		$this->logMessage("-- OK");
-
-		$this->logMessage("Checking for database connection");
 		try {
 			$this->old_db = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
-				'driver' => 'pdo_mysql',
-				'host' => $this->config->db_host,
-				'user' => $this->config->db_user,
+				'driver'   => 'pdo_mysql',
+				'host'     => $this->config->db_host,
+				'user'     => $this->config->db_user,
 				'password' => $this->config->db_password,
-				'dbname' => $this->config->db_name
+				'dbname'   => $this->config->db_name
 			));
 			$this->logMessage("-- OK");
 		} catch (\Exception $e) {

@@ -77,7 +77,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('message', $message);
 
 		// Automatically set the is_agent_note field
-		if ($message->is_agent_note) {
+		if ($message && $message->is_agent_note) {
 			$this->is_agent_note = true;
 		}
 	}

@@ -93,7 +93,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 			$new_cat = new DownloadCategory();
 			$new_cat->title = $cat['name'];
-			$new_cat->display_order = $cat['display_order'];
+			$new_cat->display_order = $cat['displayorder'];
 
 			$this->getEm()->persist($new_cat);
 			$this->getEm()->flush();
