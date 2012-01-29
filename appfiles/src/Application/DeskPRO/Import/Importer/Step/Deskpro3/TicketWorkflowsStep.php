@@ -20,7 +20,7 @@ class TicketWorkflowsStep extends AbstractDeskpro3Step
 		return 'Import Ticket Workflows';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_workflow");
 		$this->logMessage(sprintf("Importing %d ticket workflows", $count));
@@ -67,7 +67,7 @@ class TicketWorkflowsStep extends AbstractDeskpro3Step
 
 		$new_work = new TicketWorkflow();
 		$new_work->title = $work['name'];
-		$new_work->display_order = $work['display_order'];
+		$new_work->display_order = $work['displayorder'];
 
 		$this->getEm()->persist($new_work);
 		$this->getEm()->flush();

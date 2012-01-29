@@ -14,47 +14,40 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 use Orb\Util\Strings;
 use Orb\Data\ContentTypes;
 
-class BlobsStep extends AbstractDeskpro3Step
+// DP3's blob table doesnt store any info about the type of file, filesize etc
+// But the individual content tables (ie ticket_attachments) does.
+// So we'll just go through them one by one and process blobs in each
+// - This has the nifty sideeffect of us easily ignoring abandoned blobs and that makes everyone smile
+
+// Note this is JUST about importing blobs.
+// Actually re-connecting these content tables is up to the steps that import that type of content
+// I.e., we import blobs from ticket attachments into our blobs table, but the tickets step will actually make the relevant
+// ticket attachment records.
+abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 {
-	public static function getTitle()
+	abstract public function getTable();
+
+	public function countPages()
 	{
-		return 'Import Blobs';
+		$table = $this->getTable();
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM $table");
+		if (!$count) {
+			return 1;
+		}
+
+		$pages = ceil($count / 1000);
+		return $pages;
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
-		// DP3's blob table doesnt store any info about the type of file, filesize etc
-		// But the individual content tables (ie ticket_attachments) does.
-		// So we'll just go through them one by one and process blobs in each
-		// - This has the nifty sideeffect of us easily ignoring abandoned blobs and that makes everyone smile
+		$table = $this->getTable();
 
-		// Note this is JUST about importing blobs.
-		// Actually re-connecting these content tables is up to the steps that import that type of content
-		// I.e., we import blobs from ticket attachments into our blobs table, but the tickets step will actually make the relevant
-		// ticket attachment records.
-
-		$tables = array(
-			'chat_attachment',
-			'faq_attachments',
-			'ticket_attachments',
-			'files'
-		);
-
-		foreach ($tables as $table) {
-			$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM $table");
-			if (!$count) {
-				continue;
-			}
-
-			$page = 0;
-			while ($batch = $this->getIdsBatch($table, $page++)) {
-				foreach ($batch as $rid) {
-					$this->processBlob($table, $rid);
-				}
-			}
+		$batch = $this->getIdsBatch($table, $page - 1);
+		foreach ($batch as $rid) {
+			$this->processBlob($table, $rid);
 		}
 	}
-
 
 	protected function processBlob($table, $record_id)
 	{
@@ -62,6 +55,11 @@ class BlobsStep extends AbstractDeskpro3Step
 		$blob = $this->getOldDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($record['blobid']));
 
 		if (!$blob) {
+			return;
+		}
+
+		$check = $this->getMappedNewId('blob', $blob['id']);
+		if ($check) {
 			return;
 		}
 
@@ -97,7 +95,7 @@ class BlobsStep extends AbstractDeskpro3Step
 			'blob_hash' => $hash,
 			'dim_w' => $dim_w,
 			'dim_h' => $dim_h,
-			'date_createad' => new \DateTime('@' . $record['timestamp']),
+			'date_created' => date('Y-m-d H:i:s', $record['timestamp']),
 		));
 
 		$new_blob_id = $this->getDb()->lastInsertId();

@@ -23,7 +23,7 @@ class SettingsStep extends AbstractDeskpro3Step
 		return 'Import Settings';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 
 	}

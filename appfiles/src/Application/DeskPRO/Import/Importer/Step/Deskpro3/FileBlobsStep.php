@@ -11,15 +11,18 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class TasksStep extends AbstractDeskpro3Step
+use Orb\Util\Strings;
+use Orb\Data\ContentTypes;
+
+class FileBlobsStep extends AbstractBlobsStep
 {
 	public static function getTitle()
 	{
-		return 'Import Calendar Tasks';
+		return 'Import Files Blobs';
 	}
 
-	public function run($page = 1)
+	public function getTable()
 	{
-
+		return 'files';
 	}
 }

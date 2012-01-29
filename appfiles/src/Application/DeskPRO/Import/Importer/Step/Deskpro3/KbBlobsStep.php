@@ -11,15 +11,18 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class ChatStep extends AbstractDeskpro3Step
+use Orb\Util\Strings;
+use Orb\Data\ContentTypes;
+
+class KbBlobsStep extends AbstractBlobsStep
 {
 	public static function getTitle()
 	{
-		return 'Import Chat';
+		return 'Import KB Blobs';
 	}
 
-	public function run()
+	public function getTable()
 	{
-
+		return 'faq_attachments';
 	}
 }

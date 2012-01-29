@@ -21,32 +21,28 @@ class UsersStep extends AbstractDeskpro3Step
 		return 'Import Users';
 	}
 
-	public function run()
+	public function countPages()
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user");
-
-		$this->logMessage(sprintf("Importing %d users", $count));
 		if (!$count) {
-			return;
+			return 1;
 		}
 
-		$start_time = microtime(true);
+		return ceil($count / 1000);
+	}
 
-		$page = 0;
-		while ($batch = $this->getIdsBatch($page++)) {
-			$sub_start_time = microtime(true);
-			$this->logMessage("-- Processing batch {$page}");
+	public function run($page = 1)
+	{
+		$batch = $this->getIdsBatch($page - 1);
+		$sub_start_time = microtime(true);
+		$this->logMessage("-- Processing batch {$page}");
 
-			foreach ($batch as $uid) {
-				$this->processUser($uid);
-			}
-
-			$sub_end_time = microtime(true);
-			$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+		foreach ($batch as $uid) {
+			$this->processUser($uid);
 		}
 
-		$end_time = microtime(true);
-		$this->logMessage(sprintf("Done all users. Took %.3f seconds.", $end_time-$start_time));
+		$sub_end_time = microtime(true);
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
 
@@ -115,6 +111,7 @@ class UsersStep extends AbstractDeskpro3Step
 			$person->is_user = true;
 			$person->is_confirmed = true;
 			$person->name = $user_info['name'];
+			$person->password_scheme = 'deskpro3';
 			$person->date_created = new \DateTime('@' . $user_info['date_registered']);
 			if ($user_info['last_activity']) {
 				$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);

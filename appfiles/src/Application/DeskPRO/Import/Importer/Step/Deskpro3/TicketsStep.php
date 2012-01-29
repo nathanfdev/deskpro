@@ -23,44 +23,40 @@ class TicketsStep extends AbstractDeskpro3Step
 		return 'Import Tickets';
 	}
 
-	public function run()
+	public function countPages()
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket");
-
-		$this->logMessage(sprintf("Importing %d tickets", $count));
 		if (!$count) {
-			return;
+			return 1;
 		}
 
-		$start_time = microtime(true);
+		return ceil($count / 1000);
+	}
 
-		$page = 0;
-		while ($batch = $this->getIdsBatch($page++)) {
-			$sub_start_time = microtime(true);
-			$this->logMessage("-- Processing batch {$page}");
+	public function run($page = 1)
+	{
+		$sub_start_time = microtime(true);
+		$batch = $this->getIdsBatch($page - 1);
+		$this->logMessage("-- Processing batch {$page}");
 
-			foreach ($batch as $tid) {
-				$this->getDb()->beginTransaction();
+		foreach ($batch as $tid) {
+			$this->getDb()->beginTransaction();
 
-				try {
-					$this->processTicket($tid);
-					$this->getDb()->commit();
-				} catch (\Exception $e) {
-					$this->getDb()->rollback();
-					throw $e;
-				}
-
-				if (mt_rand(1,10) <= 3) {
-					$this->getEm()->clear();
-				}
+			try {
+				$this->processTicket($tid);
+				$this->getDb()->commit();
+			} catch (\Exception $e) {
+				$this->getDb()->rollback();
+				throw $e;
 			}
 
-			$sub_end_time = microtime(true);
-			$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+			if (mt_rand(1,10) <= 3) {
+				$this->getEm()->clear();
+			}
 		}
 
-		$end_time = microtime(true);
-		$this->logMessage(sprintf("Done all tickets. Took %.3f seconds.", $end_time-$start_time));
+		$sub_end_time = microtime(true);
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
 
@@ -114,13 +110,14 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$ticket = new Ticket();
 		$ticket->setNoLog(); // dont want the change logger to happen for all these tickets
-		$ticket->subject = $ticket_info['subject'];
-		$ticket->person = $new_person;
-		$ticket->agent = $new_agent;
-		$ticket->department = $new_department;
-		$ticket->workflow = $new_workflow;
-		$ticket->priority = $new_priority;
-		$ticket->organization = $new_org;
+		$ticket->subject       = $ticket_info['subject'];
+		$ticket->person        = $new_person;
+		$ticket->agent         = $new_agent;
+		$ticket->department    = $new_department;
+		$ticket->workflow      = $new_workflow;
+		$ticket->priority      = $new_priority;
+		$ticket->organization  = $new_org;
+		$ticket->ticket_hash  = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
 		$ticket->date_createad = new \DateTime('@' . $ticket_info['timestamp_opened']);
 
 		if ($ticket_info['creation'] == 'gateway') {
@@ -162,7 +159,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			case 'nodisplay':
 				$ticket->status = Ticket::STATUS_HIDDEN;
-				switch ($ticket['nodisplay']) {
+				switch ($ticket_info['nodisplay']) {
 					case 'spam':
 						$ticket->hidden_status = Ticket::HIDDEN_STATUS_SPAM;
 						break;
@@ -255,7 +252,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$ticket_parts = $this->getOldDb()->fetchAll("SELECT * FROM ticket_participant WHERE ticket = ?", array($ticket_info['id']));
 		foreach ($ticket_parts as $part_info) {
 			if ($part_info['user_type'] == 'tech') {
-				$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $part_info['user']))
+				$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $part_info['user']));
 			} else {
 				$p = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $part_info['user']));
 			}

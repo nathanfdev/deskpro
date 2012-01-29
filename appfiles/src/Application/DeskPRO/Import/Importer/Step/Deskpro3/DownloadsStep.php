@@ -21,7 +21,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 		return 'Import Downloads';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM files_cats");
 		if ($count) {

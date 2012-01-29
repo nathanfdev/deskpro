@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 
 class UserNewsStep extends AbstractDeskpro3Step
 {
@@ -25,11 +26,14 @@ class UserNewsStep extends AbstractDeskpro3Step
 		return 'Import User News';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
-		$this->category = $this->getEm()->createQuery("SELECT c FROM DeskPRO:NewsCategory c ORDER BY id ASC")->getOneOrNullResult();
+		$this->category = $this->getEm()->createQuery("SELECT c FROM DeskPRO:NewsCategory c ORDER BY c.id ASC")->getOneOrNullResult();
 		if (!$this->category) {
-			return;
+			$this->category = new NewsCategory();
+			$this->category->title = "General";
+			$this->getEm()->persist($this->category);
+			$this->getEm()->flush();
 		}
 
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM news");

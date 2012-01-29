@@ -18,7 +18,7 @@ class MiscStep extends AbstractDeskpro3Step
 		return 'Import Misc';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 
 	}

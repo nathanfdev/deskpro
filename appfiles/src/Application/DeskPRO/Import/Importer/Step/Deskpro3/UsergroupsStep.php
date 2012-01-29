@@ -20,7 +20,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		return 'Import Usergroups';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$usergroups = $this->getOldDb()->fetchAll("SELECT * FROM user_groups ORDER BY id ASC");
 
@@ -35,7 +35,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		try {
 			foreach ($usergroups as $group_info) {
-				$this->processUsergruop($group_info);
+				$this->processUsergroup($group_info);
 			}
 
 			$this->getDb()->commit();
@@ -76,7 +76,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		// TODO permission mapping when permissions are final
 
 		$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
-		if ($usergroup['system_name'] == 'registered') {
+		if ($group_info['system_name'] == 'registered') {
 			$this->saveMappedId('usergroup_sys', 'registered', $usergroup->id);
 		}
 	}

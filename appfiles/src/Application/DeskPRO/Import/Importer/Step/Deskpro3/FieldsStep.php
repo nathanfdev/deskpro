@@ -18,7 +18,7 @@ class FieldsStep extends AbstractDeskpro3Step
 		return 'Import Fields';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 
 	}

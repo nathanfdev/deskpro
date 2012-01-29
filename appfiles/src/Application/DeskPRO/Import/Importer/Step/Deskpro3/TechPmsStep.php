@@ -18,7 +18,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 		return 'Import Tech Private Messages';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$tech_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM tech");
 

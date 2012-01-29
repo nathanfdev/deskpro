@@ -20,7 +20,7 @@ class TicketPrioritiesStep extends AbstractDeskpro3Step
 		return 'Import Ticket Priorities';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_pri");
 		$this->logMessage(sprintf("Importing %d ticket priorities", $count));
@@ -67,8 +67,8 @@ class TicketPrioritiesStep extends AbstractDeskpro3Step
 
 		$new_pri = new TicketPriority();
 		$new_pri->title = $pri['name'];
-		$new_pri->priority = $pri['display_order'];
-		$new_pri->display_order = $pri['display_order'];
+		$new_pri->priority = $pri['displayorder'];
+		$new_pri->display_order = $pri['displayorder'];
 
 		$this->getEm()->persist($new_pri);
 		$this->getEm()->flush();

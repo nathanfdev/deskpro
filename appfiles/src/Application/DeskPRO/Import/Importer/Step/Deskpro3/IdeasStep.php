@@ -22,7 +22,7 @@ class IdeasStep extends AbstractDeskpro3Step
 		return 'Import Ideas';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM user_idea_categories");
 		if ($count) {

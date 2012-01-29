@@ -42,7 +42,16 @@ abstract class AbstractStep
 	/**
 	 * Actually do the import work
 	 */
-	abstract public function run();
+	abstract public function run($page = 1);
+
+
+	/**
+	 * @return int
+	 */
+	public function countPages()
+	{
+		return 1;
+	}
 
 
 	/**

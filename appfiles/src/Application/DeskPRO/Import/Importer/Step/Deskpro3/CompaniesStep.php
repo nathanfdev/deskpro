@@ -21,7 +21,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 		return 'Import Companies';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_company");
 
@@ -110,7 +110,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 	protected function getIdsBatch($page)
 	{
 		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM company ORDER BY id ASC LIMIT $start, 1000");
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_company ORDER BY id ASC LIMIT $start, 1000");
 
 		return $ids;
 	}

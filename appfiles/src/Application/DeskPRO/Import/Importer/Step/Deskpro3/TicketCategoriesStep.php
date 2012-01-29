@@ -20,10 +20,10 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 		return 'Import Ticket Categories';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_cat");
-		$this->logMessage(sprintf("Importing %d ticket categories", $count);
+		$this->logMessage(sprintf("Importing %d ticket categories", $count));
 		if (!$count) {
 			return;
 		}
@@ -75,7 +75,7 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 
 		$dep = new Department();
 		$dep->title = $cat['name'];
-		$dep->display_order = $cat['display_order'];
+		$dep->display_order = $cat['displayorder'];
 		$dep->is_tickets_enabled = true;
 		$dep->is_chat_enabled = true;
 

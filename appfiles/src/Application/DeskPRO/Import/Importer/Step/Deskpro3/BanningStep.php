@@ -18,7 +18,7 @@ class BanningStep extends AbstractDeskpro3Step
 		return 'Import Banned Emails and IPs';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$this->getDb()->beginTransaction();
 

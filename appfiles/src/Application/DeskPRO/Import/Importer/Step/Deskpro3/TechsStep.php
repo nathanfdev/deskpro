@@ -18,7 +18,7 @@ class TechsStep extends AbstractDeskpro3Step
 		return 'Import Techs';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$techs = $this->getOldDb()->fetchAllKeyed("SELECT * FROM tech");
 		$this->logMessage(sprintf("Importing %d techs", count($techs)));

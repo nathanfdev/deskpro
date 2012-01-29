@@ -21,7 +21,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		return 'Import Custom Fields';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		#----------------------------------------
 		# Ticket Fields
@@ -101,7 +101,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		$new_field = new CustomDefTicket();
-		$new_field->display_order = $f['display_order'];
+		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
 
 		$has_choices = false;
@@ -138,7 +138,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 				$this->getEm()->persist($child);
 				$this->getEm()->flush();
 
-				$this->saveMappedId('ticket_def_choice', $f['id'] . '_' . $choice_info[1], $child->id);
+				$this->saveMappedId('ticket_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		$new_field = new CustomDefPerson();
-		$new_field->display_order = $f['display_order'];
+		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
 
 		$has_choices = false;
@@ -197,7 +197,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 				$this->getEm()->persist($child);
 				$this->getEm()->flush();
 
-				$this->saveMappedId('people_def_choice', $f['id'] . '_' . $choice_info[1], $child->id);
+				$this->saveMappedId('people_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
 			}
 		}
 	}

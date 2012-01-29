@@ -22,7 +22,7 @@ class KbStep extends AbstractDeskpro3Step
 		return 'Import Knowledgebase';
 	}
 
-	public function run()
+	public function run($page = 1)
 	{
 		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM faq_cats");
 		if ($count) {
@@ -101,7 +101,7 @@ class KbStep extends AbstractDeskpro3Step
 
 			$new_cat = new ArticleCategory();
 			$new_cat->title = $cat['name'];
-			$new_cat->display_order = $cat['display_order'];
+			$new_cat->display_order = $cat['displayorder'];
 			if ($new_parent) {
 				$new_cat->parent = $new_parent;
 			}
@@ -121,7 +121,7 @@ class KbStep extends AbstractDeskpro3Step
 	 */
 	protected function processArticle($article_id)
 	{
-		$article = $this->getOldDb()->fetchAssoc("SELECT * FROM faq_article WHERE id = ?", array($article_id));
+		$article = $this->getOldDb()->fetchAssoc("SELECT * FROM faq_articles WHERE id = ?", array($article_id));
 
 		#------------------------------
 		# Make sure we havent already done them
@@ -169,7 +169,7 @@ class KbStep extends AbstractDeskpro3Step
 		# Comments
 		#------------------------------
 
-		$comments = $this->getDb()->fetchAll("SELECT * FROM faq_comments WHERE articleid = ? AND published = 1");
+		$comments = $this->getOldDb()->fetchAll("SELECT * FROM faq_comments WHERE articleid = ? AND published = 1", array($article['id']));
 		foreach ($comments as $comment) {
 			$new_comment = new ArticleComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['timestamp_created']);
@@ -179,6 +179,7 @@ class KbStep extends AbstractDeskpro3Step
 			if ($comment['useremail']) {
 				$new_comment->email = $comment['useremail'];
 			}
+			$new_comment->content = $comment['comments'];
 
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();

@@ -19,6 +19,7 @@ $loader->registerNamespaces(array(
     'Doctrine\\Common'               => DP_ROOT.'/vendor/doctrine-common/lib',
     'Doctrine\\DBAL'                 => DP_ROOT.'/vendor/doctrine-dbal/lib',
     'Doctrine'                       => DP_ROOT.'/vendor/doctrine/lib',
+    'Monolog'                        => DP_ROOT.'/vendor/monolog/src',
 	'Zend'                           => DP_ROOT.'/vendor/zend/library',
 	'Elao'                           => DP_ROOT.'/vendor/profiler',
 	'Profiler'                       => DP_ROOT.'/vendor/profiler',

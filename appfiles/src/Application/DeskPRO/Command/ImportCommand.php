@@ -24,16 +24,23 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$this->addOption('run', null, InputOption::VALUE_NONE, 'Run the importer from start to finish');
 		$this->addOption('step', null, InputOption::VALUE_REQUIRED, 'Start from this step');
 		$this->addOption('exec-step', null, InputOption::VALUE_REQUIRED, 'Execute only this step');
+		$this->addOption('exec-step-page', null, InputOption::VALUE_REQUIRED, 'With exec-step, runs a page of the step. If not specified, page 1 is run.');
 		$this->setHelp("This imports data from another platform into the currently installed helpdesk. Please read http://support.deskpro.com/ for more information.");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$mode = null;
-		if ($input->getOption('info')) $mode = 'info';
-		if ($input->getOption('run')) $mode = 'run';
-		if ($input->getOption('step') !== null) $mode = 'step';
 		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
+		elseif ($input->getOption('step') !== null) $mode = 'step';
+		elseif ($input->getOption('info')) $mode = 'info';
+		elseif ($input->getOption('run')) $mode = 'run';
+
+		$page = 0;
+		if ($input->getOption('exec-step-page') !== null) $page = (int)$input->getOption('exec-step-page');
+		if (!$page) {
+			$page = 1;
+		}
 
 		if (!$mode) {
 			$output->writeln("<error>Choose one of the run modes: --info, --run, --step or --exec-step</error>");
@@ -59,6 +66,38 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if (!class_exists($importer_class)) {
 			$output->writeln("<error>The `import.importer` class of {$config['importer']} does not exist.</error>");
 			return 3;
+		}
+
+		#----------------------------------------
+		# Figure out PHP path
+		#----------------------------------------
+
+		$php_path = false;
+
+		if (isset($config['php_path'])) {
+			$php_path = $config['php_path'];
+			if (!is_executable($php_path)) {
+				$output->writeln("<error>`import.php_path` is invalid</error>");
+				return 1;
+			}
+		}
+
+		if (isset($_SERVER['_']) AND is_executable($_SERVER['_'])) {
+			$php_path = $_SERVER['_'];
+		}
+
+		if (!$php_path) {
+			foreach (array('/usr/bin/php', '/usr/bin/local/php', '/usr/bin/php5', '/usr/bin/local/php5', 'C:\\php\\bin\\php.exe', 'C:\\php5\\bin\\php.exe') as $p) {
+				if (is_executable($p)) {
+					$php_path = $p;
+					break;
+				}
+			}
+		}
+
+		if (!$php_path) {
+			$output->writeln("<error>Unknow path to PHP executable. Add `import.php_path` to config.</error>");
+			return 1;
 		}
 
 		#----------------------------------------
@@ -104,63 +143,89 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		#----------------------------------------
-		# Run importer
+		# Execute a single step and page
 		#----------------------------------------
 
-		$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
+		if ($mode == 'exec-step') {
+			$importer->validateOptions();
+			$importer->setupImport();
 
-		if ($errors = $importer->validateOptions()) {
-			$logger->log(sprintf("There were %i errors detected before importing could begin", count($errors)), 'INFO');
-			foreach ($errors as $e) {
-				$logger->log($e, 'ERROR');
+			$step_num = $input->getOption('exec-step');
+			$importer->preRunStep($step_num);
+			$step = $importer->getStep($step_num);
+			$step->run($page);
+			$importer->postRunStep($step_num);
+
+			$importer->cleanupImport();
+
+			return 0;
+		}
+
+		#----------------------------------------
+		# Run full importer
+		#----------------------------------------
+
+		if ($mode == 'run') {
+			$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
+
+			if ($errors = $importer->validateOptions()) {
+				$logger->log(sprintf("There were %i errors detected before importing could begin", count($errors)), 'INFO');
+				foreach ($errors as $e) {
+					$logger->log($e, 'ERROR');
+				}
+				return 4;
 			}
-			return 4;
-		}
 
-		$importer->setupImport();
-		$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
-		echo "\n";
-
-		$this->getContainer()->getDb()->beginTransaction();
-
-		$i = 1;
-		$num = $importer->countSteps();
-
-		if ($mode == 'step') {
-			$i = $input->getOption('step');
-		} else if ($mode == 'exec-step') {
-			$i = $input->getOption('exec-step');
-			$num = $input->getOption('exec-step');
-		}
-
-		if ($i < 1 || $i > $importer->countSteps()) {
-			$output->writeln("<error>`step` must be between 1 and {$importer->countSteps()}</error>");
-			return 1;
-		}
-
-		for (; $i <= $num; $i++) {
-
-			$start_step_time = microtime(true);
-			$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
-
-			$importer->preRunStep($i);
-			$step = $importer->getStep($i);
-			$step->run();
-			$importer->postRunStep($i);
-
-			$end_step_time = microtime(true);
-			$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
+			$importer->setupImport();
+			$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
 			echo "\n";
 
+			$i = 1;
+			$num = $importer->countSteps();
 
+			if ($mode == 'step') {
+				$i = $input->getOption('step');
+			}
+
+			if ($i < 1 || $i > $importer->countSteps()) {
+				$output->writeln("<error>`step` must be between 1 and {$importer->countSteps()}</error>");
+				return 1;
+			}
+
+			for (; $i <= $num; $i++) {
+
+				$start_step_time = microtime(true);
+
+				$step = $importer->getStep($i);
+				$logger->log(sprintf("### Step %d: %s ###", $i, $step::getTitle(), $start_step_time), 'INFO');
+
+				$num_pages = $step->countPages();
+				for ($p = 1; $p <= $num_pages; $p++) {
+					if ($num_pages > 1) {
+						$logger->log(sprintf("Part %d of %d", $p, $num_pages), 'INFO');
+					}
+
+					$cmd = $php_path . ' console.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
+					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin');
+					$proc->run();
+
+					if (!$proc->isSuccessful()) {
+						echo $proc->getErrorOutput();
+					}
+				}
+
+				$end_step_time = microtime(true);
+				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
+				echo "\n";
+			}
+
+			$importer->cleanupImport();
+
+			$end_time = microtime(true);
+			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
+			return 0;
 		}
 
-		$this->getContainer()->getDb()->rollback();
-
-		$importer->cleanupImport();
-
-		$end_time = microtime(true);
-		$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 		return 0;
 	}
 }

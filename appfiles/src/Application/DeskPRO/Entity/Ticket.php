@@ -253,7 +253,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="c",type="datetime",nullable=true)
+	 * @ORM_Mapping\Column(name="date_resolved",type="datetime",nullable=true)
 	 */
 	protected $date_resolved = null;
 

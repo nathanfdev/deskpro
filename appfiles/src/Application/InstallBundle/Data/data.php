@@ -705,6 +705,7 @@ $em->flush();
 $g = new \Application\DeskPRO\Entity\Usergroup();
 $g['title'] = 'Everyone';
 $g['note'] = '(system group)';
+$g['sys_name'] = 'everyone';
 $em->persist($g);
 $em->flush();
 
