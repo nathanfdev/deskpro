@@ -18,20 +18,25 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 	},
 
 	setValue: function(value) {
+		var agentInfo = null;
 		this.getFormEl().val(value);
 
-		if (value == "0") value = 0;
+		if (value == "0" || value === "") {
+			value = 0;
+		} else {
+			agentInfo = DeskPRO_Window.getAgentInfo(value);
+		}
+
 
 		var el = this.getInterfaceElement();
 
-		if (value == 0) {
+		if (!agentInfo) {
 
 			el.text(el.data('none-label'));
 			el.data('agent-id', 0);
 			el.attr('data-agent-id', 0);
 			el.css('background-image', '');
 		} else {
-			var agentInfo = DeskPRO_Window.getAgentInfo(value);
 			el.text(agentInfo.name);
 			el.data('agent-id', agentInfo.id);
 			el.attr('data-agent-id', agentInfo.id);
