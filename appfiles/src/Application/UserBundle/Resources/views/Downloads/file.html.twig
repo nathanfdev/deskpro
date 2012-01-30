@@ -6,6 +6,14 @@
 	{% endfor %}
 	<li><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
 {% endblock %}
+{% block page_title %}
+	{{ download.title }} - {{ download.filename }}
+	-
+	Downloads
+	{% for cat in category_path %}
+		/ {{cat.title}}
+	{% endfor %}
+{% endblock %}
 {% block content %}
 <div class="dp-download-page">
 	<div class="dp-content-block">

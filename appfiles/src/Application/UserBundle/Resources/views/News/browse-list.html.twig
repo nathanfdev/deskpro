@@ -5,6 +5,12 @@
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
 {% endblock %}
+{% block page_title %}
+	News
+	{% for cat in category_path %}
+		/ {{cat.title}}
+	{% endfor %}
+{% endblock %}
 {% block news_list %}
 <div class="with-handler"
 		data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"

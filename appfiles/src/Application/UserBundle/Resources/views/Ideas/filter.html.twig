@@ -34,6 +34,24 @@
 		<li><a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a></li>
 	{% endif %}
 {% endblock %}
+{% block page_title %}
+	Ideas
+	/ {{ phrase('user.ideas.status_' ~ parent_status) }}
+	{% if parent_status != status %}
+		/
+		{% if parent_status == 'active' %}
+			{{ active_status_cats[sub_status_id].title }}
+		{% else %}
+			{{ closed_status_cats[sub_status_id].title }}
+		{% endif %}
+	{% endif %}
+	{% if category %}
+		{% for cat in category.getTreeParents() %}
+			/ {{ cat.title }}
+		{% endfor %}
+		/ {{ category.title }}
+	{% endif %}
+{% endblock %}
 {% block content %}
 <div class="dp-content-block dp-ideas-page">
 	<div class="dp-box">

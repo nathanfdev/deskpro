@@ -6,6 +6,13 @@
 	{% endfor %}
 	<li><a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
 {% endblock %}
+{% block page_title %}
+	Knowledgebase /
+	{% for cat in category_path %}
+		{{cat.title}} /
+	{% endfor %}
+	{{category.title}}
+{% endblock %}
 {% block kb_browse %}
 
 {% if category_children|length or not articles|length %}

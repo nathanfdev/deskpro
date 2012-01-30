@@ -11,6 +11,14 @@
 	{% endfor %}
 	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}
+{% block page_title %}
+	{{ idea.title }}
+	-
+	Ideas
+	{% for cat in category_path %}
+		/ {{ cat.title }}
+	{% endfor %}
+{% endblock %}
 {% block content %}
 <div class="dp-idea-page">
 	<div class="dp-content-block">

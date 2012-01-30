@@ -117,11 +117,17 @@ class IdeasController extends AbstractController
 		$active_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats  = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
+		$category = $idea->category;
+		$category_path = $category->getTreeParents();
+
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
 			'idea'           => $idea,
 			'idea_comments'  => $idea_comments,
 			'idea_revisions' => $idea_revisions,
 			'state'          => $state,
+
+			'category' => $category,
+			'category_path' => $category_path,
 
 			'custom_fields'  => $custom_fields,
 

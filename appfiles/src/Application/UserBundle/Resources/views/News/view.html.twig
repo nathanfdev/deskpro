@@ -11,6 +11,14 @@
 	{% endfor %}
 	<li><a href="{{ path('user_news_view', {'slug': post.url_slug}) }}">{{ post.title }}</a></li>
 {% endblock %}
+{% block page_title %}
+	{{ post.title }}
+	-
+	News
+	{% for cat in category_path %}
+		/ {{cat.title}}
+	{% endfor %}
+{% endblock %}
 {% block content %}
 <div class="dp-news-page">
 	<div class="dp-content-block">
