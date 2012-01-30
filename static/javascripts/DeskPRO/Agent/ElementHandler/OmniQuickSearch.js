@@ -136,6 +136,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		}).done(function(results) {
 			self.setResults(results, true);
 		}).always(function() {
+			self.runningAjax = null;
 			self.el.removeClass('loading');
 		});
 	},
