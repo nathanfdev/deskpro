@@ -7,6 +7,7 @@ body {
 	overflow: visible !important;
 	border: none !important;
 }
+
 #dp_nav, #dp_header, #dp_source, #dp_list, #dp_devbar, #tabNavigationPane {
 	display: none !important;
 }
@@ -154,4 +155,82 @@ section.description-area .info-list dd {
 
 .deskpro-menu-outer {
 	display: none !important;
+}
+
+.tagit-new {
+	visibility: hidden !important;
+}
+
+.btn-small-add, .edit-gear {
+	visibility: hidden !important;
+}
+
+.page-ticket .people-box .user-link {
+	padding: 0;
+	border: none;
+	box-shadow: none;
+	background: #fff;
+}
+
+.profile-box-container {
+	> header {
+	    .rounded(0);
+		border: none !important;
+	}
+
+	> section {
+	    .rounded(0);
+		border: none;
+		border-bottom: 2px solid #B8BABD;
+		margin-bottom: 15px;
+		padding-bottom: 25px;
+	}
+}
+
+.profile-box-container.ticket-messages {
+	> section {
+		border-bottom: none;
+	}
+}
+
+.profile-box-container:last-of-type {
+	> section {
+		border-bottom: none;
+	}
+}
+
+body.print-overlay {
+	#dp_content { display: none !important; }
+
+	.dp-overlay-container, .dp-overlay-container > section.dp-overlay, .dp-overlay-container > section.dp-overlay > article {
+		position: relative;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		border: 0;
+		margin: 0;
+	}
+
+	.dp-overlay-container > section.dp-overlay > header { display: none; }
+	.dp-overlay-container > section.dp-overlay > footer { display: none; }
+
+	.dp-overlay-container th.check-all, .dp-overlay-container td.check-all { width: 1px; overflow: hidden; padding: 0; }
+	.dp-overlay-container th.check-all input, .dp-overlay-container td.check-all input { visibility: hidden; padding: 0; margin: 0; }
+
+	.dp-overlay-container table {
+		.rounded(0);
+		border: none;
+	}
+	.dp-overlay-container th { background-color: #C2C5CA; text-shadow: none; font-size: 13px; .rounded(0); color: #000; padding: 8px; }
+	.dp-overlay-container td { background-color: #fff; color: #000 !important; }
+
+	.dp-overlay-backdrop {
+		display: none !important;
+		background-color: #fff !important;
+		top: 0; left: 0; width: 1px; height: 1px;
+	}
 }

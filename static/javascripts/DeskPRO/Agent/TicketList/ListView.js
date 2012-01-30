@@ -94,6 +94,7 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 		this.wrapper.addClass('open');
 		this.backdropEl.show();
 
+		$('body').addClass('print-overlay');
 		this.fireEvent('opened', [this]);
 	},
 
@@ -107,6 +108,7 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 
 	close: function() {
 		if (!this._hasInit || !this.isOpen()) return;
+		$('body').removeClass('print-overlay');
 		this.destroy();
 	},
 
