@@ -142,29 +142,39 @@ class AgentChatController extends AbstractController
 	public function getSectionDataAction()
 	{
 		$agent_chatted = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentList($this->person);
+		$agent_team_chatted = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentTeamList($this->person);
+
+		$agent_chatted_counts = App::getEntityRepository('DeskPRO:ChatConversation')->getConvoCountsBetween($this->person, array_keys($agent_chatted));
+		$agent_chatted_counts[0] = array_sum($agent_chatted_counts);
+
+		$agent_team_chatted_counts = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamConvoCounts($this->person);
+		$agent_team_chatted_counts[0] = array_sum($agent_team_chatted_counts);
 
 		$html = $this->renderView('AgentBundle:AgentChat:window-section.html.twig', array(
 			'agent_chatted' => $agent_chatted,
+			'chatted_counts' => $agent_chatted_counts,
+			'agent_team_chatted' => $agent_team_chatted,
+			'chatted_team_counts' => $agent_team_chatted_counts,
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
 	}
 
-	/**
-	 * List the articles
-	 */
 	public function agentHistoryAction($agent_id)
 	{
-		$agent = App::findEntity('DeskPRO:Person', $agent_id);
-		$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
-			$this->person['id'],
-			$agent['id']
-		));
+		if ($agent_id) {
+			$agent = App::findEntity('DeskPRO:Person', $agent_id);
+			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
+				$this->person['id'],
+				$agent['id']
+			));
+		} else {
+			$agent = null;
+			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentChatsForPerson($this->person);
+		}
 
-		$is_partial = false;
 		$tpl = 'AgentBundle:AgentChat:list.html.twig';
 		if ($this->in->getBool('partial')) {
-			$is_partial = true;
 			$tpl = 'AgentBundle:AgentChat:list-part.html.twig';
 		}
 
@@ -174,6 +184,26 @@ class AgentChatController extends AbstractController
 		));
 	}
 
+	public function agentTeamHistoryAction($agent_team_id)
+	{
+		if ($agent_team_id) {
+			$agent_team = App::findEntity('DeskPRO:AgentTeam', $agent_team_id);
+			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, $agent_team);
+		} else {
+			$agent_team = null;
+			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, null);
+		}
+
+		$tpl = 'AgentBundle:AgentChat:list-team.html.twig';
+		if ($this->in->getBool('partial')) {
+			$tpl = 'AgentBundle:AgentChat:list-team-part.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'agent_team' => $agent_team,
+			'conversations' => $conversations,
+		));
+	}
 
 	public function agentChatTranscriptAction($conversation_id)
 	{

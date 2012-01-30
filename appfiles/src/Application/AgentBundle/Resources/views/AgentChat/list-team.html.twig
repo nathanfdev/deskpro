@@ -1,11 +1,11 @@
 {% extends 'AgentBundle:Common:common-listing.html.twig' %}
 {% block pagemeta %}
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory';
-pageMeta.agentId = {{ agent.id|default(0) }};
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentTeamChatHistory';
+pageMeta.agentTeamId = {{ agent_team.id|default(0) }};
 {% endblock pagemeta %}
 
 {% block listing %}
-	{% include 'AgentBundle:AgentChat:list-part.html.twig' %}
+	{% include 'AgentBundle:AgentChat:list-team-part.html.twig' %}
 {% endblock listing %}
 {% block result_nav %}
 	<div class="cursor">Showing results 1-{{ conversations|length }} of {{ conversations|length }}</div>

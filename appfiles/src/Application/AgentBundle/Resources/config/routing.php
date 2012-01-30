@@ -2073,6 +2073,13 @@ $collection->add('agent_agentchat_history', new Route(
 	array()
 ));
 
+$collection->add('agent_agentchat_history_team', new Route(
+	'/agent-chat/agent-history/team/{agent_team_id}',
+	array('_controller' => 'AgentBundle:AgentChat:agentTeamHistory'),
+	array(),
+	array()
+));
+
 $collection->add('agent_agentchat_view', new Route(
 	'/agent-chat/agent-transcript/{conversation_id}',
 	array('_controller' => 'AgentBundle:AgentChat:agentChatTranscript'),

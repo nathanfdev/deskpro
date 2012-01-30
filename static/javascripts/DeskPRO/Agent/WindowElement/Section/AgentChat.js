@@ -19,16 +19,26 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this._initInterface();
 
 		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
-					this.setHasInitialLoaded();
-					this.contentEl.html(data.section_html);
-				}).bind(this));
+			this.setHasInitialLoaded();
+			this.contentEl.html(data.section_html);
+			this.initSection();
+		}).bind(this));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agentchat-section.list-activated', function (info) {
+			this.highlightNavItem($('.agent-' + info.id, this.getSectionElement()));
+		}, this);
 	},
 
 	onShow: function() {
 		DeskPRO_Window.getSectionData('agent_chat_section', (function(data) {
 			this.setHasInitialLoaded();
 			this.contentEl.html(data.section_html);
+			this.initSection();
 		}).bind(this));
+	},
+
+	initSection: function() {
+
 	},
 
 	_initMessageHandlers: function() {

@@ -154,6 +154,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentTeamChatHistory.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',

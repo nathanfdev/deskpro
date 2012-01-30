@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.AgentTeamChatHistory = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initializeProperties: function() {
@@ -11,7 +11,7 @@ DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory = new Orb.Class({
 
 	initPage: function(el) {
 
-		DeskPRO_Window.getMessageBroker().sendMessage('agentchat-section.list-activated', { id: this.meta.agentId });
+		DeskPRO_Window.getMessageBroker().sendMessage('agentchat-section.team-list-activated', { id: this.meta.agentTeamId });
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);

@@ -67,11 +67,20 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $agent = null;
 
 	/**
+	 * If this is a team chat, the team it is
+	 *
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $agent_team = null;
+
+	/**
 	 * If this is a user conversation, this is the user who started the chat
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\JoinColumn(name="chat_conversation_to_person", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 

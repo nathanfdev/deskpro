@@ -19,21 +19,64 @@ pageMeta.conversation_id = {{convo.id}};
 			<h4>{{ phrase('agent.chat.chat_transcript') }}</h4>
 		</header>
 		<section class="chat-transcript">
-			{% for message in convo_messages %}
-				<div class="row">
-					<time>{{ convo.date_created|date('h:ia') }}</time>
-					<div class="name">
+			<div class="messages chat-transcript {% if convo.status == 'ended' %}chat-ended{% endif %}" id="{{baseId}}_messages_box">
+				{% for message in convo_messages|reverse %}
+					<div class="row {% if message.metadata.new_user_track %}user-track{% endif %} {% if message.is_sys %}sys{% elseif message.author.is_agent and message.author.id != convo.person.id %}agent{% else %}user{% endif%} message-{{ message.id }}">
 						{% if message.is_sys %}
-							&nbsp;
+							<div class="message-content">
+								<div class="message">
+									{% if message.is_html %}
+										{{message.content|raw}}
+									{% else %}
+										{{message.content}}
+									{% endif %}
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
+						{% elseif message.author.is_agent and message.author.id != convo.person.id %}
+							<div class="message-content">
+								<div class="chatSend">
+									<div class="chatMsgSend">
+										{% if message.is_html %}
+											{{message.content|raw}}
+										{% else %}
+											{{message.content}}
+										{% endif %}
+										<span class="bubbleLeft"></span>
+									</div>
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
 						{% else %}
-							{{ message.author.display_name }}
+							<div class="message-content">
+								<div class="chatRecieve">
+									<div class="chatMsgRecieve">
+										{% if message.is_html %}
+											{{message.content|raw}}
+										{% else %}
+											{{message.content|safe_link_urls}}
+										{% endif %}
+										<span class="bubbleRight"></span>
+									</div>
+								</div>
+								<time>{{ message.date_created|date('g:ia') }}</time>
+							</div>
 						{% endif %}
 					</div>
-					<div class="message">
-						{{ message.content }}
+				{% endfor %}
+				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
+					<div class="message-content">
+						<div class="chatRecieve">
+							<div class="chatMsgRecieve">
+								<label>{{ phrase('agent.chat.user_typing') }}: </label>
+								<div class="prop-msg"></div>
+								<span class="bubbleRight"></span>
+							</div>
+						</div>
 					</div>
 				</div>
-			{% endfor %}
+			</div>
+			<br class="clear" />
 		</section>
 	</div>
 {{ agentui.scroll_containers_end() }}

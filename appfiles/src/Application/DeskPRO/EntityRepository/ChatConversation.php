@@ -17,9 +17,8 @@ use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 
 use Orb\Util\Arrays;
-use Doctrine\ORM\EntityRepository;
 
-class ChatConversation extends EntityRepository
+class ChatConversation extends AbstractEntityRepository
 {
 	public function getOpenChatsForAgent(PersonEntity $person)
 	{
@@ -107,10 +106,39 @@ class ChatConversation extends EntityRepository
 		return App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
 	}
 
+	public function getAgentTeamList($agent)
+	{
+		$agent_team_ids = App::getDb()->fetchAllCol("
+			SELECT c.agent_team_id
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
+			WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
+		");
+
+		return App::getEntityRepository('DeskPRO:AgentTeam')->getByIds($agent_team_ids);
+	}
+
+	public function getAgentChatsForPerson($agent)
+	{
+		$convo_ids = App::getDb()->fetchAllCol("
+			SELECT convo.conversation_id
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			LEFT JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
+			ORDER BY convo.conversation_id DESC
+		");
+
+		if (!$convo_ids) {
+			return array();
+		}
+
+		return $this->getByIds($convo_ids, true);
+	}
+
 	public function getChatsForPeople(array $participant_ids)
 	{
 		$participant_ids = Arrays::removeFalsey($participant_ids);
-		$count = count($participant_ids);
 
 		$person1 = $participant_ids[0];
 		$person2 = $participant_ids[1];
@@ -137,6 +165,71 @@ class ChatConversation extends EntityRepository
 		")->execute();
 
 		return $conversations;
+	}
+
+	public function getTeamChatsForPerson($agent, $agent_team = null)
+	{
+		if ($agent_team === null) {
+			$convo_ids = App::getDb()->fetchAllCol("
+				SELECT convo.conversation_id
+				FROM chat_conversation_to_person convo
+				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
+				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
+				ORDER BY convo.conversation_id
+			");
+		} else {
+			$convo_ids = App::getDb()->fetchAllCol("
+				SELECT convo.conversation_id
+				FROM chat_conversation_to_person convo
+				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
+				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id = {$agent_team['id']}
+				ORDER BY convo.conversation_id
+			");
+		}
+
+		return $this->getByIds($convo_ids, true);
+	}
+
+
+	/**
+	 * Count how many chats there have been between a person, and someone else
+	 *
+	 * @param $person
+	 * @param $person_ids
+	 */
+	public function getConvoCountsBetween($person, $person_ids)
+	{
+		$is_array = true;
+		if (!is_array($person_ids)) {
+			$is_array = false;
+			$person_ids = array($person_ids);
+		}
+
+		$person_ids = Arrays::removeFalsey($person_ids);
+		if (!$person_ids) {
+			return $is_array ? array() : 0;
+		}
+
+		$sql = "
+			SELECT convo2.person_id, COUNT(*)
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			WHERE convo.person_id = {$person->id} AND convo2.person_id IN (" . implode(',', $person_ids) . ")
+			GROUP BY convo2.person_id
+		";
+
+		return App::getDb()->fetchAllKeyValue($sql);
+	}
+
+	public function getTeamConvoCounts($agent)
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT c.agent_team_id, COUNT(*)
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
+			WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
+			GROUP BY c.agent_team_id
+		");
 	}
 
 

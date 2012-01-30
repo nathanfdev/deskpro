@@ -14,9 +14,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
-use \Doctrine\ORM\EntityRepository;
-
-class AgentTeam extends EntityRepository
+class AgentTeam extends AbstractEntityRepository
 {
 	protected $_team_names = null;
 
