@@ -17,7 +17,7 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended '%}true{% endif %}false;
 
-pageMeta.session_id = {{ convo.session.id }};
+pageMeta.session_id = {{ convo.session.id|default('null') }};
 {% if convo.person.id %}
 pageMeta.viewPersonUrl = '{{ path('agent_people_view', {'person_id': convo.person.id}) }}';
 pageMeta.person_id = {{ convo.person.id }};
