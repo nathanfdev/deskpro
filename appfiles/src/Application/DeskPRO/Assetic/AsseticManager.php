@@ -421,14 +421,14 @@ class AsseticManager
 				);
 				$filter->setDisableOptimizations(true);
 				$filter->setNomunge(true);
-				$filter->setLineBreak(1000);
+				$filter->setLineBreak(500);
 				break;
 			case 'yui':
 				$filter = new \Assetic\Filter\Yui\JsCompressorFilter(
 					$this->options->get('yui_compressor'),
 					$this->options->get('java_path')
 				);
-				$filter->setLineBreak(1000);
+				$filter->setLineBreak(500);
 				break;
 			case 'css':
 				$filter = new \Assetic\Filter\CssMinFilter();
