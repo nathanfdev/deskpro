@@ -60,9 +60,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		this.ownObject(this.relatedContent);
 
-		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
-		this.ownObject(this.miscContent);
-
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
@@ -71,6 +68,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
+
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
+		this.ownObject(this.miscContent);
 
 		var fieldsRendered = this.getEl('custom_fields_rendered');
 		var fieldsForm = this.getEl('custom_fields_editable');
@@ -166,7 +166,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 						context: this,
 						success: function(html) {
 							this.getEl('revs').html(html);
-							this.miscCont();
+
+							if (this.miscContent) {
+								this.miscContent.destroy();
+								this.miscContent = null;
+							}
+
+							this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
+							this.ownObject(this.miscContent);
 						}
 					});
 				}

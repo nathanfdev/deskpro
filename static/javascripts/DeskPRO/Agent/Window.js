@@ -1758,36 +1758,49 @@ DeskPRO.Agent.Window = new Orb.Class({
 			menuElement: '#create_content_menu'
 		});
 
+		var autostart = true;
+		if (DeskPRO_Window.DEBUG.disableSectionHandlers) {
+			autostart = false;
+		}
+
 		this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tickets/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
+			autostart: autostart
 		});
 		this.newPersonLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/people/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/people/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/people/new',
+			autostart: autostart
 		});
 		this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/organizations/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/organizations/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
+			autostart: autostart
 		});
 		this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/kb/article/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
+			autostart: autostart
 		});
 		this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/news/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/news/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+			autostart: autostart
 		});
 		this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/downloads/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/news/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+			autostart: autostart
 		});
 		this.newIdeaLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/ideas/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new'
+			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new',
+			autostart: autostart
 		});
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/tasks/new'
+			loadUrl: BASE_URL + 'agent/tasks/new',
+			autostart: autostart
 		});
 
 		/*
