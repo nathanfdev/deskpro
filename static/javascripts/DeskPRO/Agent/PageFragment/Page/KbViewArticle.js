@@ -202,12 +202,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		// Attachments
 		var list = $('.file-list', this.getEl('attachtab'));
 
-		this.wrapper.fileupload({
+		DeskPRO_Window.util.fileupload(this.wrapper, {
 			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
-			dropZone: this.wrapper,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', self.getEl('attachtab')),
-			downloadTemplate: $('.template-download', self.getEl('attachtab'))
+			page: this
 		});
 
 		list.on('click', '.delete', function() {

@@ -2266,3 +2266,33 @@ ul.search-summary {
 		margin-right: 4px;
 	}
 }
+
+
+
+#dp_window_filedrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+
+	background-color: rgba(255, 241, 228, 0.5);
+	z-index: 1000000;
+	display: none;
+
+	h1 {
+		margin: 100px auto 0 auto;
+		width: 300px;
+		text-align: center;
+		padding: 25px;
+		background-color: #D7CCC2;
+		font-size: 18px;
+		border: 1px solid #C2B8B0;
+		.rounded(6px);
+	}
+}
+
+body.file-drag-over #dp_window_filedrop {
+	display: block;
+}

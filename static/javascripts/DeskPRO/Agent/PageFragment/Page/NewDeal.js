@@ -286,12 +286,8 @@ Extends: DeskPRO.Agent.PageFragment.Basic,
 			}
 		});
 
-		this.wrapper.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: this.wrapper,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', this.wrapper),
-			downloadTemplate: $('.template-download', this.wrapper)
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			page: this
 		});
 	}
 

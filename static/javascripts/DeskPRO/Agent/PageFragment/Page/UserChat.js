@@ -543,10 +543,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		var drops = $([overlayWrapper.get(0), this.getEl('replybox').get(0)]);
 
-		overlayWrapper.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: drops,
-			autoUpload: true,
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			page: this,
 			uploadTemplate: $('.template-upload', overlayWrapper),
 			downloadTemplate: $('.template-download', overlayWrapper)
 		});

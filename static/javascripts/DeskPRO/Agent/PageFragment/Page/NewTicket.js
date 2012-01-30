@@ -28,6 +28,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initOtherSection();
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
+
+		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
 	},
 
 	closeSelf: function() {
@@ -457,14 +459,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			} else {
 				li.addClass('unchecked');
 			}
-		});
-
-		this.wrapper.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: this.wrapper,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', this.wrapper),
-			downloadTemplate: $('.template-download', this.wrapper)
 		});
 	}
 });

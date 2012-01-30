@@ -56,10 +56,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 	_initControls: function() {
 		var wrapper = this.overlay.getWrapper();
 
-		wrapper.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: wrapper,
-			autoUpload: true,
+		DeskPRO_Window.util.fileupload(wrapper, {
+			page: this.page,
 			uploadTemplate: $('.template-upload', wrapper),
 			downloadTemplate: $('.template-download', wrapper)
 		}).bind('fileuploadstart', function() {

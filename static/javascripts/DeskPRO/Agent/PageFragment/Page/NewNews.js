@@ -190,12 +190,8 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 			}
 		});
 
-		this.wrapper.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: this.wrapper,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', this.wrapper),
-			downloadTemplate: $('.template-download', this.wrapper)
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			page: this
 		});
 	}
 });

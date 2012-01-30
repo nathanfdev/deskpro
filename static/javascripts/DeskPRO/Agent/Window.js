@@ -208,6 +208,56 @@ DeskPRO.Agent.Window = new Orb.Class({
 						$(this).removeClass('checked');
 					}
 				});
+			},
+
+			fileupload: function(el, options) {
+
+				if (!options) options = {};
+
+				if (options.page) {
+					options.namespace = options.page.OBJ_ID + '_fileupload';
+				}
+
+				if (!options.namespace) {
+					options.namespace = Orb.uuid();
+				}
+
+				if (!options.dropZone) {
+					options.dropZone = $(document);
+				}
+
+				if (typeof options.autoUpload == 'undefined') {
+					options.autoUpload = true;
+				}
+
+				if (!options.url) {
+					options.url = BASE_URL + 'agent/misc/accept-upload';
+				}
+
+				if (!options.uploadTemplate) {
+					options.uploadTemplate = $('.template-upload', el);
+				}
+
+				if (!options.downloadTemplate) {
+					options.downloadTemplate = $('.template-download', el);
+				}
+
+				if (options.page) {
+					options.page.addEvent('activate', function() {
+						DeskPRO_Window.util.fileupload(el, options);
+					});
+					options.page.addEvent('deactivate', function() {
+						console.log('deactivate');
+						$(options.dropZone).unbind('.' + options.namespace);
+						$(el).unbind('.' + options.namespace);
+						$(el).fileupload('disable');
+						$(el).fileupload('destroy');
+					});
+				}
+
+				return $(el).fileupload(options).bind('fileuploaddragover.' + options.namespace, function(e) {
+					$('body').addClass('file-drag-over');
+				});
 			}
 		};
 	},
@@ -215,6 +265,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 	initPage: function() {
 
 		$('#dp_loading').remove();
+
+		// Prevents default browser action of navigating to a dropped file
+		// if a drop target isnt configured yet (ie no tab open to accept a file)
+		$(document).bind('drop dragover', function (e) {
+			e.preventDefault();
+		});
+
+		$('#dp_window_filedrop').bind('dragleave dragend drop', function (ev) {
+			$('body').removeClass('file-drag-over');
+		});
 
 		this._initBasic();
 		this._initSections();

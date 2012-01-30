@@ -280,13 +280,13 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		// Upload handling
 		//------------------------------
 
-		this.wrapper.fileupload({
+		DeskPRO_Window.util.fileupload(this.wrapper, {
+			page: this.page,
 			url: this.wrapper.data('upload-url'),
-			dropZone: this.wrapper,
-			autoUpload: true,
 			uploadTemplate: $('.template-upload', this.replyBox),
 			downloadTemplate: $('.template-download', this.replyBox)
 		});
+
 		this.wrapper.bind('fileuploaddone', function() {
 			self.getElById('attach_row').slideDown();
 		});

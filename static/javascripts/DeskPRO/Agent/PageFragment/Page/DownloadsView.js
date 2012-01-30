@@ -394,14 +394,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				this.wrapper.fileupload('destroy');
 			}
 
-			this.wrapper.fileupload({
-				url: BASE_URL + 'agent/misc/accept-upload',
-				dropZone: this.wrapper,
-				autoUpload: true,
-				uploadTemplate: $('.template-upload', self.getEl('content_ed')),
-				downloadTemplate: $('.template-download', self.getEl('content_ed'))
-			});
-
+			DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
 			this.wrapper.bind('fileuploadadd', function() {
 				$('ul.file-list', self.getEl('content_ed')).empty();
 			});

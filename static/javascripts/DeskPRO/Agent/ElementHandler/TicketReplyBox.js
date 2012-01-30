@@ -51,10 +51,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Upload handling
 		//------------------------------
 
-		this.el.fileupload({
-			url: this.el.data('upload-url'),
-			dropZone: this.el,
-			autoUpload: true,
+		DeskPRO_Window.util.fileupload(this.el, {
 			uploadTemplate: $('.template-upload', this.replyBox),
 			downloadTemplate: $('.template-download', this.replyBox)
 		});
