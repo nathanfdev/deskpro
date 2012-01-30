@@ -866,9 +866,11 @@ class TicketSearchController extends AbstractController
 		$actions_builder = RuleBuilder::newTermsBuilder();
 		$actions_set = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'string'));
 
-		$this->em->beginTransaction();
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids);
 
-		if ($actions && $ticket_ids) {
+		if ($actions && $tickets) {
+			$this->em->beginTransaction();
+
 			$factory = new ActionsFactory();
 			$collection = new ActionsCollection();
 
@@ -882,15 +884,14 @@ class TicketSearchController extends AbstractController
 				$collection->add($action);
 			}
 
-			foreach ($ticket_ids as $ticket_id) {
-				$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+			foreach ($tickets as $ticket) {
 				$collection->apply($ticket, $this->person);
 				$this->em->persist($ticket);
 				$this->em->flush();
 			}
-		}
 
-		$this->em->commit();
+			$this->em->commit();
+		}
 
 		return $this->createJsonResponse(array('success' => true));
 	}
