@@ -70,7 +70,7 @@ class KernelBooter
 
 		// Always force index.php
 		if (strpos($request->getRequestUri(), '/index.php') === false) {
-			header('Location: ' . $request->getBasePath() . '/index.php' . $path);
+			header('Location: ' . rtrim($request->getBasePath(), '/') . '/index.php' . $path);
 			exit;
 		}
 
