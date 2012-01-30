@@ -14,6 +14,8 @@ namespace Application\InstallBundle\Install;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Log\Logger;
 
+use Application\DeskPRO\App;
+
 class ServerChecks
 {
 	/**
@@ -395,6 +397,21 @@ class ServerChecks
 			return false;
 		}
 
+		$this->getLogger()->log("[CHECK] checking for innodb engine", Logger::DEBUG);
+		$engines = App::getDb()->fetchAllKeyed("SHOW ENGINES", array(), 'Engine');
+		if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] != 'YES') {
+			$msg = "MySQL does not have the InnoDB engine enabled";
+			$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
+			$this->server_errors['db_no_innodb'] = array(
+				'message' => $msg,
+				'level' => 'fatal'
+			);
+
+			return false;
+		} else {
+			$this->getLogger()->log("[OK] innodb engine enabled", Logger::DEBUG);
+		}
+
 		$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.1", Logger::DEBUG);
 		$ver = $db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
 		if (version_compare($ver, '5.1', '>=')) {
@@ -409,21 +426,6 @@ class ServerChecks
 
 			return false;
 		}
-
-		$this->getLogger()->log("[CHECK] checking for pre-existing tables", Logger::DEBUG);
-			$ver = $db->fetchColumn("SHOW TABLES");
-			if (!$ver) {
-				$this->getLogger()->log("[OK] no existing tables", Logger::DEBUG);
-			} else {
-				$msg = "There appear to be tables in this database already";
-				$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
-				$this->server_errors['db_not_empty'] = array(
-					'message' => $msg,
-					'level' => 'fatal'
-				);
-
-				return false;
-			}
 
 		return true;
 	}

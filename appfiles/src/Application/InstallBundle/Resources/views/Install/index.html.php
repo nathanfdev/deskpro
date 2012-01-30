@@ -222,6 +222,23 @@
 					<tr>
 						<td>
 							<?php $failed = false ?>
+							<?php if (!isset($errors['db_no_innodb'])): ?>
+								<span class="label success" style="float:right">OK</span>
+							<?php else: $failed = true; ?>
+								<span class="label important" style="float:right">FAIL</span>
+							<?php endif ?>
+							Checking for InnoDB Engine
+							<?php if ($failed): ?>
+								<div class="alert-message block-message error">
+									Your MySQL server does not support the InnoDB engine.
+								</div>
+							<?php endif ?>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<?php $failed = false ?>
 							<?php if (!isset($errors['db_not_empty'])): ?>
 								<span class="label success" style="float:right">OK</span>
 							<?php else: $failed = true; ?>
