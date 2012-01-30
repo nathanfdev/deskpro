@@ -20,7 +20,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			 * The initial timeout before we load the newticket tpl
 			 * in the background
 			 */
-			initialTimeout: 12000, // 15 seconds
+			initialTimeout: 12000, // 12 seconds
 
 			/**
 			 * Periodically update the template to account for changes
@@ -56,7 +56,12 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		 */
 		this.pop = null;
 
-		if (this.autostart) {
+		/**
+		 * True when the template has been reset
+		 */
+		this.doReset = false;
+
+		if (this.options.autostart) {
 			this.startTimeout();
 		}
 	},
@@ -76,7 +81,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			t = this.options.initialTimeout;
 		}
 
-		this.timeout = window.setTimeout(this.loadTemplate.bind(this), t);
+		this.timeout = window.setTimeout(this.loadTemplate.bind(this, null), t);
 	},
 
 
@@ -85,13 +90,14 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	 */
 	loadTemplate: function(callback) {
 
+		DP.console.debug('[BackgroundPopout] Loading: %s', this.options.loadUrl);
+		if (this.xhr) {
+			return;
+		}
+
 		if (this.timeout) {
 			window.clearTimeout(this.timeout);
 			this.timeout = null;
-		}
-
-		if (this.xhr) {
-			return;
 		}
 
 		this.xhr = $.ajax({
@@ -103,11 +109,11 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.template = html;
 
 				if (callback) {
-					if (!callback.call) {
-						console.error("Not a valid callback: %o", callback);
+					if (typeof callback != 'function') {
+						DP.console.error("Not a valid callback: %o", callback);
 						return;
 					}
-					callback.call(this, html);
+					callback(html);
 				}
 			},
 			complete: function() {
@@ -142,12 +148,18 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	open: function(callback) {
 
 		if (this.pop) {
+			if (this.doReset) {
+				this.pop.setHtml(this.getTemplate());
+				this.doReset = false;
+			}
 			this.pop.open();
 			if (callback) {
 				callback(this.pop.page);
 			}
 			return;
 		}
+
+		this.doReset = false;
 
 		var self = this;
 		var pop = new DeskPRO.Agent.PageHelper.Popover({
