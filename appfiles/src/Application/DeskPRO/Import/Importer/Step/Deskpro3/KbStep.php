@@ -155,6 +155,11 @@ class KbStep extends AbstractDeskpro3Step
 
 		$new_article = new Article();
 		$new_article->addToCategory($new_category);
+		if ($article['published']) {
+			$new_article->setStatusCode(Article::STATUS_PUBLISHED);
+		} else {
+			$new_article->setStatusCode(Article::STATUS_ARCHIVED);
+		}
 		$new_article->person = $new_person;
 		$new_article->title = $article['title'];
 		$new_article->content = $article['question'] . "<br /><br />" . $article['answer'];

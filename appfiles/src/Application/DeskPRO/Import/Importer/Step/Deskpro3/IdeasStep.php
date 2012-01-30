@@ -151,7 +151,16 @@ class IdeasStep extends AbstractDeskpro3Step
 
 		$new_idea = new Idea();
 		$new_idea->addToCategory($new_category);
+		if ($idea['status'] == 'new') {
+			$new_idea->setStatusCode(Idea::STATUS_NEW);
+		} elseif ($idea['status'] == 'accepted') {
+			$new_idea->setStatusCode(Idea::STATUS_ACTIVE . '.1');
+		} else {
+			$new_idea->setStatusCode(Idea::STATUS_CLOSED . '.3');
+		}
+
 		$new_idea->person = $new_person;
+		$new_idea->title = $idea['title'];
 		$new_idea->title = $idea['title'];
 		$new_idea->content = $idea['question'] . "<br /><br />" . $idea['answer'];
 		$new_idea->date_created = new \DateTime('@' . $idea['timestamp_made']);

@@ -79,6 +79,11 @@ class UserNewsStep extends AbstractDeskpro3Step
 
 		$new_news = new News();
 		$new_news->category = $this->category;
+		if ($news['logged_out']) {
+			$new_news->setStatusCode(News::STATUS_PUBLISHED);
+		} else {
+			$new_news->setStatusCode(News::STATUS_ARCHIVED);
+		}
 		$new_news->date_created = new \DateTime('@' . $news['timestamp']);
 		$new_news->person = $new_person;
 		$new_news->title = $news['title'];

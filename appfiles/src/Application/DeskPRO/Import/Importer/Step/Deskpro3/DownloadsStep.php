@@ -145,6 +145,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 		}
 
 		$new_download = new Download();
+		$new_download->setStatusCode(Download::STATUS_PUBLISHED);
 		$new_download->blob = $new_blob;
 		$new_download->category = $new_category;
 		$new_download->person = $new_person;
