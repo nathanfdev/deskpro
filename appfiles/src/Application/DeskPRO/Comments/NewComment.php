@@ -129,7 +129,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 					}
 
 					$vars = array(
-						'comment' => $comment,
+						'comment' => $obj,
 
 						'person' => $person,
 						'email_validating' => $email_validating,
