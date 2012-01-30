@@ -38,10 +38,8 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The users name (best guess from other sources etc)
 	 *
-	 * @!TODO This needs to be a binary type
-	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="blob")
 	 */
 	protected $data;
 }

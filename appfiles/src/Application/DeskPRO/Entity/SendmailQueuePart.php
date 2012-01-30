@@ -35,10 +35,8 @@ class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 	protected $queue = null;
 
 	/**
-	 * @!TODO This needs to be a binary type
-	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="blob")
 	 */
 	protected $data;
 }

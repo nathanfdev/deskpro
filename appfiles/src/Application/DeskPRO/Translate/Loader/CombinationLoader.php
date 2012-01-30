@@ -15,7 +15,6 @@ use Orb\Util\Arrays;
 
 /**
  * Combines multiple loaders, and also adds a cache layer.
- * TODO may want to abstract caching out into a decorator
  */
 class CombinationLoader implements LoaderInterface
 {

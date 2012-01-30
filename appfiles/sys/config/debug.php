@@ -53,7 +53,6 @@ $DP_CONFIG['debug']['mail'] = array();
  * Useful for debugging since you dont need to re-compile the files each time.
  * Possible values are in config.assets.php
  */
-// TODO remove in distribution. Enabled just for devs
 $DP_CONFIG['debug']['raw_assets'] = array();
 //$DP_CONFIG['debug']['raw_assets'][] = 'all -vendors';
 //$DP_CONFIG['debug']['raw_assets'][] = 'all';

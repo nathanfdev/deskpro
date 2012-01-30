@@ -24,7 +24,7 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -36,10 +36,8 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 	protected $source = null;
 
 	/**
-	 * @!TODO This needs to be a binary type
-	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="blob")
 	 */
 	protected $data;
 }

@@ -136,9 +136,8 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Any data pertaining to the job
-	 * !TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="blob", nullable=true)
 	 */
 	protected $data = array();
 

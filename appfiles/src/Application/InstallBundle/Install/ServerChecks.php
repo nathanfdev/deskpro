@@ -291,11 +291,6 @@ class ServerChecks
 		# mbstring_ext
 		#------------------------------
 
-		// TODO
-		// This is really a 'recommended' thing, but bug in Doctrine has mbstring used in Composite.php
-		// Until that is fixed or we patch it in-house, we'll make it required
-		// [Doctrine bug DDC-1589]
-
 		if ($type == 'mbstring_ext' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking mbstring is installed", Logger::DEBUG);
 			if (is_writable(DP_ROOT.'/sys/cache')) {
@@ -305,7 +300,7 @@ class ServerChecks
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['mbstring_ext'] = array(
 					'message' => $msg,
-					'level' => 'fatal'
+					'level' => 'recommended'
 				);
 			}
 		}

@@ -72,21 +72,6 @@ class CoreExtension extends Extension
 		$this->loadDoctrineCaches($container);
     }
 
-
-	protected function loadSession(ContainerBuilder $container)
-	{
-		// TODO: Change this to proper Entity storage when its finished
-		$definition = new Definition('Symfony\\Component\\HttpFoundation\\SessionStorage\\NativeSessionStorage', array());
-		$container->setDefinition('session.storage', $definition);
-
-		$definition = new Definition('Application\\DeskPRO\\HttpFoundation\\Session', array(
-			new Reference('doctrine.orm.entity_manager'),
-			new Reference('session.storage'),
-		));
-		$container->setDefinition('session', $definition);
-	}
-
-
 	/**
 	 * Sets up the translater
 	 */

@@ -61,7 +61,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	protected $email_domain;
 
 	/**
-	 * TODO depciated use PersonEmailValidating
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_validated", type="boolean")
 	 */
