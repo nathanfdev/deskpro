@@ -201,7 +201,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'downloads',
 			fieldName: 'newdownload[labels]',
-			textarea: $(".tags-wrap textarea", this.wrapper),
+			textarea: $(".tags-wrap input", this.wrapper),
 			onChange: function() {
 				self.stateSaver.triggerChange();
 			}

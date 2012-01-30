@@ -167,7 +167,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'news',
 			fieldName: 'newnews[labels]',
-			textarea: $(".tags-wrap textarea", this.wrapper),
+			textarea: $(".tags-wrap input", this.wrapper),
 			onChange: function() {
 				self.stateSaver.triggerChange();
 			}

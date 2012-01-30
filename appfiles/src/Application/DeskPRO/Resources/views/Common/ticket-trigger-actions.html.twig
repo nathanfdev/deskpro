@@ -100,14 +100,14 @@
 		</div>
 	</div>
 	{% endif %}
-	<div class="type" title="Add Labels" data-rule-type="add_labels">
+	<div class="type" title="Add Labels" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
 		<div class="options">
-			<input type="text" name="labels" />
+			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="Remove Labels" data-rule-type="remove_labels">
+	<div class="type" title="Remove Labels" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
 		<div class="options">
-			<input type="text" name="labels" />
+			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
 	<div class="type" title="Set Flag" data-rule-type="flag">

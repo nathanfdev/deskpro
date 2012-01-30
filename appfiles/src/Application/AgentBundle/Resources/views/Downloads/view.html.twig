@@ -46,7 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<dd>
 			<ul>
 				<div class="tags-wrap download-tags">
-					<textarea>{% for label in download.labels %}{{label.label}},{% endfor %}</textarea>
+					<input type="text" value="{% for label in download.labels %}{{label.label}},{% endfor %}" />
 				</div>
 			</ul>
 		</dd>
@@ -160,7 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab: Search #}
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
 		<div class="tags-wrap sticky-search-words">
-			<textarea>{% for word in sticky_search_words %}{{word}},{% endfor %}</textarea>
+			<input type="text" value="{% for word in sticky_search_words %}{{word}},{% endfor %}" />
 		</div>
 
 		<br />

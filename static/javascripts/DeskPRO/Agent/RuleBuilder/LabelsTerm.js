@@ -6,11 +6,11 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 	initRow: function() {
 		this.inner = $('.label-chooser-wrap', this.rowEl);
 		this.labelType = this.rowEl.data('label-type');
-		this.labelsList = $('ul:first', this.rowEl);
+		this.labelsList = $('input.labels-box', this.rowEl).first();
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'tickets',
-			list: this.labelsList,
+			textarea: this.labelsList,
 			onChange: this.updateLabels.bind(this)
 		});
 

@@ -28,7 +28,7 @@
 			<dl class="table-list">
 				<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
 				<dd class="org-tags tags-wrap">
-					<textarea>{% for label in org.labels %}{{label.label}},{% endfor %}</textarea>
+					<input type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
 				</dd>
 			</dl>
 			<br class="clear" />

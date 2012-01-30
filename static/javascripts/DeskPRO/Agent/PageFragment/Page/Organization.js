@@ -488,7 +488,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	_initLabels: function() {
 
 		// Tags
-		this.labelsList = $(".org-tags textarea", this.wrapper);
+		this.labelsList = $(".org-tags input", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'organizations',

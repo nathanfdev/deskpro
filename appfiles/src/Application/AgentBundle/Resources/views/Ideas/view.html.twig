@@ -60,7 +60,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<dl class="info-list">
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="idea-tags tags-wrap">
-				<textarea>{% for label in idea.labels %}{{label.label}},{% endfor %}</textarea>
+				<input type="text" value="{% for label in idea.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 
 			<dt>{{ phrase('agent.votes') }}:</dt>

@@ -1184,17 +1184,24 @@ textarea.integrated:focus, input.integrated:focus {
 
 
 .tags-wrap {
-	textarea {
+    line-height: 100% !important;
+
+	textarea, input[type="text"] {
 		width: 400px;
-		line-height: 100% !important;
-		padding: 3px 3px 0 3px !important;
+		line-height: 100%;
 		margin: 0;
+		padding: 3px;
 	}
 
-	line-height: 100% !important;
 	text-shadow: none;
 }
 
+input[type="text"].labels-box {
+	width: 400px;
+	line-height: 100%;
+	margin: 0;
+	padding: 3px;
+}
 
 /*****************************************************************************
  * Button styles
@@ -2222,4 +2229,9 @@ ul.search-summary {
 
 body.file-drag-over #dp_window_filedrop {
 	display: block;
+}
+
+.label-chooser-wrap {
+	width: 425px;
+	height: 23px;
 }

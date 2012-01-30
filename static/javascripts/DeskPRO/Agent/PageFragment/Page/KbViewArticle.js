@@ -382,7 +382,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'articles',
-			textarea: $(".kb-tags textarea", this.wrapper),
+			textarea: $(".kb-tags input", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

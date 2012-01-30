@@ -341,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.Deal = new Orb.Class({
         // Tags
         this.labelsInput = new DeskPRO.UI.LabelsInput({
             type: 'deal',
-            textarea: $(".deal-tags textarea", this.wrapper),
+            textarea: $(".deal-tags input", this.wrapper),
             onChange: this.saveLabels.bind(this)
         });
         this.ownObject(this.labelsInput);

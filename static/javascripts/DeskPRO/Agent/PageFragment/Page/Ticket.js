@@ -423,7 +423,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'tickets',
-			textarea: $(".ticket-tags textarea", this.wrapper),
+			textarea: $(".ticket-tags input", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

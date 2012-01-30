@@ -87,7 +87,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.label_labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<textarea>{% for label in state.newidea.labels %}{{label.label}},{% endfor %}</textarea>
+								<input type="text" value="{% for label in state.newidea.labels %}{{label.label}},{% endfor %}" />
 							</div>
 						</dd>
 					</dl>

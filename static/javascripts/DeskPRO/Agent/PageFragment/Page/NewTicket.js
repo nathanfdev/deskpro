@@ -355,7 +355,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.loadSnippetsViewer();
 
 		// Tags
-		this.labelsList = $(".ticket-tags textarea", this.wrapper);
+		this.labelsList = $(".ticket-tags input", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'tickets',

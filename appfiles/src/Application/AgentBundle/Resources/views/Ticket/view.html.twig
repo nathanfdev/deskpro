@@ -221,7 +221,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="ticket-tags tags-wrap">
-				<textarea>{% for label in ticket.labels %}{{label.label}},{% endfor %}</textarea>
+				<input type="text" value="{% for label in ticket.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 
 			<dt>{{ phrase('agent.created') }}:</dt>

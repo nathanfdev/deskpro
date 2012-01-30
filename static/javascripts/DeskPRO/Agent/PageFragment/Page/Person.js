@@ -423,7 +423,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	_initLabels: function() {
 
 		// Tags
-		this.labelsList = $(".people-tags textarea", this.wrapper);
+		this.labelsList = $(".people-tags input", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'people',

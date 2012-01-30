@@ -12,7 +12,7 @@
 		<div class="tags-wrap blob-tags">
 			<span class="tag-icon"></span>
 			<ul>
-				<textarea>{% for label in blob.labels %}{{label.label}},{% endfor %}</textarea>
+				<input type="text" value="{% for label in blob.labels %}{{label.label}},{% endfor %}" />
 			</ul>
 		</div>
 		<ul>

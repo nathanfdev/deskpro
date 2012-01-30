@@ -57,7 +57,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<dl class="info-list">
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="kb-tags tags-wrap">
-				<textarea>{% for label in article.labels %}{{label.label}},{% endfor %}</textarea>
+				<input type="text" value="{% for label in article.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 			<dt class="">{{ phrase('agent.categories') }}</dt>
 			<dd>
@@ -261,7 +261,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<dl class="table-list">
 				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
 				<dd>
-					<textarea>{% for label in sticky_search_words %}{{label}},{% endfor %}</textarea>
+					<input type="text" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
 					<div class="explain">
 						{{ phrase('agent.publish.search_sticky_words_explain') }}
 					</div>

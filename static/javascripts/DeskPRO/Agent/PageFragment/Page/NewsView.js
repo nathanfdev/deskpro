@@ -221,7 +221,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".news-tags textarea", this.wrapper);
+		this.labelsList = $(".news-tags input", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'news',

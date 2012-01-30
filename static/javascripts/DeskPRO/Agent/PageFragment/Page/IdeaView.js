@@ -312,7 +312,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'ideas',
-			textarea: $(".idea-tags textarea", this.wrapper),
+			textarea: $(".idea-tags input", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

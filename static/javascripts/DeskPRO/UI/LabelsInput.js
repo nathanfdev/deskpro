@@ -62,6 +62,11 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			}
 		});
 
+		// TODO
+		// Keep an eye on https://github.com/alexgorbatchev/jquery-textext/issues
+		// - 'filter' plugin causes tags.items not to render properly
+		// - Cant click 'autocomplete' items to enter them
+
 		this.options.textarea.textext({
 			plugins: 'autocomplete suggestions tags arrow prompt',
 			suggestions: tagSource,
@@ -85,6 +90,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				last = str;
 				self.data = data;
 				self.fireEvent('change', data);
+				$(this).trigger('showDropdown');
 			}
 		});
 	},
@@ -96,7 +102,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getLabels: function() {
-		return this.tagit.getLabels();
+		return this.data;
 	},
 
 

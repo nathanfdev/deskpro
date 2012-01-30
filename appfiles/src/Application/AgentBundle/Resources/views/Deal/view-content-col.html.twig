@@ -211,7 +211,7 @@
                 <dl class="table-list">
                     <dt class="type-labels">Labels</dt>
                     <dd class="deal-tags tags-wrap">
-                        <textarea>{% for label in deal.labels %}{{label.label}},{% endfor %}</textarea>
+                        <input type="text" value="{% for label in deal.labels %}{{label.label}},{% endfor %}" />
                     </dd>
 		</dl>
 
