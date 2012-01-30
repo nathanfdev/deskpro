@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				this.resultsHelper.removeResultId(val);
 				sels.push('.ticket-' + val);
 				this.countTotal--;
-			});
+			}, this);
 
 			sels = sels.join(', ');
 
@@ -166,7 +166,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
 
 		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
-			this.resultsHelper.removeResultId(ticket_id);
+			self.resultsHelper.removeResultId(ticket_id);
 			el.remove();
 			self.countTotal--;
 			self.updateTicketCountLabels();
