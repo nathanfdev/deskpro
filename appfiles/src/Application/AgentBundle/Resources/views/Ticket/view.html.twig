@@ -221,11 +221,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="ticket-tags tags-wrap">
-				<ul data-label-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
-					{% for label in ticket.labels %}
-						<li><span>{{label.label}}</span></li>
-					{% endfor %}
-				</ul>
+				<textarea>{% for label in ticket.labels %}{{label.label}},{% endfor %}</textarea>
 			</dd>
 
 			<dt>{{ phrase('agent.created') }}:</dt>

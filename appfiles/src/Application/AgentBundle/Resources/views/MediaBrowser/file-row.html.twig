@@ -12,9 +12,7 @@
 		<div class="tags-wrap blob-tags">
 			<span class="tag-icon"></span>
 			<ul>
-				{% for blob in blob.labels %}
-					<li><span>{{label.label}}</span></li>
-				{% endfor %}
+				<textarea>{% for label in blob.labels %}{{label.label}},{% endfor %}</textarea>
 			</ul>
 		</div>
 		<ul>

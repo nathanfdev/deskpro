@@ -488,7 +488,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	_initLabels: function() {
 
 		// Tags
-		this.labelsList = $(".org-tags ul", this.wrapper);
+		this.labelsList = $(".org-tags textarea", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'organizations',
@@ -503,7 +503,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
+		var data = this.labelsInput.getFormData();
 
 		$.ajax({
 			url: this.getMetaData('labelsSaveUrl'),

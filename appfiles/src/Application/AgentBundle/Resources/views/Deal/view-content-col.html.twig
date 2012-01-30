@@ -18,10 +18,10 @@
                             <li style="display:none" class="assign-agent"><em>Assign agent</em>: <span class="label"></span></li>
 
                     </ul>
-                </dd>    
+                </dd>
             </dl>
         </div>
-        
+
         <div class="meta-line">
             <dl class="table-list">
                 <dt class="type-labels">Users</dt>
@@ -32,14 +32,14 @@
                         <li class="member-row member-{{ person.id }}" data-person-id="{{ person.id }}">
                                 <span data-person-id="{{ person.id }}"><b>{{ person.display_name }}</b> &lt;{{person.primary_email.email}}&gt; </span>
                                 <span class="remove btn-small-remove remove-row-trigger">x</span>
-                                
+
                         </li>
                         {% endfor%}
                         <li class="newpersonrow" id="{{baseId}}_person_assign_btn"><span class="btn-small-add"></span>Add User</li>
-                        
+
                     </ul>
                 </dd>
-                <dd>                       
+                <dd>
                         <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
                         <div id="{{baseId}}_choose_user" style="display:none;" class="choose-user" >
                                 <div
@@ -89,14 +89,14 @@
                 <dt class="type-labels">Organizations</dt>
                 <dd>
                     <ul class="controls" id="{{baseId}}_organizations_list">
-                        {% for organization in deal.organizations%} 
+                        {% for organization in deal.organizations%}
                             <li class="organization-row organization-{{ organization.id }}" data-organization-id="{{ organization.id }}">
                                 <span> {{organization.name}} </span>
                                 <span class="remove btn-small-remove remove-row-trigger"></span>
                             </li>
                         {% endfor%}
                             <li class="neworgrow" id="{{baseId}}_org_assign_btn"><span class="btn-small-add"></span>Add Organization</li>
-                        
+
                     </ul>
                 </dd>
                 <dd>
@@ -182,7 +182,7 @@
 			</ul>
 		</section>
 	</div>
-    	
+
     	<br class="clear" />
     	<footer>
            <button class="save-trigger">Apply</button>
@@ -211,11 +211,7 @@
                 <dl class="table-list">
                     <dt class="type-labels">Labels</dt>
                     <dd class="deal-tags tags-wrap">
-                        <ul data-label-route="listpane:{{ path('agent_peoplesearch') }}?terms[0][rule_type]=deal_label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}">
-                                {% for label in deal.labels %}
-                                        <li><span>{{label.label}}</span></li>
-                                {% endfor %}
-                        </ul>
+                        <textarea>{% for label in deal.labels %}{{label.label}},{% endfor %}</textarea>
                     </dd>
 		</dl>
 
@@ -287,7 +283,7 @@
     <header>
         <nav>
             <ul>
-                <li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>                    
+                <li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
             </ul>
         </nav>
     </header>

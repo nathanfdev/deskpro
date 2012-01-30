@@ -380,12 +380,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initLabels: function() {
-		// Tags
-		this.labelsList = $(".kb-tags ul", this.wrapper);
-
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'articles',
-			list: this.labelsList,
+			textarea: $(".kb-tags textarea", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
@@ -407,7 +404,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
+		var data = this.labelsInput.getFormData();
 
 		$.ajax({
 			url: this.getMetaData('labelsSaveUrl'),

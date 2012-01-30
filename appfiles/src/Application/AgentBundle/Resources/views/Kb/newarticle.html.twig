@@ -107,12 +107,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">Labels</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<span class="tag-icon"></span>
-								<ul>
-									{% for l in state.newarticle.labels %}
-										<li>{{ l }}</li>
-									{% endfor %}
-								</ul>
+								<textarea>{% for label in state.newarticle.labels %}{{label}},{% endfor %}</textarea>
 							</div>
 						</dd>
 					</dl>

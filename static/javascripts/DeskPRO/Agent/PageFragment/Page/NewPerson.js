@@ -132,7 +132,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'people',
 			fieldName: 'newperson[labels]',
-			list: $(".tags-wrap ul", this.wrapper),
+			textarea: $(".tags-wrap textarea", this.wrapper),
 			onChange: function() {
 				self.stateSaver.triggerChange();
 			}

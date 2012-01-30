@@ -12,11 +12,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
+		var self = this;
 		this.options = {
 			/**
-			 * The labels list to apply to
+			 * The labels textareato apply to
 			 */
-			list: null,
+			textarea: null,
 
 			/**
 			 * The field name the labels should be added (ie labels[])
@@ -34,15 +35,6 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		this.setOptions(options);
 
-		var tagitOptions = {
-			enableBackspace: false,
-			fieldName: this.options.fieldName,
-			unique: true,
-			onchange: (function(labels) {
-				this.fireEvent('change', [this.getLabels()]);
-			}).bind(this)
-		};
-
 		var tagSource = false;
 
 		if (DeskPRO.UI.LabelsInput_Grouped[this.options.type]) {
@@ -58,59 +50,43 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			DeskPRO.UI.LabelsInput_Grouped[this.options.type] = tagSource;
 		}
 
-		// If tagSource exists, we're using local (fast) autocomplete
-		if (tagSource && tagSource.length) {
-			tagitOptions.autocompleteOptions = {
-				source: tagSource,
-				minLength: 0,
-				delay: 20
-			};
+		if (!tagSource) tagSource = [];
 
-			tagitOptions.focusShowAutocomplete = true;
-
-		// Otherwise, we're using AJAX (slow) autocomplete
-		} else {
-			tagitOptions.autocompleteOptions = {
-				source: BASE_URL + '/agent/misc/ajax-labels/' + this.options.type
+		var exist = [];
+		var val = this.options.textarea.val().trim();
+		this.options.textarea.val('');
+		Array.each(val.split(','), function(t) {
+			t = t.trim();
+			if (t.length) {
+				exist.push(t);
 			}
-		}
+		});
 
-		// Limit to max entries
-		var max = this.options.showMax;
-		tagitOptions.autocompleteOptions.open = (function(event, ui) {
-			var el = this.tagit.getInput();
-			var list = $(el.autocomplete('widget'));
+		this.options.textarea.textext({
+			plugins: 'autocomplete suggestions tags arrow prompt',
+			suggestions: tagSource,
+			prompt: 'Add a label...',
+			tags: {
+				items: exist
+			}
+		}).on('focus', function() {
+			$(this).trigger('change');
+			$(this).trigger('showDropdown');
+		});
 
-			var remove_lis = $('> li', list).slice(max);
-			remove_lis.remove();
-		}).bind(this);
+		self.data = exist;
 
-		this.tagit = $(this.options.list).tagit(tagitOptions);
-
-		var route = $(this.options.list).data('label-route');
-		if (route) {
-			$(this.options.list).on('click', function(ev) {
-				if ($(ev.target).is('.close')) {
-					return;
-				}
-
-				if ($(ev.target).is('li')) {
-					var li = $(ev.target);
-				} else {
-					var li = $(ev.target).closest('li');
-				}
-
-				if (li.is('.tagit-new')) {
-					return;
-				}
-
-				var tag = $('input', li).val();
-				var loadRoute = route.replace(/\{LABEL\}/g, tag, route);
-				DeskPRO_Window.runPageRoute(loadRoute);
-
-				ev.stopPropagation();
-			});
-		}
+		var last = (this.options.textarea.textext()[0]).hiddenInput().val();
+		this.options.textarea.bind('setFormData', function(e, data, isEmpty) {
+			var me = this;
+			var textext = $(e.target).textext()[0];
+			var str = textext.hiddenInput().val();
+			if (str != last) {
+				last = str;
+				self.data = data;
+				self.fireEvent('change', data);
+			}
+		});
 	},
 
 
@@ -130,6 +106,17 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getFormData: function() {
-		return this.tagit.getFormData();
+		var tags = this.data;
+		var field = this.options.fieldName;
+
+		var postData = [];
+		Array.each(tags, function(x) {
+			postData.push({
+				name: field + '[]',
+				value: x
+			});
+		});
+
+		return postData;
 	}
 });

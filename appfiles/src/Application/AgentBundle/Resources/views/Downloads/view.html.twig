@@ -46,11 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<dd>
 			<ul>
 				<div class="tags-wrap download-tags">
-					<ul>
-						{% for label in download.labels %}
-							<li><span>{{label.label}}</span></li>
-						{% endfor %}
-					</ul>
+					<textarea>{% for label in download.labels %}{{label.label}},{% endfor %}</textarea>
 				</div>
 			</ul>
 		</dd>
@@ -164,19 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab: Search #}
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
 		<div class="tags-wrap sticky-search-words">
-			<dl class="table-list">
-				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
-				<dd>
-					<ul>
-						{% for word in sticky_search_words %}
-							<li><span>{{word}}</span></li>
-						{% endfor %}
-					</ul>
-					<div class="explain">
-						{{ phrase('agent.publish.search_sticky_words_explain') }}
-					</div>
-				</dd>
-			</dl>
+			<textarea>{% for word in sticky_search_words %}{{word}},{% endfor %}</textarea>
 		</div>
 
 		<br />

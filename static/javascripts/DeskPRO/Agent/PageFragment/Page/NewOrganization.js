@@ -105,7 +105,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'people',
 			fieldName: 'neworg[labels]',
-			list: $(".tags-wrap ul", this.wrapper),
+			textarea: $(".tags-wrap textarea", this.wrapper),
 			onChange: function() {
 				self.stateSaver.triggerChange();
 			}

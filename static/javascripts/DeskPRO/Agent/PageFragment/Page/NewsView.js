@@ -221,11 +221,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".news-tags ul", this.wrapper);
+		this.labelsList = $(".news-tags textarea", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'news',
-			list: this.labelsList,
+			textarea: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
@@ -247,7 +247,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
+		var data = this.labelsInput.getFormData();
 
 		$.ajax({
 			url: this.getMetaData('labelsSaveUrl'),

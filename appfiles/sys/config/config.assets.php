@@ -76,6 +76,15 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
 		'vendor/jquery/token-field/jquery.token-field.js',
 
+		'vendor/jquery/jquery-textext/src/js/textext.core.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.ajax.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.arrow.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.autocomplete.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.filter.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.prompt.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.suggestions.js',
+		'vendor/jquery/jquery-textext/src/js/textext.plugin.tags.js',
+
 		'vendor/tiny_mce/jquery.tinymce.js',
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
@@ -621,6 +630,13 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/markitup/markitup/skins/simple/style.css',
 		'vendor/jquery/markitup/markitup/sets/markdown/style.css',
 		'vendor/jquery/token-field/token-field.css',
+
+		'vendor/jquery/jquery-textext/src/css/textext.core.css',
+		'vendor/jquery/jquery-textext/src/css/textext.plugin.arrow.css',
+		'vendor/jquery/jquery-textext/src/css/textext.plugin.autocomplete.css',
+		'vendor/jquery/jquery-textext/src/css/textext.plugin.focus.css',
+		'vendor/jquery/jquery-textext/src/css/textext.plugin.prompt.css',
+		'vendor/jquery/jquery-textext/src/css/textext.plugin.tags.css',
 	)
 );
 

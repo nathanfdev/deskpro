@@ -162,7 +162,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<dl>
 						<dt class="prop type-labels">{{ phrase('agent.label_labels') }}:</dt>
 						<dd class="prop ticket-tags tags-wrap">
-							<ul data-label-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={LABEL}&amp;view_name=label&amp;view_extra={LABEL}"></ul>
+							<textarea></textarea>
 						</dd>
 					</dl>
 
@@ -237,6 +237,8 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 						{% endfor %}
 					{% endif %}
+
+					<br class="clear" />
 				</div>
 				{# /Tab Properties #}
 

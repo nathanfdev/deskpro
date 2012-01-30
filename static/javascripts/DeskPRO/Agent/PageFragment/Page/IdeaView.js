@@ -310,12 +310,9 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	//#################################################################
 
 	_initLabels: function() {
-		// Tags
-		this.labelsList = $(".idea-tags ul", this.wrapper);
-
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'ideas',
-			list: this.labelsList,
+			textarea: $(".idea-tags textarea", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
@@ -337,7 +334,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
+		var data = this.labelsInput.getFormData();
 
 		$.ajax({
 			url: this.getMetaData('labelsSaveUrl'),
