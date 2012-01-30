@@ -217,7 +217,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", cascade={"persist", "remove", "merge"})
 	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
@@ -298,7 +298,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id", cascade={"persist", "remove", "merge"})
 	 * @ORM_Mapping\JoinTable(name="person2usergroups",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
