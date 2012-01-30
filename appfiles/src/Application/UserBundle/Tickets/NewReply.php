@@ -52,7 +52,7 @@ class NewReply
 			$desc = App::getApi('filestorage')->createRandomPath();
 
 			$desc->write(file_get_contents($this->new_upload->getRealPath()), array(
-				'content_type' => $this->new_upload->getMimeType(),
+				'content_type' => $this->new_upload->getClientMimeType(),
 				'filename' => $this->new_upload->getClientOriginalName()
 			));
 

@@ -28,7 +28,7 @@ class PortalController extends AbstractController
 		$file_content = $im->getImageBlob();
 
 		$desc->write($file_content, array(
-			'content_type' => $file->getMimeType(),
+			'content_type' => $file->getClientMimeType(),
 			'filename' => $file->getClientOriginalName()
 		));
 

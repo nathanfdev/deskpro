@@ -166,7 +166,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$desc = App::getApi('filestorage')->createRandomPath();
 
 				$desc->write(file_get_contents($this->ticket->new_upload->getRealPath()), array(
-					'content_type' => $this->ticket->new_upload->getMimeType(),
+					'content_type' => $this->ticket->new_upload->getClientMimeType(),
 					'filename' => $this->ticket->new_upload->getClientOriginalName()
 				));
 

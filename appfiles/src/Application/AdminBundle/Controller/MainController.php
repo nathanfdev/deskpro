@@ -27,7 +27,7 @@ class MainController extends AbstractController
 		$desc = App::getApi('filestorage')->createRandomPath();
 
 		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $file->getMimeType(),
+			'content_type' => $file->getClientMimeType(),
 			'filename' => $file->getClientOriginalName()
 		));
 
