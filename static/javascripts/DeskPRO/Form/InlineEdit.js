@@ -49,6 +49,8 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		this.setOptions(options);
 
+		this.options.baseElement = $(this.options.baseElement);
+
 		var sel = '.' + this.options['editableClass'];
 		var self = this;
 		$(sel, this.options['baseElement']).each(function() { self.initEditable(this); });

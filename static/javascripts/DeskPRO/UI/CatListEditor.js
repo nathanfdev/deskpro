@@ -427,6 +427,8 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			this.editTab.remove();
 			this.edit.remove();
 			this.editTabBk.remove();
+
+			this.editBack = this.editTab = this.edit = this.editTabBk = null;
 		}
 	}
 });
