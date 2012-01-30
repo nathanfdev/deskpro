@@ -782,6 +782,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->setModelField('password', $pass);
 
+		// If we're setting the password, we're now using the default
+		// password scheme so remove the old one. eg an imported user just changed their password
+		$this->setModelField('password_scheme', null);
+
 		return $this->password;
 	}
 
@@ -818,7 +822,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hashPassword($plain_password)
 	{
-		if ($this->password_scheme === null) {
+		if ($this->password_scheme === null && !($this->id && defined('DP_OVERRIDE_USER_PASS'))) {
 			return sha1($this->salt . $plain_password);
 		}
 

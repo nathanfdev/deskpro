@@ -111,14 +111,22 @@ class UsersStep extends AbstractDeskpro3Step
 			$person->is_user = true;
 			$person->is_confirmed = true;
 			$person->name = $user_info['name'];
-			$person->password_scheme = 'deskpro3';
 			$person->date_created = new \DateTime('@' . $user_info['date_registered']);
 			if ($user_info['last_activity']) {
 				$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);
 			}
 
-			$person->setRawPassword($user_deskpro['password']);
-			$person->salt = $user_deskpro['salt'];
+			// "Secure passwords" was enabled, which means we have a salt and the password is hashed
+			if ($user_deskpro['salt']) {
+				$person->password_scheme = 'deskpro3';
+				$person->setRawPassword($user_deskpro['password']);
+				$person->salt = $user_deskpro['salt'];
+
+			// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
+			// so we can just set a password normally and use DP4 scheme
+			} else {
+				$person->setPassword($user_deskpro['password']);
+			}
 
 			//---
 			// Company

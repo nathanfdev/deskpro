@@ -33,7 +33,7 @@ class TechsStep extends AbstractDeskpro3Step
 				$agent->name = $tech['name'];
 				$agent->setEmail($tech['email'], true);
 				$agent->setRawPassword($tech['password']);
-				$agent->password_scheme = 'deskpro3';
+				$agent->password_scheme = 'deskpro3_tech';
 				$agent->salt = $tech['salt'];
 				$agent->is_user = true;
 				$agent->is_confirmed = true;

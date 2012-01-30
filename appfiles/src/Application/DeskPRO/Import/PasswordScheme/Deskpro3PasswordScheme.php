@@ -18,6 +18,10 @@ class Deskpro3PasswordScheme implements PasswordSchemeInterface
 {
 	public function hashPassword(Person $person, $plain_password)
 	{
-		return md5($plain_password . $person->salt);
+		if ($person->password_scheme == 'deskpro3_tech') {
+			return sha1($plain_password . $person->salt);
+		} else {
+			return md5($plain_password . $person->salt);
+		}
 	}
 }
