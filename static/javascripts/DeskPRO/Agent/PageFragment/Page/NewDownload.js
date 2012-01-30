@@ -213,7 +213,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.ownObject(this.labelsInput);
 
 		this.getEl('slug').on('focus', function() {
-			this.addClass('had-focus');
+			$(this).addClass('had-focus');
 		});
 	}
 });
