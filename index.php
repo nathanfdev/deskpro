@@ -1,19 +1,28 @@
 <?php
+
+/**
+ * You may wish to turn the display of PHP errors off. 
+ * You should monitor your PHP error log (location defined in php.ini) if you do.
+ */
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
 /**
  * The path to the 'appfiles' directory.
- * If you move that directory, you must update this path.
+ * If you move the appfiles directory, you must update this path.
  */
 define('DP_ROOT', dirname(__FILE__) . '/appfiles');
 
 /**
  * The path to the config.php file.
- * If you want to that file, you must update this path.
+ * You may wish to move the config file outisde of the webroot.
+ * If you move the config.php file, you must update this path.
  */
 define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 
+/**
+ * You should not change anything below this line.
+ */
 require DP_ROOT . '/sys/preboot.php';
 
 if (!defined('DP_BOOT_MODE')) define('DP_BOOT_MODE', 'web');
