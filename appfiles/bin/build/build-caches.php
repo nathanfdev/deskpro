@@ -6,6 +6,7 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
@@ -56,7 +57,7 @@ if ($proc_kernel === null) {
 	$class = $kernel_classes[$proc_kernel];
 	$kernel = new $class('prod', false);
 
-	$_SERVER['argv'] = array('xx', 'cache:warmup');
+	$_SERVER['argv'] = array('xx', 'cache:warmup', '--verbose');
 
 	$application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 	$application->run();

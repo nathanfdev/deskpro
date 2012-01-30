@@ -53,6 +53,9 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			unset($params['host']);
 
 			$conf = App::getConfig($key);
+			if (!$conf && defined('DP_BUILDING')) {
+				$conf = array('bogus'); // Dont need dbinfo
+			}
 			if (!$conf) {
 				throw new \Exception("Invalid database key $key");
 			}

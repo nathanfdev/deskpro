@@ -34,7 +34,7 @@ class KernelBooter
 
 	public static function bootstrapLib($debug)
 	{
-		if ($debug) {
+		if ($debug || defined('DP_BUILDING')) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
 
@@ -177,6 +177,10 @@ class KernelBooter
 		}
 
 		self::bootstrapLib($debug);
+
+		if (defined('DP_BUILDING')) {
+			$debug = false;
+		}
 
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 
