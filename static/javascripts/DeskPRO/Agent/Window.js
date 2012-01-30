@@ -69,7 +69,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 			 * @return {String}
 			 */
 			getPlainTpl: function(el) {
+
+				if (!el) {
+					DP.console.error('Invalid template element passed %o', el);
+					return '';
+				}
+
 				var el = $(el);
+
+
+				if (!el.length) {
+					DP.console.error('No template element passed %o', el);
+					return '';
+				}
+
 				var html = el.get(0).innerHTML;
 
 				html = html.replace(/%startScript%/g, '<script>');
