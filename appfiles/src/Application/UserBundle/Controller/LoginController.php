@@ -58,7 +58,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	public function logoutAction($auth)
 	{
-		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
+		if (!$this->container->getSession()->checkSecurityToken('user_logout', $auth)) {
 			return $this->redirectRoute('user');
 		}
 
