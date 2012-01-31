@@ -12,6 +12,7 @@
 namespace Application\InstallBundle\Install;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\App;
 use Orb\Log\Logger;
 
 class InstallSchema
@@ -41,9 +42,39 @@ class InstallSchema
 	 * @param \Application\DeskPRO\DBAL\Connection $db
 	 * @param array $schema
 	 */
-	public function __construct($db, array $schema, $build = 'default')
+	public function __construct($db, array $schema = null, $build = 'default')
 	{
 		$this->db = $db;
+
+		// Generate now dynamically (dev tool)
+		if ($schema === null) {
+			$em = App::get('doctrine.orm.entity_manager');
+			$metadata = $em->getMetadataFactory()->getAllMetadata();
+			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+			$all_sql = $tool->getCreateSchemaSql($metadata);
+
+			$schema = array('create' => array(), 'alter' => array());
+
+			foreach ($all_sql as $s) {
+				$s = trim($s);
+
+				if (preg_match('#^ALTER#', $s)) {
+					$schema['alter'][] = $s;
+				} else {
+					$schema['create'][] = $s;
+				}
+			}
+
+			$schema['create'][] = <<<SQL
+				CREATE TABLE `content_search` (
+				  `object_type` varchar(15) NOT NULL DEFAULT '',
+				  `object_id` int(11) NOT NULL,
+				  `content` longtext NOT NULL,
+				  PRIMARY KEY (`object_type`,`object_id`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL;
+		}
+
 		$this->schema = $schema;
 		$this->build = $build;
 	}

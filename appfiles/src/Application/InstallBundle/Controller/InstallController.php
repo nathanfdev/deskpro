@@ -59,6 +59,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function verifyFilesAction()
 	{
+		if (!file_exists(DP_ROOT.'/sys/Resources/distro-checksums.php')) {
+			return $this->redirect($this->get('router')->generate('install_create_tables'));
+		}
+
 		$verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
 		$count  = $verify->countChunks();
 
@@ -121,7 +125,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 		}
 
-		$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
+		$schema = null;
+		if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
+			$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
+		}
 		$install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema, DP_BUILD_TIME);
 
 		$response = new \Symfony\Component\HttpFoundation\Response();
