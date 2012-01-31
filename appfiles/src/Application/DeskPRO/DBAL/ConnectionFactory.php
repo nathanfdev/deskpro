@@ -33,6 +33,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 	public function __construct(array $typesConfig)
 	{
 		parent::__construct($typesConfig);
+		\Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
 	}
 
 	public function setContainer(ContainerInterface $container = null)
@@ -71,6 +72,8 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 		if ($this->container && $this->container->has('event_dispatcher')) {
 			$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
 		}
+
+		$conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
 
 		return $conn;
 	}

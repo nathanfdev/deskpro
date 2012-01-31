@@ -37,7 +37,7 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="blob")
+	 * @ORM_Mapping\Column(name="data", type="dpblob")
 	 */
 	protected $data;
 }

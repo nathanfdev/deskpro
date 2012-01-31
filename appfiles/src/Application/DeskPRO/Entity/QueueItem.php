@@ -136,7 +136,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Any data pertaining to the job
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="blob", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="dpblob", nullable=true)
 	 */
 	protected $data = array();
 

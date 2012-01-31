@@ -25,20 +25,20 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of id/thing/whatever this is mapping.
 	 * @var string
 	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="typename", type="blob", length=80)
+	 * @ORM_Mapping\Column(name="typename", type="dpblob", length=80)
 	 */
 	protected $typename;
 
 	/**
 	 * @var string
 	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="old_id", type="blob", length=80)
+	 * @ORM_Mapping\Column(name="old_id", type="dpblob", length=80)
 	 */
 	protected $old_id = 0;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="new_id", type="blob", length=80)
+	 * @ORM_Mapping\Column(name="new_id", type="dpblob", length=80)
 	 */
 	protected $new_id = 0;
 }
