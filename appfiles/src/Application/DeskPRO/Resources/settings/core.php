@@ -66,6 +66,14 @@
 
 	'core.email_validation' => true,
 
+	'core.attach_agent_maxsize' => '5242880',
+	'core.attach_agent_must_exts' => null,
+	'core.attach_agent_not_exts' => null,
+
+	'core.attach_user_maxsize' => '5242880',
+	'core.attach_user_must_exts' => null,
+	'core.attach_user_not_exts' => 'php',
+
 	'core.enable_departments' => true,
 	'core.enable_products' => true,
 	'core.enable_ticket_categories' => true,

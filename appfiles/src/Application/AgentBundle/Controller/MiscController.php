@@ -194,34 +194,14 @@ class MiscController extends AbstractController
     public function acceptTempUploadAction()
     {
 		$file = $this->request->files->get('file-upload');
+		$accept = $this->container->getAttachmentAccepter();
 
-		if (!$file->isValid() || !is_uploaded_file($file->getRealPath())) {
-			return $this->createJsonResponse(array(array(
-				'error' => 'invalid',
-			)));
+		$error = $accept->getError($file, 'agent');
+		if ($error) {
+			return $this->createJsonResponse(array($error));
 		}
 
-		$desc = App::getApi('filestorage')->createRandomPath();
-
-		try {
-			$mime_type = $file->getMimeType();
-		} catch (\Exception $e) {
-			$mime_type = $file->getClientMimeType();
-		}
-
-		if (!$mime_type) {
-			return $this->createJsonResponse(array(array(
-				'error' => 'invalid',
-			)));
-		}
-
-		$desc->write(file_get_contents($file->getRealPath()), array(
-			'content_type' => $mime_type,
-			'filename' => $file->getClientOriginalName()
-		));
-
-		$blob_id = $desc->getPath();
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $accept->accept($file);
 
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {
@@ -242,11 +222,11 @@ class MiscController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array(array(
-			'blob_id' => $blob['id'],
-			'blob_auth' => $blob->authcode,
-			'blob_auth_id' => $blob->id . '-' . $blob->authcode,
-			'download_url' => $blob->getDownloadUrl(true),
-			'filename' => $blob['filename'],
+			'blob_id'           => $blob['id'],
+			'blob_auth'         => $blob->authcode,
+			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+			'download_url'      => $blob->getDownloadUrl(true),
+			'filename'          => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
 	}

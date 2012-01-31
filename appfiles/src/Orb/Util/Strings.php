@@ -450,7 +450,7 @@ class Strings
 	{
 		$matches = null;
 		if (preg_match('#\.([a-zA-Z0-9]+)$#', $string, $matches)) {
-			return $matches[1];
+			return strtolower($matches[1]);
 		}
 
 		return '';

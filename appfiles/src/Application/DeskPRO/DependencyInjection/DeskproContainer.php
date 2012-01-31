@@ -329,6 +329,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\Attachments\AcceptAttachment
+	 */
+	public function getAttachmentAccepter()
+	{
+		return $this->getSystemService('attachment_accepter');
+	}
+
+
+	/**
 	 * Get a cache object, or null if no cache exists.
 	 *
 	 * @param string $name                Name of the cache
@@ -369,9 +378,9 @@ class DeskproContainer extends Container
 	 * @param string $name The name of the setting to get
 	 * @return string
 	 */
-	public function getSetting($name)
+	public function getSetting($name, $default = null)
 	{
 		$settings = $this->get(self::SERVICE_SETTINGS);
-		return $settings->get($name);
+		return $settings->get($name, $default);
 	}
 }

@@ -41,34 +41,26 @@ class MainController extends AbstractController
 		$security_token = $this->in->getString('security_token');
 
 		if (!$this->session->getEntity()->checkSecurityToken('attach_temp', $security_token)) {
-			return $this->createJsonResponse(array(
-				'error' => 'invalid_security_token'
-			), 403);
+			return $this->createJsonResponse(array(array(
+				'error_code' => 'invalid_security_token'
+			)), 403);
 		}
 
-		try {
-			$file = $this->request->files->get('attach');
-			$desc = App::getApi('filestorage')->createRandomPath();
+		$file = $this->request->files->get('attach');
+		$accept = $this->container->getAttachmentAccepter();
 
-			$desc->write(file_get_contents($file->getRealPath()), array(
-				'content_type' => $file->getClientMimeType(),
-				'filename' => $file->getClientOriginalName(),
-				'is_temp' => true
-			));
-
-			$blob_id = $desc->getPath();
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-		} catch (\Exception $e) {
-			return $this->createJsonResponse(array(
-				'error' => 'general',
-			));
+		$error = $accept->getError($file, 'user');
+		if ($error) {
+			return $this->createJsonResponse(array($error));
 		}
+
+		$blob = $accept->accept($file, true);
 
 		return $this->createJsonResponse(array(array(
-			'blob_id' => $blob->getId(),
-			'blob_auth_id' => $blob->getAuthId(),
-			'download_url' => $blob->getDownloadUrl(true),
-			'filename' => $blob->getFilename(),
+			'blob_id'           => $blob->getId(),
+			'blob_auth_id'      => $blob->getAuthId(),
+			'download_url'      => $blob->getDownloadUrl(true),
+			'filename'          => $blob->getFilename(),
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
 	}

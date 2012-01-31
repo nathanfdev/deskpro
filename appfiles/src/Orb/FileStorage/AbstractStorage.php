@@ -29,7 +29,7 @@ abstract class AbstractStorage
 	 * Gets a file descriptor object for a certain path. Note that this
 	 * path might not exist.
 	 *
-	 * @return Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
+	 * @return \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	abstract public function getFileDescriptor($path);
 
@@ -40,7 +40,7 @@ abstract class AbstractStorage
 	 * useful for storing things like attachments, where the filename doesn't matter
 	 * because the real name is stored somewhere else.
 	 *
-	 * @return Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
+	 * @return \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	public function createRandomPath()
 	{

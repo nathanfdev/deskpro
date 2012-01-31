@@ -1,0 +1,211 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category DependencyInjection
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Attachments;
+
+use Doctrine\ORM\EntityManager;
+use Orb\FileStorage\AbstractStorage as AbstractFileStorage;
+
+use Orb\Util\Numbers;
+use Orb\Data\ContentTypes;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Application\DeskPRO\App;
+
+class AcceptAttachment
+{
+	const ERR_SIZE    = 'sys_size';
+	const ERR_FAILED  = 'failed_upload';
+	const ERR_NO_FILE = 'no_file';
+	const ERR_SERVER  = 'server_error';
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
+	 * @var \Orb\FileStorage\AbstractStorage
+	 */
+	protected $filestorage;
+
+	/**
+	 * @var \Application\DeskPRO\Attachments\RestrictionSet[]
+	 */
+	protected $restriction_sets = array();
+
+	public function __construct(EntityManager $em, AbstractFileStorage $filestorage)
+	{
+		$this->em = $em;
+		$this->filestorage = $filestorage;
+	}
+
+
+	/**
+	 * @param $id
+	 * @param \Application\DeskPRO\Attachments\RestrictionSet $set
+	 */
+	public function addRestrictionSet($id, RestrictionSet $set)
+	{
+		$this->restriction_sets[$id] = $set;
+	}
+
+
+	/**
+	 * @param $id
+	 * @return \Application\DeskPRO\Attachments\RestrictionSet
+	 * @throws \InvalidArgumentException
+	 */
+	public function getRestrictionSet($id)
+	{
+		if (!isset($this->restriction_sets[$id])) {
+			throw new \InvalidArgumentException("No set with id `$id`");
+		}
+
+		return $this->restriction_sets[$id];
+	}
+
+
+	/**
+	 * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+	 * @param $restriction_set_id
+	 * @return array|null
+	 */
+	public function getError(UploadedFile $file = null, $restriction_set_id = null)
+	{
+		$restriction = null;
+		if ($restriction_set_id) {
+			$restriction = $this->getRestrictionSet($restriction_set_id);
+		}
+
+		if ($file === null) {
+			return array('error_code' => self::ERR_NO_FILE, 'error_detail' => 'null_file');
+		}
+
+		$log_error = false;
+		$error = array(
+			'error_code' => null,
+			'error_detail' => null
+		);
+
+		if (!$file->isValid()) {
+			switch ($file->getError()) {
+				case \UPLOAD_ERR_INI_SIZE:
+					$error['error_code'] = self::ERR_SIZE;
+					$error['error_detail'] = Numbers::parseIniSize(ini_get('upload_max_filesize'));
+					break;
+
+				case \UPLOAD_ERR_PARTIAL:
+					$error['error_code'] = self::ERR_FAILED;
+					$error['error_detail'] = '';
+					break;
+
+				case \UPLOAD_ERR_NO_FILE:
+					$error['error_code'] = self::ERR_NO_FILE;
+					$error['error_detail'] = '';
+					break;
+
+				case \UPLOAD_ERR_NO_TMP_DIR:
+					$log_error = true;
+					$error['error_code'] = self::ERR_SERVER;
+					$error['error_detail'] = 'bad_tmp_dir';
+					break;
+
+				case \UPLOAD_ERR_CANT_WRITE:
+					$log_error = true;
+					$error['error_code'] = self::ERR_SERVER;
+					$error['error_detail'] = 'failed_write';
+					break;
+
+				case \UPLOAD_ERR_EXTENSION:
+					$log_error = true;
+					$error['error_code'] = self::ERR_SERVER;
+					$error['error_detail'] = 'ext_stopped';
+					break;
+
+				default:
+					$log_error = true;
+					$error['error_code'] = self::ERR_SERVER;
+					$error['error_detail'] = 'unknown';
+					break;
+			}
+		}
+
+		if (!$error['error_code']) {
+			$error = null;
+		}
+
+		if (!$error && $restriction) {
+			$error = $restriction->getError($file);
+		}
+
+		if (!$error || $error['error_code']) {
+			return null;
+		}
+
+		if ($log_error) {
+			App::logErrorMessage('failed_upload', 'INFO', "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}", array(
+				'error_code' => $error['error_code'],
+				'error_detail' => $error['error_detail'],
+				'filename' => $file->getClientOriginalName(),
+				'type' => $file->getClientMimeType(),
+				'size' => $file->getClientSize(),
+				'file_err_code' => $file->getError()
+			));
+		}
+
+		return $error;
+	}
+
+
+	/**
+	 * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+	 * @param bool $is_temp
+	 * @return \Application\DeskPRO\Entity\Blob
+	 */
+	public function accept(UploadedFile $file, $is_temp = false)
+	{
+		$desc = $this->filestorage->createRandomPath();
+
+		try {
+			$mime_type = $file->getMimeType();
+		} catch (\Exception $e) {
+			$mime_type = $file->getClientMimeType();
+		}
+
+		if (!$mime_type) {
+			$mime_type = ContentTypes::getContentTypeFromFilename($file->getClientOriginalName());
+		}
+
+		if (!$mime_type) {
+			$mime_type = 'application/octet-stream';
+		}
+
+		$filename = $file->getClientOriginalName();
+		if (!$filename) {
+			$filename = crc32(mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999));
+			$ext = ContentTypes::findExtensionForContentType($mime_type);
+			if ($ext) {
+				$filename .= '.' . $ext;
+			}
+		}
+
+		$desc->write(file_get_contents($file->getRealPath()), array(
+			'content_type' => $mime_type,
+			'filename' => $filename,
+			'is_temp' => $is_temp
+		));
+
+		$blob_id = $desc->getPath();
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
+
+		return $blob;
+	}
+}
