@@ -255,6 +255,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 				}
 
+				options.start = function() {
+					// Dont stack error messes. Once you upload again, the old one disappears
+					$(el).find('.error').remove();
+				};
+
 				return $(el).fileupload(options).bind('fileuploaddragover.' + options.namespace, function(e) {
 					$('body').addClass('file-drag-over');
 				});

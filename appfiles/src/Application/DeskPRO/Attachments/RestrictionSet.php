@@ -21,7 +21,8 @@ use Orb\Util\Strings;
 class RestrictionSet
 {
 	const ERR_SIZE = 'size';
-	const ERR_BAD_EXT = 'ext';
+	const ERR_FAIL_MUST_EXT = 'not_in_allowed_exts';
+	const ERR_FAIL_NOT_EXT = 'not_allowed_exts';
 
 	/**
 	 * The max size to accept
@@ -63,14 +64,14 @@ class RestrictionSet
 
 		if ($this->allowed_exts && !in_array($ext, $this->allowed_exts)) {
 			return array(
-				'error_code' => self::ERR_BAD_EXT,
+				'error_code' => self::ERR_FAIL_MUST_EXT,
 				'error_detail' => implode(',', $this->allowed_exts)
 			);
 		}
 
 		if ($this->disallowed_exts && in_array($ext, $this->disallowed_exts)) {
 			return array(
-				'error_code' => self::ERR_BAD_EXT,
+				'error_code' => self::ERR_FAIL_NOT_EXT,
 				'error_detail' => implode(',', $this->disallowed_exts)
 			);
 		}

@@ -51,6 +51,7 @@ class MainController extends AbstractController
 
 		$error = $accept->getError($file, 'user');
 		if ($error) {
+			$error['error'] = $this->container->getTranslator()->phrase('user.attach_error_' . $error['error_code'], $error);
 			return $this->createJsonResponse(array($error));
 		}
 

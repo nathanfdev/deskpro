@@ -76,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<br class="clear" />
 
             </div>
-            <div class="col">                    
+            <div class="col">
                 <button class="clean-white small switch-org" id="{{baseId}}_switch_org" style="display: none">Change Organization</button>
                 <div class="org-edit" style="display: block" id="{{baseId}}_org_edit_wrap">
 			<div
@@ -139,7 +139,7 @@ pageMeta.baseId = '{{ baseId }}';
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Type',
-                                'options': deal_type,                                
+                                'options': deal_type,
                                 'add_classname': 'select-deal-type'
                             } %}
                     </div>
@@ -151,7 +151,7 @@ pageMeta.baseId = '{{ baseId }}';
                                 'with_blank': true,
                                 'with_blank2': true,
                                 'blank_title': 'Set Deal Stage',
-                                'options': deal_stage,                                
+                                'options': deal_stage,
                                 'add_classname': 'select-stage-type'
                             } %}
                             </dd>
@@ -159,9 +159,9 @@ pageMeta.baseId = '{{ baseId }}';
                     <div class="col">
                             <h4>Assignment</h4>
                             <input type="hidden" name="newdeal[agent_id]" value="{{person.id}}" id="{{baseId}}_agent_id" />
-                            
+
                             <span id="{{baseId}}_assign_btn" class="agent-prop-links">
-                                    <span id="{{baseId}}_agent_label">Me</span> 
+                                    <span id="{{baseId}}_agent_label">Me</span>
                             </span>
                     </div>
                 <div class="col">
@@ -216,7 +216,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">Properties</li>					
+					<li data-tab-for="> .tab-properties">Properties</li>
 					<li data-tab-for="> .tab-attach">Attachments</li>
 				</ul>
 			</nav>
@@ -224,7 +224,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						
+
 					</dl>
 				</div>
 				{# /Tab Properties #}
@@ -235,11 +235,17 @@ pageMeta.baseId = '{{ baseId }}';
 						<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
 					</script>
 					<script class="template-download" type="text/x-jquery-tmpl">
-						<li class="uploaded">
-							<input type="checkbox" checked="checked" name="newdeal[attach][]" value="${blob_id}" />
-							<a href="${download_url}" target="_blank">${filename}</a>
-							<span class="size">${filesize_readable}</span>
-						</li>
+						{{ '{{if error}} '}}
+							<li class="error">
+								${error}
+							</li>
+						{{ '{{else}} '}}
+							<li class="uploaded">
+								<input type="checkbox" checked="checked" name="newdeal[attach][]" value="${blob_id}" />
+								<a href="${download_url}" target="_blank">${filename}</a>
+								<span class="size">${filesize_readable}</span>
+							</li>
+						{{ '{{/if}} '}}
 					</script>
 					<h6>Attachments</h6>
 					<div class="file-input">

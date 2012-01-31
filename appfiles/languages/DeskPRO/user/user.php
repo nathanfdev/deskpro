@@ -118,4 +118,10 @@
 	'user.error_not_found_title' => 'Not Found',
 	'user.error_not_found' => 'The page you are looking for was not found.',
 
+	'user.attach_error_size' => 'Your attachment is too large. The maximum file size is {{error_detail}}',
+	'user.attach_error_failed_upload' => 'Your attachment failed to upload (did you cancel it?). You should try again.',
+	'user.attach_error_no_file' => 'Please select a file to upload',
+	'user.attach_error_server_error' => 'There was a problem with our server while trying to accept your attachment. Please try again.',
+	'user.attach_error_not_in_allowed_exts' => 'Only the following file types can be uploaded: {{error_detail}}',
+	'user.attach_error_not_allowed_exts' => 'The type of file you uploaded is not allowed.',
 );

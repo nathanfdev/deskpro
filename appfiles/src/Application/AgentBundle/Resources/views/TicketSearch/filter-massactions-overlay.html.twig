@@ -138,11 +138,17 @@
 									<li class="uploading">${name} ({{ phrase('agent.loading_saving') }})</li>
 								</script>
 								<script class="template-download" type="text/x-jquery-tmpl">
-									<li>
-										<input type="hidden" name="actions[reply][attach_ids][]" value="${blob_id}" />
-										<em class="remove-attach-trigger"></em>
-										<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
-									</li>
+									{{ '{{if error}} '}}
+										<li class="error">
+											${error}
+										</li>
+									{{ '{{else}} '}}
+										<li>
+											<input type="hidden" name="actions[reply][attach_ids][]" value="${blob_id}" />
+											<em class="remove-attach-trigger"></em>
+											<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+										</li>
+									{{ '{{/if}}'}}
 								</script>
 							</ul>
 							<div class="input-wrap">

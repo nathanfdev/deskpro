@@ -72,7 +72,7 @@
 
 	'core.attach_user_maxsize' => '5242880',
 	'core.attach_user_must_exts' => null,
-	'core.attach_user_not_exts' => 'php',
+	'core.attach_user_not_exts' => null,
 
 	'core.enable_departments' => true,
 	'core.enable_products' => true,

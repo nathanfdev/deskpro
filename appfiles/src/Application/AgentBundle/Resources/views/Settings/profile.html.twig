@@ -39,10 +39,16 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<p>{{ phrase('agent.uploading') }} ${name}</p>
 			</script>
 			<script class="template-download" type="text/x-jquery-tmpl">
-				<div>
-					<input type="hidden" name="settings_profile[new_picture_blob_id]" class="new_blob_id" value="${blob_auth_id}" />
-					<img src="${download_url}?s=80" class="pic-new" data-setted-size="${download_url}?s=60" />
-				</div>
+				{{ '{{if error}} '}}
+					<div class="error">
+						${error}
+					</div>
+				{{ '{{else}} '}}
+					<div>
+						<input type="hidden" name="settings_profile[new_picture_blob_id]" class="new_blob_id" value="${blob_auth_id}" />
+						<img src="${download_url}?s=80" class="pic-new" data-setted-size="${download_url}?s=60" />
+					</div>
+				{{ '{{/if}}' }}
 			</script>
 		</div>
 

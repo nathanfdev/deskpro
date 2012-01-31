@@ -21,7 +21,7 @@ use Application\DeskPRO\App;
 
 class AcceptAttachment
 {
-	const ERR_SIZE    = 'sys_size';
+	const ERR_SIZE    = 'size';
 	const ERR_FAILED  = 'failed_upload';
 	const ERR_NO_FILE = 'no_file';
 	const ERR_SERVER  = 'server_error';
@@ -99,7 +99,7 @@ class AcceptAttachment
 			switch ($file->getError()) {
 				case \UPLOAD_ERR_INI_SIZE:
 					$error['error_code'] = self::ERR_SIZE;
-					$error['error_detail'] = Numbers::parseIniSize(ini_get('upload_max_filesize'));
+					$error['error_detail'] = \Orb\Util\Env::getEffectiveMaxUploadSize();
 					break;
 
 				case \UPLOAD_ERR_PARTIAL:
@@ -146,7 +146,7 @@ class AcceptAttachment
 			$error = $restriction->getError($file);
 		}
 
-		if (!$error || $error['error_code']) {
+		if (!$error || !$error['error_code']) {
 			return null;
 		}
 
