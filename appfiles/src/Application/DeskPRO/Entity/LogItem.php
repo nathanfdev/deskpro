@@ -76,7 +76,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The log message
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="message", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message;
 

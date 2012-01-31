@@ -49,12 +49,6 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	protected $title;
 
 	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="labels", type="string", length=1000)
-	 */
-	protected $labels = '';
-
-	/**
 	 * @var bool
 	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */

@@ -70,7 +70,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The org importance
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="importance", type="smallint")
+	 * @ORM_Mapping\Column(name="importance", type="integer")
 	 */
 	protected $importance = 0;
 

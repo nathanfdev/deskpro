@@ -57,7 +57,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The class responsible for the view
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="view_class", type="string", length=500)
+	 * @ORM_MAPPING\Column(name="view_class", type="string", length=255)
 	 */
 	protected $view_class;
 
@@ -65,7 +65,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * Number of slots the stat takes up in the dashboard
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="grid_slots", type="smallint")
+	 * @ORM_MAPPING\Column(name="grid_slots", type="integer")
 	 */
 	protected $grid_slots;
 
@@ -73,7 +73,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * Number of cols the stat takes up in the dashboard
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="grid_columns", type="smallint")
+	 * @ORM_MAPPING\Column(name="grid_columns", type="integer")
 	 */
 	protected $grid_columns;
 
@@ -81,7 +81,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * Number of rows the stat takes up in the dashboard
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="grid_rows", type="smallint")
+	 * @ORM_MAPPING\Column(name="grid_rows", type="integer")
 	 */
 	protected $grid_rows;
 
@@ -89,7 +89,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The order of the stat in the dashboard
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="slot_number", type="smallint")
+	 * @ORM_MAPPING\Column(name="slot_number", type="integer")
 	 */
 	protected $slot_number;
 

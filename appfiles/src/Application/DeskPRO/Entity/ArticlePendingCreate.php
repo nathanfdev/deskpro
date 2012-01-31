@@ -51,7 +51,7 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="comment", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="comment", type="text")
 	 */
 	protected $comment = '';
 

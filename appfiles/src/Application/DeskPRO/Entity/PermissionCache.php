@@ -53,7 +53,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * A comma-separated list of usergroup_ids this cache applies to
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="usergroup_ids", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="usergroup_ids", type="text")
 	 */
 	protected $usergroup_ids = '';
 

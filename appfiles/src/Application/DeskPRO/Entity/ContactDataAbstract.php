@@ -47,7 +47,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The label/comment/name for this contact entry (Work, Home, etc).
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="comment", type="string", length=100)
+	 * @ORM_Mapping\Column(name="comment", type="text")
 	 */
 	protected $comment = '';
 

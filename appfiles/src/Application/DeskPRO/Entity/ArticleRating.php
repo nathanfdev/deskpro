@@ -66,7 +66,7 @@ class ArticleRating extends \Application\DeskPRO\Domain\DomainObject
 	 * Comment left by the user (usually in the case of negative)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="comment", type="string", length=2500)
+	 * @ORM_Mapping\Column(name="comment", type="text")
 	 */
 	protected $comment = '';
 

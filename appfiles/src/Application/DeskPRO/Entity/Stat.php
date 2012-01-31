@@ -115,7 +115,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * Stat concept class. The class responsible for getting the data for this stat
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="stat_concept_class", type="string", length=500)
+	 * @ORM_MAPPING\Column(name="stat_concept_class", type="string", length=255)
 	 */
 	protected $stat_concept_class;
 

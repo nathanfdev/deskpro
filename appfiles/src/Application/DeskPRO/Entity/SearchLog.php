@@ -67,7 +67,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="query", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="query", type="text")
 	 */
 	protected $query;
 

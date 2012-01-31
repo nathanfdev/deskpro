@@ -28,7 +28,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -63,7 +63,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * Just the headers portion of the email
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="headers", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="headers", type="text")
 	 */
 	protected $headers;
 
