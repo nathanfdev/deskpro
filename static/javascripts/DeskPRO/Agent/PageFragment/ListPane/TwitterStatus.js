@@ -23,7 +23,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 	},
 
 	_initHeader: function() {
-		this._initOrderBySelectField();
+		//this._initSortByFields();
 		this._initIncludeFields();
 	},
 
@@ -42,17 +42,16 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 		this._initArchive();
 	},
 
-	_initOrderBySelectField: function() {
-		$('.display-options select[name=sortbydate]', this.header)
-			.on('change', $.proxy(this.reload, this));
+	_initSortByFields: function() {
+		$('.order-by-menu a', this.header).on('change', $.proxy(this.reload, this));
 	},
 
 	_initIncludeFields: function() {
-		$('.display-options input:checkbox', this.header).on('change', $.proxy(this.reload, this));
+		$('.list-control-bar input:checkbox', this.header).on('change', $.proxy(this.reload, this));
 
-		$('.display-options label', this.header).each($.proxy(function(idx, el) {
+		$('.list-control-bar label', this.header).each($.proxy(function(idx, el) {
 			var label = $(el),
-				input = $('.display-options input[name='+label.data('for')+']', this.header),
+				input = $('.list-control-bar input[name='+label.data('for')+']', this.header),
 				id = Orb.getUniqueId('twitter_options_'+label.data('for'));
 
 			input.attr('id', id);
@@ -78,11 +77,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 
 	_getDisplayOptions: function() {
 		var options = {
-			sortbydate: $('.display-options select[name=sortbydate] option:selected', this.header).val(),
+			sortbydate: $('.list-control-bar select[name=sortbydate] option:selected', this.header).val(),
 			include: {}
 		};
 
-		$('.display-options input:checkbox', this.header).each(function() {
+		$('.list-control-bar input:checkbox', this.header).each(function() {
 			var field = $(this);
 			options.include[field.attr('name')] = field.attr('checked') ? 1 : 0;
 		});
@@ -331,12 +330,29 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Orb.Class({
 				return false;
 			}, this));
 
+			reply.on('keyup', $.proxy(function(e) {
+				// Update character count display
+				var standardStatusLimit = this.getMetaData('standardStatusLimit') || 160;
+				var statusLength = area.val().length;
+				if (statusLength <= standardStatusLimit) {
+					var html = '<span>' + statusLength + '</span> characters';
+					$('.twitter-status-count span').html(html);
+				}
+				else {
+					var html = 'Reply too long for twitter, will be sent as a long message';
+					$('.twitter-status-count span').html(html);
+				}
+				e.preventDefault();
+				return false;
+			}, this));
+
 			reply.show();
 			area.focus();
 
 			e.preventDefault();
 			return false;
 		}, this));
+
 	},
 
 	doReply: function(id, text, type, account_id) {

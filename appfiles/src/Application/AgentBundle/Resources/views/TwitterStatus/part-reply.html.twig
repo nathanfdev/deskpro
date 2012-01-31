@@ -1,9 +1,13 @@
 
+<style type="text/css">
+	.twitter-status-count { text-align: right; }
+</style>
+
 <div class="form-reply" style="display: none">
 	<form>
 		<h5>Add Reply</h5>
 		<div class="type" style="float: left">
-			<div style="float: left"> 
+			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_public.png') }}" /><br />
 				<span>Public</span>
 			</div>
@@ -11,7 +15,7 @@
 				<img src="{{ asset('images/agent/icons/twitter_private.png') }}" /><br />
 				<span>Private</span>
 			</div>
-			
+
 			<ul style="display: none">
 				<li>
 					<input type="radio" name="type" value="private" />
@@ -33,5 +37,6 @@
 			</select>
 		</div>
 		<textarea name="text" rows="2" cols="40"></textarea>
+		<p class="twitter-status-count"><span>0</span> characters</p>
 	</form>
 </div>

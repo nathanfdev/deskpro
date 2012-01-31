@@ -601,5 +601,11 @@ $collection->add('user_chat_ignoreproactive', new Route(
 	array()
 ));
 
+$collection->add('user_twitter_long_message', new Route(
+	'/twitter-message/{id}',
+	array('_controller' => 'UserBundle:Twitter:message'),
+	array(),
+	array()
+));
 
 return $collection;

@@ -107,7 +107,7 @@ class TwitterStatus extends EntityRepository
 		});
 
 		if (!$userIds) {
-			return array();
+			return 0;
 		}
 
 		$query = "
@@ -396,12 +396,13 @@ class TwitterStatus extends EntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findStarredTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findStarredTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = "
 			SELECT s
@@ -466,12 +467,13 @@ class TwitterStatus extends EntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = "
 			SELECT s
@@ -528,15 +530,16 @@ class TwitterStatus extends EntityRepository
 	 *
 	 * @param integer $id Agent Id
 	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
 	 * @param string $sortByDate (optional)
 	 * @param integer $limit (optional)
 	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
+	public function findTweetsForAgentTeamByAgentId($id, $includeArchived = false, $includeAccount = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = "
-			SELECT COUNT(s.id)
+			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			INNER JOIN s.agent_team at
 			INNER JOIN at.members m

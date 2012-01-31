@@ -41,7 +41,7 @@ class TwitterStatusController extends AbstractController
 		// fetch public timeline
 		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
 
-		return $this->renderList($account, $statuses, 'statuses');
+		return $this->renderList($account, $statuses, 'agent_twitter_statuses_list');
 	}
 
 	/**
@@ -60,7 +60,7 @@ class TwitterStatusController extends AbstractController
 
 		$messages = $account->getMessages($includeArchived, $this->getSortByDate());
 
-		return $this->renderList($account, $messages, 'messages');
+		return $this->renderList($account, $messages, 'agent_twitter_messages_list');
 	}
 
 	/**
@@ -79,7 +79,7 @@ class TwitterStatusController extends AbstractController
 
 		$replies = $account->getReplies($includeArchived, $this->getSortByDate());
 
-		return $this->renderList($account, $replies, 'replies');
+		return $this->renderList($account, $replies, 'agent_twitter_replies_list');
 	}
 
 	/**
@@ -98,7 +98,7 @@ class TwitterStatusController extends AbstractController
 
 		$mentions = $account->getMentions($includeArchived, $this->getSortByDate());
 
-		return $this->renderList($account, $mentions, 'mentions');
+		return $this->renderList($account, $mentions, 'agent_twitter_mentions_list');
 	}
 
 	/**
@@ -117,7 +117,7 @@ class TwitterStatusController extends AbstractController
 
 		$retweets = $account->getRetweets($includeArchived, $this->getSortByDate());
 
-		return $this->renderList($account, $retweets, 'retweets');
+		return $this->renderList($account, $retweets, 'agent_twitter_retweets_list');
 	}
 
 	/**
@@ -136,7 +136,7 @@ class TwitterStatusController extends AbstractController
 
 		$statuses = $account->getOutgoing($includeArchived, $this->getSortByDate());
 
-		return $this->renderList($account, $statuses, 'outgoing');
+		return $this->renderList($account, $statuses, 'agent_twitter_outgoing_list');
 	}
 
 	/**
@@ -156,14 +156,14 @@ class TwitterStatusController extends AbstractController
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
 	 * @param array $statuses
-	 * @param string $type
+	 * @param string $route
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, $type)
+	protected function renderList(TwitterAccount $account, array $statuses, $route)
 	{
 		// view parameters
 		$parameters = array(
-			'type' => $type,
+			'twitter_list_route' => $route,
 			'account' => $account,
 			'statuses' => $statuses,
             'person' => $this->getPerson(),

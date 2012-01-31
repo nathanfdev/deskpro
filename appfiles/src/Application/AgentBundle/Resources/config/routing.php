@@ -1047,21 +1047,21 @@ $collection->add('agent_twitter_statusespane', new Route(
 
 $collection->add('agent_twitter_starred_tweets_list', new Route(
 	'/twitter/starred-tweets',
-	array('_controller' => 'AgentBundle:TwitterAccount:starredTweets'),
+	array('_controller' => 'AgentBundle:Twitter:starredTweets'),
 	array('account_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('agent_twitter_my_tweets_list', new Route(
 	'/twitter/my-tweets',
-	array('_controller' => 'AgentBundle:TwitterAccount:myTweets'),
+	array('_controller' => 'AgentBundle:Twitter:myTweets'),
 	array('account_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('agent_twitter_team_tweets_list', new Route(
 	'/twitter/team-tweets',
-	array('_controller' => 'AgentBundle:TwitterAccount:TeamTweets'),
+	array('_controller' => 'AgentBundle:Twitter:TeamTweets'),
 	array('account_id' => '\\d+'),
 	array()
 ));
@@ -1173,21 +1173,21 @@ $collection->add('agent_twitter_getsectiondata', new Route(
 
 $collection->add('agent_twitter_list_searches', new Route(
 	'/twitter/searches/{account_id}',
-	array('_controller' => 'AgentBundle:TwitterAccount:listSearches'),
+	array('_controller' => 'AgentBundle:Twitter:listSearches'),
 	array('account_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('agent_twitter_run_search', new Route(
 	'/twitter/{account_id}/search/{search_id}',
-	array('_controller' => 'AgentBundle:TwitterAccount:runSearch'),
+	array('_controller' => 'AgentBundle:Twitter:runSearch'),
 	array('account_id' => '\\d+', 'search_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('agent_twitter_new_search', new Route(
 	'/twitter/{account_id}/search/new',
-	array('_controller' => 'AgentBundle:TwitterAccount:newSearch'),
+	array('_controller' => 'AgentBundle:Twitter:newSearch'),
 	array('account_id' => '\\d+'),
 	array()
 ));
