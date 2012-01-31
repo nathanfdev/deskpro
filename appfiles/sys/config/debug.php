@@ -6,6 +6,7 @@
 // the end of your config.php:
 //    require DP_ROOT.'/sys/config/debug.php';
 
+if (!is_array($DP_CONFIG)) $DP_CONFIG = array();
 $DP_CONFIG['debug'] = array();
 
 /**
