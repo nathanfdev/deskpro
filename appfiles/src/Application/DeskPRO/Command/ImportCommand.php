@@ -207,12 +207,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$cmd = $php_path . ' console.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
 					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin');
 					$proc->setTimeout(600);
-					$proc->run();
-
-					echo $proc->getOutput();
+					$proc->run(function ($type, $buffer) {
+						if ('err' === $type) {
+							echo '[ERR] '.$buffer;
+						} else {
+							echo $buffer;
+						}
+					});
 
 					if (!$proc->isSuccessful()) {
-						echo $proc->getErrorOutput();
 						$logger->log("Error detected, stopping.", 'ERROR');
 						return 1;
 					}
