@@ -39,7 +39,7 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="dpblob")
+	 * @ORM_Mapping\Column(name="data", type="dpblob", length=4294967295)
 	 */
 	protected $data;
 }
