@@ -115,11 +115,13 @@ class Choice extends HandlerAbstract
 
 		if ($value) {
 			if (is_array($value)) {
+				// Multiple selections in the form of field_1[] = childid
 				$ret = array();
 				foreach ($value as $k) {
 					$ret[] = array($k, 'value', 1);
 				}
 			} else {
+				// Single selections in the form of field_1 = childid
 				$ret = array(
 					array($value, 'value', 1)
 				);

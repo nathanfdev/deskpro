@@ -16,6 +16,16 @@ use Application\DeskPRO\Entity\PersonEmail;
 
 class UsersStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var array
+	 */
+	protected $custom_field_info = array();
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $fieldmanager;
+
 	public static function getTitle()
 	{
 		return 'Import Users';
@@ -33,6 +43,9 @@ class UsersStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM user_def");
+		$this->fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
+
 		$batch = $this->getIdsBatch($page - 1);
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
@@ -176,10 +189,67 @@ class UsersStep extends AbstractDeskpro3Step
 
 			$person->primary_email = $default_email;
 
+			//---
+			// Custom fields
+			//---
+
+			$form_data = array();
+			foreach ($this->custom_field_info as $field_info) {
+				$name = $field_info['name'];
+				if (!isset($user_info[$name]) || !$user_info[$name]) {
+					continue;
+				}
+
+				$field = $this->getEm()->find('DeskPRO:CustomDefPerson', $this->getMappedNewId('people_def', $field_info['id']));
+				if (!$field) {
+					continue;
+				}
+
+				$data = null;
+				switch ($field->handler_class) {
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+						$data = $user_info[$name];
+						break;
+
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+						$val = str_replace('|||', '', $user_info[$name]);
+						$new_val = $this->getMappedNewId('people_def_choice', $val);
+						if ($new_val) {
+							$data = $new_val;
+						}
+						break;
+
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
+						$vals = explode('|||', $user_info[$name]);
+						$new_vals = array();
+						foreach ($vals as $val) {
+							$new_val = $this->getMappedNewId('people_def_choice', $val);
+							if ($new_val) {
+								$new_vals[] = $new_val;
+							}
+						}
+						if ($new_vals) {
+							$data = $new_vals;
+						}
+						break;
+				}
+
+				if ($data) {
+					$form_data['field_' . $field->id] = $data;
+				}
+			}
+
 			$this->getEm()->persist($person);
 			$this->getEm()->flush();
-
 			$this->saveMappedId('user', $user_id, $person->id);
+
+			if ($form_data) {
+				$this->fieldmanager->saveFormToObject($form_data, $person);
+			}
+
+			$this->getEm()->persist($person);
+			$this->getEm()->flush();
 
 			$this->getDb()->commit();
 		} catch (\Exception $e) {

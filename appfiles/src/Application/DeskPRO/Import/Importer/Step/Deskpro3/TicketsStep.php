@@ -18,6 +18,16 @@ use Application\DeskPRO\Entity\TicketParticipant;
 
 class TicketsStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var array
+	 */
+	protected $custom_field_info = array();
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $fieldmanager;
+	
 	public static function getTitle()
 	{
 		return 'Import Tickets';
@@ -35,6 +45,9 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM ticket_def");
+		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
+
 		$sub_start_time = microtime(true);
 		$batch = $this->getIdsBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
@@ -285,6 +298,65 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$this->getEm()->persist($part);
 			$this->getEm()->flush();
+		}
+
+		#------------------------------
+		// Custom fields
+		#------------------------------
+
+		$form_data = array();
+		foreach ($this->custom_field_info as $field_info) {
+			$name = $field_info['name'];
+			if (!isset($ticket_info[$name]) || !$ticket_info[$name]) {
+				continue;
+			}
+
+			$field = $this->getEm()->find('DeskPRO:CustomDefTicket', $this->getMappedNewId('ticket_def', $field_info['id']));
+			if (!$field) {
+				continue;
+			}
+
+			$data = null;
+			switch ($field->handler_class) {
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+					$data = $ticket_info[$name];
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+					$val = str_replace('|||', '', $ticket_info[$name]);
+					$new_val = $this->getMappedNewId('ticket_def_choice', $val);
+					if ($new_val) {
+						$data = $new_val;
+					}
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
+					$vals = explode('|||', $ticket_info[$name]);
+					$new_vals = array();
+					foreach ($vals as $val) {
+						$new_val = $this->getMappedNewId('ticket_def_choice', $val);
+						if ($new_val) {
+							$new_vals[] = $new_val;
+						}
+					}
+					if ($new_vals) {
+						$data = $new_vals;
+					}
+					break;
+			}
+
+			if ($data) {
+				$form_data['field_' . $field->id] = $data;
+			}
+		}
+
+		$this->getEm()->persist($person);
+		$this->getEm()->flush();
+		$this->saveMappedId('user', $user_id, $person->id);
+
+		if ($form_data) {
+			$this->fieldmanager->saveFormToObject($form_data, $person);
 		}
 	}
 
