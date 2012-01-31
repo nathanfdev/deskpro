@@ -12,7 +12,7 @@ $DP_CONFIG['debug'] = array();
 /**
  * When enabled, boots Symfony into dev environment with debug options enabeld
  */
-//$DP_CONFIG['debug']['dev'] = true;
+$DP_CONFIG['debug']['dev'] = true;
 
 /**
  * Email a copy of errors to this address.
@@ -56,7 +56,7 @@ $DP_CONFIG['debug']['mail'] = array();
  */
 $DP_CONFIG['debug']['raw_assets'] = array();
 //$DP_CONFIG['debug']['raw_assets'][] = 'all -vendors';
-//$DP_CONFIG['debug']['raw_assets'][] = 'all';
+$DP_CONFIG['debug']['raw_assets'][] = 'all';
 
 /**
  * True to rename use .css from stylesheets/ instead of .less from stylesheets-less.
