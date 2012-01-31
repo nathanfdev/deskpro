@@ -6,6 +6,7 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 

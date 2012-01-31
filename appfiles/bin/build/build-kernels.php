@@ -6,6 +6,10 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+require './php-path.php';
+
+chdir(__DIR__);
+
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 require DP_ROOT . '/bin/build/inc.php';
@@ -30,7 +34,7 @@ $kernel_classes = array(
 if ($proc_kernel === null) {
 	$cache_dir = DP_ROOT.'/sys/cache/prod';
 	if (file_exists($cache_dir)) {
-		echo "Removing existing cache dir ... ";
+		echo "Removing existing cache dir $cache_dir ... ";
 		$proc = new Symfony\Component\Process\Process('rm -rf prod', DP_ROOT.'/sys/cache');
 		$proc->run();
 		if (!$proc->isSuccessful()) {
@@ -46,7 +50,7 @@ if ($proc_kernel === null) {
 		echo "Building {$kernel_class} ... ";
 		$time = microtime(true);
 
-		$cmd = './build-kernels.php --knum ' . $k;
+		$cmd = DP_PHP_PATH . ' ./build-kernels.php --knum ' . $k;
 		$proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
 		$proc->run();
 
@@ -68,7 +72,8 @@ if ($proc_kernel === null) {
 	require DP_ROOT.'/sys/system.php';
 
 	$class = $kernel_classes[$proc_kernel];
-	$kernel = new $class('prod', true);
+	$kernel = new $class('prod', false);
 	$kernel->boot();
+
 	exit(0);
 }

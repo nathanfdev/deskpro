@@ -6,6 +6,10 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+require './php-path.php';
+
+chdir(__DIR__);
+
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 
@@ -31,7 +35,7 @@ $loader->register();
 $time = microtime(true);
 echo "build-boostrap ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-bootstrap.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-bootstrap.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -50,7 +54,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-kernels ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-kernels.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-kernels.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -69,7 +73,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-caches ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-caches.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-caches.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -88,7 +92,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-assetic ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-assetic.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-assetic.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -107,7 +111,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-compiled ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-compiled.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-compiled.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -126,7 +130,7 @@ echo "\n";
 $time = microtime(true);
 echo "build-schema-file ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-schema-file.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-schema-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 
@@ -161,13 +165,36 @@ if (!$proc->isSuccessful()) {
 echo " DONE ";
 echo "\n";
 
+#####################################################################
+
+$time = microtime(true);
+echo "build-cleanup ... ";
+
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-cleanup.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
+$proc->run();
+
+if (!$proc->isSuccessful()) {
+	echo "ERROR\n";
+	echo $proc->getOutput();
+	echo $proc->getErrorOutput();
+	exit($proc->getExitCode());
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
+
+if ($htaccess_path && $htaccess_contents) {
+	file_put_contents($htaccess_path, $htaccess_contents);
+}
+
 
 #####################################################################
 
 $time = microtime(true);
 echo "build-checksum-file ... ";
 
-$proc = new \Symfony\Component\Process\Process('./build-checksum-file.php', DP_ROOT.'/bin/build');
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
 $proc->run();
 

@@ -6,6 +6,10 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
+require './php-path.php';
+
+chdir(__DIR__);
+
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 require DP_ROOT . '/bin/build/inc.php';
@@ -33,7 +37,7 @@ if ($proc_kernel === null) {
 		echo "Warming {$kernel_class} ... ";
 		$time = microtime(true);
 
-		$cmd = './build-caches.php --knum ' . $k;
+		$cmd = DP_PHP_PATH . ' ./build-caches.php --knum ' . $k;
 		$proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
 		$proc->setTimeout(600);
 		$proc->run();

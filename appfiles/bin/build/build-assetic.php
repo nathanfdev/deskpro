@@ -11,9 +11,9 @@ define('DP_ROOT', realpath(__DIR__ . '/../../'));
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
-$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
+$kernel = new \DeskPRO\Kernel\CliKernel('dev', false);
 
-$_SERVER['argv'] = array('x', 'dpdev:assetic', '-r', 'ALL');
+$_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
 
 $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run();
