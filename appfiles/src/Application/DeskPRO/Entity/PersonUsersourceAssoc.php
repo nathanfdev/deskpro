@@ -50,7 +50,6 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * ID such as a UserID.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Index
 	 * @ORM_Mapping\Column(name="identity", type="string", length=255)
 	 */
 	protected $identity;
@@ -61,7 +60,6 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * if this changes.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Index
 	 * @ORM_Mapping\Column(name="identity_friendly", type="string", length=255)
 	 */
 	protected $identity_friendly;

@@ -205,7 +205,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="ticket_hash", type="string", length="40")
+	 * @ORM_Mapping\Column(name="ticket_hash", type="string", length=40)
 	 */
 	protected $ticket_hash;
 

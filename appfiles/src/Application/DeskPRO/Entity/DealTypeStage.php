@@ -33,12 +33,11 @@ class DealTypeStage extends \Application\DeskPRO\Domain\DomainObject
      *
      */
     protected $id = null;
-    
+
     /**
      * @var \Application\DeskPRO\Entity\DealType
      * @ORM_Mapping\ManyToOne(targetEntity="DealType", inversedBy="deal_type_stage")
      * @ORM_Mapping\JoinColumn(name="deal_type_id", referencedColumnName="id", onDelete="cascade")
-     * @ORM_Mapping\Id
      */
     protected $deal_type;
 
@@ -46,7 +45,6 @@ class DealTypeStage extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\DealStage
      * @ORM_Mapping\ManyToOne(targetEntity="DealStage", inversedBy="deal_type_stage")
      * @ORM_Mapping\JoinColumn(name="deal_stage_id", referencedColumnName="id", onDelete="cascade")
-     * @ORM_Mapping\Id
      */
     protected $deal_stage;
 

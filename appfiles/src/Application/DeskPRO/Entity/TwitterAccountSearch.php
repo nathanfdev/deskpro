@@ -43,7 +43,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="term", type="string", length="255")
+	 * @ORM_Mapping\Column(name="term", type="string", length=255)
 	 */
 	protected $term;
 

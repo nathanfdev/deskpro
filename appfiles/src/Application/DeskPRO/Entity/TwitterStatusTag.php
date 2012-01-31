@@ -43,7 +43,7 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="hash", type="string", length="255")
+	 * @ORM_Mapping\Column(name="hash", type="string", length=255)
 	 */
 	protected $hash;
 

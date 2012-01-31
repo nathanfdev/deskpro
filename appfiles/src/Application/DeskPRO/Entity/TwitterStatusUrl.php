@@ -43,7 +43,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="url", type="string", length="255")
+	 * @ORM_Mapping\Column(name="url", type="string", length=255)
 	 */
 	protected $url;
 

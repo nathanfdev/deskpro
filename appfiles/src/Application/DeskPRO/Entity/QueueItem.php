@@ -46,7 +46,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: tube
 	 *
 	 * @var string
-	 * @ORM_Mapping\Index
 	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;

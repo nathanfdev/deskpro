@@ -28,7 +28,7 @@ class BlobObjectAttach extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="object_type", type="string", length="100")
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
 	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;

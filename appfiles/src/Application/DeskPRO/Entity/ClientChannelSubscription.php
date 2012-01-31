@@ -60,7 +60,7 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * (Ex in the ajax script we can just check the currently logged in user).
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="private_channel_id", type="string", length="150", nullable=true)
+	 * @ORM_Mapping\Column(name="private_channel_id", type="string", length=150, nullable=true)
 	 */
 	protected $private_channel_id = null;
 

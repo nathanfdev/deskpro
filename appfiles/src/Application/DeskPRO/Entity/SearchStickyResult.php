@@ -20,7 +20,6 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Entity
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\SearchStickyResult")
  * @ORM_Mapping\Table(name="search_sticky_result")
- * @Orm:HasLifecycleCallbacks
  */
 class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
 {

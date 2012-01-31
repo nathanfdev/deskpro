@@ -42,7 +42,7 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	 * The Grouping Reference
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="grouping_ref", type="string", length="255", nullable=true)
+	 * @ORM_MAPPING\Column(name="grouping_ref", type="string", length=255, nullable=true)
 	 */
 	protected $grouping_ref;
 

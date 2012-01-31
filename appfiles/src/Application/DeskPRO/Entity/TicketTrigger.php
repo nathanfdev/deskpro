@@ -86,7 +86,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * Used prefixes: "urgency." for urgency-type triggers.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length=50, nullable=true)
 	 */
 	protected $sys_name = null;
 

@@ -72,7 +72,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length=50, nullable=true)
 	 */
 	protected $sys_name = null;
 

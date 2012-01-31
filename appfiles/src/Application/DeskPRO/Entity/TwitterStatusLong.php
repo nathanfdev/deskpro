@@ -45,7 +45,7 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="text", type="string", length="4000")
+	 * @ORM_Mapping\Column(name="text", type="string", length=4000)
 	 */
 	protected $text;
 

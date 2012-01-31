@@ -18,7 +18,6 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  *
  * @ORM_Mapping\Entity
  * @ORM_Mapping\Table(name="search_term_boosters")
- * @Orm:HasLifecycleCallbacks
  */
 class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
 {

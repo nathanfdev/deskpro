@@ -49,7 +49,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.url, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @ORM_Mapping\Index
 	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;

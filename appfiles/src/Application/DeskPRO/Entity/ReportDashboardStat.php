@@ -31,7 +31,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_MAPPING\Column(name="title", type="string", length="255")
+	 * @ORM_MAPPING\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -57,7 +57,7 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The class responsible for the view
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="view_class", type="string", length="500")
+	 * @ORM_MAPPING\Column(name="view_class", type="string", length=500)
 	 */
 	protected $view_class;
 

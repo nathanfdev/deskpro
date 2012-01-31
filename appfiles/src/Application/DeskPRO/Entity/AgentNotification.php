@@ -52,7 +52,7 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="notify_type", type="string", length="50")
+	 * @ORM_Mapping\Column(name="notify_type", type="string", length=50)
 	 */
 	protected $notify_type = false;
 

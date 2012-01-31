@@ -107,7 +107,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The grouping type
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="grouping_ref", type="string", length="255")
+	 * @ORM_MAPPING\Column(name="grouping_ref", type="string", length=255)
 	 */
 	protected $grouping_ref;
 
@@ -115,7 +115,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * Stat concept class. The class responsible for getting the data for this stat
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="stat_concept_class", type="string", length="500")
+	 * @ORM_MAPPING\Column(name="stat_concept_class", type="string", length=500)
 	 */
 	protected $stat_concept_class;
 
@@ -123,7 +123,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The stat variation.
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="variation", type="string", length="7")
+	 * @ORM_MAPPING\Column(name="variation", type="string", length=7)
 	 */
 	protected $variation;
 
@@ -155,7 +155,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The frequency to run the stat
 	 *
 	 * @var string
-	 * @ORM_MAPPING\Column(name="run_frequency", type="string", length="10")
+	 * @ORM_MAPPING\Column(name="run_frequency", type="string", length=10)
 	 */
 	protected $run_frequency = "daily";
 
