@@ -87,7 +87,7 @@ class BanningStep extends AbstractDeskpro3Step
 		$start_time = microtime(true);
 
 		foreach ($email_bans as $email) {
-			$this->getDb()->insert('ban_emails', array('banned_email' => $email));
+			$this->getDb()->replace('ban_emails', array('banned_email' => $email));
 		}
 
 		$end_time = microtime(true);
@@ -118,7 +118,7 @@ class BanningStep extends AbstractDeskpro3Step
 		$start_time = microtime(true);
 
 		foreach ($email_bans as $email) {
-			$this->getDb()->insert('ban_emails', array('banned_email' => $email));
+			$this->getDb()->replace('ban_emails', array('banned_email' => $email));
 		}
 
 		$end_time = microtime(true);
