@@ -74,9 +74,6 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			tags: {
 				items: exist
 			}
-		}).on('focus', function() {
-			$(this).trigger('change');
-			$(this).trigger('showDropdown');
 		});
 
 		self.data = exist;
@@ -90,7 +87,6 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				last = str;
 				self.data = data;
 				self.fireEvent('change', data);
-				$(this).trigger('showDropdown');
 			}
 		});
 	},
