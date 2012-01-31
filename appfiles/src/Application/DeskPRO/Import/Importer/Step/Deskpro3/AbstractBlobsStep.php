@@ -68,7 +68,12 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			$filetype = 'application/octet-stream';
 		}
 
-		$file = $this->getOldDb()->fetchAllCol("SELECT blobdata FROM blob_parts ORDER BY displayorder ASC");
+		$file = $this->getOldDb()->fetchAllCol("
+			SELECT blobdata
+			FROM blob_parts
+			WHERE blobid = ?
+			ORDER BY displayorder ASC
+		", array($record['blobid']));
 		$file = implode('', $file);
 
 		$hash = sha1($file);
