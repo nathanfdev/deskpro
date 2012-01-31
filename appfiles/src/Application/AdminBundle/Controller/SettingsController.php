@@ -36,6 +36,16 @@ class SettingsController extends AbstractController
 				'core.force_domain'     => empty($_POST['settings']['core.force_domain']) ? 0 : 1,
 				'core.cookie_path'      => $_POST['settings']['core.cookie_path'],
 				'core.cookie_domain'    => $_POST['settings']['core.cookie_domain'],
+				'core.cookie_domain'    => $_POST['settings']['core.cookie_domain'],
+				'core.cookie_domain'    => $_POST['settings']['core.cookie_domain'],
+
+				'core.attach_agent_maxsize'   => (int)$_POST['settings']['core.attach_agent_maxsize'],
+				'core.attach_agent_must_exts' => $_POST['settings']['core.attach_agent_must_exts'],
+				'core.attach_agent_not_exts'  => $_POST['settings']['core.attach_agent_not_exts'],
+
+				'core.attach_user_maxsize'   => (int)$_POST['settings']['core.attach_user_maxsize'],
+				'core.attach_user_must_exts' => $_POST['settings']['core.attach_user_must_exts'],
+				'core.attach_user_not_exts'  => $_POST['settings']['core.attach_user_not_exts'],
 			);
 			array_walk($update_settings, 'trim');
 

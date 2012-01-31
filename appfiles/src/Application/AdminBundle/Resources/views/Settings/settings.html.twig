@@ -1,6 +1,12 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.SettingsPage' %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Settings</h1>
+{% block pagebar %}
+	<ul>
+		<li>Settings</li>
+	</ul>
+{% endblock %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/SettingsPage.js') }}"></script>
 {% endblock %}
 {% block page %}
 
@@ -8,7 +14,7 @@
 	<a href="{{ path('admin_settings_adv') }}">Advanced settings view</a>
 </div>
 
-<form action="{{ path('admin_settings') }}" method="POST">
+<form action="{{ path('admin_settings') }}" method="POST" id="settings_form">
 <input type="hidden" name="process" value="1" />
 
 <div class="setting_field_row">
@@ -58,6 +64,44 @@
 	</div>
 </div>
 <div class="setting_field_row">
+	<h4>Attachments</h4>
+	<div class="setting_fields">
+		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 15px" width="50%">
+			<h6>Users</h6>
+
+			<div class="field_row">
+				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
+				Max upload size: <span id="user_attach_maxsize_label"></span> MB
+				<div id="user_attach_maxsize_slider"></div>
+			</div>
+
+			<div class="field_row">
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> Disallow these file types</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> Only allow these file types</label>
+				<input type="hidden" id="user_attach_limit_list_whitelist" name="settings[core.attach_user_must_exts]" value="{{ app.getSetting('core.attach_user_must_exts') }}" />
+				<input type="hidden" id="user_attach_limit_list_blacklist" name="settings[core.attach_user_not_exts]" value="{{ app.getSetting('core.attach_user_not_exts') }}" />
+				<input type="text" id="user_attach_limit_input" style="width: 300px; height: 22px;" />
+			</div>
+		</td><td valign="top" style="padding-left: 15px" width="50%">
+			<h6>Agents</h6>
+
+			<div class="field_row">
+				<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
+				Max upload size: <span id="agent_attach_maxsize_label"></span> MB
+				<div id="agent_attach_maxsize_slider"></div>
+			</div>
+
+			<div class="field_row">
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> Disallow these file types</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> Only allow these file types</label>
+				<input type="hidden" id="agent_attach_limit_list_whitelist" name="settings[core.attach_agent_must_exts]" value="{{ app.getSetting('core.attach_agent_must_exts') }}" />
+				<input type="hidden" id="agent_attach_limit_list_blacklist" name="settings[core.attach_agent_not_exts]" value="{{ app.getSetting('core.attach_agent_not_exts') }}" />
+				<input type="text" id="agent_attach_limit_input" style="width: 300px; height: 22px;" />
+			</div>
+		</table>
+	</div>
+</div>
+<div class="setting_field_row">
 	<h4>Advanced</h4>
 	<div class="setting_fields">
 		<div class="field_row">
@@ -76,7 +120,7 @@
 </div>
 
 <div class="setting_field_row" style="text-align: center">
-	<button class="dp-button">Save Settings</button>
+	<button class="clean-white">Save Settings</button>
 </div>
 
 </form>
