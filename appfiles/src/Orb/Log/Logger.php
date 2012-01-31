@@ -138,6 +138,9 @@ class Logger
 	public function log($message, $priority, array $info = array())
 	{
 		if (is_string($priority)) {
+			if ($priority == 'ERROR') {
+				$priority = 'ERR';
+			}
 			$priority = constant('Orb\\Log\\Logger::' . strtoupper($priority));
 		}
 

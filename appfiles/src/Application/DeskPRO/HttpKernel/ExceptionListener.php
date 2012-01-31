@@ -30,7 +30,7 @@ class ExceptionListener
 
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
-		if ($this->handling_exception === true) return false;
+		if ($this->handling_exception === true) return;
 		$this->handling_exception = true;
 
 		$exception = $event->getException();
@@ -73,6 +73,11 @@ class ExceptionListener
 			));
 		} catch (\Exception $e) {}
 
+		$trace_short = $exception->getTraceAsString();
+		$trace_short = str_replace(DP_ROOT, '/', $trace_short);
+
+		error_log($summary . " $trace_short", 0);
+
 		if (App::getConfig('debug.email_on_error')) {
 			try {
 				$message = App::getMailer()->createMessage();
@@ -88,6 +93,27 @@ class ExceptionListener
 
 				App::getMailer()->send($message);
 			} catch (\Exception $e) {}
+		}
+
+		if (in_array(ini_get('display_errors'), array(1, '1', 'on', 'On', true))) {
+			echo $summary;
+		}
+
+		// Unhandled exceptions in CLI means we should exit
+		if (isset($GLOBALS['DP_IS_IN_CLI'])) {
+
+			echo "\n";
+			echo $trace;
+			echo "\n";
+
+			$code = $exception->getCode();
+			if (is_numeric($code)) {
+				$code = (int)$code;
+			}
+
+			if ($code > 255) $code = 255;
+			if ($code == 0) $code = 1;
+			exit($code);
 		}
 	}
 
@@ -122,6 +148,11 @@ class ExceptionListener
 		$content = str_replace($prefix, '', $content);
 
 		return $content;
+	}
+
+	public function handleException(\Exception $exception)
+	{
+		$this->_logException($exception);
 	}
 
 	public function handleError($errno, $errstr, $errfile, $errline)
@@ -193,10 +224,12 @@ class ExceptionListener
 			echo $summary;
 		}
 
+		error_log($summary, 0);
+
 		$this->handling_exception = false;
 
 		if ($die) {
-			exit;
+			exit($errno);
 		}
 
 		return true;

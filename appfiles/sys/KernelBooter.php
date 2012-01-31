@@ -150,7 +150,9 @@ class KernelBooter
 	{
 		static::ensureCli();
 		$app = static::getCliApp($env, $debug);
+		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run();
+		unset($GLOBALS['DP_IS_IN_CLI']);
 	}
 
 	public static function bootCron($env = 'prod', $debug = false)
@@ -187,6 +189,7 @@ class KernelBooter
 		define('DP_INTERFACE', 'cli');
 
 		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
+		$app->setCatchExceptions(false);
 		return $app;
 	}
 

@@ -212,15 +212,47 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		 // Lazyload exception listener for the generic handler
 		set_error_handler(function($errno, $errstr, $errfile, $errline) {
 
-			error_log("[$errno] $errstr ($errfile, line $errline)", 0);
+			$doerrlog = false;
+			try {
+				if (!App::has('deskpro.exception_logger')) {
+					$doerrlog = true;
+				}
+			} catch (\Exception $e){ $doerrlog = true; }
 
-			if (!App::has('deskpro.exception_logger')) {
-				return;
+			if (!$doerrlog) {
+				try {
+					$logger = App::get('deskpro.exception_logger');
+					$logger->handleError($errno, $errstr, $errfile, $errline);
+				} catch (\Exception $e) { $doerrlog = true; }
 			}
 
-			$logger = App::get('deskpro.exception_logger');
-			$logger->handleError($errno, $errstr, $errfile, $errline);
+			if ($doerrlog) {
+				error_log("[$errno] $errstr ($errfile, line $errline)", 0);
+			}
 		}, E_ALL | E_STRICT);
+
+		set_exception_handler(function(\Exception $exception) {
+
+			$doerrlog = false;
+			try {
+				if (!App::has('deskpro.exception_logger')) {
+					$doerrlog = true;
+				}
+			} catch (\Exception $e){ $doerrlog = true; }
+
+			if (!$doerrlog) {
+				try {
+					$logger = App::get('deskpro.exception_logger');
+					$logger->handleException($exception);
+				} catch (\Exception $e) { $doerrlog = true; }
+			}
+
+			if ($doerrlog) {
+				$str = $exception->getTraceAsString();
+				$str = str_replace(DP_ROOT, '/', $str);
+				error_log("[{$exception->getCode()}] {$exception->getMessage()} ({$exception->getFile()}, line {$exception->getLine()}): $str", 0);
+			}
+		});
 	}
 
 	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
