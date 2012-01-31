@@ -73,6 +73,9 @@
 				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
 				Max upload size: <span id="user_attach_maxsize_label"></span> MB
 				<div id="user_attach_maxsize_slider"></div>
+				<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
+					The max file size your server supports is {{ max_uploadsize_readable }}. <a>Learn why you are bound by this limit.</a>
+				</div>
 			</div>
 
 			<div class="field_row">
@@ -89,6 +92,9 @@
 				<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
 				Max upload size: <span id="agent_attach_maxsize_label"></span> MB
 				<div id="agent_attach_maxsize_slider"></div>
+				<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
+					The max file size your server supports is {{ max_uploadsize_readable }}. <a>Learn why you are bound by this limit.</a>
+				</div>
 			</div>
 
 			<div class="field_row">

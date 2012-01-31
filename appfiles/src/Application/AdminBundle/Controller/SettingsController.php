@@ -56,8 +56,11 @@ class SettingsController extends AbstractController
 			return $this->redirectRoute('admin_settings');
 		}
 
-		return $this->render('AdminBundle:Settings:settings.html.twig', array(
+		$max_filesize = \Orb\Util\Env::getEffectiveMaxUploadSize();
 
+		return $this->render('AdminBundle:Settings:settings.html.twig', array(
+			'max_uploadsize' => $max_filesize,
+			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize)
 		));
 	}
 
