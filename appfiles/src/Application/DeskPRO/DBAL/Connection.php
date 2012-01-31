@@ -174,4 +174,32 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		return $quoted;
 	}
+
+
+	/**
+	 * Just like insert() except executes a REPLACE INTO instead.
+	 *
+	 * @param $tableName
+	 * @param array $data
+	 * @param array $types
+	 */
+	public function replace($tableName, array $data, array $types = array())
+	{
+		$this->connect();
+
+        // column names are specified as array keys
+        $cols = array();
+        $placeholders = array();
+
+        foreach ($data as $columnName => $value) {
+            $cols[] = $columnName;
+            $placeholders[] = '?';
+        }
+
+        $query = 'REPLACE INTO ' . $tableName
+               . ' (' . implode(', ', $cols) . ')'
+               . ' VALUES (' . implode(', ', $placeholders) . ')';
+
+        return $this->executeUpdate($query, array_values($data), $types);
+	}
 }
