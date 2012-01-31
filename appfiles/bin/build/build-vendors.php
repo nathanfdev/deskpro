@@ -300,12 +300,12 @@ function deskpro_build_cleanvendors_elastica($dir)
 
 function deskpro_build_cleanvendors_doctrine($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin tests tools .travis.yml .gitignore .gitmodules composer.json build.properties build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin tests tools .travis.yml .gitignore .gitmodules composer.json build.properties build.properties.dev build.xml doctrine-mapping.xsd phpunit.xml.dist README.markdown run-all.sh UPGRADE_TO_2_0 UPGRADE_TO_2_1 UPGRADE_TO_2_2 UPGRADE_TO_ALPHA3 UPGRADE_TO_ALPHA4", $dir);
 }
 
 function deskpro_build_cleanvendors_doctrine_common($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf tests .travis.yml .gitignore build.properties.dev build.xml phpunit.xml.dist UPGRADE_TO_2_1", $dir);
+	deskpro_build_exec_exit_error("rm -rf tests .travis.yml .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist UPGRADE_TO_2_1 UPGRADE_TO_2_2 README.md composer.json build.properties", $dir);
 }
 
 function deskpro_build_cleanvendors_doctrine_dbal($dir)
@@ -320,7 +320,7 @@ function deskpro_build_cleanvendors_facebook($dir)
 
 function deskpro_build_cleanvendors_htmlpurifier($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf art benchmarks configdoc docs extras maintenance plugins smoketests tests .gitattributes .gitignore CREDITS Doxyfile FOCUS INSTALL INSTALL.fr.utf8 NEWS README TODO VERSION WHATSNEW WYSIWYG package.php phpdoc.ini release1-update.php release2-tag.php test-settings.sample.php", $dir);
+	deskpro_build_exec_exit_error("rm -rf art benchmarks configdoc docs extras maintenance plugins smoketests tests .gitattributes .gitignore CREDITS Doxyfile FOCUS INSTALL INSTALL.fr.utf8 NEWS README TODO VERSION WHATSNEW UPGRADE README.md composer.json build.properties WYSIWYG package.php phpdoc.ini release1-update.php release2-tag.php test-settings.sample.php", $dir);
 }
 
 function deskpro_build_cleanvendors_imagine($dir)
