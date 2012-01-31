@@ -29,6 +29,13 @@ class TechsStep extends AbstractDeskpro3Step
 
 		try {
 			foreach ($techs as $tech) {
+
+				$check_exist = $this->getMappedNewId('tech', $tech['id']);
+				if ($check_exist) {
+					$this->getLogger()->log("{$tech['id']} already mapped, skipping", 'DEBUG');
+					return;
+				}
+
 				$agent = new \Application\DeskPRO\Entity\Person();
 				$agent->name = $tech['name'];
 				$agent->setEmail($tech['email'], true);
