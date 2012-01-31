@@ -67,7 +67,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 
 			$other_agent = $this->getEm()->find('DeskPRO:Person', $other_agent_id);
 
-			$convo = $this->getEm()->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array($agent_id, $other_agent_id));
+			$convo = $this->getEm()->getRepository('DeskPRO:ChatConversation')->getRecentForPeople(array($agent_id, $other_agent_id));
 			if (!$convo) {
 				$convo = new \Application\DeskPRO\Entity\ChatConversation();
 				$convo->is_agent = true;
@@ -77,7 +77,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 				$this->getEm()->flush();
 			}
 
-			$chat_message = $conversation->addNewMessage(
+			$chat_message = $convo->addNewMessage(
 				strip_tags($message['message']),
 				$agent
 			);
