@@ -174,7 +174,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<dl>
 					<dt class="agent-row">{{ phrase('agent.agent') }}</dt>
 					<dd class="agent-row">
-						<span class="agent-link agent-icon prop-agent-id" data-none-label="{{ phrase('agent.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default(phrase('agent.no_agent_assigned')) }}</span>
+						<span class="agent-link agent-icon prop-agent-id {% if ticket.agent.id == app.user.id %}me{% elseif not ticket.agent.id %}no-agent{% endif %}" data-none-label="{{ phrase('agent.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default(phrase('agent.no_agent_assigned')) }}</span>
 					</dd>
 
 					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.team') }}</dt>

@@ -91,7 +91,7 @@
 	}
 
 	{# Agent links that are us dont appear clickable #}
-	.agent-link[data-agent-id="{{ app.user.id }}"]:hover {
+	.agent-link[data-agent-id="{{ app.user.id }}"]:hover, .agent-link[data-agent-id="0"]:hover {
 		text-decoration: none;
 		cursor: text;
 	}

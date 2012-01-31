@@ -29,6 +29,7 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 
 
 		var el = this.getInterfaceElement();
+		el.removeClass('me no-agent');
 
 		if (!agentInfo) {
 
@@ -36,11 +37,16 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 			el.data('agent-id', 0);
 			el.attr('data-agent-id', 0);
 			el.css('background-image', '');
+			el.addClass('no-agent');
 		} else {
 			el.text(agentInfo.name);
 			el.data('agent-id', agentInfo.id);
 			el.attr('data-agent-id', agentInfo.id);
 			el.css('background-image', agentInfo.pictureUrlSizable.replace('{SIZE}', 20));
+
+			if (agentInfo.id == DESKPRO_PERSON_ID) {
+				el.addClass('me');
+			}
 		}
 
 		// Hide buttons that dont make sense anymore
