@@ -519,6 +519,30 @@ $em->flush();
 # Cron Jobs
 ################################################################################
 
+##BEGIN:create_jobs.article_publish_state##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'article_publish_state';
+$j['worker_group'] = 'article_publish_state';
+$j['title'] = 'Article Publish State';
+$j['description'] = 'Goes through articles with a publish date that was set in the future (publish now), or an end date set (deleting or archivng now).';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ArticlePublishState';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ArticlePublishState::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+##BEGIN:create_jobs.chat_ping_timeout##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'chat_ping_timeout';
+$j['worker_group'] = 'chat';
+$j['title'] = 'Chat Ping Timeout';
+$j['description'] = 'Timesout chats where both parties are not longer participating';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ChatPingTimeout';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ChatPingTimeout::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
 ##BEGIN:create_jobs.cleanup_client_messages##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_client_messages';
@@ -527,6 +551,18 @@ $j['title'] = 'Cleanup Client Messages';
 $j['description'] = 'Cleanup expired client polling messages';
 $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupClientMessages';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupClientMessages::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+##BEGIN:create_jobs.cleanup_sendmail##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_sendmail';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Chat Ping Timeout';
+$j['description'] = 'Cleans up old logged copies of sent mail';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupSendmail';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupSendmail::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
 
@@ -543,6 +579,31 @@ $em->persist($j);
 $em->flush();
 
 
+##BEGIN:create_jobs.cleanup_tmp_data##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_tmp_data';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Temporary Data';
+$j['description'] = 'Cleanup temporary data';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTmpData';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTmpData::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+##BEGIN:create_jobs.cleanup_tmp_attach##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_tmp_attach';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Temporary Attachments';
+$j['description'] = 'Cleanup temporary attachments';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupTmpAttach';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupTmpAttach::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+
 ##BEGIN:create_jobs.ensure_search_tables##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'ensure_search_tables';
@@ -555,14 +616,14 @@ $em->persist($j);
 $em->flush();
 
 
-##BEGIN:create_jobs.sendmail_queue##
+##BEGIN:create_jobs.generate_stats##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
-$j['id'] = 'sendmail_queue';
-$j['worker_group'] = 'sendmail_queue';
-$j['title'] = 'Sendmail Queue';
-$j['description'] = 'Attempts to send queued mail, or re-send fail mail';
-$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SendmailQueue';
-$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_INTERVAL;
+$j['id'] = 'generate_stats';
+$j['worker_group'] = 'stats';
+$j['title'] = 'Generates Stats';
+$j['description'] = 'Generates statistical data for reports';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\GenerateStats';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\GenerateStats::DEFAULT_INTERVAL;
 $em->persist($j);
 $em->flush();
 
@@ -578,6 +639,29 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAU
 $em->persist($j);
 $em->flush();
 
+
+##BEGIN:create_jobs.search_index_update##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'search_index_update';
+$j['worker_group'] = 'search';
+$j['title'] = 'Search Index Update';
+$j['description'] = 'Updates the search index with updated objects';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SearchIndexUpdate';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SearchIndexUpdate::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+##BEGIN:create_jobs.sendmail_queue##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'sendmail_queue';
+$j['worker_group'] = 'sendmail_queue';
+$j['title'] = 'Sendmail Queue';
+$j['description'] = 'Attempts to send queued mail, or re-send fail mail';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SendmailQueue';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
 
 ################################################################################
 # Portal Blocks

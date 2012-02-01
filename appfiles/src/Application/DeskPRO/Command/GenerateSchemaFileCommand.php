@@ -62,8 +62,9 @@ CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
   `content` longtext NOT NULL,
-  PRIMARY KEY (`object_type`,`object_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+  PRIMARY KEY (`object_type`,`object_id`),
+  FULLTEXT KEY `content` (`content`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL;
 
 		$s_ex = var_export($s, true);

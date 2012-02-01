@@ -83,7 +83,7 @@ class GenerateStats extends AbstractJob
 
 		$stat_concept = new $stat_concept_class($stat, $stat->getLastFullRun());
 		$stat_concept->addGrouping($stat->getGroupingRef());
-		$values = $stat_concept->getStats($this->time);
+		$values = $stat_concept->getStats($this->date_time);
 
 		// Check if existing StatValue is set for period
 		$stat_value = $stat->getStatValueForDate(new \DateTime());

@@ -31,7 +31,7 @@ class CleanupSendmail extends AbstractJob
 				WHERE has_sent = 1
 			");
 		} else {
-			$datetime = date('Y-m-d H:i:s', "-$days days");
+			$datetime = date('Y-m-d H:i:s', strtotime("-$days days"));
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM sendmail_queue
 				WHERE has_sent = 1 AND date_sent < ?",

@@ -72,13 +72,13 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	public function delete()
 	{
-		$this->blob_id = null;
-		$this->blob_exists_cache = null;
-
 		$this->db->beginTransaction();
 		$this->db->delete('blobs', array('id' => $this->blob_id));
 		$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
 		$this->db->commit();
+
+		$this->blob_id = null;
+		$this->blob_exists_cache = null;
 	}
 
 

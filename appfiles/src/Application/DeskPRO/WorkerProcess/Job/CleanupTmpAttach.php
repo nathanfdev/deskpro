@@ -34,15 +34,13 @@ class CleanupTmpAttach extends AbstractJob
 
 		$num = 0;
 		foreach ($blob_ids as $blob_id) {
-			try {
-				$desc = App::getApi('filestorage')->getFileDescriptor($blob_id);
-				$desc->delete();
-				$num++;
-			} catch (\Exception $e) {}
+			$desc = App::getApi('filestorage')->getFileDescriptor($blob_id);
+			$desc->delete();
+			$num++;
 		}
 
 		if ($num) {
-			$this->logStatus("Cleaned up $num stale user preference entries");
+			$this->logStatus("Cleaned up $num temporary attachments");
 		}
 	}
 }
