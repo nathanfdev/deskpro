@@ -33,7 +33,6 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$verbose = $input->getOption('verbose');
-		$force = $input->getOption('force');
 
 		if ($input->getOption('gateway')) {
 			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'));
@@ -43,9 +42,18 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 				return 2;
 			}
 
+			if (!$gateway->is_enabled && !$input->getOption('force')) {
+				$output->writeln('<error>Gateway is currently disabled. Use --force to run it anyway.');
+				return 3;
+			}
+
 			$gateways = array($gateway);
 		} else {
-			$gateways = App::getEntityRepository('DeskPRO:EmailGateway')->findAll();
+			if ($input->getOption('force')) {
+				$gateways = App::getEntityRepository('DeskPRO:EmailGateway')->findAll();
+			} else {
+				$gateways = App::getEntityRepository('DeskPRO:EmailGateway')->getAllEnabled();
+			}
 		}
 
 		$count = count($gateways);
@@ -53,85 +61,18 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 			$output->writeln("<info>{$count} gateways found</info>");
 		}
 
-		$time_start = microtime(true);
+		$logger = new \Application\DeskPRO\Log\Logger();
 
-		foreach ($gateways as $gateway) {
-
-			if ($verbose) {
-				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}</info>");
-			}
-
-			if (!$gateway->is_enabled) {
-				if (!$force) {
-					if ($verbose) {
-						$output->writeln("<info>Gateway disabled. Skipping.</info>");
-					}
-					continue;
-				}
-
-				if ($verbose) {
-					$output->writeln("<info>Gateway disabled but --force enabled so processing anyway</info>");
-				}
-			}
-
-			/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
-			$fetcher = $gateway->getFetcher();
-
-			$logger = new \Orb\Log\Logger();
-			if ($verbose) {
-				$writer = new \Orb\Log\Writer\Output();
-				$logger->addWriter($writer);
-			}
-
-			while ($source = $fetcher->readNext()) {
-
-				if ($verbose) {
-					$output->writeln("Read source ID {$source['id']}");
-				}
-
-				$reader = new EzcReader();
-				$reader->setRawSource($source['raw_source']);
-				$reader->setProperty('email_source', $source);
-
-				if ($verbose) {
-					$to = array();
-					foreach ($reader->getToAddresses() as $x) {
-						$to[] = $x->getEmail();
-					}
-					$to = implode(', ', $to);
-
-					$subj = substr($reader->getSubject()->getSubject(), 0, 40);
-
-					$output->writeln("[Message] To: $to :: $subj");
-				}
-
-				App::getOrm()->beginTransaction();
-
-				try {
-					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
-					$proc = $gateway->getNewProcessor($reader, array('logger' => $logger));
-					$created_obj = $proc->run();
-
-					$source['status'] = 'complete';
-					App::getOrm()->persist($source);
-					App::getOrm()->flush();
-
-					App::getOrm()->commit();
-
-					if ($verbose) {
-						$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
-					}
-				} catch (\Exception $e) {
-					App::getOrm()->rollback();
-
-					throw $e;
-				}
-			}
+		$output_writer = new \Orb\Log\Writer\ConsoleOutputWriter($output);
+		$logger->addWriter($output_writer);
+		if (!$verbose) {
+			$output_writer->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::NOTICE));
 		}
 
-		if ($verbose) {
-			$output->writeln(sprintf("<info>Finished in %.f seconds</info>", microtime(true) - $time_start));
-		}
+		$runner = new \Application\DeskPRO\EmailGateway\Runner();
+		$runner->setLogger($logger);
+		$runner->setGateways($gateways);
+		$runner->execute();
 
 		return 0;
 	}

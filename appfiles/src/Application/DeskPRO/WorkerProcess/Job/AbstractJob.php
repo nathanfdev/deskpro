@@ -23,7 +23,7 @@ abstract class AbstractJob
 	protected $options = array();
 
 	/**
-	 * @var Application\DeskPRO\Log\Logger
+	 * @var \Application\DeskPRO\Log\Logger
 	 */
 	protected $logger;
 

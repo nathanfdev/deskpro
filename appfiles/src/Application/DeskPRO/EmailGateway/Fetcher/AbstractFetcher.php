@@ -29,10 +29,35 @@ abstract class AbstractFetcher
 	 */
 	protected $storage;
 
+	/**
+	 * @var \Application\DeskPRO\Log\Logger
+	 */
+	protected $logger;
+
 	public function __construct(Entity\EmailGateway $gateway)
 	{
 		$this->gateway = $gateway;
-		$this->storage = $this->_initConnection();
+		$this->logger = new \Application\DeskPRO\Log\Logger();
+	}
+
+	/**
+	 * @return \Zend\Mail\AbstractStorage
+	 */
+	public function getStorage()
+	{
+		if (!$this->storage) {
+			$this->storage = $this->_initConnection();
+		}
+
+		return $this->storage;
+	}
+
+	/**
+	 * @param $logger \Application\DeskPRO\Log\Logger
+	 */
+	public function setLogger(\Application\DeskPRO\Log\Logger $logger)
+	{
+		$this->logger = $logger;
 	}
 
 	/**

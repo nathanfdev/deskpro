@@ -338,3 +338,16 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\HardDeleteTickets';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
+
+
+##BEGIN:create_jobs.process_email_gateways##
+
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'process_email_gateways';
+$j['worker_group'] = 'process_email_gateways';
+$j['title'] = 'Process Email Gateways';
+$j['description'] = 'Runs through the email gateways and processes new messages';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ProcessEmailGateways';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ProcessEmailGateways::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();

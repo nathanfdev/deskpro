@@ -18,6 +18,8 @@ use Application\DeskPRO\Entity;
  */
 class Pop3 extends AbstractFetcher
 {
+	protected $read_count = 0;
+
 	/**
 	 * Initiates the connection
 	 *
@@ -31,8 +33,11 @@ class Pop3 extends AbstractFetcher
 		$options['user']     = $this->gateway['connection_options']['username'];
 		$options['password'] = $this->gateway['connection_options']['password'];
 
+		$this->logger->log("Connecting {$options['user']}@{$options['host']}:{$options['port']}", 'debug');
+
 		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
 			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
+			$this->logger->log('SSL Enabled', 'debug');
 		}
 
 		$storage = new \Zend\Mail\Storage\Pop3($options);
@@ -46,17 +51,30 @@ class Pop3 extends AbstractFetcher
 	 */
 	protected function _readNext()
 	{
+		$this->getStorage();// init connection
+
+		$this->read_count++;
+		$this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
+
+		$start_time = microtime(true);
+
 		try {
-			$headers = $this->storage->getRawHeader(1);
+			$headers = $this->getStorage()->getRawHeader(1);
 		} catch (\Zend\Mail\Protocol\Exception $e) {
 			// means there is none
+			$this->logger->log("No more messages", 'debug');
 			return null;
+		} catch (\Exception $e) {
+			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
+			throw $e;
 		}
 
 		$raw_message = new RawMessage();
 		$raw_message->id = 1;
 		$raw_message->headers = $headers;
-		$raw_message->content = $headers . "\n\n" . $this->storage->getRawContent(1);
+		$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent(1);
+
+		$this->logger->log(sprintf("Got message [1]. Took %0.2f seconds.", microtime(true) - $start_time), 'debug');
 
 		return $raw_message;
 	}
@@ -68,12 +86,16 @@ class Pop3 extends AbstractFetcher
 	 */
 	protected function _doneRead($id)
 	{
+		$this->logger->log("Marking message as deleted: $id", 'debug');
 		try {
-			$this->storage->removeMessage($id);
+			$this->getStorage()->removeMessage($id);
 		} catch (\Zend\Mail\Protocol\Exception $e) {
 			/* usually reading a pop message marks it for deletion, which
 			 throws an -ERR. So we'll ignore it
 			 */
+		} catch (\Exception $e) {
+			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
+			throw $e;
 		}
 	}
 

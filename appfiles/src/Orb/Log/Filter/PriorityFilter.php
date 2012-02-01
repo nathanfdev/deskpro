@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Orb\Log\Writer;
+namespace Orb\Log\Filter;
 
 use \Orb\Log\Logger;
 use \Orb\Log\LogItem;
@@ -35,7 +35,7 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
 		}
 
 		// Remove this special flag
-		if ($log_item['ignore_priority_filter']) {
+		if (isset($log_item['ignore_priority_filter'])) {
 			unset($log_item['ignore_priority_filter']);
 		}
 

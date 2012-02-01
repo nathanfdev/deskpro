@@ -14,7 +14,8 @@ namespace Application\DeskPRO\EntityRepository;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
-use \Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
 class EmailGateway extends EntityRepository
 {
@@ -69,5 +70,16 @@ class EmailGateway extends EntityRepository
 
 
 		return null;
+	}
+
+
+	/**
+	 * Get all gateway accounts that are enabled
+	 *
+	 * @return array
+	 */
+	public function getAllEnabled()
+	{
+		return $this->findBy(array('is_enabled' => true));
 	}
 }

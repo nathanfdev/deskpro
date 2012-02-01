@@ -38,7 +38,7 @@ class Imap extends AbstractFetcher
 	protected function _readNext()
 	{
 		try {
-			$headers = $this->storage->getRawHeader(1);
+			$headers = $this->getStorage()->getRawHeader(1);
 		} catch (\Zend\Mail\Storage\Exception $e) {
 			// means there is none
 			return null;
@@ -61,9 +61,9 @@ class Imap extends AbstractFetcher
 	{
 		$move_to = isset($this->gateway['connection_options']['delete_move']) ? $this->gateway['connection_options']['delete_move'] : false;
 		if ($move_to) {
-			$this->storage->moveMessage($id, $move_to);
+			$this->getStorage()->moveMessage($id, $move_to);
 		} else {
-			$this->storage->removeMessage($id);
+			$this->getStorage()->removeMessage($id);
 		}
 	}
 }
