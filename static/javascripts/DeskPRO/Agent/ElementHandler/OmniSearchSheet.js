@@ -49,6 +49,30 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		this.el.on('click', '.close-search-sheet', function() {
 			self.close();
 		});
+
+		$('#omnisearch_submit').on('click', function(ev) {
+			ev.preventDefault();
+			var activeTab = self.typeTabs.getActiveTabContent();
+
+			var form = activeTab.find('form').first();
+			if (form.length) {
+				var event = $.Event('submitsearch');
+
+				form.trigger(event);
+				if (!event.isDefaultPrevented()) {
+					if (!event.submitFormData) {
+						event.submitFormData = form.serializeArray();
+					}
+
+					var action = form.attr('action');
+					DeskPRO_Window.loadListPane(action, {
+						postData: event.submitFormData
+					});
+
+					self.close();
+				}
+			}
+		});
 	},
 
 	updatePositions: function() {
@@ -94,6 +118,10 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		if (this._hasInitTicketSearch) return;
 		this._hasInitTicketSearch = true;
 
+		//------------------------------
+		// Common properties
+		//------------------------------
+
 		$('ul.property-list > li', tab).each(function() {
 			var values = $('> .values', this);
 			var select = $('> select', values);
@@ -136,6 +164,36 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			});
 
 			$(this).on('click', function(ev) { ob.open(ev); });
+		});
+
+
+		//------------------------------
+		// Criteria builder
+		//------------------------------
+
+		var critTpl = $('#tickersearch_criteria_tpl');
+		var critList = $('#tickersearch_criteria_list');
+
+		var editor = new DeskPRO.Form.RuleBuilder(critTpl);
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).on('click', function() {
+				new_row.remove();
+			});
+		});
+		$('.add-term', critList).on('click', function() {
+			var basename = 'terms['+Orb.uuid()+']';
+
+			editor.addNewRow($('.search-terms', critList), basename);
+		});
+
+		//------------------------------
+		// Do search
+		//------------------------------
+
+		$('#ticketsearch_submit').click(function(ev) {
+			ev.preventDefault();
+
+
 		});
 	},
 

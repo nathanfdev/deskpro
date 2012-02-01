@@ -14,7 +14,8 @@
 	<div class="type" title="Choose criteria..." data-rule-type="">
 	</div>
 {% endif %}
-	{% if event_trigger == 'new_reply' or event_trigger == 'property_change'  %}
+
+	{% if 'action_performer' not in no_show_fields and event_trigger == 'new_reply' or event_trigger == 'property_change'  %}
 		<div class="type" title="Performer" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
@@ -30,6 +31,8 @@
 			</div>
 		</div>
 	{% endif %}
+
+	{% if 'creation_system' not in no_show_fields %}
 	<div class="type" title="Originated interface" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
@@ -46,6 +49,9 @@
 			</select>
 		</div>
 	</div>
+	{% endif %}
+
+	{% if 'subject' not in no_show_fields %}
 	<div class="type" title="Subject" data-rule-type="subject">
 		<div class="op">
 			<select name="op" class="op">
@@ -59,7 +65,9 @@
 			<input type="text" name="subject" value="" />
 		</div>
 	</div>
-	{% if term_options.departments_hierarchy %}
+	{% endif %}
+
+	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
 		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
@@ -88,7 +96,8 @@
 			</div>
 		</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
+
+	{% if 'agent' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="Assigned Agent" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
@@ -114,8 +123,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
-	{% if term_options.agent_teams %}
+
+	{% if options.agent_teams and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 		<div class="type" title="Agent Team" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
 				<select name="op" class="op">
@@ -141,8 +150,8 @@
 			</div>
 		</div>
 	{% endif %}
-	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
+
+	{% if 'participant' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="Followers" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
 		<div class="op">
 			<select name="op" class="op">
@@ -165,7 +174,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
+
+	{% if 'label' not in no_show_fields and not event_trigger or event_trigger != 'new_ticket' %}
 	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
@@ -183,6 +193,8 @@
 		</div>
 	</div>
 	{% endif  %}
+
+	{% if 'status' not in no_show_fields %}
 	<div class="type" title="Status" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
@@ -207,7 +219,27 @@
 			</select>
 		</div>
 	</div>
-	{% if term_options.products %}
+	{% endif %}
+
+	{% if 'organization' not in no_show_fields %}
+	<div class="type" title="Organization" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="options">
+			<select name="organization">
+				{% for id,title in term_options.organizations %}
+				<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
+
+	{% if 'product' not in no_show_fields and term_options.products %}
 		<div class="type" title="Product" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
 				<select name="op" class="op">
@@ -231,7 +263,8 @@
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.categories %}
+
+	{% if 'category' not in no_show_fields and term_options.categories %}
 		<div class="type" title="Category" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
@@ -255,6 +288,8 @@
 			</div>
 		</div>
 	{% endif %}
+
+	{% if 'urgency' not in no_show_fields %}
 	<div class="type" title="Urgency" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
@@ -285,7 +320,9 @@
 			<input type="text" size="4" value="" name="num" />
 		</div>
 	</div>
-	{% if term_options.priorities %}
+	{% endif %}
+
+	{% if 'priority' not in no_show_fields and term_options.priorities %}
 		<div class="type" title="Priority" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
 			<div class="op">
 				<select name="op" class="op">
@@ -311,7 +348,8 @@
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.ticket_workflows %}
+
+	{% if 'workflow' not in no_show_fields and term_options.ticket_workflows %}
 		<div class="type" title="Workflow" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
 			<div class="op">
 				<select name="op" class="op">
@@ -335,7 +373,8 @@
 			</div>
 		</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
+
+	{% if 'date_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
 		<div class="op">
 			<select name="op" class="op">
@@ -349,7 +388,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger == 'time_resolved' %}
+
+	{% if 'date_resolved' not in no_show_fields and (not event_trigger or event_trigger == 'time_resolved') %}
 	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
 		<div class="op">
 			<select name="op" class="op">
@@ -363,7 +403,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if not event_trigger %}
+
+	{% if 'date_closed' not in no_show_fields and not event_trigger %}
 	<div class="type" title="Date closed" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
@@ -377,7 +418,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if not event_trigger or event_trigger != 'new_ticket' %}
+
+	{% if 'date_last_agent_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="Date of last agent reply" data-rule-type="date_last_agent_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
@@ -390,6 +432,9 @@
 			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 		</div>
 	</div>
+	{% endif %}
+
+	{% if 'date_last_user_reply' not in no_show_fields %}
 	<div class="type" title="Date of last user reply" data-rule-type="date_last_user_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
@@ -403,7 +448,8 @@
 		</div>
 	</div>
 	{% endif %}
-	{% if term_options.custom_ticket_fields %}
+
+	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
 		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
 		{% for field in term_options.custom_ticket_fields %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
@@ -426,7 +472,10 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options, 'id': false, 'classname': false} %}
+
+	{% if 'person' not in no_show_fields %}
+		{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options, 'id': false, 'classname': false} %}
+	{% endif %}
 
 {% if id or classname %}
 </div>

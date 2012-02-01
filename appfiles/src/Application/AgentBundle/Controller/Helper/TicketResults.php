@@ -87,7 +87,7 @@ class TicketResults
 	}
 
 	/**
-	 * @return Application\AgentBundle\Controller\Helper\TicketResults
+	 * @return \Application\AgentBundle\Controller\Helper\TicketResults
 	 */
 	public static function newFromResultCache($controller, ResultCache $result_cache)
 	{

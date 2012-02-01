@@ -704,13 +704,6 @@ $collection->add('agent_ticketsearch_getflaggedsectiondata', new Route(
 	array()
 ));
 
-$collection->add('agent_ticketsearch_customfilter', new Route(
-	'/ticket-search/custom-filter/new-search',
-	array('_controller' => 'AgentBundle:TicketSearch:newCustomFilter'),
-	array(),
-	array()
-));
-
 $collection->add('agent_ticketsearch_runcustomfilter', new Route(
 	'/ticket-search/custom-filter/run',
 	array('_controller' => 'AgentBundle:TicketSearch:runCustomFilter'),

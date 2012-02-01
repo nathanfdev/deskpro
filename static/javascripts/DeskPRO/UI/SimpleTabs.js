@@ -135,6 +135,14 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.fireEvent('tabSwitch', eventData);
 	},
 
+	getActiveTab: function() {
+		return this.lastActiveTab;
+	},
+
+	getActiveTabContent: function() {
+		return this.getContentElFromTab(this.getActiveTab());
+	},
+
 	getContentElFromTab: function(tabEl) {
 		if (!tabEl.data('tab-for')) {
 			DP.console.error('tab has no tab-for: %o', tabEl);

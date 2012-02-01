@@ -317,6 +317,142 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function runCustomFilterAction()
+	{
+		$result_cache = false;
+		if ($this->in->getUint('cache_id')) {
+			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			if ($result_cache['person_id'] != $this->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		$do_run = false;
+
+		$terms = array();
+		$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
+		$display_fields = $this->person->getPref('agent.ui.ticket-basic-display-fields.general');
+		$group_by = $this->in->getString('group_by');
+
+		#------------------------------
+		# If there's no result set, we're running it for the first time
+		#------------------------------
+
+		if (!$result_cache) {
+			$term_rules = RuleBuilder::newTermsBuilder();
+			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+			$set_terms_map = array(
+				'department'    => array('op' => 'contains', 'options' => array()),
+				'status'        => array('op' => 'contains', 'options' => array()),
+				'agent'         => array('op' => 'contains', 'options' => array()),
+				'agent_team'    => array('op' => 'contains', 'options' => array()),
+				'participant'   => array('op' => 'contains', 'options' => array()),
+				'category'      => array('op' => 'contains', 'options' => array()),
+				'product'       => array('op' => 'contains', 'options' => array()),
+				'priority'      => array('op' => 'contains', 'options' => array()),
+				'workflow'      => array('op' => 'contains', 'options' => array()),
+			);
+			foreach ($set_terms_map as $name => $info) {
+				$in_val = $this->container->getIn()->getCleanValueArray('set_term.'.$name, 'raw', 'discard');
+				if ($in_val) {
+					$new_term = $info;
+					$new_term['options'] = $in_val;
+					Arrays::unshiftAssoc($new_term, 'type', $name);
+					$terms[] = $new_term;
+				}
+			}
+
+			$do_run = true;
+		}
+
+
+		#------------------------------
+		# Re-do search if we changed order
+		#------------------------------
+
+		if ($result_cache && $order_by && $result_cache->getExtraData('order_by') != $order_by) {
+			$terms = $result_cache['criteria'];
+			$do_run = true;
+		}
+
+		#------------------------------
+		# Run a filter if we need to
+		#------------------------------
+
+		if ($do_run) {
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
+			if ($order_by) {
+				$searcher->setOrderByCode($order_by);
+			}
+
+			$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+			$has_user_terms = false;
+
+			foreach ($terms as $term) {
+				if (!isset($term['options'])) $term['options'] = array();
+				if (strpos($term['type'], 'person_') === 0) {
+					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
+					$has_user_terms = true;
+				} else {
+					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				}
+			}
+
+			if ($has_user_terms) {
+				$searcher->setPersonSearch($user_searcher);
+			}
+
+			$results = $searcher->getMatches();
+			$results = Arrays::castToType($results, 'integer');
+
+			if (!$result_cache) {
+				$result_cache = new \Application\DeskPRO\Entity\ResultCache();
+				$result_cache->person = $this->person;
+			}
+
+			$result_cache->results = $results;
+			$result_cache->criteria = $terms;
+			$result_cache->num_results = count($results);
+			$result_cache->setExtraData('order_by', $order_by);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
+			$result_cache->setExtraData('order_by_summary', $searcher->getOrderBySummary());
+
+			$this->em->persist($result_cache);
+			$this->em->flush();
+		}
+
+		$helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
+		if ($group_by) {
+			$helper->setGroupField($group_by);
+		}
+
+		$vars = array(
+			'cache'               => $result_cache,
+			'cache_id'            => $result_cache->id,
+			'order_by_summary'    => $result_cache->getExtraData('order_by_summary'),
+			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
+			'order_by'            => $result_cache->getExtraData('order_by'),
+			'ticket_ids'          => $result_cache->results,
+			'view_name'           => $this->in->getString('view_name'),
+			'view_extra'          => $this->in->getString('view_extra')
+		);
+
+		$search_form = array(
+			'terms'    => $result_cache->criteria,
+			'order_by' => $result_cache->getExtraData('order_by')
+		);
+		$vars['search_form'] = $search_form;
+		$vars['display_fields'] = $display_fields;
+
+		if ($this->in->getString('page_title')) {
+			$vars['page_title'] = $this->in->getString('page_title');
+		}
+
+		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $helper, $vars);
+	}
+
 	public function runFilterAction($filter_id)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
@@ -387,8 +523,6 @@ class TicketSearchController extends AbstractController
 			// Default display fields based on the filter
 			$vars['display_fields'] = $this->_suggestedDisplayFields($filter->getSearcher());
 		}
-
-		$vars['filter'] = $filter;
 
 		$search_form = array(
 			'terms' => $filter['terms'],
@@ -607,152 +741,6 @@ class TicketSearchController extends AbstractController
 		}
 
 		return $display_fields;
-	}
-
-	############################################################################
-	# run-custom-filter
-	############################################################################
-
-	public function runCustomFilterAction()
-	{
-		$result_cache = false;
-		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-			if ($result_cache['person_id'] != $this->person['id']) {
-				$result_cache = false;
-			}
-		}
-
-		#------------------------------
-		# If there's no result set, we're running it for the first time
-		#------------------------------
-
-		if (!$result_cache) {
-
-			$term_rules = RuleBuilder::newTermsBuilder();
-
-			$order_by = null;
-			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setPerson($this->person);
-
-			$user_searcher = new \Application\DeskPRO\Searcher\PersonSearch();
-			$has_user_terms = false;
-
-			foreach ($terms as $term) {
-				if (!isset($term['options'])) $term['options'] = array();
-				if (strpos($term['type'], 'person_') === 0) {
-					$user_searcher->addTerm($term['type'], $term['op'], $term['options']);
-					$has_user_terms = true;
-				} else {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
-				}
-			}
-
-			if ($has_user_terms) {
-				$searcher->setPersonSearch($user_searcher);
-			}
-
-			if (!$order_by) {
-				$order_by = $this->in->getString('filter.order_by');
-			}
-			//$group_by = $this->in->getString('filter.group_by');
-			$group_by = '';
-
-			if ($order_by) {
-				$searcher->setOrderByCode($order_by);
-			}
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new Entity\ResultCache();
-			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $terms, 'order_by' => $order_by, 'group_by' => $group_by);
-			$result_cache['results'] = $results;
-			$result_cache['num_results'] = count($results);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
-
-			// Default display fields based on our search
-			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($searcher));
-
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
-		}
-
-		#------------------------------
-		# Re-do search if we changed order
-		#------------------------------
-
-		// Prefs are saved into extra[]. Of order_by doesn't match
-		// the order_by in criteria, that means the user changed it
-		// and we have to re-do the search
-
-		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
-			$criteria = $result_cache['criteria'];
-			$criteria['order_by'] = $result_cache['extra']['order_by'];
-
-			$result_cache['criteria'] = $criteria;
-
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setPerson($this->person);
-			$searcher->setTerms($result_cache['criteria']['terms']);
-			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
-
-			$results = $searcher->getMatches();
-			$result_cache['results'] = $results;
-			$result_cache['num_results'] = count($results);
-			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
-
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
-		}
-
-		#------------------------------
-		# Serve results
-		#------------------------------
-
-		// If we have no searcher, create one now from the result cache
-		// so we have access to the summaries in the template
-		if (!isset($searcher) || !$searcher) {
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			$searcher->setPerson($this->person);
-			$searcher->setTerms($result_cache['criteria']['terms']);
-			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
-		}
-
-		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
-
-		$vars = array(
-			'cache'               => $result_cache,
-			'cache_id'            => $result_cache['id'],
-			'order_by_summary'    => $searcher->getOrderBySummary(),
-			'terms_summary'       => $searcher->getSummary(),
-			'ticket_ids'          => $result_cache['results'],
-			'view_name'           => $this->in->getString('view_name'),
-			'view_extra'          => $this->in->getString('view_extra')
-		);
-
-		$search_form = array(
-			'terms' => $result_cache['criteria'],
-			'order_by' => !empty($result_cache['extra']['order_by']) ? $result_cache['extra']['order_by'] : ''
-		);
-		$vars['search_form'] = $search_form;
-
-		if (!empty($result_cache['extra']['display_fields'])) {
-			$vars['display_fields'] =$result_cache['extra']['display_fields'];
-		}
-
-		$pref_name = 'agent.ui.ticket-filter-display-fields.' . $result_cache['id'];
-		if (!empty($result_cache['extra'][$pref_name])) {
-			$vars['display_fields'] = $result_cache['extra'][$pref_name];
-		}
-
-		if ($this->in->getString('page_title')) {
-			$vars['page_title'] = $this->in->getString('page_title');
-		}
-
-		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 
 	############################################################################

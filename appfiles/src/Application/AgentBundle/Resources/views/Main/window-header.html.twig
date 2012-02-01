@@ -179,82 +179,134 @@
 
 	{# Ticket Search Form #}
 	<article id="dp_searchsheet_tickets">
-		<ul class="property-list">
-			<li>
-				<label>Department</label>
-				<div class="values">
-					{% include 'AgentBundle:Common:select-department.html.twig' with {
-						'name': 'actions[department]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.department'),
-						'departments': ticket_options.departments_hierarchy,
-						'add_attr': 'multiple="multiple"'
-					} %}
-				</div>
-			</li>
-			{% if app.getSetting('core.use_ticket_category') %}
-			<li>
-				<label>Category</label>
-				<div class="values">
-					{% include 'AgentBundle:Common:select-category.html.twig' with {
-						'name': 'actions[category]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.category'),
-						'categories': ticket_options.ticket_categories_hierarchy,
-						'add_attr': 'multiple="multiple"'
-					} %}
-				</div>
-			</li>
-			{% endif %}
-			{% if app.getSetting('core.use_product') %}
-			<li>
-				<label>Product</label>
-				<div class="values">
-					{% include 'AgentBundle:Common:select-product.html.twig' with {
-						'name': 'actions[product]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.product'),
-						'products': ticket_options.products_hierarchy,
-						'add_attr': 'multiple="multiple"'
-					} %}
-				</div>
-			</li>
-			{% endif %}
-			{% if app.getSetting('core.use_ticket_priority') %}
-			<li>
-				<label>Priority</label>
-				<div class="values">
-					{% include 'AgentBundle:Common:select-priority.html.twig' with {
-						'name': 'actions[priority]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.priority'),
-						'priorities': ticket_options.ticket_priorities,
-						'add_attr': 'multiple="multiple"'
-					} %}
-				</div>
-			</li>
-			{% endif %}
-			{% if app.getSetting('core.use_ticket_workflow') %}
-			<li>
-				<label>Workflow</label>
-				<div class="values">
-					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-						'name': 'actions[workflow]',
-						'with_blank': true,
-						'with_blank2': true,
-						'blank_title': phrase('agent.workflow'),
-						'workflows': ticket_options.ticket_workflows,
-						'add_attr': 'multiple="multiple"'
-					} %}
-				</div>
-			</li>
-			{% endif %}
-		</ul>
-		<br class="clear" />
+		<form action="{{ path('agent_ticketsearch_runcustomfilter') }}">
+			<ul class="property-list">
+				<li>
+					<label>Department</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-department.html.twig' with {
+							'name': 'set_term[department][]',
+							'blank_title': phrase('agent.department'),
+							'departments': ticket_options.departments_hierarchy,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				<li>
+					<label>Status</label>
+					<div class="values">
+						<select name="set_term[status][]">
+							<option value="awaiting_agent">Awaiting Agent</option>
+							<option value="awaiting_user">Awaiting User</option>
+							<option value="resolved">Resolved</option>
+							<option value="closed">Closed</option>
+							<option value="hidden">Hidden (awaiting validating, spam)</option>
+						</select>
+					</div>
+				</li>
+				<li>
+					<label>Agent</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-agent.html.twig' with {
+							'name': 'set_term[agent][]',
+							'blank_title': phrase('agent.agent'),
+							'departments': ticket_options.agents,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% if app.getSetting('core.use_agent_team') %}
+					<li>
+						<label>Agent Team</label>
+						<div class="values">
+							{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
+								'name': 'set_term[agent_team][]',
+								'blank_title': phrase('agent.agent_team'),
+								'departments': ticket_options.agent_teams,
+								'add_attr': 'multiple="multiple"'
+							} %}
+						</div>
+					</li>
+				{% endif %}
+				<li>
+					<label>Followers</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-agent.html.twig' with {
+							'name': 'set_term[participant][]',
+							'blank_title': phrase('agent.agent'),
+							'departments': ticket_options.agents,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% if app.getSetting('core.use_ticket_category') %}
+				<li>
+					<label>Category</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-category.html.twig' with {
+							'name': 'set_term[category][]',
+							'blank_title': phrase('agent.category'),
+							'categories': ticket_options.ticket_categories_hierarchy,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% endif %}
+				{% if app.getSetting('core.use_product') %}
+				<li>
+					<label>Product</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-product.html.twig' with {
+							'name': 'actions[product][]',
+							'blank_title': phrase('agent.product'),
+							'products': ticket_options.products_hierarchy,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_priority') %}
+				<li>
+					<label>Priority</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-priority.html.twig' with {
+							'name': 'set_term[priority][]',
+							'blank_title': phrase('agent.priority'),
+							'priorities': ticket_options.ticket_priorities,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% endif %}
+				{% if app.getSetting('core.use_ticket_workflow') %}
+				<li>
+					<label>Workflow</label>
+					<div class="values">
+						{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+							'name': 'set_term[workflow][]',
+							'blank_title': phrase('agent.workflow'),
+							'workflows': ticket_options.ticket_workflows,
+							'add_attr': 'multiple="multiple"'
+						} %}
+					</div>
+				</li>
+				{% endif %}
+			</ul>
+			<br class="clear" />
+
+			<div class="search-form" id="tickersearch_criteria_list">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+			</div>
+		</form>
+
+		{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
+			classname: 'search-builder-tpl',
+			id: 'tickersearch_criteria_tpl',
+			term_options: term_options,
+			no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow'],
+			search_context: 'filter'
+		} %}
 	</article>
 	{# /Ticket Search Form #}
 
@@ -277,6 +329,6 @@
 	{# /Content Search Form #}
 
 	<footer>
-		<button>Search</button>
+		<button id="omnisearch_submit">Search</button>
 	</footer>
 </div>
