@@ -28,7 +28,7 @@ class Setting extends EntityRepository
 	 */
 	public function updateSetting($name, $value)
 	{
-		$setting = $this->find($name);
+		$setting = $this->findOneBy(array('name' => $name));
 		if (!$setting) {
 			$setting = new Entity\Setting();
 			$setting['name'] = $name;
