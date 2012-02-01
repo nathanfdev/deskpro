@@ -485,6 +485,10 @@ class UserChatManager
 	 */
 	public function agentTimeout(ChatConversation $convo, Person $person)
 	{
+		if (!$convo->agent) {
+			return;
+		}
+
 		$this->em->beginTransaction();
 		try {
 

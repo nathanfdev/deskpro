@@ -38,12 +38,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		/** @var $queue \Application\DeskPRO\Queue\Queue */
 		$queue = $this->getContainer()->getQueue('test');
 
-		$queue->send('my message woo' . mt_rand(0,10000000));
-		$queue->send('my message woo' . mt_rand(0,10000000));
-		$queue->send('my message woo' . mt_rand(0,10000000));
+		echo "inserting \n";
+		$queue->send(array('test' => 1));
+		$queue->send(array('test' => 2));
+		$queue->send(array('test' => 3));
 
+		echo "\n recieving \n";
 		foreach ($queue->receive(10, 100) as $m) {
-			echo $m->message;
+			echo $m->test;
 			echo "\n";
 
 			$queue->deleteMessage($m);

@@ -129,6 +129,7 @@ class MysqlAdapter extends AbstractAdapter
 		return $searcher;
 	}
 
+
 	/**
 	 * Get a content searcher.
 	 *
@@ -142,6 +143,19 @@ class MysqlAdapter extends AbstractAdapter
 		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
+	}
+
+
+	/**
+	 * Delete all objects from the index of a particular content type.
+	 *
+	 * @param string $type_name
+	 */
+	public function deleteContentTypeFromIndex($type_name)
+	{
+		App::getDb()->executeUpdate("
+			DELETE FROM content_search WHERE object_type = ?
+		", array($type_name));
 	}
 
 
@@ -160,6 +174,17 @@ class MysqlAdapter extends AbstractAdapter
 	public static function encodeLabel($label)
 	{
 		$label = "lbl" . md5(strtolower(trim($label)));
+		return $label;
+	}
+
+
+	/**
+	 * @param  $label
+	 * @return string
+	 */
+	public static function encodeProperty($k, $v)
+	{
+		$label = md5(strtolower($k . $v));
 		return $label;
 	}
 }

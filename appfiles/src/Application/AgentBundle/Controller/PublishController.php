@@ -752,4 +752,21 @@ class PublishController extends AbstractController
 			'type' => $type
 		));
 	}
+
+	############################################################################
+	# search
+	############################################################################
+
+	public function searchAction()
+	{
+		$query = $this->in->getString('query');
+		$types = $this->container->getIn()->getCleanValueArray('types');
+
+		$result_set = $this->container->getSearchAdapter()->getContentSearcher()->query($query, 250, 1, $types);
+		$results    = $this->container->getSearchAdapter()->getResultSetObjects($result_set, true);
+
+		return $this->render('AgentBundle:Publish:search-results.html.twig', array(
+			'results'           => $results,
+		));
+	}
 }

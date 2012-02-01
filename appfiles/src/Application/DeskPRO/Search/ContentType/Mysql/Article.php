@@ -19,7 +19,7 @@ use Application\DeskPRO\Search\Indexer\Document;
 class Article extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:Article';
-	
+
 	public function objectToDocument($article)
 	{
 		$data = array();

@@ -40,10 +40,16 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$this->person = $person;
 	}
 
-	public function query($query)
+	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null)
 	{
+		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+		if (!$limit_types) {
+			$limit_types = array('article', 'download', 'idea', 'news');
+		}
+		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+
 		$where = "
-			object_type IN ('article', 'download', 'idea', 'news')
+			object_type IN ($limit_types)
 			AND MATCH (content) AGAINST (?)
 		";
 
@@ -59,8 +65,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			WHERE $where
 		";
 
-		$total        = App::getDb()->fetchColumn($count_query, array($query));
-		$results_raw  = App::getDb()->fetchAll($select_query, array($query));
+		$total        = App::getDb()->fetchColumn($count_query, array($query_text));
+		$results_raw  = App::getDb()->fetchAll($select_query, array($query_text));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {
@@ -77,8 +83,14 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		return $result_set;
 	}
 
-	public function labelled(array $labels)
+	public function labelled(array $labels, array $limit_types = null)
 	{
+		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+		if (!$limit_types) {
+			$limit_types = array('article', 'download', 'idea', 'news');
+		}
+		$limit_types = implode(',', $limit_types);
+
 		$label_where = array();
 
 		foreach ($labels as $label) {
@@ -88,7 +100,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$label_where = implode(' ', $label_where);
 
 		$where = "
-			object_type IN ('article', 'download', 'idea', 'news')
+			object_type IN ($limit_types)
 			AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
 		";
 

@@ -42,13 +42,16 @@ class SearchIndexUpdate extends AbstractJob
 		$this->db = $this->em->getConnection();
 		$this->queue = App::getContainer()->getQueue('search_object_update');
 
-		while ($batch = $this->queue->receive(20)) {
+		$batch = $this->queue->receive(20);
+		while (count($batch)) {
 			$update = array();
 			$delete = array();
 
 			foreach ($batch as $info) {
-				if ($info->op == 'update') {
-					$entity = $this->em->find($info->entity, array('id' => $info->id));
+				$op = isset($info->op) ? $info->op : 'update';
+
+				if ($op == 'update') {
+					$entity = $this->em->find($info->entity_type, array('id' => $info->id));
 					if ($entity) {
 						$update[] = $entity;
 					}
@@ -56,6 +59,7 @@ class SearchIndexUpdate extends AbstractJob
 					$doc = new \Application\DeskPRO\Search\Indexer\Document($info->id, $info->entity_type);
 					$delete[] = $doc;
 				}
+				$this->queue->deleteMessage($info);
 			}
 
 			if ($update) {
@@ -65,7 +69,7 @@ class SearchIndexUpdate extends AbstractJob
 				App::getContainer()->getSearchAdapter()->deleteDocumentsFromIndex($delete);
 			}
 
-			$this->queue->deleteMessage($info);
+			$batch = $this->queue->receive(20);
 		}
 	}
 }

@@ -23,6 +23,7 @@ use Orb\Util\Arrays;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
  * @ORM_Mapping\Table(name="news")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class News extends ContentAbstract
 {
@@ -118,5 +119,25 @@ class News extends ContentAbstract
 	{
 		$label['news'] = $this;
 		$this->labels->add($label);
+	}
+
+	/**
+	 * @ORM_Mapping\PostUpdate
+	 * @ORM_Mapping\PostPersist
+	 */
+	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
+	/**
+	 * @ORM_Mapping\PostRemove
+	 */
+	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
+
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:News', 'id' => $this->id, 'op' => $op));
 	}
 }

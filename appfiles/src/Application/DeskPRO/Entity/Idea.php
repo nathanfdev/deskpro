@@ -272,4 +272,24 @@ class Idea extends ContentAbstract
 
 		return $this->_label_manager;
 	}
+
+	/**
+	 * @ORM_Mapping\PostUpdate
+	 * @ORM_Mapping\PostPersist
+	 */
+	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
+	/**
+	 * @ORM_Mapping\PostRemove
+	 */
+	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
+
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:Idea', 'id' => $this->id, 'op' => $op));
+	}
 }

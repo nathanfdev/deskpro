@@ -1571,6 +1571,13 @@ $collection->add('agent_publish_searchlog', new Route(
 	array()
 ));
 
+$collection->add('agent_publish_search', new Route(
+	'/publish/search',
+	array('_controller' => 'AgentBundle:Publish:search'),
+	array(),
+	array()
+));
+
 $collection->add('agent_kb_newarticle_save', new Route(
 	'/kb/article/new/save',
 	array('_controller' => 'AgentBundle:Kb:newArticleSave'),

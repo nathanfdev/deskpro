@@ -364,6 +364,13 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 		$this->deleteDocumentsFromIndex($documents);
 	}
 
+	/**
+	 * Delete all objects from the index of a particular content type.
+	 *
+	 * @param string $type_name
+	 */
+	abstract public function deleteContentTypeFromIndex($type_name);
+
 
 	/**
 	 * Update the search index with the specified docs

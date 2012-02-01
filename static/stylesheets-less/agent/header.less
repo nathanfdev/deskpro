@@ -1527,7 +1527,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 }
 
 #dp_searchsheet > article {
-	min-height: 180px;
+	min-height: 100px;
 	margin-top: 33px;
 	margin-bottom: 33px;
 
@@ -1554,6 +1554,18 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 
 		&:hover {
 			border: 1px solid #4686C1;
+		}
+
+		&.search-input {
+			background: #fff;
+			float: none;
+			width: auto;
+			margin-top: 44px;
+			padding: 8px;
+
+			input[type="text"] {
+				margin-bottom: 6px;
+			}
 		}
 
 		// Selected items in each list

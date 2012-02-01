@@ -24,6 +24,7 @@ use Orb\Util\Strings;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
  * @ORM_Mapping\Table(name="articles")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class Article extends ContentAbstract
 {
@@ -206,5 +207,25 @@ class Article extends ContentAbstract
 	{
 		$this->attachments->add($attach);
 		$attach['article'] = $this;
+	}
+
+	/**
+	 * @ORM_Mapping\PostUpdate
+	 * @ORM_Mapping\PostPersist
+	 */
+	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
+	/**
+	 * @ORM_Mapping\PostRemove
+	 */
+	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
+
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:Article', 'id' => $this->id, 'op' => $op));
 	}
 }

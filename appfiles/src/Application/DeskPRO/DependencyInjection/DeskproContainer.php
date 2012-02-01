@@ -321,7 +321,7 @@ class DeskproContainer extends Container
 	 */
 	public function getQueue($name)
 	{
-		$adapter = new \Application\DeskPRO\Queue\Adapter\QueueItemEntity(array('em' => $this->getOrm(), 'name' => $name));
+		$adapter = new \Application\DeskPRO\Queue\Adapter\QueueItemEntity(array('em' => $this->getEm(), 'name' => $name));
 		$queue = new \Application\DeskPRO\Queue\Queue($adapter);
 
 		return $queue;

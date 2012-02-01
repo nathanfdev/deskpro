@@ -22,6 +22,7 @@ use Orb\Util\Strings;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Download")
  * @ORM_Mapping\Table(name="downloads")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class Download extends ContentAbstract
 {
@@ -123,5 +124,25 @@ class Download extends ContentAbstract
 	{
 		$label['download'] = $this;
 		$this->labels->add($label);
+	}
+
+	/**
+	 * @ORM_Mapping\PostUpdate
+	 * @ORM_Mapping\PostPersist
+	 */
+	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
+	/**
+	 * @ORM_Mapping\PostRemove
+	 */
+	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
+
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:Download', 'id' => $this->id, 'op' => $op));
 	}
 }
