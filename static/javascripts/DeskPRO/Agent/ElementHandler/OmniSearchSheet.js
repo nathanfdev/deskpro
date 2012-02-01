@@ -118,14 +118,49 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 		if (this._hasInitTicketSearch) return;
 		this._hasInitTicketSearch = true;
 
-		//------------------------------
-		// Common properties
-		//------------------------------
+		this._initFormElements(tab);
+	},
 
-		$('ul.property-list > li', tab).each(function() {
+
+	//##########################################################################
+	//# People Search
+	//##########################################################################
+
+	_initPeopleSearch: function(tab) {
+		if (this._hasInitPeopleSearch) return;
+		this._hasInitPeopleSearch = true;
+
+		this._initFormElements(tab);
+	},
+
+
+	//##########################################################################
+	//# Org Search
+	//##########################################################################
+
+	_initOrgsSearch: function(tab) {
+		if (this._hasInitOrgsSearch) return;
+		this._hasInitOrgsSearch = true;
+
+		this._initFormElements(tab);
+	},
+
+
+	//##########################################################################
+	//# Content Search
+	//##########################################################################
+
+	_initContentSearch: function(tab) {
+		if (this._hasInitContentSearch) return;
+		this._hasInitContentSearch = true;
+	},
+
+	//##########################################################################
+
+	_initFormElements: function(tab) {
+		$('ul.property-list > li.ob', tab).each(function() {
 			var values = $('> .values', this);
 			var select = $('> select', values);
-			var label = $('> label', this);
 
 			var ob = new DeskPRO.UI.OptionBoxBuilder({
 				values: select,
@@ -166,64 +201,63 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 			$(this).on('click', function(ev) { ob.open(ev); });
 		});
 
+		var fieldInput = {
+			init: function(wrapper) {
+				wrapper.find('input').hide().on('blur', function() {
+					fieldInput.closeEdit(wrapper);
+				}).on('keypress', (function(ev) {
+					if (ev.keyCode == 13/* enter key */) {
+						ev.preventDefault();//dont enter enter key
+						fieldInput.closeEdit(wrapper);
+					}
+				}));
+			},
+			openEdit: function(wrapper) {
+				if (wrapper.hasClass('open')) {
+					return;
+				}
+				wrapper.addClass('open');
+				wrapper.find('ul').remove();
+				wrapper.find('input').show().focus();
+			},
+			closeEdit: function(wrapper) {
+				if (!wrapper.hasClass('open')) {
+					return;
+				}
+				wrapper.removeClass('open');
+				var val = wrapper.find('input').hide().val().trim();
+				if (val.length) {
+					var li = $('<li></li>');
+					li.text(val);
 
-		//------------------------------
-		// Criteria builder
-		//------------------------------
+					$('<ul />').append(li).appendTo(wrapper);
+				}
+			}
+		};
 
-		var critTpl = $('#tickersearch_criteria_tpl');
-		var critList = $('#tickersearch_criteria_list');
-
-		var editor = new DeskPRO.Form.RuleBuilder(critTpl);
-		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).on('click', function() {
-				new_row.remove();
+		$('ul.property-list > li.field-input', tab).each(function() {
+			var values = $('> .values', this);
+			fieldInput.init(values);
+			$(this).on('click', function() {
+				fieldInput.openEdit(values);
 			});
 		});
-		$('.add-term', critList).on('click', function() {
-			var basename = 'terms['+Orb.uuid()+']';
-
-			editor.addNewRow($('.search-terms', critList), basename);
-		});
-
-		//------------------------------
-		// Do search
-		//------------------------------
-
-		$('#ticketsearch_submit').click(function(ev) {
-			ev.preventDefault();
 
 
-		});
-	},
+		var critList = $('.search-form', tab);
+		if (critList.length) {
+			var critTpl = $(critList.data('templates'), tab);
+			var editor = new DeskPRO.Form.RuleBuilder(critTpl);
+			editor.addEvent('newRow', function(new_row) {
+				$('.remove', new_row).on('click', function() {
+					new_row.remove();
+				});
+			});
+			$('.add-term', critList).on('click', function() {
+				var basename = 'terms['+Orb.uuid()+']';
 
-
-	//##########################################################################
-	//# People Search
-	//##########################################################################
-
-	_initPeopleSearch: function(tab) {
-		if (this._hasInitPeopleSearch) return;
-		this._hasInitPeopleSearch = true;
-	},
-
-
-	//##########################################################################
-	//# Org Search
-	//##########################################################################
-
-	_initOrgsSearch: function(tab) {
-		if (this._hasInitOrgsSearch) return;
-		this._hasInitOrgsSearch = true;
-	},
-
-
-	//##########################################################################
-	//# Content Search
-	//##########################################################################
-
-	_initContentSearch: function(tab) {
-		if (this._hasInitContentSearch) return;
-		this._hasInitContentSearch = true;
+				editor.addNewRow($('.search-terms', critList), basename);
+			});
+		}
 	}
 });

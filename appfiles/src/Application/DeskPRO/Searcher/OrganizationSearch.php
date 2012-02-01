@@ -11,14 +11,13 @@ use Application\DeskPRO\Entity;
 
 class OrganizationSearch extends SearcherAbstract
 {
-	const TERM_ID             = 'id';
-	const TERM_NAME           = 'name';
-	const TERM_ORGANIZATION_FIELD   = 'organization_field';
-	const TERM_LABEL          = 'label';
-	const TERM_DIRECTORY_NAME = 'directory_name';
-	const TERM_CONTACT_PHONE    = 'contact_phone';
-	const TERM_CONTACT_ADDRESS  = 'contact_address';
-	const TERM_CONTACT_IM       = 'contact_im';
+	const TERM_ID                   = 'org_id';
+	const TERM_NAME                 = 'org_name';
+	const TERM_ORGANIZATION_FIELD   = 'org_field';
+	const TERM_LABEL                = 'org_label';
+	const TERM_CONTACT_PHONE        = 'org_contact_phone';
+	const TERM_CONTACT_ADDRESS      = 'org_contact_address';
+	const TERM_CONTACT_IM           = 'org_contact_im';
 
 
 	/**
@@ -201,37 +200,32 @@ class OrganizationSearch extends SearcherAbstract
 				case self::TERM_CONTACT_PHONE:
 
 					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Phone');
 
 					$joins[] = array(
 						'organizations_contact_data',
-						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'phone')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
 
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
 
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Address');
-
 					$joins[] = array(
 						'organizations_contact_data',
-						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
 					break;
 
 				case self::TERM_CONTACT_IM:
 
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\InstantMessage');
-
 					$joins[] = array(
 						'organizations_contact_data',
-						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'instant_message')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
 					break;
 

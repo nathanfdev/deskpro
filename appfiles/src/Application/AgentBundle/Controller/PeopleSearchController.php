@@ -19,6 +19,8 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
+use Application\DeskPRO\UI\RuleBuilder;
+
 /**
  * Handles searching for people
  */
@@ -253,18 +255,35 @@ class PeopleSearchController extends AbstractController
 				}
 			}
 
-			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+			$term_rules = RuleBuilder::newTermsBuilder();
+			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+			$set_terms_map = array(
+				'person_organization'       => array('op' => 'contains', 'options' => array()),
+				'person_usergroup'          => array('op' => 'contains', 'options' => array()),
+				'person_label'              => array('op' => 'contains', 'options' => array()),
+				'person_name'               => array('op' => 'contains', 'options' => array()),
+				'person_email'              => array('op' => 'contains', 'options' => array()),
+				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
+			);
+			foreach ($set_terms_map as $name => $info) {
+				$in_val = $this->container->getIn()->getCleanValue('set_term.'.$name, 'raw');
+				if (is_string($in_val)) {
+					$in_val = trim($in_val);
+				} elseif (is_array($in_val)) {
+					$in_val = Arrays::removeEmptyString($in_val);
+				}
+				if ($in_val) {
+					$new_term = $info;
+					$new_term['options'] = $in_val;
+					Arrays::unshiftAssoc($new_term, 'type', $name);
+					$terms[] = $new_term;
+				}
+			}
 
 			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 			foreach ($terms as $term) {
-				$data = $term;
-				unset($data['rule_type'], $data['op']);
-
-				if (count($data) == 1) {
-					$data = array_pop($data);
-				}
-
-				$searcher->addTerm($term['rule_type'], $term['op'], $data);
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
 
 			$order_by = $this->person->getPref('agent.ui.people-filter-order-by.0');

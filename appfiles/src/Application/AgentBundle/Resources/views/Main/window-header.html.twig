@@ -181,7 +181,7 @@
 	<article id="dp_searchsheet_tickets">
 		<form action="{{ path('agent_ticketsearch_runcustomfilter') }}">
 			<ul class="property-list">
-				<li>
+				<li class="ob">
 					<label>Department</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-department.html.twig' with {
@@ -192,7 +192,7 @@
 						} %}
 					</div>
 				</li>
-				<li>
+				<li class="ob">
 					<label>Status</label>
 					<div class="values">
 						<select name="set_term[status][]">
@@ -204,7 +204,7 @@
 						</select>
 					</div>
 				</li>
-				<li>
+				<li class="ob">
 					<label>Agent</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-agent.html.twig' with {
@@ -216,7 +216,7 @@
 					</div>
 				</li>
 				{% if app.getSetting('core.use_agent_team') %}
-					<li>
+					<li class="ob">
 						<label>Agent Team</label>
 						<div class="values">
 							{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
@@ -228,7 +228,7 @@
 						</div>
 					</li>
 				{% endif %}
-				<li>
+				<li class="ob">
 					<label>Followers</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-agent.html.twig' with {
@@ -240,7 +240,7 @@
 					</div>
 				</li>
 				{% if app.getSetting('core.use_ticket_category') %}
-				<li>
+				<li class="ob">
 					<label>Category</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-category.html.twig' with {
@@ -253,7 +253,7 @@
 				</li>
 				{% endif %}
 				{% if app.getSetting('core.use_product') %}
-				<li>
+				<li class="ob">
 					<label>Product</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-product.html.twig' with {
@@ -266,7 +266,7 @@
 				</li>
 				{% endif %}
 				{% if app.getSetting('core.use_ticket_priority') %}
-				<li>
+				<li class="ob">
 					<label>Priority</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-priority.html.twig' with {
@@ -279,7 +279,7 @@
 				</li>
 				{% endif %}
 				{% if app.getSetting('core.use_ticket_workflow') %}
-				<li>
+				<li class="ob">
 					<label>Workflow</label>
 					<div class="values">
 						{% include 'AgentBundle:Common:select-workflow.html.twig' with {
@@ -294,7 +294,7 @@
 			</ul>
 			<br class="clear" />
 
-			<div class="search-form" id="tickersearch_criteria_list">
+			<div class="search-form" id="tickersearch_criteria_list" data-templates="#tickersearch_criteria_tpl">
 				<div class="search-terms"></div>
 				<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
 			</div>
@@ -312,13 +312,119 @@
 
 	{# People Search Form #}
 	<article id="dp_searchsheet_people">
-		People
+		<form action="{{ path('agent_peoplesearch_customfilter') }}">
+			<ul class="property-list">
+				{% if people_options.organizations %}
+				<li class="ob">
+					<label>Organization</label>
+					<div class="values">
+						<select name="set_term[person_organization]" multiple="multiple">
+							{% for id,title in people_options.organizations %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</li>
+				{% endif %}
+				{% if people_options.usergroups %}
+				<li class="ob">
+					<label>Usergroup</label>
+					<div class="values">
+						<select name="set_term[person_usergroup]" multiple="multiple">
+							{% for id,title in people_options.usergroups %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</li>
+				{% endif %}
+				<li class="field-input">
+					<label>Label</label>
+					<div class="values">
+						<input class="form-label-input" type="text" name="set_term[person_label]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Name</label>
+					<div class="values">
+						<input type="text" name="set_term[person_name]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Email Address</label>
+					<div class="values">
+						<input type="text" name="set_term[person_email]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Phone</label>
+					<div class="values">
+						<input type="text" name="set_term[person_contact_phone]" />
+					</div>
+				</li>
+			</ul>
+			<br class="clear" />
+
+			<div class="search-form" id="peoplesearch_criteria_list" data-templates="#peoplesearch_criteria_tpl">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+			</div>
+		</form>
+
+		{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {
+			classname: 'search-builder-tpl',
+			id: 'peoplesearch_criteria_tpl',
+			term_options: term_options,
+			no_show_fields: ['person_organization', 'person_usergroup', 'person_label', 'person_name', 'person_email', 'person_phone'],
+			search_context: 'filter'
+		} %}
 	</article>
 	{# /People Search Form #}
 
 	{# Orgs Search Form #}
 	<article id="dp_searchsheet_orgs">
-		Orgs
+		<form action="{{ path('agent_orgsearch_customfilter') }}">
+			<ul class="property-list">
+				<li class="field-input">
+					<label>Name</label>
+					<div class="values">
+						<input type="text" name="set_term[org_name]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Label</label>
+					<div class="values">
+						<input class="form-label-input" type="text" name="set_term[org_label]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Email Domain</label>
+					<div class="values">
+						<input type="text" name="set_term[org_email_domain]" />
+					</div>
+				</li>
+				<li class="field-input">
+					<label>Phone</label>
+					<div class="values">
+						<input type="text" name="set_term[org_contact_phone]" />
+					</div>
+				</li>
+			</ul>
+			<br class="clear" />
+
+			<div class="search-form" id="orgsearch_criteria_list" data-templates="#orgsearch_criteria_tpl">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+			</div>
+		</form>
+
+		{% include 'DeskPRO:Common:org-search-criteria.html.twig' with {
+			classname: 'search-builder-tpl',
+			id: 'orgsearch_criteria_tpl',
+			term_options: term_options,
+			no_show_fields: ['org_name', 'org_label', 'org_email_domain', 'org_contact_phone'],
+			search_context: 'filter'
+		} %}
 	</article>
 	{# /Orgs Search Form #}
 

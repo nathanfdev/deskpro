@@ -289,7 +289,7 @@ class PersonSearch extends SearcherAbstract
 
 					$wheres[] = $w;
 
-					$this->summary[] = "Name is " . array_pop($choice);
+					$this->summary[] = "Name is " . $choice;
 
 					break;
 
@@ -311,37 +311,30 @@ class PersonSearch extends SearcherAbstract
 				case self::TERM_CONTACT_PHONE:
 
 					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Phone');
-
 					$joins[] = array(
 						'people_contact_data',
-						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'phone')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_20", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
 
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
-
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Address');
-
 					$joins[] = array(
 						'people_contact_data',
-						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'address')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
 					break;
 
 				case self::TERM_CONTACT_IM:
 
-					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\InstantMessage');
-
 					$joins[] = array(
 						'people_contact_data',
-						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'instant_message')"
 					);
-					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
 					break;
 
