@@ -1,7 +1,15 @@
 {% block pre_extra %}{% endblock %}
+{% set top_extra %}
+		{% block top_extra %}{% endblock %}
+		{{ top_extra }}
+	{% endset %}
+{% set bottom_extra %}
+	{% block bottom_extra %}{% endblock %}
+	{{ bottom_extra }}
+{% endset %}
+{% if top_extra|trim|length or bottom_extra|trim|length or contact_data.website or contact_data.twitter or contact_data.linkedin or contact_data.facebook or contact_data.mobile or contact_data.phone or contact_data.fax or contact_data.instant_message %}
 <ul class="contact-data-list">
-	{% block top_extra %}{% endblock %}
-	{{ top_extra }}
+	{{ top_extra|raw }}
 
 	{% if not show_only or show_only.website %}
 	{% for contact in contact_data.website %}
@@ -76,9 +84,9 @@
 	{% endfor %}
 	{% endif %}
 
-	{% block bottom_extra %}{% endblock %}
-	{{ bottom_extra }}
+	{{ bottom_extra|raw }}
 </ul>
+{% endif %}
 
 {% if contact_data.address %}
 	<div class="addresses">

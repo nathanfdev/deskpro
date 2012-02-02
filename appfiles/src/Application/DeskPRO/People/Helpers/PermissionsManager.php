@@ -273,6 +273,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	public function hasPerm($name)
 	{
 		// TODO until admin interface for perms is done
+		return true;
+
 		if ($name == 'users.delete-emails' || $name == 'users.set-password' || $name == 'users.add-emails' || $name == 'users.delete' || $name == 'orgs.delete') {
 			return true;
 		}

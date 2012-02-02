@@ -117,6 +117,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 						DeskPRO_Window.showAlert(div);
 					}
+
+					self.fireEvent('success', data);
 				}
 			});
 		});
@@ -143,12 +145,10 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			}
 		};
 
-		contactEditor.on('click', '.remove', function(ev) {
-			var rowTypeEl = $(this).closest('.row-type');
-			var row = $(this).closest('li');
-
+		function doRemove(row, rowTypeEl) {
 			var removeName = row.data('remove-name');
 			var removeVal  = row.data('remove-value');
+
 
 			if (removeName && removeVal) {
 				var input = $('<input type="hidden" />');
@@ -167,6 +167,18 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 			if (lis.length < 2) { /* two because the fade is going now and it hasnt been removed yet */
 				rowTypeEl.removeClass('with-values');
+			}
+		};
+		contactEditor.on('click', '.remove', function(ev) {
+			var rowTypeEl = $(this).closest('.row-type');
+			var row = $(this).closest('li');
+
+			if (row.data('confirm')) {
+				DeskPRO_Window.showConfirm(row.data('confirm'), function() {
+					doRemove(row, rowTypeEl);
+				});
+			} else {
+				doRemove(row, rowTypeEl);
 			}
 		});
 

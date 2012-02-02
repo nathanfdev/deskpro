@@ -29,7 +29,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			window.setTimeout(function() {
 				var w = propBox.width() - 140;
 				input.width(w);
-				if (self.labelsInput) {
+				if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
 					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
 					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
 				}
@@ -42,6 +42,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			outsideEl: this.getEl('contact_outside'),
 			onReplaceEditor: function() {
 				self.refreshPropBox();
+			},
+			onSuccess: function(data) {
+				if (data.changed_primary_email) {
+					DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
+				}
 			}
 		});
 		this.ownObject(this.contactEditor);
@@ -127,6 +132,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				data: {
 					action: 'set-primary-email',
 					email_id: email_id
+				},
+				success: function(data) {
+					DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
 				}
 			});
 		});

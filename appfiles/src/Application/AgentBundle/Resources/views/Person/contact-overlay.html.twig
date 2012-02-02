@@ -1,11 +1,11 @@
 {% extends 'AgentBundle:Common:profile-contact-overlay.html.twig' %}
 {% block list_extra %}
-	<div class="row-type website {% if person.emails|length %}with-values{% endif %}">
+	<div class="row-type email {% if person.emails|length %}with-values{% endif %}">
 		<h4>Email Address</h4>
 		<div class="contact-info">
 			<ul>
 				{% for email in person.emails %}
-					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}">
+					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}" data-confirm="Are you sure you want to remove this email address?">
 						<div class="controls">
 							{% if app.user.hasPerm('users.delete-emails') %}
 								<span class="remove">x</span>

@@ -241,6 +241,8 @@ class PersonController extends AbstractController
 					$person->primary_email = $person->emails[$email_id];
 					$this->em->persist($person);
 				}
+
+				$data['primary_email_address'] = $person->primary_email->email;
 				break;
 
 			case 'delete-picture':
@@ -422,6 +424,8 @@ class PersonController extends AbstractController
 
 		$errors = array();
 
+		$changed_primary_email = false;
+
 		try {
 
 			// Editing emails
@@ -465,8 +469,21 @@ class PersonController extends AbstractController
 			if ($this->person->hasPerm('users.remove-emails')) {
 				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
 					if (isset($person->emails[$email_id])) {
+
+						if ($person->primary_email->id == $email_id) {
+							$changed_primary_email = true;
+							$person->primary_email = null;
+						}
+
 						$this->em->remove($person->emails[$email_id]);
 						$person->emails->remove($email_id);
+					}
+				}
+
+				if ($changed_primary_email && count($person->emails)) {
+					foreach ($person->emails as $e) {
+						$person->primary_email = $e;
+						break;
 					}
 				}
 			}
@@ -532,6 +549,8 @@ class PersonController extends AbstractController
 			'display_html' => $display_html,
 			'editor_overlay_html' => $editor_overlay_html,
 			'errors' => $errors ? $errors : false,
+			'primary_email_address' => $person->getPrimaryEmailAddress(),
+			'changed_primary_email' => $changed_primary_email
 		));
 	}
 

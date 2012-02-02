@@ -30,7 +30,7 @@
 			</span>
 		{% endif %}
 		{% if ticket.person.primary_email %}
-			<span class="email">{{ ticket.person.primary_email_address }}</span>
+			<span class="email"><b class="person-{{ticket.person.id}}-pemail">{{ ticket.person.primary_email_address }}</b></span>
 		{% endif %}
 		<div class="bound-fade"></div>
 	</div>

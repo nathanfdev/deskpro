@@ -248,6 +248,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 
 				return $(el).fileupload(options);
+			},
+
+			updateUserEmailAddressDisplay: function(person_id, email) {
+				var sel = $('b.pemail-' + person_id);
+				var mode = 'chance';
+				if (!email || !email.length) {
+					mode = 'hide';
+				}
+
+				sel.each(function() {
+					var el = $(this);
+
+					var hideEl = el;
+					if (el.data('hide') && el.data('hide') == '@parent') {
+						hideEl = el.parent();
+					}
+
+					if (mode == 'chance') {
+						hideEl.show();
+						el.text(email);
+					} else {
+						el.text('');
+						hideEl.hide();
+					}
+				});
 			}
 		};
 	},
