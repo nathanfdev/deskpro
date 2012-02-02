@@ -36,7 +36,8 @@
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
 
-<div class="profile-box-container reply-box-wrap">
+<div class="profile-box-container reply-box-wrap" style="position: relative">
+	<div class="drop-file-zone"><h1>Drop your file here to attach it to your reply</h1></div>
 	<header>
 		<nav>
 			<ul>

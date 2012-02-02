@@ -223,7 +223,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (!options.dropZone) {
-					options.dropZone = $(document);
+					options.dropZone = $(el);
 				}
 
 				if (typeof options.autoUpload == 'undefined') {
@@ -242,27 +242,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 					options.downloadTemplate = $('.template-download', el);
 				}
 
-				if (options.page) {
-					options.page.addEvent('activate', function() {
-						DeskPRO_Window.util.fileupload(el, options);
-					});
-					options.page.addEvent('deactivate', function() {
-						console.log('deactivate');
-						$(options.dropZone).unbind('.' + options.namespace);
-						$(el).unbind('.' + options.namespace);
-						$(el).fileupload('disable');
-						$(el).fileupload('destroy');
-					});
-				}
-
 				options.start = function() {
 					// Dont stack error messes. Once you upload again, the old one disappears
 					$(el).find('.error').remove();
 				};
 
-				return $(el).fileupload(options).bind('fileuploaddragover.' + options.namespace, function(e) {
-					$('body').addClass('file-drag-over');
-				});
+				return $(el).fileupload(options);
 			}
 		};
 	},
@@ -277,8 +262,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 			e.preventDefault();
 		});
 
-		$('#dp_window_filedrop').bind('dragleave dragend drop', function (ev) {
-			$('body').removeClass('file-drag-over');
+		$(document).bind('dragover', function (e) {
+			var timeout = window.dropZoneTimeout;
+			if (!timeout) {
+				$('body').addClass('file-drag-over');
+			} else {
+				clearTimeout(timeout);
+			}
+
+			window.dropZoneTimeout = setTimeout(function () {
+				window.dropZoneTimeout = null;
+				$('body').removeClass('file-drag-over');
+			}, 100);
 		});
 
 		this._initBasic();

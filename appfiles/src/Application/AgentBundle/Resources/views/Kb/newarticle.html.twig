@@ -8,7 +8,8 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{{ agentui.scroll_containers('page-new-article page-new-content') }}
+{% set dropzonehtml %}<div class="drop-file-zone"><h1>Drop your file here to add it to this download</h1></div>{% endset %}
+{{ agentui.scroll_containers('page-new-article page-new-content', dropzonehtml) }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 

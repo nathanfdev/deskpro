@@ -2212,33 +2212,36 @@ ul.search-summary {
 	}
 }
 
-
-
-#dp_window_filedrop {
+.drop-file-zone {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	top: -5px;
+	left: -5px;
+	right: -5px;
+	bottom: -5px;
 	display: none;
 
-	background-color: rgba(255, 241, 228, 0.5);
+	background-color: rgba(175, 192, 213, 0.7);
 	z-index: 1000000;
 	display: none;
+	.rounded(6px);
 
 	h1 {
-		margin: 100px auto 0 auto;
+		margin: 60px auto 0 auto;
 		width: 300px;
 		text-align: center;
 		padding: 25px;
-		background-color: #D7CCC2;
+		background-color: #AFC0D5;
 		font-size: 18px;
-		border: 1px solid #C2B8B0;
+		border: 1px solid #66717F;
 		.rounded(6px);
+	}
+
+	&:hover h1 {
+		background-color: #fff;
 	}
 }
 
-body.file-drag-over #dp_window_filedrop {
+body.file-drag-over .drop-file-zone {
 	display: block;
 }
 
