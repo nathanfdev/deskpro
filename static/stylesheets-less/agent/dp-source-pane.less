@@ -234,7 +234,7 @@ ul.source-list li span.title {
 			position: absolute;
 			top: 3px;
 			right: 10px;
-			left: 21px;
+			left: 16px;
 			height: 15px;
 			padding-right: 15px;
 			line-height: 15px !important;
@@ -248,12 +248,11 @@ ul.source-list li span.title {
 	}
 }
 
-.sub-group .fitted > span.title-edit { left: 37px !important; }
-.sub-group .sub-group .fitted > span.title-edit { left: 47px !important; }
-.sub-group .sub-group .sub-group .fitted > span.title-edit { left: 57px !important; }
-.sub-group .sub-group .sub-group .sub-group .fitted > span.title-edit { left: 67px !important; }
-.sub-group .sub-group .sub-group .sub-group .sub-group .fitted > span.title-edit { left: 77px !important; }
-.sub-group .sub-group .sub-group .sub-group .sub-group .sub-group .fitted > span.title-edit { left: 87px !important; }
+.sub-group .fitted > span.title-edit { left: 26px !important; }
+.sub-group .sub-group .fitted > span.title-edit { left: 36px !important; }
+.sub-group .sub-group .sub-group .fitted > span.title-edit { left: 46px !important; }
+.sub-group .sub-group .sub-group .sub-group .fitted > span.title-edit { left: 56px !important; }
+.sub-group .sub-group .sub-group .sub-group .sub-group .fitted > span.title-edit { left: 66px !important; }
 
 ul.source-list li:not(.nav-selected) > span.title:not(.nav-selected):hover,
 ul.source-list li.on:not(.nav-selected) > span.title:not(.nav-selected),
@@ -362,27 +361,28 @@ ul.source-list li .elbow {
 .source-list .sub-toggle {
     position: absolute;
 	left: 0px;
-	top: 11px;
+	top: 7px;
 	z-index: 1;
 
     display: block;
-    background-image: url("../../images/agent/expand.png") /** sprite-ref: ui-v */;
+    background-image: url("../../images/agent/expand-small.png") /** sprite-ref: ui-v */;
     cursor: pointer;
-    margin-right: 2px;
-    margin-top: 3px;
-    margin-left: 0px;
-    width: 11px;
-    height: 11px;
+    width: 9px;
+    height: 9px;
     text-indent: -100px;
     overflow: hidden;
 
 	.opacity(70);
 }
 
+.dp-cat-item {
+	position: relative;
+}
+
 .source-list .sub-expanded > .sub-toggle,
 .source-list .sub-expanded > div > .sub-toggle,
 .source-list .sub-toggle.open {
-    background-image: url("../../images/agent/collapse.png") /** sprite-ref: ui-v */;
+    background-image: url("../../images/agent/collapse-small.png") /** sprite-ref: ui-v */;
 }
 
 .source-list .sub-toggle:hover {
@@ -416,26 +416,22 @@ ul.source-list.with-tree ul.sub-group {
 	border-top: none;
 }
 
-ul.source-list.with-tree li > .item-wrap > .title { padding-left: 27px; }
-ul.source-list.with-tree ul.sub-group li > .item-wrap > .title { padding-left: 37px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 47px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 57px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 67px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 77px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 87px; }
+ul.source-list.with-tree li > .item-wrap > .title { padding-left: 20px; }
+ul.source-list.with-tree ul.sub-group li > .item-wrap > .title { padding-left: 30px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 40px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 50px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 60px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .title { padding-left: 70px; }
 
-ul.source-list.with-tree li > .item-wrap > .sub-toggle { left: 7px; }
-ul.source-list.with-tree ul.sub-group li > .item-wrap > .sub-toggle { left: 22px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 32px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 42px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 52px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 62px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 72px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 82px; }
-ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 92px; }
+ul.source-list.with-tree li > .item-wrap > .sub-toggle { left: 3px; }
+ul.source-list.with-tree ul.sub-group li > .item-wrap > .sub-toggle { left: 13px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 23px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 33px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 43px; }
+ul.source-list.with-tree ul.sub-group ul.sub-group ul.sub-group ul.sub-group ul.sub-group li > .item-wrap > .sub-toggle { left: 53px; }
 
 ul.source-list.with-tree ul.sub-group .sub-toggle {
-	top: 10px;
+	top: 6px;
 }
 
 ul.source-list li.all {
