@@ -94,7 +94,7 @@ if ($results['news']) {
 	}
 }
 
-if ($people_top) {
+if ($people_top && !empty($OUTPUT['person'])) {
 	$people = $OUTPUT['person'];
 	unset($OUTPUT['person']);
 
