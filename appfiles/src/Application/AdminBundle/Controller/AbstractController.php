@@ -37,7 +37,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			return $this->redirect($this->get('router')->generate('admin_login', array('return' => $return)));
+			// Todo need this to be a no permissions screen
+			return $this->redirect($this->get('router')->generate('admin_login'));
 		}
 
 		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
