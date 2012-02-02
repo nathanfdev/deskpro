@@ -182,21 +182,6 @@ class OrganizationSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);;
 					break;
 
-				case self::TERM_DIRECTORY_NAME:
-
-					if ($choice == 'OTHER') {
-						$where[] = "organizations.name RLIKE '^[^A-Za-z]'";
-					} else {
-						$letter = $choice[0];
-						if (!preg_match('#^[a-zA-Z]#', $letter)) {
-							$letter = 'A';
-						}
-
-						$where[] = "organizations.name LIKE '%$letter'";
-					}
-
-					break;
-
 				case self::TERM_CONTACT_PHONE:
 
 					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
@@ -336,11 +321,6 @@ class OrganizationSearch extends SearcherAbstract
 							break;
 					}
 					break; // end TERM_PERSON_FIELD
-
-				default:
-					echo "Unknown term $term ($term_id)";
-					exit;
-					break;
 			}
 		}
 
