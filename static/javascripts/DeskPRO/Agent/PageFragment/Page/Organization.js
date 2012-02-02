@@ -22,6 +22,24 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		});
 		this.ownObject(this.contactEditor);
 
+		// TextExt doesnt play well with fluid columns
+		// so this listens for resizes, and then updates the input width,
+		// then forces textext to invalidatebounds
+		var propBox = self.getEl('properties_box');
+		var input = self.getEl('label_input');
+		input.width(propBox.width() - 140);
+
+		$(window).resize(function() {
+			window.setTimeout(function() {
+				var w = propBox.width() - 130;
+				input.width(w);
+				if (self.labelsInput) {
+					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
+					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+				}
+			}, 500);
+		});
+
 		// Name is editable
 		var name = $('h3.name.editable:first', el);
 		if (!name.attr('id')) {

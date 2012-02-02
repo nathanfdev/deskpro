@@ -18,6 +18,24 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		var cw = this.contentWrapper;
 
+		// TextExt doesnt play well with fluid columns
+		// so this listens for resizes, and then updates the input width,
+		// then forces textext to invalidatebounds
+		var propBox = self.getEl('properties_box');
+		var input = self.getEl('label_input');
+		input.width(propBox.width() - 140);
+
+		$(window).resize(function() {
+			window.setTimeout(function() {
+				var w = propBox.width() - 140;
+				input.width(w);
+				if (self.labelsInput) {
+					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
+					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+				}
+			}, 500);
+		});
+
 		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
 			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
 			displayEl: this.getEl('contact_display'),
@@ -423,11 +441,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	_initLabels: function() {
 
 		// Tags
-		this.labelsList = $(".people-tags input", this.wrapper);
+		var labelsList = $(".people-tags input", this.wrapper);
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'people',
-			textarea: this.labelsList,
+			textarea: labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

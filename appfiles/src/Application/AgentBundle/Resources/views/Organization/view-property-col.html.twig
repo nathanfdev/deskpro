@@ -13,7 +13,7 @@
 {# /Box Contact #}
 
 {# Properties Box #}
-<div class="profile-box-container properties">
+<div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
 		<div class="controls">
 			<span class="edit-gear prop-edit-trigger"></span>
@@ -28,7 +28,7 @@
 			<dl class="table-list">
 				<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
 				<dd class="org-tags tags-wrap">
-					<input type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
+					<input id="{{baseId}}_label_input" type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
 				</dd>
 			</dl>
 			<br class="clear" />
