@@ -31,11 +31,11 @@ $container->setParameter('router.options.generator_class', 'Application\\DeskPRO
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('doctrine.data_collector.class', 'Application\\DeskPRO\\Profiler\\DataCollector\\DoctrineDataCollector');
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
-$container->setParameter('profiler.storage.dsn', 'mysql:host=localhost;dbname=deskpro_dev');
-$container->setParameter('profiler.storage.username', 'deskpro_dev');
-$container->setParameter('profiler.storage.password', 'deskpro_dev');
-$container->setParameter('profiler.storage.class', 'Profiler\\LiveBundle\\Profiler\\Storage\\MysqlProfilerStorage');
-$container->setParameter('profiler.storage.lifetime', '1800');
+//$container->setParameter('profiler.storage.dsn', 'mysql:host=localhost;dbname=deskpro_dev');
+//$container->setParameter('profiler.storage.username', 'deskpro_dev');
+//$container->setParameter('profiler.storage.password', 'deskpro_dev');
+//$container->setParameter('profiler.storage.class', 'Profiler\\LiveBundle\\Profiler\\Storage\\MysqlProfilerStorage');
+//$container->setParameter('profiler.storage.lifetime', '1800');
 $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%/../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 
 ############################################################################

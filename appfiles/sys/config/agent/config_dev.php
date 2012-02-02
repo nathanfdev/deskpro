@@ -27,8 +27,8 @@ $container->loadFromExtension('monolog', array(
 	'handlers' => array(
 		'main' => array(
 			'type' => 'stream',
-			'path' => '%kernel.logs_dir%/%kernel.environment%.log',
-			'level' => 'debug'
+			'path' => '%kernel.logs_dir%/%kernel.environment%.agent.log',
+			'level' => 'WARNING'
 		)
 	)
 ));
