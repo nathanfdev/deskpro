@@ -19,7 +19,7 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 	},
 
 	_initOverlay: function() {
-
+		var self = this;
 		if (this._isIniting) return;
 		if (this._hasInit) return
 		this._isIniting = true;
@@ -29,22 +29,35 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 			new_url = this.options.load_url.replace('$view_type', 'list');
 		}
 
-		$.ajax({
+		this.wrapper = $('<div class="dp-overlay-container ticketlist" />').appendTo('body');
+		this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
+		this.backdropEl.css('z-index', '10000').hide().appendTo('body');
+		this.backdropEl.on('click', (function(ev) {
+			ev.stopPropagation();
+			this.close();
+		}).bind(this));
+
+		this.wrapper.html('<section class="dp-overlay"><div class="overlay-title"><span class="close-overlay"></span></div><div class="loading"></div></section>');
+		this.wrapper.find('.close-overlay').on('click', function(ev) {
+			ev.stopPropagation();
+			self.close();
+		});
+
+		this.updatePositions();
+
+		this.wrapper.addClass('open');
+		this.backdropEl.show();
+
+		this.runningAjax = $.ajax({
 			url: new_url,
 			dataType: 'html',
 			context:  this,
+			done: function() {
+				this.runningAjax = null;
+			},
 			success: function(html) {
 
-				this.wrapper = $('<div class="dp-overlay-container ticketlist" />').appendTo('body');
 				this.wrapper.html(html);
-
-				this.backdropEl = $('<div class="backdrop dp-overlay-backdrop" />');
-				this.backdropEl.css('z-index', '10000').hide().appendTo('body');
-
-				this.backdropEl.on('click', (function(ev) {
-					ev.stopPropagation();
-					this.close();
-				}).bind(this));
 
 				$('header .close-trigger', this.wrapper).first().on('click', (function(ev) {
 					ev.stopPropagation();
@@ -88,11 +101,12 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 		this.wrapper.addClass('open');
 		this.backdropEl.show();
 
+		$('body').addClass('print-overlay');
 		this.fireEvent('opened', [this]);
 	},
 
 	isOpen: function() {
-		if (!this._hasInit || !this.wrapper.is('.open')) {
+		if (!(this._hasInit || this.wrapper.is('.open'))) {
 			return false;
 		}
 
@@ -100,7 +114,8 @@ DeskPRO.Agent.PageHelper.PeopleList.ListView = new Orb.Class({
 	},
 
 	close: function() {
-		if (!this._hasInit || !this.isOpen()) return;
+		if (!(this._hasInit || this._isIniting || this.isOpen())) return;
+		$('body').removeClass('print-overlay');
 		this.destroy();
 	},
 
