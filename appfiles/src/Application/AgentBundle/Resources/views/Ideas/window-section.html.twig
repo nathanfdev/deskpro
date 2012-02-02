@@ -1,6 +1,6 @@
 <section class="source-section">
 	<ul class="source-list">
-		<li class="is-nav-item" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
+		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
 			<h3 class="title">
 				<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 				{{ phrase('agent.ideas.ideas_to_validate') }}
@@ -25,7 +25,7 @@
 
 <section id="ideas_outline_status" class="deskpro-tab-item">
 	<ul class="source-list">
-		<li class="auto-load-route is-nav-item">
+		<li class="is-nav-item">
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
 				<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
 				{{ phrase('agent.ideas.status_new') }}
