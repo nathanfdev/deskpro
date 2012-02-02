@@ -336,6 +336,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
+		page.TYPENAME_FOR = routeData.master;
+		page.TAB_FOR_ID = routeData.masterTag;
 
 		if (routeData.url_fragment) {
 			page.meta.url_fragment = routeData.url_fragment;

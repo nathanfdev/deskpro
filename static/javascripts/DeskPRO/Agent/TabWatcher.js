@@ -37,14 +37,22 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
+		if (this.watchedTypes['*']) {
+			Array.each(this.watchedTypes['*'], function(watcher) {
+				watcher.fireEvent('watchedTabActivated', [tab]);
+			});
+		}
 	},
 
 	_addTab: function(tab, containerEl, tabManager) {
-		var id = tab.id;
-
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
+				watcher.fireEvent('watchedTabAdded', [tab]);
+			});
+		}
+		if (this.watchedTypes['*']) {
+			Array.each(this.watchedTypes['*'], function(watcher) {
 				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
@@ -52,9 +60,19 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 	_deactivateTab: function(tab, containerEl, tabManager) {
 		var typename = this.getTabType(tab);
+		var isLast = false;
+		if (this.tabManager.tabCount == 1) {
+			isLast = true;
+		}
+
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
-				watcher.fireEvent('watchedTabDeactivated', [tab]);
+				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
+			});
+		}
+		if (this.watchedTypes['*']) {
+			Array.each(this.watchedTypes['*'], function(watcher) {
+				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
 			});
 		}
 	},
@@ -68,13 +86,18 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
+		if (this.watchedTypes['*']) {
+			Array.each(this.watchedTypes['*'], function(watcher) {
+				watcher.fireEvent('watchedTabRemoved', [tab]);
+			});
+		}
 	},
 
 
 	/**
 	 * Add a type watcher.
 	 *
-	 * @param string typename
+	 * @param string typename  The tabtype or an asterisk to subscribe to all types
 	 * @param {Object} watcher
 	 * @param {Boolean} notifyOfExisting Cycle through the already open tabs of the type and notify the watcher with the 'watchedTabAdded' event
 	 */
@@ -163,8 +186,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 			return null;
 		}
 
-		if (tab.page && tab.page.TYPENAME) {
-			return tab.page.TYPENAME;
+		if (tab.page) {
+			if (tab.page.TYPENAME && tab.page.TYPENAME != 'loading') {
+				return tab.page.TYPENAME;
+			} else if (tab.page.TYPENAME_FOR) {
+				return tab.page.TYPENAME_FOR;
+			}
 		}
 
 		return 'general';

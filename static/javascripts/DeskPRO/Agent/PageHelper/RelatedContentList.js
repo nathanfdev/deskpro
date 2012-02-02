@@ -21,31 +21,40 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 
 		this.contentListEl = $(this.options.contentListEl);
 
+		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('*', this);
 		var types = ['article', 'download', 'news', 'idea'];
+
 		this.addEvent('watchedTabActivated', function(tab) {
-			if (types.indexOf(DeskPRO_Window.getTabWatcher().getTabType(tab)) !== -1) {
+
+			// Instant feedback: Enable all buttons again, but disable ourselves
+			// when the tab actually loads the proper routines will be called
+			// and the correct items will be shown/hidden
+			$('.related-is-linkable', this.contentListEl).each(function() {
+				var el = $(this);
+				el.removeClass('related-not-linkable').removeClass('related-is-linked');
+			});
+			if (tab.page && tab.page.meta.routeData && tab.page.meta.routeData.routeTriggerEl) {
+				var row = $(tab.page.meta.routeData.routeTriggerEl);
+				if (row.hasClass('row-item')) {
+					row.addClass('related-not-linkable').removeClass('related-is-linked');
+				}
+			}
+
+			var tabtype = DeskPRO_Window.getTabWatcher().getTabType(tab);
+			if (types.indexOf(tabtype) !== -1) {
 				this.enableControls(tab);
+			} else {
+				this.disableControls();
 			}
 		}, this);
-		this.addEvent('watchedTabDeactivated', function(tab) {
-			if (types.indexOf(DeskPRO_Window.getTabWatcher().getTabType(tab)) !== -1) {
+		this.addEvent('watchedTabDeactivated', function(tab, isLast) {
+			if (isLast) {
 				this.disableControls();
 			}
 		}, this);
 
 		var selectedTabType = DeskPRO_Window.getTabWatcher().getActiveTabType();
-		var doEnable = false;
-
-		Array.each(types, function(t) {
-			DeskPRO_Window.getTabWatcher().addTabTypeWatcher(t, this);
-
-			// Check currently selected tab too,  might need to activate right now
-			if (selectedTabType == t) {
-				doEnable = true;
-			}
-		}, this);
-
-		if (doEnable) {
+		if (types.indexOf(selectedTabType) !== -1) {
 			this.enableControls(DeskPRO_Window.getTabWatcher().getActiveTab());
 		}
 

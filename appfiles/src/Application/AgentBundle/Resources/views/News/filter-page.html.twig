@@ -4,7 +4,7 @@
 			class="row-item news news-{{news.id}} related-is-linkable"
 			data-content-type="news"
 			data-content-id="{{ news.id }}"
-			data-route="page:{{ path('agent_news_view', {'news_id': news.id}) }}"
+			data-route="news:{{ path('agent_news_view', {'news_id': news.id}) }}"
 			data-route-title="@selector(a.row-title)"
 			data-route-openclass="open"
 		>

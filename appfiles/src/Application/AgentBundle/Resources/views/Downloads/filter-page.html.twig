@@ -4,7 +4,7 @@
 			class="row-item download download-{{download.id}} downloads-{{download.id}} related-is-linkable"
 			data-content-type="downloads"
 			data-content-id="{{ download.id }}"
-			data-route="page:{{ path('agent_downloads_view', {'download_id': download.id}) }}"
+			data-route="download:{{ path('agent_downloads_view', {'download_id': download.id}) }}"
 			data-route-title="@selector(a.row-title)"
 			data-route-openclass="open"
 		>

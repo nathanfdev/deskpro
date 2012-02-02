@@ -25,6 +25,8 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		this.containerEl = $(containerEl);
 		this.setOptions(options);
+
+		this.tabCount = 0;
 	},
 
 
@@ -100,6 +102,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 		data.html = '<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + data.html + '</div>';
 
 		this.tabs[id] = data;
+		this.tabCount++;
 
 		var el = $(data.html).appendTo(this.containerEl);
 		data.isInserted = true;
@@ -232,6 +235,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		var data = this.tabs[id];
 		delete this.tabs[id];
+		this.tabCount--;
 
 		if (data.callback_remove_content !== undefined) {
 			data.callback_remove_content(data, $('#' + data.wrapperId), this);

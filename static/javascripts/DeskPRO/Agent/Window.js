@@ -1674,6 +1674,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
+		this.addPageRouteLoader('article', this.loadRoute.bind(this));
+		this.addPageRouteLoader('download', this.loadRoute.bind(this));
+		this.addPageRouteLoader('news', this.loadRoute.bind(this));
+		this.addPageRouteLoader('idea', this.loadRoute.bind(this));
+		this.addPageRouteLoader('org', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', (function(routeData) {
 
 			routeData.forTypename = 'ticket';

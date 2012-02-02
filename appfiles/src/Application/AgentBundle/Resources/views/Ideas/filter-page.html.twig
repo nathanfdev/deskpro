@@ -4,7 +4,7 @@
 			class="row-item idea idea-{{idea.id}} ideas-{{idea.id}} related-is-linkable"
 			data-content-type="ideas"
 			data-content-id="{{ idea.id }}"
-			data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id}) }}"
+			data-route="idea:{{ path('agent_ideas_view', {'idea_id': idea.id}) }}"
 			data-route-title="@selector(a.idea-title)"
 			data-route-openclass="open"
 		>
