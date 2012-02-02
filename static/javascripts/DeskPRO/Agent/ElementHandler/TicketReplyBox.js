@@ -284,6 +284,25 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 	},
 
+	appendToMessage: function(content) {
+		var sig = this.getElById('signature_value').val();
+		var val = this.getElById('replybox_txt').val();
+		if (val.trim().length) {
+
+			// Always put it before the signature
+			// (if have sig and val ends with sig)
+			if (sig.length && val.indexOf(sig, val.length - sig.length) !== -1) {
+				val = content + val;
+			} else {
+				val += " ";
+				val += content;
+			}
+		} else {
+			val = content;
+		}
+		this.getElById('replybox_txt').val(val);
+	},
+
 	destroy: function() {
 
 	}

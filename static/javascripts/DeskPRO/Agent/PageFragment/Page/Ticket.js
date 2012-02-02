@@ -346,7 +346,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	appendToMessage: function(content) {
-		this.getEl('replybox_txt').insertAtCaret(content);
+		this.wrapper.find('.ticket-reply-form').data('handler').appendToMessage(content);
 	},
 
 	addAttachToList: function(attachInfo) {
