@@ -115,9 +115,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						});
 
 						if (show) {
-							$('.delete-cat', this).show();
+							$('.delete-cat', this).removeClass('undeletable');
 						} else {
-							$('.delete-cat', this).hide();
+							$('.delete-cat', this).addClass('undeletable');
 						}
 					});
 
