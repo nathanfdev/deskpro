@@ -159,6 +159,9 @@ class PeopleSearchController extends AbstractController
 			}
 		}
 
+		// Ticket counts for everyone!
+		$people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($people);
+
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
@@ -166,7 +169,8 @@ class PeopleSearchController extends AbstractController
 			'page'               => $page,
 			'person_field_defs'  => $person_field_defs,
 			'load_first'         => $this->in->getBool('load_first'),
-			'user_all_custom_fields' => $user_all_custom_fields
+			'user_all_custom_fields' => $user_all_custom_fields,
+			'people_ticket_counts' => $people_ticket_counts,
 		));
 
 		$html = $this->renderView($tpl, $vars);
@@ -213,6 +217,8 @@ class PeopleSearchController extends AbstractController
 
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
+		$people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($people);
+
 		$tpl = 'list-page.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
 			$tpl = 'list-list-page.html.twig';
@@ -223,6 +229,7 @@ class PeopleSearchController extends AbstractController
 			'display_fields'    => $display_fields,
 			'person_field_defs' => $person_field_defs,
 			'user_all_custom_fields' => $user_all_custom_fields,
+			'people_ticket_counts' => $people_ticket_counts,
 		));
 	}
 

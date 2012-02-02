@@ -79,7 +79,6 @@ class PersonSearch extends SearcherAbstract
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
 
-
 		#------------------------------
 		# Add joins
 		#------------------------------
@@ -93,9 +92,8 @@ class PersonSearch extends SearcherAbstract
 		}
 
 		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
-
-			$sql .= " $order_join ";
+			$sql .= " {$order_by[0]} ";
+			$order_by = $order_by[1];
 		}
 
 		#------------------------------
@@ -108,7 +106,9 @@ class PersonSearch extends SearcherAbstract
 		}
 
 		$sql .= " GROUP BY people.id ";
-		$sql .= $order_by;
+		if ($order_by) {
+			$sql .= " ORDER BY $order_by ";
+		}
 		$sql .= " LIMIT 1000";
 
 		return $sql;
@@ -147,11 +147,11 @@ class PersonSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'people.name':
-				$order_by = "ORDER BY people.last_name $dir, people.name $dir";
+				$order_by = "people.name $dir";
 				break;
 
 			case 'people.date_created':
-				$order_by = "ORDER BY people.id $dir";
+				$order_by = "people.id $dir";
 				break;
 
 			case 'people.email':
@@ -168,8 +168,15 @@ class PersonSearch extends SearcherAbstract
 				);
 				break;
 
+			case 'people.num_tickets':
+				$order_by = array(
+					"INNER JOIN tickets AS sort_table ON (sort_table.person_id = people.id)",
+					"COUNT(sort_table.id) $dir, people.id DESC"
+				);
+				break;
+
 			case 'people.date_last_login':
-				$order_by = "ORDER BY people.date_last_login $dir, people.id $dir";
+				$order_by = "people.date_last_login $dir, people.id DESC";
 				break;
 
 			case 'people.people_field':
@@ -183,7 +190,7 @@ class PersonSearch extends SearcherAbstract
 					case 'value':
 						$order_by = arary(
 							"INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
-							"ORDER BY sort_table.$search_type $dir"
+							"sort_table.$search_type $dir"
 						);
 						break;
 				}

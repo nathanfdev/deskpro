@@ -30,6 +30,10 @@
 				<td class="{{field}}">
 					{{ticket.language.title}}
 				</td>
+			{% elseif field == 'num_tickets' %}
+				<td class="{{field}}">
+					{{people_ticket_counts[person.id]|default(0)}}
+				</td>
 			{% else %}
 				{% for f in user_all_custom_fields[person.id] %}
 					{% if field == 'person_fields['~f.id~']' %}

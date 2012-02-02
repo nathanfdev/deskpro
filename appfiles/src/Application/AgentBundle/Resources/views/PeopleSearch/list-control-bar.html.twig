@@ -15,6 +15,8 @@
 					Last Login Time
 				{% elseif 'organization' in cache.criteria.order_by %}
 					Last Login Time
+				{% elseif 'num_tickets' in cache.criteria.order_by %}
+					Number of Tickets
 				{% else %}
 					{{ phrase('agent.date_created') }}
 				{% endif %}
@@ -29,6 +31,7 @@
 		<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
 		<li data-order-by="last_login">Last Login Time</li>
 		<li data-order-by="org">Organization</li>
+		<li data-order-by="num_tickets">Number of Tickets</li>
 	</ul>
 
 	{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}

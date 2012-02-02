@@ -385,4 +385,26 @@ class Ticket extends AbstractEntityRepository
 			ORDER BY id DESC
 		", array($validating_email));
 	}
+
+
+	public function getTicketCountsForPeople(array $people)
+	{
+		$ids = array();
+		foreach ($people as $p) {
+			$ids[] = $p->id;
+		}
+
+		if (!$ids) {
+			return array();
+		}
+
+		$ids = implode(',', $ids);
+
+		return App::getDb()->fetchAllKeyValue("
+			SELECT person_id, COUNT(*)
+			FROM tickets
+			WHERE person_id IN ($ids)
+			GROUP BY person_id
+		");
+	}
 }

@@ -11,6 +11,7 @@
 			{% if field == 'email_address' %}<th width="{{perc}}%" data-field="email_address">Email Address</th>
 			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">Organization</th>
 			{% elseif field == 'language' %}<th width="{{perc}}%" data-field="language">Language</th>
+			{% elseif field == 'num_tickets' %}<th width="{{perc}}%" data-field="language">Tickets</th>
 			{% else %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}
