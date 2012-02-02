@@ -31,7 +31,7 @@
 					{{ticket.language.title}}
 				</td>
 			{% else %}
-				{% for f in user_all_custom_fields[ticket.person.id] %}
+				{% for f in user_all_custom_fields[person.id] %}
 					{% if field == 'person_fields['~f.id~']' %}
 						<td class="person-field">
 							<div class="prop-val person_fields_{{f.id}}">
