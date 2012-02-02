@@ -76,10 +76,24 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 
 	_initOtherSection: function() {
 
+		var self = this;
 		this.otherTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('other_props_tabs')),
 			context: this.getEl('other_props_tabs_content'),
 			autoSelectFirst: false,
+			onTabSwitch: function(eventData) {
+				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
+					self.labelsInput = new DeskPRO.UI.LabelsInput({
+						type: 'org',
+						fieldName: 'neworg[labels]',
+						textarea: $(".tags-wrap input", eventData.tabContent),
+						onChange: function() {
+							self.stateSaver.triggerChange();
+						}
+					});
+					self.ownObject(self.labelsInput);
+				}
+			},
 			onTabClick: (function(ev) {
 				var contentWrap = this.getEl('other_props_tabs_content');
 				var navWrap = this.getEl('other_props_tabs_wrap');
@@ -99,17 +113,5 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			}).bind(this)
 		});
 		this.ownObject(this.otherTabs);
-
-		// Labels
-		var self = this;
-		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'people',
-			fieldName: 'neworg[labels]',
-			textarea: $(".tags-wrap input", this.wrapper),
-			onChange: function() {
-				self.stateSaver.triggerChange();
-			}
-		});
-		this.ownObject(this.labelsInput);
 	}
 });

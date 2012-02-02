@@ -354,15 +354,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.loadSnippetsViewer();
 
-		// Tags
-		this.labelsList = $(".ticket-tags input", this.wrapper);
-
-		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'tickets',
-			textarea: this.labelsList
-		});
-		this.ownObject(this.labelsInput);
-
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
 		this.getEl('message').css('height', Math.max(h - 500, 200));
@@ -404,11 +395,21 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	//#########################################################################
 
 	_initOtherSection: function() {
+		var self = this;
 
 		this.otherTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('other_props_tabs')),
 			context: this.getEl('other_props_tabs_content'),
 			autoSelectFirst: false,
+			onTabSwitch: function(eventData) {
+				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
+					self.labelsInput = new DeskPRO.UI.LabelsInput({
+						type: 'tickets',
+						textarea: $(".ticket-tags input", eventData.tabContent)
+					});
+					self.ownObject(self.labelsInput);
+				}
+			},
 			onTabClick: (function(ev) {
 				var contentWrap = this.getEl('other_props_tabs_content');
 				var navWrap = this.getEl('other_props_tabs_wrap');

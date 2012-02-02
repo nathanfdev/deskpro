@@ -48,12 +48,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
-			<nav id="{{baseId}}_other_props_tabs_wrap" class="on">
+			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
 					<li class="on" data-tab-for="> .tab-properties">{{ phrase('agent.label_properties') }}</li>
 				</ul>
 			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content">
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties">
 					<dl>
