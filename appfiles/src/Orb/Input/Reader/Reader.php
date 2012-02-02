@@ -260,7 +260,7 @@ class Reader
 		if ($name === null) $name = $this->default_source_name;
 
 		if (!isset($this->source_aliases[$name])) {
-			throw new Exception('Unknow source: ' . $name);
+			throw new \Exception('Unknow source: ' . $name);
 		}
 
 		return $this->source_aliases[$name];

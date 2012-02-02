@@ -1384,43 +1384,124 @@ class TicketController extends AbstractController
 			# Save
 			#------------------------------
 
-			$newticket->save();
-			$ticket = $newticket->getTicket();
+			$this->db->beginTransaction();
 
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$post_custom_fields = $this->request->request->get('custom_fields', array());
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $ticket);
-			}
+			try {
+				$newticket->save();
+				$ticket = $newticket->getTicket();
 
-			$this->em->flush();
-
-			$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-			if ($labels) {
-				$ticket->getLabelManager()->setLabelsArray($labels);
-			}
-
-			$this->em->flush();
-
-			$comment_type   = $this->in->getString('for_comment_type');
-			$comment_id     = $this->in->getUint('for_comment_id');
-			$comment_action = $this->in->getString('comment_action');
-
-			if ($comment_id && $comment_type && $comment_action) {
-				$entity = $this->_getCommentEntityName($comment_type);
-				$comment = $this->em->find($entity, $comment_id);
-
-				switch ($comment_action) {
-					case 'delete':
-						$comment->setStatus('deleted');
-						break;
-					case 'approve':
-						$comment->setStatus('visible');
-						break;
+				$field_manager = $this->container->getSystemService('ticket_fields_manager');
+				$post_custom_fields = $this->request->request->get('custom_fields', array());
+				if (!empty($post_custom_fields)) {
+					$field_manager->saveFormToObject($post_custom_fields, $ticket);
 				}
 
-				$this->em->persist($comment);
 				$this->em->flush();
+
+				#------------------------------
+				# Labels
+				#------------------------------
+
+				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+				if ($labels) {
+					$ticket->getLabelManager()->setLabelsArray($labels);
+
+
+				$this->em->flush();}
+
+				#------------------------------
+				# Add CC's
+				#------------------------------
+
+				$add_cc_people = $this->container->getIn()->getCleanValueArray('add_cc_person', 'uint');
+				if ($add_cc_people) {
+					foreach ($add_cc_people as $pid) {
+						$p = $this->em->find('DeskPRO:Person', $pid);
+						if ($p) {
+							$part = $ticket->addParticipantPerson($p);
+							$this->em->persist($part);
+							$this->em->persist($ticket);
+						}
+					}
+
+					$this->em->flush();
+				}
+
+				$add_cc_people = $this->container->getIn()->getCleanValueArray('add_cc_person', 'uint');
+				if ($add_cc_people) {
+					foreach ($add_cc_people as $pid) {
+						$p = $this->em->find('DeskPRO:Person', $pid);
+						if ($p) {
+							$part = $ticket->addParticipantPerson($p);
+							$this->em->persist($part);
+						}
+					}
+
+					$this->em->persist($ticket);
+					$this->em->flush();
+				}
+
+				$new_cc_people_ids = array_merge(
+					array_keys($this->container->getIn()->getCleanValueArray('new_cc_person_name', 'raw', 'string')),
+					array_keys($this->container->getIn()->getCleanValueArray('new_cc_person_email', 'raw', 'string'))
+				);
+				$new_cc_people_ids = array_unique($new_cc_people_ids);
+
+				if ($new_cc_people_ids) {
+					foreach ($new_cc_people_ids as $fid) {
+						$email = $this->container->getIn()->getCleanValue('new_cc_person_email.'.$fid, 'string');
+						$name  = $this->container->getIn()->getCleanValue('new_cc_person_name.'.$fid, 'string');
+
+						if (!$email && !$name) {
+							continue;
+						}
+						if ($email && !\Orb\Validator\StringEmail::isValueValid($email)) {
+							continue;
+						}
+
+						$p = Person::newContactPerson(array(
+							'name' => $name,
+							'email' => $email
+						));
+						$this->em->persist($p);
+						$this->em->flush();
+
+						$part = $ticket->addParticipantPerson($p);
+						$this->em->persist($part);
+					}
+
+					$this->em->flush();
+				}
+
+				#------------------------------
+				# Related comment
+				#------------------------------
+
+				$comment_type   = $this->in->getString('for_comment_type');
+				$comment_id     = $this->in->getUint('for_comment_id');
+				$comment_action = $this->in->getString('comment_action');
+
+				if ($comment_id && $comment_type && $comment_action) {
+					$entity = $this->_getCommentEntityName($comment_type);
+					$comment = $this->em->find($entity, $comment_id);
+
+					switch ($comment_action) {
+						case 'delete':
+							$comment->setStatus('deleted');
+							break;
+						case 'approve':
+							$comment->setStatus('visible');
+							break;
+					}
+
+					$this->em->persist($comment);
+					$this->em->flush();
+				}
+
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
 			}
 
 			return $this->createJsonResponse(array(

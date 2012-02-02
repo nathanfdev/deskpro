@@ -424,9 +424,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$person = new self();
 
+		$email = null;
+		if (!empty($info['email'])) {
+			$email = $info['email'];
+			unset($info['email']);
+		}
+
 		if ($info) {
 			$person->fromArray($info);
 		}
+
+		$person->addEmailAddressString($email);
 
 		return $person;
 	}

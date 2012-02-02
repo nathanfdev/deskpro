@@ -372,6 +372,13 @@ $collection->add('agent_people_view', new Route(
 	array('fragment_name' => 'p')
 ));
 
+$collection->add('agent_people_view_basicjson', new Route(
+	'/people/{person_id}/basic.json',
+	array('_controller' => 'AgentBundle:Person:getBasicInfo'),
+	array('person_id' => '\\d+'),
+	array()
+));
+
 $collection->add('agent_people_viewtip', new Route(
 	'/person/{person_id}/tip',
 	array('_controller' => 'AgentBundle:Person:viewTip'),

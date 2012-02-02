@@ -180,12 +180,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 */
 	refreshPosition: function() {
 		var termPos = this.boundEl.offset();
-		var termW   = this.boundEl.outerWidth() + 2;
+		var termW   = this.boundEl.outerWidth();
 		var termH   = this.boundEl.outerHeight();
 
 		this.resultsBox.css({
 			top: termPos.top + termH - 1,
-			left: termPos.left - 1,
+			left: termPos.left,
 			width: termW
 		});
 	},

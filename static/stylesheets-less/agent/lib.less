@@ -165,6 +165,42 @@
 	background-clip: padding-box;
 }
 
+.border-radius-tl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-left-radius: @topleft;
+	-moz-border-radius-topleft: @topleft;
+	border-top-left-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.border-radius-tr(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-top-right-radius: @topleft;
+	-moz-border-radius-topright: @topleft;
+	border-top-right-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.border-radius-br(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-bottom-right-radius: @topleft;
+	-moz-border-radius-bottomright: @topleft;
+	border-bottom-right-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.border-radius-bl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
+	-webkit-border-bottom-left-radius: @topleft;
+	-moz-border-radius-bottomleft: @topleft;
+	border-bottom-left-radius: @topleft;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
 /**
 * Set an inner black shadow
 */

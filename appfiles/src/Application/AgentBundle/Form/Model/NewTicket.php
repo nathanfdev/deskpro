@@ -139,9 +139,8 @@ class NewTicket
 			$message->addAttachment($attach);
 		}
 
-		$em->persist($message);
-
 		$ticket->addMessage($message);
+
 
 		if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
 			$em->rollback();
@@ -150,6 +149,8 @@ class NewTicket
 		}
 
 		$em->persist($ticket);
+		$em->flush();
+		$em->persist($message);
 		$em->flush();
 
 		#------------------------------

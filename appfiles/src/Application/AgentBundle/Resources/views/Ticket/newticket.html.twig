@@ -245,14 +245,38 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab CC #}
 				<div class="tab-cc" style="display: none">
 					<div class="cc-input">
-						<input
-							type="text"
-							placeholder="Enter an email address..."
-							name="newticket[new_parts]"
-							value=""
-							class="new-cc" id="{{baseId}}_add_cc_txt"
-						/>
+						<div
+							id="{{baseId}}_user_ccbox"
+							data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+							data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+							data-highlight-term="1"
+							data-touch-focus="1"
+							data-search-param="term"
+							data-position-bound="#{{baseId}}_userccselect"
+						>
+							<input type="text" id="{{baseId}}_userccselect" class="cc-user term" placeholder="Search for people to add, or enter their email addresses to create them" />
+
+							<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+								<li>
+									<a>
+									<span class="user-name"></span>
+									<address>&lt;<span class="user-email"></span>&gt;</address>
+									<div class="bound-fade"></div>
+								</a></li>
+							</script>
+							<div class="person-search-box" style="display: none">
+								<section>
+									<ul class="results-list">
+
+									</ul>
+									<footer>
+										<span class="create-user">Create a new person</span>
+									</footer>
+								</section>
+							</div>
+						</div>
 					</div>
+					<ul id="{{baseId}}_cc_list" class="cc-list"></ul>
 				</div>
 				{# /Tab CC #}
 

@@ -26,6 +26,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initSubjectSection();
 		this._initMessageSection();
 		this._initOtherSection();
+		this._initCcSelection();
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
@@ -236,6 +237,65 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			fnCheck();
 			e.on('change', fnCheck);
 		}
+	},
+
+	//#########################################################################
+	//# CC Selection
+	//#########################################################################
+
+	_initCcSelection: function() {
+		var self = this;
+		var ccbox = this.getEl('user_ccbox');
+
+		ccbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+			$.ajax({
+				type: 'GET',
+				url: BASE_URL + 'agent/people/' + personId + '/basic.json',
+				dataType: 'json',
+				context: this,
+				success: function(data) {
+					var html = [];
+					html.push('<li>');
+						html.push('<em class="remove"></em>');
+						html.push('<a data-route="page:'+data.url+'">' + data.contact_name + '</a>');
+						html.push('<input type="hidden" name="add_cc_person[]" value="'+personId+'" />');
+					html.push('</li>');
+
+					html = html.join('');
+					self.getEl('cc_list').append(html);
+				}
+			});
+			sb.close();
+			sb.reset();
+		});
+		ccbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
+
+			var rowid = Orb.uuid();
+
+			var html = [];
+			html.push('<li>');
+				html.push('<em class="remove"></em>');
+				html.push('<input type="text" class="name" name="new_cc_person_name['+rowid+']" placeholder="Enter a full name" />');
+				html.push('<input type="text" class="email" name="new_cc_person_email['+rowid+']" placeholder="Enter an email address" />');
+			html.push('</li>');
+
+			html = $(html.join(''));
+
+			if (term.indexOf('@') !== -1) {
+				$('input.email', html).val(term);
+			} else {
+				$('input.name', html).val(term);
+			}
+
+			self.getEl('cc_list').append(html);
+
+			sb.close();
+			sb.reset();
+		});
+
+		this.getEl('cc_list').on('click', 'em.remove', function() {
+			$(this).closest('li').remove();
+		});
 	},
 
 	//#########################################################################

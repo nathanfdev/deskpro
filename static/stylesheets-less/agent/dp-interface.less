@@ -2260,3 +2260,51 @@ section.description-area .info-list dd.tags-wrap {
     position: relative;
 	top: -2px;
 }
+
+.cc-input .cc-user {
+	width: 98%;
+	margin-bottom: 5px;
+}
+
+ul.cc-list {
+	li {
+	    &:first-child {
+	    	.border-radius-tl(5px);
+	    	.border-radius-tr(5px);
+	    }
+	 	&:last-child {
+	    	.border-radius-bl(5px);
+	    	.border-radius-br(5px);
+	    }
+
+		padding: 4px 7px 4px 7px;
+		margin-top: 1px;
+
+		background-color: #EEEFF1;
+
+		a {
+			color: @body-text-color;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		em.remove {
+			.iconbase(16px, 16px);
+			background: url(../../images/agent/icons/cross.png);
+			float: right;
+			cursor: pointer;
+			.opacity(50);
+
+			&:hover {
+				.opacity(100);
+			}
+		}
+
+		input[type="text"] {
+			width: 40%;
+			margin: 0;
+			margin-right: 10px;
+		}
+	}
+}

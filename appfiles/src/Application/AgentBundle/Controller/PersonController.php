@@ -166,6 +166,19 @@ class PersonController extends AbstractController
 		));
 	}
 
+	public function getBasicInfoAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		return $this->createJsonResponse(array(
+			'person_id' => $person,
+			'name' => $person->getDisplayName(),
+			'email' => $person->getPrimaryEmailAddress(),
+			'contact_name' => $person->getDisplayContact(),
+			'url' => $this->generateUrl('agent_people_view', array('person_id' => $person->id))
+		));
+	}
+
 	############################################################################
 	# viewSession
 	############################################################################
