@@ -4,9 +4,10 @@
 		<h4>{{ phrase('agent.misc.change_pic_for', {'name': person.display_name}) }}</h4>
 	</div>
 	<div class="overlay-content">
+		<div class="drop-file-zone"><h1>Drop your file here to upload a new picture</h1></div>
 		{% if person.picture_blob %}
 		<div class="existing-picture">
-			<header><h3>{{ phrase('agent.misc.people.existing_pic') }}</h3></header>
+			<header><h3>{{ phrase('agent.misc.existing_pic') }}</h3></header>
 			<section>
 				<img src="{{ person.getPictureUrl(150) }}" />
 			</section>

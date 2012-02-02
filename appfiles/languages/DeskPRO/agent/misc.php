@@ -13,5 +13,5 @@
 	'agent.misc.redirect_server_host' => 'Server Hostname',
 	'agent.misc.redirect_explain' => 'The link you clicked is for an external site on {{host}}. Are you sure you want to continue?',
 	'agent.misc.redirect_continue' => 'Continue to {{url}}',
-	
+
 );
