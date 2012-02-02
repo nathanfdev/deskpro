@@ -68,7 +68,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		// - Cant click 'autocomplete' items to enter them
 
 		this.options.textarea.textext({
-			plugins: 'autocomplete suggestions tags arrow prompt',
+			plugins: 'autocomplete suggestions tags prompt',
 			suggestions: tagSource,
 			prompt: 'Add a label...',
 			tags: {
