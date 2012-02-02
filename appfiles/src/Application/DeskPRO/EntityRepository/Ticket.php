@@ -340,7 +340,7 @@ class Ticket extends AbstractEntityRepository
 			$check = array_shift($check);
 		}
 
-		if ($check) {
+		if ($check && $check->id != $ticket->id) {
 			return $check;
 		}
 

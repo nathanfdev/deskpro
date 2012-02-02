@@ -141,13 +141,6 @@ class NewTicket
 
 		$ticket->addMessage($message);
 
-
-		if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
-			$em->rollback();
-			$this->_ticket = $dupe_ticket;
-			return;
-		}
-
 		$em->persist($ticket);
 		$em->flush();
 		$em->persist($message);

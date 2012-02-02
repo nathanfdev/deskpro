@@ -1498,7 +1498,21 @@ class TicketController extends AbstractController
 					$this->em->flush();
 				}
 
+				$ticket->recomputeHash();
+				if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+					$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
+					$e->ticket_id = $dupe_ticket->id;
+					throw $e;
+				}
+
 				$this->db->commit();
+			} catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
+				$this->db->rollback();
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'is_dupe' => true,
+					'dupe_ticket_id' => $e->ticket_id
+				));
 			} catch (\Exception $e) {
 				$this->db->rollback();
 				throw $e;

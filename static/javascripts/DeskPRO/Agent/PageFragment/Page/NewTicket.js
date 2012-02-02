@@ -49,17 +49,28 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
+		this.wrapper.parent().addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
 			context: this,
+			complete: function() {
+				this.wrapper.parent().removeClass('loading');
+			},
 			success: function(data) {
 				if (data.error) {
-					Array.each(data.error_codes, function(code) {
-						this.showErrorCode(code);
-					}, this);
+					if (data.is_dupe) {
+						DeskPRO_Window.showConfirm('The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.', function() {
+							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id)
+						}, function() {}, 'View Existing Ticket', 'hidden');
+					} else {
+						Array.each(data.error_codes, function(code) {
+							this.showErrorCode(code);
+						}, this);
+					}
 				}
 
 				if (data.ticket_id) {

@@ -745,8 +745,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._confirmOverlay_callback_no = callback_no || function() { };
 
 		$('#confirm_overlay_msg').html(msg);
-		$('#confirm_overlay_msg .okay-trigger').text(phrase_yes);
-		$('#confirm_overlay_msg .cancel-trigger').text(phrase_no);
+		$('#confirm_overlay .okay-trigger').text(phrase_yes);
+
+		if (phrase_no == 'hidden') {
+			$('#confirm_overlay .cancel-trigger').text(phrase_no).hide();
+		} else {
+			$('#confirm_overlay .cancel-trigger').text(phrase_no).show();
+		}
 
 		this._confirmOverlay.openOverlay();
 	},

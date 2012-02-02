@@ -1770,22 +1770,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->ticket_hash;
 	}
 
-
 	/**
-	 * @ORM_Mapping\PrePersist
+	 * Resets the ticket hash
 	 */
-	public function initHashCode()
+	public function recomputeHash()
 	{
-		if ($this->ticket_hash OR !$this->messages->first()) {
-			return;
-		}
-
 		$hashes = array();
 		$hashes[] = sha1(
 			$this->subject
 			. $this->person->id
 			. $this->getAgentId()
 			. $this->getAgentTeamId()
+			. $this->getDepartmentId()
 			. $this->getCategoryId()
 			. $this->getWorkflowId()
 			. $this->getPriorityId()
@@ -1796,12 +1792,26 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$hashes[] = sha1($d['field_id'] . $d['value'] . $d['input']);
 		}
 
-		$hashes[] = $this->messages->first()->getMessageHash();
+		if ($this->messages->containsKey(0)) {
+			$hashes[] = $this->messages->get(0)->getMessageHash();
+		}
 
 		sort($hashes, \SORT_STRING);
 
 		$this->ticket_hash = sha1(implode('', $hashes));
 		$this->_onPropertyChanged('ticket_hash', '', $this->ticket_hash);
+	}
+
+	/**
+	 * @ORM_Mapping\PrePersist
+	 */
+	public function initHashCode()
+	{
+		if ($this->ticket_hash) {
+			return;
+		}
+
+		$this->recomputeHash();
 	}
 
 
