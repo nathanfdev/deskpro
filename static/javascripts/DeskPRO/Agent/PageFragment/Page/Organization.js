@@ -492,7 +492,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'organizations',
-			list: this.labelsList,
+			textarea: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);

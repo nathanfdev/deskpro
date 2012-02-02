@@ -10,10 +10,7 @@
 	</div>
 	<div class="info">
 		<div class="tags-wrap blob-tags">
-			<span class="tag-icon"></span>
-			<ul>
-				<input type="text" value="{% for label in blob.labels %}{{label.label}},{% endfor %}" />
-			</ul>
+			<input type="text" value="{% for label in blob.labels %}{{label.label}},{% endfor %}" />
 		</div>
 		<ul>
 			<li><a href="{{ blob.download_url }}">Download file</a></li>
