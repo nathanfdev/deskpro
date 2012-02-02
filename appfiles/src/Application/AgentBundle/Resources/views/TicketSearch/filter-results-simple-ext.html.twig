@@ -74,9 +74,9 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	{% endif %}
 
-	<section class="list-listing" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
+	<section class="list-listing no-results" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
 		<article class="row-item no-results">
-			<p style="padding: 15px;">There are no tickets to show.</p>
+			<p style="padding: 15px;">{{ phrase('agent.there_are_no_results') }}</p>
 		</article>
 	</section>
 
