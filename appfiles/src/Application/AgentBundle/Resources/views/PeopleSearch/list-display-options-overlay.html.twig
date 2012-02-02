@@ -16,6 +16,6 @@
 	<li data-field="organization"><input type="checkbox" name="organization" {% if 'organization' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.organization') }}</li>
 	<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.language') }}</li>
 	{% for f in person_field_defs %}
-		<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> {{f.title}}</li>
+		<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" {% if "person_fields[#{f.id}]" in display_fields %}checked="checked"{% endif %} /> {{f.title}}</li>
 	{% endfor %}
 {% endblock %}
