@@ -1,4 +1,4 @@
-Orb.createNamespace('DeskPRO.Agent.ElementHandler');
+	Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 /**
  * This handles the quick search and results
@@ -150,9 +150,19 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			this.clear();
 		}
 
+		if (!results) {
+			this.close();
+			return;
+		}
+
 		var count = 0;
 
 		Object.each(results, function(typeResults, type) {
+
+			if (!typeResults || !typeResults.length) {
+				return;
+			}
+
 			sectionEl = this.resultWrap.find('section.' + type);
 			if (!sectionEl.length) {
 				sectionEl = $(this.tplResultSection.replace(/\{TITLE\}/g, type).replace(/\{TYPE\}/g, type));
