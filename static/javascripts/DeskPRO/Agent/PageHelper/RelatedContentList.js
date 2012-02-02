@@ -21,13 +21,21 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 
 		this.contentListEl = $(this.options.contentListEl);
 
-		this.addEvent('watchedTabActivated', this.enableControls, this);
-		this.addEvent('watchedTabDeactivated', this.disableControls, this);
+		var types = ['article', 'download', 'news', 'idea'];
+		this.addEvent('watchedTabActivated', function(tab) {
+			if (types.indexOf(DeskPRO_Window.getTabWatcher().getTabType(tab)) !== -1) {
+				this.enableControls(tab);
+			}
+		}, this);
+		this.addEvent('watchedTabDeactivated', function(tab) {
+			if (types.indexOf(DeskPRO_Window.getTabWatcher().getTabType(tab)) !== -1) {
+				this.disableControls();
+			}
+		}, this);
 
 		var selectedTabType = DeskPRO_Window.getTabWatcher().getActiveTabType();
 		var doEnable = false;
 
-		var types = ['article', 'download', 'news', 'idea'];
 		Array.each(types, function(t) {
 			DeskPRO_Window.getTabWatcher().addTabTypeWatcher(t, this);
 

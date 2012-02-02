@@ -25,10 +25,14 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('ticket', this);
 		this.addEvent('watchedTabActivated', function(tab) {
-			self.initVisibleTicket();
+			if (DeskPRO_Window.getTabWatcher().getTabType(tab) == 'ticket') {
+				self.initVisibleTicket();
+			}
 		});
 		this.addEvent('watchedTabDeactivated', function(tab) {
-			self.removeVisibleTicket();
+			if (DeskPRO_Window.getTabWatcher().getTabType(tab) == 'ticket') {
+				self.removeVisibleTicket();
+			}
 		});
 
 		// Or if we're already viewing a tab ticket...
