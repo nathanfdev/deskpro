@@ -65,7 +65,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		if ($group_info['system_name'] == 'guest') {
-			$usergroup = $this->getEm()->find('DeskPRO:Usergroup', 1);
+			return;
 		} else {
 			$usergroup = new Usergroup();
 			$usergroup->title = $group_info['name'];
@@ -76,6 +76,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		// TODO permission mapping when permissions are final
 
 		$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
+
 		if ($group_info['system_name'] == 'registered') {
 			$this->saveMappedId('usergroup_sys', 'registered', $usergroup->id);
 		}

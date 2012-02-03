@@ -156,16 +156,18 @@ class UsersStep extends AbstractDeskpro3Step
 			// Usergroups
 			//---
 
+			$done_ids = array();
 			foreach ($usergroup_ids as $ug_id) {
 				$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup', $ug_id));
 				if ($usergroup) {
+					$done_ids[] = $usergroup->id;
 					$person->usergroups->add($usergroup);
 				}
 			}
 
 			// Also DP3 had the 'registered' group that was always added on demand
 			$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup_sys', 'registered'));
-			if ($usergroup) {
+			if ($usergroup && !in_array($usergroup->id, $done_ids)) {
 				$person->usergroups->add($usergroup);
 			}
 
@@ -245,7 +247,8 @@ class UsersStep extends AbstractDeskpro3Step
 			$this->saveMappedId('user', $user_id, $person->id);
 
 			if ($form_data) {
-				$this->fieldmanager->saveFormToObject($form_data, $person);
+				// TODO fix custom field saving
+				//$this->fieldmanager->saveFormToObject($form_data, $person);
 			}
 
 			$this->getEm()->persist($person);
