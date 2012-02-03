@@ -142,6 +142,8 @@ class AgentAlertNotificationAction implements ActionInterface
 
 		$em = App::getOrm();
 
+		$log_items = $this->getLogItems();
+
 		$em->beginTransaction();
 		try {
 			foreach ($notify_list as $agent_id) {
@@ -154,6 +156,7 @@ class AgentAlertNotificationAction implements ActionInterface
 					'ticket'             => $ticket,
 					'agent'              => $agent,
 					'performer'          => $this->tracker->getPersonPerformer(),
+					'log_items'          => $log_items,
 				);
 
 				if ($this->notify_info[$agent->id]) {
@@ -201,5 +204,20 @@ class AgentAlertNotificationAction implements ActionInterface
 	public function getDescription()
 	{
 		return '';
+	}
+
+	protected function getLogItems()
+	{
+		$log_items = array();
+
+		foreach ($this->tracker->getLogInspector()->getLogActions() as $action) {
+			$ticket_log = new \Application\DeskPRO\Entity\TicketLog();
+			$ticket_log['action_type'] = $action->getLogName();
+			$ticket_log['details'] = $action->getLogDetails();
+
+			$log_items[] = $ticket_log;
+		}
+
+		return $log_items;
 	}
 }

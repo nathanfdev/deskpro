@@ -126,6 +126,7 @@ class NotifyListBuilder
 			}
 		}
 
+		// We dont want to notify ourselves (that is, the one that performed whatever action prompted the changeset)
 		$person_context = App::getCurrentPerson();
 		if ($person_context && $person_context->id) {
 			$agent_ids = array_filter($agent_ids, function($aid) use ($person_context) {

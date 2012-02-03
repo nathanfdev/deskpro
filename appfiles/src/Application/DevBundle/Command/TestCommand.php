@@ -38,9 +38,13 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		$ticket = App::findEntity('DeskPRO:Ticket', 22487);
 		$person = App::findEntity('DeskPRO:Person', 20001);
 
-		App::getDb()->beginTransaction();
 
-		$ticket->deleteTicket($person, "Some Reason");
+		App::getDb()->beginTransaction();
+		if ($ticket->status == 'awaiting_user') {
+			$ticket->setStatus('awaiting_agent');
+		} else {
+			$ticket->setStatus('awaiting_user');
+		}
 		App::getOrm()->flush();
 
 		App::getDb()->rollback();
