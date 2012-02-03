@@ -9,7 +9,9 @@
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
-						<a class="row-title click-through">{{ org.name }}</a>
+						<a class="row-title click-through">
+							<span class="person-name-picture" style="background-image: url({{ org.getPictureUrl(15) }})">{{ org.name }}</span>
+						</a>
 					</h3>
 				</div>
 			</div>

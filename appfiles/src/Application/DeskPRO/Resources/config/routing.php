@@ -61,5 +61,18 @@ $collection->add('favicon', new Route(
 	array()
 ));
 
+$collection->add('serve_org_picture_default', new Route(
+	'/download/org-pic/default',
+	array('_controller' => 'DeskPRO:Blob:defaultOrgPicture'),
+	array(),
+	array()
+));
+
+$collection->add('serve_org_picture', new Route(
+	'/download/org-pic/{person_id}',
+	array('_controller' => 'DeskPRO:Blob:orgPicture'),
+	array('person_id' => '\\d+'),
+	array()
+));
 
 return $collection;

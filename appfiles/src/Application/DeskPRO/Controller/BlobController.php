@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Orb\Util\Util;
+use Orb\Util\Numbers;
 
 class BlobController extends AbstractController
 {
@@ -126,6 +127,83 @@ class BlobController extends AbstractController
 		}
 
 		$response->setPublic();
+
+		return $response;
+	}
+
+	public function orgPictureAction($org_id)
+	{
+		$size = $this->in->getUint('size');
+		if (!Numbers::inRange($size, 5, 200)) {
+			$size = 80;
+		}
+
+		$org = App::getEntityRepository('DeskPRO:Organization')->find($org_id);
+
+		if ($person->picture_blob) {
+			$response = $this->getDownloadResponse($org, array(
+				'size' => $size,
+				'cache' => true,
+				'cache_date_cleanup' => new \DateTime('+2 weeks')
+			));
+		} else {
+			$response = $this->defaultOrgPictureAction($size);
+		}
+
+		$response->setPublic();
+
+		return $response;
+	}
+
+	public function defaultOrgPictureAction()
+	{
+		$size = $this->in->getUint('size');
+		if (!Numbers::inRange($size, 5, 200)) {
+			$size = 80;
+		}
+
+		$img_path = DP_ROOT . '/src/Application/DeskPRO/Resources/assets/orgpicture-default.jpeg';
+		$sys_name = 'dp.orgpicture-default';
+
+		if ($size == 200) {
+			$file = file_get_contents($img_path);
+		} else {
+
+			$name = $sys_name . '-' . $size;
+			$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+
+			if (!$cached_blob) {
+				$desc = App::getApi('filestorage')->createRandomPath();
+
+				$image = $this->container->getImagine()->open($img_path);
+				$image->resize(new \Imagine\Image\Box($size, $size));
+
+				$file = $image->get('jpeg');
+
+				$desc->write($file, array(
+					'content_type' => 'image/jpeg',
+					'filename' => basename($img_path),
+					'sys_name' => $name,
+				));
+			} else {
+				$desc = App::getApi('filestorage')->getFileDescriptor($cached_blob['id']);
+				$file = $desc->get();
+				unset($desc);
+			}
+		}
+
+		$size = strlen($file);
+
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', 'image/jpeg; filename=' . basename($img_path));
+		$response->headers->set('Content-Disposition', 'inline; filename=' . basename($img_path));
+		$response->headers->set('Content-Length', $size);
+		$response->setLastModified(date_create("-6 months"));
+		$response->setExpires(date_create("+6 months"));
+		$response->setMaxAge(31556926);
+		$response->setSharedMaxAge(31556926);
+		$response->setPublic();
+		$response->setContent($file);
 
 		return $response;
 	}

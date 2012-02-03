@@ -308,8 +308,8 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if (!$url) {
-			$url = App::get('router')->generate('serve_default_picture', array(
-				's' => $size
+			$url = App::get('router')->generate('serve_org_picture_default', array(
+				'size' => $size,
 			), true);
 		}
 
@@ -319,6 +319,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 
 		return $url;
 	}
+
 
 
 	/**
