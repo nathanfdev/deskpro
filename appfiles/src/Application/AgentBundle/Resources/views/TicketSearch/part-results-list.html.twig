@@ -93,6 +93,14 @@
 					{% endif %}
 					</span>
 				</td>
+			{% elseif field == 'labels' %}
+				<td class="{{field}}">
+					<span class="prop-val labels">
+						{% for label in ticket_display.getTicketLabels(ticket) %}
+							<span class="listing-tag">{{ label }}</span>
+						{% endfor %}
+					</span>
+				</td>
 			{% else %}
 				{% for f in all_custom_fields[ticket.id] %}
 					{% if field == 'ticket_fields['~f.id~']' %}

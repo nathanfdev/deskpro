@@ -16,6 +16,7 @@
 			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">Organization</th>
 			{% elseif field == 'agent' %}<th width="{{perc}}%" data-field="agent">Agent</th>
 			{% elseif field == 'agent_team' %}<th width="{{perc}}%" data-field="agent_team">Team</th>
+			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="agent_team">Lables</th>
 			{% elseif field == 'date_created' %}<th width="{{perc}}%" data-field="date_created">Date Opened</th>
 			{% else %}
 				{% for f in ticket_field_defs %}

@@ -25,7 +25,9 @@ class TestController extends AbstractController
 	 */
 	public function tabAction()
 	{
-		$vars = array();
+		$vars = array(
+			'page_count' => $this->in->getUint('page_count')
+		);
 		return $this->render('AgentBundle:Test:test-tab.html.twig', $vars);
 	}
 }

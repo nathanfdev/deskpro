@@ -30,6 +30,7 @@
 	{% if app.getSetting('core.use_ticket_workflow') %}<li data-field="workflow"><label><input type="checkbox" name="workflow" {% if 'workflow' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.workflow') }}</label></li>{% endif %}
 	{% if app.getSetting('core.use_product') %}<li data-field="product"><label><input type="checkbox" name="product" {% if 'product' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.product') }}</label></li>{% endif %}
 	<li data-field="organization"><label><input type="checkbox" name="organization" {% if 'organization' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.organization') }}</label></li>
+	<li data-field="labels"><label><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.labels') }}</label></li>
 	<li data-field="date_user_waiting"><label><input type="checkbox" name="date_user_waiting" {% if 'date_user_waiting' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.date_user_waiting') }}</label></li>
 	{% for t in types %}
 		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.' ~ t) }}</label></li>

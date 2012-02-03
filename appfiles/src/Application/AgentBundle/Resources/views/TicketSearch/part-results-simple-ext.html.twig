@@ -123,6 +123,15 @@
 					{% endif %}
 					</span>
 				</li>
+			{% elseif field == 'labels' and (ticket_display.hasTicketLabels(ticket) or changed_fields[ticket.id].labels) %}
+				<li class="{{field}} {% if changed_fields[ticket.id].product %}changed{% endif %}">
+					<span class="prop-title">Labels:</span>
+					<span class="prop-val labels">
+						{% for label in ticket_display.getTicketLabels(ticket) %}
+							<span class="listing-tag">{{ label }}</span>
+						{% endfor %}
+					</span>
+				</li>
 			{% elseif field == 'date_user_waiting' %}
 				<li class="{{field}}">
 					<span class="prop-title">User Waiting:</span>

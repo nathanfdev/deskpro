@@ -227,12 +227,15 @@ class TicketSearchController extends AbstractController
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
+		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+
 		$tpl = 'part-results-simple-ext.html.twig';
 		if ($this->in->getString('view_type') == 'list') {
 			$tpl = 'part-results-list.html.twig';
 		}
 
 		return $this->render("AgentBundle:TicketSearch:$tpl", array(
+			'ticket_display'    => $ticket_display,
 			'tickets'           => $tickets,
 			'display_fields'    => $display_fields,
 			'ticket_field_defs' => $ticket_field_defs,
@@ -651,11 +654,14 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+
 		$vars = array_merge($vars, array(
 			'agents'             => $agents,
 			'agent_teams'        => $agent_teams,
 			'type'               => $type,
 			'type_id'            => $type_id,
+			'ticket_display'     => $ticket_display,
 			'tickets'            => $tickets,
 			'count'              => $results_helper->getCount(),
 			'flagged_tickets'    => $flagged_tickets,
