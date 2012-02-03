@@ -11,7 +11,12 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		}
 
 		this.faviconEl = $(options.favicon);
+		if (!this.faviconEl.length) {
+			this.supported = false;
+		}
 		this.badgeEl = null;
+
+		this.updateBadge(0, false);
 	},
 
 	updateBadge: function(num, do_animate) {
@@ -23,11 +28,6 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		// We have only two digits to play with
 		if (num > 99) {
 			num = 99;
-		}
-
-		// Same number, dont need to redraw
-		if (self.badgeEl && self.badgeEl.data('num') == num) {
-			return;
 		}
 
 		if (self.currentCancel) self.currentCancel();
