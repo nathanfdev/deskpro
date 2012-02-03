@@ -1380,7 +1380,7 @@ section.dp-overlay > article.no-footer {
 
 
 .dp-overlay-container.display-options {
-    width: 500px;
+    width: 700px;
     height: 400px;
 	z-index: 30000;
 }
@@ -1390,26 +1390,36 @@ section.dp-overlay > article.no-footer {
 }
 
 .dp-overlay-container.display-options ul {
-
-}
-
-.dp-overlay-container.display-options ul.sortable-list {
 	padding: 10px;
-	text-align: center;
 }
-.dp-overlay-container.display-options ul.sortable-list li,
-.dp-overlay-container.display-options ul.sortable-list li.ui-sortable-helper {
+
+.dp-overlay-container.display-options ul.display-fields-list {
+
+}
+.dp-overlay-container.display-options ul.display-fields-list li,
+.dp-overlay-container.display-options ul.display-fields-list li.ui-sortable-helper {
 	line-height: 100%;
 	display: inline-block;
 	margin: 0 6px 6px 0;
-	padding: 3px 16px 3px 6px;
+	padding: 3px 18px 3px 6px;
 	cursor: move;
-	border-bottom: 1px dotted #ACB2B9;
 	border-right: 4px solid #EEF0F1;
 	line-height: 15px;
 	overflow: hidden;
 	height: 15px;
-	background: #EEF0F1 url(../../images/agent/icons/move-grip.png) no-repeat 100% 50%;
+	background: darken(#EEF0F1, 3%) url(../../images/agent/icons/move-grip.png) no-repeat 100% 50%;
+	.rounded(3px);
+
+	&.off {
+		background: lighten(#EEF0F1, 1%);
+		color: lighten(@body-text-color, 20%);
+		cursor: default;
+	}
+}
+
+.dp-overlay-container.display-options ul.off-list {
+	border-top: 1px solid lighten(#A1AAB3, 2%);
+	padding-top: 20px;
 }
 
 .dp-overlay-container.display-options ul li {

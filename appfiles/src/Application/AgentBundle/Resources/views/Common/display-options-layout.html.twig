@@ -5,9 +5,10 @@
 			<h1>{% block title %}{{ phrase('agent.display_options') }}{% endblock %}</h1>
 		</header>
 		<article>
-			<ul class="sortable-list">
+			<ul class="display-fields-list on-list sortable-list">
 				{% block display_elements_list %}{% endblock %}
 			</ul>
+			<ul class="display-fields-list off-list"></ul>
 
 			{% block other_options %}{% endblock %}
 		</article>

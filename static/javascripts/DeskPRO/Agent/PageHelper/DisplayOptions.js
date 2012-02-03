@@ -64,10 +64,33 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this._hasInit = true;
 
 		this.wrapper = $('.display-options', this.page.wrapper).first();
-		this.optionsList = $('ul.sortable-list', this.wrapper).sortable({
+		this.optionsList = $('ul.display-fields-list.on-list', this.wrapper).sortable({
 			forceHelperSize:true,
 			opacity: 0.6
-		});;
+		});
+
+		var onList = this.optionsList;
+		var offList = $('ul.display-fields-list.off-list', this.wrapper);
+
+		onList.find(':checkbox').on('click', function() {
+			var check = $(this);
+			var li = $(this).closest('li');
+
+			if (check.attr('checked')) {
+				li.detach().removeClass('off').appendTo(onList);
+				if (!offList.find('> li').length) {
+					offList.hide();
+				}
+			} else {
+				li.detach().addClass('off').prependTo(offList);
+				offList.show();
+			}
+		}).not(':checked').each(function() {
+			$(this).closest('li').detach().addClass('off').appendTo(offList);
+		});
+		if (!offList.find('> li').length) {
+			offList.hide();
+		}
 
 		this.wrapper.detach().appendTo('body');
 		this.wrapper.css('z-index', '10101');
