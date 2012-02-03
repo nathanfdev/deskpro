@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Tickets
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -80,6 +88,7 @@ class TicketResultsDisplay
 
 		if (!$this->ticket_count) {
 			$this->all_labels = array();
+			return $this->all_labels;
 		}
 
 		$ticket_ids = implode(',', $this->ticket_ids);
