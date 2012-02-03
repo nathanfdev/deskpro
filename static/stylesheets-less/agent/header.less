@@ -479,7 +479,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	color: #2b3233;
 	background-color: #fafafa;
 	border: 1px solid #3a4a59;
-	border-radius:15px;
+	.rounded(3px);
 	box-shadow: 0 1px 0 #3b71a9, inset 0 1px 3px rgba(0,0,0,0.15);
 	overflow: hidden;
 	z-index: 9999;
@@ -520,6 +520,15 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 		display: block;
 		height: 25px;
 	}
+}
+
+#dp_omniinput::-webkit-input-placeholder {
+    font-size: 11px;
+    color: lighten(#3A4A59, 10%) !important;
+}
+#dp_omniinput:-moz-placeholder {
+    font-size: 11px;
+    color: lighten(#3A4A59, 10%) !important;
 }
 
 /* DP Create Ticket */
