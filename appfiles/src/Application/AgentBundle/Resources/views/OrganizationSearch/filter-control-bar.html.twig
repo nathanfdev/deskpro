@@ -5,11 +5,19 @@
 	</ul>
 	<ul>
 		<li>{{ phrase('agent.ordered_by') }} </li>
-		<li class="order-by-menu-trigger"><a class="button"><span class="label">Name</span><em></em></a></li>
+		<li class="order-by-menu-trigger"><a class="button">
+			<span class="label">
+				{% if 'num_members' in cache.criteria.order_by %}
+					Number of Members
+				{% else %}
+					Name
+				{% endif %}
+			</span><em></em></a>
+		</li>
 		<li><span class="sep"></span></li>
 	</ul>
 	<ul style="display: none" class="order-by-menu">
-		<li data-group-by="name-asc">Name (A-Z)</li>
-		<li data-group-by="name-desc">Name (Z-A)</li>
+		<li data-order-by="num_members">Number of Members</li>
+		<li data-order-by="name-asc">Name</li>
 	</ul>
 </header>

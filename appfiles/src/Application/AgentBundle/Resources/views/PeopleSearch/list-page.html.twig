@@ -32,7 +32,7 @@
 							{% elseif field == 'language' %}
 								{% set has_set = true %}
 								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
-							{% elseif field == 'labels' %}
+							{% elseif field == 'labels' and result_display.hasPersonLabels(person) %}
 								<li>
 									<span class="prop-title">Labels:</span>
 									<span class="prop-val labels">
@@ -43,7 +43,7 @@
 								</li>
 							{% elseif field == 'num_tickets' %}
 								{% set has_set = true %}
-								<li><span class="prop-val num_tickets">Tickets: {{people_ticket_counts[person.id]|default(0)}}</span></li>
+								<li><span class="prop-val num_tickets">Tickets: {{ result_display.getPersonTicketCount(person) }}</span></li>
 							{% else %}
 								{% for f in user_all_custom_fields[person.id] %}
 									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}

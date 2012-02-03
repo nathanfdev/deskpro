@@ -61,10 +61,10 @@ class OrganizationSearch extends SearcherAbstract
 			}
 		}
 
+		// An array means the sort needs a join
 		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
-
-			$sql .= " $order_join ";
+			$sql .= " {$order_by[0]} ";
+			$order_by = $order_by[1];
 		}
 
 		#------------------------------
@@ -77,7 +77,9 @@ class OrganizationSearch extends SearcherAbstract
 		}
 
 		$sql .= " GROUP BY organizations.id ";
-		$sql .= $order_by;
+		if ($order_by) {
+			$sql .= " ORDER BY $order_by ";
+		}
 		$sql .= " LIMIT 1000";
 
 		return $sql;
@@ -116,7 +118,14 @@ class OrganizationSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'organization.name':
-				$order_by = "ORDER BY organizations.name $dir";
+				$order_by = "organizations.name $dir";
+				break;
+
+			case 'organization.num_members':
+				$order_by = array(
+					"INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)",
+					"COUNT(sort_table.id) $dir, organizations.name DESC"
+				);
 				break;
 
 			case 'organization.organization_field':
@@ -130,7 +139,7 @@ class OrganizationSearch extends SearcherAbstract
 					case 'value':
 						$order_by = arary(
 							"INNER JOIN custom_data_organizations AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
-							"ORDER BY sort_table.$search_type $dir"
+							"sort_table.$search_type $dir"
 						);
 						break;
 				}

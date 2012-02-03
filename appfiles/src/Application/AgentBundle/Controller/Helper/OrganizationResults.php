@@ -25,7 +25,7 @@ use Orb\Util\Arrays;
 class OrganizationResults
 {
 	/**
-	 * @var Application\AgentBundle\Controller\AbstractController
+	 * @var \Application\AgentBundle\Controller\AbstractController
 	 */
 	protected $controller;
 
@@ -40,7 +40,7 @@ class OrganizationResults
 	protected $order_by = null;
 
 	/**
-	 * @return Application\AgentBundle\Controller\Helper\OrganizationResults
+	 * @return \Application\AgentBundle\Controller\Helper\OrganizationResults
 	 */
 	public static function newFromResultCache($controller, ResultCache $result_cache)
 	{

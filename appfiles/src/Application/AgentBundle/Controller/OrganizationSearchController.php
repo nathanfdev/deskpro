@@ -43,14 +43,6 @@ class OrganizationSearchController extends AbstractController
 
 		$organizations = $results_helper->getOrgsForPage($page);
 
-		// Members count
-		$members_count = App::getDb()->fetchAllKeyValue("
-			SELECT organization_id, COUNT(*)
-			FROM people
-			WHERE organization_id IS NOT NULL
-			GROUP BY organization_id
-		");
-
 		#------------------------------
 		# Send results
 		#------------------------------
@@ -62,14 +54,14 @@ class OrganizationSearchController extends AbstractController
 		// person defs for columns
 		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
+		$result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'organizations'      => $organizations,
-			'members_count'      => $members_count,
 			'page'               => $page,
 			'org_field_defs'     => $org_field_defs,
-			'load_first'         => $this->in->getBool('load_first')
+			'result_display'     => $result_display,
 		));
 
 		$html = $this->renderView($tpl, $vars);
@@ -86,7 +78,6 @@ class OrganizationSearchController extends AbstractController
 
 	/**
 	 * Render a new pageset.
-	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
 	 */
 	public function getOrgPageAction()
 	{
@@ -94,10 +85,14 @@ class OrganizationSearchController extends AbstractController
 		$org_ids = Arrays::removeFalsey($org_ids);
 		$org_ids = array_unique($org_ids);
 
-		$orgs = $this->em->getRepository('DeskPRO:Organization')->getOrganizationsFromIds($org_ids);
-		$orgs = Arrays::orderIdArray($org_ids, $orgs);
+		$organizations = $this->em->getRepository('DeskPRO:Organization')->getByIds($org_ids, true);
 
-		$display_fields = $this->in->getCleanValueArray('display_fields', 'str_simple', 'discard');
+		$pref_display_fields = $this->person->getPref('agent.ui.org-filter-display-fields.0');
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			$vars['display_fields'] = array('members_count');
+		}
 
 		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
@@ -106,10 +101,12 @@ class OrganizationSearchController extends AbstractController
 			$tpl = 'filter-list-page.html.twig';
 		}
 
+		$result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
 		return $this->render("AgentBundle:OrganizationSearch:$tpl", array(
-			'organizations'           => $orgs,
-			'display_fields'    => $display_fields,
-			'org_field_defs' => $org_field_defs,
+			'organizations'    => $organizations,
+			'display_fields'   => $pref_display_fields,
+			'org_field_defs'   => $org_field_defs,
+			'result_display'   => $result_display,
 		));
 	}
 
@@ -127,6 +124,8 @@ class OrganizationSearchController extends AbstractController
 				$result_cache = false;
 			}
 		}
+
+		$order_by = $this->person->getPref('agent.ui.org-filter-order-by.0');
 
 		#------------------------------
 		# If there's no result set, we're running it for the first time
@@ -163,8 +162,6 @@ class OrganizationSearchController extends AbstractController
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
 
-			$order_by = $this->in->getString('filter.order_by');
-
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}
@@ -189,15 +186,15 @@ class OrganizationSearchController extends AbstractController
 		// the order_by in criteria, that means the user changed it
 		// and we have to re-do the search
 
-		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
+		if ($order_by && (empty($result_cache['criteria']['order_by']) || $result_cache['criteria']['order_by'] != $order_by)) {
 			$criteria = $result_cache['criteria'];
-			$criteria['order_by'] = $result_cache['extra']['order_by'];
+			$criteria['order_by'] = $order_by;
 
 			$result_cache['criteria'] = $criteria;
 
 			$searcher = new \Application\DeskPRO\Searcher\OrganizationSearch();
 			$searcher->setTerms($result_cache['criteria']['terms']);
-			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
+			$searcher->setOrderByCode($order_by);
 
 			$results = $searcher->getMatches();
 			$result_cache['results'] = $results;

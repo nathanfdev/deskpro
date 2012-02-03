@@ -78,7 +78,7 @@ class PeopleResultsDisplay
 	/**
 	 * @return \Application\DeskPRO\Entity\Person[]
 	 */
-	public function getpeople()
+	public function getPeople()
 	{
 		return $this->people;
 	}
@@ -155,6 +155,7 @@ class PeopleResultsDisplay
 	 */
 	public function getPersonTicketCount(Person $person)
 	{
+		$this->getAllPeopleTicketCounts();
 		return isset($this->people_ticket_counts[$person->id]) ? $this->people_ticket_counts[$person->id] : 0;
 	}
 }

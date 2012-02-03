@@ -32,7 +32,7 @@
 				</td>
 			{% elseif field == 'num_tickets' %}
 				<td class="{{field}}">
-					{{people_ticket_counts[person.id]|default(0)}}
+					{{ result_display.getPersonTicketCount(person) }}
 				</td>
 			{% elseif field == 'labels' %}
 				<td class="{{field}}">
