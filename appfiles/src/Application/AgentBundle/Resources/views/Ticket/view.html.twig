@@ -67,7 +67,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </form>
 
 {% if ticket.status == 'hidden' %}
-	<div class="ticket-hidden-bar">
+	<div class="ticket-hidden-bar {% if ticket.hidden_status == 'deleted' or ticket.hidden_status == 'spam' %}deleted{% endif %}">
+		<article>
 		{% if ticket.hidden_status == 'deleted' %}
 			{{ phrase('agent.tickets.deleted_by') }} {{ ticket_deleted.by_person.display_name }} (<time class="timeago" title="{{ ticket_deleted.date_created|date('c') }}">{{ ticket_deleted.date_created|date('M j Y') }}</time>).
 			{% if ticket_deleted.reason %}
@@ -86,6 +87,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
 			{{ phrase('agent.tickets.hidden_explain') }}
 		{% endif %}
+		</article>
 	</div>
 {% endif %}
 

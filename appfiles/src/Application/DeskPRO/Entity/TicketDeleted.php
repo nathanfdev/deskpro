@@ -32,7 +32,6 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
 	 * @ORM_Mapping\Column(name="new_ticket_id", type="integer")
 	 */
 	protected $new_ticket_id = 0;

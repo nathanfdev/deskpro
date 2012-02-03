@@ -572,7 +572,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	doTicketUndelete: function() {
 		var self = this;
 		var prop = this.getPropertyManager('status');
-		this.changeManager.setInstantChange(prop, 'open', function() {
+		this.changeManager.setInstantChange(prop, 'awaiting_agent', function() {
 			DeskPRO_Window.removePage(self);
 
 			// Reload the ticket page

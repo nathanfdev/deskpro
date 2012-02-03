@@ -1104,9 +1104,8 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_STATUS:
-					if (!$this->_testChoiceMatch($ticket['status'], $op, $choice)) return false;
+					if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) return false;
 					break;
-
 				case self::TERM_DEPARTMENT:
 					if (count($choice) == 1) $choice = Arrays::getFirstItem($choice);
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);

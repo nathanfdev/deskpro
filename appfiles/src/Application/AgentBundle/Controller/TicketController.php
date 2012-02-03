@@ -1213,12 +1213,24 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		$reason = $this->in->getString('reason');
+		$this->em->getConnection()->beginTransaction();
 
-		$this->em->beginTransaction();
-		$ticket->deleteTicket($this->person, $reason);
-		$this->em->flush();
-		$this->em->commit();
+		try {
+			$ticket->setStatus('hidden.deleted');
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		$this->db->insert('tickets_deleted', array(
+			'ticket_id' => $ticket->id,
+			'by_person_id' => $this->person->id,
+			'new_ticket_id' => 0,
+			'reason' => $this->in->getString('reason'),
+			'date_created' => date('Y-m-d H:i:s')
+		));
 
 		return $this->createJsonResponse(array(
 			'success' => true

@@ -35,20 +35,14 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		/** @var $queue \Application\DeskPRO\Queue\Queue */
-		$queue = $this->getContainer()->getQueue('test');
+		$ticket = App::findEntity('DeskPRO:Ticket', 22487);
+		$person = App::findEntity('DeskPRO:Person', 20001);
 
-		echo "inserting \n";
-		$queue->send(array('test' => 1));
-		$queue->send(array('test' => 2));
-		$queue->send(array('test' => 3));
+		App::getDb()->beginTransaction();
 
-		echo "\n recieving \n";
-		foreach ($queue->receive(10, 100) as $m) {
-			echo $m->test;
-			echo "\n";
+		$ticket->deleteTicket($person, "Some Reason");
+		App::getOrm()->flush();
 
-			$queue->deleteMessage($m);
-		}
+		App::getDb()->rollback();
 	}
 }

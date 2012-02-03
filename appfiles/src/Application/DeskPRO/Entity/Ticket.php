@@ -1416,15 +1416,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getDeletionRecord()
 	{
-		try {
-			$del = App::getOrm()->createQuery("
-				SELECT d
-				FROM DeskPRO:TicketDeleted d
-				WHERE d.ticket_id = ?1
-			")->setParameter(1, $this->id)->getSingleResult();
-		} catch (\Exception $e) {
-			return null;
-		}
+		$del = App::getOrm()->createQuery("
+			SELECT d
+			FROM DeskPRO:TicketDeleted d
+			WHERE d.ticket_id = ?1
+		")->setParameter(1, $this->id)->getOneOrNullResult();
 
 		return $del;
 	}
@@ -1500,6 +1496,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			list($status, $hstatus) = explode('.', $status, 2);
 		}
 
+		if (!in_array($status, array(
+			self::STATUS_AWAITING_AGENT,
+			self::STATUS_AWAITING_USER,
+			self::STATUS_CLOSED,
+			self::STATUS_RESOLVED,
+			self::STATUS_HIDDEN
+		))) {
+			throw new \InvalidArgumentException("Invalid status `$status`");
+		}
+
+		if ($hstatus && !in_array($hstatus, array(
+			self::HIDDEN_STATUS_DELETED,
+			self::HIDDEN_STATUS_SPAM,
+			self::HIDDEN_STATUS_VALIDATING
+		))) {
+			throw new \InvalidArgumentException("Invalid hidden status `$hstatus`");
+		}
+
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
 
@@ -1565,19 +1579,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$del = new TicketDeleted();
 		}
 
-		if (!$person) {
-			$person = App::getCurrentPerson();
-		}
-
 		$del['ticket_id']     = $this->id;
-		$del['by_person_id']  = $person['id'];
+		$del['by_person']     = $person;
 		$del['new_ticket_id'] = 0;
 		$del['reason']        = $reason;
 
-		$this->status        = self::STATUS_HIDDEN;
-		$this->hidden_status = self::HIDDEN_STATUS_DELETED;
+		$this->setStatus('hidden.deleted');
 
 		App::getOrm()->persist($del);
+		App::getOrm()->flush($del);
 		App::getOrm()->persist($this);
 	}
 

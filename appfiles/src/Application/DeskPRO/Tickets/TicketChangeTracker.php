@@ -88,6 +88,12 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			$logger = new \Orb\Log\Logger();
 			$writer = new \Orb\Log\Writer\Stream(DP_ROOT . '/sys/logs/ticket-change-tracker.log');
 			$logger->addWriter($writer);
+
+			if (DP_INTERFACE == 'cli') {
+				$writer = new \Orb\Log\Writer\Output();
+				$logger->addWriter($writer);
+			}
+
 			$this->log = $logger;
 		}
 		return $this->log;
