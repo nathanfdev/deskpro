@@ -22,6 +22,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
 			{% for category in text_snippet_cats %}
 				{% set group = text_snippets[category.id] %}
 				{% include 'AgentBundle:Common:text-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
+			{% else %}
+				<div class="no-cats-message" {% if ticket_snippet_cats|length %}style="display: none"{% endif %}>
+					{{ phrase('agent.snippets_none_explain') }}
+				</div>
 			{% endfor %}
         {# Page Containers #}
         </div></div>

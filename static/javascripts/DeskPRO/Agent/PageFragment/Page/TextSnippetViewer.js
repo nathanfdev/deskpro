@@ -262,7 +262,11 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 							var prev = el.prev();
 							el.remove();
 
-							self.catTabs.activateTab(prev);
+							if (prev.length) {
+								self.catTabs.activateTab(prev);
+							} else {
+								$('.no-cats-message', this.wrapper).show();
+							}
 
 							hideOverlay();
 						}
@@ -294,6 +298,8 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
+				$('.no-cats-message', this.wrapper).hide();
+				
 				var li = $(data.cat_row_html);
 
 				this.newCatOverlay.slideUp();
