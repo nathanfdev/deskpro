@@ -1418,6 +1418,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 
 	/**
+	 * Reloads the currently selected list if it has the proper rotueData metadata.
+	 */
+	reloadSelectedList: function() {
+		if (!this.listPage) {
+			return;
+		}
+
+		var route = this.listPage.meta.routeData.route;
+		this.runPageRoute(route);
+	},
+
+
+	/**
 	 * Get the message channeler
 	 */
 	getMessageChanneler: function() {

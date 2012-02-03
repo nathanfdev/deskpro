@@ -6,7 +6,7 @@
 				<div class="top-row-left">
 					<h3>
 						<a class="name click-through">
-							{{ person.display_name }}
+							<span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span>
 						</a>
 					</h3>
 				</div>

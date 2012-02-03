@@ -33,7 +33,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		if (self.currentCancel) self.currentCancel();
 
 		// With zero we put the old one back
-		if (num == 0) {
+		if (num == 0 && self.badgeEl) {
 			do_animate = false;
 			self.badgeEl.remove();
 		}
