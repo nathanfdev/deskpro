@@ -30,6 +30,14 @@ $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array('Symfony' => DP_ROOT.'/vendor/symfony/src'));
 $loader->register();
 
+$output_realtime = function($type, $buffer) {
+	if ($type === 'err') {
+		echo 'ERR: '.$buffer;
+	} else {
+		echo $buffer;
+	}
+};
+
 #####################################################################
 
 $time = microtime(true);
@@ -37,12 +45,10 @@ echo "build-boostrap ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-bootstrap.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -56,12 +62,10 @@ echo "build-kernels ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-kernels.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -75,12 +79,10 @@ echo "build-caches ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-caches.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -94,12 +96,10 @@ echo "build-assetic ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-assetic.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -113,12 +113,10 @@ echo "build-compiled ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-compiled.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -132,12 +130,10 @@ echo "build-schema-file ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-schema-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -153,12 +149,10 @@ echo "echoing build time of ... $build_time ";
 
 $proc = new \Symfony\Component\Process\Process("echo '<?php define(\"DP_BUILD_TIME\", $build_time); ' > build-time.php", DP_ROOT.'/sys/config');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -172,12 +166,10 @@ echo "build-cleanup ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-cleanup.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 
@@ -196,12 +188,10 @@ echo "build-checksum-file ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
 $proc->setTimeout(600);
-$proc->run();
+$proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo "ERROR\n";
-	echo $proc->getOutput();
-	echo $proc->getErrorOutput();
+	echo ("\nDetected error. Quitting.\n");
 	exit($proc->getExitCode());
 }
 

@@ -299,7 +299,7 @@ DeskPRO.Agent.PageFragment.Page.TextSnippetViewer = new Orb.Class({
 			context: this,
 			success: function(data) {
 				$('.no-cats-message', this.wrapper).hide();
-				
+
 				var li = $(data.cat_row_html);
 
 				this.newCatOverlay.slideUp();

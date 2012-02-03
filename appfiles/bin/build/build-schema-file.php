@@ -8,12 +8,32 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+require DP_ROOT . '/../config.php';
+
+if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
+	$DP_CONFIG = array();
+}
+
+if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
+if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
+if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
+if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
+if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+
+if (!defined('DP_BUILD_TIME')) {
+	if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+		require(DP_ROOT.'/sys/config/build-time.php');
+	} else {
+		define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
+	}
+}
+
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $kernel = new \DeskPRO\Kernel\CliKernel('dev', false);
 
-$_SERVER['argv'] = array('x', 'dp:generate-schema-file', '-w');
+$_SERVER['argv'] = array('x', 'dp:generate-schema-file', '-w', '--verbose');
 
 $application = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 $application->run();

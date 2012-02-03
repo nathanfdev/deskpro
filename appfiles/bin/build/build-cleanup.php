@@ -41,5 +41,7 @@ $rm_paths = array(
 );
 
 foreach ($rm_paths as $p) {
-	unlink($p);
+	if (file_exists($p)) {
+		unlink($p);
+	}
 }

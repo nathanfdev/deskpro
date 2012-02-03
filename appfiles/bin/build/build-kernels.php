@@ -52,12 +52,15 @@ if ($proc_kernel === null) {
 
 		$cmd = DP_PHP_PATH . ' ./build-kernels.php --knum ' . $k;
 		$proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
-		$proc->run();
+		$proc->run(function($type, $buffer) {
+			if ($type === 'err') {
+				echo 'ERR: '.$buffer;
+			} else {
+				echo $buffer;
+			}
+		});
 
 		if (!$proc->isSuccessful()) {
-			echo "ERROR\n\n";
-			echo $proc->getOutput();
-			echo $proc->getErrorOutput();
 			exit($proc->getExitCode());
 		}
 
