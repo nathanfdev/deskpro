@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = {{ person.display_name|json_encode|raw }};
 pageMeta.person_id = {{person.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_people_view', {'person_id': person.id}) }}';
 pageMeta.pageIdentity = 'person1:{{person.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
