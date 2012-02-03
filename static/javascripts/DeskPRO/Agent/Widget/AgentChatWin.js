@@ -147,6 +147,10 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			ev.stopPropagation();
 			self.close();
 		});
+		$('.close', newContainer).on('click', function(ev) {
+			ev.stopPropagation();
+			self.destroy();
+		});
 	},
 
 	_fireSendMessage: function() {
