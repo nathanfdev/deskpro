@@ -18,8 +18,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 <input type="hidden" name="for_comment_type" id="{{baseId}}_for_comment_type" value="" />
 <input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
+<input type="hidden" name="for_chat_id" id="{{baseId}}_for_chat_id" value="" />
 
-<div class="pending-info" style="display: none;">
+<div class="pending-info comment" style="display: none;">
 	<h3>Creating ticket for comment:</h3>
 	<div class="pending-item pending-ticket">
 		<div class="about">Commented on: <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a></div>
@@ -31,6 +32,10 @@ pageMeta.baseId = '{{ baseId }}';
 			comment after ticket is created
 		</div>
 	</div>
+</div>
+
+<div class="pending-info chat" style="display: none;">
+	<h3>Creating ticket for chat: <span id="{{baseId}}_chat_title"></span></h3>
 </div>
 
 <div class="section user-section first" id="{{baseId}}_user_section">

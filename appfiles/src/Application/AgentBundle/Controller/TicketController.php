@@ -1417,9 +1417,8 @@ class TicketController extends AbstractController
 				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 				if ($labels) {
 					$ticket->getLabelManager()->setLabelsArray($labels);
-
-
-				$this->em->flush();}
+					$this->em->flush();
+				}
 
 				#------------------------------
 				# Add CC's
@@ -1482,6 +1481,20 @@ class TicketController extends AbstractController
 						$this->em->persist($part);
 					}
 
+					$this->em->flush();
+				}
+
+				#------------------------------
+				# Related chat
+				#------------------------------
+
+				$chat_id = $this->in->getUint('for_chat_id');
+				$chat = null;
+				if ($chat_id) {
+					$chat = $this->em->find('DeskPRO:ChatConversation', $chat_id);
+
+					$ticket->linked_chat = $chat;
+					$this->em->persist($ticket);
 					$this->em->flush();
 				}
 

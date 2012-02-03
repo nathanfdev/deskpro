@@ -130,7 +130,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('message').val(data.message);
 		this.getEl('for_comment_type').val(data.content_type);
 		this.getEl('for_comment_id').val(data.comment_id);
-		$('.pending-info', this.wrapper).show();
+		$('.pending-info.comment', this.wrapper).show();
 
 		this.getEl('comment_object_link').data('route', 'page:' + data.object_url).text(data.object_title);
 
@@ -142,6 +142,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		} else {
 			$('option[value="approve"]', this.getEl('comment_action')).show();
 		}
+	},
+
+	setNewByChat: function(data) {
+		this.getEl('for_chat_id').val(data.chat_id);
+		$('.pending-info.chat', this.wrapper).show();
+
+		this.getEl('chat_title').text(data.chat_title);
 	},
 
 	//#########################################################################

@@ -221,6 +221,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<br class="clear"/>
 			</dd>
 
+			{% if ticket.linked_chat %}
+				<dt>Linked Chat:</dt>
+				<dd>
+					<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
+				</dd>
+			{% endif %}
+
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="ticket-tags tags-wrap">
 				<input type="text" value="{% for label in ticket.labels %}{{label.label}},{% endfor %}" />

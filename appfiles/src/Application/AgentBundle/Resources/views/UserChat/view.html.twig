@@ -26,6 +26,12 @@ pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': con
 pageMeta.person_id = 0;
 {% endif %}
 
+{% if convo.person %}
+	pageMeta.chatTitle = '{{ convo.person.display_name }} ({{ convo.person.primary_email_address }})';
+{% else %}
+	pageMeta.chatTitle = '{{ phrase('agent.anonymous') }}';
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

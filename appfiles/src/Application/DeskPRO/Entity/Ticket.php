@@ -149,6 +149,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $organization = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\ChatConversation
+	 * @ORM_Mapping\ManyToOne(targetEntity="ChatConversation")
+	 * @ORM_Mapping\JoinColumn(name="linked_chat_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $linked_chat = null;
+
+	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="TicketAttachment", mappedBy="ticket", cascade={"persist", "remove", "merge"})
 	 */
 	protected $attachments;
@@ -1496,7 +1503,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			list($status, $hstatus) = explode('.', $status, 2);
 		}
 
-		if (!in_array($status, array(
+		if ($status && !in_array($status, array(
 			self::STATUS_AWAITING_AGENT,
 			self::STATUS_AWAITING_USER,
 			self::STATUS_CLOSED,
