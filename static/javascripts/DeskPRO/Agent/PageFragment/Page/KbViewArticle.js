@@ -295,6 +295,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 		});
 
+		var lis = $('li:not(.add)', self.getEl('categories'));
+		if (lis.length < 2) {
+			$('.remove', lis).hide();
+		}
+
 		this.getEl('categories').on('click', '.remove', function(ev) {
 			var li = $(this).parent();
 			li.remove();
