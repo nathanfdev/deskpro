@@ -434,7 +434,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$person->fromArray($info);
 		}
 
-		$person->addEmailAddressString($email);
+		if ($email) {
+			$person->addEmailAddressString($email);
+		}
 
 		return $person;
 	}

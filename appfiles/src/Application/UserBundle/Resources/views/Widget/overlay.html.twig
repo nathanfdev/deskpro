@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<script type="text/javascript">
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+		{% if constant('DP_DEBUG') %}
+			DP_DEBUG = true;
+		{% else %}
+			DP_DEBUG = false;
+		{% endif %}
+	</script>
+
+	{% if app.isDebug() %}
+		{{ dp_asset_html('user_vendors') }}
+		{{ dp_asset_html('user_common') }}
+	{% else %}
+		{{ dp_asset_html('user') }}
+	{% endif %}
+
+	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+</head>
+<body id="dp_overlay">
+
+<div id="left_pane">
+	<div class="search-area">
+		<input id="search_box" type="text" placeholder="Search for something..." />
+	</div>
+</div>
+<div id="right_pane">
+	XXX
+</div>
+
+</body>
+</html>

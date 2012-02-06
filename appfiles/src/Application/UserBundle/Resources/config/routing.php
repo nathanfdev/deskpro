@@ -608,4 +608,13 @@ $collection->add('user_twitter_long_message', new Route(
 	array()
 ));
 
+
+
+$collection->add('user_widget_overlay', new Route(
+	'/widget/overlay.html',
+	array('_controller' => 'UserBundle:Widget:overlay'),
+	array(),
+	array()
+));
+
 return $collection;

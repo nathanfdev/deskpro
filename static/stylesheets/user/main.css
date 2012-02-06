@@ -2496,3 +2496,55 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 
 #dp_custom_head { display: none; }
+
+
+
+/**********************************************************
+* Overlay
+**********************************************************/
+
+#dp_overlay {}
+
+#dp_overlay #left_pane {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 350px;
+	background-color: #dfe4ea;
+	-webkit-box-shadow: 2px 0px 3px 0px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 2px 0px 3px 0px rgba(0, 0, 0, 0.4);
+	box-shadow: 2px 0px 3px 0px rgba(0, 0, 0, 0.4);
+	z-index: 2;
+}
+
+#dp_overlay #left_pane .search-area {
+	border-bottom: 1px solid #B9BDC2;
+	background-color: #CCD4E2;
+
+	padding: 15px;
+
+	-webkit-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+	-moz-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+	box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+}
+
+#dp_overlay #left_pane .search-area input#search_box {
+	width: 310px;
+	border: 1px solid #7DAAC8;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+	padding: 3px;
+}
+
+#dp_overlay #right_pane {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 350px;
+	bottom: 0;
+	background-color: #f4f4f4;
+	z-index: 1;
+}
