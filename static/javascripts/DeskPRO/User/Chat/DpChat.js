@@ -86,7 +86,7 @@ var DpChatMake = function() {
 
 			DpChatConsole.log('DpChat.init');
 
-			if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.6.') === -1) {
+			if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.7.') === -1) {
 
 				DpChatConsole.log('DpChat.init: loading jquery');
 
@@ -98,7 +98,7 @@ var DpChatMake = function() {
 
 				var script_tag = document.createElement('script');
 				script_tag.setAttribute("type", "text/javascript");
-				script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
+				script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
 				script_tag.setAttribute("async", 'true');
 				script_tag.onload = function() {
 					initJquery();
@@ -247,6 +247,9 @@ var DpChatMake = function() {
 		 * Pop the chat out into a new window
 		 */
 		this.popChat = function() {
+
+			console.log('DpChat.popChat');
+
 			hasEnded = true;
 			display.destroy();
 			ajaxPoller.disable = true;

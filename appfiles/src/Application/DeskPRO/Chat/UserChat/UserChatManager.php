@@ -105,16 +105,16 @@ class UserChatManager
 				$convo->person = $this->person;
 			}
 
-			if (isset($chat_options['department_id'])) {
+			if (!empty($chat_options['department_id'])) {
 				$dep = $this->em->getRepository('DeskPRO:Department')->find($chat_options['department_id']);
 				if ($dep) {
 					$convo->department = $dep;
 				}
 			}
-			if (isset($chat_options['name'])) {
+			if (!empty($chat_options['name'])) {
 				$convo->person_name = $chat_options['name'];
 			}
-			if (isset($chat_options['email'])) {
+			if (!empty($chat_options['email'])) {
 				$convo->person_email = $chat_options['email'];
 
 				$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($chat_options['email']);

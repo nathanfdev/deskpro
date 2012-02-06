@@ -29,12 +29,9 @@ var DpChat_Display = (function() {
 		// The butotn that opens the chat
 		//--------------------
 
-		var html = [];
-		html.push('<div id="dpchat_btn"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat">Open your chat</span></div></div>');
-
-		var el = $(html.join(''));
+		var el = $('<div id="dpchat_btn"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat">Open your chat</span></div></div>');
 		el.appendTo('body');
-		chatBoxBtn = el;
+		chatBoxBtn = $(el);
 
 		chatBoxBtn.on('click', function() {
 			chatBox.addClass('dpchat-panel-open');
