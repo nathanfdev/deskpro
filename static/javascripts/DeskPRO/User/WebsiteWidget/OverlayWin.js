@@ -8,6 +8,8 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	},
 
 	initPage: function() {
+		var self = this;
+
 		this.winNav = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('#dp_overlay_navtabs').find('> li')
 		});
@@ -19,6 +21,33 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			var v = new DeskPRO.Form.FormValidator($(this));
 			$(this).data('form-validator-inst', v);
 		});
+
+		$(document).on('click', '.view-item', function(ev) {
+			ev.preventDefault();
+
+			var origUrl = $(this).attr('href');
+			var url = Orb.appendQueryData(origUrl, '_partial', 'overlay');
+			self.showInlinePage(url);
+		});
+	},
+
+	showInlinePage: function(url) {
+		var self = this;
+		if (!this.inlinePageFrame) {
+			this.inlinePageWrap = $('<div id="dp_inline_page_wrap" />').hide().appendTo('body');
+			this.inlinePageWrap.append('<span class="close"></span>');
+			this.inlinePageWrap.find('span.close').on('click', function() {
+				self.hideInlinePage();
+			});
+			this.inlinePageIframe = $('<iframe id="dp_inline_page_iframe" name="dp_inline_page_iframe" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" width="100%" height="100%"></div>').appendTo(this.inlinePageWrap);
+		}
+
+		this.inlinePageWrap.show();
+		this.inlinePageIframe.attr('src', url);
+	},
+
+	hideInlinePage: function() {
+		this.inlinePageWrap.hide();
 	},
 
 	//##################################################################################################################
@@ -64,6 +93,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			context: this,
 			success: function(html) {
 				var ul = $(html);
+				ul.find('a').addClass('view-item');
 				var lis = ul.find('> li');
 
 				$('#new_content_list').hide();

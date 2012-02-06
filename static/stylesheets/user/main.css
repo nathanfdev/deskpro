@@ -2658,3 +2658,44 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	font-size: 12px;
 	font-weight: bold;
 }
+
+#dp_overlay #dp_inline_page_wrap {
+	position: absolute;
+	z-index: 3;
+	top: 30px;
+	right: 30px;
+	bottom: 30px;
+	left: 30px;
+
+	background-color: #fff;
+	border: 1px solid #9EA1A4;
+
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+}
+
+#dp_overlay #dp_inline_page_wrap span.close {
+	background: url(../../images/user/close-btn.png);
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	cursor: pointer;
+	z-index: 1;
+}
+
+#dp_overlay #dp_inline_page_iframe {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+}
