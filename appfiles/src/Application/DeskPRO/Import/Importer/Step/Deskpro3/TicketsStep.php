@@ -52,20 +52,15 @@ class TicketsStep extends AbstractDeskpro3Step
 		$batch = $this->getIdsBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
 
-		foreach ($batch as $tid) {
+		try {
 			$this->getDb()->beginTransaction();
-
-			try {
+			foreach ($batch as $tid) {
 				$this->processTicket($tid);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
 			}
-
-			if (mt_rand(1,10) <= 3) {
-				$this->getEm()->clear();
-			}
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
 
 		$sub_end_time = microtime(true);
