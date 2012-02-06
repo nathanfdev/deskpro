@@ -27,7 +27,7 @@ class TicketsStep extends AbstractDeskpro3Step
 	 * @var \Application\DeskPRO\CustomFields\FieldManager
 	 */
 	protected $fieldmanager;
-	
+
 	public static function getTitle()
 	{
 		return 'Import Tickets';
@@ -351,12 +351,13 @@ class TicketsStep extends AbstractDeskpro3Step
 			}
 		}
 
-		$this->getEm()->persist($person);
+		$this->getEm()->persist($ticket);
 		$this->getEm()->flush();
-		$this->saveMappedId('user', $user_id, $person->id);
+		$this->saveMappedId('ticket', $ticket_id, $ticket->id);
 
 		if ($form_data) {
-			$this->fieldmanager->saveFormToObject($form_data, $person);
+			// TODO fix custom field saving
+			//$this->fieldmanager->saveFormToObject($form_data, $ticket);
 		}
 	}
 
