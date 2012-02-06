@@ -82,6 +82,28 @@ class GlossaryHandler
 		}
 	}
 
+	/**
+	 * @param $text
+	 * @return array
+	 */
+	public function findWords($text)
+	{
+		$this->_initWords();
+
+		$load = array();
+		foreach ($this->_words as $word) {
+			if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
+				$load[] = $word;
+			}
+		}
+
+		return $load;
+	}
+
+	/**
+	 * @param $text
+	 * @return mixed
+	 */
 	public function processText($text)
 	{
 		$this->_initWords();

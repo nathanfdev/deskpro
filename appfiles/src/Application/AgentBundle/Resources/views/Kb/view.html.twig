@@ -12,6 +12,8 @@ pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': ar
 pageMeta.isValidating = true;
 {% endif %}
 
+pageMeta.glossaryWords = {{ glossary_words|json_encode|raw }};
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

@@ -108,6 +108,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				}
 			});
 		});
+
+		this.scanGlossaryWords();
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -120,6 +122,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 
 		this.getEl('revs').empty().removeClass('loaded');
+	},
+
+	scanGlossaryWords: function() {
+		DeskPRO.WordHighlighter.highlight(this.getEl('content_ed').find('.article-content-wrap').get(0), this.meta.glossaryWords);
+		this.getEl('content_ed').find('span.dp-highlight-word').each(function() {
+			$(this).addClass('embedded-glossary-word tipped').data('tipped-options', "ajax:true").data('tipped', BASE_URL + "agent/glossary/"+$(this).data('word')+"/tip");
+		});
 	},
 
 	//#################################################################

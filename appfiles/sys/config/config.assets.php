@@ -267,6 +267,7 @@ $CONFIG['agent_common'] = array(
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/IntervalCaller.js',
 		'javascripts/DeskPRO/TouchCaller.js',
+		'javascripts/DeskPRO/WordHighlighter.js',
 		'javascripts/DeskPRO/AjaxPoller/Poller.js',
 		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
 		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',

@@ -78,7 +78,7 @@ class KbController extends AbstractController
 
 		$glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
 		$content = $article->content;
-		$content = $glossary->processText($content);
+		$glossary_words = $glossary->findWords($content);
 
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
@@ -99,6 +99,7 @@ class KbController extends AbstractController
 			'related_content'      => $related_content,
 			'state'                => $state,
 			'article_categories'   => $article_categories,
+			'glossary_words'       => $glossary_words,
 		));
 	}
 
