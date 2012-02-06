@@ -36,7 +36,7 @@ $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctri
 //$container->setParameter('profiler.storage.password', 'deskpro_dev');
 //$container->setParameter('profiler.storage.class', 'Profiler\\LiveBundle\\Profiler\\Storage\\MysqlProfilerStorage');
 //$container->setParameter('profiler.storage.lifetime', '1800');
-$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%/../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
+$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%/twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 
 ############################################################################
 # Services
