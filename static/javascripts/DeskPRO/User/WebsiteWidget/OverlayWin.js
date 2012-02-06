@@ -12,6 +12,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			triggerElements: $('#dp_overlay_navtabs').find('> li')
 		});
 
+		this._initSearch();
 		this._initNewTicket();
 
 		$('form.with-form-validator').each(function() {
@@ -19,6 +20,61 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			$(this).data('form-validator-inst', v);
 		});
 	},
+
+	//##################################################################################################################
+	//# Search Bar
+	//##################################################################################################################
+
+	_initSearch: function() {
+		var self = this;
+		this.searchBox = $('#search_box');
+
+		this.updateSearchCaller = new DeskPRO.TouchCaller({
+			timeout: 250,
+			callback: this.updateResults,
+			context: this
+		});
+
+		this.searchBox.on('keyup', function(ev) {
+			if (!$(this).val().trim()) {
+				self.clearSearch();
+			} else {
+				self.updateSearchCaller.touch($(this).val().trim());
+			}
+		});
+	},
+
+	clearSearch: function() {
+		$('#search_content_list').empty().hide();
+		$('#new_content_list').show();
+	},
+
+	updateResults: function() {
+		var self = this;
+		var q = this.searchBox.val().trim();
+
+		if (!q.length) {
+			this.clearSearch();
+			return;
+		}
+
+		$.ajax({
+			url: BASE_URL + 'search/omnisearch/' + encodeURI(q),
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				var ul = $(html);
+				var lis = ul.find('> li');
+
+				$('#new_content_list').hide();
+				$('#search_content_list').empty().append(lis).show();
+			}
+		});
+	},
+
+	//##################################################################################################################
+	//# New Ticket
+	//##################################################################################################################
 
 	_initNewTicket: function() {
 		var self = this;

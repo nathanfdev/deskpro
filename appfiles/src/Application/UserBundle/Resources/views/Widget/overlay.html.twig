@@ -23,6 +23,7 @@
 	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
+	<script src="{{ asset('javascripts/DeskPRO/TouchCaller.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('javascripts/DeskPRO/User/WebsiteWidget/OverlayWin.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
@@ -39,13 +40,14 @@
 		<input id="search_box" type="text" placeholder="Search for something..." />
 	</div>
 	<div class="list-area">
-		<ul>
+		<ul id="new_content_list">
 			{% for content in newest_content %}
 				<li>
 					<a href="{{ content.item.getLink() }}" class="view-item">{{ content.item.title }}</a>
 				</li>
 			{% endfor %}
 		</ul>
+		<ul id="search_content_list" style="display: none"></ul>
 	</div>
 </div>
 <div id="right_pane">
