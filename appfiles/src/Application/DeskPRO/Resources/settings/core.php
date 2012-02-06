@@ -15,7 +15,7 @@
 	'core.deskpro_tagline' => 'Support',
 	'core.site_url' => '',
 	'core.site_name' => '',
-	'core.deskpro_assets_full_url' => 'http://localhost/static/',
+	'core.deskpro_assets_full_url' => '',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
 	'core.default_from_email' => '',

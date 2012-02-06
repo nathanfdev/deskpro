@@ -344,7 +344,7 @@ class ChatConversation extends AbstractEntityRepository
 			$conversation = null;
 		}
 
-		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_ENDED)) {
+		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_OPEN)) {
 			$conversation = null;
 		}
 

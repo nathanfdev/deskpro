@@ -166,6 +166,7 @@ var DpChatMake = function() {
 
 			// Box.js
 			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
+			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
 
 			// DeskPRO script that sets/gets session and initial messages
 			var url = options.deskproUrl + 'chat/chat-session?_1=';
@@ -357,6 +358,7 @@ var DpChatMake = function() {
 
 			send: function() {
 
+				DpChatConsole.log("Polling ...");
 				this._clearDelays();
 
 				if (this.disable) {
@@ -416,7 +418,12 @@ var DpChatMake = function() {
 					crossDomain: true,
 					data: send_data,
 					dataType: 'jsonp',
+					complete: function() {
+						// Start auto timer
+						this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
+					},
 					success: function (data) {
+
 						if (data.conversation_id) {
 							conversationId = data.conversation_id;
 						}
@@ -462,9 +469,6 @@ var DpChatMake = function() {
 						messageBroker.sendMessage(name, message[1]);
 					}
 				}
-
-				// Start auto timer
-				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 			},
 
 			_clearDelays: function() {
@@ -505,7 +509,11 @@ var DpChatMake = function() {
 				crossDomain: true,
 				data: data,
 				dataType: 'jsonp',
-				success: function() {
+				success: function(data) {
+					if (data.conversation_id) {
+						conversationId = data.conversation_id;
+					}
+
 					ajaxPoller.options.interval = 2000;
 					ajaxPoller.disable = false;
 					ajaxPoller.send();

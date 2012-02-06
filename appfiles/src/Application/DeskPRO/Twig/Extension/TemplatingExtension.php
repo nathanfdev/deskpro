@@ -593,7 +593,13 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function assetFull($location)
 	{
-		return App::getSetting('core.deskpro_assets_full_url') . ltrim($location, '/');
+		$url = App::getSetting('core.deskpro_assets_full_url');
+		if (!$url) {
+			$url = App::getSetting('core.deskpro_url');
+			$url = trim(str_replace('/index.php', '', $url), '/');
+			$url .= '/static/';
+		}
+		return $url . ltrim($location, '/');
 	}
 
 	public function rawUrlEncode($str)
