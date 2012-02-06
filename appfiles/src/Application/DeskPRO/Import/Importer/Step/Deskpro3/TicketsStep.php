@@ -190,8 +190,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->getEm()->persist($ticket);
 		$this->getEm()->flush();
 
-		$this->saveMappedId('ticket', $ticket_info['id'], $ticket->id);
-
 		#------------------------------
 		# Notes
 		#------------------------------
