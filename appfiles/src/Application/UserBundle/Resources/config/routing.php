@@ -617,4 +617,12 @@ $collection->add('user_widget_overlay', new Route(
 	array()
 ));
 
+$collection->add('user_widget_newticket', new Route(
+	'/widget/new-ticket.js',
+	array('_controller' => 'UserBundle:Widget:newTicket'),
+	array(),
+	array()
+));
+
+
 return $collection;

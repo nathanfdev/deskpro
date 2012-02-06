@@ -24,6 +24,9 @@ use Symfony\Component\Form\FormBuilder;
  */
 class NewTicketType extends AbstractType
 {
+	const MODE_NORMAL = 'normal';
+	const MODE_WIDGE = 'widget';
+
 	/**
 	 * The actual person (logged in)
 	 */
@@ -39,9 +42,12 @@ class NewTicketType extends AbstractType
 	protected $ticket_options;
 	protected $ticket_fields = array();
 
-	public function __construct($person)
+	protected $mode;
+
+	public function __construct($person, $mode = self::MODE_NORMAL)
 	{
 		$this->person = $person;
+		$this->mode = $mode;
 	}
 
 	public function buildForm(FormBuilder $builder, array $options)
@@ -103,15 +109,17 @@ class NewTicketType extends AbstractType
 		# Custom fields
 		#------------------------------
 
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		if ($this->mode == self::MODE_NORMAL) {
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 
-		$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
+			$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
 
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
-		$this->ticket_fields = $custom_fields;
+			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
+			$this->ticket_fields = $custom_fields;
 
-		$builder->add($ticket_builder);
-		$builder->add($ticket_fields_builder);
+			$builder->add($ticket_builder);
+			$builder->add($ticket_fields_builder);
+		}
 	}
 
 	public function getTicketOptions()

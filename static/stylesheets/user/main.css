@@ -163,7 +163,7 @@ html{
 #deskpro table.dp-table{width:100%;margin-bottom:18px;padding:0;border-collapse:separate;*border-collapse:collapse;font-size:13px;border:1px solid #ddd;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}table.dp-table th,table.dp-table td{padding:10px 10px 9px;line-height:18px;text-align:left;}
 #deskpro table.dp-table th{padding-top:9px;font-weight:bold;vertical-align:middle;border-bottom:1px solid #ddd;}
 #deskpro table.dp-table td{vertical-align:top;}
-#deskpro table.dp-table th+th,table td+td{border-left:1px solid #ddd;}
+#deskpro table.dp-table th+th,#deskpro table.dp-table td+td{border-left:1px solid #ddd;}
 #deskpro table.dp-table tr+tr td{border-top:1px solid #ddd;}
 #deskpro table.dp-table tbody tr:first-child td:first-child{-webkit-border-radius:4px 0 0 0;-moz-border-radius:4px 0 0 0;border-radius:4px 0 0 0;}
 #deskpro table.dp-table tbody tr:first-child td:last-child{-webkit-border-radius:0 4px 0 0;-moz-border-radius:0 4px 0 0;border-radius:0 4px 0 0;}
@@ -2503,7 +2503,9 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 * Overlay
 **********************************************************/
 
-#dp_overlay {}
+#dp_overlay {
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
+}
 
 #dp_overlay #left_pane {
 	position: absolute;
@@ -2547,4 +2549,94 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	bottom: 0;
 	background-color: #f4f4f4;
 	z-index: 1;
+}
+
+#dp_overlay #right_pane .head-area {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 52px;
+	overflow: hidden;
+	background-color: #DFE4E8;
+
+	-webkit-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+	-moz-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+	box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.5);
+	border-bottom: 1px solid #B9BDC2;
+}
+
+#dp_overlay #right_pane .head-area ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#dp_overlay #right_pane .head-area ul li {
+	float: left;
+	cursor: pointer;
+	background-color: #fff;
+	font-size: 13px;
+
+	margin: 8px 0 0 15px;
+	padding: 8px;
+	border: 1px solid #B9BDC0;
+}
+
+#dp_overlay #right_pane .head-area ul li.on {
+	background-color: #B1B1B1;
+}
+
+#dp_overlay #right_pane .body-area {
+	position: absolute;
+	top: 53px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow: auto;
+}
+
+#dp_overlay .dp-form-row  {
+	padding: 15px 15px 0 15px;
+}
+
+#dp_overlay .fordp-form-row m-row table td {
+	padding: 0;
+	border: none;
+}
+
+#dp_overlay .dp-form-row  input, #dp_overlay .dp-form-row  textarea {
+	width: 100%;
+}
+
+#dp_overlay .dp-form-row  textarea {
+	height: 110px;
+}
+
+#dp_overlay .dp-form-row  input[type="text"], #dp_overlay .dp-form-row input[type="password"], #dp_overlay .dp-form-row textarea {
+	background-color: #fff;
+	color: #000;
+	padding: 5px;
+	border: 1px solid #DEDEDE;
+	font-size: 12px;
+	font-family: Verdana, Arial, sans-serif;
+	border-radius: 3px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+#dp_overlay .dp-form-row .dp-form-label {
+	display: none;
+}
+
+#dp_overlay .dp-form-row .dp-error-explain { display: none; }
+#dp_overlay .dp-form-row.dp-error .dp-error-explain {
+	display: block;
+	font-size: 11px;
+	color: #FF2E46;
+	font-weight: bold;
+}
+
+#dp_overlay .thank-you {
+	padding: 15px;
+
 }
