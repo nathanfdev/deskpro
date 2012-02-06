@@ -23,7 +23,7 @@ use Orb\Util\Util;
  * Ticket
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Ticket")
- * @ORM_Mapping\Table(name="tickets")
+ * @ORM_Mapping\Table(name="tickets", uniqueConstraints={@ORM_Mapping\UniqueConstraint(name="ref_idx", columns={"ref"})} )
  * @ORM_Mapping\HasLifecycleCallbacks
  *
  * @property \Application\DeskPRO\Entity\Person $person

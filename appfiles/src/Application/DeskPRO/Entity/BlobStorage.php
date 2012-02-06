@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * (Ordering is by id ASC)
  *
  * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="blobs_storage")
+ * @ORM_Mapping\Table(name="blobs_storage", indexes={@ORM_Mapping\Index(name="blob_id_idx", columns={"blob_id"})} ))
  */
 class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {

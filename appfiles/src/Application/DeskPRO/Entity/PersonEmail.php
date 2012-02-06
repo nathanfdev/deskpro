@@ -23,6 +23,7 @@ use Orb\Util\Arrays;
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonEmail")
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="people_emails",
+ *     uniqueConstraints={@ORM_Mapping\UniqueConstraint(name="email_idx", columns={"email"})},
  *     indexes={
  *         @ORM_Mapping\Index(name="email_domain_idx", columns={"email_domain"})
  * })
