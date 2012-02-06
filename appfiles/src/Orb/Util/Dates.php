@@ -32,7 +32,7 @@ class Dates
 
 	/**
 	 * Check if a year is a leap year
-	 * 
+	 *
 	 * @param $year
 	 * @return bool
 	 */
@@ -233,5 +233,23 @@ class Dates
 		}
 
 		return implode($lang['sep'], $str_parts);
+	}
+
+
+	/**
+	 * Converts a datetime object into a datetime object.
+	 *
+	 * When using setTimezone on a datetime, it doesn't change the internal representation of the date, only the output.
+	 * (eg if you were to getTimezone() on each, they'd be the same value).
+	 *
+	 * So if you want a "real" UTC datetime object with the time adjusted, you need to do the conversion.
+	 *
+	 * @param \DateTime $datetime
+	 * @return \DateTime
+	 */
+	public function convertToUtcDateTime(\DateTime $datetime)
+	{
+		$utc_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $datetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
+		return $utc_datetime;
 	}
 }

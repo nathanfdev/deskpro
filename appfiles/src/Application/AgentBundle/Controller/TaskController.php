@@ -13,6 +13,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Orb\Util\Arrays;
+use Orb\Util\Dates;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -144,7 +145,15 @@ class TaskController extends AbstractController
 
 			$task->setVisibility($task_data['visibility']);
 			if (!empty($task_data['date_due'])) {
-				$task->setDueDate($task_data['date_due']);
+				try {
+					$date_due = new \DateTime($task_data['date_due'], $this->person->getDateTimezone());
+				} catch (\Exception $e) {
+					$date_due = null;
+				}
+
+				if ($date_due) {
+					$task->date_due = Dates::convertToUtcDateTime($date_due);
+				}
 			}
 
 			$tasks[] = $task;
@@ -194,7 +203,7 @@ class TaskController extends AbstractController
         } else if ($search_type == 'delegate') {
             $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person, $search_categoty);
         } else if ($search_type == 'all') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($search_categoty);
+            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person, $search_categoty);
         }
 
 		$tasks = array();

@@ -117,7 +117,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 
 
 
-        /**
+		/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -134,7 +134,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $task_associations;
 
-        /**
+		/**
 	 * Label manager for adding/removing labels
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -183,10 +183,10 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		return ($this->date_due == $today);
 	}
 
-        public function isDueTomorrow()
-        {
+	public function isDueTomorrow()
+	{
 
-            if (!$this->date_due) {
+		if (!$this->date_due) {
 			return true;
 		}
 
@@ -194,11 +194,11 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$today = clone $now;
 		$today->setTime(23, 59, 59);
 
-                $tomorrow = clone $today;
+				$tomorrow = clone $today;
 		$tomorrow->modify('+1 day');
 
 		return ($this->date_due->modify('+1 day') == $tomorrow);
-        }
+	}
 
 	/**
 	 * Sets the task visibility.
@@ -410,17 +410,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$this->comments->add($comment);
 	}
 
-        public function setDueDate($due_date)
-        {
-            $this->date_due = new \DateTime($due_date);
-        }
-
-        public function getDueDate()
-        {
-            return $this->date_due;
-        }
-
-        public function getLabelManager()
+	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
 			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelTask');
@@ -428,7 +418,5 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 
 		return $this->_label_manager;
 	}
-
-
 }
 
