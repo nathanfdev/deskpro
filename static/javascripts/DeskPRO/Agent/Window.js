@@ -2548,8 +2548,10 @@ function toggle_visibility(elId, parentId) {
 		back.css('z-index', 100);
 		back.appendTo('body');
 
+		el.data('backdrop', back);
 		back.on('click', function() {
 			el.hide();
+			el.data('backdrop', null);
 			back.remove();
 		});
 

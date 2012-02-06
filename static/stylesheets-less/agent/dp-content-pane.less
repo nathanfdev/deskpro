@@ -581,7 +581,7 @@ section.description-area {
 
 section.description-area .info-list {
 	color: @body-text-color-alt;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 section.description-area .info-list dl { line-height: 20px; }
@@ -622,6 +622,7 @@ section.description-area .info-list dd {
 	text-align: left;
 	font-weight: normal;
 	line-height: 20px;
+	margin-bottom: 3px;
 }
 
 section.description-area .info-list dd span {
@@ -637,6 +638,12 @@ section.description-area .info-list dd span.expand{
 
 section.description-area .controls {
 	margin-top: 9px;
+}
+
+section.description-area .info-list .prop-val.display-content .menu-trigger,
+section.description-area .info-list .prop-title.display-title .menu-trigger {
+	color: @body-text-color-alt;
+	pointer: default;
 }
 
 
@@ -748,6 +755,10 @@ dl.table-list dt.type-labels {
 }
 
 .add-remove-list li span.add {
+    position: relative;
+    top: 5px;
+    margin-right: 6px;
+
 	display: block;
 	background-repeat: no-repeat;
 	background-position: 0 0;
@@ -759,12 +770,14 @@ dl.table-list dt.type-labels {
 	cursor: pointer;
 	text-indent: -100px;
 
-	float: left;
-	margin-right: 4px;
-	margin-top: 1px;
+	float: left
 }
 
 .add-remove-list li span.remove {
+    position: relative;
+    top: 5px;
+    margin-right: 6px;
+
 	display: block;
 	background-repeat: no-repeat;
 	background-position: 0 0;
@@ -777,8 +790,6 @@ dl.table-list dt.type-labels {
 	text-indent: -100px;
 
 	float: left;
-	margin-right: 4px;
-	margin-top: 1px;
 }
 
 
@@ -926,6 +937,7 @@ article.content-message .content header .comment-validate-btn {
 
 article.content-message .content .body-text {
 	padding: 6px;
+	font-size: 12px;
 }
 
 article.content-message .content .feedback {
@@ -1116,7 +1128,7 @@ section.ticket-reply article.reply-area .attach-list-area span {
 	padding: 10px;
 	color: #404040;
 	line-height: 145%;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .content-post-wrap h1,
@@ -1228,9 +1240,9 @@ table.tickets-simple th {
 
 table.tickets-simple td {
 	border-top: 1px solid #D5E3EE;
-	font-size: 11px;
+	font-size: 12px;
 	vertical-align: middle;
-	padding: 1px 4px 1px 3px;
+	padding: 4px;
 	width: auto;
 }
 
@@ -1314,7 +1326,7 @@ table.tickets-simple tr.add-new-member td {
 
 table.info-simple td {
 	border-top: 1px solid #D5E3EE;
-	font-size: 11px;
+	font-size: 12px;
 	vertical-align: middle;
 	padding: 1px 4px 1px 3px;
 }
@@ -1367,6 +1379,7 @@ ul.activity-stream time {
 
 .notes-wrap .message {
 	border-bottom: 1px solid #D5E3EE;
+	padding: 4px;
 }
 
 .notes-wrap li.note:last-of-type .message {
@@ -1376,11 +1389,12 @@ ul.activity-stream time {
 .notes-wrap .message .message-avatar {
 	float: left;
 	width: 25px;
-	margin: 2px 1px 2px 2px;
+	margin: 1px 4px 1px 1px;
 }
 
 .notes-wrap .message h4 {
 	color: #606060;
+	font-size: 11px;
 }
 
 .notes-wrap .message time {
@@ -1392,6 +1406,7 @@ ul.activity-stream time {
 .notes-wrap .message .message-body {
 	margin-left: 28px;
 	padding: 3px;
+	font-size: 12px;
 }
 
 .notes-wrap .message .message-body:after {
@@ -1693,6 +1708,7 @@ ul.activity-stream time {
 
 .profile-box-container dl.table-list {
 	margin: 0 4px 0 4px;
+	font-size: 12px;
 }
 
 .profile-box-container dl.table-list:first-child {
@@ -1701,6 +1717,7 @@ ul.activity-stream time {
 
 .profile-box-container dl.table-list:first-child dd {
 	margin-top: 0;
+	margin-bottom: 4px;
 }
 
 .profile-box-container ul.twitter-list li {
@@ -1739,6 +1756,7 @@ ul.activity-stream time {
 	background-repeat: no-repeat;
 	padding-left: 20px;
 	position: relative;
+	font-size: 12px;
 }
 
 .contact-list ul li.email.is-primary .set-primary,
@@ -1924,6 +1942,7 @@ ul.activity-stream time {
 	font-size: 10px;
 	color: @subtle-text-color;
 	cursor: pointer;
+	box-shadow: none;
 }
 
 .profile-contact-editor-wrapper .row-type .label input[type="text"]:focus {
@@ -2155,7 +2174,7 @@ padding: 30px;
 }
 
 .page-ticket .people-box > section {
-
+	font-size: 12px;
 }
 
 .page-ticket .people-box {
@@ -2197,6 +2216,8 @@ padding: 30px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	float: left;
+	font-size: 12px;
+	font-weight: bold;
 }
 
 .page-ticket .people-box .user-link span.email {
@@ -2207,7 +2228,7 @@ padding: 30px;
 .page-ticket .people-box .user-link > span {
     line-height: 100%;
     display: block;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 28px;
 	background-repeat: no-repeat;
 	background-position: 0 50%;
 }
@@ -3321,7 +3342,7 @@ body.popup section.body textarea.fill {
 }
 
 .check-grid.item-list > table thead th {
-	padding: 4px 0 4px 0;
+	padding: 5px 0 5px 0;
 }
 .check-grid > table thead th {
 	font-family: @heading-font;
@@ -3335,7 +3356,8 @@ body.popup section.body textarea.fill {
 }
 
 .check-grid > table td {
-	padding: 2px 0 2px 0;
+	padding: 4px 0 4px 0;
+	font-size: 12px;
 }
 
 .check-grid.item-list > table td {
@@ -3346,7 +3368,7 @@ body.popup section.body textarea.fill {
 	vertical-align: middle;
 }
 .check-grid.item-list > table td {
-	padding: 0 0 0 5px;
+	padding: 5px 2px 5px 5px;
 }
 
 .check-grid > table td.title {

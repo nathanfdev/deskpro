@@ -125,6 +125,11 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 
 		this.el.show();
 		this.backdrop.show();
+
+		if ($('#userSetting').data('backdrop')) {
+			$('#userSetting').data('backdrop').remove();
+			$('#userSetting').hide();
+		}
 	},
 
 	isOpen: function() {

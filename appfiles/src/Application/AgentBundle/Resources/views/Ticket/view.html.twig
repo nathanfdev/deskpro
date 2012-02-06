@@ -128,7 +128,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 									{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}
 									{{ ticket.person.organization }}
 								{% endif %}
-								<span class="email">&lt;<b class="pemail-{{ticket.person.id}}" data-hide="@parent">{{ ticket.person_email_address }}</b>&gt;</span>
+								<span class="email"><b class="pemail-{{ticket.person.id}}" data-hide="@parent">{{ ticket.person_email_address }}</b></span>
 							</span>
 						</a>
 						<div class="clear"></div>
