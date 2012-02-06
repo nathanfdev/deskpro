@@ -53,6 +53,8 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		}).on('blur', function(ev) {
 			self.close();
 		});
+
+		this.ajaxLoading = {};
 	},
 
 	_handleKeyPress: function(ev) {
@@ -127,18 +129,44 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			return;
 		}
 
+		var now = new Date();
+
 		this.el.addClass('loading');
 		this.runningAjax = $.ajax({
 			url: BASE_URL + 'agent/quick-search.json',
 			data: { q: q },
 			type: 'GET',
 			dataType: 'json'
-		}).done(function(results) {
+		});
+
+		this.runningAjax.done(function(results) {
 			self.setResults(results, true);
+
+			// Abort all ajax requests made before this one
+			Object.each(self.ajaxLoading, function(v, k) {
+				if (v[1].getTime() < now.getTime()) {
+					self._abortAjax(v[0]);
+				}
+			});
 		}).always(function() {
 			self.runningAjax = null;
 			self.el.removeClass('loading');
 		});
+
+		var id = Orb.uuid();
+		this.runningAjax.xDeskproId = id;
+		this.ajaxLoading[id] = [this.runningAjax, now];
+	},
+
+	_abortAjax: function(xhr) {
+		if (xhr.xDeskproId) {
+			this.ajaxLoading[xhr.xDeskproId] = null;
+			delete this.ajaxLoading[xhr.xDeskproId];
+		}
+
+		if (xhr.abort) {
+			xhr.abort();
+		}
 	},
 
 	updateResultsSearch: function() {
@@ -219,13 +247,14 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 	},
 
 	clearAll: function() {
+		var self = this;
+
 		this.clear();
 		this.close();
 
-		if (this.runningAjax) {
-			this.runningAjax.abort();
-			this.runningAjax = null;
-		}
+		Object.each(self.ajaxLoading, function(v, k) {
+			self._abortAjax(v[0]);
+		});
 	},
 
 	open: function() {
