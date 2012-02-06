@@ -21,7 +21,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 {
 	/**
 	 * Database connection to use
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 

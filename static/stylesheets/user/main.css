@@ -2640,3 +2640,21 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	padding: 15px;
 
 }
+
+#dp_overlay .list-area ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#dp_overlay .list-area ul li {
+	display: block;
+	border-bottom: 1px solid #C7CBD1;
+	padding: 10px;
+}
+
+#dp_overlay .list-area ul li a {
+	color: #525356;
+	font-size: 12px;
+	font-weight: bold;
+}

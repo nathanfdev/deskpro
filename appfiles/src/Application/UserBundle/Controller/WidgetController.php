@@ -18,6 +18,10 @@ use Application\UserBundle\Form\NewTicketType;
 
 class WidgetController extends AbstractController
 {
+	################################################################################
+	# overlay
+	################################################################################
+
 	public function overlayAction()
 	{
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
@@ -39,8 +43,22 @@ class WidgetController extends AbstractController
 			'form' => $form->createView(),
 		);
 
+		#------------------------------
+		# Fetch latest content
+		#------------------------------
+
+		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
+		$latest_content->setMaxCount(10);
+
+		$vars['newest_content'] = $latest_content->getResults();
+
 		return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
 	}
+
+
+	################################################################################
+	# new-ticket
+	################################################################################
 
 	public function newTicketAction()
 	{

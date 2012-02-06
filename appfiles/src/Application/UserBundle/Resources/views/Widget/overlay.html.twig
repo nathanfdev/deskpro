@@ -38,6 +38,15 @@
 	<div class="search-area">
 		<input id="search_box" type="text" placeholder="Search for something..." />
 	</div>
+	<div class="list-area">
+		<ul>
+			{% for content in newest_content %}
+				<li>
+					<a href="{{ content.item.getLink() }}" class="view-item">{{ content.item.title }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
 <div id="right_pane">
 	<div class="head-area with-handler" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">

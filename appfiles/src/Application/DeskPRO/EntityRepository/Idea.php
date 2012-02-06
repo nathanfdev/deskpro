@@ -270,6 +270,15 @@ class Idea extends AbstractEntityRepository
 	public function getNewest($status, $num = 10, $node = false)
 	{
 		// TODO this can be shortened by using a builder
+		if (!$status) {
+			$ideas = $this->getEntityManager()->createQuery("
+				SELECT i
+				FROM DeskPRO:Idea i INDEX BY i.id
+				WHERE i.status != 'closed' AND i.status != 'hidden'
+				ORDER BY i.id DESC
+			")->setMaxResults($num)->execute();
+			return $ideas;
+		}
 
 		if (Numbers::isInteger($status)) {
 			if ($node) {
