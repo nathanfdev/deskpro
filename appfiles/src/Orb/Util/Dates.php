@@ -247,7 +247,7 @@ class Dates
 	 * @param \DateTime $datetime
 	 * @return \DateTime
 	 */
-	public function convertToUtcDateTime(\DateTime $datetime)
+	public static function convertToUtcDateTime(\DateTime $datetime)
 	{
 		$utc_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $datetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
 		return $utc_datetime;

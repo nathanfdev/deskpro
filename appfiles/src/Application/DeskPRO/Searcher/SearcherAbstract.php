@@ -210,11 +210,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = array($choice);
 		}
 
+		$timezone_context = null;
+		if ($this->person) {
+			$timezone_context = $this->person->getTimezone();
+		}
+
 		$date1 = null;
 		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
 		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
-			$date1 = date_create("-" . (int)$choice['date1_relative'] . " {$choice['date1_relative_type']}");
+			$date1 = date_create("-" . (int)$choice['date1_relative'] . " {$choice['date1_relative_type']}", $timezone_context);
 		} else if (!empty($choice[0])) {
 			$date1 = $choice[0];
 		}
@@ -223,22 +228,25 @@ abstract class SearcherAbstract implements PersonContextInterface
 		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
 		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
-			$date1 = date_create("-" . (int)$choice['date2_relative'] . " {$choice['date2_relative_type']}");
+			$date1 = date_create("-" . (int)$choice['date2_relative'] . " {$choice['date2_relative_type']}", $timezone_context);
 		} else if (!empty($choice[1])) {
 			$date2 = $choice[1];
 		}
 
 		if ($date1 AND !($date1 instanceof \DateTime)) {
-			$date1 = new \DateTime("@{$date1}");
+			$date1 = new \DateTime("@{$date1}", $timezone_context);
 		}
 		if ($date2 AND !($date2 instanceof \DateTime)) {
-			$date2 = new \DateTime("@{$date2}");
+			$date2 = new \DateTime("@{$date2}", $timezone_context);
 		}
 
 		// There should always be at least one date
 		if ($date1 === null AND $date2 === null) {
 			return '0';
 		}
+
+		if ($date1) $date1 = \Orb\Util\Dates::convertToUtcDateTime($date1);
+		if ($date2) $date2 = \Orb\Util\Dates::convertToUtcDateTime($date2);
 
 		// Normalize operations
 		if ($op == self::OP_LT) $op = self::OP_LTE;

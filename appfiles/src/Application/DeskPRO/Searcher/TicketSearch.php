@@ -183,7 +183,7 @@ class TicketSearch extends SearcherAbstract
 	 * Check an array of fields to see if this searcher has any of them
 	 *
 	 * @param array $fields
-	 * @return void
+	 * @return bool
 	 */
 	public function hasAnyAffectedFields(array $fields)
 	{
