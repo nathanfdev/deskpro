@@ -316,6 +316,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 /* Search Categories */
 #dp_omnibox_wrap{
 	position: relative;
+	display: block;
 	float: left;
 	height: 41px;
 	width: 467px;
@@ -323,6 +324,9 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.2);
 	position: relative;
 	cursor:	text;
+	overflow: hidden;
+	min-width: 369px;
+	white-space: nowrap;
 }
 .ie #dp_omnibox_wrap{
 	box-shadow: 2px 0 4px 0 #396388;
@@ -466,6 +470,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	top: 0;
 	right: 0;
 	left: 54px;
+	overflow: hidden;
 }
 
 #dp_omnibox{
