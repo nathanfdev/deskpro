@@ -105,6 +105,12 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			type: 'GET',
 			dataType: 'html',
 			context: this,
+			errorDp: function() {
+				this.template = null;
+				this.destroyPop();
+				this.close();
+				this.startTimeout();
+			},
 			success: function(html) {
 				this.template = html;
 
@@ -117,8 +123,8 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				}
 			},
 			complete: function() {
-				this.startTimeout();
 				this.xhr = null;
+				this.startTimeout();
 			}
 		});
 	},

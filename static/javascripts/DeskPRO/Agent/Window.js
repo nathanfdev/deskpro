@@ -1607,6 +1607,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (ajaxOptions.errorDp) {
+			ajaxOptions.errorDp.call(ajaxOptions.context || xhr, event, xhr, ajaxOptions, errorThrown);
+		}
+
 		var data = xhr.responseText;
 		try {
 			data = $.parseJSON(data);
@@ -1641,7 +1645,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// We dont show the error popup if it was just an error with polling
 		if (ajaxOptions && ajaxOptions.dpIsPolling) return;
 
-		// We dont know if the request was JSON or HTML,
+		// We dont know if the request was JSON or HTML (eg the sn code might be embedded in html in json),
 		// so we have to sniff the raw responseText to see about any embedded SN code
 		var sn = null;
 		if (data && data.sn) {
@@ -1653,6 +1657,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		console.log(ajaxOptions);
 		DP.console.log(sn);
 
 		// Show overlay about failed
