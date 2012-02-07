@@ -15,8 +15,15 @@ $container->loadFromExtension('framework', array(
 		'resource' => DP_ROOT.'/sys/config/agent/routing.php'
 	),
 	'profiler' => array(
-		'only_exceptions' => true
-	)
+		'only_exceptions' => false,
+		'matcher' => array('service' => 'deskpro.profiler.request_matcher')
+	),
+));
+
+$container->loadFromExtension('web_profiler', array(
+	'toolbar' => true,
+	'intercept_redirects' => true,
+	'verbose' => true
 ));
 
 $container->loadFromExtension('twig', array(

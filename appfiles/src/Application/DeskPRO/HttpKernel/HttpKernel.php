@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * that can be used to perform actions before or after an action, and can override the response object
  * in those cases.
  */
-class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
+class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
 {
 	protected $dispatcher;
 	protected $resolver;

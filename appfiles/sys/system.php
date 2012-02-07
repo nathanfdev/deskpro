@@ -363,7 +363,6 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
 
 		if ($this->isDebug()) {
-
 			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
 			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
 			$bundles[] = new \Application\DevBundle\DevBundle();

@@ -12,11 +12,18 @@ $container->setParameter('kernel.debug', true);
 
 $container->loadFromExtension('framework', array(
 	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/admin/routing.php'
+		'resource' => DP_ROOT.'/sys/config/admin/routing_dev.php'
 	),
 	'profiler' => array(
-		'only_exceptions' => true
-	)
+		'only_exceptions' => false,
+		'matcher' => array('service' => 'deskpro.profiler.request_matcher')
+	),
+));
+
+$container->loadFromExtension('web_profiler', array(
+	'toolbar' => true,
+	'intercept_redirects' => true,
+	'verbose' => true
 ));
 
 $container->loadFromExtension('twig', array(

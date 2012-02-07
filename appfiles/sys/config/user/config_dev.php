@@ -12,11 +12,18 @@ $container->setParameter('kernel.debug', true);
 
 $container->loadFromExtension('framework', array(
 	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/user/routing.php'
+		'resource' => DP_ROOT.'/sys/config/user/routing_dev.php'
 	),
 	'profiler' => array(
-		'only_exceptions' => true
-	)
+		'only_exceptions' => false,
+		'matcher' => array('service' => 'deskpro.profiler.request_matcher')
+	),
+));
+
+$container->loadFromExtension('web_profiler', array(
+	'toolbar' => true,
+	'intercept_redirects' => true,
+	'verbose' => true
 ));
 
 // twig.helpers.deskpro_user_templating
