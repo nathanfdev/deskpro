@@ -111,6 +111,10 @@ var DpOverlayWidget = (function() {
 					height: overlayIframe.height()
 				};
 
+			case 'closeMe':
+				this.close();
+				break;
+
 			// When the child wants to resize to a certain height (ie to accomodate more stuff) they send this message
 			// Afterwards we pass back the height we were able to set which may be smaller than it wanted
 			case 'requestHeight':

@@ -1,6 +1,6 @@
 <li {% if is_sticky %}class="sticky"{% endif %}>
 	{% if res.type == 'article' %}
-		<a class="title" href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">{{ res.object.title|emphasize_words(query) }}</a>
+		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">{{ res.object.title|emphasize_words(query) }}</a>
 		<div class="breadcrumb-line">
 			<ul>
 				<li><a href="{{ path('user_articles') }}">{{ phrase('user.content_articles') }}</a></li>
@@ -15,7 +15,7 @@
 			</ul>
 		</div>
 	{% elseif res.type == 'download' %}
-		<a class="title" href="{{ path('user_downloads_file', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
+		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_downloads_file', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
 				<li><a href="{{ path('user_downloads') }}">{{ phrase('user.content_downloads') }}</a></li>
@@ -25,7 +25,7 @@
 			</ul>
 		</div>
 	{% elseif res.type == 'feedback' %}
-		<a class="title" href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
+		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
 				<li><a href="{{ path('user_feedback') }}">{{ phrase('user.content_feedback') }}</a></li>
@@ -35,7 +35,7 @@
 			</ul>
 		</div>
 	{% elseif res.type == 'news' %}
-		<a class="title" href="{{ path('user_news_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
+		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_news_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
 				<li><a href="{{ path('user_news') }}">{{ phrase('user.content_news') }}</a></li>

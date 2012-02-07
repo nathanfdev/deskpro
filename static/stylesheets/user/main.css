@@ -2719,3 +2719,43 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	border-radius: 5px;
 	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 }
+
+#dp_overlay #dp_content_overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow: auto;
+
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+}
+
+#dp_overlay #dp_content_overlay .dp-open-full {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 10px;
+}
+
+#dp_overlay #dp_content_overlay .dp-content-holder {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 37px;
+	left: 0;
+	overflow: auto;
+}
+
+#dp_overlay #dp_content_overlay .dp-controls {
+	position: absolute;
+	height: 21px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: #DFE4EA;
+	padding: 8px;
+}

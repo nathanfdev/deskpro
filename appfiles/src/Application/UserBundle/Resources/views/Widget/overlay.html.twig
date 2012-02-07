@@ -46,7 +46,7 @@
 		<ul id="new_content_list">
 			{% for content in newest_content %}
 				<li class="{{ content.type }}">
-					<a href="{{ content.item.getLink() }}" class="view-item">{{ content.item.title }}</a>
+					<a href="{{ content.item.getLink() }}" class="view-item" data-content-type="{{ content.type }}" data-content-id="{{ content.item.id }}">{{ content.item.title }}</a>
 				</li>
 			{% endfor %}
 		</ul>
@@ -151,6 +151,21 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/x-deskpro-plain" id="dp_content_overlay_tpl">
+	<div id="dp_content_overlay">
+		<div class="dp-content-holder">
+			<div class="dp-loading-msg">Loading</div>
+		</div>
+		<div class="dp-controls">
+			<button class="dp-open-in-window" style="float: right">Open this in a new window</button>
+			<div class="dp-default dp-control-section">
+				<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This is what I needed</button>
+				<button class="btn small dp-not-answered">This is not what I was looking for</button>
+			</div>
+		</div>
+	</div>
+</script>
 
 </body>
 </html>
