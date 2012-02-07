@@ -37,8 +37,7 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheInvalidator');
 		$container->setDefinition('deskpro.dbal.logger.cache_invalidator', $definition);
 
-		$definition = new Definition('Symfony\Bridge\Doctrine\Logger\DbalLogger');
-		//$definition->addMethodCall('addSlowLogRule', array(31, 0));
+		$definition = new Definition('Symfony\Bridge\Doctrine\Logger\DbalLogger', array(new Reference('logger')));
 		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
