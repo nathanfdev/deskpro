@@ -618,11 +618,17 @@ $collection->add('user_widget_overlay', new Route(
 ));
 
 $collection->add('user_widget_newticket', new Route(
-	'/widget/new-ticket.js',
+	'/widget/new-ticket.json',
 	array('_controller' => 'UserBundle:Widget:newTicket'),
 	array(),
 	array()
 ));
 
+$collection->add('user_widget_newfeedback', new Route(
+	'/widget/new-feedback.json',
+	array('_controller' => 'UserBundle:Widget:newFeedback'),
+	array(),
+	array()
+));
 
 return $collection;

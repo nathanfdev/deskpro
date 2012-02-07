@@ -21,6 +21,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		this._initSearch();
 		this._initNewTicket();
+		this._initNewFeedback();
 
 		$('form.with-form-validator').each(function() {
 			var v = new DeskPRO.Form.FormValidator($(this));
@@ -322,5 +323,73 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		sub.show();
 		var subDepId = $('select.department_id', sub);
+	},
+
+
+	//##################################################################################################################
+	//# New Feedback
+	//##################################################################################################################
+
+	_initNewFeedback: function() {
+		var self = this;
+		this.newFeedbackForm = $('#dp_newfeedback_form');
+		this.newFeedbackForm.find('[required]').prop('required', false);
+
+		this.feedbackCatSelect = this.newFeedbackForm.find('select.category_id');
+		this.feedbackCatId = 0;
+
+		var self = this;
+		this.feedbackCatSelect.on('change', function() {
+			self.handleFeedbackCatChange();
+		});
+		this.feedbackCatSelect.data('original-name', this.feedbackCatSelect.attr('name'));
+
+		this.newFeedbackForm.on('submit', function(ev) {
+			ev.preventDefault();
+			var data = self.newFeedbackForm.find('select, input, textarea').serializeArray();
+
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: data,
+				dataType: 'json',
+				success: function(data) {
+					if (data.is_error) {
+						Object.each(data.errors, function(v,k) {
+							var find = '.dp-form-row-' + k.replace(/\./g, '_');
+							console.log(find);
+							self.newFeedbackForm.find(find).addClass('dp-error');
+						});
+
+						return;
+					}
+
+					self.newFeedbackForm.hide();
+					$('#dp_newfeedback_done').show();
+				}
+			});
+		});
+
+		this.handlefeedbackCatChange();
+	},
+
+	handleFeedbackCatChange: function() {
+		var wrapper = this.newFeedbackForm.find('.feedbackCat_id_wrapper');
+
+		var allSubs = $('.dp-sub-options', wrapper).hide();
+		$('select', allSubs).attr('name', '');
+
+		var feedbackCatId = this.feedbackCatSelect.val();
+		var sub = $('.sub-options-' + feedbackCatId, wrapper);
+
+		if (!sub.length) {
+			this.feedbackCatSelect.attr('name', this.feedbackCatSelect.data('original-name'));
+			return;
+		} else {
+			this.feedbackCatSelect.attr('name', '');
+			$('select', sub).attr('name', this.feedbackCatSelect.data('original-name'));
+		}
+
+		sub.show();
 	}
 });

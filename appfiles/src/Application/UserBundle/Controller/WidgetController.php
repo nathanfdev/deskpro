@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Application\UserBundle\Form\NewTicketType;
+use Application\UserBundle\Form\NewFeedbackType;
 
 class WidgetController extends AbstractController
 {
@@ -24,6 +25,10 @@ class WidgetController extends AbstractController
 
 	public function overlayAction()
 	{
+		#------------------------------
+		# New ticket form
+		#------------------------------
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_WEB_PERSON,
 			$this->person
@@ -31,17 +36,22 @@ class WidgetController extends AbstractController
 		$newticket->setPersonContext($this->person);
 
 		$newticket_formtype = new NewTicketType($this->person);
-		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+		$ticketform = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
 		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
 
-		$vars = array(
-			'departments' => $departments,
-			'newticket' => $newticket,
-			'newticket_formtype' => $newticket_formtype,
-			'ticket_options' => $newticket_formtype->getTicketOptions(),
-			'form' => $form->createView(),
-		);
+		#------------------------------
+		# New idea form
+		#------------------------------
+
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(App::getSession()->getVisitor());
+		$newfeedback->setPersonContext($this->person);
+		$feedbackform = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+
+		$feedback_categories = $structure->getFeedbackRootCategories();
 
 		#------------------------------
 		# Fetch latest content
@@ -50,7 +60,20 @@ class WidgetController extends AbstractController
 		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
 		$latest_content->setMaxCount(10);
 
-		$vars['newest_content'] = $latest_content->getResults();
+		$vars = array(
+			'departments' => $departments,
+
+			'newticket' => $newticket,
+			'newticket_formtype' => $newticket_formtype,
+			'ticket_options' => $newticket_formtype->getTicketOptions(),
+			'ticketform' => $ticketform->createView(),
+
+			'newfeedback' => $newfeedback,
+			'feedbackform' => $feedbackform->createView(),
+			'feedback_categories' => $feedback_categories,
+
+			'newest_content' => $latest_content->getResults(),
+		);
 
 		return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
 	}
@@ -87,6 +110,37 @@ class WidgetController extends AbstractController
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
 				'email' => $newticket->person->email
+			));
+		} else {
+			$errors = $validator->getErrors(true);
+			$error_fields = $validator->getErrorGroups(true);
+
+			return $this->createJsonResponse(array(
+				'is_error' => true,
+				'errors' => $error_fields
+			));
+		}
+	}
+
+	################################################################################
+	# new-feedback
+	################################################################################
+
+	public function newFeedbackAction()
+	{
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(App::getSession()->getVisitor());
+		$newfeedback->setPersonContext($this->person);
+		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+
+		$form->bindRequest($this->get('request'));
+
+		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
+
+		if ($validator->isValid($newfeedback)) {
+			$feedback = $newfeedback->save();
+
+			return $this->createJsonResponse(array(
+				'feedback_id' => $feedback->id
 			));
 		} else {
 			$errors = $validator->getErrors(true);
