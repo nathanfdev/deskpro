@@ -181,7 +181,7 @@ var DpOverlayWidget = (function() {
 			css.push('position: relative');
 			css.push('text-align: left');
 			css.push('border: 2px solid #000000');
-			css.push('background-color: #ffffff');
+			css.push('background: #ffffff url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
 			css.push('width: 880px');
 			css.push('height: 500px');
 			css.push('margin: auto');
@@ -332,6 +332,10 @@ var DpOverlayWidget = (function() {
 			ev.preventDefault();
 			self.open();
 		});
+
+		// Preload this image as it's used in the loading icon when opening the widget
+		var image = new Image();
+		image.src = options.staticUrl + 'images/spinners/loading-big-circle.gif';
 
 		winWidth  = lastWinWidth  = $(window).width();
 		winHeight = lastWinHeight = $(window).height();
