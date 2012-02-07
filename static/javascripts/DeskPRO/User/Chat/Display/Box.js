@@ -204,6 +204,9 @@ var DpChat_Display = (function() {
 			findingAgentEl.hide();
 			DpChatConsole.log('DpChat_Display.showAssignedStatus: assigned');
 		}
+
+		var e = jQuery.Event("dpchat_assigned", { });
+		$('#dpchat_events').trigger(e);
 	};
 
 	this.showTicketLink = function() {

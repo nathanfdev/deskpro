@@ -22,6 +22,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this._initSearch();
 		this._initNewTicket();
 		this._initNewFeedback();
+		this._initNewChat();
 
 		$('form.with-form-validator').each(function() {
 			var v = new DeskPRO.Form.FormValidator($(this));
@@ -322,7 +323,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		}
 
 		sub.show();
-		var subDepId = $('select.department_id', sub);
 	},
 
 
@@ -388,6 +388,64 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		} else {
 			this.feedbackCatSelect.attr('name', '');
 			$('select', sub).attr('name', this.feedbackCatSelect.data('original-name'));
+		}
+
+		sub.show();
+	},
+
+	//##################################################################################################################
+	//# New Chat
+	//##################################################################################################################
+
+	_initNewChat: function() {
+		var self = this;
+		this.newChatForm = $('#dp_newchat_form');
+		this.newChatForm.find('[required]').prop('required', false);
+
+		this.depSelect = this.newChatForm.find('select.department_id');
+		this.departmentId = 0;
+
+		var self = this;
+		this.depSelect.on('change', function() {
+			self.handleChatDepChange();
+		});
+		this.depSelect.data('original-name', this.depSelect.attr('name'));
+
+		this.newChatForm.on('submit', function(ev) {
+			ev.preventDefault();
+			var data = {
+				name: self.newChatForm.find('input[name="name"]').val(),
+				email: self.newChatForm.find('input[name="email"]').val(),
+				department_id: self.newChatForm.find('select[name="department_id"]').val()
+			};
+
+			var comm = self.tellParent('requestChat', data);
+			comm.chatReady = function(chatReady) {
+				self.tellParent('closeMe');
+			};
+
+			$('#dp_newchat_form').hide();
+			$('#dp_newchat_done').show();
+		});
+
+		this.handleChatDepChange();
+	},
+
+	handleChatDepChange: function() {
+		var wrapper = this.newChatForm.find('.department_id_wrapper');
+
+		var allSubs = $('.dp-sub-options', wrapper).hide();
+		$('select', allSubs).attr('name', '');
+
+		var depId = this.depSelect.val();
+		var sub = $('.sub-options-' + depId, wrapper);
+
+		if (!sub.length) {
+			this.depSelect.attr('name', this.depSelect.data('original-name'));
+			return;
+		} else {
+			this.depSelect.attr('name', '');
+			$('select', sub).attr('name', this.depSelect.data('original-name'));
 		}
 
 		sub.show();

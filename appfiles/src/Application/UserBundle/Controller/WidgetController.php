@@ -53,6 +53,7 @@ class WidgetController extends AbstractController
 
 		$feedback_categories = $structure->getFeedbackRootCategories();
 
+
 		#------------------------------
 		# Fetch latest content
 		#------------------------------

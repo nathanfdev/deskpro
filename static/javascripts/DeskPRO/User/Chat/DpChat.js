@@ -182,6 +182,8 @@ var DpChatMake = function() {
 
 			// Box.css
 			$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
+
+			$('<div id="dpchat_events" style="width: 1px; height: 1px; background: transparent; border: none; position: absolute; left: 0; bottom: 0;" />').appendTo('body');
 		};
 
 		var confirmGoingAway = function() {
@@ -202,6 +204,14 @@ var DpChatMake = function() {
 			display = _display;
 
 			mainRunner();
+		};
+
+
+		/**
+		 * @return display
+		 */
+		this.getDislay = function() {
+			return display;
 		};
 
 

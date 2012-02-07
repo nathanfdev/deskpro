@@ -130,6 +130,24 @@ var DpOverlayWidget = (function() {
 				setHeight(height);
 
 				return height;
+
+			case 'requestChat':
+
+				var preform = $('#dpchat_preform');
+				preform.find('input[name="name"]').val(data.name);
+				preform.find('input[name="email"]').val(data.email);
+				preform.find('select[name="department_id"]').val(data.department_id);
+
+				$('#dpchat_preform_submit').trigger('click');
+
+				var comm = { callback: function() {} };
+				comm._do = function() {
+					console.log('Chat Assigned');
+					comm.callback();
+				};
+				$('#dpchat_events').one('dpchat_assigned', comm._do);
+
+				return comm;
 		}
 	};
 
