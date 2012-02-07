@@ -2520,6 +2520,14 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	z-index: 2;
 }
 
+#dp_overlay #left_pane.loading {
+	background: #dfe4ea url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 75px;
+}
+
+#dp_overlay #left_pane.loading .list-area {
+	display: none;
+}
+
 #dp_overlay #left_pane .search-area {
 	border-bottom: 1px solid #B9BDC2;
 	background-color: #CCD4E2;
@@ -2532,7 +2540,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 }
 
 #dp_overlay #left_pane .search-area input#search_box {
-	width: 310px;
+	width: 230px;
 	border: 1px solid #7DAAC8;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;

@@ -120,17 +120,19 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		var self = this;
 		this.searchBox = $('#search_box');
 
-		this.updateSearchCaller = new DeskPRO.TouchCaller({
-			timeout: 250,
-			callback: this.updateResults,
-			context: this
+		$('#search_box_go').on('click', function() {
+			self.updateResults();
 		});
-
-		this.searchBox.on('keyup', function(ev) {
-			if (!$(this).val().trim()) {
-				self.clearSearch();
+		$('#search_box_clear').on('click', function() {
+			self.clearSearch();
+			self.searchBox.val('').focus();
+		});
+		this.searchBox.on('keypress', function(ev) {
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();//dont enter enter key
+				self.updateResults();
 			} else {
-				self.updateSearchCaller.touch($(this).val().trim());
+				$('#search_box_clear').show();
 			}
 		});
 	},
@@ -138,6 +140,12 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	clearSearch: function() {
 		$('#search_content_list').empty().hide();
 		$('#new_content_list').show();
+		$('#search_box_clear').hide();
+
+		if (this.searchAjax) {
+			this.searchAjax.abort();
+			this.searchAjax = null;
+		}
 	},
 
 	updateResults: function() {
@@ -149,10 +157,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			return;
 		}
 
-		$.ajax({
+		if (this.searchAjax) {
+			this.searchAjax.abort();
+			this.searchAjax = null;
+		}
+
+		$('#left_pane').addClass('loading');
+
+		this.searchAjax = $.ajax({
 			url: BASE_URL + 'search/omnisearch/' + encodeURI(q),
 			dataType: 'html',
 			context: this,
+			complete: function() {
+				$('#left_pane').removeClass('loading');
+			},
 			success: function(html) {
 				var ul = $(html);
 				ul.find('a').addClass('view-item');
