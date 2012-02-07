@@ -19,7 +19,7 @@ use \Orb\Util\Util;
  * with setDbFile(), just cahnge $cache_name. This essentially creates a new table
  * for each cache, so you can reuse one db.
  */
-class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
+class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 {
 	/**
 	 * An array of saved connections. Allows us to reuse connections.
@@ -179,7 +179,7 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 		return $keys;
 	}
 
-	protected function _doFetch($id)
+	protected function doFetch($id)
     {
 		if ($this->_no_expire) {
 			$sql = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
@@ -195,7 +195,7 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 		return $data;
     }
 
-    protected function _doContains($id)
+    protected function doContains($id)
     {
 		if ($this->_cached_ids_mode) {
 			if ($this->_cached_ids === null) {
@@ -217,7 +217,7 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 		return (bool)$exists;
     }
 
-    protected function _doSave($id, $data, $lifeTime = 0)
+    protected function doSave($id, $data, $lifeTime = 0)
     {
 		$data = serialize($data);
 
@@ -235,7 +235,7 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 		return true;
     }
 
-    protected function _doDelete($id)
+    protected function doDelete($id)
     {
 		$this->getDbConnection()->executeUpdate("DELETE FROM {$this->_cache_name} WHERE id = ?", array($id));
 
@@ -245,4 +245,14 @@ class SqliteCache extends \Doctrine\Common\Cache\AbstractCache
 
 		return true;
     }
+
+	protected function doFlush()
+	{
+		$this->getDbConnection()->executeUpdate("DELETE FROM {$this->_cache_name}");
+	}
+
+	protected function doGetStats()
+	{
+		return null;
+	}
 }

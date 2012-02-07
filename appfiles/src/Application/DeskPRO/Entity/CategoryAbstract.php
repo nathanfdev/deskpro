@@ -81,6 +81,11 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	 */
 	protected $_structure = array();
 
+	/**
+	 * @var \Application\DeskPRO\Publish\Structure
+	 */
+	public $structure_helper;
+
 	public function setParent(CategoryAbstract $cat = null)
 	{
 		$this->setModelField('parent', $cat);
@@ -92,6 +97,15 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 			$this->setModelField('root', null);
 			$this->setModelField('depth', 0);
 		}
+	}
+
+	public function getParentId()
+	{
+		if ($this->parent) {
+			return $this->parent->id;
+		}
+
+		return 0;
 	}
 
 
@@ -134,7 +148,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	{
 		if (isset($this->_structure['all_parents'])) return $this->_structure['all_parents'];
 
-		$this->_structure['all_parents'] = App::getEntityRepository(get_class($this))->getPath($this);
+		$this->_structure['all_parents'] = array();
+		$cat = $this;
+		while ($cat->getParent()) {
+			$this->_structure['all_parents'][$cat->getParent()->id] = $cat->getParent();
+			$cat = $cat->parent;
+		}
 
 		return $this->_structure['all_parents'];
 	}
@@ -144,14 +163,25 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	/**
 	 * Get all IDs of this tree, from this node and downwards.
 	 *
-	 * @param  $including_this Include this nodes ID in the array of ids
-	 * @return void
+	 * @param bool $including_this Include this nodes ID in the array of ids
+	 * @return array
 	 */
 	public function getTreeIds($including_this = true)
 	{
 		if (!isset($this->_structure['all_child_ids'])) {
-			$ids = App::getEntityRepository(get_class($this))->getIdsInTree($this);
-			$this->_structure['all_child_ids'] = $ids;
+
+			$all_ids = array();
+			$r = function($cat) use (&$r, &$all_ids) {
+				foreach ($cat->getChildren() as $c) {
+					$all_ids[] = $c->id;
+					if ($c->getChildren()) {
+						$r($c);
+					}
+				}
+			};
+			$r($this);
+
+			$this->_structure['all_child_ids'] = $all_ids;
 		}
 
 		$ids = $this->_structure['all_child_ids'];
@@ -162,7 +192,23 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		return $ids;
 	}
 
+	public function getChildren()
+	{
+		if ($this->structure_helper) {
+			return $this->structure_helper->getCategoryHelperForCategory($this)->getChildren($this);
+		}
 
+		return $this->children;
+	}
+
+	public function getParent()
+	{
+		if ($this->structure_helper) {
+			return $this->structure_helper->getCategoryHelperForCategory($this)->getParent($this);
+		}
+
+		return $this->parent;
+	}
 
 	public function getUrlSlug()
 	{

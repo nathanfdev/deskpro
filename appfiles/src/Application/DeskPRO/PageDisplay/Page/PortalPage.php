@@ -263,7 +263,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			return '';
 		}
 
-		$cache = App::getCache('portal');
+		/** @var $cache \Orb\Doctrine\Common\Cache\PreloadedMysqlCache */
+		$cache = App::getContainer()->getSystemService('portal_block_cache');
+		$cache->preloadPrefix('block.');
 
 		$html = array();
 		foreach ($this->page_display_items[$section] as $item) {
@@ -283,16 +285,16 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				if (empty($cache_info['lifetime'])) $cache_info['lifetime'] = false;
 				if (empty($cache_info['tags'])) $cache_info['tags'] = array();
 
-				$cache_id = "portal_{$section}_" . str_replace('\\', '', get_class($item));
+				$cache_id = "block.portal_{$section}_" . str_replace('\\', '', get_class($item));
 				$cache_lifetime = null;
 
 				if (!isset($cache_info['user_indifferent']) OR !$cache_info['user_indifferent']) {
 					$cache_id .= '_' . $this->person_context->getUsergroupSetKey();
 				}
 
-				if (($block_html = $cache->load($cache_id)) === false) {
+				if (($block_html = $cache->fetch($cache_id)) === false || $this->is_admin_mode) {
 					$block_html = $item->getHtml();
-					$cache->save($block_html, $cache_id, $cache_info['tags'], $cache_info['lifetime']);
+					$cache->save($cache_id, $block_html, $cache_info['lifetime']);
 				}
 
 			} else {

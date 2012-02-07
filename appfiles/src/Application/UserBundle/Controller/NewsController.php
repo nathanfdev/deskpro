@@ -29,6 +29,9 @@ class NewsController extends AbstractController
 {
 	public function browseAction($slug = '', $page = 1, $list_type = 'list')
 	{
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
 		if ($this->in->getUint('page')) {
 			$page = $this->in->getUint('page');
 		}
@@ -38,7 +41,12 @@ class NewsController extends AbstractController
 		$search_options['order_by'] = $this->in->getString('order_by');
 
 		if ($slug) {
-			$category = App::getEntityRepository('DeskPRO:NewsCategory')->getBySlug($slug);
+			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
+			$category = null;
+
+			if ($category_id && $structure->hasNewsCategory($category_id)) {
+				$category = $structure->getNewsCategory($category_id);
+			}
 
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
@@ -61,8 +69,8 @@ class NewsController extends AbstractController
 			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
 		}
 
-		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
-		$news_cat_objs = App::getEntityRepository('DeskPRO:NewsCategory')->getAll();
+		$news_cats = $structure->getNewsCategories();
+		$news_cat_objs = $structure->getNewsCategories();
 
 		if ($search_options['order_by']) {
 			$searcher->setOrderByCode($search_options['order_by']);
@@ -103,7 +111,7 @@ class NewsController extends AbstractController
 				->countsOnCollection($news);
 		}
 
-		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
+		$category_counts = $structure->getNewsCategoryCounts($this->person);
 
 		return $this->render($tpl, array(
 			'news_cats' => $news_cats,

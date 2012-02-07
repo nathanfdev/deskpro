@@ -242,7 +242,7 @@ class DeskproContainer extends Container
 	/**
 	 * Get the router
 	 *
-	 * @return \Symfony\Component\Routing\Router
+	 * @return \Application\DeskPRO\Routing\Router
 	 */
 	public function getRouter()
 	{

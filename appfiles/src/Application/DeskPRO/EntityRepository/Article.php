@@ -145,7 +145,8 @@ class Article extends AbstractEntityRepository
 			FROM DeskPRO:Article a INDEX BY a.id
 			WHERE a.id IN (" . implode(',', $ids) . ")
 			ORDER BY a.id DESC
-		")->execute();
+		")->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
+		  ->execute();
 
 		$articles = array();
 
@@ -182,6 +183,7 @@ class Article extends AbstractEntityRepository
 		$done_articles = array(0);
 
 		foreach ($nodes as $node) {
+
 			$cat_ids = $node->getTreeIds(true);
 
 			$articles = $this->getEntityManager()->createQuery("

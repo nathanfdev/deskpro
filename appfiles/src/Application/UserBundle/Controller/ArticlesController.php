@@ -32,13 +32,21 @@ class ArticlesController extends AbstractController
 	 */
 	public function browseAction($slug = '')
 	{
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
 
 		$per_page = 25;
 
 		if ($slug) {
-			$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
+			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
+			$category = null;
+
+			if ($category_id && $structure->hasArticleCategory($category_id)) {
+				$category = $structure->getArticleCategory($category_id);
+			}
 
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
@@ -50,7 +58,7 @@ class ArticlesController extends AbstractController
 			}
 
 			$category_path = $category->getTreeParents();
-			$category_children = $category->children;
+			$category_children = $category->getChildren();
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 			$searcher->addTerm('category_specific', 'is', $category['id']);
@@ -70,12 +78,12 @@ class ArticlesController extends AbstractController
 
 		} else {
 			$category = null;
-			$category_children = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
+			$category_children = $structure->getArticleRootCategories();
 			$category_path = array();
 			$articles = array();
 		}
 
-		$category_counts = App::getEntityRepository('DeskPRO:ArticleCategory')->getAllCounts($this->person);
+		$category_counts = $structure->getArticleCategoryCounts($this->person);
 
 		$comment_counts = array();
 		if ($articles) {
@@ -103,12 +111,15 @@ class ArticlesController extends AbstractController
 
 	public function filterAction()
 	{
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
 
 		$per_page = 20;
 
-		$kb_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getFlatHierarchy();
+		$kb_cats  = $structure->getArticleRootCategories();
 		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();

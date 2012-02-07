@@ -41,4 +41,13 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 		return $results;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTableName()
+	{
+		return $this->getClassMetadata()->getTableName();
+	}
 }

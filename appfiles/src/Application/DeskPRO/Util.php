@@ -24,7 +24,7 @@ class Util
 
 	/**
 	 * Create a new object
-	 * 
+	 *
 	 * @param string $classname_spec  The classname, static factory method, or array callback
 	 * @param array  $options         Options to pass to the factory or constructor
 	 * @return object

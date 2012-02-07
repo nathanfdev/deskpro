@@ -27,6 +27,9 @@ class DownloadsController extends AbstractController
 {
 	public function browseAction($slug = '')
 	{
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
@@ -34,7 +37,12 @@ class DownloadsController extends AbstractController
 		$search_options['order_by'] = $this->in->getString('order_by');
 
 		if ($slug) {
-			$category = App::getEntityRepository('DeskPRO:DownloadCategory')->getBySlug($slug);
+			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
+			$category = null;
+
+			if ($category_id && $structure->hasDownloadCategory($category_id)) {
+				$category = $structure->getDownloadCategory($category_id);
+			}
 
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
@@ -57,9 +65,9 @@ class DownloadsController extends AbstractController
 			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
 		}
 
-		$category_counts = App::getEntityRepository('DeskPRO:DownloadCategory')->getAllCounts($this->person);
+		$category_counts = $structure->getDownloadCategoryCounts($this->person);
 
-		$categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
+		$categories = $structure->getDownloadRootCategories();
 
 		if ($search_options['order_by']) {
 			$searcher->setOrderByCode($search_options['order_by']);
@@ -234,6 +242,10 @@ class DownloadsController extends AbstractController
 		} else {
 			$rating_log_search_id = 0;
 		}
+
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+		$download->category->structure_helper = $structure;
 
 		return $this->render('UserBundle:Downloads:file.html.twig', array(
 			'subscription' => $subscription,

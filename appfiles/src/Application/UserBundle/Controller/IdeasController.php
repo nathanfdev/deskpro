@@ -32,6 +32,9 @@ class IdeasController extends AbstractController
 	 */
 	public function filterAction($status = 'popular', $slug = 'all')
 	{
+		/** @var $structure \Application\DeskPRO\Publish\Structure */
+		$structure = $this->container->getSystemService('publish_structure');
+
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
 
@@ -56,7 +59,12 @@ class IdeasController extends AbstractController
 		);
 
 		if ($slug && $slug != 'all') {
-			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
+			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
+			$category = null;
+
+			if ($category_id && $structure->hasIdeaCategory($category_id)) {
+				$category = $structure->getIdeaCategory($category_id);
+			}
 
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
@@ -77,7 +85,7 @@ class IdeasController extends AbstractController
 			$category_path = array();
 		}
 
-		$idea_cats  = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$idea_cats  = $structure->getIdeaRootCategories();
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 		$status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
@@ -118,7 +126,7 @@ class IdeasController extends AbstractController
 
 		$ideas = App::getEntityRepository('DeskPRO:Idea')->getByResultIds($idea_ids);
 
-		$category_counts = App::getEntityRepository('DeskPRO:IdeaCategory')->getAllCounts($this->person);
+		$category_counts = $structure->getIdeaCategoryCounts($this->person);
 		$has_voted_ids = $this->person->IdeaVotes->getVotesOnIdeas($idea_ids);
 
 		$comment_counts = array();
