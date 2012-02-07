@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
 
 /**
@@ -37,7 +38,7 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheInvalidator');
 		$container->setDefinition('deskpro.dbal.logger.cache_invalidator', $definition);
 
-		$definition = new Definition('Symfony\Bridge\Doctrine\Logger\DbalLogger', array(new Reference('logger')));
+		$definition = new Definition('Symfony\Bridge\Doctrine\Logger\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
 		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
