@@ -692,6 +692,8 @@ class PublishController extends AbstractController
 			$em->commit();
 		});
 
+		$this->container->getSystemService('publish_structure_cache')->flush();
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 

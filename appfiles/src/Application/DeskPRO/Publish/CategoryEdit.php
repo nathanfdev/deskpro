@@ -59,6 +59,8 @@ class CategoryEdit
 		$obj['title'] = $title;
 
 		App::getOrm()->persist($obj);
+
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->flush();
 
 		return $obj;
@@ -101,6 +103,8 @@ class CategoryEdit
 		}
 
 		App::getOrm()->flush();
+
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->commit();
 
 		return $cats;
@@ -136,6 +140,7 @@ class CategoryEdit
 				}
 			}
 
+			App::getContainer()->getSystemService('publish_structure_cache')->flush();
 			App::getOrm()->persist($cat);
 			App::getOrm()->commit();
 
@@ -177,11 +182,7 @@ class CategoryEdit
 			App::getOrm()->persist($cats[$id]);
 		}
 
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		App::getOrm()->beginTransaction();
-
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 	}
@@ -222,6 +223,8 @@ class CategoryEdit
 		}
 
 		App::getOrm()->flush();
+
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->commit();
 
 		return $cats;
@@ -264,6 +267,8 @@ class CategoryEdit
 		$fn($cat);
 
 		App::getOrm()->flush();
+
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->commit();
 
 		return $cat;

@@ -188,8 +188,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 		$prefix_like = "$prefix%";
 
 		$this->db->fetchAll("
-			DELETE FROM
-			FROM cache
+			DELETE FROM cache
 			WHERE id LIKE ?
 		", array($prefix_like));
 
@@ -318,15 +317,31 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	{
 		$prefix_id = $this->id_prefix . $id;
 
-		$this->db->fetchAll("
-			DELETE FROM
-			FROM cache
+		$this->db->executeUpdate("
+			DELETE FROM cache
 			WHERE id = ?
 		", array($prefix_id));
 
 		unset($this->loaded[$prefix_id]);
 
 		return true;
+	}
+
+
+	/**
+	 * Clear the cache
+	 */
+	public function flush()
+	{
+		$prefix_like = $this->id_prefix . '%';
+		$this->db->executeUpdate("
+			DELETE FROM cache
+			WHERE id LIKE ?
+		", array($prefix_like));
+
+		foreach ($this->loaded as &$v) {
+			$v = null;
+		}
 	}
 
 
