@@ -6,8 +6,8 @@
 	'user.emails.subj_newemail_validate' => 'Validate your email address',
 	'user.emails.subj_newemail_exists' => 'You tried to add a secondary email address...',
 
-	'user_emails.subj_newidea' => 'Thank you for submitting your idea',
-	'user_emails.subj_newidea_validate' => 'Thank you for submitting your idea (validation required)',
+	'user_emails.subj_newfeedback' => 'Thank you for submitting your feedback',
+	'user_emails.subj_newfeedback_validate' => 'Thank you for submitting your feedback (validation required)',
 
 	'user_emails.subj_newcomment_validate' => 'Thank you for your comment',
 );

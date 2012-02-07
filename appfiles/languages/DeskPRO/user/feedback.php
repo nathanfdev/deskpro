@@ -11,10 +11,10 @@
 	'user.feedback.label_status' => 'Status',
 	'user.feedback.label_votes' => 'Votes',
 
-	'user.feedback.all_ideas' => 'All Feedback',
+	'user.feedback.all_feedback' => 'All Feedback',
 
-	'user.feedback.newidea_section_name' => 'Submit Feedback',
-	'user.feedback.submit_new_idea' => 'Submit Feedback',
+	'user.feedback.newfeedback_section_name' => 'Submit Feedback',
+	'user.feedback.submit_new_feedback' => 'Submit Feedback',
 
 	'user.feedback.label_summary' => 'Summary',
 	'user.feedback.label_summary_explain' => 'A title or a brief summary of what your feedback is about',
@@ -28,9 +28,9 @@
 	'user.feedback.similar_note' => 'Don\'t worry, you can click a title and you will remain on this page.',
 	'user.feedback.similar_count' => 'View {{count_place}} more results',
 
-	'user.feedback.no_ideas_spec' => 'There are no feedback submissions with those specificiations',
+	'user.feedback.no_feedback_spec' => 'There are no feedback submissions with those specificiations',
 
-	'user.feedback.view_all_x_ideas' => 'View all {{count}} feedback submissions',
+	'user.feedback.view_all_x_feedback' => 'View all {{count}} feedback submissions',
 
 	'user.feedback.similar_same_as' => 'This is the same as my submission',
 	'user.feedback.similar_not_same_as' => 'This isn\'t the same as my submission',

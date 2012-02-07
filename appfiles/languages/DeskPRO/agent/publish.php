@@ -21,8 +21,8 @@
 	'agent.publish.downloads' => 'Downloads',
 	'agent.publish.new_download' => 'New Download',
 
-	'agent.publish.ideas' => 'Ideas',
-	'agent.publish.new_idea' => 'New Idae',
+	'agent.publish.feedback' => 'Feedback',
+	'agent.publish.new_feedback' => 'New Feedback',
 
 	'agent.publish.restored_unsaved_changes' => 'Unsaved changes were restored.',
 	'agent.publish.discard_unsaved_changes' => 'Discard and revert to default',

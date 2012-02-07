@@ -18,7 +18,7 @@
 	'user.all' => 'All',
 
 	'user.content_articles' => 'Articles',
-	'user.content_ideas' => 'Ideas',
+	'user.content_feedback' => 'Feedback',
 	'user.content_downloads' => 'Downloads',
 	'user.content_news' => 'News',
 
@@ -50,7 +50,7 @@
 	'user.related_articles' => 'Related Articles',
 	'user.related_downloads' => 'Related Downloads',
 	'user.related_news' => 'Related News',
-	'user.related_ideas' => 'Related Ideas',
+	'user.related_feedback' => 'Related Feedback',
 
 	'user.label_file_uploading' => 'Uploading:',
 	'user.upload_btn' => 'Upload',
@@ -74,7 +74,7 @@
 
 	'user.search_did_you_find_it' => 'Did not find what you were looking for?',
 	'user.btn_create_ticket' => 'Create Ticket',
-	'user.btn_create_idea' => 'Create Idea',
+	'user.btn_create_feedback' => 'Create Feedback',
 	'user.btn_create_chat' => 'Start Chat',
 
 	'user.page_prev' => '&larr; Prev',
