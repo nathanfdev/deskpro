@@ -596,10 +596,10 @@ class Structure
 			$counts['0_total'] += $counts[$c['id']];
 		}
 
-		$repos = $this;
-		$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
+		$structure = $this;
+		$fn_count = function($node) use (&$counts, $structure, &$fn_count) {
 			$total = 0;
-			foreach ($repos->children($node, true) as $c) {
+			foreach ($structure->getNewsCategoryHelper()->getChildren($node, true) as $c) {
 				// We already have the single count
 				$total += $counts[$c['id']];
 
