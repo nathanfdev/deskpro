@@ -2659,7 +2659,15 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	display: block;
 	border-bottom: 1px solid #C7CBD1;
 	padding: 10px;
+	padding-left: 30px;
+	background-repeat: no-repeat;;
+	background-position: 10px 13px;
 }
+
+#dp_overlay .list-area ul li.article { background-image: url(../../images/user/page.png); }
+#dp_overlay .list-area ul li.download { background-image: url(../../images/user/page_white_zip.png); }
+#dp_overlay .list-area ul li.news { background-image: url(../../images/user/newspaper.png); }
+#dp_overlay .list-area ul li.feedback { background-image: url(../../images/user/bulb.png); }
 
 #dp_overlay .list-area ul li a {
 	color: #525356;
