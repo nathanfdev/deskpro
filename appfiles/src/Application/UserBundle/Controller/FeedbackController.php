@@ -127,7 +127,7 @@ class FeedbackController extends AbstractController
 		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
-		$has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedback($feedback_ids);
+		$has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedbackCollection($feedback_ids);
 
 		$comment_counts = array();
 		if ($feedback) {

@@ -210,7 +210,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = array($choice);
 		}
 
-		$timezone_context = null;
+		$timezone_context = new \DateTimeZone('UTC');
 		if ($this->person) {
 			$timezone_context = $this->person->getTimezone();
 		}

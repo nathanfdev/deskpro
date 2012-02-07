@@ -159,7 +159,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 	 * @param array $feedback
 	 * @return array
 	 */
-	public function getVotesOnFeedback(array $feedback)
+	public function getVotesOnFeedbackCollection(array $feedback)
 	{
 		$ids = array();
 
