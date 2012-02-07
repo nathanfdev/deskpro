@@ -178,6 +178,15 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 				$('#new_content_list').hide();
 				$('#search_content_list').empty().append(lis).show();
+
+				var words = q.split(' ');
+				words = words.filter(function(w) {
+					if (w.length > 2) {
+						return true;
+					}
+				});
+
+				DeskPRO.WordHighlighter.highlight($('#search_content_list').get(0), words, true);
 			}
 		});
 	},

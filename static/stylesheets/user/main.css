@@ -2667,6 +2667,10 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	font-weight: bold;
 }
 
+#dp_overlay .list-area ul li a span .dp-highlight-word {
+	background-color: #FBFDB5;
+}
+
 #dp_overlay #dp_inline_page_wrap {
 	position: absolute;
 	z-index: 3;
