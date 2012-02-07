@@ -20,15 +20,6 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		if (1) {
-			$this->session->setFlash('new_ticket_validating_email', 'chroder@gmail.com');
-		} else {
-			$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
-		}
-		$this->session->setFlash('new_ticket', 21);
-
-		return $this->redirectRoute('user');
-
 		return $this->render('UserBundle:Test:index.html.twig');
 	}
 }

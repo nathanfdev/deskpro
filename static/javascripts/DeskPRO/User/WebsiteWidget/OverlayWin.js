@@ -4,14 +4,19 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function() {
-
+		this.tellParent('initialized');
 	},
 
 	initPage: function() {
 		var self = this;
 
+		this.activeTabBody = null;
+
 		this.winNav = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('#dp_overlay_navtabs').find('> li')
+			triggerElements: $('#dp_overlay_navtabs').find('> li'),
+			onTabSwitch: function(ev) {
+				self.activeTabBody = ev.tabContent;
+			}
 		});
 
 		this._initSearch();
@@ -29,26 +34,83 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			var url = Orb.appendQueryData(origUrl, '_partial', 'overlay');
 			self.showInlinePage(url);
 		});
+
+		this.tellParent('ready');
+
+		var bodyTabHeight, lastBodyTabHeight;
+		bodyTabHeight = lastBodyTabHeight = this.activeTabBody.height();
+
+		window.setInterval(function() {
+			lastBodyTabHeight = bodyTabHeight;
+			bodyTabHeight = self.activeTabBody.height();
+
+			if (lastBodyTabHeight != bodyTabHeight) {
+				var fullHeight = self.activeTabBody.offset().top + bodyTabHeight;
+				var gotHeight = self.tellParent('requestHeight', { height: fullHeight });
+				if (gotHeight < fullHeight) {
+					$('#right_pane_body').css('overflow', 'auto');
+				} else {
+					$('#right_pane_body').css('overflow', 'hidden');
+				}
+			}
+		}, 80);
 	},
 
+
+	/**
+	 * Show an inline page
+	 *
+	 * @param {String} url
+	 */
 	showInlinePage: function(url) {
 		var self = this;
+
+		if (this.inlinePageIframe) {
+			this.inlinePageIframe.remove();
+		}
+
 		if (!this.inlinePageFrame) {
 			this.inlinePageWrap = $('<div id="dp_inline_page_wrap" />').hide().appendTo('body');
 			this.inlinePageWrap.append('<span class="close"></span>');
 			this.inlinePageWrap.find('span.close').on('click', function() {
 				self.hideInlinePage();
 			});
-			this.inlinePageIframe = $('<iframe id="dp_inline_page_iframe" name="dp_inline_page_iframe" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" width="100%" height="100%"></div>').appendTo(this.inlinePageWrap);
 		}
+
+		this.inlinePageIframe = $('<iframe id="dp_inline_page_iframe" name="dp_inline_page_iframe" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" width="100%" height="100%"></div>').appendTo(this.inlinePageWrap);
 
 		this.inlinePageWrap.show();
 		this.inlinePageIframe.attr('src', url);
 	},
 
+
+	/**
+	 * Hide the inline page
+	 */
 	hideInlinePage: function() {
 		this.inlinePageWrap.hide();
 	},
+
+
+	/**
+	 * Pass a message up to the parent controller
+	 *
+	 * @param {String} messageId
+	 * @param {Object} [data]
+	 */
+	tellParent: function(messageId, data) {
+		data = data || null;
+
+		if (window.parent.DpOverlayWidget) {
+			console.log('[Sending] %s %o', messageId, data);
+			return window.parent.DpOverlayWidget.childListen(messageId, data);
+		} else {
+			console.log('[Sending:No Comms] %s %o', messageId, data);
+		}
+
+		return null;
+	},
+
 
 	//##################################################################################################################
 	//# Search Bar
