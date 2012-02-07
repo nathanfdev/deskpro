@@ -1,7 +1,7 @@
 {% extends 'UserBundle::layout-partial-aware.html.twig' %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
-		<a href="{{ path('user_ideas', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
 		{% if cat.children|length %}
 			<ul>
 				{% for subcat in cat.children %}
@@ -12,13 +12,13 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+	<li><a href="{{ path('user_feedback') }}">Ideas</a></li>
 	<li>
-		<a href="{{ path('user_ideas', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_' ~ parent_status) }}</a>
+		<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
 	</li>
 	{% if parent_status != status %}
 		<li>
-			<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">
+			<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
 				{% if parent_status == 'active' %}
 					{{ active_status_cats[sub_status_id].title }}
 				{% else %}
@@ -29,14 +29,14 @@
 	{% endif %}
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
-			<li><a href="{{ path('user_ideas', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
+			<li><a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
 		{% endfor %}
-		<li><a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a></li>
+		<li><a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block page_title %}
 	Ideas
-	/ {{ phrase('user.ideas.status_' ~ parent_status) }}
+	/ {{ phrase('user.feedback.status_' ~ parent_status) }}
 	{% if parent_status != status %}
 		/
 		{% if parent_status == 'active' %}
@@ -53,37 +53,37 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
-<div class="dp-content-block dp-ideas-page">
+<div class="dp-content-block dp-feedback-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
 			<div class="dp-box-options">
-				<a class="btn small" href="{{ path('user_ideas_newidea') }}">{{ phrase('user.ideas.submit_new_idea') }}</a>
+				<a class="btn small" href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.feedback.submit_new_feedback') }}</a>
 			</div>
 			<h1>
-				<a href="{{ path('user_ideas_all') }}">{{ phrase('user.ideas.section_name') }}</a>
+				<a href="{{ path('user_feedback_all') }}">{{ phrase('user.feedback.section_name') }}</a>
 			</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-nav">
 				<ul>
-					<li class="dp-title">{{ phrase('user.ideas.label_status') }}</li>
-					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_all') }}</a></li>
-					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_popular') }}</a></li>
-					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_new') }}</a></li>
+					<li class="dp-title">{{ phrase('user.feedback.label_status') }}</li>
+					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
+					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_popular') }}</a></li>
+					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_new') }}</a></li>
 					<li {% if status == 'active' %}class="on"{% endif %}>
-						<a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_active') }}</a>
+						<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_active') }}</a>
 						<ul>
 							{% for s_cat in active_status_cats %}
-								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
+								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
 							{% endfor %}
 						</ul>
 					</li>
 					<li {% if status == 'closed' %}class="on"{% endif %}>
-						<a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.ideas.status_closed') }}</a>
+						<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_closed') }}</a>
 						<ul>
 							{% for s_cat in closed_status_cats %}
-								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
+								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
 							{% endfor %}
 						</ul>
 					</li>
@@ -92,54 +92,54 @@
 				{% if status != 'popular' %}
 					<div class="dp-sort-options">
 						{{ phrase('user.label_sort_by') }}:<br />
-							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.ideas.label_votes') }}</a>
+							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.feedback.label_votes') }}</a>
 							/
-							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.label_date') }}</a>
+							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.label_date') }}</a>
 					</div>
 				{% endif %}
 
-				{% if idea_cats|length %}
+				{% if feedback_cats|length %}
 					<ul class="sep">
 						<li class="dp-title">{{ phrase('user.label_category') }}</li>
-						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.all') }}</a></li>
-						{% for cat in idea_cats %}
+						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.all') }}</a></li>
+						{% for cat in feedback_cats %}
 							{{ _self.cat_row(cat, status, category) }}
 						{% endfor %}
 					</ul>
 				{% endif %}
 			</div>
 			<div class="dp-box-content dp-with-nav">
-				<ul class="dp-ideas-list">
-					{% for idea in ideas %}
+				<ul class="dp-feedback-list">
+					{% for feedback in feedback %}
 						<li>
 							{% include 'UserBundle:Ideas:voting-widget.html.twig' %}
 							<div class="item">
 								<div class="dp-faded-container">
-									<h3><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h3>
+									<h3><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
 									<div class="dp-bound-faded"></div>
 								</div>
 								<div class="meta">
-									{{ phrase('user.created_by_x', {'name': idea.person.display_name}) }} |
-									{{ idea.date_created|date('M d, Y') }} |
-										{% if idea.status_category %}
-											{{ idea.status_category.title }}
+									{{ phrase('user.created_by_x', {'name': feedback.person.display_name}) }} |
+									{{ feedback.date_created|date('M d, Y') }} |
+										{% if feedback.status_category %}
+											{{ feedback.status_category.title }}
 										{% else %}
-											{{ phrase('user.ideas.status_' ~ idea.status) }}
+											{{ phrase('user.feedback.status_' ~ feedback.status) }}
 										{% endif %}
-									{% if comment_counts[idea.id] %}| Comments: {{ comment_counts[idea.id] }}{% endif %}
+									{% if comment_counts[feedback.id] %}| Comments: {{ comment_counts[feedback.id] }}{% endif %}
 								</div>
 							</div>
 						</li>
 					{% else %}
-						<li>{{ phrase('user.ideas.no_ideas_spec') }}</li>
+						<li>{{ phrase('user.feedback.no_feedback_spec') }}</li>
 					{% endfor %}
 				</ul>
 			</div>
 			{% if is_partial_request() %}
-				{% if num_results > ideas|length %}
+				{% if num_results > feedback|length %}
 					<div class="dp-footer">
-						<a class="btn" href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}">
-							{{ phrase('user.ideas.view_all_x_ideas', {'count': num_results}) }}
+						<a class="btn" href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
+							{{ phrase('user.feedback.view_all_x_feedback', {'count': num_results}) }}
 						</a>
 					</div>
 				{% endif %}
@@ -150,17 +150,17 @@
 							<ul>
 								{% if pageinfo.prev %}
 									<li>
-										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
+										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
 									</li>
 								{% endif %}
 								{% for p in pageinfo.pages %}
 									<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
-										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': p }) }}">{{ p }}</a>
+										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': p }) }}">{{ p }}</a>
 									</li>
 								{% endfor %}
 								{% if pageinfo.next %}
 									<li>
-										<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
+										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
 									</li>
 								{% endif %}
 							</ul>

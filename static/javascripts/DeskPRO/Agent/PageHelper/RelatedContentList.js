@@ -22,7 +22,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 		this.contentListEl = $(this.options.contentListEl);
 
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('*', this);
-		var types = ['article', 'download', 'news', 'idea'];
+		var types = ['article', 'download', 'news', 'feedback'];
 
 		this.addEvent('watchedTabActivated', function(tab) {
 

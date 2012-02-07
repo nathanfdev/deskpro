@@ -1,10 +1,10 @@
 {% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
-{% set this_page = 'idea_fields' %}
+{% set this_page = 'feedback_fields' %}
 {% extends 'AdminBundle:CustomDefAbstract:edit-choosetype.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_customdefideas') }}">Idea Fields</a></li>
+		<li><a href="{{ path('admin_customdeffeedback') }}">Idea Fields</a></li>
 		<li>Choose Field Type</li>
      </ul>
 {% endblock %}

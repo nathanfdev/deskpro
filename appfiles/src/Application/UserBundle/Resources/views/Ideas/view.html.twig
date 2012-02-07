@@ -1,18 +1,18 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
-	<meta property="og:url" content="{{ path('user_ideas_view', {'slug': idea.id}) }}" />
-	<meta property="og:title" content="{{idea.title}}" />
+	<meta property="og:url" content="{{ path('user_feedback_view', {'slug': feedback.id}) }}" />
+	<meta property="og:title" content="{{feedback.title}}" />
 	<meta property="og:type" content="article" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+	<li><a href="{{ path('user_feedback') }}">Ideas</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
+	<li><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></li>
 {% endblock %}
 {% block page_title %}
-	{{ idea.title }}
+	{{ feedback.title }}
 	-
 	Ideas
 	{% for cat in category_path %}
@@ -20,25 +20,25 @@
 	{% endfor %}
 {% endblock %}
 {% block content %}
-<div class="dp-idea-page">
+<div class="dp-feedback-page">
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
 				{% include 'UserBundle:Ideas:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
-				<h1>{{ idea.title }}</h1>
+				<h1>{{ feedback.title }}</h1>
 			</div>
 			<div class="dp-box-content-meta">
 				<div class="by-line">
-					<img src="{{ idea.person.getPictureUrl(40) }}" />
-					{{ phrase('user.created_by_x_on_y', {'name': idea.person.display_name, 'date': idea.date_created|date('M d Y')}) }}
+					<img src="{{ feedback.person.getPictureUrl(40) }}" />
+					{{ phrase('user.created_by_x_on_y', {'name': feedback.person.display_name, 'date': feedback.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>
 			<div class="dp-box-content-wrapper">
 				<div class="dp-box-content">
-					<div class="dp-post">{{ idea.content_html|raw }}</div>
+					<div class="dp-post">{{ feedback.content_html|raw }}</div>
 
-					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': idea.labels} %}
+					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': feedback.labels} %}
 
 					{% if app.getSetting('core.facebook_like') %}
 						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': article.permalink} %}
@@ -46,7 +46,7 @@
 
 					{% include 'UserBundle:Common:comments-box.html.twig' with {
 						'comments': comments,
-						'form_action': path('user_ideas_newcomment', {'idea_id': idea.id})
+						'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id})
 					} %}
 				</div>
 			</div>

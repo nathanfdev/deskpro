@@ -43,7 +43,7 @@ class ContentSubscription extends EntityRepository
 		} elseif ($content_object instanceof NewsEntity) {
 			$qb->andWhere("s.news = ?2");
 		} elseif ($content_object instanceof IdeaEntity) {
-			$qb->andWhere("s.idea = ?2");
+			$qb->andWhere("s.feedback = ?2");
 		} else {
 			throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Idea. Got `" . get_class($content_object) . "`");
 		}

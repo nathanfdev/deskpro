@@ -27,7 +27,7 @@ class AgentHelper implements PersonContextInterface
 	const ARTICLES  = 'articles';
 	const DOWNLOADS = 'downloads';
 	const NEWS      = 'news';
-	const IDEAS     = 'ideas';
+	const IDEAS     = 'feedback';
 
 	protected $enabled_types = array('articles', 'downloads', 'news');
 
@@ -198,7 +198,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
+			'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Idea',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
 		);
 
 		#------------------------------
@@ -247,7 +247,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
 			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
 			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
-			'ideas'     => array('content_type' => 'ideas',     'table' => 'idea_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'idea_id'),
+			'feedback'     => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'feedback_id'),
 		);
 
 		#------------------------------
@@ -317,7 +317,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
 			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
 			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
-			'ideas'     => array('content_type' => 'ideas',     'table' => 'idea_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'idea_id'),
+			'feedback'     => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'feedback_id'),
 		);
 
 		foreach ($this->enabled_types as $t) {
@@ -369,7 +369,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
+			'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Idea',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
 		);
 
 		#------------------------------
@@ -412,7 +412,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
+			'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Idea',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
 		);
 
 		$sql_parts = array();
@@ -447,7 +447,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
+			'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Idea',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
 		);
 
 		#------------------------------
@@ -539,7 +539,7 @@ class AgentHelper implements PersonContextInterface
 				return 'DeskPRO:NewsCategory';
 				break;
 			case self::IDEAS:
-				return 'DeskPRO:IdeaCategory';
+				return 'DeskPRO:FeedbackCategory';
 				break;
 		}
 

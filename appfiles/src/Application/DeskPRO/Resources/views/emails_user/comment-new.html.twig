@@ -4,7 +4,7 @@
 	{{ layout.section_start() }}
 		<p>Thank you for submitting your comment on "<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>"</p>
 		{% if validating %}
-			{% if idea.status == 'visible' %}
+			{% if feedback.status == 'visible' %}
 				Please validate your email address online by clicking the following link:
 			{% else %}
 				Before your comment will be displayed publicly you must validate your email address by clicking on the following link:

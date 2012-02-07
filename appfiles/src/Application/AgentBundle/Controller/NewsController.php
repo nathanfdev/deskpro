@@ -207,7 +207,7 @@ class NewsController extends AbstractController
 	############################################################################
 
 	/**
-	 * View a list of ideas
+	 * View a list of feedback
 	 */
 	public function listAction($category_id = 0)
 	{

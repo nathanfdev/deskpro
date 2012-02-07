@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Interface for 'ContentSearcher'
  *
- * The content searcher searches: articles, downloads, ideas, news
+ * The content searcher searches: articles, downloads, feedback, news
  */
 interface ContentSearcherInterface
 {

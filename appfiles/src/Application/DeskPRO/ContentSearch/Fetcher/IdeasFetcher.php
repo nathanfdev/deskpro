@@ -18,7 +18,7 @@ use Orb\Util\Strings;
 
 class IdeasFetcher extends AbstractFetcher
 {
-	const TYPENAME = 'ideas';
+	const TYPENAME = 'feedback';
 
 	/**
 	 * Returns an array of entities identified by $related_ids, that the user is able to see.

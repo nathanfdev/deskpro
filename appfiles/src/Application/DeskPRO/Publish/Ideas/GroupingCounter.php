@@ -104,8 +104,8 @@ class GroupingCounter
 				'hidden' => array('title' => 'Hidden'),
 			);
 
-			$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-			$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+			$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+			$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 			foreach ($active_status_cats as $cat) {
 				$titles['active.' . $cat['id']] = array('title' => $cat['title']);
@@ -119,7 +119,7 @@ class GroupingCounter
 
 		switch ($this->grouping1) {
 			case 'category_id':
-				$group1_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
+				$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
 				break;
 
 			case 'status':
@@ -136,7 +136,7 @@ class GroupingCounter
 		if ($this->grouping2) {
 			switch ($this->grouping2) {
 				case 'category_id':
-					$group1_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
+					$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
 					break;
 
 				case 'status':
@@ -193,15 +193,15 @@ class GroupingCounter
 		$grouping2 = $this->grouping2;
 
 		if ($grouping1 == 'status') {
-			$grouping1 = "IF(ideas.status_category_id, CONCAT(ideas.status, '.', ideas.status_category_id), ideas.status)";
+			$grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping1 = "ideas.$grouping1";
+			$grouping1 = "feedback.$grouping1";
 		}
 
 		if ($grouping2 == 'status') {
-			$grouping2 = "IF(ideas.status_category_id, CONCAT(ideas.status, '.', ideas.status_category_id), ideas.status)";
+			$grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping2 = "ideas.$grouping2";
+			$grouping2 = "feedback.$grouping2";
 		}
 
 		$select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -213,8 +213,8 @@ class GroupingCounter
 
 		$sql = "
 			SELECT " . implode(', ', $select_fields) . "
-			FROM ideas
-			WHERE (ideas.hidden_status IS NULL OR ideas.hidden_status != 'validating')
+			FROM feedback
+			WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')
 			$group_by WITH ROLLUP
 		";
 
@@ -321,7 +321,7 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'category_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
@@ -334,8 +334,8 @@ class GroupingCounter
 					'hidden' => 'Hidden',
 				);
 
-				$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-				$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+				$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+				$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 				foreach ($active_status_cats as $cat) {
 					$titles['active.' . $cat['id']] = 'Active > ' . $cat['title'];

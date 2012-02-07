@@ -5,13 +5,13 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
-			ideaId: 0,
+			feedbackId: 0,
 			destroyOnClose: false
 		};
 
 		this.setOptions(options);
 
-		this.ideaId = this.options.ideaId;
+		this.feedbackId = this.options.feedbackId;
 
 		this.overlay = null;
 	},
@@ -21,11 +21,11 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 
 		var data = [];
 
-		Array.each(DeskPRO_Window.getTabWatcher().findTabType('idea'), function(tab) {
-			var tid = tab.page.getMetaData('idea_id');
-			if (tid && tid != this.ideaId) {
+		Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
+			var tid = tab.page.getMetaData('feedback_id');
+			if (tid && tid != this.feedbackId) {
 				data.push({
-					name: 'open_idea_ids[]',
+					name: 'open_feedback_ids[]',
 					value: tid
 				});
 			}
@@ -34,7 +34,7 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/ideas/merge-overlay/' + this.ideaId,
+				url: BASE_URL + 'agent/feedback/merge-overlay/' + this.feedbackId,
 				data: data
 			}
 		});
@@ -50,11 +50,11 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 			$(this).text('...').attr('disabled', true);
 			$('.merge-trigger', this.wrapper).attr('disabled', true );
 
-			var otherIdeaId = $(this).data('idea-id');
-			var ideaId = self.ideaId;
+			var otherIdeaId = $(this).data('feedback-id');
+			var feedbackId = self.feedbackId;
 
 			$.ajax({
-				url: BASE_URL + 'agent/ideas/merge/' + ideaId + '/' + otherIdeaId,
+				url: BASE_URL + 'agent/feedback/merge/' + feedbackId + '/' + otherIdeaId,
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {

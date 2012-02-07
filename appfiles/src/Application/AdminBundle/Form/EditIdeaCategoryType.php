@@ -19,7 +19,7 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class EditIdeaCategoryType extends AbstractType
+class EditFeedbackCategoryType extends AbstractType
 {
 	protected $is_new;
 
@@ -34,7 +34,7 @@ class EditIdeaCategoryType extends AbstractType
 
 		if ($this->is_new) {
 			$builder->add('parent', 'entity', array(
-				'class' => 'DeskPRO:IdeaCategory',
+				'class' => 'DeskPRO:FeedbackCategory',
 				'property' => 'select_title',
 				'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
 						return $er->createQueryBuilder('c')
@@ -48,6 +48,6 @@ class EditIdeaCategoryType extends AbstractType
 
 	public function getName()
 	{
-		return 'idea_cat';
+		return 'feedback_cat';
 	}
 }

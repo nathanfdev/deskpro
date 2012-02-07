@@ -259,7 +259,7 @@ class PublishController extends AbstractController
 				return 'DeskPRO:DownloadComment';
 			case 'news':
 				return 'DeskPRO:NewsComment';
-			case 'ideas':
+			case 'feedback':
 				return 'DeskPRO:IdeaComment';
 		}
 	}
@@ -576,7 +576,7 @@ class PublishController extends AbstractController
 			case 'articles':   $entity_name = 'DeskPRO:Article';   break;
 			case 'downloads':  $entity_name = 'DeskPRO:Download';  break;
 			case 'news':       $entity_name = 'DeskPRO:News';      break;
-			case 'ideas':      $entity_name = 'DeskPRO:Idea';      break;
+			case 'feedback':      $entity_name = 'DeskPRO:Idea';      break;
 		}
 
 		$this->db->beginTransaction();

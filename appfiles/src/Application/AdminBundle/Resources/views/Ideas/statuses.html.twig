@@ -1,4 +1,4 @@
-{% set this_page = 'idea_statuses' %}
+{% set this_page = 'feedback_statuses' %}
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.IdeaStatusListPage' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
@@ -13,11 +13,11 @@
 	</nav>
 {% endblock %}
 {% block page %}
-	{{ design.structure_table({ 'id': 'active_statuses_table', 'save_order_url': path('admin_ideas_status_updateorders') }) }}
+	{{ design.structure_table({ 'id': 'active_statuses_table', 'save_order_url': path('admin_feedback_status_updateorders') }) }}
 		<thead>
 			<th colspan="10" class="only">
 				Active Statuses
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="An active status is a status assigned to ideas that have been reviewed, but haven't been implemented or haven't been decided on."></span>
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="An active status is a status assigned to feedback that have been reviewed, but haven't been implemented or haven't been decided on."></span>
 			</th>
 		</thead>
 		{% for cat in active_cats %}
@@ -27,11 +27,11 @@
 
 	<br />
 
-	{{ design.structure_table({ 'id': 'closed_statuses_table', 'save_order_url': path('admin_ideas_status_updateorders') }) }}
+	{{ design.structure_table({ 'id': 'closed_statuses_table', 'save_order_url': path('admin_feedback_status_updateorders') }) }}
 		<thead>
 			<th colspan="10" class="only">
 				Closed Statuses
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="A closed status is a status assigned to ideas that are finished. Users cannot vote or comment on closed ideas."></span>
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback."></span>
 			</th>
 		</thead>
 		{% for cat in closed_cats %}
@@ -73,7 +73,7 @@
 			<button
 				id="create_status_save_btn"
 				class="clean-white"
-				data-save-url="{{ path('admin_ideas_statuses_ajaxadd') }}"
+				data-save-url="{{ path('admin_feedback_statuses_ajaxadd') }}"
 			>Create Status</button>
 		</div>
 	</div>

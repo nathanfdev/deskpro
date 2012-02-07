@@ -6,7 +6,7 @@
  * Based upon the plugin by Tzury Bar Yochay:
  * http://github.com/tzuryby/hotkeys
  *
- * Original idea by:
+ * Original feedback by:
  * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
 */
 

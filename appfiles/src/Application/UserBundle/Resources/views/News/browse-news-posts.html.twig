@@ -1,9 +1,9 @@
 {% for news in news_entries %}
 	<li class="{% if show_more and loop.last %}has-more{% endif %}">
 		<div style="float:right">
-			<div class="cal-date" title="{{ idea.date_created|date('M d Y @ H:i:s') }}" style="margin-bottom: 4px;">
-				<div class="month">{{ idea.date_created|date('M')|upper }}</div>
-				<div class="day">{{ idea.date_created|date('d') }}</div>
+			<div class="cal-date" title="{{ feedback.date_created|date('M d Y @ H:i:s') }}" style="margin-bottom: 4px;">
+				<div class="month">{{ feedback.date_created|date('M')|upper }}</div>
+				<div class="day">{{ feedback.date_created|date('d') }}</div>
 			</div>
 			<div class="info-line">
 				<ul>

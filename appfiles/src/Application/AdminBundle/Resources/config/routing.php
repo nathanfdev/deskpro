@@ -1303,71 +1303,71 @@ $collection->add('admin_plugins_uninstall', new Route(
 # Publish
 ################################################################################
 
-$collection->add('admin_ideas_settings', new Route(
-	'/portal/ideas/settings',
-	array('_controller' => 'AdminBundle:Ideas:ideaSettings'),
+$collection->add('admin_feedback_settings', new Route(
+	'/portal/feedback/settings',
+	array('_controller' => 'AdminBundle:Ideas:feedbackSettings'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_statuses', new Route(
-	'/portal/ideas/statuses',
+$collection->add('admin_feedback_statuses', new Route(
+	'/portal/feedback/statuses',
 	array('_controller' => 'AdminBundle:Ideas:statuses'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_statuses_ajaxadd', new Route(
-	'/portal/ideas/statuses/new',
+$collection->add('admin_feedback_statuses_ajaxadd', new Route(
+	'/portal/feedback/statuses/new',
 	array('_controller' => 'AdminBundle:Ideas:ajaxNewStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_statuses_edit', new Route(
-	'/portal/ideas/statuses/{category_id}/edit',
+$collection->add('admin_feedback_statuses_edit', new Route(
+	'/portal/feedback/statuses/{category_id}/edit',
 	array('_controller' => 'AdminBundle:Ideas:editStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_statuses_del', new Route(
-	'/portal/ideas/statuses/{category_id}/delete',
+$collection->add('admin_feedback_statuses_del', new Route(
+	'/portal/feedback/statuses/{category_id}/delete',
 	array('_controller' => 'AdminBundle:Ideas:deleteStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_status_updateorders', new Route(
-	'/portal/ideas/statuses/update-orders',
+$collection->add('admin_feedback_status_updateorders', new Route(
+	'/portal/feedback/statuses/update-orders',
 	array('_controller' => 'AdminBundle:Ideas:updateStatusOrders'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_cats', new Route(
-	'/portal/ideas/categories',
+$collection->add('admin_feedback_cats', new Route(
+	'/portal/feedback/categories',
 	array('_controller' => 'AdminBundle:Ideas:categories'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_cats_edit', new Route(
-	'/portal/ideas/categories/{category_id}/edit',
+$collection->add('admin_feedback_cats_edit', new Route(
+	'/portal/feedback/categories/{category_id}/edit',
 	array('_controller' => 'AdminBundle:Ideas:editCategory'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_cats_del', new Route(
-	'/portal/ideas/categories/{category_id}/delete',
+$collection->add('admin_feedback_cats_del', new Route(
+	'/portal/feedback/categories/{category_id}/delete',
 	array('_controller' => 'AdminBundle:Ideas:deleteCategory'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ideas_cats_updateorders', new Route(
-	'/portal/ideas/categories/update-orders',
+$collection->add('admin_feedback_cats_updateorders', new Route(
+	'/portal/feedback/categories/update-orders',
 	array('_controller' => 'AdminBundle:Ideas:updateCategoryOrders'),
 	array(),
 	array()
@@ -1408,36 +1408,36 @@ $collection->add('admin_customdefarticles_test', new Route(
 	array()
 ));
 
-$collection->add('admin_customdefideas', new Route(
-	'/idea-fields',
+$collection->add('admin_customdeffeedback', new Route(
+	'/feedback-fields',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:index'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_customdefideas_new_choosetype', new Route(
-	'/idea-fields/new-choose-type',
+$collection->add('admin_customdeffeedback_new_choosetype', new Route(
+	'/feedback-fields/new-choose-type',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:newChooseType', 'field_id' => 0),
 	array(),
 	array()
 ));
 
-$collection->add('admin_customdefideas_edit', new Route(
-	'/idea-fields/{field_id}/edit',
+$collection->add('admin_customdeffeedback_edit', new Route(
+	'/feedback-fields/{field_id}/edit',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:edit'),
 	array('field_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('admin_customdefideas_setenabled', new Route(
-	'/idea-fields/{field_id}/set-enabled',
+$collection->add('admin_customdeffeedback_setenabled', new Route(
+	'/feedback-fields/{field_id}/set-enabled',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:setEnabled'),
 	array('field_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('admin_customdefideas_test', new Route(
-	'/idea-fields/{field_id}/test',
+$collection->add('admin_customdeffeedback_test', new Route(
+	'/feedback-fields/{field_id}/test',
 	array('_controller' => 'AdminBundle:CustomDefIdeas:test'),
 	array('field_id' => '\\d+'),
 	array()

@@ -16,7 +16,7 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 {
 	protected function configure()
 	{
-		$this->setName('dp:search-reindex')->addArgument('content-type', InputArgument::REQUIRED, 'The type of content you want to reindex: article, download, idea, news, ticket');
+		$this->setName('dp:search-reindex')->addArgument('content-type', InputArgument::REQUIRED, 'The type of content you want to reindex: article, download, feedback, news, ticket');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -38,9 +38,9 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 				$table = 'downloads';
 				break;
 
-			case 'idea':
+			case 'feedback':
 				$entity = 'DeskPRO:Idea';
-				$table = 'ideas';
+				$table = 'feedback';
 				break;
 
 			case 'news':

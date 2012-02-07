@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
-DeskPRO.Admin.ElementHandler.IdeaCategoryEditPage = new Orb.Class({
+DeskPRO.Admin.ElementHandler.FeedbackCategoryEditPage = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {
@@ -12,7 +12,7 @@ DeskPRO.Admin.ElementHandler.IdeaCategoryEditPage = new Orb.Class({
 		})
 
 		if (window.leaf_ids) {
-			$('#idea_cat_parent').change(function() {
+			$('#feedback_cat_parent').change(function() {
 				var val = $(this).val();
 				if (window.leaf_ids.indexOf(val) !== -1) {
 					$('#move_note').show();

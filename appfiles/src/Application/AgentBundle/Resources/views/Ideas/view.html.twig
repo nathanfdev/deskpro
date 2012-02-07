@@ -1,53 +1,53 @@
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
-pageMeta.title = {{idea.title|json_encode|raw}};
-pageMeta.idea_id = {{idea.id}};
-pageMeta.url_fragment  = '{{ url_fragment('agent_ideas_view', {'idea_id': idea.id}) }}';
+pageMeta.title = {{feedback.title|json_encode|raw}};
+pageMeta.feedback_id = {{feedback.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_feedback_view', {'feedback_id': feedback.id}) }}';
 
-pageMeta.permalink = '{{ idea.permalink }}';
-pageMeta.labelsSaveUrl = '{{ path('agent_ideas_ajax_labels_save', {'idea_id': idea.id}) }}';
+pageMeta.permalink = '{{ feedback.permalink }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_feedback_ajax_labels_save', {'feedback_id': feedback.id}) }}';
 
-{% if idea.hidden_status == 'validating' %}
+{% if feedback.hidden_status == 'validating' %}
 pageMeta.isValidating = true;
 {% endif %}
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page page-idea-view with-scrollbar">
+<div class="layout-content full-page page-feedback-view with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="delete-notice" {% if idea.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.undelete') }}</button>
 </div>
 
-<div class="spam-notice" {% if idea.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
+<div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.unspam') }}</button>
 </div>
 
-{% if idea.status_code == "hidden.validating" %}
+{% if feedback.status_code == "hidden.validating" %}
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
 <header class="page-header">
-	<h4 class="id-number">#{{ idea.id }}</h4>
-	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ idea.title }}</h1>
+	<h4 class="id-number">#{{ feedback.id }}</h4>
+	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ feedback.title }}</h1>
 	<br class="clear" />
 	<div class="meta-line">
-		<div class="status the-status idea-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
-			{% if idea.status == 'new' %}
-				{{ phrase('agent.ideas.status_active') }}
-			{% elseif idea.status == 'active' %}
-				{{ phrase('agent.ideas.status_active') }}: {{ idea.status_category.title }}
-			{% elseif idea.status == 'closed' %}
-				{{ phrase('agent.ideas.status_closed') }}: {{ idea.status_category.title }}
+		<div class="status the-status feedback-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
+			{% if feedback.status == 'new' %}
+				{{ phrase('agent.feedback.status_active') }}
+			{% elseif feedback.status == 'active' %}
+				{{ phrase('agent.feedback.status_active') }}: {{ feedback.status_category.title }}
+			{% elseif feedback.status == 'closed' %}
+				{{ phrase('agent.feedback.status_closed') }}: {{ feedback.status_category.title }}
 			{% else %}
-				{{ phrase('agent.ideas.status_hidden') }}
+				{{ phrase('agent.feedback.status_hidden') }}
 			{% endif %}
 		</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.category') }}: <span id="{{baseId}}_cat_label">{{ idea.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.category') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
@@ -59,20 +59,20 @@ pageMeta.baseId = '{{ baseId }}';
 	<section class="description-area">
 		<dl class="info-list">
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
-			<dd class="idea-tags tags-wrap">
-				<input type="text" value="{% for label in idea.labels %}{{label.label}},{% endfor %}" />
+			<dd class="feedback-tags tags-wrap">
+				<input type="text" value="{% for label in feedback.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 
 			<dt>{{ phrase('agent.votes') }}:</dt>
 			<dd>
-				<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes</span>
-				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
+				<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span> votes</span>
+				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this feedback" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 
 			<dt>{{ phrase('agent.author') }}:</dt>
 			<dd>
-				By {% for author in idea.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
-				on {{ idea.date_created|date('M d Y') }}
+				By {% for author in feedback.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
+				on {{ feedback.date_created|date('M d Y') }}
 			</dd>
 		</dl>
 
@@ -91,8 +91,8 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
 				<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>
-				<button class="clean-white delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
-				<button class="clean-white spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.mark_spam') }}</button>
+				<button class="clean-white delete delete-type" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				<button class="clean-white spam delete-type" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.mark_spam') }}</button>
 				<button class="clean-white merge">{{ phrase('agent.merge') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
@@ -104,7 +104,7 @@ pageMeta.baseId = '{{ baseId }}';
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab"><a>{{ phrase('agent.label_description') }}</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_revs"><a>{{ phrase('agent.label_revisions') }}</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_"><a>{{ phrase('agent.label_related_content') }}</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab"><a>{{ phrase('agent.label_search') }}</a></li>
@@ -123,10 +123,10 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{# Tab: Comments #}
 	<div id="{{baseId}}_comments_tab" class="deskpro-tab-item">
-		<div class="idea-comments">
+		<div class="feedback-comments">
 			<div class="full-tab-content">
 				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-					{% for comment in idea_comments %}
+					{% for comment in feedback_comments %}
 						{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
 					{% endfor %}
 				</div>
@@ -199,7 +199,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ idea.title }}"/>
+		<input type="text" name="title" value="{{ feedback.title }}"/>
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('agent.ideas.status_new') }}</li>
+	>{{ phrase('agent.feedback.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
@@ -226,7 +226,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.ideas.status_closed') }}</li>
+	>{{ phrase('agent.feedback.status_closed') }}</li>
 	{% for cat in closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -240,11 +240,11 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_start('', 'status') }}
 		<li class="top parent-option item-new" data-item-id="new" data-full-title="New">
 			<input type="radio" name="status" value="new" />
-			<label>{{ phrase('agent.ideas.status_new') }}</label>
+			<label>{{ phrase('agent.feedback.status_new') }}</label>
 		</li>
 		<li class="top parent-option item-active" data-item-id="active" data-full-title="Active">
 			<input type="radio" name="status" value="active" />
-			<label>{{ phrase('agent.ideas.status_active') }}</label>
+			<label>{{ phrase('agent.feedback.status_active') }}</label>
 		</li>
 		{% for cat in active_status_cats %}
 			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="Active: {{ cat.title }}">
@@ -255,7 +255,7 @@ pageMeta.baseId = '{{ baseId }}';
 		{% endfor %}
 		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="Closed">
 			<input type="radio" name="status" value="closed" />
-			<label>{{ phrase('agent.ideas.status_closed') }}</label>
+			<label>{{ phrase('agent.feedback.status_closed') }}</label>
 		</li>
 		{% for cat in closed_status_cats %}
 			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="Closed: {{ cat.title }}">
@@ -267,7 +267,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_end() }}
 {{ optionbox.end(phrase('agent.set_status')) }}
 
-{{ optionbox.category_ob(idea_categories, 'Idea Category', phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(feedback_categories, 'Idea Category', phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

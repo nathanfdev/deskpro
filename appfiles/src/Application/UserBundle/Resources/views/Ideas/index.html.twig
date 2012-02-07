@@ -9,27 +9,27 @@
 
 	<div style="background-color: #eee; padding: 3px;">
 		{% if not category %}
-			<a href="{{ path('user_ideas') }} ">New</a> |
-			<a href="{{ path('user_ideas_status', {'status': 'accepted'}) }} ">Accepted</a> |
-			<a href="{{ path('user_ideas_status', {'status': 'declined'}) }} ">Declined</a> |
-			<a href="{{ path('user_ideas_status', {'status': 'completed'}) }} ">Completed</a>
+			<a href="{{ path('user_feedback') }} ">New</a> |
+			<a href="{{ path('user_feedback_status', {'status': 'accepted'}) }} ">Accepted</a> |
+			<a href="{{ path('user_feedback_status', {'status': 'declined'}) }} ">Declined</a> |
+			<a href="{{ path('user_feedback_status', {'status': 'completed'}) }} ">Completed</a>
 		{% else %}
-			<a href="{{ path('user_ideas_cat', {'slug': category.url_slug}) }} ">New</a> |
-			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">Accepted</a> |
-			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">Declined</a> |
-			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">Completed</a>
+			<a href="{{ path('user_feedback_cat', {'slug': category.url_slug}) }} ">New</a> |
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">Accepted</a> |
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">Declined</a> |
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">Completed</a>
 		{% endif %}
 	</div>
 
 	<table cellpadding="0" cellspacing="0" width="100%" border="0">
-		{% for idea in ideas %}
+		{% for feedback in feedback %}
 			<tr>
 				<td width="80">
-					{{ idea.total_rating }} votes
+					{{ feedback.total_rating }} votes
 				</td>
 				<td>
-					<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
-					{{idea.content_html|raw}}
+					<a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a>
+					{{feedback.content_html|raw}}
 				</td>
 			</tr>
 		{% endfor %}

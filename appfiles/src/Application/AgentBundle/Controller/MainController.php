@@ -133,7 +133,7 @@ class MainController extends AbstractController
 					$data[$name] = json_decode($this->forward('AgentBundle:PeopleSearch:getSectionData')->getContent());
 					break;
 
-				case 'ideas_section':
+				case 'feedback_section':
 					$data[$name] = json_decode($this->forward('AgentBundle:Ideas:getSectionData')->getContent());
 					break;
 
@@ -165,7 +165,7 @@ class MainController extends AbstractController
 		$type_to_ent = array(
 			'article'  => 'DeskPRO:Article',
 			'download' => 'DeskPRO:Download',
-			'idea'     => 'DeskPRO:Idea',
+			'feedback'     => 'DeskPRO:Idea',
 			'news'     => 'DeskPRO:News',
 			'ticket'   => 'DeskPRO:Ticket',
 			'person'   => 'DeskPRO:Person',
@@ -175,7 +175,7 @@ class MainController extends AbstractController
 		$results = array(
 			'article' => array(),
 			'download' => array(),
-			'idea' => array(),
+			'feedback' => array(),
 			'news' => array(),
 			'ticket' => array(),
 			'person' => array(),

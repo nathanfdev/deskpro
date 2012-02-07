@@ -79,7 +79,7 @@ class SearchController extends AbstractController
 			}
 		}
 
-		if (!$type OR !in_array($type, array('all', 'articles', 'ideas', 'downloads', 'news'))) {
+		if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
 			$type = 'all';
 		}
 
@@ -94,14 +94,14 @@ class SearchController extends AbstractController
 		if ($label) {
 			$type_searchers = array(
 				'articles' => new \Application\DeskPRO\Searcher\ArticleSearch(),
-				'ideas' => new \Application\DeskPRO\Searcher\IdeaSearch(),
+				'feedback' => new \Application\DeskPRO\Searcher\IdeaSearch(),
 				'downloads' => new \Application\DeskPRO\Searcher\DownloadSearch(),
 				'news' => new \Application\DeskPRO\Searcher\NewsSearch(),
 			);
 
 			$results = array(
 				'articles' => array(),
-				'ideas' => array(),
+				'feedback' => array(),
 				'downloads' => array(),
 				'news' => array()
 			);

@@ -17,15 +17,15 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * Idea revisions
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaRevision")
- * @ORM_Mapping\Table(name="idea_revisions")
+ * @ORM_Mapping\Table(name="feedback_revisions")
  */
 class IdeaRevision extends RevisionAbstract
 {
 	/**
 	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
-	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $idea;
+	protected $feedback;
 
 	/**
 	 * @var string

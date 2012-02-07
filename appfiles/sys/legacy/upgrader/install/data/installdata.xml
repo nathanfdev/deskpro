@@ -35,12 +35,12 @@
 		<p_ticket>1</p_ticket>
 		<p_ticket_new>1</p_ticket_new>
 		<p_ticket_new_email>1</p_ticket_new_email>
-		<p_ideas>1</p_ideas>
-		<p_ideas_vote>0</p_ideas_vote>
-		<p_ideas_new>0</p_ideas_new>
-		<p_ideas_new_visible>0</p_ideas_new_visible>
-		<p_ideas_comment_new>0</p_ideas_comment_new>
-		<p_ideas_comment_view>1</p_ideas_comment_view>
+		<p_feedback>1</p_feedback>
+		<p_feedback_vote>0</p_feedback_vote>
+		<p_feedback_new>0</p_feedback_new>
+		<p_feedback_new_visible>0</p_feedback_new_visible>
+		<p_feedback_comment_new>0</p_feedback_comment_new>
+		<p_feedback_comment_view>1</p_feedback_comment_view>
 	</query>
 	<query table="user_groups">
 		<id>2</id>
@@ -61,12 +61,12 @@
 		<p_ticket_new_email>1</p_ticket_new_email>
 		<p_ticket_rate>1</p_ticket_rate>
 		<p_ticket_reopen>1</p_ticket_reopen>
-		<p_ideas>1</p_ideas>
-		<p_ideas_vote>1</p_ideas_vote>
-		<p_ideas_new>1</p_ideas_new>
-		<p_ideas_new_visible>1</p_ideas_new_visible>
-		<p_ideas_comment_new>1</p_ideas_comment_new>
-		<p_ideas_comment_view>1</p_ideas_comment_view>
+		<p_feedback>1</p_feedback>
+		<p_feedback_vote>1</p_feedback_vote>
+		<p_feedback_new>1</p_feedback_new>
+		<p_feedback_new_visible>1</p_feedback_new_visible>
+		<p_feedback_comment_new>1</p_feedback_comment_new>
+		<p_feedback_comment_view>1</p_feedback_comment_view>
 	</query>
 
 	<!-- Default usersource -->
@@ -219,7 +219,7 @@
 	<query table="faq_articles">
 		<id>1</id>
 		<title>Test Article - How do I turn off a computer?</title>
-		<question>How should I turn off my computer? A friend told me it was a bad idea to just pull out the power plug. Please help</question>
+		<question>How should I turn off my computer? A friend told me it was a bad feedback to just pull out the power plug. Please help</question>
 		<answer>If you are running Windows XP, click the Start button in the bottom left hand corner. Then move your mouse to the Shut Down icon on the bottom right of the menu that pops up. Select Shut Down from the next menu and click Ok. Your computer will now turn itself off.</answer>
 		<category>1</category>
 		<timestamp_made>###TIMENOW###</timestamp_made>

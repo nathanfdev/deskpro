@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				}
 
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/filter/mass-actions/' + action,
+					url: BASE_URL + 'agent/feedback/filter/mass-actions/' + action,
 					data: postData,
 					type: 'POST',
 					dataType: 'json',

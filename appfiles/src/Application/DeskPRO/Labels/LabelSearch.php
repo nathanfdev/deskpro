@@ -28,7 +28,7 @@ class LabelSearch
 	/**
 	 * @var array
 	 */
-	protected $search_types = array('article', 'download', 'idea', 'news', 'organization', 'people', 'ticket');
+	protected $search_types = array('article', 'download', 'feedback', 'news', 'organization', 'people', 'ticket');
 
 	/**
 	 * @var int
@@ -78,7 +78,7 @@ class LabelSearch
 		$results = array(
 			'article' => array(),
 			'download' => array(),
-			'idea' => array(),
+			'feedback' => array(),
 			'news' => array(),
 			'ticket' => array(),
 			'person' => array(),
@@ -128,18 +128,18 @@ class LabelSearch
 			}
 		}
 
-		if (in_array('idea', $this->search_types)) {
+		if (in_array('feedback', $this->search_types)) {
 			$ids = $this->db->fetchAllCol("
-				SELECT labels_ideas.idea_id
-				FROM labels_ideas
-				LEFT JOIN ideas ON ideas.id = labels_ideas.idea_id
-				WHERE labels_ideas.label = ? AND ideas.hidden_status NOT IN('spam', 'deleted')
-				ORDER BY labels_ideas.idea_id DESC
+				SELECT labels_feedback.feedback_id
+				FROM labels_feedback
+				LEFT JOIN feedback ON feedback.id = labels_feedback.feedback_id
+				WHERE labels_feedback.label = ? AND feedback.hidden_status NOT IN('spam', 'deleted')
+				ORDER BY labels_feedback.feedback_id DESC
 				LIMIT {$this->limit}
 			", array($label));
 
 			if ($ids) {
-				$results['idea'] = $this->em->getRepository('DeskPRO:Idea')->getByIds($ids, true);
+				$results['feedback'] = $this->em->getRepository('DeskPRO:Idea')->getByIds($ids, true);
 			}
 		}
 

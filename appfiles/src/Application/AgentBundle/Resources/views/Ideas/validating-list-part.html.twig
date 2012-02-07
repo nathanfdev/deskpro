@@ -1,23 +1,23 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
-	{% for idea in ideas %}
+	{% for feedback in feedback %}
 		<article
-			class="idea idea-{{idea.id}}"
-			data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id, 'from_listing_result_id': cache_id}) }}"
-			data-route-title="@selector(a.idea-title)"
+			class="feedback feedback-{{feedback.id}}"
+			data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id, 'from_listing_result_id': cache_id}) }}"
+			data-route-title="@selector(a.feedback-title)"
 			data-route-openclass="open"
 		>
 			<div class="userinfo">
 				<address style="right: 20px;">
-					{{ idea.person.primary_email_address }}
+					{{ feedback.person.primary_email_address }}
 				</address>
-				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': idea.person.id|default('0')}) }}">
-					{{ idea.person.display_name }}
+				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': feedback.person.id|default('0')}) }}">
+					{{ feedback.person.display_name }}
 				</a>
 			</div>
 			<div class="preview">
-				<a class="idea-title">{{ idea.summary_line }}</a>
+				<a class="feedback-title">{{ feedback.summary_line }}</a>
 			</div>
-			<time class="timeago" datetime="{{ idea.date_created|date('c') }}">{{ idea.date_created|date('M d') }}</time>
+			<time class="timeago" datetime="{{ feedback.date_created|date('c') }}">{{ feedback.date_created|date('M d') }}</time>
 		</article>
 	{% endfor %}
 </section>

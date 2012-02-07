@@ -24,16 +24,16 @@ class IdeaType extends AbstractType
 	/**
 	 * Transform a value into a Document
 	 *
-	 * @param  Idea $idea
+	 * @param  Idea $feedback
 	 * @return \Elastic_Document
 	 */
-	public function transformToDocument($idea)
+	public function transformToDocument($feedback)
 	{
 		$trans = new IdeaTransformer();
-		$doc = $trans->transform($idea);
+		$doc = $trans->transform($feedback);
 
 		$doc->setIndex('content');
-		$doc->setType('idea');
+		$doc->setType('feedback');
 
 		return $doc;
 	}
@@ -46,7 +46,7 @@ class IdeaType extends AbstractType
 	 */
 	public function getType()
 	{
-		return 'idea';
+		return 'feedback';
 	}
 
 

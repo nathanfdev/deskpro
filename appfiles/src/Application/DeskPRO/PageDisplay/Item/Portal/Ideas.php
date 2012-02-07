@@ -30,7 +30,7 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 	public function getCacheOptions()
 	{
 		$opt = array(
-			'tags' => array('ideas')
+			'tags' => array('feedback')
 		);
 
 		if ($this->section == 'sidebar') {
@@ -64,17 +64,17 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 	{
 		$category = null;
 		if ($this->getOption('category_id')) {
-			$category = App::findEntity('DeskPRO:IdeaCategory', $this->getOption('category_id'));
+			$category = App::findEntity('DeskPRO:FeedbackCategory', $this->getOption('category_id'));
 		}
 
-		$ideas = App::getEntityRepository('DeskPRO:Idea')->getNewest(
+		$feedback = App::getEntityRepository('DeskPRO:Idea')->getNewest(
 			$this->getOption('status', 'new'),
 			$this->getValueOption('num_articles', 5),
 			$category
 		);
 
-		$html = $this->renderView('UserBundle:Portal:ideas-sidebar.html.twig', array(
-			'ideas' => $ideas,
+		$html = $this->renderView('UserBundle:Portal:feedback-sidebar.html.twig', array(
+			'feedback' => $feedback,
 			'block_title' => $this->getOption('block_title'),
 		));
 

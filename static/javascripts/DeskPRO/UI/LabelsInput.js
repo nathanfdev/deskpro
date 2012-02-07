@@ -26,7 +26,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 			/**
 			 * The label type. This is used with autocomplete.
-			 * Values: tickets, people, articles, downloads, ideas, news
+			 * Values: tickets, people, articles, downloads, feedback, news
 			 */
 			type: '',
 

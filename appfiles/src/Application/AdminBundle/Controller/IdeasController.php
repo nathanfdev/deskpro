@@ -2,9 +2,9 @@
 
 namespace Application\AdminBundle\Controller;
 
-use Application\DeskPRO\Entity\IdeaStatusCategory;
-use Application\DeskPRO\Entity\IdeaCategory;
-use Application\AdminBundle\Form\EditIdeaCategoryType;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\AdminBundle\Form\EditFeedbackCategoryType;
 use Orb\Util\Arrays;
 
 class IdeasController extends AbstractController
@@ -15,8 +15,8 @@ class IdeasController extends AbstractController
 
 	public function statusesAction()
 	{
-		$active_cats = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$closed_cats = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+		$active_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 		return $this->render('AdminBundle:Ideas:statuses.html.twig', array(
 			'active_cats' => $active_cats,
@@ -27,7 +27,7 @@ class IdeasController extends AbstractController
 	public function updateStatusOrdersAction()
 	{
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
-		return $helper->doUpdate('idea_status_categories');
+		return $helper->doUpdate('feedback_status_categories');
 	}
 
 	public function ajaxNewStatusAction()
@@ -42,7 +42,7 @@ class IdeasController extends AbstractController
 		$this->em->getConnection()->beginTransaction();
 
 		try {
-			$cat = new IdeaStatusCategory();
+			$cat = new FeedbackStatusCategory();
 			$cat->title = $title;
 			$cat->status_type = $type;
 			$cat->display_order = 9999;
@@ -66,9 +66,9 @@ class IdeasController extends AbstractController
 		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInStatusCategory($cat);
 
 		if ($cat->status_type == 'active') {
-			$other_cats = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+			$other_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		} else {
-			$other_cats = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+			$other_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 		}
 
 		unset($other_cats[$cat->id]);
@@ -90,11 +90,11 @@ class IdeasController extends AbstractController
 		try {
 
 			if ($count_existing) {
-				$move_cat = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->find($this->in->getUint('move_to_cat'));
+				$move_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->in->getUint('move_to_cat'));
 				if (!$move_cat) {
 					$this->em->createQuery("
 						SELECT c
-						FROM DeskPRO:IdeaStatusCategory c
+						FROM DeskPRO:FeedbackStatusCategory c
 						WHERE c.status_type = ?1 AND c != ?2
 						ORDER BY c.id ASC
 					")->setMaxResults(1)
@@ -104,10 +104,10 @@ class IdeasController extends AbstractController
 				}
 
 				if (!$move_cat) {
-					return $this->renderStandardError("You did not specify a status to move existing ideas into.");
+					return $this->renderStandardError("You did not specify a status to move existing feedback into.");
 				}
 
-				$this->db->update('ideas', array('status_category_id' => $move_cat->id), array('status_category_id' => $cat->id));
+				$this->db->update('feedback', array('status_category_id' => $move_cat->id), array('status_category_id' => $cat->id));
 			}
 
 			$this->em->remove($cat);
@@ -119,7 +119,7 @@ class IdeasController extends AbstractController
 			throw $e;
 		}
 
-		return $this->redirectRoute('admin_ideas_statuses');
+		return $this->redirectRoute('admin_feedback_statuses');
 	}
 
 	/**
@@ -127,7 +127,7 @@ class IdeasController extends AbstractController
 	 */
 	public function getStatusOr404($id)
 	{
-		$cat = $this->em->find('DeskPRO:IdeaStatusCategory', $id);
+		$cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $id);
 		if (!$cat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no status with ID $id");
 		}
@@ -145,7 +145,7 @@ class IdeasController extends AbstractController
 	{
 		$all_categories = $this->em->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaCategory c
+			FROM DeskPRO:FeedbackCategory c
 			WHERE c.parent IS NULL
 			ORDER BY c.display_order ASC
 		")->getResult();
@@ -158,18 +158,18 @@ class IdeasController extends AbstractController
 	public function editCategoryAction($category_id)
 	{
 		if (!$category_id) {
-			$category = new IdeaCategory();
+			$category = new FeedbackCategory();
 		} else {
-			$category = $this->em->getRepository('DeskPRO:IdeaCategory')->find($category_id);
+			$category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($category_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditIdeaCategoryType($category->id ? false : true), $category);
+		$form = $this->get('form.factory')->create(new EditFeedbackCategoryType($category->id ? false : true), $category);
 
 		if ($this->in->getBool('process')) {
 
 			$do_move = false;
-			if (!$category_id && $this->in->getUint('idea_cat.parent')) {
-				$do_move = $this->db->fetchColumn("SELECT COUNT(*) FROM idea_categories c WHERE c.parent_id = ?", array($this->in->getUint('idea_cat.parent')));
+			if (!$category_id && $this->in->getUint('feedback_cat.parent')) {
+				$do_move = $this->db->fetchColumn("SELECT COUNT(*) FROM feedback_categories c WHERE c.parent_id = ?", array($this->in->getUint('feedback_cat.parent')));
 			}
 
 			$form->bindRequest($this->get('request'));
@@ -182,10 +182,10 @@ class IdeasController extends AbstractController
 					$this->em->flush();
 
 					if ($do_move) {
-						$this->db->update('ideas', array('category_id' => $category->id), array('category_id' => $category->parent->id));
+						$this->db->update('feedback', array('category_id' => $category->id), array('category_id' => $category->parent->id));
 					}
 
-					$this->em->getRepository('DeskPRO:IdeaCategory')->repair();
+					$this->em->getRepository('DeskPRO:FeedbackCategory')->repair();
 
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
@@ -194,12 +194,12 @@ class IdeasController extends AbstractController
 				}
 
 				$this->session->setFlash('saved', $category->title);
-				return $this->redirectRoute('admin_ideas_cats');
+				return $this->redirectRoute('admin_feedback_cats');
 			}
 		}
 
-		$other_cats = $this->em->getRepository('DeskPRO:IdeaCategory')->getCategoriesInHierarchy();
-		$exclude_cat_ids = $this->em->getRepository('DeskPRO:IdeaCategory')->getChildrenIds($category, false);
+		$other_cats = $this->em->getRepository('DeskPRO:FeedbackCategory')->getCategoriesInHierarchy();
+		$exclude_cat_ids = $this->em->getRepository('DeskPRO:FeedbackCategory')->getChildrenIds($category, false);
 		$exclude_cat_ids[] = $category->id;
 
 		$filter_fn = function($c) use ($exclude_cat_ids, &$filter_fn) {
@@ -224,7 +224,7 @@ class IdeasController extends AbstractController
 		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInCategory($category);
 
 		if (!$category_id) {
-			$leaf_ids = $this->em->getRepository('DeskPRO:IdeaCategory')->getLeafIds();
+			$leaf_ids = $this->em->getRepository('DeskPRO:FeedbackCategory')->getLeafIds();
 		} else {
 			$leaf_ids = array();
 		}
@@ -240,16 +240,16 @@ class IdeasController extends AbstractController
 
 	public function deleteCategoryAction($category_id)
 	{
-		$category = $this->em->getRepository('DeskPRO:IdeaCategory')->find($category_id);
+		$category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($category_id);
 
 		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInCategory($category);
 
 		if ($count_existing) {
-			$move_cat = $this->em->getRepository('DeskPRO:IdeaStatusCategory')->find($this->in->getUint('move_to_cat'));
+			$move_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->in->getUint('move_to_cat'));
 			if (!$move_cat) {
 				$this->em->createQuery("
 					SELECT c
-					FROM DeskPRO:IdeaCategory c
+					FROM DeskPRO:FeedbackCategory c
 					WHERE c != ?2
 					ORDER BY c.id ASC
 				")->setMaxResults(1)
@@ -258,7 +258,7 @@ class IdeasController extends AbstractController
 			}
 
 			if (!$move_cat) {
-				return $this->renderStandardError("You did not specify a category to move existing ideas into.");
+				return $this->renderStandardError("You did not specify a category to move existing feedback into.");
 			}
 		}
 
@@ -266,7 +266,7 @@ class IdeasController extends AbstractController
 		try {
 
 			if ($move_cat) {
-				$this->db->update('ideas', array('category_id' => $move_cat->id), array('category_id' => $category->id));
+				$this->db->update('feedback', array('category_id' => $move_cat->id), array('category_id' => $category->id));
 			}
 
 			foreach ($category->children as $c) {
@@ -275,7 +275,7 @@ class IdeasController extends AbstractController
 			$this->em->remove($category);
 			$this->em->flush();
 
-			$this->em->getRepository('DeskPRO:IdeaCategory')->repair();
+			$this->em->getRepository('DeskPRO:FeedbackCategory')->repair();
 
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
@@ -284,12 +284,12 @@ class IdeasController extends AbstractController
 		}
 
 		$this->session->setFlash('deleted', $category->title);
-		return $this->redirectRoute('admin_ideas_cats');
+		return $this->redirectRoute('admin_feedback_cats');
 	}
 
 	public function updateCategoryOrdersAction()
 	{
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
-		return $helper->doUpdate('idea_categories');
+		return $helper->doUpdate('feedback_categories');
 	}
 }

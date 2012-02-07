@@ -23,7 +23,7 @@ use Application\DeskPRO\Searcher\IdeaSearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class IdeaCategory extends AbstractCategoryRepository
+class FeedbackCategory extends AbstractCategoryRepository
 {
 	protected $all_cats = null;
 
@@ -47,8 +47,8 @@ class IdeaCategory extends AbstractCategoryRepository
 			$this->getEntityName(),
 			$this->getClassMetadata(),
 			'DeskPRO:IdeaComment',
-			'idea_comments',
-			'idea_id'
+			'feedback_comments',
+			'feedback_id'
 		);
 
 		return $this->_comment_helper;
@@ -56,7 +56,7 @@ class IdeaCategory extends AbstractCategoryRepository
 
 	public function getPermissionTableName()
 	{
-		return 'idea_category2usergroup';
+		return 'feedback_category2usergroup';
 	}
 
 	/**
@@ -70,7 +70,7 @@ class IdeaCategory extends AbstractCategoryRepository
 
 		$this->all_cats = App::getDb()->fetchAllKeyed("
 			SELECT id, parent_id title
-			FROM idea_categories
+			FROM feedback_categories
 			ORDER BY display_order DESC
 		", array(), 'id');
 
@@ -98,7 +98,7 @@ class IdeaCategory extends AbstractCategoryRepository
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaCategory c INDEX BY c.id
+			FROM DeskPRO:FeedbackCategory c INDEX BY c.id
 			ORDER BY c.id DESC
 		")->execute();
 	}
@@ -106,7 +106,7 @@ class IdeaCategory extends AbstractCategoryRepository
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
 	{
 		$cache = App::getCache($cache_name);
-		$cache_id = "counts_ideas";
+		$cache_id = "counts_feedback";
 
 		if (($counts = $cache->load($cache_id)) === false) {
 			$counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));

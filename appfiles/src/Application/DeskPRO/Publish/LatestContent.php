@@ -33,7 +33,7 @@ class LatestContent
 	/**
 	 * @var int
 	 */
-	protected $max_idea = 10;
+	protected $max_feedback = 10;
 
 	/**
 	 * @var int
@@ -64,7 +64,7 @@ class LatestContent
 		$this->count = $x;
 
 		// They all have equal weight
-		$this->max_article = $this->max_idea = $this->max_download = $this->max_news = $x;
+		$this->max_article = $this->max_feedback = $this->max_download = $this->max_news = $x;
 
 		return $this;
 	}
@@ -87,7 +87,7 @@ class LatestContent
 	 */
 	public function setMaxIdeas($x)
 	{
-		$this->max_idea = $x;
+		$this->max_feedback = $x;
 		return $this;
 	}
 
@@ -127,10 +127,10 @@ class LatestContent
 				$results[] = array('type' => 'article', 'item' => $r);
 			}
 		}
-		if ($this->max_idea) {
-			$res = $this->em->getRepository('DeskPRO:Idea')->getNewest(null, $this->max_idea);
+		if ($this->max_feedback) {
+			$res = $this->em->getRepository('DeskPRO:Idea')->getNewest(null, $this->max_feedback);
 			foreach ($res as $r) {
-				$results[] = array('type' => 'idea', 'item' => $r);
+				$results[] = array('type' => 'feedback', 'item' => $r);
 			}
 		}
 		if ($this->max_download) {

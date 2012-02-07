@@ -1,7 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.TicketList');
 
 /**
- * Handles changes to many tickets on a ticket page. Somewhat same idea as with the Ticket.ChangeManager,
+ * Handles changes to many tickets on a ticket page. Somewhat same feedback as with the Ticket.ChangeManager,
  * except we work with many tickets at a time, and we only care about updating the UI and not about
  * getting current values.
  */

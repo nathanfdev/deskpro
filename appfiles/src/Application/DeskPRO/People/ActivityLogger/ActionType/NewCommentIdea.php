@@ -24,7 +24,7 @@ class NewCommentIdea extends NewCommentAbstract
 	public function getDetails()
 	{
 		$details = parent::getDetails();
-		$details['idea_id'] = $this->comment->idea['id'];
-		$details['idea_title'] = $this->comment->idea['title'];
+		$details['feedback_id'] = $this->comment->feedback['id'];
+		$details['feedback_title'] = $this->comment->feedback['title'];
 	}
 }

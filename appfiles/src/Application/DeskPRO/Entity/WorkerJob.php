@@ -72,7 +72,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	protected $options = array();
 
 	/**
-	 * The most ideal interval for this task to run.
+	 * The most feedbackl interval for this task to run.
 	 *
 	 * @ORM_Mapping\Column(name="run_interval", type="integer")
 	 */

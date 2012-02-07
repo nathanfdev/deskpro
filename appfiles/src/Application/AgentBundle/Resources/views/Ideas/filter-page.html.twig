@@ -1,21 +1,21 @@
  <section class="search-reuslts page-set" data-page="{{ page }}">
-	{% for idea in ideas %}
+	{% for feedback in feedback %}
 		<article
-			class="row-item idea idea-{{idea.id}} ideas-{{idea.id}} related-is-linkable"
-			data-content-type="ideas"
-			data-content-id="{{ idea.id }}"
-			data-route="idea:{{ path('agent_ideas_view', {'idea_id': idea.id}) }}"
-			data-route-title="@selector(a.idea-title)"
+			class="row-item feedback feedback-{{feedback.id}} feedback-{{feedback.id}} related-is-linkable"
+			data-content-type="feedback"
+			data-content-id="{{ feedback.id }}"
+			data-route="feedback:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}"
+			data-route-title="@selector(a.feedback-title)"
 			data-route-openclass="open"
 		>
-			<input class="item-select" type="checkbox" value="{{idea.id}}" />
+			<input class="item-select" type="checkbox" value="{{feedback.id}}" />
 			<div class="top-row">
 				<div class="top-row-left">
 					<span class="votes">
-						{{ idea.num_ratings|default(0) }}
+						{{ feedback.num_ratings|default(0) }}
 					</span>
 					<h3>
-						<a class="idea-title click-through">{{ idea.title }}</a>
+						<a class="feedback-title click-through">{{ feedback.title }}</a>
 					</h3>
 				</div>
 				<div class="top-row-right visible-related-content-controls">
@@ -32,17 +32,17 @@
 							{% if field == 'category' %}
 								<li>
 									<span class="prop-title">{{ phrase('agent.category') }}</span>
-									<span class="prop-val">{{ idea.category.full_title }}</span>
+									<span class="prop-val">{{ feedback.category.full_title }}</span>
 								</li>
 							{% elseif field == 'author' %}
 								<li>
 									<span class="prop-title">{{ phrase('agent.author') }}</span>
-									<span class="prop-val">{{ idea.person.display_name }} {% if idea.person.primary_email_address %}({{ idea.person.primary_email_address }}){% endif %}</span>
+									<span class="prop-val">{{ feedback.person.display_name }} {% if feedback.person.primary_email_address %}({{ feedback.person.primary_email_address }}){% endif %}</span>
 								</li>
 							{% elseif field == 'date_created' %}
 								<li>
 									<span class="prop-title">{{ phrase('agent.date_created') }}</span>
-									<span class="prop-val">{{ idea.date_created|date('M j, Y')}}</span>
+									<span class="prop-val">{{ feedback.date_created|date('M j, Y')}}</span>
 								</li>
 							{% endif %}
 						{% endfor %}

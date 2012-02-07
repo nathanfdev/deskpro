@@ -89,21 +89,21 @@ $em->flush();
 # Ideas
 ################################################################################
 
-##BEGIN:create_ideas.default##
-$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\IdeaCategory();
+##BEGIN:create_feedback.default##
+$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
 $DEFAULT_IDEA_CAT['title'] = 'General';
 $em->persist($DEFAULT_IDEA_CAT);
 $em->flush();
 
 foreach (array('Planning', 'Started') as $t) {
-	$s = new \Application\DeskPRO\Entity\IdeaStatusCategory();
+	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 	$s->status_type = 'active';
 	$s->title = $t;
 	$em->persist($s);
 }
 
 foreach (array('Completed', 'Duplicate', 'Already Exists', 'Declined') as $t) {
-	$s = new \Application\DeskPRO\Entity\IdeaStatusCategory();
+	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 	$s->status_type = 'closed';
 	$s->title = $t;
 	$em->persist($s);
@@ -113,7 +113,7 @@ $em->flush();
 $DEFAULT_IDEA = new \Application\DeskPRO\Entity\Idea();
 $DEFAULT_IDEA->person = $AGENT;
 $DEFAULT_IDEA->title = 'Example Idea';
-$DEFAULT_IDEA->content = 'This is an example idea. Feel free to edit or delete it.';
+$DEFAULT_IDEA->content = 'This is an example feedback. Feel free to edit or delete it.';
 $DEFAULT_IDEA->status = 'new';
 $DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
 $em->persist($DEFAULT_IDEA);
@@ -683,7 +683,7 @@ $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.ideas##
+##BEGIN:create_portal_block.feedback##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'portal';
 $b->type = 'Ideas';
@@ -736,7 +736,7 @@ $b->type = 'Downloads';
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.ideas_sidebar##
+##BEGIN:create_portal_block.feedback_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'Ideas';

@@ -5,7 +5,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'idea';
+		this.TYPENAME = 'feedback';
 	},
 
 	initPage: function(el) {
@@ -13,7 +13,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.idea_id = this.getMetaData('idea_id');
+		this.feedback_id = this.getMetaData('feedback_id');
 
 		this._initBasic();
 		this._initMenus();
@@ -24,23 +24,23 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 		if (this.meta.isValidating) {
 			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-				typename: 'ideas',
-				contentId: this.idea_id,
-				singleTyle: 'idea'
+				typename: 'feedback',
+				contentId: this.feedback_id,
+				singleTyle: 'feedback'
 			});
 			this.ownObject(this.validatingEdit);
 		}
 
-		var btn = $('.idea-editor-edit', this.wrapper);
+		var btn = $('.feedback-editor-edit', this.wrapper);
 		btn.on('click', this.showEditor.bind(this));
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
-			typename: 'ideas',
-			content_id: this.idea_id,
+			typename: 'feedback',
+			content_id: this.feedback_id,
 			listEl: $('section.linked-content:first', this.wrapper),
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -49,7 +49,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -64,7 +64,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'agent/ideas/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'agent/feedback/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -72,7 +72,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/rating-who-voted/idea/' + this.idea_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/feedback/' + this.feedback_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
@@ -108,7 +108,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
-				url: BASE_URL + 'agent/ideas/view/' + self.meta.idea_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'agent/feedback/view/' + self.meta.feedback_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -143,9 +143,9 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.idea-revs') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/view-revisions',
+						url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: this,
@@ -169,7 +169,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+				url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
 				success: function(data) {
 					self.handleUnloadRevisions(data.revision_id);
 				}
@@ -190,7 +190,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+			url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
 			type: 'POST',
 			data: {action: action},
 			context: this,
@@ -219,7 +219,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 				self.getEl('status_label').text(title);
 
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'status', status: catId},
 					context: self,
@@ -229,7 +229,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+			ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 			statusMenu: this.statusMenu,
 			type: 'spam'
 		});
@@ -247,7 +247,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 				self.getEl('cat_label').text(title);
 
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
 					type: 'POST',
 					data: { action: 'category', category_id: catId },
 					dataType: 'json'
@@ -267,7 +267,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
-			html.push('The permalink to this idea on the website is:<br />');
+			html.push('The permalink to this feedback on the website is:<br />');
 			html.push('<input type="text" style="width:450px;" />');
 			html.push('</div>');
 
@@ -283,19 +283,19 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 		$('.merge', actions).on('click', (function(ev) {
 			var mergeOverlay = new DeskPRO.Agent.Widget.MergeIdea({
-				ideaId: this.getMetaData('idea_id'),
+				feedbackId: this.getMetaData('feedback_id'),
 				destroyOnClose: true,
 				onMergeSuccess: function(data) {
 
 					// remove old tabs, theyre outdated
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('idea'), function(tab) {
-						var tid = tab.page.getMetaData('idea_id');
-						if (tid == data.old_idea_id || tid == data.idea_id) {
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
+						var tid = tab.page.getMetaData('feedback_id');
+						if (tid == data.old_feedback_id || tid == data.feedback_id) {
 							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
 						}
 					});
 
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/ideas/view/' + data.idea_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
 
 					mergeOverlay.close();
 				}
@@ -311,15 +311,15 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'ideas',
-			textarea: $(".idea-tags input", this.wrapper),
+			type: 'feedback',
+			textarea: $(".feedback-tags input", this.wrapper),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
 
 		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'ideas',
-			contentId: this.idea_id,
+			contentType: 'feedback',
+			contentId: this.feedback_id,
 			element: $('.sticky-search-words ul', this.wrapper)
 		});
 		this.ownObject(this.stickyWords);
@@ -385,7 +385,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.getMetaData('idea_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/feedback/view/' + this.getMetaData('feedback_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -399,7 +399,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 				this.newCommentWrapper.before(el);
 
 				// Inc note count
-				this.incCount('idea-comments');
+				this.incCount('feedback-comments');
 			}
 		});
 	},
@@ -421,8 +421,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		}
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editidea',
-			listenOn: $('.idea-editor-wrap:first', wrap)
+			stateId: 'editfeedback',
+			listenOn: $('.feedback-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);
 
@@ -431,12 +431,12 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 			var data = {
 				action: 'content',
-				content: $('.idea-editor-wrap textarea:first', wrap).val(),
-				attach: $('.idea-editor-wrap .edit-content-attach:first', wrap).val()
+				content: $('.feedback-editor-wrap textarea:first', wrap).val(),
+				attach: $('.feedback-editor-wrap .edit-content-attach:first', wrap).val()
 			};
 
 			$.ajax({
-				url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+				url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
@@ -457,7 +457,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 
 		var self = this;
 
-		var edWrap = $('.idea-editor-wrap', this.getEl('content_ed')).show();
+		var edWrap = $('.feedback-editor-wrap', this.getEl('content_ed')).show();
 		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
@@ -465,8 +465,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			$('.revert-message-notice', edWrap).remove();
 		});
 
-		$('.idea-content-wrap', this.getEl('content_ed')).hide();
-		$('.idea-editor-wrap', this.getEl('content_ed')).show();
+		$('.feedback-content-wrap', this.getEl('content_ed')).hide();
+		$('.feedback-editor-wrap', this.getEl('content_ed')).show();
 
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
@@ -482,8 +482,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	},
 
 	hideEditor: function() {
-		$('.idea-editor-wrap', this.getEl('content_ed')).hide();
-		$('.idea-content-wrap', this.getEl('content_ed')).show();
+		$('.feedback-editor-wrap', this.getEl('content_ed')).hide();
+		$('.feedback-content-wrap', this.getEl('content_ed')).show();
 	},
 
 	_initMediaBrowser: function() {
@@ -515,8 +515,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 	},
 
 	showCompareRev: function() {
-		var old_id = $('.idea-revs input.old:checked', this.wrapper).val();
-		var new_id = $('.idea-revs input.new:checked', this.wrapper).val();
+		var old_id = $('.feedback-revs input.old:checked', this.wrapper).val();
+		var new_id = $('.feedback-revs input.new:checked', this.wrapper).val();
 
 		if (!old_id || !new_id) {
 			return;
@@ -526,7 +526,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 			triggerElement: $('button.compare-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/ideas/compare-revs/' + old_id + '/' + new_id
+				url: BASE_URL + 'agent/feedback/compare-revs/' + old_id + '/' + new_id
 			},
 			destroyOnClose: true
 		});

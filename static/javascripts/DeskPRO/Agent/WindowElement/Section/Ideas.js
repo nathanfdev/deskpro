@@ -4,13 +4,13 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
-		this.buttonEl = $('#ideas_section');
+		this.buttonEl = $('#feedback_section');
 
-		this.urlFragmentName = 'ideas';
+		this.urlFragmentName = 'feedback';
 
-		this.setSectionElement($('<section id="ideas_outline"></section>'));
+		this.setSectionElement($('<section id="feedback_outline"></section>'));
 
-		DeskPRO_Window.getSectionData('ideas_section', this._initSection.bind(this));
+		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
 	},
 
 	_initSection: function(data) {
@@ -22,7 +22,7 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 		var self = this;
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
-			triggerElements: $('#ideas_outline_tabstrip li'),
+			triggerElements: $('#feedback_outline_tabstrip li'),
 			onTabSwitch: function(info) {
 
 			}
@@ -35,8 +35,8 @@ DeskPRO.Agent.WindowElement.Section.Ideas = new Orb.Class({
 
 	recountBadge: function() {
 		var count = 0;
-		count += parseInt($('#ideas_validating_count').text().trim()) || 0;
-		count += parseInt($('#ideas_comments_validating_count').text().trim()) || 0;
+		count += parseInt($('#feedback_validating_count').text().trim()) || 0;
+		count += parseInt($('#feedback_comments_validating_count').text().trim()) || 0;
 		this.updateBadge(count);
 	}
 });

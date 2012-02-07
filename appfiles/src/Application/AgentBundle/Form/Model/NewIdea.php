@@ -25,7 +25,7 @@ class NewIdea
 	public $slug;
 	public $labels = array();
 
-	protected $_idea;
+	protected $_feedback;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -43,27 +43,27 @@ class NewIdea
 	{
 		$this->_em->beginTransaction();
 
-		$idea = new Idea();
-		$idea->person = $this->_person_context;
-		$idea->setStatusCode($this->status_code);
-		$idea->title = $this->title;
-		$idea->content = $this->content;
-		$idea->slug = $this->slug;
+		$feedback = new Idea();
+		$feedback->person = $this->_person_context;
+		$feedback->setStatusCode($this->status_code);
+		$feedback->title = $this->title;
+		$feedback->content = $this->content;
+		$feedback->slug = $this->slug;
 
-		$cat = $this->_em->find('DeskPRO:IdeaCategory', $this->category_id);
-		$idea->category = $cat;
+		$cat = $this->_em->find('DeskPRO:FeedbackCategory', $this->category_id);
+		$feedback->category = $cat;
 
-		$idea->getLabelManager()->setLabelsArray($this->labels);
+		$feedback->getLabelManager()->setLabelsArray($this->labels);
 
-		$this->_em->persist($idea);
+		$this->_em->persist($feedback);
 		$this->_em->flush();
 		$this->_em->commit();
 
-		$this->_idea = $idea;
+		$this->_feedback = $feedback;
 	}
 
 	public function getIdea()
 	{
-		return $this->_idea;
+		return $this->_feedback;
 	}
 }

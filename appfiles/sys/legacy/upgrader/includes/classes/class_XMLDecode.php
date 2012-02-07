@@ -204,7 +204,7 @@ class class_XMLDecode {
 			$this->output = $attributes;
 
 			// See ticket 64584 or issue 39
-			// - For some reason, the above output variable is lost sometimes. I have no idea
+			// - For some reason, the above output variable is lost sometimes. I have no feedback
 			// why. I suspect a PHP bug.
 			// - This is a workaround. Assigning the value to a global var seems to make it work
 			global $_xmldecode;

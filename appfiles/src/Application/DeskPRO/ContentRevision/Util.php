@@ -190,7 +190,7 @@ class Util
 
 			case 'Application\\DeskPRO\\Entity\\Idea':
 			case 'Application\\DeskPRO\\Entity\\IdeaRevision':
-				return 'idea';
+				return 'feedback';
 				break;
 		}
 

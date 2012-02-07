@@ -357,21 +357,21 @@ $collection->add('user_tickets_close', new Route(
 ));
 
 $collection->add('user_tickets_feedback', new Route(
-	'/ticket-edit/{ticket_ref}/ideas/{message_id}',
+	'/ticket-edit/{ticket_ref}/feedback/{message_id}',
 	array('_controller' => 'UserBundle:Tickets:feedback'),
 	array(),
 	array()
 ));
 
 $collection->add('user_tickets_feedback_save', new Route(
-	'/ticket-edit/{ticket_ref}/ideas/{message_id}/save',
+	'/ticket-edit/{ticket_ref}/feedback/{message_id}/save',
 	array('_controller' => 'UserBundle:Tickets:feedbackSave'),
 	array(),
 	array()
 ));
 
 $collection->add('user_tickets_feedback_closeticket', new Route(
-	'/ticket-edit/{ticket_ref}/ideas/{message_id}/close-ticket',
+	'/ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket',
 	array('_controller' => 'UserBundle:Tickets:feedbackCloseTicket'),
 	array(),
 	array()
@@ -489,64 +489,64 @@ $collection->add('user_news_newcomment', new Route(
 	array()
 ));
 
-$collection->add('user_ideas', new Route(
-	'/ideas/{status}/{slug}',
+$collection->add('user_feedback', new Route(
+	'/feedback/{status}/{slug}',
 	array('_controller' => 'UserBundle:Ideas:filter', 'status' => 'new', 'slug' => 'all'),
 	array('slug' => '((\\d+(\\-.*?)?)?)|all', 'status' => '(all|popular|new|active|closed)(\\.([0-9]+))?'),
 	array()
 ));
 
-$collection->add('user_ideas_all', new Route(
-	'/ideas/all',
+$collection->add('user_feedback_all', new Route(
+	'/feedback/all',
 	array('_controller' => 'UserBundle:Ideas:filter', 'status' => 'all', 'slug' => 'all'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_view', new Route(
-	'/ideas/ideas/{slug}',
+$collection->add('user_feedback_view', new Route(
+	'/feedback/feedback/{slug}',
 	array('_controller' => 'UserBundle:Ideas:view'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_newidea', new Route(
-	'/ideas/new-idea',
+$collection->add('user_feedback_newfeedback', new Route(
+	'/feedback/new-feedback',
 	array('_controller' => 'UserBundle:Ideas:newIdea'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_newcomment', new Route(
-	'/ideas/new-comment/{idea_id}',
+$collection->add('user_feedback_newcomment', new Route(
+	'/feedback/new-comment/{feedback_id}',
 	array('_controller' => 'UserBundle:Ideas:newComment'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_vote', new Route(
-	'/ideas/vote/{idea_id}',
+$collection->add('user_feedback_vote', new Route(
+	'/feedback/vote/{feedback_id}',
 	array('_controller' => 'UserBundle:Ideas:vote'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_status', new Route(
-	'/ideas/all/{status}',
+$collection->add('user_feedback_status', new Route(
+	'/feedback/all/{status}',
 	array('_controller' => 'UserBundle:Ideas:index', 'slug' => 0),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_cat', new Route(
-	'/ideas/{slug}',
+$collection->add('user_feedback_cat', new Route(
+	'/feedback/{slug}',
 	array('_controller' => 'UserBundle:Ideas:index', 'status' => 'new'),
 	array(),
 	array()
 ));
 
-$collection->add('user_ideas_cat_status', new Route(
-	'/ideas/{slug}/{status}',
+$collection->add('user_feedback_cat_status', new Route(
+	'/feedback/{slug}/{status}',
 	array('_controller' => 'UserBundle:Ideas:index'),
 	array(),
 	array()

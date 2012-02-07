@@ -49,8 +49,8 @@ class ObjectUrlGenerator
 			return $object->getUrlSlug();
 		} elseif ($object instanceof \Application\DeskPRO\Entity\Idea) {
 			if ($context == 'agent') {
-				$params['idea_id'] = $object['id'];
-				return $this->generator->generate('agent_ideas_view', $params);
+				$params['feedback_id'] = $object['id'];
+				return $this->generator->generate('agent_feedback_view', $params);
 			}
 			return $object->getUrlSlug();
 		} elseif ($object instanceof \Application\DeskPRO\Entity\News) {

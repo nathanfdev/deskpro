@@ -17,10 +17,10 @@
 			&middot; <a href="{{ path('user_news_view', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}
 	{% endif %}
-	{% if related_content.ideas %}
-		<strong>{{ phrase('user.related_ideas') }}</strong><br />
-		{% for rel in related_content.ideas %}
-			&middot; <a href="{{ path('user_ideas_view', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
+	{% if related_content.feedback %}
+		<strong>{{ phrase('user.related_feedback') }}</strong><br />
+		{% for rel in related_content.feedback %}
+			&middot; <a href="{{ path('user_feedback_view', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}
 	{% endif %}
 </div>

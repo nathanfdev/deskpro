@@ -379,7 +379,7 @@ class ArticlesController extends AbstractController
 	/**
 	 * Rate an article
 	 *
-	 * @param  $idea_id
+	 * @param  $feedback_id
 	 */
 	public function rateAction($article_id)
 	{

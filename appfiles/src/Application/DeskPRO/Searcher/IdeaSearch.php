@@ -34,9 +34,9 @@ class IdeaSearch extends SearcherAbstract
 	{
 		$db = App::getDb();
 
-		$idea_ids = $db->fetchAllCol($this->getSql($limit));
+		$feedback_ids = $db->fetchAllCol($this->getSql($limit));
 
-		return $idea_ids;
+		return $feedback_ids;
 	}
 
 
@@ -63,7 +63,7 @@ class IdeaSearch extends SearcherAbstract
 	 */
 	public function getCount()
 	{
-		$sql = "SELECT COUNT(*) FROM ideas ";
+		$sql = "SELECT COUNT(*) FROM feedback ";
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
 
@@ -75,7 +75,7 @@ class IdeaSearch extends SearcherAbstract
 			if (is_array($j)) {
 				$sql .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.idea_id = ideas.id ";
+				$sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
 			}
 		}
 
@@ -107,7 +107,7 @@ class IdeaSearch extends SearcherAbstract
 	 */
 	public function getSql(array $limit = null)
 	{
-		$sql = "SELECT ideas.id FROM ideas ";
+		$sql = "SELECT feedback.id FROM feedback ";
 
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
@@ -121,7 +121,7 @@ class IdeaSearch extends SearcherAbstract
 			if (is_array($j)) {
 				$sql .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.idea_id = ideas.id ";
+				$sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
 			}
 		}
 
@@ -140,7 +140,7 @@ class IdeaSearch extends SearcherAbstract
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
 
-		$sql .= " GROUP BY ideas.id ";
+		$sql .= " GROUP BY feedback.id ";
 		$sql .= $order_by;
 
 		if ($limit) {
@@ -177,15 +177,15 @@ class IdeaSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date_created':
-				$order_by = "ORDER BY ideas.id $dir";
+				$order_by = "ORDER BY feedback.id $dir";
 				break;
 
 			//case 'popularity':
-			//	$order_by = "ORDER BY ideas.popularity $dir";
+			//	$order_by = "ORDER BY feedback.popularity $dir";
 			//	break;
 
 			case 'num_ratings':
-				$order_by = "ORDER BY ideas.num_ratings $dir";
+				$order_by = "ORDER BY feedback.num_ratings $dir";
 				break;
 		}
 
@@ -214,14 +214,14 @@ class IdeaSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("ideas.id", $op, $choice, true);
+					$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
 					if ($op == 'not') {
-						$wheres[] = '(ideas.hidden_status IS NULL OR ' . $this->_stringMatch('ideas.hidden_status', $op, $choice) . ')';
+						$wheres[] = '(feedback.hidden_status IS NULL OR ' . $this->_stringMatch('feedback.hidden_status', $op, $choice) . ')';
 					} else {
-						$wheres[] = $this->_stringMatch('ideas.hidden_status', $op, $choice);
+						$wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
 					}
 					break;
 
@@ -250,10 +250,10 @@ class IdeaSearch extends SearcherAbstract
 
 					$part_where = array();
 					if ($cats) {
-						$part_where[] = $this->_choiceMatch('ideas.status_category_id', $op, $cats);
+						$part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);
 					}
 					if ($types) {
-						$part_where[] = $this->_stringMatch('ideas.status', $op, $types);
+						$part_where[] = $this->_stringMatch('feedback.status', $op, $types);
 					}
 
 					$part_where = "(" . implode(' OR ', $part_where) . ")";
@@ -270,22 +270,22 @@ class IdeaSearch extends SearcherAbstract
 						$ids = $base_ids;
 					} else {
 						foreach ($base_ids as $id) {
-							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id, true));
+							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($id, true));
 						}
 					}
 
 					$ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('ideas.category_id', $op, $ids);
+					$wheres[] = $this->_choiceMatch('feedback.category_id', $op, $ids);
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryNames((array)$choice);
 						return $titles;
 					});
 					break;
 
 				case self::TERM_NUM_RATINGS:
-					$wheres[] = $this->_rangeMatch('ideas.num_ratings', $op, $choice);
+					$wheres[] = $this->_rangeMatch('feedback.num_ratings', $op, $choice);
 					break;
 
 				case self::TERM_DATE_CREATED:
@@ -306,30 +306,30 @@ class IdeaSearch extends SearcherAbstract
 					switch ($op) {
 						case self::OP_IS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+								'labels_feedback',
+								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
 							);
 							$wheres[] = "$join_name.label = " . $db->quote($choice);
 							break;
 						case self::OP_NOT:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label = '.$db->quote($choice).')"
+								'labels_feedback',
+								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label = '.$db->quote($choice).')"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
 						case self::OP_CONTAINS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+								'labels_feedback',
+								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
 							);
 							$wheres[] = "$join_name.label IN ($choices_in)";
 							break;
 
 						case self::OP_NOTCONTAINS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label IN ($choices_in)"
+								'labels_feedback',
+								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label IN ($choices_in)"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;

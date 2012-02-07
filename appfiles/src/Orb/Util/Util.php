@@ -225,7 +225,7 @@ class Util
 	 * Serialize a data structure and sign it with some secret key. The data
 	 * is also base64.
 	 *
-	 * This is ideal when transmitting a serialized object where it could potentially
+	 * This is feedbackl when transmitting a serialized object where it could potentially
 	 * be tampered with by a user. If they tamper with the data, then the sign hash
 	 * becomes invalid and the unserialize method will throw an exception.
 	 *

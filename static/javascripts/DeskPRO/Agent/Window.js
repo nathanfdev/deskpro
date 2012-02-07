@@ -946,7 +946,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		} else if (testcl('.OpenChats')) {
 			handler = this.sections['chat_section'];
 		} else if (testcl('.Idea')) {
-			handler = this.sections['ideas_section'];
+			handler = this.sections['feedback_section'];
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			handler = this.sections['tickets_section'];
 		}else if (testcl('.Task')) {
@@ -1720,7 +1720,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('article', this.loadRoute.bind(this));
 		this.addPageRouteLoader('download', this.loadRoute.bind(this));
 		this.addPageRouteLoader('news', this.loadRoute.bind(this));
-		this.addPageRouteLoader('idea', this.loadRoute.bind(this));
+		this.addPageRouteLoader('feedback', this.loadRoute.bind(this));
 		this.addPageRouteLoader('org', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', (function(routeData) {
 
@@ -1907,8 +1907,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			autostart: autostart
 		});
 		this.newIdeaLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/ideas/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/ideas/new',
+			loadUrl: BASE_URL + 'agent/feedback/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 			autostart: autostart
 		});
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
@@ -1941,7 +1941,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_download_btn').on('click', function() {
 			DeskPRO_Window.newDownloadLoader.toggle();
 		});
-		$('#create_idea_btn').on('click', function() {
+		$('#create_feedback_btn').on('click', function() {
 			DeskPRO_Window.newIdeaLoader.toggle();
 		});
 		$('#create_task_btn').on('click', function() {
@@ -2454,8 +2454,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				url = BASE_URL + 'agent/people-search/get-section-data.json';
 				break;
 
-			case 'ideas_section':
-				url = BASE_URL + 'agent/ideas/get-section-data.json';
+			case 'feedback_section':
+				url = BASE_URL + 'agent/feedback/get-section-data.json';
 				break;
 
 			case 'publish_section':

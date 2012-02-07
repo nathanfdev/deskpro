@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\IdeaCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
 
 use Orb\Util\Strings;
 

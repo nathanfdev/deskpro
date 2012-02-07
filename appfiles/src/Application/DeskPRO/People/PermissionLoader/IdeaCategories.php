@@ -19,17 +19,17 @@ use Application\DeskPRO\Entity\UsergroupPropertyPermission;
 use Orb\Util\Arrays;
 
 /**
- * Loads idea category permissions
+ * Loads feedback category permissions
  */
 class IdeaCategories extends BasicTreeCategoryPermission
 {
 	protected function getCategoryPermissionEntity()
 	{
-		return 'DeskPRO:IdeaCategoryPermission';
+		return 'DeskPRO:FeedbackCategoryPermission';
 	}
 
 	protected function getCategoryEntity()
 	{
-		return 'DeskPRO:IdeaCategory';
+		return 'DeskPRO:FeedbackCategory';
 	}
 }

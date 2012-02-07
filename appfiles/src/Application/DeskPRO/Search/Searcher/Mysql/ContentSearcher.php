@@ -23,7 +23,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\Result;
 
 /**
- * The content searcher searches: articles, downloads, ideas, news
+ * The content searcher searches: articles, downloads, feedback, news
  */
 class ContentSearcher implements ContentSearcherInterface, PersonContextInterface
 {
@@ -44,7 +44,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	{
 		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
 		if (!$limit_types) {
-			$limit_types = array('article', 'download', 'idea', 'news');
+			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
@@ -87,7 +87,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	{
 		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
 		if (!$limit_types) {
-			$limit_types = array('article', 'download', 'idea', 'news');
+			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
 		$limit_types = implode(',', $limit_types);
 

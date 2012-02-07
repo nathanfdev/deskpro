@@ -115,10 +115,10 @@ class LabelDef extends EntityRepository
 				");
 				break;
 
-			case 'ideas':
+			case 'feedback':
 				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count
-					FROM labels_ideas
+					FROM labels_feedback
 					GROUP BY label
 					ORDER BY count DESC
 					" . ($limit ? "LIMIT $limit" : '') . "
@@ -177,7 +177,7 @@ class LabelDef extends EntityRepository
 				return 'DeskPRO:LabelArticle';
 				break;
 
-			case 'ideas':
+			case 'feedback':
 				return 'DeskPRO:LabelIdea';
 				break;
 
@@ -206,7 +206,7 @@ class LabelDef extends EntityRepository
 			'labels_people'        => 'DeskPRO:LabelPerson',
 			'labels_tickets'       => 'DeskPRO:LabelTicket',
 			'labels_articles'      => 'DeskPRO:LabelArticle',
-			'labels_ideas'         => 'DeskPRO:LabelIdea',
+			'labels_feedback'         => 'DeskPRO:LabelIdea',
 			'labels_downloads'     => 'DeskPRO:LabelDownload',
 			'labels_news'          => 'DeskPRO:LabelNews',
 		);

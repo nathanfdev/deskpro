@@ -126,8 +126,8 @@ class PortalController extends AbstractController
 		return $this->render('AdminBundle:Portal:settings.html.twig');
 	}
 
-	public function ideaSettingsAction()
+	public function feedbackSettingsAction()
 	{
-		return $this->render('AdminBundle:Portal:idea-settings.html.twig');
+		return $this->render('AdminBundle:Portal:feedback-settings.html.twig');
 	}
 }

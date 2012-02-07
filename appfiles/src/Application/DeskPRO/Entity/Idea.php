@@ -22,7 +22,7 @@ use Orb\Util\Strings;
  *
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
- * @ORM_Mapping\Table(name="ideas")
+ * @ORM_Mapping\Table(name="feedback")
  */
 class Idea extends ContentAbstract
 {
@@ -32,8 +32,8 @@ class Idea extends ContentAbstract
 	const STATUS_HIDDEN   = 'hidden';
 
 	/**
-	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
-	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
+	 * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
+	 * @ORM_Mapping\ManyToOne(targetEntity="FeedbackStatusCategory", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="status_category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $status_category = null;
@@ -52,28 +52,28 @@ class Idea extends ContentAbstract
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\ManyToOne(targetEntity="FeedbackCategory", cascade={"persist", "remove", "merge"})
 	 */
 	protected $category;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaRevision", mappedBy="idea", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaRevision", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $revisions;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $comments;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelIdea", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataIdea", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
@@ -108,7 +108,7 @@ class Idea extends ContentAbstract
 
 	public function addComment(IdeaComment $comment)
 	{
-		$comment->idea = $this;
+		$comment->feedback = $this;
 		$this->comments->add($comment);
 
 		return $comment;
@@ -117,7 +117,7 @@ class Idea extends ContentAbstract
 	public function addCustomData(CustomDataIdea $data)
 	{
 		$this->custom_data->add($data);
-		$data['idea'] = $this;
+		$data['feedback'] = $this;
 	}
 
 	public function addRating($rating)
@@ -153,19 +153,19 @@ class Idea extends ContentAbstract
 
 	public function setCategoryId($id)
 	{
-		$this->category = App::getEntityRepository('DeskPRO:IdeaCategory')->find($id);
+		$this->category = App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id);
 	}
 
 	public function getLink()
 	{
-		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->getUrlSlug()), true);
+		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), true);
 
 		return $url;
 	}
 
 	public function getPermalink()
 	{
-		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);
+		$url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), true);
 
 		return $url;
 	}
@@ -214,7 +214,7 @@ class Idea extends ContentAbstract
 			case self::STATUS_ACTIVE:
 			case self::STATUS_CLOSED:
 				$this['status'] = $status;
-				$status_cat = App::findEntity('DeskPRO:IdeaStatusCategory', $sub_status);
+				$status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
 				$this->status_category = $status_cat;
 				break;
 
@@ -257,7 +257,7 @@ class Idea extends ContentAbstract
 
 	public function addLabel($label)
 	{
-		$label['idea'] = $this;
+		$label['feedback'] = $this;
 		$this->labels->add($label);
 	}
 

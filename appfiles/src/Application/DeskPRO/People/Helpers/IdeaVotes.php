@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 /**
- * Helps figure out this users votes on ideas and how many votes remain
+ * Helps figure out this users votes on feedback and how many votes remain
  */
 class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 {
@@ -48,10 +48,10 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	protected $num_votes_remaining = null;
 
 	/**
-	 * Number of votes cast on specific ideas
+	 * Number of votes cast on specific feedback
 	 * @var array
 	 */
-	protected $idea_votes = array();
+	protected $feedback_votes = array();
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
@@ -95,13 +95,13 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 			$num_votes = App::getDb()->fetchColumn("
 				SELECT SUM(rating)
 				FROM ratings
-				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' #AND is_returned = 0
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' #AND is_returned = 0
 			", array($this->person['id'], $this->visitor['id']));
 		} elseif ($this->visitor) {
 			$num_votes = App::getDb()->fetchColumn("
 				SELECT SUM(rating)
 				FROM ratings
-				WHERE visitor_id = ? AND object_type = 'idea' #AND is_returned = 0
+				WHERE visitor_id = ? AND object_type = 'feedback' #AND is_returned = 0
 			", array(App::getSession()->getVisitor()->getId()));
 		} else {
 			$num_votes = 0;
@@ -116,54 +116,54 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 
 
 	/**
-	 * Get how many votes this user has cast on a specific idea
+	 * Get how many votes this user has cast on a specific feedback
 	 *
-	 * @param Idea|int $idea An Idea or an idea ID
+	 * @param Idea|int $feedback An Idea or an feedback ID
 	 * @return int
 	 */
-	public function getVotesOnIdea($idea)
+	public function getVotesOnIdea($feedback)
 	{
-		$idea_id = $idea;
-		if (is_object($idea_id) OR is_array($idea_id)) {
-			$idea_id = $idea_id['id'];
+		$feedback_id = $feedback;
+		if (is_object($feedback_id) OR is_array($feedback_id)) {
+			$feedback_id = $feedback_id['id'];
 		}
 
 		// Already know it
-		if (isset($this->idea_votes[$idea_id])) return $this->idea_votes[$idea_id];
+		if (isset($this->feedback_votes[$feedback_id])) return $this->feedback_votes[$feedback_id];
 
 		if ($this->person['id']) {
 			$num_votes_this = App::getDb()->fetchColumn("
 				SELECT rating
 				FROM ratings
-				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' AND object_id = ?
-			", array($this->person['id'], $this->visitor['id'], $idea_id));
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id = ?
+			", array($this->person['id'], $this->visitor['id'], $feedback_id));
 		} elseif ($this->visitor) {
 			$num_votes_this = App::getDb()->fetchColumn("
 				SELECT rating
 				FROM ratings
-				WHERE visitor_id = ? AND object_type = 'idea' AND object_id = ?
-			", array($this->visitor['id'], $idea_id));
+				WHERE visitor_id = ? AND object_type = 'feedback' AND object_id = ?
+			", array($this->visitor['id'], $feedback_id));
 		} else {
 			$num_votes_this = 0;
 		}
 
-		$this->idea_votes[$idea_id] = $num_votes_this;
+		$this->feedback_votes[$feedback_id] = $num_votes_this;
 
-		return $this->idea_votes[$idea_id];
+		return $this->feedback_votes[$feedback_id];
 	}
 
 
 	/**
-	 * Get vote status on a bunch of ideas
+	 * Get vote status on a bunch of feedback
 	 *
-	 * @param array $ideas
+	 * @param array $feedback
 	 * @return array
 	 */
-	public function getVotesOnIdeas(array $ideas)
+	public function getVotesOnIdeas(array $feedback)
 	{
 		$ids = array();
 
-		foreach ($ideas as $i) {
+		foreach ($feedback as $i) {
 			if ($i instanceof \Application\DeskPRO\Entity\Idea) {
 				$ids[] = $i->getId();
 			} else {
@@ -172,7 +172,7 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 		}
 
 		if (!$ids) {
-			return $this->idea_votes;
+			return $this->feedback_votes;
 		}
 
 
@@ -182,23 +182,23 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 			$vote_info = App::getDb()->fetchAllKeyValue("
 				SELECT object_id, rating
 				FROM ratings
-				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'idea' AND object_id IN ($ids_in)
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN ($ids_in)
 			", array($this->person['id'], $this->visitor['id']));
 		} elseif ($this->visitor) {
 			$vote_info = App::getDb()->fetchAllKeyValue("
 				SELECT object_id, rating
 				FROM ratings
-				WHERE visitor_id = ? AND object_type = 'idea' AND object_id IN ($ids_in)
+				WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN ($ids_in)
 			", array($this->visitor['id']));
 		} else {
 			$vote_info = array_combine($ids, array_fill(0, count($ids), 0));
 		}
 
 		foreach ($vote_info as $k => $v) {
-			$this->idea_votes[$k] = $v;
+			$this->feedback_votes[$k] = $v;
 		}
 
-		return $this->idea_votes;
+		return $this->feedback_votes;
 	}
 
 

@@ -21,7 +21,7 @@ use Orb\Util\Arrays;
  * is still used in cases where additional information must be stored.
  *
  * For example, in the case of queue servers that store queues in memory
- * (such as beanstalkd) it's not a good idea to store large amounts of data
+ * (such as beanstalkd) it's not a good feedback to store large amounts of data
  * in the task. So instead, we simply store the QueueItem ID and the task
  * worker can fetch the data when it processes the task.
  *

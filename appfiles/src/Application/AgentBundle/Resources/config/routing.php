@@ -1900,150 +1900,150 @@ $collection->add('agent_mediabrowser_imageeditor_save', new Route(
 	array()
 ));
 
-$collection->add('agent_ideas_category', new Route(
-	'/ideas/category/{category_id}',
+$collection->add('agent_feedback_category', new Route(
+	'/feedback/category/{category_id}',
 	array('_controller' => 'AgentBundle:Ideas:categoryList'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_status', new Route(
-	'/ideas/status/{status}',
+$collection->add('agent_feedback_status', new Route(
+	'/feedback/status/{status}',
 	array('_controller' => 'AgentBundle:Ideas:statusList'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_label', new Route(
-	'/ideas/label/{label}',
+$collection->add('agent_feedback_label', new Route(
+	'/feedback/label/{label}',
 	array('_controller' => 'AgentBundle:Ideas:labelList'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_filter', new Route(
-	'/ideas/filter',
+$collection->add('agent_feedback_filter', new Route(
+	'/feedback/filter',
 	array('_controller' => 'AgentBundle:Ideas:filterList'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_massactions', new Route(
-	'/ideas/filter/mass-actions/{action}',
+$collection->add('agent_feedback_massactions', new Route(
+	'/feedback/filter/mass-actions/{action}',
 	array('_controller' => 'AgentBundle:Ideas:massActions'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_getsectiondata', new Route(
-	'/ideas/get-section-data.json',
+$collection->add('agent_feedback_getsectiondata', new Route(
+	'/feedback/get-section-data.json',
 	array('_controller' => 'AgentBundle:Ideas:getSectionData'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_new', new Route(
-	'/ideas/new',
+$collection->add('agent_feedback_new', new Route(
+	'/feedback/new',
 	array('_controller' => 'AgentBundle:Ideas:newIdea'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_new_save', new Route(
-	'/ideas/new/save',
+$collection->add('agent_feedback_new_save', new Route(
+	'/feedback/new/save',
 	array('_controller' => 'AgentBundle:Ideas:newIdeaSave'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_view', new Route(
-	'/ideas/view/{idea_id}',
+$collection->add('agent_feedback_view', new Route(
+	'/feedback/view/{feedback_id}',
 	array('_controller' => 'AgentBundle:Ideas:view'),
 	array(),
 	array('fragment_name' => 'i')
 ));
 
-$collection->add('agent_ideas_ajaxsavecustomfields', new Route(
-	'/ideas/view/{idea_id}/ajax-save-custom-fields',
+$collection->add('agent_feedback_ajaxsavecustomfields', new Route(
+	'/feedback/view/{feedback_id}/ajax-save-custom-fields',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSaveCustomFields'),
-	array('idea_id' => '\\d+'),
+	array('feedback_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_who_voted', new Route(
-	'/ideas/view/{idea_id}/who-voted',
+$collection->add('agent_feedback_who_voted', new Route(
+	'/feedback/view/{feedback_id}/who-voted',
 	array('_controller' => 'AgentBundle:Ideas:whoVoted'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_revisionstab', new Route(
-	'/ideas/view/{idea_id}/view-revisions',
+$collection->add('agent_feedback_revisionstab', new Route(
+	'/feedback/view/{feedback_id}/view-revisions',
 	array('_controller' => 'AgentBundle:Ideas:viewRevisions'),
 	array('news_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_save', new Route(
-	'/ideas/view/{idea_id}/ajax-save',
+$collection->add('agent_feedback_save', new Route(
+	'/feedback/view/{feedback_id}/ajax-save',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSave'),
 	array('news_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_ajax_labels_save', new Route(
-	'/ideas/view/{idea_id}/ajax-save-labels',
+$collection->add('agent_feedback_ajax_labels_save', new Route(
+	'/feedback/view/{feedback_id}/ajax-save-labels',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSaveLabels'),
 	array('news_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_ajax_save_comment', new Route(
-	'/ideas/view/{idea_id}/ajax-save-comment',
+$collection->add('agent_feedback_ajax_save_comment', new Route(
+	'/feedback/view/{feedback_id}/ajax-save-comment',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSaveComment'),
 	array('news_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_ajaxsavecomment', new Route(
-	'/ideas/view/{idea_id}/ajax-save-comment',
+$collection->add('agent_feedback_ajaxsavecomment', new Route(
+	'/feedback/view/{feedback_id}/ajax-save-comment',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSaveComment'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_ajaxsaveeditables', new Route(
-	'/ideas/view/{idea_id}/ajax-save-editables',
+$collection->add('agent_feedback_ajaxsaveeditables', new Route(
+	'/feedback/view/{feedback_id}/ajax-save-editables',
 	array('_controller' => 'AgentBundle:Ideas:ajaxSaveEditables'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_ajaxupdatecat', new Route(
-	'/ideas/view/{idea_id}/ajax-update-category/{category_id}',
+$collection->add('agent_feedback_ajaxupdatecat', new Route(
+	'/feedback/view/{feedback_id}/ajax-update-category/{category_id}',
 	array('_controller' => 'AgentBundle:Ideas:ajaxUpdateCategory'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_ajaxupdatestatus', new Route(
-	'/ideas/view/{idea_id}/ajax-update-status/{status_code}',
+$collection->add('agent_feedback_ajaxupdatestatus', new Route(
+	'/feedback/view/{feedback_id}/ajax-update-status/{status_code}',
 	array('_controller' => 'AgentBundle:Ideas:ajaxUpdateStatus'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_ideas_merge_overlay', new Route(
-	'/ideas/merge-overlay/{idea_id}',
+$collection->add('agent_feedback_merge_overlay', new Route(
+	'/feedback/merge-overlay/{feedback_id}',
 	array('_controller' => 'AgentBundle:Ideas:mergeOverlay'),
-	array('idea_id' => '\\d+'),
+	array('feedback_id' => '\\d+'),
 	array()
 ));
 
-$collection->add('agent_ideas_merge', new Route(
-	'/ideas/merge/{idea_id}/{other_idea_id}',
+$collection->add('agent_feedback_merge', new Route(
+	'/feedback/merge/{feedback_id}/{other_feedback_id}',
 	array('_controller' => 'AgentBundle:Ideas:merge'),
-	array('idea_id' => '\\d+', 'other_idea_id' => '\\d+'),
+	array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
 	array()
 ));
 

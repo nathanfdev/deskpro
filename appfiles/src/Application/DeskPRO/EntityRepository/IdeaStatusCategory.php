@@ -14,9 +14,9 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\IdeaStatusCategory as IdeaStatusCategoryEntity;
+use Application\DeskPRO\Entity\FeedbackStatusCategory as FeedbackStatusCategoryEntity;
 
-class IdeaStatusCategory extends EntityRepository
+class FeedbackStatusCategory extends EntityRepository
 {
 	protected $active_cats = null;
 	protected $closed_cats = null;
@@ -25,14 +25,14 @@ class IdeaStatusCategory extends EntityRepository
 	{
 		$this->active_cats = $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaStatusCategory c INDEX BY c.id
+			FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
 			WHERE c.status_type = ?1
 			ORDER BY c.display_order ASC
 		")->setParameter(1, 'active')->execute();
 
 		$this->closed_cats = $this->getEntityManager()->createQuery("
 			SELECT c
-			FROM DeskPRO:IdeaStatusCategory c INDEX BY c.id
+			FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
 			WHERE c.status_type = ?1
 			ORDER BY c.display_order ASC
 		")->setParameter(1, 'closed')->execute();

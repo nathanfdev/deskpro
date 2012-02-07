@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefIdea")
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="custom_def_idea")
+ * @ORM_Mapping\Table(name="custom_def_feedback")
  */
 class CustomDefIdea extends CustomDefAbstract
 {

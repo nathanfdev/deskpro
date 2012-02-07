@@ -14,7 +14,7 @@ class Upgrade20110927125003 extends UpgradeAbstract
 		try {
 			App::getOrm()->exec("ALTER TABLE  `news_comments` ADD  `validating` VARCHAR( 35 ) NULL DEFAULT NULL AFTER  `status`");
 			App::getOrm()->exec("ALTER TABLE  `article_comments` ADD  `validating` VARCHAR( 35 ) NULL DEFAULT NULL AFTER  `status`");
-			App::getOrm()->exec("ALTER TABLE  `idea_comments` ADD  `validating` VARCHAR( 35 ) NULL DEFAULT NULL AFTER  `status`");
+			App::getOrm()->exec("ALTER TABLE  `feedback_comments` ADD  `validating` VARCHAR( 35 ) NULL DEFAULT NULL AFTER  `status`");
 			App::getOrm()->exec("ALTER TABLE  `download_comments` ADD  `validating` VARCHAR( 35 ) NULL DEFAULT NULL AFTER  `status`");
 			App::getOrm()->persist($usersource);
 			App::getOrm()->flush();

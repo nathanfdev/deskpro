@@ -3,7 +3,7 @@
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
 				<td>Who</td>
-				{% if object_type != 'idea' %}
+				{% if object_type != 'feedback' %}
 					<td>Rating</td>
 				{% endif %}
 				<td>When</td>
@@ -30,7 +30,7 @@
 					{% endif %}
 					{% if rating.ip_address %}from {{ rating.ip_address }}{% endif %}
 				</td>
-				{% if object_type != 'idea' %}
+				{% if object_type != 'feedback' %}
 					<td>
 						{% if rating.rating >= 1 %}
 							Helpful

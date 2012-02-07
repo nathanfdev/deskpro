@@ -19,7 +19,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
 
 /**
- * Ratings on ideas
+ * Ratings on feedback
  *
  * @ORM_Mapping\Entity
  * @ORM_Mapping\Table(name="article_ratings")

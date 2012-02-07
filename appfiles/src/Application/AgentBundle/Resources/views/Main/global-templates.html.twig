@@ -341,8 +341,8 @@
 {# Ideas related #}
 {##############################################################}
 
-<ul id="idea_category_menu" data-menu-type="idea-category-menu" data-menu-flag="copy-menu">
-	{% for cat in idea_categories %}
+<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
+	{% for cat in feedback_categories %}
 		{% if last_with_child %}
 			<li>-</li>
 		{% endif %}
@@ -359,18 +359,18 @@
 	{% endfor %}
 </ul>
 
-<ul id="idea_status_menu" data-menu-type="idea-status-menu" data-menu-flag="copy-menu">
+<ul id="feedback_status_menu" data-menu-type="feedback-status-menu" data-menu-flag="copy-menu">
 	<li
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('agent.ideas.status_new') }}</li>
+	>{{ phrase('agent.feedback.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('agent.ideas.status_active') }}</li>
-	{% for cat in idea_active_status_cats %}
+	>{{ phrase('agent.feedback.status_active') }}</li>
+	{% for cat in feedback_active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="active"
@@ -381,8 +381,8 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.ideas.status_closed') }}</li>
-	{% for cat in idea_closed_status_cats %}
+	>{{ phrase('agent.feedback.status_closed') }}</li>
+	{% for cat in feedback_closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="closed"

@@ -6,9 +6,9 @@
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>
-		{% elseif res.type == 'idea' %}
-			<li class="idea idea-{{ res.object.id }}">
-				<a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}" data-content-type="idea" data-content-id="{{ res.object.id }}">
+		{% elseif res.type == 'feedback' %}
+			<li class="feedback feedback-{{ res.object.id }}">
+				<a href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}" data-content-type="feedback" data-content-id="{{ res.object.id }}">
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>

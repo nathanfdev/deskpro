@@ -18,17 +18,17 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  *
  * @ORM_Mapping\Entity
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="labels_ideas")
+ * @ORM_Mapping\Table(name="labels_feedback")
  */
 class LabelIdea extends LabelAssocAbstract
 {
-	const LABEL_TYPENAME = 'ideas';
+	const LABEL_TYPENAME = 'feedback';
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 * @ORM_Mapping\Id
 	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
-	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $idea;
+	protected $feedback;
 }

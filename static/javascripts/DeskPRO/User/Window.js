@@ -71,7 +71,7 @@ DeskPRO.User.Window = new Orb.Class({
 	initFeatures: function(contextEl) {
 		var self = this;
 
-		this.ideaVoteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
+		this.feedbackVoteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
 
 		$('.with-handler[data-element-handler]', contextEl).each(function() {
 			var el = $(this);

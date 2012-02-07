@@ -109,7 +109,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
 				}
 			}
 
-		// Uh oh, I have no idea how
+		// Uh oh, I have no feedback how
 		} else {
 			throw new \RuntimeException('No clearState() method was registered; I don\'t know how to clearState().');
 		}

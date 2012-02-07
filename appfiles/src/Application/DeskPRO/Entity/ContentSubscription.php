@@ -85,9 +85,9 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 * @ORM_Mapping\ManyToOne(targetEntity="Idea", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $idea = null;
+	protected $feedback = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\News
@@ -113,7 +113,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 		} elseif ($content_object instanceof News) {
 			$sub->news = $content_object;
 		} elseif ($content_object instanceof Idea) {
-			$sub->idea = $content_object;
+			$sub->feedback = $content_object;
 		} else {
 			throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Idea. Got `" . get_class($content_object) . "`");
 		}

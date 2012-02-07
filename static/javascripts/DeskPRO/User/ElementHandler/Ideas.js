@@ -9,10 +9,10 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 		this.initFilterForm();
 
 		this.loadingTpl = $('.loading-tpl:first', this.el).detach();
-		this.content = $('.portal_ideas:first', this.el);
+		this.content = $('.portal_feedback:first', this.el);
 
 		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
-		$('.idea-btn', this.el).on('click', function(ev) {
+		$('.feedback-btn', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			voteHelper.openMenu($(this));
@@ -26,7 +26,7 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 		});
 
 		if (this.useAjax) {
-			$('#idea_find_form_btm').on('submit', function(ev) {
+			$('#feedback_find_form_btm').on('submit', function(ev) {
 				ev.preventDefault();
 				self.submitForm($(this));
 			});

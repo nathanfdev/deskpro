@@ -493,7 +493,7 @@ body.dp-simple-popup .dp-content-block {
 }
 #deskpro #dp_search_assist .results ul li.article a span { background-image: url(../../images/user/page.png); }
 #deskpro #dp_search_assist .results ul li.news a span    { background-image: url(../../images/user/newspaper.png); }
-#deskpro #dp_search_assist .results ul li.idea a span    { background-image: url(../../images/user/bulb.png); }
+#deskpro #dp_search_assist .results ul li.feedback a span    { background-image: url(../../images/user/bulb.png); }
 #deskpro #dp_search_assist .results ul li.more a span    { background-image: url(../../images/user/magnifier.png); }
 
 #deskpro #dp_search_assist .foot {
@@ -1014,10 +1014,10 @@ body.dp-simple-popup .dp-content-block {
 }
 
 /******************
-* dp-ideas-list
+* dp-feedback-list
 *******************/
 
-#deskpro ul.dp-ideas-list {
+#deskpro ul.dp-feedback-list {
 	list-style-type: none;
 	font-size: 11px;
 
@@ -1027,25 +1027,25 @@ body.dp-simple-popup .dp-content-block {
 	margin-bottom: 0;
 }
 
-#deskpro ul.dp-ideas-list:first-of-type {
+#deskpro ul.dp-feedback-list:first-of-type {
 	border-top: none;
 	margin-top: 0;
 }
 
-#deskpro ul.dp-ideas-list a {
+#deskpro ul.dp-feedback-list a {
 	cursor: pointer;
 }
 
-#deskpro ul.dp-ideas-list > li {
+#deskpro ul.dp-feedback-list > li {
 	margin-bottom: 8px;
 	padding-bottom: 8px;
 }
 
-#deskpro ul.dp-ideas-list > li:last-of-type {
+#deskpro ul.dp-feedback-list > li:last-of-type {
 	border-bottom: none;
 }
 
-#deskpro ul.dp-ideas-list > li h3 {
+#deskpro ul.dp-feedback-list > li h3 {
 	font-weight: bold;
 	font-size: 16px;
 	margin: 0;
@@ -1053,23 +1053,23 @@ body.dp-simple-popup .dp-content-block {
 	line-height: 100%;
 }
 
-#deskpro ul.dp-ideas-list > li .meta {
+#deskpro ul.dp-feedback-list > li .meta {
 	font-size: 10px;
 }
 
-#deskpro ul.dp-ideas-list .dp-faded-container {
+#deskpro ul.dp-feedback-list .dp-faded-container {
 	padding-bottom: 1px;
 }
 
-#deskpro .dp-idea-page .dp-idea-vote {
+#deskpro .dp-feedback-page .dp-feedback-vote {
 	margin-right: 10px;
 }
 
-#deskpro .dp-sidebar-block .dp-idea-vote {
+#deskpro .dp-sidebar-block .dp-feedback-vote {
 	margin-right: 7px;
 }
 
-#deskpro .dp-idea-vote {
+#deskpro .dp-feedback-vote {
 	float: left;
 	background: rgb(244,252,252); /* Old browsers */
 	background: -moz-linear-gradient(top, rgba(244,252,252,1) 0%, rgba(224,228,232,1) 100%); /* FF3.6+ */
@@ -1085,7 +1085,7 @@ body.dp-simple-popup .dp-content-block {
 	cursor: pointer;
 }
 
-#deskpro .dp-idea-vote span {
+#deskpro .dp-feedback-vote span {
 	background: url(../../images/user/star-off.png) no-repeat 0 0;
 	display: block;
 	width: 14px;
@@ -1096,12 +1096,12 @@ body.dp-simple-popup .dp-content-block {
 	margin-top: 3px;
 }
 
-#deskpro .dp-idea-vote.dp-voted span,
-#deskpro .dp-idea-vote:hover span {
+#deskpro .dp-feedback-vote.dp-voted span,
+#deskpro .dp-feedback-vote:hover span {
 	background: url(../../images/user/star.png) no-repeat 0 0;
 }
 
-#deskpro .dp-idea-vote em {
+#deskpro .dp-feedback-vote em {
 	display: block;
 	float: left;
 	width: 20px;
@@ -1112,28 +1112,28 @@ body.dp-simple-popup .dp-content-block {
 	font-weight: bold;
 }
 
-#deskpro ul.dp-ideas-list > li .item {
+#deskpro ul.dp-feedback-list > li .item {
 	margin-left: 48px;
 }
 
-#deskpro ul.dp-ideas-list .meta {
+#deskpro ul.dp-feedback-list .meta {
 	font-size: 10px;
 }
 
-#deskpro .dp-ideas-nav {
+#deskpro .dp-feedback-nav {
 	height: 25px;
 }
 
-#deskpro .dp-ideas-nav ul {
+#deskpro .dp-feedback-nav ul {
 	margin-left: 7px;
 }
 
-#deskpro .dp-ideas-nav ul li {
+#deskpro .dp-feedback-nav ul li {
 	float: left;
 	margin-right: 15px;
 }
 
-#deskpro .dp-sidebar-block .dp-ideas-block li {
+#deskpro .dp-sidebar-block .dp-feedback-block li {
 	clear: left;
 	margin-bottom: 12px;
 }
@@ -1141,14 +1141,14 @@ body.dp-simple-popup .dp-content-block {
 #deskpro .dp-sidebar-block .dp-news-block .dp-more {
 	margin-top: 3px;
 }
-#deskpro .dp-sidebar-block .dp-ideas-block .dp-more {
+#deskpro .dp-sidebar-block .dp-feedback-block .dp-more {
 	margin-top: 6px;
 }
-#deskpro .dp-sidebar-block .dp-ideas-block .dp-more {
+#deskpro .dp-sidebar-block .dp-feedback-block .dp-more {
 	marign-top: 6px;
 }
 
-#deskpro .dp-ideas-page .dp-box-nav .dp-sort-options {
+#deskpro .dp-feedback-page .dp-box-nav .dp-sort-options {
 	font-size: 10px;
 	margin-top: 6px;
 }
@@ -1304,10 +1304,10 @@ body.dp-simple-popup .dp-content-block {
 	color: @sidebar_block_title_color;
 }
 
-#deskpro .dp-sidebar-block.dp-ideas-block li {
+#deskpro .dp-sidebar-block.dp-feedback-block li {
 	position: relative;
 }
-#deskpro .dp-sidebar-block.dp-ideas-block li a {
+#deskpro .dp-sidebar-block.dp-feedback-block li a {
 	position: relative;
 	font-size: 11px;
 	top: 2px;

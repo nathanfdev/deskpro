@@ -1,10 +1,10 @@
-{% set this_page = 'idea_cats' %}
-{% set page_handler = 'DeskPRO.Admin.ElementHandler.IdeaCategoryEditPage' %}
+{% set this_page = 'feedback_cats' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.FeedbackCategoryEditPage' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block html_head %}
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/IdeaCategoryEditPage.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/FeedbackCategoryEditPage.js') }}"></script>
 	{% if leaf_ids %}
 	<script type="text/javascript">
 		var leaf_ids = {{ leaf_ids|json_encode|raw }};
@@ -14,12 +14,12 @@
 {% block pagetitle %}
 	<h1>{% if category.id %}Edit Category{% else %}New Category{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ideas_cats') }}">&larr; Back to categories</a>
+		<a class="clean-white" href="{{ path('admin_feedback_cats') }}">&larr; Back to categories</a>
 	</nav>
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_ideas_cats_edit', {'category_id': category.id|default(0)}) }}" method="post">
+<form action="{{ path('admin_feedback_cats_edit', {'category_id': category.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
 <div class="dp-form">
@@ -40,7 +40,7 @@
 			<div class="dp-form-input">
 				{{ form_widget(form.parent) }}
 				<div id="move_note" style="display: none">
-					Note: The parent category selected is currently a top-level category. By creating this child-category, any existing ideas will be moved over.
+					Note: The parent category selected is currently a top-level category. By creating this child-category, any existing feedback will be moved over.
 				</div>
 			</div>
 		</div>
@@ -52,7 +52,7 @@
 				<label>Ideas using this category</label>
 			</div>
 			<div class="dp-form-input">
-				{{ count_existing }} ideas
+				{{ count_existing }} feedback
 			</div>
 		</div>
 	{% endif %}
@@ -90,7 +90,7 @@
 		</div>
 	{% else %}
 		<div id="delete_cat_overlay" style="width: 400px; height: 165px; display: none;">
-			<form action="{{ path('admin_ideas_cats_del', {'category_id': category.id}) }}" method="post">
+			<form action="{{ path('admin_feedback_cats_del', {'category_id': category.id}) }}" method="post">
 				<div class="overlay-title">
 					<span class="close-overlay close-trigger"></span>
 					<h4>Delete Category</h4>
@@ -100,7 +100,7 @@
 						<div class="dp-form">
 							<div class="dp-form-row">
 								<div class="dp-form-label">
-									<label>Move {{ count_existing }} ideas using this category to...</label>
+									<label>Move {{ count_existing }} feedback using this category to...</label>
 								</div>
 								<div class="dp-form-input">
 									{% macro move_cat_opt(cats, depth) %}

@@ -16,21 +16,21 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * Comments on ideas
+ * Comments on feedback
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaComment")
- * @ORM_Mapping\Table(name="idea_comments")
+ * @ORM_Mapping\Table(name="feedback_comments")
  */
 class IdeaComment extends CommentAbstract
 {
 	/**
 	 * @ORM_Mapping\ManyToOne(targetEntity="Idea", inversedBy="comment")
-	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $idea;
+	protected $feedback;
 
 	public function getObject()
 	{
-		return $this->idea;
+		return $this->feedback;
 	}
 }

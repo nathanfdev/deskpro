@@ -15,5 +15,5 @@ use Application\DeskPRO\App;
 
 class CustomDefIdeasController extends CustomDefAbstractController
 {
-	const API_NAME = 'custom_fields.ideas';
+	const API_NAME = 'custom_fields.feedback';
 }

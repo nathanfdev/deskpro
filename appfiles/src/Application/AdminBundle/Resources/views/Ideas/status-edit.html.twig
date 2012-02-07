@@ -1,4 +1,4 @@
-{% set this_page = 'idea_statuses' %}
+{% set this_page = 'feedback_statuses' %}
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.IdeaStatusEditPage' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
@@ -9,12 +9,12 @@
 {% block pagetitle %}
 	<h1>Edit Status</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ideas_statuses') }}">&larr; Back To List</a>
+		<a class="clean-white" href="{{ path('admin_feedback_statuses') }}">&larr; Back To List</a>
 	</nav>
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_ideas_statuses_edit', {'category_id': cat.id}) }}" method="post">
+<form action="{{ path('admin_feedback_statuses_edit', {'category_id': cat.id}) }}" method="post">
 
 <div class="dp-form">
 	<div class="dp-form-row">
@@ -49,7 +49,7 @@
 
 {% if not other_cats|length %}
 	<div id="delete_status_overlay" class="no-delete" style="width: 400px; height: 165px; display: none;">
-		<form action="{{ path('admin_ideas_statuses_del', {'category_id': cat.id}) }}" method="post">
+		<form action="{{ path('admin_feedback_statuses_del', {'category_id': cat.id}) }}" method="post">
 			<div class="overlay-title">
 				<span class="close-overlay close-trigger"></span>
 				<h4>Delete Status</h4>
@@ -61,7 +61,7 @@
 	</div>
 {% else %}
 	<div id="delete_status_overlay" style="width: 400px; height: 165px; display: none;">
-		<form action="{{ path('admin_ideas_statuses_del', {'category_id': cat.id}) }}" method="post">
+		<form action="{{ path('admin_feedback_statuses_del', {'category_id': cat.id}) }}" method="post">
 			<div class="overlay-title">
 				<span class="close-overlay close-trigger"></span>
 				<h4>Delete Status</h4>
@@ -71,7 +71,7 @@
 					<div class="dp-form">
 						<div class="dp-form-row">
 							<div class="dp-form-label">
-								<label>Move {{ count_existing }} ideas using this status to...</label>
+								<label>Move {{ count_existing }} feedback using this status to...</label>
 							</div>
 							<div class="dp-form-input">
 								<select name="move_to_cat">
@@ -90,7 +90,7 @@
 				<button
 					id="create_status_save_btn"
 					class="clean-white"
-					data-save-url="{{ path('admin_ideas_statuses_ajaxadd') }}"
+					data-save-url="{{ path('admin_feedback_statuses_ajaxadd') }}"
 				>Delete Status</button>
 			</div>
 		</form>

@@ -30,7 +30,7 @@ class NewIdeaType extends AbstractType
 		$builder->add('content', 'textarea');
 
 		$builder->add('category_id', 'choice', array(
-			'choices' => App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames(' > ', false),
+			'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames(' > ', false),
 			'required' => false // needed for empty_value to appear
 		));
 
@@ -40,6 +40,6 @@ class NewIdeaType extends AbstractType
 
 	public function getName()
 	{
-		return 'idea';
+		return 'feedback';
 	}
 }

@@ -17,5 +17,5 @@ use \Doctrine\ORM\EntityRepository;
 
 class IdeaComment extends CommentAbstract
 {
-	const FIELD = 'idea';
+	const FIELD = 'feedback';
 }

@@ -23,7 +23,7 @@ use Application\DeskPRO\Search\SearcherResult\Elastic\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\Elastic\Result;
 
 /**
- * The content searcher searches: articles, downloads, ideas, news
+ * The content searcher searches: articles, downloads, feedback, news
  */
 class ContentSearcher implements ContentSearcherInterface, PersonContextInterface
 {
@@ -212,7 +212,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		#------------------------------
 
 		if (!$this->person->getPermissionsManager()->IdeaCategories->hasRestrictions()) {
-			$no_perm_types[] = 'idea';
+			$no_perm_types[] = 'feedback';
 		} else {
 			$term = new \Elastica_Filter_Bool();
 
@@ -228,7 +228,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		#------------------------------
 
 		if (!$this->person->getPermissionsManager()->NewsCategories->hasRestrictions()) {
-			$no_perm_types[] = 'idea';
+			$no_perm_types[] = 'feedback';
 		} else {
 			$term = new \Elastica_Filter_Bool();
 

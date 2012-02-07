@@ -292,7 +292,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$subscriptions = array(
 			'article' => array(),
 			'download' => array(),
-			'idea' => array(),
+			'feedback' => array(),
 			'news' => array(),
 		);
 
@@ -301,8 +301,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				$subscriptions['article'][] = $s;
 			} elseif ($s->download) {
 				$subscriptions['download'][] = $s;
-			} elseif ($s->idea) {
-				$subscriptions['idea'][] = $s;
+			} elseif ($s->feedback) {
+				$subscriptions['feedback'][] = $s;
 			} elseif ($s->news) {
 				$subscriptions['news'][] = $s;
 			}

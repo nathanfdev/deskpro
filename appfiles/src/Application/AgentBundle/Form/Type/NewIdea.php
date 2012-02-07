@@ -44,6 +44,6 @@ class NewIdea extends AbstractType
 
     public function getName()
     {
-        return 'newidea';
+        return 'newfeedback';
     }
 }

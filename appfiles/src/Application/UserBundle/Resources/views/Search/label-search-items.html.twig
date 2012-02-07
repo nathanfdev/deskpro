@@ -36,15 +36,15 @@
 {% endfor %}
 
 {# Ideas #}
-{% elseif typename == 'ideas' %}
-{% for idea in results %}
-	<li class="idea-item {% if show_more and loop.last %}has-more{% endif %}">
-		<a class="title" href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{ idea.title }}</a>
+{% elseif typename == 'feedback' %}
+{% for feedback in results %}
+	<li class="feedback-item {% if show_more and loop.last %}has-more{% endif %}">
+		<a class="title" href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{ feedback.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_ideas') }}">{{ phrase('user.content_ideas') }}</a></li>
-				{% for cat in idea.category.tree_parents %}
-					<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+				<li><a href="{{ path('user_feedback') }}">{{ phrase('user.content_feedback') }}</a></li>
+				{% for cat in feedback.category.tree_parents %}
+					<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 				{% endfor %}
 			</ul>
 		</div>

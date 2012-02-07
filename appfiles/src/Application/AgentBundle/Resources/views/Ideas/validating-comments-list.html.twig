@@ -1,9 +1,9 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaCommentsValidating';
-pageMeta.pageUrl = '{{ path('agent_ideas_validating_comments') }}?partial=1&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ideas_validating_comments') }}';
+pageMeta.pageUrl = '{{ path('agent_feedback_validating_comments') }}?partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_feedback_validating_comments') }}';
 pageMeta.isValidating = true;
-{% if not ideas %}
+{% if not feedback %}
 	pageMeta.noResults = true;
 {% endif %}
 </script>
@@ -14,7 +14,7 @@ pageMeta.isValidating = true;
 </header>
 <div class="layout-content">
 <div class="content">
-	<section class="ideas-simple-list deskpro-results-list">
+	<section class="feedback-simple-list deskpro-results-list">
 		{% include 'AgentBundle:Ideas:validating-comments-list-part.html.twig' %}
 	</section>
 

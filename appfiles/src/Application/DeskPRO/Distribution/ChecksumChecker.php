@@ -26,7 +26,7 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
 			->notName('.htaccess')
 			->ignoreVCS(true)
 			->exclude('sys/cache/dev')
-			->exclude('.idea');
+			->exclude('.feedback');
 	}
 
 	/**

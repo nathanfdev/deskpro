@@ -25,7 +25,7 @@ class Idea extends AbstractEntityRepository
 	############################################################################
 
 	/**
-	 * Count the number of ideas that are awaiting validation
+	 * Count the number of feedback that are awaiting validation
 	 *
 	 * @return int
 	 */
@@ -33,14 +33,14 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM ideas
+			FROM feedback
 			WHERE hidden_status = ?
 		", array('validating'));
 	}
 
 
 	/**
-	 * Count the number of ideas that are 'active', grouped by status category as key.
+	 * Count the number of feedback that are 'active', grouped by status category as key.
 	 * The key 0 will be used as the total.
 	 *
 	 * @return array
@@ -49,14 +49,14 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
-			FROM ideas
+			FROM feedback
 			WHERE status = ?
 			GROUP BY status_category_id WITH ROLLUP
 		", array('active'));
 	}
 
 	/**
-	 * Count the number of ideas that are 'active', grouped by status category as key.
+	 * Count the number of feedback that are 'active', grouped by status category as key.
 	 * The key 0 will be used as the total.
 	 *
 	 * @return array
@@ -65,7 +65,7 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
-			FROM ideas
+			FROM feedback
 			WHERE status = ?
 			GROUP BY status_category_id WITH ROLLUP
 		", array('closed'));
@@ -73,7 +73,7 @@ class Idea extends AbstractEntityRepository
 
 
 	/**
-	 * Count the number of hidden ideas, groupbed by hidden_status as key.
+	 * Count the number of hidden feedback, groupbed by hidden_status as key.
 	 * The key 'hidden' will be used as the total.
 	 *
 	 * @return array
@@ -85,7 +85,7 @@ class Idea extends AbstractEntityRepository
 
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
-			FROM ideas
+			FROM feedback
 			WHERE status = ? AND hidden_status != ?
 			GROUP BY hidden_status WITH ROLLUP
 		", array('hidden', 'validating'));
@@ -93,7 +93,7 @@ class Idea extends AbstractEntityRepository
 
 
 	/**
-	 * Count the number of ideas that are new
+	 * Count the number of feedback that are new
 	 *
 	 * @return int
 	 */
@@ -101,13 +101,13 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM ideas
+			FROM feedback
 			WHERE status = ?
 		", array('new'));
 	}
 
 	/**
-	 * Count the number of non-hidden ideas in all categories, grouped by category ID key.
+	 * Count the number of non-hidden feedback in all categories, grouped by category ID key.
 	 * Each parent category has the sum of all children.
 	 *
 	 * @return array
@@ -124,14 +124,14 @@ class Idea extends AbstractEntityRepository
 
 		$counts = App::getDb()->fetchAllKeyValue("
 			SELECT category_id, COUNT(*)
-			FROM ideas
+			FROM feedback
 			WHERE status != ?
 			GROUP BY category_id
 			ORDER BY category_id ASC
 		", array('hidden'));
 
 		foreach ($counts as $cat_id => &$count) {
-			$cat_childs = App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($cat_id, false);
+			$cat_childs = App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($cat_id, false);
 			if ($cat_childs) {
 				foreach ($cat_childs as $child_cat_id) {
 					if (isset($counts[$child_cat_id])) {
@@ -146,7 +146,7 @@ class Idea extends AbstractEntityRepository
 
 
 	/**
-	 * Count the number of ideas in a status category
+	 * Count the number of feedback in a status category
 	 *
 	 * @param $category
 	 * @return int
@@ -155,14 +155,14 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM ideas
+			FROM feedback
 			WHERE category_id = ?
 		", array($category->id));
 	}
 
 
 	/**
-	 * Count the number of ideas in a status category
+	 * Count the number of feedback in a status category
 	 *
 	 * @param $category
 	 * @return int
@@ -171,7 +171,7 @@ class Idea extends AbstractEntityRepository
 	{
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM ideas
+			FROM feedback
 			WHERE status_category_id = ?
 		", array($category->id));
 	}
@@ -190,7 +190,7 @@ class Idea extends AbstractEntityRepository
 	}
 
 	/**
-	 * Get a collection of ideas by ID. If $person_context
+	 * Get a collection of feedback by ID. If $person_context
 	 * is supplied, only articles that this person is able to view will be returned.
 	 *
 	 * @return array
@@ -200,14 +200,14 @@ class Idea extends AbstractEntityRepository
 		if (!$ids) return array();
 
 		if ($person_context) {
-			$ideas = $this->getEntityManager()->createQuery("
+			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Idea i INDEX BY i.id
 				WHERE i.id IN (" . implode(',', $ids) . ") AND i.status != 'hidden'
 				ORDER BY i.id DESC
 			")->execute();
 		} else {
-			$ideas = $this->getEntityManager()->createQuery("
+			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Idea i INDEX BY i.id
 				WHERE i.id IN (" . implode(',', $ids) . ")
@@ -215,29 +215,29 @@ class Idea extends AbstractEntityRepository
 			")->execute();
 		}
 
-		return $ideas;
+		return $feedback;
 	}
 
 	public function getByResultIds(array $ids)
 	{
 		if (!$ids) return array();
 
-		$unsorted_ideas = $this->getEntityManager()->createQuery("
+		$unsorted_feedback = $this->getEntityManager()->createQuery("
 			SELECT i
 			FROM DeskPRO:Idea i INDEX BY i.id
 			WHERE i.id IN (" . implode(',', $ids) . ")
 			ORDER BY i.id DESC
 		")->execute();
 
-		$ideas = array();
+		$feedback = array();
 
 		foreach ($ids as $id) {
-			if (isset($unsorted_ideas[$id])) {
-				$ideas[$id] = $unsorted_ideas[$id];
+			if (isset($unsorted_feedback[$id])) {
+				$feedback[$id] = $unsorted_feedback[$id];
 			}
 		}
 
-		return $ideas;
+		return $feedback;
 	}
 
 	public function getIdeas($status, $node = false, $sort = 'id', $num = 10)
@@ -248,14 +248,14 @@ class Idea extends AbstractEntityRepository
 		if ($node) {
 			$node_ids = $node->getTreeIds(true);
 
-			$ideas = $this->getEntityManager()->createQuery("
+			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Idea i
 				WHERE i.category IN (".implode(',', $node_ids).") AND i.status = ?1
 				ORDER BY i.$sort DESC
 			")->setParameter(1, $status)->setMaxResults($num)->execute();
 		} else {
-			$ideas = $this->getEntityManager()->createQuery("
+			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Idea i
 				WHERE i.status = ?1
@@ -263,7 +263,7 @@ class Idea extends AbstractEntityRepository
 			")->setParameter(1, $status)->setMaxResults($num)->execute();
 		}
 
-		return $ideas;
+		return $feedback;
 	}
 
 
@@ -271,26 +271,26 @@ class Idea extends AbstractEntityRepository
 	{
 		// TODO this can be shortened by using a builder
 		if (!$status) {
-			$ideas = $this->getEntityManager()->createQuery("
+			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Idea i INDEX BY i.id
 				WHERE i.status != 'closed' AND i.status != 'hidden'
 				ORDER BY i.id DESC
 			")->setMaxResults($num)->execute();
-			return $ideas;
+			return $feedback;
 		}
 
 		if (Numbers::isInteger($status)) {
 			if ($node) {
 				$cat_ids = $node->getTreeIds(true);
-				$ideas = $this->getEntityManager()->createQuery("
+				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Idea i INDEX BY i.id
 					WHERE i.status_category = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();
 			} else {
-				$ideas = $this->getEntityManager()->createQuery("
+				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Idea i INDEX BY i.id
 					WHERE i.status_category = ?1
@@ -300,14 +300,14 @@ class Idea extends AbstractEntityRepository
 		} else {
 			if ($node) {
 				$cat_ids = $node->getTreeIds(true);
-				$ideas = $this->getEntityManager()->createQuery("
+				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Idea i INDEX BY i.id
 					WHERE i.status = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();
 			} else {
-				$ideas = $this->getEntityManager()->createQuery("
+				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Idea i INDEX BY i.id
 					WHERE i.status = ?1
@@ -316,6 +316,6 @@ class Idea extends AbstractEntityRepository
 			}
 		}
 
-		return $ideas;
+		return $feedback;
 	}
 }

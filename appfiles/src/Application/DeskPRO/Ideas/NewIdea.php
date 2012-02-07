@@ -20,7 +20,7 @@ use Application\DeskPRO\Entity\Idea;
 use Application\DeskPRO\Entity\Rating;
 
 /**
- * New idea acts as the processor and domain object for a newidea form
+ * New feedback acts as the processor and domain object for a newfeedback form
  */
 class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 {
@@ -126,21 +126,21 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 
 			App::getOrm()->flush();
 
-			$idea = new Idea();
+			$feedback = new Idea();
 
-			$idea['title']        = $this->title;
-			$idea['content']      = $this->content;
-			$idea['category_id']  = $this->category_id;
-			$idea['status']       = Idea::STATUS_NEW;
-			$idea['date_created'] = new \DateTime();
-			$idea['validating']   = $validating;
+			$feedback['title']        = $this->title;
+			$feedback['content']      = $this->content;
+			$feedback['category_id']  = $this->category_id;
+			$feedback['status']       = Idea::STATUS_NEW;
+			$feedback['date_created'] = new \DateTime();
+			$feedback['validating']   = $validating;
 
 			if ($validating) {
 				// TODO visibility based on setting
-				$idea->setStatusCode('hidden.validating');
+				$feedback->setStatusCode('hidden.validating');
 			}
 
-			App::getOrm()->persist($idea);
+			App::getOrm()->persist($feedback);
 			App::getOrm()->flush();
 
 			$rating = Rating::create(1);
@@ -148,42 +148,42 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 			if ($this->visitor) {
 				$rating->visitor = $this->visitor;
 			}
-			$idea->addRating($rating);
+			$feedback->addRating($rating);
 
 			App::getOrm()->persist($rating);
-			App::getOrm()->persist($idea);
+			App::getOrm()->persist($feedback);
 
 			App::getOrm()->flush();
 
 			if ($email_validating) {
-				$email_validating->addValidatingContent('DeskPRO:Idea', $idea->id);
+				$email_validating->addValidatingContent('DeskPRO:Idea', $feedback->id);
 				App::getOrm()->flush();
 			}
 
 			App::getOrm()->commit();
 
 			// Send confirmation email
-			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($idea, $person, $email_validating, $email, $validating) {
+			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($feedback, $person, $email_validating, $email, $validating) {
 
 				if ($validating == 'existing') {
 					$email_to       = $email->email;
-					$email_subject  = $tr->phrase('user_emails.subj_newidea_validate');
+					$email_subject  = $tr->phrase('user_emails.subj_newfeedback_validate');
 				} elseif ($validating == 'new') {
 					$email_to       = $email_validating->email;
-					$email_subject  = $tr->phrase('user_emails.subj_newidea_validate');
+					$email_subject  = $tr->phrase('user_emails.subj_newfeedback_validate');
 				} else {
 					$email_to       = $person->primary_email_address;
-					$email_subject  = $tr->phrase('user_emails.subj_newidea');
+					$email_subject  = $tr->phrase('user_emails.subj_newfeedback');
 				}
 
 				$vars = array(
-					'idea' => $idea,
+					'feedback' => $feedback,
 					'person' => $person,
 					'email_validating' => $email_validating,
 					'email' => $email,
 					'validating' => $validating,
 				);
-				$email_body = App::get('templating')->render('DeskPRO:emails_user:idea-new.html.twig', $vars);
+				$email_body = App::get('templating')->render('DeskPRO:emails_user:feedback-new.html.twig', $vars);
 
 				$message = App::getMailer()->createMessage();
 				$message->setTo($email_to, $person->getDisplayName());
@@ -199,6 +199,6 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 			throw $e;
 		}
 
-		return $idea;
+		return $feedback;
 	}
 }

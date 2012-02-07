@@ -16,10 +16,10 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 /**
  * Ideas status types for accepted/declined statuses
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaStatusCategory")
- * @ORM_Mapping\Table(name="idea_status_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackStatusCategory")
+ * @ORM_Mapping\Table(name="feedback_status_categories")
  */
-class IdeaStatusCategory extends \Application\DeskPRO\Domain\DomainObject
+class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_ACTIVE = 'active';
 	const STATUS_CLOSED = 'closed';

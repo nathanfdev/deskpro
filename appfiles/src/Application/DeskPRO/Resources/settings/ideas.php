@@ -3,36 +3,36 @@
 	/**
 	 * How many votes each person gets to spend
 	 */
-	'core_ideas.votes_per_person' => 10,
+	'core_feedback.votes_per_person' => 10,
 
 	/**
-	 * The max votes a user can spend on one idea
+	 * The max votes a user can spend on one feedback
 	 */
-	'core_ideas.max_votes_ideas' => 3,
+	'core_feedback.max_votes_feedback' => 3,
 
 	/**
-	 * Return votes to a user when an idea is accepted?
-	 * Otherwise, return when the idea is marked completed/deleted.
+	 * Return votes to a user when an feedback is accepted?
+	 * Otherwise, return when the feedback is marked completed/deleted.
 	 */
-	'core_ideas.return_on_accept' => false,
+	'core_feedback.return_on_accept' => false,
 
 	/**
-	 * Require a user to login before an idea can be submitted
+	 * Require a user to login before an feedback can be submitted
 	 */
-	'core_ideas.require_user' => false,
+	'core_feedback.require_user' => false,
 
 	/**
 	 * Require an agent to manually validate eacy submission
 	 */
-	'core_ideas.require_validation' => false,
+	'core_feedback.require_validation' => false,
 
 	/**
-	 * How many votes until an idea is 'popular'?
+	 * How many votes until an feedback is 'popular'?
 	 */
-	'core_ideas.popular_votes' => 10,
+	'core_feedback.popular_votes' => 10,
 
 	/**
-	 * Show ideas publicly even when they're validating?
+	 * Show feedback publicly even when they're validating?
 	 */
-	'core_ideas.show_validating' => 1,
+	'core_feedback.show_validating' => 1,
 );

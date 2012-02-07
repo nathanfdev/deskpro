@@ -1047,7 +1047,7 @@
 			<display_name>Send Welcome Email (Gateway Registrations)</display_name>
 			<value>0</value>
 			<options></options>
-			<description>If enabled a welcome email will be sent to users when they first send an email letting them know an account has been created for them. This is useful to let the user know their username and password and introduce the idea that they are using a helpdesk. Note that if you have the new ticket autoresponders turned on, the user will receive two emails.</description>
+			<description>If enabled a welcome email will be sent to users when they first send an email letting them know an account has been created for them. This is useful to let the user know their username and password and introduce the feedback that they are using a helpdesk. Note that if you have the new ticket autoresponders turned on, the user will receive two emails.</description>
 		</setting>
 		<setting name="deskpro_year" field_type="text" displayorder="1">
 			<display_name></display_name>
@@ -1385,35 +1385,35 @@
 			<options></options>
 			<description>When enabled, a tech-created ticket generates a notifications for the tech starter. (Usually the tech starter is excluded, since it's assumed they don't need a notification).</description>
 		</setting>
-		<setting name="ideas_enable" field_type="radio" displayorder="1">
+		<setting name="feedback_enable" field_type="radio" displayorder="1">
 			<display_name>Enable Ideas</display_name>
 			<value>0</value>
 			<options></options>
 			<description><![CDATA[This is a global on/off switch for the Ideas features.]]></description>
 		</setting>
-		<setting name="ideas_enable_comments" field_type="radio" displayorder="1">
+		<setting name="feedback_enable_comments" field_type="radio" displayorder="1">
 			<display_name>Enable comments</display_name>
 			<value>1</value>
 			<options></options>
 			<description><![CDATA[Enable or disable comments globally. If you turn this off, existing comments will remain in the database but they won't be displayed.]]></description>
 		</setting>
-		<setting name="ideas_num_votes_per_user" field_type="text" displayorder="1">
+		<setting name="feedback_num_votes_per_user" field_type="text" displayorder="1">
 			<display_name>Number of votes per user</display_name>
 			<value>10</value>
 			<options></options>
-			<description><![CDATA[The number of votes each user gets. Votes are returned to users when ideas are accepted or declined.]]></description>
+			<description><![CDATA[The number of votes each user gets. Votes are returned to users when feedback are accepted or declined.]]></description>
 		</setting>
-		<setting name="ideas_num_votes_per_idea" field_type="text" displayorder="1">
-			<display_name>Maximum number of votes per idea</display_name>
+		<setting name="feedback_num_votes_per_feedback" field_type="text" displayorder="1">
+			<display_name>Maximum number of votes per feedback</display_name>
 			<value>3</value>
 			<options></options>
-			<description><![CDATA[The maximum number of votes a user can allocate to a single idea.]]></description>
+			<description><![CDATA[The maximum number of votes a user can allocate to a single feedback.]]></description>
 		</setting>
-		<setting name="ideas_enable_ajaxsubmit" field_type="radio" displayorder="1">
+		<setting name="feedback_enable_ajaxsubmit" field_type="radio" displayorder="1">
 			<display_name>Enable AJAX Widget</display_name>
 			<value>0</value>
 			<options></options>
-			<description><![CDATA[When enabled, new ideas can be submitted via AJAX. Users don't need to be logged in (even if Guest perms disable new ideas).]]></description>
+			<description><![CDATA[When enabled, new feedback can be submitted via AJAX. Users don't need to be logged in (even if Guest perms disable new feedback).]]></description>
 		</setting>
 	</settingscat>
 </settingscats>

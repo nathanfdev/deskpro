@@ -25,7 +25,7 @@ class ContentLabelCloud
 
 		$counts = array(
 			'articles'     => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
-			'ideas'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ideas', 25),
+			'feedback'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('feedback', 25),
 			'downloads'    => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
 			'news'         => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
 		);

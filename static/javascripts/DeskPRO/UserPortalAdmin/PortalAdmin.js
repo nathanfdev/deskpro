@@ -153,8 +153,8 @@ var PortalAdmin = {
 				var e = $('.dp-content-block.dp-news-page, .dp-sidebar-block.dp-news-block').hide();
 				if (is_enabled) e.show(); else e.hide();
 				break;
-			case 'ideas':
-				var e = $('.dp-content-block.dp-ideas-page, .dp-sidebar-block.dp-ideas-block').hide();
+			case 'feedback':
+				var e = $('.dp-content-block.dp-feedback-page, .dp-sidebar-block.dp-feedback-block').hide();
 				if (is_enabled) e.show(); else e.hide();
 				break;
 		}

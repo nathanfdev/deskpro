@@ -75,8 +75,8 @@ class PersonEditManager
 	{
 		$valid_names = array(
 			'chat_message.email',
-			'new_idea.email', 'new_idea.alert',
-			'new_idea_validate.email', 'new_idea_validate.alert',
+			'new_feedback.email', 'new_feedback.alert',
+			'new_feedback_validate.email', 'new_feedback_validate.alert',
 			'new_comment.email', 'new_comment.alert',
 			'new_comment_validate.email', 'new_comment_validate.alert',
 			'new_user.email', 'new_user.alert',

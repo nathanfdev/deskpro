@@ -37,12 +37,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status the-status article-status"><span>
-			{% if idea.status == 'new' %}
+			{% if feedback.status == 'new' %}
 				New
-			{% elseif idea.status == 'active' %}
-				Active: {{ idea.status_category.title }}
-			{% elseif idea.status == 'closed' %}
-				Closed: {{ idea.status_category.title }}
+			{% elseif feedback.status == 'active' %}
+				Active: {{ feedback.status_category.title }}
+			{% elseif feedback.status == 'closed' %}
+				Closed: {{ feedback.status_category.title }}
 			{% else %}
 				Hidden
 			{% endif %}

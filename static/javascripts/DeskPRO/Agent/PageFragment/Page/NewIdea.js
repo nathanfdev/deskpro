@@ -6,7 +6,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'newidea';
+		this.TYPENAME = 'newfeedback';
 		this.allowDupe = true;
 	},
 
@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'newnews',
-			listenOn: this.getEl('newidea')
+			listenOn: this.getEl('newfeedback')
 		});
 		this.ownObject(this.stateSaver);
 	},
@@ -48,14 +48,14 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 		var formData = this.form.serializeArray();
 
 		$.ajax({
-			url: BASE_URL + 'agent/ideas/new/save',
+			url: BASE_URL + 'agent/feedback/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/ideas/view/' + data.idea_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
@@ -145,8 +145,8 @@ DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
 			onTabSwitch: function(eventData) {
 				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
 					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'ideas',
-						fieldName: 'newidea[labels]',
+						type: 'feedback',
+						fieldName: 'newfeedback[labels]',
 						textarea: $(".tags-wrap input", eventData.tabContent),
 						onChange: function() {
 							self.stateSaver.triggerChange();

@@ -52,7 +52,7 @@ class ElasticaExtension extends Extension
 		// Idea
 		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\IdeaType');
 		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
-		$container->setDefinition('deskpro.elastica.types.idea', $definition);
+		$container->setDefinition('deskpro.elastica.types.feedback', $definition);
 
 		// News
 		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\NewsType');

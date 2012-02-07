@@ -20,14 +20,14 @@ class Idea extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:Idea';
 	
-	public function objectToDocument($idea)
+	public function objectToDocument($feedback)
 	{
 		$data = array();
-		$data['id'] = $idea['id'];
-		$data['content_type'] = 'idea';
-		$data['content'] = $idea['title'] . "\n" . $idea['content'] . "\n";
+		$data['id'] = $feedback['id'];
+		$data['content_type'] = 'feedback';
+		$data['content'] = $feedback['title'] . "\n" . $feedback['content'] . "\n";
 
-		foreach ($idea->getLabelManager()->getLabelsArray() as $label) {
+		foreach ($feedback->getLabelManager()->getLabelsArray() as $label) {
 			$label = MysqlAdapter::encodeLabel($label);
 			$data['content'] .= " $label ";
 		}

@@ -463,8 +463,8 @@ class CategoryHierarchy
 	{
 		return App::getDb()->fetchAllCol("
 			SELECT DISTINCT c.id
-			FROM idea_categories c
-			LEFT JOIN idea_categories AS c2 ON (c2.parent_id = c.id)
+			FROM feedback_categories c
+			LEFT JOIN feedback_categories AS c2 ON (c2.parent_id = c.id)
 			WHERE c2.id IS NULL
 		");
 	}

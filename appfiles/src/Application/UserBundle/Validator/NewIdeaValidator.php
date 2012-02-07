@@ -22,42 +22,42 @@ class NewIdeaValidator extends AbstractValidator
 	/**
 	 * @var \Application\DeskPRO\Ideas\NewIdea
 	 */
-	protected $newidea;
+	protected $newfeedback;
 
 	/**
 	 * Check $value to see if its valid.
 	 *
-	 * @param \Application\DeskPRO\Ideas\NewIdea $newidea
+	 * @param \Application\DeskPRO\Ideas\NewIdea $newfeedback
 	 * @return bool
 	 */
-	protected function checkIsValid($newidea)
+	protected function checkIsValid($newfeedback)
 	{
-		$this->newidea = $newidea;
+		$this->newfeedback = $newfeedback;
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->newidea->title)) {
+		if (!$validator->isValid($this->newfeedback->title)) {
 			$this->addError('title.short');
 		}
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 10));
-		if (!$validator->isValid($this->newidea->content)) {
+		if (!$validator->isValid($this->newfeedback->content)) {
 			$this->addError('content.short');
 		}
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 2));
-		if (!$validator->isValid($this->newidea->person_name)) {
+		if (!$validator->isValid($this->newfeedback->person_name)) {
 			$this->addError('person_name.short');
 		}
 
-		$cat = App::getEntityRepository('DeskPRO:IdeaCategory')->find($this->newidea->category_id);
+		$cat = App::getEntityRepository('DeskPRO:FeedbackCategory')->find($this->newfeedback->category_id);
 		if (!$cat) {
 			$this->addError('category_id.invalid');
 		}
 
-		$person_context = $this->newidea->getPersonContext();
+		$person_context = $this->newfeedback->getPersonContext();
 		if (!$person_context || $person_context->isGuest()) {
 			$validator = new \Orb\Validator\StringEmail();
-			if (!$validator->isValid($this->newidea->person_email)) {
+			if (!$validator->isValid($this->newfeedback->person_email)) {
 				$this->addError('person_email.invalid');
 			}
 		}

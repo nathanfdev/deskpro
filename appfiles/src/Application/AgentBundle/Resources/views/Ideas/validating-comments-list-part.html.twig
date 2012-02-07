@@ -17,8 +17,8 @@
 				{{ comment.content }}
 			</div>
 			<div style="padding-left: 5px;">
-				<a class="with-route" data-route="page:{{ path('agent_ideas_view', {'idea_id': comment.idea.id}) }}">
-					{{ comment.idea.title }}
+				<a class="with-route" data-route="page:{{ path('agent_feedback_view', {'feedback_id': comment.feedback.id}) }}">
+					{{ comment.feedback.title }}
 				</a>
 			</div>
 			<div style="float:right; padding-right: 4px;">

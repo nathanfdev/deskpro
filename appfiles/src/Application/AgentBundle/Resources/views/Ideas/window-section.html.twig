@@ -1,46 +1,46 @@
 <section class="source-section">
 	<ul class="source-list">
-		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
+		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'feedback'}) }}">
 			<h3 class="title">
-				<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
-				{{ phrase('agent.ideas.ideas_to_validate') }}
+				<span class="list-counter" id="feedback_validating_count">{{ counts.feedback_awaiting_validation|default(0) }}</span>
+				{{ phrase('agent.feedback.feedback_to_validate') }}
 			</h3>
 		</li>
-		<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
+		<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'feedback'}) }}">
 			<h3 class="title">
-				<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
+				<span class="list-counter" id="feedback_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 				{{ phrase('agent.publish.comments_to_validate') }}
 			</h3>
 		</li>
 	</ul>
 </section>
 
-<section class="source-tabs" id="ideas_outline_tabstrip">
+<section class="source-tabs" id="feedback_outline_tabstrip">
 	<ul>
-		<li data-tab-for="#ideas_outline_status"><span>{{ phrase('agent.status') }}</span></li>
-		{% if not idea_cats|length or idea_cats|length == 1 %}<li data-tab-for="#ideas_outline_category"><span>{{ phrase('agent.category') }}</span></li>{% endif %}
-		<li data-tab-for="#ideas_outline_labels"><span>{{ phrase('agent.labels') }}</span></li>
+		<li data-tab-for="#feedback_outline_status"><span>{{ phrase('agent.status') }}</span></li>
+		{% if not feedback_cats|length or feedback_cats|length == 1 %}<li data-tab-for="#feedback_outline_category"><span>{{ phrase('agent.category') }}</span></li>{% endif %}
+		<li data-tab-for="#feedback_outline_labels"><span>{{ phrase('agent.labels') }}</span></li>
 	</ul>
 </section>
 
-<section id="ideas_outline_status" class="deskpro-tab-item">
+<section id="feedback_outline_status" class="deskpro-tab-item">
 	<ul class="source-list">
 		<li class="is-nav-item">
-			<span class="title is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
-				<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
-				{{ phrase('agent.ideas.status_new') }}
+			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'new'}) }}">
+				<span class="list-counter" id="feedback_status_new_count">{{ status_counts.new|default(0) }}</span>
+				{{ phrase('agent.feedback.status_new') }}
 			</span>
 		</li>
 		<li>
-			<span class="title is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': 'active'}) }}">
-				<span class="list-counter is-nav-item" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
-				{{ phrase('agent.ideas.status_active') }}
+			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active'}) }}">
+				<span class="list-counter is-nav-item" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
+				{{ phrase('agent.feedback.status_active') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in active_status_cats %}
-					<li class="indent is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
+					<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id}) }}">
 						<span class="title">
-							<span class="list-counter" id="ideas_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
+							<span class="list-counter" id="feedback_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
 							{{ cat.title }}
 						</span>
 					</li>
@@ -48,15 +48,15 @@
 			</ul>
 		</li>
 		<li>
-			<span class="title is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': 'closed'}) }}">
-				<span class="list-counter is-nav-item" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
-				{{ phrase('agent.ideas.status_closed') }}
+			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed'}) }}">
+				<span class="list-counter is-nav-item" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
+				{{ phrase('agent.feedback.status_closed') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in closed_status_cats %}
-					<li class="indent is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
+					<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id}) }}">
 						<span class="title">
-							<span class="list-counter" id="ideas_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
+							<span class="list-counter" id="feedback_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
 							{{ cat.title }}
 						</span>
 					</li>
@@ -64,60 +64,60 @@
 			</ul>
 		</li>
 		<li>
-			<span class="title is-nav-item" data-route="listpane:{{ path('agent_ideas_status', {'status': 'hidden'}) }}">
-				<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
-				{{ phrase('agent.ideas.status_hidden') }}
+			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden'}) }}">
+				<span class="list-counter" id="feedback_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
+				{{ phrase('agent.feedback.status_hidden') }}
 			</span>
 			<ul class="sub-group indented-list">
 				<li class="indent is-nav-item" data-route="listpane:">
 					<span class="title">
-						<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
-						{{ phrase('agent.ideas.status_deleted') }}
+						<span class="list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
+						{{ phrase('agent.feedback.status_deleted') }}
 					</span>
 				</li>
 				<li class="indent is-nav-item" data-route="listpane:">
 					<span class="title">
-						<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
-						{{ phrase('agent.ideas.status_spam') }}
+						<span class="list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
+						{{ phrase('agent.feedback.status_spam') }}
 					</span>
 				</li>
 			</ul>
 		</li>
 	</ul>
 </section>
-<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies">
+<section id="feedback_outline_category" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.categroies">
 	<ul class="source-list">
-		{% for cat in idea_cats %}
+		{% for cat in feedback_cats %}
 			<li
 				class="is-nav-item"
-				data-route="listpane:{{ path('agent_ideas_category', {'category_id':cat.id}) }}"
-				data-usergroup-ids="{{ ideas_cats_usergroups[cat.id]|default([])|join(',') }}"
+				data-route="listpane:{{ path('agent_feedback_category', {'category_id':cat.id}) }}"
+				data-usergroup-ids="{{ feedback_cats_usergroups[cat.id]|default([])|join(',') }}"
 			>
 				<span class="title" {% if cat.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %}>
-					<span class="list-counter" id="ideas_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
+					<span class="list-counter" id="feedback_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
 					{{ cat.title }}
 				</span>
 			</li>
 		{% endfor %}
 	</ul>
 </section>
-<section id="ideas_outline_labels" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.labels">
+<section id="feedback_outline_labels" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.labels">
 	<section class="source-labels-list">
-		{% if not ideas_tag_index|length %}
+		{% if not feedback_tag_index|length %}
 			<dl>
-				{% for letter,labels in ideas_tag_index %}
+				{% for letter,labels in feedback_tag_index %}
 					<dt>{{ letter }}</dt>
 					<dd>
 						<ul>
 							{% for label in labels %}
-								<li class="is-nav-item"><span data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</span></li>
+								<li class="is-nav-item"><span data-route="listpane:{{ path('agent_feedback_label', {'label': label}) }}">{{label}}</span></li>
 							{% endfor %}
 						</ul>
 					</dd>
 				{% endfor %}
 			</dl>
 		{% else %}
-			<p class="no-labels">{{ phrase('agent.ideas.no_labels_explain') }}</p>
+			<p class="no-labels">{{ phrase('agent.feedback.no_labels_explain') }}</p>
 		{% endif %}
 	</section>
 </section>

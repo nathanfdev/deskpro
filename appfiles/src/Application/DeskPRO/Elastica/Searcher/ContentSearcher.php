@@ -136,7 +136,7 @@ class ContentSearcher extends AbstractSearcher
 		#------------------------------
 
 		if (!$this->person->getPermissionsManager()->IdeaCategories->hasRestrictions()) {
-			$no_perm_types[] = 'idea';
+			$no_perm_types[] = 'feedback';
 		} else {
 			$term = new \Elastica_Filter_Bool();
 
@@ -152,7 +152,7 @@ class ContentSearcher extends AbstractSearcher
 		#------------------------------
 
 		if (!$this->person->getPermissionsManager()->NewsCategories->hasRestrictions()) {
-			$no_perm_types[] = 'idea';
+			$no_perm_types[] = 'feedback';
 		} else {
 			$term = new \Elastica_Filter_Bool();
 

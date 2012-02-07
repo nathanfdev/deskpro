@@ -1,17 +1,17 @@
 <div class="full-tab-content">
-	<div class="idea-content-wrap">
-		{{ idea.content_html|raw }}
+	<div class="feedback-content-wrap">
+		{{ feedback.content_html|raw }}
 	</div>
-	<div class="idea-editor-wrap" style="display: none">
-		<div class="idea-editor">
-			{% if state.idea.content %}
+	<div class="feedback-editor-wrap" style="display: none">
+		<div class="feedback-editor">
+			{% if state.feedback.content %}
 				<div class="revert-message-notice">
 					Unsaved changes were restored. <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
-					<textarea class="edit-content-field-default" style="display: none;">{{idea.content}}</textarea>
+					<textarea class="edit-content-field-default" style="display: none;">{{feedback.content}}</textarea>
 				</div>
 			{% endif %}
-			<textarea class="edit-content-field" name="idea[content]" rows="5" cols="50">{{ state.idea.content|default(idea.content) }}</textarea>
+			<textarea class="edit-content-field" name="feedback[content]" rows="5" cols="50">{{ state.feedback.content|default(feedback.content) }}</textarea>
 
 			<br />
 

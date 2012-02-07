@@ -1,21 +1,21 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block email_teaser_link %}
-	{% if idea.status == 'visible' %}
-		View your idea online at:<br />
-		<a href="{{ url('user_ideas_view', {'slug': idea.url_slug}) }}">
-			{{ url('user_ideas_view', {'slug': idea.url_slug}) }}
+	{% if feedback.status == 'visible' %}
+		View your feedback online at:<br />
+		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
+			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
 	{% endif %}
 {% endblock %}
 {% block content %}
 	{{ layout.section_start() }}
-		<p>Thank you for submitting your idea "{{ idea.title }}"</p>
+		<p>Thank you for submitting your feedback "{{ feedback.title }}"</p>
 		{% if validating %}
-			{% if idea.status == 'visible' %}
+			{% if feedback.status == 'visible' %}
 				Please validate your email address online by clicking the following link:
 			{% else %}
-				Before your idea will be displayed publicly you must validate your email address by clicking on the following link:
+				Before your feedback will be displayed publicly you must validate your email address by clicking on the following link:
 			{% endif %}
 			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 		{% endif %}

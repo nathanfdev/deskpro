@@ -25,7 +25,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for vote in idea_votes %}
+			{% for vote in feedback_votes %}
 				<tr class="{% if vote.person %}type-person{% else %}type-guest{% endif %}">
 					<td>
 						{% if vote.person %}

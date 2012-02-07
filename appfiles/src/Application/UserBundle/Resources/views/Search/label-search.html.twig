@@ -86,23 +86,23 @@
 {% if results.articles.results|length %}
 	{{ layout.page_box() }}
 		{{ layout.page_title() }}
-			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas'}) }}">{{ phrase('user.content_ideas') }}</a></h1>
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback'}) }}">{{ phrase('user.content_feedback') }}</a></h1>
 		{{ layout.page_title_end() }}
 
 		{{ layout.page_content() }}
 			<div class="with-handler"
 				data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
-				data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': '00000'})|replace({'00000': '{page}'}) }}"
+				data-load-url="{{ path('user_search_labels', {'label': label, 'type': 'feedback', 'page': '00000'})|replace({'00000': '{page}'}) }}"
 			>
 				<div class="dp-search-list">
 					<ul>
-						{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'ideas', 'results': results.ideas.results, 'show_more': results.ideas.show_more} %}
+						{% include 'UserBundle:Search:label-search-items.html.twig' with {'typename': 'feedback', 'results': results.feedback.results, 'show_more': results.feedback.show_more} %}
 					</ul>
 				</div>
-				{% if results.ideas.show_more %}
+				{% if results.feedback.show_more %}
 				<div class="content-more">
 					<div class="is-not-loading">
-						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'ideas', 'page': page+1}) }}">{{ phrase('user.more_results_btn') }}</a>
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback', 'page': page+1}) }}">{{ phrase('user.more_results_btn') }}</a>
 					</div>
 					<div class="is-loading">
 						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>

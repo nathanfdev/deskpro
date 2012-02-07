@@ -18,8 +18,8 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  *
  * @ORM_Mapping\Entity
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="custom_data_idea", indexes={
- *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","idea_id"})
+ * @ORM_Mapping\Table(name="custom_data_feedback", indexes={
+ *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","feedback_id"})
  * })
  */
 class CustomDataIdea extends CustomDataAbstract
@@ -27,10 +27,10 @@ class CustomDataIdea extends CustomDataAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
-	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 * @ORM_Mapping\Id
 	 */
-	protected $idea;
+	protected $feedback;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefIdea
@@ -43,6 +43,6 @@ class CustomDataIdea extends CustomDataAbstract
 
 	public function getIdeaId()
 	{
-		return $this->idea['id'];
+		return $this->feedback['id'];
 	}
 }

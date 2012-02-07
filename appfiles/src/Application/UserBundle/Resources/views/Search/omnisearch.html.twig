@@ -6,9 +6,9 @@
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>
-		{% elseif res.type == 'idea' %}
-			<li class="idea">
-				<a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}">
+		{% elseif res.type == 'feedback' %}
+			<li class="feedback">
+				<a href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}">
 					<span>{{ res.object.title }}</span>
 				</a>
 			</li>

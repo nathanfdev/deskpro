@@ -146,7 +146,7 @@ class RelatedContentFinder
 				return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\DownloadsFetcher';
 				break;
 
-			case 'ideas':
+			case 'feedback':
 				return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\IdeasFetcher';
 				break;
 

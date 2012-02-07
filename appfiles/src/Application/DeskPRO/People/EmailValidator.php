@@ -132,18 +132,18 @@ class EmailValidator
 				// TODO tear these out into their own validator ahndlers
 				switch ($entity_name) {
 					case 'DeskPRO:Idea':
-						$idea = App::findEntity('DeskPRO:Idea', $entity_id);
-						if (!$idea) {
+						$feedback = App::findEntity('DeskPRO:Idea', $entity_id);
+						if (!$feedback) {
 							break;
 						}
 
-						$idea->validating = null;
-						if ($idea->status_code == 'hidden.validating') {
-							$idea->status = 'visible';
+						$feedback->validating = null;
+						if ($feedback->status_code == 'hidden.validating') {
+							$feedback->status = 'visible';
 						}
 
-						App::getOrm()->transactional(function ($em) use ($idea) {
-							$em->persist($idea);
+						App::getOrm()->transactional(function ($em) use ($feedback) {
+							$em->persist($feedback);
 							$em->flush();
 						});
 

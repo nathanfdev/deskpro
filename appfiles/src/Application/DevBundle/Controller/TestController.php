@@ -14,7 +14,7 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		foreach (array('ArticleCategory', 'IdeaCategory', 'NewsCategory', 'DownloadCategory', 'Product') as $name) {
+		foreach (array('ArticleCategory', 'FeedbackCategory', 'NewsCategory', 'DownloadCategory', 'Product') as $name) {
 			$name = "DeskPRO:$name";
 			$er = App::getEntityRepository($name);
 			$er->repair();

@@ -4,7 +4,7 @@
 {% endif %}
 	<tr data-item-id="{{ category.id }}" class="depth-{{ depth|default(0) }} category category-{{category.id}} {% if category.parent %}is-sub parent-{{ category.parent.id }}{% endif %} {% if category.children|length %}has-children{% endif %}" data-category-id="{{category.id}}">
 		<td class="title">
-			<a href="{{ path('admin_ideas_cats_edit', {'category_id': category.id}) }}" class="edit-title">
+			<a href="{{ path('admin_feedback_cats_edit', {'category_id': category.id}) }}" class="edit-title">
 				{{category.title}}
 			</a>
 		</td>

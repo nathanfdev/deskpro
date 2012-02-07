@@ -70,14 +70,14 @@ class ElasticAdapter extends AbstractAdapter
 
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Article',         'article');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Download',        'download');
-		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Idea',            'idea');
+		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Idea',            'feedback');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\News',            'news');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Ticket',          'ticket');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\TicketMessage',   'ticket_message');
 
 		$this->addIndexMap('article',   'content');
 		$this->addIndexMap('download',  'content');
-		$this->addIndexMap('idea',      'content');
+		$this->addIndexMap('feedback',      'content');
 		$this->addIndexMap('news',      'content');
 		$this->addIndexMap('ticket',         'tickets');
 		$this->addIndexMap('ticket_message', 'tickets');

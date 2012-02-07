@@ -1,10 +1,10 @@
 {% set layout_tpl = 'AdminBundle:Portal:layout.html.twig' %}
-{% set this_page = 'idea_fields' %}
+{% set this_page = 'feedback_fields' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_customdefideas') }}">Idea Fields</a></li>
+		<li><a href="{{ path('admin_customdeffeedback') }}">Idea Fields</a></li>
 		{% if field.id %}
 			<li>Edit Field</li>
 		{% else %}

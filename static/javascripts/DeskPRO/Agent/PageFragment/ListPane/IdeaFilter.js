@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 		this.wrapper = el;
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
-			prefId: 'idea-filter',
+			prefId: 'feedback-filter',
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl
 		});
@@ -49,7 +49,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 		});
 		this.ownObject(this.sortingMenu);
 
-		this.listWrapper = $('section.idea-simple-list', this.wrapper);
+		this.listWrapper = $('section.feedback-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 				var action = '';
 
 				switch (menuType) {
-					case 'idea-status-menu':
+					case 'feedback-status-menu':
 
 						action = 'set-status';
 
@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 						});
 						break;
 
-					case 'idea-category-menu':
+					case 'feedback-category-menu':
 
 						action = 'set-category';
 
@@ -90,7 +90,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 
 						break;
 
-					case 'idea-massactions-menu':
+					case 'feedback-massactions-menu':
 
 						switch (itemEl.data('action')) {
 							case 'delete':
@@ -124,7 +124,7 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 				}
 
 				$.ajax({
-					url: BASE_URL + 'agent/ideas/filter/mass-actions/' + action,
+					url: BASE_URL + 'agent/feedback/filter/mass-actions/' + action,
 					data: postData,
 					type: 'POST',
 					dataType: 'json',
@@ -147,6 +147,6 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
 
-		this.enableHighlightOpenRows('idea', 'idea_id', 'article.idea-');
+		this.enableHighlightOpenRows('feedback', 'feedback_id', 'article.feedback-');
 	}
 });

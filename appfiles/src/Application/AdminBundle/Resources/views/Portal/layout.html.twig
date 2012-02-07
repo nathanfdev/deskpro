@@ -36,17 +36,17 @@
 	<section>
 		<header>
 			<div class="onoff">
-				<input type="checkbox" name="ideas" value="1" checked="checked" class="onoff-slider section-toggle" />
+				<input type="checkbox" name="feedback" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
 			<h4>Ideas</h4>
 		</header>
 		<article>
 			<ul>
-				{#<li class="{% if this_page == 'idea_settings' %}on{% endif %}"><a href="{{ path('admin_ideas_settings' ) }}">Settings</a></li>#}
-				<li class="{% if this_page == 'idea_statuses' %}on{% endif %}"><a href="{{ path('admin_ideas_statuses') }}">Statuses</a></li>
-				<li class="{% if this_page == 'idea_cats' %}on{% endif %}"><a href="{{ path('admin_ideas_cats') }}">Categories</a></li>
-				<li class="{% if this_page == 'idea_fields' %}on{% endif %}"><a href="{{ path('admin_customdefideas') }}">Custom Fields</a></li>
-				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.ideas" target="_blank">Manage Ideas</a></li>
+				{#<li class="{% if this_page == 'feedback_settings' %}on{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">Settings</a></li>#}
+				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">Statuses</a></li>
+				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">Categories</a></li>
+				<li class="{% if this_page == 'feedback_fields' %}on{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">Custom Fields</a></li>
+				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">Manage Ideas</a></li>
 			</ul>
 		</article>
 	</section>

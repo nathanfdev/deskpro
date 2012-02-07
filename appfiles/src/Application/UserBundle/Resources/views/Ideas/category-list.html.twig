@@ -1,23 +1,23 @@
 <div style="background-color: #eee; padding: 3px;">
 	<ul>
-		<li><a href="{{ path('user_ideas_newidea') }}">{{ phrase('user.ideas.submit_new_idea') }}</a></li>
+		<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.feedback.submit_new_feedback') }}</a></li>
 	</ul>
 	<ul>
 		<li style="margin-bottom: 15px;">
 			{% if not status or status == 'new' %}
-				<a href="{{ path('user_ideas') }}">
+				<a href="{{ path('user_feedback') }}">
 			{% else %}
-				<a href="{{ path('user_ideas_status', {'status': status}) }}">
+				<a href="{{ path('user_feedback_status', {'status': status}) }}">
 			{% endif %}
-				{{ phrase('user.ideas.all_ideas') }}
+				{{ phrase('user.feedback.all_feedback') }}
 			</a>
 		</li>
 	{% for cat in categories %}
 		<li>
 			{% if not status or status == 'new' %}
-				<a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">
+				<a href="{{ path('user_feedback_cat', {'slug': cat.url_slug}) }}">
 			{% else %}
-				<a href="{{ path('user_ideas_cat_status', {'slug': cat.url_slug, 'status': status}) }}">
+				<a href="{{ path('user_feedback_cat_status', {'slug': cat.url_slug, 'status': status}) }}">
 			{% endif %}
 			{{ cat.title }}</a>
 		</li>

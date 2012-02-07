@@ -29,7 +29,7 @@ class IdeaResults
 	/**
 	 * @var array
 	 */
-	protected $idea_ids = array();
+	protected $feedback_ids = array();
 
 	/**
 	 * @var array
@@ -88,7 +88,7 @@ class IdeaResults
 
 			$order_by = $controller->in->getString('order_by');
 			if (!$order_by) {
-				$order_by = $controller->person->getPref('agent.ui.idea-filter-order-by.0');
+				$order_by = $controller->person->getPref('agent.ui.feedback-filter-order-by.0');
 			}
 
 			if ($order_by) {
@@ -151,11 +151,11 @@ class IdeaResults
 
 	/**
 	 * Set ticket IDs for the search results
-	 * @param array $idea_ids
+	 * @param array $feedback_ids
 	 */
-	public function setIdeaIds(array $idea_ids)
+	public function setIdeaIds(array $feedback_ids)
 	{
-		$this->idea_ids = $idea_ids;
+		$this->feedback_ids = $feedback_ids;
 	}
 
 
@@ -166,7 +166,7 @@ class IdeaResults
 	 */
 	public function getIdeaIds()
 	{
-		return $this->idea_ids;
+		return $this->feedback_ids;
 	}
 
 
@@ -181,21 +181,21 @@ class IdeaResults
 	}
 
 
-	protected function _getPageFromIdeaIds(array $idea_ids, $page, $per_page)
+	protected function _getPageFromIdeaIds(array $feedback_ids, $page, $per_page)
 	{
-		$page_idea_ids = Arrays::getPageChunk($idea_ids, $page, $per_page);
-		$ideas_raw = App::getEntityRepository('DeskPRO:Idea')->getByIds($page_idea_ids);
+		$page_feedback_ids = Arrays::getPageChunk($feedback_ids, $page, $per_page);
+		$feedback_raw = App::getEntityRepository('DeskPRO:Idea')->getByIds($page_feedback_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.
 		// - So we'll re-create the array here according to the order they're supposed to be in.
-		$ideas = array();
-		foreach ($idea_ids as $tid) {
-			if (isset($ideas_raw[$tid])) {
-				$ideas[$tid] = $ideas_raw[$tid];
+		$feedback = array();
+		foreach ($feedback_ids as $tid) {
+			if (isset($feedback_raw[$tid])) {
+				$feedback[$tid] = $feedback_raw[$tid];
 			}
 		}
 
-		return $ideas;
+		return $feedback;
 	}
 }

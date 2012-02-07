@@ -24,7 +24,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
@@ -198,7 +198,7 @@ class Structure
 	 */
 	public function getIdeaCategories()
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 		return $this->category_data[$ent]['all'];
 	}
@@ -209,7 +209,7 @@ class Structure
 	 */
 	public function getIdeaRootCategories()
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 		return $this->category_data[$ent]['hierarchy'];
 	}
@@ -220,9 +220,9 @@ class Structure
 	 *
 	 * @return array
 	 */
-	public function getIdeaCategoryIds()
+	public function getFeedbackCategoryIds()
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 		return $this->category_data[$ent]['ids'];
 	}
@@ -232,9 +232,9 @@ class Structure
 	 * @param $slug
 	 * @return
 	 */
-	public function getIdeaCategory($id)
+	public function getFeedbackCategory($id)
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 
 		if (!isset($this->category_data[$ent]['all'][$id])) {
@@ -249,9 +249,9 @@ class Structure
 	 * @param $id
 	 * @return bool
 	 */
-	public function hasIdeaCategory($id)
+	public function hasFeedbackCategory($id)
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 
 		return isset($this->category_data[$ent]['all'][$id]);
@@ -265,9 +265,9 @@ class Structure
 	 * @param bool $include_tops
 	 * @return array
 	 */
-	public function getIdeaCategoryNames($sep = ' > ', $include_tops = true)
+	public function getFeedbackCategoryNames($sep = ' > ', $include_tops = true)
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 		return $this->_getFullCategoryNames(array(), $this->category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
@@ -276,9 +276,9 @@ class Structure
 	/**
 	 * @return \Orb\Util\HierarchyStructure
 	 */
-	public function getIdeaCategoryHelper()
+	public function getFeedbackCategoryHelper()
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 		return $this->category_data[$ent]['helper'];
 	}
@@ -288,9 +288,9 @@ class Structure
 	 * @param \Application\DeskPRO\Entity\Person|null $person_context
 	 * @return array
 	 */
-	public function getIdeaCategoryCounts(Person $person_context = null)
+	public function getFeedbackCategoryCounts(Person $person_context = null)
 	{
-		$ent = 'DeskPRO:IdeaCategory';
+		$ent = 'DeskPRO:FeedbackCategory';
 		$id = 'categories.counts.' . $ent;
 		$this->loadCategories($ent);
 
@@ -630,8 +630,8 @@ class Structure
 	{
 		if ($obj instanceof ArticleCategory) {
 			return $this->getArticleCategoryHelper();
-		} elseif ($obj instanceof IdeaCategory) {
-			return $this->getIdeaCategoryHelper();
+		} elseif ($obj instanceof FeedbackCategory) {
+			return $this->getFeedbackCategoryHelper();
 		} elseif ($obj instanceof DownloadCategory) {
 			return $this->getDownloadCategoryHelper();
 		} elseif ($obj instanceof NewsCategory) {

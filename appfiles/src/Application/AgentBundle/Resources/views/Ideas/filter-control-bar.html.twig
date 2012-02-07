@@ -8,7 +8,7 @@
 		<li class="order-by-menu-trigger"><a class="button">
 			<span class="label">
 				{% if 'popularity' in cache.criteria.order_by %}
-					{{ phrase('agent.ideas.popularity') }}
+					{{ phrase('agent.feedback.popularity') }}
 				{% elseif 'num_ratings' in cache.criteria.order_by %}
 					{{ phrase('agent.publish.votes') }}
 				{% else %}
@@ -20,7 +20,7 @@
 		<li ><span class="sep"></span></li>
 	</ul>
 	<ul class="order-by-menu" style="display: none">
-		<li data-order-by="popularity">{{ phrase('agent.ideas.popularity') }}</li>
+		<li data-order-by="popularity">{{ phrase('agent.feedback.popularity') }}</li>
 		<li data-order-by="votes">{{ phrase('agent.publish.votes') }}</li>
 		<li data-order-by="date">{{ phrase('agent.date_created') }}</li>
 	</ul>

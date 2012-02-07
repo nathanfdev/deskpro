@@ -8,7 +8,7 @@
 			<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
 			<li><a href="{{ path('user_news') }}">News</a></li>
 			<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
-			<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+			<li><a href="{{ path('user_feedback') }}">Ideas</a></li>
 		</ul>
 		<br class="clear" />
 		
@@ -35,7 +35,7 @@
 	</div>
 	<div class="searchbar">
 		<form action="{{ path('user_search') }}" method="GET">
-			<input type="text" name="query" id="omni_search_txt" value="{{ query }}" placeholder="Ask a question, suggest an idea or search the helpdesk here" />
+			<input type="text" name="query" id="omni_search_txt" value="{{ query }}" placeholder="Ask a question, suggest an feedback or search the helpdesk here" />
 			<button class="dp-button">Search</button>
 		</form>
 		<div class="example">
@@ -54,7 +54,7 @@
 					<p>None of these results what you were looking for?</p>
 					<ul class="links">
 						<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>Subimt a new ticket</span></a></li>
-						<li class="idea"><a href="{{ path('user_ideas_newidea') }}"><span>Subimt an idea</span></a></li>
+						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>Subimt an feedback</span></a></li>
 						<li class="chat"><a href="#" class="dp-chat-trigger"><span>Chat with an agent</span></a></li>
 					</ul>
 					<br class="clear" />

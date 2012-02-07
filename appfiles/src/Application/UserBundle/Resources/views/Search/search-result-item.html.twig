@@ -24,13 +24,13 @@
 				{% endfor %}
 			</ul>
 		</div>
-	{% elseif res.type == 'idea' %}
-		<a class="title" href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
+	{% elseif res.type == 'feedback' %}
+		<a class="title" href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_ideas') }}">{{ phrase('user.content_ideas') }}</a></li>
+				<li><a href="{{ path('user_feedback') }}">{{ phrase('user.content_feedback') }}</a></li>
 				{% for cat in res.object.category.tree_parents %}
-					<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+					<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 				{% endfor %}
 			</ul>
 		</div>

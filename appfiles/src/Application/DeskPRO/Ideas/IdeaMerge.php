@@ -20,7 +20,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 
 /**
- * Handles merging of one idea into the other
+ * Handles merging of one feedback into the other
  */
 class IdeaMerge implements PersonContextInterface
 {
@@ -32,12 +32,12 @@ class IdeaMerge implements PersonContextInterface
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 */
-	protected $idea;
+	protected $feedback;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 */
-	protected $other_idea;
+	protected $other_feedback;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -47,19 +47,19 @@ class IdeaMerge implements PersonContextInterface
 	/**
 	 * @throws \InvalidArgumentException
 	 * @param \Application\DeskPRO\Entity\Person $person_performer
-	 * @param \Application\DeskPRO\Entity\Idea $idea         The base idea, this is the one that will still exist at the end
-	 * @param \Application\DeskPRO\Entity\Idea $other_idea   The other idea, the one that will be merged into $idea and then deleted
+	 * @param \Application\DeskPRO\Entity\Idea $feedback         The base feedback, this is the one that will still exist at the end
+	 * @param \Application\DeskPRO\Entity\Idea $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
 	 */
-	public function __construct(Person $person_performer, Idea $idea, Idea $other_idea)
+	public function __construct(Person $person_performer, Idea $feedback, Idea $other_feedback)
 	{
 		$this->em = App::getOrm();
 
-		$this->idea = $idea;
-		$this->other_idea = $other_idea;
+		$this->feedback = $feedback;
+		$this->other_feedback = $other_feedback;
 		$this->setPersonContext($person_performer);
 
-		if ($idea == $other_idea) {
-			throw new \InvalidArgumentException("You cannot merge an idea with itself");
+		if ($feedback == $other_feedback) {
+			throw new \InvalidArgumentException("You cannot merge an feedback with itself");
 		}
 	}
 
@@ -88,10 +88,10 @@ class IdeaMerge implements PersonContextInterface
 			$this->mergeVotes();
 			$this->mergeComments();
 			$this->mergeDescription();
-			$this->em->persist($this->idea);
+			$this->em->persist($this->feedback);
 			$this->em->flush();
 
-			$this->em->remove($this->other_idea);
+			$this->em->remove($this->other_feedback);
 			$this->em->flush();
 
 			$this->em->commit();
@@ -107,16 +107,16 @@ class IdeaMerge implements PersonContextInterface
 
 	protected function mergeProps()
 	{
-		if (!$this->idea->category && $this->other_idea->category) {
-			$this->idea->category = $this->other_idea->category;
+		if (!$this->feedback->category && $this->other_feedback->category) {
+			$this->feedback->category = $this->other_feedback->category;
 		}
-		$this->idea->view_count = $this->idea->view_count + $this->other_idea->view_count;
+		$this->feedback->view_count = $this->feedback->view_count + $this->other_feedback->view_count;
 	}
 
 	protected function mergeVotes()
 	{
-		$votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('idea', $this->idea->id);
-		$other_votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('idea', $this->other_idea->id);
+		$votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->feedback->id);
+		$other_votes = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $this->other_feedback->id);
 
 		$finished_votes = $votes;
 
@@ -146,19 +146,19 @@ class IdeaMerge implements PersonContextInterface
 				$this->em->remove($v);
 			} else {
 				// Move the vote over
-				$this->idea->addRating($v);
+				$this->feedback->addRating($v);
 				$this->em->persist($v);
 				$finished_votes[] = $v;
 			}
 		}
 
-		$this->idea->recalculateVoteStats($finished_votes);
+		$this->feedback->recalculateVoteStats($finished_votes);
 	}
 
 	public function mergeComments()
 	{
-		foreach ($this->other_idea->comments as $comment) {
-			$comment->idea = $this->idea;
+		foreach ($this->other_feedback->comments as $comment) {
+			$comment->feedback = $this->feedback;
 			$this->em->persist($comment);
 		}
 	}
@@ -167,11 +167,11 @@ class IdeaMerge implements PersonContextInterface
 	{
 		$comment = new IdeaComment();
 
-		$comment->person = $this->other_idea->person;
-		$comment->content = $this->other_idea->content;
-		$comment->date_Created = $this->other_idea->date_created;
+		$comment->person = $this->other_feedback->person;
+		$comment->content = $this->other_feedback->content;
+		$comment->date_Created = $this->other_feedback->date_created;
 
-		$this->idea->addComment($comment);
+		$this->feedback->addComment($comment);
 
 		$this->em->persist($comment);
 	}

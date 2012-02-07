@@ -172,7 +172,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 
 	/**
-	 * Sets the list element (this.listEl) and the inner list content (this.listContentEl). Same idea
+	 * Sets the list element (this.listEl) and the inner list content (this.listContentEl). Same feedback
 	 * as section element, except its the list column.
 	 *
 	 * This is a wrapper for 'pages'.

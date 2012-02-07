@@ -644,7 +644,7 @@ class App
 		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
 		'custom_fields.tickets'      => 'Application\\DeskPRO\\CustomFields\\TicketFields',
 		'custom_fields.articles'     => 'Application\\DeskPRO\\CustomFields\\ArticleFields',
-		'custom_fields.ideas'        => 'Application\\DeskPRO\\CustomFields\\IdeaFields',
+		'custom_fields.feedback'        => 'Application\\DeskPRO\\CustomFields\\IdeaFields',
 		'custom_fields.organizations'      => 'Application\\DeskPRO\\CustomFields\\OrganizationFields',
 		'custom_fields.util'         => 'Application\\DeskPRO\\CustomFields\\Util',
 		'filestorage'                => '',

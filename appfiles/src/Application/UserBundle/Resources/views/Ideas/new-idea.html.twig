@@ -3,19 +3,19 @@
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewIdea.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_ideas') }}">{{ phrase('user.ideas.section_name') }}</a></li>
-	<li><a href="{{ path('user_ideas_newidea') }}">{{ phrase('user.ideas.newidea_section_name') }}</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.section_name') }}</a></li>
+	<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.feedback.newfeedback_section_name') }}</a></li>
 {% endblock %}
 {% block content %}
 
 <div
-	class="dp-content-block dp-newidea-page with-handler"
+	class="dp-content-block dp-newfeedback-page with-handler"
 	data-element-handler="DeskPRO.User.ElementHandler.NewIdea"
-	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'idea'}) }}"
+	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'feedback'}) }}"
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.ideas.newidea_section_name') }}</h1>
+			<h1>{{ phrase('user.feedback.newfeedback_section_name') }}</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
@@ -30,14 +30,14 @@
 					</div>
 				{% endif %}
 
-				<form action="{{ path('user_ideas_newidea') }}" method="post" class="with-form-validator">
+				<form action="{{ path('user_feedback_newfeedback') }}" method="post" class="with-form-validator">
 				<input type="hidden" name="process" value="1" />
 
 					{###############
 					 # Email
 					 ###############}
 
-					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'idea[person_email]', 'mode': 'identity' } %}
+					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'feedback[person_email]', 'mode': 'identity' } %}
 
 					{###############
 					 # Name
@@ -69,13 +69,13 @@
 						</div>
 						<div class="dp-form-input with-sub-options" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 							<div class="dp-select-wrapper" style="width: 70%;">
-								<select name="idea[category_id]" class="parent-option category_id">
+								<select name="feedback[category_id]" class="parent-option category_id">
 									<option value=""></option>
-									{% for id,info in idea_categories %}
+									{% for id,info in feedback_categories %}
 										<option value="{{id}}">{{info.title}}</option>
 									{% endfor %}
 								</select>
-								{% for parent_id, parent_info in idea_categories %}
+								{% for parent_id, parent_info in feedback_categories %}
 									{% if parent_info.children|length %}
 									<div class="dp-sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
 										<select class="sub_category_id">
@@ -100,7 +100,7 @@
 
 					<div class="dp-form-row {% if error_fields['title'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.ideas.label_summary') }} *</label> <em class="note">{{ phrase('user.ideas.label_summary_explain') }}</em>
+							<label>{{ phrase('user.feedback.label_summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.title, {
@@ -110,18 +110,18 @@
 								}
 							}) }}
 							<div class="dp-error-explain">
-								{{ phrase('user.ideas.summary_error') }}
+								{{ phrase('user.feedback.summary_error') }}
 							</div>
 						</div>
 					</div>
 
-					<div class="dp-related-search" id="dp_newidea_related_container" style="display: none">
-						<h4>{{ phrase('user.ideas.similar_title') }}</h4>
-						<div class="subline">{{ phrase('user.ideas.similar_note') }}</div>
+					<div class="dp-related-search" id="dp_newfeedback_related_container" style="display: none">
+						<h4>{{ phrase('user.feedback.similar_title') }}</h4>
+						<div class="subline">{{ phrase('user.feedback.similar_note') }}</div>
 						<div class="dp-list results">
 						</div>
 						<div class="more-link" style="display: none;">
-							<a>{{ phrase('user.ideas.similar_count', {'count_place': '<span class="count">0</span>'}) }}</a>
+							<a>{{ phrase('user.feedback.similar_count', {'count_place': '<span class="count">0</span>'}) }}</a>
 						</div>
 					</div>
 
@@ -131,7 +131,7 @@
 
 					<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.ideas.label_desc') }} *</label> <em class="note">{{ phrase('user.ideas.label_desc_explain') }}</em>
+							<label>{{ phrase('user.feedback.label_desc') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.content, {
@@ -141,7 +141,7 @@
 								}
 							}) }}
 							<div class="dp-error-explain">
-								{{ phrase('user.ideas.desc_error') }}
+								{{ phrase('user.feedback.desc_error') }}
 							</div>
 						</div>
 					</div>
@@ -164,13 +164,13 @@
 					</div>
 					<div class="dp-controls">
 						<div class="dp-default dp-control-section">
-							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.ideas.similar_same_as') }}</button>
-							<button class="btn small dp-not-answered">{{ phrase('user.ideas.similar_not_same_as') }}</button>
+							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.feedback.similar_same_as') }}</button>
+							<button class="btn small dp-not-answered">{{ phrase('user.feedback.similar_not_same_as') }}</button>
 						</div>
 						<div class="dp-confirm-answered dp-control-section" style="display:none">
-							<p>{{ phrase('user.ideas.similar_same_confirm') }}</p>
-							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.ideas.simialr_same_confirm_yes') }}</button>
-							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.ideas.simialr_same_confirm_no') }}</button>
+							<p>{{ phrase('user.feedback.similar_same_confirm') }}</p>
+							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.feedback.simialr_same_confirm_yes') }}</button>
+							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.feedback.simialr_same_confirm_no') }}</button>
 						</div>
 					</div>
 				</div>

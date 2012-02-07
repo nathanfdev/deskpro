@@ -1,4 +1,4 @@
-<div class="dp-idea-vote {% if has_voted_ids[idea.id] or has_voted_this %}dp-voted{% endif %}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">
+<div class="dp-feedback-vote {% if has_voted_ids[feedback.id] or has_voted_this %}dp-voted{% endif %}" data-vote-url="{{ path('user_feedback_vote', {'feedback_id': feedback.id}) }}">
 	<span></span>
-	<em>{{ idea.total_rating|default(0) }}</em>
+	<em>{{ feedback.total_rating|default(0) }}</em>
 </div>
