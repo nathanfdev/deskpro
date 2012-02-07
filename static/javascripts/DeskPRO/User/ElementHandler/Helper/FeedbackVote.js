@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.User.ElementHandler.Helper');
 
-DeskPRO.User.ElementHandler.Helper.IdeaVote = new Orb.Class({
+DeskPRO.User.ElementHandler.Helper.FeedbackVote = new Orb.Class({
 
 	initialize: function() {
 		var self = this;

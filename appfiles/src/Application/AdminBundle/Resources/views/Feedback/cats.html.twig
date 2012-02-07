@@ -3,7 +3,7 @@
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Idea Categories</h1>
+	<h1>Feedback Categories</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_feedback_cats_edit', {'category_id': '0'}) }}">Create New Category</a>
 	</nav>
@@ -14,7 +14,7 @@
 <div class="page-content">
 	{{ design.structure_table({ 'save_order_url': path('admin_feedback_cats_updateorders') }) }}
 		{% for category in all_categories %}
-			{% include 'AdminBundle:Ideas:cats-row.html.twig' %}
+			{% include 'AdminBundle:Feedback:cats-row.html.twig' %}
 		{% endfor %}
 	{{ design.structure_table_end() }}
 </div>

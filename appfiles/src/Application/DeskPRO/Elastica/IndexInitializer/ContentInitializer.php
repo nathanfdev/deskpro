@@ -49,7 +49,7 @@ class ContentInitializer extends AbstractInitializer
 		try {
 			$total += $this->runForType(App::get('deskpro.elastica.types.article'),  'DeskPRO:Article');
 			$total += $this->runForType(App::get('deskpro.elastica.types.download'), 'DeskPRO:Download');
-			$total += $this->runForType(App::get('deskpro.elastica.types.feedback'),     'DeskPRO:Idea');
+			$total += $this->runForType(App::get('deskpro.elastica.types.feedback'),     'DeskPRO:Feedback');
 			$total += $this->runForType(App::get('deskpro.elastica.types.news'),     'DeskPRO:News');
 		} catch (\Exception $e) {
 			$this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);

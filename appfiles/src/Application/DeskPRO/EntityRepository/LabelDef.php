@@ -178,7 +178,7 @@ class LabelDef extends EntityRepository
 				break;
 
 			case 'feedback':
-				return 'DeskPRO:LabelIdea';
+				return 'DeskPRO:LabelFeedback';
 				break;
 
 			case 'downloads':
@@ -206,7 +206,7 @@ class LabelDef extends EntityRepository
 			'labels_people'        => 'DeskPRO:LabelPerson',
 			'labels_tickets'       => 'DeskPRO:LabelTicket',
 			'labels_articles'      => 'DeskPRO:LabelArticle',
-			'labels_feedback'         => 'DeskPRO:LabelIdea',
+			'labels_feedback'         => 'DeskPRO:LabelFeedback',
 			'labels_downloads'     => 'DeskPRO:LabelDownload',
 			'labels_news'          => 'DeskPRO:LabelNews',
 		);

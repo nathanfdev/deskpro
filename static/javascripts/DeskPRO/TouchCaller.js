@@ -2,7 +2,7 @@ Orb.createNamespace('DeskPRO');
 
 /**
  * This calls a callback function every time something touches the object, but limits
- * it to a minimum timeout period between calls. Ideal for things like ajax searchers
+ * it to a minimum timeout period between calls. Feedbackl for things like ajax searchers
  * where you want to update as the user types, but dont want to do a request
  * every millisecond as they enter new characters.
  */

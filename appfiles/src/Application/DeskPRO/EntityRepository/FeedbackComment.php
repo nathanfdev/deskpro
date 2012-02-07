@@ -15,7 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class IdeaComment extends CommentAbstract
+class FeedbackComment extends CommentAbstract
 {
 	const FIELD = 'feedback';
 }

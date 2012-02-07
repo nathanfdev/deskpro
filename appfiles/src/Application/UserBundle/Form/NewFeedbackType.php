@@ -22,7 +22,7 @@ use Symfony\Component\Form\FormBuilder;
 /**
  * The new ticket form
  */
-class NewIdeaType extends AbstractType
+class NewFeedbackType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{

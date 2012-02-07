@@ -22,7 +22,7 @@ use Orb\Util\Util;
 /**
  * Helps figure out this users votes on feedback and how many votes remain
  */
-class IdeaVotes implements \Orb\Helper\ShortCallableInterface
+class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -118,10 +118,10 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	/**
 	 * Get how many votes this user has cast on a specific feedback
 	 *
-	 * @param Idea|int $feedback An Idea or an feedback ID
+	 * @param Feedback|int $feedback An Feedback or an feedback ID
 	 * @return int
 	 */
-	public function getVotesOnIdea($feedback)
+	public function getVotesOnFeedback($feedback)
 	{
 		$feedback_id = $feedback;
 		if (is_object($feedback_id) OR is_array($feedback_id)) {
@@ -159,12 +159,12 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	 * @param array $feedback
 	 * @return array
 	 */
-	public function getVotesOnIdeas(array $feedback)
+	public function getVotesOnFeedback(array $feedback)
 	{
 		$ids = array();
 
 		foreach ($feedback as $i) {
-			if ($i instanceof \Application\DeskPRO\Entity\Idea) {
+			if ($i instanceof \Application\DeskPRO\Entity\Feedback) {
 				$ids[] = $i->getId();
 			} else {
 				$ids[] = (int)$i;
@@ -206,9 +206,9 @@ class IdeaVotes implements \Orb\Helper\ShortCallableInterface
 	public function getShortCallableNames()
 	{
 		return array(
-			'getIdeaVotesRemaining' => 'getVotesRemaining',
-			'getIdeaVotesUsed'      => 'getVotesUsed',
-			'IdeaVotes'             => '_getthis',
+			'getFeedbackVotesRemaining' => 'getVotesRemaining',
+			'getFeedbackVotesUsed'      => 'getVotesUsed',
+			'FeedbackVotes'             => '_getthis',
 		);
 	}
 

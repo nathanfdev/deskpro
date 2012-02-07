@@ -188,8 +188,8 @@ class Util
 				return 'download';
 				break;
 
-			case 'Application\\DeskPRO\\Entity\\Idea':
-			case 'Application\\DeskPRO\\Entity\\IdeaRevision':
+			case 'Application\\DeskPRO\\Entity\\Feedback':
+			case 'Application\\DeskPRO\\Entity\\FeedbackRevision':
 				return 'feedback';
 				break;
 		}
@@ -226,11 +226,11 @@ class Util
 				}
 				break;
 
-			case 'Application\\DeskPRO\\Entity\\Idea':
+			case 'Application\\DeskPRO\\Entity\\Feedback':
 				if ($entity_name) {
-					return 'DeskPRO:IdeaRevision';
+					return 'DeskPRO:FeedbackRevision';
 				} else {
-					return 'Application\\DeskPRO\\Entity\\IdeaRevision';
+					return 'Application\\DeskPRO\\Entity\\FeedbackRevision';
 				}
 				break;
 		}

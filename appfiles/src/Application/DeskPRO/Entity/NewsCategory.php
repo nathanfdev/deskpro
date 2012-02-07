@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 use Application\DeskPRO\App;
 
 /**
- * Idea categories
+ * Feedback categories
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\NewsCategory")
  * @ORM_Mapping\Table(name="news_categories")

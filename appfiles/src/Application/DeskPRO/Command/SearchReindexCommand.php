@@ -39,7 +39,7 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 				break;
 
 			case 'feedback':
-				$entity = 'DeskPRO:Idea';
+				$entity = 'DeskPRO:Feedback';
 				$table = 'feedback';
 				break;
 

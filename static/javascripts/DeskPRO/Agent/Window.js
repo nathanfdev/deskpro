@@ -945,7 +945,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['agent_chat_section'];
 		} else if (testcl('.OpenChats')) {
 			handler = this.sections['chat_section'];
-		} else if (testcl('.Idea')) {
+		} else if (testcl('.Feedback')) {
 			handler = this.sections['feedback_section'];
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			handler = this.sections['tickets_section'];
@@ -1906,7 +1906,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			tabRoute: 'page:' + BASE_URL + 'agent/news/new',
 			autostart: autostart
 		});
-		this.newIdeaLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+		this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/feedback/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 			autostart: autostart
@@ -1942,7 +1942,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			DeskPRO_Window.newDownloadLoader.toggle();
 		});
 		$('#create_feedback_btn').on('click', function() {
-			DeskPRO_Window.newIdeaLoader.toggle();
+			DeskPRO_Window.newFeedbackLoader.toggle();
 		});
 		$('#create_task_btn').on('click', function() {
 			$('form#newTaskForm input, form#newTaskForm select').val('');

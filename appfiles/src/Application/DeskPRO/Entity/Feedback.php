@@ -18,13 +18,13 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
 /**
- * Ideas (feedback)
+ * Feedback (feedback)
  *
  * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Feedback")
  * @ORM_Mapping\Table(name="feedback")
  */
-class Idea extends ContentAbstract
+class Feedback extends ContentAbstract
 {
 	const STATUS_NEW      = 'new';
 	const STATUS_ACTIVE   = 'active';
@@ -58,22 +58,22 @@ class Idea extends ContentAbstract
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaRevision", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 * @ORM_Mapping\OneToMany(targetEntity="FeedbackRevision", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $revisions;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 * @ORM_Mapping\OneToMany(targetEntity="FeedbackComment", mappedBy="feedback", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $comments;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelIdea", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelFeedback", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataIdea", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataFeedback", mappedBy="feedback", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
@@ -106,7 +106,7 @@ class Idea extends ContentAbstract
 		}
 	}
 
-	public function addComment(IdeaComment $comment)
+	public function addComment(FeedbackComment $comment)
 	{
 		$comment->feedback = $this;
 		$this->comments->add($comment);
@@ -114,7 +114,7 @@ class Idea extends ContentAbstract
 		return $comment;
 	}
 
-	public function addCustomData(CustomDataIdea $data)
+	public function addCustomData(CustomDataFeedback $data)
 	{
 		$this->custom_data->add($data);
 		$data['feedback'] = $this;
@@ -267,7 +267,7 @@ class Idea extends ContentAbstract
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelIdea');
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelFeedback');
 		}
 
 		return $this->_label_manager;
@@ -290,6 +290,6 @@ class Idea extends ContentAbstract
 			return;
 		}
 		$queue = $container->getQueue('search_object_update');
-		$queue->send(array('entity_type' => 'DeskPRO:Idea', 'id' => $this->id, 'op' => $op));
+		$queue->send(array('entity_type' => 'DeskPRO:Feedback', 'id' => $this->id, 'op' => $op));
 	}
 }

@@ -418,7 +418,7 @@ HTML;
 
 		$person = $identity['person'];
 		$person->setLastLoginAt();
-		$person->loadHelper('IdeaVotes', array(
+		$person->loadHelper('FeedbackVotes', array(
 			'visitor' => $this->session->getVisitor()
 		));
 		$person->loadHelper('HelpdeskUser', array(

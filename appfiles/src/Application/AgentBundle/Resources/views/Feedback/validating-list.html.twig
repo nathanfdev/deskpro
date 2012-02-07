@@ -1,24 +1,28 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaCommentsValidating';
-pageMeta.pageUrl = '{{ path('agent_feedback_validating_comments') }}?partial=1&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_feedback_validating_comments') }}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter';
+pageMeta.pageUrl = '{{ path('agent_feedback_validating') }}?partial=1&cache_id={{cache_id}}&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?cache_id={{cache_id}}';
+pageMeta.submitFilterUrl = '{{ path('agent_feedback_validating') }}';
 pageMeta.isValidating = true;
+{% if cache_id %}
+	pageMeta.cache_id = {{cache_id}};
+{% endif %}
 {% if not feedback %}
 	pageMeta.noResults = true;
 {% endif %}
 </script>
 <header class="section-header">
 	<h1>
-		{{ phrase('agent.publish.comments_awaiting_validation') }}
+		{{ phrase('core_feedback.articles_awaiting_validation') }}
 	</h1>
 </header>
 <div class="layout-content">
 <div class="content">
 	<section class="feedback-simple-list deskpro-results-list">
-		{% include 'AgentBundle:Ideas:validating-comments-list-part.html.twig' %}
+		{% include 'AgentBundle:Feedback:validating-list-part.html.twig' %}
 	</section>
 
-	{% if not comments|length %}
+	{% if not feedback|length %}
 		<section class="list-listing no-results">
 			<p>{{ phrase('agent.there_are_no_results') }}</p>
 		</section>

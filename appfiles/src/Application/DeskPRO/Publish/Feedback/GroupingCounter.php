@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Publish\Ideas;
+namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;

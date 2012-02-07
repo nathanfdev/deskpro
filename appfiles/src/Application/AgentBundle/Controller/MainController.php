@@ -134,7 +134,7 @@ class MainController extends AbstractController
 					break;
 
 				case 'feedback_section':
-					$data[$name] = json_decode($this->forward('AgentBundle:Ideas:getSectionData')->getContent());
+					$data[$name] = json_decode($this->forward('AgentBundle:Feedback:getSectionData')->getContent());
 					break;
 
 				case 'publish_section':
@@ -165,7 +165,7 @@ class MainController extends AbstractController
 		$type_to_ent = array(
 			'article'  => 'DeskPRO:Article',
 			'download' => 'DeskPRO:Download',
-			'feedback'     => 'DeskPRO:Idea',
+			'feedback'     => 'DeskPRO:Feedback',
 			'news'     => 'DeskPRO:News',
 			'ticket'   => 'DeskPRO:Ticket',
 			'person'   => 'DeskPRO:Person',

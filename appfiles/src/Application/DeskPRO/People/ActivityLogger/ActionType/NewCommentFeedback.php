@@ -19,7 +19,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 use Orb\Util\Arrays;
 
-class NewCommentIdea extends NewCommentAbstract
+class NewCommentFeedback extends NewCommentAbstract
 {
 	public function getDetails()
 	{

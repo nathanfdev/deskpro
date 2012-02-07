@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\AdminBundle\Form\EditFeedbackCategoryType;
 use Orb\Util\Arrays;
 
-class IdeasController extends AbstractController
+class FeedbackController extends AbstractController
 {
 	############################################################################
 	# statuses
@@ -18,7 +18,7 @@ class IdeasController extends AbstractController
 		$active_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		$closed_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
-		return $this->render('AdminBundle:Ideas:statuses.html.twig', array(
+		return $this->render('AdminBundle:Feedback:statuses.html.twig', array(
 			'active_cats' => $active_cats,
 			'closed_cats' => $closed_cats
 		));
@@ -56,14 +56,14 @@ class IdeasController extends AbstractController
 			throw $e;
 		}
 
-		return $this->render('AdminBundle:Ideas:statuses-row.html.twig', array('cat' => $cat));
+		return $this->render('AdminBundle:Feedback:statuses-row.html.twig', array('cat' => $cat));
 	}
 
 	public function editStatusAction($category_id)
 	{
 		$cat = $this->getStatusOr404($category_id);
 
-		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInStatusCategory($cat);
+		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInStatusCategory($cat);
 
 		if ($cat->status_type == 'active') {
 			$other_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
@@ -73,7 +73,7 @@ class IdeasController extends AbstractController
 
 		unset($other_cats[$cat->id]);
 
-		return $this->render('AdminBundle:Ideas:status-edit.html.twig', array(
+		return $this->render('AdminBundle:Feedback:status-edit.html.twig', array(
 			'cat' => $cat,
 			'count_existing' => $count_existing,
 			'other_cats' => $other_cats,
@@ -83,7 +83,7 @@ class IdeasController extends AbstractController
 	public function deleteStatusAction($category_id)
 	{
 		$cat = $this->getStatusOr404($category_id);
-		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInStatusCategory($cat);
+		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInStatusCategory($cat);
 
 		$this->em->getConnection()->beginTransaction();
 
@@ -150,7 +150,7 @@ class IdeasController extends AbstractController
 			ORDER BY c.display_order ASC
 		")->getResult();
 
-		return $this->render('AdminBundle:Ideas:cats.html.twig', array(
+		return $this->render('AdminBundle:Feedback:cats.html.twig', array(
 			'all_categories' => $all_categories
 		));
 	}
@@ -221,7 +221,7 @@ class IdeasController extends AbstractController
 		};
 		$trav_filter_fn($other_cats);
 
-		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInCategory($category);
+		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInCategory($category);
 
 		if (!$category_id) {
 			$leaf_ids = $this->em->getRepository('DeskPRO:FeedbackCategory')->getLeafIds();
@@ -229,7 +229,7 @@ class IdeasController extends AbstractController
 			$leaf_ids = array();
 		}
 
-		return $this->render('AdminBundle:Ideas:cats-edit.html.twig', array(
+		return $this->render('AdminBundle:Feedback:cats-edit.html.twig', array(
 			'category' => $category,
 			'form'      => $form->createView(),
 			'count_existing' => $count_existing,
@@ -242,7 +242,7 @@ class IdeasController extends AbstractController
 	{
 		$category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($category_id);
 
-		$count_existing = $this->em->getRepository('DeskPRO:Idea')->countInCategory($category);
+		$count_existing = $this->em->getRepository('DeskPRO:Feedback')->countInCategory($category);
 
 		if ($count_existing) {
 			$move_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->in->getUint('move_to_cat'));

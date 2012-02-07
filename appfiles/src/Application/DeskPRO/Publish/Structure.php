@@ -16,14 +16,14 @@ use Orb\Doctrine\Common\Cache\PreloadedMysqlCache;
 use Orb\Util\Arrays;
 
 use Application\DeskPRO\Searcher\ArticleSearch;
-use Application\DeskPRO\Searcher\IdeaSearch;
+use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -188,7 +188,7 @@ class Structure
 	}
 
 	####################################################################################################################
-	# Idea Fetchers
+	# Feedback Fetchers
 	####################################################################################################################
 
 	/**
@@ -196,7 +196,7 @@ class Structure
 	 *
 	 * @return array
 	 */
-	public function getIdeaCategories()
+	public function getFeedbackCategories()
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
@@ -207,7 +207,7 @@ class Structure
 	/**
 	 * @return mixed
 	 */
-	public function getIdeaRootCategories()
+	public function getFeedbackRootCategories()
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
@@ -299,26 +299,26 @@ class Structure
 		}
 
 		$counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));
-		foreach ($this->getIdeaCategories() as $c) {
+		foreach ($this->getFeedbackCategories() as $c) {
 
 			$cat_counts = array();
 
-			$searcher = new IdeaSearch();
+			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(IdeaSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
-			$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', Idea::STATUS_NEW);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_NEW);
 			$cat_counts['new'] = $searcher->getCount();
 
-			$searcher = new IdeaSearch();
+			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(IdeaSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
-			$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', Idea::STATUS_ACTIVE);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_ACTIVE);
 			$cat_counts['active'] = $searcher->getCount();
 
-			$searcher = new IdeaSearch();
+			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(IdeaSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
-			$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', Idea::STATUS_CLOSED);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_CLOSED);
 			$cat_counts['closed'] = $searcher->getCount();
 
 			$cat_counts['all'] = array_sum($cat_counts);

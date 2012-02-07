@@ -13,7 +13,7 @@ namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
 
-class CustomDefIdeasController extends CustomDefAbstractController
+class CustomDefFeedbackController extends CustomDefAbstractController
 {
 	const API_NAME = 'custom_fields.feedback';
 }

@@ -17,7 +17,7 @@ use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Idea as NewsEntity;
+use Application\DeskPRO\Entity\Feedback as NewsEntity;
 use Application\DeskPRO\Searcher\NewsSearch;
 
 use Orb\Util\Arrays;

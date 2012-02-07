@@ -208,15 +208,15 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		}
 
 		#------------------------------
-		# Ideas
+		# Feedback
 		#------------------------------
 
-		if (!$this->person->getPermissionsManager()->IdeaCategories->hasRestrictions()) {
+		if (!$this->person->getPermissionsManager()->FeedbackCategories->hasRestrictions()) {
 			$no_perm_types[] = 'feedback';
 		} else {
 			$term = new \Elastica_Filter_Bool();
 
-			$cat_perms = $this->person->getPermissionsManager()->IdeaCategories->getSmallestSet();
+			$cat_perms = $this->person->getPermissionsManager()->FeedbackCategories->getSmallestSet();
 			$type = $cat_perms['type'] == 'allowed' ? 'addMust' : 'addMustNot';
 
 			$term->$type(array('term' => array('category_id' => $cat_perms['ids'])));

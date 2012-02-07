@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initializeProperties: function() {

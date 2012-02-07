@@ -491,63 +491,63 @@ $collection->add('user_news_newcomment', new Route(
 
 $collection->add('user_feedback', new Route(
 	'/feedback/{status}/{slug}',
-	array('_controller' => 'UserBundle:Ideas:filter', 'status' => 'new', 'slug' => 'all'),
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'new', 'slug' => 'all'),
 	array('slug' => '((\\d+(\\-.*?)?)?)|all', 'status' => '(all|popular|new|active|closed)(\\.([0-9]+))?'),
 	array()
 ));
 
 $collection->add('user_feedback_all', new Route(
 	'/feedback/all',
-	array('_controller' => 'UserBundle:Ideas:filter', 'status' => 'all', 'slug' => 'all'),
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'all', 'slug' => 'all'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_view', new Route(
 	'/feedback/feedback/{slug}',
-	array('_controller' => 'UserBundle:Ideas:view'),
+	array('_controller' => 'UserBundle:Feedback:view'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_newfeedback', new Route(
 	'/feedback/new-feedback',
-	array('_controller' => 'UserBundle:Ideas:newIdea'),
+	array('_controller' => 'UserBundle:Feedback:newFeedback'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_newcomment', new Route(
 	'/feedback/new-comment/{feedback_id}',
-	array('_controller' => 'UserBundle:Ideas:newComment'),
+	array('_controller' => 'UserBundle:Feedback:newComment'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_vote', new Route(
 	'/feedback/vote/{feedback_id}',
-	array('_controller' => 'UserBundle:Ideas:vote'),
+	array('_controller' => 'UserBundle:Feedback:vote'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_status', new Route(
 	'/feedback/all/{status}',
-	array('_controller' => 'UserBundle:Ideas:index', 'slug' => 0),
+	array('_controller' => 'UserBundle:Feedback:index', 'slug' => 0),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_cat', new Route(
 	'/feedback/{slug}',
-	array('_controller' => 'UserBundle:Ideas:index', 'status' => 'new'),
+	array('_controller' => 'UserBundle:Feedback:index', 'status' => 'new'),
 	array(),
 	array()
 ));
 
 $collection->add('user_feedback_cat_status', new Route(
 	'/feedback/{slug}/{status}',
-	array('_controller' => 'UserBundle:Ideas:index'),
+	array('_controller' => 'UserBundle:Feedback:index'),
 	array(),
 	array()
 ));

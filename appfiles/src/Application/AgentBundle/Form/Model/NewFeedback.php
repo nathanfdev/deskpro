@@ -12,10 +12,10 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 
-class NewIdea
+class NewFeedback
 {
 	public $title;
 	public $category_id;
@@ -43,7 +43,7 @@ class NewIdea
 	{
 		$this->_em->beginTransaction();
 
-		$feedback = new Idea();
+		$feedback = new Feedback();
 		$feedback->person = $this->_person_context;
 		$feedback->setStatusCode($this->status_code);
 		$feedback->title = $this->title;
@@ -62,7 +62,7 @@ class NewIdea
 		$this->_feedback = $feedback;
 	}
 
-	public function getIdea()
+	public function getFeedback()
 	{
 		return $this->_feedback;
 	}

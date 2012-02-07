@@ -31,7 +31,7 @@
 				</li>
 				<li class="{% if label_type == 'feedback' %}on{% endif %}">
 					<span class="count" id="labels_count_feedback">{{ def_counts.feedback|default(0) }}</span>
-					<a href="{{ path('admin_labels', {'label_type': 'feedback'}) }}">Ideas</a>
+					<a href="{{ path('admin_labels', {'label_type': 'feedback'}) }}">Feedback</a>
 				</li>
 				<li class="{% if label_type == 'news' %}on{% endif %}">
 					<span class="count" id="labels_count_news">{{ def_counts.news|default(0) }}</span>
@@ -86,7 +86,7 @@
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'articles' %}checked="checked"{% endif %} value="articles" /> Articles</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'deals' %}checked="checked"{% endif %} value="deals" /> Deals</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'downloads' %}checked="checked"{% endif %} value="downloads" /> Downloads</label>
-			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'feedback' %}checked="checked"{% endif %} value="feedback" /> Ideas</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'feedback' %}checked="checked"{% endif %} value="feedback" /> Feedback</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'news' %}checked="checked"{% endif %} value="news" /> News</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'organizations' %}checked="checked"{% endif %} value="organizations" /> Organizations</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'people' %}checked="checked"{% endif %} value="people" /> People</label>

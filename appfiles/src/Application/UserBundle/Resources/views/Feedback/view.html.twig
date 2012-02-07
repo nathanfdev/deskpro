@@ -5,7 +5,7 @@
 	<meta property="og:type" content="article" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">Ideas</a></li>
+	<li><a href="{{ path('user_feedback') }}">Feedback</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -14,7 +14,7 @@
 {% block page_title %}
 	{{ feedback.title }}
 	-
-	Ideas
+	Feedback
 	{% for cat in category_path %}
 		/ {{ cat.title }}
 	{% endfor %}
@@ -24,7 +24,7 @@
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				{% include 'UserBundle:Ideas:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
+				{% include 'UserBundle:Feedback:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
 				<h1>{{ feedback.title }}</h1>
 			</div>
 			<div class="dp-box-content-meta">

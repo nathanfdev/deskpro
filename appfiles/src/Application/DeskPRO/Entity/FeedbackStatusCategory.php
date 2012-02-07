@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
 /**
- * Ideas status types for accepted/declined statuses
+ * Feedback status types for accepted/declined statuses
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackStatusCategory")
  * @ORM_Mapping\Table(name="feedback_status_categories")

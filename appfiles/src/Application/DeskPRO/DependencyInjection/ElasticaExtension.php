@@ -49,8 +49,8 @@ class ElasticaExtension extends Extension
 		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
 		$container->setDefinition('deskpro.elastica.types.download', $definition);
 
-		// Idea
-		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\IdeaType');
+		// Feedback
+		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\FeedbackType');
 		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
 		$container->setDefinition('deskpro.elastica.types.feedback', $definition);
 

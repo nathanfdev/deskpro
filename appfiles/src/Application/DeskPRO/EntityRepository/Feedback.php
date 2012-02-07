@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
 
-class Idea extends AbstractEntityRepository
+class Feedback extends AbstractEntityRepository
 {
 	############################################################################
 	# Counters
@@ -202,14 +202,14 @@ class Idea extends AbstractEntityRepository
 		if ($person_context) {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
-				FROM DeskPRO:Idea i INDEX BY i.id
+				FROM DeskPRO:Feedback i INDEX BY i.id
 				WHERE i.id IN (" . implode(',', $ids) . ") AND i.status != 'hidden'
 				ORDER BY i.id DESC
 			")->execute();
 		} else {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
-				FROM DeskPRO:Idea i INDEX BY i.id
+				FROM DeskPRO:Feedback i INDEX BY i.id
 				WHERE i.id IN (" . implode(',', $ids) . ")
 				ORDER BY i.id DESC
 			")->execute();
@@ -224,7 +224,7 @@ class Idea extends AbstractEntityRepository
 
 		$unsorted_feedback = $this->getEntityManager()->createQuery("
 			SELECT i
-			FROM DeskPRO:Idea i INDEX BY i.id
+			FROM DeskPRO:Feedback i INDEX BY i.id
 			WHERE i.id IN (" . implode(',', $ids) . ")
 			ORDER BY i.id DESC
 		")->execute();
@@ -240,7 +240,7 @@ class Idea extends AbstractEntityRepository
 		return $feedback;
 	}
 
-	public function getIdeas($status, $node = false, $sort = 'id', $num = 10)
+	public function getFeedback($status, $node = false, $sort = 'id', $num = 10)
 	{
 		if ($sort == 'date') $sort = 'id';
 		if (!in_array($sort, array('id', 'num_ratings'))) $sort = 'id';
@@ -250,14 +250,14 @@ class Idea extends AbstractEntityRepository
 
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
-				FROM DeskPRO:Idea i
+				FROM DeskPRO:Feedback i
 				WHERE i.category IN (".implode(',', $node_ids).") AND i.status = ?1
 				ORDER BY i.$sort DESC
 			")->setParameter(1, $status)->setMaxResults($num)->execute();
 		} else {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
-				FROM DeskPRO:Idea i
+				FROM DeskPRO:Feedback i
 				WHERE i.status = ?1
 				ORDER BY i.$sort DESC
 			")->setParameter(1, $status)->setMaxResults($num)->execute();
@@ -273,7 +273,7 @@ class Idea extends AbstractEntityRepository
 		if (!$status) {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
-				FROM DeskPRO:Idea i INDEX BY i.id
+				FROM DeskPRO:Feedback i INDEX BY i.id
 				WHERE i.status != 'closed' AND i.status != 'hidden'
 				ORDER BY i.id DESC
 			")->setMaxResults($num)->execute();
@@ -285,14 +285,14 @@ class Idea extends AbstractEntityRepository
 				$cat_ids = $node->getTreeIds(true);
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
-					FROM DeskPRO:Idea i INDEX BY i.id
+					FROM DeskPRO:Feedback i INDEX BY i.id
 					WHERE i.status_category = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();
 			} else {
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
-					FROM DeskPRO:Idea i INDEX BY i.id
+					FROM DeskPRO:Feedback i INDEX BY i.id
 					WHERE i.status_category = ?1
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();
@@ -302,14 +302,14 @@ class Idea extends AbstractEntityRepository
 				$cat_ids = $node->getTreeIds(true);
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
-					FROM DeskPRO:Idea i INDEX BY i.id
+					FROM DeskPRO:Feedback i INDEX BY i.id
 					WHERE i.status = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();
 			} else {
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
-					FROM DeskPRO:Idea i INDEX BY i.id
+					FROM DeskPRO:Feedback i INDEX BY i.id
 					WHERE i.status = ?1
 					ORDER BY i.id DESC
 				")->setParameter(1, $status)->setMaxResults($num)->execute();

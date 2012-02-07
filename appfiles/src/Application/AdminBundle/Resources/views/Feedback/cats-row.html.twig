@@ -11,7 +11,7 @@
 	</tr>
 	{% if category.children|length %}
 		{% for sub_cat in category.children %}
-			{% include 'AdminBundle:Ideas:cats-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
+			{% include 'AdminBundle:Feedback:cats-row.html.twig' with {'category': sub_cat, 'is_sub': true, 'depth': depth|default(0) + 1 } %}
 		{% endfor %}
 	{% endif %}
 {% if not depth %}

@@ -21,7 +21,7 @@ use Orb\Util\Arrays;
 /**
  * Loads feedback category permissions
  */
-class IdeaCategories extends BasicTreeCategoryPermission
+class FeedbackCategories extends BasicTreeCategoryPermission
 {
 	protected function getCategoryPermissionEntity()
 	{

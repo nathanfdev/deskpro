@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Admin.ElementHandler');
 
-DeskPRO.Admin.ElementHandler.IdeaStatusEditPage = new Orb.Class({
+DeskPRO.Admin.ElementHandler.FeedbackStatusEditPage = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {

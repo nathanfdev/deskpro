@@ -1,13 +1,13 @@
 {% set this_page = 'feedback_statuses' %}
-{% set page_handler = 'DeskPRO.Admin.ElementHandler.IdeaStatusListPage' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.FeedbackStatusListPage' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block html_head %}
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/IdeaStatusListPage.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/FeedbackStatusListPage.js') }}"></script>
 {% endblock %}
 {% block pagetitle %}
-	<h1>Idea Statuses</h1>
+	<h1>Feedback Statuses</h1>
 	<nav>
 		<button id="create_status_btn" class="clean-white">Create New Status</button>
 	</nav>
@@ -21,7 +21,7 @@
 			</th>
 		</thead>
 		{% for cat in active_cats %}
-			{% include 'AdminBundle:Ideas:statuses-row.html.twig' with {'cat': cat} %}
+			{% include 'AdminBundle:Feedback:statuses-row.html.twig' with {'cat': cat} %}
 		{% endfor %}
 	{{ design.structure_table_end() }}
 
@@ -35,7 +35,7 @@
 			</th>
 		</thead>
 		{% for cat in closed_cats %}
-			{% include 'AdminBundle:Ideas:statuses-row.html.twig' with {'cat': cat} %}
+			{% include 'AdminBundle:Feedback:statuses-row.html.twig' with {'cat': cat} %}
 		{% endfor %}
 	{{ design.structure_table_end() }}
 

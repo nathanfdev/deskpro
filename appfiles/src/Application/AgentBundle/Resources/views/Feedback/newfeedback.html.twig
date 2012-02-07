@@ -1,6 +1,6 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewIdea';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewFeedback';
 pageMeta.title = '{{ phrase('agent.publish.new_feedback') }}';
 
 {% set baseId = el_uid() %}
@@ -101,7 +101,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create Idea <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">Create Feedback <kbd>(alt+c)</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

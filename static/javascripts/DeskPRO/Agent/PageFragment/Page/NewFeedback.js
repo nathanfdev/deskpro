@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.NewIdea = new Orb.Class({
+DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 

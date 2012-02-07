@@ -1,6 +1,6 @@
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.FeedbackView';
 pageMeta.title = {{feedback.title|json_encode|raw}};
 pageMeta.feedback_id = {{feedback.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_feedback_view', {'feedback_id': feedback.id}) }}';
@@ -78,10 +78,10 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if custom_fields|length %}
 			<dl class="info-list" id="{{baseId}}_custom_fields_rendered">
-				{% include 'AgentBundle:Ideas:view-customfields-rendered-rows.html.twig' %}
+				{% include 'AgentBundle:Feedback:view-customfields-rendered-rows.html.twig' %}
 			</dl>
 			<dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
-				{% include 'AgentBundle:Ideas:view-customfields-edit-rows.html.twig' %}
+				{% include 'AgentBundle:Feedback:view-customfields-edit-rows.html.twig' %}
 			</dl>
 		{% endif %}
 
@@ -116,7 +116,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab: Content #}
 	<div id="{{baseId}}_content_tab" class="deskpro-tab-item on" style="display: block">
 		<div id="{{baseId}}_content_ed">
-		{% include 'AgentBundle:Ideas:view-content-tab.html.twig' %}
+		{% include 'AgentBundle:Feedback:view-content-tab.html.twig' %}
 		</div>
 	</div>
 	{# /Tab: Content #}
@@ -127,7 +127,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="full-tab-content">
 				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 					{% for comment in feedback_comments %}
-						{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
+						{% include 'AgentBundle:Feedback:view-comment.html.twig' %}
 					{% endfor %}
 				</div>
 			</div>
@@ -165,7 +165,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{# Tab: Revisions #}
 	<div id="{{baseId}}_revs" class="deskpro-tab-item">
-		{% include 'AgentBundle:Ideas:view-revisions-tab.html.twig' %}
+		{% include 'AgentBundle:Feedback:view-revisions-tab.html.twig' %}
 	</div>
 	{# /Tab: Revisions #}
 
@@ -267,7 +267,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_end() }}
 {{ optionbox.end(phrase('agent.set_status')) }}
 
-{{ optionbox.category_ob(feedback_categories, 'Idea Category', phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(feedback_categories, 'Feedback Category', phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

@@ -17,17 +17,17 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Validator\AbstractValidator;
 
-class NewIdeaValidator extends AbstractValidator
+class NewFeedbackValidator extends AbstractValidator
 {
 	/**
-	 * @var \Application\DeskPRO\Ideas\NewIdea
+	 * @var \Application\DeskPRO\Feedback\NewFeedback
 	 */
 	protected $newfeedback;
 
 	/**
 	 * Check $value to see if its valid.
 	 *
-	 * @param \Application\DeskPRO\Ideas\NewIdea $newfeedback
+	 * @param \Application\DeskPRO\Feedback\NewFeedback $newfeedback
 	 * @return bool
 	 */
 	protected function checkIsValid($newfeedback)

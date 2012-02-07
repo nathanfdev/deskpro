@@ -94,7 +94,7 @@ class SearchController extends AbstractController
 		if ($label) {
 			$type_searchers = array(
 				'articles' => new \Application\DeskPRO\Searcher\ArticleSearch(),
-				'feedback' => new \Application\DeskPRO\Searcher\IdeaSearch(),
+				'feedback' => new \Application\DeskPRO\Searcher\FeedbackSearch(),
 				'downloads' => new \Application\DeskPRO\Searcher\DownloadSearch(),
 				'news' => new \Application\DeskPRO\Searcher\NewsSearch(),
 			);

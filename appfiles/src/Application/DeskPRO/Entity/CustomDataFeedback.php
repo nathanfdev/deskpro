@@ -22,26 +22,26 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","feedback_id"})
  * })
  */
-class CustomDataIdea extends CustomDataAbstract
+class CustomDataFeedback extends CustomDataAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Idea
-	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
+	 * @var \Application\DeskPRO\Entity\Feedback
+	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback")
 	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 * @ORM_Mapping\Id
 	 */
 	protected $feedback;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefIdea
-	 * @var \Application\DeskPRO\Entity\CustomDefIdea
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefIdea", fetch="EAGER")
+	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
+	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefFeedback", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
 	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 
-	public function getIdeaId()
+	public function getFeedbackId()
 	{
 		return $this->feedback['id'];
 	}

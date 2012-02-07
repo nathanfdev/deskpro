@@ -1,5 +1,5 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter';
 pageMeta.pageUrl = '{{ path('agent_feedback_filter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 {% if list_type == 'category' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
@@ -30,13 +30,13 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
 
-	{% include 'AgentBundle:Ideas:filter-display-options.html.twig' %}
-	{% include 'AgentBundle:Ideas:filter-control-bar.html.twig' %}
-	{% include 'AgentBundle:Ideas:filter-grouping-bar.html.twig' %}
-	{% include 'AgentBundle:Ideas:filter-massactions-bar.html.twig' %}
+	{% include 'AgentBundle:Feedback:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:Feedback:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:Feedback:filter-grouping-bar.html.twig' %}
+	{% include 'AgentBundle:Feedback:filter-massactions-bar.html.twig' %}
 
 	<section class="feedback-simple-list list-listing">
-		{% include 'AgentBundle:Ideas:filter-page.html.twig' %}
+		{% include 'AgentBundle:Feedback:filter-page.html.twig' %}
 	</section>
 
 	{% if not feedback|length %}

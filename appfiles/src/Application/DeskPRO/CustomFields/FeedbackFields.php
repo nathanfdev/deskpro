@@ -9,8 +9,8 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 /**
  * @deprecated Use the FieldFanager with the field manager service
  */
-class IdeaFields extends AbstractFields
+class FeedbackFields extends AbstractFields
 {
-	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefIdea';
-	const ENTITY_NAME  = 'DeskPRO:CustomDefIdea';
+	const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefFeedback';
+	const ENTITY_NAME  = 'DeskPRO:CustomDefFeedback';
 }

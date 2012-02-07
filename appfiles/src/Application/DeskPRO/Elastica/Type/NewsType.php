@@ -24,7 +24,7 @@ class NewsType extends AbstractType
 	/**
 	 * Transform a value into a Document
 	 *
-	 * @param  Idea $news
+	 * @param  Feedback $news
 	 * @return \Elastic_Document
 	 */
 	public function transformToDocument($news)

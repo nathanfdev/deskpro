@@ -17,8 +17,8 @@ use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Doctrine\ORM\Query, Doctrine\ORM\Proxy\Proxy;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Idea as IdeaEntity;
-use Application\DeskPRO\Searcher\IdeaSearch;
+use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Searcher\FeedbackSearch;
 
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -46,7 +46,7 @@ class FeedbackCategory extends AbstractCategoryRepository
 			$this,
 			$this->getEntityName(),
 			$this->getClassMetadata(),
-			'DeskPRO:IdeaComment',
+			'DeskPRO:FeedbackComment',
 			'feedback_comments',
 			'feedback_id'
 		);
@@ -114,22 +114,22 @@ class FeedbackCategory extends AbstractCategoryRepository
 
 				$cat_counts = array();
 
-				$searcher = new IdeaSearch();
+				$searcher = new FeedbackSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(IdeaSearch::TERM_CATEGORY, 'is', $c['id']);
-				$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', IdeaEntity::STATUS_NEW);
+				$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
+				$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_NEW);
 				$cat_counts['new'] = $searcher->getCount();
 
-				$searcher = new IdeaSearch();
+				$searcher = new FeedbackSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(IdeaSearch::TERM_CATEGORY, 'is', $c['id']);
-				$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', IdeaEntity::STATUS_ACTIVE);
+				$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
+				$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_ACTIVE);
 				$cat_counts['active'] = $searcher->getCount();
 
-				$searcher = new IdeaSearch();
+				$searcher = new FeedbackSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(IdeaSearch::TERM_CATEGORY, 'is', $c['id']);
-				$searcher->addTerm(IdeaSearch::TERM_STATUS, 'is', IdeaEntity::STATUS_CLOSED);
+				$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
+				$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_CLOSED);
 				$cat_counts['closed'] = $searcher->getCount();
 
 				$cat_counts['all'] = array_sum($cat_counts);

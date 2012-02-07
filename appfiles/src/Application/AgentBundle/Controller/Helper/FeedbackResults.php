@@ -11,15 +11,15 @@
 
 namespace Application\AgentBundle\Controller\Helper;
 
-use Application\DeskPRO\Searcher\IdeaSearch;
+use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-class IdeaResults
+class FeedbackResults
 {
 	/**
 	 * @var Application\AgentBundle\Controller\AbstractController
@@ -49,7 +49,7 @@ class IdeaResults
 	 *
 	 * @param  $controller
 	 * @param array $options
-	 * @return \Application\AgentBundle\Controller\Helper\IdeaResults
+	 * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
 	 */
 	public static function newFromRequest($controller, array $options = array())
 	{
@@ -81,7 +81,7 @@ class IdeaResults
 
 			$terms = $term_rules->readForm($form_terms);
 
-			$searcher = new IdeaSearch();
+			$searcher = new FeedbackSearch();
 			foreach ($terms as $term) {
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
@@ -110,10 +110,10 @@ class IdeaResults
 			/*
 			 * Usually search forms terms are keyed arbitrarily (usually numerically).
 			 * The keys are discarded when read in by the RuleBuilder class above.
-			 * But in the IdeasController and template, we set specific keys
+			 * But in the FeedbackController and template, we set specific keys
 			 * for terms so the values can be easily plugged back into the form.
 			 *
-			 * (See IdeasController setting 'specific_terms', and the 'filter-searhc-form' template)
+			 * (See FeedbackController setting 'specific_terms', and the 'filter-searhc-form' template)
 			 *
 			 * Usually search forms are made with the RuleBuilder JS widget, which
 			 * adds terms dynamically. But when we want a static form and just want
@@ -135,7 +135,7 @@ class IdeaResults
 
 		if ($result_cache) {
 			$this->result_cache = $result_cache;
-			$this->setIdeaIds($result_cache['results']);
+			$this->setFeedbackIds($result_cache['results']);
 		}
 	}
 
@@ -153,7 +153,7 @@ class IdeaResults
 	 * Set ticket IDs for the search results
 	 * @param array $feedback_ids
 	 */
-	public function setIdeaIds(array $feedback_ids)
+	public function setFeedbackIds(array $feedback_ids)
 	{
 		$this->feedback_ids = $feedback_ids;
 	}
@@ -164,7 +164,7 @@ class IdeaResults
 	 *
 	 * @return array
 	 */
-	public function getIdeaIds()
+	public function getFeedbackIds()
 	{
 		return $this->feedback_ids;
 	}
@@ -175,16 +175,16 @@ class IdeaResults
 	 *
 	 * @return array
 	 */
-	public function getIdeasForPage($page, $per_page = 50)
+	public function getFeedbackForPage($page, $per_page = 50)
 	{
-		return $this->_getPageFromIdeaIds($this->getIdeaIds(), $page, $per_page);
+		return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
 	}
 
 
-	protected function _getPageFromIdeaIds(array $feedback_ids, $page, $per_page)
+	protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
 	{
 		$page_feedback_ids = Arrays::getPageChunk($feedback_ids, $page, $per_page);
-		$feedback_raw = App::getEntityRepository('DeskPRO:Idea')->getByIds($page_feedback_ids);
+		$feedback_raw = App::getEntityRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.

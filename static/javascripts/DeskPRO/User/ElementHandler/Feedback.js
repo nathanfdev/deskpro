@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.User.ElementHandler');
 
-DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
+DeskPRO.User.ElementHandler.Feedback = new Orb.Class({
 
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
@@ -11,7 +11,7 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 		this.loadingTpl = $('.loading-tpl:first', this.el).detach();
 		this.content = $('.portal_feedback:first', this.el);
 
-		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
+		var voteHelper = new DeskPRO.User.ElementHandler.Helper.FeedbackVote();
 		$('.feedback-btn', this.el).on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();

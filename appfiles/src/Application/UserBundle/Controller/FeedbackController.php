@@ -17,7 +17,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-use Application\UserBundle\Form\NewIdeaType;
+use Application\UserBundle\Form\NewFeedbackType;
 use Application\DeskPRO\Comments\NewCommentFormType;
 
 use Application\UserBundle\Controller\Helper\Comments;
@@ -25,7 +25,7 @@ use Application\UserBundle\Controller\Helper\FacebookLike;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
-class IdeasController extends AbstractController
+class FeedbackController extends AbstractController
 {
 	/**
 	 * Main index shows initial category listing
@@ -85,12 +85,12 @@ class IdeasController extends AbstractController
 			$category_path = array();
 		}
 
-		$feedback_cats  = $structure->getIdeaRootCategories();
+		$feedback_cats  = $structure->getFeedbackRootCategories();
 		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 		$status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
 
-		$searcher = new \Application\DeskPRO\Searcher\IdeaSearch();
+		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 
 		if ($status == 'popular') {
 			$searcher->addTerm('status', 'is', array('active', 'new'));
@@ -124,10 +124,10 @@ class IdeasController extends AbstractController
 
 		$feedback_ids = $searcher->getMatches($limit);
 
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->getByResultIds($feedback_ids);
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
-		$has_voted_ids = $this->person->IdeaVotes->getVotesOnIdeas($feedback_ids);
+		$has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedback($feedback_ids);
 
 		$comment_counts = array();
 		if ($feedback) {
@@ -136,7 +136,7 @@ class IdeasController extends AbstractController
 				->countsOnCollection($feedback);
 		}
 
-		return $this->render('UserBundle:Ideas:filter.html.twig', array(
+		return $this->render('UserBundle:Feedback:filter.html.twig', array(
 			'feedback_cats'          => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
@@ -162,9 +162,9 @@ class IdeasController extends AbstractController
 	/**
 	 * New feedback
 	 */
-	public function newIdeaAction()
+	public function newFeedbackAction()
 	{
-		$newfeedback = new \Application\DeskPRO\Ideas\NewIdea(
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
 			App::getSession()->getVisitor()
 		);
 		$newfeedback->setPersonContext($this->person);
@@ -178,8 +178,8 @@ class IdeasController extends AbstractController
 			$newfeedback->category_id = $this->in->getUint('category_id');
 		}
 
-		$form = $this->get('form.factory')->create(new NewIdeaType($this->person), $newfeedback);
-		$validator = new \Application\UserBundle\Validator\NewIdeaValidator();
+		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
 		$errors = null;
 		$error_fields = null;
@@ -199,7 +199,7 @@ class IdeasController extends AbstractController
 
 		$feedback_categories = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 
-		return $this->render('UserBundle:Ideas:new-feedback.html.twig', array(
+		return $this->render('UserBundle:Feedback:new-feedback.html.twig', array(
 			'form' => $form->createView(),
 			'feedback_categories' => $feedback_categories,
 			'errors' => $errors,
@@ -216,7 +216,7 @@ class IdeasController extends AbstractController
 	 */
 	public function viewAction($slug)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->getBySlug($slug);
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getBySlug($slug);
 		if (!$feedback) {
 			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
 		}
@@ -242,7 +242,7 @@ class IdeasController extends AbstractController
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
 
-		$num_votes_this   = $this->person->IdeaVotes->getVotesOnIdea($feedback);
+		$num_votes_this   = $this->person->FeedbackVotes->getVotesOnFeedback($feedback);
 
 		$comments = null;
 		$comments_widget = null;
@@ -250,7 +250,7 @@ class IdeasController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:IdeaComment')->getComments($feedback);
+			$comments = App::getEntityRepository('DeskPRO:FeedbackComment')->getComments($feedback);
 		}
 
 		if (App::getSetting('core.facebook_like')) {
@@ -261,7 +261,7 @@ class IdeasController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $feedback);
 		$related_content = $related_finder->getRelatedEntities();
 
-		return $this->render('UserBundle:Ideas:view.html.twig', array(
+		return $this->render('UserBundle:Feedback:view.html.twig', array(
 			'subscription' => $subscription,
 
 			'num_votes_this' => $num_votes_this,
@@ -289,15 +289,15 @@ class IdeasController extends AbstractController
 	 */
 	public function voteAction($feedback_id)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->find($feedback_id);
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
 			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
 		}
 
 		if ($this->person['id']) {
-			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Idea', $feedback_id, $this->person, $this->session->getVisitor());
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
 		} else {
-			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Idea', $feedback_id, null, $this->session->getVisitor());
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, $this->session->getVisitor());
 		}
 
 		if ($r) {
@@ -339,13 +339,13 @@ class IdeasController extends AbstractController
 	 */
 	public function newCommentAction($feedback_id)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->find($feedback_id);
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
 			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
-			'Application\\DeskPRO\\Entity\\IdeaComment',
+			'Application\\DeskPRO\\Entity\\FeedbackComment',
 			$this->person,
 			array('feedback' => $feedback)
 		);
@@ -373,7 +373,7 @@ class IdeasController extends AbstractController
 			$category = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->getNewest($status, $num, $category);
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getNewest($status, $num, $category);
 
 		$vars = array(
 			'category' => $category,
@@ -381,9 +381,9 @@ class IdeasController extends AbstractController
 		);
 
 		if ($this->request->isPartialRequest()) {
-			return $this->render('UserBundle:Ideas:quick-browser-list.html.twig', $vars);
+			return $this->render('UserBundle:Feedback:quick-browser-list.html.twig', $vars);
 		} else {
-			return $this->render('UserBundle:Ideas:quick-browser.html.twig', $vars);
+			return $this->render('UserBundle:Feedback:quick-browser.html.twig', $vars);
 		}
 	}
 }

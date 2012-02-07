@@ -16,9 +16,9 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
-class Idea extends AbstractContentType
+class Feedback extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:Idea';
+	const ENTITY_NAME = 'DeskPRO:Feedback';
 	
 	public function objectToDocument($feedback)
 	{

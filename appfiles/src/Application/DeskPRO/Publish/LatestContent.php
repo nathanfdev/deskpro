@@ -85,7 +85,7 @@ class LatestContent
 	 * @param $x
 	 * @return LatestContent
 	 */
-	public function setMaxIdeas($x)
+	public function setMaxFeedback($x)
 	{
 		$this->max_feedback = $x;
 		return $this;
@@ -128,7 +128,7 @@ class LatestContent
 			}
 		}
 		if ($this->max_feedback) {
-			$res = $this->em->getRepository('DeskPRO:Idea')->getNewest(null, $this->max_feedback);
+			$res = $this->em->getRepository('DeskPRO:Feedback')->getNewest(null, $this->max_feedback);
 			foreach ($res as $r) {
 				$results[] = array('type' => 'feedback', 'item' => $r);
 			}

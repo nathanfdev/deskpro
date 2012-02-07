@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.User.ElementHandler');
 
-DeskPRO.User.ElementHandler.NewIdea = new Orb.Class({
+DeskPRO.User.ElementHandler.NewFeedback = new Orb.Class({
 
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 

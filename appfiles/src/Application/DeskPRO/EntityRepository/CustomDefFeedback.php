@@ -15,7 +15,7 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDefIdea extends CustomDefAbstract
+class CustomDefFeedback extends CustomDefAbstract
 {
 
 }

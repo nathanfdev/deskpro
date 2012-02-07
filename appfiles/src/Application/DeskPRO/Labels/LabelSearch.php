@@ -139,7 +139,7 @@ class LabelSearch
 			", array($label));
 
 			if ($ids) {
-				$results['feedback'] = $this->em->getRepository('DeskPRO:Idea')->getByIds($ids, true);
+				$results['feedback'] = $this->em->getRepository('DeskPRO:Feedback')->getByIds($ids, true);
 			}
 		}
 

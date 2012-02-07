@@ -9,11 +9,11 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Ideas;
+namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
@@ -22,7 +22,7 @@ use Orb\Util\Arrays;
 /**
  * Handles merging of one feedback into the other
  */
-class IdeaMerge implements PersonContextInterface
+class FeedbackMerge implements PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -30,12 +30,12 @@ class IdeaMerge implements PersonContextInterface
 	protected $person;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Idea
+	 * @var \Application\DeskPRO\Entity\Feedback
 	 */
 	protected $feedback;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Idea
+	 * @var \Application\DeskPRO\Entity\Feedback
 	 */
 	protected $other_feedback;
 
@@ -47,10 +47,10 @@ class IdeaMerge implements PersonContextInterface
 	/**
 	 * @throws \InvalidArgumentException
 	 * @param \Application\DeskPRO\Entity\Person $person_performer
-	 * @param \Application\DeskPRO\Entity\Idea $feedback         The base feedback, this is the one that will still exist at the end
-	 * @param \Application\DeskPRO\Entity\Idea $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
+	 * @param \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
+	 * @param \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
 	 */
-	public function __construct(Person $person_performer, Idea $feedback, Idea $other_feedback)
+	public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)
 	{
 		$this->em = App::getOrm();
 
@@ -165,7 +165,7 @@ class IdeaMerge implements PersonContextInterface
 
 	public function mergeDescription()
 	{
-		$comment = new IdeaComment();
+		$comment = new FeedbackComment();
 
 		$comment->person = $this->other_feedback->person;
 		$comment->content = $this->other_feedback->content;

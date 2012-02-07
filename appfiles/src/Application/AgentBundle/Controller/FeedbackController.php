@@ -12,11 +12,11 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 
-use Application\DeskPRO\Searcher\IdeaSearch;
-use Application\AgentBundle\Controller\Helper\IdeaResults;
+use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\AgentBundle\Controller\Helper\FeedbackResults;
 use Application\DeskPRO\UI\RuleBuilder;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -24,9 +24,9 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
-use Application\DeskPRO\Publish\Ideas\GroupingCounter;
+use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 
-use Application\DeskPRO\Ideas\IdeaMerge;
+use Application\DeskPRO\Feedback\FeedbackMerge;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -37,7 +37,7 @@ use FineDiff;
 /**
  * Handles ticket searches
  */
-class IdeasController extends AbstractController
+class FeedbackController extends AbstractController
 {
 	############################################################################
 	# get-section-data
@@ -48,16 +48,16 @@ class IdeasController extends AbstractController
 		$data = array();
 
 		$counts = array();
-		$counts['feedback_awaiting_validation']    = App::getEntityRepository('DeskPRO:Idea')->countAwaitingValidation();
-		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:IdeaComment')->countAwaitingValidation();
+		$counts['feedback_awaiting_validation']    = App::getEntityRepository('DeskPRO:Feedback')->countAwaitingValidation();
+		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
 		$status_counts = array();
-		$status_counts['new']    = App::getEntityRepository('DeskPRO:Idea')->countNew();
-		$status_counts['active'] = App::getEntityRepository('DeskPRO:Idea')->countActiveGrouped();
-		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Idea')->countClosedGrouped();
-		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Idea')->countHiddenGrouped();
+		$status_counts['new']    = App::getEntityRepository('DeskPRO:Feedback')->countNew();
+		$status_counts['active'] = App::getEntityRepository('DeskPRO:Feedback')->countActiveGrouped();
+		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Feedback')->countClosedGrouped();
+		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Feedback')->countHiddenGrouped();
 
-		$category_counts = App::getEntityRepository('DeskPRO:Idea')->countAllCategoriesGrouped();
+		$category_counts = App::getEntityRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
 
 		$feedback_cats          = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
@@ -66,7 +66,7 @@ class IdeasController extends AbstractController
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('feedback');
 		$feedback_tag_index = $label_lister->getIndexList();
 
-		$data['section_html'] = $this->renderView('AgentBundle:Ideas:window-section.html.twig', array(
+		$data['section_html'] = $this->renderView('AgentBundle:Feedback:window-section.html.twig', array(
 			'counts'             => $counts,
 			'status_counts'      => $status_counts,
 			'category_counts'    => $category_counts,
@@ -85,7 +85,7 @@ class IdeasController extends AbstractController
 
 	public function viewAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
 		#------------------------------
 		# Custom fields
@@ -120,7 +120,7 @@ class IdeasController extends AbstractController
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
 
-		return $this->render('AgentBundle:Ideas:view.html.twig', array(
+		return $this->render('AgentBundle:Feedback:view.html.twig', array(
 			'feedback'           => $feedback,
 			'feedback_comments'  => $feedback_comments,
 			'feedback_revisions' => $feedback_revisions,
@@ -145,11 +145,11 @@ class IdeasController extends AbstractController
 
 	public function whoVotedAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
 		$feedback_votes = $feedback->votes->toArray();
 
-		return $this->render('AgentBundle:Ideas:view-who-voted.html.twig', array(
+		return $this->render('AgentBundle:Feedback:view-who-voted.html.twig', array(
 			'feedback' => $feedback,
 			'feedback_votes' => $feedback_votes,
 		));
@@ -157,7 +157,7 @@ class IdeasController extends AbstractController
 
 	public function ajaxSaveEditablesAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
 		$ret = '';
 
@@ -183,7 +183,7 @@ class IdeasController extends AbstractController
 
 	public function ajaxUpdateCategoryAction($feedback_id, $category_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 		$cat  = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
 
 		$feedback->category = $cat;
@@ -201,7 +201,7 @@ class IdeasController extends AbstractController
 
 	public function ajaxUpdateStatusAction($feedback_id, $status_code)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 		$feedback['status_code'] = $status_code;
 
 		App::getOrm()->transactional(function ($em) use ($feedback) {
@@ -217,7 +217,7 @@ class IdeasController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
 		$this->em->beginTransaction();
 
@@ -237,7 +237,7 @@ class IdeasController extends AbstractController
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($feedback);
 
-		return $this->render('AgentBundle:Ideas:view-customfields-rendered-rows.html.twig', array(
+		return $this->render('AgentBundle:Feedback:view-customfields-rendered-rows.html.twig', array(
 			'feedback' => $feedback,
 			'custom_fields' => $custom_fields,
 		));
@@ -245,7 +245,7 @@ class IdeasController extends AbstractController
 
 	public function ajaxSaveLabelsAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -259,9 +259,9 @@ class IdeasController extends AbstractController
 
 	public function ajaxSaveCommentAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
-		$comment = new IdeaComment();
+		$comment = new FeedbackComment();
 		$comment->feedback = $feedback;
 		$comment->person = $this->person;
 		$comment['content'] = $this->in->getString('content');
@@ -277,14 +277,14 @@ class IdeasController extends AbstractController
 		App::getOrm()->persist($comment);
 		App::getOrm()->flush();
 
-		return $this->render('AgentBundle:Ideas:view-comment.html.twig', array(
+		return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
 			'comment' => $comment
 		));
 	}
 
 	public function ajaxSaveAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 		$rev = null;
 
 		$action = $this->in->getString('action');
@@ -329,7 +329,7 @@ class IdeasController extends AbstractController
 
 				$feedback['content'] = $this->in->getString('content');
 
-				$data['content_html'] = $this->renderView('AgentBundle:Ideas:view-content-tab.html.twig', array(
+				$data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
 					'feedback' => $feedback
 				));
 
@@ -389,9 +389,9 @@ class IdeasController extends AbstractController
 
 	public function mergeOverlayAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 
-		$open_feedback = $this->em->getRepository('DeskPRO:Idea')->getByIds($this->in->getCleanValueArray('open_feedback_ids', 'uint', 'discard'));
+		$open_feedback = $this->em->getRepository('DeskPRO:Feedback')->getByIds($this->in->getCleanValueArray('open_feedback_ids', 'uint', 'discard'));
 
 		$fn = function ($i) use ($feedback) {
 			if ($i['id'] == $feedback['id']) {
@@ -402,7 +402,7 @@ class IdeasController extends AbstractController
 
 		$open_feedback = array_filter($open_feedback, $fn);
 
-		return $this->render('AgentBundle:Ideas:merge-overlay.html.twig', array(
+		return $this->render('AgentBundle:Feedback:merge-overlay.html.twig', array(
 			'feedback'          => $feedback,
 			'open_feedback'    => $open_feedback,
 		));
@@ -413,14 +413,14 @@ class IdeasController extends AbstractController
 	 */
 	public function mergeAction($feedback_id, $other_feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Idea', $feedback_id);
-		$other_feedback = App::findEntity('DeskPRO:Idea', $other_feedback_id);
+		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$other_feedback = App::findEntity('DeskPRO:Feedback', $other_feedback_id);
 
 		$old_feedback_id = $other_feedback['id'];
 
 		try {
 			$this->em->beginTransaction();
-			$merge = new IdeaMerge($this->person, $feedback, $other_feedback);
+			$merge = new FeedbackMerge($this->person, $feedback, $other_feedback);
 			$merge->merge();
 			$this->em->commit();
 		} catch (\Exception $e) {
@@ -449,7 +449,7 @@ class IdeasController extends AbstractController
 	{
 		$vars = array('list_type' => 'filter');
 
-		$result_helper = IdeaResults::newFromRequest($this);
+		$result_helper = FeedbackResults::newFromRequest($this);
 
 		$result_cache = $result_helper->getResultCache();
 
@@ -470,7 +470,7 @@ class IdeasController extends AbstractController
 	public function categoryListAction($category_id)
 	{
 		if ($this->in->getString('subgroup')) {
-			$result_helper = IdeaResults::newFromRequest($this, array(
+			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
 					'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
@@ -478,7 +478,7 @@ class IdeasController extends AbstractController
 				)
 			));
 		} else {
-			$result_helper = IdeaResults::newFromRequest($this, array(
+			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
 					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
@@ -540,7 +540,7 @@ class IdeasController extends AbstractController
 	 */
 	public function labelListAction($label)
 	{
-		$result_helper = IdeaResults::newFromRequest($this, array(
+		$result_helper = FeedbackResults::newFromRequest($this, array(
 			'specific_terms' => array(
 				array('type' => 'label', 'op' => 'is', 'label' => $label),
 				array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
@@ -572,7 +572,7 @@ class IdeasController extends AbstractController
 		// or an integer which will be treated as a status category (Active > Planned for example)
 
 		if ($this->in->getString('subgroup')) {
-			$result_helper = IdeaResults::newFromRequest($this, array(
+			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
@@ -580,7 +580,7 @@ class IdeasController extends AbstractController
 				)
 			));
 		} else {
-			$result_helper = IdeaResults::newFromRequest($this, array(
+			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
 					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
@@ -655,7 +655,7 @@ class IdeasController extends AbstractController
 	public function renderList($result_helper, $template = null, array $template_vars = array())
 	{
 		if (!$template) {
-			$template = 'AgentBundle:Ideas:filter-list.html.twig';
+			$template = 'AgentBundle:Feedback:filter-list.html.twig';
 		}
 
 		$result_cache = $result_helper->getResultCache();
@@ -663,7 +663,7 @@ class IdeasController extends AbstractController
 		$page = $this->in->getUint('p');
 		if (!$page) $page = 1;
 
-		$feedback = $result_helper->getIdeasForPage($page);
+		$feedback = $result_helper->getFeedbackForPage($page);
 
 		if ($this->in->getBool('is_partial')) {
 			$template = str_replace('.html.twig', '-part.html.twig', $template);
@@ -703,7 +703,7 @@ class IdeasController extends AbstractController
 	{
 		$this->em->beginTransaction();
 
-		$feedback = $this->em->getRepository('DeskPRO:Idea')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
 
 		foreach ($feedback as $feedback) {
 			switch ($action) {
@@ -732,7 +732,7 @@ class IdeasController extends AbstractController
 	# newfeedback
 	############################################################################
 
-	public function newIdeaAction()
+	public function newFeedbackAction()
 	{
 		$feedback_categories    = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
@@ -740,7 +740,7 @@ class IdeasController extends AbstractController
 
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
-		return $this->render('AgentBundle:Ideas:newfeedback.html.twig', array(
+		return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
 			'feedback_categories'    => $feedback_categories,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
@@ -748,11 +748,11 @@ class IdeasController extends AbstractController
 		));
 	}
 
-	public function newIdeaSaveAction()
+	public function newFeedbackSaveAction()
 	{
-		$newfeedback = new \Application\AgentBundle\Form\Model\NewIdea($this->person);
+		$newfeedback = new \Application\AgentBundle\Form\Model\NewFeedback($this->person);
 
-		$formType = new \Application\AgentBundle\Form\Type\NewIdea();
+		$formType = new \Application\AgentBundle\Form\Type\NewFeedback();
 		$form = $this->get('form.factory')->create($formType, $newfeedback);
 
 		if ($this->get('request')->getMethod() == 'POST') {
@@ -761,7 +761,7 @@ class IdeasController extends AbstractController
 
 			$newfeedback->save();
 
-			$feedback = $newfeedback->getIdea();
+			$feedback = $newfeedback->getFeedback();
 
 			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 

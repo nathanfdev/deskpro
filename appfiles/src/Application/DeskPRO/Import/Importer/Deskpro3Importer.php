@@ -43,7 +43,7 @@ class Deskpro3Importer extends AbstractImporter
 		'TicketBlobs',
 		'Kb',
 		'Downloads',
-		'Ideas',
+		'Feedback',
 		'UserNews',
 		'Tasks',
 		'Tickets',

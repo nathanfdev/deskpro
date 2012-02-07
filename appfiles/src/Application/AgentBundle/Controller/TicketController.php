@@ -1567,7 +1567,7 @@ class TicketController extends AbstractController
 			case 'news':
 				return 'DeskPRO:NewsComment';
 			case 'feedback':
-				return 'DeskPRO:IdeaComment';
+				return 'DeskPRO:FeedbackComment';
 		}
 	}
 

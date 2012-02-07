@@ -14,15 +14,15 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
 /**
- * Idea revisions
+ * Feedback revisions
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaRevision")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackRevision")
  * @ORM_Mapping\Table(name="feedback_revisions")
  */
-class IdeaRevision extends RevisionAbstract
+class FeedbackRevision extends RevisionAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback")
 	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback;

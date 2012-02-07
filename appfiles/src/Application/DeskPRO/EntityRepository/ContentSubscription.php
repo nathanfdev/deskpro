@@ -16,7 +16,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\Download as DownloadEntity;
 use Application\DeskPRO\Entity\News as NewsEntity;
-use Application\DeskPRO\Entity\Idea as IdeaEntity;
+use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
 
 use \Doctrine\ORM\EntityRepository;
 
@@ -25,7 +25,7 @@ class ContentSubscription extends EntityRepository
 	/**
 	 * Get a subscription for a type of content
 	 *
-	 * @param $content_object An Article, Idea, News or Download
+	 * @param $content_object An Article, Feedback, News or Download
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return \Application\DeskPRO\Entity\ContentSubscription
 	 */
@@ -42,10 +42,10 @@ class ContentSubscription extends EntityRepository
 			$qb->andWhere("s.download = ?2");
 		} elseif ($content_object instanceof NewsEntity) {
 			$qb->andWhere("s.news = ?2");
-		} elseif ($content_object instanceof IdeaEntity) {
+		} elseif ($content_object instanceof FeedbackEntity) {
 			$qb->andWhere("s.feedback = ?2");
 		} else {
-			throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Idea. Got `" . get_class($content_object) . "`");
+			throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Feedback. Got `" . get_class($content_object) . "`");
 		}
 
 		$qb->setParameters(array(1 => $person, 2 => $content_object));

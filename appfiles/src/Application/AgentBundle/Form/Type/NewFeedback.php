@@ -14,7 +14,7 @@ namespace Application\AgentBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class NewIdea extends AbstractType
+class NewFeedback extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
     {
@@ -38,7 +38,7 @@ class NewIdea extends AbstractType
 	public function getDefaultOptions(array $options)
 	{
 		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewIdea',
+			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewFeedback',
 		);
 	}
 

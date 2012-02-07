@@ -25,7 +25,7 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
  * @option string   status              The initial status in the browser, or the single status to fetch in the sidebar
  * @option bool     show_cat_switcher   When using content section, show cat/status switcher?
  */
-class Ideas extends PortalItemAbstract implements CacheableItem
+class Feedback extends PortalItemAbstract implements CacheableItem
 {
 	public function getCacheOptions()
 	{
@@ -52,7 +52,7 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 	public function getContentHtml()
 	{
 		$html = $this->renderForward(
-			'UserBundle:Ideas:filter',
+			'UserBundle:Feedback:filter',
 			array('status' => $this->getOption('status', 'new'), 'slug' => ''),
 			array('_partial' => 'portal')
 		);
@@ -67,7 +67,7 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 			$category = App::findEntity('DeskPRO:FeedbackCategory', $this->getOption('category_id'));
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:Idea')->getNewest(
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getNewest(
 			$this->getOption('status', 'new'),
 			$this->getValueOption('num_articles', 5),
 			$category
@@ -84,7 +84,7 @@ class Ideas extends PortalItemAbstract implements CacheableItem
 	public function getJsAssets()
 	{
 		if ($this->section == 'portal') {
-			return array('javascripts/DeskPRO/User/ElementHandler/Ideas.js');
+			return array('javascripts/DeskPRO/User/ElementHandler/Feedback.js');
 		}
 
 		return array();

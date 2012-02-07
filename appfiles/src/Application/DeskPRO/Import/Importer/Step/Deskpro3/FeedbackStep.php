@@ -12,14 +12,14 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 
-class IdeasStep extends AbstractDeskpro3Step
+class FeedbackStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()
 	{
-		return 'Import Ideas';
+		return 'Import Feedback';
 	}
 
 	public function run($page = 1)
@@ -53,7 +53,7 @@ class IdeasStep extends AbstractDeskpro3Step
 			$this->getDb()->beginTransaction();
 			try {
 				foreach ($feedback_ids as $iid) {
-					$this->processIdea($iid);
+					$this->processFeedback($iid);
 				}
 				$this->getDb()->commit();
 			} catch (\Exception $e) {
@@ -117,7 +117,7 @@ class IdeasStep extends AbstractDeskpro3Step
 	/**
 	 * Process an feedback
 	 */
-	protected function processIdea($feedback_id)
+	protected function processFeedback($feedback_id)
 	{
 		$feedback = $this->getOldDb()->fetchAssoc("SELECT * FROM user_feedback WHERE id = ?", array($feedback_id));
 
@@ -149,14 +149,14 @@ class IdeasStep extends AbstractDeskpro3Step
 			$new_person = $this->getEm()->getRepository('DeskPRO:Person')->findOneBy(array('can_admin' => true));
 		}
 
-		$new_feedback = new Idea();
+		$new_feedback = new Feedback();
 		$new_feedback->addToCategory($new_category);
 		if ($feedback['status'] == 'new') {
-			$new_feedback->setStatusCode(Idea::STATUS_NEW);
+			$new_feedback->setStatusCode(Feedback::STATUS_NEW);
 		} elseif ($feedback['status'] == 'accepted') {
-			$new_feedback->setStatusCode(Idea::STATUS_ACTIVE . '.1');
+			$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.1');
 		} else {
-			$new_feedback->setStatusCode(Idea::STATUS_CLOSED . '.3');
+			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.3');
 		}
 
 		$new_feedback->person = $new_person;
@@ -176,7 +176,7 @@ class IdeasStep extends AbstractDeskpro3Step
 
 		$comments = $this->getDb()->fetchAll("SELECT * FROM user_feedback_comments WHERE feedback_id = ?");
 		foreach ($comments as $comment) {
-			$new_comment = new IdeaComment();
+			$new_comment = new FeedbackComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['created_at']);
 			if ($comment['userid']) {
 				$new_comment->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $comment['userid']));

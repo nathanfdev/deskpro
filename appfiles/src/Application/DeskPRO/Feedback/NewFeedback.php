@@ -9,20 +9,20 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Ideas;
+namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\DeskPRO\Entity\Visitor;
-use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Rating;
 
 /**
  * New feedback acts as the processor and domain object for a newfeedback form
  */
-class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
+class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 {
 	public $category_id = 0;
 	public $title = '';
@@ -126,12 +126,12 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 
 			App::getOrm()->flush();
 
-			$feedback = new Idea();
+			$feedback = new Feedback();
 
 			$feedback['title']        = $this->title;
 			$feedback['content']      = $this->content;
 			$feedback['category_id']  = $this->category_id;
-			$feedback['status']       = Idea::STATUS_NEW;
+			$feedback['status']       = Feedback::STATUS_NEW;
 			$feedback['date_created'] = new \DateTime();
 			$feedback['validating']   = $validating;
 
@@ -156,7 +156,7 @@ class NewIdea implements \Application\DeskPRO\People\PersonContextInterface
 			App::getOrm()->flush();
 
 			if ($email_validating) {
-				$email_validating->addValidatingContent('DeskPRO:Idea', $feedback->id);
+				$email_validating->addValidatingContent('DeskPRO:Feedback', $feedback->id);
 				App::getOrm()->flush();
 			}
 

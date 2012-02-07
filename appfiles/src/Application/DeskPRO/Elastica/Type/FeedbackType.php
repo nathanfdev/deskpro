@@ -11,25 +11,25 @@
 
 namespace Application\DeskPRO\Elastica\Type;
 
-use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Elastica\Transformer\IdeaTransformer;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Elastica\Transformer\FeedbackTransformer;
 
 use APplication\DeskPRO\App;
 
 /**
- * Type for the Idea entity
+ * Type for the Feedback entity
  */
-class IdeaType extends AbstractType
+class FeedbackType extends AbstractType
 {
 	/**
 	 * Transform a value into a Document
 	 *
-	 * @param  Idea $feedback
+	 * @param  Feedback $feedback
 	 * @return \Elastic_Document
 	 */
 	public function transformToDocument($feedback)
 	{
-		$trans = new IdeaTransformer();
+		$trans = new FeedbackTransformer();
 		$doc = $trans->transform($feedback);
 
 		$doc->setIndex('content');
@@ -53,10 +53,10 @@ class IdeaType extends AbstractType
 	/**
 	 * Get a single value from a document
 	 *
-	 * @return \Application\DeskPRO\Entity\Idea
+	 * @return \Application\DeskPRO\Entity\Feedback
 	 */
 	protected function getValueFromResult(\Elastica_Result $doc)
 	{
-		return App::getEntityRepository('DeskPRO:Idea')->find($doc->getId());
+		return App::getEntityRepository('DeskPRO:Feedback')->find($doc->getId());
 	}
 }

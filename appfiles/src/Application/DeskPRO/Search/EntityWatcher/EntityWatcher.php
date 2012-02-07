@@ -25,7 +25,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 	public static $watched_entities = array(
 		'Application\\DeskPRO\\Entity\\Article',
 		'Application\\DeskPRO\\Entity\\Download',
-		'Application\\DeskPRO\\Entity\\Idea',
+		'Application\\DeskPRO\\Entity\\Feedback',
 		'Application\\DeskPRO\\Entity\\News',
 		'Application\\DeskPRO\\Entity\\Ticket',
 		'Application\\DeskPRO\\Entity\\TicketMessage',

@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout-partial-aware.html.twig' %}
 {% block head %}
-<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewIdea.js') }}"></script>
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewFeedback.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.section_name') }}</a></li>
@@ -10,7 +10,7 @@
 
 <div
 	class="dp-content-block dp-newfeedback-page with-handler"
-	data-element-handler="DeskPRO.User.ElementHandler.NewIdea"
+	data-element-handler="DeskPRO.User.ElementHandler.NewFeedback"
 	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'feedback'}) }}"
 >
 	<div class="dp-box">
@@ -146,7 +146,7 @@
 						</div>
 					</div>
 
-					<input class="btn primary" type="submit" value="Submit Idea" />
+					<input class="btn primary" type="submit" value="Submit Feedback" />
 				</form>
 			</div>
 		</div>

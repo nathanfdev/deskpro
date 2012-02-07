@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Elastica\Transformer;
 
-use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\Feedback;
 
-class IdeaTransformer implements TransformerInterface
+class FeedbackTransformer implements TransformerInterface
 {
 	public function transform($feedback)
 	{

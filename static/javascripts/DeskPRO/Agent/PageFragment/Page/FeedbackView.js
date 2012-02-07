@@ -1,5 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
+DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
@@ -282,7 +282,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Orb.Class({
 		});
 
 		$('.merge', actions).on('click', (function(ev) {
-			var mergeOverlay = new DeskPRO.Agent.Widget.MergeIdea({
+			var mergeOverlay = new DeskPRO.Agent.Widget.MergeFeedback({
 				feedbackId: this.getMetaData('feedback_id'),
 				destroyOnClose: true,
 				onMergeSuccess: function(data) {

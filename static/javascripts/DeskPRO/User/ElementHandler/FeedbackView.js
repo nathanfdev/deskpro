@@ -1,11 +1,11 @@
 Orb.createNamespace('DeskPRO.User.ElementHandler');
 
-DeskPRO.User.ElementHandler.IdeaView = new Orb.Class({
+DeskPRO.User.ElementHandler.FeedbackView = new Orb.Class({
 
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
+		var voteHelper = new DeskPRO.User.ElementHandler.Helper.FeedbackVote();
 
 		this.btnEl = $('#submit_vote_trigger');
 		this.btnEl.on('click', function(ev) {

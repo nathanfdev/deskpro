@@ -25,8 +25,8 @@ class SearchStickyResult extends EntityRepository
 			$object_type = 'DeskPRO:Download';
 		} elseif ($object instanceof \Application\DeskPRO\Entity\News) {
 			$object_type = 'DeskPRO:News';
-		} elseif ($object instanceof \Application\DeskPRO\Entity\Idea) {
-			$object_type = 'DeskPRO:Idea';
+		} elseif ($object instanceof \Application\DeskPRO\Entity\Feedback) {
+			$object_type = 'DeskPRO:Feedback';
 		} else {
 			throw new \InvalidArgumentException("Unknow type");
 		}

@@ -8,7 +8,7 @@ use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-class IdeaSearch extends SearcherAbstract
+class FeedbackSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
@@ -52,7 +52,7 @@ class IdeaSearch extends SearcherAbstract
 
 		if (!$ids) return array();
 
-		return App::getEntityRepository('DeskPRO:Idea')->getByResultIds($ids);
+		return App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($ids);
 	}
 
 

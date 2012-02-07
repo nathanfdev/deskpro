@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.IdeaContentValidating = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent,
 
 	listRemove: function(el) {

@@ -16,7 +16,7 @@ use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Strings;
 
-class IdeasFetcher extends AbstractFetcher
+class FeedbackFetcher extends AbstractFetcher
 {
 	const TYPENAME = 'feedback';
 
@@ -28,6 +28,6 @@ class IdeasFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:Idea')->findById($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:Feedback')->findById($related_ids, $this->person);
 	}
 }

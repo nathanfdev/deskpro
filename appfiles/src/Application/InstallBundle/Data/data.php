@@ -86,7 +86,7 @@ $em->flush();
 
 
 ################################################################################
-# Ideas
+# Feedback
 ################################################################################
 
 ##BEGIN:create_feedback.default##
@@ -110,9 +110,9 @@ foreach (array('Completed', 'Duplicate', 'Already Exists', 'Declined') as $t) {
 }
 $em->flush();
 
-$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Idea();
+$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
 $DEFAULT_IDEA->person = $AGENT;
-$DEFAULT_IDEA->title = 'Example Idea';
+$DEFAULT_IDEA->title = 'Example Feedback';
 $DEFAULT_IDEA->content = 'This is an example feedback. Feel free to edit or delete it.';
 $DEFAULT_IDEA->status = 'new';
 $DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
@@ -686,7 +686,7 @@ $em->flush();
 ##BEGIN:create_portal_block.feedback##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'portal';
-$b->type = 'Ideas';
+$b->type = 'Feedback';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
@@ -739,7 +739,7 @@ $em->flush();
 ##BEGIN:create_portal_block.feedback_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
-$b->type = 'Ideas';
+$b->type = 'Feedback';
 $em->persist($b);
 $em->flush();
 

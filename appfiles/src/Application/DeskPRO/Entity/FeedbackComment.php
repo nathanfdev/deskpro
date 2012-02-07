@@ -18,13 +18,13 @@ use Orb\Util\Arrays;
 /**
  * Comments on feedback
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaComment")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackComment")
  * @ORM_Mapping\Table(name="feedback_comments")
  */
-class IdeaComment extends CommentAbstract
+class FeedbackComment extends CommentAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Idea", inversedBy="comment")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback", inversedBy="comment")
 	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback;

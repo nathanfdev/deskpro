@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.Widget');
 
-DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
+DeskPRO.Agent.Widget.MergeFeedback = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
@@ -50,11 +50,11 @@ DeskPRO.Agent.Widget.MergeIdea = new Orb.Class({
 			$(this).text('...').attr('disabled', true);
 			$('.merge-trigger', this.wrapper).attr('disabled', true );
 
-			var otherIdeaId = $(this).data('feedback-id');
+			var otherFeedbackId = $(this).data('feedback-id');
 			var feedbackId = self.feedbackId;
 
 			$.ajax({
-				url: BASE_URL + 'agent/feedback/merge/' + feedbackId + '/' + otherIdeaId,
+				url: BASE_URL + 'agent/feedback/merge/' + feedbackId + '/' + otherFeedbackId,
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {

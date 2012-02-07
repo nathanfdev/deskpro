@@ -131,8 +131,8 @@ class EmailValidator
 
 				// TODO tear these out into their own validator ahndlers
 				switch ($entity_name) {
-					case 'DeskPRO:Idea':
-						$feedback = App::findEntity('DeskPRO:Idea', $entity_id);
+					case 'DeskPRO:Feedback':
+						$feedback = App::findEntity('DeskPRO:Feedback', $entity_id);
 						if (!$feedback) {
 							break;
 						}
@@ -151,7 +151,7 @@ class EmailValidator
 
 					case 'DeskPRO:ArticleComment':
 					case 'DeskPRO:DownloadComment':
-					case 'DeskPRO:IdeaComment':
+					case 'DeskPRO:FeedbackComment':
 					case 'DeskPRO:NewsComment':
 						$comment = App::findEntity($entity_name, $entity_id);
 						if (!$comment) {

@@ -260,7 +260,7 @@ class PublishController extends AbstractController
 			case 'news':
 				return 'DeskPRO:NewsComment';
 			case 'feedback':
-				return 'DeskPRO:IdeaComment';
+				return 'DeskPRO:FeedbackComment';
 		}
 	}
 
@@ -351,7 +351,7 @@ class PublishController extends AbstractController
 		$entity =  $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
-		if ($obj instanceof \Application\DeskPRO\Entity\Idea) {
+		if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
 			$obj->status = 'new';
 		} else {
 			$obj->status = 'published';
@@ -382,7 +382,7 @@ class PublishController extends AbstractController
 		$entity = $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
-		if ($obj instanceof \Application\DeskPRO\Entity\Idea) {
+		if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
 			$obj->status_code = 'hidden.deleted';
 		} else {
 			$obj->status_code = 'hidden.draft';
@@ -576,7 +576,7 @@ class PublishController extends AbstractController
 			case 'articles':   $entity_name = 'DeskPRO:Article';   break;
 			case 'downloads':  $entity_name = 'DeskPRO:Download';  break;
 			case 'news':       $entity_name = 'DeskPRO:News';      break;
-			case 'feedback':      $entity_name = 'DeskPRO:Idea';      break;
+			case 'feedback':      $entity_name = 'DeskPRO:Feedback';      break;
 		}
 
 		$this->db->beginTransaction();
