@@ -14,6 +14,10 @@ use \Orb\Auth\Adapter\CallbackInterface;
 use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
 
+/**
+ * Requirements:
+ * - Facebook SDK: https://github.com/facebook/php-sdk
+ */
 class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
 	protected $app_id;

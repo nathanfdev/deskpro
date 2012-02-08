@@ -219,6 +219,7 @@ HTML;
 				$login_processor = new LoginProcessor($usersource, $result->getIdentity());
 				$person = $login_processor->getPerson();
 				$person->setLastLoginAt();
+
 				App::getOrm()->persist($person);
 				App::getOrm()->flush();
 
@@ -238,6 +239,7 @@ HTML;
 				if ($this->session->get('auth_return')) {
 					$return = $this->session->get('auth_return');
 					$this->session->remove('auth_return');
+					$this->session->save();
 					return $this->redirect($return);
 				} else {
 					return $this->redirectRoute($this->route_prefix);
@@ -324,6 +326,7 @@ HTML;
 			if ($this->session->get('auth_return')) {
 				$return = $this->session->get('auth_return');
 				$this->session->remove('auth_return');
+				$this->session->save();
 				return $this->redirect($return);
 			} else {
 				return $this->redirectRoute($this->route_prefix);

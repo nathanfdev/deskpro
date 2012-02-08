@@ -6,7 +6,7 @@
 		function go() {
 			if (window.opener && window.opener.DP_LOGIN_NOTIFY) {
 				window.opener.DP_LOGIN_NOTIFY({
-					person_id: {{ person.id|default(0) }}
+					person_id: {{ app.person.id|default(0) }}
 				});
 				window.close();
 			} else {
