@@ -23,11 +23,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 {
 	public function __construct($environment, $debug)
 	{
-		// Normalize locale
-		setlocale(LC_CTYPE, 'C');
-		date_default_timezone_set('UTC');
-		ini_set('default_charset', 'UTF-8');
-
 		parent::__construct($environment, $debug);
 
 		$name = explode("\\", get_class($this));
@@ -47,22 +42,21 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function init()
 	{
-		error_reporting(E_ALL);
-		ini_set('display_errors', 1);
+		// Normalize env
+		setlocale(LC_CTYPE, 'C');
+		date_default_timezone_set('UTC');
+		ini_set('default_charset', 'UTF-8');
 
-		ErrorHandler::register();
-		if ('cli' !== php_sapi_name()) {
-			ExceptionHandler::register();
-		}
+		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
+		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 	}
 
 	public function boot()
 	{
 		parent::boot();
 		App::setContainer($this->container, 'default');
-
-		// Set phputf8 strings
-		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 	}
 
 
@@ -206,31 +200,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	public function boot()
 	{
 		parent::boot();
-
 		$this->container->get('deskpro.sys_events_loader');
-
-		 // Lazyload exception listener for the generic handler
-		set_error_handler(function($errno, $errstr, $errfile, $errline) {
-			@error_log("[$errno] $errstr ($errfile, line $errline)", 0);
-			try {
-				if (!App::has('deskpro.exception_logger') && !App::get('deskpro.exception_logger')) {
-					$logger = App::get('deskpro.exception_logger');
-					$logger->handleError($errno, $errstr, $errfile, $errline);
-				}
-			} catch (\Exception $e){}
-		}, E_ALL | E_STRICT);
-
-		set_exception_handler(function(\Exception $exception) {
-			$str = $exception->getTraceAsString();
-			$str = str_replace(DP_ROOT, '/', $str);
-			@error_log("[{$exception->getCode()}] {$exception->getMessage()} ({$exception->getFile()}, line {$exception->getLine()}): $str", 0);
-			try {
-				if (!App::has('deskpro.exception_logger') && !App::get('deskpro.exception_logger')) {
-					$logger = App::get('deskpro.exception_logger');
-					$logger->handleException($exception);
-				}
-			} catch (\Exception $e){}
-		});
 	}
 
 	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
@@ -511,6 +481,245 @@ class UserKernel extends AbstractKernel
 	}
 }
 
+
+###############################################################################
+# ExceptionHandler
+###############################################################################
+
+class KernelErrorHandler
+{
+	public static function handleError($errno, $errstr, $errfile, $errline)
+	{
+		$errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
+		self::logToFile($errinfo);
+
+		if ($errinfo['display']) {
+			echo $errinfo['summary'];
+			echo "\n";
+			echo $errinfo['trace'];
+		}
+
+		try {
+			$logger = App::get('deskpro.exception_logger');
+			$logger->handleError($errno, $errstr, $errfile, $errline);
+		} catch (\Exception $e) {}
+
+		if ($errinfo['die']) {
+			exit(1);
+		}
+	}
+
+	public static function handleException(\Exception $exception)
+	{
+		$errinfo = self::getExceptionInfo($exception);
+		self::logToFile($errinfo);
+
+		if ($errinfo['display']) {
+			echo $errinfo['summary'];
+			echo "\n";
+			echo $errinfo['trace'];
+		}
+
+		try {
+			$logger = App::get('deskpro.exception_logger');
+			$logger->handleException($exception);
+		} catch (\Exception $e) {}
+
+		if ($errinfo['die']) {
+			exit(1);
+		}
+	}
+
+	public static function logErrorInfo(array $errinfo)
+	{
+		if (!class_exists('Application\DeskPRO\App')) {
+			return null;
+		}
+
+		unset($errinfo['exception']);
+
+		try {
+			$logger = App::createNewLogger('error_log', null);
+			$logger->log($summary, $errinfo['pri'], $errinfo);
+		} catch (\Exception $e) {}
+
+		try {
+			if (App::getConfig('debug.email_on_error')) {
+				$message = App::getMailer()->createMessage();
+				$message->setTo(App::getConfig('debug.email_on_error'));
+				$message->setSubject("[DeskPRO Error] {$errinfo['summary']}");
+				$message->setBody(print_r($errinfo, true));
+				App::getMailer()->send($message);
+			}
+		} catch (\Exception $e) {}
+	}
+
+	public static function logToFile(array $errinfo)
+	{
+		@error_log($errinfo['summary'] . "\n" . $errinfo['trace'], 0);
+	}
+
+	public static function getExceptionInfo(\Exception $exception)
+	{
+		$errno = $exception->getCode();
+		$errstr = $exception->getMessage();
+		$errfile = self::stripPathPrefix($exception->getFile());
+		$errline = $exception->getLine();
+
+		$backtrace = $exception->getTrace();
+		$trace = self::formatBacktrace($backtrace);
+		$trace = self::stripPathPrefix($trace);
+
+		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+
+		$display = true;
+		if (!(error_reporting() & E_ERROR)) {
+			$display = false;
+		}
+
+		return array(
+			'type'         => 'exception',
+			'session_name' => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
+			'exception'    => $exception,
+			'die'          => true,
+			'pri'          => 'ERR',
+			'trace'        => $trace,
+			'summary'      => $summary,
+			'errstr'       => $errstr,
+			'errname'      => $errfile,
+			'errno'        => $errno,
+			'errfile'      => $errfile,
+			'errline'      => $errline,
+			'display'      => $display,
+		);
+	}
+
+	public static function getErrorInfo($errno, $errstr, $errfile, $errline)
+	{
+		$die = false;
+		switch ($errno) {
+			case E_ERROR:
+				$die = true;
+				$pri = 'ERR';
+				$errname = "E_ERROR";
+				break;
+
+			case E_WARNING:
+			case E_USER_WARNING:
+				$pri = 'WARN';
+				$errname = "E_WARNING";
+				break;
+
+			case E_NOTICE:
+			case E_USER_NOTICE:
+				$pri = 'NOTICE';
+				$errname = "E_NOTICE";
+				break;
+
+			case E_STRICT:
+				$pri = 'STRICT';
+				$errname = "E_STRICT";
+				break;
+
+			case E_RECOVERABLE_ERROR:
+				$pri = 'ERR';
+				$errname = "E_RECOVERABLE_ERROR";
+				break;
+
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+				$pri = 'NOTICE';
+				$errname = "E_DEPRECATED";
+				break;
+		}
+
+		$display = true;
+		if (!(error_reporting() & $errno)) {
+			$display = false;
+		}
+
+		$errfile = self::stripPathPrefix($errfile);
+
+		$backtrace = debug_backtrace();
+		$trace = self::formatBacktrace($backtrace);
+		$trace = self::stripPathPrefix($trace);
+
+		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+
+		return array(
+			'type'         => 'error',
+			'session_name' => null,
+			'die'          => $die,
+			'pri'          => $pri,
+			'trace'        => $trace,
+			'summary'      => $summary,
+			'errstr'       => $errstr,
+			'errname'      => $errfile,
+			'errno'        => $errno,
+			'errfile'      => $errfile,
+			'errline'      => $errline,
+			'display'      => $display,
+		);
+	}
+
+	public static function stripPathPrefix($content)
+	{
+		$prefix = DP_ROOT . '/';
+		$content = str_replace($prefix, '', $content);
+		return $content;
+	}
+
+	public static function formatBacktrace(array $backtrace)
+	{
+		$trace = '';
+		foreach($backtrace as $k=>$v){
+
+			$line = "#$k ";
+
+			if (isset($v['object'])) {
+				$line .= get_class($v['object']) . "::";
+			} elseif (isset($v['class'])) {
+				$line .= $v['class'] . "::";
+			}
+
+			$line .= "{$v['function']}(";
+
+			if (!empty($v['args'])) {
+				$line .= self::varToString($v['args']);
+			}
+
+			$line .= ")";
+
+			if (!empty($v['file'])) {
+				$line .= " called at [{$v['file']}:{$v['line']}]";
+			}
+
+			$line .= "\n";
+
+			$trace .= $line;
+		}
+
+		return $trace;
+	}
+
+	public static function varToString($var)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+                $a[] = sprintf('%s => %s', $k, self::varToString($v));
+            }
+            return sprintf("[array](%s)", implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+        return str_replace("\n", '', var_export((string) $var, true));
+    }
+}
 
 ###############################################################################
 # License

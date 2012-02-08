@@ -1,10 +1,10 @@
 <?php
 
 /**
- * You may wish to turn the display of PHP errors off. 
+ * You may wish to turn the display of PHP errors off.
  * You should monitor your PHP error log (location defined in php.ini) if you do.
  */
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', true);
 
 /**

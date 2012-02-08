@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', true);
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 
 
