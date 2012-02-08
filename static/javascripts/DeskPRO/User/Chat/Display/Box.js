@@ -205,8 +205,10 @@ var DpChat_Display = (function() {
 			DpChatConsole.log('DpChat_Display.showAssignedStatus: assigned');
 		}
 
-		var e = jQuery.Event("dpchat_assigned", { });
-		$('#dpchat_events').trigger(e);
+		if (DpChat.assignedCallback) {
+			DpChat.assignedCallback();
+			DpChat.assignedCallback = null;
+		}
 	};
 
 	this.showTicketLink = function() {

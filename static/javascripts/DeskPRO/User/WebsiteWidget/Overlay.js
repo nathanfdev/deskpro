@@ -86,6 +86,7 @@ var DpOverlayWidget = (function() {
 	 */
 	this.childListen = function(messageId, data) {
 
+		var self = this;
 		console.log('[Recieving] %s', messageId);
 
 		switch (messageId) {
@@ -140,14 +141,11 @@ var DpOverlayWidget = (function() {
 
 				$('#dpchat_preform_submit').trigger('click');
 
-				var comm = { callback: function() {} };
-				comm._do = function() {
-					console.log('Chat Assigned');
-					comm.callback();
+				DpChat.assignedCallback = function() {
+					self.close();
 				};
-				$('#dpchat_events').one('dpchat_assigned', comm._do);
 
-				return comm;
+				return;
 		}
 	};
 

@@ -419,10 +419,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				department_id: self.newChatForm.find('select[name="department_id"]').val()
 			};
 
-			var comm = self.tellParent('requestChat', data);
-			comm.chatReady = function(chatReady) {
-				self.tellParent('closeMe');
-			};
+			self.tellParent('requestChat', data);
 
 			$('#dp_newchat_form').hide();
 			$('#dp_newchat_done').show();

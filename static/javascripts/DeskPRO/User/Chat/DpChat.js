@@ -368,7 +368,6 @@ var DpChatMake = function() {
 
 			send: function() {
 
-				DpChatConsole.log("Polling ...");
 				this._clearDelays();
 
 				if (this.disable) {
