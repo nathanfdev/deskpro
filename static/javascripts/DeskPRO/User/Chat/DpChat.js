@@ -709,7 +709,7 @@ var DpChatMake = function() {
 
 			$.ajax({
 				cache: false,
-				url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId,
+				url: options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId + '&is_ajax=1',
 				context: this,
 				crossDomain: true,
 				dataType: 'jsonp',
@@ -720,7 +720,7 @@ var DpChatMake = function() {
 		};
 
 		this.getFinisehdUrl = function() {
-			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId + '&is_ajax=1'
+			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
 		};
 
 		this.endChatReboot = function() {

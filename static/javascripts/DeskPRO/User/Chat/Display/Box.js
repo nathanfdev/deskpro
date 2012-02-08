@@ -29,7 +29,7 @@ var DpChat_Display = (function() {
 		// The butotn that opens the chat
 		//--------------------
 
-		var el = $('<div id="dpchat_btn"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat">Open your chat</span></div></div>');
+		var el = $('<div id="dpchat_btn" style="display: none"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat">Open your chat</span></div></div>');
 		el.appendTo('body');
 		chatBoxBtn = $(el);
 
@@ -46,7 +46,7 @@ var DpChat_Display = (function() {
 		options.name = options.email = 1;
 
 		var html = [];
-		html.push('<div id="dpchat_panel">');
+		html.push('<div id="dpchat_panel" style="display: none">');
 			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span><span id="dpchat_popchat">Open in new window</span></div>');
 			if (options.name || options.email || options.departmentSelect) {
 				html.push('<div id="dpchat_preform">')
@@ -158,6 +158,9 @@ var DpChat_Display = (function() {
 			ev.stopPropagation();
 			doSend();
 		});
+
+		$('#dpchat_btn').show();
+		$('#dpchat_panel').show();
 	};
 
 	var playSound = function() {

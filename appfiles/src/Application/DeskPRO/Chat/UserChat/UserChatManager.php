@@ -585,6 +585,8 @@ class UserChatManager
 			$this->em->rollback();
 			throw $e;
 		}
+
+		$this->autoSendChatTranscript($convo);
 	}
 
 
@@ -628,6 +630,8 @@ class UserChatManager
 			$this->em->rollback();
 			throw $e;
 		}
+
+		$this->autoSendChatTranscript($convo);
 	}
 
 
@@ -662,6 +666,36 @@ class UserChatManager
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);
+	}
+
+
+	/**
+	 * Send a chat transcript to the user who started a chat if we have an email for them
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @return bool
+	 */
+	public function autoSendChatTranscript(ChatConversation $convo)
+	{
+		$email = '';
+		$name = '';
+		if ($convo->person && $convo->person->getPrimaryEmailAddress()) {
+			$email = $convo->person->getPrimaryEmailAddress();
+		} else if ($convo->person_email) {
+			$email = $convo->person_email;
+		}
+		if ($convo->person && $convo->person->name) {
+			$name = $convo->person->name;
+		} else if ($convo->person_name) {
+			$name = $convo->person_name;
+		}
+
+		if ($email) {
+			$this->sendChatTranscript($convo, $email, $name);
+			return true;
+		}
+
+		return false;
 	}
 
 
