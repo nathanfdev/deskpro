@@ -39,6 +39,7 @@
 	'user.name_anon' => 'Anonymous',
 	'user.post_comment_btn' => 'Post Comment',
 	'user.label_logged_in_as' => 'Logged in as',
+	'user.label_name' => 'Name',
 	'user.label_email_address' => 'Email Address',
 
 	'user.rating_x_of_y_found_helpful' => '{{percent}}% of {{vote_count}} found this page helpful',
@@ -124,4 +125,7 @@
 	'user.attach_error_server_error' => 'There was a problem with our server while trying to accept your attachment. Please try again.',
 	'user.attach_error_not_in_allowed_exts' => 'Only the following file types can be uploaded: {{error_detail}}',
 	'user.attach_error_not_allowed_exts' => 'The type of file you uploaded is not allowed.',
+
+	'user.required' => 'Required',
+	'user.required_not_displayed' => 'Required but never displayed',
 );
