@@ -1,0 +1,16 @@
+<li class="{{ type }} {{ type }}-{{ item.id }}">
+	<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
+		<span>{{ item.title }}</span>
+	</a>
+	<div class="summary">
+		{% if type == 'article' %}
+			{{ item.getSearchSummary() }}
+		{% elseif type == 'news' %}
+			{{ item.date_created|date('Y-m-d') }} &middot; {{ item.getSearchSummary() }}
+		{% elseif type == 'download' %}
+			{{ item.getFileName() }} &middot; {{ item.getReadableFileSize() }}
+		{% elseif type == 'feedback' %}
+			{{ item.total_rating }} Votes &middot; {{ item.getSearchSummary() }}
+		{% endif %}
+	</div>
+</li>

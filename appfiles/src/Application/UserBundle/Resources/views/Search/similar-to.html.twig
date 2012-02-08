@@ -1,17 +1,5 @@
 <ul>
 	{% for res in results %}
-		{% if res.type == 'article' %}
-			<li class="article article-{{ res.object.id }}">
-				<a href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}" data-content-type="article" data-content-id="{{ res.object.id }}">
-					<span>{{ res.object.title }}</span>
-				</a>
-			</li>
-		{% elseif res.type == 'feedback' %}
-			<li class="feedback feedback-{{ res.object.id }}">
-				<a href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}" data-content-type="feedback" data-content-id="{{ res.object.id }}">
-					<span>{{ res.object.title }}</span>
-				</a>
-			</li>
-		{% endif %}
+		{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: res.type, item: res.object } %}
 	{% endfor %}
 </ul>

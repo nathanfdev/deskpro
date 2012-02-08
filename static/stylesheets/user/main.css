@@ -2675,7 +2675,12 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	font-weight: bold;
 }
 
-#dp_overlay .list-area ul li a span .dp-highlight-word {
+#dp_overlay .list-area ul li .summary {
+	font-size: 10px;
+}
+
+#dp_overlay .list-area ul li a span.dp-highlight-word,
+#dp_overlay .list-area ul li .summary span.dp-highlight-word {
 	background-color: #FBFDB5;
 }
 
@@ -2771,3 +2776,4 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	vertical-align: middle;
 	cursor: pointer;
 }
+

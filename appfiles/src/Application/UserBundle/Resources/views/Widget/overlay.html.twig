@@ -45,9 +45,7 @@
 	<div class="list-area">
 		<ul id="new_content_list">
 			{% for content in newest_content %}
-				<li class="{{ content.type }}">
-					<a href="{{ content.item.getLink() }}" class="view-item" data-content-type="{{ content.type }}" data-content-id="{{ content.item.id }}">{{ content.item.title }}</a>
-				</li>
+				{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: content.type, item: content.item } %}
 			{% endfor %}
 		</ul>
 		<ul id="search_content_list" style="display: none"></ul>

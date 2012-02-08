@@ -226,6 +226,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$content = preg_replace("#<p>\n?#", "\n", $content);
 		$content = preg_replace("#\n?</p>#", "\n", $content);
 		$content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
+		$content = str_replace('&nbsp;', ' ', $content);
 		$content = trim($content);
 
 		$lines_raw = explode("\n", $content);
@@ -236,6 +237,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 		$content = implode("\n", $lines);
 		$content = preg_replace("#\n{3,}#", "\n\n", $content);
+
+		return $content;
+	}
+
+	/**
+	 * Get an excerpt of the content suitable for display in a search listing. So this means
+	 * no html, and collapsed whitespace.
+	 */
+	public function getSearchSummary($length = 100)
+	{
+		$content = $this->getContentPlain();
+		$content = str_replace(array("\r\n", "\n"), " ", $content);
+
+		if (Strings::utf8_strlen($content) > $length) {
+			$content = Strings::utf8_substr($content, 0, $length) . '...';
+		}
 
 		return $content;
 	}
