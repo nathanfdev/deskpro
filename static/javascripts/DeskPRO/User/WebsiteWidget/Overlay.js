@@ -171,15 +171,15 @@ var DpOverlayWidget = new (function() {
 			css.push('display: none');
 			css.push('box-shadow: none');
 			css.push('overflow: hidden');
-			css.push('background: #000');
+			css.push('background: #000000');
 			css.push('top: 0');
 			css.push('right: 0');
 			css.push('bottom: 0');
 			css.push('left: 0');
-			css.push('filter: alpha(opacity=0.6)');
-			css.push('-khtml-opacity: 0.6');
-			css.push('-moz-opacity: 0.6');
-			css.push('opacity: 0.6');
+			css.push('filter: alpha(opacity=0.7)');
+			css.push('-khtml-opacity: 0.7');
+			css.push('-moz-opacity: 0.7');
+			css.push('opacity: 0.7');
 			css.push('z-index: 15000');
 			css = css.join(';');
 			overlayBack = $('<div id="dp_overlay_back" style="' + css  +'"></div>').appendTo('body');
@@ -230,6 +230,26 @@ var DpOverlayWidget = new (function() {
 				ev.preventDefault();
 				self.close();
 			});
+
+			css = [];
+			css.push('border: none');
+			css.push('width: 152px');
+			css.push('height: 45px');
+			css.push('margin: 0');
+			css.push('padding: 0');
+			css.push('cursor: pointer');
+			css.push('box-shadow: none');
+			css.push('overflow: hidden');
+			css.push('position: absolute');
+			css.push('background: url(' + options.staticUrl + 'images/user/widgetlogo.png)');
+			css.push('right: 10px');
+			css.push('bottom: -55px');
+			css = css.join(';');
+
+			var logo = $('<a href="http://www.deskpro.com/" style="' + css + '"></a>')
+				.appendTo(overlayWrapInner)
+				.on('mouseover', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo-on.png)') })
+				.on('mouseout', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo.png)') });
 		}
 
 		isOpen = true;
@@ -353,9 +373,10 @@ var DpOverlayWidget = new (function() {
 			self.open();
 		});
 
-		// Preload this image as it's used in the loading icon when opening the widget
-		var image = new Image();
-		image.src = options.staticUrl + 'images/spinners/loading-big-circle.gif';
+		// Preload images used in the overlay
+		(new Image()).src = options.staticUrl + 'images/spinners/loading-big-circle.gif';
+		(new Image()).src = options.staticUrl + 'images/user/widgetlogo.png';
+		(new Image()).src = options.staticUrl + 'images/user/widgetlogo-on.png';
 
 		winWidth  = lastWinWidth  = $(window).width();
 		winHeight = lastWinHeight = $(window).height();
