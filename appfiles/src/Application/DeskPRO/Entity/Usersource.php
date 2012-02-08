@@ -81,16 +81,14 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var Application\DeskPRO\Usersource\Adapter\AbstractUsersource
+	 * @var \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	 */
 	protected $_adapter_instance = null;
-
-
 
 	/**
 	 * Get the usersource adapter for this usersource.
 	 *
-	 * @return \Application\DeskPRO\Usersource\Adapter\AbstractUsersource
+	 * @return \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	 */
 	public function getAdapter()
 	{
@@ -108,7 +106,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return call_user_func_array(array($this->getAdapter(), $name), $args);
 	}
-
 
 	public function hasOption($name)
 	{

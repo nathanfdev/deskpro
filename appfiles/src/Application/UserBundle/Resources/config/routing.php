@@ -42,7 +42,7 @@ $collection->add('user_validate_email', new Route(
 
 $collection->add('user_jstell_login', new Route(
 	'/login/jstell/{jstell}/{security_token}/{usersource_id}',
-	array('_controller' => 'UserBundle:Main:jstellLogin'),
+	array('_controller' => 'UserBundle:Login:jstellLogin'),
 	array(),
 	array()
 ));

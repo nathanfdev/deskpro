@@ -21,6 +21,9 @@ use \Orb\Auth\Result;
  */
 abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface
 {
+	const DISLPAY_CONTEXT_PAGE = 'page';
+	const DISLPAY_CONTEXT_POPUP = 'popup';
+
 	/**
 	 * If in callback context, then an array of callback data
 	 * @var array
@@ -38,6 +41,11 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 * @var string
 	 */
 	protected $callback_url = null;
+
+	/**
+	 * @var null
+	 */
+	protected $display_context = null;
 
 	/**
 	 * Switches the adapter to the callback context using form data $data.

@@ -16,22 +16,10 @@ use Symfony\Component\Templating\EngineInterface;
 
 use Orb\Util\CapabilityInformerInterface;
 use Orb\Auth\Identity;
+use Orb\Util\Util;
 
 abstract class AbstractAdapter implements CapabilityInformerInterface
 {
-	/**
-	 * This adapter can render an actual signin form in HTML.
-	 */
-	const CAPABILITY_VIEW_FORM = 'form';
-
-	/**
-	 * This adapter can render a button.
-	 */
-	const CAPABILITY_VIEW_BUTTON = 'button';
-
-	const VIEW_FORM = 'form';
-	const VIEW_BUTTON = 'button';
-
 	/**
 	 * @var \Application\DeskPRO\Entity\Usersource
 	 */
@@ -84,14 +72,10 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	}
 
 
-	/**
-	 * Render a view
-	 *
-	 * @param \Symfony\Component\Templating\EngineInterface $tpl
-	 * @param string $type
-	 * @return string
-	 */
-	abstract public function renderView(EngineInterface $tpl, $type, array $params = array());
+	public function applyResultToUser()
+	{
+
+	}
 
 
 	/**
@@ -101,4 +85,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	 * @return \Orb\Auth\Adapter\AdapterInterface
 	 */
 	abstract protected function _createAuthAdapterObject();
+
+	public function getTypename()
+	{
+		return strtolower(Util::getBaseClassname($this));
+	}
 }

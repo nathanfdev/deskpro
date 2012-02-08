@@ -14,10 +14,11 @@ use \Orb\Auth\Adapter\CallbackInterface;
 use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
 
-class Facebook extends AbstractCallbackAdatper
+class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
 	protected $app_id;
 	protected $app_secret;
+	protected $display = 'page';
 
 	/**
 	 * The facebook object
@@ -37,8 +38,24 @@ class Facebook extends AbstractCallbackAdatper
 		$this->fb = new \Facebook(array(
 			'appId'  => $this->app_id,
 			'secret' => $this->app_secret,
-			'cookie' => false,
 		));
+	}
+
+
+	/**
+	 * Sets the display context: page or popup
+	 *
+	 * @param $context
+	 * @throws \InvalidArgumentException
+	 */
+	public function setDisplayContext($context)
+	{
+		$context = strtolower($context);
+		if (!in_array($context, array('page', 'popup'))) {
+			throw new \InvalidArgumentException("Invalid display context `$context`");
+		}
+
+		$this->display = $context;
 	}
 
 
@@ -49,22 +66,24 @@ class Facebook extends AbstractCallbackAdatper
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-		$session = $this->fb->getSession();
+		// Gets a userid or false if no user logged in
+		$user = $this->fb->getUser();
 
 		$me = false;
-		if ($session) {
+		if ($user) {
 			try {
-				$uid = $this->fb->getUser();
 				$me = $this->fb->api('/me');
 			} catch (\FacebookApiException $e) { }
 		}
 
+		// Already a user
 		if ($me) {
 			return $this->_meToResult($me);
 		}
 
 		$redirect_url = $this->fb->getLoginUrl(array(
-			'next' => $this->getCallbackUrl(),
+			'redirect_uri' => $this->getCallbackUrl(),
+			'display' => $this->display,
 			'req_perms' => 'user_about_me,user_birthday,user_website,email',
 		));
 		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
@@ -80,12 +99,11 @@ class Facebook extends AbstractCallbackAdatper
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
-		$session = $this->fb->getSession();
+		$session = $this->fb->getUser();
 
 		$me = false;
 		if ($session) {
 			try {
-				$uid = $this->fb->getUser();
 				$me = $this->fb->api('/me');
 			} catch (\FacebookApiException $e) { }
 		}

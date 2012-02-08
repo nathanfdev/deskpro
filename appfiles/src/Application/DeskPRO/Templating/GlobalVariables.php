@@ -59,6 +59,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('style');
 	}
 
+	public function getUsersourceManager()
+	{
+		return App::getSystemService('UsersourceManager');
+	}
+
 	public function __get($name)
 	{
 		if (isset($this->variables[$name])) {

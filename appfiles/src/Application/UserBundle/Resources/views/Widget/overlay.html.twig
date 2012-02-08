@@ -67,46 +67,59 @@
 		<div id="newticket">
 			<form action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator">
 				{{ form_token('newticket_widget') }}
-				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
-						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
-							<div class="dp-form-label">
-								<label>Your Name *</label>
-							</div>
+				{% if app.user.id %}
+					<div class="form-row">
+						<div class="dp-form-row">
+							<div class="dp-form-label"><label>You</label></div>
 							<div class="dp-form-input">
-								{{ form_widget(ticketform.person.name, {
-									'attr': {
-										'data-field-validators': 'DeskPRO.Form.LengthValidator',
-										'data-min-len': 2,
-										'placeholder': 'Your Name',
-										'class': 'name-field'
-									}
-								}) }}
-								<div class="dp-error-explain">
-									Please enter your name
-								</div>
+								{{ app.user.display_name }} ({{ app.user.email_address }})
 							</div>
 						</div>
-					</td><td valign="top" width="50%" style="padding-left: 10px;">
-						<div class="dp-form-row dp-form-row-person_email">
-							<div class="dp-form-label">
-								<label>Your Email Address *</label>
-							</div>
-							<div class="dp-form-input">
-								<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="Your Email Address" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
-								<div class="connect-with">
-									Or connect with
-									<img src="{{ asset('images/site-icons/facebook.png') }}" />
-									<img src="{{ asset('images/site-icons/gplus.png') }}" />
-									<img src="{{ asset('images/site-icons/linkedin.png') }}" />
+					</div>
+				{% else %}
+					<div class="form-row">
+						<table cellspacing="0" cellpadding="0" width="98%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
+							<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
+								<div class="dp-form-label">
+									<label>Your Name *</label>
 								</div>
-								<div class="dp-error-explain">
-									Please enter your name
+								<div class="dp-form-input">
+									{{ form_widget(ticketform.person.name, {
+										'attr': {
+											'data-field-validators': 'DeskPRO.Form.LengthValidator',
+											'data-min-len': 2,
+											'placeholder': 'Your Name',
+											'class': 'name-field'
+										}
+									}) }}
+									<div class="dp-error-explain">
+										Please enter your name
+									</div>
 								</div>
 							</div>
-						</div>
-					</td></tr></table>
-				</div>
+						</td><td valign="top" width="50%" style="padding-left: 10px;">
+							<div class="dp-form-row dp-form-row-person_email">
+								<div class="dp-form-label">
+									<label>Your Email Address *</label>
+								</div>
+								<div class="dp-form-input">
+									<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="Your Email Address" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+									{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+										<div class="connect-with">
+											Or connect with
+											{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+												{{ render_usersource(usersource, 'widget_overlay_btn') }}
+											{% endfor %}
+										</div>
+									{% endif %}
+									<div class="dp-error-explain">
+										Please enter your name
+									</div>
+								</div>
+							</div>
+						</td></tr></table>
+					</div>
+				{% endif %}
 
 				<div class="form-row">
 					<table cellspacing="0" cellpadding="0" width="98%"><tr><td>
@@ -146,6 +159,16 @@
 		<div id="newfeedback" style="display: none">
 			<form action="{{ path('user_widget_newfeedback') }}" method="POST" id="dp_newfeedback_form" class="with-form-validator">
 				{{ form_token('newfeedback_widget') }}
+				{% if app.user.id %}
+					<div class="form-row">
+						<div class="dp-form-row">
+							<div class="dp-form-label"><label>You</label></div>
+							<div class="dp-form-input">
+								{{ app.user.display_name }} ({{ app.user.email_address }})
+							</div>
+						</div>
+					</div>
+				{% else %}
 				<div class="form-row">
 					<table cellspacing="0" cellpadding="0" width="98%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
@@ -180,6 +203,7 @@
 						</div>
 					</td></tr></table>
 				</div>
+				{% endif %}
 
 				<div class="dp-form-row {% if error_fields['category_id'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
@@ -260,6 +284,16 @@
 
 		<div id="newchat" style="display: none">
 			<form method="POST" id="dp_newchat_form" class="with-form-validator">
+				{% if app.user.id %}
+					<div class="form-row">
+						<div class="dp-form-row">
+							<div class="dp-form-label"><label>You</label></div>
+							<div class="dp-form-input">
+								{{ app.user.display_name }} ({{ app.user.email_address }})
+							</div>
+						</div>
+					</div>
+				{% else %}
 				<div class="form-row">
 					<table cellspacing="0" cellpadding="0" width="98%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
@@ -287,6 +321,7 @@
 						</div>
 					</td></tr></table>
 				</div>
+				{% endif %}
 
 				<div class="dp-form-row {% if error_fields['department_id'] %}dp-error{% endif %}">
 					<div class="dp-form-label">

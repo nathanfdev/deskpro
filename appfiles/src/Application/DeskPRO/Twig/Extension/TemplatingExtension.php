@@ -300,7 +300,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderUsersource($usersource, $type, array $params = array())
 	{
-		return $usersource->renderView($this->getTemplating(), $type, $params);
+		return App::getSystemService('usersource_manager')->renderView($usersource, $type, $params);
 	}
 
 	public function slugify($str)

@@ -76,8 +76,7 @@ class LoginProcessor
 			$this->identity->getIdentity()
 		);
 
-		// If we dont have one yet, we're have to create the assoc
-		// and maybe a new user too
+		// If we dont have one yet, we're have to create the assoc and maybe a new user too
 		if (!$this->assoc) {
 
 			$mapped_fields = $this->usersource->getFieldsFromIdentity($this->identity);

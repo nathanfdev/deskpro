@@ -84,10 +84,8 @@
 					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 				</dl>
 				<div style="float:right">
-					{% for usersource in app.usersources %}
-						{% if usersource.isCapable('button') %}
-							{{ render_usersource(usersource, 'button', {'button_type': 'icon'}) }}
-						{% endif %}
+					{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
 				<input class="btn" type="submit" value="Log In" />
@@ -183,29 +181,29 @@
 	</div>
 {% endif %}
 
-{% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls %}
-	{% include 'UserBundle:Common:chat-loader.html.twig' %}
-{% endif %}
-
 {% if admin_portal_controls %}
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 {% endif %}
 
-<!-- DeskPRO Widget -->
-<div id="dp_newticket_form" style="display: none"></div>
-<script type="text/javascript">
-var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
-DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
-DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
-DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-(function() {
-	var scr = document.createElement('script');
-	scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
-	scr.setAttribute('async', 'true');
-	document.documentElement.firstChild.appendChild(scr);
-})();
-</script>
-<!-- /DeskPRO Widget -->
+{% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls %}
+	{% include 'UserBundle:Common:chat-loader.html.twig' %}
+
+	<!-- DeskPRO Widget -->
+	<div id="dp_newticket_form" style="display: none"></div>
+	<script type="text/javascript">
+	var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
+	DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
+	DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
+	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	(function() {
+		var scr = document.createElement('script');
+		scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
+		scr.setAttribute('async', 'true');
+		document.documentElement.firstChild.appendChild(scr);
+	})();
+	</script>
+	<!-- /DeskPRO Widget -->
+{% endif %}
 
 </body>
 </html>

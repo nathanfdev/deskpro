@@ -176,6 +176,25 @@ HTML;
 	}
 
 
+	/**
+	 * A generic landing page after the user has logged in which has JS to alert
+	 * its parent that the user is now logged in.
+	 *
+	 * This is used when the auth happens in a popup, and then the page that spawned
+	 * the popup needs to know the user is finished.
+	 */
+	public function jstellLoginAction($security_token, $usersource_id)
+	{
+		if (!App::getSession()->getEntity()->checkSecurityToken('jstell', $security_token)) {
+			return $this->createResponse('');
+		}
+
+		return $this->render('UserBundle:Login:jstell.html.twig', array(
+
+		));
+	}
+
+
 	############################################################################
 	# Usersource auth
 	############################################################################
@@ -185,7 +204,7 @@ HTML;
 		$return = $this->in->getString('return');
 
 		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
-		$adapter = $this->_initUserSourceAdapter($usersource);
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
 
 		#------------------------------
 		# Callback types require us to redirect
@@ -194,8 +213,38 @@ HTML;
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
 
+			// The user is already logged in
+			if ($result->isValid()) {
+
+				$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+				$person = $login_processor->getPerson();
+				$person->setLastLoginAt();
+				App::getOrm()->persist($person);
+				App::getOrm()->flush();
+
+				$this->session->set('auth_person_id', $person->id);
+				$this->session->set('dp_interface', DP_INTERFACE);
+				$this->session->save();
+
+				if ($this->in->getString('js_tell')) {
+					$return = $this->generateUrl('user_jstell_login', array(
+						'jstell' => $this->in->getString('js_tell'),
+						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
+						'usersource_id' => $usersource_id
+					), true);
+					return $this->redirect($return);
+				}
+
+				if ($this->session->get('auth_return')) {
+					$return = $this->session->get('auth_return');
+					$this->session->remove('auth_return');
+					return $this->redirect($return);
+				} else {
+					return $this->redirectRoute($this->route_prefix);
+				}
+
 			// We expect a redirect to be rquired
-			if ($result->isRedirectRequired()) {
+			} elseif ($result->isRedirectRequired()) {
 
 				$return = $this->in->getString('return');
 				$this->session->set('auth_return', $return);
@@ -207,6 +256,7 @@ HTML;
 						'usersource_id' => $usersource_id
 					), true);
 					$this->session->set('auth_return', $return);
+					$this->session->save();
 				}
 
 				return $this->redirect($result->getRedirectUrl());
@@ -294,12 +344,16 @@ HTML;
 		));
 	}
 
-	protected function _initUserSourceAdapter($usersource)
+	protected function _initUserSourceAdapter($usersource, $context = null)
 	{
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
 		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
 			$adapter->setFormData($_POST);
+		}
+
+		if ($context && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
+			$adapter->setDisplayContext($context);
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {

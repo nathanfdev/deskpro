@@ -102,6 +102,7 @@
 	'user.lost_password_explain' => 'Forgot your password? Fill in your email address above, and then click the button below.',
 	'user.lost_password_sent_explain' => 'If we have an account with this email address, then we have sent you instructions on how to reset your password.',
 	'user.lost_password_send_btn' => 'Send Reset Instructions',
+	'user.lost_password_cancel_btn' => 'Cancel',
 	'user.lost_password_back_btn' => 'Go back to the login form',
 
 	'user.powered_by' => 'Powered by DeskPRO customer service platform',

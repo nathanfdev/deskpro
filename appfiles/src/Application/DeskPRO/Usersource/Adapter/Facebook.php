@@ -66,7 +66,8 @@ class Facebook extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			self::CAPABILITY_VIEW_BUTTON
+			'tpl_login_pull_btn',
+			'tpl_widget_overlay_btn'
 		);
 	}
 

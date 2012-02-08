@@ -82,6 +82,15 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 			$.cookie('dp_uemail', val);
 		});
+
+		$('.auth-popup').click(function(ev) {
+			ev.preventDefault();
+			window.open($(this).attr('href'),'dpauth','width=600,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=0');
+
+			window.DP_LOGIN_NOTIFY = function() {
+				window.location.href = window.location.href;
+			};
+		});
 	},
 
 
