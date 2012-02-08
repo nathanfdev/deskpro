@@ -68,6 +68,31 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				}
 			}
 		}, 80);
+
+		// Sync name and email fields, and save them to cookies for next time too
+		var names = $('input.name-field');
+		var emails = $('input.email-field');
+
+		if ($.cookie('dp_uname')) {
+			names.val($.cookie('dp_uname'));
+		}
+		if ($.cookie('dp_uemail')) {
+			names.val($.cookie('dp_uemail'));
+		}
+
+		names.on('change', function() {
+			var val = $(this).val().trim();
+			names.val(val);
+
+			$.cookie('dp_uname', val);
+		});
+
+		emails.on('change', function() {
+			var val = $(this).val().trim();
+			emails.val(val);
+
+			$.cookie('dp_uemail', val);
+		});
 	},
 
 
@@ -370,7 +395,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			});
 		});
 
-		this.handlefeedbackCatChange();
+		this.handleFeedbackCatChange();
 	},
 
 	handleFeedbackCatChange: function() {
