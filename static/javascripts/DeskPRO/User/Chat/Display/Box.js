@@ -76,7 +76,7 @@ var DpChat_Display = (function() {
 				html.push('<div class="dpchat-finding-agent-long" style="display: none">We are still trying to find an agent to take your chat but it is taking longer than we thought. Maybe you want to <a href="'+DpChat_Options.deskproUrl+'tickets/new">send us an email</a> instead?</div>');
 			html.push('</div>');
 			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
-			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
+			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><span id="dpchat_ended_did_send">A transcript has been sent to <span class="dp-chat-insert-email"></span></span><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
 			html.push('<div id="dpchat_sound_tpl" style="display:none"><audio preload="preload"><source src="' + DpChat_Options.staticUrl + 'sounds/pop.mp3" /><source src="' + DpChat_Options.staticUrl + 'sounds/pop.ogg" /></audio></div>');
 		html.push('</div>');
 
@@ -349,6 +349,16 @@ var DpChat_Display = (function() {
 	};
 
 	this.showEnd = function() {
+
+		var email = $('#dpchat_preform').find('input[name="email"]').val().trim();
+		if (email) {
+			$('#dpchat_ended_send_btn').hide();
+			$('#dpchat_ended_did_send').show().find('.dp-chat-insert-email').text(email);
+		} else {
+			$('#dpchat_ended_send_btn').show();
+			$('#dpchat_ended_did_send').hide();
+		}
+
 		$('#dpchat_input').hide();
 		$('#dpchat_endchat').hide();
 		$('#dpchat_ended').show();

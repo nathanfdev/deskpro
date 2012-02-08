@@ -632,6 +632,40 @@ class UserChatManager
 
 
 	/**
+	 * Send a transcript of a chat to a user
+	 *
+	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
+	 * @param $email
+	 * @param string $name
+	 */
+	public function sendChatTranscript(ChatConversation $convo, $email, $name = '')
+	{
+		$convo_messages = $this->em->createQuery("
+			SELECT m
+			FROM DeskPRO:ChatMessage m
+			WHERE m.conversation = ?1 AND m.is_user_hidden = false
+			ORDER BY m.id DESC
+		")->setParameter(1, $convo)->execute();
+
+		$vars = array(
+			'convo' => $convo,
+			'convo_messages' => $convo_messages
+		);
+
+		$email_subject = 'Chat Transcript';
+		$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+
+		$message = App::getMailer()->createMessage();
+		$message->setTo($email, $name);
+		$message->setSubject($email_subject);
+		$message->setBody($email_body, 'text/html');
+		$message->enableQueueHint();
+
+		App::getMailer()->send($message);
+	}
+
+
+	/**
 	 * Add a new message form the user who started the chat.
 	 *
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo

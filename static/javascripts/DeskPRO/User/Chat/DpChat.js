@@ -720,7 +720,7 @@ var DpChatMake = function() {
 		};
 
 		this.getFinisehdUrl = function() {
-			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
+			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId + '&is_ajax=1'
 		};
 
 		this.endChatReboot = function() {

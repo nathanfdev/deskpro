@@ -277,12 +277,32 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			return $this->createResponse('');
 		}
 
+		$sent_transcript = false;
 		if ($convo['status'] != ChatConversation::STATUS_ENDED) {
 			$chat_manager->endChatUser($convo);
+
+			// Send the user their transcript automatically if we have an email
+			$email = '';
+			$name = '';
+			if ($convo->person && $convo->person->getPrimaryEmailAddress()) {
+				$email = $convo->person->getPrimaryEmailAddress();
+			} else if ($convo->person_email) {
+				$email = $convo->person_email;
+			}
+			if ($convo->person && $convo->person->name) {
+				$name = $convo->person->name;
+			} else if ($convo->person_name) {
+				$name = $convo->person_name;
+			}
+
+			if ($email) {
+				$chat_manager->sendChatTranscript($convo, $email, $name);
+				$sent_transcript = true;
+			}
 		}
 
-		if ($this->request->isXmlHttpRequest()) {
-			return $this->createJsonpResponse(array('ended' => true));
+		if ($this->request->isXmlHttpRequest() || $this->in->getBool('is_ajax')) {
+			return $this->createJsonpResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
 		}
 
 		if ($this->in->getBool('process')) {
