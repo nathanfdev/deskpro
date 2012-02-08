@@ -97,6 +97,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Number of user-visible comments: This is a count that must be updated when a comment is added
 	 *
 	 * @var int
+	 * @ORM_Mapping\Column(name="num_comments", type="integer")
 	 */
 	protected $num_comments = 0;
 
