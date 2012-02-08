@@ -9,7 +9,7 @@ if (window.Dp_EnableDebug) {
 	DpConsole['debug'] = function(){};
 }
 
-var DpOverlayWidget = (function() {
+var DpOverlayWidget = new (function() {
 
 	var options = {
 		protocol: null,
