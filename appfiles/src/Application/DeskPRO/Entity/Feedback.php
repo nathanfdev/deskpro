@@ -106,14 +106,6 @@ class Feedback extends ContentAbstract
 		}
 	}
 
-	public function addComment(FeedbackComment $comment)
-	{
-		$comment->feedback = $this;
-		$this->comments->add($comment);
-
-		return $comment;
-	}
-
 	public function addCustomData(CustomDataFeedback $data)
 	{
 		$this->custom_data->add($data);
