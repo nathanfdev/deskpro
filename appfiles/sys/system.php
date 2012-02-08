@@ -487,6 +487,7 @@ class SysKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 	{
 		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+			new \Symfony\Bundle\MonologBundle\MonologBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),

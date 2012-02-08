@@ -38,3 +38,13 @@ $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 $container->loadFromExtension('twig', array(
 	'debug' => true
 ));
+
+$container->loadFromExtension('monolog', array(
+	'handlers' => array(
+		'main' => array(
+			'type' => 'stream',
+			'path' => '%kernel.logs_dir%/%kernel.environment%.user.log',
+			'level' => 'WARNING'
+		)
+	)
+));
