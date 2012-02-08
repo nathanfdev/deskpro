@@ -2759,3 +2759,15 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	background-color: #DFE4EA;
 	padding: 8px;
 }
+
+#dp_overlay .connect-with {
+	text-align: right;
+	font-size: 11px;
+	line-height: 19px;
+	display: block;
+}
+
+#dp_overlay .connect-with img {
+	vertical-align: middle;
+	cursor: pointer;
+}
