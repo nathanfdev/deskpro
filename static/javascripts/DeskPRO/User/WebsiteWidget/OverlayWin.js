@@ -4,7 +4,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function() {
-		this.tellParent('initialized');
+
 	},
 
 	initPage: function() {
@@ -33,20 +33,9 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			ev.preventDefault();
 
 			var origUrl = $(this).attr('href');
-			var url = Orb.appendQueryData(origUrl, '_partial', 'overlay');
+			var url = Orb.appendQueryData(origUrl, '_partial', 'overlayWidget');
 
-			self.showInlineContent(url);
-
-			self.inlinePage.find('.dp-open-in-window').on('click', function() {
-				window.open(origUrl);
-			});
-			self.inlinePage.find('.dp-not-answered').on('click', function() {
-				self.hideInlinePage();
-			});
-			self.inlinePage.find('.dp-set-answered').on('click', function() {
-				window.open(origUrl);
-				self.tellParent('closeMe');
-			});
+			self.tellParent('showContentPage', url);
 		});
 
 		this.tellParent('ready');
@@ -97,82 +86,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 
 	/**
-	 * Show an inline page
-	 *
-	 * @param {String} url
-	 */
-	showInlinePage: function(url) {
-		var self = this;
-
-		if (this.inlinePage) {
-			this.inlinePage.remove();
-			this.inlinePage = null;
-		}
-
-		if (!this.inlinePageFrame) {
-			this.inlinePageWrap = $('<div id="dp_inline_page_wrap" />').hide().appendTo('body');
-			this.inlinePageWrap.append('<span class="close"></span>');
-			this.inlinePageWrap.find('span.close').on('click', function() {
-				self.hideInlinePage();
-			});
-		}
-
-		this.inlinePage = $('<iframe id="dp_inline_page_iframe" name="dp_inline_page_iframe" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" width="100%" height="100%"></div>').appendTo(this.inlinePageWrap);
-
-		this.inlinePageWrap.show();
-		this.inlinePage.attr('src', url);
-	},
-
-
-	/**
-	 *
-	 * @param partialUrl
-	 */
-	showInlineContent: function(partialUrl, callback) {
-		var self = this;
-		if (this.inlinePage) {
-			this.inlinePage.remove();
-			this.inlinePage = null;
-		}
-
-		if (!this.inlinePageFrame) {
-			this.inlinePageWrap = $('<div id="dp_inline_page_wrap" />').hide().appendTo('body');
-			this.inlinePageWrap.append('<span class="close"></span>');
-			this.inlinePageWrap.find('span.close').on('click', function() {
-				self.hideInlinePage();
-			});
-		}
-
-		this.inlinePage = $(document.getElementById('dp_content_overlay_tpl').innerHTML);
-		this.inlinePage.appendTo(this.inlinePageWrap);
-
-		$.ajax({
-			url: partialUrl,
-			dataType: 'html',
-			context: this,
-			success: function(html) {
-
-				this.inlinePage.find('.dp-content-holder').html(html);
-
-				if (callback) {
-					callback(this.inlinePage);
-				}
-			}
-		});
-
-		this.inlinePageWrap.show();
-	},
-
-
-	/**
-	 * Hide the inline page
-	 */
-	hideInlinePage: function() {
-		this.inlinePageWrap.hide();
-	},
-
-
-	/**
 	 * Pass a message up to the parent controller
 	 *
 	 * @param {String} messageId
@@ -189,18 +102,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		}
 
 		return null;
-	},
-
-
-	/**
-	 * Recieves a message from the child inline frame. These are generally the messages about answering
-	 * something as helpful etc.
-	 *
-	 * @param {String} messageId
-	 * @param {Object} [data]
-	 */
-	listenInlineChild: function(messageId, data) {
-
 	},
 
 

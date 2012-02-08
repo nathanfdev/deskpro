@@ -53,6 +53,11 @@ var DpOverlayWidget = new (function() {
 	var overlayIframe = null;
 
 	/**
+	 * The overlay the loads to the right of the left pane for alt content
+	 */
+	var contentWrap;
+
+	/**
 	 * Is the overlay currently open?
 	 * @var {Boolean}
 	 */
@@ -144,6 +149,72 @@ var DpOverlayWidget = new (function() {
 				DpChat.assignedCallback = function() {
 					self.close();
 				};
+
+				return;
+
+			case 'showContentPage':
+
+				if (contentWrap) {
+					contentWrap.remove();
+				}
+
+				var w = overlayWrapInner.width();
+				var h = overlayWrapInner.height();
+
+				var myWidth  = w - 350 + 20; // 350 is width of the left pane inside
+				var myHeight = h + 50; // 20 for some space around
+
+				var top = (winHeight - myHeight) / 2;
+				var left = ((winWidth - myWidth) / 2) + 175 + 20;
+
+				var css = [];
+				css.push('position: fixed');
+				css.push('border: 2px solid #000000');
+				css.push('background: #ffffff url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
+				css.push('width: ' + myWidth + 'px');
+				css.push('height: ' + myHeight + 'px');
+				css.push('margin: 0');
+				css.push('padding: 0');
+				css.push('box-shadow: none');
+				css.push('top: ' + top + 'px');
+				css.push('left: ' + left + 'px');
+				css.push('z-index: 16001');
+				css = css.join(';');
+				contentWrap = $('<div style="' + css  +'"></div>').appendTo('body');
+
+				css = [];
+				css.push('border: none');
+				css.push('width: 18px');
+				css.push('height: 18px');
+				css.push('margin: 0');
+				css.push('padding: 0');
+				css.push('cursor: pointer');
+				css.push('box-shadow: none');
+				css.push('overflow: hidden');
+				css.push('position: absolute');
+				css.push('background: url(' + options.staticUrl + 'images/user/close-btn.png)');
+				css.push('top: -10px');
+				css.push('right: -10px');
+				css = css.join(';');
+
+				close = $('<span style="'+css+'"></span>').appendTo(contentWrap).click(function(ev) {
+					ev.preventDefault();
+					contentWrap.fadeOut('fast', function() {
+						contentWrap.remove();
+					});
+				});
+
+				css = [];
+				css.push('width: ' + myWidth + 'px');
+				css.push('height: ' + myHeight + 'px');
+				css.push('margin: 0');
+				css.push('padding: 0');
+				css.push('box-shadow: none');
+				css.push('overflow: hidden');
+				css = css.join(';');
+
+				$('<iframe src="' + data + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>')
+					.appendTo(contentWrap);
 
 				return;
 		}
@@ -246,7 +317,7 @@ var DpOverlayWidget = new (function() {
 			css.push('bottom: -55px');
 			css = css.join(';');
 
-			var logo = $('<a href="http://www.deskpro.com/" style="' + css + '"></a>')
+			$('<a href="http://www.deskpro.com/" style="' + css + '"></a>')
 				.appendTo(overlayWrapInner)
 				.on('mouseover', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo-on.png)') })
 				.on('mouseout', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo.png)') });
@@ -264,7 +335,7 @@ var DpOverlayWidget = new (function() {
 		css = css.join(';');
 
 		var src = options.deskproUrl + 'widget/overlay.html';
-		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" height="500" width"880" marginheight="0" marginwidth="0" scrolling="no"></div>').appendTo(overlayWrapInner);
+		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
 		setHeight(500);
 

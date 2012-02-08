@@ -246,10 +246,13 @@ class Feedback extends ContentAbstract
 		$path = array();
 
 		$cat = $this->category;
-		$path[] = $cat;
-		while ($cat['parent']) {
-			$cat = $cat['parent'];
+
+		if ($cat) {
 			$path[] = $cat;
+			while ($cat['parent']) {
+				$cat = $cat['parent'];
+				$path[] = $cat;
+			}
 		}
 
 		return $path;

@@ -261,7 +261,12 @@ class FeedbackController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $feedback);
 		$related_content = $related_finder->getRelatedEntities();
 
-		return $this->render('UserBundle:Feedback:view.html.twig', array(
+		$tpl = 'UserBundle:Feedback:view.html.twig';
+		if ($this->in->getString('_partial') == 'overlayWidget') {
+			$tpl = 'UserBundle:Feedback:view-overlay.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'subscription' => $subscription,
 
 			'num_votes_this' => $num_votes_this,

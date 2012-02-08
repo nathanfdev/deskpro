@@ -190,7 +190,12 @@ class NewsController extends AbstractController
 			$rating_log_search_id = 0;
 		}
 
-		return $this->render('UserBundle:News:view.html.twig', array(
+		$tpl = 'UserBundle:News:view.html.twig';
+		if ($this->in->getString('_partial') == 'overlayWidget') {
+			$tpl = 'UserBundle:News:view-overlay.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,

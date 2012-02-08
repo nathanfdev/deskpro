@@ -247,7 +247,12 @@ class DownloadsController extends AbstractController
 		$structure = $this->container->getSystemService('publish_structure');
 		$download->category->structure_helper = $structure;
 
-		return $this->render('UserBundle:Downloads:file.html.twig', array(
+		$tpl = 'UserBundle:Downloads:file.html.twig';
+		if ($this->in->getString('_partial') == 'overlayWidget') {
+			$tpl = 'UserBundle:Downloads:file-overlay.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" class="dp-simple-popup">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	{% include 'UserBundle:Common:resources.html.twig' %}
+	{% block head %}{% endblock %}
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('a.full-page').on('click', function(ev) {
+				ev.preventDefault();
+				window.open($(this).attr('href'));
+			});
+			$('.dp-open-in-window').on('click', function(ev) {
+				ev.preventDefault();
+
+				var a = $('a.full-page');
+				if (a[0]) {
+					a.click();
+				}
+			});
+		});
+	</script>
+</head>
+<body id="dp_content_overlay">
+	<div class="dp-content-holder">
+		{% block content %}{% endblock %}
+	</div>
+	{% block foot %}
+	<div class="dp-controls">
+		<button class="dp-open-in-window" style="float: right">Open this in a new window</button>
+		<div class="dp-default dp-control-section">
+			<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This is what I needed</button>
+			<button class="btn small dp-not-answered">This is not what I was looking for</button>
+		</div>
+	</div>
+	{% endblock %}
+</body>
+</html>

@@ -2730,7 +2730,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 }
 
-#dp_overlay #dp_content_overlay {
+#dp_content_overlay {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -2744,14 +2744,14 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 }
 
-#dp_overlay #dp_content_overlay .dp-open-full {
+#dp_content_overlay .dp-open-full {
 	position: absolute;
 	top: 0;
 	right: 0;
 	padding: 10px;
 }
 
-#dp_overlay #dp_content_overlay .dp-content-holder {
+#dp_content_overlay .dp-content-holder {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -2760,7 +2760,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	overflow: auto;
 }
 
-#dp_overlay #dp_content_overlay .dp-controls {
+#dp_content_overlay .dp-controls {
 	position: absolute;
 	height: 21px;
 	right: 0;

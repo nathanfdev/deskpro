@@ -1,10 +1,10 @@
 {% extends 'UserBundle:Widget:layout-content-overlay.html.twig' %}
 {% block content %}
 	<div class="dp-content-header">
-		<h3 class="title"><a href="{{ article.getLink() }}" class="full-page">{{ article.title }}</a></h3>
+		<h3 class="title">{{ post.title }}</h3>
 	</div>
 	<div class="dp-content-body">
-		<div class="dp-post">{{ article.content_html|raw }}</div>
+		<div class="dp-post">{{ post.content_html|raw }}</div>
 		{% if comments|length %}
 			<div class="dp-box-comments dp-mini">
 				<div class="dp-comments-placeholder dp-toggle-sel" data-toggle-sel=".dp-box-comments-content">
