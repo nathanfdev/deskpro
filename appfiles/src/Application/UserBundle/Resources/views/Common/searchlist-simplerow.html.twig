@@ -4,13 +4,13 @@
 	</a>
 	<div class="summary">
 		{% if type == 'article' %}
-			{{ item.getSearchSummary() }}
+			{{ item.getSearchSummary(100) }}
 		{% elseif type == 'news' %}
-			{{ item.date_created|date('Y-m-d') }} &middot; {{ item.getSearchSummary() }}
+			{{ item.date_created|date('Y-m-d') }} &middot; {{ item.num_comments }} Comments
 		{% elseif type == 'download' %}
 			{{ item.getFileName() }} &middot; {{ item.getReadableFileSize() }}
 		{% elseif type == 'feedback' %}
-			{{ item.total_rating }} Votes &middot; {{ item.getSearchSummary() }}
+			{{ item.total_rating }} Votes &middot; {{ item.num_comments }} Comments
 		{% endif %}
 	</div>
 </li>

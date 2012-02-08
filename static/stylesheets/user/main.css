@@ -2677,6 +2677,11 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 #dp_overlay .list-area ul li .summary {
 	font-size: 10px;
+	line-height: 12px;
+	height: 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 #dp_overlay .list-area ul li a span.dp-highlight-word,

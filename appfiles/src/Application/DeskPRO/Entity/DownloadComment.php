@@ -23,14 +23,11 @@ use Orb\Util\Arrays;
  */
 class DownloadComment extends CommentAbstract
 {
+	const OBJ_PROP = 'download';
+
 	/**
 	 * @ORM_Mapping\ManyToOne(targetEntity="Download", inversedBy="comment")
 	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
-
-	public function getObject()
-	{
-		return $this->download;
-	}
 }

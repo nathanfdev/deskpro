@@ -23,14 +23,11 @@ use Orb\Util\Arrays;
  */
 class FeedbackComment extends CommentAbstract
 {
+	const OBJ_PROP = 'feedback';
+
 	/**
 	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback", inversedBy="comment")
 	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback;
-
-	public function getObject()
-	{
-		return $this->feedback;
-	}
 }

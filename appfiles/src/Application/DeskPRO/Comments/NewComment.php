@@ -106,6 +106,13 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 			foreach ($this->assignments as $k => $v) {
 				$obj[$k] = $v;
+
+				// this is the object that owns the comment,
+				// we need to increase its comment count by using addComment on it
+				if ($k == $obj::OBJ_PROP) {
+					$v->addComment($obj);
+					App::getOrm()->persist($v);
+				}
 			}
 
 			App::getOrm()->persist($obj);

@@ -86,12 +86,19 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $view_count = 0;
 
 	/**
-	 * Total rating
+	 * Total rating: This is a tally and must be updated when a rating is added
 	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="total_rating", type="integer")
 	 */
 	protected $total_rating = 0;
+
+	/**
+	 * Number of user-visible comments: This is a count that must be updated when a comment is added
+	 *
+	 * @var int
+	 */
+	protected $num_comments = 0;
 
 	/**
 	 * Total rating
@@ -335,6 +342,17 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->num_ratings   = $this->num_ratings - 1;
 		$this->total_rating  = $this->total_rating - $rating->rating;
+	}
+
+	public function addComment($comment)
+	{
+		$this->num_comments++;
+		$comment->setObject($this);
+	}
+
+	public function removeComment($comment)
+	{
+		$this->num_comments--;
 	}
 
 	/**

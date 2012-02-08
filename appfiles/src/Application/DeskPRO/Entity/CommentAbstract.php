@@ -27,6 +27,8 @@ use Orb\Util\Arrays;
  */
 abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
+	const OBJ_PROP = '__abstract__';
+
 	const STATUS_VISIBLE    = 'visible';
 	const STATUS_VALIDATING = 'validating';
 	const STATUS_DELETED    = 'deleted';
@@ -128,6 +130,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+
+	/**
+	 * Get the email address for the person who made the comment, trying
+	 * the person record first if it exists.
+	 *
+	 * @return string
+	 */
 	public function getUserEmail()
 	{
 		if ($this->person) {
@@ -139,6 +148,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * Get the name for the person who made the comment, trying
+	 * the person record first if it exists.
+	 *
+	 * @return string
+	 */
 	public function getUserName()
 	{
 		if ($this->person) {
@@ -150,6 +166,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * Set the visitor of the person who made this comment. If the name
+	 * and email arent set they will be set to values of the visitor.
+	 *
+	 * @return string
+	 */
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
@@ -167,6 +190,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+
+	/**
+	 * Set the Status
+	 *
+	 * @param $new_status
+	 */
 	public function setStatus($new_status)
 	{
 		// any time after its created and the status is set
@@ -178,16 +207,34 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('status', $new_status);
 	}
 
+	/**
+	 * TODO: Is this still used?
+	 *
+	 * @return string
+	 */
 	public function getContentHtml()
 	{
 		return Markdown::format(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8'));
 	}
 
+
+	/**
+	 * TODO: Is this still used
+	 *
+	 * @return string
+	 */
 	public function getContentHtmlPlain()
 	{
 		return nl2br(htmlspecialchars($this->content));
 	}
 
+
+	/**
+	 * Strip all HTML from the content and convert breaks and paragraphs to linebreaks.
+	 * Suitable for showing a "plain text" version of the content.
+	 *
+	 * @return string
+	 */
 	public function getContentPlain()
 	{
 		if (!$this->content) {
@@ -216,6 +263,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return $content;
 	}
 
+
+	/**
+	 * Get the author ID
+	 *
+	 * @return int
+	 */
 	public function getPersonId()
 	{
 		if ($this->person) {
@@ -225,15 +278,37 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return 0;
 	}
 
+
 	/**
 	 * Get the entity this comment is attached to. This is a standardized way to fetch the
 	 * entity when you might not know the $comment->XXX to use.
 	 *
 	 * @return mixed
 	 */
-	abstract function getObject();
+	public function getObject()
+	{
+		$prop = static::OBJ_PROP;
+		return $this->$prop;
+	}
 
 
+	/**
+	 * Set the content object
+	 *
+	 * @param mixed $obj
+	 */
+	public function setObject($obj)
+	{
+		$prop = static::OBJ_PROP;
+		$this[$prop] = $obj;
+	}
+
+
+	/**
+	 * Get the base clasname of the object
+	 *
+	 * @return string
+	 */
 	public function getObjectType()
 	{
 		return Util::getBaseClassname($this->getObject());
