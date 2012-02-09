@@ -310,7 +310,7 @@ function deskpro_build_cleanvendors_doctrine_common($dir)
 
 function deskpro_build_cleanvendors_doctrine_dbal($dir)
 {
-	deskpro_build_exec_exit_error("rm -rf bin tests .travis.yml .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist run-all.sh", $dir);
+	deskpro_build_exec_exit_error("rm -rf bin tests .travis.yml .gitignore .gitmodules composer.json build.properties build.properties.dev build.xml phpunit.xml.dist README.md run-all.sh UPGRADE", $dir);
 }
 
 function deskpro_build_cleanvendors_facebook($dir)
