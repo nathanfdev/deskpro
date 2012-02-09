@@ -106,9 +106,13 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if (id != '0') {
 			if (newCount < 1) {
-				el.closest('li').hide();
+				$('#userchat_list_all').hide();
+				if (!$('#userchat_deplist_all').is(':visible')) {
+					$('#userchat_no_chats').show();
+				}
 			} else {
-				el.closest('li').show();
+				$('#userchat_list_all').show();
+				$('#userchat_no_chats').hide();
 			}
 		}
 	},
@@ -120,6 +124,18 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (row.parent().is('.sub-group')) {
 			var parentEl = $('.list-counter', row.parent().closest('li')).first();
 			DeskPRO_Window.util.modCountEl(parentEl, op, count);
+		}
+
+		if (id != '0') {
+			if (newCount < 1) {
+				$('#userchat_deplist_all').hide();
+				if (!$('#userchat_list_all').is(':visible')) {
+					$('#userchat_no_chats').show();
+				}
+			} else {
+				$('#userchat_deplist_all').show();
+				$('#userchat_no_chats').hide();
+			}
 		}
 	},
 
