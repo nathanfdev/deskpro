@@ -36,6 +36,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			ev.preventDefault();
 			self._resetForX();
 		});
+
+		this.addEvent('deactivate', function() {
+			this._resetForX();
+		}, this);
 	},
 
 	closeSelf: function() {
@@ -137,9 +141,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('for_comment_id').val(data.comment_id);
 		$('.pending-info.comment', this.wrapper).show();
 
+		this.getEl('comment_title').text(data.name + " (" + data.email + ")");
 		this.getEl('comment_object_link').data('route', 'page:' + data.object_url).text(data.object_title);
 
+		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 		this.getEl('usersearch').val(data.email_address);
+
+		this.getEl('user_section').hide();
+		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
+
 		this.setUser(data.person_id);
 
 		if (data.status == 'validating') {
@@ -151,9 +161,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	setNewByChat: function(data) {
 		this.getEl('for_chat_id').val(data.chat_id);
-		$('.pending-info.chat', this.wrapper).show();
-
 		this.getEl('chat_title').text(data.chat_title);
+		$('.pending-info.chat', this.wrapper).show();
 
 		if (data.person_id) {
 			this.setUser(data.person_id, data.session_id);
@@ -162,10 +171,21 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		}
 	},
 
+	setNewByPerson: function(data) {
+		this.getEl('person_title').text(data.name + " (" + data.email + ")");
+		$('.pending-info.person', this.wrapper).show();
+		this.setUser(data.person_id);
+		this.getEl('user_section').hide();
+		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
+	},
+
 	_resetForX: function() {
 		this.wrapper.find('.pending-info').hide();
-		this.getEl('for_chat_id').val(0);
 		this.getEl('user_section').show();
+
+		this.getEl('for_chat_id').val('');
+		this.getEl('for_comment_type').val('');
+		this.getEl('for_comment_id').val('');
 	},
 
 	//#########################################################################

@@ -243,8 +243,9 @@ class PublishController extends AbstractController
 			'status'        => $comment->status,
 			'content_type'  => $typename,
 			'comment_id'    => $comment_id,
+			'name'          => $comment->getPerson()->display_name,
 			'person_id'     => $comment->getPersonId(),
-			'email_address' => $comment->getUserEmail(),
+			'email'         => $comment->getUserEmail(),
 			'object_title'  => $comment->getObject()->getTitle(),
 			'object_url'    => $this->get('router')->getGenerator()->generateObjectUrl($comment->getObject())
 		));

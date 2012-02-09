@@ -113,9 +113,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			editable.handleDocumentClick(ev);
 		});
 
+		var self = this;
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
-				page.setUser(self.meta.person_id);
+				var data = {
+					person_id: self.meta.person_id,
+					email: self.getEl('contact_display').find('li.is-primary.email').data('email-address'),
+					name: self.getEl('editname').find('input[name="name"]').val()
+				};
+				page.setNewByPerson(data);
 			});
 		});
 
