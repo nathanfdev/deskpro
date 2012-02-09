@@ -56,6 +56,8 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 	{
 		$ah = GoogleOpenID::getAssociationHandle();
 		$googleLogin = GoogleOpenID::createRequest($this->getCallbackUrl(), $ah, true);
+
+		$params = $googleLogin->getArray();
 		if ($this->display == 'popup') {
 			$params['openid.ui.mode'] = 'popup';
 		}
@@ -82,7 +84,15 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 		}
 
 		if ($user_id && $user_email) {
-			$identity = new \Orb\Auth\Identity($user_id, array('user_id' => $user_id, 'user_email' => $user_email));
+
+			$raw = array('user_id' => $user_id, 'user_email' => $user_email);
+			foreach ($_GET as $k => $v) {
+				if (strpos($k, 'openid_') === 0) {
+					$raw[$k] = $v;
+				}
+			}
+
+			$identity = new \Orb\Auth\Identity($user_id, $raw);
 			$identity->setFriendlyIdentity($user_email);
 			$result = new Result(Result::SUCCESS, $identity);
 

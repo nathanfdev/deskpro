@@ -43,6 +43,7 @@ $loader->registerClassNames(array(
 	'UserstreamPhirehose'             => DP_ROOT.'/vendor/phirehose/UserstreamPhirehose.php',
 	'Markdown_Parser'                 => DP_ROOT.'/vendor/php-markdown/markdown.php',
 	'FineDiff'                        => DP_ROOT.'/vendor/PHP-FineDiff/finediff.php',
+	'GoogleOpenID'                    => DP_ROOT.'/vendor/googleopenid/GoogleOpenID.php',
 ));
 
 spl_autoload_register(function($classname) {

@@ -48,7 +48,7 @@ class Facebook extends AbstractHandler
 	 * Create a new instance of the adapter interface, using the usersource info
 	 * for options etc.
 	 *
-	 * @return Orb\Auth\Adapter\AdapterInterface
+	 * @return \Orb\Auth\Adapter\AdapterInterface
 	 */
 	protected function _createAuthAdapterObject()
 	{

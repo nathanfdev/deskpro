@@ -169,6 +169,9 @@
     //static creator that accepts an associative array of parameters and
     //sets only the setable attributes (does not overwrite constants)
     public static function create($params){
+
+		$mode = $op_endpoint = $response_nonce = $return_to = $realm = $assoc_handle = $claimed_id = $signed = $sig = $email = $require_email = null;
+
       //loop through each parameter
       foreach($params as $param => $value){
         switch($param){

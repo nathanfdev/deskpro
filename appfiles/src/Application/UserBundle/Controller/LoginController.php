@@ -232,7 +232,7 @@ HTML;
 						'jstell' => $this->in->getString('js_tell'),
 						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
 						'usersource_id' => $usersource_id
-					), true);
+					));
 					return $this->redirect($return);
 				}
 
@@ -322,6 +322,7 @@ HTML;
 			$person = $login_processor->getPerson();
 
 			$this->session->set('auth_person_id', $person['id']);
+			$this->session->save();
 
 			if ($this->session->get('auth_return')) {
 				$return = $this->session->get('auth_return');
@@ -360,7 +361,9 @@ HTML;
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-			$adapter->setCallbackUrl($this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), true));
+			$adapter->setCallbackUrl(
+				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
+			);
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {

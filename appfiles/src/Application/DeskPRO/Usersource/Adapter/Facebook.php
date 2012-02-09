@@ -31,22 +31,6 @@ class Facebook extends AbstractAdapter
 		);
 	}
 
-	/**
-	 * @param \Symfony\Component\Templating\EngineInterface $tpl
-	 * @param string $type
-	 * @return string
-	 */
-	public function renderView(EngineInterface $tpl, $type, array $params = array())
-	{
-		$params['usersource'] = $this->usersource;
-
-		switch ($type) {
-			case self::VIEW_BUTTON:
-				return $tpl->render('DeskPRO:Auth:facebook-btn.html.twig', $params);
-				break;
-		}
-	}
-
 
 	/**
 	 * @return \Orb\Auth\Adapter\Twitter

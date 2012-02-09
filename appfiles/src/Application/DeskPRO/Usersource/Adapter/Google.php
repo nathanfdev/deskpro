@@ -12,19 +12,18 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Entity\Usersource;
-use Symfony\Component\Templating\EngineInterface;
 
 use Orb\Util\CapabilityInformerInterface;
 use Orb\Auth\Identity;
 
-class Twitter extends AbstractAdapter
+class Google extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{
 		$info = $identity->getRawData();
 		return array(
-			'name' => $info['fullname'],
-
+			'email'            => $info['user_email'],
+			'email_confirmed'  => true,
 		);
 	}
 
@@ -34,10 +33,7 @@ class Twitter extends AbstractAdapter
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\Twitter(
-			$this->usersource->getOption('consumer_key'),
-			$this->usersource->getOption('consumer_secret')
-		);
+		return new \Orb\Auth\Adapter\Google();
 	}
 
 
@@ -47,7 +43,8 @@ class Twitter extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			self::CAPABILITY_VIEW_BUTTON
+			'tpl_login_pull_btn',
+			'tpl_widget_overlay_btn'
 		);
 	}
 
