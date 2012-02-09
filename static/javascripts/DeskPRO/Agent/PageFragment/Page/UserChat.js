@@ -148,13 +148,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			meta.type = 'user-track';
 		}
 		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata);
-
-		// Add 'pop' sound
-		var alertEl = $.tmpl('user_chat_newmsg_sound');
-		alertEl.appendTo(this.el);
-		DeskPRO_Window.handleSoundElements(alertEl);
-
-
 	},
 
 	chatReassignedTo: function(agent_id) {
@@ -341,6 +334,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	addMessageRow: function(name, msg, type, is_html, message_id, metadata) {
 
+		var notify = true;
 		if (message_id && $('.message-' + message_id, this.getEl('messages_box')).length) {
 			return;
 		}
@@ -363,6 +357,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var addclass = '';
 		if (metadata && metadata.new_user_track) {
 			addclass = 'user-track';
+			notify = false;
 		}
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {
@@ -418,7 +413,21 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.getEl('messages_box').scrollTop(10000);
 
-		this.alertTab();
+		// Ignore our own messages
+		if (notify) {
+			if (data.author_type && data.author_type == 'agent' && data.from_client == DESKPRO_SESSION_ID) {
+				notify = false;
+			}
+		}
+
+		if (notify) {
+			this.alertTab();
+
+			// Add 'pop' sound if its not us
+			var alertEl = $.tmpl('user_chat_newmsg_sound');
+			alertEl.appendTo(this.el);
+			DeskPRO_Window.handleSoundElements(alertEl);
+		}
 	},
 
 	sendMessage: function(msg) {

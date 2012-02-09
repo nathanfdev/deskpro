@@ -166,13 +166,23 @@ var DpChatMake = function() {
 
 			// Box.js
 			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
-			scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
 
 			// DeskPRO script that sets/gets session and initial messages
 			var url = options.deskproUrl + 'chat/chat-session?_1=';
-			url += encodeURIComponent(document.location.href);
-			url += '&amp;_2=' + encodeURIComponent(document.referrer);
-			url += '&amp;___='+(new Date().getTime());
+			if (DpChat_Options && DpChat_Options.currentPageUrl) {
+				url += DpChat_Options.currentPageUrl;
+			} else {
+				url += encodeURIComponent(document.location.href);
+			}
+			url += '&amp;_2=';
+
+			if (DpChat_Options && DpChat_Options.referrerPageUrl) {
+				url += encodeURIComponent(document.location.href);
+			} else {
+				url += encodeURIComponent(document.referrer);
+			}
+
+			url += '&amp;'+(new Date().getTime());
 
 			if (options.displayType == 'DpWindow') {
 				url += '&amp;is_window=1';
@@ -636,6 +646,7 @@ var DpChatMake = function() {
 
 				display.showChatPanel();
 				ajaxPoller.options.interval = 2000;
+				ajaxPoller.disable = false;
 				ajaxPoller.send();
 
 				chatAssigned({agent_id:1});

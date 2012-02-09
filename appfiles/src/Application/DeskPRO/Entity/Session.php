@@ -76,7 +76,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @ORM_Mapping\Column(name="active_status", type="string", length=15)
 	 */
-	protected $active_status = '';
+	protected $active_status = 'available';
 
 	/**
 	 * @var int

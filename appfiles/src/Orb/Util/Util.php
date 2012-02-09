@@ -193,7 +193,7 @@ class Util
 	 * Decode a number using an alphabet.
 	 *
 	 * @param   string  $string    The string-encoded number to decode
-	 * @param   stirng  $alphabet  The alphabet used to decode
+	 * @param   string  $alphabet  The alphabet used to decode
 	 * @return  int
 	 */
 	public static function baseDecode($string, $alphabet)
