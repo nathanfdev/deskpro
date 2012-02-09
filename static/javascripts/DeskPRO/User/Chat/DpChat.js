@@ -336,11 +336,11 @@ var DpChatMake = function() {
 
 		var ajaxPoller = this.ajaxPoller = {
 			options: {
-				interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
+				interval: 2000,
 				initialDelay: 1500
 			},
 			filterdData: [],
-			disable: false,
+			disable: true,
 			maxDelayTimers: [],
 
 			init: function() {
