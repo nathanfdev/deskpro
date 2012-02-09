@@ -1,34 +1,4 @@
 {% raw %}
-<script type="text/x-jquery-tmpl" id="new_user_chat_alert">
-	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="new_user_chat_alert_${conversation_id}" data-play-sound="new-chat">
-		<header><h3>{% endraw %}{{ phrase('agent.chat.new_chat') }}{% raw %}</h3></header>
-		<div class="messages">
-			{{if author_name || author_email}}
-				<div class="meta">
-					{{if author_name || author_email}}
-						{% endraw %}{{ phrase('agent.chat.by_x', {'name': '<em>${author_name} {{if author_email}}&lt;${author_email}&gt;</em>{{/if}}'}) }}{% raw %}
-					{{/if}}
-					{{if department_id}}
-						{% endraw %}{{ phrase('agent.chat.in_department', {'name': '<em>${department_name}</em>'}) }}{% raw %}
-					{{/if}}
-				</div>
-			{{else}}
-				<div class="meta">
-					{% endraw %}{{ phrase('agent.chat.by_anon', {'chat_id': '${conversation_id}'}) }}{% raw %}
-					{{if department_id}}
-						{% endraw %}{{ phrase('agent.chat.in_department', {'name': '<em>${department_name}</em>'}) }}{% raw %}
-					{{/if}}
-				</div>
-			{{/if}}
-			{{if subject_line}}<p>${subject_line}</p>{{/if}}
-		</div>
-		<footer>
-			<button class="clean-white small dismiss-trigger">{% endraw %}{{ phrase('agent.chat.dismiss_chat') }}{% raw %}</button>
-			<button class="clean-white small accept-trigger">{% endraw %}{{ phrase('agent.chat.take_chat') }}{% raw %}</button>
-		</footer>
-	</section>
-</script>
-
 <script type="text/x-jquery-tmpl" id="invite_chat_alert">
 	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="invite_chat_alert_${conversation_id}" data-play-sound="new-chat">
 		<header><h3>{% endraw %}{{ phrase('agent.chat.you_have_been_invited') }}{% raw %}</h3></header>

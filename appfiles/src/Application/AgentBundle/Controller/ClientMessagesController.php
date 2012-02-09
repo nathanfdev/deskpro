@@ -33,6 +33,15 @@ class ClientMessagesController extends AbstractController
 			($this->in->getBool('is_initial_poll') ? $last_since : null)
 		);
 
+		// We inject a rendered view for new chats, so loop through the messages to do that
+		foreach ($data['messages'] as &$item) {
+			$channel = $item[1];
+			if ($channel == 'chat.new') {
+				$cid = $item[2]['conversation_id'];
+				$item[2]['html'] = $this->forward('AgentBundle:UserChat:getChatAlert', array('id' => $cid))->getContent();
+			}
+		}
+
 		// We save the last message we know a user got because we need to know
 		// to deliver offline messages (such as chats) the next time the user logs in
 		if ($new_since && $new_since > $last_since) {

@@ -247,12 +247,26 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	showNewChatAlert: function(data) {
 		var conversation_id = data.conversation_id;
-		var alertEl = $.tmpl('new_user_chat_alert', data);
+		var alertEl = $(data.html);
 		alertEl.appendTo('body');
 		DeskPRO_Window.handleSoundElements(alertEl);
 
 		var audio = $('audio', alertEl).get(0);
 		var self = this;
+
+		var secEl = alertEl.find('span.wait-timer');
+		function up() {
+			var secs = parseInt(secEl.data('time'));
+			secs++;
+			secEl.data('time', secs);
+
+			if (secs > 60) {
+				secEl.text((Math.floor(secs / 60)) + " minutes");
+			} else {
+				secEl.text(secs + " seconds");
+			}
+		};
+		var waitTimer = window.setInterval(up, 1000);
 
 		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio) {
@@ -260,6 +274,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 			alertEl.remove();
 			self.dismissedChats[data.conversation_id] = true;
+			window.clearTimeout(waitTimer);
 		});
 		$('.accept-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
@@ -268,6 +283,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				audio.pause();
 			}
 			alertEl.remove();
+			window.clearTimeout(waitTimer);
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 	}
 });

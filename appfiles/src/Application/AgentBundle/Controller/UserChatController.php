@@ -365,6 +365,40 @@ class UserChatController extends AbstractController
 		));
 	}
 
+	/**
+	 * @param $id
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function getChatAlertAction($id)
+	{
+		$convo = $this->em->find('DeskPRO:ChatConversation', $id);
+		if (!$convo) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$tickets = null;
+		if ($convo->person) {
+			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($convo->person, 5, true);
+		}
+
+		$waiting_secs = time() - $convo->date_created->getTimestamp();
+
+		$url = null;
+		if ($convo->visitor && $convo->visitor->last_page) {
+			$url = $convo->visitor->last_page;
+		}
+
+		return $this->render('AgentBundle:UserChat:chat-alert.html.twig', array(
+			'convo'         => $convo,
+			'person'        => $convo->person,
+			'tickets'       => $tickets,
+			'session'       => $convo->session,
+			'visitor'       => $convo->visitor,
+			'waiting_secs'  => $waiting_secs,
+			'url'           => $url,
+		));
+	}
 
 	/**
 	 * Creates a JSON response but with client messages as well

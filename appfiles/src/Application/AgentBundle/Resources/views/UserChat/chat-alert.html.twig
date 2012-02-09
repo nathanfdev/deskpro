@@ -1,0 +1,56 @@
+<section class="new-user-chat-alert" data-conversation-id="{{ convo.id }}" id="new_user_chat_alert_{{ convo.id }}" data-play-sound="new-chat">
+	<header><h3>{{ phrase('agent.chat.new_chat') }}</h3></header>
+	<div class="messages">
+		<div class="row name">
+			<label>Chat started by</label>
+			{% if person %}
+				<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ person.display_name }} &lt;{{ person.email_address }}&gt;</a>
+			{% else %}
+				Chat by anonymouse
+			{% endif %}
+		</div>
+
+		{% if convo.department %}
+			<div class="row department">
+				<label>Department</label>
+				{{ convo.department.full_title }}
+			</div>
+		{% endif %}
+
+		<div class="row waiting">
+			<label>User Waiting</label>
+			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ waiting_secs }} seconds</span>
+		</div>
+
+		{% if url %}
+			<div class="row url">
+				<label>User is viewing</label>
+				<a href="{{ url }}" title="{{ url }}">{{ url|truncate(50) }}</a>
+			</div>
+		{% endif %}
+
+		{% if tickets|length %}
+			<div class="row tickets">
+				<label>Open Tickets</label>
+				<ul>
+					{% for ticket in tickets %}
+						<li>
+							<a data-route="ticket:{{ path('agent_ticket_view', {ticket_id: ticket.id}) }}">{{ ticket.subject }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+
+		{% if visitor %}
+			<div class="row ip">
+				<label>IP Address</label>
+				{{ visitor.ip_address }}
+			</div>
+		{% endif %}
+	</div>
+	<footer>
+		<button class="clean-white small dismiss-trigger">{{ phrase('agent.chat.dismiss_chat') }}</button>
+		<button class="clean-white small accept-trigger">{{ phrase('agent.chat.take_chat') }}</button>
+	</footer>
+</section>

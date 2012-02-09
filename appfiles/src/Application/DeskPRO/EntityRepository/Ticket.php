@@ -13,6 +13,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
 
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -272,14 +273,28 @@ class Ticket extends AbstractEntityRepository
 	 * @param int $max The max number of results
 	 * @return array
 	 */
-	public function getLatestByUser(Entity\Person $person, $max = 20)
+	public function getLatestByUser(Entity\Person $person, $max = 20, $only_open = false)
 	{
+		if ($only_open) {
+			$status = array(
+				TicketEntity::STATUS_AWAITING_AGENT,
+				TicketEntity::STATUS_AWAITING_USER
+			);
+		} else {
+			$status = array(
+				TicketEntity::STATUS_AWAITING_AGENT,
+				TicketEntity::STATUS_AWAITING_USER,
+				TicketEntity::STATUS_CLOSED,
+				TicketEntity::STATUS_RESOLVED
+			);
+		}
+
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t
-			WHERE t.person = ?1
+			WHERE t.person = ?1 AND t.status IN(?2)
 			ORDER BY t.id DESC
-		")->setMaxResults($max)->execute(array(1=> $person));
+		")->setMaxResults($max)->execute(array(1=> $person, 2=> $status));
 
 		return $tickets;
 	}
