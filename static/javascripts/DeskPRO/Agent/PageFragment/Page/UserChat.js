@@ -99,6 +99,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this._confirmCloseOverlay = new DeskPRO.UI.Overlay({
 			contentElement: this.getEl('closetab_prompt'),
 			addClassname: 'normal-size',
+			onPosition: function(evData) {
+				var tabId = self.getTabId();
+				if (!tabId) return;
+
+				var tabEl = $('#' + tabId);
+				var tabW = tabEl.width();
+
+				evData.left = (tabEl.offset().left + (tabW / 2)) - (evData.w / 2);
+				evData.top = tabEl.offset().top;
+
+				if ((evData.left+evData.w) > evData.pageW) {
+					evData.left = evData.pageW - evData.w - 15;
+				}
+			},
 			onContentSet: function(eventData) {
 				$('.unassign-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
@@ -134,6 +148,15 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				page.setNewByChat({ chat_id: self.meta.conversation_id, chat_title: self.meta.chatTitle});
 			});
 		});
+
+		var imposter = this.getEl('imposter');
+		if (imposter[0]) {
+			imposter.find('button.dismiss').on('click', function() {
+				imposter.fadeOut('fast', function() {
+					imposter.remove();
+				});
+			});
+		}
 	},
 
 	handleNewMessageCm: function(data, name) {

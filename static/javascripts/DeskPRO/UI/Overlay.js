@@ -180,6 +180,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				'left': leftForCenter
 			});
 		}
+
+		this.reposition();
 		this.elements.wrapperOuter.fadeIn(450, (function() {
 			this.fireEvent('overlayOpened', { overlay: this });
 		}).bind(this));
@@ -190,20 +192,37 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 * Recalculate positions
 	 */
 	reposition: function() {
-		if (false == this.getOption('fullScreen')) {
-			var w = this.elements.wrapperOuter.outerWidth();
-			var pageW = $(window).width();
-			var leftForCenter = (pageW / 2) - (w / 2);
-
-			var h = this.elements.wrapperOuter.outerHeight();
-			var pageH = $(window).height();
-			var topForCenter = (pageH / 2) - (h / 2);
-
-			this.elements.wrapperOuter.css({
-				'top': topForCenter,
-				'left': leftForCenter
-			});
+		if (this.getOption('fullScreen')) {
+			return;
 		}
+
+		var w = this.elements.wrapperOuter.outerWidth();
+		var pageW = $(window).width();
+		var leftForCenter = (pageW / 2) - (w / 2);
+
+		var h = this.elements.wrapperOuter.outerHeight();
+		var pageH = $(window).height();
+		var topForCenter = (pageH / 2) - (h / 2);
+
+		var evData = {
+			overlay: this,
+			wrapperOuter: this.elements.wrapperOuter,
+			pageW: pageW,
+			pageH: pageH,
+			w: w,
+			h: h,
+			top: topForCenter,
+			left: leftForCenter,
+			setLeft: function(x) { this.left = x; },
+			setTop: function(x) { this.top = x; }
+		};
+
+		this.fireEvent('position', evData);
+
+		this.elements.wrapperOuter.css({
+			'top': evData.top,
+			'left': evData.left
+		});
 	},
 
 	recalcForResize: function() {
@@ -262,7 +281,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			this.elements.modal.appendTo('body');
 
 			if (this.options.modalClickClose) {
-				this.elements.modal.on('click', (function() {
+				this.elements.modal.on('click', (function(ev) {
+					if (ev && ev.deskpro && ev.deskpro.cancelClose) return;
 					this.closeOverlay();
 				}).bind(this));
 			}

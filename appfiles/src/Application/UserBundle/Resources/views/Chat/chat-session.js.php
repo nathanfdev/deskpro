@@ -8,7 +8,7 @@
 	DpChat.setInitialMessages(<?php echo json_encode(array_reverse($messages)) ?>);
 <?php endif ?>
 
-<?php if ($conversation->agent): ?>DpChat.chatAssigned(<?php echo $conversation->agent->id ?>)<?php endif ?>
+<?php if (isset($conversation) && $conversation->agent): ?>DpChat.chatAssigned(<?php echo $conversation->agent->id ?>)<?php endif ?>
 
 <?php if ($session->visitor): ?>
 	<?php if ($session->visitor->name): ?>DpChat.setFormVar('name', <?php echo json_encode($session->visitor->name) ?>);<?php endif ?>

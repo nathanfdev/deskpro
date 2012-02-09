@@ -145,6 +145,14 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" {% if convo.status != 'open' %}style="display: none"{% endif %}>
+				{% if convo.person and convo.person.id != session.person.id %}
+					<div class="impersonation-warning" id="{{baseId}}_imposter">
+						<strong>Warning</strong>
+						<p>The user entered an email address that matches an existing account in the system, but the user
+						is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.</p>
+						<button class="clean-white small dismiss">Dismiss</button>
+					</div>
+				{% endif %}
 				<nav>
 					<ul class="option-buttons">
 						<li class="tipped attach" title="{{ phrase('agent.chat.send_file') }}" id="{{baseId}}_send_file">

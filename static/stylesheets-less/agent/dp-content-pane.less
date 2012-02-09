@@ -4072,13 +4072,39 @@ section.new-user-chat-alert footer {
 }
 
 .chatreply .input-wrap textarea {
-	background-color: transparent;
+	background: transparent !important;
+	.box-shadow(none);
 	border: none;
 	margin: 0;
 	padding: 5px;
 	width: 97%;
-	height: 77px;
+	height: 76px;
 	resize: none;
+}
+
+.chatreply .impersonation-warning {
+	position: absolute;
+	top: 2px; right: 1px; bottom: 1px; left: 1px;
+	z-index: 10;
+
+	background-color: rgba(183,56,57, 0.8);
+	.border-radius(0, 0, 2px, 2px);
+
+	padding: 10px;
+	color: #fff;
+	text-shadow: 1px 0px 0px rgba(0,0,0, 0.7);
+
+	strong {
+		font-family: @body-font-bold;
+	}
+
+	p {
+		padding: 8px;
+	}
+
+	button.dismiss {
+		margin-left: 8px;
+	}
 }
 
 

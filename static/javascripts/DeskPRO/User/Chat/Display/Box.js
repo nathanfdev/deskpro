@@ -140,10 +140,19 @@ var DpChat_Display = (function() {
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');
+		if (window.sessionStorage) {
+			var val = window.sessionStorage.getItem('dpchat_typing');
+			if (val) {
+				messageTextarea.val(val);
+			}
+			delete val;
+		}
 		messageTextarea.on('keyup', function(ev) {
+			if (window.sessionStorage) window.sessionStorage.setItem('dpchat_typing', messageTextarea.val());
 			DpChat.userTypingIndicator(messageTextarea.val());
 		});
 		messageTextarea.on('change', function(ev) {
+			if (window.sessionStorage) window.sessionStorage.setItem('dpchat_typing', messageTextarea.val());
 			DpChat.userTypingIndicator(messageTextarea.val());
 		});
 		messageTextarea.on('keypress', function(ev) {
