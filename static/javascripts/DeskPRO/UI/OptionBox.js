@@ -272,10 +272,10 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		this.backdrop.show();
 
 		if (pageY + w > viewportW) {
-			pageY = pageY - w;
+			pageY = viewportW - w - 10;
 		}
 		if (pageX + h > viewportH) {
-			pageX = pageX - h;
+			pageX = viewportH - h - 10;
 		}
 
 		this.el.css({

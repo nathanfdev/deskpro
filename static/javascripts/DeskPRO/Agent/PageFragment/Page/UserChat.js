@@ -269,19 +269,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		// Department
 		//------------------------------
 
-		this.depMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('dep_btn'),
-			menuElement: $('#department_menu').clone(),
-			onItemClicked: function(info) {
-				var item = $(info.itemEl);
-				var depId = item.data('department-id');
+		var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
+		this.departmentOptionBox = new DeskPRO.UI.OptionBox({
+			element: el,
+			trigger: this.getEl('dep_btn'),
+			onClose: function(ob) {
+				var depId = parseInt(ob.getSelected('department'));
 
 				// The same
-				if (depId == self.getEl('dep_btn').data('department-id')) {
+				if (depId == parseInt(self.getEl('dep_btn').data('department-id'))) {
 					return;
 				}
 
-				$('.label-department-id', self.getEl('dep_btn')).text(item.data('full-title'));
+				var name = DeskPRO_Window.getDisplayName('department_full', depId);
+				$('.label-department-id', self.getEl('dep_btn')).text(name);
 				self.getEl('dep_btn').data('department-id', depId)
 
 				DeskPRO_Window.util.ajaxWithClientMessages({
