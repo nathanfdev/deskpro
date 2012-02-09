@@ -31,6 +31,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+
+		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
+			ev.preventDefault();
+			self._resetForX();
+		});
 	},
 
 	closeSelf: function() {
@@ -149,6 +154,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		$('.pending-info.chat', this.wrapper).show();
 
 		this.getEl('chat_title').text(data.chat_title);
+
+		if (data.person_id) {
+			this.setUser(data.person_id, data.session_id);
+			this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
+			this.getEl('user_section').hide();
+		}
+	},
+
+	_resetForX: function() {
+		this.wrapper.find('.pending-info').hide();
+		this.getEl('for_chat_id').val(0);
+		this.getEl('user_section').show();
 	},
 
 	//#########################################################################
