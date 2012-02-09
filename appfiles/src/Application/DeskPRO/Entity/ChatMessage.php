@@ -173,6 +173,11 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 			$info['author_id'] = $this->author->id;
 			$info['author_name'] = $this->author->display_name;
 			$info['author_type'] = $this->author->is_agent ? 'agent' : 'user';
+
+			// Handle the case where the author is an agent in the user interface
+			if ($info['author_type'] == 'agent' && isset($this->metadata['is_user_message'])) {
+				$info['author_type'] = 'user';
+			}
 		} else {
 			$info['author_id'] = 0;
 			$info['author_name'] = $this->getAuthorName();

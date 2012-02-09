@@ -482,6 +482,9 @@ var DpChatMake = function() {
 				}
 
 				if (data.messages.length) {
+
+					console.log('DpChat Poll Data: %o', data);
+
 					var message = null;
 					while (message = data.messages.shift()) {
 						var name = message[0].replace(/chat_convo\.([0-9]+)\./, '');
@@ -538,8 +541,6 @@ var DpChatMake = function() {
 					ajaxPoller.send();
 				}
 			});
-
-			display.showAssignedStatus(false);
 		};
 
 		var typingIndicatorTime = null;
@@ -636,6 +637,11 @@ var DpChatMake = function() {
 					if (initialMessages[i].is_html) {
 						info.is_html = true;
 					}
+
+					if (initialMessages[i].author_type == 'user') {
+						initialMessages[i].author_name = 'You';
+					}
+
 					display.addMessageRow(
 						initialMessages[i].author_name,
 						initialMessages[i].content,
@@ -687,6 +693,7 @@ var DpChatMake = function() {
 			}
 			display.showAssignedStatus(isAssigned);
 		};
+		this.chatAssigned = chatAssigned;
 
 		var addIncomingMessage = function(data) {
 			if (data.is_html) {

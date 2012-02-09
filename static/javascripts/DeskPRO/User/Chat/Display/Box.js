@@ -317,12 +317,6 @@ var DpChat_Display = (function() {
 			name = name + ': ';
 		}
 
-		if (meta.chat_assigned) {
-			return;
-		} else if (meta.chat_unassigned) {
-			return;
-		}
-
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
 			html.push('<div class="dpchat-author">' + name + '</div>');

@@ -714,6 +714,8 @@ class UserChatManager
 			$person = null;
 		}
 
+		$metadata['is_user_message'] = true;
+
 		return $this->addMessage($convo, $person, $message, $metadata);
 	}
 
@@ -825,7 +827,6 @@ class UserChatManager
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => $msg->getInfo(),
-				'created_by_client' => $this->getCurrentClientId()
 			));
 			$this->em->persist($cm);
 
