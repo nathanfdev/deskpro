@@ -193,6 +193,7 @@ class MiscController extends AbstractController
 
     public function acceptTempUploadAction()
     {
+		sleep(30);
 		$file = $this->request->files->get('file-upload');
 		$accept = $this->container->getAttachmentAccepter();
 

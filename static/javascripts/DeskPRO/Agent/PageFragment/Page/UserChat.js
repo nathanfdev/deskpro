@@ -8,7 +8,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		var self = this
+		var self = this;
+
+		this.el = el;
 
 		if (!this.meta.isEnded) {
 			var messageTextarea = this.getEl('replybox_txt');
@@ -36,12 +38,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				sendMsg();
 			});
 
-			this.getEl('send_file').on('click', function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				self.showUploadOverlay();
-			});
-
 			this.getEl('end_btn').on('click', function() {
 				self.endChat();
 			});
@@ -63,6 +59,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this._initMenus();
 		this._initAssignControl();
+		this._initUpload();
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
@@ -552,51 +549,30 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	//# Upload message
 	//#################################################################
 
-	showUploadOverlay: function() {
-		this._initUploadOverlay();
-		this.uploadOverlay.open();
-	},
-
-	_initUploadOverlay: function() {
-		if (this.uploadOverlay) return;
+	_initUpload: function() {
 
 		var self = this;
-		var o;
-		var overlayWrapper = this.getEl('upfile_overlay');
-		this.uploadOverlay = o = new DeskPRO.UI.Overlay({
-			contentElement: overlayWrapper,
-			customClassname: 'userchat-send-file'
+
+		DeskPRO_Window.util.fileupload(this.el, {
+			uploadTemplate: $('.template-upload', this.el),
+			downloadTemplate: $('.template-download', this.el)
 		});
-
-		var list = $('.file-list', overlayWrapper);
-
-		var drops = $([overlayWrapper.get(0), this.getEl('replybox').get(0)]);
-
-		DeskPRO_Window.util.fileupload(this.wrapper, {
-			page: this,
-			uploadTemplate: $('.template-upload', overlayWrapper),
-			downloadTemplate: $('.template-download', overlayWrapper)
-		});
-		overlayWrapper.bind('fileuploadadd', function() {
-            $('ul.file-list', overlayWrapper).empty();
-			self.uploadOverlay.open();
-        });
-
-		$('button.send-trigger', overlayWrapper).on('click', function() {
-			var blobId = $('input.send_blob_id', overlayWrapper).val();
-			DP.console.log(blobId);
-
-			if (!blobId) {
-				return;
+		this.el.bind('fileuploaddone', function(ev, data) {
+			if (data.result && data.result.length) {
+				var items = data.result, x;
+				for (x = 0; x < items.length; x++) {
+					DeskPRO_Window.util.ajaxWithClientMessages({
+						url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
+						data: {send_blob_id: items[0].blob_id }
+					});
+				}
 			}
 
-			DeskPRO_Window.util.ajaxWithClientMessages({
-				url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
-				data: {send_blob_id: blobId},
-			});
-
-			self.uploadOverlay.close();
-			$('ul.file-list', overlayWrapper).empty();
+			self.getEl('uploading_list').hide().find('> ul').empty();
+		});
+		this.el.bind('fileuploadstart', function() {
+			self.getEl('uploading_list').detach().appendTo(self.getEl('messages_box')).show();
+			self.getEl('messages_box').scrollTop(10000);
 		});
 	}
 });

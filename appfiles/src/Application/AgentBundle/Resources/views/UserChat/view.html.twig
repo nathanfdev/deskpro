@@ -132,6 +132,9 @@ pageMeta.baseId = '{{ baseId }}';
 						{% endif %}
 					</div>
 				{% endfor %}
+				<div id="{{baseId}}_uploading_list" class="uploading-list">
+					<ul class="files"></ul>
+				</div>
 				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
 					<div class="message-content">
 						<div class="chatRecieve">
@@ -144,7 +147,8 @@ pageMeta.baseId = '{{ baseId }}';
 					</div>
 				</div>
 			</div>
-			<div class="chatreply" id="{{baseId}}_replybox" {% if convo.status != 'open' %}style="display: none"{% endif %}>
+			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
+				<div class="drop-file-zone"><h1>Drop your file here to attach it to your reply</h1></div>
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
 						<strong>Warning</strong>
@@ -155,7 +159,8 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 				<nav>
 					<ul class="option-buttons">
-						<li class="tipped attach" title="{{ phrase('agent.chat.send_file') }}" id="{{baseId}}_send_file">
+						<li class="tipped attach" title="{{ phrase('agent.attachments') }}">
+							<input type="file" class="file" name="file-upload" />
 							<span></span>
 						</li>
 						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="{{ phrase('agent.chat.quick_replies') }}"><span></span></li>
@@ -175,37 +180,22 @@ pageMeta.baseId = '{{ baseId }}';
 	</section>
 </div>
 
-<section id="{{baseId}}_upfile_overlay" style="display: none;">
-	<div class="overlay-title">
-		<h4>{{ phrase('agent.chat.title_send_file') }}</h4>
-	</div>
-	<div class="overlay-content">
-		<div class="file-input">
-			<input type="file" name="file-upload" multiple="multiple" size="15" /> {{ phrase('agent.upctrl_drag_note') }}
-		</div>
-		<ul class="files file-list"></ul><br />
-	</div>
-	<div class="overlay-footer">
-		<button class="clean-white send-trigger">{{ phrase('agent.chat.send_file') }}</button>
-	</div>
-	<script class="template-upload" type="text/x-jquery-tmpl">
-		<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">{{ phrase('agent.cancel') }}</button></span></li>
-	</script>
-	<script class="template-download" type="text/x-jquery-tmpl">
-		{{ '{{if error}} '}}
-			<li class="error">
-				${error}
-			</li>
-		{{ '{{else}} '}}
-			<li class="uploaded">
-				<input type="hidden" name="send_blob_id" class="send_blob_id" value="${blob_id}" />
-				<a href="${download_url}" target="_blank">${filename}</a>
-				<span class="size">${filesize_readable}</span>
-			</li>
-		{{ '{{/if}}' }}
-	</script>
-</section>
-
+<script class="template-upload" type="text/x-jquery-tmpl">
+	<li class="uploading">${name} ({{ phrase('agent.loading_saving') }})</li>
+</script>
+<script class="template-download" type="text/x-jquery-tmpl">
+	{{ '{{if error}} '}}
+		<li class="error">
+			${error}
+		</li>
+	{{ '{{else}} '}}
+		<li>
+			<input type="hidden" name="attach[]" value="${blob_id}" />
+			<em class="remove-attach-trigger"></em>
+			<label><a href="${download_url}" target="_blank">${filename}</a><span>${filesize_readable}</span></label>
+		</li>
+	{{ '{{/if}}' }}
+</script>
 
 <div class="optionbox" id="{{baseId}}_agent_selector">
 	<section data-section-name="agents">
