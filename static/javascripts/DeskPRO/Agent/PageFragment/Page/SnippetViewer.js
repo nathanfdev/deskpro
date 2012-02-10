@@ -105,17 +105,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			self.newCategory();
 		});
 
-		this.newCatOverlay = $('.new-snippet-category', this.wrapper);
-		this.newCatOverlay.detach().appendTo('body');
-
-		$('.close', this.newCatOverlay).on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			self.newCatOverlay.slideUp();
-			self.newCatBackdrop.hide();
-		});
-
+		this.newCatOverlay = this.getEl('new_snippet_cat');
 		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
 			DP.console.log('click');
 			if ($(this).val() == 'team') {
@@ -125,15 +115,20 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			}
 		});
 
+		this.newCatOverlayObj = new DeskPRO.UI.Overlay({
+			contentElement: this.newCatOverlay,
+			onPosition: function(ev) {
+				var pos = self.newCategoryBtn.offset();
+
+				ev.setLeft(pos.left);
+				ev.setTop(pos.top);
+			}
+		});
+
 		$('.new-cat-trigger', this.newCatOverlay).on('click', function() {
 			self.saveNewCat();
 		});
 
-		this.newCatBackdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 20001});
-		this.newCatBackdrop.on('click', function() {
-			self.newCatOverlay.slideUp();
-			self.newCatBackdrop.hide();
-		});
 
 		this.wrapper.on('click', '.save-snippet-trigger', function(ev) {
 			ev.preventDefault();
@@ -195,39 +190,32 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		var self = this;
 		var category_id = catRow.data('category');
 
+		catRow.addClass('loading-ed');
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/snippet-viewer/edit-category',
 			type: 'GET',
 			data: {category_id: category_id},
 			dataType: 'html',
 			context: this,
+			complete: function() {
+				catRow.removeClass('loading-ed');
+			},
 			success: function(html) {
-				var overlay = $(html).hide().appendTo('body');
-				var backdrop = $('<div class="backdrop" />').hide().appendTo('body').css({'z-index': 20000});;
+				var overlay = $(html);
 
 				var pos = catRow.offset();
-				overlay.css({
-					left: pos.left,
-					top: pos.top
+				var overlayObj = new DeskPRO.UI.Overlay({
+					contentElement: overlay,
+					onPosition: function(ev) {
+						ev.setLeft(pos.left);
+						ev.setTop(pos.top);
+					}
 				});
 
-				overlay.slideDown();
-				backdrop.show();
-
+				overlayObj.open();
 				function hideOverlay() {
-					backdrop.remove();
-					overlay.slideUp(function() {
-						overlay.remove();
-					});
+					overlayObj.close();
 				}
-
-				backdrop.on('click', hideOverlay);
-				$('.close', this.newCatOverlay).on('click', function(ev) {
-					ev.preventDefault();
-					ev.stopPropagation();
-
-					hideOverlay();
-				});
 
 				$('.save-trigger', overlay).on('click', function(ev) {
 					ev.preventDefault();
@@ -235,6 +223,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 					var data = $('input', overlay).serializeArray();
 
+					overlay.addClass('loading');
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/snippet-viewer/save-category',
 						type: 'POST',
@@ -242,7 +231,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						dataType: 'json',
 						context: this,
 						success: function(data) {
-							$('.cat-title-' + data.category_id + ' a', self.wrapper).text(data.title);
+							$('.cat-title-' + data.category_id, self.wrapper).find('.label').text(data.title);
 							hideOverlay();
 						}
 					});
@@ -252,6 +241,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					ev.preventDefault();
 					ev.stopPropagation();
 
+					overlay.addClass('loading');
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/snippet-viewer/delete-category',
 						type: 'POST',
@@ -260,10 +250,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						context: this,
 						success: function(data) {
 							var el = $('.cat-title-' + data.category_id, self.wrapper);
-							var prev = el.prev();
 							el.remove();
 
-							if (prev.length) {
+							var prev = self.getEl('catlist').find('li.category')[0];
+							if (prev) {
 								self.catTabs.activateTab(prev);
 							} else {
 								$('.no-cats-message', this.wrapper).show();
@@ -278,20 +268,13 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 	},
 
 	newCategory: function() {
-		var pos = this.newCategoryBtn.offset();
-
-		this.newCatOverlay.css({
-			left: pos.left,
-			top: pos.top
-		});
-
-		this.newCatOverlay.slideDown();
-		this.newCatBackdrop.show();
+		this.newCatOverlayObj.open();
 	},
 
 	saveNewCat: function() {
 		var data = $('input', this.newCatOverlay).serializeArray();
 
+		this.newCatOverlay.addClass('loading');
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/snippet-viewer/new-cat',
 			type: 'POST',
@@ -303,8 +286,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 				var li = $(data.cat_row_html);
 
-				this.newCatOverlay.slideUp();
-				this.newCatBackdrop.hide();
+				this.newCatOverlay.removeClass('loading');
+				this.newCatOverlayObj.close();
 
 				$('nav ul', this.wrapper).append(li);
 

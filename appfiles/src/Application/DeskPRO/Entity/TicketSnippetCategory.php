@@ -44,7 +44,7 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Teams who can use this snippet
 	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToMany(targetEntity="AgentTeam", cascade={"persist", "remove", "merge"})
      * @ORM_Mapping\JoinTable(name="ticket_snippetcat_to_team", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")})
 	 */
@@ -67,5 +67,16 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function getPermType()
+	{
+		if ($this->is_global) {
+			return 'global';
+		} else if (count($this->agent_teams)) {
+			return 'team';
+		} else {
+			return 'me';
+		}
 	}
 }

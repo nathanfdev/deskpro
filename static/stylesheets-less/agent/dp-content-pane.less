@@ -2696,6 +2696,10 @@ padding: 30px;
 	z-index: 2;
 }
 
+.snippets-overlay > nav li.loading-ed .edit-cat-trigger {
+	background-image: url(../../images/spinners/loading-arrows-xsmall-bluebg.gif);
+}
+
 .snippets-overlay > nav li:hover .edit-cat-trigger {
 	display: inline-block;
 }
@@ -2711,6 +2715,13 @@ padding: 30px;
 	padding: 0px 5px 2px;
 }
 
+.snippets-overlay .delete-snippet-trigger {
+	float: right;
+	.iconbase(16px, 16px);
+	background: url(../../images/agent/icons/cross.png);
+	cursor: pointer;
+	margin-right: 10px;
+}
 
 .new-snippet-category {
     width: 300px;
@@ -4757,4 +4768,22 @@ article.task .new-comment .comment-input span {
 
 .embedded-glossary-word {
 	border-bottom: 1px dotted #555;
+}
+
+
+dl.generic-form-list {
+	font-size: 11px;
+
+	dt {
+	    font-family: @body-font-bold;
+		font-weight: bold;
+	}
+	dd {
+		padding-left: 8px;
+		padding-bottom: 20px;
+
+		input[type="text"] {
+			width: 80%;
+		}
+	}
 }
