@@ -34,7 +34,7 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 			of
 			<span class="results-total-count" id="{{baseId}}_total_count">{{ person_ids|length }}</span>
 		</div>
-		{% if person_ids|length > per_page %}
+		{% if person_ids|length > 50 %}
 			<ul class="pagenav no-prev">
 				<li class="prev"></li>
 				<li class="next"></li>
