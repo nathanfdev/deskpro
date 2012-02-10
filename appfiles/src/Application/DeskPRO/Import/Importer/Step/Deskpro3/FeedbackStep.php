@@ -24,7 +24,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM user_feedback_categories");
+		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM user_idea_categories");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d feedback categories", $count));
 
@@ -44,7 +44,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		}
 
 
-		$feedback_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_feedback ORDER BY id ASC");
+		$feedback_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY id ASC");
 		if ($feedback_ids) {
 			$this->logMessage(sprintf("Importing %d feedback", count($feedback_ids)));
 
@@ -68,7 +68,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	protected function processCategories($parent_id)
 	{
-		$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_feedback_categories WHERE parent_id = ?", array($parent_id));
+		$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
 		if (!$cats) {
 			return;
 		}
@@ -119,7 +119,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 	 */
 	protected function processFeedback($feedback_id)
 	{
-		$feedback = $this->getOldDb()->fetchAssoc("SELECT * FROM user_feedback WHERE id = ?", array($feedback_id));
+		$feedback = $this->getOldDb()->fetchAssoc("SELECT * FROM user_ideas WHERE id = ?", array($feedback_id));
 
 		#------------------------------
 		# Make sure we havent already done them
@@ -174,7 +174,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		# Comments
 		#------------------------------
 
-		$comments = $this->getDb()->fetchAll("SELECT * FROM user_feedback_comments WHERE feedback_id = ?");
+		$comments = $this->getDb()->fetchAll("SELECT * FROM user_idea_comments WHERE feedback_id = ?");
 		foreach ($comments as $comment) {
 			$new_comment = new FeedbackComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['created_at']);
