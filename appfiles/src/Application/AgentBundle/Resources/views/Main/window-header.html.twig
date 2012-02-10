@@ -71,7 +71,7 @@
 		<div id="DP-userControl">
 			<div class="currentUserAvatar">
 				<div class="userWrapper">
-					<a onclick="toggle_visibility('userSetting');">
+					<a id="userSetting_trigger" onclick="toggle_visibility('userSetting');">
 						<em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em>
 						<span class="drop"></span>
 					</a>
@@ -81,7 +81,7 @@
 		<!-- Header - User Control Dropdown -->
 		<div id="userSetting" style="display:none;">
 			<div class="userProfileDropdown" >
-				<div class="userProfileDropdownHeader" onclick="toggle_visibility('userSetting');">
+				<div class="userProfileDropdownHeader" onclick="toggle_visibility('userSetting', 'close');">
 					<a><em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em></a>
 					<span class="drop"></span>
 				</div>

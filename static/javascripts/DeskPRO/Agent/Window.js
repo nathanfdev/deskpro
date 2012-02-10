@@ -1986,8 +1986,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.stopPropagation();
 
 			var pos = $(this).offset();
-			var w = $(this).outerWidth();
-			var h= $(this).outerHeight();
 
 			var list = $('#interfacesToggle');
 			list.hide().detach().appendTo('body');
@@ -2010,14 +2008,38 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		});
 
+		// User menu
+		$('#userSetting_trigger').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var list = $('#userSetting');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: 41,
+				right: 3
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.on('click', close);
+			list.on('click', close);
+			$('ul', list).on('click', function(ev) {
+				ev.stopPropagation();
+			});
+		});
+
 		// Status
 		$('#agent_status_trigger').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
 			var pos = $(this).offset();
-			var w = $(this).outerWidth();
-			var h= $(this).outerHeight();
 
 			var list = $('#agent_status_menu');
 			list.hide().detach().appendTo('body');
@@ -2523,43 +2545,3 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	}
 });
-
-// TODO get rid of this from the designer and replace with proper opener
-function toggle_visibility(elId, parentId) {
-	var el = $('#' + elId);
-	if (el.is(':visible')) {
-		el.hide();
-	} else {
-		if (!el.is('.has-init')) {
-			el.addClass('has-init');
-
-			if (parentId) {
-				var trigger = $('#' + parentId);
-				var pos = trigger.offset();
-				el.detach().appendTo('body');
-
-				el.css({
-					'position': 'absolute',
-					'top': pos.top,
-					'left': pos.left,
-					'width': 200,
-					'height': 'auto',
-					'z-index': 101
-				});
-			}
-		}
-
-		var back = $('<div class="backdrop" />');
-		back.css('z-index', 100);
-		back.appendTo('body');
-
-		el.data('backdrop', back);
-		back.on('click', function() {
-			el.hide();
-			el.data('backdrop', null);
-			back.remove();
-		});
-
-		el.show();
-	}
-}
