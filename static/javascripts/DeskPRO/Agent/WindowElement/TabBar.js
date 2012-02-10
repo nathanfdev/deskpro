@@ -18,12 +18,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			/**
 			 * The element the append body pages to
 			 */
-			bodyPane: null,
-
-			/**
-			 * The trigger for the menu element
-			 */
-			menuBtn: null
+			bodyPane: null
 		};
 
 		this.setOptions(options);
@@ -39,6 +34,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.currentTabId = null;
 
 		this.tabPane.on('mouseup', this._tabStripClick.bind(this));
+
+		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
 	},
 
 
@@ -254,6 +251,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
+		this.tabBarOverflow.update();
+
 		return id;
 	},
 
@@ -430,6 +429,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
+		this.tabBarOverflow.update();
 	},
 
 

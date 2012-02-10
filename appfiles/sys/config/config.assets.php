@@ -293,6 +293,7 @@ $CONFIG['agent_agent_ui'] = array(
 
 		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
 		'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
+		'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
 
 		// Omnisearch
 		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',

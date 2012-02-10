@@ -130,28 +130,28 @@ span.gear{
 	z-index: 99;
 	background-repeat: no-repeat;
 	background-position: 0 0;
-	background-image: url("../../images/agent/tabnav-left.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/tabs/tabnav-left.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorLeft:hover{
     background-repeat: no-repeat;
 	background-position: 0 0;
-	background-image: url("../../images/agent/tabnav-left-on.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/tabs/tabnav-left-on.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorRight{
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	right: 18px;
+	right: 0;
 	width: 18px;
 	z-index: 99;
 	background-repeat: no-repeat;
 	background-position: 0 0;
-	background-image: url("../../images/agent/tabnav-right.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/tabs/tabnav-right.png") /** sprite-ref: ui-v */;
 }
 #tabNavSelectorRight:hover{
     background-repeat: no-repeat;
 	background-position: 0 0;
-	background-image: url("../../images/agent/tabnav-right-on.png") /** sprite-ref: ui-v */;
+	background-image: url("../../images/agent/tabs/tabnav-right-on.png") /** sprite-ref: ui-v */;
 }
 
 #tabNavSelectorLeft, #tabNavSelectorRight, #tabDropdownPicker { display: none; }
@@ -219,7 +219,6 @@ span.gear{
 .deskproTabList{
 	position: absolute;
 	height: 37px;
-	padding: 0 0 0 10px;
 	top: 0;
 	left: 0;
 	bottom: 0;
@@ -227,11 +226,27 @@ span.gear{
 	overflow: hidden;
 }
 
+.deskproTabListInner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 5000px;
+}
+
 .deskproTabList ul{
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0 10px;
 	cursor: pointer;
+	float: left;
 }
+
+.with-overflow .deskproTabList ul {
+	padding-left: 24px;
+	//padding-right: 42px;
+	padding-right: 24px;
+}
+
 .deskproTabList li{
 	.gradient(#d5d8dc, #b6babf);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset;
