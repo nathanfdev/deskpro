@@ -564,7 +564,6 @@ $CONFIG['agent_css'] = array(
 	'post_filters' => array('smartsprites', 'css'),
 	'references' => array(
 		'agent_vendors_css',
-		'agent_deskpro_ui_css',
 		'agent_interface_css',
 	)
 );
@@ -574,14 +573,6 @@ $CONFIG['admin_interface_css'] = array(
 	'filters' => array('less'),
 	'files' => array(
 		'stylesheets-less/admin/main.less',
-	)
-);
-
-$CONFIG['agent_deskpro_ui_css'] = array(
-	'out' => 'css/deskpro-ui.css',
-	'filters' => array('css_path'),
-	'files' => array(
-		'javascripts/DeskPRO/UI/ui.css',
 	)
 );
 

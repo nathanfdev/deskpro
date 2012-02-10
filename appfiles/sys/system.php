@@ -570,7 +570,7 @@ class KernelErrorHandler
 		$trace = self::formatBacktrace($backtrace);
 		$trace = self::stripPathPrefix($trace);
 
-		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+		$summary = "[EXCEPTION:$errno] $errstr ($errfile:$errline)";
 
 		$display = true;
 		if (!(error_reporting() & E_ERROR)) {

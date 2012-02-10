@@ -39,9 +39,9 @@ pageMeta.baseId = '{{ baseId }}';
 <section class="dp-overlay">
 	<header>
 		<div class="controls">
-			<a class="order-by-menu-trigger clean-white small arrow">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
-			<a class="group-by-menu-trigger clean-white small arrow">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default('None') }}</span><em></em></a>
-			<a class="display-options-trigger clean-white small">{{ phrase('agent.display_options') }}</a>
+			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
+			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default('None') }}</span><em></em></a>
+			<a class="display-options-trigger clean-white">{{ phrase('agent.display_options') }}</a>
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
@@ -51,7 +51,6 @@ pageMeta.baseId = '{{ baseId }}';
 		</ul>
 		<ul style="display: none" class="group-by-menu">
 			<li data-group-by="">None</li>
-			<li class="sep">-</li>
 			<li data-group-by="department">{{ phrase('agent.department') }}</li>
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}

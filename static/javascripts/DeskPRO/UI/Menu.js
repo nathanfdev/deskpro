@@ -273,78 +273,129 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.options.zIndex = Orb.findHighestZindex()+1;
 		}
 
-		// If this is a submenu being re-hovered over to re-open it,
-		// then we dont have to figure out position stuff again because we already did
-		// So we can use the cached info to make it a bit snappier
-		if (this.cachePosInfo && this.openedTime && this.parentMenu && this.parentMenu.openedTime && this.parentMenu.openedTime <= this.openedTime) {
-			var left  = this.cachePosInfo.left;
-			var top   = this.cachePosInfo.top;
-			var point = this.cachePosInfo.point;
+		if (this.options.triggerElement && this.options.triggerElement[0]) {
+			var target = this.options.triggerElement;
 		} else {
-			var width = this.elements.wrapperOuter.outerWidth();
-			var height = this.elements.wrapperOuter.outerHeight();
+			var target = event.target;
+		}
 
-			var pageWidth = $(document).width();
-			var pageHeight = $(document).height();
+		if (target) {
+			target = $(target);
+			if (!target.is('.menu-fitted')) {
+				target = target.closest('.menu-fitted');
+			}
 
-			// If this is a submenu and the parent is open ...
-			if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
+			if (!target.is('.menu-fitted')) {
+				target = null;
+			}
+		}
+		if (target) {
+			if (target.data('menu-button')) {
+				target = target.find(target.data('menu-button'));
+			}
 
-				var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
-				var pageY = this.options.parentMenuItem.offset().top;
+			this.targetEl = target;
+			target = $(target);
+			var tPos = target.offset();
+			var tWidth = target.outerWidth();
+			var tHeight = target.outerHeight();
 
-				// Position to the left if theres no room
-				if (pageX+width > pageWidth) {
-					pageX = this.options.parentMenuItem.offset().left - width;
+			var top = tPos.top + tHeight - 1; //-1 to overlap a bottom border
+			var left = tPos.left; // +2 for borders
+			var minW = tWidth + 15;
+
+			this.elements.wrapperOuter.css('min-width', minW).addClass('fitted');
+
+			if (this.elements.wrapperOuter.outerWidth() + left > $(document).width()) {
+				left = (tPos.left + tWidth) - this.elements.wrapperOuter.outerWidth();
+			}
+
+			// Overlapper to erase the line
+			this.lineRemover = $('<div />').addClass('menu-fitted-line');
+			this.lineRemover.css({
+				position: 'absolute',
+				width: tWidth - 2,
+				height: 4,
+				top: tPos.top + tHeight - 4,
+				left: tPos.left + 1,
+				'z-index': '90000'
+			}).appendTo('body');
+
+		} else {
+
+			// If this is a submenu being re-hovered over to re-open it,
+			// then we dont have to figure out position stuff again because we already did
+			// So we can use the cached info to make it a bit snappier
+			if (this.cachePosInfo && this.openedTime && this.parentMenu && this.parentMenu.openedTime && this.parentMenu.openedTime <= this.openedTime) {
+				var left  = this.cachePosInfo.left;
+				var top   = this.cachePosInfo.top;
+				var point = this.cachePosInfo.point;
+			} else {
+				var width = this.elements.wrapperOuter.outerWidth();
+				var height = this.elements.wrapperOuter.outerHeight();
+
+				var pageWidth = $(document).width();
+				var pageHeight = $(document).height();
+
+				// If this is a submenu and the parent is open ...
+				if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
+
+					var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
+					var pageY = this.options.parentMenuItem.offset().top;
+
+					// Position to the left if theres no room
+					if (pageX+width > pageWidth) {
+						pageX = this.options.parentMenuItem.offset().left - width;
+					}
+
+				// If we have a target (usually a button)
+				// we can try a standard spot so it looks a bit cleaner when opening
+				} else if (event.target && !$(event.target).is('.with-menu-click-position')) {
+
+					var pageX = $(event.target).offset().left + ($(event.target).width() / 2);
+					var pageY = $(event.target).offset().top + ($(event.target).outerHeight()) + 2;
+
+
+				// If its a click event...
+				} else if (event.pageX) {
+					var pageX = event.pageX;
+					var pageY = event.pageY;
+
+				// Otherwise we have no choice but to use the element...
+				} else {
+					var pageX = $(event.target).offset().left;
+					var pageY = $(event.target).offset().top;
 				}
 
-			// If we have a target (usually a button)
-			// we can try a standard spot so it looks a bit cleaner when opening
-			} else if (event.target && !$(event.target).is('.with-menu-click-position')) {
+				var point = true;
 
-				var pageX = $(event.target).offset().left + ($(event.target).width() / 2);
-				var pageY = $(event.target).offset().top + ($(event.target).outerHeight()) + 2;
+				// Determine which way to open the menu,
+				// We do this so the menu doesn't go off-screen if
+				// its near the edge
+				if (pageX+width < pageWidth) {
+					var left = pageX;
+				} else {
+					var left = pageWidth - width - 4;
+					point = false;
+				}
 
+				if (pageY+height < pageHeight) {
+					var top = pageY;
+				} else {
+					var top = pageHeight - height - 4;
+					point = false;
+				}
 
-			// If its a click event...
-			} else if (event.pageX) {
-				var pageX = event.pageX;
-				var pageY = event.pageY;
+				if (top < 0) {
+					top = 5;
+				}
 
-			// Otherwise we have no choice but to use the element...
-			} else {
-				var pageX = $(event.target).offset().left;
-				var pageY = $(event.target).offset().top;
+				this.cachePosInfo = {
+					left: left,
+					top: top,
+					point: point
+				};
 			}
-
-			var point = true;
-
-			// Determine which way to open the menu,
-			// We do this so the menu doesn't go off-screen if
-			// its near the edge
-			if (pageX+width < pageWidth) {
-				var left = pageX;
-			} else {
-				var left = pageWidth - width - 4;
-				point = false;
-			}
-
-			if (pageY+height < pageHeight) {
-				var top = pageY;
-			} else {
-				var top = pageHeight - height - 4;
-				point = false;
-			}
-
-			if (top < 0) {
-				top = 5;
-			}
-
-			this.cachePosInfo = {
-				left: left,
-				top: top,
-				point: point
-			};
 		}
 
 		// If we have a shim, position it.
@@ -383,6 +434,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (!eventData.noFireEvent) {
 			this.fireEvent('menuOpened', { menu: this });
+		}
+
+		if (this.targetEl) {
+			this.targetEl.addClass('menu-open');
 		}
 	},
 
@@ -437,6 +492,16 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		this.openTriggerEvent = null;
+
+		if (this.targetEl) {
+			this.targetEl.removeClass('menu-open');
+			this.targetEl = null;
+		}
+
+		if (this.lineRemover) {
+			this.lineRemover.remove();
+			this.lineRemover = null;
+		}
 
 		return true;
 	},

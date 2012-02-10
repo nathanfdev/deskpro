@@ -12,7 +12,6 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 
 {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
 	{{ dp_asset_html('agent_vendors_css') }}
-	{{ dp_asset_html('agent_deskpro_ui_css') }}
 	{{ dp_asset_html('agent_interface_css') }}
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 

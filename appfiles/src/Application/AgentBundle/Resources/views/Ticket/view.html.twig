@@ -264,7 +264,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></a>
 			<a class="clean-white" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.merge') }}</span></a>
 			{% if macros|length %}
-				<a class="clean-white arrow" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></a>
+				<a class="clean-white arrow menu-fitted" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.macros') }}</span><em></em></a>
 			{% endif %}
 			<a class="clean-white" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span></a>
 			<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span></a>
