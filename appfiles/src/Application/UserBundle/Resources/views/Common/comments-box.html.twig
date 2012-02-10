@@ -6,19 +6,17 @@
 		{% else %}
 			<ul>
 				{% for comment in comments %}
-					<li>
-						<div class="author">
-							{% if comment.person %}
-								<img src="{{ comment.person.getPictureUrl(60) }}" /><br />
-							{% else %}
-								<img src="{{ path('serve_default_picture', {'s': 60}) }}" /><br />
-							{% endif %}
-							<strong>{{ comment.user_name }}</strong>
-						</div>
+					<li {% if comment.person.is_agent == 2 %}class="agent"{% endif %}>
+						<div class="avatar" style="background-image: url('{{ path('serve_default_picture', {'s': 30}) }}');"></div>
 						<div class="post">
-							{{ comment.content_html|raw }}
+							<div class="byline">
+								<span class="time">{{ comment.date_created|date('M j, Y') }}</span>
+								<cite>{{ comment.getUserName() }}</cite>
+							</div>
+							<div class="message">
+								{{ comment.content_html|raw }}
+							</div>
 						</div>
-						<br class="dp-clear" style="clear:left" />
 					</li>
 				{% endfor %}
 				{% if not no_comment_form %}
