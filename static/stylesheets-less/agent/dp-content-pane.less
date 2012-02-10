@@ -2043,6 +2043,10 @@ padding: 30px;
 .profile .org-edit {
 	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
 	padding: 0;
+
+	label {
+		padding-right: 8px;
+	}
 }
 
 .profile .org-edit input[type="text"] {
@@ -2050,7 +2054,16 @@ padding: 30px;
 	background: transparent;
 	border: none;
 	padding: 0;
-	width: 120px;
+	box-shadow: none;
+}
+
+.profile .org-edit td {
+	vertical-align: center;
+}
+
+.profile .org-edit .org-pos-set,
+.profile .org-edit .org-name {
+	width: 98%;
 }
 
 .profile .org-edit .org-input {

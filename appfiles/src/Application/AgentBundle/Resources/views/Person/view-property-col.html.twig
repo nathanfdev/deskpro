@@ -45,12 +45,15 @@
 				data-search-param="term"
 				data-position-bound="@parent(.org-input)"
 			>
-				{{ phrase('agent.organization') }}:
-				<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+				<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+					<label>{{ phrase('agent.organization') }}:</label>
+				</td><td width="100%">
+					<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+				</td></tr></table>
+
 				<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-					<li>
-						<a>
+					<li><a>
 						<span class="org-name"></span>
 						<div class="bound-fade"></div>
 					</a></li>
@@ -67,8 +70,11 @@
 				</div>
 			</div>
 			<div class="pos-input" {% if not person.organization %}style="display: none"{% endif %}>
-				<label>{{ phrase('agent.position') }}:</label>
-				<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.set_a_org_pos') }}" value="{{ person.organization_position }}" />
+				<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
+					<label>{{ phrase('agent.position') }}:</label>
+				</td><td width="100%">
+					<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.set_a_org_pos') }}" value="{{ person.organization_position }}" />
+				</td></tr></table>
 			</div>
 		</div>
 	</section>

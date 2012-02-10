@@ -439,6 +439,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		if (orgEdit.is(':visible')) {
 			orgEdit.hide();
+			this.getEl('org_searchbox').data('org-search-box').close();
 			orgDisplay.show();
 			this.orgEnableBtn('org-edit-trigger');
 		} else {

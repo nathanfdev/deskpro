@@ -16,6 +16,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
+		this.el.data('org-search-box', this);
 
 		this.termInput   = $('input.org-name', this.el);
 		this.idInput     = $('input.org-id', this.el);
