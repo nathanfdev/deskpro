@@ -340,7 +340,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			top: elPos.top - 10
 		});
 
-		var ids = (li.data('usergroup-ids') || '').split(',');
+		var ids = ((li.data('usergroup-ids')+'') || '').split(',');
 		$(':checkbox.usergroup', this.edit).prop('checked', false);
 		Array.each(ids, function(id) {
 			$('input.usergroup-' + id, this.edit).prop('checked', true);
