@@ -102,7 +102,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
 
 					if (!$email_validating) {
-						$person = Entity\Person::newContactPerson();
+						$person = Person::newContactPerson();
 						$person->name = $this->person_name;
 						App::getOrm()->persist($person);
 
