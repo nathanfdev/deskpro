@@ -372,7 +372,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var firstTabId = null;
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
-		this.cancelHashLoad++;
 
 		Array.each(segments, function (hash, i) {
 
@@ -439,13 +438,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}, this);
 
-		if (this.cancelHashLoad) {
-			if (activateTabId) {
-				DeskPRO_Window.TabBar.activateTabById(activateTabId);
-			} else if (firstTabId) {
-				DeskPRO_Window.TabBar.activateTabById(firstTabId);
-			}
+		this.cancelHashLoad++;
+		if (activateTabId) {
+			DeskPRO_Window.TabBar.activateTabById(activateTabId);
+		} else if (firstTabId) {
+			DeskPRO_Window.TabBar.activateTabById(firstTabId);
 		}
+
 		if (activateSection) {
 			var activateSectionId = null;
 			Object.each(this.sections, function(section, id) {
@@ -461,7 +460,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		DeskPRO_Window.TabBar.options.activateNew = true;
-		this.cancelHashLoad--;
 	},
 
 	updateWindowUrlFragment: function() {
@@ -479,38 +477,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		if (DeskPRO_Window.TabBar) {
-			var currentTab = DeskPRO_Window.TabBar.getActiveTab();
+		if (DeskPRO_Window.TabBar) {			// Only if we have current tab, cuz no current tab means there are no tabs open at all
+			$('#tabNavigationPane ul.dp-tab-list li').each(function() {
+				var isActive = $(this).hasClass('activeTabList');
 
-			// Only if we have current tab, cuz no current tab means there are no tabs open at all
-			if (currentTab) {
-				$('#tabNavigationPane ul.dp-tab-list li').each(function() {
-					var tab = $(this).data('tab');
-					var tabPage = tab.page;
-					var hash = tabPage.getMetaData('url_fragment');
+				var tab = $(this).data('tab');
+				var tabPage = tab.page;
+				var hash = tabPage.getMetaData('url_fragment');
 
-					if (hash) {
-						if (tab.id == currentTab.id) {
-							if (hash.indexOf(':') !== -1) {
-								// ticket:123 to ticket.o:123
-								hash = hash.replace(/:/, '.o:');
-							} else {
-								// somename to somename.o
-								hash = hash + '.o';
-							}
+				if (hash) {
+					if (isActive) {
+						if (hash.indexOf(':') !== -1) {
+							// ticket:123 to ticket.o:123
+							hash = hash.replace(/:/, '.o:');
+						} else {
+							// somename to somename.o
+							hash = hash + '.o';
 						}
-
-						segments.push(hash);
 					}
-				});
-			}
+
+					segments.push(hash);
+				}
+			});
 		}
 
 		var browserHash = segments.join(',');
 
 		this.cancelHashLoad++;
 		jQuery.history.load(browserHash);
-		this.cancelHashLoad--;
 	},
 
 	windowStateUpdated: function(type) {

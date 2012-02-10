@@ -151,6 +151,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 * @param {Object} page
 	 */
 	addTab: function(page) {
+
+		this.isAdding = true;
+
 		var id = Orb.uuid();
 		page.meta.tabId = id;
 
@@ -216,15 +219,22 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.tabBtn = $(html);
 		data.tabBtn.data('tab', data);
 
+		var wasActive = false;
 		if (data.page && data.page.meta.tabPlaceholderId) {
 			// We may have had a placeholder, in which case we want to place
 			// the new tab where the old one was while also removing the placeholder
 			// content in the body pane
 
 			var otherTab = this.getTab(data.page.meta.tabPlaceholderId);
-			otherTab.tabBtn.replaceWith(data.tabBtn);
+			data.tabBtn.insertAfter(otherTab.tabBtn);
+			otherTab.tabBtn.remove();
 
-			this.removeTab(otherTab);
+			if (this.currentTabId == otherTab.id) {
+				wasActive = true;
+				this.currentTabId = null;
+			}
+
+			this.removeTab(otherTab, true);
 
 		} else {
 			data.tabBtn.appendTo(this.tabList);
@@ -236,11 +246,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.fireEvent('addTab', [data, this]);
 
-		if (!this.currentTabId) {
+		if (!this.currentTabId || wasActive) {
 			this.activateTabById(id);
 		} else {
 			DeskPRO_Window.updateWindowUrlFragment();
 		}
+
+		this.isAdding = false;
 
 		return id;
 	},
@@ -381,6 +393,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			if (!silent) {
 				this.deactivateCurrentTab();
 			}
+
+			this.currentTabId = null;
 		}
 
 		var data = this.tabs[id];
