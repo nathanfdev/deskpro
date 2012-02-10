@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'news',
-			content_id: this.meta.article_id,
+			content_id: this.meta.news_id,
 			listEl: $('section.linked-content:first', this.wrapper),
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
