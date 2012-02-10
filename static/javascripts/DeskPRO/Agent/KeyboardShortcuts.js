@@ -136,35 +136,35 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabLeft: function() {
-		var activeTab = $('li.active-tab', DeskPRO_Window.pageTabStrip.tabStrip);
+		var activeTab = $('li.active-tab', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.prev();
 
 		if (!next.length) {
-			next = $('li:last', DeskPRO_Window.pageTabStrip.tabStrip);
+			next = $('li:last', DeskPRO_Window.TabBar.tabList);
 		}
 
 		if (!next.is('.active-tab')) {
-			DeskPRO_Window.pageTabStrip.activateTabById(next.data('tab-id'));
+			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
 		}
 	},
 
 	tabRight: function() {
-		var activeTab = $('li.active-tab', DeskPRO_Window.pageTabStrip.tabStrip);
+		var activeTab = $('li.active-tab', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.next();
 
 		if (!next.length) {
-			next = $('li:first', DeskPRO_Window.pageTabStrip.tabStrip);
+			next = $('li:first', DeskPRO_Window.TabBar.tabList);
 		}
 
 		if (!next.is('.active-tab')) {
-			DeskPRO_Window.pageTabStrip.activateTabById(next.data('tab-id'));
+			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
 		}
 	},
 
 	closeTab: function() {
-		var activeTab = DeskPRO_Window.pageTabStrip.getActiveTab();
+		var activeTab = DeskPRO_Window.TabBar.getActiveTab();
 		if (activeTab) {
-			DeskPRO_Window.pageTabStrip.removeTabById(activeTab.id);
+			DeskPRO_Window.TabBar.removeTabById(activeTab.id);
 		}
 	}
 });

@@ -291,7 +291,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 					Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
 						var tid = tab.page.getMetaData('feedback_id');
 						if (tid == data.old_feedback_id || tid == data.feedback_id) {
-							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
+							DeskPRO_Window.TabBar.removeTabById(tab.id);
 						}
 					});
 

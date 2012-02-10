@@ -114,12 +114,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				$('.unassign-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'unassign';
-					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
 				$('.end-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'end';
-					DeskPRO_Window.pageTabStrip.removeTabById(self.meta.tabId);
+					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
 				$('.cancel-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();

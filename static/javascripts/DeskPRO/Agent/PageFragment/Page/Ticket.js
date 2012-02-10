@@ -130,7 +130,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
 						var tid = tab.page.getMetaData('ticket_id');
 						if (tid == data.old_ticket_id || tid == data.ticket_id) {
-							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
+							DeskPRO_Window.TabBar.removeTabById(tab.id);
 						}
 					});
 

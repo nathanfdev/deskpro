@@ -122,7 +122,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 						if (data.ticket_id) {
 							var closeTicketId = data.ticket_id;
 							page.addEvent('destroy', function() {
-								Object.each(DeskPRO_Window.tabManager.getTabs(), function(tab, id) {
+								Object.each(DeskPRO_Window.TabBar.getTabs(), function(tab, id) {
 									if (tab.page && tab.page.meta.ticket_id == closeTicketId) {
 										DeskPRO_Window.removePage(tab.page);
 									}
