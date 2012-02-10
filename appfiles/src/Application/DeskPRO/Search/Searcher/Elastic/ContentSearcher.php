@@ -51,7 +51,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 
-	public function query($query_text, $per_page = 25, $page = 1)
+	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null)
 	{
 		$index = $this->adapter->getIndex('content');
 
