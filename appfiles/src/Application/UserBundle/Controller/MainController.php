@@ -47,6 +47,9 @@ class MainController extends AbstractController
 		}
 
 		$file = $this->request->files->get('attach');
+		if (is_array($file)) {
+			$file = array_pop($file);
+		}
 		$accept = $this->container->getAttachmentAccepter();
 
 		$error = $accept->getError($file, 'user');

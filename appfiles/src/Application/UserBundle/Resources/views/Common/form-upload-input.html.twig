@@ -2,7 +2,7 @@
 {% if not good_field_name %}{% set good_field_name = "attach" %}{% endif %}
 {% if not blob_field_name %}{% set blob_field_name = "attach_ids[]" %}{% endif %}
 <div
-	class="with-handler {{ add_classname }}"
+	class="with-handler {{ add_classname }} form-upload-section"
 	data-element-handler="DeskPRO.User.ElementHandler.FormUploadHandler"
 	data-upload-to="{{ path('user_accept_upload') }}"
 	data-security-token="{{ security_token('attach_temp') }}"
@@ -24,9 +24,10 @@
 				</li>
 			{{ '{{else}} '}}
 				<li class="uploaded">
-					<input type="checkbox" checked="checked" name="{{ blob_field_name }}" value="${blob_auth_id}" />
+					<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
 					<a href="${download_url}" target="_blank">${filename}</a>
 					<span class="size">${filesize_readable}</span>
+					<span class="remove">remove</span>
 				</li>
 			{{ '{{/if}} '}}
 		</script>

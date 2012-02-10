@@ -10,6 +10,23 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		$('.with-handler[data-element-handler]').each(function() {
+			var el = $(this);
+			var className = el.data('element-handler');
+			var classObj = Orb.getNamespacedObject(className);
+
+			if (!classObj) {
+				DP.console.error("Unknown portal handler `%s` on element %o", className, this);
+				return;
+			}
+
+			if (!el.attr('id')) {
+				el.attr('id', Orb.getUniqueId('portal_'));
+			}
+
+			var obj = new classObj({ el: el });
+		});
+
 		this.activeTabBody = null;
 
 		this.winNav = new DeskPRO.UI.SimpleTabs({
@@ -90,6 +107,26 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			window.DP_LOGIN_NOTIFY = function() {
 				window.location.href = window.location.href;
 			};
+		});
+
+		// Prevents default browser action of navigating to a dropped file
+		// if a drop target isnt configured yet (ie no tab open to accept a file)
+		$(document).bind('drop dragover', function (e) {
+			e.preventDefault();
+		});
+
+		$(document).bind('dragover', function (e) {
+			var timeout = window.dropZoneTimeout;
+			if (!timeout) {
+				$('body').addClass('file-drag-over');
+			} else {
+				clearTimeout(timeout);
+			}
+
+			window.dropZoneTimeout = setTimeout(function () {
+				window.dropZoneTimeout = null;
+				$('body').removeClass('file-drag-over');
+			}, 100);
 		});
 	},
 

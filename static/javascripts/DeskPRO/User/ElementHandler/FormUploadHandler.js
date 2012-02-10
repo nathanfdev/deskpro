@@ -25,6 +25,12 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 			downloadTemplate: $('.dptpl-attach-download', this.el)
 		});
 
+		this.el.on('click', '.remove', function() {
+			var li = $(this).closest('li.uploaded').fadeOut('fast', function() {
+				li.remove();
+			});
+		});
+
 		$('.dp-fallback', this.el).remove();
 		$('.dp-good-upload', this.el).show();
 	}

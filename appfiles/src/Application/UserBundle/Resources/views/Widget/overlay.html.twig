@@ -52,7 +52,7 @@
 	</div>
 </div>
 <div id="right_pane">
-	<div class="head-area with-handler" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+	<div class="head-area with-handler">
 		<ul id="dp_overlay_navtabs">
 			<li data-tab-for="#newticket" class="on">Contact our agents</li>
 			<li data-tab-for="#newfeedback">Submit feedback</li>
@@ -60,12 +60,13 @@
 		</ul>
 	</div>
 	<div class="body-area" id="right_pane_body">
+
 		{################################################
 		 # New Ticket
 		 ################################################}
 
 		<div id="newticket">
-			<form action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator">
+			<form action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator" enctype="multipart/form-data">
 				{{ form_token('newticket_widget') }}
 				{% if app.user.id %}
 					<div class="form-row">
@@ -78,7 +79,7 @@
 					</div>
 				{% else %}
 					<div class="form-row">
-						<table cellspacing="0" cellpadding="0" width="98%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
+						<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 							<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 								<div class="dp-form-label">
 									<label>Your Name *</label>
@@ -122,25 +123,27 @@
 				{% endif %}
 
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td>
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
 						{% include 'UserBundle:NewTicket:field-subject.html.twig' with {form: ticketform} %}
 					</td></tr></table>
 				</div>
 
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td>
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
 						{% include 'UserBundle:NewTicket:field-department.html.twig' with {form: ticketform} %}
 					</td></tr></table>
 				</div>
 
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td>
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
+						<div class="dp-drop-file-zone"><h1>Drop your file here to attach it to your message</h1></div>
 						{% include 'UserBundle:NewTicket:field-message.html.twig' with {form: ticketform} %}
-					</td></tr></table>
+						{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+					</div></td></tr></table>
 				</div>
 
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td>
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
 						<button class="dp-button">Send Message</button>
 					</td></tr></table>
 				</div>
@@ -170,7 +173,7 @@
 					</div>
 				{% else %}
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td width="50%" style="padding-right: 10px;">
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 							<div class="dp-form-label">
 								<label>Your Name *</label>
@@ -295,7 +298,7 @@
 					</div>
 				{% else %}
 				<div class="form-row">
-					<table cellspacing="0" cellpadding="0" width="98%"><tr><td width="50%" style="padding-right: 10px;">
+					<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 							<div class="dp-form-label">
 								<label>Your Name *</label>

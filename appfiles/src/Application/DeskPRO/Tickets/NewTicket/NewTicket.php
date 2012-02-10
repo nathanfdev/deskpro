@@ -183,11 +183,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			// Existing (pre-uploaded temp) attachments
 			if ($this->ticket->attach_ids) {
 				foreach ($this->ticket->attach_ids as $blob_id) {
+					$blob = null;
 					if ($this->ticket->attach_ids_authed) {
-						list($blob_id, $blob_auth) = explode('-', $$blob_id, 2);
-						$blob = App::findEntity('DeskPRO:Blob', $blob_id);
-						if ($blob && $blob->getAuthCode() != $blob_auth) {
-							$blob = false;
+						if (strpos($blob_id, '-')) {
+							list($blob_id, $blob_auth) = explode('-', $blob_id, 2);
+							$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+							if ($blob && $blob->authcode != $blob_auth) {
+								$blob = false;
+							}
 						}
 					} else {
 						$blob = App::findEntity('DeskPRO:Blob', $blob_id);

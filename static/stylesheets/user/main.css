@@ -2605,7 +2605,11 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 }
 
 #dp_overlay .dp-form-row  {
-	padding: 15px 15px 0 15px;
+	padding: 15px 25px 0 15px;
+}
+
+#dp_overlay .form-upload-section {
+	padding: 3px 25px 0 15px;
 }
 
 #dp_overlay .fordp-form-row m-row table td {
@@ -2782,3 +2786,44 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	cursor: pointer;
 }
 
+#dp_overlay .file-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#dp_overlay .file-list li {
+	font-size: 11px;
+}
+
+#dp_overlay .file-list li .remove {
+	cursor: pointer;
+	color: #525356;
+}
+
+.dp-drop-file-zone {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+
+	background-color: rgba(175, 192, 213, 0.7);
+	z-index: 1000000;
+	display: none;
+}
+
+.dp-drop-file-zone h1 {
+		margin: 10px auto 0 auto;
+		width: 300px;
+		text-align: center;
+		padding: 25px;
+		background-color: #AFC0D5;
+		font-size: 18px;
+		border: 1px solid #66717F;
+}
+
+body.file-drag-over .dp-drop-file-zone {
+	display: block;
+}
