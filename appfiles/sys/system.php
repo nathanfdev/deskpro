@@ -221,6 +221,13 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+		// Make sure we arent offline
+		if (App::getSetting('core.helpdesk_disabled')) {
+			$response = new Response();
+			$response->setContent(file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html'));
+			return $response;
+		}
+
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 

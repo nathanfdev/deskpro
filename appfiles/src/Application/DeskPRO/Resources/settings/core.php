@@ -9,6 +9,7 @@
 	'core.use_ticket_workflow' => false,
 	'core.use_agent_team' => false,
 	'core.use_product' => false,
+	'core.helpdesk_disabled' => false,
 
 	'core.deskpro_url' => 'http://localhost/',
 	'core.deskpro_name' => 'DeskPRO',

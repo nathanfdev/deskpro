@@ -32,6 +32,15 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 	{
 		$verbose = $input->getOption('verbose');
 
+		if (App::getSetting('core.helpdesk_disabled')) {
+			if ($verbose) {
+				$output->writeln("<info>Helpdesk is currently disabled.</info>");
+			}
+
+			return 0;
+		}
+
+
 		$ignore_interval = false;
 		if ($input->getOption('ignore-interval')) {
 			$ignore_interval = true;
