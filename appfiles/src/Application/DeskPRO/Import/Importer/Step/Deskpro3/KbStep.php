@@ -44,7 +44,7 @@ class KbStep extends AbstractDeskpro3Step
 		}
 
 
-		$article_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY id ASC");
+		$article_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY `timestamp_made` ASC");
 		if ($article_ids) {
 			$this->logMessage(sprintf("Importing %d knowledgebase articles", count($article_ids)));
 

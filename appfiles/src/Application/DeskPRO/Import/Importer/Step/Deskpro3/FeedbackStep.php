@@ -44,7 +44,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		}
 
 
-		$feedback_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY id ASC");
+		$feedback_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY `created_at` ASC");
 		if ($feedback_ids) {
 			$this->logMessage(sprintf("Importing %d feedback", count($feedback_ids)));
 

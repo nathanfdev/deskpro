@@ -42,7 +42,7 @@ class UserNewsStep extends AbstractDeskpro3Step
 		}
 
 		$this->logMessage(sprintf("Importing %d news entries", $count));
-		$news_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM news ORDER BY id DESC");
+		$news_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM news ORDER BY `timestamp` DESC");
 
 		foreach ($news_ids as $nid) {
 			$this->getDb()->beginTransaction();
