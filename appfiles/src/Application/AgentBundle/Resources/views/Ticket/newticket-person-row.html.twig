@@ -1,9 +1,9 @@
 <div class="col">
 	<h4>Email Address</h4>
-	{% if person.id %}
-		{{ person.primary_email_address }}
+	{% if person.id and person.primary_email and person.primary_email.email %}
+		{{ person.primary_email.email }}
 	{% else %}
-		<input type="text" name="newticket[person][email_address]" class="email" value="{{ person.primary_email_address }}" />
+		<input type="text" name="newticket[person][email_address]" class="email" value="" />
 	{% endif %}
 </div>
 
