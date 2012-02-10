@@ -427,7 +427,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		}
 
 		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
-		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tipped ' + tabIdClass;
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="' + tabIdClass;
 
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' ' + tabData.page.TYPENAME;
@@ -437,24 +437,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				html += ' ' + tabData.page.LOADING_TYPENAME;
 			}
 
-			if (tabData.page.getMetaData('tabTip')) {
-				if (tabData.page.getMetaData('tabTip').indexOf('.') === 0) {
-
-					// This means the tip is in an actual element in the tab
-					// Note that due to the way the tab manager works, we havent actually rendered
-					// the html yet, so this element doesnt exist yet.
-					// We'll give the tip an ID, and in _onTabActivate we'll give the tip that ID
-					// when the element is rendered.
-
-					tabData.page.setMetaData('fetchTabTip', true);
-					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, hook: \'topmiddle\', showDelay: 1000">';
-				} else {
-					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">';
-				}
-			} else {
-				html += '" data-tipped="' + tabData.title + '" data-tipped-options="hook: \'topmiddle\', showDelay: 1000">';
-			}
-
+			html += '">';
 			html += '<a>';
 				html += '<span class="tab-title">'+tabData.title+'</span>';
 			html += '</a>';
