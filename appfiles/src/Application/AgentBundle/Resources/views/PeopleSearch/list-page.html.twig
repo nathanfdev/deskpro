@@ -1,13 +1,12 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for person in people %}
 		<article class="row-item person person-{{person.id}}" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)" data-route-openclass="open">
-			<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
-						<a class="name click-through">
-							<span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span>
-						</a>
+						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
+						{% if person.email_address %}<span class="person-email">&lt;{{ person.email_address }}&gt;</span>{% endif %}
+						{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
 					</h3>
 				</div>
 			</div>
@@ -15,13 +14,10 @@
 			{% if display_fields|length %}
 				{% set extra_info_row %}
 				{% set has_set = false %}
-				<div class="extra-fields">
+				<div class="extra-fields" style="margin-top: 25px">
 					<ul>
 						{% for field in display_fields %}
-							{% if field == 'email_address' and person.primary_email_address %}
-								{% set has_set = true %}
-								<li><span class="prop-val email_address">{{ person.primary_email_address }}</span></li>
-							{% elseif field == 'organization' and person.organization %}
+							{% if field == 'organization' and person.organization %}
 								{% set has_set = true %}
 								<li>
 									<span class="prop-val org">{{ person.organization.name }}</span>

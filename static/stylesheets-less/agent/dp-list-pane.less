@@ -292,11 +292,6 @@
 	position: relative;
 }
 
-.list-listing .row-item:first-child {
-	border-top: none;
-	padding-top: 1px;
-}
-
 .list-listing .row-item.open {
 	background-color: #D4E7FC;
 	-webkit-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
@@ -431,6 +426,19 @@
 	text-decoration: underline;
 	color: #356595;
 }
+
+.list-listing .row-item .top-row .top-row-left .person-email,
+.list-listing .row-item .top-row .top-row-left .person-org {
+	font-size: 10px;
+	font-weight: normal;
+	font-family: @body-font;
+}
+
+.list-listing .row-item .top-row .top-row-left .person-org:hover {
+	color: #356595;
+	text-decoration: underline;
+}
+
 .list-listing .row-item .top-row .top-row-left h3 a:hover{
 	color: #3586A9;
 }

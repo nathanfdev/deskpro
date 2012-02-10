@@ -134,10 +134,6 @@ class PeopleSearchController extends AbstractController
 			return $this->createJsonResponse(array('no_more_results' => true));
 		}
 
-		if (empty($vars['display_fields'])) {
-			$vars['display_fields'] = array('email_address');
-		}
-
 		$vars['display_fields'] = Arrays::removeFalsey($vars['display_fields']);
 		$vars['display_fields'] = array_unique($vars['display_fields']);
 
