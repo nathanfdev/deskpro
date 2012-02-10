@@ -139,7 +139,7 @@ class DB_PdoMysql extends DB_Abstract
 			'ticket_pri' => array('basic_ticket_props'),
 			'user_groups' => array('basic_user_props'),
 			'user_company_role' => array('basic_user_props'),
-			'user_feedback_categories' => array('userfeedback_categories'),
+			'user_idea_categories' => array('useridea_categories'),
 		);
 		
 		// We dont care about this table if its not in the map

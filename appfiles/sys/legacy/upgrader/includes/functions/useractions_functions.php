@@ -243,9 +243,9 @@ function user_delete($id, $ban_email = false) {
 	$db->query("DELETE FROM chat_message WHERE authortype = 'user' AND authorid IN $where");
 
 	$db->query("UPDATE faq_articles SET userid = 0 WHERE userid IN $where");
-	$db->query("UPDATE user_feedback SET user_id = 0, tracking_id = 'unknown".TIMENOW."' WHERE user_id IN $where");
-	$db->query("UPDATE user_feedback_comments SET user_id = 0 WHERE user_id IN $where");
-	$db->query("UPDATE user_feedback_votes SET user_id = 0, tracking_id = 'unknown".TIMENOW."' WHERE user_id IN $where");
+	$db->query("UPDATE user_ideas SET user_id = 0, tracking_id = 'unknown".TIMENOW."' WHERE user_id IN $where");
+	$db->query("UPDATE user_idea_comments SET user_id = 0 WHERE user_id IN $where");
+	$db->query("UPDATE user_idea_votes SET user_id = 0, tracking_id = 'unknown".TIMENOW."' WHERE user_id IN $where");
 
 	$db->query("DELETE FROM tech_start_tickets WHERE userid IN $where");
 
