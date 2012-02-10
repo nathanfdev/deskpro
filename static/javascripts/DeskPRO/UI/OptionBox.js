@@ -97,6 +97,10 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			var radio = $(':radio, :checkbox', this);
 			if (radio.length) {
 				radio.click();
+
+				if (radio.is(':radio') && self.isSingleMode) {
+					self.close();
+				}
 			}
 			amClicking = false;
 		});
@@ -132,6 +136,13 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		}).on('change', function() {
 			self.updateFilter($(this));
 		});
+
+		var l = this.el.find('div.col').length;
+		if (l == 0 || l == 1) {
+			this.isSingleMode = true;
+		} else {
+			this.isSingleMode = false;
+		}
 
 		this.fireEvent('init', [this]);
 	},
