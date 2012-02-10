@@ -27,7 +27,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		# Ticket Fields
 		#----------------------------------------
 
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_def");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_def");
 		$this->logMessage(sprintf("Importing %d custom ticket fields", $count));
 
 		if ($count) {
@@ -57,7 +57,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		# People Fields
 		#----------------------------------------
 
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM user_def");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_def");
 		$this->logMessage(sprintf("Importing %d custom user fields", $count));
 
 		if ($count) {

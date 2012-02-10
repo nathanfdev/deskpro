@@ -24,7 +24,7 @@ class KbStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM faq_cats");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM faq_cats");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d knowledgebase categories", $count));
 

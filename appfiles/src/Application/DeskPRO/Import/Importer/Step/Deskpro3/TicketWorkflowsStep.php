@@ -22,7 +22,7 @@ class TicketWorkflowsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_workflow");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflow");
 		$this->logMessage(sprintf("Importing %d ticket workflows", $count));
 		if (!$count) {
 			return;

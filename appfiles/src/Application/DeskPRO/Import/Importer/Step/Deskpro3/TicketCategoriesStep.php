@@ -22,7 +22,7 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_cat");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_cat");
 		$this->logMessage(sprintf("Importing %d ticket categories", $count));
 		if (!$count) {
 			return;

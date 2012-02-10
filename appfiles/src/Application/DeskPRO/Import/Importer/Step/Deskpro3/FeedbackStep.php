@@ -24,7 +24,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM user_idea_categories");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d feedback categories", $count));
 

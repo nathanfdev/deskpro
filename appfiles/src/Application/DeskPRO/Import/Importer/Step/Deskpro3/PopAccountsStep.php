@@ -23,7 +23,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM gateway_pop_accounts");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM gateway_pop_accounts");
 		$this->logMessage(sprintf("Importing %d POP3 accounts", $count));
 		if (!$count) {
 			return;

@@ -22,7 +22,7 @@ class TicketPrioritiesStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$count = $this->getOldDb()->fetchAll("SELECT COUNT(*) FROM ticket_pri");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_pri");
 		$this->logMessage(sprintf("Importing %d ticket priorities", $count));
 		if (!$count) {
 			return;
