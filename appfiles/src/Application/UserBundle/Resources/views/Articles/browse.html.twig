@@ -53,7 +53,8 @@
 						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
 						<div class="dp-meta">
 							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
-							{{ phrase('user.articles.meta_comments', {'author': comment_counts[article.id]}) }}
+							&middot;
+							{{ phrase('user.articles.meta_comments', {'count': comment_counts[article.id]|default(0)}) }}
 						</div>
 					</li>
 					{% endfor %}
