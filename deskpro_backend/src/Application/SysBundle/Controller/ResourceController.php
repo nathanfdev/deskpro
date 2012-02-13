@@ -9,6 +9,9 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 	public function userCssAction($filename)
 	{
 		$style = $this->container->getSystemService('style');
+		if (!$style) {
+			$style = new \Application\DeskPRO\Entity\Style();
+		}
 
 		$cache_name = md5($style->id . ':' . $filename);
 
@@ -20,7 +23,7 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 			$info = $cache->load($cache_name);
 		}
 		if (!$info || $info['css_updated'] < $style->css_updated->getTimestamp()) {
-			$file = file_get_contents(DP_ROOT . '/../static/' . $style->css_dir . '/' . $filename);
+			$file = file_get_contents(DP_WEB_ROOT.'/deskpro_assets/' . $style->css_dir . '/' . $filename);
 			$userstyle = new \Application\DeskPRO\Style\UserStyle($file);
 
 			$file = $userstyle->compileCss($style->getCssVars());
