@@ -40,10 +40,17 @@ class FieldManager
 	protected $options;
 
 	/**
-	 * Array of fields
+	 * Array of top-level fields
 	 * @var array
 	 */
 	protected $fields = null;
+
+	/**
+	 * Array of all fields
+	 *
+	 * @var array
+	 */
+	protected $all_fields = null;
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
@@ -77,6 +84,9 @@ class FieldManager
 			$this->fields = array();
 			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 			foreach ($all_fields as $f) {
+
+				$this->all_fields[$f->id] = $f;
+
 				if (!$f->parent) {
 					$this->fields[$f->id] = $f;
 				}
@@ -381,7 +391,7 @@ class FieldManager
 
 		try {
 			$custom_data = $this->createDataClass();
-			$custom_data['field'] = $set_field;
+			$custom_data->field = $set_field;
 			$custom_data[$value_type] = $value;
 
 			$object->addCustomData($custom_data);

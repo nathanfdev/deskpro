@@ -45,13 +45,23 @@ class UsersStep extends AbstractDeskpro3Step
 	{
 		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM user_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
+		$this->fieldmanager->getFields();
 
 		$batch = $this->getIdsBatch($page - 1);
+		$users = $this->getEm()->getRepository('DeskPRO:Person')->getByIds($batch);
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		foreach ($batch as $uid) {
-			$this->processUser($uid);
+		foreach ($users as $u) {
+			$this->getDb()->beginTransaction();
+
+			try {
+				$this->processUser($u);
+				$this->getDb()->commit();
+			} catch (\Exception $e) {
+				$this->getDb()->rollback();
+				throw $e;
+			}
 		}
 
 		$sub_end_time = microtime(true);
@@ -63,8 +73,10 @@ class UsersStep extends AbstractDeskpro3Step
 	 * Process a single user
 	 * @param $user_id
 	 */
-	protected function processUser($user_id)
+	protected function processUser($user)
 	{
+		$user_id = $user->id;
+
 		#------------------------------
 		# Make sure we havent already done them
 		#------------------------------
@@ -111,156 +123,135 @@ class UsersStep extends AbstractDeskpro3Step
 		# Re-create the user
 		#------------------------------
 
-		$this->getDb()->beginTransaction();
+		//---
+		// Basic properties
+		//---
 
-		try {
-
-			//---
-			// Basic properties
-			//---
-
-			$person = new Person();
-			$person->is_contact = true;
-			$person->is_user = true;
-			$person->is_confirmed = true;
-			$person->name = $user_info['name'];
-			$person->date_created = new \DateTime('@' . $user_info['date_registered']);
-			if ($user_info['last_activity']) {
-				$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);
-			}
-
-			// "Secure passwords" was enabled, which means we have a salt and the password is hashed
-			if ($user_deskpro['salt']) {
-				$person->password_scheme = 'deskpro3';
-				$person->setRawPassword($user_deskpro['password']);
-				$person->salt = $user_deskpro['salt'];
-
-			// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
-			// so we can just set a password normally and use DP4 scheme
-			} else {
-				$person->setPassword($user_deskpro['password']);
-			}
-
-			//---
-			// Company
-			//---
-
-			if ($user_company_id) {
-				$org = $this->getEm()->find('DeskPRO:Organization', $this->getMappedNewId('company', $user_company_id));
-				if ($org) {
-					$person->organization = $org;
-				}
-			}
-
-			//---
-			// Usergroups
-			//---
-
-			$done_ids = array();
-			foreach ($usergroup_ids as $ug_id) {
-				$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup', $ug_id));
-				if ($usergroup) {
-					$done_ids[] = $usergroup->id;
-					$person->usergroups->add($usergroup);
-				}
-			}
-
-			// Also DP3 had the 'registered' group that was always added on demand
-			$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup_sys', 'registered'));
-			if ($usergroup && !in_array($usergroup->id, $done_ids)) {
-				$person->usergroups->add($usergroup);
-			}
-
-
-			//---
-			// Email addresses
-			//---
-
-			$default_email = null;
-			foreach ($user_emails as $email_info) {
-				$email = new PersonEmail();
-				$email->email = $email_info['email'];
-				$email->date_validated = new \DateTime();
-
-				if (!$default_email || $email_info['id'] == $user_info['default_emailid']) {
-					$default_email = $email;
-				}
-
-				$person->addEmailAddress($email);
-			}
-
-			$person->primary_email = $default_email;
-
-			//---
-			// Custom fields
-			//---
-
-			$form_data = array();
-			foreach ($this->custom_field_info as $field_info) {
-				$name = $field_info['name'];
-				if (!isset($user_info[$name]) || !$user_info[$name]) {
-					continue;
-				}
-
-				$field = $this->getEm()->find('DeskPRO:CustomDefPerson', $this->getMappedNewId('people_def', $field_info['id']));
-				if (!$field) {
-					continue;
-				}
-
-				$data = null;
-				switch ($field->handler_class) {
-					case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-					case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-						$data = $user_info[$name];
-						break;
-
-					case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-						$val = str_replace('|||', '', $user_info[$name]);
-						$new_val = $this->getMappedNewId('people_def_choice', $val);
-						if ($new_val) {
-							$data = $new_val;
-						}
-						break;
-
-					case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
-						$vals = explode('|||', $user_info[$name]);
-						$new_vals = array();
-						foreach ($vals as $val) {
-							$new_val = $this->getMappedNewId('people_def_choice', $val);
-							if ($new_val) {
-								$new_vals[] = $new_val;
-							}
-						}
-						if ($new_vals) {
-							$data = $new_vals;
-						}
-						break;
-				}
-
-				if ($data) {
-					$form_data['field_' . $field->id] = $data;
-				}
-			}
-
-			$this->getEm()->persist($person);
-			$this->getEm()->flush();
-			$this->saveMappedId('user', $user_id, $person->id);
-
-			if ($form_data) {
-				// TODO fix custom field saving
-				$this->fieldmanager->saveFormToObject($form_data, $person);
-			}
-
-			$this->getEm()->persist($person);
-			$this->getEm()->flush();
-
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
+		$person = new Person();
+		$person->is_contact = true;
+		$person->is_user = true;
+		$person->is_confirmed = true;
+		$person->name = $user_info['name'];
+		$person->date_created = new \DateTime('@' . $user_info['date_registered']);
+		if ($user_info['last_activity']) {
+			$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);
 		}
 
-		$this->getEm()->clear();
+		// "Secure passwords" was enabled, which means we have a salt and the password is hashed
+		if ($user_deskpro['salt']) {
+			$person->password_scheme = 'deskpro3';
+			$person->setRawPassword($user_deskpro['password']);
+			$person->salt = $user_deskpro['salt'];
+
+		// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
+		// so we can just set a password normally and use DP4 scheme
+		} else {
+			$person->setPassword($user_deskpro['password']);
+		}
+
+		//---
+		// Company
+		//---
+
+		if ($user_company_id) {
+			$org = $this->getEm()->find('DeskPRO:Organization', $this->getMappedNewId('company', $user_company_id));
+			if ($org) {
+				$person->organization = $org;
+			}
+		}
+
+		//---
+		// Usergroups
+		//---
+
+		$done_ids = array();
+		foreach ($usergroup_ids as $ug_id) {
+			$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup', $ug_id));
+			if ($usergroup) {
+				$done_ids[] = $usergroup->id;
+				$person->usergroups->add($usergroup);
+			}
+		}
+
+		// Also DP3 had the 'registered' group that was always added on demand
+		$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup_sys', 'registered'));
+		if ($usergroup && !in_array($usergroup->id, $done_ids)) {
+			$person->usergroups->add($usergroup);
+		}
+
+
+		//---
+		// Email addresses
+		//---
+
+		$default_email = null;
+		foreach ($user_emails as $email_info) {
+			$email = new PersonEmail();
+			$email->email = $email_info['email'];
+			$email->date_validated = new \DateTime();
+
+			if (!$default_email || $email_info['id'] == $user_info['default_emailid']) {
+				$default_email = $email;
+			}
+
+			$person->addEmailAddress($email);
+		}
+
+		$person->primary_email = $default_email;
+
+		//---
+		// Custom fields
+		//---
+
+		$form_data = array();
+		foreach ($this->custom_field_info as $field_info) {
+			$name = $field_info['name'];
+			if (!isset($user_info[$name]) || !$user_info[$name]) {
+				continue;
+			}
+
+			$field = $this->fieldmanager->getFieldFromId($this->getMappedNewId('people_def', $field_info['id']));
+			if (!$field) {
+				continue;
+			}
+
+			$data = null;
+			switch ($field->handler_class) {
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+					$form_data['field_' . $field->id] = $user_info[$name];
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+					$val = str_replace('|||', '', $user_info[$name]);
+					$new_val = $this->getMappedNewId('people_def_choice', $val);
+					if ($new_val) {
+						$form_data['field_' . $new_val] = 1;
+					}
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
+					$vals = explode('|||', $user_info[$name]);
+					$new_vals = array();
+					foreach ($vals as $val) {
+						$new_val = $this->getMappedNewId('people_def_choice', $val);
+						if ($new_val) {
+							$form_data['field_' . $new_val] = 1;
+						}
+					}
+					break;
+			}
+		}
+
+		$this->getEm()->persist($person);
+		$this->getEm()->flush();
+		$this->saveMappedId('user', $user_id, $person->id);
+
+		if ($form_data) {
+			$this->fieldmanager->saveFormToObject($form_data, $person);
+		}
+
+		$this->getEm()->flush();
 	}
 
 

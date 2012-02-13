@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Entity
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="custom_data_ticket", indexes={
+ *     @ORM_Mapping\Index(name="obj_id_idx", columns={"ticket_id"}),
  *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","ticket_id"})
  * })
  */
@@ -28,7 +29,6 @@ class CustomDataTicket extends CustomDataAbstract
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
 	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $ticket;
 
@@ -36,7 +36,6 @@ class CustomDataTicket extends CustomDataAbstract
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket
 	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 

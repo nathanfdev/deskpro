@@ -21,6 +21,15 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 *
+	 */
+	protected $id = null;
+
+	/**
 	 * IMPLEMENT IN CHILD CLASS
 	 * The form field this is attached to
 	 *

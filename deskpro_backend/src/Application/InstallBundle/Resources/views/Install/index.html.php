@@ -279,3 +279,7 @@
 		</div>
 	</div>
 <?php endif ?>
+
+<!--
+<?php echo htmlspecialchars(print_r($errors, true)) ?>
+-->

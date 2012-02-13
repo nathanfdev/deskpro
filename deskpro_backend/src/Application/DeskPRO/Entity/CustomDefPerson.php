@@ -26,7 +26,7 @@ class CustomDefPerson extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefPeople
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefPerson", inversedBy="children", fetch="EAGER")
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefPerson", inversedBy="children")
 	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
@@ -35,7 +35,7 @@ class CustomDefPerson extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefPerson", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefPerson", mappedBy="parent", cascade={"persist", "remove", "merge"})
 	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;

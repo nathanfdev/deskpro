@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\Entity
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="custom_data_feedback", indexes={
+ *     @ORM_Mapping\Index(name="obj_id_idx", columns={"feedback_id"}),
  *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","feedback_id"})
  * })
  */
@@ -28,16 +29,13 @@ class CustomDataFeedback extends CustomDataAbstract
 	 * @var \Application\DeskPRO\Entity\Feedback
 	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback")
 	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $feedback;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
-	 * @var \Application\DeskPRO\Entity\CustomDefFeedback
 	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefFeedback", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 

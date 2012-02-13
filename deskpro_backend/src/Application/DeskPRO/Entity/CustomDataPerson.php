@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Table(name="custom_data_person",
  *     indexes={
+ *     @ORM_Mapping\Index(name="obj_id_idx", columns={"person_id"}),
  *         @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","person_id"})
  * })
  */
@@ -29,7 +30,6 @@ class CustomDataPerson extends CustomDataAbstract
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $person;
 
@@ -37,7 +37,6 @@ class CustomDataPerson extends CustomDataAbstract
 	 * @var \Application\DeskPRO\Entity\CustomDefPerson
 	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefPerson", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 

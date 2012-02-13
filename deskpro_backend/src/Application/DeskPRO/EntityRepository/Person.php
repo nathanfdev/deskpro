@@ -17,7 +17,7 @@ use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 
 use Orb\Util\Numbers;
 
-class Person extends \Doctrine\ORM\EntityRepository
+class Person extends AbstractEntityRepository
 {
 	protected $_agent_names = null;
 

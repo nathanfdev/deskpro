@@ -79,7 +79,6 @@ class Deskpro3Importer extends AbstractImporter
 
 	public function postRunStep($step)
 	{
-		$this->getEm()->clear();
 		gc_collect_cycles();
 	}
 
