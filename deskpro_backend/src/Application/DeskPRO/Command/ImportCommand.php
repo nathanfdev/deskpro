@@ -252,6 +252,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$importer->cleanupImport();
 
+			// Clear caches like kb/news/ideas/files category caches
+			$importer->getDb()->delete('cache');
+
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 			return 0;
