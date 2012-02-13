@@ -9,19 +9,23 @@
 *.sublime*
 
 # cache and log files
-/appfiles/sys/cache/
-/appfiles/sys/logs/
-/appfiles/sys/bootstrap.php
-/appfiles/sys/compiled.php
-/appfiles/sys/config/build-time.php
-/appfiles/sys/Resources/distro-checksums.php
-/appfiles/src/Application/InstallBundle/Data/schema.php
-/static/build
-/static/stylesheets/agent
-/static/stylesheets/admin
-/static/stylesheets/report
+/deskpro_backend/sys/cache/
+/deskpro_backend/sys/bootstrap.php
+/deskpro_backend/sys/compiled.php
+/deskpro_backend/sys/config/build-time.php
+/deskpro_backend/sys/Resources/distro-checksums.php
+/deskpro_backend/src/Application/InstallBundle/Data/schema.php
+
+/data_logs/
+/data_backups/
+/data_files/
+
+/deskpro_assets/build
+/deskpro_assets/stylesheets/agent
+/deskpro_assets/stylesheets/admin
+/deskpro_assets/stylesheets/report
 
 # Per-site files
 /config.php
-/appfiles/sys/config/dev_debug.php
-/appfiles/sys/VERSION
+/deskpro_backend/sys/config/dev_debug.php
+/deskpro_backend/sys/VERSION
