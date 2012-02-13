@@ -52,9 +52,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		$batch = $this->getIdsBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
 
-		$this->getDb()->exec("SET unique_checks = 0");
-		$this->getDb()->exec("SET foreign_key_checks = 0");
-
 		try {
 			$this->getDb()->beginTransaction();
 			foreach ($batch as $tid) {
@@ -65,9 +62,6 @@ class TicketsStep extends AbstractDeskpro3Step
 			$this->getDb()->rollback();
 			throw $e;
 		}
-
-		$this->getDb()->exec("SET unique_checks = 1");
-		$this->getDb()->exec("SET foreign_key_checks = 1");
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));

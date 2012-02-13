@@ -31,7 +31,7 @@ class ImportDataStore extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="new_id", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 }

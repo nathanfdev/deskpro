@@ -35,18 +35,28 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$ticket = App::findEntity('DeskPRO:Ticket', 22487);
-		$person = App::findEntity('DeskPRO:Person', 20001);
+		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
+		$sm = App::getDb()->getSchemaManager();
 
+		$table = 'people';
+		$indexes = $sm->listTableIndexes($table);
+		$fkeys = $sm->listTableForeignKeys($table);
 
-		App::getDb()->beginTransaction();
-		if ($ticket->status == 'awaiting_user') {
-			$ticket->setStatus('awaiting_agent');
-		} else {
-			$ticket->setStatus('awaiting_user');
+		$data = array('indexes' => $indexes, 'fkeys' => $fkeys);
+
+		foreach ($data['indexes'] as $x) {
+			if ($x->isPrimary()) continue;
+			$p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$alter_parts[] = $p;
 		}
-		App::getOrm()->flush();
+		foreach ($data['fkeys'] as $x) {
+			$p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$alter_parts[] = $p;
+		}
 
-		App::getDb()->rollback();
+		$sql = "ALTER TABLE $table " . implode(', ', $alter_parts);
+		echo $sql;
 	}
 }

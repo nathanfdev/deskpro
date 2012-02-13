@@ -204,6 +204,83 @@ class Deskpro3Importer extends AbstractImporter
 	}
 
 
+	/**
+	 * Remove indexes on a table for bulk inserting
+	 *
+	 * We are a bit clever and combine the alter queries into one so they execute faster,
+	 * rather than trying to do them one at a time as Doctrine does by default
+	 */
+	public function removeTableIndexes($table)
+	{
+		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
+		$sm = $this->getDb()->getSchemaManager();
+
+		$indexes = $sm->listTableIndexes($table);
+		$fkeys = $sm->listTableForeignKeys($table);
+
+		$drop_parts = array();
+		$restore_parts = array();
+
+		foreach ($indexes as $x) {
+			if ($x->isPrimary()) continue;
+
+			$p = $sm->getDatabasePlatform()->getDropIndexSQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$p = preg_replace("# ON (.*?)$#", '', trim($p));
+			$drop_parts[] = $p;
+
+			$p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$p = preg_replace('#^CREATE #', 'ADD ', trim($p));
+			$p = preg_replace('# ON (.*?) \((.*?)\)$#', ' ($2)', trim($p));
+			$restore_parts[] = $p;
+		}
+		foreach ($fkeys as $x) {
+			$p = $sm->getDatabasePlatform()->getDropForeignKeySQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$drop_parts[] = $p;
+
+			$p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
+			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+			$restore_parts[] = $p;
+		}
+
+		print_r($restore_parts);
+
+		if (!$drop_parts) {
+			return;
+		}
+
+		$drop_sql      = "ALTER TABLE `$table` " . implode(', ', $drop_parts);
+		$restore_sql   = "ALTER TABLE `$table` " . implode(', ', $restore_parts);
+
+		$this->getDb()->replace('import_datastore', array(
+			'typename' => 'tableindexes.' . $table,
+			'data' => serialize(array('sql' => $restore_sql))
+		));
+
+		$this->getDb()->exec($drop_sql);
+	}
+
+
+	/**
+	 * Restores indexes that were previously deleted
+	 *
+	 * @param string $table
+	 */
+	public function restoreTableIndexes($table)
+	{
+		$data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.' . $table));
+		$data = @unserialize($data);
+
+		if (!$data || empty($data['sql'])) {
+			return;
+		}
+
+		$this->getDb()->exec($data['sql']);
+	}
+
+
 	public function getStepTitle($step)
 	{
 		$class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Deskpro3\\' . $this->steps[$step-1] . 'Step';

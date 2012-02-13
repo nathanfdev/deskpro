@@ -42,8 +42,26 @@ class UsersStep extends AbstractDeskpro3Step
 		return ceil($count / self::PERPAGE);
 	}
 
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('people');
+		$this->importer->removeTableIndexes('people_emails');
+		$this->importer->removeTableIndexes('custom_data_person');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('people');
+		$this->importer->restoreTableIndexes('people_emails');
+		$this->importer->restoreTableIndexes('custom_data_person');
+	}
+
 	public function run($page = 1)
 	{
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM user_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
 		$this->fieldmanager->getFields();
@@ -76,6 +94,10 @@ class UsersStep extends AbstractDeskpro3Step
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
+		}
 	}
 
 

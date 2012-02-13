@@ -127,7 +127,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		/** @var $importer \Application\DeskPRO\Import\Importer\AbstractImporter */
 		$config['log_dir'] = App::getKernel()->getLogDir();
-		//$config['enable_query_log'] = true;
+		$config['enable_query_log'] = true;
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
 
 		#----------------------------------------
