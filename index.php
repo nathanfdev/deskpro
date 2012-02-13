@@ -23,6 +23,7 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 /**
  * You should not change anything below this line.
  */
+define('DP_WEB_ROOT', dirname(__FILE__));
 require DP_ROOT . '/sys/preboot.php';
 
 if (!defined('DP_BOOT_MODE')) define('DP_BOOT_MODE', 'web');

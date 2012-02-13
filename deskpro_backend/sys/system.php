@@ -130,17 +130,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		static $cache_dir = null;
 
 		if ($cache_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['cache_dir'])) {
-				$cache_dir = $DP_CONFIG['cache_dir'];
-			} else {
-				$name = explode('\\', get_class($this));
-				$name = array_pop($name);
-				$name = strtolower($name);
-				$name = str_replace('kernel', '', $name);
-
-				$cache_dir = DP_ROOT . '/sys/cache/%env%/' . $name;
-			}
+			$cache_dir = DP_ROOT . '/sys/cache/%env%/' . $name;
 			$cache_dir = str_replace('%env%', $this->environment, $cache_dir);
 		}
 
@@ -153,14 +143,46 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		if ($log_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['log_dir'])) {
-				$log_dir = $DP_CONFIG['log_dir'];
+			if (isset($DP_CONFIG['folder_logs'])) {
+				$log_dir = $DP_CONFIG['folder_logs'];
 			} else {
-				$log_dir = DP_ROOT . '/sys/logs';
+				$log_dir = DP_WEB_ROOT . '/data_logs';
 			}
 		}
 
 		return $log_dir;
+	}
+
+	public function getBackupDir()
+	{
+		static $backup_dir = null;
+
+		if ($backup_dir === null) {
+			global $DP_CONFIG;
+			if (isset($DP_CONFIG['folder_backups'])) {
+				$backup_dir = $DP_CONFIG['folder_backups'];
+			} else {
+				$backup_dir = DP_WEB_ROOT . '/data_backups';
+			}
+		}
+
+		return $backup_dir;
+	}
+
+	public function getBlobDir()
+	{
+		static $blob_dir = null;
+
+		if ($blob_dir === null) {
+			global $DP_CONFIG;
+			if (isset($DP_CONFIG['folder_files'])) {
+				$blob_dir = $DP_CONFIG['folder_files'];
+			} else {
+				$blob_dir = DP_WEB_ROOT . '/data_files';
+			}
+		}
+
+		return $blob_dir;
 	}
 
 	protected function getKernelParameters()

@@ -22,7 +22,7 @@ define('DP_DATABASE_NAME', 'deskpro');
 
 #########################################################################################################
 #########################################################################################################
-##################################   ALL SETTINGS BELOW ARE OPTIONAL   ################################## 
+##################################   ALL SETTINGS BELOW ARE OPTIONAL   ##################################
 #########################################################################################################
 #########################################################################################################
 
@@ -43,13 +43,14 @@ $DP_CONFIG = array();
 ######################################################
 # OPTIONAL : Location of Folders                     #
 #                                                    #
-# You may wish to move the files and backups folder  #
-# out of the webroot. If you move the folders you    #
-# must update the paths below                        #
+# You may wish to move the files, logs and backups   #
+# folder out of the webroot. If you move the folders #
+# you must update the paths below                    #
 ######################################################
 
 // $DP_CONFIG['folder_files'] = '';
 // $DP_CONFIG['folder_backups'] = '';
+// $DP_CONFIG['folder_logs'] = '';
 
 ######################################################
 # OPTIONAL : Memcached                               #
@@ -63,7 +64,7 @@ $DP_CONFIG = array();
 // $DP_CONFIG['memcached']['enabled'] = false;
 
 // $DP_CONFIG['memcached']['servers'][0] = array(
-//   'host' => ''	
+//   'host' => ''
 // );
 
 ######################################################
