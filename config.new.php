@@ -90,7 +90,7 @@ $DP_CONFIG = array();
 // $DP_CONFIG['debug']['raw_assets'][] = 'all';
 
 // $DP_CONFIG['debug']['mail'] = array();
-// $DP_CONFIG['debug']['mail']['save_to_file'] = true;    // true logs to appfiles/sys/logs/emails
+// $DP_CONFIG['debug']['mail']['save_to_file'] = true;    // true logs to /data_logs/emails
 // $DP_CONFIG['debug']['mail']['force_to'] = '';
 // $DP_CONFIG['debug']['mail']['disable_send'] = 1;
 

@@ -59,7 +59,7 @@ function deskpro_install_check_memory_limit()
 
 function deskpro_install_check_writable()
 {
-	if (!is_writable(DP_ROOT.'/sys/cache') || !is_writable(DP_ROOT.'/sys/logs')) {
+	if (!is_writable(DP_ROOT.'/sys/cache') || !is_writable(DP_WEB_ROOT.'/data_logs')) {
 		return false;
 	}
 
@@ -69,7 +69,7 @@ function deskpro_install_check_writable()
 function deskpro_install_basic_error($message)
 {
 	// We dont know the root path yet, so lets just inline the CSS
-	$css = file_get_contents(DP_ROOT.'/../static/stylesheets/install/install.css');
+	$css = file_get_contents(DP_WEB_ROOT.'/deskpro_assets/stylesheets/install/install.css');
 	$html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
