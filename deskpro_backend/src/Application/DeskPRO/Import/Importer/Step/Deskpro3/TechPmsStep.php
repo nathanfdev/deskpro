@@ -61,7 +61,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 
 		foreach ($messages as $message) {
 			$other_agent_id = $this->getMappedNewId('tech', $message['toid']);
-			if (!$other_agent_id) {
+			if (!$other_agent_id || $other_agent_id == $agent_id) {
 				continue;
 			}
 
