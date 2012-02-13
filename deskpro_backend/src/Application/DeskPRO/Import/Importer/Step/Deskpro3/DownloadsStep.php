@@ -172,7 +172,12 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$new_download->person = $new_person;
 		$new_download->title = $download['filename'];
 		$new_download->content = $download['filename'];
-		$new_download->date_created = new \DateTime('@' . $download['timestamp']);
+
+		try {
+			$new_download->date_created = new \DateTime('@' . $download['timestamp']);
+		} catch (\Exception $e) {
+			$new_download->date_created = new \DateTime();
+		}
 
 		$this->getEm()->persist($new_download);
 		$this->getEm()->flush();
