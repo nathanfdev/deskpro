@@ -347,10 +347,11 @@ class ServerChecks
 
 		if ($type == 'logs_write' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
-			if (is_writable(DP_ROOT.'/sys/logs')) {
+			$dir = App::getKernel()->getLogDir();
+			if (is_writable($dir)) {
 				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
 			} else {
-				$msg = "The deskpro_backend/sys/logs directory must be writable";
+				$msg = "The " . str_replace(DP_WEB_ROOT, '', $dir) . " directory must be writable";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['logs_write'] = array(
 					'message' => $msg,
