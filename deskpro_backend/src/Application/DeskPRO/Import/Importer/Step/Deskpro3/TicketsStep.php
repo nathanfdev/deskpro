@@ -128,7 +128,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$new_department_id = $this->getMappedNewId('ticket_category', $ticket_info['category']);
 		if (!$new_department_id) {
-			$new_department_id = 1;
+			$new_department_id = $this->getDb()->fetchColumn("SELECT id FROM departments ORDER BY id ASC LIMIT 1");
 		}
 
 		$new_workflow_id = null;

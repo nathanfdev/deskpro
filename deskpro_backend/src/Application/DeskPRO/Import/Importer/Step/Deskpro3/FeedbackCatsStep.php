@@ -24,6 +24,13 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		// If there arent any ideas besides the default, delete default data
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM feedback ORDER BY id DESC LIMIT 1");
+		if (!$default_check || $default_check == 1) {
+			$this->getDb()->exec("DELETE FROM feedback");
+			$this->getDb()->exec("DELETE FROM feedback_categories");
+		}
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d feedback categories", $count));

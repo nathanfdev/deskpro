@@ -23,6 +23,13 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		// If there arent any downloads, delete default download cats
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM downloads LIMIT 1");
+		if (!$default_check) {
+			$this->getDb()->exec("DELETE FROM downloads");
+			$this->getDb()->exec("DELETE FROM download_categories");
+		}
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM files_cats");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d download categories", $count));

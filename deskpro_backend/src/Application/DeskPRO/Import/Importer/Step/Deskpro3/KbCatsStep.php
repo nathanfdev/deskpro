@@ -24,6 +24,13 @@ class KbCatsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		// If there arent any articles besides our default, remove the default data
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM articles ORDER BY id DESC LIMIT 1");
+		if (!$default_check || $default_check == 1) {
+			$this->getDb()->exec("DELETE FROM articles");
+			$this->getDb()->exec("DELETE FROM article_categories");
+		}
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM faq_cats");
 		if ($count) {
 			$this->logMessage(sprintf("Importing %d knowledgebase categories", $count));

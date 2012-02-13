@@ -28,6 +28,13 @@ class UserNewsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		// If there arent any news besides the default, delete default data
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM news ORDER BY id DESC LIMIT 1");
+		if (!$default_check || $default_check == 1) {
+			$this->getDb()->exec("DELETE FROM news");
+			$this->getDb()->exec("DELETE FROM news_categories");
+		}
+
 		$this->category = $this->getEm()->createQuery("SELECT c FROM DeskPRO:NewsCategory c ORDER BY c.id ASC")->getOneOrNullResult();
 		if (!$this->category) {
 			$this->category = new NewsCategory();

@@ -86,6 +86,18 @@ class Deskpro3Importer extends AbstractImporter
 		return $errors;
 	}
 
+	public function isLargeDatabase()
+	{
+		$count_users   = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user");
+		$count_tickets = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket");
+
+		if ($count_users > 250000 || $count_tickets > 250000) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function setupImport()
 	{
 		gc_enable();

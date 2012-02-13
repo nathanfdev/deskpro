@@ -34,14 +34,14 @@ class Article extends ContentAbstract
 	const END_ACTION_ARCHIVE = 'archive';
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"}, indexBy="id")
      * @ORM_Mapping\JoinTable(name="article_to_categories", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $categories;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"}, indexBy="id")
      * @ORM_Mapping\JoinTable(name="article_to_product", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="product_id", referencedColumnName="id", onDelete="cascade")})
 	 */

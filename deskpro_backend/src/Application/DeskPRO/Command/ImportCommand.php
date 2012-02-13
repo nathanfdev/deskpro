@@ -179,6 +179,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		if ($mode == 'run') {
+
 			$logger->log(sprintf("Starting importer %s", $importer->getId()), 'INFO');
 
 			if ($errors = $importer->validateOptions()) {
@@ -192,6 +193,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$importer->setupImport();
 			$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
 			echo "\n";
+
+			if ($importer->isLargeDatabase()) {
+				$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttp://www.deskpro.com/g/import-large-db\n</info>");
+				$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to continue with the import now? [Y/n]> ');
+				if (!$yes) {
+					echo "\n";
+					return 0;
+				}
+			}
 
 			$i = 1;
 			$num = $importer->countSteps();

@@ -22,6 +22,13 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		// If there arent any tickets besides the default one, then remove the default data
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC LIMIT 1");
+		if (!$default_check || $default_check == 1) {
+			$this->getDb()->exec("DELETE FROM tickets");
+			$this->getDb()->exec("DELETE FROM departments");
+		}
+
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_cat");
 		$this->logMessage(sprintf("Importing %d ticket categories", $count));
 		if (!$count) {

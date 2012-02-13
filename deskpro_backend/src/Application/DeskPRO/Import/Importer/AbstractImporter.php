@@ -78,6 +78,17 @@ abstract class AbstractImporter
 
 
 	/**
+	 * Returns true when we can detect a large database and can link to the kb article
+	 *
+	 * @return bool
+	 */
+	public function isLargeDatabase()
+	{
+		return false;
+	}
+
+
+	/**
 	 * Called before initalizing. Use this to check $config to ensure
 	 * everything is alright.
 	 *
