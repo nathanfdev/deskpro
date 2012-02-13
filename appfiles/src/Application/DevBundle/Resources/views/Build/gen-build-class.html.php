@@ -1,8 +1,8 @@
 <?php $view->extend('DevBundle::layout.html.php') ?>
 <h1>New Build Class</h1>
 <ul>
-	<li>Copy this code template into <var>appfiles/src/Application/DeskPRO/Build/Upgrade/<strong><?php echo $build_classname ?>.php</strong></var> and edit it</li>
-	<li>Update <var>appfiles/sys/<strong>VERSION</strong></var> and set it to <var><?php echo $build_string ?></var></li>
+	<li>Copy this code template into <var>deskpro_backend/src/Application/DeskPRO/Build/Upgrade/<strong><?php echo $build_classname ?>.php</strong></var> and edit it</li>
+	<li>Update <var>deskpro_backend/sys/<strong>VERSION</strong></var> and set it to <var><?php echo $build_string ?></var></li>
 </ul>
 
 <textarea style="width: 95%; height: 280px; font-family: 'Monaco', 'Courier New', monospace;">

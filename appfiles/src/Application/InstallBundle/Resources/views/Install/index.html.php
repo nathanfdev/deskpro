@@ -165,7 +165,7 @@
 		<div class="alert-message block-message error">
 			<strong>You don't have a config file</strong>!
 			<p>
-				In the <code>/appfiles/</code> directory, rename <code>config.new.php</code> to <code>config.php</code>
+				In the root directory, rename <code>config.new.php</code> to <code>config.php</code>
 				and edit the values inside with your database connection details. Once you have done this,
 				re-run this page.
 			</p>

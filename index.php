@@ -8,10 +8,10 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', true);
 
 /**
- * The path to the 'appfiles' directory.
- * If you move the appfiles directory, you must update this path.
+ * The path to the 'deskpro_backend' directory.
+ * If you move the deskpro_backend directory, you must update this path.
  */
-define('DP_ROOT', dirname(__FILE__) . '/appfiles');
+define('DP_ROOT', dirname(__FILE__) . '/deskpro_backend');
 
 /**
  * The path to the config.php file.

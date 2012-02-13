@@ -2,11 +2,8 @@
 <ruleset name="DeskPRO Standard">
 	<description>DeskPRO Standards</description>
 
-	<exclude-pattern>appfiles/vendor/*</exclude-pattern>
-	<exclude-pattern>appfiles/sys/logs</exclude-pattern>
-	<exclude-pattern>appfiles/sys/cache</exclude-pattern>
-	<exclude-pattern>appfiles/config.php</exclude-pattern>
-	<exclude-pattern>appfiles/config.new.php</exclude-pattern>
+	<exclude-pattern>deskpro_backend/vendor/*</exclude-pattern>
+	<exclude-pattern>deskpro_backend/sys/cache</exclude-pattern>
 
 	<rule ref="Generic.Files.LineEndings">
 		<properties>
