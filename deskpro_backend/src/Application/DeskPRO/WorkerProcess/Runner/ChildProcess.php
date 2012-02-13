@@ -41,9 +41,9 @@ class ChildProcess extends AbstractRunner
 	 */
 	public function runJob(Entity\WorkerJob $worker_job)
 	{
-		$cmd = App::getConfig('php_path') . ' console.php dp:worker-job -j='.$worker_job->id;
+		$cmd = App::getConfig('php_path') . ' cmd.php dp:worker-job -j='.$worker_job->id;
 
-		$process = new \Symfony\Component\Process\Process($cmd, DP_ROOT . '/bin');
+		$process = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT);
 		$process->run();
 	}
 }

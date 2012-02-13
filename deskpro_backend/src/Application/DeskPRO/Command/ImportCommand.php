@@ -216,8 +216,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$logger->log(sprintf("Part %d of %d", $p, $num_pages), 'INFO');
 					}
 
-					$cmd = $php_path . ' console.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
-					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin');
+					$cmd = $php_path . ' cmd.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
+					$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT);
 					$proc->setTimeout(600);
 					$proc->run(function ($type, $buffer) {
 						if ('err' === $type) {

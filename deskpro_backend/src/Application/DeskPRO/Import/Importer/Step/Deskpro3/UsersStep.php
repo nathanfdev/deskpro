@@ -248,7 +248,7 @@ class UsersStep extends AbstractDeskpro3Step
 
 			if ($form_data) {
 				// TODO fix custom field saving
-				//$this->fieldmanager->saveFormToObject($form_data, $person);
+				$this->fieldmanager->saveFormToObject($form_data, $person);
 			}
 
 			$this->getEm()->persist($person);
