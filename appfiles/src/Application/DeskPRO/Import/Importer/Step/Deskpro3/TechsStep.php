@@ -13,6 +13,11 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 class TechsStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var int[]
+	 */
+	protected $dep_ids;
+
 	public static function getTitle()
 	{
 		return 'Import Techs';
@@ -24,6 +29,8 @@ class TechsStep extends AbstractDeskpro3Step
 		$this->logMessage(sprintf("Importing %d techs", count($techs)));
 
 		$start_time = microtime(true);
+
+		$this->dep_ids = $this->getDb()->fetchAllCol("SELECT id FROM departments");
 
 		$this->getDb()->beginTransaction();
 
@@ -64,6 +71,34 @@ class TechsStep extends AbstractDeskpro3Step
 				$this->getEm()->flush();
 
 				$this->saveMappedId('tech', $tech['id'], $agent->id);
+
+				#------------------------------
+				# Category (department) permissions
+				#------------------------------
+
+				// DP3: Cats in cats_admin are ones that are *denied*
+				// DP4: Theres an entry in department_permissions for each cat *allowed*
+
+				$deny_cat_ids = explode(',', (string)$tech['cats_admin']);
+
+				foreach ($this->dep_ids as $did) {
+					$mapped_id = $this->getMappedOldId('ticket_category', $did);
+					if (in_array($mapped_id, $deny_cat_ids)) {
+						continue;
+					}
+
+					$this->getDb()->insert('department_permissions', array(
+						'department_id' => $did,
+						'person_id' => $agent->id,
+						'app' => 'tickets',
+					));
+
+					$this->getDb()->insert('department_permissions', array(
+						'department_id' => $did,
+						'person_id' => $agent->id,
+						'app' => 'chat',
+					));
+				}
 			}
 
 			$this->getEm()->flush();
