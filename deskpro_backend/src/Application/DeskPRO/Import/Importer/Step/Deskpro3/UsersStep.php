@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 
 class UsersStep extends AbstractDeskpro3Step
 {
+	const PERPAGE = 1000;
 	/**
 	 * @var array
 	 */
@@ -38,7 +39,7 @@ class UsersStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		return ceil($count / 1000);
+		return ceil($count / self::PERPAGE);
 	}
 
 	public function run($page = 1)
@@ -168,50 +169,61 @@ class UsersStep extends AbstractDeskpro3Step
 			}
 		}
 
+		$insert_person = $person->toArray(Person::TOARRAY_ONLY_PRIMATIVES, true);
+		$this->getDb()->insert('people', $insert_person);
+		$insert_person['id'] = $this->getDb()->lastInsertId();
+
+		$this->saveMappedId('user', $user_id, $insert_person['id']);
+		unset($person);
+
+
 		//---
 		// Usergroups
 		//---
 
 		$done_ids = array();
 		foreach ($usergroup_ids as $ug_id) {
-			$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup', $ug_id));
-			if ($usergroup) {
-				$done_ids[] = $usergroup->id;
-				$person->usergroups->add($usergroup);
+			$new_ug_id = $this->getMappedNewId('usergroup', $ug_id);
+			if ($new_ug_id) {
+				$this->getDb()->insert('person2usergroups', array('person_id' => $insert_person['id'], 'usergroup_id' => $new_ug_id));
+				$done_ids[] = $new_ug_id;
 			}
 		}
 
 		// Also DP3 had the 'registered' group that was always added on demand
-		$usergroup = $this->getEm()->find('DeskPRO:Usergroup', $this->getMappedNewId('usergroup_sys', 'registered'));
-		if ($usergroup && !in_array($usergroup->id, $done_ids)) {
-			$person->usergroups->add($usergroup);
+		$new_ug_id = $this->getMappedNewId('usergroup_sys', 'registered');
+		if ($new_ug_id && !in_array($new_ug_id, $done_ids)) {
+			$this->getDb()->insert('person2usergroups', array('person_id' => $insert_person['id'], 'usergroup_id' => $new_ug_id));
 		}
+
+		unset($done_ids);
 
 
 		//---
 		// Email addresses
 		//---
 
-		$default_email = null;
+		$default_email_id = null;
 		foreach ($user_emails as $email_info) {
+
 			$email = new PersonEmail();
 			$email->email = $email_info['email'];
 			$email->date_validated = new \DateTime();
 
-			if (!$default_email || $email_info['id'] == $user_info['default_emailid']) {
-				$default_email = $email;
-			}
+			$insert_email = $email->toArray(PersonEmail::TOARRAY_ONLY_PRIMATIVES, true);
+			$this->getDb()->insert('people_emails', $insert_email);
 
-			$person->addEmailAddress($email);
+			if (!$default_email_id || $email_info['id'] == $user_info['default_emailid']) {
+				$default_email_id = $this->getDb()->lastInsertId();
+			}
 		}
 
-		$person->primary_email = $default_email;
+		$this->getDb()->update('people', array('primary_email_id' => $default_email_id), array('id' => $insert_person['id']));
 
 		//---
 		// Custom fields
 		//---
 
-		$form_data = array();
 		foreach ($this->custom_field_info as $field_info) {
 			$name = $field_info['name'];
 			if (!isset($user_info[$name]) || !$user_info[$name]) {
@@ -227,39 +239,42 @@ class UsersStep extends AbstractDeskpro3Step
 			switch ($field->handler_class) {
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-					$form_data['field_' . $field->id] = $user_info[$name];
+					$this->getDb()->insert('custom_data_person', array(
+						'person_id' => $insert_person['id'],
+						'field_id' => $field->id,
+						'input' => $user_info[$name]
+					));
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
 					$val = str_replace('|||', '', $user_info[$name]);
 					$new_val = $this->getMappedNewId('people_def_choice', $val);
 					if ($new_val) {
-						$form_data['field_' . $new_val] = 1;
+						$this->getDb()->insert('custom_data_person', array(
+							'person_id' => $insert_person['id'],
+							'field_id' => $new_val,
+							'value' => 1
+						));
 					}
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
 					$vals = explode('|||', $user_info[$name]);
-					$new_vals = array();
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('people_def_choice', $val);
 						if ($new_val) {
-							$form_data['field_' . $new_val] = 1;
+							$this->getDb()->insert('custom_data_person', array(
+								'person_id' => $insert_person['id'],
+								'field_id' => $new_val,
+								'value' => 1
+							));
 						}
 					}
 					break;
 			}
 		}
 
-		$this->getEm()->persist($person);
-		$this->getEm()->flush();
-		$this->saveMappedId('user', $user_id, $person->id);
-
-		if ($form_data) {
-			$this->fieldmanager->saveFormToObject($form_data, $person);
-		}
-
-		$this->getEm()->flush();
+		echo ".";
 	}
 
 
@@ -269,8 +284,8 @@ class UsersStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user ORDER BY id ASC LIMIT $start, 1000");
+		$start = $page * self::PERPAGE;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user ORDER BY id ASC LIMIT $start, " . self::PERPAGE);
 
 		return $ids;
 	}

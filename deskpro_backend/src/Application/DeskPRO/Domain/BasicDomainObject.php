@@ -56,11 +56,17 @@ abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChang
 	 * @param bool $mode
 	 * @return array
 	 */
-	public function toArray($mode = self::TOARRAY_NOOP)
+	public function toArray($mode = self::TOARRAY_NOOP, $only_real = false)
 	{
 		$values = array();
 
 		foreach ($this->getKeys() as $name) {
+
+			if ($only_real) {
+				if (!property_exists($this, $name)) {
+					continue;
+				}
+			}
 
 			$val = $this[$name];
 
@@ -78,6 +84,8 @@ abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChang
 			} elseif ($mode & self::TOARRAY_ONLY_PRIMATIVES) {
 				if (is_scalar($val) OR is_array($val)) {
 					$values[$name] = $val;
+				} elseif ($val instanceof \DateTime) {
+					$values[$name] = $val->format('Y-m-d H:i:s');
 				}
 
 			} elseif ($mode & self::TOARRAY_DEEP) {

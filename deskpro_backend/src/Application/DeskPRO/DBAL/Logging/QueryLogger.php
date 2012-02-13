@@ -44,6 +44,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	protected $disable_trace = true;
 
 	protected $keep_queries = false;
+
+	public $query_count = 0;
 	public $total_time = 0.0;
 
 	/**
@@ -102,6 +104,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		$queryinfo = &$this->_queries[$this->_last_query];
 		$queryinfo['time_end']   = microtime(true);
 		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
+
+		$this->query_count++;
 		$this->total_time += $queryinfo['time_taken'];
 
 		$this->_query_counter++;

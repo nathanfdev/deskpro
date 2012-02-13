@@ -144,7 +144,7 @@ class Deskpro3Importer extends AbstractImporter
 		// For current database connection
 		$qlog = new QueryLogger();
 
-		if ($this->config->get('enable_log')) {
+		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-db-sql.log', null, false));
@@ -157,7 +157,7 @@ class Deskpro3Importer extends AbstractImporter
 		$this->db->getConfiguration()->setSQLLogger($qlog);
 
 		// For olddb too
-		if ($this->config->get('enable_log')) {
+		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-olddb-sql.log', null, false));
@@ -191,13 +191,15 @@ class Deskpro3Importer extends AbstractImporter
 		$time_db_total  = $time_db + $time_olddb;
 		$time_php_total = $time_total - $time_db_total;
 
+		$total_queries = $this->qlog_db->query_count + $this->qlog_olddb->query_count;
+
 		$mem = @memory_get_peak_usage();
 		if (!$mem) {
 			$mem = 0;
 		}
 		$mem = \Orb\Util\Numbers::filesizeDisplay($mem);
 
-		$this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   DB: %0.2f   (db %0.2f, olddb %0.2f)   Peak Mem: %s", $time_total, $time_php_total, $time_db_total, $time_db, $time_olddb, $mem));
+		$this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   DB: %0.2f (db %0.2f, olddb %0.2f)  Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_db_total, $time_db, $time_olddb, $total_queries, $mem));
 	}
 
 
