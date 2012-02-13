@@ -48,7 +48,7 @@ class InstallSchema
 
 		// Generate now dynamically (dev tool)
 		if ($schema === null) {
-			$sc = new \Application\InstallBundle\Data\GenerateSchema($em);
+			$sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
 			$schema = array(
 				'create' => $sc->getCreates(),
 				'alter' => $sc->getAlters(),
