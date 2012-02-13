@@ -56,6 +56,9 @@ class UsersStep extends AbstractDeskpro3Step
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
+		$this->getDb()->exec("SET unique_checks = 0");
+		$this->getDb()->exec("SET foreign_key_checks = 0");
+
 		foreach ($users as $u) {
 			$this->getDb()->beginTransaction();
 
@@ -67,6 +70,9 @@ class UsersStep extends AbstractDeskpro3Step
 				throw $e;
 			}
 		}
+
+		$this->getDb()->exec("SET unique_checks = 1");
+		$this->getDb()->exec("SET foreign_key_checks = 1");
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
