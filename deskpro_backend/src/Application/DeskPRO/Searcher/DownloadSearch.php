@@ -204,7 +204,7 @@ class DownloadSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date':
-				$order_by = "ORDER BY downloads.id $dir";
+				$order_by = "ORDER BY downloads.date_published $dir";
 				break;
 
 			case 'num_downloads':

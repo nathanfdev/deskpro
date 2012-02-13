@@ -205,7 +205,7 @@ class ArticleSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date':
-				$order_by = "ORDER BY articles.id $dir";
+				$order_by = "ORDER BY articles.date_published $dir";
 				break;
 
 			case 'view_count':

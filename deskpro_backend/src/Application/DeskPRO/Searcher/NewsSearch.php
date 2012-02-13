@@ -186,7 +186,7 @@ class NewsSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date':
-				$order_by = "ORDER BY news.id $dir";
+				$order_by = "ORDER BY news.date_published $dir";
 				break;
 		}
 

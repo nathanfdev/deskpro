@@ -21,7 +21,9 @@ use Orb\Util\Strings;
  * A download/file available from the protal
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Download")
- * @ORM_Mapping\Table(name="downloads")
+  * @ORM_Mapping\Table(name="downloads", indexes={
+ *     @ORM_Mapping\Index(name="date_published_idx", columns={"date_published"})
+ * })
  * @ORM_Mapping\HasLifecycleCallbacks
  */
 class Download extends ContentAbstract

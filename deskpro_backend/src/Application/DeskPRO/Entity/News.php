@@ -22,8 +22,10 @@ use Orb\Util\Arrays;
  * News
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
- * @ORM_Mapping\Table(name="news")
  * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="news", indexes={
+ *     @ORM_Mapping\Index(name="date_published_idx", columns={"date_published"})
+ * })
  */
 class News extends ContentAbstract
 {

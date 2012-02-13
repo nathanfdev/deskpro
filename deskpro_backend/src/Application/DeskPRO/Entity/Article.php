@@ -23,7 +23,9 @@ use Orb\Util\Strings;
  * Article
  *
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
- * @ORM_Mapping\Table(name="articles")
+ * @ORM_Mapping\Table(name="articles", indexes={
+ *     @ORM_Mapping\Index(name="date_published_idx", columns={"date_published"})
+ * })
  * @ORM_Mapping\HasLifecycleCallbacks
  */
 class Article extends ContentAbstract

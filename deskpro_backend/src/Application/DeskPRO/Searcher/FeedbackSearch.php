@@ -177,7 +177,7 @@ class FeedbackSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date_created':
-				$order_by = "ORDER BY feedback.id $dir";
+				$order_by = "ORDER BY feedback.date_published $dir";
 				break;
 
 			//case 'popularity':

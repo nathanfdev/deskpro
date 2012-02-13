@@ -22,7 +22,9 @@ use Orb\Util\Strings;
  *
  * @ORM_Mapping\HasLifecycleCallbacks
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Feedback")
- * @ORM_Mapping\Table(name="feedback")
+ * @ORM_Mapping\Table(name="feedback", indexes={
+ *     @ORM_Mapping\Index(name="date_published_idx", columns={"date_published"})
+ * })
  */
 class Feedback extends ContentAbstract
 {
