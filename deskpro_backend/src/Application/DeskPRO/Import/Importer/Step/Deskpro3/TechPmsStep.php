@@ -68,7 +68,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 			$other_agent = $this->getEm()->find('DeskPRO:Person', $other_agent_id);
 
 			$convo = $this->getEm()->getRepository('DeskPRO:ChatConversation')->getRecentForPeople(array($agent_id, $other_agent_id));
-			if (!$convo) {
+			if (!$convo || !$convo->is_agent) {
 				$convo = new \Application\DeskPRO\Entity\ChatConversation();
 				$convo->is_agent = true;
 				$convo->addParticipant($agent);
