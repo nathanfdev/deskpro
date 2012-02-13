@@ -48,7 +48,11 @@ class UsersStep extends AbstractDeskpro3Step
 		$this->fieldmanager->getFields();
 
 		$batch = $this->getIdsBatch($page - 1);
-		$users = $this->getEm()->getRepository('DeskPRO:Person')->getByIds($batch);
+
+		$ids = implode(',', $batch);
+		if (!$ids) $ids = '0';
+
+		$users = $this->getOldDb()->fetchAll("SELECT * FROM user WHERE id IN ($ids)");
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
@@ -73,9 +77,9 @@ class UsersStep extends AbstractDeskpro3Step
 	 * Process a single user
 	 * @param $user_id
 	 */
-	protected function processUser($user)
+	protected function processUser($user_info)
 	{
-		$user_id = $user->id;
+		$user_id = $user_info['id'];
 
 		#------------------------------
 		# Make sure we havent already done them
@@ -91,7 +95,6 @@ class UsersStep extends AbstractDeskpro3Step
 		# Get the users info
 		#------------------------------
 
-		$user_info         = $this->getOldDb()->fetchAssoc("SELECT * FROM user WHERE id = ?", array($user_id));
 		$user_map          = $this->getOldDb()->fetchAssoc("SELECT * FROM user_map WHERE localid = ? AND sourceid = 1", array($user_id));
 		$user_deskpro      = $this->getOldDb()->fetchAssoc("SELECT * FROM user_deskpro WHERE id = ?", array($user_map['remoteid']));
 		$user_company_id   = $this->getOldDb()->fetchColumn("SELECT company FROM user_member_company WHERE user = ? LIMIT 1", array($user_id));

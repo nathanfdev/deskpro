@@ -22,108 +22,62 @@ class FeedbackStep extends AbstractDeskpro3Step
 		return 'Import Feedback';
 	}
 
-	public function run($page = 1)
+	public function countPages()
 	{
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
-		if ($count) {
-			$this->logMessage(sprintf("Importing %d feedback categories", $count));
-
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				$this->processCategories(0);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_ideas");
+		if (!$count) {
+			return 1;
 		}
 
-
-		$feedback_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY `created_at` ASC");
-		if ($feedback_ids) {
-			$this->logMessage(sprintf("Importing %d feedback", count($feedback_ids)));
-
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				foreach ($feedback_ids as $iid) {
-					$this->processFeedback($iid);
-				}
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all feedback. Took %.3f seconds.", $end_time-$start_time));
-		}
+		return ceil($count / 150);
 	}
 
-	protected function processCategories($parent_id)
+	/**
+	 * @param $page
+	 * @return array
+	 */
+	protected function getIdsBatch($page)
 	{
-		if ($parent_id) {
-			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
-		} else {
-			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id IS NULL");
-		}
-		if (!$cats) {
-			return;
-		}
+		$start = $page * 150;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY created_at ASC LIMIT $start, 150");
 
-		$new_parent = null;
-		if ($parent_id) {
-			$new_parent = $this->getEm()->find('DeskPRO:FeedbackCategory', $this->getMappedNewId('feedback_cat', $parent_id));
-			if (!$new_parent) {
-				return;
+		return $ids;
+	}
+
+	public function run($page = 1)
+	{
+		$batch = $this->getIdsBatch($page - 1);
+
+		$ids = implode(',', $batch);
+		if (!$ids) $ids = '0';
+
+		$ideas = $this->getOldDb()->fetchAll("SELECT * FROM user_ideas WHERE id IN ($ids)");
+		$sub_start_time = microtime(true);
+		$this->logMessage("-- Processing batch {$page}");
+
+		foreach ($ideas as $i) {
+			$this->getDb()->beginTransaction();
+
+			try {
+				$this->processFeedback($i);
+				$this->getDb()->commit();
+			} catch (\Exception $e) {
+				$this->getDb()->rollback();
+				throw $e;
 			}
 		}
 
-		foreach ($cats as $cat) {
-			#------------------------------
-			# Make sure we havent already done them
-			#------------------------------
-
-			$check_exist = $this->getMappedNewId('feedback_cat', $cat['id']);
-			if ($check_exist) {
-				$this->getLogger()->log("{$cat['id']} already mapped, skipping", 'DEBUG');
-				continue;
-			}
-
-			#------------------------------
-			# Create it
-			#------------------------------
-
-			$new_cat = new FeedbackCategory();
-			$new_cat->title = $cat['title'];
-			$new_cat->display_order = $cat['display_order'];
-			if ($new_parent) {
-				$new_cat->parent = $new_parent;
-			}
-
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-
-			$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
-
-			// Process any subcats
-			$this->processCategories($cat['id']);
-		}
+		$sub_end_time = microtime(true);
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
 
 	/**
 	 * Process an feedback
 	 */
-	protected function processFeedback($feedback_id)
+	protected function processFeedback($feedback)
 	{
-		$feedback = $this->getOldDb()->fetchAssoc("SELECT * FROM user_ideas WHERE id = ?", array($feedback_id));
+		$feedback_id = $feedback['id'];
 
 		#------------------------------
 		# Make sure we havent already done them

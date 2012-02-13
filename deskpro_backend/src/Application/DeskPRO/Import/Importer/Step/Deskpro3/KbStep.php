@@ -22,106 +22,62 @@ class KbStep extends AbstractDeskpro3Step
 		return 'Import Knowledgebase';
 	}
 
-	public function run($page = 1)
+	public function countPages()
 	{
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM faq_cats");
-		if ($count) {
-			$this->logMessage(sprintf("Importing %d knowledgebase categories", $count));
-
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				$this->processCategories(0);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM faq_articles");
+		if (!$count) {
+			return 1;
 		}
 
-
-		$article_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY `timestamp_made` ASC");
-		if ($article_ids) {
-			$this->logMessage(sprintf("Importing %d knowledgebase articles", count($article_ids)));
-
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				foreach ($article_ids as $aid) {
-					$this->processArticle($aid);
-				}
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all articles. Took %.3f seconds.", $end_time-$start_time));
-		}
+		return ceil($count / 150);
 	}
 
-
 	/**
-	 * Process all categories in a tree starting from by $parent_id.
-	 * I.e., to process all categories start with a parent_id of 0
-	 *
-	 * @param $parent_id
+	 * @param $page
+	 * @return array
 	 */
-	protected function processCategories($parent_id)
+	protected function getIdsBatch($page)
 	{
-		$cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats WHERE parent = ?", array($parent_id));
-		if (!$cats) {
-			return;
-		}
+		$start = $page * 150;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY timestamp_made ASC LIMIT $start, 150");
 
-		$new_parent = null;
-		if ($parent_id) {
-			$new_parent = $this->getEm()->find('DeskPRO:ArticleCategory', $this->getMappedNewId('faq_cat', $parent_id));
-			if (!$new_parent) {
-				return;
+		return $ids;
+	}
+
+	public function run($page = 1)
+	{
+		$batch = $this->getIdsBatch($page - 1);
+
+		$ids = implode(',', $batch);
+		if (!$ids) $ids = '0';
+
+		$articles = $this->getOldDb()->fetchAll("SELECT * FROM faq_articles WHERE id IN ($ids)");
+		$sub_start_time = microtime(true);
+		$this->logMessage("-- Processing batch {$page}");
+
+		foreach ($articles as $a) {
+			$this->getDb()->beginTransaction();
+
+			try {
+				$this->processArticle($a);
+				$this->getDb()->commit();
+			} catch (\Exception $e) {
+				$this->getDb()->rollback();
+				throw $e;
 			}
 		}
 
-		foreach ($cats as $cat) {
-			#------------------------------
-			# Make sure we havent already done them
-			#------------------------------
-
-			$check_exist = $this->getMappedNewId('faq_cat', $cat['id']);
-			if ($check_exist) {
-				$this->getLogger()->log("{$cat['id']} already mapped, skipping", 'DEBUG');
-				continue;
-			}
-
-			$new_cat = new ArticleCategory();
-			$new_cat->title = $cat['name'];
-			$new_cat->display_order = $cat['displayorder'];
-			if ($new_parent) {
-				$new_cat->parent = $new_parent;
-			}
-
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-
-			$this->saveMappedId('faq_cat', $cat['id'], $new_cat->id);
-
-			$this->processCategories($cat['id']);
-		}
+		$sub_end_time = microtime(true);
+		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
 	}
 
 
 	/**
 	 * Process an article
 	 */
-	protected function processArticle($article_id)
+	protected function processArticle($article)
 	{
-		$article = $this->getOldDb()->fetchAssoc("SELECT * FROM faq_articles WHERE id = ?", array($article_id));
+		$article_id = $article['id'];
 
 		#------------------------------
 		# Make sure we havent already done them
