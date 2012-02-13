@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackCatsStep extends AbstractDeskpro3Step
 {
