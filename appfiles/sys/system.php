@@ -507,8 +507,13 @@ class KernelErrorHandler
 		}
 
 		try {
-			$logger = App::get('deskpro.exception_logger');
-			$logger->handleError($errno, $errstr, $errfile, $errline);
+			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
+				$logger = $GLOBALS['DP_ERR_LOGGER'];
+				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR');
+			} elseif (App::has('deskpro.exception_logger')) {
+				$ex_logger = App::get('deskpro.exception_logger');
+				$ex_logger->handleError($errno, $errstr, $errfile, $errline);
+			}
 		} catch (\Exception $e) {}
 
 		if ($errinfo['die']) {
@@ -528,8 +533,13 @@ class KernelErrorHandler
 		}
 
 		try {
-			$logger = App::get('deskpro.exception_logger');
-			$logger->handleException($exception);
+			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
+				$logger = $GLOBALS['DP_ERR_LOGGER'];
+				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR');
+			} elseif (App::has('deskpro.exception_logger')) {
+				$ex_logger = App::get('deskpro.exception_logger');
+				$ex_logger->handleException($exception);
+			}
 		} catch (\Exception $e) {}
 
 		if ($errinfo['die']) {

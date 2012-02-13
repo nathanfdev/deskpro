@@ -29,8 +29,8 @@ class Stream extends AbstractWriter
 	protected $_did_open_stream = false;
 
 	/**
-	 * @param  streamOrUrl     Stream or URL to open as a stream
-	 * @param  mode            Mode, only applicable if a URL is given
+	 * @param  mixed  streamOrUrl     Stream or URL to open as a stream
+	 * @param  string mode            Mode, only applicable if a URL is given
 	 */
 	public function __construct($stream_or_url, $mode = null)
 	{

@@ -111,6 +111,18 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$logger = new Logger();
 		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
 
+		$log_file_path = DP_ROOT.'/sys/logs/import.log';
+		try {
+			$logger->addWriter(new \Orb\Log\Writer\Stream($log_file_path));
+		} catch (\Exception $e) {
+			$output->writeln("<error>Log file not writable: $log_file_path</error>");
+			$output->writeln("Make the logs directory writable and try again.");
+			return 1;
+		}
+
+		// Override default error logger so it logs to the file
+		$GLOBALS['DP_ERR_LOGGER'] = $logger;
+
 		$start_time = microtime(true);
 
 		/** @var $importer \Application\DeskPRO\Import\Importer\AbstractImporter */
