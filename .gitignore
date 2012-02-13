@@ -16,9 +16,20 @@
 /deskpro_backend/sys/Resources/distro-checksums.php
 /deskpro_backend/src/Application/InstallBundle/Data/schema.php
 
-/data_logs/
-/data_backups/
-/data_files/
+/data_logs/*
+!/data_logs/.htaccess
+!/data_logs/index.html
+/data_logs/emails/*
+!/data_logs/emails/.htaccess
+!/data_logs/emails/index.html
+
+/data_backups/*
+!/data_backups/.htaccess
+!/data_backups/index.html
+
+/data_files/*
+!/data_files/.htaccess
+!/data_files/index.html
 
 /deskpro_assets/build
 /deskpro_assets/stylesheets/agent
