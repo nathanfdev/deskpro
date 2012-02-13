@@ -9,7 +9,8 @@
 *.sublime*
 
 # cache and log files
-/deskpro_backend/sys/cache/
+/deskpro_backend/sys/cache/*
+!/deskpro_backend/sys/cache/index.html
 /deskpro_backend/sys/bootstrap.php
 /deskpro_backend/sys/compiled.php
 /deskpro_backend/sys/config/build-time.php
