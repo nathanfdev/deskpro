@@ -227,7 +227,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$insert_message = array();
 			$insert_message['message_hash'] = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
-			$insert_message['message'] = $note_info['note'];
+			$insert_message['message'] = nl2br(htmlspecialchars($note_info['note'], \ENT_QUOTES));
 			$insert_message['person_id'] = $pid;
 			$insert_message['ticket_id'] = $insert_ticket['id'];
 			$insert_message['is_agent_note'] = 1;
@@ -255,7 +255,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$insert_message = array();
 			$insert_message['message_hash'] = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
-			$insert_message['message'] = $message_info['message'];
+			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES));
 			$insert_message['person_id'] = $pid;
 			$insert_message['ticket_id'] = $insert_ticket['id'];
 			$insert_message['is_agent_note'] = 1;
