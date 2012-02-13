@@ -30,7 +30,7 @@
 
 	'user.feedback.no_feedback_spec' => 'There are no feedback submissions with those specificiations',
 
-	'user.feedback.view_all_x_feedback' => 'View all {{count}} feedback submissions',
+	'user.feedback.view_all_x_feedback' => 'View all {{count}} feedback submissions|View 1 feedback submission',
 
 	'user.feedback.similar_same_as' => 'This is the same as my submission',
 	'user.feedback.similar_not_same_as' => 'This isn\'t the same as my submission',

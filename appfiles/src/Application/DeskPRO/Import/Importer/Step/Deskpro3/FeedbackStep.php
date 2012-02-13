@@ -68,7 +68,11 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	protected function processCategories($parent_id)
 	{
-		$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
+		if ($parent_id) {
+			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
+		} else {
+			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id IS NULL");
+		}
 		if (!$cats) {
 			return;
 		}
@@ -143,27 +147,34 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 		$new_person = null;
 		if ($feedback['user_id']) {
-			$new_person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $feedback['userid']));
+			$new_person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $feedback['user_id']));
 		}
 		if (!$new_person) {
 			$new_person = $this->getEm()->getRepository('DeskPRO:Person')->findOneBy(array('can_admin' => true));
 		}
 
 		$new_feedback = new Feedback();
-		$new_feedback->addToCategory($new_category);
+		$new_feedback->category = $new_category;
 		if ($feedback['status'] == 'new') {
 			$new_feedback->setStatusCode(Feedback::STATUS_NEW);
 		} elseif ($feedback['status'] == 'accepted') {
-			$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.1');
+			if ($feedback['completion_status'] == 'planned') {
+				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.1');
+			} elseif ($feedback['completion_status'] == 'started') {
+				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.2');
+			} else {
+				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.3');
+			}
+		} elseif ($feedback['status'] == 'completed') {
+			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.1');
 		} else {
-			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.3');
+			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.4');
 		}
 
 		$new_feedback->person = $new_person;
 		$new_feedback->title = $feedback['title'];
-		$new_feedback->title = $feedback['title'];
-		$new_feedback->content = $feedback['question'] . "<br /><br />" . $feedback['answer'];
-		$new_feedback->date_created = new \DateTime('@' . $feedback['timestamp_made']);
+		$new_feedback->content = $feedback['message'];
+		$new_feedback->date_created = new \DateTime('@' . $feedback['created_at']);
 
 		$this->getEm()->persist($new_feedback);
 		$this->getEm()->flush();
@@ -174,18 +185,23 @@ class FeedbackStep extends AbstractDeskpro3Step
 		# Comments
 		#------------------------------
 
-		$comments = $this->getDb()->fetchAll("SELECT * FROM user_idea_comments WHERE feedback_id = ?");
+		$comments = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_comments WHERE idea_id = ?", array($feedback['id']));
 		foreach ($comments as $comment) {
 			$new_comment = new FeedbackComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['created_at']);
-			if ($comment['userid']) {
-				$new_comment->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $comment['userid']));
-			} elseif ($comment['techid']) {
-				$new_comment->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $comment['techid']));
+			if ($comment['user_id']) {
+				$new_comment->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('user', $comment['user_id']));
+			} elseif ($comment['tech_id']) {
+				$new_comment->person = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $comment['tech_id']));
+			}
+			if (!$new_comment->person) {
+				continue;
 			}
 			if ($comment['user_ip']) {
 				$new_comment->ip_address = $comment['user_ip'];
 			}
+
+			$new_comment->content = $comment['message'];
 
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();

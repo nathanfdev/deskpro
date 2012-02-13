@@ -95,7 +95,7 @@ $DEFAULT_IDEA_CAT['title'] = 'General';
 $em->persist($DEFAULT_IDEA_CAT);
 $em->flush();
 
-foreach (array('Planning', 'Started') as $t) {
+foreach (array('Planning', 'Started', 'Under Review') as $t) {
 	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 	$s->status_type = 'active';
 	$s->title = $t;
