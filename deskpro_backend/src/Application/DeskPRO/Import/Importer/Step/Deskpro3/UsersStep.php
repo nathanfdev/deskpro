@@ -45,15 +45,15 @@ class UsersStep extends AbstractDeskpro3Step
 	public function preRunAll()
 	{
 		$this->importer->removeTableIndexes('people');
-		$this->importer->removeTableIndexes('people_emails');
 		$this->importer->removeTableIndexes('custom_data_person');
+		$this->importer->removeTableIndexes('person2usergroups');
 	}
 
 	public function postRunAll()
 	{
 		$this->importer->restoreTableIndexes('people');
-		$this->importer->restoreTableIndexes('people_emails');
 		$this->importer->restoreTableIndexes('custom_data_person');
+		$this->importer->restoreTableIndexes('person2usergroups');
 	}
 
 	public function run($page = 1)
@@ -295,8 +295,6 @@ class UsersStep extends AbstractDeskpro3Step
 					break;
 			}
 		}
-
-		echo ".";
 	}
 
 

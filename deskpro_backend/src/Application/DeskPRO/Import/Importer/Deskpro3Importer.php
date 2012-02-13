@@ -245,8 +245,6 @@ class Deskpro3Importer extends AbstractImporter
 			$restore_parts[] = $p;
 		}
 
-		print_r($restore_parts);
-
 		if (!$drop_parts) {
 			return;
 		}
