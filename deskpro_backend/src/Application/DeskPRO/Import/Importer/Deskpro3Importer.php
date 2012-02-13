@@ -50,6 +50,7 @@ class Deskpro3Importer extends AbstractImporter
 		'Tasks',
 		'Tickets',
 		'Misc',
+		'BackupTroubles',
 	);
 
 	public function validateOptions()
