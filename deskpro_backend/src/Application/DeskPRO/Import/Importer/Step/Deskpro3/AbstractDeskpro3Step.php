@@ -27,4 +27,9 @@ abstract class AbstractDeskpro3Step extends AbstractStep
 	{
 		return $this->importer->getOldDb();
 	}
+
+	public function getStepTime()
+	{
+
+	}
 }

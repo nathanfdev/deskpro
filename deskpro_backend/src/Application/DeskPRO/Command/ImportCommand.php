@@ -126,6 +126,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$start_time = microtime(true);
 
 		/** @var $importer \Application\DeskPRO\Import\Importer\AbstractImporter */
+		$config['log_dir'] = App::getKernel()->getLogDir();
 		$importer = new $importer_class($this->getContainer(), $config, $logger);
 
 		#----------------------------------------

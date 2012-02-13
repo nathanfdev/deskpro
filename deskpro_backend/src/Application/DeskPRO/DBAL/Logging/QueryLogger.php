@@ -25,7 +25,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	const TYPE_INSERT = 4;
 	const TYPE_DELETE = 8;
 	const TYPE_OTHER  = 16;
-	const TYPE_ALL    = 31;
+	const TYPE_ALL    = 63;
 
 	/**
 	 * @var Orb\Log\Logger
@@ -40,6 +40,11 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
 	protected $_query_counter = 0;
 	protected $_query_total_time = 0.0;
+
+	protected $disable_trace = true;
+
+	protected $keep_queries = false;
+	public $total_time = 0.0;
 
 	/**
 	 * True when logging a query to the log. We need this incase the logger
@@ -56,37 +61,48 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		$sql = trim($sql);
 		if (preg_match('#^SELECT#i', $sql)) {
 			$query_type = self::TYPE_SELECT;
+			$query_typename = 'SELECT';
 		} else if (preg_match('#^UPDATE#i', $sql)) {
 			$query_type = self::TYPE_UPDATE;
+			$query_typename = 'UPDATE';
 		} else if (preg_match('#^INSERT#i', $sql)) {
 			$query_type = self::TYPE_INSERT;
+			$query_typename = 'INSERT';
 		} else if (preg_match('#^DELETE#i', $sql)) {
 			$query_type = self::TYPE_DELETE;
+			$query_typename = 'DELETE';
 		} else {
 			$query_type = self::TYPE_OTHER;
+			$query_typename = 'OTHER';
 		}
 
 		$this->_last_query++;
 
 		$this->_queries[$this->_last_query] = array(
-			'sql'        => $sql,
-			'params'     => $params,
-			'types'      => $types,
-			'query_type' => $query_type,
-			'time_start' => microtime(true),
-			'time_end'   => 0,
-			'time_taken' => 0
+			'sql'            => $sql,
+			'params'         => $params,
+			'types'          => $types,
+			'query_type'     => $query_type,
+			'query_typename' => $query_typename,
+			'time_start'     => microtime(true),
+			'time_end'       => 0,
+			'time_taken'     => 0
 		);
 	}
 
 	public function stopQuery()
 	{
-		if ($this->_is_logging) return;
-		if (!$this->_is_enabled OR $this->_last_query == -1) return;
+		if ($this->_is_logging) {
+			return;
+		}
+		if (!$this->_is_enabled OR $this->_last_query == -1) {
+			return;
+		}
 
 		$queryinfo = &$this->_queries[$this->_last_query];
 		$queryinfo['time_end']   = microtime(true);
 		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
+		$this->total_time += $queryinfo['time_taken'];
 
 		$this->_query_counter++;
 		$this->_query_total_time += $queryinfo['time_taken'];
@@ -96,8 +112,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		$trace = false;
 		$table = false;
 		foreach ($this->_slowlog_rules as $rule) {
-			if (($queryinfo['query_type'] & $rule[0]) AND $queryinfo['time_taken'] >= $rule[1]) {
-				if (!$trace) {
+			if (($queryinfo['query_type'] == self::TYPE_ALL || $queryinfo['query_type'] & $rule[0]) AND $queryinfo['time_taken'] >= $rule[1]) {
+				if (!$trace && !$this->disable_trace) {
 					try { throw new \Exception(); } catch (\Exception $e) { $trace = str_replace(DP_ROOT, '', $e->getTraceAsString()); }
 				}
 				if (!$table) {
@@ -113,6 +129,11 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 				$this->getLogger()->log("SQL log against $table", Logger::NOTICE, array('queryinfo' => $queryinfo));
 				break;
 			}
+		}
+
+		if (!$this->keep_queries) {
+			$this->_queries = array();
+			$this->_last_query = -1;
 		}
 
 		$this->_is_logging = false;
@@ -173,6 +194,16 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	public function addSlowLogRule($query_type, $max_time)
 	{
 		$this->_slowlog_rules[] = array($query_type, $max_time);
+	}
+
+
+
+	/**
+	 * @return float
+	 */
+	public function getTotalTime()
+	{
+		return $this->total_time;
 	}
 
 

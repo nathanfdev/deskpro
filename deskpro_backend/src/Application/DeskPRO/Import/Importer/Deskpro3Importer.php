@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Import\Importer;
 
 use Orb\Log\Logger;
+use Application\DeskPRO\DBAL\Logging\QueryLogger;
 
 class Deskpro3Importer extends AbstractImporter
 {
@@ -24,6 +25,11 @@ class Deskpro3Importer extends AbstractImporter
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $old_db;
+
+	/**
+	 * @var int
+	 */
+	protected $time_begin = 0;
 
 	protected $steps = array(
 		'Settings',
@@ -80,11 +86,6 @@ class Deskpro3Importer extends AbstractImporter
 		return $errors;
 	}
 
-	public function postRunStep($step)
-	{
-		gc_collect_cycles();
-	}
-
 	public function setupImport()
 	{
 		gc_enable();
@@ -109,6 +110,94 @@ class Deskpro3Importer extends AbstractImporter
 		$step = new $class($this);
 
 		return $step;
+	}
+
+	/**
+	 * Called before a step is run
+	 *
+	 * @param $step
+	 */
+	public function preRunStep($step)
+	{
+		$formatter = new \Orb\Log\Filter\CallbackFormatter(function ($log_item) {
+			/** @var $log_item \Orb\Log\LogItem */
+			$log_item = $log_item;
+
+			$extra = $log_item->getExtra();
+			$queryinfo = $extra['queryinfo'];
+
+			$mem = @memory_get_usage();
+			$mem = \Orb\Util\Numbers::filesizeDisplay($mem);
+
+			$log_item[\Orb\Log\LogItem::MESSAGE_LINE] = sprintf(
+				"[%s time:%0.2fs mem:%s]\n\t%s\n\n\t%s\n\n\n",
+				$queryinfo['query_typename'],
+				$queryinfo['time_taken'],
+				$mem,
+				\DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']),
+				$queryinfo['sql']
+			);
+
+			return $log_item;
+		});
+
+		// For current database connection
+		$qlog = new QueryLogger();
+
+		if ($this->config->get('enable_log')) {
+			$logger = new \Orb\Log\Logger();
+			$logger->addFilter($formatter);
+			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-db-sql.log', null, false));
+
+			$qlog->setLogger($logger);
+			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+		}
+
+		$this->qlog_db = $qlog;
+		$this->db->getConfiguration()->setSQLLogger($qlog);
+
+		// For olddb too
+		if ($this->config->get('enable_log')) {
+			$logger = new \Orb\Log\Logger();
+			$logger->addFilter($formatter);
+			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-olddb-sql.log', null, false));
+
+			$qlog->setLogger($logger);
+			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+		}
+
+		$this->qlog_olddb = new QueryLogger();
+		$this->getOldDb()->getConfiguration()->setSQLLogger($qlog);
+
+		$this->time_begin = microtime(true);
+	}
+
+
+	/**
+	 * Called after a step is run
+	 *
+	 * @param $step
+	 */
+	public function postRunStep($step)
+	{
+		gc_collect_cycles();
+
+		$time_end   = microtime(true);
+		$time_total = $time_end - $this->time_begin;
+
+		$time_db    = $this->qlog_db->total_time;
+		$time_olddb = $this->qlog_olddb->total_time;
+
+		$time_db_total  = $time_db + $time_olddb;
+		$time_php_total = $time_total - $time_db_total;
+
+		$mem = @memory_get_peak_usage();
+		if (!$mem) {
+			$mem = 0;
+		}
+		$mem = \Orb\Util\Numbers::filesizeDisplay($mem);
+
+		$this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   DB: %0.2f   (db %0.2f, olddb %0.2f)   Peak Mem: %s", $time_total, $time_php_total, $time_db_total, $time_db, $time_olddb, $mem));
 	}
 
 

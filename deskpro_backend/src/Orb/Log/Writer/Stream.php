@@ -32,7 +32,7 @@ class Stream extends AbstractWriter
 	 * @param  mixed  streamOrUrl     Stream or URL to open as a stream
 	 * @param  string mode            Mode, only applicable if a URL is given
 	 */
-	public function __construct($stream_or_url, $mode = null)
+	public function __construct($stream_or_url, $mode = null, $add_lineformatter = true)
 	{
 		// Setting the default
 		if ($mode === null) {
@@ -58,7 +58,9 @@ class Stream extends AbstractWriter
 			$this->_did_open_stream = true;
 		}
 
-		$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+		if ($add_lineformatter) {
+			$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+		}
 	}
 
 
