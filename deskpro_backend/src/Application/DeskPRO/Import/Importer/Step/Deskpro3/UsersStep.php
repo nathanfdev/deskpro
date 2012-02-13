@@ -59,16 +59,15 @@ class UsersStep extends AbstractDeskpro3Step
 		$this->getDb()->exec("SET unique_checks = 0");
 		$this->getDb()->exec("SET foreign_key_checks = 0");
 
-		foreach ($users as $u) {
-			$this->getDb()->beginTransaction();
-
-			try {
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($users as $u) {
 				$this->processUser($u);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
 			}
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
 
 		$this->getDb()->exec("SET unique_checks = 1");
