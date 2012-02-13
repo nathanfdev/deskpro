@@ -263,8 +263,29 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['date_created'] = date('Y-m-d H:i:s', $message_info['timestamp']);
 			$insert_message['ip_address'] = $message_info['ipaddress'];
 
-			if ($message_info['charset'] && $message_info['charset'] != 'utf8') {
-				$new_msg = @iconv($message_info['charset'], 'UTF-8//TRANSLIT', $message_info['message']);
+			if ($message_info['charset'] && strtoupper($message_info['charset']) != 'UTF-8') {
+
+				// Fix common missing charsets
+				if (strtoupper($message_info['charset']) == 'US-ASCII' || !trim($message_info['charset'])) {
+					$message_info['charset'] = 'ISO-8859-1';
+				}
+
+				// Fix charsets with a country prepended like en_US.ISO-8859-1
+				if (strpos($message_info['charset'], '.')) {
+					$parts = explode('.', $message_info['charset'], 2);
+					$message_info['charset'] = $parts[1];
+				}
+
+				// Surrounded in curlies like {windows-1251} (why? dont ask me)
+				if (preg_match('#^\{(.*?)\}$#', $message_info['charset'], $m)) {
+					$message_info['charset'] = $m[1];
+				}
+
+				if (!preg_match('#^[a-zA-Z0-9\-]+$#', $message_info['charset'])) {
+					$message_info['charset'] = 'ISO-8859-1';
+				}
+
+				$new_msg = @iconv($message_info['charset'], 'UTF-8//IGNORE//TRANSLIT', $message_info['message']);
 				if ($new_msg) {
 					$message_info['message'] = $new_msg;
 				}
