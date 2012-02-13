@@ -48,32 +48,12 @@ class InstallSchema
 
 		// Generate now dynamically (dev tool)
 		if ($schema === null) {
-			$em = App::get('doctrine.orm.entity_manager');
-			$metadata = $em->getMetadataFactory()->getAllMetadata();
-			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-			$all_sql = $tool->getCreateSchemaSql($metadata);
-
-			$schema = array('create' => array(), 'alter' => array());
-
-			foreach ($all_sql as $s) {
-				$s = trim($s);
-
-				if (preg_match('#^ALTER#', $s)) {
-					$schema['alter'][] = $s;
-				} else {
-					$schema['create'][] = $s;
-				}
-			}
-
-			$schema['create'][] = <<<SQL
-				CREATE TABLE `content_search` (
-				  `object_type` varchar(15) NOT NULL DEFAULT '',
-				  `object_id` int(11) NOT NULL,
-				  `content` longtext NOT NULL,
-				  PRIMARY KEY (`object_type`,`object_id`),
-				  FULLTEXT KEY `content` (`content`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-SQL;
+			$sc = new \Application\InstallBundle\Data\GenerateSchema($em);
+			$schema = array(
+				'create' => $sc->getCreates(),
+				'alter' => $sc->getAlters(),
+				'triggers' => $sc->getTriggers()
+			);
 		}
 
 		$this->schema = $schema;
@@ -202,6 +182,48 @@ SQL;
 						$sub = $sql;
 					}
 					$this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($halt_on_error) {
+						throw $e;
+					}
+				}
+
+				$limit--;
+				if (!$limit) {
+					break;
+				}
+			}
+		}
+
+		if ($limit) {
+			foreach ($this->schema['trigger'] as $k => $sql) {
+				if ($skip) {
+					$skip--;
+					continue;
+				}
+
+				$step_id = "query_triger_$k";
+				if ($this->hasDoneStep($step_id)) {
+					$this->getLogger()->log("[QUERY:TRIGGER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					$limit--;
+					if (!$limit) {
+						break;
+					}
+					continue;
+				}
+
+				$this->getLogger()->log("[QUERY:TRIGGER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+
+				try {
+					$this->db->exec($sql);
+					$this->markStepDone($step_id);
+				} catch (\Exception $e) {
+					$has_error = true;
+					if (strlen($sql) > 30) {
+						$sub = substr($sql, 0, 30) . '...';
+					} else {
+						$sub = $sql;
+					}
+					$this->getLogger()->log("[QUERY:TRIGGER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
 					if ($halt_on_error) {
 						throw $e;
 					}

@@ -145,7 +145,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		echo '</script>';
 		flush();
 
-		$limit = 20;
+		$limit = 50;
 		$skip = $limit * $batch;
 
 		$logger = new \Orb\Log\Logger();

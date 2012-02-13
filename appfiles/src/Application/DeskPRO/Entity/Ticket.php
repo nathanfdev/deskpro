@@ -220,7 +220,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @!TODO Make this an enum type
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="status", type="string", length=30)
 	 */
 	protected $status;
 
@@ -228,7 +228,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @!TODO Make this an enum type
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=15, nullable=true)
+	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=30, nullable=true)
 	 */
 	protected $hidden_status = null;
 
