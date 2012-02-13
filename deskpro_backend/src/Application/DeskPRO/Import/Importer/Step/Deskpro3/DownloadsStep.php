@@ -47,6 +47,13 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
+		} else {
+			// We need a default category that "top" level downloads will go into
+			$new_cat = new DownloadCategory();
+			$new_cat->title = 'General';
+			$new_cat->display_order = 0;;
+			$this->getEm()->persist($new_cat);
+			$this->getEm()->flush();
 		}
 
 
@@ -133,8 +140,15 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 		$new_category = $this->getEm()->find('DeskPRO:DownloadCategory', $this->getMappedNewId('file_cat', $download['category']));
 		if (!$new_category) {
-			$this->logMessage("{$download['id']} has an invalid category, skipping");
-			return;
+			// Used to allow "0"
+			if ($download['category'] == 0) {
+				$new_category = $this->getEm()->createQuery("SELECT c FROM DeskPRO:DownloadCategory c ORDER BY c.id ASC")->setMaxResults(1)->getOneOrNullResult();
+			}
+
+			if (!$new_category) {
+				$this->logMessage("{$download['id']} has an invalid category {$download['category']}, skipping");
+				return;
+			}
 		}
 
 		$new_person = null;
