@@ -36,20 +36,29 @@ class TechsStep extends AbstractDeskpro3Step
 					return;
 				}
 
-				$agent = new \Application\DeskPRO\Entity\Person();
-				$agent->name = $tech['name'];
-				$agent->setEmail($tech['email'], true);
-				$agent->setRawPassword($tech['password']);
-				$agent->password_scheme = 'deskpro3_tech';
-				$agent->salt = $tech['salt'];
+				// Check if the account already exists (ie from install, or the import was run late)
+				$check_exist_email = $this->getDb()->fetchColumn("SELECT person_id FROM people_emails WHERE email = ?", array($tech['email']));
+				if ($check_exist_email) {
+					$agent = $this->getEm()->find('DeskPRO:Person', $check_exist_email);
+
+				// Import the tech account
+				} else {
+					$agent = new \Application\DeskPRO\Entity\Person();
+					$agent->setEmail($tech['email'], true);
+					$agent->setRawPassword($tech['password']);
+					$agent->password_scheme = 'deskpro3_tech';
+					$agent->salt = $tech['salt'];
+					$agent->can_agent = true;
+					$agent->can_admin = (bool)$tech['is_admin'];
+					$agent->can_billing = (bool)$tech['is_admin'];
+					$agent->can_reports = (bool)$tech['is_admin'];
+					$agent->name = $tech['name'];
+				}
+
 				$agent->is_user = true;
 				$agent->is_confirmed = true;
 				$agent->is_agent_confirmed = true;
 				$agent->is_agent = true;
-				$agent->can_agent = true;
-				$agent->can_admin = (bool)$tech['is_admin'];
-				$agent->can_billing = (bool)$tech['is_admin'];
-				$agent->can_reports = (bool)$tech['is_admin'];
 
 				$this->getEm()->persist($agent);
 				$this->getEm()->flush();
