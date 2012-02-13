@@ -111,7 +111,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$logger = new Logger();
 		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
 
-		$log_file_path = DP_ROOT.'/sys/logs/import.log';
+		$log_file_path = App::getKernel()->getLogDir() . '/import.log';
 		try {
 			$logger->addWriter(new \Orb\Log\Writer\Stream($log_file_path));
 		} catch (\Exception $e) {
