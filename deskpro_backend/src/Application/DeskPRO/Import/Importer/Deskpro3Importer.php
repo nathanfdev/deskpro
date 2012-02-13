@@ -157,6 +157,7 @@ class Deskpro3Importer extends AbstractImporter
 		$this->db->getConfiguration()->setSQLLogger($qlog);
 
 		// For olddb too
+		$qlog = new QueryLogger();
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
@@ -166,7 +167,7 @@ class Deskpro3Importer extends AbstractImporter
 			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
 		}
 
-		$this->qlog_olddb = new QueryLogger();
+		$this->qlog_olddb = $qlog;
 		$this->getOldDb()->getConfiguration()->setSQLLogger($qlog);
 
 		$this->time_begin = microtime(true);
@@ -199,7 +200,7 @@ class Deskpro3Importer extends AbstractImporter
 		}
 		$mem = \Orb\Util\Numbers::filesizeDisplay($mem);
 
-		$this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   DB: %0.2f (db %0.2f, olddb %0.2f)  Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_db_total, $time_db, $time_olddb, $total_queries, $mem));
+		$this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   DB: %0.2f (db %0.3f, olddb %0.3f)  Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_db_total, $time_db, $time_olddb, $total_queries, $mem));
 	}
 
 
