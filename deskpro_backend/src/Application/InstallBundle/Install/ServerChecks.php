@@ -395,7 +395,7 @@ class ServerChecks
 
 		$this->getLogger()->log("[CHECK] checking for innodb engine", Logger::DEBUG);
 		$engines = App::getDb()->fetchAllKeyed("SHOW ENGINES", array(), 'Engine');
-		if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] != 'YES') {
+		if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] == 'NO') {
 			$msg = "MySQL does not have the InnoDB engine enabled";
 			$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
 			$this->server_errors['db_no_innodb'] = array(
