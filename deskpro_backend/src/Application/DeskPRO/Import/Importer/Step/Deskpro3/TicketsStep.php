@@ -146,6 +146,11 @@ class TicketsStep extends AbstractDeskpro3Step
 			$new_org_id = $this->getMappedNewId('company', $ticket_info['company']);
 		}
 
+		if (!$new_priority_id) $new_priority_id = null;
+		if (!$new_workflow_id) $new_workflow_id = null;
+		if (!$new_org_id) $new_org_id = null;
+		if (!$new_agent_id) $new_agent_id = null;
+
 		$insert_ticket = array(
 			'subject' => $ticket_info['subject'],
 			'person_id' => $new_person_id,
