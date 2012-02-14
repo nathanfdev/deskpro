@@ -16,35 +16,13 @@ class FilestorageLoader
 	protected $path_info;
 	protected $request_uri;
 
+	/**
+	 * @var \PDO
+	 */
+	protected $pdo;
+
 	public function run()
 	{
-		try {
-			$this->handleRequest();
-		} catch (\Exception $e) {
-			header("HTTP/1.1 500 Internal Server Error");
-			echo "An error occurred.";
-			exit;
-		}
-	}
-
-	protected function handleRequest()
-	{
-		#------------------------------
-		# Parse out the blob code
-		#------------------------------
-
-		// Requests come in like /blobauth/filename
-		if (!preg_match('#^/([0-9]+)\-([A-Z0-9]+)/?(.*?)$#', $this->getPathInfo(), $m)) {
-			header("HTTP/1.0 404 Not Found");
-			echo "File not found.";
-			exit;
-		}
-
-		$blob_id       = $m[1];
-		$blob_auth     = $m[2];
-		$blob_filename = $m[3];
-
-
 		#------------------------------
 		# Config and DB connection
 		#------------------------------
@@ -62,21 +40,201 @@ class FilestorageLoader
 		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
 		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
 
-		$pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-		$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
+		#------------------------------
+		# Run appropriate action
+		#------------------------------
+
+		try {
+			$pathinfo = $this->getPathInfo();
+
+			// Default avatar: /avatar/default
+			if (preg_match('#^/avatar/default#', $pathinfo)) {
+				$this->defaultAvatarAction();
+
+			// Person avatar: /avatar/13
+			} elseif (preg_match('#^/avatar/([0-9]+)#', $pathinfo, $m)) {
+				$this->personAvatarAction($m[1]);
+
+			// Default org avatar: /o-avatar/default
+			} elseif (preg_match('#^/o-avatar/default#', $pathinfo)) {
+				$this->defaultOrgAvatarAction();
+
+			// Org avatar: /o-avatar/13
+			} elseif (preg_match('#^/o-avatar/([0-9]+)#', $pathinfo, $m)) {
+				$this->orgAvatarAction($m[1]);
+
+			// Any other blob: /123-AUTH/filename.zip
+			} elseif (preg_match('#^/([0-9]+)\-([A-Z0-9]+)/?(.*?)$#', $pathinfo, $m)) {
+				$this->handleBlobRequest($m[1], $m[2], $m[3]);
+			} else {
+				header("HTTP/1.0 404 Not Found");
+				echo "File not found.";
+			}
+		} catch (\Exception $e) {
+			header("HTTP/1.1 500 Internal Server Error");
+			echo "An error occurred.";
+		}
+	}
+
+
+	/**
+	 * Render a persons avatar.
+	 *
+	 * @deprecated If you have a person record, then use picture_blob_id and directly link to the avatar
+	 * @param $person_id
+	 * @return mixed
+	 */
+	public function personAvatarAction($person_id)
+	{
+		$sth = $this->pdo->prepare("
+			SELECT *
+			FROM blobs
+			LEFT JOIN people ON (blobs.id = people.picture_blob_id)
+			WHERE people.id = :person_id
+		");
+		$sth->execute(array('person_id' => $person_id));
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$blob) {
+			$this->defaultAvatarAction();
+			return;
+		}
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob, $size);
+	}
+
+	/**
+	 * Render an org avatar.
+	 *
+	 * @deprecated If you have a org record, then use picture_blob_id and directly link to the avatar
+	 * @param $person_id
+	 * @return mixed
+	 */
+	public function orgAvatarAction($org_id)
+	{
+		$sth = $this->pdo->prepare("
+			SELECT *
+			FROM blobs
+			LEFT JOIN organizations ON (blobs.id = organizations.picture_blob_id)
+			WHERE organizations.id = :org_id
+		");
+		$sth->execute(array('org_id' => $org_id));
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$blob) {
+			$this->defaultOrgAvatarAction();
+			return;
+		}
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob, $size);
+	}
+
+
+	/**
+	 * Serve the default avatar
+	 */
+	public function defaultAvatarAction()
+	{
+		$name = 'picture-default';
+		if (isset($_GET['is_agent'])) {
+			$name = 'picture-default-agent';
+		}
+
+		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth->execute(array('sys_name' => $name));
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
+		if (!$blob) {
+			$container = $this->bootFullSystem();
+			$desc = $container->getSystemService('filestorage')->createRandomPath();
+			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
+				'content_type' => 'image/jpeg',
+				'filename' => $name . '.jpeg',
+				'sys_name' => $name,
+			));
+
+			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth->execute(array('id' => $desc->getPath()));
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+		}
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob, $size);
+	}
+
+
+	/**
+	 * Serve the default org avatar
+	 */
+	public function defaultOrgAvatarAction()
+	{
+		$name = 'orgpicture-default';
+
+		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth->execute(array('sys_name' => $name));
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
+		if (!$blob) {
+			$container = $this->bootFullSystem();
+			$desc = $container->getSystemService('filestorage')->createRandomPath();
+			$desc->write(file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg'), array(
+				'content_type' => 'image/jpeg',
+				'filename' => $name . '.jpeg',
+				'sys_name' => $name,
+			));
+
+			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth->execute(array('id' => $desc->getPath()));
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+		}
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob, $size);
+	}
+
+
+	/**
+	 * @param int $blob_id
+	 * @param string $blob_auth
+	 * @param string $blob_filename
+	 */
+	protected function handleBlobRequest($blob_id, $blob_auth, $blob_filename)
+	{
 		#------------------------------
 		# Fetch and verify the blob
 		#------------------------------
 
-		$sth = $pdo->prepare("SELECT * FROM blobs WHERE id = :id");
+		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
 		$sth->execute(array('id' => $blob_id));
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$blob || $blob['authcode'] != $blob_auth) {
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found.";
-			exit;
+			return;
 		}
 
 		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
@@ -88,12 +246,41 @@ class FilestorageLoader
 			$url = $this->getScheme().'://'.$this->getHttpHost() . $this->getBaseUrl() . '/' . $blob['id'] . '-' . $blob['authcode'] . '/' . $filename_safe;
 			header("HTTP/1.1 301 Moved Permanently");
 			header("Location: $url");
-			exit;
+			return;
 		}
 
 		#------------------------------
 		# Serve the file
 		#------------------------------
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob, $size);
+	}
+
+
+	/**
+	 * Renders a blob
+	 *
+	 * @param $blob
+	 * @param null $size
+	 */
+	protected function showBlob($blob, $size = null)
+	{
+		$blob_id = $blob['id'];
+
+		#------------------------------
+		# Serve the file
+		#------------------------------
+
+		if (!isset($blob['filename_safe'])) {
+			$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
+			$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+			$blob['filename_safe'] = $filename_safe;
+		}
 
 		$is_image = false;
 		switch ($blob['content_type']) {
@@ -105,10 +292,8 @@ class FilestorageLoader
 				break;
 		}
 
-		if ($is_image && isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
-			$size = $_GET['s'];
-
-			$sth = $pdo->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
+		if ($is_image && $size) {
+			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
 			$sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => "blob-$blob_id-$size"));
 			$sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -119,15 +304,15 @@ class FilestorageLoader
 
 			// Generate the resized blob and save it now
 			} else {
-				$blob = $this->createSizedBlob($blob, $size, $pdo);
+				$blob = $this->createSizedBlob($blob, $size, $this->pdo);
 			}
 		}
 
 		if ($blob['storage_loc'] == 'fs') {
-			unset($pdo);
+			unset($this->pdo);
 			$this->sendFromFilesystem($blob);
 		} else {
-			$this->sendFromDatabase($blob, $pdo);
+			$this->sendFromDatabase($blob, $this->pdo);
 		}
 	}
 
@@ -199,11 +384,11 @@ class FilestorageLoader
 	 *
 	 * @param $blob
 	 */
-	public function sendFromDatabase($blob, \PDO $pdo)
+	public function sendFromDatabase($blob)
 	{
 		$this->sendHeaders($blob);
 
-		$sth = $pdo->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id DESC");
+		$sth = $this->pdo->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id DESC");
 		$sth->execute(array('blob_id' => $blob['id']));
 
 		while (($seg = $sth->fetchColumn(0)) !== false) {
@@ -218,23 +403,9 @@ class FilestorageLoader
 	/**
 	 * Resize a blob. This needs to load the entire environment.
 	 */
-	protected function createSizedBlob($blob_info, $size, $pdo)
+	protected function createSizedBlob($blob_info, $size)
 	{
-		require DP_ROOT . '/sys/KernelBooter.php';
-		\DeskPRO\Kernel\KernelBooter::bootstrapLib(false);
-
-		// Used in the connection factory for the doctrine connection,
-		// so it doesnt try and connect twice
-		$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $pdo;
-
-		$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
-		define('DP_INTERFACE', 'sys');
-
-		$kernel = new $kernel_class('prod', false);
-		$kernel->boot();
-
-		/** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */
-		$container = $kernel->getContainer();
+		$container = $this->bootFullSystem();
 
 		$blob = $container->getEm()->find('DeskPRO:Blob', $blob_info['id']);
 
@@ -257,6 +428,35 @@ class FilestorageLoader
 		$new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
 		return $new_blob_info;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected function bootFullSystem()
+	{
+		static $container;
+
+		if (!$container) {
+			require DP_ROOT . '/sys/KernelBooter.php';
+			\DeskPRO\Kernel\KernelBooter::bootstrapLib(false);
+
+			// Used in the connection factory for the doctrine connection,
+			// so it doesnt try and connect twice
+			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->pdo;
+
+			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
+			define('DP_INTERFACE', 'sys');
+
+			$kernel = new $kernel_class('prod', false);
+			$kernel->boot();
+
+			/** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */
+			$container = $kernel->getContainer();
+		}
+
+		return $container;
 	}
 
 

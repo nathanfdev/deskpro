@@ -24,6 +24,19 @@ class UrlGenerator extends BaseUrlGenerator
 {
 	protected $object_url_generator = null;
 
+	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
+	{
+		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
+
+		// /file.php/ is a hint to say that we want to serve through the file loader,
+		// Any route that is prefixed with /file.php/ has this magic below applied
+		if (strpos($url, '/file.php/') !== false) {
+			$url = str_replace('/index.php', '', $url);
+		}
+
+		return $url;
+	}
+
 	public function getObjectUrlGenerator()
 	{
 		if ($this->object_url_generator !== null) return $this->object_url_generator;

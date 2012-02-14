@@ -13,22 +13,22 @@ $collection->add('proxy', new Route(
 ));
 
 $collection->add('serve_blob', new Route(
-	'/file.php/download/{blob_auth_id}/{filename}',
+	'/file.php/{blob_auth_id}/{filename}',
 	array('_controller' => 'DeskPRO:Blob:showBlob', 'filename' => ''),
 	array(),
 	array()
 ));
 
 $collection->add('serve_person_picture', new Route(
-	'/download/person-pic/{person_id}',
+	'/file.php/avatar/{person_id}',
 	array('_controller' => 'DeskPRO:Blob:personPicture', 'size' => 0),
 	array('person_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('serve_person_picture_size', new Route(
-	'/download/person-pic/{person_id}/{size}',
-	array('_controller' => 'DeskPRO:Blob:personPicture', 'size' => 80),
+	'/file.php/avatar/{person_id}',
+	array('_controller' => 'DeskPRO:Blob:personPicture'),
 	array('person_id' => '\\d+', 'size' => '\\d+'),
 	array()
 ));
@@ -41,7 +41,7 @@ $collection->add('serve_trans_gif', new Route(
 ));
 
 $collection->add('serve_default_picture', new Route(
-	'/download/person-pic/default',
+	'/file.php/avatar/default',
 	array('_controller' => 'DeskPRO:Blob:getStaticFile', 'name' => 'default_picture'),
 	array(),
 	array()
@@ -62,14 +62,14 @@ $collection->add('favicon', new Route(
 ));
 
 $collection->add('serve_org_picture_default', new Route(
-	'/download/org-pic/default',
+	'/file.php/o-avatar/default',
 	array('_controller' => 'DeskPRO:Blob:defaultOrgPicture'),
 	array(),
 	array()
 ));
 
 $collection->add('serve_org_picture', new Route(
-	'/download/org-pic/{person_id}',
+	'/file.php/o-avatar/{org_id}',
 	array('_controller' => 'DeskPRO:Blob:orgPicture'),
 	array('person_id' => '\\d+'),
 	array()
