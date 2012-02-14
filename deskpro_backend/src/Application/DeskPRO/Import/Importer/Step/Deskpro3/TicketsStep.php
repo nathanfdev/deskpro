@@ -407,12 +407,12 @@ class TicketsStep extends AbstractDeskpro3Step
 					$this->getDb()->insert('custom_data_ticket', array(
 						'ticket_id' => $insert_ticket['id'],
 						'field_id' => $field->id,
-						'input' => $user_info[$name]
+						'input' => $ticket_info[$name]
 					));
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-					$val = str_replace('|||', '', $user_info[$name]);
+					$val = str_replace('|||', '', $ticket_info[$name]);
 					$new_val = $this->getMappedNewId('ticket_def_choice', $val);
 					if ($new_val) {
 						$this->getDb()->insert('custom_data_ticket', array(
@@ -424,7 +424,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					break;
 
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
-					$vals = explode('|||', $user_info[$name]);
+					$vals = explode('|||', $ticket_info[$name]);
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('ticket_def_choice', $val);
 						if ($new_val) {
