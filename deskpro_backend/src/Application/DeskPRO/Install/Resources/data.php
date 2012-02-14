@@ -340,6 +340,19 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAU
 \Application\DeskPRO\App::getOrm()->flush();
 
 
+##BEGIN:create_jobs.move_blobs##
+
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'move_blobs';
+$j['worker_group'] = 'move_blobs';
+$j['title'] = 'Move Blobs';
+$j['description'] = 'When the storage mechanism is changed, this job moves existing blobs to the new mechanism a bit at a time';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\MoveBlobs';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\MoveBlobs::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+
+
 ##BEGIN:create_jobs.process_email_gateways##
 
 $j = new \Application\DeskPRO\Entity\WorkerJob();

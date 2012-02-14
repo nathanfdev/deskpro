@@ -25,11 +25,6 @@ abstract class AbstractFileDescriptor
 	const METADATA_FILEHASH = 'filehash';
 
 	/**
-	 * @param string $path The path to the file
-	 */
-	abstract public function __construct($path);
-
-	/**
 	 * Does the file exist?
 	 *
 	 * @return bool
@@ -95,7 +90,7 @@ abstract class AbstractFileDescriptor
 	abstract public function getLength();
 
 
-	
+
 	/**
 	 * Get any metadata stored with the file. Some adapters may not support this.
 	 *
@@ -161,7 +156,7 @@ abstract class AbstractFileDescriptor
 	 */
 	abstract public function getPath();
 
-	
+
 
 	public function __destruct()
 	{

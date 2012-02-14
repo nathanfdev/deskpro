@@ -17,8 +17,19 @@ use Orb\Util\Util;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
+/**
+ * Store files in the filesystem as well as the descriptor in the database
+ */
+class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 {
+	/**
+	 * The path prepended to paths stored in the database. This is the path the user
+	 * enters in settings.
+	 *
+	 * @var string
+	 */
+	protected $base_path;
+
 	/**
 	 * Database connection to use
 	 * @var \Application\DeskPRO\DBAL\Connection
@@ -32,17 +43,16 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	protected $blob_id = null;
 
 	/**
-	 * Used with exists()
-	 * @var bool
+	 * @var array
 	 */
-	protected $blob_exists_cache = null;
+	public $blob_info = null;
 
-	public function __construct($blob_id, \Application\DeskPRO\DBAL\Connection $db)
+	public function __construct($blob_id, $base_path, \Application\DeskPRO\DBAL\Connection $db)
 	{
 		$this->db = $db;
+		$this->base_path = rtrim($base_path, '/\\');
 		$this->blob_id = $blob_id;
 	}
-
 
 
 	/**
@@ -56,15 +66,17 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return false;
 		}
 
-		if ($this->blob_exists_cache !== null) {
-			return $this->blob_exists_cache;
+		if ($this->blob_info !== null) {
+			if ($this->blob_info) {
+				return true;
+			}
+			return false;
 		}
 
-		$this->blob_exists_cache = (bool)$this->db->fetchColumn("SELECT COUNT(*) FROM blobs WHERE id = ?", array($this->blob_id));
+		$this->blob_info = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($this->blob_id));
 
-		return $this->blob_exists_cache;
+		return !empty($this->blob_info);
 	}
-
 
 
 	/**
@@ -72,15 +84,19 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	 */
 	public function delete()
 	{
+		$path = $this->getRealPath();
+		if (!$path) {
+			return;
+		}
+
 		$this->db->beginTransaction();
 		$this->db->delete('blobs', array('id' => $this->blob_id));
-		$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
+		@unlink($path);
 		$this->db->commit();
 
 		$this->blob_id = null;
-		$this->blob_exists_cache = null;
+		$this->blob_info = array();
 	}
-
 
 
 	/**
@@ -110,25 +126,43 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			$this->blob_id = $this->db->lastInsertId();
 			$this->blob_exists_cache = true;
 
+		}
+
+		$dirs = array();
+		$dirs[] = (int)($this->blob_id / 1000);
+
+		$key = sha1($this->blob_id . mt_rand(10000,99999) . microtime());
+		$segs = str_split($key, 2);
+		$dirs[] = array_shift($segs);
+		$dirs[] = array_shift($segs);
+
+		$dir_path = implode(DIRECTORY_SEPARATOR, $dirs);
+		$dir_path_full = $this->base_path . DIRECTORY_SEPARATOR . $dir_path;
+
+		$filename = $this->blob_id . '-' . implode('', $segs);
+		$file_path = $dir_path . DIRECTORY_SEPARATOR . $filename;
+		$file_path_full = $dir_path_full . DIRECTORY_SEPARATOR . $filename;
+
+		if (!is_dir($dir_path_full)) {
+			if (!mkdir($dir_path_full, 0755, true)) {
+				throw new \RuntimeException("Could not create filesystem storage directory");
+			}
+		}
+		if ($data) {
+			if (!file_put_contents($file_path_full, $data)) {
+				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
+			}
 		} else {
-			// Delete previous data every time we write
-			$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
+			if (!touch($file_path_full)) {
+				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
+			}
 		}
 
-		$data_len = strlen($data);
-
-		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-		$max_size = ($this->db->getMaxPacketSize()/2)-200;
-		$parts = ceil($data_len / $max_size);
-
-		for ($i = 0; $i < $parts; $i++) {
-			$this->db->insert('blobs_storage', array(
-				'blob_id' => $this->blob_id,
-				'data' => substr($data, $i * $max_size, $max_size)
-			));
-		}
-
-		$metadata = array('filesize' => $data_len);
+		$metadata = array(
+			'filesize'    => strlen($data),
+			'storage_loc' => 'fs',
+			'save_path'   => $file_path,
+		);
 		if ($metadata) {
 			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
 			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
@@ -142,8 +176,9 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
 
 		$this->db->commit();
-	}
 
+		$this->blob_info = null;
+	}
 
 
 	/**
@@ -160,7 +195,6 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		$this->write(stream_get_contents($fp_data), $meta);
 	}
-
 
 
 	/**
@@ -183,7 +217,6 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	}
 
 
-
 	/**
 	 * Get the filesize of the file.
 	 *
@@ -195,9 +228,21 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return null;
 		}
 
-		return filesize($this->real_path);
+		return filesize($this->getRealPath());
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getRealPath()
+	{
+		if (!$this->exists()) {
+			return null;
+		}
+
+		return $this->base_path . DIRECTORY_SEPARATOR . $this->blob_info['save_path'];
+	}
 
 
 	/**
@@ -209,21 +254,17 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return null;
 		}
 
-		$metadata_read = $this->db->fetchAssoc("SELECT filesize, content_type, filename, blob_hash FROM blobs WHERE id = ?", array($this->blob_id));
-
 		$metadata = array(
-			self::METADATA_FILESIZE => $metadata_read['filesize'],
-			self::METADATA_FILENAME => $metadata_read['filename'],
-			self::METADATA_FILEHASH => $metadata_read['blob_hash'],
-			self::METADATA_CONTENT_TYPE => $metadata_read['content_type'],
+			self::METADATA_FILESIZE => $this->blob_info['filesize'],
+			self::METADATA_FILENAME => $this->blob_info['filename'],
+			self::METADATA_FILEHASH => $this->blob_info['blob_hash'],
+			self::METADATA_CONTENT_TYPE => $this->blob_info['content_type'],
 		);
 
 		$metadata = Arrays::removeEmptyString($metadata);
 
 		return $metadata;
 	}
-
-
 
 
 	/**
@@ -233,7 +274,6 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	{
 
 	}
-
 
 
 	/**

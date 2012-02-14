@@ -672,10 +672,7 @@ class App
 		}
 
 		if ($name == 'filestorage') {
-
-			$source = new \Application\DeskPRO\FileStorage\Database(self::getDb());
-			self::$_api_handlers[$name] = $source;
-
+			return self::getSystemService('filestorage');
 		} else {
 			$classname = self::$_api_handler_names[$name];
 			self::$_api_handlers[$name] = new $classname();

@@ -27,6 +27,9 @@ use Application\DeskPRO\Entity\LabelBlob;
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STORAGE_LOC_FILESYSTEM = 'fs';
+	const STORAGE_LOC_S3 = 's3';
+
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
@@ -51,6 +54,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\JoinColumn(name="original_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $original_blob;
+
+	/**
+	 * If not stored in the database, this is where the file is stored.
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="storage_loc", type="string", length=50, nullable=true)
+	 */
+	protected $storage_loc = null;
 
 	/**
 	 * The path to the file if it's not stored in the database.
@@ -155,7 +166,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
-		$this->authcode = Strings::random(20, Strings::CHARS_KEY);
+		$this->authcode = Strings::random(20, Strings::CHARS_KEY_ALPHA);
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
@@ -248,7 +259,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthId()
 	{
-		return $this->id . '-' . $this->authcode;
+		return $this->id . $this->authcode;
 	}
 
 
