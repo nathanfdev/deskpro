@@ -75,6 +75,13 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$this->db->beginTransaction();
 		$this->db->delete('blobs', array('id' => $this->blob_id));
 		$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
+
+		$affected_blobs = $this->db->fetchAllCol("SELECT id FROM blobs WHERE id = ? OR original_blob_id = ?", array($this->blob_id, $this->blob_id));
+		foreach ($affected_blobs as $bid) {
+			$this->db->delete('blobs', array('id' => $bid));
+			$this->db->delete('blobs_storage', array('blob_id' => $bid));
+		}
+
 		$this->db->commit();
 
 		$this->blob_id = null;
@@ -130,10 +137,11 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		$metadata = array('filesize' => $data_len);
 		if ($metadata) {
-			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
-			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
-			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']    = $meta[self::METADATA_FILEHASH];
-			if (!empty($meta['sys_name']))                  $metadata['sys_name']     = $meta['sys_name'];
+			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type']       = $meta[self::METADATA_CONTENT_TYPE];
+			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']           = $meta[self::METADATA_FILENAME];
+			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']          = $meta[self::METADATA_FILEHASH];
+			if (!empty($meta['sys_name']))                  $metadata['sys_name']           = $meta['sys_name'];
+			if (!empty($meta['original_blob_id']))          $metadata['original_blob_id']   = $meta['original_blob_id'];
 
 			if (!empty($meta['is_temp']) && $meta['is_temp']) {
 				$metadata['is_temp'] = 1;

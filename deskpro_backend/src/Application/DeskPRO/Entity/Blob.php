@@ -290,6 +290,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 's' => $size), $absolute);
 	}
 
+	/**
+	 * Get a safe version of a filename. That is the same filename with all "weird" characters removed.
+	 *
+	 * @return string
+	 */
+	public function getFilenameSafe()
+	{
+		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $this->filename);
+		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+
+		return $filename_safe;
+	}
 
 	/**
 	 * @return string

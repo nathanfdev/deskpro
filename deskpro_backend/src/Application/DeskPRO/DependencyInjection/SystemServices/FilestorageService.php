@@ -21,8 +21,9 @@ class FilestorageService
 	{
 		switch ($container->getSetting('core.filestorage_method')) {
 			case 'fs':
-				$base_path = $container->getSetting('core.filestorage_fs_basepath');
-				if (!$base_path) {
+				if (isset($GLOBALS['DP_CONFIG']['folder_files'])) {
+					$base_path = $GLOBALS['DP_CONFIG']['folder_files'];
+				} else {
 					$base_path = DP_WEB_ROOT . '/data_files';
 				}
 

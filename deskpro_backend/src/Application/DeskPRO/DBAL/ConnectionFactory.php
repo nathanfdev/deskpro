@@ -64,6 +64,12 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			}
 		}
 
+		// Sometimes in a pre-boot handler like serve_file.php we might
+		// already have a connection, so use that PDO object
+		if (isset($GLOBALS['DP_DEFAULT_CONNECTION_PDO'])) {
+			$params['pdo'] = $GLOBALS['DP_DEFAULT_CONNECTION_PDO'];
+		}
+
 		/** @var $conn \Doctrine\DBAL\Connection */
 		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 

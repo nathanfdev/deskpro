@@ -6,11 +6,22 @@ class KernelBooter
 {
 	public static function bootstrapConfig()
 	{
+		static $has_loaded = false;
+		if ($has_loaded) {
+			return;
+		}
+
+		$has_loaded = true;
+
 		#------------------------------
 		# Load main config now
 		#------------------------------
 
 		global $DP_CONFIG;
+		if (is_array($DP_CONFIG)) {
+			return;
+		}
+
 		require DP_CONFIG_FILE;
 
 		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
@@ -34,6 +45,13 @@ class KernelBooter
 
 	public static function bootstrapLib($debug)
 	{
+		static $has_loaded = false;
+		if ($has_loaded) {
+			return;
+		}
+
+		$has_loaded = true;
+
 		if ($debug || defined('DP_BUILDING')) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
@@ -49,7 +67,12 @@ class KernelBooter
 		require(DP_ROOT . '/sys/system.php');
 	}
 
-	public static function bootWeb()
+	public static function bootEnv()
+	{
+
+	}
+
+	public static function bootWeb($request = null)
 	{
 		global $DP_CONFIG;
 
@@ -65,7 +88,9 @@ class KernelBooter
 
 		self::bootstrapLib($debug);
 
-		$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
+		if (!$request) {
+			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
+		}
 		$path = $request->getPathInfo();
 
 		// Always force index.php

@@ -89,10 +89,14 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return;
 		}
 
-		$this->db->beginTransaction();
-		$this->db->delete('blobs', array('id' => $this->blob_id));
-		@unlink($path);
-		$this->db->commit();
+		$affected_blobs = $this->db->fetchAll("SELECT id, save_path FROM blobs WHERE id = ? OR original_blob_id = ?", array($this->blob_id, $this->blob_id));
+		foreach ($affected_blobs as $b) {
+			$this->db->delete('blobs', array('id' => $b['id']));
+			$this->db->delete('blobs_storage', array('blob_id' => $b['id']));
+
+			$path = $this->base_path . DIRECTORY_SEPARATOR . $b['save_path'];
+			@unlink($path);
+		}
 
 		$this->blob_id = null;
 		$this->blob_info = array();
@@ -164,10 +168,11 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			'save_path'   => $file_path,
 		);
 		if ($metadata) {
-			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
-			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
-			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']    = $meta[self::METADATA_FILEHASH];
-			if (!empty($meta['sys_name']))                  $metadata['sys_name']     = $meta['sys_name'];
+			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type']       = $meta[self::METADATA_CONTENT_TYPE];
+			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']           = $meta[self::METADATA_FILENAME];
+			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']          = $meta[self::METADATA_FILEHASH];
+			if (!empty($meta['sys_name']))                  $metadata['sys_name']           = $meta['sys_name'];
+			if (!empty($meta['original_blob_id']))          $metadata['original_blob_id']   = $meta['original_blob_id'];
 
 			if (!empty($meta['is_temp']) && $meta['is_temp']) {
 				$metadata['is_temp'] = 1;
@@ -206,14 +211,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return '';
 		}
 
-		$parts = array();
-		$statement = $this->db->executeQuery("SELECT data FROM blobs_storage WHERE blob_id = ?", array($this->blob_id));
-
-		while ($row = $statement->fetch(\PDO::FETCH_NUM)) {
-			$parts[] = $row[0];
-		}
-
-		return implode('', $parts);
+		return file_get_contents($this->getRealPath());
 	}
 
 

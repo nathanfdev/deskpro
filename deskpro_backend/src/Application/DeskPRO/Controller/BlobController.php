@@ -63,7 +63,8 @@ class BlobController extends AbstractController
 					'content_type' => $blob->content_type,
 					'filename' => $blob->filename,
 					'sys_name' => $name,
-					'date_cleanup' => isset($options['cache_date_cleanup']) ? $options['cache_date_cleanup'] : null
+					'date_cleanup' => isset($options['cache_date_cleanup']) ? $options['cache_date_cleanup'] : null,
+					'original_blob_id' => $blob->id,
 				));
 			}
 		} else {
