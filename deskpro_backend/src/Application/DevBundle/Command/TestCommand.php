@@ -35,28 +35,10 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-		$sm = App::getDb()->getSchemaManager();
+		$path = '/Users/chroder/Sites/deskpro/dp_400/cache-test.php';
+		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
+		$cache->registerShutdownCommit();
 
-		$table = 'people';
-		$indexes = $sm->listTableIndexes($table);
-		$fkeys = $sm->listTableForeignKeys($table);
-
-		$data = array('indexes' => $indexes, 'fkeys' => $fkeys);
-
-		foreach ($data['indexes'] as $x) {
-			if ($x->isPrimary()) continue;
-			$p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
-			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
-			$alter_parts[] = $p;
-		}
-		foreach ($data['fkeys'] as $x) {
-			$p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
-			$p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
-			$alter_parts[] = $p;
-		}
-
-		$sql = "ALTER TABLE $table " . implode(', ', $alter_parts);
-		echo $sql;
+		echo $cache->fetch('test');
 	}
 }

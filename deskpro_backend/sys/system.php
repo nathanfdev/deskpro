@@ -84,7 +84,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		// Make sure the cache dirs exist
 		$env_dir = realpath($this->getCacheDir() . '/../');
-		if (!file_exists($env_dir . '/annotations')) mkdir($env_dir . '/annotations', 0777, true);
 		if (!file_exists($env_dir . '/doctrine-proxies')) mkdir($env_dir . '/doctrine-proxies', 0777, true);
 		if (!file_exists($env_dir . '/twig-compiled')) mkdir($env_dir . '/twig-compiled', 0777, true);
 
@@ -99,8 +98,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
 
 		$cache->write($content, $container->getResources());
-
-		if (file_exists($this->getCacheDir() . '/annotations')) rmdir($this->getCacheDir() . '/annotations');
 	}
 
 	protected function getContainerClass()
