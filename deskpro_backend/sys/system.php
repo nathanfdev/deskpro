@@ -98,6 +98,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
 
 		$cache->write($content, $container->getResources());
+
+		if (file_exists($this->getCacheDir() . '/annotations')) rmdir($this->getCacheDir() . '/annotations');
 	}
 
 	protected function getContainerClass()
