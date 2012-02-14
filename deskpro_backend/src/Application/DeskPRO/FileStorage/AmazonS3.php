@@ -12,13 +12,13 @@
 namespace Application\DeskPRO\FileStorage;
 
 use Application\DeskPRO\App;
-
+use Zend\Service\Amazon\S3\S3;
 use Orb\Util\Util;
 
 /**
  * This handler stores metadata in the database but actual blobs in the filesystem.
  */
-class Filesystem extends \Orb\FileStorage\AbstractStorage
+class AmazonS3 extends \Orb\FileStorage\AbstractStorage
 {
 	/**
 	 * Database connection to use
@@ -27,16 +27,29 @@ class Filesystem extends \Orb\FileStorage\AbstractStorage
 	protected $db;
 
 	/**
+	 * Base filepath for the filesystem
 	 * @var string
 	 */
 	protected $base_path;
 
 	/**
-	 * @var bool
+	 * Amazon S3 bucket to use
+	 * @var string
 	 */
-	protected $is_pre_s3 = false;
+	protected $bucket;
 
-	public function __construct($base_path, \Application\DeskPRO\DBAL\Connection $db)
+	/**
+	 * Object prefix for everything we save to the bucket
+	 * @var string
+	 */
+	protected $prefix;
+
+	/**
+	 * @var \Zend\Service\Amazon\S3\S3
+	 */
+	protected $s3;
+
+	public function __construct($access_key, $secret_key, $bucket, $base_path, \Application\DeskPRO\DBAL\Connection $db, $prefix = '')
 	{
 		if (!$db) {
 			$db = App::getDb();
@@ -44,15 +57,10 @@ class Filesystem extends \Orb\FileStorage\AbstractStorage
 
 		$this->db = $db;
 		$this->base_path = $base_path;
-	}
 
-
-	/**
-	 * Mark the file as pre-S3 storage. That is, a file is saved locally before offloading on to S3.
-	 */
-	public function enableIsPreS3()
-	{
-		$this->is_pre_s3 = true;
+		$this->bucket = $bucket;
+		$this->prefix = $prefix;
+		$this->s3 = new S3($access_key, $secret_key);
 	}
 
 
@@ -64,10 +72,16 @@ class Filesystem extends \Orb\FileStorage\AbstractStorage
 	 */
 	public function getFileDescriptor($blob_id)
 	{
-		$desc = new FileDescriptor\Filesystem($blob_id, $this->base_path, $this->db);
+		$blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_id));
+		if (!$blob) {
+			$blob = null;
+		}
 
-		if ($this->is_pre_s3) {
+		if (!$blob || $blob['storage_loc'] == 's3fs') {
+			$desc = new FileDescriptor\Filesystem($blob, $this->base_path, $this->db);
 			$desc->enableIsPreS3();
+		} else {
+			$desc = new FileDescriptor\AmazonS3($blob, $this->db, $this->s3, $this->bucket, $this->prefix);
 		}
 
 		return $desc;
@@ -83,11 +97,8 @@ class Filesystem extends \Orb\FileStorage\AbstractStorage
 	 */
 	public function createRandomPath()
 	{
-		$desc = $this->getFileDescriptor(null);
-
-		if ($this->is_pre_s3) {
-			$desc->enableIsPreS3();
-		}
+		$desc = new FileDescriptor\Filesystem(null, $this->base_path, $this->db);
+		$desc->enableIsPreS3();
 
 		return $desc;
 	}

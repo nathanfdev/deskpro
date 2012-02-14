@@ -13,23 +13,21 @@ namespace Application\DeskPRO\FileStorage\FileDescriptor;
 
 use Application\DeskPRO\App;
 
+use Zend\Service\Amazon\S3\S3;
+
 use Orb\Util\Util;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Store files in the filesystem as well as the descriptor in the database
+ * The S3 adapter is a sort of hybrid adapter. It stores files in the filesystem first,
+ * and then on cron they are moved off-site to S3.
+ *
+ * So this descriptor is a S3 descriptor unless it starts with file://, which means it's
+ * currently on the local filesystem.
  */
-class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
+class AmazonS3 extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 {
-	/**
-	 * The path prepended to paths stored in the database. This is the path the user
-	 * enters in settings.
-	 *
-	 * @var string
-	 */
-	protected $base_path;
-
 	/**
 	 * Database connection to use
 	 * @var \Application\DeskPRO\DBAL\Connection
@@ -48,34 +46,37 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	public $blob_info = null;
 
 	/**
-	 * @var bool
+	 * @var
 	 */
-	protected $is_pre_s3 = false;
+	protected $s3;
+
+	/**
+	 * @var string
+	 */
+	protected $prefix;
+
+	/**
+	 * @var string
+	 */
+	protected $bucket;
 
 	/**
 	 * @param int|array|null $blob_id Blob ID or an array of existing blob info
 	 * @param string $base_path
 	 * @param \Application\DeskPRO\DBAL\Connection $db
 	 */
-	public function __construct($blob_id, $base_path, \Application\DeskPRO\DBAL\Connection $db)
+	public function __construct($blob_id, \Application\DeskPRO\DBAL\Connection $db, S3 $s3, $bucket, $prefix = '')
 	{
 		if (is_array($blob_id)) {
 			$this->blob_info = $blob_id;
 			$blob_id = $blob_id['id'];
 		}
 
-		$this->db = $db;
-		$this->base_path = rtrim($base_path, '/\\');
-		$this->blob_id = $blob_id;
-	}
-
-
-	/**
-	 * Mark the file as pre-S3 storage. That is, a file is saved locally before offloading on to S3.
-	 */
-	public function enableIsPreS3()
-	{
-		$this->is_pre_s3 = true;
+		$this->db       = $db;
+		$this->blob_id  = $blob_id;
+		$this->s3       = $s3;
+		$this->bucket   = $bucket;
+		$tihs->prefix   = $prefix;
 	}
 
 
@@ -104,23 +105,32 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 
 	/**
+	 * Like exists() but actually makes a request to amazon to see if the object exists
+	 *
+	 * @return bool
+	 */
+	public function existsReal()
+	{
+		if (!$this->exists()) {
+			return false;
+		}
+
+		return $this->s3->isObjectAvailable($this->bucket . '/' . $this->prefix . $this->blob_info['save_path']);
+	}
+
+
+	/**
 	 * Delete the file.
 	 */
 	public function delete()
 	{
-		$path = $this->getRealPath();
-		if (!$path) {
+		if (!$this->exists()) {
 			return;
 		}
 
-		$affected_blobs = $this->db->fetchAll("SELECT id, save_path FROM blobs WHERE id = ? OR original_blob_id = ?", array($this->blob_id, $this->blob_id));
-		foreach ($affected_blobs as $b) {
-			$this->db->delete('blobs', array('id' => $b['id']));
-			$this->db->delete('blobs_storage', array('blob_id' => $b['id']));
-
-			$path = $this->base_path . DIRECTORY_SEPARATOR . $b['save_path'];
-			@unlink($path);
-		}
+		$this->s3->removeObject($this->bucket . '/' . $this->prefix . $this->blob_info['save_path']);
+		$this->db->delete('blobs', array('id' => $this->blob_id));
+		$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
 
 		$this->blob_id = null;
 		$this->blob_info = array();
@@ -158,37 +168,38 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		$dirs = array();
 		$dirs[] = (int)($this->blob_id / 1000);
+		$dirs[] = $this->blob_id;
 
-		$key = sha1($this->blob_id . mt_rand(10000,99999) . microtime());
-		$segs = str_split($key, 2);
-		$dirs[] = array_shift($segs);
-		$dirs[] = array_shift($segs);
+		$dir_path = implode('/', $dirs);
+		$dir_path_full = $this->prefix . '/' . $dir_path;
 
-		$dir_path = implode(DIRECTORY_SEPARATOR, $dirs);
-		$dir_path_full = $this->base_path . DIRECTORY_SEPARATOR . $dir_path;
-
-		$filename = $this->blob_id . '-' . implode('', $segs);
-		$file_path = $dir_path . DIRECTORY_SEPARATOR . $filename;
-		$file_path_full = $dir_path_full . DIRECTORY_SEPARATOR . $filename;
-
-		if (!is_dir($dir_path_full)) {
-			if (!mkdir($dir_path_full, 0755, true)) {
-				throw new \RuntimeException("Could not create filesystem storage directory");
-			}
-		}
-		if ($data) {
-			if (!file_put_contents($file_path_full, $data)) {
-				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
-			}
+		if (!empty($meta[self::METADATA_FILENAME])) {
+			$filename = $meta[self::METADATA_FILENAME];
+		} elseif ($this->blob_info && $this->blob_info['filename']) {
+			$filename = $this->blob_info['filename'];
 		} else {
-			if (!touch($file_path_full)) {
-				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
-			}
+			$filename = 'file';
 		}
+
+		$filename = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename);
+		$filename = preg_replace('#\-{2,}#', '-', $filename);
+
+		$file_path = $dir_path . '/' . $filename;
+		$file_path_full = $dir_path_full . '/' . $filename;
+
+		$content_type = empty($meta[self::METADATA_CONTENT_TYPE]) ? null : $meta[self::METADATA_CONTENT_TYPE];
+		if (!$content_type && $this->blob_info && $this->blob_info['content_type']) {
+			$content_type = $this->blob_info['content_type'];
+		}
+
+		$this->s3->putFile($this->bucket . '/' . $file_path_full, $data, array(
+			S3::S3_ACL_HEADER => S3::S3_ACL_PUBLIC_READ,
+			S3::S3_CONTENT_TYPE_HEADER => $content_type
+		));
 
 		$metadata = array(
 			'filesize'    => strlen($data),
-			'storage_loc' => $this->is_pre_s3 ? 's3fs' : 'fs',
+			'storage_loc' => 's3',
 			'save_path'   => $file_path,
 		);
 		if ($metadata) {
@@ -235,7 +246,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return '';
 		}
 
-		return file_get_contents($this->getRealPath());
+		return $this->s3->getObject($this->bucket . '/' . $this->prefix . $this->blob_info['save_path']);
 	}
 
 
@@ -250,7 +261,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return null;
 		}
 
-		return filesize($this->getRealPath());
+		return $this->blob_info['filesize'];
 	}
 
 
@@ -263,7 +274,20 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return null;
 		}
 
-		return $this->base_path . DIRECTORY_SEPARATOR . $this->blob_info['save_path'];
+		return $this->prefix . $this->blob_info['save_path'];
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDirectLink()
+	{
+		if (!$this->exists()) {
+			return null;
+		}
+
+		return 'http://' . $this->bucket . '.s3.amazonaws.com/' . $this->getRealPath();
 	}
 
 
