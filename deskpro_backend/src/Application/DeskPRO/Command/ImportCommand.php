@@ -248,8 +248,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$end_step_time = microtime(true);
 				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
 				echo "\n";
-
-				break;
 			}
 
 			$importer->cleanupImport();

@@ -156,6 +156,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			'organization_id' => $new_org_id,
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
+			'ref' => $ticket_info['ref'],
 		);
 
 		if ($ticket_info['creation'] == 'gateway') {
@@ -263,6 +264,8 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['date_created'] = date('Y-m-d H:i:s', $message_info['timestamp']);
 			$insert_message['ip_address'] = $message_info['ipaddress'];
 
+			$save_raw = false;
+			$orig_charset = $message_info['charset'];
 			if ($message_info['charset'] && strtoupper($message_info['charset']) != 'UTF-8') {
 
 				// Fix common missing charsets
@@ -292,6 +295,8 @@ class TicketsStep extends AbstractDeskpro3Step
 				$new_msg = @iconv($message_info['charset'], 'UTF-8//IGNORE//TRANSLIT', $message_info['message']);
 				if ($new_msg) {
 					$message_info['message'] = $new_msg;
+				} else {
+					$save_raw = true;
 				}
 			}
 
@@ -301,6 +306,14 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['id'] = $this->getDb()->lastInsertId();
 
 			$this->saveMappedId('ticket_message', $message_info['id'], $insert_message['id']);
+
+			if ($save_raw) {
+				$this->getDb()->insert('tickets_messages_raw', array(
+					'message_id' => $insert_message['id'],
+					'raw'        => $message_info['message'],
+					'charset'    => $orig_charset,
+				));
+			}
 		}
 
 		#------------------------------

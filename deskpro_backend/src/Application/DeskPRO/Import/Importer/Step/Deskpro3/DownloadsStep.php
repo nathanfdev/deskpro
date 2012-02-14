@@ -47,7 +47,9 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
-		} else {
+		}
+
+		if (!$this->getDb()->fetchColumn("SELECT id FROM download_categories LIMIT 1")) {
 			// We need a default category that "top" level downloads will go into
 			$new_cat = new DownloadCategory();
 			$new_cat->title = 'General';
@@ -122,7 +124,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 	 */
 	protected function processDownload($download_id)
 	{
-		$download = $this->getOldDb()->fetchAssoc("SELECT * FROM files WHERE id = ? AND category != 0", array($download_id));
+		$download = $this->getOldDb()->fetchAssoc("SELECT * FROM files WHERE id = ?", array($download_id));
 
 		#------------------------------
 		# Make sure we havent already done them
@@ -172,12 +174,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$new_download->person = $new_person;
 		$new_download->title = $download['filename'];
 		$new_download->content = $download['filename'];
-
-		try {
-			$new_download->date_created = new \DateTime('@' . $download['timestamp']);
-		} catch (\Exception $e) {
-			$new_download->date_created = new \DateTime();
-		}
+		$new_download->date_created = new \DateTime('@' . $download['timestamp']);
 
 		$this->getEm()->persist($new_download);
 		$this->getEm()->flush();
