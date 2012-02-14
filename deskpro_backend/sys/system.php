@@ -519,6 +519,10 @@ class KernelErrorHandler
 {
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
+		if (!(error_reporting() & $errno)) {
+			return;
+		}
+
 		$errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
 		self::logToFile($errinfo);
 

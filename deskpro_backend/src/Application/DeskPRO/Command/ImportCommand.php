@@ -73,16 +73,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$php_path = false;
 
-		if (isset($config['php_path'])) {
-			$php_path = $config['php_path'];
+		if (isset($_SERVER['_']) AND is_executable($_SERVER['_'])) {
+			$php_path = $_SERVER['_'];
+		}
+
+		if (App::getConfig('php_path')) {
+			$php_path = App::getConfig('php_path');
 			if (!is_executable($php_path)) {
 				$output->writeln("<error>`import.php_path` is invalid</error>");
 				return 1;
 			}
-		}
-
-		if (isset($_SERVER['_']) AND is_executable($_SERVER['_'])) {
-			$php_path = $_SERVER['_'];
 		}
 
 		if (!$php_path) {
@@ -248,12 +248,14 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$end_step_time = microtime(true);
 				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
 				echo "\n";
+
+				break;
 			}
 
 			$importer->cleanupImport();
 
 			// Clear caches like kb/news/ideas/files category caches
-			$importer->getDb()->delete('cache');
+			$importer->getDb()->executeUpdate('DELETE FROM cache');
 
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
