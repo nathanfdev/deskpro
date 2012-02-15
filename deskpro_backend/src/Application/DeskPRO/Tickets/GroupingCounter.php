@@ -157,7 +157,11 @@ class GroupingCounter
 			$default = App::getEntityRepository('DeskPRO:Language')->getDefault();
 			return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
 		} else {
-			$group_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($grouping);
+			try {
+				$group_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($grouping);
+			} catch (\InvalidArgumentException $e) {
+				$group_fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField('department');
+			}
 			return "COALESCE(tickets.{$group_fieldname}, 0) AS $field";
 		}
 	}

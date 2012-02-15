@@ -1267,7 +1267,7 @@ class TicketSearch extends SearcherAbstract
 			case self::TERM_USER_WAITING: return 'date_user_waiting';
 			case self::TERM_TOTAL_USER_WAITING: return 'total_user_waiting';
 			case self::TERM_DATE_CREATED: return 'date_created';
-			default: return false;
+			default: throw new \InvalidArgumentException("Invalid field: $term_id");
 		}
 	}
 }
