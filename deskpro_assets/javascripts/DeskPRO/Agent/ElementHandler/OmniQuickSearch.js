@@ -25,7 +25,9 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			context: this
 		});
 
-		this.resultWrap = $('#dp_omniresults');
+		this.resultWrap = $('#dp_omniresults').on('click', '[data-route]', function(ev) {
+			self.runPageRouteFromElement($(this));
+		});
 
 		this.tplResultSection = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_section'));
 		this.tplResultRow = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_result_row'));
@@ -51,7 +53,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				}
 			}
 		}).on('blur', function(ev) {
-			self.close();
+			self.blurTimeout = window.setTimeout(function() { self.close(); },  300);
 		});
 
 		this.ajaxLoading = {};
