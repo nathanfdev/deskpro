@@ -69,13 +69,13 @@
 				{{ phrase('agent.feedback.status_hidden') }}
 			</span>
 			<ul class="sub-group indented-list">
-				<li class="indent is-nav-item" data-route="listpane:">
+				<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.deleted'}) }}">
 					<span class="title">
 						<span class="list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
 						{{ phrase('agent.feedback.status_deleted') }}
 					</span>
 				</li>
-				<li class="indent is-nav-item" data-route="listpane:">
+				<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.spam' }) }}">
 					<span class="title">
 						<span class="list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
 						{{ phrase('agent.feedback.status_spam') }}

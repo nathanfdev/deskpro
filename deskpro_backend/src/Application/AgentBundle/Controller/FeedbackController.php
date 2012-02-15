@@ -580,12 +580,22 @@ class FeedbackController extends AbstractController
 				)
 			));
 		} else {
-			$result_helper = FeedbackResults::newFromRequest($this, array(
-				'specific_terms' => array(
-					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-				)
-			));
+			if (strpos($status, '.') !== false) {
+				list ($status, $v_status) = explode('.', $status);
+				$result_helper = FeedbackResults::newFromRequest($this, array(
+					'specific_terms' => array(
+						'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+						'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status)
+					)
+				));
+			} else {
+				$result_helper = FeedbackResults::newFromRequest($this, array(
+					'specific_terms' => array(
+						'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+						'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
+					)
+				));
+			}
 		}
 
 		$grouping = new GroupingCounter();
