@@ -69,18 +69,19 @@ class Deskpro3Importer extends AbstractImporter
 			}
 		}
 
-		try {
-			$this->old_db = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
-				'driver'   => 'pdo_mysql',
-				'host'     => $this->config->db_host,
-				'user'     => $this->config->db_user,
-				'password' => $this->config->db_password,
-				'dbname'   => $this->config->db_name
-			));
-			$this->logMessage("-- OK");
-		} catch (\Exception $e) {
-			$this->logMessage("-- FAILED");
-			$errors[] = "Failed connecting to DeskPRO v3 database: {$e->getMessage()}";
+		if (!$this->old_db) {
+			try {
+				$this->old_db = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
+					'driver'   => 'pdo_mysql',
+					'host'     => $this->config->db_host,
+					'user'     => $this->config->db_user,
+					'password' => $this->config->db_password,
+					'dbname'   => $this->config->db_name
+				));
+			} catch (\Exception $e) {
+				$this->logMessage("-- FAILED");
+				$errors[] = "Failed connecting to DeskPRO v3 database: {$e->getMessage()}";
+			}
 		}
 
 		return $errors;
