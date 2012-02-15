@@ -439,6 +439,15 @@ class FilestorageLoader
 		static $container;
 
 		if (!$container) {
+			global $DP_CONFIG;
+			$env = 'prod';
+			$debug = false;
+
+			if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+				$env = 'dev';
+				$debug = true;
+			}
+
 			require DP_ROOT . '/sys/KernelBooter.php';
 			\DeskPRO\Kernel\KernelBooter::bootstrapLib(false);
 
@@ -449,7 +458,7 @@ class FilestorageLoader
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 			define('DP_INTERFACE', 'sys');
 
-			$kernel = new $kernel_class('prod', false);
+			$kernel = new $kernel_class($env, $debug);
 			$kernel->boot();
 
 			/** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */
