@@ -28,6 +28,10 @@
 				<div class="dp-ticket-info">
 					<ul>
 						<li>
+							<div class="label">{{ phrase('user.tickets.label_ticket_ref') }}</div>
+							<div class="value">{{ ticket.public_id }}</div>
+						</li>
+						<li>
 							<div class="label">{{ phrase('user.department') }}</div>
 							<div class="value">{{ phrase_object(ticket.department, 'full') }}</div>
 						</li>

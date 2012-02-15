@@ -11,6 +11,8 @@
 	'user.tickets.priority'               => 'Priority',
 	'user.tickets.id'                     => 'ID',
 
+	'user.tickets.label_ticket_ref'       => 'Ticket Ref',
+
 	'user.tickets.status_open'             => 'Open',
 	'user.tickets.status_resolved'         => 'Resolved',
 	'user.tickets.status_closed'           => 'Closed',
