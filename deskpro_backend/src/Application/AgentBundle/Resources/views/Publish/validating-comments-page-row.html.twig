@@ -9,7 +9,7 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<div class="by-line">
-				{% if comment.person %}<a class="with-route person-tip" data-person-id="{{ comment.person.id }}" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
+				{% if comment.person %}<a data-person-id="{{ comment.person.id }}" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
 				{{ comment.user_name }} {% if comment.user_email %}&lt;{{ comment.user_email }}&gt;{% endif %}
 				{% if comment.person %}</a>{% endif %}
 			</div>
