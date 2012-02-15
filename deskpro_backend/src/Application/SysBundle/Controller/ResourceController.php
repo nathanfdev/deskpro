@@ -29,7 +29,7 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 			$file = $userstyle->compileCss($style->getCssVars());
 
 			// Fix url to static
-			$file = str_replace('url(../../', 'url(../../../../static/', $file);
+			$file = str_replace('url(../../', 'url(../../../../deskpro_assets/', $file);
 
 			// Strip comments
 			$file = preg_replace('#/\*[^*]*.*?\*/#s', '', $file);
