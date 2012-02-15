@@ -42,10 +42,10 @@ class Date extends HandlerAbstract
 		if ($data AND !empty($data['value'])) {
 			$setData = $data['value'];
 		}
-		$field = App::getFormFactory()->createNamedBuilder('date', $this->getFormFieldName(), $setData, array(
-			'widget' => 'text',
-			'input' => 'timestamp',
-			'format' => 3,
+		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array(
+			//'widget' => 'text',
+			//'input' => 'timestamp',
+			//'format' => 3,
 			'required' => false
 		));
 

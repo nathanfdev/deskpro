@@ -56,9 +56,11 @@ abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChang
 	 * @param bool $mode
 	 * @return array
 	 */
-	public function toArray($mode = self::TOARRAY_NOOP, $only_real = false)
+	public function toArray($mode = self::TOARRAY_NOOP)
 	{
 		$values = array();
+
+		$only_real = true;
 
 		foreach ($this->getKeys() as $name) {
 
@@ -144,7 +146,7 @@ abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChang
 	 * Checks to see if a particular field on this object exists and is a real database field.
 	 * By convention, this is any protected property on the object whose name doesnt start with an underscore.
 	 *
-	 * @param stirng $field
+	 * @param string $field
 	 * @return bool
 	 */
 	public function propertyFieldExists($field)
