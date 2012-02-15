@@ -157,6 +157,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 			}
 
 			$new_comment->content = $comment['message'];
+			$new_comment->is_reviewed = true;
 
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();
