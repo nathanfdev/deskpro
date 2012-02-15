@@ -118,7 +118,7 @@ CREATE TABLE `content_search` (
   `content` longtext NOT NULL,
   PRIMARY KEY (`object_type`,`object_id`),
   FULLTEXT KEY `content` (`content`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM
 SQL;
 
 		$all_sql[] = <<<SQL
@@ -522,6 +522,8 @@ SQL;
 				$xa++;
 			} else {
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
+				$s .= ' DEFAULT CHARSET=utf8';
+
 				$s_ex = var_export($s, true);
 
 				$this->creates[] = $s;

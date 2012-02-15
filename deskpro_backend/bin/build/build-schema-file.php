@@ -31,7 +31,7 @@ if (!defined('DP_BUILD_TIME')) {
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
-$kernel = new \DeskPRO\Kernel\CliKernel('dev', false);
+$kernel = new \DeskPRO\Kernel\CliKernel('dev', true);
 
 $_SERVER['argv'] = array('x', 'dp:generate-schema-file', '-w', '--verbose');
 

@@ -15,11 +15,11 @@ class InterfaceValue
 {
 	public function getInterface()
 	{
-		return DP_INTERFACE;
+		return defined('DP_INTERFACE') ? DP_INTERFACE : 'user';
 	}
 
 	public function __toString()
 	{
-		return DP_INTERFACE;
+		return $this->getInterface();
 	}
 }
