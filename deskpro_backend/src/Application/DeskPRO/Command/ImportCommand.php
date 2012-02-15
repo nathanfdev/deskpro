@@ -289,7 +289,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						return 25;
 					}
 
-					$f = 'dp3-' . date('Y-m-d-H-i-s') . '.sql';
+					$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
 					$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
 
 					$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT . '/data_backups');
