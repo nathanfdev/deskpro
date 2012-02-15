@@ -1,6 +1,7 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for person in people %}
 		<article class="row-item person person-{{person.id}}" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)" data-route-openclass="open">
+			<span class="top-row-spacer"></span>
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
@@ -14,7 +15,7 @@
 			{% if display_fields|length %}
 				{% set extra_info_row %}
 				{% set has_set = false %}
-				<div class="extra-fields" style="margin-top: 25px">
+				<div class="extra-fields">
 					<ul>
 						{% for field in display_fields %}
 							{% if field == 'organization' and person.organization %}
