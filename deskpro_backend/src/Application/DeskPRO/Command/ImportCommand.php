@@ -69,13 +69,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		/** @var $db \Application\DeskPRO\DBAL\Connection */
 		$db = $this->getContainer()->getDb();
+		$DP_CONFIG = $this->getContainer()->getSysConfig('*');
 
 		try {
 			$db->connect();
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '1049') {
-
-				$DP_CONFIG = $this->getContainer()->getSysConfig('*');
 
 				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO);
 
