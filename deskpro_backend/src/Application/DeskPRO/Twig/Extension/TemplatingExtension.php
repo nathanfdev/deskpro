@@ -597,7 +597,7 @@ class TemplatingExtension extends \Twig_Extension
 		if (!$url) {
 			$url = App::getSetting('core.deskpro_url');
 			$url = trim(str_replace('/index.php', '', $url), '/');
-			$url .= '/static/';
+			$url .= '/deskpro_assets/';
 		}
 		return $url . ltrim($location, '/');
 	}
