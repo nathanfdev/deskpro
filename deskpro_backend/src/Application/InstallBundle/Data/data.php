@@ -17,21 +17,25 @@ $em->flush();
 # Departments
 ################################################################################
 
-##BEGIN:create_department.department##
-$q = new \Application\DeskPRO\Entity\Department();
-$q['title'] = 'Sales';
-$q['is_tickets_enabled'] = true;
-$q['is_chat_enabled'] = true;
-$em->persist($q);
-$em->flush();
+##BEGIN:create_department.department1##
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\Department();
+	$q['title'] = 'Sales';
+	$q['is_tickets_enabled'] = true;
+	$q['is_chat_enabled'] = true;
+	$em->persist($q);
+	$em->flush();
+}
 
-##BEGIN:create_department.department##
-$q = new \Application\DeskPRO\Entity\Department();
-$q['title'] = 'Support';
-$q['is_tickets_enabled'] = true;
-$q['is_chat_enabled'] = true;
-$em->persist($q);
-$em->flush();
+##BEGIN:create_department.department2##
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\Department();
+	$q['title'] = 'Support';
+	$q['is_tickets_enabled'] = true;
+	$q['is_chat_enabled'] = true;
+	$em->persist($q);
+	$em->flush();
+}
 
 
 ################################################################################
@@ -39,19 +43,21 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:create_article.default##
-$DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
-$DEFAULT_ARTICLE_CAT['title'] = 'General';
-$em->persist($DEFAULT_ARTICLE_CAT);
-$em->flush();
+if (!$IMPORT_INSTALL) {
+	$DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
+	$DEFAULT_ARTICLE_CAT['title'] = 'General';
+	$em->persist($DEFAULT_ARTICLE_CAT);
+	$em->flush();
 
-$DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
-$DEFAULT_ARTICLE->person = $AGENT;
-$DEFAULT_ARTICLE->title = 'Example Article';
-$DEFAULT_ARTICLE->content = 'This is an example knowledgebase article. Feel free to edit or delete it.';
-$DEFAULT_ARTICLE->status = 'published';
-$DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
-$em->persist($DEFAULT_ARTICLE);
-$em->flush();
+	$DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
+	$DEFAULT_ARTICLE->person = $AGENT;
+	$DEFAULT_ARTICLE->title = 'Example Article';
+	$DEFAULT_ARTICLE->content = 'This is an example knowledgebase article. Feel free to edit or delete it.';
+	$DEFAULT_ARTICLE->status = 'published';
+	$DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
+	$em->persist($DEFAULT_ARTICLE);
+	$em->flush();
+}
 
 
 ################################################################################
@@ -59,10 +65,12 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:create_download_cat.default##
-$q = new \Application\DeskPRO\Entity\DownloadCategory();
-$q['title'] = 'General';
-$em->persist($q);
-$em->flush();
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\DownloadCategory();
+	$q['title'] = 'General';
+	$em->persist($q);
+	$em->flush();
+}
 
 
 ################################################################################
@@ -70,19 +78,21 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:create_news.default##
-$DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
-$DEFAULT_NEWS_CAT['title'] = 'General';
-$em->persist($DEFAULT_NEWS_CAT);
-$em->flush();
+if (!$IMPORT_INSTALL) {
+	$DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
+	$DEFAULT_NEWS_CAT['title'] = 'General';
+	$em->persist($DEFAULT_NEWS_CAT);
+	$em->flush();
 
-$DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
-$DEFAULT_NEWS->person = $AGENT;
-$DEFAULT_NEWS->title = 'Example News Post';
-$DEFAULT_NEWS->content = 'This is an example news post. Feel free to edit or delete it.';
-$DEFAULT_NEWS->status = 'published';
-$DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
-$em->persist($DEFAULT_NEWS);
-$em->flush();
+	$DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
+	$DEFAULT_NEWS->person = $AGENT;
+	$DEFAULT_NEWS->title = 'Example News Post';
+	$DEFAULT_NEWS->content = 'This is an example news post. Feel free to edit or delete it.';
+	$DEFAULT_NEWS->status = 'published';
+	$DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
+	$em->persist($DEFAULT_NEWS);
+	$em->flush();
+}
 
 
 ################################################################################
@@ -90,34 +100,36 @@ $em->flush();
 ################################################################################
 
 ##BEGIN:create_feedback.default##
-$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-$DEFAULT_IDEA_CAT['title'] = 'General';
-$em->persist($DEFAULT_IDEA_CAT);
-$em->flush();
+if (!$IMPORT_INSTALL) {
+	$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
+	$DEFAULT_IDEA_CAT['title'] = 'General';
+	$em->persist($DEFAULT_IDEA_CAT);
+	$em->flush();
 
-foreach (array('Planning', 'Started', 'Under Review') as $t) {
-	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-	$s->status_type = 'active';
-	$s->title = $t;
-	$em->persist($s);
+	foreach (array('Planning', 'Started', 'Under Review') as $t) {
+		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+		$s->status_type = 'active';
+		$s->title = $t;
+		$em->persist($s);
+	}
+
+	foreach (array('Completed', 'Duplicate', 'Already Exists', 'Declined') as $t) {
+		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+		$s->status_type = 'closed';
+		$s->title = $t;
+		$em->persist($s);
+	}
+	$em->flush();
+
+	$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
+	$DEFAULT_IDEA->person = $AGENT;
+	$DEFAULT_IDEA->title = 'Example Feedback';
+	$DEFAULT_IDEA->content = 'This is an example feedback. Feel free to edit or delete it.';
+	$DEFAULT_IDEA->status = 'new';
+	$DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
+	$em->persist($DEFAULT_IDEA);
+	$em->flush();
 }
-
-foreach (array('Completed', 'Duplicate', 'Already Exists', 'Declined') as $t) {
-	$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
-	$s->status_type = 'closed';
-	$s->title = $t;
-	$em->persist($s);
-}
-$em->flush();
-
-$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
-$DEFAULT_IDEA->person = $AGENT;
-$DEFAULT_IDEA->title = 'Example Feedback';
-$DEFAULT_IDEA->content = 'This is an example feedback. Feel free to edit or delete it.';
-$DEFAULT_IDEA->status = 'new';
-$DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
-$em->persist($DEFAULT_IDEA);
-$em->flush();
 
 ################################################################################
 # Filters

@@ -52,7 +52,7 @@ class InstallSchema
 			$schema = array(
 				'create' => $sc->getCreates(),
 				'alter' => $sc->getAlters(),
-				'triggers' => $sc->getTriggers()
+				'trigger' => $sc->getTriggers()
 			);
 		}
 
@@ -99,7 +99,7 @@ class InstallSchema
 	 * @param bool $halt_on_error True to stop and throw an exception when an error is encountered.
 	 * @return bool True on success, false on error
 	 */
-	public function run($halt_on_error = true, $limit = 1000000, $skip = 0)
+	public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback)
 	{
 		$has_error = false;
 
@@ -120,6 +120,7 @@ class InstallSchema
 				$step_id = "query_table_$k";
 				if ($this->hasDoneStep($step_id)) {
 					$this->getLogger()->log("[QUERY:TABLE:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					if ($callback) $callback('table', 'skip', $sql, $k);
 					$limit--;
 					if (!$limit) {
 						break;
@@ -132,6 +133,7 @@ class InstallSchema
 				try {
 					$this->db->exec($sql);
 					$this->markStepDone($step_id);
+					if ($callback) $callback('table', 'done', $sql, $k);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {
@@ -140,6 +142,7 @@ class InstallSchema
 						$sub = $sql;
 					}
 					$this->getLogger()->log("[QUERY:TABLE:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($callback) $callback('table', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
 					if ($halt_on_error) {
 						throw $e;
 					}
@@ -162,6 +165,7 @@ class InstallSchema
 				$step_id = "query_alter_$k";
 				if ($this->hasDoneStep($step_id)) {
 					$this->getLogger()->log("[QUERY:ALTER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					if ($callback) $callback('alter', 'skip', $sql, $k);
 					$limit--;
 					if (!$limit) {
 						break;
@@ -174,6 +178,7 @@ class InstallSchema
 				try {
 					$this->db->exec($sql);
 					$this->markStepDone($step_id);
+					if ($callback) $callback('alter', 'done', $sql, $k);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {
@@ -182,6 +187,7 @@ class InstallSchema
 						$sub = $sql;
 					}
 					$this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($callback) $callback('alter', 'fail', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
 					if ($halt_on_error) {
 						throw $e;
 					}
@@ -194,7 +200,7 @@ class InstallSchema
 			}
 		}
 
-		if ($limit) {
+		if ($limit && isset($this->schema['trigger'])) {
 			foreach ($this->schema['trigger'] as $k => $sql) {
 				if ($skip) {
 					$skip--;
@@ -204,6 +210,7 @@ class InstallSchema
 				$step_id = "query_triger_$k";
 				if ($this->hasDoneStep($step_id)) {
 					$this->getLogger()->log("[QUERY:TRIGGER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+					if ($callback) $callback('trigger', 'skip', $sql, $k);
 					$limit--;
 					if (!$limit) {
 						break;
@@ -216,6 +223,7 @@ class InstallSchema
 				try {
 					$this->db->exec($sql);
 					$this->markStepDone($step_id);
+					if ($callback) $callback('trigger', 'done', $sql, $k);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {
@@ -224,6 +232,7 @@ class InstallSchema
 						$sub = $sql;
 					}
 					$this->getLogger()->log("[QUERY:TRIGGER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+					if ($callback) $callback('trigger', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
 					if ($halt_on_error) {
 						throw $e;
 					}

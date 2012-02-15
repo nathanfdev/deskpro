@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
+use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -47,6 +48,9 @@ class DeskproContainer extends Container
 	const SERVICE_PERSON_ACTIVITY_LOGGER = 'deskpro.person_activity_logger';
 	/**#@-*/
 
+	/**
+	 * @var array
+	 */
 	protected $system_services = array();
 
 	public function __construct(ParameterBagInterface $parameterBag = null)
@@ -389,5 +393,84 @@ class DeskproContainer extends Container
 	{
 		$settings = $this->get(self::SERVICE_SETTINGS);
 		return $settings->get($name, $default);
+	}
+
+
+	/**
+	 * Get a value from the main system configuration
+	 *
+	 * @param string $name
+	 * @param mixed  $default
+	 * @return mixed
+	 */
+	public function getSysConfig($name, $default = null)
+	{
+		if ($name == '*') {
+			return $GLOBALS['DP_CONFIG'];
+		}
+
+		$value = Arrays::getValue($GLOBALS['DP_CONFIG'], $name);
+		if ($value === null) $value = $default;
+
+		return $value;
+	}
+
+
+	/**
+	 * Get the path to PHP executable used on the CLI.
+	 *
+	 * Returns false if the path could not be found and if 'php_path' in config is not set.
+	 *
+	 * @return string
+	 */
+	public function getPhpBinaryPath()
+	{
+		static $php_path = null;
+
+		if ($php_path === null) {
+			$php_path = $this->getSysConfig('php_path');
+			if (!$php_path) {
+				$finder = new \Symfony\Component\Process\PhpExecutableFinder();
+				$php_path = $finder->find();
+			}
+
+			if (!$php_path) {
+				$php_path = false;
+			}
+		}
+
+		return $php_path;
+	}
+
+
+	/**
+	 * Get the path to mysqldump executable used on the CLI.
+	 *
+	 * Returns false if the path could not be found and if 'mysqldump_path' in config is not set.
+	 *
+	 * @return string
+	 */
+	public function getMysqldumpBinaryPath()
+	{
+		static $mysqdump_path = null;
+
+		if ($mysqdump_path === null) {
+			$mysqdump_path = $this->getSysConfig('mysqldump_path');
+			if (!$mysqdump_path) {
+				$finder = new \Symfony\Component\Process\ExecutableFinder();
+				$finder->addSuffix('');
+				$finder->addSuffix('.exe');
+				$finder->addSuffix('.bat');
+				$finder->addSuffix('.cmd');
+				$finder->addSuffix('.com');
+				$mysqdump_path = $finder->find('mysqldump');
+			}
+
+			if (!$mysqdump_path) {
+				$mysqdump_path = false;
+			}
+		}
+
+		return $mysqdump_path;
 	}
 }

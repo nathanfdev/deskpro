@@ -48,6 +48,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	protected $auto_unserialize = true;
 
 	/**
+	 * True to catch and silently discard exceptions
+	 * for fetch/save's
+	 *
+	 * @var bool
+	 */
+	protected $silence_exceptions = true;
+
+	/**
 	 * @param \Doctrine\DBAL\Connection $db
 	 */
 	public function __construct(Connection $db)
@@ -136,11 +144,19 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 		$keys_in = "'" . implode("','", $keys) . "'";
 
 		$date = date('Y-m-d H:i:s');
-		$records = $this->db->fetchAll("
-			SELECT id, data
-			FROM cache
-			WHERE id IN ($keys_in) AND (date_expire IS NULL OR date_expire > ?)
-		", array($date));
+
+		try {
+			$records = $this->db->fetchAll("
+				SELECT id, data
+				FROM cache
+				WHERE id IN ($keys_in) AND (date_expire IS NULL OR date_expire > ?)
+			", array($date));
+		} catch (\Exception $e) {
+			$records = array();
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		$got_keys = array();
 		foreach ($records as $rec) {
@@ -175,11 +191,18 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 		$prefix_like = "$prefix%";
 
 		$date = date('Y-m-d H:i:s');
-		$records = $this->db->fetchAll("
-			SELECT id, data
-			FROM cache
-			WHERE id LIKE ? AND (date_expire IS NULL OR date_expire > ?)
-		", array($prefix_like, $date));
+		try {
+			$records = $this->db->fetchAll("
+				SELECT id, data
+				FROM cache
+				WHERE id LIKE ? AND (date_expire IS NULL OR date_expire > ?)
+			", array($prefix_like, $date));
+		} catch (\Exception $e) {
+			$records = array();
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		foreach ($records as $rec) {
 			$this->loaded[$rec['id']] = $rec['data'];
@@ -197,10 +220,16 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 		$prefix = $this->id_prefix . $prefix;
 		$prefix_like = "$prefix%";
 
-		$this->db->fetchAll("
-			DELETE FROM cache
-			WHERE id LIKE ?
-		", array($prefix_like));
+		try {
+			$this->db->fetchAll("
+				DELETE FROM cache
+				WHERE id LIKE ?
+			", array($prefix_like));
+		} catch (\Exception $e) {
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		foreach (array_keys($this->loaded) as $key) {
 			if (strpos($key, $prefix) === 0) {
@@ -231,11 +260,19 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
 		} else {
 			$date = date('Y-m-d H:i:s');
-			$record = $this->db->fetchAssoc("
-				SELECT data
-				FROM cache
-				WHERE id = ? AND (date_expire IS NULL OR date_expire > ?)
-			", array($prefix_id, $date));
+
+			try {
+				$record = $this->db->fetchAssoc("
+					SELECT data
+					FROM cache
+					WHERE id = ? AND (date_expire IS NULL OR date_expire > ?)
+				", array($prefix_id, $date));
+			} catch (\Exception $e) {
+				$record = null;
+				if (!$this->silence_exceptions) {
+					throw $e;
+				}
+			}
 
 			if ($record) {
 				$this->loaded[$prefix_id] = $record['data'];
@@ -307,9 +344,15 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 			$data = serialize($data);
 		}
 
-		$this->db->executeUpdate("
-			REPLACE INTO cache SET id = ?, data = ?, date_expire = ?
-		", array($prefix_id, $data, $date));
+		try {
+			$this->db->executeUpdate("
+				REPLACE INTO cache SET id = ?, data = ?, date_expire = ?
+			", array($prefix_id, $data, $date));
+		} catch (\Exception $e) {
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		$this->loaded[$prefix_id] = $data;
 
@@ -327,10 +370,16 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	{
 		$prefix_id = $this->id_prefix . $id;
 
-		$this->db->executeUpdate("
-			DELETE FROM cache
-			WHERE id = ?
-		", array($prefix_id));
+		try {
+			$this->db->executeUpdate("
+				DELETE FROM cache
+				WHERE id = ?
+			", array($prefix_id));
+		} catch (\Exception $e) {
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		unset($this->loaded[$prefix_id]);
 
@@ -344,10 +393,17 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	public function flush()
 	{
 		$prefix_like = $this->id_prefix . '%';
-		$this->db->executeUpdate("
-			DELETE FROM cache
-			WHERE id LIKE ?
-		", array($prefix_like));
+
+		try {
+			$this->db->executeUpdate("
+				DELETE FROM cache
+				WHERE id LIKE ?
+			", array($prefix_like));
+		} catch (\Exception $e) {
+			if (!$this->silence_exceptions) {
+				throw $e;
+			}
+		}
 
 		foreach ($this->loaded as &$v) {
 			$v = null;

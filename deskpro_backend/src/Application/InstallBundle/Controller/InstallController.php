@@ -219,6 +219,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			// Install data stuff
 			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
 			$AGENT = $agent; // can be used in data.php
+			$WEB_INSTALL = true;
+			$IMPORT_INSTALL = false;
 
 			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 			$em = $this->getOrm();

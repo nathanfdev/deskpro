@@ -91,35 +91,21 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			@unlink($tmpfname);
 		}
 
-		$this->getDb()->insert('blobs', array(
-			'save_path' => $blob['filepath'],
+		$desc = $this->getContainer()->getSystemService('filestorage')->createRandomPath();
+		$desc->write($file, array(
+			'content_type' => $filetype,
+			'filename' => $record['filename'],
+		));
+		$new_blob_id = $desc->getPath();
+		$this->getDb()->update('blobs', array(
 			'filename' => $record['filename'],
 			'filesize' => $record['filesize'],
-			'content_type' => $filetype,
-			'authcode' => Strings::random(20, Strings::CHARS_KEY),
-			'blob_hash' => $hash,
 			'dim_w' => $dim_w,
 			'dim_h' => $dim_h,
 			'date_created' => date('Y-m-d H:i:s', $record['timestamp']),
-		));
-
-		$new_blob_id = $this->getDb()->lastInsertId();
+		), array('id' => $new_blob_id));
 
 		$this->saveMappedId('blob', $blob['id'], $new_blob_id);
-
-		// Insert the parts too
-		$data_len = strlen($file);
-
-		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-		$max_size = ($this->getDb()->getMaxPacketSize()/2)-200;
-		$parts = ceil($data_len / $max_size);
-
-		for ($i = 0; $i < $parts; $i++) {
-			$this->getDb()->insert('blobs_storage', array(
-				'blob_id' => $new_blob_id,
-				'data' => substr($file, $i * $max_size, $max_size)
-			));
-		}
 	}
 
 

@@ -30,14 +30,14 @@ class Settings implements \ArrayAccess
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
 
 	/**
 	 * Settings we've loaded so far
-	 * @var arrau
+	 * @var array
 	 */
 	protected $settings = array();
 
@@ -88,6 +88,10 @@ class Settings implements \ArrayAccess
 	public function get($name)
 	{
 		if (!$name) return '';
+
+		if (isset($GLOBALS['DP_CONFIG']['SETTINGS'][$name])) {
+			return $GLOBALS['DP_CONFIG']['SETTINGS'][$name];
+		}
 
 		if (!isset($this->settings[$name])) {
 			$check_group = $this->getGroupFromName($name);
@@ -198,17 +202,6 @@ class Settings implements \ArrayAccess
 
 		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);
 		$this->_pending_groups = array();
-
-		#------------------------------
-		# Config overrides
-		#------------------------------
-
-		// Always merge with those from config file, they are effectively
-		// hard-coded overrides (ex useful if something broke and you have to disable)
-		$config_settings = App::getConfig('SETTINGS');
-		if ($config_settings) {
-			$this->settings = array_merge($this->settings, $config_settings);
-		}
 	}
 
 
@@ -238,7 +231,7 @@ class Settings implements \ArrayAccess
 
 	public function offsetSet($offset, $value)
 	{
-		throw new BadMethodCallException('You cannot set settings');
+		throw new \BadMethodCallException('You cannot set settings');
 	}
 
 	public function offsetGet($offset)
@@ -248,6 +241,6 @@ class Settings implements \ArrayAccess
 
 	public function offsetUnset($offset)
 	{
-		throw new BadMethodCallException('You cannot unset settings');
+		throw new \BadMethodCallException('You cannot unset settings');
 	}
 }
