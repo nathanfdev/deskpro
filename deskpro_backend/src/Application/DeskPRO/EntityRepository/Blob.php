@@ -28,9 +28,9 @@ class Blob extends EntityRepository
 			return null;
 		}
 
-		list($blob_id, ) = explode('-', $auth_id, 2);
+		list($blob_id, $authcode) = explode('-', $auth_id, 2);
 		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
-		if ($blob && $blob->getAuthId() != $auth_id) {
+		if ($blob && $blob->getAuthId() != $authcode) {
 			$blob = null;
 		}
 
