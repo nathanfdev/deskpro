@@ -236,6 +236,7 @@ class UsersStep extends AbstractDeskpro3Step
 			$email->date_validated = new \DateTime();
 
 			$insert_email = $email->toArray(PersonEmail::TOARRAY_ONLY_PRIMATIVES, true);
+			$insert_email['person_id'] = $insert_person['id'];
 			$this->getDb()->insert('people_emails', $insert_email);
 
 			if (!$default_email_id || $email_info['id'] == $user_info['default_emailid']) {
