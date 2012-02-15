@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			window.setTimeout(function() {
 				var w = propBox.width() - 130;
 				input.width(w);
-				if (self.labelsInput) {
+				if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
 					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
 					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
 				}
