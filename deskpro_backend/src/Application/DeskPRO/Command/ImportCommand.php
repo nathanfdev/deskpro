@@ -340,7 +340,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				}
 			}
 
-			if ($DP_CONFIG['core.filestorage_method'] == 'fs') {
+			if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
 				$this->getContainer()->getDb()->replace('settings', array(
 					'name' => 'core.filestorage_method',
 					'groupname' => 'core',
