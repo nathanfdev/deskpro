@@ -136,7 +136,11 @@
 				<li class="{{field}}">
 					<span class="prop-title">User Waiting:</span>
 					<span class="prop-val">
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c') }}"></time>
+						{% if ticket.real_total_user_waiting %}
+							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
+						{% else %}
+							N/A
+						{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'organization' and ticket.organization %}

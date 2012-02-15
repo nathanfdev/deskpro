@@ -73,6 +73,14 @@
 					{% endif %}
 					</span>
 				</td>
+			{% elseif field == 'date_user_waiting' %}
+				<td class="{{field}}">
+					{% if ticket.real_total_user_waiting %}
+						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
+					{% else %}
+						N/A
+					{% endif %}
+				</td>
 			{% elseif field == 'agent' %}
 				<td class="{{field}}">
 					<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
