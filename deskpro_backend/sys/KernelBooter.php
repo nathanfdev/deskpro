@@ -52,14 +52,9 @@ class KernelBooter
 
 		$has_loaded = true;
 
-		if ($debug || defined('DP_BUILDING')) {
+		if ($debug || defined('DP_BUILDING') || !file_exists(DP_ROOT . '/sys/bootstrap.php') || !file_exists((DP_ROOT . '/sys/compiled.php'))) {
 			require(DP_ROOT . '/sys/bootstrap-dev.php');
 		} else {
-
-			if (!file_exists(DP_ROOT . '/sys/bootstrap.php') || !file_exists((DP_ROOT . '/sys/compiled.php'))) {
-				die('You must run the build scripts before you can use the DeskPRO Source in production');
-			}
-
 			require(DP_ROOT . '/sys/bootstrap.php');
 			require(DP_ROOT . '/sys/compiled.php');
 		}
