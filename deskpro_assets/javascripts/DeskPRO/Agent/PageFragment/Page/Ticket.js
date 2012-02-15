@@ -302,7 +302,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a', messageEl);
 
 		imageEls.colorbox({
-			title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
+			title: function(){
+				var url = $(this).attr('href');
+				var dl_url = Orb.appendQueryData(url, 'dl', '1');
+				return '<a href="'+url+'" target="_blank">Open In New Window</a> | <a href="'+dl_url+'" target="_blank">Download</a>'
+			},
 			width: '50%',
 			height: '50%',
 			initialWidth: '200',

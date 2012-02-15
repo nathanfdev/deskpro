@@ -243,7 +243,11 @@ class FilestorageLoader
 
 		if ($blob_filename != $filename_safe) {
 			// Invalid filename, redirect to the correct one
-			$url = $this->getScheme().'://'.$this->getHttpHost() . $this->getBaseUrl() . '/' . $blob['id'] . '-' . $blob['authcode'] . '/' . $filename_safe;
+			$qs = '';
+			if (!empty($_GET)) {
+				$qs = '?' . http_build_query($_GET	, '', '&');
+			}
+			$url = $this->getScheme().'://'.$this->getHttpHost() . $this->getBaseUrl() . '/' . $blob['id'] . '-' . $blob['authcode'] . '/' . $filename_safe . $qs;
 			header("HTTP/1.1 301 Moved Permanently");
 			header("Location: $url");
 			return;
@@ -334,10 +338,14 @@ class FilestorageLoader
 			case 'image/jpeg':
 			case 'image/gif':
 			case 'image/png':
-				header('Content-Disposition', 'inline; filename=' . $blob['filename_safe']);
+				if (isset($_GET['dl'])) {
+					header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
+				} else {
+					header('Content-Disposition: inline; filename=' . $blob['filename_safe']);
+				}
 				break;
 			default:
-				header('Content-Disposition', 'attachment; filename=' . $blob['filename_safe']);
+				header('Content-Disposition: attachment; filename=' . $blob['filename_safe']);
 		}
 
 		$d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
