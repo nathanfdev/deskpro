@@ -68,15 +68,17 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			$filetype = 'application/octet-stream';
 		}
 
-		$file = $this->getOldDb()->fetchAllCol("
-			SELECT blobdata
-			FROM blob_parts
-			WHERE blobid = ?
-			ORDER BY displayorder ASC
-		", array($record['blobid']));
-		$file = implode('', $file);
-
-		$hash = sha1($file);
+		if ($blob['filepath']) {
+			$file = file_get_contents($this->importer->getConfig('existing_attachment_files') . '/' . $blob['filepath']);
+		} else {
+			$file = $this->getOldDb()->fetchAllCol("
+				SELECT blobdata
+				FROM blob_parts
+				WHERE blobid = ?
+				ORDER BY displayorder ASC
+			", array($record['blobid']));
+			$file = implode('', $file);
+		}
 
 		$dim_w = $dim_h = 0;
 		if (in_array($filetype, ContentTypes::getImageContentTypes())) {

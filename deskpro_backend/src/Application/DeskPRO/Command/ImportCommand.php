@@ -136,8 +136,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		if (!isset($config['importer'])) {
-			$logger->log("<error>Missing `import.importer` configuration value. I do not know which system you want to import from.</error>\n", Logger::ERR);
-			return 2;
+			$config['importer'] = 'Deskpro3';
 		}
 
 		$importer_class = 'Application\\DeskPRO\\Import\\Importer\\' . $config['importer'] . 'Importer';
@@ -146,7 +145,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 3;
 		}
 
-		if (isset($config['attachment_files'])) {
+		if (isset($config['store_attachment_files'])) {
 			global $DP_CONFIG;
 			$DP_CONFIG['core.filestorage_method'] = 'fs';
 		}

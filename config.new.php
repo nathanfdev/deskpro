@@ -94,7 +94,9 @@ $DP_CONFIG = array();
 //   'db_host' => '',
 //   'db_user' => '',
 //   'db_password' => '',
-//   'db_name' => ''
+//   'db_name' => '',
+//   'store_attachment_files' => false,
+//   'existing_attachment_files' => ''
 //  );
 
 ######################################################
